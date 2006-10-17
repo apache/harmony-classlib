@@ -21,10 +21,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import junit.framework.TestCase;
 
-public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
+public class Support_UnmodifiableMapTest extends TestCase {
 
-	Map map;
+	Map<String, Integer> map;
 
 	// must be a map containing the string keys "0"-"99" paired with the Integer
 	// values Integer(0) to Integer(99)
@@ -33,12 +34,13 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 		super(p1);
 	}
 
-	public Support_UnmodifiableMapTest(String p1, Map m) {
+	public Support_UnmodifiableMapTest(String p1, Map<String, Integer> m) {
 		super(p1);
 		map = m;
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		// containsKey
 		assertTrue("UnmodifiableMapTest - Should contain the key \"0\"", map
 				.containsKey("0"));
@@ -56,11 +58,11 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 				.containsValue(new Integer(100)));
 
 		// entrySet
-		Set entrySet = map.entrySet();
-		Iterator entrySetIterator = entrySet.iterator();
+		Set<?> entrySet = map.entrySet();
+		Iterator<?> entrySetIterator = entrySet.iterator();
 		int myCounter = 0;
 		while (entrySetIterator.hasNext()) {
-			Map.Entry me = (Map.Entry) entrySetIterator.next();
+			Map.Entry<?, ?> me = (Map.Entry<?, ?>) entrySetIterator.next();
 			assertTrue("UnmodifiableMapTest - Incorrect Map.Entry returned",
 					map.get(me.getKey()).equals(me.getValue()));
 			myCounter++;
@@ -70,9 +72,9 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 
 		// get
 		assertTrue("UnmodifiableMapTest - getting \"0\" didn't return 0",
-				((Integer) map.get("0")).intValue() == 0);
+				map.get("0").intValue() == 0);
 		assertTrue("UnmodifiableMapTest - getting \"50\" didn't return 0",
-				((Integer) map.get("0")).intValue() == 0);
+				map.get("0").intValue() == 0);
 		assertNull("UnmodifiableMapTest - getting \"100\" didn't return null",
 				map.get("100"));
 
@@ -82,7 +84,7 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 				!map.isEmpty());
 
 		// keySet
-		Set keySet = map.keySet();
+		Set<?> keySet = map.keySet();
 		t_KeySet(keySet);
 
 		// size
@@ -95,7 +97,7 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 
 	}
 
-	void t_KeySet(Set keySet) {
+	void t_KeySet(Set<?> keySet) {
 		// keySet should be a set of the strings "0" to "99"
 
 		// contains
@@ -108,7 +110,7 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 				!keySet.contains("100"));
 
 		// containsAll
-		HashSet hs = new HashSet();
+		HashSet<String> hs = new HashSet<String>();
 		hs.add("0");
 		hs.add("25");
 		hs.add("99");
@@ -125,7 +127,7 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 				!keySet.isEmpty());
 
 		// iterator
-		Iterator it = keySet.iterator();
+		Iterator<?> it = keySet.iterator();
 		while (it.hasNext()) {
 			assertTrue(
 					"UnmodifiableMapTest - keySetTest - Iterator returned wrong values",

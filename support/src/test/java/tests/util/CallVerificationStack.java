@@ -23,7 +23,7 @@ import java.util.Stack;
  * A stack to store the parameters of a call, as well as the call stack.
  * 
  */
-public class CallVerificationStack extends Stack {
+public class CallVerificationStack extends Stack<Object> {
 
 	/*
 	 * --------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class CallVerificationStack extends Stack {
 	private static final long serialVersionUID = 1L;
 
 	// the singleton
-	private static CallVerificationStack _instance = new CallVerificationStack();
+	private static final CallVerificationStack _instance = new CallVerificationStack();
 
 	/*
 	 * --------------------------------------------------------------------
@@ -43,7 +43,7 @@ public class CallVerificationStack extends Stack {
 	 */
 
 	// the call stack, store StackTraceElement
-	private Stack callStack = new Stack();
+	private final Stack<StackTraceElement> callStack = new Stack<StackTraceElement>();
 
 	/*
 	 * -------------------------------------------------------------------
@@ -93,7 +93,7 @@ public class CallVerificationStack extends Stack {
 	 * @return the "current" calling class name
 	 */
 	public String getCurrentSourceClass() {
-		return ((StackTraceElement) this.callStack.peek()).getClassName();
+		return this.callStack.peek().getClassName();
 	}
 
 	/**
@@ -102,25 +102,21 @@ public class CallVerificationStack extends Stack {
 	 * @return the "current" calling method name
 	 */
 	public String getCurrentSourceMethod() {
-		return ((StackTraceElement) this.callStack.peek()).getMethodName();
+		return this.callStack.peek().getMethodName();
 	}
 
 	/**
 	 * Clear the parameter stack and the call stack.
 	 * 
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		this.callStack.clear();
 		super.clear();
 	}
 
-	/**
-	 * Pushes an object onto the top of this stack.
-	 * 
-	 * @param o
-	 *            the object to push
-	 */
-	public Object push(Object o) {
+	@Override
+    public Object push(Object o) {
 		pushCallStack();
 		return super.push(o);
 	}
@@ -200,7 +196,8 @@ public class CallVerificationStack extends Stack {
 	 * 
 	 * @return the object
 	 */
-	public Object pop() {
+	@Override
+    public Object pop() {
 		this.callStack.pop();
 		return super.pop();
 	}

@@ -35,179 +35,87 @@ import java.util.Enumeration;
  */
 public class Support_DummyPKCS12Keystore extends KeyStoreSpi {
 
-	/**
-	 * 
-	 */
 	public Support_DummyPKCS12Keystore() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineGetKey(java.lang.String, char[])
-	 */
-	public Key engineGetKey(String arg0, char[] arg1)
+	@Override
+    public Key engineGetKey(String arg0, char[] arg1)
 			throws NoSuchAlgorithmException, UnrecoverableKeyException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineGetCertificateChain(java.lang.String)
-	 */
-	public Certificate[] engineGetCertificateChain(String arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public Certificate[] engineGetCertificateChain(String arg0) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineGetCertificate(java.lang.String)
-	 */
-	public Certificate engineGetCertificate(String arg0) {
-		// TODO Auto-generated method stub
+	@Override
+    public Certificate engineGetCertificate(String arg0) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineGetCreationDate(java.lang.String)
-	 */
-	public Date engineGetCreationDate(String arg0) {
-		// TODO Auto-generated method stub
+	@Override
+    public Date engineGetCreationDate(String arg0) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineSetKeyEntry(java.lang.String,
-	 *      java.security.Key, char[], java.security.cert.Certificate[])
-	 */
-	public void engineSetKeyEntry(String arg0, Key arg1, char[] arg2,
+	@Override
+    public void engineSetKeyEntry(String arg0, Key arg1, char[] arg2,
 			Certificate[] arg3) throws KeyStoreException {
-		// TODO Auto-generated method stub
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineSetKeyEntry(java.lang.String,
-	 *      byte[], java.security.cert.Certificate[])
-	 */
-	public void engineSetKeyEntry(String arg0, byte[] arg1, Certificate[] arg2)
+    @Override
+    public void engineSetKeyEntry(String arg0, byte[] arg1, Certificate[] arg2)
 			throws KeyStoreException {
-		// TODO Auto-generated method stub
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineSetCertificateEntry(java.lang.String,
-	 *      java.security.cert.Certificate)
-	 */
-	public void engineSetCertificateEntry(String arg0, Certificate arg1)
+	@Override
+    public void engineSetCertificateEntry(String arg0, Certificate arg1)
 			throws KeyStoreException {
-		// TODO Auto-generated method stub
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineDeleteEntry(java.lang.String)
-	 */
-	public void engineDeleteEntry(String arg0) throws KeyStoreException {
-		// TODO Auto-generated method stub
-
+	@Override
+    public void engineDeleteEntry(String arg0) throws KeyStoreException {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineAliases()
-	 */
-	public Enumeration engineAliases() {
-		// TODO Auto-generated method stub
+	@Override
+    public Enumeration<String> engineAliases() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineContainsAlias(java.lang.String)
-	 */
-	public boolean engineContainsAlias(String arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean engineContainsAlias(String arg0) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineSize()
-	 */
-	public int engineSize() {
-		// TODO Auto-generated method stub
+    @Override
+    public int engineSize() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineIsKeyEntry(java.lang.String)
-	 */
-	public boolean engineIsKeyEntry(String arg0) {
-		// TODO Auto-generated method stub
+	@Override
+    public boolean engineIsKeyEntry(String arg0) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineIsCertificateEntry(java.lang.String)
-	 */
-	public boolean engineIsCertificateEntry(String arg0) {
-		// TODO Auto-generated method stub
+	@Override
+    public boolean engineIsCertificateEntry(String arg0) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineGetCertificateAlias(java.security.cert.Certificate)
-	 */
-	public String engineGetCertificateAlias(Certificate arg0) {
-		// TODO Auto-generated method stub
+	@Override
+    public String engineGetCertificateAlias(Certificate arg0) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineStore(java.io.OutputStream, char[])
-	 */
-	public void engineStore(OutputStream arg0, char[] arg1) throws IOException,
+	@Override
+    public void engineStore(OutputStream arg0, char[] arg1) throws IOException,
 			NoSuchAlgorithmException, CertificateException {
-		// TODO Auto-generated method stub
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.security.KeyStoreSpi#engineLoad(java.io.InputStream, char[])
-	 */
-	public void engineLoad(InputStream arg0, char[] arg1) throws IOException,
+	@Override
+    public void engineLoad(InputStream arg0, char[] arg1) throws IOException,
 			NoSuchAlgorithmException, CertificateException {
-		// TODO Auto-generated method stub
 	}
 }

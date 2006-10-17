@@ -24,18 +24,19 @@ import java.util.NoSuchElementException;
 
 public class Support_ListTest extends junit.framework.TestCase {
 
-	List list; // must contain the Integers 0 to 99 in order
+	List<Integer> list; // must contain the Integers 0 to 99 in order
 
 	public Support_ListTest(String p1) {
 		super(p1);
 	}
 
-	public Support_ListTest(String p1, List l) {
+	public Support_ListTest(String p1, List<Integer> l) {
 		super(p1);
 		list = l;
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		int hashCode = 1;
 		for (int counter = 0; counter < 100; counter++) {
 			Object elem;
@@ -74,7 +75,7 @@ public class Support_ListTest extends junit.framework.TestCase {
 				"ListTest - c) remove with index failed--affected previous elements",
 				list.get(49).equals(new Integer(49)));
 
-		List myList = new LinkedList();
+		List<Integer> myList = new LinkedList<Integer>();
 		myList.add(new Integer(500));
 		myList.add(new Integer(501));
 		myList.add(new Integer(502));
@@ -93,7 +94,7 @@ public class Support_ListTest extends junit.framework.TestCase {
 				"ListTest - e) addAll with index failed--affected previous elements",
 				list.get(49).equals(new Integer(49)));
 
-		List mySubList = list.subList(50, 53);
+		List<Integer> mySubList = list.subList(50, 53);
 		assertEquals(3, mySubList.size());
 		assertTrue(
 				"ListTest - a) sublist Failed--does not contain correct elements",
@@ -112,7 +113,7 @@ public class Support_ListTest extends junit.framework.TestCase {
 				100, list.size());
 
 		t_listIterator(list);
-		ListIterator li = list.listIterator();
+		ListIterator<Integer> li = list.listIterator();
 		for (int counter = 0; li.hasNext(); counter++) {
 			Object elem;
 			elem = li.next();
@@ -124,23 +125,25 @@ public class Support_ListTest extends junit.framework.TestCase {
 
 	}
 
-	public void t_listIterator(List list) {
-		ListIterator li = list.listIterator(1);
+	public void t_listIterator(List<Integer> list) {
+		ListIterator<Integer> li = list.listIterator(1);
 		assertTrue("listIterator(1)", li.next() == list.get(1));
 
 		int orgSize = list.size();
 		li = list.listIterator();
 		for (int i = 0; i <= orgSize; i++) {
-			if (i == 0)
-				assertTrue("list iterator hasPrevious(): " + i, !li
+			if (i == 0) {
+                assertTrue("list iterator hasPrevious(): " + i, !li
 						.hasPrevious());
-			else
-				assertTrue("list iterator hasPrevious(): " + i, li
+            } else {
+                assertTrue("list iterator hasPrevious(): " + i, li
 						.hasPrevious());
-			if (i == list.size())
-				assertTrue("list iterator hasNext(): " + i, !li.hasNext());
-			else
-				assertTrue("list iterator hasNext(): " + i, li.hasNext());
+            }
+			if (i == list.size()) {
+                assertTrue("list iterator hasNext(): " + i, !li.hasNext());
+            } else {
+                assertTrue("list iterator hasNext(): " + i, li.hasNext());
+            }
 			assertTrue("list iterator nextIndex(): " + i, li.nextIndex() == i);
 			assertTrue("list iterator previousIndex(): " + i, li
 					.previousIndex() == i - 1);
@@ -151,10 +154,11 @@ public class Support_ListTest extends junit.framework.TestCase {
 			} catch (NoSuchElementException e) {
 				exception = true;
 			}
-			if (i == list.size())
-				assertTrue("list iterator next() exception: " + i, exception);
-			else
-				assertTrue("list iterator next() exception: " + i, !exception);
+			if (i == list.size()) {
+                assertTrue("list iterator next() exception: " + i, exception);
+            } else {
+                assertTrue("list iterator next() exception: " + i, !exception);
+            }
 		}
 
 		for (int i = orgSize - 1; i >= 0; i--) {
@@ -163,12 +167,13 @@ public class Support_ListTest extends junit.framework.TestCase {
 			assertTrue("list iterator nextIndex()2: " + i, li.nextIndex() == i);
 			assertTrue("list iterator previousIndex()2: " + i, li
 					.previousIndex() == i - 1);
-			if (i == 0)
-				assertTrue("list iterator hasPrevious()2: " + i, !li
+			if (i == 0) {
+                assertTrue("list iterator hasPrevious()2: " + i, !li
 						.hasPrevious());
-			else
-				assertTrue("list iterator hasPrevious()2: " + i, li
+            } else {
+                assertTrue("list iterator hasPrevious()2: " + i, li
 						.hasPrevious());
+            }
 			assertTrue("list iterator hasNext()2: " + i, li.hasNext());
 		}
 		boolean exception = false;

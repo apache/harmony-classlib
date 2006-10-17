@@ -18,12 +18,13 @@
 package tests.support;
 
 import java.util.Map;
+import junit.framework.TestCase;
 
-public class Support_MapTest2 extends junit.framework.TestCase {
+public class Support_MapTest2 extends TestCase {
 
-	Map map;
+	Map<String, String> map;
 
-	public Support_MapTest2(Map m) {
+	public Support_MapTest2(Map<String, String> m) {
 		super();
 		map = m;
 		if (!map.isEmpty()) {
@@ -31,7 +32,8 @@ public class Support_MapTest2 extends junit.framework.TestCase {
 		}
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		try {
 			map.put("one", "1");
 			assertEquals("size should be one", 1, map.size());

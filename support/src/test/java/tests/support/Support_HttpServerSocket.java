@@ -39,10 +39,12 @@ public class Support_HttpServerSocket implements Support_ServerSocket {
 	 * @see tests.support.Support_ServerSocket#accept()
 	 */
 	public Support_Socket accept() throws IOException {
-		if (port == -1)
-			return null;
-		if (instance == null)
-			return null;
+		if (port == -1) {
+            return null;
+        }
+		if (instance == null) {
+            return null;
+        }
 		instance.setSoTimeout(timeout);
 		Socket s = instance.accept();
 		return new Support_HttpSocket(s);
@@ -71,8 +73,9 @@ public class Support_HttpServerSocket implements Support_ServerSocket {
 	 * @see tests.support.Support_ServerSocket#close()
 	 */
 	public void close() throws IOException {
-		if (instance != null)
-			instance.close();
+		if (instance != null) {
+            instance.close();
+        }
 	}
 
 }

@@ -47,10 +47,11 @@ public class Support_BitSet {
 	 * @see #set
 	 */
 	public Support_BitSet(int nbits) {
-		if (nbits >= 0)
-			bits = new long[(nbits / ELM_SIZE) + (nbits % ELM_SIZE > 0 ? 1 : 0)];
-		else
-			throw new NegativeArraySizeException();
+		if (nbits >= 0) {
+            bits = new long[(nbits / ELM_SIZE) + (nbits % ELM_SIZE > 0 ? 1 : 0)];
+        } else {
+            throw new NegativeArraySizeException();
+        }
 	}
 
 	/**
@@ -65,12 +66,14 @@ public class Support_BitSet {
 	 */
 	public void clear(int pos) {
 		if (pos >= 0) {
-			if (pos < bits.length * ELM_SIZE)
-				bits[pos / ELM_SIZE] &= ~(1L << (pos % ELM_SIZE));
-			else
-				growBits(pos); // Bit is cleared for free if we have to grow
-		} else
-			throw new IndexOutOfBoundsException("Negative index specified");
+			if (pos < bits.length * ELM_SIZE) {
+                bits[pos / ELM_SIZE] &= ~(1L << (pos % ELM_SIZE));
+            } else {
+                growBits(pos); // Bit is cleared for free if we have to grow
+            }
+		} else {
+            throw new IndexOutOfBoundsException("Negative index specified");
+        }
 	}
 
 	/**
@@ -88,11 +91,12 @@ public class Support_BitSet {
 	 */
 	public boolean get(int pos) {
 		if (pos >= 0) {
-			if (pos < bits.length * ELM_SIZE)
-				return (bits[pos / ELM_SIZE] & (1L << (pos % ELM_SIZE))) != 0;
+			if (pos < bits.length * ELM_SIZE) {
+                return (bits[pos / ELM_SIZE] & (1L << (pos % ELM_SIZE))) != 0;
+            }
 			return false;
-		} else
-			throw new IndexOutOfBoundsException("Negative index specified");
+		}
+        throw new IndexOutOfBoundsException("Negative index specified");
 	}
 
 	/**
@@ -122,11 +126,13 @@ public class Support_BitSet {
 	 */
 	public void set(int pos) {
 		if (pos >= 0) {
-			if (pos >= bits.length * ELM_SIZE)
-				growBits(pos);
+			if (pos >= bits.length * ELM_SIZE) {
+                growBits(pos);
+            }
 			bits[pos / ELM_SIZE] |= 1L << (pos % ELM_SIZE);
-		} else
-			throw new IndexOutOfBoundsException("Negative index specified");
+		} else {
+            throw new IndexOutOfBoundsException("Negative index specified");
+        }
 	}
 
 	/**
@@ -148,20 +154,22 @@ public class Support_BitSet {
 	 * 
 	 * @return A comma delimited list of the indices of all bits that are set.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer sb = new StringBuffer(bits.length / 2);
 		int bitCount = 0;
 		sb.append('{');
 		boolean comma = false;
-		for (int i = 0; i < bits.length; i++) {
-			if (bits[i] == 0) {
+		for (long element : bits) {
+			if (element == 0) {
 				bitCount += ELM_SIZE;
 				continue;
 			}
 			for (int j = 0; j < ELM_SIZE; j++) {
-				if (((bits[i] & (1L << j)) != 0)) {
-					if (comma)
-						sb.append(", ");
+				if (((element & (1L << j)) != 0)) {
+					if (comma) {
+                        sb.append(", ");
+                    }
 					sb.append(bitCount);
 					comma = true;
 				}
@@ -178,14 +186,17 @@ public class Support_BitSet {
 	 */
 	public int length() {
 		int idx = bits.length - 1;
-		while (idx >= 0 && bits[idx] == 0)
-			--idx;
-		if (idx == -1)
-			return 0;
+		while (idx >= 0 && bits[idx] == 0) {
+            --idx;
+        }
+		if (idx == -1) {
+            return 0;
+        }
 		int i = ELM_SIZE - 1;
 		long val = bits[idx];
-		while ((val & (1L << i)) == 0 && i > 0)
-			i--;
+		while ((val & (1L << i)) == 0 && i > 0) {
+            i--;
+        }
 		return idx * ELM_SIZE + i + 1;
 	}
 }

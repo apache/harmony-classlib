@@ -19,7 +19,8 @@ package tests.support;
 
 public class Support_TestResource extends java.util.ListResourceBundle {
 
-	protected Object[][] getContents() {
+	@Override
+    protected Object[][] getContents() {
 		Object[][] contents = { { "parent1", "parentValue1" },
 				{ "parent2", "parentValue2" }, { "parent3", "parentValue3" },
 				{ "parent4", "parentValue4" }, };

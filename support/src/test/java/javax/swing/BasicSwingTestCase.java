@@ -69,12 +69,14 @@ public abstract class BasicSwingTestCase extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         timeoutDelay = defaultTimeoutDelay;
         previousLF = UIManager.getLookAndFeel();
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         UIManager.getDefaults().clear();
@@ -125,6 +127,7 @@ public abstract class BasicSwingTestCase extends TestCase {
         return null;
     }
 
+    @Override
     public void runBare() throws Throwable {
         final Throwable[] exception = new Throwable[1];
         Thread thread = new Thread(new Runnable() {
@@ -138,6 +141,7 @@ public abstract class BasicSwingTestCase extends TestCase {
         thread.start();
         thread.join(timeoutDelay);
         if (thread.isAlive()) {
+            // TODO is this stop necessary?
             thread.stop();
             fail("Test interrupted due timeout");
         }
@@ -212,6 +216,7 @@ public abstract class BasicSwingTestCase extends TestCase {
     }
 
     private class FixedFontMetrics extends FontMetrics {
+        private static final long serialVersionUID = 1L;
         private final int charWidth;
         private final int charHeight;
 
@@ -227,37 +232,44 @@ public abstract class BasicSwingTestCase extends TestCase {
             this.charHeight = charHeight;
         }
 
+        @Override
         public int stringWidth(final String str) {
             return ((str == null || str.equals("")) ? 0 : str.length() * charWidth);
         }
 
+        @Override
         public int charWidth(final int ch) {
             return charWidth;
         }
 
+        @Override
         public int charWidth(final char ch) {
             return charWidth;
         }
 
+        @Override
         public int getAscent() {
             return charWidth;
         }
 
+        @Override
         public int getDescent() {
             return charWidth*2;
         }
 
+        @Override
         public int getLeading() {
             return 2;
         }
 
+        @Override
         public int getHeight() {
             return charHeight;
         }
     };
 
     protected abstract class ExceptionalCase {
-        private Class clazz;
+        private Class<?> clazz;
         private String msg;
 
         public abstract void exceptionalAction() throws Exception;
@@ -265,12 +277,12 @@ public abstract class BasicSwingTestCase extends TestCase {
         public ExceptionalCase() {
         }
 
-        public ExceptionalCase(String msg, Class clazz) {
+        public ExceptionalCase(String msg, Class<?> clazz) {
             this.msg = msg;
             this.clazz = clazz;
         }
 
-        public Class expectedExceptionClass() {
+        public Class<?> expectedExceptionClass() {
             return clazz;
         }
 
@@ -280,39 +292,45 @@ public abstract class BasicSwingTestCase extends TestCase {
     }
 
     protected abstract class BadLocationCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
+        @Override
+        public Class<?> expectedExceptionClass() {
             return BadLocationException.class;
         }
     }
 
     protected abstract class ClassCastCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
+        @Override
+        public Class<?> expectedExceptionClass() {
             return ClassCastException.class;
         }
     }
 
     protected abstract class IllegalArgumentCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
+        @Override
+        public Class<?> expectedExceptionClass() {
             return IllegalArgumentException.class;
         }
     }
 
     protected abstract class NullPointerCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
+        @Override
+        public Class<?> expectedExceptionClass() {
             return NullPointerException.class;
         }
     }
 
     protected abstract class StringIndexOutOfBoundsCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
+        @Override
+        public Class<?> expectedExceptionClass() {
             return StringIndexOutOfBoundsException.class;
         }
     }
 
     protected static class EventsController implements Serializable {
+        private static final long serialVersionUID = 1L;
         private boolean isVerbose;
         private Object lastEventHappened;
-        private final Map events = new HashMap();
+        private final Map<Object, Object> events = new HashMap<Object, Object>();
 
         protected EventsController() {
             this(false);
@@ -343,7 +361,7 @@ public abstract class BasicSwingTestCase extends TestCase {
             if (!isChanged() || key == null) {
                 return false;
             }
-            for (Iterator it = events.keySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Object> it = events.keySet().iterator(); it.hasNext(); ) {
                 String property = (String)it.next();
                 if (key.equals(property)) {
                     return true;
@@ -372,8 +390,8 @@ public abstract class BasicSwingTestCase extends TestCase {
 
         public int findMe(final Object[] listenersArray) {
             int found = 0;
-            for (int i = 0; i < listenersArray.length; i++) {
-                if (listenersArray[i] == this) {
+            for (Object element : listenersArray) {
+                if (element == this) {
                     found++;
                 }
             }
@@ -383,6 +401,7 @@ public abstract class BasicSwingTestCase extends TestCase {
     }
 
     protected class PropertyChangeController extends EventsController implements PropertyChangeListener {
+        private static final long serialVersionUID = 1L;
         public PropertyChangeController() {
             super(false);
         }
@@ -422,6 +441,8 @@ public abstract class BasicSwingTestCase extends TestCase {
     }
 
     protected class ChangeController extends EventsController implements ChangeListener {
+        private static final long serialVersionUID = 1L;
+
         public ChangeController() {
             super(false);
         }
@@ -541,14 +562,14 @@ public abstract class BasicSwingTestCase extends TestCase {
         }
     }
 
-    protected boolean hasListener(final EventListener[] listeners, final Class listenerClass) {
+    protected boolean hasListener(final EventListener[] listeners, final Class<?> listenerClass) {
         return getListener(listeners, listenerClass) != null;
     }
 
-    protected EventListener getListener(final EventListener[] listeners, final Class listenerClass) {
-        for (int i = 0; i < listeners.length; i++) {
-            if (listeners[i].getClass().isAssignableFrom(listenerClass)) {
-                return listeners[i];
+    protected EventListener getListener(final EventListener[] listeners, final Class<?> listenerClass) {
+        for (EventListener element : listeners) {
+            if (element.getClass().isAssignableFrom(listenerClass)) {
+                return element;
             }
         }
 
@@ -573,7 +594,7 @@ public abstract class BasicSwingTestCase extends TestCase {
         return "JUnit".equals(f.getTitle());
     }
 
-    protected Component findComponent(final Container root, final Class findClass, final boolean exactClassMatch) {
+    protected Component findComponent(final Container root, final Class<?> findClass, final boolean exactClassMatch) {
         if (exactClassMatch && findClass == root.getClass()
             || !exactClassMatch && findClass.isAssignableFrom(root.getClass())) {
 
@@ -618,8 +639,7 @@ public abstract class BasicSwingTestCase extends TestCase {
 
     private void closeAllFrames() {
         Frame[] frames = Frame.getFrames();
-        for (int i = 0; i < frames.length; i++) {
-            Frame f = frames[i];
+        for (Frame f : frames) {
             if (f.isDisplayable()) {
                 if (!isSystemWindow(f)) {
                     f.dispose();

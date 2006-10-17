@@ -24,6 +24,7 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.Vector;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class Support_HttpServer {
@@ -79,7 +80,7 @@ public class Support_HttpServer {
 	private boolean shuttingDown = false;
 
 	// synchronization
-	private Object lock = new Object();
+	private final Object lock = new Object();
 
 	TestCase testcase = null;
 
@@ -93,8 +94,9 @@ public class Support_HttpServer {
 	}
 
 	public void startServer(final int port) {
-		if (started)
-			return;
+		if (started) {
+            return;
+        }
 		started = true;
 		this.port = port;
 		Thread serverThread = new Thread(new Runnable() {
@@ -119,15 +121,16 @@ public class Support_HttpServer {
 							.println("Wait timed out.  Test HTTP Server shut down.");
 					started = false;
 					try {
-						if (serversocket != null)
-							serversocket.close();
+						if (serversocket != null) {
+                            serversocket.close();
+                        }
 					} catch (IOException e2) {
 					}
 				} catch (IOException e) {
 					// release the lock so the tests will finish running
 					if (!shuttingDown) {
 						e.printStackTrace();
-						TestCase.fail("Test server error on HTTP Server on port "
+						Assert.fail("Test server error on HTTP Server on port "
 										+ port + ": " + e);
 					}
 					synchronized (lock) {
@@ -135,8 +138,9 @@ public class Support_HttpServer {
 					}
 				} finally {
 					try {
-						if (serversocket != null)
-							serversocket.close();
+						if (serversocket != null) {
+                            serversocket.close();
+                        }
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -181,20 +185,23 @@ public class Support_HttpServer {
 			boolean lastCr = false;
 			StringBuffer result = new StringBuffer();
 			int c = is.read();
-			if (c < 0)
-				return null;
+			if (c < 0) {
+                return null;
+            }
 			while (c != '\n') {
 				if (lastCr) {
 					result.append('\r');
 					lastCr = false;
 				}
-				if (c == '\r')
-					lastCr = true;
-				else
-					result.append((char) c);
+				if (c == '\r') {
+                    lastCr = true;
+                } else {
+                    result.append((char) c);
+                }
 				c = is.read();
-				if (c < 0)
-					break;
+				if (c < 0) {
+                    break;
+                }
 			}
 			return result.toString();
 		}
@@ -213,7 +220,7 @@ public class Support_HttpServer {
 				boolean authenticated = false, contentLength = false, chunked = false;
 				int length = -1;
 				String resourceName = "";
-				Vector headers = new Vector();
+				Vector<String> headers = new Vector<String>();
 				while (((line = readln(in)) != null) && (line.length() > 1)) {
 					headers.addElement(line);
 					String lline = line.toLowerCase();
@@ -221,59 +228,65 @@ public class Support_HttpServer {
 					if (lline.startsWith("get") || lline.startsWith("post")) {
 						int start = line.indexOf(' ') + 1;
 						int end = line.indexOf(' ', start);
-						if (start > 0 && end > -1)
-							resourceName = line.substring(start, end);
+						if (start > 0 && end > -1) {
+                            resourceName = line.substring(start, end);
+                        }
 					}
 					if (lline.startsWith("authorization:")) {
 						authenticated = true;
 					}
 					if (lline.startsWith("content-length")) {
-						if (contentLength)
-							TestCase.fail("Duplicate Content-Length: " + line);
+						if (contentLength) {
+                            Assert.fail("Duplicate Content-Length: " + line);
+                        }
 						contentLength = true;
 						length = Integer.parseInt(line.substring(line
 								.indexOf(' ') + 1));
 					}
 					if (line.startsWith("transfer-encoding")) {
-						if (chunked)
-							TestCase.fail("Duplicate Transfer-Encoding: "
+						if (chunked) {
+                            Assert.fail("Duplicate Transfer-Encoding: "
 									+ line);
+                        }
 						chunked = true;
 						String encoding = line.substring(line.indexOf(' ') + 1);
-						if ("chunked".equals(encoding))
-							TestCase.fail("Unknown Transfer-Encoding: "
+						if ("chunked".equals(encoding)) {
+                            Assert.fail("Unknown Transfer-Encoding: "
 									+ encoding);
+                        }
 					}
 
 				}
-				if (contentLength && chunked)
-					TestCase.fail("Found both Content-Length and Transfer-Encoding");
+				if (contentLength && chunked) {
+                    Assert.fail("Found both Content-Length and Transfer-Encoding");
+                }
 
 				// call the test function based on the requested resource
-				if (resourceName.equals(CHUNKEDTEST))
-					chunkedTest();
-				else if (resourceName.equals(CONTENTTEST))
-					contentTest();
-				else if (resourceName.equals(AUTHTEST))
-					authenticateTest(authenticated);
-				else if (resourceName.startsWith(REDIRECTTEST))
-					redirectTest(resourceName);
-				else if (portRedirectTestEnable
-						&& resourceName.equals(PORTREDIRTEST))
-					contentTest();
-				else if (resourceName.equals(OTHERTEST))
-					otherTest();
-				else if (resourceName.equals(HEADERSTEST))
-					headersTest(headers);
-				else if (resourceName.startsWith("http://")
-						&& resourceName.indexOf(OTHERTEST) > -1)
-					// redirection to a proxy passes an absolute URI to the
+				if (resourceName.equals(CHUNKEDTEST)) {
+                    chunkedTest();
+                } else if (resourceName.equals(CONTENTTEST)) {
+                    contentTest();
+                } else if (resourceName.equals(AUTHTEST)) {
+                    authenticateTest(authenticated);
+                } else if (resourceName.startsWith(REDIRECTTEST)) {
+                    redirectTest(resourceName);
+                } else if (portRedirectTestEnable
+						&& resourceName.equals(PORTREDIRTEST)) {
+                    contentTest();
+                } else if (resourceName.equals(OTHERTEST)) {
+                    otherTest();
+                } else if (resourceName.equals(HEADERSTEST)) {
+                    headersTest(headers);
+                } else if (resourceName.startsWith("http://")
+						&& resourceName.indexOf(OTHERTEST) > -1) {
+                    // redirection to a proxy passes an absolute URI to the
 					// proxy server
 					otherTest();
-				else if (resourceName.equals(POSTTEST)) {
+                } else if (resourceName.equals(POSTTEST)) {
 					postTest(length, in);
-				} else
-					notFound(); // return a not found error
+				} else {
+                    notFound(); // return a not found error
+                }
 
 				in.close();
 				socket.close();
@@ -401,15 +414,15 @@ public class Support_HttpServer {
 
 		}
 
-		private void headersTest(Vector headers) {
+		private void headersTest(Vector<String> headers) {
 			int found = 0;
 			for (int i = 0; i < headers.size(); i++) {
-				String header = (String) headers.elementAt(i);
+				String header = headers.elementAt(i);
 				if (header.startsWith("header1:")) {
 					found++;
-					TestCase.assertTrue("unexpected header: " + header,
+					Assert.assertTrue("unexpected header: " + header,
 							found == 1);
-					TestCase.assertTrue("invalid header: " + header,
+					Assert.assertTrue("invalid header: " + header,
 							"header1: value2".equals(header));
 				}
 			}
@@ -435,8 +448,9 @@ public class Support_HttpServer {
 			try {
 				ByteArrayOutputStream data = new ByteArrayOutputStream();
 				// read content-length specified data
-				for (int i = 0; i < length; i++)
-					data.write(in.read());
+				for (int i = 0; i < length; i++) {
+                    data.write(in.read());
+                }
 
 				// read chunked-encoding data
 				if (length == -1) {

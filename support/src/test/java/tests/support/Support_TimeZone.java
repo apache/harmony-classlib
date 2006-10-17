@@ -27,8 +27,9 @@ import java.util.TimeZone;
  * 
  */
 public class Support_TimeZone extends TimeZone {
+    private static final long serialVersionUID = 1L;
 
-	int rawOffset;
+    int rawOffset;
 
 	boolean useDaylightTime;
 
@@ -37,7 +38,8 @@ public class Support_TimeZone extends TimeZone {
 		this.useDaylightTime = useDaylightTime;
 	}
 
-	public int getRawOffset() {
+	@Override
+    public int getRawOffset() {
 		return rawOffset;
 	}
 
@@ -45,20 +47,23 @@ public class Support_TimeZone extends TimeZone {
 	 * let's assume this timezone has daylight savings from the 4th month till
 	 * the 10th month of the year to ame things simple.
 	 */
-	public boolean inDaylightTime(java.util.Date p1) {
-		if (!useDaylightTime)
-			return false;
+	@Override
+    public boolean inDaylightTime(java.util.Date p1) {
+		if (!useDaylightTime) {
+            return false;
+        }
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(p1);
 		int month = cal.get(Calendar.MONTH);
 
-		if (month > 4 && month < 10)
-			return true;
-		else
-			return false;
+		if (month > 4 && month < 10) {
+            return true;
+        }
+        return false;
 	}
 
-	public boolean useDaylightTime() {
+	@Override
+    public boolean useDaylightTime() {
 		return useDaylightTime;
 	}
 
@@ -66,11 +71,13 @@ public class Support_TimeZone extends TimeZone {
 	 * return 0 to keep it simple, since this subclass is not used to test this
 	 * method..
 	 */
-	public int getOffset(int p1, int p2, int p3, int p4, int p5, int p6) {
+	@Override
+    public int getOffset(int p1, int p2, int p3, int p4, int p5, int p6) {
 		return 0;
 	}
 
-	public void setRawOffset(int p1) {
+	@Override
+    public void setRawOffset(int p1) {
 		rawOffset = p1;
 	}
 }

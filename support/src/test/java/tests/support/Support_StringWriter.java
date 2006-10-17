@@ -43,8 +43,9 @@ public class Support_StringWriter extends Writer {
 		if (initialSize >= 0) {
 			buf = new StringBuffer(initialSize);
 			lock = buf;
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -54,7 +55,8 @@ public class Support_StringWriter extends Writer {
 	 * @exception java.io.IOException
 	 *                If an IO error occurs closing this StringWriter.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 	}
 
 	/**
@@ -62,7 +64,8 @@ public class Support_StringWriter extends Writer {
 	 * particular implementation does nothing.
 	 * 
 	 */
-	public void flush() {
+	@Override
+    public void flush() {
 	}
 
 	/**
@@ -85,7 +88,8 @@ public class Support_StringWriter extends Writer {
 	 * 
 	 * @return this StringWriters current contents as a String.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		synchronized (lock) {
 			return buf.toString();
 		}
@@ -105,15 +109,17 @@ public class Support_StringWriter extends Writer {
 	 * @exception java.lang.ArrayIndexOutOfBoundsException
 	 *                If offset or count are outside of bounds.
 	 */
-	public void write(char[] buf, int offset, int count) {
+	@Override
+    public void write(char[] buf, int offset, int count) {
 		// avoid int overflow
 		if (0 <= offset && offset <= buf.length && 0 <= count
 				&& count <= buf.length - offset) {
 			synchronized (lock) {
 				this.buf.append(buf, offset, count);
 			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -125,7 +131,8 @@ public class Support_StringWriter extends Writer {
 	 *            The character to write
 	 * 
 	 */
-	public void write(int oneChar) {
+	@Override
+    public void write(int oneChar) {
 		synchronized (lock) {
 			buf.append((char) oneChar);
 		}
@@ -139,7 +146,8 @@ public class Support_StringWriter extends Writer {
 	 *            the non-null String containing the characters to write.
 	 * 
 	 */
-	public void write(String str) {
+	@Override
+    public void write(String str) {
 		synchronized (lock) {
 			buf.append(str);
 		}
@@ -160,7 +168,8 @@ public class Support_StringWriter extends Writer {
 	 * @exception java.lang.ArrayIndexOutOfBoundsException
 	 *                If offset or count are outside of bounds.
 	 */
-	public void write(String str, int offset, int count) {
+	@Override
+    public void write(String str, int offset, int count) {
 		String sub = str.substring(offset, offset + count);
 		synchronized (lock) {
 			buf.append(sub);

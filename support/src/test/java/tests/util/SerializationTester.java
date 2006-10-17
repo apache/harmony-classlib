@@ -75,7 +75,7 @@ public class SerializationTester {
 
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bis);
-		Object outputObject = (Object) ois.readObject();
+		Object outputObject = ois.readObject();
 		lastOutput = outputObject;
 		ois.close();
 		return outputObject;

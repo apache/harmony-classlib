@@ -21,8 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 /**
  * Performs some basic testing of either HttpConnection or HttpURLConnection
@@ -76,16 +75,17 @@ public class Support_HttpTests {
 
 			// receive the data, and then read again after EOF
 			c = is.read();
-			while (c > 0)
-				c = is.read();
+			while (c > 0) {
+                c = is.read();
+            }
 			c = is.read();
 			is.close();
 			connector.close();
-			TestCase.assertEquals("Error receiving chunked transfer coded data",
+			Assert.assertEquals("Error receiving chunked transfer coded data",
 					-1, c);
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during test a: " + e);
+			Assert.fail("Exception during test a: " + e);
 		}
 
 		// Content-Length Test
@@ -95,17 +95,18 @@ public class Support_HttpTests {
 			bout.reset();
 			do {
 				c = is.read();
-				if (c != -1)
-					bout.write(c);
+				if (c != -1) {
+                    bout.write(c);
+                }
 			} while (c != -1);
 			is.close();
 			connector.close();
 			String result = new String(bout.toByteArray(), "ISO8859_1");
-			TestCase.assertTrue("Error receiving content coded data: " + result,
+			Assert.assertTrue("Error receiving content coded data: " + result,
 					"ABCDE".equals(result));
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during test b: " + e);
+			Assert.fail("Exception during test b: " + e);
 		}
 
 		// Headers Test
@@ -118,22 +119,23 @@ public class Support_HttpTests {
 					"private", "no-transform" };
 			while (true) {
 				String key = connector.getHeaderFieldKey(i);
-				if (key == null && i > 0)
-					break;
+				if (key == null && i > 0) {
+                    break;
+                }
 				if ("Cache-Control".equals(key)) {
-					TestCase.assertTrue("Too many headers at: " + i, found <= 2);
+					Assert.assertTrue("Too many headers at: " + i, found <= 2);
 					String value = connector.getHeaderField(i);
-					TestCase.assertTrue("Invalid header value: " + found + ": "
+					Assert.assertTrue("Invalid header value: " + found + ": "
 							+ value, expected[found].equals(value));
 					found++;
 				}
 				i++;
 			}
-			TestCase.assertTrue("Invalid headers: " + found, found == 3);
+			Assert.assertTrue("Invalid headers: " + found, found == 3);
 			connector.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during test c: " + e);
+			Assert.fail("Exception during test c: " + e);
 		}
 
 		// Post Test
@@ -149,17 +151,18 @@ public class Support_HttpTests {
 			bout.reset();
 			do {
 				c = is.read();
-				if (c != -1)
-					bout.write(c);
+				if (c != -1) {
+                    bout.write(c);
+                }
 			} while (c != -1);
 			is.close();
 			connector.close();
 			String result = new String(bout.toByteArray(), "ISO8859_1");
-			TestCase.assertTrue("Error sending data 1: " + result, toWrite
+			Assert.assertTrue("Error sending data 1: " + result, toWrite
 					.equals(result));
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during test d: " + e);
+			Assert.fail("Exception during test d: " + e);
 		}
 
 		// Post Test chunked
@@ -174,17 +177,18 @@ public class Support_HttpTests {
 			bout.reset();
 			do {
 				c = is.read();
-				if (c != -1)
-					bout.write(c);
+				if (c != -1) {
+                    bout.write(c);
+                }
 			} while (c != -1);
 			is.close();
 			connector.close();
 			String result = new String(bout.toByteArray(), "ISO8859_1");
-			TestCase.assertTrue("Error sending data 2: " + result, ("C" + toWrite)
+			Assert.assertTrue("Error sending data 2: " + result, ("C" + toWrite)
 					.equals(result));
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during test e: " + e);
+			Assert.fail("Exception during test e: " + e);
 		}
 
 		OutputStream os = null;
@@ -203,18 +207,19 @@ public class Support_HttpTests {
 			len = 0;
 			do {
 				int r = is.read(data, len, data.length - len);
-				if (r == -1)
-					break;
+				if (r == -1) {
+                    break;
+                }
 				len += r;
 			} while (true);
 			is.close();
 			connector.close();
 			String result = new String(data, 0, len, "ISO8859_1");
-			TestCase.assertTrue("Basic port error: " + result, message
+			Assert.assertTrue("Basic port error: " + result, message
 					.equals(result));
 		} catch (IOException e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during basic post test: " + e);
+			Assert.fail("Exception during basic post test: " + e);
 		}
 
 		String chunkChar = connector.isChunkedOnFlush() ? "C" : "";
@@ -232,18 +237,19 @@ public class Support_HttpTests {
 			len = 0;
 			do {
 				int r = is.read(data, len, data.length - len);
-				if (r == -1)
-					break;
+				if (r == -1) {
+                    break;
+                }
 				len += r;
 			} while (true);
 			is.close();
 			connector.close();
 			String result = new String(data, 0, len, "ISO8859_1");
-			TestCase.assertTrue("Flushing with post: " + result, (chunkChar
+			Assert.assertTrue("Flushing with post: " + result, (chunkChar
 					+ message1 + chunkChar + message2).equals(result));
 		} catch (IOException e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during flushing post test: " + e);
+			Assert.fail("Exception during flushing post test: " + e);
 		}
 
 		// Flushing with post and setting content-length
@@ -260,19 +266,20 @@ public class Support_HttpTests {
 			len = 0;
 			do {
 				int r = is.read(data, len, data.length - len);
-				if (r == -1)
-					break;
+				if (r == -1) {
+                    break;
+                }
 				len += r;
 			} while (true);
 			is.close();
 			connector.close();
 			String result = new String(data, 0, len, "ISO8859_1");
-			TestCase.assertTrue("Flushing with post and setting content-length: "
+			Assert.assertTrue("Flushing with post and setting content-length: "
 					+ result, (chunkChar + message1 + chunkChar + message2)
 					.equals(result));
 		} catch (IOException e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during flushing with content-length post test: "
+			Assert.fail("Exception during flushing with content-length post test: "
 							+ e);
 		}
 
@@ -288,18 +295,19 @@ public class Support_HttpTests {
 			len = 0;
 			do {
 				int r = is.read(data, len, data.length - len);
-				if (r == -1)
-					break;
+				if (r == -1) {
+                    break;
+                }
 				len += r;
 			} while (true);
 			is.close();
 			connector.close();
 			String result = new String(data, 0, len, "ISO8859_1");
-			TestCase.assertTrue("Flushing followed immediately by a close(): "
+			Assert.assertTrue("Flushing followed immediately by a close(): "
 					+ result, (chunkChar + message).equals(result));
 		} catch (IOException e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during flush followed by close post test: "
+			Assert.fail("Exception during flush followed by close post test: "
 					+ e);
 		}
 
@@ -333,25 +341,26 @@ public class Support_HttpTests {
 					// says there MUST NOT be a message body on 304 responses.
 					// But Java returns the message-body
 					if (!(c == results[i] || c == -1)) {
-						TestCase.fail("Incorrect data returned on test of HTTP response "
+						Assert.fail("Incorrect data returned on test of HTTP response "
 										+ testCodes[i]);
 					}
 				} else if (c != results[i]) {
-					TestCase.fail("Incorrect data returned on test of HTTP response "
+					Assert.fail("Incorrect data returned on test of HTTP response "
 									+ testCodes[i]);
 				}
-				while (c > 0)
-					c = is.read();
+				while (c > 0) {
+                    c = is.read();
+                }
 				c = is.read();
 				is.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				TestCase.fail("Error during redirection test " + i + ": " + e);
+				Assert.fail("Error during redirection test " + i + ": " + e);
 			}
 		}
 
 		// Test redirecting to a location on a different port
-		Class serversocketclass = serversocket.getClass();
+		Class<?> serversocketclass = serversocket.getClass();
 		try {
 			Support_ServerSocket serversocket2 = (Support_ServerSocket) serversocketclass
 					.newInstance();
@@ -377,21 +386,22 @@ public class Support_HttpTests {
 				connector.close();
 
 				c = is.read();
-				TestCase.assertEquals("Incorrect data returned on redirection to a different port.",
+				Assert.assertEquals("Incorrect data returned on redirection to a different port.",
 								'A', c);
-				while (c > 0)
-					c = is.read();
+				while (c > 0) {
+                    c = is.read();
+                }
 				c = is.read();
 				is.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				TestCase.fail("Exception during test f: " + e);
+				Assert.fail("Exception during test f: " + e);
 			}
 			server2.stopServer();
 		} catch (IllegalAccessException e) {
-			TestCase.fail("Exception during redirection to a different port:" + e);
+			Assert.fail("Exception during redirection to a different port:" + e);
 		} catch (InstantiationException e) {
-			TestCase.fail("Exception during redirection to a different port:" + e);
+			Assert.fail("Exception during redirection to a different port:" + e);
 		}
 
 		// test redirecting to a relative URL on the same host
@@ -403,15 +413,16 @@ public class Support_HttpTests {
 			connector.close();
 
 			c = is.read();
-			TestCase.assertEquals("Incorrect data returned on redirect to relative URI.",
+			Assert.assertEquals("Incorrect data returned on redirect to relative URI.",
 					'A', c);
-			while (c > 0)
-				c = is.read();
+			while (c > 0) {
+                c = is.read();
+            }
 			c = is.read();
 			is.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			TestCase.fail("Exception during redirection test to a relative URL: " + e);
+			Assert.fail("Exception during redirection test to a relative URL: " + e);
 		}
 		server.stopServer();
 	}

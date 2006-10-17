@@ -23,10 +23,11 @@ import java.text.Format;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Iterator;
 import java.util.Vector;
+import junit.framework.TestCase;
 
-public class Support_Format extends junit.framework.TestCase {
+public class Support_Format extends TestCase {
 
-	protected String text = null;
+	protected String text;
 
 	public Support_Format(String p1) {
 		super(p1);
@@ -41,12 +42,13 @@ public class Support_Format extends junit.framework.TestCase {
 		// System.out.println(buffer);
 		// System.out.println(pos);
 
-		if (text == null)
-			assertEquals("Test " + count + ": incorrect formatted text",
+		if (text == null) {
+            assertEquals("Test " + count + ": incorrect formatted text",
 					this.text, buffer.toString());
-		else
-			assertEquals("Test " + count + ": incorrect formatted text", text,
+        } else {
+            assertEquals("Test " + count + ": incorrect formatted text", text,
 					buffer.toString());
+        }
 
 		assertEquals("Test " + count + ": incorrect begin index for field "
 				+ field, begin, pos.getBeginIndex());
@@ -55,9 +57,9 @@ public class Support_Format extends junit.framework.TestCase {
 	}
 
 	protected void t_Format(int count, Object object, Format format,
-			Vector expectedResults) {
+			Vector<FieldContainer> expectedResults) {
 		// System.out.println(format.format(object));
-		Vector results = findFields(format.formatToCharacterIterator(object));
+		Vector<FieldContainer> results = findFields(format.formatToCharacterIterator(object));
 		assertTrue("Test " + count
 				+ ": Format returned incorrect CharacterIterator for "
 				+ format.format(object), compare(results, expectedResults));
@@ -66,7 +68,7 @@ public class Support_Format extends junit.framework.TestCase {
 	/**
 	 * compares two vectors regardless of the order of their elements
 	 */
-	protected static boolean compare(Vector vector1, Vector vector2) {
+	protected static boolean compare(Vector<FieldContainer> vector1, Vector<FieldContainer> vector2) {
 		return vector1.size() == vector2.size() && vector1.containsAll(vector2);
 	}
 
@@ -79,16 +81,15 @@ public class Support_Format extends junit.framework.TestCase {
 	 *         which stores start and end indexes and an attribute this range
 	 *         has
 	 */
-	protected static Vector findFields(AttributedCharacterIterator iterator) {
-		Vector result = new Vector();
+	protected static Vector<FieldContainer> findFields(AttributedCharacterIterator iterator) {
+		Vector<FieldContainer> result = new Vector<FieldContainer>();
 		while (iterator.getIndex() != iterator.getEndIndex()) {
 			int start = iterator.getRunStart();
 			int end = iterator.getRunLimit();
 
-			Iterator it = iterator.getAttributes().keySet().iterator();
+			Iterator<Attribute> it = iterator.getAttributes().keySet().iterator();
 			while (it.hasNext()) {
-				AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) it
-						.next();
+				AttributedCharacterIterator.Attribute attribute = it.next();
 				Object value = iterator.getAttribute(attribute);
 				result.add(new FieldContainer(start, end, attribute, value));
 				// System.out.println(start + " " + end + ": " + attribute + ",
@@ -128,9 +129,11 @@ public class Support_Format extends junit.framework.TestCase {
 			this.value = value;
 		}
 
-		public boolean equals(Object obj) {
-			if (!(obj instanceof FieldContainer))
-				return false;
+		@Override
+        public boolean equals(Object obj) {
+			if (!(obj instanceof FieldContainer)) {
+                return false;
+            }
 
 			FieldContainer fc = (FieldContainer) obj;
 			return (start == fc.start && end == fc.end

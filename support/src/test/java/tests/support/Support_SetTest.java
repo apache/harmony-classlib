@@ -21,18 +21,19 @@ import java.util.Set;
 
 public class Support_SetTest extends junit.framework.TestCase {
 
-	Set set; // must contain only the Integers 0 to 99
+	Set<Integer> set; // must contain only the Integers 0 to 99
 
 	public Support_SetTest(String p1) {
 		super(p1);
 	}
 
-	public Support_SetTest(String p1, Set s) {
+	public Support_SetTest(String p1, Set<Integer> s) {
 		super(p1);
 		set = s;
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		// add
 		assertTrue("Set Test - Adding a duplicate element changed the set",
 				!set.add(new Integer(50)));

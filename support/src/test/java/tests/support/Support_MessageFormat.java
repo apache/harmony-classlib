@@ -32,7 +32,8 @@ public class Support_MessageFormat extends Support_Format {
 		super(p1);
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		t_formatToCharacterIterator();
 		t_format_with_FieldPosition();
 	}
@@ -81,8 +82,8 @@ public class Support_MessageFormat extends Support_Format {
 		t_Format(1, objects, format, getMessageVector1());
 	}
 
-	private Vector getMessageVector1() {
-		Vector v = new Vector();
+	private Vector<FieldContainer> getMessageVector1() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(3, 6, Field.ARGUMENT, 4));
 		v.add(new FieldContainer(3, 6, DateFormat.Field.MONTH));
 		v.add(new FieldContainer(6, 7, Field.ARGUMENT, 4));

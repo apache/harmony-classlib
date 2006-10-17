@@ -51,8 +51,9 @@ public class Support_Resources {
 		copyFile(resources, folder, name);
 		URL url = null;
 		String resPath = resources.toString();
-		if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
-			resPath = resPath.substring(1);
+		if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
+            resPath = resPath.substring(1);
+        }
 		try {
 			url = new URL("file:/" + resPath + "/" + fileName);
 		} catch (MalformedURLException e) {
@@ -85,8 +86,9 @@ public class Support_Resources {
 				f.mkdirs();
 				f.deleteOnExit();
 			}
-		} else
-			f = root;
+		} else {
+            f = root;
+        }
 
 		File dest = new File(f.toString() + "/" + file);
 
@@ -113,8 +115,9 @@ public class Support_Resources {
 			FileOutputStream out = new FileOutputStream(dest);
 			int result;
 			byte[] buf = new byte[4096];
-			while ((result = in.read(buf)) != -1)
-				out.write(buf, 0, result);
+			while ((result = in.read(buf)) != -1) {
+                out.write(buf, 0, result);
+            }
 			in.close();
 			out.close();
 			dest.deleteOnExit();

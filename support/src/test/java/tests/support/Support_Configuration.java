@@ -125,7 +125,7 @@ public class Support_Configuration {
 
 	public static String Port2 = "COM2";
 
-	static Hashtable props = null;
+	static Hashtable<String, String> props = null;
 	static {
 		loadProperties();
 		HomeAddress = WebName + DomainAddress;
@@ -134,7 +134,7 @@ public class Support_Configuration {
 
 	static void loadProperties() {
 		InputStream in = null;
-		Hashtable props = new Hashtable();
+		Hashtable<String, String> props = new Hashtable<String, String>();
 
 		String iniName = System.getProperty("test.ini.file", "JCLAuto.ini");
 		if (System.getProperty("test.comm") != null) {
@@ -151,7 +151,7 @@ public class Support_Configuration {
 		}
 		if (in == null) {
 			try {
-				Class cl = Class
+				Class<?> cl = Class
 						.forName("com.ibm.support.Support_Configuration");
 				in = cl.getResourceAsStream(iniName);
 			} catch (ClassNotFoundException e) {
@@ -163,50 +163,61 @@ public class Support_Configuration {
 			}
 		} catch (IOException e) {
 		}
-		if (props.size() == 0)
-			return;
+		if (props.size() == 0) {
+            return;
+        }
 		String value;
 
-		value = (String) props.get("DomainAddress");
-		if (value != null)
-			DomainAddress = value;
+		value = props.get("DomainAddress");
+		if (value != null) {
+            DomainAddress = value;
+        }
 
-		value = (String) props.get("WebName");
-		if (value != null)
-			WebName = value;
+		value = props.get("WebName");
+		if (value != null) {
+            WebName = value;
+        }
 
-		value = (String) props.get("TestResourcesDir");
-		if (value != null)
-			TestResourcesDir = value;
-		value = (String) props.get("HomeAddressResponse");
-		if (value != null)
-			HomeAddressResponse = value;
+		value = props.get("TestResourcesDir");
+		if (value != null) {
+            TestResourcesDir = value;
+        }
+		value = props.get("HomeAddressResponse");
+		if (value != null) {
+            HomeAddressResponse = value;
+        }
 
-		value = (String) props.get("HomeAddressSoftware");
-		if (value != null)
-			HomeAddressSoftware = value;
+		value = props.get("HomeAddressSoftware");
+		if (value != null) {
+            HomeAddressSoftware = value;
+        }
 
-		value = (String) props.get("ProxyServerTestHost");
-		if (value != null)
-			ProxyServerTestHost = value;
+		value = props.get("ProxyServerTestHost");
+		if (value != null) {
+            ProxyServerTestHost = value;
+        }
 
-		value = (String) props.get("SocksServerTestHost");
-		if (value != null)
-			SocksServerTestHost = value;
+		value = props.get("SocksServerTestHost");
+		if (value != null) {
+            SocksServerTestHost = value;
+        }
 
-		value = (String) props.get("SocksServerTestPort");
-		if (value != null)
-			SocksServerTestPort = Integer.parseInt(value);
+		value = props.get("SocksServerTestPort");
+		if (value != null) {
+            SocksServerTestPort = Integer.parseInt(value);
+        }
 
-		value = (String) props.get("UnresolvedIP");
-		if (value != null)
-			UnresolvedIP = value;
+		value = props.get("UnresolvedIP");
+		if (value != null) {
+            UnresolvedIP = value;
+        }
 
-		value = (String) props.get("InetTestAddress");
-		if (value != null)
-			InetTestAddress = value;
+		value = props.get("InetTestAddress");
+		if (value != null) {
+            InetTestAddress = value;
+        }
 
-		value = (String) props.get("InetTestIP");
+		value = props.get("InetTestIP");
 		if (value != null) {
 			InetTestIP = value;
 			byte[] addr = new byte[4];
@@ -227,7 +238,7 @@ public class Support_Configuration {
 			}
 		}
 
-		value = (String) props.get("NonLocalAddressBytes");
+		value = props.get("NonLocalAddressBytes");
 		if (value != null) {
 			String nonLocalAddressBytesString = value;
 			byte[] addr = new byte[4];
@@ -250,81 +261,99 @@ public class Support_Configuration {
 			}
 		}
 
-		value = (String) props.get("InetTestAddress2");
-		if (value != null)
-			InetTestAddress2 = value;
+		value = props.get("InetTestAddress2");
+		if (value != null) {
+            InetTestAddress2 = value;
+        }
 
-		value = (String) props.get("InetTestIP2");
-		if (value != null)
-			InetTestIP2 = value;
+		value = props.get("InetTestIP2");
+		if (value != null) {
+            InetTestIP2 = value;
+        }
 
-		value = (String) props.get("InetTestHashcode");
-		if (value != null)
-			InetTestHashcode = Integer.parseInt(value);
+		value = props.get("InetTestHashcode");
+		if (value != null) {
+            InetTestHashcode = Integer.parseInt(value);
+        }
 
-		value = (String) props.get("SpecialInetTestAddress");
-		if (value != null)
-			SpecialInetTestAddress = value;
+		value = props.get("SpecialInetTestAddress");
+		if (value != null) {
+            SpecialInetTestAddress = value;
+        }
 
-		value = (String) props.get("SpecialInetTestAddressNumber");
-		if (value != null)
-			SpecialInetTestAddressNumber = Integer.parseInt(value);
+		value = props.get("SpecialInetTestAddressNumber");
+		if (value != null) {
+            SpecialInetTestAddressNumber = Integer.parseInt(value);
+        }
 
-		value = (String) props.get("FTPTestAddress");
-		if (value != null)
-			FTPTestAddress = value;
+		value = props.get("FTPTestAddress");
+		if (value != null) {
+            FTPTestAddress = value;
+        }
 
-		value = (String) props.get("URLConnectionLastModifiedString");
-		if (value != null)
-			URLConnectionLastModifiedString = value;
+		value = props.get("URLConnectionLastModifiedString");
+		if (value != null) {
+            URLConnectionLastModifiedString = value;
+        }
 
-		value = (String) props.get("URLConnectionLastModified");
-		if (value != null)
-			URLConnectionLastModified = Long.parseLong(value);
+		value = props.get("URLConnectionLastModified");
+		if (value != null) {
+            URLConnectionLastModified = Long.parseLong(value);
+        }
 
-		value = (String) props.get("URLConnectionDate");
-		if (value != null)
-			URLConnectionDate = Long.parseLong(value);
+		value = props.get("URLConnectionDate");
+		if (value != null) {
+            URLConnectionDate = Long.parseLong(value);
+        }
 
-		value = (String) props.get("Port1");
-		if (value != null)
-			Port1 = value;
+		value = props.get("Port1");
+		if (value != null) {
+            Port1 = value;
+        }
 
-		value = (String) props.get("Port2");
-		if (value != null)
-			Port2 = value;
+		value = props.get("Port2");
+		if (value != null) {
+            Port2 = value;
+        }
 
-		value = (String) props.get("InetTestIP6");
-		if (value != null)
-			InetTestIP6 = value;
+		value = props.get("InetTestIP6");
+		if (value != null) {
+            InetTestIP6 = value;
+        }
 
-		value = (String) props.get("InetTestIP6LO");
-		if (value != null)
-			InetTestIP6LO = value;
+		value = props.get("InetTestIP6LO");
+		if (value != null) {
+            InetTestIP6LO = value;
+        }
 
-		value = (String) props.get("ProxyServerTestHostIPv6");
-		if (value != null)
-			ProxyServerTestHostIPv6 = value;
+		value = props.get("ProxyServerTestHostIPv6");
+		if (value != null) {
+            ProxyServerTestHostIPv6 = value;
+        }
 
-		value = (String) props.get("ResolvedNotExistingHost");
-		if (value != null)
-			ResolvedNotExistingHost = value;
+		value = props.get("ResolvedNotExistingHost");
+		if (value != null) {
+            ResolvedNotExistingHost = value;
+        }
 
-		value = (String) props.get("InetAlias1");
-		if (value != null)
-			InetAlias1 = value;
+		value = props.get("InetAlias1");
+		if (value != null) {
+            InetAlias1 = value;
+        }
 
-		value = (String) props.get("InetAlias2");
-		if (value != null)
-			InetAlias2 = value;
+		value = props.get("InetAlias2");
+		if (value != null) {
+            InetAlias2 = value;
+        }
 
-		value = (String) props.get("IPv6GlobalAddressJcl4");
-		if (value != null)
-			IPv6GlobalAddressJcl4 = value;
+		value = props.get("IPv6GlobalAddressJcl4");
+		if (value != null) {
+            IPv6GlobalAddressJcl4 = value;
+        }
 
 	}
 
-	static void load(InputStream in, Hashtable result) throws IOException {
+	static void load(InputStream in, Hashtable<String, String> result) throws IOException {
 		int NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, DONE = 4, IGNORE = 5;
 		int mode = NONE, unicode = 0, count = 0, nextChar;
 		StringBuffer key = new StringBuffer(), value = new StringBuffer(), buffer = key;
@@ -335,13 +364,15 @@ public class Support_Configuration {
 				int digit = Character.digit((char) nextChar, 16);
 				if (digit >= 0) {
 					unicode = (unicode << 4) + digit;
-					if (++count < 4)
-						continue;
+					if (++count < 4) {
+                        continue;
+                    }
 				}
 				mode = NONE;
 				buffer.append((char) unicode);
-				if (nextChar != '\n')
-					continue;
+				if (nextChar != '\n') {
+                    continue;
+                }
 			}
 			if (mode == SLASH) {
 				mode = NONE;
@@ -377,9 +408,11 @@ public class Support_Configuration {
 				case '#':
 				case '!':
 					if (firstChar) {
-						while ((nextChar = in.read()) != -1)
-							if (nextChar == '\r' || nextChar == '\n')
-								break;
+						while ((nextChar = in.read()) != -1) {
+                            if (nextChar == '\r' || nextChar == '\n') {
+                                break;
+                            }
+                        }
 						continue;
 					}
 					break;
@@ -392,8 +425,9 @@ public class Support_Configuration {
 				case '\r':
 					mode = NONE;
 					firstChar = true;
-					if (key.length() > 0 || buffer == value)
-						result.put(key.toString(), value.toString());
+					if (key.length() > 0 || buffer == value) {
+                        result.put(key.toString(), value.toString());
+                    }
 					key.setLength(0);
 					value.setLength(0);
 					buffer = key;
@@ -411,17 +445,20 @@ public class Support_Configuration {
 				}
 				char c = (char) nextChar;
 				if ((c >= 0x1c && c <= 0x20) || (c >= 0x9 && c <= 0xd)) {
-					if (mode == CONTINUE)
-						mode = IGNORE;
-					if (buffer.length() == 0 || mode == IGNORE)
-						continue;
+					if (mode == CONTINUE) {
+                        mode = IGNORE;
+                    }
+					if (buffer.length() == 0 || mode == IGNORE) {
+                        continue;
+                    }
 					if (buffer == key) {
 						mode = DONE;
 						continue;
 					}
 				}
-				if (mode == IGNORE || mode == CONTINUE)
-					mode = NONE;
+				if (mode == IGNORE || mode == CONTINUE) {
+                    mode = NONE;
+                }
 			}
 			firstChar = false;
 			if (mode == DONE) {
@@ -430,8 +467,9 @@ public class Support_Configuration {
 			}
 			buffer.append((char) nextChar);
 		}
-		if (key.length() > 0 || buffer == value)
-			result.put(key.toString(), value.toString());
+		if (key.length() > 0 || buffer == value) {
+            result.put(key.toString(), value.toString());
+        }
 	}
 
 }

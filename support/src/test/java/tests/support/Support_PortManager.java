@@ -17,15 +17,17 @@
 
 package tests.support;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Support_PortManager extends java.lang.Object {
 
 	private static int lastAssignedPort = somewhatRandomPort();
 
 	public static synchronized int getNextPort() {
-		if (++lastAssignedPort > 65534)
-			lastAssignedPort = 6000;
+		if (++lastAssignedPort > 65534) {
+            lastAssignedPort = 6000;
+        }
 		return lastAssignedPort;
 	}
 
@@ -34,9 +36,9 @@ public class Support_PortManager extends java.lang.Object {
 	 * should be about += 100 at each 6 second interval
 	 */
 	private static int somewhatRandomPort() {
-		Date date = new Date();
-		int minutes = date.getMinutes();
-		int seconds = date.getSeconds();
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int minutes = c.get(Calendar.MINUTE);
+		int seconds = c.get(Calendar.SECOND);
 		return 6000 + (1000 * minutes) + ((seconds / 6) * 100);
 	}
 

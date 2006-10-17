@@ -39,8 +39,9 @@ public class Support_Exec extends TestCase {
 		byte[] bytes = new byte[1024];
 		while ((result = in.read(bytes)) != -1) {
 			output.append(new String(bytes, 0, result));
-			if (displayOutput)
-				System.out.write(bytes, 0, result);
+			if (displayOutput) {
+                System.out.write(bytes, 0, result);
+            }
 		}
 		in.close();
 		proc.waitFor();
@@ -50,7 +51,6 @@ public class Support_Exec extends TestCase {
 	}
 
 	public static void checkStderr(Object[] execArgs) {
-		Process proc = (Process) execArgs[0];
 		StringBuffer errBuf = (StringBuffer) execArgs[1];
 		synchronized (errBuf) {
 			if (errBuf.length() > 0) {
@@ -64,29 +64,32 @@ public class Support_Exec extends TestCase {
 		// this function returns the resulting process from the exec
 		int baseArgs = 0;
 		String[] execArgs = null;
-		String vendor = System.getProperty("java.vendor");
-		boolean onUnix = File.separatorChar == '/';
+//		String vendor = System.getProperty("java.vendor");
 		String classPathString = "";
 		if (classpath != null)
-            for (int i = 0; i < classpath.length; i++)
-                classPathString += File.pathSeparator + classpath[i];
+            for (String element : classpath) {
+                classPathString += File.pathSeparator + element;
+            }
 
         baseArgs = 3;
         execArgs = new String[baseArgs + args.length];
         String executable = System.getProperty("java.home");
-        if (!executable.endsWith(File.separator))
+        if (!executable.endsWith(File.separator)) {
             executable += File.separator;
+        }
         executable += "bin" + File.separator;
         execArgs[0] = executable + "java";
         execArgs[1] = "-cp";
         execArgs[2] = "\"" + System.getProperty("java.class.path")
                 + classPathString + "\"";
 
-        for (int i = 0; i < args.length; i++)
+        for (int i = 0; i < args.length; i++) {
             execArgs[baseArgs + i] = args[i];
+        }
         StringBuffer command = new StringBuffer(execArgs[0]);
-        for (int i = 1; i < execArgs.length; i++)
+        for (int i = 1; i < execArgs.length; i++) {
             command.append(" " + execArgs[i]);
+        }
         System.out.println();
         System.out.println("Exec: " + command.toString());
 

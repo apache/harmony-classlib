@@ -66,7 +66,7 @@ public class SomeTests extends TestSetup {
 
 	private Node excludesDoc;
 
-	private List runCases = new ArrayList();
+	private final List<TestCase> runCases = new ArrayList<TestCase>();
 
 	private String excludesListURI;
 
@@ -97,12 +97,13 @@ public class SomeTests extends TestSetup {
 	 * 
 	 * @see junit.extensions.TestDecorator#basicRun(junit.framework.TestResult)
 	 */
-	public void basicRun(TestResult result) {
+	@Override
+    public void basicRun(TestResult result) {
 		// The 'basic run' of this decorator is to enumerate through all
 		// of the tests not excluded and run them...
-		Iterator allIncluded = runCases.iterator();
+		Iterator<TestCase> allIncluded = runCases.iterator();
 		while (allIncluded.hasNext()) {
-			TestCase test = (TestCase) allIncluded.next();
+			TestCase test = allIncluded.next();
 			test.run(result);
 		}// end while
 	}
@@ -112,7 +113,8 @@ public class SomeTests extends TestSetup {
 	 * 
 	 * @see junit.extensions.TestSetup#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		if (docIsValid) {
 			System.out.println("\nExcludes list document " + excludesListURI
 					+ " is valid");
@@ -122,7 +124,8 @@ public class SomeTests extends TestSetup {
 				+ " possible test cases\n");
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		System.out.println("\nRan " + this.countTestCases()
 				+ " out of a total of " + this.originalTestCaseCount
 				+ " possible test cases\n");
@@ -164,12 +167,13 @@ public class SomeTests extends TestSetup {
 	 * 
 	 * @see junit.framework.Test#countTestCases()
 	 */
-	public int countTestCases() {
+	@Override
+    public int countTestCases() {
 		return runCases.size();
 	}
 
 	private void seekTests(TestSuite suite) {
-		Enumeration allTests = suite.tests();
+		Enumeration<?> allTests = suite.tests();
 		while (allTests.hasMoreElements()) {
 			Test test = (Test) allTests.nextElement();
 			seekTests(test);
@@ -309,12 +313,14 @@ public class SomeTests extends TestSetup {
 
 		private SAXParseException spException = null;
 
-		public void error(SAXParseException exception) throws SAXException {
+		@Override
+        public void error(SAXParseException exception) throws SAXException {
 			inError = true;
 			spException = exception;
 		}
 
-		public void fatalError(SAXParseException exception) throws SAXException {
+		@Override
+        public void fatalError(SAXParseException exception) throws SAXException {
 			inError = true;
 			spException = exception;
 		}

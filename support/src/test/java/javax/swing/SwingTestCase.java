@@ -36,6 +36,7 @@ public abstract class SwingTestCase extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected Throwable runBareImpl() throws Throwable {
         final Throwable[] exception = new Throwable[1];
         EventQueue.invokeAndWait(new Runnable() {

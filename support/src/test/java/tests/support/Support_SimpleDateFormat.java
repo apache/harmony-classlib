@@ -34,7 +34,8 @@ public class Support_SimpleDateFormat extends Support_Format {
 		super(p1);
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		t_formatToCharacterIterator();
 		t_format_with_FieldPosition();
 	}
@@ -158,9 +159,9 @@ public class Support_SimpleDateFormat extends Support_Format {
 		t_Format(4, date, format, getDateVector4());
 	}
 
-	private Vector getDateVector1() {
+	private Vector<FieldContainer> getDateVector1() {
 		// "19990913171901"
-		Vector v = new Vector();
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 4, Field.YEAR));
 		v.add(new FieldContainer(4, 6, Field.MONTH));
 		v.add(new FieldContainer(6, 8, Field.DAY_OF_MONTH));
@@ -170,9 +171,9 @@ public class Support_SimpleDateFormat extends Support_Format {
 		return v;
 	}
 
-	private Vector getDateVector2() {
+	private Vector<FieldContainer> getDateVector2() {
 		// "12 3 5 March 2002 Monday"
-		Vector v = new Vector();
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 2, Field.WEEK_OF_YEAR));
 		v.add(new FieldContainer(3, 4, Field.WEEK_OF_MONTH));
 		v.add(new FieldContainer(5, 7, Field.DAY_OF_MONTH));
@@ -182,26 +183,26 @@ public class Support_SimpleDateFormat extends Support_Format {
 		return v;
 	}
 
-	private Vector getDateVector3() {
+	private Vector<FieldContainer> getDateVector3() {
 		// "5:19 EDT"
-		Vector v = new Vector();
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, Field.HOUR1));
 		v.add(new FieldContainer(2, 4, Field.MINUTE));
 		v.add(new FieldContainer(5, 8, Field.TIME_ZONE));
 		return v;
 	}
 
-	private Vector getDateVector5() {
+	private Vector<FieldContainer> getDateVector5() {
 		// "5:19 -0400"
-		Vector v = new Vector();
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, Field.HOUR1));
 		v.add(new FieldContainer(2, 4, Field.MINUTE));
 		v.add(new FieldContainer(5, 10, Field.TIME_ZONE));
 		return v;
 	}
 
-	private Vector getDateVector4() {
-		Vector v = new Vector();
+	private Vector<FieldContainer> getDateVector4() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 
 		// "AD AD 99 99 1999 9 09 Sep September 13 13 013 17 17 017 17 17 017 5
 		// 05

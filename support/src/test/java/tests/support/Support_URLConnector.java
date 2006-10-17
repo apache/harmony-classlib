@@ -50,15 +50,17 @@ public class Support_URLConnector implements Support_HttpConnector {
 	 * @see com.ibm.support.Support_HttpConnector#getInputStream()
 	 */
 	public InputStream getInputStream() throws IOException {
-		if (instance == null)
-			return null;
+		if (instance == null) {
+            return null;
+        }
 		streamOpen = true;
 		return instance.getInputStream();
 	}
 
 	public OutputStream getOutputStream() throws IOException {
-		if (instance == null)
-			return null;
+		if (instance == null) {
+            return null;
+        }
 		instance.setDoOutput(true);
 		((HttpURLConnection) instance).setRequestMethod("POST");
 		streamOpen = true;

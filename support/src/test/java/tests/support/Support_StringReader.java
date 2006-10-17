@@ -49,10 +49,12 @@ public class Support_StringReader extends Reader {
 	 * effect.
 	 * 
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		synchronized (lock) {
-			if (isOpen())
-				str = null;
+			if (isOpen()) {
+                str = null;
+            }
 		}
 	}
 
@@ -74,16 +76,19 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If an error occurs attempting mark this StringReader.
 	 */
-	public void mark(int readLimit) throws IOException {
+	@Override
+    public void mark(int readLimit) throws IOException {
 		if (readLimit >= 0) {
 			synchronized (lock) {
-				if (isOpen())
-					markpos = pos;
-				else
-					throw new IOException("StringReader is closed");
+				if (isOpen()) {
+                    markpos = pos;
+                } else {
+                    throw new IOException("StringReader is closed");
+                }
 			}
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -94,7 +99,8 @@ public class Support_StringReader extends Reader {
 	 *         <code>false</code> otherwise. This implementation always
 	 *         returns <code>true</code>.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return true;
 	}
 
@@ -108,14 +114,16 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If the StringReader is already closed.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (pos != count)
-					return str.charAt(pos++);
+				if (pos != count) {
+                    return str.charAt(pos++);
+                }
 				return -1;
-			} else
-				throw new IOException("StringReader is closed");
+			}
+            throw new IOException("StringReader is closed");
 		}
 	}
 
@@ -136,25 +144,27 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If the StringReader is closed.
 	 */
-	public int read(char buf[], int offset, int count) throws IOException {
+	@Override
+    public int read(char buf[], int offset, int count) throws IOException {
 		// avoid int overflow
 		if (0 <= offset && offset <= buf.length && 0 <= count
 				&& count <= buf.length - offset) {
 			synchronized (lock) {
 				if (isOpen()) {
-					if (pos == this.count)
-						return -1;
+					if (pos == this.count) {
+                        return -1;
+                    }
 					int end = pos + count > this.count ? this.count : pos
 							+ count;
 					str.getChars(pos, end, buf, offset);
 					int read = end - pos;
 					pos = end;
 					return read;
-				} else
-					throw new IOException("StringReader is closed");
+				}
+                throw new IOException("StringReader is closed");
 			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		}
+        throw new ArrayIndexOutOfBoundsException();
 	}
 
 	/**
@@ -172,10 +182,12 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If an IO error occurs.
 	 */
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				return true;
+			if (isOpen()) {
+                return true;
+            }
 			throw new IOException("StringReader is closed");
 		}
 	}
@@ -189,12 +201,14 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If this StringReader has already been closed.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				pos = markpos != -1 ? markpos : 0;
-			else
-				throw new IOException("StringReader is closed");
+			if (isOpen()) {
+                pos = markpos != -1 ? markpos : 0;
+            } else {
+                throw new IOException("StringReader is closed");
+            }
 		}
 	}
 
@@ -210,11 +224,13 @@ public class Support_StringReader extends Reader {
 	 * @exception java.io.IOException
 	 *                If this StringReader has already been closed.
 	 */
-	public long skip(long count) throws IOException {
+	@Override
+    public long skip(long count) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (count <= 0)
-					return 0;
+				if (count <= 0) {
+                    return 0;
+                }
 				long skipped = 0;
 				if (count < this.count - pos) {
 					pos = pos + (int) count;
@@ -224,8 +240,8 @@ public class Support_StringReader extends Reader {
 					pos = this.count;
 				}
 				return skipped;
-			} else
-				throw new IOException("StringReader is closed");
+			}
+            throw new IOException("StringReader is closed");
 		}
 	}
 }

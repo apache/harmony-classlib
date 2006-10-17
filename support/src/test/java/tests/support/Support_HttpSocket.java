@@ -27,7 +27,7 @@ import java.net.Socket;
  */
 public class Support_HttpSocket implements Support_Socket {
 
-	private Socket instance;
+	private final Socket instance;
 
 	private boolean streamOpen = false;
 
@@ -46,8 +46,9 @@ public class Support_HttpSocket implements Support_Socket {
 	}
 
 	public void close() throws IOException {
-		if (!streamOpen && instance != null)
-			instance.close();
+		if (!streamOpen && instance != null) {
+            instance.close();
+        }
 	}
 
 }

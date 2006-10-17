@@ -29,7 +29,7 @@ public class Support_PermissionCollection {
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new SecurityManager());
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		try {
 			URL url = new URL(args[0]);
@@ -41,7 +41,7 @@ public class Support_PermissionCollection {
 		}
 		ProtectionDomain pd = c.getProtectionDomain();
 		PermissionCollection coll = Policy.getPolicy().getPermissions(pd);
-		Class myPermission = Class.forName("mypackage.MyPermission");
+		Class<?> myPermission = Class.forName("mypackage.MyPermission");
 		BasicPermission myperm = (BasicPermission) myPermission.newInstance();
 		System.out.println(coll.implies(new java.io.FilePermission("test1.txt",
 				"write"))

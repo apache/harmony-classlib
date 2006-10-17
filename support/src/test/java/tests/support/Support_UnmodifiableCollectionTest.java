@@ -22,11 +22,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import junit.framework.TestCase;
 
-public class Support_UnmodifiableCollectionTest extends
-		junit.framework.TestCase {
+public class Support_UnmodifiableCollectionTest extends TestCase {
 
-	Collection col;
+	Collection<Integer> col;
 
 	// must be a collection containing the Integers 0 to 99 (which will iterate
 	// in order)
@@ -35,12 +35,13 @@ public class Support_UnmodifiableCollectionTest extends
 		super(p1);
 	}
 
-	public Support_UnmodifiableCollectionTest(String p1, Collection c) {
+	public Support_UnmodifiableCollectionTest(String p1, Collection<Integer> c) {
 		super(p1);
 		col = c;
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 
 		// contains
 		assertTrue("UnmodifiableCollectionTest - should contain 0", col
@@ -51,7 +52,7 @@ public class Support_UnmodifiableCollectionTest extends
 				.contains(new Integer(100)));
 
 		// containsAll
-		HashSet hs = new HashSet();
+		HashSet<Integer> hs = new HashSet<Integer>();
 		hs.add(new Integer(0));
 		hs.add(new Integer(25));
 		hs.add(new Integer(99));
@@ -68,14 +69,14 @@ public class Support_UnmodifiableCollectionTest extends
 				.isEmpty());
 
 		// iterator
-		Iterator it = col.iterator();
-		SortedSet ss = new TreeSet();
+		Iterator<Integer> it = col.iterator();
+		SortedSet<Integer> ss = new TreeSet<Integer>();
 		while (it.hasNext()) {
 			ss.add(it.next());
 		}
 		it = ss.iterator();
 		for (int counter = 0; it.hasNext(); counter++) {
-			int nextValue = ((Integer) it.next()).intValue();
+			int nextValue = it.next().intValue();
 			assertTrue(
 					"UnmodifiableCollectionTest - Iterator returned wrong value.  Wanted: "
 							+ counter + " got: " + nextValue,

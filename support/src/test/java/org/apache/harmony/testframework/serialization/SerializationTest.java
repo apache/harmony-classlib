@@ -25,7 +25,6 @@ package org.apache.harmony.testframework.serialization;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +84,7 @@ public abstract class SerializationTest extends TestCase {
      */
     public static final String GOLDEN_PATH = "RESOURCE_DIR";
 
-    private static String outputPath = System.getProperty(GOLDEN_PATH,
+    private static final String outputPath = System.getProperty(GOLDEN_PATH,
                                                           "test/common/unit");
 
     /**
@@ -105,6 +104,7 @@ public abstract class SerializationTest extends TestCase {
     /**
      * Depending on testing mode, produces golden files or performs testing.
      */
+    @Override
     public void runBare() throws Throwable {
 
         if (mode != null && mode.equals(SERIAL_REFERENCE_MODE)) {

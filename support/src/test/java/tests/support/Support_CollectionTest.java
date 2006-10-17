@@ -25,22 +25,23 @@ import java.util.TreeSet;
  */
 public class Support_CollectionTest extends junit.framework.TestCase {
 
-	Collection col; // must contain the Integers 0 to 99
+	Collection<Integer> col; // must contain the Integers 0 to 99
 
 	public Support_CollectionTest(String p1) {
 		super(p1);
 	}
 
-	public Support_CollectionTest(String p1, Collection c) {
+	public Support_CollectionTest(String p1, Collection<Integer> c) {
 		super(p1);
 		col = c;
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		new Support_UnmodifiableCollectionTest("", col).runTest();
 
 		// setup
-		Collection myCollection = new TreeSet();
+		Collection<Integer> myCollection = new TreeSet<Integer>();
 		myCollection.add(new Integer(101));
 		myCollection.add(new Integer(102));
 		myCollection.add(new Integer(103));

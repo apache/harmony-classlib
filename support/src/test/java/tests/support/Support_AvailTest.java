@@ -51,21 +51,24 @@ public class Support_AvailTest {
 			int c = 0;
 			while (true) {
 				c = myin.read();
-				if (c == ' ' || c == -1)
-					break;
+				if (c == ' ' || c == -1) {
+                    break;
+                }
 				input.append((char) c);
 			}
 			expected = Integer.parseInt(input.toString());
 			// Verify correct value at start of read
-			if (real != expected)
-				output = "Failed avail test1 - " + real + "!=" + expected;
+			if (real != expected) {
+                output = "Failed avail test1 - " + real + "!=" + expected;
+            }
 
 			c = 0;
 			input = new StringBuffer("");
 			while (true) {
 				c = myin.read();
-				if (c == ' ' || c == -1)
-					break;
+				if (c == ' ' || c == -1) {
+                    break;
+                }
 				input.append((char) c);
 			}
 			expected = Integer.parseInt(input.toString());
@@ -78,10 +81,11 @@ public class Support_AvailTest {
 			// Verify value at end of reading
 			// loop to EOF, then check if available = 0
 			// replace this:
-			for (int i = 0; i < 5; i++)
-				myin.read();
+			for (int i = 0; i < 5; i++) {
+                myin.read();
 			// with:
 			// while(myin.read() != -1);
+            }
 
 			// The current for loop reads exactly to the end
 			// of the data, but is dependent on knowing the length of the data
@@ -89,8 +93,9 @@ public class Support_AvailTest {
 
 			expected = 0;
 			real = myin.available();
-			if (real != 0)
-				output = "Failed avail test3 - " + real + "!=" + expected;
+			if (real != 0) {
+                output = "Failed avail test3 - " + real + "!=" + expected;
+            }
 
 		} catch (IOException e) {
 			output = "IOException during available() testing";

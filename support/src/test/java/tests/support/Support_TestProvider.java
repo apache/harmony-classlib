@@ -25,7 +25,9 @@ import java.security.Provider;
  * This class implements a dummy provider.
  */
 public class Support_TestProvider extends Provider {
-	// Provider name
+    private static final long serialVersionUID = 1L;
+
+    // Provider name
 	private static final String NAME = "TestProvider";
 
 	// Version of the services provided
@@ -47,8 +49,8 @@ public class Support_TestProvider extends Provider {
 	 * Register the services the receiver provides.
 	 */
 	private void registerServices() {
-		AccessController.doPrivileged(new PrivilegedAction() {
-			public Object run() {
+		AccessController.doPrivileged(new PrivilegedAction<Void>() {
+			public Void run() {
 				// Digest engine
 				put("MessageDigest.SHA",
 						"made.up.provider.name.MessageDigestSHA");

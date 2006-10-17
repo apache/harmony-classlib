@@ -28,7 +28,8 @@ public class Support_DecimalFormat extends Support_Format {
 		super(p1);
 	}
 
-	public void runTest() {
+	@Override
+    public void runTest() {
 		t_formatToCharacterIterator();
 		t_format_with_FieldPosition();
 	}
@@ -185,31 +186,31 @@ public class Support_DecimalFormat extends Support_Format {
 				getZeroVector());
 	}
 
-	private static Vector getNumberVectorUS() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getNumberVectorUS() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 3, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(3, 4, NumberFormat.Field.DECIMAL_SEPARATOR));
 		v.add(new FieldContainer(4, 6, NumberFormat.Field.FRACTION));
 		return v;
 	}
 
-	private static Vector getPositiveCurrencyVectorTR() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getPositiveCurrencyVectorTR() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 3, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(4, 6, NumberFormat.Field.CURRENCY));
 		return v;
 	}
 
-	private static Vector getNegativeCurrencyVectorTR() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getNegativeCurrencyVectorTR() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, NumberFormat.Field.SIGN));
 		v.add(new FieldContainer(1, 4, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(5, 7, NumberFormat.Field.CURRENCY));
 		return v;
 	}
 
-	private static Vector getPositiveCurrencyVectorUS() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getPositiveCurrencyVectorUS() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, NumberFormat.Field.CURRENCY));
 		v.add(new FieldContainer(1, 4, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(4, 5, NumberFormat.Field.DECIMAL_SEPARATOR));
@@ -217,8 +218,8 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getNegativeCurrencyVectorUS() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getNegativeCurrencyVectorUS() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(1, 2, NumberFormat.Field.CURRENCY));
 		v.add(new FieldContainer(2, 5, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(5, 6, NumberFormat.Field.DECIMAL_SEPARATOR));
@@ -226,8 +227,8 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getPercentVectorUS() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getPercentVectorUS() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 2, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(2, 3, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(2, 3, NumberFormat.Field.GROUPING_SEPARATOR));
@@ -236,15 +237,15 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getPermilleVector() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getPermilleVector() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 6, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(6, 7, NumberFormat.Field.PERMILLE));
 		return v;
 	}
 
-	private static Vector getNegativeExponentVector() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getNegativeExponentVector() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 4, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(4, 5, NumberFormat.Field.DECIMAL_SEPARATOR));
 		v.add(new FieldContainer(5, 6, NumberFormat.Field.FRACTION));
@@ -254,8 +255,8 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getPositiveExponentVector() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getPositiveExponentVector() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 2, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(2, 3, NumberFormat.Field.DECIMAL_SEPARATOR));
 		v.add(new FieldContainer(3, 5, NumberFormat.Field.FRACTION));
@@ -264,8 +265,8 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getNumberVector2US() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getNumberVector2US() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 3, NumberFormat.Field.INTEGER));
 		v.add(new FieldContainer(3, 4, NumberFormat.Field.GROUPING_SEPARATOR));
 		v.add(new FieldContainer(3, 4, NumberFormat.Field.INTEGER));
@@ -276,8 +277,8 @@ public class Support_DecimalFormat extends Support_Format {
 		return v;
 	}
 
-	private static Vector getZeroVector() {
-		Vector v = new Vector();
+	private static Vector<FieldContainer> getZeroVector() {
+		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, NumberFormat.Field.INTEGER));
 		return v;
 	}
