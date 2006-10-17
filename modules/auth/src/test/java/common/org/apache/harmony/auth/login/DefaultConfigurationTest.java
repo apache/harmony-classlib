@@ -23,11 +23,8 @@
 package org.apache.harmony.auth.login;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.security.Permission;
-import java.security.Security;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +34,6 @@ import javax.security.auth.login.AppConfigurationEntry;
 import junit.framework.TestCase;
 
 import org.apache.harmony.auth.tests.support.TestUtils;
-import org.apache.harmony.auth.login.DefaultConfiguration;
 
 import tests.support.resource.Support_Resources;
 
@@ -52,75 +48,21 @@ public class DefaultConfigurationTest extends TestCase {
     static String otherConfFile = Support_Resources
             .getAbsoluteResourcePath("auth.conf");
 
-	private static File defaultConfFile;
-
 	static AppConfigurationEntry[] ents;
 
 	SecurityManager old = System.getSecurityManager();
 
-	String oldp1;
-	String oldp2;
-
-	@Override
-    public void setUp() throws Exception {
-		createConfFile();
-		
-		oldp1 = Security.getProperty("login.config.url.1");
-		oldp2 = Security.getProperty("login.config.url.2");
-	}
-
 	@Override
     public void tearDown() throws Exception {
 		System.setSecurityManager(old);
-
-		TestUtils.setSystemProperty("login.config.url.1", oldp1);
-		TestUtils.setSystemProperty("login.config.url.2", oldp2);
-
-		defaultConfFile.delete();
 	}
 
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(DefaultConfigurationTest.class);
 	}
 	
-	/**
-	 * loading a config file specified on the security property  
-	 * using login.config.url.1
-	 * XXX: load a default config file
-	 */
-	public static void testLoadConfigFile() throws Exception {
-			Security.setProperty("login.config.url.1", "file:"
-					+ defaultConfFile.getCanonicalPath());
-			Security.setProperty("login.config.url.2", "file:"
-					+ new File(otherConfFile).getCanonicalPath());
 
-            DefaultConfiguration dc = new DefaultConfiguration();
-			ents = dc.getAppConfigurationEntry("LoginNew");
-			assertNotNull(ents);
-			assertEquals("com.intel.security.auth.module.LoginModule1", ents[0].getLoginModuleName());
-			Map<String, String> m = new HashMap<String, String>();
-			m.put("debug", "true");
-			m.put("test", "false");
-			assertEquals(m, ents[0].getOptions());
-			assertEquals("LoginModuleControlFlag: optional", ents[0].getControlFlag().toString());
-
-			ents = dc.getAppConfigurationEntry("Login1");
-			assertNotNull(ents);
-			for (AppConfigurationEntry element : ents) {
-				assertEquals("com.intel.security.auth.module.LoginModule1",
-						element.getLoginModuleName());
-				m.clear();
-				m.put("debug1", "true");
-				m.put("test1", "false");
-				assertEquals(m, element.getOptions());
-				assertEquals("LoginModuleControlFlag: required", element
-						.getControlFlag().toString());
-			}
-			
-			
-			
-	}
-	/**
+    /**
 	 * loading a config file specified on the system property
 	 * using -Djava.security.auth.login.config    
 	 */
@@ -211,23 +153,6 @@ public class DefaultConfigurationTest extends TestCase {
 		    TestUtils.setSystemProperty(LOGIN_CONFIG, oldp);
 		}
 
-	}
-
-	private static void createConfFile() throws SecurityException, IOException {
-		
-		defaultConfFile = File.createTempFile(".java.login.config", null);
-
-		String newConfFile = "LoginNew {\n com.intel.security.auth.module.LoginModule1 optional"
-			+ " debug=\"true\" test=false;\n};";
-
-		byte[] b = newConfFile.getBytes();
-
-		OutputStream os = new FileOutputStream(defaultConfFile);
-		for (byte element : b) {
-			os.write(element);
-		}
-		os.flush();
-		os.close();
 	}
 
 	/**

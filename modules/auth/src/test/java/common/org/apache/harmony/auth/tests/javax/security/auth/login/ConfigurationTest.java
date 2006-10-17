@@ -23,7 +23,10 @@
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.security.Security;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.security.auth.AuthPermission;
@@ -48,6 +51,10 @@ public class ConfigurationTest extends TestCase {
 
     // security property to specify default configuration implementation 
     private static final String LOGIN_CONFIG_PROVIDER = "login.configuration.provider";
+
+    // testing config file 
+    private static String testConfFile = Support_Resources
+            .getAbsoluteResourcePath("auth.conf");
 
 	/**
 	 * Ease the configuration class
@@ -78,9 +85,8 @@ public class ConfigurationTest extends TestCase {
     protected void setUp() {
 
         // point to some existing file to be read 
-        String testConfig = Support_Resources
-                .getAbsoluteResourcePath("auth.conf");
-        oldAuthConfig = System.setProperty(AUTH_LOGIN_CONFIG, "=" + testConfig);
+        oldAuthConfig = System.setProperty(AUTH_LOGIN_CONFIG, "="
+                + testConfFile);
 
         defaultConfig = Configuration.getConfiguration();
 
@@ -226,6 +232,83 @@ public class ConfigurationTest extends TestCase {
                 Configuration.getConfiguration();
                 fail("No expected SecurityException");
             } catch (SecurityException e) {
+            }
+        }
+    }
+    
+    /**
+     * Tests loading config files specified with the security properties  
+     * login.config.url.N
+     * 
+     * TODO create test for loading a default config file:
+     * ${user.home}/.java.login.config
+     */
+    public void test_defaultProvider_securityProperties() throws Exception {
+
+        // create tmp config file
+        File tmpConfFile = File.createTempFile("login", "config");
+        tmpConfFile.deleteOnExit();
+        
+        String newConfFile = "LoginNew {\n org.apache.harmony.auth.module.LoginModule1 optional"
+                + " debug=\"true\" test=false;\n};";
+
+        FileOutputStream out = new FileOutputStream(tmpConfFile);
+        out.write(newConfFile.getBytes());
+        out.close();
+        
+        // set up security properties
+        Properties props = new Properties();
+        props.setProperty("login.config.url.1", "file:"
+                + tmpConfFile.getCanonicalPath());
+        props.setProperty("login.config.url.2", "file:"
+                + new File(testConfFile).getCanonicalPath());
+        String javaSecurityFile = TestUtils
+                .createJavaPropertiesFile(props);
+
+        // run test
+        String[] arg = new String[] {
+                "-Djava.security.properties=" + javaSecurityFile,
+                SecurityPropertiesToBeRead.class.getName() };
+        
+        Support_Exec.execJava(arg, null, true);
+    }
+    
+    public static class SecurityPropertiesToBeRead {
+
+        // the test is based on assumption that security properties 
+        // login.config.url.1 and login.config.url.1 are set
+        public static void main(String[] args) {
+
+            //reset path to alternative configuration file
+            TestUtils.setSystemProperty(AUTH_LOGIN_CONFIG, null);
+
+            Configuration.setConfiguration(null); // reset default config
+
+            Configuration config = Configuration.getConfiguration();
+
+            AppConfigurationEntry[] ents = config
+                    .getAppConfigurationEntry("LoginNew");
+            assertNotNull(ents);
+            assertEquals("org.apache.harmony.auth.module.LoginModule1", ents[0]
+                    .getLoginModuleName());
+            Map<String, String> m = new HashMap<String, String>();
+            m.put("debug", "true");
+            m.put("test", "false");
+            assertEquals(m, ents[0].getOptions());
+            assertEquals("LoginModuleControlFlag: optional", ents[0]
+                    .getControlFlag().toString());
+
+            ents = config.getAppConfigurationEntry("Login1");
+            assertNotNull(ents);
+            for (AppConfigurationEntry element : ents) {
+                assertEquals("com.intel.security.auth.module.LoginModule1",
+                        element.getLoginModuleName());
+                m.clear();
+                m.put("debug1", "true");
+                m.put("test1", "false");
+                assertEquals(m, element.getOptions());
+                assertEquals("LoginModuleControlFlag: required", element
+                        .getControlFlag().toString());
             }
         }
     }

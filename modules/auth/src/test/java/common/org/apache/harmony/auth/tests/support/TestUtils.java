@@ -102,7 +102,7 @@ public class TestUtils {
 
         FileOutputStream out = new FileOutputStream(f);
 
-        Properties propsToFlush = new Properties(props);
+        Properties propsToFlush = new Properties();
         
         int i = 1;
         String provider = "security.provider.1";
@@ -111,6 +111,7 @@ public class TestUtils {
             provider = "security.provider." + i++;
         }
 
+        props.store(out, null);
         propsToFlush.store(out, null);
 
         out.close();
