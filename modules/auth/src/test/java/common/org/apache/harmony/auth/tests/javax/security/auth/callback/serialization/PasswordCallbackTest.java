@@ -32,14 +32,10 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for PasswordCallback class
  */
-
 public class PasswordCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(PasswordCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         char[] pwd = {'a', 'b', 'c'};
         PasswordCallback p = new PasswordCallback("prmpt", true);

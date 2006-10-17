@@ -32,14 +32,10 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for ConfirmationCallback class
  */
-
 public class ConfirmationCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ConfirmationCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] { new ConfirmationCallback("prompt",
                 ConfirmationCallback.INFORMATION,

@@ -43,11 +43,6 @@ import org.apache.harmony.auth.tests.support.SpiEngUtils;
  * Test for Sasl class
  */
 public class Sasl2Test extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(Sasl2Test.class);
-    }
-
     Provider[] mProv;
 
     private static final String fClientClass01 = myClientFactory01.class
@@ -59,30 +54,20 @@ public class Sasl2Test extends TestCase {
     private static final String fServerClass02 = myServerFactory02.class
             .getName();
 
-    /*
-     * @see TestCase#tearDown()
-     */
+
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (mProv != null) {
-            for (int i = 0; i < mProv.length; i++) {
-                Security.removeProvider(mProv[i].getName());
+            for (Provider element : mProv) {
+                Security.removeProvider(element.getName());
             }
         }
     }
 
-    /**
-     * Constructor for Sasl2Test.
-     * 
-     * @param arg0
-     */
-    public Sasl2Test(String arg0) {
-        super(arg0);
-    }
-
     private void addProviders() {
-        for (int i = 0; i < mProv.length; i++) {
-            Security.insertProviderAt(mProv[i], 2);
+        for (Provider element : mProv) {
+            Security.insertProviderAt(element, 2);
         }
     }
 
@@ -120,7 +105,7 @@ public class Sasl2Test extends TestCase {
 
         addProviders();
 
-        Enumeration en = Sasl.getSaslClientFactories();
+        Enumeration<SaslClientFactory> en = Sasl.getSaslClientFactories();
         assertNotNull("List of SaslClientFactories should not be null", en);
         assertTrue("List of SaslClientFactories should have elements", en
                 .hasMoreElements());
@@ -128,7 +113,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslClientFactory f = (SaslClientFactory) en.nextElement();
+            SaslClientFactory f = en.nextElement();
             if (f instanceof myClientFactory01) {
                 l++;
                 assertNull("Incorect SaslClient", f.createSaslClient(null,
@@ -170,7 +155,7 @@ public class Sasl2Test extends TestCase {
                                 .concat(mech[3]), fClientClass01) };
         addProviders();
 
-        Enumeration en = Sasl.getSaslClientFactories();
+        Enumeration<SaslClientFactory> en = Sasl.getSaslClientFactories();
         assertNotNull("List of SaslClientFactories should not be null", en);
         assertTrue("List of SaslClientFactories should have elements", en
                 .hasMoreElements());
@@ -178,7 +163,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslClientFactory f = (SaslClientFactory) en.nextElement();
+            SaslClientFactory f = en.nextElement();
             if (f instanceof myClientFactory01) {
                 l++;
                 assertNull("Incorect SaslClient", f.createSaslClient(null,
@@ -213,7 +198,7 @@ public class Sasl2Test extends TestCase {
                         "Testing provider SaslClientFactory - 2", CLNTSRV
                                 .concat(mech[1]), fClientClass01) };
         addProviders();
-        Enumeration en = Sasl.getSaslClientFactories();
+        Enumeration<SaslClientFactory> en = Sasl.getSaslClientFactories();
         assertNotNull("List of SaslClientFactories should not be null", en);
         assertTrue("List of SaslClientFactories should have elements", en
                 .hasMoreElements());
@@ -222,7 +207,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm1.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslClientFactory f = (SaslClientFactory) en.nextElement();
+            SaslClientFactory f = en.nextElement();
             if (f instanceof myClientFactory01) {
                 l++;
                 assertTrue(f instanceof myClientFactory01);
@@ -273,7 +258,7 @@ public class Sasl2Test extends TestCase {
         mProv[0].put(CLNTSRV.concat(mech[3]), fClientClass01);
 
         addProviders();
-        Enumeration en = Sasl.getSaslClientFactories();
+        Enumeration<SaslClientFactory> en = Sasl.getSaslClientFactories();
         assertNotNull("List of SaslClientFactories should not be null", en);
         assertTrue("List of SaslClientFactories should have elements", en
                 .hasMoreElements());
@@ -281,7 +266,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslClientFactory f = (SaslClientFactory) en.nextElement();
+            SaslClientFactory f = en.nextElement();
             if ((f instanceof myClientFactory01)) {
                 l++;
                 assertNull("Incorect SaslClient", f.createSaslClient(null,
@@ -321,18 +306,18 @@ public class Sasl2Test extends TestCase {
                 (new SpiEngUtils()).new MyProvider("MySaslServerProvider4",
                         "Testing provider SaslServerFactory - 4", SRVSSRV
                                 .concat(mech[0]), fServerClass02) };
-        for (int i = 0; i < mProv.length; i++) {
+        for (Provider element : mProv) {
             for (int j = 1; j < mech.length; j++) {
-                mProv[i].put(SRVSSRV.concat(mech[j]).concat(mech[j]),
+                element.put(SRVSSRV.concat(mech[j]).concat(mech[j]),
                         fServerClass02);
-                mProv[i].put(SRVSSRV.concat(mech[j]).concat(mech[j]),
+                element.put(SRVSSRV.concat(mech[j]).concat(mech[j]),
                         fServerClass01);
             }
-            mProv[i].put(SRVSSRV.concat(mech[0]).concat(mech[0]),
+            element.put(SRVSSRV.concat(mech[0]).concat(mech[0]),
                     fServerClass01);
         }
         addProviders();
-        Enumeration en = Sasl.getSaslServerFactories();
+        Enumeration<SaslServerFactory> en = Sasl.getSaslServerFactories();
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertTrue("List of SaslServerFactories should have elements", en
                 .hasMoreElements());
@@ -340,7 +325,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm01.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslServerFactory f = (SaslServerFactory) en.nextElement();
+            SaslServerFactory f = en.nextElement();
             if (f instanceof myServerFactory02) {
                 l++;
                 try {
@@ -392,7 +377,7 @@ public class Sasl2Test extends TestCase {
                                 .concat(mech[3]), fServerClass01) };
         addProviders();
 
-        Enumeration en = Sasl.getSaslServerFactories();
+        Enumeration<SaslServerFactory> en = Sasl.getSaslServerFactories();
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertTrue("List of SaslServerFactories should have elements", en
                 .hasMoreElements());
@@ -400,7 +385,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm01.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslServerFactory f = (SaslServerFactory) en.nextElement();
+            SaslServerFactory f = en.nextElement();
             if (f instanceof myServerFactory01) {
                 l++;
                 assertNull("Incorect SaslServer", f.createSaslServer(null,
@@ -435,7 +420,7 @@ public class Sasl2Test extends TestCase {
                         "Testing provider SaslServerFactory - 2", SRVSSRV
                                 .concat(mech[1]), fServerClass01) };
         addProviders();
-        Enumeration en = Sasl.getSaslServerFactories();
+        Enumeration<SaslServerFactory> en = Sasl.getSaslServerFactories();
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertTrue("List of SaslServerFactories should have elements", en
                 .hasMoreElements());
@@ -444,7 +429,7 @@ public class Sasl2Test extends TestCase {
         String[] mech01 = mm1.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslServerFactory f = (SaslServerFactory) en.nextElement();
+            SaslServerFactory f = en.nextElement();
             if (f instanceof myServerFactory01) {
                 l++;
                 assertTrue(f instanceof myServerFactory01);
@@ -495,13 +480,13 @@ public class Sasl2Test extends TestCase {
         mProv[0].put(SRVSSRV.concat(mech[3]), fServerClass02);
 
         addProviders();
-        Enumeration en = Sasl.getSaslServerFactories();
+        Enumeration<SaslServerFactory> en = Sasl.getSaslServerFactories();
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertTrue("List of SaslServerFactories should have elements", en
                 .hasMoreElements());
         int l = 0;
         while (en.hasMoreElements()) {
-            SaslServerFactory f = (SaslServerFactory) en.nextElement();
+            SaslServerFactory f = en.nextElement();
             if ((f instanceof myServerFactory02)) {
                 l++;
                 try {
@@ -526,13 +511,13 @@ public class Sasl2Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map map) {
+        public String[] getMechanismNames(Map<String, ?> map) {
             return new String[] { "aaaa", "dddddddddddd",
                     "llllllllll sssssssss aaaaaaaaaaa c" };
         }
 
         public SaslServer createSaslServer(String mech, String prot,
-                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler ch) throws SaslException {
             return null;
         }
     }
@@ -542,12 +527,12 @@ public class Sasl2Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map map) {
+        public String[] getMechanismNames(Map<String, ?> map) {
             return null;
         }
 
         public SaslServer createSaslServer(String mech, String prot,
-                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler ch) throws SaslException {
             if (prot == null) {
                 throw new SaslException("Protocol is null");
             }
@@ -560,12 +545,12 @@ public class Sasl2Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map map) {
+        public String[] getMechanismNames(Map<String, ?> map) {
             return new String[] { "a1", "a2", "a3", "a4", "a5" };
         }
 
         public SaslClient createSaslClient(String[] mech, String prot, String auth,
-                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler ch) throws SaslException {
             return null;
         }
     }
@@ -575,12 +560,12 @@ public class Sasl2Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map map) {
+        public String[] getMechanismNames(Map<String, ?> map) {
             return new String[] { "a11", "a22", "a33", "a44", "a55", "" };
         }
 
         public SaslClient createSaslClient(String[] mech, String prot, String auth,
-                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler ch) throws SaslException {
             return null;
         }
     }

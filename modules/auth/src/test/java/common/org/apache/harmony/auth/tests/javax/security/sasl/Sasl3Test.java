@@ -66,6 +66,7 @@ public class Sasl3Test extends TestCase {
         super(arg0);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         if (!initProvs) {
@@ -73,8 +74,8 @@ public class Sasl3Test extends TestCase {
             initProvs = true;
         }
         if (provs != null) {
-            for (int i = 0; i < provs.length; i++) {
-                Security.removeProvider(provs[i].getName());
+            for (Provider element : provs) {
+                Security.removeProvider(element.getName());
             }
         }
     }
@@ -82,19 +83,20 @@ public class Sasl3Test extends TestCase {
     protected Provider[] mProv;
 
     private void addProviders() {
-        for (int i = 0; i < mProv.length; i++) {
-            Security.insertProviderAt(mProv[i], 1);
+        for (Provider element : mProv) {
+            Security.insertProviderAt(element, 1);
         }
     }
 
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (mProv != null) {
-            for (int i = 0; i < mProv.length; i++) {
-                Security.removeProvider(mProv[i].getName());
+            for (Provider element : mProv) {
+                Security.removeProvider(element.getName());
             }
         }
         if (provs != null) {
@@ -308,12 +310,12 @@ public class Sasl3Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map prop) {
+        public String[] getMechanismNames(Map<String, ?> prop) {
             return new String[] { "NAME-1", "NAME-2", "NAME-3", "NAME-4" };
         }
 
         public SaslClient createSaslClient(String[] mech, String id,
-                String protocol, String srvName, Map prop, CallbackHandler hnd)
+                String protocol, String srvName, Map<String, ?> prop, CallbackHandler hnd)
                 throws SaslException {
             if (mech == null) {
                 throw new SaslException();
@@ -377,12 +379,14 @@ public class Sasl3Test extends TestCase {
     }
 
     public static class mySaslClientFactoryExt extends mySaslClientFactory {
-        public String[] getMechanismNames(Map prop) {
+        @Override
+        public String[] getMechanismNames(Map<String, ?> prop) {
             return new String[] { "NAME-5", "NAME-6" };
         }
 
+        @Override
         public SaslClient createSaslClient(String[] mech, String id,
-                String protocol, String srvName, Map prop, CallbackHandler hnd)
+                String protocol, String srvName, Map<String, ?> prop, CallbackHandler hnd)
                 throws SaslException {
             if (mech == null) {
                 throw new SaslException();
@@ -397,17 +401,17 @@ public class Sasl3Test extends TestCase {
 
         public void handle(Callback[] callbacks) throws IOException,
                 UnsupportedCallbackException {
-            for (int i = 0; i < callbacks.length; i++) {
-                if (callbacks[i] instanceof NameCallback) {
-                    NameCallback nc = (NameCallback) callbacks[i];
+            for (Callback element : callbacks) {
+                if (element instanceof NameCallback) {
+                    NameCallback nc = (NameCallback) element;
                     nc.setName("Ok");
-                } else if (callbacks[i] instanceof PasswordCallback) {
-                    PasswordCallback pc = (PasswordCallback) callbacks[i];
+                } else if (element instanceof PasswordCallback) {
+                    PasswordCallback pc = (PasswordCallback) element;
                     System.err.print(pc.getPrompt());
                     System.err.flush();
                     pc.setPassword(new char[] { 'O', 'k' });
                 } else {
-                    throw new UnsupportedCallbackException(callbacks[i],
+                    throw new UnsupportedCallbackException(element,
                             "Callback should be NamCallback or PasswordCallback");
                 }
             }
@@ -420,15 +424,15 @@ public class Sasl3Test extends TestCase {
 
         public void handle(Callback[] callbacks) throws IOException,
                 UnsupportedCallbackException {
-            for (int i = 0; i < callbacks.length; i++) {
-                if (callbacks[i] instanceof TextOutputCallback) {
-                    TextOutputCallback toc = (TextOutputCallback) callbacks[i];
+            for (Callback element : callbacks) {
+                if (element instanceof TextOutputCallback) {
+                    TextOutputCallback toc = (TextOutputCallback) element;
                     if (toc.getMessageType() != TextOutputCallback.INFORMATION) {
                         throw new IOException("Unsupported message type: "
                                 + toc.getMessageType());
                     }
                 } else {
-                    throw new UnsupportedCallbackException(callbacks[i],
+                    throw new UnsupportedCallbackException(element,
                             "Callback should be TextOutputCallback");
                 }
             }

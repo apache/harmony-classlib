@@ -24,12 +24,7 @@ package org.apache.harmony.auth.tests.javax.security.auth.kerberos.serialization
 
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
-
 import javax.security.auth.kerberos.DelegationPermission;
-
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
@@ -39,6 +34,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class KrbDelegationPermissionCollectionTest extends SerializationTest {
 
+    @Override
     protected Object[] getData() {
         Permission p1 = new DelegationPermission("\"AAA\" \"BBB\"", "action");
         Permission p2 = new DelegationPermission("\"AAA\" \"CCC\"");

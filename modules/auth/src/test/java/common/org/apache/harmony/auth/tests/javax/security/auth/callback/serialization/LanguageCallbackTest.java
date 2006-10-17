@@ -32,14 +32,10 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for LanguageCallback class
  */
-
 public class LanguageCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(LanguageCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         LanguageCallback lc = new LanguageCallback();
         lc.setLocale(Locale.UK);

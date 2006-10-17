@@ -33,6 +33,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class AuthPermissionTest extends SerializationTest {
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new AuthPermission("name", "read")};
     }

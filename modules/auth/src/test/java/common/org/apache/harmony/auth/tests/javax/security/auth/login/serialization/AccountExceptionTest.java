@@ -34,10 +34,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class AccountExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new AccountException("message")};
     }

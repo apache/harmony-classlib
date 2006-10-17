@@ -32,10 +32,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class AccountExpiredExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountExpiredExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new AccountExpiredException("message")};
     }

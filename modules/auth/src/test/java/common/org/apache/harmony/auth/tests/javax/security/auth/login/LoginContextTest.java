@@ -52,16 +52,13 @@ public class LoginContextTest extends TestCase {
     // system property to specify another login configuration file 
     private static final String AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(LoginContextTest.class);
-    }
-
     private static final String moduleName = "moduleName";
 
-    private Subject subject = new Subject();
+    private final Subject subject = new Subject();
 
-    private MyCallbackHandler handler = new MyCallbackHandler();
+    private final MyCallbackHandler handler = new MyCallbackHandler();
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -208,7 +205,7 @@ public class LoginContextTest extends TestCase {
      */
     public final void testLC_String_LoginModuleInitialize() throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, Object> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -223,7 +220,7 @@ public class LoginContextTest extends TestCase {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context instantiates subject object itself. 
         assertNotNull("Subject", module.subject);
@@ -368,7 +365,7 @@ public class LoginContextTest extends TestCase {
     public final void testLC_StringCallbackHandler_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, Object> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -383,7 +380,7 @@ public class LoginContextTest extends TestCase {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context instantiates subject object itself. 
         assertNotNull("Subject", module.subject);
@@ -531,7 +528,7 @@ public class LoginContextTest extends TestCase {
     public final void testLC_StringSubject_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, Object> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -546,7 +543,7 @@ public class LoginContextTest extends TestCase {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context has provided subject 
         assertTrue("Subject", module.subject == subject);
@@ -677,7 +674,7 @@ public class LoginContextTest extends TestCase {
     public final void testLC_StringSubjectCallbackHandler_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, Object> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -692,7 +689,7 @@ public class LoginContextTest extends TestCase {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context has provided subject 
         assertTrue("Subject", module.subject == subject);
@@ -803,7 +800,7 @@ public class LoginContextTest extends TestCase {
             try {
                 // Regression for HARMONY-771
                 new LoginContext("0"); 
-                TestCase.fail("No expected SecurityException");
+                fail("No expected SecurityException");
             } catch (SecurityException e) {
             }
         }
@@ -813,32 +810,27 @@ public class LoginContextTest extends TestCase {
 
         private String appName;
 
-        private ArrayList entries;
+        private ArrayList<AppConfigurationEntry> entries;
 
         public MyConfig() {
-            entries = new ArrayList();
+            entries = new ArrayList<AppConfigurationEntry>();
         }
 
-        public AppConfigurationEntry[] getAppConfigurationEntry(
-                String applicationName) {
-
+        @Override
+        public AppConfigurationEntry[] getAppConfigurationEntry(String applicationName) {
             appName = applicationName;
-
             if (entries != null) {
                 if (entries.size() == 0) {
                     return new AppConfigurationEntry[0];
-                } else {
-                    AppConfigurationEntry[] appEntries = new AppConfigurationEntry[entries
-                            .size()];
-
-                    entries.toArray(appEntries);
-
-                    return appEntries;
                 }
+                AppConfigurationEntry[] appEntries = new AppConfigurationEntry[entries.size()];
+                entries.toArray(appEntries);
+                return appEntries;
             }
             return null;
         }
 
+        @Override
         public void refresh() {
         }
 
@@ -865,8 +857,8 @@ public class LoginContextTest extends TestCase {
         /**
          * Appends required login module to the current configuration
          */
-        public static void addRequired(String name, Map options) {
-            ArrayList list = ((MyConfig) Configuration.getConfiguration()).entries;
+        public static void addRequired(String name, Map<String, ?> options) {
+            ArrayList<AppConfigurationEntry> list = ((MyConfig) Configuration.getConfiguration()).entries;
 
             AppConfigurationEntry entry = new AppConfigurationEntry(
                     LoginContextTest.class.getName() + '$' + name,
@@ -891,10 +883,10 @@ public class LoginContextTest extends TestCase {
 
     public static class MyLoginModule implements LoginModule {
 
-        public static ArrayList list = new ArrayList();
+        public static ArrayList<MyLoginModule> list = new ArrayList<MyLoginModule>();
 
         public static void reset() {
-            list = new ArrayList();
+            list = new ArrayList<MyLoginModule>();
         }
 
         public boolean aborted;
@@ -911,9 +903,9 @@ public class LoginContextTest extends TestCase {
 
         public CallbackHandler handler;
 
-        public Map sharedState;
+        public Map<String, ?> sharedState;
 
-        public Map options;
+        public Map<String, ?> options;
 
         public MyLoginModule() {
             list.add(this);
@@ -940,7 +932,7 @@ public class LoginContextTest extends TestCase {
         }
 
         public void initialize(Subject subject, CallbackHandler handler,
-                Map sharedState, Map options) {
+                Map<String, ?> sharedState, Map<String, ?> options) {
 
             if (logined || commited || aborted) {
                 throw new AssertionError("MUST be initialized first");
@@ -983,8 +975,8 @@ public class LoginContextTest extends TestCase {
             return false;
         }
 
-        public void initialize(Subject arg0, CallbackHandler arg1, Map arg2,
-                Map arg3) {
+        public void initialize(Subject arg0, CallbackHandler arg1, Map<String, ?> arg2,
+                Map<String, ?> arg3) {
         }
 
         public boolean login() throws LoginException {

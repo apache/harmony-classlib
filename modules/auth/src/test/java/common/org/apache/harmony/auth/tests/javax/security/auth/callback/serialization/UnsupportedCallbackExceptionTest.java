@@ -31,15 +31,11 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for UnsupportedCallbackException class
  */
-
 public class UnsupportedCallbackExceptionTest extends SerializationTest {
 
     static LanguageCallback nc = new LanguageCallback();
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnsupportedCallbackExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new UnsupportedCallbackException(nc)};
     }

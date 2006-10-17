@@ -42,14 +42,15 @@ public class RealmCallbackTest extends SerializationTest implements
 
     public static String addText = "This text was set to RealmCallback";
     
+    @Override
     protected Object[] getData() {
         Object [] oo = {
                 new RealmCallback(msgs[0], msgs[1]),
                 new RealmCallback(msgs[1], msgs[0]),
                 new RealmCallback(msgs[1], msgs[1])
         };
-        for (int i = 0; i < oo.length; i++) {
-            ((RealmCallback)oo[i]).setText(addText);
+        for (Object element : oo) {
+            ((RealmCallback)element).setText(addText);
         }
         return oo;
     }

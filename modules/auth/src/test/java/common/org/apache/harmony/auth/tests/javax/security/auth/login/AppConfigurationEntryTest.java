@@ -31,12 +31,7 @@ import junit.framework.TestCase;
 /**
  * Tests AppConfigurationEntry class
  */
-
 public class AppConfigurationEntryTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AppConfigurationEntryTest.class);
-    }
 
     String loginModule = "LoginModule";
 
@@ -44,8 +39,9 @@ public class AppConfigurationEntryTest extends TestCase {
 
     AppConfigurationEntry entry = null;
 
-    Map options = new HashMap();
+    Map<String, Object> options = new HashMap<String, Object>();
 
+    @Override
     public void setUp() {
         options.put("debug", "true");
         options.put("testing", "false");
@@ -116,7 +112,7 @@ public class AppConfigurationEntryTest extends TestCase {
      * test for array of the AppConfigurationEntry and for the method getOptions 
      */
     public void testArrayCtor() {
-        Map options1 = new HashMap();
+        Map<String, String> options1 = new HashMap<String, String>();
         options1.put("debug", "false");
         AppConfigurationEntry[] entries = {
                 new AppConfigurationEntry("LoginModule1",
@@ -127,7 +123,7 @@ public class AppConfigurationEntryTest extends TestCase {
                         options1),
                 new AppConfigurationEntry("LoginModule3",
                         AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,
-                        new HashMap()) };
+                        new HashMap<String, String>()) };
 
         assertEquals("LoginModule1", entries[0].getLoginModuleName());
         assertEquals(options, entries[0].getOptions());
@@ -170,11 +166,12 @@ public class AppConfigurationEntryTest extends TestCase {
                         .toString());
     }
 
+    @SuppressWarnings("unchecked")
     public void testImmutability() {
         AppConfigurationEntry entry = new AppConfigurationEntry("LoginModule",
                 AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options);
 
-        Map eOptions = entry.getOptions();
+        Map<String, Object> eOptions = (Map<String, Object>)entry.getOptions();
 
         try {
             eOptions.put("a", "b");

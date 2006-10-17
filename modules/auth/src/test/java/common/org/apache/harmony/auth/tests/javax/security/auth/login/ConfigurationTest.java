@@ -54,12 +54,14 @@ public class ConfigurationTest extends TestCase {
 	 */
 	public static class ConfTestProvider extends Configuration {
 
-		public AppConfigurationEntry[] getAppConfigurationEntry(
+		@Override
+        public AppConfigurationEntry[] getAppConfigurationEntry(
 				String applicationName) {
 			return null;
 		}
 
-		public void refresh() {
+		@Override
+        public void refresh() {
 		}
 	}
 
@@ -222,13 +224,9 @@ public class ConfigurationTest extends TestCase {
             Configuration.setConfiguration(null); // reset default config
             try {
                 Configuration.getConfiguration();
-                TestCase.fail("No expected SecurityException");
+                fail("No expected SecurityException");
             } catch (SecurityException e) {
             }
         }
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ConfigurationTest.class);
     }
 }

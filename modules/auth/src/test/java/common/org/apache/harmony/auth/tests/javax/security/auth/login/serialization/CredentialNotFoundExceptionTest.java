@@ -33,10 +33,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class CredentialNotFoundExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new CredentialNotFoundException("message")};
     }

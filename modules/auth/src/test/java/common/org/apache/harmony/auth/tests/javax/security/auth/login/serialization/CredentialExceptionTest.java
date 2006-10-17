@@ -34,10 +34,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class CredentialExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new CredentialException("message")};
     }

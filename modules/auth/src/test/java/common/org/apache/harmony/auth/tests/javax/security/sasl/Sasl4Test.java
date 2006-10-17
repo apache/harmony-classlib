@@ -64,6 +64,7 @@ public class Sasl4Test extends TestCase {
         super(arg0);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         if (!initProvs) {
@@ -71,8 +72,8 @@ public class Sasl4Test extends TestCase {
             initProvs = true;
         }
         if (provs != null) {
-            for (int i = 0; i < provs.length; i++) {
-                Security.removeProvider(provs[i].getName());
+            for (Provider element : provs) {
+                Security.removeProvider(element.getName());
             }
         }
     }
@@ -80,19 +81,20 @@ public class Sasl4Test extends TestCase {
     protected Provider[] mProv;
 
     private void addProviders() {
-        for (int i = 0; i < mProv.length; i++) {
-            Security.insertProviderAt(mProv[i], 1);
+        for (Provider element : mProv) {
+            Security.insertProviderAt(element, 1);
         }
     }
 
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (mProv != null) {
-            for (int i = 0; i < mProv.length; i++) {
-                Security.removeProvider(mProv[i].getName());
+            for (Provider element : mProv) {
+                Security.removeProvider(element.getName());
             }
         }
         if (provs != null) {
@@ -306,12 +308,12 @@ public class Sasl4Test extends TestCase {
             super();
         }
 
-        public String[] getMechanismNames(Map prop) {
+        public String[] getMechanismNames(Map<String, ?> prop) {
             return new String[] { "MECH-1", "MECH-2", "MECH-3", "MECH-4" };
         }
 
         public SaslServer createSaslServer(String mech, String protocol,
-                String srvName, Map prop, CallbackHandler hnd) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler hnd) throws SaslException {
             if (mech == null) {
                 throw new SaslException();
             }
@@ -374,12 +376,14 @@ public class Sasl4Test extends TestCase {
     }
 
     public static class mySaslServerFactoryExt extends mySaslServerFactory {
-        public String[] getMechanismNames(Map prop) {
+        @Override
+        public String[] getMechanismNames(Map<String, ?> prop) {
             return new String[] { "MECH-5", "MECH-6" };
         }
 
+        @Override
         public SaslServer createSaslServer(String mech, String protocol,
-                String srvName, Map prop, CallbackHandler hnd) throws SaslException {
+                String srvName, Map<String, ?> prop, CallbackHandler hnd) throws SaslException {
             if (mech == null) {
                 throw new SaslException();
             }

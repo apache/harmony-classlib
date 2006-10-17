@@ -32,14 +32,10 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for TextInputCallback class
  */
-
 public class TextInputCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextInputCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         TextInputCallback t = new TextInputCallback("prmpt","defText");
         t.setText("new text");

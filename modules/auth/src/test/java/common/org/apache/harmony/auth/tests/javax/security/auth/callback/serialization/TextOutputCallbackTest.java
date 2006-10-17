@@ -36,10 +36,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 public class TextOutputCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextOutputCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] { new TextOutputCallback(
                 TextOutputCallback.INFORMATION, "message") };

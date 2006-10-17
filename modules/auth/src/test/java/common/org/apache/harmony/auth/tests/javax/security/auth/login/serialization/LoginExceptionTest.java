@@ -33,10 +33,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class LoginExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(LoginExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new LoginException("message")};
     }

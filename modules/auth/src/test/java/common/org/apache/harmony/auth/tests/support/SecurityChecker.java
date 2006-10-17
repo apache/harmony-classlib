@@ -42,6 +42,7 @@ public class SecurityChecker extends SecurityManager {
         enableAccess = enable;
     }
 
+    @Override
     public void checkPermission(Permission p) {
         if (checkTarget.equals(p)) {
             checkAsserted = true;

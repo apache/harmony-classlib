@@ -33,10 +33,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class DestroyFailedExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(DestroyFailedExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new DestroyFailedException("message")};
     }

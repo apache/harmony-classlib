@@ -32,6 +32,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class X500PrincipalTest extends SerializationTest {
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new X500Principal("CN=A"),
                 new X500Principal("CN=A, C=B"),

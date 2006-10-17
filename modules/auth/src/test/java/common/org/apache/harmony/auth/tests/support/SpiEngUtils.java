@@ -74,6 +74,7 @@ public class SpiEngUtils {
     }
 
     public class MyProvider extends Provider {
+        private static final long serialVersionUID = 1L;
 
         public MyProvider(String name, String info, String key, String clName) {
             super(name, 1.0, info);

@@ -32,15 +32,10 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 /**
  * Serialization test for ChoiceCallback class
  */
-
 public class ChoiceCallbackTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
-  
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ChoiceCallbackTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
 
         String prompt = "prompt";

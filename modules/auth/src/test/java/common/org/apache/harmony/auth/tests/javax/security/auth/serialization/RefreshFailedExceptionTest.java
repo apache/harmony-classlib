@@ -34,10 +34,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class RefreshFailedExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RefreshFailedExceptionTest.class);
-    }
-
+    @Override
     protected Object[] getData() {
         return new Object[] {new RefreshFailedException("message")};
     }
