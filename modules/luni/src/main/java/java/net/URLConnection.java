@@ -556,7 +556,6 @@ public abstract class URLConnection {
 	 * 
 	 * @see #ifModifiedSince
 	 * @see #setIfModifiedSince
-	 * @see java.text.SimpleDateFormat
 	 */
 	public long getIfModifiedSince() {
 		return ifModifiedSince;
