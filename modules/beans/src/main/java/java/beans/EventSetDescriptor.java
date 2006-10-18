@@ -175,13 +175,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
             }
         }
 
-        this.addListenerMethod = checkRegistrationMethod(listenerType,
-                addListenerMethod);
-        this.removeListenerMethod = checkRegistrationMethod(listenerType,
-                removeListenerMethod);
-        this.getListenerMethod = null;
-
-        this.unicast = isUnicastByDefault(addListenerMethod);
+        this.addListenerMethod = addListenerMethod;
+        this.removeListenerMethod = removeListenerMethod;
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
@@ -208,13 +203,9 @@ public class EventSetDescriptor extends FeatureDescriptor {
             }
         }
 
-        this.addListenerMethod = checkRegistrationMethod(listenerType,
-                addListenerMethod);
-        this.removeListenerMethod = checkRegistrationMethod(listenerType,
-                removeListenerMethod);
-        this.getListenerMethod = checkGetListenerMethod(listenerType,
-                getListenerMethod);
-
+        this.addListenerMethod = addListenerMethod;
+        this.removeListenerMethod = removeListenerMethod;
+        this.getListenerMethod = getListenerMethod;
         this.unicast = isUnicastByDefault(addListenerMethod);
     }
 
@@ -232,20 +223,18 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         this.listenerType = listenerType;
 
-        for (MethodDescriptor element : listenerMethodDescriptors) {
-            Method listenerMethod = element.getMethod();
+        if (listenerMethodDescriptors != null) {
+            for (MethodDescriptor element : listenerMethodDescriptors) {
+                Method listenerMethod = element.getMethod();
 
-            if (checkMethod(listenerType, listenerMethod)) {
-                this.listenerMethodDescriptors.add(element);
+                if (checkMethod(listenerType, listenerMethod)) {
+                    this.listenerMethodDescriptors.add(element);
+                }
             }
         }
-
-        this.addListenerMethod = checkRegistrationMethod(listenerType,
-                addListenerMethod);
-        this.removeListenerMethod = checkRegistrationMethod(listenerType,
-                removeListenerMethod);
+        this.addListenerMethod = addListenerMethod;
+        this.removeListenerMethod = removeListenerMethod;
         this.getListenerMethod = null;
-
         this.unicast = isUnicastByDefault(addListenerMethod);
     }
 
