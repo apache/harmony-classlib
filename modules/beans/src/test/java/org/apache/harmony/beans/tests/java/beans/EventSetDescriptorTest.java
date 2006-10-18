@@ -38,20 +38,6 @@ import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
 public class EventSetDescriptorTest extends TestCase {
 
     /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    /*
      * Class under test for void EventSetDescriptor(Class, String, Class,
      * String)
      */
@@ -143,12 +129,9 @@ public class EventSetDescriptorTest extends TestCase {
         String listenerMethodName = eventSetName;
         Class sourceClass = MockSourceClass.class;
         Class listenerType = MockPropertyChangeListener.class;
-        try {
-            new EventSetDescriptor(sourceClass, "", listenerType,
-                    listenerMethodName);
-            fail("Should throw StringIndexOutOfBoundsException.");
-        } catch (StringIndexOutOfBoundsException e) {
-        }
+
+        new EventSetDescriptor(sourceClass, "", listenerType,
+                listenerMethodName);
     }
 
     /*
@@ -342,7 +325,7 @@ public class EventSetDescriptorTest extends TestCase {
     public void testEventSetDescriptorClassStringClassStringArrayStringString_eventNull()
             throws IntrospectionException {
         Class sourceClass = MockSourceClass.class;
-        String eventSetName = null;
+		String eventSetName = "MockPropertyChange";
         Class listenerType = MockPropertyChangeListener.class;
         String[] listenerMethodNames = { "mockPropertyChange",
                 "mockPropertyChange2", };
@@ -369,6 +352,16 @@ public class EventSetDescriptorTest extends TestCase {
         assertEquals(listenerType, esd.getListenerType());
         assertTrue(esd.isInDefaultEventSet());
         assertFalse(esd.isUnicast());
+        //Regression for HARMONY-1504
+		try {
+			new EventSetDescriptor(sourceClass,
+				null, listenerType, listenerMethodNames, addMethod,
+				removeMethod);
+			fail("NullPointerException expected");
+		} catch (NullPointerException e) {
+			//expected
+		}
+
     }
 
     /*
@@ -581,7 +574,7 @@ public class EventSetDescriptorTest extends TestCase {
 
         assertEquals(addMethod, esd.getAddListenerMethod().getName());
         assertEquals(removeMethod, esd.getRemoveListenerMethod().getName());
-        assertEquals(getMethod, esd.getGetListenerMethod().getName());
+		assertNull(esd.getGetListenerMethod());
 
         assertEquals(2, esd.getListenerMethods().length);
         assertEquals(listenerMethodNames[0], esd.getListenerMethods()[0]
@@ -625,6 +618,16 @@ public class EventSetDescriptorTest extends TestCase {
                 eventSetName, listenerType, listenerMethodNames, addMethod,
                 removeMethod, getMethod);
         assertNull(esd.getGetListenerMethod());
+		
+		//Regression for Harmony-1504
+        try {
+            new EventSetDescriptor(sourceClass,
+                    eventSetName, listenerType, null, addMethod,
+                    removeMethod, getMethod);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            //expected
+        }
     }
 
     /*
@@ -643,7 +646,7 @@ public class EventSetDescriptorTest extends TestCase {
         EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
                 eventSetName, listenerType, listenerMethodNames, addMethod,
                 removeMethod, getMethod);
-        assertEquals(addMethod, esd.getGetListenerMethod().getName());
+		assertNull(esd.getGetListenerMethod());
     }
 
     /*

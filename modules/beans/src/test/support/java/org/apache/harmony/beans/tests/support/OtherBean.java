@@ -28,7 +28,7 @@ package org.apache.harmony.beans.tests.support;
 
 public class OtherBean {
 
-    public void addSaampleListener(SampleListener listener) {
+    public void addSampleListener(SampleListener listener) {
     }
 
     public void removeSampleListener(SampleListener listener) {

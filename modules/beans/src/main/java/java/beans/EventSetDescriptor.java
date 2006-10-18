@@ -92,15 +92,18 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         this.listenerType = listenerType;
 
-        if (listenerMethodNames != null) {
-            for (String element : listenerMethodNames) {
-                try {
-                    listenerMethodDescriptors.add(new MethodDescriptor(
-                            findMethodByName(listenerType, element)));
-                } catch (IntrospectionException ie) {
-                    listenerMethodDescriptors.clear();
-                    throw ie;
-                }
+        if (listenerMethodNames == null) {
+            throw new NullPointerException();
+        }
+
+        for (String element : listenerMethodNames) {
+            try {
+                listenerMethodDescriptors
+                        .add(new MethodDescriptor(findMethodByName(
+                                listenerType, element)));
+            } catch (IntrospectionException ie) {
+                listenerMethodDescriptors.clear();
+                throw ie;
             }
         }
 
@@ -127,15 +130,16 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         this.listenerType = listenerType;
 
-        if (listenerMethodNames != null) {
-            for (String element : listenerMethodNames) {
-                try {
-                    listenerMethodDescriptors.add(new MethodDescriptor(
-                            findMethodByName(listenerType, element)));
-                } catch (IntrospectionException ie) {
-                    listenerMethodDescriptors.clear();
-                    throw ie;
-                }
+        if (listenerMethodNames == null) {
+            throw new NullPointerException();
+        }
+        for (String element : listenerMethodNames) {
+            try {
+                listenerMethodDescriptors.add(new MethodDescriptor(
+                        findMethodByName(listenerType, element)));
+            } catch (IntrospectionException ie) {
+                listenerMethodDescriptors.clear();
+                throw ie;
             }
         }
 
