@@ -19,6 +19,7 @@ package java.math;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 
@@ -1932,16 +1933,30 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
     }
 
     /** @ar.org.fitc.spec_ref */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
         in.defaultReadObject();
-        if (getUnscaledValue() == null) {
-            // math.0B=null unscaled value
-            throw new StreamCorruptedException(Messages.getString("math.0B")); //$NON-NLS-1$
+
+        // see comment to getUnscaledValue()
+//        if (getUnscaledValue() == null) {
+//            // math.0B=null unscaled value
+//            throw new StreamCorruptedException(Messages.getString("math.0B")); //$NON-NLS-1$
+//        }
+
+        this.bitLength = intVal.bitLength();
+        if (this.bitLength < 64) {
+            this.smallValue = intVal.longValue();
         }
-        bitLength = getUnscaledValue().bitLength();
     }
 
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        getUnscaledValue();
+        out.defaultWriteObject();
+    }
+
+
     private BigInteger getUnscaledValue() {
+        // This method is not supposed to return null. Otherwise uncomment 'if' in readObject 
         if(intVal == null) {
             intVal = BigInteger.valueOf(smallValue);
         }
