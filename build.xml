@@ -231,7 +231,8 @@ Generating snapshot tar
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README"/>
         </tar>
-        <md5sum file="${deploy.tar}" />
+        <chksum file="${deploy.tar}" />
+        <chksum file="${deploy.tar}" type="sha" />
     </target>
 
     <!-- ================================= 
@@ -260,7 +261,8 @@ Generating snapshot zip
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README.txt"/>
         </zip>
-        <md5sum file="${deploy.zip}" />
+        <chksum file="${deploy.zip}" />
+        <chksum file="${deploy.zip}" type="sha" />
     </target>
 
     <target name="check-depends"
@@ -277,13 +279,15 @@ Generating snapshot zip
         description="Display the properties that are use in the ant build files"
             />
 
-    <macrodef name="md5sum">
+    <macrodef name="chksum">
         <attribute name="file" />
         <attribute name="type" default="md5" />
         <sequential>
-            <checksum property="@{file}.@{type}" file="@{file}" />
+            <checksum property="@{file}.@{type}" file="@{file}"
+                      algorithm="@{type}" />
             <echo file="@{file}.@{type}"
-                  message="${@{file}.@{type}}  @{file}" />
+                  message="${@{file}.@{type}}  @{file}${line.separator}" />
+            <echo>@{file}.@{type} = ${@{file}.@{type}}</echo>
         </sequential>
     </macrodef>
 
