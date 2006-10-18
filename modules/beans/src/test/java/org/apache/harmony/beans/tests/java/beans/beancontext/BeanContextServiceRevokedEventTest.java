@@ -20,9 +20,11 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextServiceRevokedEvent;
 import java.beans.beancontext.BeanContextServices;
+import java.beans.beancontext.BeanContextServicesSupport;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -99,6 +101,14 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
                 services, BeanContext.class, true);
         assertSame(services, event.getSource());
         assertSame(services, event.getSourceAsBeanContextServices());
+
+        // Regression for HARMONY-1153
+        BeanContextServicesSupport sup = new BeanContextServicesSupport(
+                new MockBeanContextServices(), new Locale("ru", "RU"), false,
+                false);
+        event = new BeanContextServiceRevokedEvent(sup,
+                MockBeanContextServices.class, false);
+        assertNotNull(event.getSourceAsBeanContextServices());
     }
 
     public void testGetServiceClass() {

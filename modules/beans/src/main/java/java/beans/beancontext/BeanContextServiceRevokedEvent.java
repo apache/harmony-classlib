@@ -37,6 +37,7 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
         super(bcs);
         this.serviceClass = sc;
         this.invalidateRefs = invalidate;
+        setPropagatedFrom(bcs);
     }
 
     public Class getServiceClass() {
