@@ -36,9 +36,9 @@ import org.apache.harmony.luni.util.PriviAction;
  * 
  */
 public class Manifest implements Cloneable {
-	private Attributes mainAttributes = new Attributes();
+	Attributes mainAttributes = new Attributes();
 
-	private HashMap<String, Attributes> entryAttributes = new HashMap<String, Attributes>();
+	HashMap<String, Attributes> entryAttributes = new HashMap<String, Attributes>();
 
 	private HashMap<String, byte[]> chunks;
 
@@ -141,7 +141,7 @@ public class Manifest implements Cloneable {
 		private static final byte[] sepBuf = new byte[] { '\r', '\n' };
 
 		private static final Attributes.Name nameAttribute = new Attributes.Name(
-				"Name", false); //$NON-NLS-1$
+				"Name"); //$NON-NLS-1$
 
 		byte[] oneByte = new byte[1];
 

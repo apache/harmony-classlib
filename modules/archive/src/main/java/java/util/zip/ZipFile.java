@@ -39,7 +39,7 @@ import org.apache.harmony.luni.util.Util;
 
 public class ZipFile implements ZipConstants {
 
-	private String fileName;
+	String fileName;
 
 	long descriptor = -1;
 
@@ -47,6 +47,7 @@ public class ZipFile implements ZipConstants {
 
 	private int mode;
 	static {
+        System.loadLibrary("hyarchive"); //$NON-NLS-1$
 		ntvinit();
 	}
 
@@ -90,7 +91,7 @@ public class ZipFile implements ZipConstants {
 				}
 			}
 			this.mode = mode;
-			openZip(fileName);
+			openZip();
 		} else {
             throw new IllegalArgumentException();
         }
@@ -108,10 +109,10 @@ public class ZipFile implements ZipConstants {
 			security.checkRead(filename);
 		}
 		fileName = filename;
-		openZip(fileName);
+		openZip();
 	}
 
-	private void openZip(String filename) throws IOException {
+	private void openZip() throws IOException {
 		int result = openZipImpl(Util.getBytes(fileName));
 		if (result != 0) {
 			switch (result) {

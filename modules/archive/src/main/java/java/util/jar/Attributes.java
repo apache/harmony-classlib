@@ -36,52 +36,50 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
         private int hashCode;
 
-        public static final Name CLASS_PATH = new Name("Class-Path", false); //$NON-NLS-1$
+        public static final Name CLASS_PATH = new Name("Class-Path"); //$NON-NLS-1$
 
         public static final Name MANIFEST_VERSION = new Name(
-                "Manifest-Version", false); //$NON-NLS-1$
+                "Manifest-Version"); //$NON-NLS-1$
 
-        public static final Name MAIN_CLASS = new Name("Main-Class", false); //$NON-NLS-1$
+        public static final Name MAIN_CLASS = new Name("Main-Class"); //$NON-NLS-1$
 
         public static final Name SIGNATURE_VERSION = new Name(
-                "Signature-Version", false); //$NON-NLS-1$
+                "Signature-Version"); //$NON-NLS-1$
 
-        public static final Name CONTENT_TYPE = new Name("Content-Type", false); //$NON-NLS-1$
+        public static final Name CONTENT_TYPE = new Name("Content-Type"); //$NON-NLS-1$
 
-        public static final Name SEALED = new Name("Sealed", false); //$NON-NLS-1$
+        public static final Name SEALED = new Name("Sealed"); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_TITLE = new Name(
-                "Implementation-Title", false); //$NON-NLS-1$
+                "Implementation-Title"); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VERSION = new Name(
-                "Implementation-Version", false); //$NON-NLS-1$
+                "Implementation-Version"); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VENDOR = new Name(
-                "Implementation-Vendor", false); //$NON-NLS-1$
+                "Implementation-Vendor"); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_TITLE = new Name(
-                "Specification-Title", false); //$NON-NLS-1$
+                "Specification-Title"); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_VERSION = new Name(
-                "Specification-Version", false); //$NON-NLS-1$
+                "Specification-Version"); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_VENDOR = new Name(
-                "Specification-Vendor", false); //$NON-NLS-1$
+                "Specification-Vendor"); //$NON-NLS-1$
 
-        public static final Name EXTENSION_LIST = new Name("Extension-List", //$NON-NLS-1$
-                false);
+        public static final Name EXTENSION_LIST = new Name("Extension-List"); //$NON-NLS-1$
 
-        public static final Name EXTENSION_NAME = new Name("Extension-Name", //$NON-NLS-1$
-                false);
+        public static final Name EXTENSION_NAME = new Name("Extension-Name"); //$NON-NLS-1$
 
         public static final Name EXTENSION_INSTALLATION = new Name(
-                "Extension-Installation", false); //$NON-NLS-1$
+                "Extension-Installation"); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VENDOR_ID = new Name(
-                "Implementation-Vendor-Id", false); //$NON-NLS-1$
+                "Implementation-Vendor-Id"); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_URL = new Name(
-                "Implementation-URL", false); //$NON-NLS-1$
+                "Implementation-URL"); //$NON-NLS-1$
 
         public Name(String s) {
             int i = s.length();
@@ -95,10 +93,6 @@ public class Attributes implements Cloneable, Map<Object, Object> {
                     throw new IllegalArgumentException(s);
                 }
             }
-            name = s;
-        }
-
-        Name(String s, boolean ignored) {
             name = s;
         }
 
