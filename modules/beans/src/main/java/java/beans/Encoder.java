@@ -69,6 +69,9 @@ public class Encoder {
 
     public void setPersistenceDelegate(Class<?> type,
             PersistenceDelegate persistenceDelegate) {
+        if (type == null || persistenceDelegate == null) {
+            throw new NullPointerException();
+        }
         persistenceDelegates.put(type, persistenceDelegate);
     }
 

@@ -265,7 +265,7 @@ public class EncoderTest extends TestCase {
     }
 
     public void testWriteExpression_Null() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         try {
             enc.writeExpression(null);
             fail();
@@ -279,10 +279,10 @@ public class EncoderTest extends TestCase {
     }
 
     public void testWriteStatement_Null() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         try {
             enc.writeStatement(null);
-            fail();
+            fail("NPE expected");
         } catch (NullPointerException e) {
             // expected
         }
@@ -360,33 +360,33 @@ public class EncoderTest extends TestCase {
     }
 
     public void testGetPersistenceDelegate_Null() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         PersistenceDelegate pd = enc.getPersistenceDelegate(null);
         assertNotNull(pd);
     }
 
     public void testGetPersistenceDelegate_ArrayClass() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         PersistenceDelegate pd = enc.getPersistenceDelegate(int[].class);
         assertFalse(pd instanceof DefaultPersistenceDelegate);
     }
 
     public void testGetPersistenceDelegate_ProxyClass() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         enc.getPersistenceDelegate(Proxy.getProxyClass(ClassLoader
                 .getSystemClassLoader(), new Class[] { List.class }));
     }
 
     public void testGetPersistenceDelegate_BeanInfo() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         PersistenceDelegate pd = enc
                 .getPersistenceDelegate(MockFooLiYang.class);
         assertTrue(pd instanceof VerbosePD);
     }
 
     public void testGetPersistenceDelegate_Default() {
-        MockEncoder enc = new MockEncoder();
-        MockEncoder enc2 = new MockEncoder();
+        Encoder enc = new Encoder();
+        Encoder enc2 = new Encoder();
 
         PersistenceDelegate pd1 = enc.getPersistenceDelegate(SampleBean.class);
         assertTrue(pd1 instanceof DefaultPersistenceDelegate);
@@ -403,44 +403,45 @@ public class EncoderTest extends TestCase {
     }
 
     public void testSetPersistenceDelegate_Null() {
-        MockEncoder enc = new MockEncoder();
+        // Regression for HARMONY-1304
+        Encoder enc = new Encoder();
         PersistenceDelegate pd = enc.getPersistenceDelegate(EncoderTest.class);
 
         try {
             enc.setPersistenceDelegate(null, pd);
-            fail();
+            fail("NPE expected");
         } catch (NullPointerException e) {
             // expected
         }
 
         try {
             enc.setPersistenceDelegate(EncoderTest.class, null);
-            fail();
+            fail("NPE expected");
         } catch (NullPointerException e) {
             // expected
         }
     }
 
     public void testSetPersistenceDelegate() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
         PersistenceDelegate pd = enc.getPersistenceDelegate(EncoderTest.class);
         assertTrue(pd instanceof DefaultPersistenceDelegate);
 
         enc.setPersistenceDelegate(EncoderTest.class, new VerbosePD());
         assertTrue(enc.getPersistenceDelegate(EncoderTest.class) instanceof VerbosePD);
 
-        MockEncoder enc2 = new MockEncoder();
+        Encoder enc2 = new Encoder();
         assertTrue(enc2.getPersistenceDelegate(EncoderTest.class) instanceof VerbosePD);
     }
 
     public void testGet_NullParam() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
 
         assertNull(enc.get(null));
     }
 
     public void testGet_String() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
 
         String str = "string";
         assertSame(str, enc.get(str));
@@ -462,7 +463,7 @@ public class EncoderTest extends TestCase {
     }
 
     public void testRemove_Null() {
-        MockEncoder enc = new MockEncoder();
+        Encoder enc = new Encoder();
 
         assertNull(enc.remove(null));
     }
