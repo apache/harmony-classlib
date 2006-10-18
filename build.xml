@@ -287,7 +287,6 @@ Generating snapshot zip
                       algorithm="@{type}" />
             <echo file="@{file}.@{type}"
                   message="${@{file}.@{type}}  @{file}${line.separator}" />
-            <echo>@{file}.@{type} = ${@{file}.@{type}}</echo>
         </sequential>
     </macrodef>
 
