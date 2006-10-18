@@ -23,6 +23,9 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 
+import java.util.Stack;
+import java.util.EmptyStackException;
+
 import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
@@ -52,42 +55,14 @@ public class PersistenceDelegateTest extends TestCase {
      * Tests writeObject() under normal condition when mutatesTo() returns True.
      */
     public void testWriteObject_NormalMutatesToTrue() {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate(true, true);
-        MockEncoder enc = new MockEncoder();
-        MockFoo oldInstance = new MockFoo();
-        enc.setPersistenceDelegate(MockFooStop.class, pd);
+        MockPersistenceDelegate2 pd = new MockPersistenceDelegate2(true);
+        MockEncoder2 enc = new MockEncoder2();
+        MockFoo foo = new MockFoo();
 
-        pd.writeObject(oldInstance, enc);
-
-        // should have called initialize()
-        assertSame(enc, CallVerificationStack.getInstance().pop());
-        assertSame(null, CallVerificationStack.getInstance().pop());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockPersistenceDelegate",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("initialize", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(MockFoo.class, CallVerificationStack.getInstance().pop());
-
-        // should have called mutatesTo()
-        assertSame(null, CallVerificationStack.getInstance().pop());
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockPersistenceDelegate",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("mutatesTo", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        // should have called Encoder.get()
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockEncoder",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("get", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        assertTrue(CallVerificationStack.getInstance().empty());
+        pd.writeObject(foo, enc);
+        
+        assertEquals("initialize", pd.popMethod());
+        assertEquals("mutatesTo", pd.popMethod());
     }
 
     /*
@@ -95,65 +70,23 @@ public class PersistenceDelegateTest extends TestCase {
      * false.
      */
     public void testWriteObject_NormalMutatesToFalse() {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate(false, true);
-        MockEncoder enc = new MockEncoder();
-        MockFoo oldInstance = new MockFoo();
-        enc.setPersistenceDelegate(MockFooStop.class, pd);
+        MockPersistenceDelegate2 pd = new MockPersistenceDelegate2(false);
+        MockEncoder2 enc = new MockEncoder2();
+        MockFoo foo = new MockFoo();
 
-        pd.writeObject(oldInstance, enc);
-
-        // should have called writeExpression()
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockEncoder",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("writeExpression", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertTrue(CallVerificationStack.getInstance().pop() instanceof Expression);
-
-        // should have called instantiate()
-        assertSame(enc, CallVerificationStack.getInstance().pop());
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockPersistenceDelegate",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("instantiate", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        // should have called Encoder.remove()
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockEncoder",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("remove", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        // should have called mutatesTo()
-        assertSame(null, CallVerificationStack.getInstance().pop());
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockPersistenceDelegate",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("mutatesTo", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        // should have called Encoder.get()
-        assertEquals(
-                "org.apache.harmony.beans.tests.java.beans.PersistenceDelegateTest$MockEncoder",
-                CallVerificationStack.getInstance().getCurrentSourceClass());
-        assertEquals("get", CallVerificationStack.getInstance()
-                .getCurrentSourceMethod());
-        assertSame(oldInstance, CallVerificationStack.getInstance().pop());
-
-        assertTrue(CallVerificationStack.getInstance().empty());
+        pd.writeObject(foo, enc);
+        
+        assertEquals("instantiate", pd.popMethod());
+        assertEquals("mutatesTo", pd.popMethod());
+        assertWasAdded(MockFoo.class.getClass(), "new", null, enc);
     }
 
     /*
      * Tests writeObject() when object is null.
      */
     public void testWriteObject_NullObject() {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        MockEncoder enc = new MockEncoder();
-        enc.setPersistenceDelegate(MockFooStop.class, pd);
+		MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
+		Encoder enc = new Encoder();
 
         try {
             pd.writeObject(null, enc);
@@ -167,9 +100,7 @@ public class PersistenceDelegateTest extends TestCase {
      * Tests writeObject() when encoder is null.
      */
     public void testWriteObject_NullEncoder() {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        MockEncoder enc = new MockEncoder();
-        enc.setPersistenceDelegate(MockFooStop.class, pd);
+		MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
 
         try {
             pd.writeObject(new MockFoo(), null);
@@ -284,14 +215,73 @@ public class PersistenceDelegateTest extends TestCase {
      */
     public void testMutatesTo_Null() {
         DummyPersistenceDelegate pd = new DummyPersistenceDelegate();
+
         assertFalse(pd.mutatesTo("test", null));
         assertFalse(pd.mutatesTo(null, null));
+        assertFalse(pd.mutatesTo(null, "test"));
+    }
+
+    
+    // <--
+
+    private void assertWasAdded(Class targetClass, String methodName,
+                                 Object[] args, MockEncoder2 enc) {
         try {
-            pd.mutatesTo(null, "test");
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
+            while (true) {
+                Statement stmt = enc.pop();
+
+                if (equals(stmt, targetClass, methodName, args)) {
+                    break;
+                }
+            }
+        } catch (EmptyStackException e) {
+            fail("Required statement was not found");
         }
+    }
+
+    private boolean equals(Statement stmt, Class targetClass,
+                              String methodName, Object[] args) {
+           
+        if (stmt == null || !methodName.equals(stmt.getMethodName())) {
+            return false;
+        }
+
+        if (targetClass != null) {
+            // check if we have the object of the same class at least
+            if (targetClass != stmt.getTarget().getClass()) {
+                return false;
+            }
+        } else {
+            if (stmt.getTarget() != null) {
+                return false;
+            }
+        }
+        
+        if (args != null) {
+            if (stmt.getArguments() == null ||
+                args.length != stmt.getArguments().length) {
+                return false;
+            }
+
+            for (int i = 0; i < args.length; i++) {
+
+                if (args[i] != null) {
+                    if (!args[i].equals(stmt.getArguments()[i])) {
+                        return false;
+                    }
+                } else {
+                    if (stmt.getArguments()[i] != null) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            if (stmt.getArguments() != null && stmt.getArguments().length > 0) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /*
@@ -329,7 +319,7 @@ public class PersistenceDelegateTest extends TestCase {
         }
 
         @Override
-        public PersistenceDelegate getPersistenceDelegate(Class type) {
+        public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
             return super.getPersistenceDelegate(type);
         }
 
@@ -349,7 +339,7 @@ public class PersistenceDelegateTest extends TestCase {
         }
 
         @Override
-        public void setPersistenceDelegate(Class type,
+        public void setPersistenceDelegate(Class<?> type,
                 PersistenceDelegate persistenceDelegate) {
             super.setPersistenceDelegate(type, persistenceDelegate);
         }
@@ -413,7 +403,7 @@ public class PersistenceDelegateTest extends TestCase {
         }
 
         @Override
-        public void initialize(Class type, Object oldInstance,
+        public void initialize(Class<?> type, Object oldInstance,
                 Object newInstance, Encoder enc) {
             StackTraceElement[] eles = (new Throwable()).getStackTrace();
             if (!this.filter
@@ -445,6 +435,65 @@ public class PersistenceDelegateTest extends TestCase {
 
     }
 
+    static class MockEncoder2 extends Encoder {
+        Stack<Statement> stmts = new Stack<Statement>();
+        
+        public void writeExpression(Expression expr) {
+            stmts.push(expr);
+            super.writeExpression(expr);
+        }
+
+        public void writeStatement(Statement stmt) {
+            stmts.push(stmt);
+            super.writeStatement(stmt);
+        }
+        
+        public void writeObject(Object obj) {
+            super.writeObject(obj);
+        }
+
+        public Statement pop() {
+            return stmts.pop();
+        }
+
+    }
+
+    static class MockPersistenceDelegate2 extends PersistenceDelegate {
+        private Boolean mutatesToFlag = null;
+        Stack<String> methods = new Stack<String>();
+
+        public MockPersistenceDelegate2() {}
+        
+        public MockPersistenceDelegate2(boolean mutatesToFlag) {
+            this.mutatesToFlag = mutatesToFlag;
+        }
+
+        public void initialize(Class<?> type, Object oldInstance,
+                Object newInstance, Encoder enc) {
+            methods.push("initialize");
+            super.initialize(type, oldInstance, newInstance, enc);
+        }
+        
+        public Expression instantiate(Object oldInstance, Encoder out) {
+            methods.push("instantiate");
+            return new Expression(oldInstance.getClass(), "new", null);
+        }
+        
+        public boolean mutatesTo(Object oldInstance, Object newInstance) {
+            methods.push("mutatesTo");
+
+            if (mutatesToFlag != null) {
+                return mutatesToFlag;
+            } else {
+                return super.mutatesTo(oldInstance, newInstance);
+            }
+        }
+        
+        String popMethod() {
+            return methods.pop();
+        }
+    }
+
     /*
      * Dummy PersistenceDelegate subclass.
      */
@@ -455,7 +504,7 @@ public class PersistenceDelegateTest extends TestCase {
         }
 
         @Override
-        public void initialize(Class type, Object oldInstance,
+        public void initialize(Class<?> type, Object oldInstance,
                 Object newInstance, Encoder enc) {
             super.initialize(type, oldInstance, newInstance, enc);
         }

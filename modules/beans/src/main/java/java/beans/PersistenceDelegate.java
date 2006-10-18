@@ -17,14 +17,18 @@
 
 package java.beans;
 
-public abstract class PersistenceDelegate {
+import org.apache.harmony.beans.internal.nls.Messages;
 
-    public PersistenceDelegate() {
-    }
+public abstract class PersistenceDelegate {
 
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
-        if ((out != null) && (type != null)) {
+
+        if (type == null) {
+            throw new NullPointerException(Messages.getString("beans.4B")); //$NON-NLS-1$
+        }
+
+        if (out != null) {
             PersistenceDelegate pd = out.getPersistenceDelegate(type
                     .getSuperclass());
 
@@ -61,8 +65,6 @@ public abstract class PersistenceDelegate {
             }
 
             out.writeExpression(instantiate(oldInstance, out));
-            newInstance = out.get(oldInstance);
-            initialize(oldInstance.getClass(), oldInstance, newInstance, out);
         }
     }
 }
