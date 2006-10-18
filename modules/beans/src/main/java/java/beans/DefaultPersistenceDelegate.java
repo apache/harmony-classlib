@@ -53,6 +53,13 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
+
+        if (newInstance == null) {
+            out.getExceptionListener().exceptionThrown(
+                    new NullPointerException(Messages.getString("beans.4A"))); //$NON-NLS-1$
+            return;
+        }
+
         try {
             PropertyDescriptor[] pds = Introspector.getBeanInfo(type)
                     .getPropertyDescriptors();

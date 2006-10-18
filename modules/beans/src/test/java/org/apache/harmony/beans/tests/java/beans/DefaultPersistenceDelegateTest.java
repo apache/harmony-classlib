@@ -27,6 +27,9 @@ import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 import java.beans.Statement;
 
+import java.util.Vector;
+import java.util.Iterator;
+
 import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
@@ -436,6 +439,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     public void testMutatesTo_Null() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
 
+        assertFalse(pd.mutatesTo("test", null));
+        assertFalse(pd.mutatesTo(null, null));
         assertFalse(pd.mutatesTo(null, "test"));
     }
 
@@ -444,47 +449,38 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * bean info class.
      */
     public void testInitialize_Normal() throws Exception {
-        MockEncoder enc = new MockEncoder();
+        CollectingEncoder enc = new CollectingEncoder();
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        MockFoo b = new MockFoo();
-        b.setName("myName");
-        // b.setLabel("myLabel");
+        MockFoo oldBean = new MockFoo();
+        Iterator<Statement> iter;
+        boolean found1 = false;
+        boolean found2 = false;
 
-        enc.writeObject(b);
-        CallVerificationStack.getInstance().clear();
-        MockFoo b2 = (MockFoo) enc.get(b);
-        b2.setName("YourName");
+        oldBean.setName("myName");
+        oldBean.setLabel("myLabel");
+        pd.initialize(MockFoo.class, oldBean, new MockFoo(), enc);
+        iter = enc.statements();
 
-        pd.initialize(MockFoo.class, b, b2, enc);
-
-        // should have called writeStatement()
-        Statement stm = (Statement) CallVerificationStack.getInstance().pop();
-        assertSame(b, stm.getTarget());
-        assertEquals("setName", stm.getMethodName());
-        assertEquals(1, stm.getArguments().length);
-        assertEquals("myName", stm.getArguments()[0]);
-
-        // should have called get()
-        assertEquals("myName", CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        Expression exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertSame(b.getName(), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("getName", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
-
-        // should have called get()
-        assertNull(CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertSame(b.getLabel(), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("getLabel", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
-
-        assertTrue(CallVerificationStack.getInstance().empty());
+        while (iter.hasNext()) {
+            Statement stmt = iter.next();
+            
+            if (stmt.getMethodName().equals("setName") ||
+                    stmt.getMethodName().equals("setLabel")) {
+                assertSame(oldBean, stmt.getTarget());
+                assertNotNull(stmt.getArguments());
+                assertEquals(1, stmt.getArguments().length);
+                    
+                if (stmt.getMethodName().equals("setName")) {
+                    assertEquals(oldBean.getName(), stmt.getArguments()[0]);
+                    found1 = true;
+                } else {
+                    assertEquals(oldBean.getLabel(), stmt.getArguments()[0]);
+                    found2 = true;
+                }
+            }
+        }
+        assertTrue("Required statement was not found", found1);
+        assertTrue("Required statement was not found", found2);
     }
 
     /*
@@ -984,4 +980,26 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         }
     }
 
+    public static class CollectingEncoder extends Encoder {
+        private Vector<Expression> expressions = new Vector<Expression>();
+        private Vector<Statement> statements = new Vector<Statement>();
+        
+        public void writeExpression(Expression exp) {
+            expressions.add(exp);
+            super.writeExpression(exp);
+        }
+
+        public void writeStatement(Statement stm) {
+            statements.add(stm);
+            super.writeStatement(stm);
+        }
+        
+        public Iterator<Expression> expressions() {
+            return expressions.iterator();
+        }
+
+        public Iterator<Statement> statements() {
+            return statements.iterator();
+        }
+    }
 }
