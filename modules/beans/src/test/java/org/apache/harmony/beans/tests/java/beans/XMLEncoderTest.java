@@ -194,6 +194,10 @@ public class XMLEncoderTest extends TestCase {
 
     public void testWriteStatement() {
         // coverd by testWriteStatement
+
+         //Regression for HARMONY-1521
+         //no exception expected
+         new XMLEncoder(new ByteArrayOutputStream()).writeStatement(null);
     }
 
     public void testWriteObject_Null() throws Exception {

@@ -56,12 +56,12 @@ public class XMLEncoder extends Encoder {
 
     @Override
     public void writeStatement(Statement oldStm) {
-        super.writeStatement(oldStm);
-    }
-
-    @Override
-    public void writeExpression(Expression oldExp) {
-        super.writeExpression(oldExp);
+        try {
+            super.writeStatement(oldStm);
+        } catch (NullPointerException ignore) {
+            // ignore exception like RI does
+            ignore.printStackTrace();
+        }
     }
 
     public void flush() {
