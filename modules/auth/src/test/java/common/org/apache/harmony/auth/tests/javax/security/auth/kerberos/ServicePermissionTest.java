@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.auth.kerberos;
+package org.apache.harmony.auth.tests.javax.security.auth.kerberos;
 
 import java.security.AllPermission;
 import java.security.Permission;
@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
+
+import javax.security.auth.kerberos.DelegationPermission;
+import javax.security.auth.kerberos.ServicePermission;
 
 import junit.framework.TestCase;
 

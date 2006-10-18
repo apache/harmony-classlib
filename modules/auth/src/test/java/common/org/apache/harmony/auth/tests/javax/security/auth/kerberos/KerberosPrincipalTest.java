@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 
-package javax.security.auth.kerberos;
+package org.apache.harmony.auth.tests.javax.security.auth.kerberos;
+
+import javax.security.auth.kerberos.KerberosPrincipal;
 
 import junit.framework.TestCase;
 

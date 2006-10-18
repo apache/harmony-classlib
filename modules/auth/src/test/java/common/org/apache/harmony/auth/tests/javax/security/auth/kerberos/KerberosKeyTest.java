@@ -15,12 +15,15 @@
  *  limitations under the License.
  */
 
-package javax.security.auth.kerberos;
+package org.apache.harmony.auth.tests.javax.security.auth.kerberos;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+
+import javax.security.auth.kerberos.KerberosKey;
+import javax.security.auth.kerberos.KerberosPrincipal;
 
 import junit.framework.TestCase;
 
