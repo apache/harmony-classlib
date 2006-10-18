@@ -48,17 +48,17 @@ successfully invoked from the command line.
 * C compiler - on Windows, the Microsoft(R) 32-bit C/C++ Compiler and on
                Linux, the GNU project C/C++ Compiler.
 
-* Java compiler - e.g. as delivered in a Java SDK. The compiler must be 
-                  capable of handling Java 1.5 source.
-                  See http://www.ibm.com/developerworks/java/jdk/index.html
+* Java compiler - By default, the build scripts are setup to use the Eclipse
+                  compiler (ECJ). The ECJ needs to be in the Ant class path
+                  to execute correctly. The ECJ JAR is downloaded when the 
+                  'fetch-depends' target is run on the top-level build script.
+                  Once downloaded copy the JAR from HARMONY_TRUNK/depends/ecj_x.x
+                  folder to the ANT_HOME/lib folder.
                   
-                  Although it cannot be invoked through an executable, it is 
-                  also possible to use the JDT compiler as delivered in a
-                  standard Eclipse download to accomplish the compiling of the 
-                  source under the modules directory. See the section on 
-                  "Modifying the Java Build Compiler" for more details. 
-                  
-* Apache Ant - the Java based build tool. See http://ant.apache.org
+* Apache Ant - A Java based build tool. See http://ant.apache.org/.
+               It's suggested that the ANT_OPTS environment variable be set
+               to a value of "-Xms256M -Xmx512M" while running the build scripts
+               for Harmony.
 
 * Doxygen - the open source documentation system for a variety of programming 
             languages including C, C++ and Java.
@@ -168,32 +168,20 @@ variable should contain an entry for <DOXYGEN_INSTALL_DIR>/bin ).
 
 Modifying the Java Build Compiler
 ---------------------------------
-When compiling the Java source files the top-level Ant script calls another
-Ant script, <EXTRACT_DIR>/modules/build.xml. By opening up this Ant 
-file for editing and making a small change to the "build.compiler" property
-declared near the top of the file it is possible to specify any Java compiler of
-choice - provided it is capable of handling Java 1.5 source code. For example,
-to use the JDT compiler built into Eclipse this property should be changed to
-use the Eclipse compiler adapter ...
+By default, the Java compiler is set to use the ECJ compiler. This value is
+set in the HARMONY_TRUNK/make/properties.xml and looks like the following XML
+element.
 
 <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
-So that Ant can actually locate this Eclipse compiler adapter during a build, 
-the location of the supporting JAR files in the Eclipse distribution need to be
-appended to the CLASSPATH environment variable. For an Eclipse 3.1 distribution
-this amounts to adding <ECLIPSE_INSTALL>/plugins/org.eclipse.jdt.core_3.1.0.jar
-together with the jdtCompilerAdapter.jar it contains. 
+The compiler can be set to "modern", as per the Ant manual, which will cause Ant
+to use the JDK's 'javac' tool.
 
-Remember that the Java source files located under
-<EXTRACT_DIR>/modules are intended for consumption by a compiler that
-understands Java 1.5 source code.
+Options for ECJ compiler
+------------------------
 
-For further information on this topic please refer to the Eclipse batch compiler
-website, the Ant documentation for the "javac" task and to the Eclipse help system
-contents. 
-
-http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/jdt-core-home/howto/batch%20compile/batchCompile.html
-
+For more information on configuring the ECJ, check out this document on the batch
+compiler - http://dev.eclipse.org/viewcvs/index.cgi/*checkout*/jdt-core-home/howto/batch%20compile/batchCompile.html?rev=HEAD&content-type=text/html.
 
 
 What's Next ?
@@ -263,3 +251,26 @@ to build native source:
 make: *** [../libvmi.so] Error 1
 
 (The library name may be different)
+
+                                  ----------
+
+If the build fails with an odd error that similar to the following output snippet,
+try setting the ANT_OPTS environment variable to "-Xms256M -Xmx512M".
+
+<snippet>
+    [javac] ----------
+    [javac] 1. ERROR in C:\dev\harmony\enhanced\classlib\trunk\modules\accessibi
+lity\src\main\java\javax\accessibility\Accessible.java (at line 0)
+    [javac]     /*
+    [javac]     ^
+    [javac] Internal compiler error
+    [javac] java.lang.OutOfMemoryError: Java heap space
+
+    [javac] ----------
+
+BUILD FAILED
+C:\dev\harmony\enhanced\classlib\trunk\build.xml:108: The following error occurr
+ed while executing this line:
+C:\dev\harmony\enhanced\classlib\trunk\make\build-java.xml:143: java.lang.reflec
+t.InvocationTargetException
+</snippet>
