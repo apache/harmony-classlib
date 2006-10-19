@@ -141,6 +141,9 @@ ${built.files.list}
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
+            
+            <compilerarg value="-warn:none" />
+            
             <src path="modules/accessibility/src/main/java/" />
             <src path="modules/annotation/src/main/java/" />
             <src path="modules/applet/src/main/java" />
