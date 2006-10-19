@@ -18,8 +18,61 @@
 package javax.sound.sampled;
 
 public class AudioFormat {
-    public static class Encoding{}
-    
+    public static class Encoding {
+
+        public static final Encoding ALAW = new Encoding("ALAW"); //$NON-NLS-1$
+
+        public static final Encoding PCM_SIGNED = new Encoding("PCM_SIGNED"); //$NON-NLS-1$
+
+        public static final Encoding PCM_UNSIGNED = new Encoding("PCM_UNSIGNED"); //$NON-NLS-1$
+
+        public static final Encoding ULAW = new Encoding("ULAW"); //$NON-NLS-1$
+
+        private String name;
+
+        public Encoding(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object another) {
+            if (this == another) {
+                return true;
+            }
+
+            if (another == null || !(another instanceof Encoding)) {
+                return false;
+            }
+
+            Encoding obj = (Encoding) another;
+            return name == null ? obj.name == null : name.equals(obj.name);
+        }
+
+        @Override
+        public final int hashCode() {
+            return name == null ? 0 : name.hashCode();
+        }
+
+        @Override
+        public final String toString() {
+            return name;
+        }
+    }
+
+    protected boolean bigEndian;
+
+    protected int channels;
+
+    protected Encoding encoding;
+
+    protected float frameRate;
+
+    protected int frameSize;
+
+    protected float sampleRate;
+
+    protected int sampleSizeInBits;
+
     public Encoding getEncoding() {
         throw new Error("not yet implemented");
     }

@@ -19,34 +19,47 @@ package javax.sound.sampled;
 
 public abstract class Control {
 
-    static class Type {
+    public static class Type {
+
         private String name;
 
-        protected Type(String name) {
+        public Type(String name) {
             this.name = name;
         }
 
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
+        @Override
+        public boolean equals(Object another) {
+            if (this == another) {
+                return true;
+            }
+
+            if (another == null || !(another instanceof Type)) {
+                return false;
+            }
+
+            Type obj = (Type) another;
+            return name == null ? obj.name == null : name.equals(obj.name);
         }
 
+        @Override
         public final int hashCode() {
-            throw new Error("Not yet imlemented");
+            return name == null ? 0 : name.hashCode();
         }
 
+        @Override
         public final String toString() {
-            throw new Error("Not yet imlemented");
+            return name;
         }
     }
 
-    private Control.Type type;
+    private Type type;
 
-    protected Control(Control.Type type) {
+    protected Control(Type type) {
         this.type = type;
     }
 
-    public Control.Type getType() {
-        return this.type;
+    public Type getType() {
+        return type;
     }
 
     public String toString() {

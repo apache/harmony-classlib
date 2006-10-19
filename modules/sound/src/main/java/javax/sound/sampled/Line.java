@@ -46,7 +46,7 @@ public interface Line {
 
     Control getControl(Control.Type control);
 
-    Control[] getcontrols();
+    Control[] getControls();
 
     Line.Info getLineInfo();
 
@@ -54,7 +54,7 @@ public interface Line {
 
     boolean isOpen();
 
-    void open();
+    void open() throws LineUnavailableException;
 
     void removeLineListener(LineListener listener);
 }

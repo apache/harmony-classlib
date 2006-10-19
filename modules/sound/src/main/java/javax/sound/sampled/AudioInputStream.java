@@ -17,5 +17,21 @@
 
 package javax.sound.sampled;
 
-public class AudioInputStream {
+import java.io.IOException;
+import java.io.InputStream;
+
+public class AudioInputStream extends InputStream {
+
+    protected AudioFormat format;
+
+    protected long frameLength;
+
+    protected long framePos;
+
+    protected int frameSize;
+
+    @Override
+    public int read() throws IOException {
+        throw new Error("not yet implemented");
+    }
 }

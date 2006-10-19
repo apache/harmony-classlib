@@ -91,7 +91,7 @@ public interface DataLine extends Line {
     
     long getLongFramePosition();
     
-    long getMicroSecondPosition();
+    long getMicrosecondPosition();
     
     boolean isActive();
     

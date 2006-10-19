@@ -25,6 +25,16 @@ public class AudioFileFormat {
 
         private String extension;
 
+        public static final Type AIFC = new Type("AIFF-C", "aifc"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        public static final Type AIFF = new Type("AIFF", "aif"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        public static final Type AU = new Type("AU", "au"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        public static final Type SND = new Type("SND", "snd"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        public static final Type WAVE = new Type("WAVE", "wav"); //$NON-NLS-1$ //$NON-NLS-2$
+
         public Type(String name, String extension) {
             this.name = name;
             this.extension = extension;
@@ -58,12 +68,13 @@ public class AudioFileFormat {
 
         @Override
         public final int hashCode() {
-            return name.hashCode() + extension.hashCode();
+            return (name == null ? 0 : name.hashCode()) + 
+                    (extension == null ? 0 : extension.hashCode());
         }
 
         @Override
         public final String toString() {
-            throw new Error("not yet implemented");
+            return name;
         }
     }
 }
