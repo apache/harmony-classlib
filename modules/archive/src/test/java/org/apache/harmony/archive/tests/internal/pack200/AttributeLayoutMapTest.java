@@ -20,24 +20,31 @@ package org.apache.harmony.archive.tests.internal.pack200;
 //NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import junit.framework.TestCase;
 
+import org.apache.harmony.archive.internal.pack200.AttributeLayout;
+import org.apache.harmony.archive.internal.pack200.AttributeLayoutMap;
 import org.apache.harmony.archive.internal.pack200.Pack200Exception;
-import org.apache.harmony.archive.internal.pack200.SegmentOptions;
 
-/**
- * @author Alex Blewitt
- * @version $Revision: $
- */
-public class SegmentOptionsTest extends TestCase {
-	public void testUnused() {
-		int[] unused = new int[] { 3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-				23, 24, 25, 26, 27, 28, 29, 30, 31 };
-		for (int i = 0; i < unused.length; i++) {
-			try {
-				new SegmentOptions(1 << unused[i]);
-				fail("Bit " + unused[i] + " should be unused, but it's not caught during construction");
-			} catch (Pack200Exception e) {
-				assertTrue(true);
-			}
-		}
+public class AttributeLayoutMapTest extends TestCase {
+	public void testRepeatable() throws Pack200Exception {
+		// Check we can retrieve a default layout
+		AttributeLayoutMap a = new AttributeLayoutMap();
+		AttributeLayout layout = a.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
+		assertNotNull(layout);
+		assertEquals("RUNH",layout.getLayout());
+		// and that we can change it
+		a.add(new AttributeLayout("SourceFile",AttributeLayout.CONTEXT_CLASS,"FROG",15));
+		layout = a.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
+		assertNotNull(layout);
+		assertEquals("FROG",layout.getLayout());
+		assertTrue(layout.matches(1<<15));
+		assertFalse(layout.matches(1<<16));
+		assertTrue(layout.matches(-1));
+		assertFalse(layout.matches(0));
+		// and that changes don't affect subsequent defaults
+		AttributeLayoutMap b = new AttributeLayoutMap();
+		layout = b.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
+		assertNotNull(layout);
+		assertEquals("RUNH",layout.getLayout());
+		
 	}
 }

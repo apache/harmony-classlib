@@ -14,13 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.apache.harmony.archive.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.harmony.archive.internal.nls.Messages;
 
 public class PopulationCodec extends Codec {
 	private Codec favouredCodec;
@@ -36,7 +35,7 @@ public class PopulationCodec extends Codec {
 
 	public PopulationCodec(Codec favouredCodec, int l, Codec unvafouredCodec) {
 		if (l >= 256 || l <=0)
-			throw new IllegalArgumentException(Messages.getString("archive.0F")); //$NON-NLS-1$
+			throw new IllegalArgumentException("L must be between 1..255");
 		this.favouredCodec = favouredCodec;
 		this.l = l;
 		this.unvafouredCodec = unvafouredCodec;
@@ -44,13 +43,13 @@ public class PopulationCodec extends Codec {
 
 	@Override
 	public long decode(InputStream in) throws IOException, Pack200Exception {
-		throw new Pack200Exception(Messages.getString("archive.10")); //$NON-NLS-1$
+		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
 	@Override
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
-		throw new Pack200Exception(Messages.getString("archive.10")); //$NON-NLS-1$
+		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class PopulationCodec extends Codec {
 						tokenCodec = codec;
 				}
 				if (tokenCodec == null)
-					throw new Pack200Exception(Messages.getString("archive.11", new Integer(k), new Integer(l))); //$NON-NLS-1$
+					throw new Pack200Exception("Cannot calculate token codec from " + k + " and " + l);
 			}
 		}
 		// read favourites

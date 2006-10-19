@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.tests.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 /**
  * This is intended to be used as a test class for unpacking a packed Jar file.
  * @author Alex Blewitt

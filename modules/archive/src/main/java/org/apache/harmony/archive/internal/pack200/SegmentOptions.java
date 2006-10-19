@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-
-import org.apache.harmony.archive.internal.nls.Messages;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 /**
  * Stores the combinations of bit flags that can be used in the segment header
  * options. Whilst this could be defined in {@link Segment}, it's cleaner to
@@ -74,7 +74,7 @@ public class SegmentOptions {
 	 */
 	public SegmentOptions(int options) throws Pack200Exception {
 		if ((options & UNUSED) != 0)
-			throw new Pack200Exception(Messages.getString("archive.14")); //$NON-NLS-1$
+			throw new Pack200Exception("Some unused flags are non-zero");
 		this.options = options;
 	}
 

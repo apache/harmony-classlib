@@ -15,11 +15,11 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * A run codec is a grouping of two nested codecs; K values are decoded from
@@ -38,32 +38,28 @@ public class RunCodec extends Codec {
 
 	public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
 		if (k <= 0)
-			throw new Pack200Exception(Messages.getString("archive.12")); //$NON-NLS-1$
+			throw new Pack200Exception("Cannot have a RunCodec for a negative number of numbers");
 		if (aCodec == null || bCodec == null)
-			throw new Pack200Exception(Messages.getString("archive.13")); //$NON-NLS-1$
+			throw new Pack200Exception("Must supply both codecs for a RunCodec");
 		this.k = k;
 		this.aCodec = aCodec;
 		this.bCodec = bCodec;
 	}
-    
-	@Override
-    public long decode(InputStream in) throws IOException, Pack200Exception {
+	public long decode(InputStream in) throws IOException, Pack200Exception {
 		return decode(in,this.last);
 	}
 
-	@Override
-    public long decode(InputStream in, long last) throws IOException, Pack200Exception {
+	public long decode(InputStream in, long last) throws IOException, Pack200Exception {
 		if(--k>=0) {
 			long value = aCodec.decode(in,last);
 			this.last = (k == 0 ? 0 : value);
 			return value;
+		} else {
+			this.last = bCodec.decode(in,last);
+			return this.last;			
 		}
-        this.last = bCodec.decode(in,last);
-        return this.last;
 	}
-    
-	@Override
-    public String toString() {
-        return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	public String toString() {
+		return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]";
 	}
 }

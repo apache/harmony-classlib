@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 /**
  * Represents a problem with a Pack200 coding/decoding issue.
  * 
@@ -26,7 +28,7 @@ public class Pack200Exception extends Exception {
 
     private static final long serialVersionUID = 5168177401552611803L;
 
-    /**
+	/**
 	 * Create a new Pack200 exception with the given message and cause
 	 * 
 	 * @param message

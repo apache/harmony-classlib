@@ -15,12 +15,12 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * TODO Comment -- quite a lot can be nicked from Codec, since this was created
@@ -102,17 +102,17 @@ public final class BHSDCodec extends Codec {
 	 */
 	public BHSDCodec(int b, int h, int s, int d) {
 		if (b < 1 || b > 5)
-			throw new IllegalArgumentException(Messages.getString("archive.15")); //$NON-NLS-1$
+			throw new IllegalArgumentException("1<=b<=5");
 		if (h < 1 || h > 256)
-			throw new IllegalArgumentException(Messages.getString("archive.16")); //$NON-NLS-1$
+			throw new IllegalArgumentException("1<=h<=256");
 		if (s < 0 || s > 2)
-			throw new IllegalArgumentException(Messages.getString("archive.17")); //$NON-NLS-1$
+			throw new IllegalArgumentException("0<=s<=2");
 		if (d < 0 || d > 1)
-			throw new IllegalArgumentException(Messages.getString("archive.18")); //$NON-NLS-1$
+			throw new IllegalArgumentException("0<=d<=1");
 		if (b == 1 && h != 256)
-			throw new IllegalArgumentException(Messages.getString("archive.19")); //$NON-NLS-1$
+			throw new IllegalArgumentException("b=1 -> h=256");
 		if (h == 256 && b == 5)
-			throw new IllegalArgumentException(Messages.getString("archive.1A")); //$NON-NLS-1$
+			throw new IllegalArgumentException("h=256 -> b!=5");
 		this.b = b;
 		this.h = h;
 		this.s = s;
@@ -129,15 +129,16 @@ public final class BHSDCodec extends Codec {
 	public long cardinality() {
 		if (h > 1) {
 			return (long) (l * Math.pow(1 - h, b) / (1 - h) + Math.pow(h, b));
+		} else {
+			return (b * 255) + 1;
 		}
-        return (b * 255) + 1;
 	}
 
 	@Override
 	public long decode(InputStream in) throws IOException, Pack200Exception {
 		if (d != 0)
 			throw new Pack200Exception(
-					Messages.getString("archive.1B")); //$NON-NLS-1$
+					"Delta encoding used without passing in last value; this is a coding error");
 		return decode(in, 0);
 	}
 
@@ -150,7 +151,7 @@ public final class BHSDCodec extends Codec {
 		do {
 			x = in.read();
 			if (x == -1)
-				throw new EOFException(Messages.getString("archive.1C")); //$NON-NLS-1$
+				throw new EOFException("End of stream reached whilst decoding");
 			z += x * Math.pow(h, n);
 		} while (++n < b && x >= l);
 		// This looks more complicated than it is
@@ -215,7 +216,7 @@ public final class BHSDCodec extends Codec {
 			} else if (s == 2) {
 				result = (3L * cardinality()) / 4 - 1;
 			} else {
-                throw new Error(Messages.getString("archive.1D")); //$NON-NLS-1$
+				throw new Error("Unknown s value");
 			}
 		}
 		return Math.min((s == 0 ? ((long) Integer.MAX_VALUE) << 1
@@ -243,19 +244,18 @@ public final class BHSDCodec extends Codec {
 	 * Returns the codec in the form (1,256) or (1,64,1,1). Note that trailing
 	 * zero fields are not shown.
 	 */
-	@Override
-    public String toString() {
+	public String toString() {
 		StringBuffer buffer = new StringBuffer(11);
 		buffer.append('(');
 		buffer.append(b);
 		buffer.append(',');
 		buffer.append(h);
 		if (s != 0 || d != 0) {
-			buffer.append(","); //$NON-NLS-1$
+			buffer.append(',');
 			buffer.append(s);
 		}
 		if (d != 0) {
-			buffer.append(","); //$NON-NLS-1$
+			buffer.append(',');
 			buffer.append(d);
 		}
 		buffer.append(')');

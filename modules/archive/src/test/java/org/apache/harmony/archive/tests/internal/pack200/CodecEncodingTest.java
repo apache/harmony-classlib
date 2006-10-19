@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.tests.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class CodecEncodingTest extends TestCase {
 	public void testCanonicalEncodings() throws IOException, Pack200Exception { 
 		Codec defaultCodec = new BHSDCodec(2,16,0,0);
 		assertEquals(defaultCodec,CodecEncoding.getCodec(0,null, defaultCodec));
-		Map<Integer, String> map = new HashMap<Integer, String>();
+		Map map = new HashMap();
 		// These are the canonical encodings specified by the Pack200 spec
 		map.put(new Integer(1), "(1,256)");
 		map.put(new Integer(2), "(1,256,1)");

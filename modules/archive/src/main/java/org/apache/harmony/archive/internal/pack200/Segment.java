@@ -15,15 +15,20 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-
+//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+//NOTE: Do not extract strings as messages; this code is still a work-in-progress
+//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.harmony.archive.internal.nls.Messages;
+import org.apache.harmony.archive.internal.pack200.ClassFileEntry.SourceFile;
 
 /**
  * A Pack200 archive consists of one (or more) segments. Each segment is
@@ -57,6 +62,29 @@ import org.apache.harmony.archive.internal.nls.Messages;
  * @version $Revision: $
  */
 public class Segment {
+	public class SegmentConstantPool {
+		public static final int ALL = 0;
+
+		public static final int SIGNATURE = 2; // TODO and more to come --
+												// define in archive order
+
+		public static final int UTF_8 = 1;
+
+		public Object getValue(int cp, long value) throws Pack200Exception {
+			int index = (int)value;
+			if (index == -1)
+				return null;
+			if (index < 0)
+				throw new Pack200Exception("Cannot have a negative range");
+			if (cp == UTF_8)
+				return cpUTF8[index];
+			if (cp == SIGNATURE)
+				return cpSignature[index];
+			// etc
+			throw new Error("Get value incomplete");
+		}
+	}
+
 	/**
 	 * The magic header for a Pack200 Segment is 0xCAFED00D. I wonder where they
 	 * get their inspiration from ...
@@ -106,12 +134,12 @@ public class Segment {
 			throws IOException, Pack200Exception {
 		int total = in.read(data);
 		if (total == -1)
-			throw new EOFException(Messages.getString("archive.0E")); //$NON-NLS-1$
+			throw new EOFException("Failed to read any data from input stream");
 		while (total < data.length) {
 			int delta = in.read(data, total, data.length - total);
 			if (delta == -1)
 				throw new EOFException(
-						Messages.getString("archive.0D")); //$NON-NLS-1$
+						"Failed to read some data from input stream");
 			total += delta;
 		}
 	}
@@ -126,15 +154,21 @@ public class Segment {
 
 	private String[] attributeDefinitionLayout;
 
+	private AttributeLayoutMap attributeDefinitionMap;
+
 	private String[] attributeDefinitionName;
 
 	private InputStream bandHeadersInputStream;
 
 	private int bandHeadersSize;
 
+	private int classAttrCount;
+
 	private int classCount;
 
 	private int[] classFieldCount;
+
+	private long[] classFlags;
 
 	private String[][] classInterfaces;
 
@@ -228,7 +262,7 @@ public class Segment {
 
 	private int innerClassCount;
 
-	private int major;
+	private int archiveMajor;
 
 	private int methodAttrCount;
 
@@ -236,17 +270,15 @@ public class Segment {
 
 	private long[][] methodFlags;
 
-	private int minor;
+	private int archiveMinor;
 
 	private int numberOfFiles;
 
 	private SegmentOptions options;
 
+	private final SegmentConstantPool pool = new SegmentConstantPool();
+
 	private int segmentsRemaining;
-
-	private int classAttrCount;
-
-	private long[] classFlags;
 
 	/**
 	 * This is a local debugging message to aid the developer in writing this
@@ -258,7 +290,7 @@ public class Segment {
 	 * @deprecated this should be removed from production code
 	 */
 	@Deprecated
-    private void debug(String message) {
+	private void debug(String message) {
 		if (System.getProperty("debug.pack200") != null) {
 			System.err.println(message);
 		}
@@ -423,8 +455,95 @@ public class Segment {
 
 	}
 
+	public SegmentConstantPool getConstantPool() {
+		return pool;
+	}
+
 	public int getNumberOfFiles() {
 		return numberOfFiles;
+	}
+	/**
+	 * Writes the segment to an output stream. The output stream should be pre-buffered for
+	 * efficiency. Also takes the same input stream for reading, since the file bits may
+	 * not be loaded and thus just copied from one stream to another.
+	 * Doesn't close the output stream when finished, in case there are more entries (e.g.
+	 * further segments) to be written.
+	 * @param out the JarOutputStream to write data to
+	 * @param in the same InputStream that was used to parse the segment
+	 * @throws IOException if an error occurs whilst reading or writing to the streams
+	 * @throws Pack200Exception if an error occurs whilst unpacking data
+	 */
+	public void writeJar(JarOutputStream out, InputStream in ) throws IOException, Pack200Exception {
+		processFileBits(in);
+		DataOutputStream dos = new DataOutputStream(out);
+		// out.setLevel(JarEntry.DEFLATED)
+		// now write the files out
+		int classNum = 0;
+		for(int i=0;i<numberOfFiles;i++) {
+			String name = fileName[i];
+			long modtime = archiveModtime + fileModtime[i];
+			boolean deflate = (fileOptions[i] & 1) == 1 || options.shouldDeflate(); 
+			boolean isClass = (fileOptions[i] & 2) == 2  || name == null || name.equals("");
+			if (isClass) {
+				// pull from headers
+				if (name == null || name.equals(""))
+					name = cpClass[classNum] + ".class";				
+			};
+			JarEntry entry = new JarEntry(name);
+			if (deflate)
+				entry.setMethod(JarEntry.DEFLATED);
+			entry.setTime(modtime);
+			out.putNextEntry(entry);
+			
+			if(isClass){
+				// write to dos
+				ClassFile classFile = buildClassFile(classNum);
+				classFile.write(dos);
+				dos.flush();
+				classNum++;
+			} else {
+				long size = fileSize[i];
+				entry.setSize(size);
+				// TODO pull from in
+				byte[] data = fileBits[i];
+				out.write(data);
+			}
+		}
+		dos.flush();
+		out.finish();
+		out.flush();
+	}
+
+	private ClassFile buildClassFile(int classNum) {
+		ClassFile classFile = new ClassFile();
+		classFile.major = defaultClassMajorVersion; // TODO If classVersionMajor[] use that instead
+		classFile.minor = defaultClassMinorVersion; // TODO if classVersionMinor[] use that instead
+		// build constant pool
+		ClassFileEntry cfThis = new ConstantPoolEntry.Class(classThis[classNum]);
+		ClassFileEntry cfSuper = new ConstantPoolEntry.Class(classSuper[classNum]);
+		ClassFileEntry cfInterfaces[] = new ClassFileEntry[classInterfaces[classNum].length];
+		for(int i=0;i<cfInterfaces.length;i++) {
+			cfInterfaces[i] = new ConstantPoolEntry.Class(classInterfaces[classNum][i]);
+		}
+		ClassConstantPool cp = classFile.pool;
+		cp.add(cfThis);
+		cp.add(cfSuper);
+		// build up remainder of file
+		classFile.accessFlags = (int) classFlags[classNum];
+		classFile.thisClass = cp.indexOf(cfThis);
+		classFile.superClass = cp.indexOf(cfSuper);
+		// TODO placate format of file for writing purposes
+		classFile.interfaces = new int[0];
+		classFile.fields = new int[0];
+		classFile.methods = new int[0];
+		SourceFile sf;
+		classFile.attributes = new ClassFileEntry.Attribute[] { sf = new ClassFileEntry.SourceFile(classThis[classNum]  + ".java") };
+		cp.add(sf);
+
+		// sort CP according to cp_All
+		cp.resolve();
+
+		return classFile;
 	}
 
 	private SegmentOptions getOptions() {
@@ -482,7 +601,8 @@ public class Segment {
 		attributeDefinitionLayout = parseReferences("attr_definition_layout",
 				in, Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
 		if (attributeDefinitionCount > 0)
-            throw new Error(Messages.getString("archive.0C")); //$NON-NLS-1$
+			throw new Error("No idea what the adc is for yet");
+		attributeDefinitionMap = new AttributeLayoutMap();
 	}
 
 	private void parseBcBands(InputStream in) {
@@ -499,10 +619,22 @@ public class Segment {
 				classAttrCount++;
 		}
 		if (classAttrCount > 0)
-		    throw new Error(Messages.getString("archive.0A")); //$NON-NLS-1$
+			throw new Error(
+					"There are attribute flags, and I don't know what to do with them");
 		debug("unimplemented class_attr_count");
 		debug("unimplemented class_attr_indexes");
 		debug("unimplemented class_attr_calls");
+		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
+				"SourceFile", AttributeLayout.CONTEXT_CLASS);
+		for (int i = 0; i < classCount; i++) {
+			long flag = classFlags[i];
+			if (layout.matches(flag)) {
+				// we've got a value to read
+				long result = layout.getCodec().decode(in);
+				Object value = layout.getValue(result, this);
+				debug("Processed value " + value + " for SourceFile"); 
+			}
+		}
 		debug("unimplemented class_SourceFile_RUN");
 		debug("unimplemented class_EnclosingMethod_RC");
 		debug("unimplemented class_EnclosingMethod_RDN");
@@ -550,18 +682,6 @@ public class Segment {
 		setClassCount(decodeScalar("class_count", in, Codec.UNSIGNED5));
 	}
 
-	private void parseCodeBands(InputStream in) {
-		debug("unimplemented code_headers");
-		debug("unimplemented code_max_stack");
-		debug("unimplemented code_max_na_locals");
-		debug("unimplemented code_hander_count");
-		debug("unimplemented code_hander_start_P");
-		debug("unimplemented code_hander_end_PO");
-		debug("unimplemented code_hander_catch_PO");
-		debug("unimplemented code_hander_class_RC");
-		parseCodeAttrBands(in);
-	}
-
 	private void parseCodeAttrBands(InputStream in) {
 		debug("unimplemented code_flags");
 		debug("unimplemented code_attr_count");
@@ -580,6 +700,18 @@ public class Segment {
 			debug("unimplemented code_" + type + "_type_RS");
 			debug("unimplemented code_" + type + "_slot");
 		}
+	}
+
+	private void parseCodeBands(InputStream in) {
+		debug("unimplemented code_headers");
+		debug("unimplemented code_max_stack");
+		debug("unimplemented code_max_na_locals");
+		debug("unimplemented code_hander_count");
+		debug("unimplemented code_hander_start_P");
+		debug("unimplemented code_hander_end_PO");
+		debug("unimplemented code_hander_catch_PO");
+		debug("unimplemented code_hander_class_RC");
+		parseCodeAttrBands(in);
 	}
 
 	/**
@@ -779,7 +911,7 @@ public class Segment {
 			String form = cpSignatureForm[i];
 			int len = form.length();
 			StringBuffer signature = new StringBuffer(64);
-			ArrayList<String> list = new ArrayList<String>();
+			ArrayList list = new ArrayList();
 			for (int j = 0; j < len; j++) {
 				char c = form.charAt(j);
 				signature.append(c);
@@ -1005,38 +1137,6 @@ public class Segment {
 				cpUTF8);
 	}
 
-	private void parseMethodBands(InputStream in) throws IOException,
-			Pack200Exception {
-		methodDescr = new String[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			methodDescr[i] = parseReferences("method_descr", in, Codec.MDELTA5,
-					classMethodCount[i], cpDescriptor);
-		}
-		methodFlags = new long[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			methodFlags[i] = parseFlags("method_flags", in,
-					classMethodCount[i], Codec.UNSIGNED5, options
-							.hasMethodFlagsHi());
-		}
-		for (int i = 0; i < classCount; i++) {
-			for (int j = 0; j < methodFlags[i].length; j++) {
-				long flag = methodFlags[i][j];
-				if ((flag & (1 << 16)) != 0)
-					methodAttrCount++;
-			}
-		}
-		if (methodAttrCount > 0)
-			throw new Error(
-					"There are method attribute flags, and I don't know what to do with them");
-		debug("unimplemented method_attr_count");
-		debug("unimplemented method_attr_indexes");
-		debug("unimplemented method_attr_calls");
-		debug("unimplemented method_Exceptions_N");
-		debug("unimplemented method_Exceptions_RC");
-		debug("unimplemented method_Signature_RS");
-		parseMetadataBands("method");
-	}
-
 	private void parseMetadataBands(String unit) throws Pack200Exception {
 		String[] RxA;
 		if ("method".equals(unit)) {
@@ -1073,6 +1173,38 @@ public class Segment {
 		}
 	}
 
+	private void parseMethodBands(InputStream in) throws IOException,
+			Pack200Exception {
+		methodDescr = new String[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			methodDescr[i] = parseReferences("method_descr", in, Codec.MDELTA5,
+					classMethodCount[i], cpDescriptor);
+		}
+		methodFlags = new long[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			methodFlags[i] = parseFlags("method_flags", in,
+					classMethodCount[i], Codec.UNSIGNED5, options
+							.hasMethodFlagsHi());
+		}
+		for (int i = 0; i < classCount; i++) {
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				long flag = methodFlags[i][j];
+				if ((flag & (1 << 16)) != 0)
+					methodAttrCount++;
+			}
+		}
+		if (methodAttrCount > 0)
+			throw new Error(
+					"There are method attribute flags, and I don't know what to do with them");
+		debug("unimplemented method_attr_count");
+		debug("unimplemented method_attr_indexes");
+		debug("unimplemented method_attr_calls");
+		debug("unimplemented method_Exceptions_N");
+		debug("unimplemented method_Exceptions_RC");
+		debug("unimplemented method_Signature_RS");
+		parseMetadataBands("method");
+	}
+
 	/**
 	 * Helper method to parse <i>count</i> references from <code>in</code>,
 	 * using <code>codec</code> to decode the values as indexes into
@@ -1107,7 +1239,7 @@ public class Segment {
 			int index = decode[i];
 			if (index < 0 || index >= reference.length)
 				throw new Pack200Exception(
-                        Messages.getString("archive.06")); //$NON-NLS-1$
+						"Something has gone wrong during parsing references");
 			result[i] = reference[index];
 		}
 		return result;
@@ -1130,7 +1262,7 @@ public class Segment {
 		debug("-------");
 		parseSegmentHeader(in);
 		if (bandHeadersSize > 0) {
-			byte[] bandHeaders = new byte[bandHeadersSize];
+			byte[] bandHeaders = new byte[(int) bandHeadersSize];
 			readFully(in, bandHeaders);
 			setBandHeadersData(bandHeaders);
 		}
@@ -1151,9 +1283,7 @@ public class Segment {
 		parseClassBands(in);
 		parseBcBands(in);
 		// TODO Re-enable these after completing class/bytecode bands
-		// parseFileBands(in);
-		// processFileBits(in); // this just caches them in file_bits; it should
-		// probably start writing here?
+		parseFileBands(in);
 	}
 
 	private void parseSegmentHeader(InputStream in) throws IOException,
@@ -1162,10 +1292,10 @@ public class Segment {
 				magic.length);
 		for (int m = 0; m < magic.length; m++)
 			if (word[m] != magic[m])
-                throw new Error(Messages.getString("archive.07")); //$NON-NLS-1$
-		setMinorVersion((int) decodeScalar("archive_minver", in,
+				throw new Error("Bad header");
+		setArchiveMinorVersion((int) decodeScalar("archive_minver", in,
 				Codec.UNSIGNED5));
-		setMajorVersion((int) decodeScalar("archive_majver", in,
+		setArchiveMajorVersion((int) decodeScalar("archive_majver", in,
 				Codec.UNSIGNED5));
 		setOptions(new SegmentOptions((int) decodeScalar("archive_options", in,
 				Codec.UNSIGNED5)));
@@ -1283,10 +1413,10 @@ public class Segment {
 	 * @throws Pack200Exception
 	 *             if the major version is not 150
 	 */
-	private void setMajorVersion(int version) throws Pack200Exception {
+	private void setArchiveMajorVersion(int version) throws Pack200Exception {
 		if (version != 150)
-            throw new Pack200Exception(Messages.getString("archive.08")); //$NON-NLS-1$
-		major = version;
+			throw new Pack200Exception("Invalid segment major version");
+		archiveMajor = version;
 	}
 
 	/**
@@ -1297,10 +1427,10 @@ public class Segment {
 	 * @throws Pack200Exception
 	 *             if the minor version is not 7
 	 */
-	private void setMinorVersion(int version) throws Pack200Exception {
+	private void setArchiveMinorVersion(int version) throws Pack200Exception {
 		if (version != 7)
-            throw new Pack200Exception(Messages.getString("archive.09")); //$NON-NLS-1$
-		minor = version;
+			throw new Pack200Exception("Invalid segment minor version");
+		archiveMinor = version;
 	}
 
 	public void setNumberOfFiles(long value) {
