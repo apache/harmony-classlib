@@ -30,6 +30,14 @@
 
     <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
 
+    <target name="test" >
+        <!--
+             This target exists to match the API of other module
+             build.xml files.  However, we should probably write some
+             (native) portlib tests to aid porting.
+          -->
+    </target>
+
     <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/include/shared">
@@ -38,27 +46,10 @@
                 <include name="hycomp.h" />
                 <include name="hyporterror.h" />
                 <include name="hypool.h" />
-
             </fileset>
         </copy>
-
-        <antcall target="copy-native-includes-windows" />
-        <antcall target="copy-native-includes-linux" />
-    </target>
-
-    <target name="copy-native-includes-windows" if="is.windows">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.portlib.src.main.native}/include/windows">
-                <include name="hymutex.h" />
-                <include name="hysock.h" />
-                <include name="hyportpg.h" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="copy-native-includes-linux" if="is.linux">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.portlib.src.main.native}/include/linux">
+            <fileset dir="${hy.portlib.src.main.native}/include/${hy.os}">
                 <include name="hymutex.h" />
                 <include name="hysock.h" />
                 <include name="hyportpg.h" />
