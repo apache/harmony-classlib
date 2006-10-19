@@ -60,7 +60,7 @@ public class FontMetricsImpl extends FontMetrics  {
     private float scaleX = 1;
 
     // Y scale parameter of the font transform
-    private float scaleY = 1;
+    // private float scaleY = 1;
 
     /**
      * Creates new FontMericsImpl object described by the specified Font.
@@ -73,8 +73,7 @@ public class FontMetricsImpl extends FontMetrics  {
         AffineTransform at = fnt.getTransform();
         if (!at.isIdentity()){
             scaleX = (float)at.getScaleX();
-            scaleY = (float)at.getScaleY();
-
+            // scaleY = (float)at.getScaleY();
         }
 
         LineMetricsImpl lm = (LineMetricsImpl)peer.getLineMetrics("", null, at);
@@ -181,6 +180,8 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum descent of the Font describing this 
      * FontMetricsImpl object.
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     @Override
     public int getMaxDecent() {
         return this.maxDescent;

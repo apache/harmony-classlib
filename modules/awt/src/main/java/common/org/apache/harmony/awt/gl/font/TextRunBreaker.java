@@ -30,11 +30,12 @@ import java.awt.font.*;
 import java.awt.*;
 import java.text.AttributedCharacterIterator;
 import java.text.Annotation;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.*;
 
 import org.apache.harmony.awt.gl.font.TextDecorator.Decoration;
 import org.apache.harmony.misc.HashCode;
-// XXX - TODO - bidi not implemented yet
+// TODO - bidi not implemented yet
 
 /**
  * This class is responsible for breaking the text into the run segments
@@ -51,21 +52,21 @@ public class TextRunBreaker implements Cloneable {
 
     byte[] levels;
 
-    HashMap fonts = null;
-    HashMap<Integer, Decoration> decorations = null;
+    HashMap<Integer, Font> fonts;
+    HashMap<Integer, Decoration> decorations;
 
     // Related to default font substitution
-    int forcedFontRunStarts[] = null;
+    int forcedFontRunStarts[];
 
     ArrayList<TextRunSegment> runSegments = new ArrayList<TextRunSegment>();
 
     // For fast retrieving of the segment containing
     // character with known logical index
-    int logical2segment[] = null;
-    int segment2visual[] = null; // Visual order of segments XXX - todo - implement
-    int visual2segment[] = null;
-    int logical2visual[] = null;
-    int visual2logical[] = null;
+    int logical2segment[];
+    int segment2visual[]; // Visual order of segments TODO - implement
+    int visual2segment[];
+    int logical2visual[];
+    int visual2logical[];
 
     SegmentsInfo storedSegments;
     private boolean haveAllSegments = false;
@@ -155,9 +156,9 @@ public class TextRunBreaker implements Cloneable {
      * @param attrs - text attributes
      * @return patched text attributes
      */
-    Map unpackAttributes(Map attrs) {
+    Map<? extends Attribute, ?> unpackAttributes(Map<? extends Attribute, ?> attrs) {
         if (attrs.containsKey(TextAttribute.INPUT_METHOD_HIGHLIGHT)) {
-            Map styles = null;
+            Map<TextAttribute, ?> styles = null;
 
             Object val = attrs.get(TextAttribute.INPUT_METHOD_HIGHLIGHT);
 
@@ -176,7 +177,7 @@ public class TextRunBreaker implements Cloneable {
             }
 
             if (styles != null) {
-                HashMap newAttrs = new HashMap();
+                HashMap<Attribute, Object> newAttrs = new HashMap<Attribute, Object>();
                 newAttrs.putAll(attrs);
                 newAttrs.putAll(styles);
                 return newAttrs;
@@ -190,14 +191,14 @@ public class TextRunBreaker implements Cloneable {
      * Breaks the text into separate style runs.
      */
     void createStyleRuns() {
-        // XXX - todo - implement fast and simple case
-        fonts = new HashMap();
+        // TODO - implement fast and simple case
+        fonts = new HashMap<Integer, Font>();
         decorations = new HashMap<Integer, Decoration>();
         ////
 
         ArrayList<Integer> forcedFontRunStartsList = null;
 
-        Map attributes = null;
+        Map<? extends Attribute, ?> attributes = null;
 
         // Check justification attribute
         Object val = aci.getAttribute(TextAttribute.JUSTIFICATION);
@@ -219,11 +220,11 @@ public class TextRunBreaker implements Cloneable {
             // Find appropriate font or place GraphicAttribute there
 
             // 1. Try to pick up CHAR_REPLACEMENT (compatibility)
-            Object value = attributes.get(TextAttribute.CHAR_REPLACEMENT);
+            Font value = (Font)attributes.get(TextAttribute.CHAR_REPLACEMENT);
 
             if (value == null) {
                 // 2. Try to Get FONT
-                value = attributes.get(TextAttribute.FONT);
+                value = (Font)attributes.get(TextAttribute.FONT);
 
                 if (value == null) {
                     // 3. Try to create font from FAMILY
@@ -301,7 +302,7 @@ public class TextRunBreaker implements Cloneable {
     public void createSegments(int runStart, int runEnd) {
         int endStyleRun, endLevelRun;
 
-        // XXX - todo - update levels
+        // TODO - update levels
 
         int pos = runStart, levelPos;
 

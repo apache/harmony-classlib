@@ -53,15 +53,18 @@ public class BufferedImageGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
     }
 
+    @Override
     public Graphics create() {
         BufferedImageGraphics2D res = new BufferedImageGraphics2D(bi);
         copyInternalFields(res);
         return res;
     }
 
+    @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         return null;
     }

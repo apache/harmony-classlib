@@ -47,7 +47,7 @@ public class JpegDecoder extends ImageDecoder {
 
     // Buffer for the stream
     private static final int BUFFER_SIZE = 1024;
-    private byte buffer[] = new byte[BUFFER_SIZE];
+    private final byte buffer[] = new byte[BUFFER_SIZE];
 
     // 3 possible color models only
     private static ColorModel cmRGB;
@@ -58,22 +58,22 @@ public class JpegDecoder extends ImageDecoder {
 
     // Pointer to native structure which store decoding state
     // between subsequent decoding/IO-suspension cycles
-    private long hNativeDecoder = 0; // NULL initially
+    private final long hNativeDecoder = 0; // NULL initially
 
     private boolean headerDone = false;
 
     // Next 4 members are filled by the native method (decompress).
     // We can simply check if imageWidth is still negative to find
     // out if they are already filled.
-    private int imageWidth = -1;
-    private int imageHeight = -1;
-    private boolean progressive = false;
-    private int jpegColorSpace = 0;
+    private final int imageWidth = -1;
+    private final int imageHeight = -1;
+    private final boolean progressive = false;
+    private final int jpegColorSpace = 0;
 
     // Stores number of bytes consumed by the native decoder
-    private int bytesConsumed = 0;
+    private final int bytesConsumed = 0;
     // Stores current scanline returned by the decoder
-    private int currScanline = 0;
+    private final int currScanline = 0;
 
     private ColorModel cm = null;
 
@@ -113,6 +113,7 @@ public class JpegDecoder extends ImageDecoder {
 
     private static native void releaseNativeDecoder(long hDecoder);
 
+    @Override
     public void decodeImage() throws IOException {
         try {
             int bytesRead = 0, dataLength = 0;
@@ -152,8 +153,9 @@ public class JpegDecoder extends ImageDecoder {
                     headerDone = true;
                 }
 
-                if (bytesConsumed < 0)
+                if (bytesConsumed < 0) {
                     break; // Error exit
+                }
 
                 if (arr instanceof byte[]) {
                     byteOut = (byte[]) arr;
@@ -167,7 +169,9 @@ public class JpegDecoder extends ImageDecoder {
                     dataLength = 0;
                 }
 
-                if (hNativeDecoder == 0) break;
+                if (hNativeDecoder == 0) {
+                    break;
+                }
 
                 if (dataLength == 0 && eosReached) {
                     releaseNativeDecoder(hNativeDecoder);
@@ -194,28 +198,30 @@ public class JpegDecoder extends ImageDecoder {
 
         setHints(progressive ? hintflagsProgressive : hintflagsSingle);
 
-        setProperties(new Hashtable()); // Empty
+        setProperties(new Hashtable<Object, Object>()); // Empty
     }
 
     // Send the data to the consumer
     public void returnData(int data[], int currScanLine) {
         // Send 1 or more scanlines to the consumer.
         int numScanlines = data.length / imageWidth;
-        if (numScanlines > 0)
+        if (numScanlines > 0) {
             setPixels(
                     0, currScanLine - numScanlines,
                     imageWidth, numScanlines,
                     cm, data, 0, imageWidth
             );
+        }
     }
 
     public void returnData(byte data[], int currScanLine) {
         int numScanlines = data.length / imageWidth;
-        if (numScanlines > 0)
+        if (numScanlines > 0) {
             setPixels(
                     0, currScanLine - numScanlines,
                     imageWidth, numScanlines,
                     cm, data, 0, imageWidth
             );
+        }
     }
 }

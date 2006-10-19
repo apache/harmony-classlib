@@ -45,10 +45,12 @@ public class ByteArrayDecodingImageSource extends DecodingImageSource {
         this(imagedata, 0, imagedata.length);
     }
 
+    @Override
     protected boolean checkConnection() {
         return true;
     }
 
+    @Override
     protected InputStream getInputStream() {
         return new BufferedInputStream(new ByteArrayInputStream(imagedata,
                 imageoffset, imagelength));

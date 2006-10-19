@@ -194,7 +194,7 @@ public abstract class FontManager {
      * Table with all available font properties corresponding
      * to the current system configuration.
      */
-    public Hashtable fProperties = new Hashtable();
+    public Hashtable<String, Vector<FontProperty>> fProperties = new Hashtable<String, Vector<FontProperty>>();
 
     public FontManager(){
         allFamilies = getAllFamilies();
@@ -207,14 +207,14 @@ public abstract class FontManager {
     }
 
     /**
-     * Maximum number of unreferensed font peers to keep.
+     * Maximum number of unreferenced font peers to keep.
      */
     public static final int EMPTY_FONTS_CAPACITY = 10;
 
     /**
      * Locale - Language ID hash table.
      */
-    Hashtable tableLCID = new Hashtable();
+    Hashtable<String, Short> tableLCID = new Hashtable<String, Short>();
 
     /**
      * Hash table that contains FontPeers instances.
@@ -226,7 +226,7 @@ public abstract class FontManager {
      * ReferenceQueue for HashMapReference objects to check
      * if they were collected by garbage collector. 
      */
-    public ReferenceQueue queue = new ReferenceQueue();
+    public ReferenceQueue<FontPeer> queue = new ReferenceQueue<FontPeer>();
 
     /**
      * Singleton instance
@@ -237,7 +237,7 @@ public abstract class FontManager {
     /**
      * Gets singleton instance of FontManager
      * 
-     * @return instanse of FontManager implementation
+     * @return instance of FontManager implementation
      */
     public static FontManager getInstance() {
         return inst;
@@ -245,11 +245,11 @@ public abstract class FontManager {
 
     /**
      * Returns platform-dependent Font peer created from the specified 
-     * Font object from the table with cached FontPeers instanses.
+     * Font object from the table with cached FontPeers instances.
      * 
      * Note, this method checks whether FontPeer with specified parameters 
-     * exists in the table with cached FontPeers' instanses. If there is no needed 
-     * instanse - it is created and cached.
+     * exists in the table with cached FontPeers' instances. If there is no needed 
+     * instance - it is created and cached.
      * 
      * @param fontName name of the font 
      * @param _fontStyle style of the font 
@@ -281,7 +281,7 @@ public abstract class FontManager {
         
         HashMapReference hmr   = fontsTable.get(key);
         if (hmr != null) {
-            peer = (FontPeer)hmr.get();
+            peer = hmr.get();
         }
 
         if (peer == null) {
@@ -405,7 +405,7 @@ public abstract class FontManager {
         
         HashMapReference hmr   = fontsTable.get(key);
         if (hmr != null) {
-            peer = (FontPeer)hmr.get();
+            peer = hmr.get();
         }
 
         if (peer == null) {
@@ -500,7 +500,7 @@ public abstract class FontManager {
             initLCIDTable();
         }
 
-        return (Short)tableLCID.get(l.toString());
+        return tableLCID.get(l.toString());
     }
 
     /**
@@ -573,7 +573,7 @@ public abstract class FontManager {
         int i = 0;
 
         // OS names from system properties don't match
-        // OS identifiers used in font.peroperty files
+        // OS identifiers used in font.property files
         for (; i < OS_VALUES.length; i++){
             if (os.endsWith(OS_VALUES[i])){
                 os = OS_VALUES[i];
@@ -678,7 +678,7 @@ public abstract class FontManager {
      * @param fpName key of the font properties in the properties set
      */
     public FontProperty[] getFontProperties(String fpName){
-        Vector props = (Vector)fProperties.get(fpName);
+        Vector<FontProperty> props = fProperties.get(fpName);
         
         if (props == null){
             return null;
@@ -692,7 +692,7 @@ public abstract class FontManager {
 
         FontProperty[] fps = new FontProperty[size];
         for (int i=0; i < fps.length; i++){
-            fps[i] = (FontProperty)props.elementAt(i);
+            fps[i] = props.elementAt(i);
         }
         return fps;
     }
@@ -765,12 +765,12 @@ public abstract class FontManager {
      * Class contains SoftReference instance that can be stored in the 
      * Hashtable by means of key field corresponding to it.
      */
-    private class HashMapReference extends SoftReference {
+    private class HashMapReference extends SoftReference<FontPeer> {
         
         /**
          * The key for Hashtable.
          */
-        private final Object key;
+        private final String key;
 
         /**
          * Creates a new soft reference with the key specified and 
@@ -780,8 +780,8 @@ public abstract class FontManager {
          * @param value object that corresponds to the key
          * @param queue reference queue where reference is to be added 
          */
-        public HashMapReference(final Object key, final Object value,
-                              final ReferenceQueue queue) {
+        public HashMapReference(final String key, final FontPeer value,
+                              final ReferenceQueue<FontPeer> queue) {
             super(value, queue);
             this.key = key;
         }
@@ -803,8 +803,7 @@ public abstract class FontManager {
     private void updateFontsTable() {
         HashMapReference r;
         while ((r = (HashMapReference)queue.poll()) != null) {
-            Object obj = fontsTable.remove(r.getKey());
-            
+            fontsTable.remove(r.getKey());
         }
     }
 

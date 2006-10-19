@@ -31,6 +31,7 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Map;
 
 /**
@@ -156,7 +157,7 @@ public class TextDecorator {
      * @param attributes - text attributes
      * @return Decoration object
      */
-    static Decoration getDecoration(Map attributes) {
+    static Decoration getDecoration(Map<? extends Attribute, ?> attributes) {
         if (attributes == null) {
             return null; // It is for plain text
         }

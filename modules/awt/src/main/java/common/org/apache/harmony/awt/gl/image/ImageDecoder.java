@@ -23,15 +23,17 @@
  */
 package org.apache.harmony.awt.gl.image;
 
+import java.awt.image.ColorModel;
+import java.awt.image.ImageConsumer;
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ConcurrentModificationException;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.awt.image.ColorModel;
-import java.awt.image.ImageConsumer;
+import java.util.List;
 
 /**
  * This class contains common functionality for all image decoders.
@@ -39,14 +41,14 @@ import java.awt.image.ImageConsumer;
 abstract class ImageDecoder {
     private static final int MAX_BYTES_IN_SIGNATURE = 8;
 
-    ArrayList consumers;
+    List<ImageConsumer> consumers;
     InputStream inputStream;
     DecodingImageSource src;
 
-    boolean terminated = false;
+    boolean terminated;
 
     /**
-     * Choouses appropriate image decoder by looking into input stream and checking
+     * Chooses appropriate image decoder by looking into input stream and checking
      * the image signature.
      * @param src - image producer, required for passing data to it from the
      * created decoder via callbacks
@@ -56,10 +58,11 @@ abstract class ImageDecoder {
     static ImageDecoder createDecoder(DecodingImageSource src, InputStream is) {
         InputStream markable;
 
-        if (!is.markSupported())
+        if (!is.markSupported()) {
             markable = new BufferedInputStream(is);
-        else
+        } else {
             markable = is;
+        }
 
         // Read the signature from the stream and then reset it back
         try {
@@ -119,9 +122,9 @@ abstract class ImageDecoder {
         src.lockDecoder(this);
         closeStream();
 
-        java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
+        AccessController.doPrivileged(
+                new PrivilegedAction<Void>() {
+                    public Void run() {
                         Thread.currentThread().interrupt();
                         return null;
                     }
@@ -132,49 +135,41 @@ abstract class ImageDecoder {
     }
 
     protected void setDimensions(int w, int h) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setDimensions(w, h);
         }
     }
 
-    protected void setProperties(Hashtable props) {
-        if (terminated)
+    protected void setProperties(Hashtable<?, ?> props) {
+        if (terminated) {
             return;
+        }
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setProperties(props);
         }
     }
 
     protected void setColorModel(ColorModel cm) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setColorModel(cm);
         }
     }
 
     protected void setHints(int hints) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setHints(hints);
         }
     }
@@ -186,15 +181,13 @@ abstract class ImageDecoder {
             byte pix[],
             int off, int scansize
             ) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
         src.lockDecoder(this);
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setPixels(x, y, w, h, model, pix, off, scansize);
         }
     }
@@ -206,30 +199,29 @@ abstract class ImageDecoder {
             int pix[],
             int off, int scansize
             ) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
         src.lockDecoder(this);
 
-        ImageConsumer ic = null;
-
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
-            ic = (ImageConsumer) i.next();
+        for (ImageConsumer ic : consumers) {
             ic.setPixels(x, y, w, h, model, pix, off, scansize);
         }
     }
 
     protected void imageComplete(int status) {
-        if (terminated)
+        if (terminated) {
             return;
+        }
 
         src.lockDecoder(this);
 
         ImageConsumer ic = null;
 
-        for (Iterator i = consumers.iterator(); i.hasNext();) {
+        for (Iterator<ImageConsumer> i = consumers.iterator(); i.hasNext();) {
             try {
-                ic = (ImageConsumer) i.next();
+                ic = i.next();
             } catch (ConcurrentModificationException e) {
                 i = consumers.iterator();
                 continue;

@@ -83,7 +83,7 @@ public class TextMetricsCalculator {
      */
     public void checkBaselines() {
         // Take baseline offsets of the first font and normalize them
-        HashMap fonts = breaker.fonts;
+        HashMap<Integer, Font> fonts = breaker.fonts;
 
         Object val = fonts.get(new Integer(0));
 
@@ -111,7 +111,7 @@ public class TextMetricsCalculator {
             baselineOffsets[0] = 0;
             baselineOffsets[1] = (ga.getDescent() - ga.getAscent()) / 2.f;
             baselineOffsets[2] = -ga.getAscent();
-        } else { // Use defaults - roman baseline and zero offsets
+        } else { // Use defaults - Roman baseline and zero offsets
             baselineIndex = GraphicAttribute.ROMAN_BASELINE;
             baselineOffsets = new float[3];
         }

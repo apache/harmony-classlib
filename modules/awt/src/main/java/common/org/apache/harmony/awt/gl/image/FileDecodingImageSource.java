@@ -40,7 +40,8 @@ public class FileDecodingImageSource extends DecodingImageSource {
     filename = file;
   }
 
-  protected boolean checkConnection() {
+  @Override
+protected boolean checkConnection() {
       SecurityManager security = System.getSecurityManager();
       if (security != null) {
           try {
@@ -53,7 +54,8 @@ public class FileDecodingImageSource extends DecodingImageSource {
       return true;
   }
 
-  protected InputStream getInputStream() {
+  @Override
+protected InputStream getInputStream() {
     try {
       return new BufferedInputStream(new FileInputStream(filename));
     } catch (FileNotFoundException e) {

@@ -23,8 +23,11 @@
  */
 package org.apache.harmony.awt.gl.image;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class provides functionality for simultaneous loading of
@@ -36,12 +39,12 @@ public class ImageLoader extends Thread {
     static class ImageLoadersStorage {
         private static final int MAX_THREADS = 5;
         private static final int TIMEOUT = 4000;
-        static ImageLoadersStorage instance = null;
+        static ImageLoadersStorage instance;
 
-        LinkedList queue = new LinkedList();
-        ArrayList loaders = new ArrayList(MAX_THREADS);
+        List<DecodingImageSource> queue = new LinkedList<DecodingImageSource>();
+        List<Thread> loaders = new ArrayList<Thread>(MAX_THREADS);
 
-        private int freeLoaders = 0;
+        private int freeLoaders;
 
         private ImageLoadersStorage() {}
 
@@ -68,16 +71,17 @@ public class ImageLoader extends Thread {
         final ImageLoadersStorage storage = ImageLoadersStorage.getStorage();
 
         synchronized(storage.loaders) {
-            if (storage.loaders.size() < ImageLoadersStorage.MAX_THREADS)
-                java.security.AccessController.doPrivileged(
-                        new java.security.PrivilegedAction() {
-                            public Object run() {
+            if (storage.loaders.size() < ImageLoadersStorage.MAX_THREADS) {
+                AccessController.doPrivileged(
+                        new PrivilegedAction<Void>() {
+                            public Void run() {
                                 ImageLoader loader = new ImageLoader();
                                 storage.loaders.add(loader);
                                 loader.start();
                                 return null;
                             }
                         });
+            }
         }
     }
 
@@ -89,10 +93,12 @@ public class ImageLoader extends Thread {
     public static void addImageSource(DecodingImageSource imgSrc) {
         ImageLoadersStorage storage = ImageLoadersStorage.getStorage();
         synchronized(storage.queue) {
-            if (!storage.queue.contains(imgSrc))
+            if (!storage.queue.contains(imgSrc)) {
                 storage.queue.add(imgSrc);
-            if (storage.freeLoaders == 0)
+            }
+            if (storage.freeLoaders == 0) {
                 createLoader();
+            }
 
             storage.queue.notify();
         }
@@ -122,7 +128,7 @@ public class ImageLoader extends Thread {
             }
 
             if (storage.queue.size() > 0) {
-                isrc = (DecodingImageSource) storage.queue.get(0);
+                isrc = storage.queue.get(0);
                 storage.queue.remove(0);
             }
 
@@ -135,6 +141,7 @@ public class ImageLoader extends Thread {
      * runs decoders for them while there are available image sources in the queue.
      * If there are no and timeout expires it terminates.
      */
+    @Override
     public void run() {
         ImageLoadersStorage storage = ImageLoadersStorage.getStorage();
 
@@ -172,8 +179,9 @@ public class ImageLoader extends Thread {
         synchronized(storage) {
             storage.loaders.remove(currThread);
 
-            if (storage.freeLoaders < storage.queue.size())
+            if (storage.freeLoaders < storage.queue.size()) {
                 createLoader();
+            }
         }
 
         currThread.setPriority(Thread.MIN_PRIORITY);

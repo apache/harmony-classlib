@@ -48,6 +48,7 @@ public class URLDecodingImageSource extends DecodingImageSource {
         this.url = url;
     }
 
+    @Override
     protected boolean checkConnection() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -61,6 +62,7 @@ public class URLDecodingImageSource extends DecodingImageSource {
         return true;
     }
 
+    @Override
     protected InputStream getInputStream() {
         try{
             URLConnection uc = url.openConnection();

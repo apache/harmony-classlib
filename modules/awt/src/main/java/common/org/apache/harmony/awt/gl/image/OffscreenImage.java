@@ -37,7 +37,6 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -55,8 +54,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
     ColorModel cm;
     WritableRaster raster;
     boolean isIntRGB;
-    Hashtable properties;
-    Vector observers;
+    Hashtable<?, ?> properties;
+    Vector<ImageObserver> observers;
     int width;
     int height;
     int imageState;
@@ -69,53 +68,65 @@ public class OffscreenImage extends Image implements ImageConsumer {
         src = ip;
         width = -1;
         height = -1;
-        observers = new Vector();
+        observers = new Vector<ImageObserver>();
         producing = false;
     }
 
+    @Override
     public Object getProperty(String name, ImageObserver observer) {
-        if(name == null)
+        if(name == null) {
             throw new NullPointerException("Property name is not defined");
+        }
         if(properties == null){
             addObserver(observer);
             startProduction();
-            if(properties == null) return null;
+            if(properties == null) {
+                return null;
+            }
         }
         Object prop = properties.get(name);
-        if(prop == null)
+        if(prop == null) {
             prop = UndefinedProperty;
+        }
         return prop;
     }
 
+    @Override
     public ImageProducer getSource() {
         return src;
     }
 
+    @Override
     public int getWidth(ImageObserver observer) {
         if((imageState & ImageObserver.WIDTH) == 0){
             addObserver(observer);
             startProduction();
-            if((imageState & ImageObserver.WIDTH) == 0)
+            if((imageState & ImageObserver.WIDTH) == 0) {
                 return -1;
+            }
         }
         return width;
     }
 
+    @Override
     public int getHeight(ImageObserver observer) {
         if((imageState & ImageObserver.HEIGHT) == 0){
             addObserver(observer);
             startProduction();
-            if((imageState & ImageObserver.HEIGHT) == 0)
+            if((imageState & ImageObserver.HEIGHT) == 0) {
                 return -1;
+            }
         }
         return height;
     }
 
+    @Override
     public Graphics getGraphics() {
         throw new UnsupportedOperationException("This method is not " +
                 "implemented for image obtained from ImageProducer");
     }
 
+    @Override
     public void flush() {
         stopProduction();
         imageUpdate(this, ImageObserver.ABORT, -1, -1, -1, -1);
@@ -129,7 +140,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
         height = -1;
     }
 
-    public void setProperties(Hashtable properties) {
+    public void setProperties(Hashtable<?, ?> properties) {
         this.properties = properties;
         imageUpdate(this, ImageObserver.PROPERTIES, 0, 0, width, height);
     }
@@ -152,14 +163,17 @@ public class OffscreenImage extends Image implements ImageConsumer {
             int[] pixels, int off, int scansize) {
         if(raster == null){
             if(cm == null){
-                if(model == null)
+                if(model == null) {
                     throw new NullPointerException("Color Model is null");
+                }
                 cm = model;
             }
             createRaster();
         }
 
-        if(model == null) model = cm;
+        if(model == null) {
+            model = cm;
+        }
         if(cm != model){
             forceToIntARGB();
         }
@@ -209,13 +223,16 @@ public class OffscreenImage extends Image implements ImageConsumer {
 
         if(raster == null){
             if(cm == null){
-                if(model == null)
+                if(model == null) {
                     throw new NullPointerException("Color Model is null");
+                }
                 cm = model;
             }
             createRaster();
         }
-        if(model == null) model = cm;
+        if(model == null) {
+            model = cm;
+        }
         if(model != cm){
             forceToIntARGB();
         }
@@ -319,8 +336,9 @@ public class OffscreenImage extends Image implements ImageConsumer {
         if(image == null){
             ColorModel model = getColorModel();
             WritableRaster wr = getRaster();
-            if(model != null && wr != null)
-            image = new BufferedImage(model, wr, model.isAlphaPremultiplied(), null);
+            if(model != null && wr != null) {
+                image = new BufferedImage(model, wr, model.isAlphaPremultiplied(), null);
+            }
         }
         return image;
     }
@@ -338,19 +356,25 @@ public class OffscreenImage extends Image implements ImageConsumer {
             }
             return false;
         }
-        if((imageState & ImageObserver.ALLBITS) != 0) return true;
+        if((imageState & ImageObserver.ALLBITS) != 0) {
+            return true;
+        }
         addObserver(observer);
         startProduction();
         return ((imageState & ImageObserver.ALLBITS) != 0);
     }
 
     public /*synchronized*/ ColorModel getColorModel(){
-        if(cm == null) startProduction();
+        if(cm == null) {
+            startProduction();
+        }
         return cm;
     }
 
     public /*synchronized*/ WritableRaster getRaster(){
-        if(raster == null) startProduction();
+        if(raster == null) {
+            startProduction();
+        }
         return raster;
     }
 
@@ -360,7 +384,9 @@ public class OffscreenImage extends Image implements ImageConsumer {
 
     private /*synchronized*/ void addObserver(ImageObserver observer){
         if(observer != null){
-          if(observers.contains(observer)) return;
+          if(observers.contains(observer)) {
+            return;
+        }
           if((imageState & ImageObserver.ERROR) != 0){
               observer.imageUpdate(this, ImageObserver.ERROR |
                       ImageObserver.ABORT, -1, -1, -1, -1);
@@ -411,8 +437,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
             int width, int height){
 
         imageState |= infoflags;
-        for(Enumeration e = observers.elements(); e.hasMoreElements();){
-            ImageObserver observer = (ImageObserver)e.nextElement();
+        for (ImageObserver observer : observers) {
             observer.imageUpdate(this, infoflags, x, y, width, height);
         }
 

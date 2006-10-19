@@ -56,11 +56,11 @@ public class PngDecoder extends ImageDecoder {
     private static final int PNG_COLOR_TYPE_RGBA = 6;
 
     private static final int INPUT_BUFFER_SIZE = 4096;
-    private byte buffer[] = new byte[INPUT_BUFFER_SIZE];
+    private final byte buffer[] = new byte[INPUT_BUFFER_SIZE];
 
     // Buffers for decoded image data
-    byte byteOut[] = null;
-    int intOut[] = null;
+    byte byteOut[];
+    int intOut[];
 
     // Native pointer to png decoder data
     private long hNativeDecoder;
@@ -86,6 +86,7 @@ public class PngDecoder extends ImageDecoder {
         super(src, is);
     }
 
+    @Override
     public void decodeImage() throws IOException {
         try {
             int bytesRead = 0;
@@ -114,7 +115,9 @@ public class PngDecoder extends ImageDecoder {
                 returnData();
 
                 // OK, we decoded all the picture in the right way...
-                if (hNativeDecoder == 0) break;
+                if (hNativeDecoder == 0) {
+                    break;
+                }
             }
 
             imageComplete(ImageConsumer.STATICIMAGEDONE);
@@ -128,13 +131,15 @@ public class PngDecoder extends ImageDecoder {
         }
     }
 
+    @SuppressWarnings("unused")
     private void returnHeader() { // Called from native code
         setDimensions(imageWidth, imageHeight);
 
         switch (colorType) {
             case PNG_COLOR_TYPE_GRAY: {
-                if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1)
+                if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1) {
                     throw new IllegalArgumentException("Unknown PNG color type");
+                }
 
                 // Create gray color model
                 int numEntries = 1 << bitDepth;
@@ -150,8 +155,9 @@ public class PngDecoder extends ImageDecoder {
             }
 
             case PNG_COLOR_TYPE_RGB: {
-                if (bitDepth != 8)
+                if (bitDepth != 8) {
                     throw new IllegalArgumentException("Unknown PNG color type");
+                }
 
                 cm = new DirectColorModel(24, 0xFF0000, 0xFF00, 0xFF);
 
@@ -160,8 +166,9 @@ public class PngDecoder extends ImageDecoder {
             }
 
             case PNG_COLOR_TYPE_PLTE: {
-                if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1)
+                if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1) {
                     throw new IllegalArgumentException("Unknown PNG color type");
+                }
 
                 cm = new IndexColorModel(/*bitDepth*/8, cmap.length / 3, cmap, 0, false);
 
@@ -170,8 +177,9 @@ public class PngDecoder extends ImageDecoder {
             }
 
             case PNG_COLOR_TYPE_GRAY_ALPHA: {
-                if (bitDepth != 8)
+                if (bitDepth != 8) {
                     throw new IllegalArgumentException("Unknown PNG color type");
+                }
 
                 cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY),
                         true, false,
@@ -184,8 +192,9 @@ public class PngDecoder extends ImageDecoder {
             }
 
             case PNG_COLOR_TYPE_RGBA: {
-                if (bitDepth != 8)
+                if (bitDepth != 8) {
                     throw new IllegalArgumentException("Unknown PNG color type");
+                }
 
                 cm = ColorModel.getRGBdefault();
 
@@ -206,7 +215,7 @@ public class PngDecoder extends ImageDecoder {
         setColorModel(cm);
 
         setHints(hintflags);
-        setProperties(new Hashtable()); // Empty
+        setProperties(new Hashtable<Object, Object>()); // Empty
     }
 
     // Send the data to the consumer
@@ -225,8 +234,9 @@ public class PngDecoder extends ImageDecoder {
             }
 
             transfer(updateFromScanline, pass1);
-            if (pass2 != 0)
+            if (pass2 != 0) {
                 transfer(0, pass2);
+            }
         }
     }
 

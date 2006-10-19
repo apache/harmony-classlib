@@ -36,27 +36,25 @@ import java.util.Hashtable;
 
 public class BufferedImageSource implements ImageProducer {
 
-    private BufferedImage image;
-    private Hashtable properties;
+    private Hashtable<?, ?> properties;
     private ColorModel cm;
     private WritableRaster raster;
-    private int numElem;
     private int width;
     private int height;
 
     private ImageConsumer ic;
 
-    public BufferedImageSource(BufferedImage image, Hashtable properties){
-        this.image = image;
-
-        if(properties == null) this.properties = new Hashtable();
-        else this.properties = properties;
+    public BufferedImageSource(BufferedImage image, Hashtable<?, ?> properties){
+        if(properties == null) {
+            this.properties = new Hashtable<Object, Object>();
+        } else {
+            this.properties = properties;
+        }
 
         width = image.getWidth();
         height = image.getHeight();
         cm = image.getColorModel();
         raster = image.getRaster();
-        numElem = raster.getNumDataElements();
     }
 
     public BufferedImageSource(BufferedImage image){
@@ -75,7 +73,9 @@ public class BufferedImageSource implements ImageProducer {
     }
 
     public void removeConsumer(ImageConsumer ic) {
-        if (this.ic == ic) this.ic = null;
+        if (this.ic == ic) {
+            this.ic = null;
+        }
     }
 
     public void addConsumer(ImageConsumer ic) {
@@ -127,7 +127,9 @@ public class BufferedImageSource implements ImageProducer {
             }
             ic.imageComplete(ImageConsumer.STATICIMAGEDONE);
         }catch (NullPointerException e){
-            if (ic != null) ic.imageComplete(ImageConsumer.IMAGEERROR);
+            if (ic != null) {
+                ic.imageComplete(ImageConsumer.IMAGEERROR);
+            }
         }
     }
 

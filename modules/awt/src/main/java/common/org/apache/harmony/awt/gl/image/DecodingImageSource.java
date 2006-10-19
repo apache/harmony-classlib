@@ -29,18 +29,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * This is an abstract class that incapsulates a main part of ImageProducer functionality
+ * This is an abstract class that encapsulates a main part of ImageProducer functionality
  * for the images being decoded by the native decoders, like PNG, JPEG and GIF.
  * It helps to integrate image decoders into producer/consumer model. It provides
  * functionality for working with several decoder instances and several image consumers
  * simultaneously.
  */
 public abstract class DecodingImageSource implements ImageProducer {
-    ArrayList consumers = new ArrayList(5);
-    ArrayList decoders = new ArrayList(5);
-    boolean loading = false;
+    List<ImageConsumer> consumers = new ArrayList<ImageConsumer>(5);
+    List<ImageDecoder> decoders = new ArrayList<ImageDecoder>(5);
+    boolean loading;
 
     ImageDecoder decoder;
 
@@ -60,11 +61,12 @@ public abstract class DecodingImageSource implements ImageProducer {
             ImageDecoder d = null;
 
             // Check for all existing decoders
-            for (Iterator i = decoders.iterator(); i.hasNext();) {
-                d = (ImageDecoder) i.next();
+            for (Iterator<ImageDecoder> i = decoders.iterator(); i.hasNext();) {
+                d = i.next();
                 cons = findConsumer(d.consumers, ic);
-                if (cons != null)
+                if (cons != null) {
                     break;
+                }
             }
         }
 
@@ -86,20 +88,22 @@ public abstract class DecodingImageSource implements ImageProducer {
      * This method stops sending data to the list of consumers.
      * @param consumersList - list of consumers
      */
-    private void abortAllConsumers(ArrayList consumersList) {
-        for (Iterator i = consumersList.iterator(); i.hasNext();)
-            abortConsumer((ImageConsumer) i.next());
+    private void abortAllConsumers(List<ImageConsumer> consumersList) {
+        for (ImageConsumer imageConsumer : consumersList) {
+            abortConsumer(imageConsumer);
+        }
     }
 
     public synchronized void removeConsumer(ImageConsumer ic) {
         ImageDecoder d = null;
 
         // Remove in all existing decoders
-        for (Iterator i = decoders.iterator(); i.hasNext();) {
-            d = (ImageDecoder) i.next();
+        for (Iterator<ImageDecoder> i = decoders.iterator(); i.hasNext();) {
+            d = i.next();
             removeConsumer(d.consumers, ic);
-            if (d.consumers.size() <= 0)
+            if (d.consumers.size() <= 0) {
                 d.terminate();
+            }
         }
 
         // Remove in the current queue of consumers
@@ -111,11 +115,11 @@ public abstract class DecodingImageSource implements ImageProducer {
      * @param consumersList - list of consumers
      * @param ic - consumer to be removed
      */
-    private static void removeConsumer(ArrayList consumersList, ImageConsumer ic) {
+    private static void removeConsumer(List<ImageConsumer> consumersList, ImageConsumer ic) {
         ImageConsumer cons = null;
 
-        for (Iterator i = consumersList.iterator(); i.hasNext();) {
-            cons = (ImageConsumer) i.next();
+        for (Iterator<ImageConsumer> i = consumersList.iterator(); i.hasNext();) {
+            cons = i.next();
             if (cons.equals(ic)) {
                 i.remove();
             }
@@ -127,8 +131,9 @@ public abstract class DecodingImageSource implements ImageProducer {
     }
 
     public synchronized void startProduction(ImageConsumer ic) {
-        if (ic != null)
+        if (ic != null) {
             addConsumer(ic);
+        }
 
         if (!loading && consumers.size() > 0) {
             ImageLoader.addImageSource(this);
@@ -140,10 +145,11 @@ public abstract class DecodingImageSource implements ImageProducer {
         ImageDecoder d = null;
 
         // Check for all existing decoders
-        for (Iterator i = decoders.iterator(); i.hasNext();) {
-            d = (ImageDecoder) i.next();
-            if (findConsumer(d.consumers, ic) != null)
+        for (Iterator<ImageDecoder> i = decoders.iterator(); i.hasNext();) {
+            d = i.next();
+            if (findConsumer(d.consumers, ic) != null) {
                 return true;
+            }
         }
 
         // Check current queue of consumers
@@ -156,13 +162,14 @@ public abstract class DecodingImageSource implements ImageProducer {
      * @param ic - consumer
      * @return consumer if found, null otherwise
      */
-    private static ImageConsumer findConsumer(ArrayList consumersList, ImageConsumer ic) {
+    private static ImageConsumer findConsumer(List<ImageConsumer> consumersList, ImageConsumer ic) {
         ImageConsumer res = null;
 
-        for (Iterator i = consumersList.iterator(); i.hasNext();) {
-            res = (ImageConsumer) i.next();
-            if (res.equals(ic))
+        for (Iterator<ImageConsumer> i = consumersList.iterator(); i.hasNext();) {
+            res = i.next();
+            if (res.equals(ic)) {
                 return res;
+            }
         }
 
         return null;
@@ -201,21 +208,21 @@ public abstract class DecodingImageSource implements ImageProducer {
                 decoders.add(decoder);
                 this.decoder = decoder;
                 loading = false;
-                consumers = new ArrayList(5); // Reset queue
+                consumers = new ArrayList<ImageConsumer>(5); // Reset queue
             }
 
             return decoder;
-        } else { // We were not able to find appropriate decoder
-            ArrayList cs;
-            synchronized (this) {
-                cs = consumers;
-                consumers = new ArrayList(5);
-                loading = false;
-            }
-            abortAllConsumers(cs);
-
-            return null;
         }
+        // We were not able to find appropriate decoder
+        List<ImageConsumer> cs;
+        synchronized (this) {
+            cs = consumers;
+            consumers = new ArrayList<ImageConsumer>(5);
+            loading = false;
+        }
+        abortAllConsumers(cs);
+
+        return null;
     }
 
     /**
