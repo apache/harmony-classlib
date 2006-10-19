@@ -55,19 +55,12 @@ public class WinFontTest extends TestCase {
     final String DIALOG_FAMILY_NAME = "Dialog"; 
     final String DIALOG_FACE_NAME = "Dialog.plain"; 
     
+    @Override
     public void setUp() throws Exception{
         super.setUp();
         physicalFont = new Font("Arial", Font.PLAIN, 12);
         dialogFont = new Font("dialog", Font.PLAIN, 12);
         
-    }
-    
-    public WinFontTest(String name) {
-        super(name);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*
@@ -235,6 +228,7 @@ public class WinFontTest extends TestCase {
     /*
      * Test method for 'java.awt.Font.deriveFont(AffineTransform)'
      */
+    @SuppressWarnings("unchecked")
     public final void testDeriveFontAffineTransform() {
         AffineTransform transform = new AffineTransform(1, 1, 1, 1, 0, 0);
         Font derivedFont = physicalFont.deriveFont(transform);
@@ -276,6 +270,7 @@ public class WinFontTest extends TestCase {
     /*
      * Test method for 'java.awt.Font.deriveFont(int, AffineTransform)'
      */
+    @SuppressWarnings("unchecked")
     public final void testDeriveFontIntAffineTransform() {
         AffineTransform transform = new AffineTransform(1, 1, 1, 1, 0, 0);
         int style = Font.ITALIC;
@@ -335,14 +330,14 @@ public class WinFontTest extends TestCase {
         Map<TextAttribute, ?> attributes = physicalFont.getAttributes();
 
         // size
-        assertEquals(physicalFont.getSize(), (Float)attributes.get(TextAttribute.SIZE), 0.0);
+        assertEquals(physicalFont.getSize(), ((Float)attributes.get(TextAttribute.SIZE)).floatValue(), 0F);
         
         // style
         Float posture = (Float)attributes.get(TextAttribute.POSTURE);
-        assertEquals(TextAttribute.POSTURE_REGULAR, posture, .0);
+        assertEquals(TextAttribute.POSTURE_REGULAR.doubleValue(), posture.doubleValue(), 0F);
         
         Float weight = (Float)attributes.get(TextAttribute.WEIGHT);
-        assertEquals(TextAttribute.WEIGHT_REGULAR, weight, .0);
+        assertEquals(TextAttribute.WEIGHT_REGULAR.floatValue(), weight.floatValue(), 0F);
         
         // family
         String family = (String)attributes.get(TextAttribute.FAMILY);
@@ -370,8 +365,8 @@ public class WinFontTest extends TestCase {
         Attribute[] attribs = physicalFont.getAvailableAttributes();
         assertNotNull(attribs);
         assertEquals(7, attribs.length);
-        for (int i=0; i < attribs.length; i++){
-            assertTrue(attribs[i] + " attribute missed", attributes.indexOf(attribs[i])!= -1);
+        for (Attribute element : attribs) {
+            assertTrue(element + " attribute missed", attributes.indexOf(element)!= -1);
         }
 
     }
@@ -561,6 +556,7 @@ public class WinFontTest extends TestCase {
     /*
      * Test method for 'java.awt.Font.getPeer()'
      */
+    @SuppressWarnings("deprecation")
     public final void testGetPeer() {
         assertNotNull(physicalFont.getPeer());
     }
@@ -681,7 +677,7 @@ public class WinFontTest extends TestCase {
      * Test method for 'java.awt.Font.getSize2D()'
      */
     public final void testGetSize2D() {
-        assertEquals((float)physicalFont.getSize(), physicalFont.getSize2D(), .0);
+        assertEquals(physicalFont.getSize(), physicalFont.getSize2D(), .0);
     }
 
     /*

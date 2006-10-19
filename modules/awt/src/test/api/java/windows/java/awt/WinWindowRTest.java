@@ -41,6 +41,7 @@ public class WinWindowRTest extends TestCase {
     public final void testSetVisible() throws Throwable {
         Frame frame = new Frame();
         frame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowOpened(WindowEvent e) {
                 try {
                 assertTrue("window is focused before opened", 

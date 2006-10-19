@@ -42,6 +42,8 @@ public class WinFontMetricsTest extends TestCase {
     Graphics g;
     FontMetrics fm;
     
+    @SuppressWarnings("deprecation")
+    @Override
     public void setUp() throws Exception{
         super.setUp();
         physicalFont = new Font("Arial", Font.PLAIN, 12);
@@ -51,18 +53,11 @@ public class WinFontMetricsTest extends TestCase {
         g = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB).getGraphics();
         g.setFont(physicalFont);
     }
-    
-    public WinFontMetricsTest(String name) {
-        super(name);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /*
      * Test method for 'java.awt.FontMetrics.FontMetrics(Font)'
      */
+    @SuppressWarnings("deprecation")
     public final void testFontMetrics() {
         FontMetrics fMetrics = Toolkit.getDefaultToolkit().getFontMetrics(physicalFont);
         assertNotNull(fMetrics);
@@ -337,6 +332,7 @@ public class WinFontMetricsTest extends TestCase {
     /*
      * Test method for 'java.awt.FontMetrics.getMaxDecent()'
      */
+    @SuppressWarnings("deprecation")
     public final void testGetMaxDecent() {
         int maxDecent = 3;
         assertEquals(maxDecent, fm.getMaxDecent());
@@ -378,6 +374,7 @@ public class WinFontMetricsTest extends TestCase {
 
     }
     
+    @SuppressWarnings("boxing")
     private boolean lmEquals(LineMetrics lm1, LineMetrics lm2){
         assertEquals("Ascent", lm1.getAscent(), lm2.getAscent());
         assertEquals("Baseline Index", lm1.getBaselineIndex(), lm2.getBaselineIndex());
