@@ -36,6 +36,7 @@ public class ScrollPaneTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         scrollPane = new ScrollPane();
@@ -44,6 +45,7 @@ public class ScrollPaneTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -105,7 +107,7 @@ public class ScrollPaneTest extends TestCase {
         });
 
         scrollPane.processEvent(new MouseWheelEvent(scrollPane,
-                                              MouseWheelEvent.MOUSE_WHEEL,
+                                              MouseEvent.MOUSE_WHEEL,
                                               0l, 0, 100, 200, 0, false,
                                               MouseWheelEvent.WHEEL_BLOCK_SCROLL,
                                               10, 10));
@@ -183,7 +185,7 @@ public class ScrollPaneTest extends TestCase {
     }
 
     public final void testEventTypeEnabled() {
-        assertTrue(scrollPane.eventTypeEnabled(MouseWheelEvent.MOUSE_WHEEL));
+        assertTrue(scrollPane.eventTypeEnabled(MouseEvent.MOUSE_WHEEL));
         assertFalse(scrollPane.eventTypeEnabled(MouseEvent.MOUSE_PRESSED));
     }
 
@@ -264,10 +266,10 @@ public class ScrollPaneTest extends TestCase {
     public final void testSetWheelScrollingEnabled() {
         scrollPane.setWheelScrollingEnabled(false);
         assertFalse(scrollPane.isWheelScrollingEnabled());
-        assertFalse(scrollPane.eventTypeEnabled(MouseWheelEvent.MOUSE_WHEEL));
+        assertFalse(scrollPane.eventTypeEnabled(MouseEvent.MOUSE_WHEEL));
         scrollPane.setWheelScrollingEnabled(true);
         assertTrue(scrollPane.isWheelScrollingEnabled());
-        assertTrue(scrollPane.eventTypeEnabled(MouseWheelEvent.MOUSE_WHEEL));
+        assertTrue(scrollPane.eventTypeEnabled(MouseEvent.MOUSE_WHEEL));
     }
 
 }

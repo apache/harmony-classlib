@@ -31,11 +31,13 @@ public class Arc2DFloatTest extends GeomTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         a = new Arc2D.Float(1, 2, 3, 4, 5, 6, Arc2D.PIE);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         a = null;
         super.tearDown();

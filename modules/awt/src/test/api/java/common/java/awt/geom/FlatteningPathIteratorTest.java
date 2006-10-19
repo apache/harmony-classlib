@@ -33,12 +33,14 @@ public class FlatteningPathIteratorTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         p = new Rectangle(1, 2, 3, 4).getPathIterator(null);
         fp = new FlatteningPathIterator(p, 10, 5);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         fp = null;
         super.tearDown();

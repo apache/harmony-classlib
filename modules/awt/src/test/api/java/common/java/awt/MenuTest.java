@@ -27,7 +27,7 @@ package java.awt;
 import java.awt.event.*;
 
 import junit.framework.TestCase;
-
+@SuppressWarnings("serial")
 public class MenuTest extends TestCase {
     public void testAddRemove() {
         Component comp = new Component() {};

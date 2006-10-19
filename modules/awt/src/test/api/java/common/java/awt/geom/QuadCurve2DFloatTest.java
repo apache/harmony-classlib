@@ -28,11 +28,13 @@ public class QuadCurve2DFloatTest extends GeomTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         q = new QuadCurve2D.Float(1, 2, 3, 4, 5, 6);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         q = null;
         super.tearDown();
@@ -89,16 +91,16 @@ public class QuadCurve2DFloatTest extends GeomTestCase {
     }
 
     public void testGetBounds2D() {
-        for(int i = 0; i < QuadCurve2DTest.bounds.length; i++) {
+        for (double[][] element : QuadCurve2DTest.bounds) {
             QuadCurve2D curve = new QuadCurve2D.Float();
-            curve.setCurve(QuadCurve2DTest.bounds[i][0], 0);
+            curve.setCurve(element[0], 0);
             assertEquals(
                     quadToStr(curve),
                     new Rectangle2D.Float(
-                            (int)QuadCurve2DTest.bounds[i][1][0],
-                            (int)QuadCurve2DTest.bounds[i][1][1],
-                            (int)QuadCurve2DTest.bounds[i][1][2],
-                            (int)QuadCurve2DTest.bounds[i][1][3]),
+                            (int)element[1][0],
+                            (int)element[1][1],
+                            (int)element[1][2],
+                            (int)element[1][3]),
                     curve.getBounds2D());
         }
     }

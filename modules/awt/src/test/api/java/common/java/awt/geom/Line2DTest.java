@@ -121,11 +121,13 @@ public class Line2DTest extends PathIteratorTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         l = new Line2D.Double(1, 2, 3, 4);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         l = null;
         super.tearDown();
@@ -142,18 +144,18 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testGetBounds(){
-        for(int i = 0; i < bounds.length; i++) {
+        for (int[][] element : bounds) {
             assertEquals(
                     new Rectangle(
-                            bounds[i][1][0],
-                            bounds[i][1][1],
-                            bounds[i][1][2],
-                            bounds[i][1][3]),
+                            element[1][0],
+                            element[1][1],
+                            element[1][2],
+                            element[1][3]),
                     new Line2D.Double(
-                            bounds[i][0][0],
-                            bounds[i][0][1],
-                            bounds[i][0][2],
-                            bounds[i][0][3]).getBounds());
+                            element[0][0],
+                            element[0][1],
+                            element[0][2],
+                            element[0][3]).getBounds());
         }
     }
 
@@ -162,90 +164,90 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testRelativeCCW1() {
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.relativeCCW(" + x + "," + y + ") failed",
-                    (int)points[i][2],
+                    (int)element[2],
                     Line2D.relativeCCW(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x, y)
             );
         }
     }
 
     public void testRelativeCCW2() {
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.relativeCCW(" + x + "," + y + ") failed",
-                    (int)points[i][2],
+                    (int)element[2],
                     l.relativeCCW(x, y)
             );
         }
     }
 
     public void testRelativeCCW3() {
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.relativeCCW(" + x + "," + y + ") failed",
-                    (int)points[i][2],
+                    (int)element[2],
                     l.relativeCCW(new Point(x, y))
             );
         }
     }
 
     public void testLinesIntersect(){
-        for(int i = 0; i < lines.length; i++) {
-            int x1 = lines[i][0];
-            int y1 = lines[i][1];
-            int x2 = lines[i][2];
-            int y2 = lines[i][3];
+        for (int[] element : lines) {
+            int x1 = element[0];
+            int y1 = element[1];
+            int x2 = element[2];
+            int y2 = element[3];
             assertEquals(
                     "Line2D.intersectsLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed",
-                    lines[i][4] == 1,
+                    element[4] == 1,
                     Line2D.linesIntersect(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x1, y1, x2, y2)
             );
         }
     }
 
     public void testIntersectsLine1(){
-        for(int i = 0; i < lines.length; i++) {
-            int x1 = lines[i][0];
-            int y1 = lines[i][1];
-            int x2 = lines[i][2];
-            int y2 = lines[i][3];
+        for (int[] element : lines) {
+            int x1 = element[0];
+            int y1 = element[1];
+            int x2 = element[2];
+            int y2 = element[3];
             assertEquals(
                     "Line2D.intersectsLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed",
-                    lines[i][4] == 1,
+                    element[4] == 1,
                     l.intersectsLine(x1, y1, x2, y2)
             );
         }
     }
 
     public void testIntersectsLine2(){
-        for(int i = 0; i < lines.length; i++) {
-            int x1 = lines[i][0];
-            int y1 = lines[i][1];
-            int x2 = lines[i][2];
-            int y2 = lines[i][3];
+        for (int[] element : lines) {
+            int x1 = element[0];
+            int y1 = element[1];
+            int x2 = element[2];
+            int y2 = element[3];
             assertEquals(
                     "Line2D.intersectsLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed",
-                    lines[i][4] == 1,
+                    element[4] == 1,
                     l.intersectsLine(new Line2D.Double(x1, y1, x2, y2))
             );
         }
     }
 
     public void testPtSegDistSq1(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDistSq(" + x + "," + y + ") failed",
-                    points[i][3],
+                    element[3],
                     Line2D.ptSegDistSq(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x, y),
                     DELTA
             );
@@ -253,12 +255,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtSegDistSq2(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDistSq(" + x + "," + y + ") failed",
-                    points[i][3],
+                    element[3],
                     l.ptSegDistSq(x, y),
                     DELTA
             );
@@ -266,12 +268,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtSegDistSq3(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDistSq(" + x + "," + y + ") failed",
-                    points[i][3],
+                    element[3],
                     l.ptSegDistSq(new Point(x, y)),
                     DELTA
             );
@@ -279,12 +281,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtSegDist1(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][3]),
+                    Math.sqrt(element[3]),
                     Line2D.ptSegDist(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x, y),
                     DELTA
             );
@@ -292,12 +294,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtSegDist2(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][3]),
+                    Math.sqrt(element[3]),
                     l.ptSegDist(x, y),
                     DELTA
             );
@@ -305,12 +307,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtSegDist3(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptSegDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][3]),
+                    Math.sqrt(element[3]),
                     l.ptSegDist(new Point(x, y)),
                     DELTA
             );
@@ -318,12 +320,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDistSq1(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDistSq(" + x + "," + y + ") failed",
-                    points[i][4],
+                    element[4],
                     Line2D.ptLineDistSq(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x, y),
                     DELTA
             );
@@ -331,12 +333,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDistSq2(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDistSq(" + x + "," + y + ") failed",
-                    points[i][4],
+                    element[4],
                     l.ptLineDistSq(x, y),
                     DELTA
             );
@@ -344,12 +346,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDistSq3(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDistSq(" + x + "," + y + ") failed",
-                    points[i][4],
+                    element[4],
                     l.ptLineDistSq(new Point(x, y)),
                     DELTA
             );
@@ -357,12 +359,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDist1(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][4]),
+                    Math.sqrt(element[4]),
                     Line2D.ptLineDist(l.getX1(), l.getY1(), l.getX2(), l.getY2(), x, y),
                     DELTA
             );
@@ -370,12 +372,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDist2(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][4]),
+                    Math.sqrt(element[4]),
                     l.ptLineDist(x, y),
                     DELTA
             );
@@ -383,12 +385,12 @@ public class Line2DTest extends PathIteratorTestCase {
     }
 
     public void testPtLineDist3(){
-        for(int i = 0; i < points.length; i++) {
-            int x = (int)points[i][0];
-            int y = (int)points[i][1];
+        for (double[] element : points) {
+            int x = (int)element[0];
+            int y = (int)element[1];
             assertEquals(
                     "Line2D.ptLineDist(" + x + "," + y + ") failed",
-                    Math.sqrt(points[i][4]),
+                    Math.sqrt(element[4]),
                     l.ptLineDist(new Point(x, y)),
                     DELTA
             );

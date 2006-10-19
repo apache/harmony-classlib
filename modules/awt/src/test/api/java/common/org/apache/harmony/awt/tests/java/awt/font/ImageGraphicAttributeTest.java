@@ -32,18 +32,6 @@ public class ImageGraphicAttributeTest extends TestCase {
     int height = 10;
     Image img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     int alignment =  GraphicAttribute.ROMAN_BASELINE;
-    
-    public ImageGraphicAttributeTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /*
      * Test method for 'java.awt.font.ImageGraphicAttribute.getAdvance()'
@@ -54,10 +42,10 @@ public class ImageGraphicAttributeTest extends TestCase {
         float xOrigin1 = 15;
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin);
-        assertEquals(img.getWidth(null) - xOrigin, iga.getAdvance());
+        assertEquals(img.getWidth(null) - xOrigin, iga.getAdvance(), 0F);
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin1, yOrigin);
-        assertEquals((float)0, iga.getAdvance());
+        assertEquals(0, iga.getAdvance(), 0F);
     }
 
     /*
@@ -69,10 +57,10 @@ public class ImageGraphicAttributeTest extends TestCase {
         float yOrigin1 = -5;
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin);
-        assertEquals(yOrigin, iga.getAscent());
+        assertEquals(yOrigin, iga.getAscent(), 0F);
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin1);
-        assertEquals((float)0, iga.getAscent());
+        assertEquals(0, iga.getAscent(), 0F);
     }
 
     /*
@@ -100,10 +88,10 @@ public class ImageGraphicAttributeTest extends TestCase {
         float yOrigin1 = 15;
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin);
-        assertEquals(img.getHeight(null) - yOrigin, iga.getDescent());
+        assertEquals(img.getHeight(null) - yOrigin, iga.getDescent(), 0F);
 
         iga = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin1);
-        assertEquals((float)0, iga.getDescent());
+        assertEquals(0, iga.getDescent(), 0F);
         
     }
 
@@ -114,9 +102,9 @@ public class ImageGraphicAttributeTest extends TestCase {
         ImageGraphicAttribute igAttribute = new ImageGraphicAttribute(img, alignment);
         assertNotNull(igAttribute);
         assertEquals(alignment, igAttribute.getAlignment());
-        assertEquals((float)width, igAttribute.getAdvance());
-        assertEquals((float)0, igAttribute.getAscent());
-        assertEquals((float)height, igAttribute.getDescent());
+        assertEquals(width, igAttribute.getAdvance(), 0F);
+        assertEquals(0, igAttribute.getAscent(), 0F);
+        assertEquals(height, igAttribute.getDescent(), 0F);
         assertEquals(new Rectangle2D.Float(0, 0, img.getWidth(null), img.getHeight(null)), 
                 igAttribute.getBounds());
 
@@ -145,9 +133,9 @@ public class ImageGraphicAttributeTest extends TestCase {
         ImageGraphicAttribute igAttribute = new ImageGraphicAttribute(img, alignment, xOrigin, yOrigin);
         assertNotNull(igAttribute);
         assertEquals(alignment, igAttribute.getAlignment());
-        assertEquals((float)width - xOrigin, igAttribute.getAdvance());
-        assertEquals(yOrigin, igAttribute.getAscent());
-        assertEquals((float)height - yOrigin, igAttribute.getDescent());
+        assertEquals(width - xOrigin, igAttribute.getAdvance(), 0F);
+        assertEquals(yOrigin, igAttribute.getAscent(), 0F);
+        assertEquals(height - yOrigin, igAttribute.getDescent(), 0F);
         assertEquals(new Rectangle2D.Float(-xOrigin, -yOrigin, img.getWidth(null), img.getHeight(null)), 
                 igAttribute.getBounds());
 
@@ -182,7 +170,7 @@ public class ImageGraphicAttributeTest extends TestCase {
     public final void testEqualsObject() {
         iga = new ImageGraphicAttribute(img, alignment);
         ImageGraphicAttribute iga1 = new ImageGraphicAttribute(img, alignment);
-        assertEquals(iga, (Object)iga1);
+        assertEquals(iga, iga1);
     }
 
     /*
@@ -214,15 +202,15 @@ public class ImageGraphicAttributeTest extends TestCase {
     }
     
     private boolean equalsGlyphJustificationInfo(GlyphJustificationInfo info1, GlyphJustificationInfo info2){
-        assertEquals("weight", info1.weight, info2.weight);
+        assertEquals("weight", info1.weight, info2.weight, 0F);
         assertEquals("growAbsorb", info1.growAbsorb, info2.growAbsorb);
         assertEquals("growPriority", info1.growPriority, info2.growPriority);
-        assertEquals("growLeftLimit", info1.growLeftLimit, info2.growLeftLimit);
-        assertEquals("growRightLimit", info1.growRightLimit, info2.growRightLimit);
+        assertEquals("growLeftLimit", info1.growLeftLimit, info2.growLeftLimit, 0F);
+        assertEquals("growRightLimit", info1.growRightLimit, info2.growRightLimit, 0F);
         assertEquals("shrinkAbsorb", info1.shrinkAbsorb, info2.shrinkAbsorb);
         assertEquals("shrinkPriority", info1.shrinkPriority, info2.shrinkPriority);
-        assertEquals("shrinkLeftLimit", info1.shrinkLeftLimit, info2.shrinkLeftLimit);
-        assertEquals("shrinkRightLimit", info1.shrinkRightLimit, info2.shrinkRightLimit);
+        assertEquals("shrinkLeftLimit", info1.shrinkLeftLimit, info2.shrinkLeftLimit, 0F);
+        assertEquals("shrinkRightLimit", info1.shrinkRightLimit, info2.shrinkRightLimit, 0F);
         
         return true;
     }

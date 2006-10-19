@@ -152,6 +152,7 @@ public class DropTargetContextTest extends TestCase {
             value = v;
         }
         
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof NotSerializable) {
                 NotSerializable ns = (NotSerializable)obj;
@@ -162,6 +163,7 @@ public class DropTargetContextTest extends TestCase {
             return false;
         }
         
+        @Override
         public int hashCode() {
             int h = (name != null) ? name.hashCode() : 8726345;
             return (h^value);
@@ -174,11 +176,13 @@ public class DropTargetContextTest extends TestCase {
         junit.textui.TestRunner.run(DropTargetContextTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         dt = new DropTarget();
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -353,6 +357,7 @@ public class DropTargetContextTest extends TestCase {
                 c.getCurrentDataFlavorsAsList().get(0));
     }
 
+    @SuppressWarnings("serial")
     public void testGetComponent() {
         Component comp = new Component() {};
         dt.setComponent(comp);

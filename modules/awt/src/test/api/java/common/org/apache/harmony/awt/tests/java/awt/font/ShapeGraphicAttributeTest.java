@@ -41,25 +41,17 @@ public class ShapeGraphicAttributeTest extends TestCase {
         super(name);
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /*
      * Test method for 'java.awt.font.ShapeGraphicAttribute.getAdvance()'
      */
     public final void testGetAdvance() {
 
         sga = new ShapeGraphicAttribute(shape, alignment, stroke);
-        assertEquals((float)shape.getBounds2D().getWidth() + xOrigin, sga.getAdvance());
+        assertEquals((float)shape.getBounds2D().getWidth() + xOrigin, sga.getAdvance(), 0F);
         
         Shape trShape = AffineTransform.getTranslateInstance(-20, 0).createTransformedShape(shape);
         sga = new ShapeGraphicAttribute(trShape, alignment, stroke);
-        assertEquals((float)0, sga.getAdvance());
+        assertEquals(0, sga.getAdvance(), 0F);
     }
 
     /*
@@ -67,11 +59,11 @@ public class ShapeGraphicAttributeTest extends TestCase {
      */
     public final void testGetAscent() {
         sga = new ShapeGraphicAttribute(shape, alignment, stroke);
-        assertEquals((float)0, sga.getAscent());
+        assertEquals(0, sga.getAscent(), 0F);
 
         Shape trShape = AffineTransform.getTranslateInstance(0, -30).createTransformedShape(shape);
         sga = new ShapeGraphicAttribute(trShape, alignment, stroke);
-        assertEquals(-(float)trShape.getBounds2D().getMinY(), sga.getAscent());
+        assertEquals(-(float)trShape.getBounds2D().getMinY(), sga.getAscent(), 0F);
 
     }
 
@@ -90,11 +82,11 @@ public class ShapeGraphicAttributeTest extends TestCase {
      */
     public final void testGetDescent() {
         sga = new ShapeGraphicAttribute(shape, alignment, stroke);
-        assertEquals((float)shape.getBounds2D().getMinY() + height, sga.getDescent());
+        assertEquals((float)shape.getBounds2D().getMinY() + height, sga.getDescent(), 0F);
 
         Shape trShape = AffineTransform.getTranslateInstance(0, -30).createTransformedShape(shape);
         sga = new ShapeGraphicAttribute(trShape, alignment, stroke);
-        assertEquals((float)0, sga.getDescent());
+        assertEquals(0, sga.getDescent(), 0F);
     }
 
     /*
@@ -104,9 +96,9 @@ public class ShapeGraphicAttributeTest extends TestCase {
         ShapeGraphicAttribute shAttribute = new ShapeGraphicAttribute(shape, alignment, stroke);
         assertNotNull(shAttribute);
         assertEquals(alignment, shAttribute.getAlignment());
-        assertEquals((float)shape.getBounds2D().getMaxX(), shAttribute.getAdvance());
-        assertEquals((float)0, shAttribute.getAscent());
-        assertEquals((float)shape.getBounds2D().getMinY() + height, shAttribute.getDescent());
+        assertEquals((float)shape.getBounds2D().getMaxX(), shAttribute.getAdvance(), 0F);
+        assertEquals(0, shAttribute.getAscent(), 0F);
+        assertEquals((float)shape.getBounds2D().getMinY() + height, shAttribute.getDescent(), 0F);
 
         Rectangle2D.Float bounds = (Rectangle2D.Float)shape.getBounds2D();
         if (stroke == ShapeGraphicAttribute.STROKE){
@@ -178,15 +170,15 @@ public class ShapeGraphicAttributeTest extends TestCase {
     }
 
     private boolean equalsGlyphJustificationInfo(GlyphJustificationInfo info1, GlyphJustificationInfo info2){
-        assertEquals("weight", info1.weight, info2.weight);
+        assertEquals("weight", info1.weight, info2.weight, 0F);
         assertEquals("growAbsorb", info1.growAbsorb, info2.growAbsorb);
         assertEquals("growPriority", info1.growPriority, info2.growPriority);
-        assertEquals("growLeftLimit", info1.growLeftLimit, info2.growLeftLimit);
-        assertEquals("growRightLimit", info1.growRightLimit, info2.growRightLimit);
+        assertEquals("growLeftLimit", info1.growLeftLimit, info2.growLeftLimit, 0F);
+        assertEquals("growRightLimit", info1.growRightLimit, info2.growRightLimit, 0F);
         assertEquals("shrinkAbsorb", info1.shrinkAbsorb, info2.shrinkAbsorb);
         assertEquals("shrinkPriority", info1.shrinkPriority, info2.shrinkPriority);
-        assertEquals("shrinkLeftLimit", info1.shrinkLeftLimit, info2.shrinkLeftLimit);
-        assertEquals("shrinkRightLimit", info1.shrinkRightLimit, info2.shrinkRightLimit);
+        assertEquals("shrinkLeftLimit", info1.shrinkLeftLimit, info2.shrinkLeftLimit, 0F);
+        assertEquals("shrinkRightLimit", info1.shrinkRightLimit, info2.shrinkRightLimit, 0F);
         
         return true;
     }

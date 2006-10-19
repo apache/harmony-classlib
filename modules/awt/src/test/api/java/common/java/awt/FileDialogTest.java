@@ -36,6 +36,7 @@ public class FileDialogTest extends TestCase {
     public static void main(String[] args) {
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
@@ -43,6 +44,7 @@ public class FileDialogTest extends TestCase {
         fd = new FileDialog(frame);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (frame != null) {

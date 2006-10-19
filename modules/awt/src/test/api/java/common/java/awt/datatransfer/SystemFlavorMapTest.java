@@ -83,7 +83,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testGetFlavorsForNative() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<DataFlavor> list;
 
         map.addFlavorForUnencodedNative("1nat1", new DataFlavor("1data1/flavor", "flav1"));
         map.addFlavorForUnencodedNative("1nat1", new DataFlavor("1data2/flavor", "flav2"));
@@ -105,7 +105,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testGetNativesForFlavor() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<String> list;
 
         map.addUnencodedNativeForFlavor(new DataFlavor("2data1/flavor", "flav1"), "2nat1");
         map.addUnencodedNativeForFlavor(new DataFlavor("2data1/flavor", "flav1"), "2nat2");
@@ -127,7 +127,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testGetFlavorsForNatives() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        Map submap;
+        Map<String, DataFlavor> submap;
 
         map.addFlavorForUnencodedNative("3nat1", new DataFlavor("3data1/flavor", "flav1"));
         map.addFlavorForUnencodedNative("3nat1", new DataFlavor("3data2/flavor", "flav2"));
@@ -146,7 +146,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testGetNativesForFlavors() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        Map submap;
+        Map<DataFlavor, String> submap;
 
         map.addUnencodedNativeForFlavor(new DataFlavor("4data1/flavor", "flav1"), "4nat1");
         map.addUnencodedNativeForFlavor(new DataFlavor("4data1/flavor", "flav1"), "4nat2");
@@ -165,7 +165,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testAddUnencodedNativeForFlavor() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<String> list;
 
         map.addUnencodedNativeForFlavor(new DataFlavor("5data1/flavor", "flav1"), "5nat1");
         map.addUnencodedNativeForFlavor(new DataFlavor("5data1/flavor", "flav1"), "5nat2");
@@ -179,7 +179,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testAddFlavorForUnencodedNative() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<DataFlavor> list;
 
         map.addFlavorForUnencodedNative("6nat1", new DataFlavor("6data1/flavor", "flav1"));
         map.addFlavorForUnencodedNative("6nat1", new DataFlavor("6data2/flavor", "flav2"));
@@ -193,7 +193,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testSetNativesForFlavor() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<String> list;
 
         map.addUnencodedNativeForFlavor(new DataFlavor("7data1/flavor", "flav1"), "77nat1");
         map.setNativesForFlavor(new DataFlavor("7data1/flavor", "flav1"), new String[] {"7nat10", "7nat11"});
@@ -206,7 +206,7 @@ public class SystemFlavorMapTest extends TestCase {
 
     public final void testSetFlavorsForNative() {
         SystemFlavorMap map = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        List list;
+        List<DataFlavor> list;
 
         map.addFlavorForUnencodedNative("8nat1", new DataFlavor("88data1/flavor", "flav1"));
         map.setFlavorsForNative("8nat1", new DataFlavor[] {new DataFlavor("8data10/flavor", "flav1"),

@@ -24,7 +24,6 @@ import java.awt.Button;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
 import java.util.Set;
-
 import junit.framework.TestCase;
 
 public class InputMethodEventTest extends TestCase {
@@ -173,57 +172,76 @@ public class InputMethodEventTest extends TestCase {
         public int getRunStart() {
             return 0;
         }
+
         public int getRunStart(Attribute arg0) {
             return 0;
         }
-        public int getRunStart(Set arg0) {
+
+        public int getRunStart(Set<? extends Attribute> arg0) {
             return 0;
         }
+
         public int getRunLimit() {
             return 0;
         }
+
         public int getRunLimit(Attribute arg0) {
             return 0;
         }
-        public int getRunLimit(Set arg0) {
+
+        public int getRunLimit(Set<? extends Attribute> arg0) {
             return 0;
         }
-        public Map getAttributes() {
+
+        public Set<Attribute> getAllAttributeKeys() {
             return null;
         }
+
         public Object getAttribute(Attribute arg0) {
             return null;
         }
-        public Set getAllAttributeKeys() {
+
+        public Map<Attribute, Object> getAttributes() {
             return null;
         }
+
         public char first() {
             return 0;
         }
+
         public char last() {
             return 0;
         }
+
         public char current() {
             return 0;
         }
+
         public char next() {
             return 0;
         }
+
         public char previous() {
             return 0;
         }
+
         public char setIndex(int arg0) {
             return 0;
         }
+
         public int getBeginIndex() {
             return 0;
         }
+
         public int getEndIndex() {
             return 0;
         }
+
         public int getIndex() {
             return 0;
         }
+
+        @Override
         public Object clone() {
             return null;
         }

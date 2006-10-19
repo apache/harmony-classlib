@@ -33,11 +33,13 @@ public class FontRenderContextTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frc = new FontRenderContext(at, isAA, usesFractionalMetrics);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

@@ -36,9 +36,9 @@ import java.util.Map;
 
 public class TextLayoutTest extends TestCase
 {
-    private int width = 500;
-    private int height = 200;
-    private BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    private final int width = 500;
+    private final int height = 200;
+    private final BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     TextLayout tl;
 
     String strings[] = new String [] {
@@ -55,13 +55,15 @@ public class TextLayoutTest extends TestCase
     Font f1 = new Font("times new roman", Font.PLAIN, 60);
     FontRenderContext frc = ((Graphics2D) im.getGraphics()).getFontRenderContext();
 
-    private int layoutStartX = 1, layoutStartY;
+    private final int layoutStartX = 1;
+    private int layoutStartY;
 
     public TextLayoutTest(String name)
     {
         super(name);
     }
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -89,6 +91,7 @@ public class TextLayoutTest extends TestCase
         tl.draw(g2, 1, layoutStartY);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();
@@ -96,12 +99,15 @@ public class TextLayoutTest extends TestCase
 
     public void testHashCode() throws Exception
     {
-        for(int i=0; i<strings.length; i++)
-            for(int j=0; j<strings.length; j++)
-                if(i == j)
+        for(int i=0; i<strings.length; i++) {
+            for(int j=0; j<strings.length; j++) {
+                if(i == j) {
                     assertTrue("HashCode " + equals[i] + " " + equals[j], equals[i].hashCode() == equals[j].hashCode());
-                else
+                } else {
                     assertTrue("HashCode " + equals[i] + " " + equals[j], equals[i].hashCode() != equals[j].hashCode());
+                }
+            }
+        }
     }
 
     public void testClone() throws Exception
@@ -111,12 +117,15 @@ public class TextLayoutTest extends TestCase
 
     public void testEquals() throws Exception
     {
-        for(int i=0; i<strings.length; i++)
-            for(int j=0; j<strings.length; j++)
-                if(i == j)
+        for(int i=0; i<strings.length; i++) {
+            for(int j=0; j<strings.length; j++) {
+                if(i == j) {
                     assertTrue(equals[i].equals(equals[j]));
-                else
+                } else {
                     assertFalse(equals[i].equals(equals[j]));
+                }
+            }
+        }
     }
 
     public void testToString() throws Exception
@@ -133,13 +142,14 @@ public class TextLayoutTest extends TestCase
     {
         int left = im.getWidth(), right = 0;
 
-        for(int i=0; i<im.getWidth(); i++)
+        for(int i=0; i<im.getWidth(); i++) {
             for(int j=0; j<im.getHeight(); j++) {
                 if(im.getRGB(i,j) != 0xFFFFFFFF) {
                     left = Math.min(i, left);
                     right = Math.max(i, right);
                 }
             }
+        }
         assertEquals((int) tl.getAdvance(), right - left, 3);
     }
 
@@ -185,8 +195,9 @@ public class TextLayoutTest extends TestCase
                 }
             }
             // Want to get only first letter
-            if(!hasPoint && pointsStarted)
+            if(!hasPoint && pointsStarted) {
                 break;
+            }
         }
 
         return new int[] {left, top, right, bottom};
@@ -210,7 +221,7 @@ public class TextLayoutTest extends TestCase
     {
         int left = im.getWidth(), right = 0, top = 0, bottom = im.getHeight();
 
-        for(int i=0; i<im.getWidth(); i++)
+        for(int i=0; i<im.getWidth(); i++) {
             for(int j=0; j<im.getHeight(); j++) {
                 if(im.getRGB(i,j) != 0xFFFFFFFF) {
                     left = Math.min(i, left);
@@ -219,6 +230,7 @@ public class TextLayoutTest extends TestCase
                     bottom = Math.min(j, bottom);
                 }
             }
+        }
 
         Rectangle2D rect = tl.getBounds();
         Rectangle2D intRect =
@@ -264,8 +276,9 @@ public class TextLayoutTest extends TestCase
             if(im.getRGB(i, letterBounds[3]) != 0xFFFFFFFF) {
                 started = true;
             } else {
-                if(started)
+                if(started) {
                     break;
+                }
             }
         }
         int bottomRight = i - 1;
@@ -519,10 +532,12 @@ public class TextLayoutTest extends TestCase
 
                 for(int dx=-3; dx<4; dx++) {
                     for(int dy=-2; dy<3; dy++) {
-                        if(x+dx < 1 || x+dx > im.getWidth())
+                        if(x+dx < 1 || x+dx > im.getWidth()) {
                             continue;
-                        if(y+dy < 1 || y+dy > im.getHeight())
+                        }
+                        if(y+dy < 1 || y+dy > im.getHeight()) {
                             continue;
+                        }
 
                         if(im.getRGB(x+dx, y+dy) != 0xFFFFFFFF) {
                             passed = true;
@@ -531,8 +546,9 @@ public class TextLayoutTest extends TestCase
                     }
                 }
 
-                if(!passed)
+                if(!passed) {
                     fail("Outline contains point located too far from glyph");
+                }
             }
 
             pi.next();
@@ -695,20 +711,20 @@ public class TextLayoutTest extends TestCase
         }
 
         try {
-            new TextLayout(null, (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+            new TextLayout(null, new HashMap<Attribute, Object>(), (FontRenderContext) null);
         } catch (IllegalArgumentException e) {
             // as expected
         }
 
         try {
-            new TextLayout("aa", (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+            new TextLayout("aa", new HashMap<Attribute, Object>(), (FontRenderContext) null);
         } catch (NullPointerException e) {
             // as expected
         }
 
         
         try{
-            new TextLayout("", (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+            new TextLayout("", new HashMap<Attribute, Object>(), (FontRenderContext) null);
         } catch (IllegalArgumentException e) {
             // as expected
             System.out.println("success: " + e.getMessage());

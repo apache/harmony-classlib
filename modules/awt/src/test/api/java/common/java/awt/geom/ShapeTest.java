@@ -135,10 +135,12 @@ public abstract class ShapeTest extends GeomTestCase {
         new File(outputPath).mkdirs();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -240,7 +242,6 @@ public abstract class ShapeTest extends GeomTestCase {
             String fname = Tools.File.extractFileName(fileName);
             TextTokenizer t = new TextTokenizer(fname);
 
-            int type = 0;
             if (t.findString("rect(")) {
                 shape = new Rectangle2D.Double(
                         t.getDouble(),
@@ -350,10 +351,11 @@ public abstract class ShapeTest extends GeomTestCase {
 
     int[][] createImageBuffer(BufferedImage img) {
         int buf[][] = new int[img.getWidth()][img.getHeight()];
-        for(int x = 0; x < img.getWidth(); x++)
+        for(int x = 0; x < img.getWidth(); x++) {
             for(int y = 0; y < img.getHeight(); y++) {
                 buf[x][y] = img.getRGB(x, y);
             }
+        }
         return buf;
     }
 
@@ -387,7 +389,7 @@ public abstract class ShapeTest extends GeomTestCase {
             x2 = Math.max(r1[2], r2[2]);
             y2 = Math.max(r1[3], r2[3]);
         }
-        for(int x = x1; x <= x2; x++)
+        for(int x = x1; x <= x2; x++) {
             for(int y = y1; y <= y2; y++) {
                 boolean inside1 = r1 != null && r1[0] <= x && x <= r1[2] && r1[1] <= y && y <= r1[3];
                 boolean inside2 = r2 != null && r2[0] <= x && x <= r2[2] && r2[1] <= y && y <= r2[3];
@@ -411,6 +413,7 @@ public abstract class ShapeTest extends GeomTestCase {
                     }
                 }
             }
+        }
     }
 
     int getRectType(BufferedImage img, int buf[][], int rx, int ry, int rw, int rh, boolean usePrev) {
@@ -493,14 +496,14 @@ public abstract class ShapeTest extends GeomTestCase {
         int countErr = 0;
         try {
             Method method = this.getClass().getMethod(methodName, new Class[] {String.class, Object[].class});
-            for(int i = 0; i < tests.length; i++) {
-                Object res = method.invoke(this, new Object[] {tests[i], params});
+            for (String element : tests) {
+                Object res = method.invoke(this, new Object[] {element, params});
                 if (!((Boolean)res).booleanValue()) {
                     if (countErr == 0) {
                         System.out.println(name);
                     }
                     countErr++;
-                    System.out.println("Failed " + tests[i]);
+                    System.out.println("Failed " + element);
                 }
             }
         } catch(Exception e) {
@@ -526,7 +529,7 @@ public abstract class ShapeTest extends GeomTestCase {
             count = new int[]{0, 0, 0};
             prevRect = null;
 
-            for(int x = 0; x < img.getWidth() - RECT_WIDTH; x++)
+            for(int x = 0; x < img.getWidth() - RECT_WIDTH; x++) {
                 for(int y = 0; y < img.getHeight() - RECT_HEIGHT; y++) {
                     int rectType = getRectType(null, buf, x, y, RECT_WIDTH, RECT_HEIGHT, true);
                     if (rectType == 0) {
@@ -543,6 +546,7 @@ public abstract class ShapeTest extends GeomTestCase {
                         error = true;
                     }
                 }
+            }
 
             int errCount = 0;
             Random rnd = new Random();
@@ -592,6 +596,7 @@ public abstract class ShapeTest extends GeomTestCase {
             Shape shape = createShape(fileName);
             BufferedImage img = Tools.BufferedImage.loadIcon(fileName);
             int buf[][] = createImageBuffer(img);
+            assertNotNull(buf);
             Graphics g = img.getGraphics();
             g.setColor(errorColor);
 
@@ -627,7 +632,7 @@ public abstract class ShapeTest extends GeomTestCase {
         boolean error = false;
         Shape shape = createShape(fileName);
         BufferedImage img = Tools.BufferedImage.loadIcon(fileName);
-        for(int x = 0; x < img.getWidth(); x++)
+        for(int x = 0; x < img.getWidth(); x++) {
             for(int y = 0; y < img.getHeight(); y++) {
                 int color = getColor(img.getRGB(x, y));
                 boolean res = shape.contains(x, y);
@@ -638,6 +643,7 @@ public abstract class ShapeTest extends GeomTestCase {
                     error = true;
                 }
             }
+        }
         Tools.BufferedImage.saveIcon(img, outputPath + "cp_" + Tools.File.extractFileName(fileName));
         return !error;
     }
@@ -660,7 +666,6 @@ public abstract class ShapeTest extends GeomTestCase {
     }
 
     public boolean checkPathIterator(String fileName, Object[] params) {
-        boolean error = false;
         double flatness = getFlatness(fileName);
         AffineTransform at = createTransform(fileName);
         Shape shape1 = createShape(fileName);

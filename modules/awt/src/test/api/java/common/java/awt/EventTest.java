@@ -27,6 +27,7 @@ public class EventTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -34,6 +35,7 @@ public class EventTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -157,7 +159,7 @@ public class EventTest extends TestCase {
     public final void testShiftDown() {
         Button button = new Button("Test shift down");
         int id = Event.MOUSE_MOVE, x = 20, y = -30;
-        int key = (int) 'a';
+        int key = 'a';
         long when = 32*1048576l;
         int mod = 0;
         Event evt = new Event(button, when, id, x, y, key,

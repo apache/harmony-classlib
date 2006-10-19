@@ -25,10 +25,12 @@ import java.util.ResourceBundle;
 
 public class MyResourceBundle extends ResourceBundle {
 
-    public Enumeration getKeys() {
+    @Override
+    public Enumeration<String> getKeys() {
         return null;
     }
 
+    @Override
     protected Object handleGetObject(String name) {
         if (name == "Orientation") {
             return ComponentOrientation.RIGHT_TO_LEFT;

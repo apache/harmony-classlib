@@ -28,11 +28,13 @@ public class RoundRectangle2DFloatTest extends GeomTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         r = new RoundRectangle2D.Float(1, 2, 3, 4, 5, 6);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

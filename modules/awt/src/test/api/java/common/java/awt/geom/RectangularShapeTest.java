@@ -36,11 +36,13 @@ public class RectangularShapeTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         r = new Rectangle(1, 2, 3, 4);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         r = null;
         super.tearDown();

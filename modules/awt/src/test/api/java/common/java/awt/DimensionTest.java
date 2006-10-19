@@ -32,11 +32,13 @@ public class DimensionTest extends SerializeTestCase {
         serializePath = getSerializePath(Dimension.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         d = new Dimension(2, 3);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         d = null;
         super.tearDown();

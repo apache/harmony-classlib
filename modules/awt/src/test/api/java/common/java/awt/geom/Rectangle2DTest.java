@@ -118,11 +118,13 @@ public class Rectangle2DTest extends ShapeTestCase {
 //      filterShape = createFilter("^(rect).*([.]shape)$", null);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         r = new Rectangle2D.Double(1, 2, 3, 4);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         r = null;
         super.tearDown();
@@ -166,28 +168,28 @@ public class Rectangle2DTest extends ShapeTestCase {
 
     public void testIntersectsLine1() {
         Rectangle2D rr = new Rectangle2D.Double(1, 2, 3, 4);
-        for(int i = 0; i < lines.length; i++) {
-            int x1 = lines[i][0];
-            int y1 = lines[i][1];
-            int x2 = lines[i][2];
-            int y2 = lines[i][3];
+        for (int[] element : lines) {
+            int x1 = element[0];
+            int y1 = element[1];
+            int x2 = element[2];
+            int y2 = element[3];
             assertEquals(
                     "Rectangle2D.intersectsLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed",
-                    lines[i][4] == 1,
+                    element[4] == 1,
                     rr.intersectsLine(x1, y1, x2, y2));
         }
     }
 
     public void testIntersectsLine2() {
         Rectangle2D rr = new Rectangle2D.Double(1, 2, 3, 4);
-        for(int i = 0; i < lines.length; i++) {
-            int x1 = lines[i][0];
-            int y1 = lines[i][1];
-            int x2 = lines[i][2];
-            int y2 = lines[i][3];
+        for (int[] element : lines) {
+            int x1 = element[0];
+            int y1 = element[1];
+            int x2 = element[2];
+            int y2 = element[3];
             assertEquals(
                     "Rectangle2D.intersectsLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed",
-                    lines[i][4] == 1,
+                    element[4] == 1,
                     rr.intersectsLine(new Line2D.Double(x1, y1, x2, y2)));
         }
     }

@@ -32,20 +32,12 @@ public class ScrollbarTest extends TestCase {
     Scrollbar scrollbar;
     private boolean eventProcessed;
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         scrollbar = new Scrollbar();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     private void checkScrollbar(int orientation, int value, int visible,
                                 int min, int max, int unitInc, int blockInc) {
@@ -220,6 +212,7 @@ public class ScrollbarTest extends TestCase {
         assertEquals(10, scrollbar.getVisibleAmount());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetVisible() {
         assertEquals(10, scrollbar.getVisible());
     }
@@ -241,6 +234,7 @@ public class ScrollbarTest extends TestCase {
         assertEquals(1, scrollbar.getUnitIncrement());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetLineIncrement() {
         assertEquals(1, scrollbar.getLineIncrement());
     }
@@ -255,6 +249,7 @@ public class ScrollbarTest extends TestCase {
         assertEquals(unitIncr, scrollbar.getUnitIncrement());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testSetLineIncrement() {
         scrollbar.setLineIncrement(10);
         assertEquals(10, scrollbar.getLineIncrement());
@@ -264,6 +259,7 @@ public class ScrollbarTest extends TestCase {
         assertEquals(10, scrollbar.getBlockIncrement());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetPageIncrement() {
         assertEquals(10, scrollbar.getPageIncrement());
     }
@@ -278,6 +274,7 @@ public class ScrollbarTest extends TestCase {
         assertEquals(blockIncr, scrollbar.getBlockIncrement());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testSetPageIncrement() {
         scrollbar.setPageIncrement(3);
         assertEquals(3, scrollbar.getPageIncrement());
@@ -344,7 +341,7 @@ public class ScrollbarTest extends TestCase {
     }
 
     public void testGetListenersClass() {
-        Class cls = AdjustmentListener.class;
+        Class<AdjustmentListener> cls = AdjustmentListener.class;
         assertEquals(0, scrollbar.getListeners(cls).length);
 
         AdjustmentListener listener = new AdjustmentListener() {

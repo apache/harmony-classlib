@@ -21,8 +21,6 @@
 package java.awt;
 
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 
@@ -31,13 +29,18 @@ public class ContainerRTest extends TestCase {
 
     public final void testSetFocusTraversalKeys() {
         try {
-        Button btn = new Button();
-        btn.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, (Set<AWTKeyStroke>)new Container().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
-        fail("IllegalArgumentException expected");
-    }catch (IllegalArgumentException e) {
-    }
+            Button btn = new Button();
+            btn
+                    .setFocusTraversalKeys(
+                            KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS,
+                            new Container()
+                                    .getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+        }
     }
 
+    @SuppressWarnings("serial")
     public final void testAddNotify() {
         Container c1 = new Container(){};
         Container c2 = new Container(){};
@@ -63,8 +66,4 @@ public class ContainerRTest extends TestCase {
 //        }        
 //        assertTrue("remove(null) throws NPE", npeThrown);
 //    }
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ContainerRTest.class);
-    }
 }

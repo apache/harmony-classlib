@@ -30,21 +30,13 @@ public class ListTest extends TestCase {
     private List list;
     private boolean eventProcessed;
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         list = new List();
         eventProcessed = false;
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     private void selectCurrentItem() {
         list.setMultipleMode(true);
@@ -127,6 +119,7 @@ public class ListTest extends TestCase {
     public final void testProcessEvent() {
         eventProcessed = false;
         list.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent a0) {
                 eventProcessed = true;
             }
@@ -139,7 +132,7 @@ public class ListTest extends TestCase {
         assertEquals(0, list.getListeners(KeyListener.class).length);
         KeyAdapter listener = new KeyAdapter(){};
         list.addKeyListener(listener);
-        Class clazz =  KeyListener.class;
+        Class<KeyListener> clazz =  KeyListener.class;
         assertEquals(1, list.getListeners(clazz).length);
         assertEquals(listener, list.getListeners(clazz)[0]);
         list.removeKeyListener(listener);
@@ -352,6 +345,7 @@ public class ListTest extends TestCase {
         // TODO: deprecated
     }
 
+    @SuppressWarnings("deprecation")
     public final void testDelItems() {
         String item = "item";
         list.add(item);

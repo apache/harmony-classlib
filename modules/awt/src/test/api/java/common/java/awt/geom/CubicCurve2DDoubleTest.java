@@ -28,11 +28,13 @@ public class CubicCurve2DDoubleTest extends GeomTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         c = new CubicCurve2D.Double(1, 2, 3, 4, 5, 6, 7, 8);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         c = null;
         super.tearDown();
@@ -102,16 +104,16 @@ public class CubicCurve2DDoubleTest extends GeomTestCase {
     }
 
     public void testGetBounds2D() {
-        for(int i = 0; i < CubicCurve2DTest.bounds.length; i++) {
+        for (double[][] element : CubicCurve2DTest.bounds) {
             CubicCurve2D curve = new CubicCurve2D.Double();
-            curve.setCurve(CubicCurve2DTest.bounds[i][0], 0);
+            curve.setCurve(element[0], 0);
             assertEquals(
                     cubicToStr(curve),
                     new Rectangle2D.Double(
-                            (int)CubicCurve2DTest.bounds[i][1][0],
-                            (int)CubicCurve2DTest.bounds[i][1][1],
-                            (int)CubicCurve2DTest.bounds[i][1][2],
-                            (int)CubicCurve2DTest.bounds[i][1][3]),
+                            (int)element[1][0],
+                            (int)element[1][1],
+                            (int)element[1][2],
+                            (int)element[1][3]),
                     curve.getBounds2D());
         }
     }

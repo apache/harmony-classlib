@@ -50,6 +50,7 @@ public class JavaBlitterTest extends TestCase{
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         w = 100;
@@ -600,61 +601,101 @@ public class JavaBlitterTest extends TestCase{
 
             for(int y = 0; y < h/2; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + w <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w/2){
-                        if(x < w + i) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w/2){
+                        if(x < w + i) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + w < w){
-                        if(x < i + w/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = 0; y < h/2; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + w < w/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w){
-                        if(x < w + i) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w < w/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w){
+                        if(x < w + i) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < w/2){
-                        if(x < i + w/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + w <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w/2){
-                        if(x < w + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w/2){
+                        if(x < w + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + w < w){
-                        if(x < i + w/2) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + w < w/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w){
-                        if(x < w + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w < w/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w){
+                        if(x < w + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < w/2){
-                        if(x < i + w/2) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
@@ -673,46 +714,76 @@ public class JavaBlitterTest extends TestCase{
 
             for(int y = 0; y < h/2; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + h <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h/2){
-                        if(y < h + i) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h/2){
+                        if(y < h + i) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + h < h){
-                        if(y < i + h/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = 0; y < h/2; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + h <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h/2){
-                        if(y < h + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h/2){
+                        if(y < h + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + h < h){
-                        if(y < i + h/2) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + h < h/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h){
-                        if(y < i + h) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h < h/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h){
+                        if(y < i + h) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < h/2){
-                        if(y < i + h/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }else if(i < h){
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }else{
                         assertEquals(0xff000000, dst.getRGB(x, y));
                     }
@@ -720,16 +791,26 @@ public class JavaBlitterTest extends TestCase{
             }
             for(int y = h/2; y < h; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + h < h/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h){
-                        if(y < i + h) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h < h/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h){
+                        if(y < i + h) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < h/2){
-                        if(y < i + h/2) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else if(i < h){
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
                         assertEquals(0xff000000, dst.getRGB(x, y));
                     }
@@ -753,61 +834,101 @@ public class JavaBlitterTest extends TestCase{
 
             for(int y = 0; y < h/2; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + w <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w/2){
-                        if(x < w + i) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w/2){
+                        if(x < w + i) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + w < w){
-                        if(x < i + w/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = 0; y < h/2; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + w < w/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w){
-                        if(x < w + i) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w < w/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w){
+                        if(x < w + i) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < w/2){
-                        if(x < i + w/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + w <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w/2){
-                        if(x < w + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w/2){
+                        if(x < w + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + w < w){
-                        if(x < i + w/2) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + w < w/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + w < w){
-                        if(x < w + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + w < w/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + w < w){
+                        if(x < w + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < w/2){
-                        if(x < i + w/2) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(x < i + w/2) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(x < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(x < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
@@ -829,46 +950,76 @@ public class JavaBlitterTest extends TestCase{
 
             for(int y = 0; y < h/2; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + h <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h/2){
-                        if(y < h + i) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h/2){
+                        if(y < h + i) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + h < h){
-                        if(y < i + h/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = 0; y < h/2; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + h <= 0) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h/2){
-                        if(y < h + i) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h <= 0) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h/2){
+                        if(y < h + i) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i + h < h){
-                        if(y < i + h/2) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else{
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }
                 }
             }
             for(int y = h/2; y < h; y++){
                 for(int x = 0; x < w/2; x++){
-                    if(i + h < h/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h){
-                        if(y < i + h) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h < h/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h){
+                        if(y < i + h) {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < h/2){
-                        if(y < i + h/2) assertEquals(0xffff0000, dst.getRGB(x, y));
-                        else assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff0000ff, dst.getRGB(x, y));
+                        }
                     }else if(i < h){
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xffff0000, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffff0000, dst.getRGB(x, y));
+                        }
                     }else{
                         assertEquals(0xff000000, dst.getRGB(x, y));
                     }
@@ -876,16 +1027,26 @@ public class JavaBlitterTest extends TestCase{
             }
             for(int y = h/2; y < h; y++){
                 for(int x = w/2; x < w; x++){
-                    if(i + h < h/2) assertEquals(0xff000000, dst.getRGB(x, y));
-                    else if(i + h < h){
-                        if(y < i + h) assertEquals(0xffffffff, dst.getRGB(x, y));
-                        else assertEquals(0xff000000, dst.getRGB(x, y));
+                    if(i + h < h/2) {
+                        assertEquals(0xff000000, dst.getRGB(x, y));
+                    } else if(i + h < h){
+                        if(y < i + h) {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        }
                     }else if(i < h/2){
-                        if(y < i + h/2) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                        else assertEquals(0xffffffff, dst.getRGB(x, y));
+                        if(y < i + h/2) {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xffffffff, dst.getRGB(x, y));
+                        }
                     }else if(i < h){
-                        if(y < i) assertEquals(0xff000000, dst.getRGB(x, y));
-                        else assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        if(y < i) {
+                            assertEquals(0xff000000, dst.getRGB(x, y));
+                        } else {
+                            assertEquals(0xff00ff00, dst.getRGB(x, y));
+                        }
                     }else{
                         assertEquals(0xff000000, dst.getRGB(x, y));
                     }
@@ -921,26 +1082,38 @@ public class JavaBlitterTest extends TestCase{
 
         for(int y = 0; y < h/2; y++){
             for(int x = 0; x < w/2; x++){
-                if(x >= w/4 && y >= h/4) assertEquals(0xffff0000, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x >= w/4 && y >= h/4) {
+                    assertEquals(0xffff0000, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = 0; y < h/2; y++){
             for(int x = w/2; x < w; x++){
-                if(x < w/2 + w/4 && y >= h/4) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x < w/2 + w/4 && y >= h/4) {
+                    assertEquals(0xff00ff00, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = h/2; y < h; y++){
             for(int x = 0; x < w/2; x++){
-                if(x >= w/4 && y < h/2 + h/4) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x >= w/4 && y < h/2 + h/4) {
+                    assertEquals(0xff0000ff, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = h/2; y < h; y++){
             for(int x = w/2; x < w; x++){
-                if(x < w/2 + w/4 && y < h/2 + h/4) assertEquals(0xffffffff, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x < w/2 + w/4 && y < h/2 + h/4) {
+                    assertEquals(0xffffffff, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
 
@@ -959,20 +1132,29 @@ public class JavaBlitterTest extends TestCase{
 
         for(int y = 0; y < h/2; y++){
             for(int x = 0; x < w/2; x++){
-                if(x >= w/4 && y >= h/4) assertEquals(0xffff0000, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x >= w/4 && y >= h/4) {
+                    assertEquals(0xffff0000, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = 0; y < h/2; y++){
             for(int x = w/2; x < w; x++){
-                if(x < w/2 + w/4 && y >= h/4) assertEquals(0xff00ff00, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x < w/2 + w/4 && y >= h/4) {
+                    assertEquals(0xff00ff00, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = h/2; y < h; y++){
             for(int x = 0; x < w/2; x++){
-                if(x >= w/4 && y < h/2 + h/4) assertEquals(0xff0000ff, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x >= w/4 && y < h/2 + h/4) {
+                    assertEquals(0xff0000ff, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
         for(int y = h/2; y < h; y++){
@@ -998,8 +1180,11 @@ public class JavaBlitterTest extends TestCase{
 
         for(int y = 0; y < h; y++){
             for(int x = 0; x < w; x++){
-                if(x == w/4 && y == h/4) assertEquals(0xffff0000, dst.getRGB(x, y));
-                else assertEquals(0xff000000, dst.getRGB(x, y));
+                if(x == w/4 && y == h/4) {
+                    assertEquals(0xffff0000, dst.getRGB(x, y));
+                } else {
+                    assertEquals(0xff000000, dst.getRGB(x, y));
+                }
             }
         }
 

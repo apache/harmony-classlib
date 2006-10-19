@@ -138,8 +138,8 @@ public class BasicStrokeTest extends TestCase {
         BasicStroke bs = createSampleStroke();
         assertTrue("Object isn't equal itself", bs.equals(bs));
         BasicStroke bsa[] = createStrokeArray();
-        for(int i = 0; i < bsa.length; i++) {
-            assertTrue("Different objects are equal", !bs.equals(bsa[i]));
+        for (BasicStroke element : bsa) {
+            assertTrue("Different objects are equal", !bs.equals(element));
         }
     }
 
@@ -147,8 +147,8 @@ public class BasicStrokeTest extends TestCase {
         BasicStroke bs = createSampleStroke();
         assertTrue("Hash code isn't equal for the same object", bs.hashCode() == bs.hashCode());
         BasicStroke bsa[] = createStrokeArray();
-        for(int i = 0; i < bsa.length; i++) {
-            assertTrue("Different objects have the same hash code", bs.hashCode() != bsa[i].hashCode());
+        for (BasicStroke element : bsa) {
+            assertTrue("Different objects have the same hash code", bs.hashCode() != element.hashCode());
         }
     }
 
@@ -161,9 +161,9 @@ public class BasicStrokeTest extends TestCase {
         } else {
             System.out.println("Golden files folder " + path.getAbsolutePath());
         }
-        for(int i = 0; i < test.length; i++) {
-            if (test[i].indexOf("_d") != -1 && test[i].indexOf("#JAVA") == -1) {
-                check(path.getAbsolutePath() + File.separator + test[i]);
+        for (String element : test) {
+            if (element.indexOf("_d") != -1 && element.indexOf("#JAVA") == -1) {
+                check(path.getAbsolutePath() + File.separator + element);
             }
         }
     }

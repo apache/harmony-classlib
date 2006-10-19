@@ -23,12 +23,13 @@ package java.awt;
 import java.awt.event.KeyEvent;
 
 import junit.framework.TestCase;
-
+@SuppressWarnings("serial")
 public class KeyboardFocusManagerRTest extends TestCase {
     Robot robot;
     Frame f;
     KeyboardFocusManager kfm;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         robot = null;
@@ -41,9 +42,7 @@ public class KeyboardFocusManagerRTest extends TestCase {
         kfm = new DefaultKeyboardFocusManager();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (f != null) {
@@ -51,6 +50,7 @@ public class KeyboardFocusManagerRTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public final void testRedispatchEvent() {
         Component c1 = new Component(){};
         Component c2 = new Component(){};
@@ -94,6 +94,7 @@ public class KeyboardFocusManagerRTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public final void testClearGlobalFocusOwner() {
         f.setSize(200, 200);
         f.show();

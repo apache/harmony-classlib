@@ -106,6 +106,7 @@ public class InvocationEventTest extends TestCase {
         runnableCalled = false;
         synchronized (button) {
             new Thread() {
+                @Override
                 public void run() {
                     event.dispatch();
                 }

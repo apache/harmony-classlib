@@ -24,6 +24,7 @@
 
 package java.awt;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -69,14 +70,14 @@ public class KeyboardFocusManagerTest extends TestCase {
         junit.textui.TestRunner.run(KeyboardFocusManagerTest.class);
     }
 
+    @SuppressWarnings("serial")
     public class SimpleComponent extends Component {
     }
     class MyKeyboardManager extends DefaultKeyboardFocusManager {
 
     }
-    /*
-     * @see TestCase#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         listenerCalled = vlistenerCalled = false;
@@ -92,6 +93,7 @@ public class KeyboardFocusManagerTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -100,8 +102,8 @@ public class KeyboardFocusManagerTest extends TestCase {
         if (kfm != null) {
             PropertyChangeListener[] listeners = kfm.getPropertyChangeListeners();
             if (listeners != null) {
-                for(int i = 0; i < listeners.length; i++) {
-                    kfm.removePropertyChangeListener(listeners[i]);
+                for (PropertyChangeListener element : listeners) {
+                    kfm.removePropertyChangeListener(element);
                 }
             }
         }
@@ -111,8 +113,8 @@ public class KeyboardFocusManagerTest extends TestCase {
         if (kfm != null) {
             VetoableChangeListener[] listeners = kfm.getVetoableChangeListeners();
             if (listeners != null) {
-                for(int i = 0; i < listeners.length; i++) {
-                    kfm.removeVetoableChangeListener(listeners[i]);
+                for (VetoableChangeListener element : listeners) {
+                    kfm.removeVetoableChangeListener(element);
                 }
             }
         }
@@ -401,7 +403,7 @@ public class KeyboardFocusManagerTest extends TestCase {
         kfm.addPropertyChangeListener(propName, listener);
         listeners = kfm.getPropertyChangeListeners(propName);
         assertEquals(1, listeners.length);
-        Set forSet = new HashSet();
+        Set<AWTKeyStroke> forSet = new HashSet<AWTKeyStroke>();
         forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
         kfm.setDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forSet);
         assertTrue(listenerCalled);
@@ -412,7 +414,7 @@ public class KeyboardFocusManagerTest extends TestCase {
         kfm.removePropertyChangeListener(propName, listener);
         listeners = kfm.getPropertyChangeListeners(propName);
         assertEquals(0, listeners.length);
-        forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK));
+        forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK));
         kfm.setDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forSet);
         assertFalse(listenerCalled);
     }

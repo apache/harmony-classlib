@@ -34,14 +34,10 @@ public class ICC_ProfileRTest extends TestCase {
                         (byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,
                         (byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00};
 
-            ICC_Profile iccp = ICC_Profile.getInstance(ba);
-        } catch (IllegalArgumentException e) {
-        } catch (Exception e) {
+            ICC_Profile.getInstance(ba);
             fail("IllegalArgumentExceptione expected");
+        } catch (IllegalArgumentException e) {
         }
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ICC_ProfileRTest.class);
-    }
 }

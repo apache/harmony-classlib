@@ -127,11 +127,13 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         countGoldenFiles = 0;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -215,7 +217,6 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
             String fname = Tools.File.extractFileName(fileName);
             TextTokenizer t = new TextTokenizer(fname);
 
-            int type = 0;
             if (t.findString("rect(")) {
                 shape = new Rectangle2D.Double(
                         t.getDouble(),
@@ -354,10 +355,11 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
 
     int[][] createImageBuffer(BufferedImage img) {
         int buf[][] = new int[img.getWidth()][img.getHeight()];
-        for(int x = 0; x < img.getWidth(); x++)
+        for(int x = 0; x < img.getWidth(); x++) {
             for(int y = 0; y < img.getHeight(); y++) {
                 buf[x][y] = img.getRGB(x, y);
             }
+        }
         return buf;
     }
 
@@ -391,7 +393,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
             x2 = Math.max(r1[2], r2[2]);
             y2 = Math.max(r1[3], r2[3]);
         }
-        for(int x = x1; x <= x2; x++)
+        for(int x = x1; x <= x2; x++) {
             for(int y = y1; y <= y2; y++) {
                 boolean inside1 = r1 != null && r1[0] <= x && x <= r1[2] && r1[1] <= y && y <= r1[3];
                 boolean inside2 = r2 != null && r2[0] <= x && x <= r2[2] && r2[1] <= y && y <= r2[3];
@@ -415,6 +417,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
                     }
                 }
             }
+        }
     }
 
     int getRectType(BufferedImage img, int buf[][], int rx, int ry, int rw, int rh, boolean usePrev) {
@@ -497,16 +500,16 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
         int countErr = 0;
         try {
             Method method = this.getClass().getMethod(methodName, new Class[] {String.class, Object[].class});
-            for(int i = 0; i < tests.length; i++) {
-                Object res = method.invoke(this, new Object[] {tests[i], params});
+            for (String element : tests) {
+                Object res = method.invoke(this, new Object[] {element, params});
                 if (!((Boolean)res).booleanValue()) {
                     if (countErr == 0) {
                         System.out.println(name);
                     }
                     countErr++;
-                    System.out.println("Failed " + tests[i]);
+                    System.out.println("Failed " + element);
                 } else {
-                    System.out.println(" " + tests[i]);
+                    System.out.println(" " + element);
                 }
             }
         } catch(Exception e) {
@@ -537,7 +540,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
             count = new int[]{0, 0, 0};
             prevRect = null;
 
-            for(int x = 0; x < img.getWidth() - RECT_WIDTH; x++)
+            for(int x = 0; x < img.getWidth() - RECT_WIDTH; x++) {
                 for(int y = 0; y < img.getHeight() - RECT_HEIGHT; y++) {
                     int rectType = getRectType(null, buf, x, y, RECT_WIDTH, RECT_HEIGHT, true);
                     if (rectType == 0) {
@@ -554,6 +557,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
                         error = true;
                     }
                 }
+            }
 
             int errCount = 0;
             Random rnd = new Random();
@@ -606,6 +610,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
             Shape shape = createShape(fileName);
             BufferedImage img = Tools.BufferedImage.loadIcon(fileName);
             int buf[][] = createImageBuffer(img);
+            assertNotNull(buf);
             Graphics g = img.getGraphics();
             g.setColor(errorColor);
 
@@ -645,7 +650,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
         boolean error = false;
         Shape shape = createShape(fileName);
         BufferedImage img = Tools.BufferedImage.loadIcon(fileName);
-        for(int x = 0; x < img.getWidth(); x++)
+        for(int x = 0; x < img.getWidth(); x++) {
             for(int y = 0; y < img.getHeight(); y++) {
                 int color = getColor(img.getRGB(x, y));
                 boolean res = shape.contains(x, y);
@@ -656,6 +661,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
                     error = true;
                 }
             }
+        }
         if (OUTPUT) {
             Tools.BufferedImage.saveIcon(img, outputPath + "cp_" + Tools.File.extractFileName(fileName));
         }
@@ -683,7 +689,6 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
 
     public boolean checkPathIterator(String fileName, Object[] params) {
         countGoldenFiles++;
-        boolean error = false;
         double flatness = getFlatness(fileName);
         AffineTransform at = createTransform(fileName);
         Shape shape1 = createShape(fileName);

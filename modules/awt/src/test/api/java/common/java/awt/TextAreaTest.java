@@ -25,16 +25,13 @@ import junit.framework.TestCase;
 public class TextAreaTest extends TestCase {
     TextArea area;
     Frame frame;
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextAreaTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         area = new TextArea();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {
@@ -98,6 +95,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.minimumSize()'
      */
+    @SuppressWarnings("deprecation")
     public void testMinimumSize() {
         Dimension minSize = new Dimension();
         assertEquals(minSize, area.minimumSize());
@@ -144,6 +142,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.preferredSize()'
      */
+    @SuppressWarnings("deprecation")
     public void testPreferredSize() {
         Dimension prefSize = new Dimension();
         assertEquals(area.minimumSize(), area.preferredSize());
@@ -269,6 +268,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.appendText(String)'
      */
+    @SuppressWarnings("deprecation")
     public void testAppendText() {
         String text = "text";
         area.setText(text);
@@ -356,6 +356,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.insertText(String, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testInsertText() {
         String text = "text";
         area.setText(text);
@@ -369,6 +370,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.minimumSize(int, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testMinimumSizeIntInt() {
         frame = new Frame();
         frame.add(area);
@@ -382,6 +384,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.preferredSize(int, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testPreferredSizeIntInt() {
         frame = new Frame();
         frame.add(area);
@@ -411,6 +414,7 @@ public class TextAreaTest extends TestCase {
     /*
      * Test method for 'java.awt.TextArea.replaceText(String, int, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testReplaceText() {
         String text = "This is old text";
         area.setText(text);

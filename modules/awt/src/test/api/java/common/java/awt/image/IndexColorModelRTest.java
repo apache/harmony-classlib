@@ -33,6 +33,7 @@ public class IndexColorModelRTest extends TestCase {
         junit.textui.TestRunner.run(IndexColorModelRTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         r = (byte)0x1f;

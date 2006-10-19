@@ -65,6 +65,7 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         dbb1 = new DataBufferByte(w * h);
@@ -1849,9 +1850,9 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
     private int[] createPixelsFromByteDataElements(byte byteData[]){
         int pixel[] = new int[bitMaskB.length * byteData.length];
         int idx = 0;
-        for(int j = 0; j < byteData.length; j++){
+        for (byte element : byteData) {
             for(int i = 0; i < bitMaskB.length; i++){
-                pixel[idx++] = (byteData[j] & bitMaskB[i]) >>> bitOffsetsB[i];
+                pixel[idx++] = (element & bitMaskB[i]) >>> bitOffsetsB[i];
             }
         }
         return pixel;
@@ -1860,9 +1861,9 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
     private int[] createPixelsFromShortDataElements(short shortData[]){
         int pixel[] = new int[bitMaskUS.length * shortData.length];
         int idx = 0;
-        for(int j = 0; j < shortData.length; j++){
+        for (short element : shortData) {
             for(int i = 0; i < bitMaskUS.length; i++){
-                pixel[idx++] = (shortData[j] & bitMaskUS[i]) >>> bitOffsetsUS[i];
+                pixel[idx++] = (element & bitMaskUS[i]) >>> bitOffsetsUS[i];
             }
         }
         return pixel;
@@ -1871,9 +1872,9 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
     private int[] createPixelsFromIntDataElements(int intData[]){
         int pixel[] = new int[bitMaskI.length * intData.length];
         int idx = 0;
-        for(int j = 0; j < intData.length; j++){
+        for (int element : intData) {
             for(int i = 0; i < bitMaskI.length; i++){
-                pixel[idx++] = (intData[j] & bitMaskI[i]) >>> bitOffsetsI[i];
+                pixel[idx++] = (element & bitMaskI[i]) >>> bitOffsetsI[i];
             }
         }
         return pixel;

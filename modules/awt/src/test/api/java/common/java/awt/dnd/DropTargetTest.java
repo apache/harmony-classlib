@@ -36,6 +36,7 @@ import junit.framework.TestCase;
 /**
  * Unit test for class java.awt.dnd.DropTarget
  */
+@SuppressWarnings("serial")
 public class DropTargetTest extends TestCase {
     
     static class DTL implements DropTargetListener {
@@ -68,11 +69,11 @@ public class DropTargetTest extends TestCase {
     }
     
     static class FM implements FlavorMap {
-        public Map getFlavorsForNatives(String[] natives) {
-            return new HashMap();
+        public Map<String, DataFlavor> getFlavorsForNatives(String[] natives) {
+            return new HashMap<String, DataFlavor>();
         }
-        public Map getNativesForFlavors(DataFlavor[] flavors) {
-            return new HashMap();
+        public Map<DataFlavor, String> getNativesForFlavors(DataFlavor[] flavors) {
+            return new HashMap<DataFlavor, String>();
         }
     }
     
@@ -84,10 +85,12 @@ public class DropTargetTest extends TestCase {
             super(c, null);
         }
         
+        @Override
         public void addNotify(ComponentPeer peer) {
             added = true;
             super.addNotify(peer);
         }
+        @Override
         public void removeNotify(ComponentPeer peer) {
             removed = true;
             super.removeNotify(peer);
@@ -98,6 +101,7 @@ public class DropTargetTest extends TestCase {
         junit.textui.TestRunner.run(DropTargetTest.class);
     }
     
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -142,6 +146,7 @@ public class DropTargetTest extends TestCase {
         final Component comp = new Component() {};
         final Point start = new Point(10, 10);
         DropTarget dt = new DropTarget(comp, new DTL()) {
+            @Override
             protected DropTargetAutoScroller createDropTargetAutoScroller(
                     Component c, Point p) {
                 assertSame(comp, c);

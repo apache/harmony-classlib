@@ -19,7 +19,7 @@
  * @version $Revision$
  */
 package java.awt;
-
+@SuppressWarnings("serial")
 public class FlowLayoutTest extends AWTTestCase {
 
     class TestButton extends Button {
@@ -33,10 +33,11 @@ public class FlowLayoutTest extends AWTTestCase {
 
     private final int MIN_SIZE = 50;
     private final int PREF_SIZE = 100;
-    private TestButton b1, b2, b3, b4, b5;
+    private final TestButton b1, b2, b3, b4, b5;
     private FlowLayout layout;
     private Frame frame;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -46,6 +47,7 @@ public class FlowLayoutTest extends AWTTestCase {
         frame.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         frame.dispose();
         super.tearDown();

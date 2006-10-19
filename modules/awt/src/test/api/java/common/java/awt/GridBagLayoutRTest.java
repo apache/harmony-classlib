@@ -31,6 +31,7 @@ public class GridBagLayoutRTest extends TestCase {
         junit.textui.TestRunner.run(GridBagLayoutRTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }

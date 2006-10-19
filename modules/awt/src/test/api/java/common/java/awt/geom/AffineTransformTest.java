@@ -105,11 +105,13 @@ public class AffineTransformTest extends GeomTestCase {
         serializePath = getSerializePath(AffineTransform.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         t = new AffineTransform(2, 3, 4, 5, 6, 7);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         t = null;
         super.tearDown();
@@ -229,11 +231,11 @@ public class AffineTransformTest extends GeomTestCase {
     }
 
     public void testGetType() {
-        for(int i = 0; i < type.length; i++) {
+        for (double[] element : type) {
             assertEquals(
-                    matrixToStr(type[i]) + " Type",
-                    (int)type[i][6],
-                    new AffineTransform(type[i]).getType());
+                    matrixToStr(element) + " Type",
+                    (int)element[6],
+                    new AffineTransform(element).getType());
         }
     }
 
@@ -574,39 +576,39 @@ public class AffineTransformTest extends GeomTestCase {
     }
 
     public void testConcatenate() {
-        for(int i = 0; i < matrix.length; i++) {
-            AffineTransform a = new AffineTransform(matrix[i][0]);
-            AffineTransform b = new AffineTransform(matrix[i][1]);
-            AffineTransform c = new AffineTransform(matrix[i][2]);
+        for (double[][] element : matrix) {
+            AffineTransform a = new AffineTransform(element[0]);
+            AffineTransform b = new AffineTransform(element[1]);
+            AffineTransform c = new AffineTransform(element[2]);
             b.concatenate(a);
             assertEquals(c, b);
         }
     }
 
     public void testPreConcatenate() {
-        for(int i = 0; i < matrix.length; i++) {
-            AffineTransform a = new AffineTransform(matrix[i][0]);
-            AffineTransform b = new AffineTransform(matrix[i][1]);
-            AffineTransform c = new AffineTransform(matrix[i][2]);
+        for (double[][] element : matrix) {
+            AffineTransform a = new AffineTransform(element[0]);
+            AffineTransform b = new AffineTransform(element[1]);
+            AffineTransform c = new AffineTransform(element[2]);
             a.preConcatenate(b);
             assertEquals(c, a);
         }
     }
 
     public void testCreateInvers() {
-        for(int i = 0; i < invers.length; i++) {
+        for (double[][] element : invers) {
             try {
-                AffineTransform at = new AffineTransform(invers[i][0]);
+                AffineTransform at = new AffineTransform(element[0]);
                 AffineTransform it = at.createInverse();
-                if (invers[i][1] == null) {
+                if (element[1] == null) {
                     fail(at + " Expected exception NoninvertibleTransformException");
                 } else {
-                    assertEquals(new AffineTransform(invers[i][1]), it);
+                    assertEquals(new AffineTransform(element[1]), it);
                 }
                 at.concatenate(it);
                 assertTrue(at.isIdentity());
             } catch(NoninvertibleTransformException e) {
-                if (invers[i][1] != null) {
+                if (element[1] != null) {
                     fail(e.toString());
                 }
             }
@@ -614,13 +616,13 @@ public class AffineTransformTest extends GeomTestCase {
     }
 
     public void testTransform1() {
-        for(int i = 0; i < points.length; i++) {
-            AffineTransform at = new AffineTransform(points[i][0]);
-            for(int j = 1; j < points[i].length; j++) {
-                float x1 = points[i][j][0];
-                float y1 = points[i][j][1];
-                float x2 = points[i][j][2];
-                float y2 = points[i][j][3];
+        for (float[][] element : points) {
+            AffineTransform at = new AffineTransform(element[0]);
+            for(int j = 1; j < element.length; j++) {
+                float x1 = element[j][0];
+                float y1 = element[j][1];
+                float x2 = element[j][2];
+                float y2 = element[j][3];
 
                 assertEquals(
                         new Point2D.Double(x2, y2),
@@ -690,13 +692,13 @@ public class AffineTransformTest extends GeomTestCase {
     }
 
     public void testDeltaTransform1() {
-        for(int i = 0; i < points.length; i++) {
-            AffineTransform at = new AffineTransform(points[i][0]);
-            for(int j = 1; j < points[i].length; j++) {
-                float x1 = points[i][j][0];
-                float y1 = points[i][j][1];
-                float x2 = points[i][j][6];
-                float y2 = points[i][j][7];
+        for (float[][] element : points) {
+            AffineTransform at = new AffineTransform(element[0]);
+            for(int j = 1; j < element.length; j++) {
+                float x1 = element[j][0];
+                float y1 = element[j][1];
+                float x2 = element[j][6];
+                float y2 = element[j][7];
 
                 assertEquals(
                         new Point2D.Double(x2, y2),
@@ -732,13 +734,13 @@ public class AffineTransformTest extends GeomTestCase {
         } catch(NoninvertibleTransformException e) {
         }
 
-        for(int i = 0; i < points.length; i++) {
-            AffineTransform at = new AffineTransform(points[i][0]);
-            for(int j = 1; j < points[i].length; j++) {
-                float x1 = points[i][j][0];
-                float y1 = points[i][j][1];
-                float x2 = points[i][j][4];
-                float y2 = points[i][j][5];
+        for (float[][] element : points) {
+            AffineTransform at = new AffineTransform(element[0]);
+            for(int j = 1; j < element.length; j++) {
+                float x1 = element[j][0];
+                float y1 = element[j][1];
+                float x2 = element[j][4];
+                float y2 = element[j][5];
 
                 try {
                     assertEquals(
@@ -822,6 +824,7 @@ public class AffineTransformTest extends GeomTestCase {
                 t.toString());
     }
 
+    @Override
     public String objToStr(Object obj) {
         double[] m = new double[6];
         ((AffineTransform)obj).getMatrix(m);

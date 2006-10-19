@@ -35,6 +35,7 @@ public class TextHitInfoTest extends TestCase
         super(name);
     }
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -43,6 +44,7 @@ public class TextHitInfoTest extends TestCase
         tm1 = TextHitInfo.trailing(-1);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();

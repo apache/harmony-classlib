@@ -24,7 +24,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,15 +31,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
-
-import org.apache.harmony.awt.gl.MultiRectAreaOp;
-
-//import com.sun.image.codec.jpeg.JPEGCodec;
-//import com.sun.image.codec.jpeg.JPEGEncodeParam;
-//import com.sun.image.codec.jpeg.JPEGImageDecoder;
-//import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
 import junit.framework.Assert;
+import org.apache.harmony.awt.gl.MultiRectAreaOp;
 
 public abstract class Tools {
 
@@ -95,7 +87,6 @@ public abstract class Tools {
                 StreamTokenizer t = new StreamTokenizer(f);
                 int count = 0;
                 int type = 0;
-                Point2D lp = null;
                 float coords[] = new float[6];
                 while(t.nextToken() != StreamTokenizer.TT_EOF) {
                     switch(t.ttype) {
@@ -266,8 +257,8 @@ public abstract class Tools {
             float dash[] = bs.getDashArray();
             if (dash != null) {
                 String str = "";
-                for(int i = 0; i < dash.length; i++) {
-                    str = str + dash[i] + " ";
+                for (float element : dash) {
+                    str = str + element + " ";
                 }
                 f.write("dash " + str + "\n");
                 f.write("phase " + bs.getDashPhase());
@@ -577,12 +568,12 @@ public abstract class Tools {
             try {
                 FileWriter f = new FileWriter(fileName);
                 Rectangle[] rect = area.getRectangles();
-                for(int i = 0; i < rect.length; i++) {
+                for (Rectangle element : rect) {
                     f.write(
-                            rect[i].x + "," +
-                            rect[i].y + "," +
-                            (rect[i].width + rect[i].x - 1) + "," +
-                            (rect[i].height + rect[i].y - 1) + "\n");
+                            element.x + "," +
+                            element.y + "," +
+                            (element.width + element.x - 1) + "," +
+                            (element.height + element.y - 1) + "\n");
                 }
                 f.close();
             } catch (IOException e) {

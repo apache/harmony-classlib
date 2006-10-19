@@ -26,18 +26,6 @@ public class GlyphMetricsTest extends TestCase {
     float advance = 10;
     Rectangle2D.Float bounds = new Rectangle2D.Float(2, 2, 15, 15);
     byte glyphType = GlyphMetrics.COMPONENT;
-    
-    public GlyphMetricsTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /*
      * Test method for 'java.awt.font.GlyphMetrics.GlyphMetrics(boolean, float, float, Rectangle2D, byte)'
@@ -48,10 +36,10 @@ public class GlyphMetricsTest extends TestCase {
         float advanceY = 5;
         GlyphMetrics gm = new GlyphMetrics(horizontal, advanceX, advanceY, bounds, glyphType);
         assertEquals(bounds, gm.getBounds2D());
-        assertEquals(advanceY, gm.getAdvance());
+        assertEquals(advanceY, gm.getAdvance(), 0F);
         assertEquals(glyphType, gm.getType());
-        assertEquals(advanceX, gm.getAdvanceX());
-        assertEquals(advanceY, gm.getAdvanceY());
+        assertEquals(advanceX, gm.getAdvanceX(), 0F);
+        assertEquals(advanceY, gm.getAdvanceY(), 0F);
     }
 
     /*
@@ -60,7 +48,7 @@ public class GlyphMetricsTest extends TestCase {
     public final void testGlyphMetricsFloatRectangle2DByte() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
         assertEquals(bounds, gm.getBounds2D());
-        assertEquals(advance, gm.getAdvance());
+        assertEquals(advance, gm.getAdvance(), 0F);
         assertEquals(glyphType, gm.getType());
     }
 
@@ -141,13 +129,13 @@ public class GlyphMetricsTest extends TestCase {
      */
     public final void testGetRSB() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
-        assertEquals(bounds.x, gm.getLSB());
+        assertEquals(bounds.x, gm.getLSB(), 0F);
 
         boolean horizontal = false;
         float advanceX = -5;
         float advanceY = 5;
         gm = new GlyphMetrics(horizontal, advanceX, advanceY, bounds, glyphType);
-        assertEquals(bounds.y, gm.getLSB());
+        assertEquals(bounds.y, gm.getLSB(), 0F);
     }
 
     /*
@@ -155,13 +143,13 @@ public class GlyphMetricsTest extends TestCase {
      */
     public final void testGetLSB() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
-        assertEquals(advance - bounds.x - (float)bounds.getWidth(), gm.getRSB());
+        assertEquals(advance - bounds.x - (float)bounds.getWidth(), gm.getRSB(), 0F);
 
         boolean horizontal = false;
         float advanceX = -5;
         float advanceY = 5;
         gm = new GlyphMetrics(horizontal, advanceX, advanceY, bounds, glyphType);
-        assertEquals(advanceY - bounds.y - (float)bounds.getHeight(), gm.getRSB());
+        assertEquals(advanceY - bounds.y - (float)bounds.getHeight(), gm.getRSB(), 0F);
     }
 
     /*
@@ -169,10 +157,10 @@ public class GlyphMetricsTest extends TestCase {
      */
     public final void testGetAdvanceY() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
-        assertEquals((float)0, gm.getAdvanceY());
+        assertEquals(0, gm.getAdvanceY(), 0F);
         
         gm = new GlyphMetrics(true, 0, advance, bounds, glyphType);
-        assertEquals(advance, gm.getAdvanceY());
+        assertEquals(advance, gm.getAdvanceY(), 0F);
 
     }
 
@@ -181,10 +169,10 @@ public class GlyphMetricsTest extends TestCase {
      */
     public final void testGetAdvanceX() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
-        assertEquals(advance, gm.getAdvanceX());
+        assertEquals(advance, gm.getAdvanceX(), 0F);
         
         gm = new GlyphMetrics(true, advance, 0, bounds, glyphType);
-        assertEquals(advance, gm.getAdvanceX());
+        assertEquals(advance, gm.getAdvanceX(), 0F);
 
     }
 
@@ -193,7 +181,7 @@ public class GlyphMetricsTest extends TestCase {
      */
     public final void testGetAdvance() {
         GlyphMetrics gm = new GlyphMetrics(advance, bounds, glyphType);
-        assertEquals(advance, gm.getAdvance());
+        assertEquals(advance, gm.getAdvance(), 0F);
     }
 
 }

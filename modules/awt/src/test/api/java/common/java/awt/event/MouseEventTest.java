@@ -30,7 +30,7 @@ public class MouseEventTest extends TestCase {
     public final void testMouseEventComponentintlongintintintintboolean() {
         Button button = new Button("Button");
         MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true);
 
         assertEquals(event.getSource(), button);
@@ -46,7 +46,7 @@ public class MouseEventTest extends TestCase {
     public final void testMouseEventComponentintlongintintintintbooleanint() {
         Button button = new Button("Button");
         MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseEvent.BUTTON1);
 
         assertEquals(event.getSource(), button);
@@ -62,7 +62,7 @@ public class MouseEventTest extends TestCase {
     public final void testTranslatePoint() {
         Button button = new Button("Button");
         MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true);
 
         event.translatePoint(10, 10);
@@ -87,13 +87,13 @@ public class MouseEventTest extends TestCase {
     public final void testParamString() {
         Button button = new Button("Button");
         MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseEvent.BUTTON1);
 
         assertEquals(event.paramString(),
                 "MOUSE_PRESSED,(100,200),button=1,modifiers=Button2,extModifiers=Button2,clickCount=10");
         event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED + 1024, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseEvent.BUTTON1);
         assertEquals(event.paramString(),
                 "unknown type,(100,200),button=1,modifiers=Button2,extModifiers=Button2,clickCount=10");

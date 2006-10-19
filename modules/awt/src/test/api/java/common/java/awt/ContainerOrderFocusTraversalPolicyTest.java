@@ -21,7 +21,7 @@
 package java.awt;
 
 import junit.framework.TestCase;
-
+@SuppressWarnings("serial")
 public class ContainerOrderFocusTraversalPolicyTest extends TestCase {
     Frame frame;
     SimpleComponent comp1, comp2, comp3;
@@ -32,9 +32,8 @@ public class ContainerOrderFocusTraversalPolicyTest extends TestCase {
 
     public class SimpleComponent extends Component {
     }
-    /*
-     * @see TestCase#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
@@ -45,9 +44,7 @@ public class ContainerOrderFocusTraversalPolicyTest extends TestCase {
         cont1 = new SimpleContainer();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (frame != null) {

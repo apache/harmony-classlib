@@ -26,10 +26,12 @@ public class Ellipse2DFloatTest extends TestCase {
 
     Ellipse2D.Float e;
 
+    @Override
     protected void setUp() throws Exception {
         e = new Ellipse2D.Float(1.0f, 2.0f, 3.0f, 4.0f);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         e = null;
     }

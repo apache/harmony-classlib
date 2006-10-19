@@ -33,6 +33,7 @@ public class WindowRTest extends TestCase {
         frm.dispose();
     }
 
+    @SuppressWarnings("deprecation")
     public final void testHide() {
         final Frame f = new Frame();
         f.setSize(100, 100);
@@ -50,7 +51,4 @@ public class WindowRTest extends TestCase {
 
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(WindowRTest.class);
-    }
 }

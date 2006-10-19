@@ -59,7 +59,7 @@ public class MultiRectAreaTestCase extends PathIteratorTestCase {
         return Tools.MultiRectArea.color[index % Tools.MultiRectArea.color.length];
     }
 
-    String concat(String msg1, String msg2) {
+    private String concat(String msg1, String msg2) {
         if (msg1 == null) {
             return msg2;
         }
@@ -103,7 +103,7 @@ public class MultiRectAreaTestCase extends PathIteratorTestCase {
         for(int i = 0; i < rect.length; i++) {
 
             // Fill rect
-            for(int x = rect[i].x; x < rect[i].x + rect[i].width; x++)
+            for(int x = rect[i].x; x < rect[i].x + rect[i].width; x++) {
                 for(int y = rect[i].y; y < rect[i].y + rect[i].height; y++) {
                     if (img.getRGB(x, y) == colorBack.getRGB()) {
                         img.setRGB(x, y, getRectColor(i).getRGB());
@@ -112,6 +112,7 @@ public class MultiRectAreaTestCase extends PathIteratorTestCase {
                         img.setRGB(x, y, colorOverride.getRGB());
                     }
                 }
+            }
         }
 
         if (areaName != null) {

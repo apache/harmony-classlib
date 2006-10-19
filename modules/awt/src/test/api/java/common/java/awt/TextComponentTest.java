@@ -43,16 +43,14 @@ public class TextComponentTest extends TestCase {
 
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextComponentTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         textComp = new TextField();
         listener = new MyTextListener();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {
@@ -144,6 +142,7 @@ public class TextComponentTest extends TestCase {
     public void testProcessEvent() {
         eventProcessed = false;
         textComp.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent a0) {
                 eventProcessed = true;
             }
@@ -157,7 +156,7 @@ public class TextComponentTest extends TestCase {
      * Test method for 'java.awt.TextComponent.getListeners(Class)'
      */
     public void testGetListeners() {
-        Class cls = TextListener.class;
+        Class<TextListener> cls = TextListener.class;
         EventListener[] listeners = textComp.getListeners(cls);
         assertEquals(0, listeners.length);
         textComp.addTextListener(listener);

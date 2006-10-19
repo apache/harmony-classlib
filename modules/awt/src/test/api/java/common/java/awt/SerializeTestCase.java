@@ -35,13 +35,13 @@ public class SerializeTestCase extends TestCase {
     static final String POSTFIX = ".actual";
     static final String FOLDER = "serialization";
 
-    public String serializePath = null;
+    public String serializePath;
 
     public SerializeTestCase(String name) {
         super(name);
     }
 
-    public static String getSerializePath(Class serializeClass) {
+    public static String getSerializePath(Class<?> serializeClass) {
         String path = System.getProperty("TEST_SRC_DIR");
         assertNotNull("Variable TEST_SRC_DIR not defined", path);
         if (!path.endsWith(File.separator)) {

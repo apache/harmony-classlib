@@ -31,6 +31,7 @@ public class FlowLayoutRTest extends TestCase {
         junit.textui.TestRunner.run(FlowLayoutRTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         emptyContainer = new Container();

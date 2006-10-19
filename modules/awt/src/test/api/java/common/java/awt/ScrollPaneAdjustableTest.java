@@ -35,9 +35,8 @@ public class ScrollPaneAdjustableTest extends TestCase {
     private final int HSIZE = 1500;
     private final int VSIZE = 200;
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @SuppressWarnings("deprecation")
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         f = new Frame();
@@ -53,9 +52,7 @@ public class ScrollPaneAdjustableTest extends TestCase {
         f.show();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (f != null) {

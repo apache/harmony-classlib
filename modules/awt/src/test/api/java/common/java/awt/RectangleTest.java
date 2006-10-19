@@ -34,11 +34,13 @@ public class RectangleTest extends SerializeTestCase {
         serializePath = getSerializePath(Rectangle.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         r = new Rectangle(1, 2, 3, 4);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         r = null;
         super.tearDown();
@@ -131,6 +133,7 @@ public class RectangleTest extends SerializeTestCase {
         assertEquals(new Point(5, 6), r.getLocation());
     }
 
+    @SuppressWarnings("deprecation")
     public void testMove() {
         r.move(5, 6);
         assertEquals(new Point(5, 6), r.getLocation());
@@ -145,11 +148,13 @@ public class RectangleTest extends SerializeTestCase {
         assertEquals(new Rectangle(13, 14, 16, 18), r);
     }
 
+    @SuppressWarnings("deprecation")
     public void testResize() {
         r.resize(5, 6);
         assertEquals(new Rectangle(1, 2, 5, 6), r);
     }
 
+    @SuppressWarnings("deprecation")
     public void testReshape() {
         r.reshape(5, 6, 7, 8);
         assertEquals(new Rectangle(5, 6, 7, 8), r);
@@ -246,6 +251,7 @@ public class RectangleTest extends SerializeTestCase {
         assertTrue(!r.contains(new Point(6, 0)));
     }
 
+    @SuppressWarnings("deprecation")
     public void testInside() {
         assertTrue(r.inside(2, 3));
         assertTrue(!r.inside(0, 0));
@@ -309,14 +315,14 @@ public class RectangleTest extends SerializeTestCase {
     }
 
     public void testOutcode() {
-        assertEquals(Rectangle.OUT_LEFT | Rectangle.OUT_TOP,     r.outcode(0, 0));
-        assertEquals(Rectangle.OUT_TOP,                          r.outcode(2, 0));
-        assertEquals(Rectangle.OUT_RIGHT | Rectangle.OUT_TOP,    r.outcode(5, 0));
-        assertEquals(Rectangle.OUT_RIGHT,                        r.outcode(5, 3));
-        assertEquals(Rectangle.OUT_RIGHT | Rectangle.OUT_BOTTOM, r.outcode(5, 7));
-        assertEquals(Rectangle.OUT_BOTTOM,                       r.outcode(2, 7));
-        assertEquals(Rectangle.OUT_LEFT | Rectangle.OUT_BOTTOM,  r.outcode(0, 7));
-        assertEquals(Rectangle.OUT_LEFT,                         r.outcode(0, 3));
+        assertEquals(Rectangle2D.OUT_LEFT | Rectangle2D.OUT_TOP,     r.outcode(0, 0));
+        assertEquals(Rectangle2D.OUT_TOP,                          r.outcode(2, 0));
+        assertEquals(Rectangle2D.OUT_RIGHT | Rectangle2D.OUT_TOP,    r.outcode(5, 0));
+        assertEquals(Rectangle2D.OUT_RIGHT,                        r.outcode(5, 3));
+        assertEquals(Rectangle2D.OUT_RIGHT | Rectangle2D.OUT_BOTTOM, r.outcode(5, 7));
+        assertEquals(Rectangle2D.OUT_BOTTOM,                       r.outcode(2, 7));
+        assertEquals(Rectangle2D.OUT_LEFT | Rectangle2D.OUT_BOTTOM,  r.outcode(0, 7));
+        assertEquals(Rectangle2D.OUT_LEFT,                         r.outcode(0, 3));
         assertEquals(0, r.outcode(2, 3));
     }
 

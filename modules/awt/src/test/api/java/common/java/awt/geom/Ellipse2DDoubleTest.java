@@ -26,10 +26,12 @@ public class Ellipse2DDoubleTest extends TestCase {
 
     Ellipse2D.Double e;
 
+    @Override
     protected void setUp() throws Exception {
         e = new Ellipse2D.Double(1.0, 2.0, 3.0, 4.0);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         e = null;
     }

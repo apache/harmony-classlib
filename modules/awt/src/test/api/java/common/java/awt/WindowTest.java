@@ -22,12 +22,9 @@ package java.awt;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 public class WindowTest extends TestCase {
@@ -49,9 +46,7 @@ public class WindowTest extends TestCase {
         }
     };
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         f = new Frame("Window Test");
@@ -59,9 +54,7 @@ public class WindowTest extends TestCase {
         cleanPropertyFields();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (w != null) {
@@ -74,6 +67,7 @@ public class WindowTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void testSetLocationRelativeTo() {
         Rectangle screenRect = f.getGraphicsConfiguration().getBounds();
         Point centerScreen = screenRect.getLocation();
@@ -96,19 +90,23 @@ public class WindowTest extends TestCase {
 
     }
 
+    @SuppressWarnings("deprecation")
     public final void testApplyResourceBundle() {
         assertNotNull(w);
         assertSame(ComponentOrientation.UNKNOWN, w.getComponentOrientation());
         w.applyResourceBundle( new ResourceBundle() {
 
-            public Enumeration getKeys() {
+            @Override
+            public Enumeration<String> getKeys() {
                 return null;
             }
 
+            @Override
             protected Object handleGetObject(String arg0) {
                 return null;
             }
 
+            @Override
             public Locale getLocale(){
                 return new Locale("ar");
             }
@@ -118,6 +116,7 @@ public class WindowTest extends TestCase {
                    w.getComponentOrientation());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testApplyResourceBundleString() {
         assertNotNull(w);
         assertSame(ComponentOrientation.UNKNOWN, w.getComponentOrientation());
@@ -126,6 +125,7 @@ public class WindowTest extends TestCase {
                    w.getComponentOrientation());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testSetGetCursorType() {
         assertNotNull(f);
         assertEquals(Frame.DEFAULT_CURSOR, f.getCursorType());

@@ -30,6 +30,7 @@ public class ShutdownThreadTest extends TestCase {
         junit.textui.TestRunner.run(ShutdownThreadTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         t = new ShutdownThread();

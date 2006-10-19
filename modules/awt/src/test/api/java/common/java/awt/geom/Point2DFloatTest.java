@@ -30,11 +30,13 @@ public class Point2DFloatTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         p = new Point2D.Float(1, 2);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         p = null;
         super.tearDown();

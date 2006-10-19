@@ -33,6 +33,7 @@ public class MenuBarTest extends TestCase {
     
     MenuBar mb;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         mb = new MenuBar();
@@ -67,9 +68,9 @@ public class MenuBarTest extends TestCase {
     }
     
     public void testShortcuts() {
-        Enumeration sh = mb.shortcuts();
+        Enumeration<MenuShortcut> sh = mb.shortcuts();
         assertNotNull(sh);
-        HashSet s = new HashSet();
+        HashSet<MenuShortcut> s = new HashSet<MenuShortcut>();
         while (sh.hasMoreElements()) {
             s.add(sh.nextElement());
         }
@@ -82,7 +83,7 @@ public class MenuBarTest extends TestCase {
         assertEquals(0, s.size());
     }
 
-    private void checkShortcut(HashSet s, int vkey) {
+    private void checkShortcut(HashSet<MenuShortcut> s, int vkey) {
         MenuShortcut ms = newShortcut(vkey);
         assertTrue(s.contains(ms));
         s.remove(ms);

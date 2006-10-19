@@ -30,11 +30,13 @@ public class MultiRectAreaRectCashTest extends MultiRectAreaTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         area = new MultiRectArea.RectCash();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         area = null;
         super.tearDown();

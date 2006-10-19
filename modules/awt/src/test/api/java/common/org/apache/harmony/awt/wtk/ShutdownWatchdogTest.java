@@ -30,6 +30,7 @@ public class ShutdownWatchdogTest extends TestCase {
         junit.textui.TestRunner.run(ShutdownWatchdogTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         wd = new ShutdownWatchdog();
@@ -107,9 +108,9 @@ public class ShutdownWatchdogTest extends TestCase {
             }
             threads = new Thread[actualCount + 1];
         }
-        for (int i = 0; i < threads.length; i++) {
-            if ((threads[i] != null) && 
-                    threads[i].getName().equals("AWT-Shutdown")) {
+        for (Thread element : threads) {
+            if ((element != null) && 
+                    element.getName().equals("AWT-Shutdown")) {
                 return true;
             }
         }

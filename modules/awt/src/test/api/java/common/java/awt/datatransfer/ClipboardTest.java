@@ -33,10 +33,6 @@ public class ClipboardTest extends TestCase {
     private boolean calledBack;
     private boolean listenerCalled;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ClipboardTest.class);
-    }
-
     public final void testClipboard() {
         assertNull(new Clipboard(null).getName());
         assertEquals(new Clipboard("Clipboard").getName(), "Clipboard");
@@ -104,6 +100,7 @@ public class ClipboardTest extends TestCase {
             }
         };
         StringSelection t = new StringSelection("") {
+            @Override
             public void lostOwnership(Clipboard clipboard, Transferable contents) {
                 calledBack = true;
             }
@@ -138,6 +135,7 @@ public class ClipboardTest extends TestCase {
         assertEquals(c.getContents(null), s);
     }
 
+    @SuppressWarnings("deprecation")
     public final void testIsDataFlavorAvailable() {
         Clipboard c = new Clipboard("");
         StringSelection s = new StringSelection("");
@@ -148,6 +146,7 @@ public class ClipboardTest extends TestCase {
         assertFalse(c.isDataFlavorAvailable(new DataFlavor(Rectangle.class, "")));
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetAvailableDataFlavors() {
         Clipboard c = new Clipboard("");
         StringSelection s = new StringSelection("");

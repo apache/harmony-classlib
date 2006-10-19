@@ -32,13 +32,7 @@ public class DataBufferFloatTest extends TestCase {
     int arraySize = 20;
     int size = 10;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(DataBufferFloatTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         float dataArrays[][] = new float[numBanks][];
@@ -239,7 +233,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -252,7 +246,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -265,7 +259,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -278,7 +272,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -291,7 +285,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -304,7 +298,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -320,7 +314,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
@@ -329,7 +323,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
@@ -338,7 +332,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
@@ -347,7 +341,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
@@ -356,7 +350,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
@@ -365,7 +359,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
     }
 
@@ -377,7 +371,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db1.getNumBanks(); i++){
@@ -390,7 +384,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db2.getNumBanks(); i++){
@@ -403,7 +397,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db3.getNumBanks(); i++){
@@ -416,7 +410,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db4.getNumBanks(); i++){
@@ -429,7 +423,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db5.getNumBanks(); i++){
@@ -442,7 +436,7 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db6.getNumBanks(); i++){
@@ -459,7 +453,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db1.getElem(i));
@@ -468,7 +462,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db2.getElem(i));
@@ -477,7 +471,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db3.getElem(i));
@@ -486,7 +480,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db4.getElem(i));
@@ -495,7 +489,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db5.getElem(i));
@@ -504,7 +498,7 @@ public class DataBufferFloatTest extends TestCase {
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
             assertEquals(i, db6.getElem(i));
@@ -517,79 +511,79 @@ public class DataBufferFloatTest extends TestCase {
 
         for(int i = 0; i < db1.getNumBanks(); i++){
             for(int j = 0; j < db1.getSize(); j++){
-                db1.setElemFloat(i, j, (float)j);
+                db1.setElemFloat(i, j, j);
             }
         }
         offsets = db1.getOffsets();
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db2.getNumBanks(); i++){
             for(int j = 0; j < db2.getSize(); j++){
-                db2.setElemFloat(i, j, (float)j);
+                db2.setElemFloat(i, j, j);
             }
         }
         offsets = db2.getOffsets();
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db3.getNumBanks(); i++){
             for(int j = 0; j < db3.getSize(); j++){
-                db3.setElemFloat(i, j, (float)j);
+                db3.setElemFloat(i, j, j);
             }
         }
         offsets = db3.getOffsets();
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db4.getNumBanks(); i++){
             for(int j = 0; j < db4.getSize(); j++){
-                db4.setElemFloat(i, j, (float)j);
+                db4.setElemFloat(i, j, j);
             }
         }
         offsets = db4.getOffsets();
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db5.getNumBanks(); i++){
             for(int j = 0; j < db5.getSize(); j++){
-                db5.setElemFloat(i, j, (float)j);
+                db5.setElemFloat(i, j, j);
             }
         }
         offsets = db5.getOffsets();
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db6.getNumBanks(); i++){
             for(int j = 0; j < db6.getSize(); j++){
-                db6.setElemFloat(i, j, (float)j);
+                db6.setElemFloat(i, j, j);
             }
         }
         offsets = db6.getOffsets();
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -600,57 +594,57 @@ public class DataBufferFloatTest extends TestCase {
         int offset;
 
         for(int i = 0; i < size; i++){
-            db1.setElemFloat(i, (float)i);
+            db1.setElemFloat(i, i);
         }
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db2.setElemFloat(i, (float)i);
+            db2.setElemFloat(i, i);
         }
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db3.setElemFloat(i, (float)i);
+            db3.setElemFloat(i, i);
         }
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db4.setElemFloat(i, (float)i);
+            db4.setElemFloat(i, i);
         }
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db5.setElemFloat(i, (float)i);
+            db5.setElemFloat(i, i);
         }
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db6.setElemFloat(i, (float)i);
+            db6.setElemFloat(i, i);
         }
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
     }
 
@@ -662,12 +656,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db1.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db1.getElemFloat(i, j), 0f);
+                assertEquals(j, db1.getElemFloat(i, j), 0f);
             }
         }
 
@@ -675,12 +669,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db2.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db2.getElem(i, j), 0f);
+                assertEquals(j, db2.getElem(i, j), 0f);
             }
         }
 
@@ -688,12 +682,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db3.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db3.getElemFloat(i, j), 0f);
+                assertEquals(j, db3.getElemFloat(i, j), 0f);
             }
         }
 
@@ -701,12 +695,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db4.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db4.getElemFloat(i, j), 0f);
+                assertEquals(j, db4.getElemFloat(i, j), 0f);
             }
         }
 
@@ -714,12 +708,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db5.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db5.getElemFloat(i, j), 0f);
+                assertEquals(j, db5.getElemFloat(i, j), 0f);
             }
         }
 
@@ -727,12 +721,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db6.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, db6.getElemFloat(i, j), 0f);
+                assertEquals(j, db6.getElemFloat(i, j), 0f);
             }
         }
     }
@@ -744,55 +738,55 @@ public class DataBufferFloatTest extends TestCase {
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db1.getElemFloat(i), 0f);
+            assertEquals(i, db1.getElemFloat(i), 0f);
         }
 
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db2.getElemFloat(i), 0f);
+            assertEquals(i, db2.getElemFloat(i), 0f);
         }
 
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db3.getElemFloat(i), 0f);
+            assertEquals(i, db3.getElemFloat(i), 0f);
         }
 
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db4.getElemFloat(i), 0f);
+            assertEquals(i, db4.getElemFloat(i), 0f);
         }
 
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db5.getElemFloat(i), 0f);
+            assertEquals(i, db5.getElemFloat(i), 0f);
         }
 
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, db6.getElemFloat(i), 0f);
+            assertEquals(i, db6.getElemFloat(i), 0f);
         }
     }
 
@@ -802,79 +796,79 @@ public class DataBufferFloatTest extends TestCase {
 
         for(int i = 0; i < db1.getNumBanks(); i++){
             for(int j = 0; j < db1.getSize(); j++){
-                db1.setElemDouble(i, j, (double)j);
+                db1.setElemDouble(i, j, j);
             }
         }
         offsets = db1.getOffsets();
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db2.getNumBanks(); i++){
             for(int j = 0; j < db2.getSize(); j++){
-                db2.setElemDouble(i, j, (double)j);
+                db2.setElemDouble(i, j, j);
             }
         }
         offsets = db2.getOffsets();
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db3.getNumBanks(); i++){
             for(int j = 0; j < db3.getSize(); j++){
-                db3.setElemDouble(i, j, (double)j);
+                db3.setElemDouble(i, j, j);
             }
         }
         offsets = db3.getOffsets();
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db4.getNumBanks(); i++){
             for(int j = 0; j < db4.getSize(); j++){
-                db4.setElemDouble(i, j, (double)j);
+                db4.setElemDouble(i, j, j);
             }
         }
         offsets = db4.getOffsets();
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db5.getNumBanks(); i++){
             for(int j = 0; j < db5.getSize(); j++){
-                db5.setElemDouble(i, j, (double)j);
+                db5.setElemDouble(i, j, j);
             }
         }
         offsets = db5.getOffsets();
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
         for(int i = 0; i < db6.getNumBanks(); i++){
             for(int j = 0; j < db6.getSize(); j++){
-                db6.setElemDouble(i, j, (double)j);
+                db6.setElemDouble(i, j, j);
             }
         }
         offsets = db6.getOffsets();
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                assertEquals((float)j, data[offsets[i] + j], 0);
+                assertEquals(j, data[offsets[i] + j], 0);
             }
         }
 
@@ -886,57 +880,57 @@ public class DataBufferFloatTest extends TestCase {
         int offset;
 
         for(int i = 0; i < size; i++){
-            db1.setElemDouble(i, (double)i);
+            db1.setElemDouble(i, i);
         }
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db2.setElemDouble(i, (double)i);
+            db2.setElemDouble(i, i);
         }
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db3.setElemDouble(i, (double)i);
+            db3.setElemDouble(i, i);
         }
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db4.setElemDouble(i, (double)i);
+            db4.setElemDouble(i, i);
         }
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db5.setElemDouble(i, (double)i);
+            db5.setElemDouble(i, i);
         }
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
 
         for(int i = 0; i < size; i++){
-            db6.setElemDouble(i, (double)i);
+            db6.setElemDouble(i, i);
         }
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            assertEquals((float)i, data[offset + i], 0);
+            assertEquals(i, data[offset + i], 0);
         }
     }
 
@@ -948,12 +942,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db1.getNumBanks(); i++){
             data = db1.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db1.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db1.getElemDouble(i, j), 0);
+                assertEquals(j, db1.getElemDouble(i, j), 0);
             }
         }
 
@@ -961,12 +955,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db2.getNumBanks(); i++){
             data = db2.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db2.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db2.getElemDouble(i, j), 0);
+                assertEquals(j, db2.getElemDouble(i, j), 0);
             }
         }
 
@@ -974,12 +968,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db3.getNumBanks(); i++){
             data = db3.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db3.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db3.getElemDouble(i, j), 0);
+                assertEquals(j, db3.getElemDouble(i, j), 0);
             }
         }
 
@@ -987,12 +981,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db4.getNumBanks(); i++){
             data = db4.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db4.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db4.getElemDouble(i, j), 0);
+                assertEquals(j, db4.getElemDouble(i, j), 0);
             }
         }
 
@@ -1000,12 +994,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db5.getNumBanks(); i++){
             data = db5.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db5.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db5.getElemDouble(i, j), 0);
+                assertEquals(j, db5.getElemDouble(i, j), 0);
             }
         }
 
@@ -1013,12 +1007,12 @@ public class DataBufferFloatTest extends TestCase {
         for(int i = 0; i < db6.getNumBanks(); i++){
             data = db6.getData(i);
             for(int j = 0; j < size; j++){
-                data[offsets[i] + j] = (float) j;
+                data[offsets[i] + j] = j;
             }
         }
         for(int i = 0; i < db6.getNumBanks(); i++){
             for(int j = 0; j < size; j++){
-                assertEquals((double)j, db6.getElemDouble(i, j), 0);
+                assertEquals(j, db6.getElemDouble(i, j), 0);
             }
         }
     }
@@ -1030,55 +1024,55 @@ public class DataBufferFloatTest extends TestCase {
         data = db1.getData();
         offset = db1.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db1.getElemDouble(i), 0);
+            assertEquals(i, db1.getElemDouble(i), 0);
         }
 
         data = db2.getData();
         offset = db2.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db2.getElemDouble(i), 0);
+            assertEquals(i, db2.getElemDouble(i), 0);
         }
 
         data = db3.getData();
         offset = db3.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db3.getElemDouble(i), 0);
+            assertEquals(i, db3.getElemDouble(i), 0);
         }
 
         data = db4.getData();
         offset = db4.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db4.getElemDouble(i), 0);
+            assertEquals(i, db4.getElemDouble(i), 0);
         }
 
         data = db5.getData();
         offset = db5.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db5.getElemDouble(i), 0);
+            assertEquals(i, db5.getElemDouble(i), 0);
         }
 
         data = db6.getData();
         offset = db6.getOffset();
         for(int i = 0; i < size; i++){
-            data[offset + i] = (float) i;
+            data[offset + i] = i;
         }
         for(int i = 0; i < size; i++){
-            assertEquals((double)i, db6.getElemDouble(i), 0);
+            assertEquals(i, db6.getElemDouble(i), 0);
         }
     }
 

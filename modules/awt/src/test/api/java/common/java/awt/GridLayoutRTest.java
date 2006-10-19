@@ -31,6 +31,7 @@ public class GridLayoutRTest extends TestCase {
         junit.textui.TestRunner.run(GridLayoutRTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         emptyContainer = new Container();

@@ -30,11 +30,13 @@ public class Line2DFloatTest extends GeomTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         l = new Line2D.Float(1, 2, 3, 4);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         l = null;
         super.tearDown();
@@ -83,18 +85,18 @@ public class Line2DFloatTest extends GeomTestCase {
     }
 
     public void testGetBounds2D() {
-        for(int i = 0; i < Line2DTest.bounds.length; i++) {
+        for (int[][] element : Line2DTest.bounds) {
             assertEquals(
                     new Rectangle2D.Float(
-                            Line2DTest.bounds[i][1][0],
-                            Line2DTest.bounds[i][1][1],
-                            Line2DTest.bounds[i][1][2],
-                            Line2DTest.bounds[i][1][3]),
+                            element[1][0],
+                            element[1][1],
+                            element[1][2],
+                            element[1][3]),
                     new Line2D.Float(
-                            Line2DTest.bounds[i][0][0],
-                            Line2DTest.bounds[i][0][1],
-                            Line2DTest.bounds[i][0][2],
-                            Line2DTest.bounds[i][0][3]).getBounds2D());
+                            element[0][0],
+                            element[0][1],
+                            element[0][2],
+                            element[0][3]).getBounds2D());
         }
     }
 

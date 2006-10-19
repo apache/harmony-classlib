@@ -22,6 +22,7 @@ package java.awt;
 
 public class GridLayoutTest extends AWTTestCase {
 
+    @SuppressWarnings("serial")
     class TestButton extends Button {
         TestButton(String name, Dimension min, Dimension pref) {
             super(name);
@@ -33,10 +34,11 @@ public class GridLayoutTest extends AWTTestCase {
 
     private final int MIN_SIZE = 50;
     private final int PREF_SIZE = 100;
-    private TestButton b1, b2, b3, b4, b5, b6;
+    private final TestButton b1, b2, b3, b4, b5, b6;
     private GridLayout layout;
     private Frame frame;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -46,6 +48,7 @@ public class GridLayoutTest extends AWTTestCase {
         frame.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         frame.dispose();
 

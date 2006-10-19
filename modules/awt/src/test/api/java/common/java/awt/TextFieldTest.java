@@ -40,16 +40,14 @@ public class TextFieldTest extends TestCase {
         }
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextFieldTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         tf = new TextField();
         listener = new MyActionListener();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {
@@ -111,6 +109,7 @@ public class TextFieldTest extends TestCase {
     /*
      * Test method for 'java.awt.TextField.minimumSize()'
      */
+    @SuppressWarnings("deprecation")
     public void testMinimumSize() {
         Dimension minSize = new Dimension();
         assertEquals(minSize, tf.minimumSize());
@@ -149,6 +148,7 @@ public class TextFieldTest extends TestCase {
     /*
      * Test method for 'java.awt.TextField.preferredSize()'
      */
+    @SuppressWarnings("deprecation")
     public void testPreferredSize() {
         Dimension prefSize = new Dimension();
         assertEquals(tf.minimumSize(), tf.preferredSize());
@@ -169,6 +169,7 @@ public class TextFieldTest extends TestCase {
     public void testProcessEvent() {
         eventProcessed = false;
         tf.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyTyped(KeyEvent ke) {
                 eventProcessed = true;
             }
@@ -182,7 +183,7 @@ public class TextFieldTest extends TestCase {
      * Test method for 'java.awt.TextField.getListeners(Class)'
      */
     public void testGetListeners() {
-        Class cls = ActionListener.class;
+        Class<ActionListener> cls = ActionListener.class;
         EventListener[] listeners = tf.getListeners(cls);
         assertEquals(0, listeners.length);
         tf.addActionListener(listener);
@@ -326,6 +327,7 @@ public class TextFieldTest extends TestCase {
     /*
      * Test method for 'java.awt.TextField.minimumSize(int)'
      */
+    @SuppressWarnings("deprecation")
     public void testMinimumSizeInt() {
         makeDisplayable();
         int cols = 25;
@@ -341,6 +343,7 @@ public class TextFieldTest extends TestCase {
     /*
      * Test method for 'java.awt.TextField.preferredSize(int)'
      */
+    @SuppressWarnings("deprecation")
     public void testPreferredSizeInt() {
         makeDisplayable();
         int cols = 125;
@@ -396,6 +399,7 @@ public class TextFieldTest extends TestCase {
     /*
      * Test method for 'java.awt.TextField.setEchoCharacter(char)'
      */
+    @SuppressWarnings("deprecation")
     public void testSetEchoCharacter() {
         char echoChar = '*';
         tf.setEchoCharacter(echoChar);

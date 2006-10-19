@@ -30,11 +30,13 @@ public class Point2DDoubleTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         p = new Point2D.Double(1, 2);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         p = null;
         super.tearDown();

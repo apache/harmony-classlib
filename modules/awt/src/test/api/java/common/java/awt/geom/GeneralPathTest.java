@@ -121,11 +121,13 @@ public class GeneralPathTest extends PathIteratorTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         g = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -291,19 +293,19 @@ public class GeneralPathTest extends PathIteratorTestCase {
     GeneralPath createPath(float[][] segments) {
         GeneralPath p = new GeneralPath();
         if (segments != null) {
-            for(int i = 0; i < segments.length; i++) {
-                switch((int)segments[i][0]) {
+            for (float[] element : segments) {
+                switch((int)element[0]) {
                 case PathIterator.SEG_MOVETO:
-                    p.moveTo(segments[i][1], segments[i][2]);
+                    p.moveTo(element[1], element[2]);
                     break;
                 case PathIterator.SEG_LINETO:
-                    p.lineTo(segments[i][1], segments[i][2]);
+                    p.lineTo(element[1], element[2]);
                     break;
                 case PathIterator.SEG_QUADTO:
-                    p.quadTo(segments[i][1], segments[i][2], segments[i][3], segments[i][4]);
+                    p.quadTo(element[1], element[2], element[3], element[4]);
                     break;
                 case PathIterator.SEG_CUBICTO:
-                    p.curveTo(segments[i][1], segments[i][2], segments[i][3], segments[i][4], segments[i][5], segments[i][6]);
+                    p.curveTo(element[1], element[2], element[3], element[4], element[5], element[6]);
                     break;
                 case PathIterator.SEG_CLOSE:
                     p.closePath();
@@ -315,11 +317,11 @@ public class GeneralPathTest extends PathIteratorTestCase {
     }
 
     public void testAppendShape() {
-        for(int i = 0; i < shapes1.length; i++) {
-            GeneralPath src1 = createPath(shapes1[i][0]);
-            GeneralPath src2 = createPath(shapes1[i][1]);
-            GeneralPath dst = createPath(shapes1[i][2]);
-            boolean connect = shapes1[i][3][0][0] == 1;
+        for (float[][][] element : shapes1) {
+            GeneralPath src1 = createPath(element[0]);
+            GeneralPath src2 = createPath(element[1]);
+            GeneralPath dst = createPath(element[2]);
+            boolean connect = element[3][0][0] == 1;
             src1.append(src2, connect);
             assertEquals(dst, src1, 0.0);
             assertEquals(dst, src1, 0.0f);
@@ -327,11 +329,11 @@ public class GeneralPathTest extends PathIteratorTestCase {
     }
 
     public void testAppendPath() {
-        for(int i = 0; i < shapes1.length; i++) {
-            GeneralPath src1 = createPath(shapes1[i][0]);
-            GeneralPath src2 = createPath(shapes1[i][1]);
-            GeneralPath dst = createPath(shapes1[i][2]);
-            boolean connect = shapes1[i][3][0][0] == 1;
+        for (float[][][] element : shapes1) {
+            GeneralPath src1 = createPath(element[0]);
+            GeneralPath src2 = createPath(element[1]);
+            GeneralPath dst = createPath(element[2]);
+            boolean connect = element[3][0][0] == 1;
             src1.append(src2.getPathIterator(null), connect);
             assertEquals(dst, src1, 0.0);
             assertEquals(dst, src1, 0.0f);
@@ -382,10 +384,10 @@ public class GeneralPathTest extends PathIteratorTestCase {
     }
 
     public void testTransform() {
-        for(int i = 0; i < shapes2.length; i++) {
-            GeneralPath src = createPath(shapes2[i][0]);
-            GeneralPath dst = createPath(shapes2[i][2]);
-            AffineTransform t = new AffineTransform(shapes2[i][1][0]);
+        for (float[][][] element : shapes2) {
+            GeneralPath src = createPath(element[0]);
+            GeneralPath dst = createPath(element[2]);
+            AffineTransform t = new AffineTransform(element[1][0]);
             src.transform(t);
             assertEquals(dst, src, 0.0);
             assertEquals(dst, src, 0.0f);
@@ -393,10 +395,10 @@ public class GeneralPathTest extends PathIteratorTestCase {
     }
 
     public void testCreateTransformedShape() {
-        for(int i = 0; i < shapes2.length; i++) {
-            GeneralPath src = createPath(shapes2[i][0]);
-            Shape dst1 = createPath(shapes2[i][2]);
-            AffineTransform t = new AffineTransform(shapes2[i][1][0]);
+        for (float[][][] element : shapes2) {
+            GeneralPath src = createPath(element[0]);
+            Shape dst1 = createPath(element[2]);
+            AffineTransform t = new AffineTransform(element[1][0]);
             Shape dst2 = src.createTransformedShape(t);
             assertTrue(Tools.Shape.equals(dst1, dst2, 0.0));
             assertTrue(Tools.Shape.equals(dst1, dst2, 0.0f));
@@ -404,25 +406,25 @@ public class GeneralPathTest extends PathIteratorTestCase {
     }
 
     public void testGetBounds2D() {
-        for(int i = 0; i < bounds.length; i++) {
-            GeneralPath src = createPath(bounds[i][0]);
+        for (float[][][] element : bounds) {
+            GeneralPath src = createPath(element[0]);
             Rectangle2D bound = new Rectangle2D.Float(
-                    bounds[i][1][0][0],
-                    bounds[i][1][0][1],
-                    bounds[i][1][0][2],
-                    bounds[i][1][0][3]);
+                    element[1][0][0],
+                    element[1][0][1],
+                    element[1][0][2],
+                    element[1][0][3]);
             assertEquals(bound, src.getBounds2D(), 0.0);
         }
     }
 
     public void testGetBounds() {
-        for(int i = 0; i < bounds.length; i++) {
-            GeneralPath src = createPath(bounds[i][0]);
+        for (float[][][] element : bounds) {
+            GeneralPath src = createPath(element[0]);
             Rectangle2D bound = new Rectangle(
-                    (int)bounds[i][1][0][0],
-                    (int)bounds[i][1][0][1],
-                    (int)bounds[i][1][0][2],
-                    (int)bounds[i][1][0][3]);
+                    (int)element[1][0][0],
+                    (int)element[1][0][1],
+                    (int)element[1][0][2],
+                    (int)element[1][0][3]);
             assertEquals(bound, src.getBounds(), 0.0);
         }
     }

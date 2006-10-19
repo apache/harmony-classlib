@@ -73,11 +73,13 @@ public class QuadCurve2DTest extends ShapeTestCase {
 //      filterShape = createFilter("^(quad).*([.]shape)$", null);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         q = new QuadCurve2D.Double(1, 2, 3, 4, 5, 6);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         q = null;
         super.tearDown();
@@ -115,90 +117,90 @@ public class QuadCurve2DTest extends ShapeTestCase {
     }
 
     public void testGetFlatnessSq1() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
-            assertEquals(quadToStr(curve), curves3[i][6], curve.getFlatnessSq(), 0.0);
+            curve.setCurve(element, 0);
+            assertEquals(quadToStr(curve), element[6], curve.getFlatnessSq(), 0.0);
         }
     }
 
     public void testGetFlatnessSq2() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
+            curve.setCurve(element, 0);
             assertEquals(
                     quadToStr(curve),
-                    curves3[i][6],
+                    element[6],
                     QuadCurve2D.getFlatnessSq(
-                            curves3[i][0],
-                            curves3[i][1],
-                            curves3[i][2],
-                            curves3[i][3],
-                            curves3[i][4],
-                            curves3[i][5]), 0.0);
+                            element[0],
+                            element[1],
+                            element[2],
+                            element[3],
+                            element[4],
+                            element[5]), 0.0);
         }
     }
 
     public void testGetFlatnessSq3() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
+            curve.setCurve(element, 0);
             assertEquals(
                     quadToStr(curve),
-                    curves3[i][6],
-                    QuadCurve2D.getFlatnessSq(curves3[i], 0), 0.0);
+                    element[6],
+                    QuadCurve2D.getFlatnessSq(element, 0), 0.0);
         }
     }
 
     public void testGetFlatness1() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
-            assertEquals(quadToStr(curve), Math.sqrt(curves3[i][6]), curve.getFlatness(), 0.0);
+            curve.setCurve(element, 0);
+            assertEquals(quadToStr(curve), Math.sqrt(element[6]), curve.getFlatness(), 0.0);
         }
     }
 
     public void testGetFlatness2() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
+            curve.setCurve(element, 0);
             assertEquals(
                     quadToStr(curve),
-                    Math.sqrt(curves3[i][6]),
+                    Math.sqrt(element[6]),
                     QuadCurve2D.getFlatness(
-                            curves3[i][0],
-                            curves3[i][1],
-                            curves3[i][2],
-                            curves3[i][3],
-                            curves3[i][4],
-                            curves3[i][5]), 0.0);
+                            element[0],
+                            element[1],
+                            element[2],
+                            element[3],
+                            element[4],
+                            element[5]), 0.0);
         }
     }
 
     public void testGetFlatness3() {
-        for(int i = 0; i < curves3.length; i++) {
+        for (double[] element : curves3) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(curves3[i], 0);
+            curve.setCurve(element, 0);
             assertEquals(
                     quadToStr(curve),
-                    Math.sqrt(curves3[i][6]),
-                    QuadCurve2D.getFlatness(curves3[i], 0), 0.0);
+                    Math.sqrt(element[6]),
+                    QuadCurve2D.getFlatness(element, 0), 0.0);
         }
     }
 
     public void testSubdivide1() {
-        for(int i = 0; i < curves1.length; i ++) {
+        for (double[][] element : curves1) {
             QuadCurve2D src1 = new QuadCurve2D.Double();
             QuadCurve2D left1 = new QuadCurve2D.Double();
             QuadCurve2D right1 = new QuadCurve2D.Double();
-            src1.setCurve(curves1[i][0], 0);
-            left1.setCurve(curves1[i][1], 0);
-            right1.setCurve(curves1[i][2], 0);
+            src1.setCurve(element[0], 0);
+            left1.setCurve(element[1], 0);
+            right1.setCurve(element[2], 0);
 
             QuadCurve2D src2 = new QuadCurve2D.Double();
             QuadCurve2D left2 = new QuadCurve2D.Double();
             QuadCurve2D right2 = new QuadCurve2D.Double();
-            src2.setCurve(curves1[i][0], 0);
+            src2.setCurve(element[0], 0);
             QuadCurve2D.subdivide(src2, left2, right2);
 
             assertEquals(src1, src2, 0.0);
@@ -208,57 +210,57 @@ public class QuadCurve2DTest extends ShapeTestCase {
     }
 
     public void testSubdivide2() {
-        for(int i = 0; i < curves2.length; i ++) {
-            int srcOff = curves2[i][0][0] < 0.0 ? (int)-curves2[i][0][0] : 0;
-            int leftOff = curves2[i][1][0] < 0.0 ? (int)-curves2[i][1][0] : 0;
-            int rightOff = curves2[i][2][0] < 0.0 ? (int)-curves2[i][2][0] : 0;
+        for (double[][] element : curves2) {
+            int srcOff = element[0][0] < 0.0 ? (int)-element[0][0] : 0;
+            int leftOff = element[1][0] < 0.0 ? (int)-element[1][0] : 0;
+            int rightOff = element[2][0] < 0.0 ? (int)-element[2][0] : 0;
 
             double[] src = new double[10];
             double[] left = new double[10];
             double[] right = new double[10];
 
-            System.arraycopy(src, 0, curves2[i][0], 0, curves2[i][0].length);
-            System.arraycopy(left, 0, curves2[i][1], 0, curves2[i][1].length);
-            System.arraycopy(right, 0, curves2[i][2], 0, curves2[i][2].length);
+            System.arraycopy(src, 0, element[0], 0, element[0].length);
+            System.arraycopy(left, 0, element[1], 0, element[1].length);
+            System.arraycopy(right, 0, element[2], 0, element[2].length);
 
             QuadCurve2D.subdivide(src, srcOff, left, leftOff, right, rightOff);
 
-            assertEquals(curves2[i][0], src, curves2[i][0].length, 0.0);
-            assertEquals(curves2[i][1], left, curves2[i][1].length, 0.0);
-            assertEquals(curves2[i][2], right, curves2[i][2].length, 0.0);
+            assertEquals(element[0], src, element[0].length, 0.0);
+            assertEquals(element[1], left, element[1].length, 0.0);
+            assertEquals(element[2], right, element[2].length, 0.0);
         }
     }
 
     public void testSolveQuadratic1() {
-        for(int i = 0; i < equations.length; i++) {
+        for (double[][] element : equations) {
             double eqn[] = new double[3];
-            System.arraycopy(equations[i][0], 0, eqn, 0, 3);
+            System.arraycopy(element[0], 0, eqn, 0, 3);
             String seqn =
                 "[" + doubleToStr(eqn[0]) + "," +
                 doubleToStr(eqn[1]) + "," +
                 doubleToStr(eqn[2]) + "]";
             int roots = QuadCurve2D.solveQuadratic(eqn);
-            assertEquals(seqn + " roots count", (int)equations[i][1][0], roots);
+            assertEquals(seqn + " roots count", (int)element[1][0], roots);
             for(int j = 0; j < roots; j++) {
-                assertEquals(seqn + " root(" + j + ")", equations[i][1][1 + j], eqn[j], ROOT_DELTA);
+                assertEquals(seqn + " root(" + j + ")", element[1][1 + j], eqn[j], ROOT_DELTA);
             }
         }
     }
 
     public void testSolveQuadratic2() {
-        for(int i = 0; i < equations.length; i++) {
+        for (double[][] element : equations) {
             double res[] = new double[3];
             double eqn[] = new double[3];
-            System.arraycopy(equations[i][0], 0, eqn, 0, 3);
+            System.arraycopy(element[0], 0, eqn, 0, 3);
             String seqn =
                 "[" + doubleToStr(eqn[0]) + "," +
                 doubleToStr(eqn[1]) + "," +
                 doubleToStr(eqn[2]) + "]";
             int roots = QuadCurve2D.solveQuadratic(eqn, res);
-            assertEquals(seqn + " roots count", (int)equations[i][1][0], roots);
-            assertEquals(equations[i][0], eqn, 3, 0.0);
+            assertEquals(seqn + " roots count", (int)element[1][0], roots);
+            assertEquals(element[0], eqn, 3, 0.0);
             for(int j = 0; j < roots; j++) {
-                assertEquals(seqn + " root(" + j + ")", equations[i][1][1 + j], res[j], ROOT_DELTA);
+                assertEquals(seqn + " root(" + j + ")", element[1][1 + j], res[j], ROOT_DELTA);
             }
         }
     }
@@ -268,16 +270,16 @@ public class QuadCurve2DTest extends ShapeTestCase {
     }
 
     public void testGetBounds() {
-        for(int i = 0; i < bounds.length; i++) {
+        for (double[][] element : bounds) {
             QuadCurve2D curve = new QuadCurve2D.Double();
-            curve.setCurve(bounds[i][0], 0);
+            curve.setCurve(element[0], 0);
             assertEquals(
                     quadToStr(curve),
                     new Rectangle(
-                            (int)bounds[i][1][0],
-                            (int)bounds[i][1][1],
-                            (int)bounds[i][1][2],
-                            (int)bounds[i][1][3]),
+                            (int)element[1][0],
+                            (int)element[1][1],
+                            (int)element[1][2],
+                            (int)element[1][3]),
                     curve.getBounds());
         }
     }

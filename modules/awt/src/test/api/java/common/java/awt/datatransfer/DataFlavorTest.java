@@ -64,7 +64,7 @@ public class DataFlavorTest extends TestCase {
         assertTrue(!new DataFlavor("x/y; class=java.util.LinkedList; charset=c1", "").equals(
                 (Object) new DataFlavor("x/y; class=java.util.List; charset=c2", "")));
         assertTrue(!new DataFlavor("z/y; class=java.util.LinkedList", "").equals(
-                (Object) new RuntimeException()));
+                new RuntimeException()));
     }
 
     /*
@@ -279,8 +279,10 @@ public class DataFlavorTest extends TestCase {
 
     public final void testIsRepresentationClassReader() {
         assertTrue(new DataFlavor(new Reader() {
+            @Override
             public void close() throws IOException {
             }
+            @Override
             public int read(char[] arg0, int arg1, int arg2) throws IOException {
                 return 0;
             }
@@ -291,6 +293,7 @@ public class DataFlavorTest extends TestCase {
 
     public final void testIsRepresentationClassInputStream() {
         assertTrue(new DataFlavor(new InputStream() {
+            @Override
             public int read() throws IOException {
                 return 0;
             }

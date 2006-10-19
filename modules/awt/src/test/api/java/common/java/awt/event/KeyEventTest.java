@@ -52,13 +52,13 @@ public class KeyEventTest extends TestCase {
         long when = 1000000000;
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, when,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), KeyEvent.KEY_PRESSED);
         assertEquals(event.getWhen(), when);
-        assertEquals(event.getModifiers(), KeyEvent.ALT_GRAPH_MASK);
-        assertEquals(event.getModifiersEx(), KeyEvent.ALT_GRAPH_DOWN_MASK);
+        assertEquals(event.getModifiers(), InputEvent.ALT_GRAPH_MASK);
+        assertEquals(event.getModifiersEx(), InputEvent.ALT_GRAPH_DOWN_MASK);
         assertEquals(event.getKeyCode(), KeyEvent.VK_A);
         assertEquals(event.getKeyChar(), 'a');
         assertEquals(event.getKeyLocation(), KeyEvent.KEY_LOCATION_UNKNOWN);
@@ -66,7 +66,7 @@ public class KeyEventTest extends TestCase {
         boolean typedKeyCode = false;
         try {
             event = new KeyEvent(button, KeyEvent.KEY_TYPED, when,
-                    KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
+                    InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
         } catch (Throwable t) {
             typedKeyCode = true;
         }
@@ -75,7 +75,7 @@ public class KeyEventTest extends TestCase {
         boolean typedUndefinedChar = false;
         try {
             event = new KeyEvent(button, KeyEvent.KEY_TYPED, when,
-                    KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
+                    InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
         } catch (Throwable t) {
             typedUndefinedChar = true;
         }
@@ -86,13 +86,13 @@ public class KeyEventTest extends TestCase {
         long when = 1000000000;
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, when,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), KeyEvent.KEY_PRESSED);
         assertEquals(event.getWhen(), when);
-        assertEquals(event.getModifiers(), KeyEvent.ALT_GRAPH_MASK);
-        assertEquals(event.getModifiersEx(), KeyEvent.ALT_GRAPH_DOWN_MASK);
+        assertEquals(event.getModifiers(), InputEvent.ALT_GRAPH_MASK);
+        assertEquals(event.getModifiersEx(), InputEvent.ALT_GRAPH_DOWN_MASK);
         assertEquals(event.getKeyCode(), KeyEvent.VK_A);
         assertEquals(event.getKeyChar(), 'a');
         assertEquals(event.getKeyLocation(), KeyEvent.KEY_LOCATION_NUMPAD);
@@ -100,7 +100,7 @@ public class KeyEventTest extends TestCase {
         boolean typedKeyCode = false;
         try {
             event = new KeyEvent(button, KeyEvent.KEY_TYPED, when,
-                    KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                    InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
         } catch (Throwable t) {
             typedKeyCode = true;
         }
@@ -109,7 +109,7 @@ public class KeyEventTest extends TestCase {
         boolean typedUndefinedChar = false;
         try {
             event = new KeyEvent(button, KeyEvent.KEY_TYPED, when,
-                    KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED,
+                    InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED,
                     KeyEvent.KEY_LOCATION_NUMPAD);
         } catch (Throwable t) {
             typedUndefinedChar = true;
@@ -120,7 +120,7 @@ public class KeyEventTest extends TestCase {
     public final void testGetSetKeyCode() {
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
 
         event.setKeyCode(KeyEvent.VK_1);
         assertEquals(event.getKeyCode(), KeyEvent.VK_1);
@@ -128,7 +128,7 @@ public class KeyEventTest extends TestCase {
         assertEquals(event.getKeyCode(), KeyEvent.VK_UNDEFINED);
 
         event = new KeyEvent(button, KeyEvent.KEY_TYPED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
         boolean typedKeyCode = false;
         try {
             event.setKeyCode(KeyEvent.VK_A);
@@ -141,7 +141,7 @@ public class KeyEventTest extends TestCase {
     public final void testGetSetKeyChar() {
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
 
         event.setKeyChar('1');
         assertEquals(event.getKeyChar(), '1');
@@ -149,7 +149,7 @@ public class KeyEventTest extends TestCase {
         assertEquals(event.getKeyChar(), KeyEvent.CHAR_UNDEFINED);
 
         event = new KeyEvent(button, KeyEvent.KEY_TYPED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_UNDEFINED, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
         boolean typedKeyChar = false;
         try {
             event.setKeyChar(KeyEvent.CHAR_UNDEFINED);
@@ -162,11 +162,11 @@ public class KeyEventTest extends TestCase {
     public final void testIsActionKey() {
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a');
 
         assertFalse(event.isActionKey());
         event = new KeyEvent(button, KeyEvent.KEY_PRESSED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED);
         assertTrue(event.isActionKey());
         event.setKeyChar('1');
         assertFalse(event.isActionKey());
@@ -181,16 +181,16 @@ public class KeyEventTest extends TestCase {
     public final void testParamString() {
         Button button = new Button("Button");
         KeyEvent event = new KeyEvent(button, KeyEvent.KEY_PRESSED, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
 
         assertEquals(event.paramString(),
                 "KEY_PRESSED,keyCode=65,keyChar='a',modifiers=Alt Graph,extModifiers=Alt Graph,keyLocation=KEY_LOCATION_NUMPAD");
         event = new KeyEvent(button, KeyEvent.KEY_PRESSED + 1024, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
         assertEquals(event.paramString(),
                 "unknown type,keyCode=65,keyChar='a',modifiers=Alt Graph,extModifiers=Alt Graph,keyLocation=KEY_LOCATION_NUMPAD");
         event = new KeyEvent(button, KeyEvent.KEY_PRESSED + 1024, 0l,
-                KeyEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD + 1024);
+                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD + 1024);
         assertEquals(event.paramString(),
                 "unknown type,keyCode=65,keyChar='a',modifiers=Alt Graph,extModifiers=Alt Graph,keyLocation=unknown type");
     }

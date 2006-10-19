@@ -34,20 +34,21 @@ public class LineBreakMeasurerTest extends TestCase
 {
     LineBreakMeasurer measurer;
 
-    private int width = 500;
-    private int height = 200;
-    private BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    private final int width = 500;
+    private final int height = 200;
+    private final BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-    private String s = "I TestItalic TestPlain I";
-    private Font f = new Font("times new roman", Font.ITALIC, 24);
-    private Font f1 = new Font("serif", Font.PLAIN, 60);
-    private FontRenderContext frc = ((Graphics2D) im.getGraphics()).getFontRenderContext();
+    private final String s = "I TestItalic TestPlain I";
+    private final Font f = new Font("times new roman", Font.ITALIC, 24);
+    private final Font f1 = new Font("serif", Font.PLAIN, 60);
+    private final FontRenderContext frc = ((Graphics2D) im.getGraphics()).getFontRenderContext();
 
     public LineBreakMeasurerTest(String name)
     {
         super(name);
     }
 
+    @Override
     public void setUp() throws Exception
     {
         super.setUp();
@@ -60,6 +61,7 @@ public class LineBreakMeasurerTest extends TestCase
         measurer = new LineBreakMeasurer(aci, frc);
     }
 
+    @Override
     public void tearDown() throws Exception
     {
         super.tearDown();

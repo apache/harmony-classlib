@@ -34,11 +34,13 @@ public class Point2DTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         p = new Point(1, 2);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         p = null;
         super.tearDown();

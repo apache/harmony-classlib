@@ -47,26 +47,29 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         area = new MultiRectArea();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         area = null;
         super.tearDown();
     }
 
     void fillRect(int[] buf, int width, Rectangle rect, int inc) {
-        for(int x = rect.x; x < rect.x + rect.width; x++)
+        for(int x = rect.x; x < rect.x + rect.width; x++) {
             for(int y = rect.y; y < rect.y + rect.height; y++) {
                 buf[x + y * width] += inc;
             }
+        }
     }
 
     void fillMultiRectArea(int[] buf, int width, MultiRectArea area, int inc) {
         Rectangle[] rect = area.getRectangles();
-        for(int i = 0; i < rect.length; i++) {
-            fillRect(buf, width, rect[i], inc);
+        for (Rectangle element : rect) {
+            fillRect(buf, width, element, inc);
         }
     }
 
@@ -74,14 +77,17 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
 
         static class Intersect extends OperationTest {
 
+            @Override
             String getName() {
                 return "Intersect";
             }
 
+            @Override
             MultiRectArea getResult(MultiRectArea mra1, MultiRectArea mra2) {
                 return MultiRectArea.intersect(mra1, mra2);
             }
 
+            @Override
             boolean isValid(int[] buf, int index) {
                 return
                     buf[index] == 0 ||
@@ -94,14 +100,17 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
 
         static class Union extends OperationTest {
 
+            @Override
             String getName() {
                 return "Union";
             }
 
+            @Override
             MultiRectArea getResult(MultiRectArea mra1, MultiRectArea mra2) {
                 return MultiRectArea.union(mra1, mra2);
             }
 
+            @Override
             boolean isValid(int[] buf, int index) {
                 return
                     buf[index] == 0 ||
@@ -114,14 +123,17 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
 
         static class Subtract extends OperationTest {
 
+            @Override
             String getName() {
                 return "Subtract";
             }
 
+            @Override
             MultiRectArea getResult(MultiRectArea mra1, MultiRectArea mra2) {
                 return MultiRectArea.subtract(mra1, mra2);
             }
 
+            @Override
             boolean isValid(int[] buf, int index) {
                 return
                     buf[index] == 0 ||
@@ -164,7 +176,7 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
         int errCount = 0;
 
     outer:
-        for(int j = 0; j < height; j += STEP)
+        for(int j = 0; j < height; j += STEP) {
             for(int i = 0; i < width; i += STEP) {
                 BufferedImage img = new BufferedImage(bufWidth, bufHeight, BufferedImage.TYPE_INT_RGB);
                 int[] buf = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
@@ -202,6 +214,7 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
                     area1.translate(-i, STEP);
                 }
             }
+        }
 
         if (errCount > 0) {
             fail(op.getName() + " failed");
@@ -293,8 +306,8 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
         return r;
     }
 
-    ArrayList createList(int[][] rect) {
-        ArrayList r = new ArrayList();
+    ArrayList<Rectangle> createList(int[][] rect) {
+        ArrayList<Rectangle> r = new ArrayList<Rectangle>();
         for(int i = 0; i < rect.length; i++) {
             r.add(i, new Rectangle(
                     rect[i][0],

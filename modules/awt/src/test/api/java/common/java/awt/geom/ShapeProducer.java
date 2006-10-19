@@ -217,74 +217,74 @@ public class ShapeProducer {
     }
 
     void createRect() {
-        for(int i = 0; i < rect.length; i++) {
+        for (double[][] element : rect) {
             saveRectShape(
                     path,
-                    createRect(rect[i][0]),
-                    createTransform(rect[i][1]),
-                    createFlatness(rect[i][2]));
+                    createRect(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
     void createRound() {
-        for(int i = 0; i < round.length; i++) {
+        for (double[][] element : round) {
             saveRectShape(
                     path,
-                    createRound(round[i][0]),
-                    createTransform(round[i][1]),
-                    createFlatness(round[i][2]));
+                    createRound(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
     void createEllipse() {
-        for(int i = 0; i < ellipse.length; i++) {
+        for (double[][] element : ellipse) {
             saveRectShape(
                     path,
-                    createEllipse(ellipse[i][0]),
-                    createTransform(ellipse[i][1]),
-                    createFlatness(ellipse[i][2]));
+                    createEllipse(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
     void createArc() {
-        for(int i = 0; i < arc.length; i++) {
-            for(int j = 0; j < arc[i][3].length; j++) {
+        for (double[][] element : arc) {
+            for(int j = 0; j < element[3].length; j++) {
                 saveRectShape(
                         path,
-                        createArc(arc[i][0], (int)arc[i][3][j]),
-                        createTransform(arc[i][1]),
-                        createFlatness(arc[i][2]));
+                        createArc(element[0], (int)element[3][j]),
+                        createTransform(element[1]),
+                        createFlatness(element[2]));
             }
         }
     }
 
     void createQuad() {
-        for(int i = 0; i < quad.length; i++) {
+        for (double[][] element : quad) {
             saveRectShape(
                     path,
-                    createQuad(quad[i][0]),
-                    createTransform(quad[i][1]),
-                    createFlatness(quad[i][2]));
+                    createQuad(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
     void createCubic() {
-        for(int i = 0; i < cubic.length; i++) {
+        for (double[][] element : cubic) {
             saveRectShape(
                     path,
-                    createCubic(cubic[i][0]),
-                    createTransform(cubic[i][1]),
-                    createFlatness(cubic[i][2]));
+                    createCubic(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
     void createPolygon() {
-        for(int i = 0; i < polygon.length; i++) {
+        for (double[][] element : polygon) {
             saveRectShape(
                     path,
-                    createPolygon(polygon[i][0]),
-                    createTransform(polygon[i][1]),
-                    createFlatness(polygon[i][2]));
+                    createPolygon(element[0]),
+                    createTransform(element[1]),
+                    createFlatness(element[2]));
         }
     }
 
@@ -322,7 +322,7 @@ public class ShapeProducer {
         g.setColor(colorFill);
         ((Graphics2D)g).fill(src);
 */
-        for(int x = 0; x < img.getWidth(); x++)
+        for(int x = 0; x < img.getWidth(); x++) {
             for(int y = 0; y < img.getHeight(); y++) {
                 if (x == 120 && y == 120) {
                     System.out.println("test");
@@ -331,6 +331,7 @@ public class ShapeProducer {
                     img.setRGB(x, y, colorFill.getRGB());
                 }
             }
+        }
 
         // Draw shape
         Stroke oldStroke = ((Graphics2D)g).getStroke();

@@ -173,11 +173,13 @@ public class Arc2DTest extends ShapeTestCase {
 //      filterBounds = createFilter("^(arc).*(bounds).*([.]ico)$", null);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         a = new Arc2D.Double(1, 2, 4, 6, 45, 240 - 45, Arc2D.PIE);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         a = null;
         super.tearDown();
@@ -202,54 +204,54 @@ public class Arc2DTest extends ShapeTestCase {
     }
 
     public void testGetStartPoint() {
-        for(int i = 0; i < angles.length; i++) {
-            double angle = angles[i][0];
+        for (double[] element : angles) {
+            double angle = element[0];
             assertEquals(
                     "[angle=" + doubleToStr(angle) + "] Start point",
-                    new Point2D.Double(angles[i][1], angles[i][2]),
+                    new Point2D.Double(element[1], element[2]),
                     new Arc2D.Double(1, 2, 4, 6, angle, 10, Arc2D.PIE).getStartPoint(),
                     DELTA);
         }
     }
 
     public void testGetEndPoint() {
-        for(int i = 0; i < angles.length; i++) {
-            double angle = angles[i][0];
+        for (double[] element : angles) {
+            double angle = element[0];
             assertEquals(
                     "[angle=" + doubleToStr(angle) + "] End point",
-                    new Point2D.Double(angles[i][1], angles[i][2]),
+                    new Point2D.Double(element[1], element[2]),
                     new Arc2D.Double(1, 2, 4, 6, 10, angle - 10, Arc2D.PIE).getEndPoint(),
                     DELTA);
         }
     }
 
     public void testGetBounds2D() {
-        for(int i = 0; i < bounds.length; i++) {
-            int type = (int)bounds[i][0];
-            double start = bounds[i][1];
-            double extent = bounds[i][2];
+        for (double[] element : bounds) {
+            int type = (int)element[0];
+            double start = element[1];
+            double extent = element[2];
             assertEquals(
                     "[start=" + doubleToStr(start) +
                     ",extent=" + doubleToStr(extent) +
                     ",type=" + type + "] Bounds",
                     new Rectangle2D.Double(
-                            bounds[i][3],
-                            bounds[i][4],
-                            bounds[i][5] - bounds[i][3],
-                            bounds[i][6] - bounds[i][4]),
+                            element[3],
+                            element[4],
+                            element[5] - element[3],
+                            element[6] - element[4]),
                     new Arc2D.Double(1, 2, 4, 6, start, extent, type).getBounds2D(),
                     DELTA);
         }
     }
 
     public void testContainsAngle() {
-        for(int i = 0; i < arcs.length; i++) {
-            double start = arcs[i][0];
-            double extent = arcs[i][1];
-            double angle = arcs[i][2];
+        for (double[] element : arcs) {
+            double start = element[0];
+            double extent = element[1];
+            double angle = element[2];
             assertEquals(
                     "[start=" + doubleToStr(start) + ",extent=" + extent + "] containsAngle(" + angle + ")",
-                    arcs[i][3] == 1,
+                    element[3] == 1,
                     new Arc2D.Double(1, 2, 4, 6, start, extent, Arc2D.OPEN).containsAngle(angle));
         }
     }
@@ -283,21 +285,21 @@ public class Arc2DTest extends ShapeTestCase {
     }
 
     public void testSetArcByTangent() {
-        for(int i = 0; i < tangent.length; i++) {
-            double x1 = tangent[i][0];
-            double y1 = tangent[i][1];
-            double x2 = tangent[i][2];
-            double y2 = tangent[i][3];
-            double x3 = tangent[i][4];
-            double y3 = tangent[i][5];
-            double radius = tangent[i][6];
+        for (double[] element : tangent) {
+            double x1 = element[0];
+            double y1 = element[1];
+            double x2 = element[2];
+            double y2 = element[3];
+            double x3 = element[4];
+            double y3 = element[5];
+            double radius = element[6];
             a.setArcByTangent(
                     new Point2D.Double(x1, y1),
                     new Point2D.Double(x2, y2),
                     new Point2D.Double(x3, y3),
                     radius);
             Arc2D a2 = new Arc2D.Double();
-            a2.setArcByCenter(tangent[i][7], tangent[i][8], radius, tangent[i][9], tangent[i][10], a.getArcType());
+            a2.setArcByCenter(element[7], element[8], radius, element[9], element[10], a.getArcType());
             assertEquals(
                     "Arc2d.setArcByTangent((" +
                     doubleToStr(x1) + "," +
@@ -314,10 +316,10 @@ public class Arc2DTest extends ShapeTestCase {
     }
 
     public void testSetAngleStart() {
-        for(int i = 0; i < points1.length; i++) {
-            double x = points1[i][0];
-            double y = points1[i][1];
-            double angle = points1[i][2];
+        for (double[] element : points1) {
+            double x = element[0];
+            double y = element[1];
+            double angle = element[2];
             a.setAngleStart(new Point2D.Double(x, y));
             assertEquals(
                     "Arc2d.setAngleStart(" + x + "," + y + ") failed",
@@ -328,13 +330,13 @@ public class Arc2DTest extends ShapeTestCase {
     }
 
     public void testSetAngels1() {
-        for(int i = 0; i < points2.length; i++) {
-            double x1 = points2[i][0];
-            double y1 = points2[i][1];
-            double x2 = points2[i][2];
-            double y2 = points2[i][3];
-            double start = points2[i][4];
-            double extent = points2[i][5];
+        for (double[] element : points2) {
+            double x1 = element[0];
+            double y1 = element[1];
+            double x2 = element[2];
+            double y2 = element[3];
+            double start = element[4];
+            double extent = element[5];
             a.setAngles(x1, y1, x2, y2);
             assertEquals(
                     "Arc2d.setAngles(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed. Start angle",
@@ -350,13 +352,13 @@ public class Arc2DTest extends ShapeTestCase {
     }
 
     public void testSetAngels2() {
-        for(int i = 0; i < points2.length; i++) {
-            double x1 = points2[i][0];
-            double y1 = points2[i][1];
-            double x2 = points2[i][2];
-            double y2 = points2[i][3];
-            double start = points2[i][4];
-            double extent = points2[i][5];
+        for (double[] element : points2) {
+            double x1 = element[0];
+            double y1 = element[1];
+            double x2 = element[2];
+            double y2 = element[3];
+            double start = element[4];
+            double extent = element[5];
             a.setAngles(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2));
             assertEquals(
                     "Arc2d.setAngles(" + x1 + "," + y1 + "," + x2 + "," + y2 + ") failed. Start angle",

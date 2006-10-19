@@ -24,6 +24,7 @@ import java.awt.Button;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("serial")
 public class InputEventTest extends TestCase {
 
     public final void testInputEvent() {

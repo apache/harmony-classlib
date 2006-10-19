@@ -19,7 +19,7 @@
  * @version $Revision$
  */
 package java.awt;
-
+@SuppressWarnings("serial")
 public class GridBagLayoutTest extends AWTTestCase {
 
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class GridBagLayoutTest extends AWTTestCase {
         }
     }
 
-    private TestButton first, second;
+    private final TestButton first, second;
     private GridBagLayout layout;
     private Frame frame;
 
@@ -45,6 +45,7 @@ public class GridBagLayoutTest extends AWTTestCase {
         second.setFont(new Font("dialog", Font.PLAIN, 50));
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -54,6 +55,7 @@ public class GridBagLayoutTest extends AWTTestCase {
         frame.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         frame.dispose();
 

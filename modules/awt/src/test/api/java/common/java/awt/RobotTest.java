@@ -20,6 +20,7 @@
  */
 package java.awt;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -51,6 +52,7 @@ public class RobotTest extends TestCase {
         junit.textui.TestRunner.run(RobotTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         System.setSecurityManager(null);
@@ -64,6 +66,7 @@ public class RobotTest extends TestCase {
         b = new Button();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (f != null) {
@@ -71,6 +74,7 @@ public class RobotTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void waitForButton() {
         int timeout = 16, time = 0;
         int nAttempts = 10;        
@@ -271,7 +275,8 @@ public class RobotTest extends TestCase {
         waitForButton();
         waitFocus(5000);
         b.addKeyListener(new KeyAdapter() {
-           public void keyPressed(KeyEvent ke) {
+           @Override
+        public void keyPressed(KeyEvent ke) {
                keyEvent = ke;
            }
         });
@@ -307,7 +312,8 @@ public class RobotTest extends TestCase {
         waitForButton();
         waitFocus(5000);
         b.addKeyListener(new KeyAdapter() {
-           public void keyReleased(KeyEvent ke) {
+           @Override
+        public void keyReleased(KeyEvent ke) {
                keyEvent = ke;
            }
         });
@@ -355,12 +361,13 @@ public class RobotTest extends TestCase {
         Point p2 = b.getLocationOnScreen();
         movePointer(p1, p2);
         b.addMouseListener(new MouseAdapter() {
-           public void mousePressed(MouseEvent me) {
+           @Override
+        public void mousePressed(MouseEvent me) {
                mouseEvent = me;
            }
         });
         robot.setAutoDelay(500);
-        int mask = MouseEvent.BUTTON1_MASK;
+        int mask = InputEvent.BUTTON1_MASK;
         robot.mousePress(mask);
         assertNotNull(mouseEvent);
         assertEquals(MouseEvent.MOUSE_PRESSED, mouseEvent.getID());
@@ -380,10 +387,11 @@ public class RobotTest extends TestCase {
         waitForButton();
         Point p1 = MouseInfo.getPointerInfo().getLocation();
         Point p2 = b.getLocationOnScreen();
-        int mask = MouseEvent.BUTTON3_MASK;
+        int mask = InputEvent.BUTTON3_MASK;
         movePointer(p1, p2);
         b.addMouseListener(new MouseAdapter() {
-           public void mouseReleased(MouseEvent me) {
+           @Override
+        public void mouseReleased(MouseEvent me) {
                mouseEvent = me;
            }
         });
@@ -486,6 +494,7 @@ public class RobotTest extends TestCase {
  */
 class MySecurityManager extends SecurityManager {
 
+    @Override
     public void checkPermission(Permission p) {
         if (p.equals(new RuntimePermission("setSecurityManager")) ||
             p.equals(new RuntimePermission("createSecurityManager"))) {
@@ -501,18 +510,22 @@ class MySecurityManager extends SecurityManager {
 
 class PrintDevice extends GraphicsDevice {
 
+    @Override
     public int getType() {
         return GraphicsDevice.TYPE_PRINTER;
     }
 
+    @Override
     public GraphicsConfiguration getDefaultConfiguration() {
         return null;
     }
 
+    @Override
     public GraphicsConfiguration[] getConfigurations() {
         return null;
     }
 
+    @Override
     public String getIDstring() {
         return null;
     }

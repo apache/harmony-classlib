@@ -67,13 +67,7 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
     MultiPixelPackedSampleModel mppsmb1, mppsmb2, mppsmu1, mppsmu2, mppsmi1,
             mppsmi2;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(MultiPixelPackedSampleModelTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -111,11 +105,6 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
         //      initTestData();
     }
 
-    /**
-     * Constructor for MultiPixelPackedSampleModelTest.
-     *
-     * @param name
-     */
     public MultiPixelPackedSampleModelTest(String name) {
         super(name);
     }
@@ -349,24 +338,23 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
     }
 
     public final void testCreateSubsetSampleModel() {
-        SampleModel sm = null;
         int bands[] = { 0 };
         int wrongBands[] = { 0, 1 };
 
         try {
-            sm = mppsmb1.createSubsetSampleModel(null);
+            mppsmb1.createSubsetSampleModel(null);
         } catch (RasterFormatException e) {
             fail();
         }
 
         try {
-            sm = mppsmb1.createSubsetSampleModel(bands);
+            mppsmb1.createSubsetSampleModel(bands);
         } catch (RasterFormatException e) {
             fail();
         }
 
         try {
-            sm = mppsmb1.createSubsetSampleModel(wrongBands);
+            mppsmb1.createSubsetSampleModel(wrongBands);
         } catch (RasterFormatException e) {
             assertTrue(true);
         }

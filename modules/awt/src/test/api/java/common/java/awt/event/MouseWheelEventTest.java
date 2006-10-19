@@ -29,7 +29,7 @@ public class MouseWheelEventTest extends TestCase {
     public final void testMouseWheelEvent() {
         Button button = new Button("Button");
         MouseWheelEvent event = new MouseWheelEvent(button, MouseEvent.MOUSE_WHEEL, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseWheelEvent.WHEEL_UNIT_SCROLL, 2, 3);
 
         assertEquals(event.getSource(), button);
@@ -43,13 +43,13 @@ public class MouseWheelEventTest extends TestCase {
     public final void testParamString() {
         Button button = new Button("Button");
         MouseWheelEvent event = new MouseWheelEvent(button, MouseEvent.MOUSE_WHEEL, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseWheelEvent.WHEEL_UNIT_SCROLL, 2, 3);
 
         assertEquals(event.paramString(),
                 "MOUSE_WHEEL,(100,200),button=0,modifiers=Button2,extModifiers=Button2,clickCount=10,scrollType=WHEEL_UNIT_SCROLL,scrollAmount=2,wheelRotation=3");
         event = new MouseWheelEvent(button, MouseEvent.MOUSE_WHEEL + 1024, 1000000000,
-                MouseEvent.BUTTON2_DOWN_MASK, 100, 200,
+                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
                 10, true, MouseWheelEvent.WHEEL_UNIT_SCROLL, 2, 3);
         assertTrue(event.paramString().startsWith("unknown type"));
     }

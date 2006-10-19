@@ -36,14 +36,6 @@ public class PolygonTest extends ShapeTestCase {
         serializePath = getSerializePath(Polygon.class);
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testCreate1() {
         Polygon pg = new Polygon();
         assertEquals(0, pg.npoints);
@@ -147,6 +139,7 @@ public class PolygonTest extends ShapeTestCase {
         assertEquals(new Rectangle(3, 4, 3, 4), pg.getBounds());
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetBoundingBox() {
         Polygon pg = new Polygon();
         assertEquals(new Rectangle(), pg.getBoundingBox());
@@ -190,6 +183,7 @@ public class PolygonTest extends ShapeTestCase {
         assertEquals(new int[]{10, 11, 12}, pg.ypoints, 3);
     }
 
+    @SuppressWarnings("deprecation")
     public void testInside() {
         Polygon pg = new Polygon();
         pg.addPoint(1, 2);
@@ -277,6 +271,7 @@ public class PolygonTest extends ShapeTestCase {
                 new float[]{4, 5, 5, 6, 6, 7});
     }
 
+    @Override
     public String objToStr(Object obj) {
         Polygon p = (Polygon)obj;
         String data = p.npoints + " [";

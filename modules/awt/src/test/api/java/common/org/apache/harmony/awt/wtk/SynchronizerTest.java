@@ -37,6 +37,7 @@ public class SynchronizerTest extends TestCase {
         junit.textui.TestRunner.run(SynchronizerTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

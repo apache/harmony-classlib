@@ -31,19 +31,7 @@ public class GlyphJustificationInfoTest extends TestCase {
     int shrinkPriority = GlyphJustificationInfo.PRIORITY_WHITESPACE;
     float shrinkLeftLimit = 20;
     float shrinkRightLimit = 20;
-    
 
-    public GlyphJustificationInfoTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /*
      * Test method for 'java.awt.font.GlyphJustificationInfo.GlyphJustificationInfo(float, boolean, int, float, float, boolean, int, float, float)'
@@ -53,15 +41,15 @@ public class GlyphJustificationInfoTest extends TestCase {
                 growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
         
-        assertEquals("weight", weight, gji.weight);
+        assertEquals("weight", weight, gji.weight, 0F);
         assertEquals("growAbsorb", growAbsorb, gji.growAbsorb);
         assertEquals("growPriority", growPriority, gji.growPriority);
-        assertEquals("growLeftLimit", growLeftLimit, gji.growLeftLimit);
-        assertEquals("growRightLimit", growRightLimit, gji.growRightLimit);
+        assertEquals("growLeftLimit", growLeftLimit, gji.growLeftLimit, 0F);
+        assertEquals("growRightLimit", growRightLimit, gji.growRightLimit, 0F);
         assertEquals("shrinkAbsorb", shrinkAbsorb, gji.shrinkAbsorb);
         assertEquals("shrinkPriority", shrinkPriority, gji.shrinkPriority);
-        assertEquals("shrinkLeftLimit", shrinkLeftLimit, gji.shrinkLeftLimit);
-        assertEquals("shrinkRightLimit", shrinkRightLimit, gji.shrinkRightLimit);
+        assertEquals("shrinkLeftLimit", shrinkLeftLimit, gji.shrinkLeftLimit, 0F);
+        assertEquals("shrinkRightLimit", shrinkRightLimit, gji.shrinkRightLimit, 0F);
         
     }
 
@@ -69,11 +57,10 @@ public class GlyphJustificationInfoTest extends TestCase {
      * Test method for 'java.awt.font.GlyphJustificationInfo.GlyphJustificationInfo(float, boolean, int, float, float, boolean, int, float, float)'
      */
     public final void testGlyphJustificationInfo_parametersCheck() {
-        GlyphJustificationInfo gji;
         
         // negative weight
         try{
-            gji = new GlyphJustificationInfo(-1, growAbsorb, 
+            new GlyphJustificationInfo(-1, growAbsorb, 
                 growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -83,7 +70,7 @@ public class GlyphJustificationInfoTest extends TestCase {
         
         // growPriority illegal level value
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 5, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -92,7 +79,7 @@ public class GlyphJustificationInfoTest extends TestCase {
         }
 
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                     -1, growLeftLimit, growRightLimit, shrinkAbsorb, 
                     shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -102,7 +89,7 @@ public class GlyphJustificationInfoTest extends TestCase {
 
         // negative growLeftLimit
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 growPriority, -1, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -112,7 +99,7 @@ public class GlyphJustificationInfoTest extends TestCase {
         
         // negative growRightLimit
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 growPriority, growLeftLimit, -1, shrinkAbsorb, 
                 shrinkPriority, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -122,7 +109,7 @@ public class GlyphJustificationInfoTest extends TestCase {
 
         // shrinkPriority illegal level value
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 5, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -131,7 +118,7 @@ public class GlyphJustificationInfoTest extends TestCase {
         }
 
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                     growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                     -1, shrinkLeftLimit, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -141,7 +128,7 @@ public class GlyphJustificationInfoTest extends TestCase {
 
         // negative shrinkLeftLimit
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, -1, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -151,7 +138,7 @@ public class GlyphJustificationInfoTest extends TestCase {
         
         // negative shrinkRightLimit
         try{
-            gji = new GlyphJustificationInfo(weight, growAbsorb, 
+            new GlyphJustificationInfo(weight, growAbsorb, 
                 growPriority, growLeftLimit, growRightLimit, shrinkAbsorb, 
                 shrinkPriority, -1, shrinkRightLimit);
             fail("IllegalArgumentException expected");
@@ -159,7 +146,6 @@ public class GlyphJustificationInfoTest extends TestCase {
             // expected
         }
 
-        
     }
 
 }
