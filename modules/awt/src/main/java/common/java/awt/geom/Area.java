@@ -197,7 +197,7 @@ public class Area implements Shape, Cloneable {
     }
 
     public Area createTransformedArea(AffineTransform t) {
-        return new Area(t.createTransformedShape(s));
+        return s == null ? new Area() : new Area(t.createTransformedShape(s));
     }
 
     @Override

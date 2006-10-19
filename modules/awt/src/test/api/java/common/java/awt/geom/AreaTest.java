@@ -82,5 +82,15 @@ public class AreaTest extends PathIteratorTestCase {
         checkPathRule(path, PathIterator.WIND_NON_ZERO);
         checkPathDone(path, true);
     }
+    
+    public void testCreateTransformedArea() {
+        // Regression test HARMONY-1880
+        AffineTransform t = AffineTransform.getScaleInstance(2, 3);
+        Area a1 = new Area();        
+        Area a2 = a1.createTransformedArea(t);
+        PathIterator path = a2.getPathIterator(null);
+        checkPathRule(path, PathIterator.WIND_NON_ZERO);
+        checkPathDone(path, true);
+    }
 
 }
