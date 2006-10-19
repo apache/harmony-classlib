@@ -43,13 +43,7 @@ public class AccessibleAWTMenuItemTest extends TestCase {
     private Robot robot;
     private ActionListener actionListener;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTMenuItemTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         item = new MenuItem();
@@ -63,13 +57,6 @@ public class AccessibleAWTMenuItemTest extends TestCase {
                 event = ae;
             }
         };
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testAccessibleAWTMenuItem() {

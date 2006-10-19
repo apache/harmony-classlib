@@ -32,13 +32,7 @@ public class AccessibleAWTLabelTest extends TestCase {
     Label label;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTLabelTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         label = new Label();
@@ -46,12 +40,6 @@ public class AccessibleAWTLabelTest extends TestCase {
         assertNotNull(ac);
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     public final void testGetAccessibleName() {
         assertEquals("", ac.getAccessibleName());

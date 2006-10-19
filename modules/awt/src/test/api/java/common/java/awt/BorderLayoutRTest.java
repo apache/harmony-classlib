@@ -28,10 +28,7 @@ public class BorderLayoutRTest extends TestCase {
     BorderLayout layout;
     private Dimension maxSize;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(BorderLayoutRTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         emptyContainer = new Container();

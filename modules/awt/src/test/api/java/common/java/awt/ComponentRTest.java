@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("serial")
 public class ComponentRTest extends TestCase {
     private static PropertyChangeEvent lastEvent;
 
@@ -39,6 +40,7 @@ public class ComponentRTest extends TestCase {
 
     public final void testFirePropertyChange() {
         Component comp = new Component(){
+            @Override
             public void firePropertyChange(String s, Object o1, Object o2) {
                 // consuming object property change
              }

@@ -30,20 +30,13 @@ public class AccessibleAWTTextAreaTest extends TestCase {
     TextArea textArea;
     AccessibleAWTTextArea aTextArea;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTTextAreaTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         textArea = new TextArea();
         aTextArea = textArea.new AccessibleAWTTextArea();
         assertTrue(textArea.getAccessibleContext()
                    instanceof AccessibleAWTTextArea);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*
@@ -53,14 +46,6 @@ public class AccessibleAWTTextAreaTest extends TestCase {
         AccessibleState state = AccessibleState.MULTI_LINE;
         assertTrue("text area is multi-line text",
                    aTextArea.getAccessibleStateSet().contains(state));
-
-    }
-
-    /*
-     * Test method for 'java.awt.TextArea.AccessibleAWTTextArea.AccessibleAWTTextArea(TextArea)'
-     */
-    public void testAccessibleAWTTextArea() {
-        assertTrue(aTextArea instanceof AccessibleAWTTextArea);
 
     }
 

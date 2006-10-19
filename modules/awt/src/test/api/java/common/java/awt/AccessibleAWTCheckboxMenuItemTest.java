@@ -36,20 +36,13 @@ public class AccessibleAWTCheckboxMenuItemTest extends TestCase {
     AccessibleValue value;
     AccessibleAction action;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTCheckboxMenuItemTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         item = new CheckboxMenuItem();
         ac = item.getAccessibleContext();
         action = ac.getAccessibleAction();
         value = ac.getAccessibleValue();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*

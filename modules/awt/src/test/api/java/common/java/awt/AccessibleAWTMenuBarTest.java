@@ -34,24 +34,11 @@ public class AccessibleAWTMenuBarTest extends TestCase {
     MenuBar menubar;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTMenuBarTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menubar = new MenuBar();
         ac = menubar.getAccessibleContext();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testAccessibleAWTMenuBar() {

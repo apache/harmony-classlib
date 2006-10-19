@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("serial")
 public class ButtonTest extends TestCase {
 
     class TestButton extends Button {
@@ -42,13 +43,10 @@ public class ButtonTest extends TestCase {
     private TestButton button;
     private boolean eventProcessed;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         button = new TestButton("Button");        
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public void testButton() {
@@ -64,19 +62,18 @@ public class ButtonTest extends TestCase {
     public void testGetSetLabel() {
         button.setLabel(null);
         assertNull(button.getLabel());
-        Dimension nullSize = button.getPreferredSize();
 
         button.setLabel("Button");
         assertTrue(button.getLabel().equals("Button"));
     }
 
     public void testGetSetActionCommand() {
-        assertTrue(button.getActionCommand() == "Button");
+        assertTrue(button.getActionCommand().equals("Button"));
         button.setLabel(null);
         assertNull(button.getActionCommand());
 
         button.setActionCommand("Button Command");
-        assertTrue(button.getActionCommand() == "Button Command");
+        assertTrue(button.getActionCommand().equals("Button Command"));
     }
 
     public void testAddGetRemoveActionListener() {
@@ -96,6 +93,7 @@ public class ButtonTest extends TestCase {
     public void testProcessEvent() {
         eventProcessed = false;
         button.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent a0) {
                 eventProcessed = true;
             }

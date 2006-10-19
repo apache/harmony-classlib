@@ -34,25 +34,12 @@ public class AccessibleAWTChoiceTest extends TestCase {
     Choice choice;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTChoiceTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         choice = new Choice();
         ac = choice.getAccessibleContext();
         assertNotNull(ac);
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleAction() {

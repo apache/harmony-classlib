@@ -37,22 +37,14 @@ public class AccessibleAWTFrameTest extends TestCase {
     AccessibleContext ac;
     private Frame frame;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTFrameTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
         ac = frame.getAccessibleContext();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {

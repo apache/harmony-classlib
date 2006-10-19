@@ -38,9 +38,11 @@ import junit.framework.TestCase;
 /**
  * AccessibleAWTComponentTest
  */
+@SuppressWarnings("serial")
 public class AccessibleAWTComponentTest extends TestCase {
 
     private class MyComponent extends Component implements Accessible {
+        @Override
         public void requestFocus() {
             methodCalled = true;
             super.requestFocus();
@@ -54,13 +56,8 @@ public class AccessibleAWTComponentTest extends TestCase {
     private PropertyChangeEvent lastPropEvent;
     private FocusEvent lastFocusEvent;
     protected boolean methodCalled;
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTComponentTest.class);
-    }
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         comp = new MyComponent();
@@ -87,13 +84,6 @@ public class AccessibleAWTComponentTest extends TestCase {
             }
 
         };
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleChildrenCount() {
@@ -301,6 +291,7 @@ public class AccessibleAWTComponentTest extends TestCase {
         assertNotSame(loc, aComponent.getLocation());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetLocationOnScreen() {
         Frame f = new Frame();
         f.setLayout(null);
@@ -336,6 +327,7 @@ public class AccessibleAWTComponentTest extends TestCase {
         assertTrue(aComponent.isFocusTraversable());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testIsShowing() {
         assertFalse(aComponent.isShowing());
         Frame f = new Frame();

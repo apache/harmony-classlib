@@ -20,6 +20,7 @@
  */
 package java.awt;
 
+@SuppressWarnings("serial")
 public class CardLayoutTest extends AWTTestCase {
 
     class TestButton extends Button {
@@ -33,10 +34,11 @@ public class CardLayoutTest extends AWTTestCase {
 
     private final int MIN_SIZE = 50;
     private final int PREF_SIZE = 100;
-    private TestButton b1, b2, b3, b4, b5, b6;
+    private final TestButton b1, b2, b3, b4, b5, b6;
     private CardLayout layout;
     private Frame frame;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -46,6 +48,7 @@ public class CardLayoutTest extends AWTTestCase {
         frame.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         frame.dispose();
 
@@ -106,6 +109,7 @@ public class CardLayoutTest extends AWTTestCase {
         assertTrue(layout.getLayoutAlignmentY(frame) == Component.CENTER_ALIGNMENT);
     }
 
+    @SuppressWarnings("deprecation")
     public void testAddLayoutComponentComponentObject() {
         Container c = new Container();
         c.setSize(1, 2);
@@ -128,6 +132,7 @@ public class CardLayoutTest extends AWTTestCase {
         assertTrue(notString);
     }
 
+    @SuppressWarnings("deprecation")
     public void testRemoveLayoutComponent() {
         Container c = new Container();
         c.setSize(13, 13);

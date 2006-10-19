@@ -21,7 +21,6 @@
 package java.awt;
 
 import java.awt.Container.AccessibleAWTContainer;
-import java.awt.event.ContainerListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -33,16 +32,17 @@ import junit.framework.TestCase;
 /**
  * AccessibleAWTContainerTest
  */
+@SuppressWarnings("serial")
 public class AccessibleAWTContainerTest extends TestCase {
 
     private AccessibleAWTContainer aContainer;
     private Container container;
     private PropertyChangeListener propListener;
-    private ContainerListener contListener;
     private PropertyChangeEvent lastPropEvent;
 
     private class MyContainer extends Container implements Accessible {
         AccessibleAWTContainer aac;
+        @Override
         public AccessibleContext getAccessibleContext() {
             if (aac == null) {
                 aac = new AccessibleAWTContainer(){};
@@ -54,6 +54,7 @@ public class AccessibleAWTContainerTest extends TestCase {
 
     private class MyComponent extends Component implements Accessible {
         AccessibleAWTComponent aac;
+        @Override
         public AccessibleContext getAccessibleContext() {
             if (aac == null) {
                 aac = new AccessibleAWTComponent(){};
@@ -70,6 +71,7 @@ public class AccessibleAWTContainerTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         container = new MyContainer();
@@ -88,6 +90,7 @@ public class AccessibleAWTContainerTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -139,6 +142,7 @@ public class AccessibleAWTContainerTest extends TestCase {
         assertNull(aContainer.getAccessibleChild(1));
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetAccessibleAt() {
         container.setSize(100, 100);
 

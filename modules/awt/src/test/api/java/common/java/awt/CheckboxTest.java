@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 /**
  * CheckboxTest
  */
+@SuppressWarnings("serial")
 public class CheckboxTest extends TestCase {
 
     class TestCheckbox extends Checkbox {
@@ -54,6 +55,7 @@ public class CheckboxTest extends TestCase {
             super(arg0, arg1, arg2);
         }
 
+        @Override
         public void paint(Graphics g) {
             super.paint(g);
             EventQueue.invokeLater(new Runnable() {
@@ -69,6 +71,7 @@ public class CheckboxTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();        
         checkbox = new TestCheckbox("Checkbox");
@@ -77,6 +80,7 @@ public class CheckboxTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -125,7 +129,6 @@ public class CheckboxTest extends TestCase {
     public void testGetSetLabel() {
         checkbox.setLabel(null);
         assertNull(checkbox.getLabel());
-        Dimension nullSize = checkbox.getPreferredSize();
 
         String text = "Checkbox";
         checkbox.setLabel(text);
@@ -191,7 +194,7 @@ public class CheckboxTest extends TestCase {
     }
 
     public void testGetListenersClass() {
-        Class cls = ItemListener.class;
+        Class<ItemListener> cls = ItemListener.class;
         assertEquals(0, checkbox.getListeners(cls).length);
 
         ItemListener listener = new ItemListener() {

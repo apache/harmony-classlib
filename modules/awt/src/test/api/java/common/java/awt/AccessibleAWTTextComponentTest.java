@@ -32,20 +32,13 @@ public class AccessibleAWTTextComponentTest extends TestCase {
     TextComponent textComp;
     AccessibleAWTTextComponent aTextComp;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTTextComponentTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         textComp = new TextField();
         aTextComp = textComp.new AccessibleAWTTextComponent();
         assertTrue(textComp.getAccessibleContext()
                    instanceof AccessibleAWTTextComponent);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*

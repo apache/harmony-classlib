@@ -39,13 +39,7 @@ public class AccessibleAWTWindowTest extends TestCase {
     private Frame frame;
     private Robot robot;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTWindowTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
@@ -54,9 +48,7 @@ public class AccessibleAWTWindowTest extends TestCase {
         robot = new Robot();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {
@@ -68,6 +60,7 @@ public class AccessibleAWTWindowTest extends TestCase {
         assertSame(AccessibleRole.WINDOW, ac.getAccessibleRole());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetAccessibleStateSet() {
         frame.show();
         window.setFocusable(true);

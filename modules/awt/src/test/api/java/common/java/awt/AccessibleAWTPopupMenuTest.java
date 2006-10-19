@@ -31,18 +31,11 @@ public class AccessibleAWTPopupMenuTest extends TestCase {
     PopupMenu popup;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTPopupMenuTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         popup = new PopupMenu();
         ac = popup.getAccessibleContext();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*

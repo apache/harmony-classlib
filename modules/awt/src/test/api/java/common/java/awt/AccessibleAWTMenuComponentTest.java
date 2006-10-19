@@ -33,10 +33,12 @@ import junit.framework.TestCase;
 /**
  * AccessibleAWTMenuComponentTest
  */
+@SuppressWarnings("serial")
 public class AccessibleAWTMenuComponentTest extends TestCase {
 
     class MyMenuComponent extends MenuComponent implements Accessible {
         AccessibleContext ac;
+        @Override
         public AccessibleContext getAccessibleContext() {
             if (ac == null) {
                 ac = new AccessibleAWTMenuComponent(){};
@@ -48,25 +50,12 @@ public class AccessibleAWTMenuComponentTest extends TestCase {
     private MenuComponent menuComp;
     private AccessibleAWTMenuComponent aMenuComp;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTMenuComponentTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuComp = new MyMenuComponent();
         aMenuComp = (AccessibleAWTMenuComponent) menuComp.getAccessibleContext();
 //        aMenuComp = menuComp.new AccessibleAWTMenuComponent(){};
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testAccessibleAWTMenuComponent() {

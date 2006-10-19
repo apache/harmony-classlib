@@ -20,6 +20,7 @@
  */
 package java.awt;
 
+@SuppressWarnings("serial")
 public class BorderLayoutTest extends AWTTestCase {
 
     class TestButton extends Button {
@@ -33,10 +34,11 @@ public class BorderLayoutTest extends AWTTestCase {
 
     private final int MIN_SIZE = 50;
     private final int PREF_SIZE = 100;
-    private TestButton n, s, w, c, e;
+    private final TestButton n, s, w, c, e;
     private BorderLayout layout;
     private Frame frame;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -46,6 +48,7 @@ public class BorderLayoutTest extends AWTTestCase {
         frame.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         frame.dispose();
 
@@ -60,10 +63,6 @@ public class BorderLayoutTest extends AWTTestCase {
         c = new TestButton("c", min, pref);
         w = new TestButton("w", min, pref);
         e = new TestButton("e", min, pref);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(BorderLayoutTest.class);
     }
 
     public final void testBorderLayoutintint() {

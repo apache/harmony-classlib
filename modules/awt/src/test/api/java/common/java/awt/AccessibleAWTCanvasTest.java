@@ -38,13 +38,7 @@ public class AccessibleAWTCanvasTest extends TestCase {
     private PropertyChangeEvent lastPropEvent;
     private Robot robot;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTCanvasTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         robot = new Robot();
@@ -57,13 +51,6 @@ public class AccessibleAWTCanvasTest extends TestCase {
             }
 
         };
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testAccessibleAWTCanvas() {

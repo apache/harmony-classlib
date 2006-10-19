@@ -28,10 +28,7 @@ public class CardLayoutRTest extends TestCase {
     CardLayout layout;
     private Dimension maxSize;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CardLayoutRTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         emptyContainer = new Container();

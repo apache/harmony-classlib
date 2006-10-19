@@ -31,9 +31,4 @@ public class CanvasRTest extends TestCase {
         assertNull(c.getName());
 
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CanvasRTest.class);
-    }
-
 }

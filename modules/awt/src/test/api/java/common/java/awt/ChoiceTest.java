@@ -36,24 +36,11 @@ public class ChoiceTest extends TestCase {
     private Choice choice;
     private boolean eventProcessed;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ChoiceTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         choice = new Choice();
         eventProcessed = false;
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testAddNotify() {
@@ -87,6 +74,7 @@ public class ChoiceTest extends TestCase {
     public final void testProcessEvent() {
         eventProcessed = false;
         choice.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyReleased(KeyEvent ke) {
                 eventProcessed = true;
             }
@@ -100,7 +88,7 @@ public class ChoiceTest extends TestCase {
         assertEquals(0, choice.getListeners(KeyListener.class).length);
         KeyAdapter listener = new KeyAdapter(){};
         choice.addKeyListener(listener);
-        Class clazz =  KeyListener.class;
+        Class<KeyListener> clazz =  KeyListener.class;
         assertEquals(1, choice.getListeners(clazz).length);
         assertEquals(listener, choice.getListeners(clazz)[0]);
         choice.removeKeyListener(listener);
@@ -270,6 +258,7 @@ public class ChoiceTest extends TestCase {
         assertTrue(npe);
     }
 
+    @SuppressWarnings("deprecation")
     public final void testCountItems() {
         assertEquals(0, choice.countItems());
     }

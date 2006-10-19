@@ -40,10 +40,7 @@ public class AccessibleAWTButtonTest extends TestCase {
     private ActionEvent action;
     private Robot robot;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTButtonTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         button = new Button();

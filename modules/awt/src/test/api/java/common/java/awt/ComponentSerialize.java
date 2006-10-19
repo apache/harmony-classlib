@@ -30,11 +30,8 @@ import junit.framework.TestCase;
 public class ComponentSerialize extends TestCase {
 
 
+    @SuppressWarnings("serial")
     static final class MyComponent extends Component {}
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ComponentSerialize.class);
-    }
 
     public void testAll() throws IOException, ClassNotFoundException {
         writeAndRead(new MyComponent());

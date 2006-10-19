@@ -38,13 +38,7 @@ public class AccessibleAWTDialogTest extends TestCase {
     private Dialog dialog;
     private Frame frame;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTDialogTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
@@ -52,9 +46,7 @@ public class AccessibleAWTDialogTest extends TestCase {
         ac = dialog.getAccessibleContext();
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if ((frame != null) && frame.isDisplayable()) {

@@ -37,24 +37,11 @@ public class AccessibleAWTScrollBarTest extends TestCase {
     Scrollbar scrollbar;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTScrollBarTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         scrollbar = new Scrollbar();
         ac = scrollbar.getAccessibleContext();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleRole() {

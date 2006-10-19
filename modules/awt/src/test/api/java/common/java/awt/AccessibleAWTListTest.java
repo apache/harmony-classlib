@@ -22,14 +22,11 @@ package java.awt;
 
 import java.awt.List.AccessibleAWTList;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
 import javax.accessibility.AccessibleState;
-
 import junit.framework.TestCase;
 
 /**
@@ -38,34 +35,14 @@ import junit.framework.TestCase;
 public class AccessibleAWTListTest extends TestCase {
     List list;
     AccessibleContext ac;
-    private PropertyChangeListener propListener;
     protected PropertyChangeEvent lastPropEvent;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTListTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         list = new List();
         ac = list.getAccessibleContext();
         assertNotNull(ac);
-        propListener = new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent pce) {
-                lastPropEvent = pce;
-            }
-        };
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleChildrenCount() {

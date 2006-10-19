@@ -28,19 +28,11 @@ import junit.framework.TestCase;
 public class CheckboxGroupTest extends TestCase {
 
     CheckboxGroup group;
-    /*
-     * @see TestCase#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         group = new CheckboxGroup();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testCheckboxGroup() {
@@ -62,10 +54,12 @@ public class CheckboxGroupTest extends TestCase {
 
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetCurrent() {
         assertNull(group.getCurrent());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testSetCurrent() {
         Checkbox cb1 = new Checkbox();
         Checkbox cb2 = new Checkbox();

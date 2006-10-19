@@ -40,26 +40,18 @@ import junit.framework.TestCase;
  */
 public class AccessibleAWTCheckboxTest extends TestCase {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTCheckboxTest.class);
-    }
-
     private Checkbox checkbox;
     private AccessibleContext ac;
-    private ItemEvent event;
     private PropertyChangeEvent lastPropEvent;
-
     private PropertyChangeListener propListener;
-    /*
-     * @see TestCase#setUp()
-     */
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         checkbox = new Checkbox();
         assertEquals(0, checkbox.getItemListeners().length);
         ac = checkbox.getAccessibleContext();
         assertSame(ac, checkbox.getItemListeners()[0]);
-        event = null;
         lastPropEvent = null;
         assertNotNull(ac);
 
@@ -69,13 +61,6 @@ public class AccessibleAWTCheckboxTest extends TestCase {
                 lastPropEvent = pce;
             }
         };
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleAction() {

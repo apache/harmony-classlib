@@ -33,7 +33,7 @@ public abstract class AWTTestCase extends TestCase {
     /**
      * Exception thrown from Runnable (test code).
      */
-    protected Throwable exception = null;
+    protected Throwable exception;
 
     public AWTTestCase() {
         super();
@@ -51,6 +51,7 @@ public abstract class AWTTestCase extends TestCase {
     /**
      * @see TestCase#runBare()
      */
+    @Override
     public void runBare() throws Throwable {
         // Wrap the test-method to be run in the event dispatch thread.
         EventQueue.invokeAndWait(new Runnable() {

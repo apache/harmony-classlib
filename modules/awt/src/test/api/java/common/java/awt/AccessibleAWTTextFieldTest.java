@@ -30,19 +30,12 @@ public class AccessibleAWTTextFieldTest extends TestCase {
     TextField textField;
     AccessibleAWTTextField aTextField;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTTextFieldTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         textField = new TextField();
         aTextField = textField.new AccessibleAWTTextField();
         assertTrue(textField.getAccessibleContext() instanceof AccessibleAWTTextField);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*
@@ -52,14 +45,6 @@ public class AccessibleAWTTextFieldTest extends TestCase {
         AccessibleState state = AccessibleState.SINGLE_LINE;
         assertTrue("text field is a single-line text",
                    aTextField.getAccessibleStateSet().contains(state));
-    }
-
-    /*
-     * Test method for 'java.awt.TextField.AccessibleAWTTextField.AccessibleAWTTextField(TextField)'
-     */
-    public void testAccessibleAWTTextField() {
-        assertTrue(aTextField instanceof AccessibleAWTTextField);
-
     }
 
 }

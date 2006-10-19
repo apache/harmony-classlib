@@ -37,6 +37,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("serial")
 public class ComponentTest extends TestCase {
     Robot robot;
 
@@ -46,29 +47,35 @@ public class ComponentTest extends TestCase {
     public class SimpleContainer extends Container {
     }
     /* more complex component for [deprecated] event testing */
+    @SuppressWarnings("deprecation")
     class MyComponent extends Canvas {
 
+        @Override
         public boolean gotFocus(Event evt, Object what) {
             synchronized(robot) {
                 return callback(evt);
             }
         }
+        @Override
         public boolean lostFocus(Event evt, Object what) {
             synchronized(robot) {
                 return callback(evt);
             }
         }
+        @Override
         public boolean keyDown(Event evt, int key) {
             synchronized(robot) {
                 return callback(evt);                
             }
         }
+        @Override
         public boolean keyUp(Event evt, int key) {
             synchronized(robot) {                
                 return callback(evt);
             }
         }
 
+        @Override
         public void paint(Graphics g) {
             super.paint(g);
             g.setColor(Color.GREEN);
@@ -80,7 +87,9 @@ public class ComponentTest extends TestCase {
             });
         }
     }
+    @SuppressWarnings("deprecation")
     class MoveResizeComponent extends SimpleComponent {
+        @Override
         public void reshape(int x, int y, int w, int h) {
             assertTrue(methodCalled);
             assertTrue(setBoundsCalled);
@@ -88,6 +97,7 @@ public class ComponentTest extends TestCase {
             reshapeCalled = true;
             super.reshape(x, y, w, h);
         }
+        @Override
         public void setBounds(int x, int y, int w, int h) {
             assertTrue(methodCalled);
             assertFalse(setBoundsCalled);
@@ -95,13 +105,16 @@ public class ComponentTest extends TestCase {
             super.setBounds(x, y, w, h);
         }
     }
+    @SuppressWarnings("deprecation")
     class MyButton extends Button {
+        @Override
         public boolean  action(Event evt, Object arg1) {
             synchronized(robot) {
                 return callback(evt);
             }
         }
 
+        @Override
         public void paint(Graphics g) {
             super.paint(g);
             EventQueue.invokeLater(new Runnable() {
@@ -111,14 +124,17 @@ public class ComponentTest extends TestCase {
             });
         }
     }
+    @SuppressWarnings("deprecation")
     class MyFrame extends Frame {
 
+        @Override
         public boolean handleEvent(Event evt) {
             synchronized (robot) {
                 return callback(evt);
             }
         }
 
+        @Override
         public void paint(Graphics g) {
             super.paint(g);
             g.setColor(Color.BLUE);
@@ -136,7 +152,7 @@ public class ComponentTest extends TestCase {
     boolean paintFlag;
     boolean listenerCalled, parentListenerCalled;
 
-    private static Map oldEventsMap = new HashMap(); //<int, boolean> key: Event id, value: if listener was called
+    private static final Map<Integer, Event> oldEventsMap = new HashMap<Integer, Event>(); //<int, boolean> key: Event id, value: if listener was called
 
     boolean methodCalled, setBoundsCalled, reshapeCalled;
     String propName;
@@ -152,7 +168,7 @@ public class ComponentTest extends TestCase {
     Object oldValue, newValue, src;
     int waitTime = 3000; //time to wait for events in ms
     private Event event; //saved last deprecated Event object
-    private int nRetries = 3; //number of times to repeat [robot] actions
+    private final int nRetries = 3; //number of times to repeat [robot] actions
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ComponentTest.class);
@@ -171,6 +187,7 @@ public class ComponentTest extends TestCase {
         return null;
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         tc = new SimpleComponent();
@@ -186,6 +203,7 @@ public class ComponentTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
 
         if (frame != null) {
@@ -291,19 +309,19 @@ public class ComponentTest extends TestCase {
     }
 
     public final void testGetFocusTraversalKeys() {
-        Set testSet = Collections.EMPTY_SET;
+        Set<AWTKeyStroke> testSet = Collections.emptySet();
         assertEquals(testSet, tc.getFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS));
-        Set forSet = tc.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
-        testSet = new HashSet();
+        Set<AWTKeyStroke> forSet = tc.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
+        testSet = new HashSet<AWTKeyStroke>();
         testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
-        testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK));
+        testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK));
         assertEquals(testSet, forSet);
     }
 
     public final void testSetFocusTraversalKeys() {
         int keysID = KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS;
         assertFalse(tc.areFocusTraversalKeysSet(keysID));
-        Set upSet = new HashSet();
+        Set<AWTKeyStroke> upSet = new HashSet<AWTKeyStroke>();
         upSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_SPACE, 0));
         tc.setFocusTraversalKeys(keysID, upSet);
         assertTrue(tc.areFocusTraversalKeysSet(keysID));
@@ -313,9 +331,9 @@ public class ComponentTest extends TestCase {
     public final void testAreFocusTraversalKeysSet() {
         int id = KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS;
         assertFalse(tc.areFocusTraversalKeysSet(id));
-        Set testSet = new HashSet();
+        Set<AWTKeyStroke> testSet = new HashSet<AWTKeyStroke>();
         testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
-        testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK));
+        testSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK));
         tc.setFocusTraversalKeys(id, testSet);
         assertTrue(tc.areFocusTraversalKeysSet(id));
 
@@ -371,17 +389,19 @@ public class ComponentTest extends TestCase {
         actionEvt.modifiers = Event.ALT_MASK;
         checkOldEvent(actionEvt);
     }
-
+   @SuppressWarnings("deprecation")
     public final void testMouseDownUp() {
 
         myTestComp = new MyComponent() {
+            @Override
             public boolean mouseDown(Event evt, int arg1, int arg2) {
                 synchronized(robot) {
                     return callback(evt);
                 }
           }
 
-          public boolean mouseUp(Event evt, int arg1, int arg2) {
+          @Override
+        public boolean mouseUp(Event evt, int arg1, int arg2) {
               synchronized(robot) {
                   return callback(evt);
               }
@@ -418,15 +438,17 @@ public class ComponentTest extends TestCase {
         checkOldEvent(mouseEvt);
 
     }
-
+   @SuppressWarnings("deprecation")
     public final void testMouseEnterExit() {
 
         myTestComp = new MyComponent () {
+            @Override
             public boolean mouseEnter(Event evt, int arg1, int arg2) {
                 synchronized(robot) {
                     return callback(evt);
                 }
             }
+            @Override
             public boolean mouseExit(Event evt, int arg1, int arg2) {
                 synchronized(robot) {
                     return callback(evt);
@@ -476,15 +498,17 @@ public class ComponentTest extends TestCase {
         assertEquals(Event.META_MASK, event.modifiers);
 
     }
-
+    @SuppressWarnings("deprecation")
     public final void testMouseDragMove() {
         int eventId = Event.MOUSE_MOVE;
         myTestComp = new MyComponent() {
+            @Override
             public boolean mouseMove(Event evt, int arg1, int arg2) {
                 synchronized(robot) {
                     return callback(evt);
                 }
             }
+            @Override
             public boolean mouseDrag(Event evt, int arg1, int arg2) {
                 synchronized(robot) {
                     return callback(evt);
@@ -829,13 +853,13 @@ public class ComponentTest extends TestCase {
         checkPropertyFields("focusTraversalKeysEnabled", tc, new Boolean(false));
 
         cleanPropertyFields();
-        Set keys = Collections.EMPTY_SET;
+        Set<AWTKeyStroke> keys = Collections.emptySet();
         tc.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS,
                                  keys);
         checkPropertyFields("upCycleFocusTraversalKeys", tc, keys);
         assertNull(oldValue);
-        keys = new HashSet();
-        keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ESCAPE, KeyEvent.CTRL_DOWN_MASK));
+        keys = new HashSet<AWTKeyStroke>();
+        keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ESCAPE, InputEvent.CTRL_DOWN_MASK));
         cleanPropertyFields();
         tc.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
         checkPropertyFields("forwardFocusTraversalKeys", tc, keys);
@@ -849,7 +873,7 @@ public class ComponentTest extends TestCase {
 
         cleanPropertyFields();
         keys.clear();
-        keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_F12, KeyEvent.ALT_DOWN_MASK));
+        keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_F12, InputEvent.ALT_DOWN_MASK));
         tc.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, keys);
         checkPropertyFields("upCycleFocusTraversalKeys", tc, keys);
 
@@ -949,9 +973,10 @@ public class ComponentTest extends TestCase {
         assertSame(Boolean.TRUE, newValue);
         assertSame(Boolean.FALSE, oldValue);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testBounds() {
         Component comp = new SimpleComponent () {
+            @Override
             public Rectangle bounds() {
                 methodCalled = true;
                 return super.bounds();
@@ -965,19 +990,22 @@ public class ComponentTest extends TestCase {
         assertNotSame(r, r1);
         assertEquals(r, r1);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testDisableEnable() {
         Component comp = new SimpleComponent () {
+            @Override
             public void disable() {
                 assertTrue(methodCalled);//called from enable(boolean)
                 methodCalled = true;
                 super.disable();
             }
+            @Override
             public void enable(boolean b) {
                 assertFalse(methodCalled);
                 methodCalled = true;
                 super.enable(b);
             }
+            @Override
             public void enable() {
                 assertTrue(methodCalled);//called from enable(boolean)
                 methodCalled = true;
@@ -995,19 +1023,22 @@ public class ComponentTest extends TestCase {
         assertTrue(methodCalled);
         assertTrue(comp.isEnabled());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testHideShow() {
         Component comp = new SimpleComponent () {
+            @Override
             public void hide() {
                 assertTrue(methodCalled);//called from enable(boolean)
                 methodCalled = true;
                 super.hide();
             }
+            @Override
             public void show(boolean b) {
                 assertFalse(methodCalled);
                 methodCalled = true;
                 super.show(b);
             }
+            @Override
             public void show() {
                 assertTrue(methodCalled);//called from enable(boolean)
                 methodCalled = true;
@@ -1025,9 +1056,10 @@ public class ComponentTest extends TestCase {
         assertTrue(methodCalled);
         assertTrue(comp.isVisible());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testInside() {
         Component comp = new SimpleComponent () {
+            @Override
             public boolean inside(int x, int y) {
                 methodCalled = true;
                 return super.inside(x, y);
@@ -1043,9 +1075,10 @@ public class ComponentTest extends TestCase {
         assertTrue(comp.contains(p));
         assertTrue(methodCalled);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testIsFocusTraversable() {
         Component comp = new SimpleComponent () {
+            @Override
             public boolean isFocusTraversable() {
                 methodCalled = true;
                 return super.isFocusTraversable();
@@ -1055,9 +1088,10 @@ public class ComponentTest extends TestCase {
         assertTrue(comp.isFocusable());
         assertTrue(methodCalled);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testLayout() {
         Component comp = new SimpleComponent () {
+            @Override
             public void layout() {
                 methodCalled = true;
                 super.layout();
@@ -1068,9 +1102,10 @@ public class ComponentTest extends TestCase {
         assertTrue(methodCalled);
 
     }
-
+    @SuppressWarnings("deprecation")
     public final void testLocate() {
         Component comp = new SimpleComponent () {
+            @Override
             public Component locate(int x, int y) {
                 methodCalled = true;
                 return super.locate(x, y);
@@ -1085,9 +1120,10 @@ public class ComponentTest extends TestCase {
         assertNull(comp.getComponentAt(p));
 
     }
-
+    @SuppressWarnings("deprecation")
     public final void testLocation() {
         Component comp = new SimpleComponent () {
+            @Override
             public Point location() {
                 methodCalled = true;
                 return super.location();
@@ -1100,9 +1136,10 @@ public class ComponentTest extends TestCase {
         assertEquals(p, comp.getLocation());
         assertTrue(methodCalled);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testMinimumSize() {
         Component comp = new SimpleComponent () {
+            @Override
             public Dimension minimumSize() {
                 methodCalled = true;
                 return super.minimumSize();
@@ -1119,15 +1156,17 @@ public class ComponentTest extends TestCase {
         assertNotSame(size, minSize);
         assertEquals(size, minSize);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testPreferredSize() {
         assertEquals(new Dimension(), tc.getPreferredSize());
         final Dimension minSize = new Dimension(5, 15);
         Component comp = new SimpleComponent () {
+            @Override
             public Dimension preferredSize() {
                 methodCalled = true;
                 return super.preferredSize();
             }
+            @Override
             public Dimension minimumSize() {
                 return minSize;
             }
@@ -1140,9 +1179,10 @@ public class ComponentTest extends TestCase {
         assertEquals(minSize, prefSize);
 
     }
-
+    @SuppressWarnings("deprecation")
     public final void testSize() {
         Component comp = new SimpleComponent () {
+            @Override
             public Dimension size() {
                 methodCalled = true;
                 return super.size();
@@ -1156,9 +1196,10 @@ public class ComponentTest extends TestCase {
         comp.setSize(size);
         assertEquals(size, comp.getSize());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testReshape() {
         Component comp = new SimpleComponent () {
+            @Override
             public void reshape(int x, int y, int w, int h) {
                 methodCalled = true;
                 super.reshape(x, y, w, h);
@@ -1170,9 +1211,10 @@ public class ComponentTest extends TestCase {
         assertTrue(methodCalled);
         assertEquals(rect, comp.getBounds());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testMove() {
         Component comp = new MoveResizeComponent () {
+            @Override
             public void move(int x, int y) {
                 assertFalse(methodCalled);
                 assertFalse(setBoundsCalled);
@@ -1188,9 +1230,10 @@ public class ComponentTest extends TestCase {
         assertTrue(reshapeCalled);
         assertEquals(p, comp.getLocation());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testResizeIntInt() {
         Component comp = new MoveResizeComponent () {
+            @Override
             public void resize(int x, int y) {
                 assertFalse(methodCalled);
                 assertFalse(setBoundsCalled);
@@ -1205,9 +1248,10 @@ public class ComponentTest extends TestCase {
         assertTrue(reshapeCalled);
         assertEquals(new Dimension(10, 20), comp.getSize());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testResizeDimension() {
         Component comp = new SimpleComponent () {
+            @Override
             public void resize(Dimension size) {
                 assertFalse(methodCalled);
                 assertFalse(setBoundsCalled);
@@ -1215,6 +1259,7 @@ public class ComponentTest extends TestCase {
                 methodCalled = true;
                 super.resize(size);
             }
+            @Override
             public void resize(int w, int h) {
                 assertTrue(methodCalled);
                 assertTrue(setBoundsCalled);
@@ -1222,6 +1267,7 @@ public class ComponentTest extends TestCase {
                 reshapeCalled = true;
                 super.resize(w, h);
             }
+            @Override
             public void setSize(int w, int h) {
                 assertTrue(methodCalled);
                 assertFalse(setBoundsCalled);
@@ -1237,9 +1283,10 @@ public class ComponentTest extends TestCase {
         assertTrue(reshapeCalled);
         assertEquals(size, comp.getSize());
     }
-
+    @SuppressWarnings("deprecation")
     public final void testNextFocus() {
         Component comp = new SimpleComponent () {
+            @Override
             public void nextFocus() {
                 methodCalled = true;
                 super.nextFocus();
@@ -1250,7 +1297,7 @@ public class ComponentTest extends TestCase {
         comp.transferFocus();
         assertTrue(methodCalled);
     }
-
+    @SuppressWarnings("deprecation")
     public final void testGetPeer() {
         frame = new Frame();
         Object peer = frame.getPeer();

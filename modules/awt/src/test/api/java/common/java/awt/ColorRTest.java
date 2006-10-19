@@ -30,7 +30,4 @@ public class ColorRTest extends TestCase {
         assertEquals(c.brighter(), new Color(255, 0, 255));
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ColorRTest.class);
-    }
 }

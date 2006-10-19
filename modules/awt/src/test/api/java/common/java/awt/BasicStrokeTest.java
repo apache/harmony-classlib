@@ -47,6 +47,7 @@ public class BasicStrokeTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         String basePath = System.getProperty("TEST_SRC_DIR");
         assertNotNull(basePath, "Parameter TEST_SRC_DIR not defined");
@@ -60,9 +61,6 @@ public class BasicStrokeTest extends TestCase {
         if (OUTPUT) {
             new File(outputPath).mkdirs();
         }
-    }
-
-    protected void tearDown() throws Exception {
     }
 
     public void testCreate() {

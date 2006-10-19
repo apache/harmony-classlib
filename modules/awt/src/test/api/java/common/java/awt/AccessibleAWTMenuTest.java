@@ -31,18 +31,11 @@ public class AccessibleAWTMenuTest extends TestCase {
     Menu menu;
     AccessibleContext ac;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTMenuTest.class);
-    }
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menu = new Menu();
         ac = menu.getAccessibleContext();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*

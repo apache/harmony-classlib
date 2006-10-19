@@ -23,14 +23,11 @@ package java.awt;
 import java.awt.List.AccessibleAWTList;
 import java.awt.List.AccessibleAWTList.AccessibleAWTListChild;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.Locale;
-
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
-
 import junit.framework.TestCase;
 
 /**
@@ -42,16 +39,9 @@ public class AccessibleAWTListChildTest extends TestCase {
     AccessibleContext ac;
     AccessibleContext ac1, ac2, ac3;
     AccessibleComponent aComp1, aComp2, aComp3;
-    private FocusListener focusListener;
     protected FocusEvent lastFocusEvent;
-    private Robot robot;
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccessibleAWTListChildTest.class);
-    }
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         list = new List();
@@ -66,27 +56,6 @@ public class AccessibleAWTListChildTest extends TestCase {
         ac3 = ac.getAccessibleChild(2).getAccessibleContext();
         aComp3 = ac3.getAccessibleComponent();
         lastFocusEvent = null;
-        focusListener = new FocusListener () {
-
-            public void focusGained(FocusEvent fe) {
-                lastFocusEvent = fe;
-
-            }
-
-            public void focusLost(FocusEvent fe) {
-                lastFocusEvent = fe;
-
-            }
-
-        };
-        robot = new Robot();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public final void testGetAccessibleChildrenCount() {
@@ -198,6 +167,7 @@ public class AccessibleAWTListChildTest extends TestCase {
         assertNull(aComp2.getLocation());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testGetLocationOnScreen() {
         assertNull(aComp1.getLocationOnScreen());
         Frame f = new Frame();
@@ -240,6 +210,7 @@ public class AccessibleAWTListChildTest extends TestCase {
         assertFalse(aComp3.isFocusTraversable());
     }
 
+    @SuppressWarnings("deprecation")
     public final void testIsShowing() {
         assertFalse(aComp3.isShowing());
         Frame f = new Frame();
