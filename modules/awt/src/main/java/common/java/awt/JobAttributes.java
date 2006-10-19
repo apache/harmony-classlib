@@ -123,8 +123,8 @@ public final class JobAttributes implements Cloneable {
         setMultipleDocumentHandlingToDefault();
         setSidesToDefault();
         setCopiesToDefault();
-        setMinPage(1);
         setMaxPage(0x7fffffff);
+        setMinPage(1);
     }
 
     public JobAttributes(JobAttributes obj){
