@@ -175,13 +175,22 @@ public class ClassTest extends junit.framework.TestCase {
                 return new ProtectionDomain[0];
             }
 
+            private boolean recurring = false;
+
             public boolean isPriviledged() {
-                combine = false;
-                try {
-                    AccessController.checkPermission(privCheckPermission);
-                } catch (SecurityException e) {
+                if (recurring) {
+                    return true;
                 }
-                return !combine;
+                try {
+                    recurring = true;
+                    combine = false;
+                    try {
+                        AccessController.checkPermission(privCheckPermission);
+                    } catch (SecurityException e) {}
+                    return !combine;
+                } finally {
+                    recurring = false;
+                }
             }
         }
 
