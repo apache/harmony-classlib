@@ -110,6 +110,14 @@ public class AccessibleStateSetTest extends SwingTestCase {
 
         stateSet.states = null;
         stateSet.toString();
+        
+        //regression test for HARMONY-1190
+        try {
+        	new AccessibleStateSet(new AccessibleState[2]).toString();
+        	fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+        	//expected 
+        }
     }
 
     public void testToArray() throws Exception {

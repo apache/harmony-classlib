@@ -75,11 +75,11 @@ public class AccessibleStateSet {
     @Override
     public String toString() {
         if (states == null) {
-            return ""; //$NON-NLS-1$
+            return "null"; //$NON-NLS-1$
         }
         StringBuffer str = new StringBuffer();
         for (Iterator<AccessibleState> it = states.iterator(); it.hasNext(); ) {
-            str.append(it.next());
+            str.append(it.next().toString());
             if (it.hasNext()) {
                 str.append(","); //$NON-NLS-1$
             }
