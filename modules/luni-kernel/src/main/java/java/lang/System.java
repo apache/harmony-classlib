@@ -689,19 +689,17 @@ public final class System {
 
     /**
      * <p>
-     * Removes the system property indicated by the specified key.
-     * </p>
-     * <p>
-     * First, if a security manager exists, its
-     * <code>SecurityManager.checkPermission</code> method is called with a
-     * <code>PropertyPermission(key, "write")</code> permission. This may
-     * result in a <code>SecurityException</code> being thrown. If no
-     * exception is thrown, the specified property is removed.
+     * Removes the system property for the specified key.
      * </p>
      * 
-     * @param key The name of the system property to remove.
-     * @return The previous value of the system property or <code>null</code>,
-     *         if there was no value.
+     * <p>
+     * Please see the Java SE API documentation for further
+     * information on this method.
+     * <p>
+     * 
+     * @param key the system property to be removed.
+     * @return previous value or null if no value existed
+     * 
      * @throws NullPointerException if the <code>key</code> argument is
      *         <code>null</code>.
      * @throws IllegalArgumentException if the <code>key</code> argument is
@@ -709,11 +707,6 @@ public final class System {
      * @throws SecurityException if a security manager exists and write access
      *         to the specified property is not allowed.
      * @since 1.5
-     * @see #getProperty(String)
-     * @see #setProperty(String, String)
-     * @see Properties
-     * @see SecurityException
-     * @see SecurityManager#checkPropertiesAccess()
      */
     public static String clearProperty(String key) {
         if (key == null) {
