@@ -329,7 +329,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         try {
             return mimeInfo.equals(MimeTypeProcessor.parse(mimeType));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Can't parse MIME type: " + mimeType);
+            return false;
         }
     }
 
