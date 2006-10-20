@@ -100,12 +100,6 @@ public class JSParameters {
     // name of the provider to work with keystore
     private String ksProviderName;
 
-    // class name of the provider to work with message digests
-    private String mdProvider;
-
-    // name of the provider to work with message digests
-    private String mdProviderName;
-
     // timestamp authority URL
     private URI tsaURI;
     

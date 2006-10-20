@@ -20,10 +20,8 @@ package javax.sound.sampled;
 import java.security.BasicPermission;
 
 public class AudioPermission extends BasicPermission {
-    //FIXME
-    /*
-     * a static final serialVersionUID field is required
-     */
+
+    private static final long serialVersionUID = -5518053473477801126L;
 
     public AudioPermission(String name) {
         super(name);
