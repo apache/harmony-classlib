@@ -75,6 +75,9 @@ public class Polygon implements Shape, Serializable {
         public Iterator(AffineTransform at, Polygon p) {
             this.p = p;
             this.t = at;
+            if (p.npoints == 0) {
+                index = 1;
+            }
         }
 
         public int getWindingRule() {

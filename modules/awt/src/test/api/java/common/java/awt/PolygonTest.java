@@ -271,6 +271,15 @@ public class PolygonTest extends ShapeTestCase {
                 new float[]{4, 5, 5, 6, 6, 7});
     }
 
+    public void testGetPathIteratorEmpty() {
+        // Regression for HARMONY-1572
+        Polygon pg = new Polygon(new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 },
+                0);
+        PathIterator p = pg.getPathIterator(null);
+        checkPathRule(p, PathIterator.WIND_EVEN_ODD);
+        checkPathDone(p, true);
+    }
+
     @Override
     public String objToStr(Object obj) {
         Polygon p = (Polygon)obj;
