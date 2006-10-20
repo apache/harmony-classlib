@@ -25,6 +25,16 @@ import java.awt.event.KeyEvent;
 import junit.framework.TestCase;
 
 public class JTextComponentRTest extends TestCase {
+    
+    class JMyTextComponent extends JTextComponent {
+        public String getUIClassID() {
+            return "TextFieldUI";
+        }
+
+        public void test(final KeyEvent event) {
+            processKeyEvent(event);
+        }
+    };
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -35,18 +45,17 @@ public class JTextComponentRTest extends TestCase {
     }
 
     public void testProcessKeyEvent() {
-        class JMyTextComponent extends JTextComponent {
-            public String getUIClassID() {
-                return "TextFieldUI";
-            }
-
-            public void test(final KeyEvent event) {
-                processKeyEvent(event);
-            }
-        };
         JMyTextComponent c = new JMyTextComponent();
         KeyEvent event = new KeyEvent(c, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, '\n');
         c.setKeymap(null);
         c.test(event);
+    }
+    
+    public void testUpdateUI() {
+        // regression test for HARMONY-1475
+        JMyTextComponent c = new JMyTextComponent();
+        c.updateUI();
+        c.setText("q");
+        assertEquals("q", c.getText());
     }
 }

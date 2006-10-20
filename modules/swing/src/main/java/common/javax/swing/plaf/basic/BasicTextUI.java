@@ -929,6 +929,9 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         uninstallDefaults();
         uninstallKeyboardActions();
         uninstallListeners();
+        ((AbstractDocument) component.getDocument())
+                .removeDocumentListener(listener);
+        component.removePropertyChangeListener(listener);
 
         //DnD support
         //java.awt.Component doesn't support DnD

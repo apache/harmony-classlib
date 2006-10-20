@@ -29,6 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingTestCase;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.JTextComponent;
 
 public class BasicTextUIRTest extends SwingTestCase {
@@ -115,6 +116,17 @@ public class BasicTextUIRTest extends SwingTestCase {
         textComp.setEditable(true);
         checkNotEditableFTK(textComp);
 
+    }
+    
+    public void testUninstallUI() {
+        // Regression for HARMONY-1475
+        JTextComponent textComp = new JTextField();
+        AbstractDocument doc = ((AbstractDocument) textComp.getDocument());
+        assertTrue("listeners installed", 
+                   doc.getDocumentListeners().length > 0);
+        textComp.getUI().uninstallUI(textComp);
+        assertEquals("no listeners installed", 0,
+                     doc.getDocumentListeners().length);
     }
 
 }
