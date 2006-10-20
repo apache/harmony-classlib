@@ -83,7 +83,7 @@ public class Dimension extends Dimension2D implements Serializable {
 
     @Override
     public void setSize(double width, double height) {
-        setSize((int)Math.round(width), (int)Math.round(height));
+        setSize((int)Math.ceil(width), (int)Math.ceil(height));
     }
 
     public Dimension getSize() {

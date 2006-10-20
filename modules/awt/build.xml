@@ -293,7 +293,6 @@
                     <exclude name="java/awt/AccessibleAWTMenuItemTest.java"/>
                     <exclude name="java/awt/AccessibleAWTWindowTest.java"/>
                     <exclude name="java/awt/FileDialogTest.java"/>
-                    <exclude name="java/awt/DimensionTest.java"/>
                     <exclude name="java/awt/FlowLayoutTest.java"/>
                     <exclude name="java/awt/GridBagLayoutTest.java"/>
                     <exclude name="java/awt/GridLayoutTest.java"/>
