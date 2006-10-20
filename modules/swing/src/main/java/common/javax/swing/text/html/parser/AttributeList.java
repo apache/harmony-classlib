@@ -138,7 +138,8 @@ public final class AttributeList implements DTDConstants, Serializable {
     }
 
     public Enumeration<?> getValues() {
-        return values.elements();
+        // avoids a NullPointerException if values is null (same as RI)
+        return values == null ? null : values.elements();
     }
 
     public int getModifier() {
@@ -177,13 +178,8 @@ public final class AttributeList implements DTDConstants, Serializable {
         }
     }
 
-    //TODO correct a bit: Do we check an instance or just equals?
     final boolean containsValue(final String value) {
-        if (value == this.value) {
-            return true;
-        }
-
-        return values.contains(value);
+        return values == null ? false : values.contains(value);
     }
 }
 
