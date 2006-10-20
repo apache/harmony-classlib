@@ -219,7 +219,7 @@ class OSFileSystem extends OSComponent implements IFileSystem {
 		}
 		long handler = openImpl(fileName, mode);
 		if (handler < 0) {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException(new String(fileName));
 		}
 		return handler;
 	}
