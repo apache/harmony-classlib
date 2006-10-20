@@ -561,7 +561,12 @@ public class Font implements Serializable {
 
 
     public String getFamily(Locale l) {
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+        if (l == null) {
+            throw new NullPointerException(Messages.getString(
+                    "awt.01", "Locale")); //$NON-NLS-1$ 
+        }
+
+        FontPeerImpl peer = (FontPeerImpl) this.getPeer();
         return peer.getFamily(l);
     }
 
@@ -575,12 +580,8 @@ public class Font implements Serializable {
     }
 
     public static Font getFont(String sp, Font f) {
-        String pr = null;
-        try {
-            pr = System.getProperty(sp);
-        } catch (Exception e){
-        }
-        if (pr == null){
+        String pr = System.getProperty(sp);
+        if (pr == null) {
             return f;
         }
         return decode(pr);
@@ -601,14 +602,13 @@ public class Font implements Serializable {
         return peer.getFontName(l);
     }
 
-    public LineMetrics getLineMetrics(char[] chars, int start,
-            int end, FontRenderContext frc) {
-
-        if (frc == null){
+    public LineMetrics getLineMetrics(char[] chars, int start, int end,
+            FontRenderContext frc) {
+        if (frc == null) {
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
         }
 
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+        FontPeerImpl peer = (FontPeerImpl) this.getPeer();
 
         return peer.getLineMetrics((new String(chars)).substring(start, end),
                 frc, this.getTransform());
@@ -752,6 +752,10 @@ public class Font implements Serializable {
     }
 
     public Rectangle2D getMaxCharBounds(FontRenderContext frc) {
+        if (frc == null){
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$ 
+        }
+
         FontPeerImpl peer = (FontPeerImpl)this.getPeer();
 
         Rectangle2D bounds = peer.getMaxCharBounds(frc);

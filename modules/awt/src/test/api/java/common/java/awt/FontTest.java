@@ -19,51 +19,94 @@ package java.awt;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.util.Collections;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 public class FontTest extends TestCase {
 
     private final Font f = new Font("dialog", Font.PLAIN, 12);
-    
+
     /**
-     * Checks Font.getLineMetrics() methods if FontRenderContext parameter is NULL. 
-     *
+     * Checks Font.getLineMetrics() methods if FontRenderContext parameter is
+     * NULL.
+     * 
      */
-    public void test_Font_getLineMetrics_WithNullFRC(){
-        // // regression test for Harmony-1465
+    public void test_Font_getLineMetrics_WithNullFRC() {
+        // Regression for Harmony-1465
         final String str = "test";
-        try{
+        try {
             f.getLineMetrics(str, null);
             fail("NullPointerException expected but wasn't thrown!");
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // as expected
         }
 
-        try{
+        try {
             f.getLineMetrics(str, 1, 3, null);
             fail("NullPointerException expected but wasn't thrown!");
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // as expected
         }
 
-        try{
+        try {
             f.getLineMetrics(str.toCharArray(), 1, 3, null);
             fail("NullPointerException expected but wasn't thrown!");
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // as expected
         }
 
-        try{
+        try {
             AttributedString as = new AttributedString("test");
-            as.addAttribute(TextAttribute.FONT, f, 0, 2 );
+            as.addAttribute(TextAttribute.FONT, f, 0, 2);
 
             f.getLineMetrics(as.getIterator(), 1, 3, null);
             fail("NullPointerException expected but wasn't thrown!");
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // as expected
         }
-        
     }
-    
+
+    public void test_Font_getMaxCharBounds_WithNullFRC() {
+        // Regression for HARMONY-1549
+        try {
+            Font font = Font.decode("dialog");
+            System.out.println(font.getMaxCharBounds(null));
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+    }
+
+    public void test_Font_getFamily_WithNullLocale() {
+        // Regression for Harmony-1543
+        try {
+            Font fnt = Font
+                    .getFont((Map<? extends TextAttribute, ?>) Collections.EMPTY_MAP);
+            fnt.getFamily(null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void test_Font_getFont_WithNullSystemProperty() {
+        // Regression for HARMONY-1546
+        try {
+            Font.getFont((String) null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            Font.getFont((String) null, new Font("dialog", Font.PLAIN, 12));
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+    }
 }
