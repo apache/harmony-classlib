@@ -28,7 +28,7 @@ import java.awt.im.InputMethodHighlight;
 import java.util.Map;
 import java.util.TreeSet;
 import org.apache.harmony.awt.ComponentInternals;
-import org.apache.harmony.awt.nativebridge.Int16Pointer;
+import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
@@ -456,19 +456,19 @@ public class WinSystemProperties implements SystemProperties {
         setIntProperty(propName, win32.GetSystemMetrics(idx), props);
     }
     
-    private Int16Pointer getIntSPI(int idx) {
-        NativeBridge bridge = NativeBridge.getInstance();        
-        Int16Pointer ptr = bridge.createInt16Pointer(1, false);
+    private int getIntSPI(int idx) {
+        NativeBridge bridge = NativeBridge.getInstance();
+        Int32Pointer ptr = bridge.createInt32Pointer(1, false);
         win32.SystemParametersInfoW(idx, 0, ptr, 0);
-        return ptr;
+        return ptr.get(0);
     }
     
     private void getBoolSPI(String propName, int idx, Map<String, Object> props) {
-        setBoolProperty(propName, getIntSPI(idx).get(0), props);
+        setBoolProperty(propName, getIntSPI(idx), props);
     }
     
     private void getIntSPI(String propName, int idx, Map<String, Object> props) {
-        setIntProperty(propName, getIntSPI(idx).get(0), props);
+        setIntProperty(propName, getIntSPI(idx), props);
     }
     
     void getXPTheme(Map<String, Object> props) {

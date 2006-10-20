@@ -53,4 +53,9 @@ public class ToolkitRTest extends TestCase {
         }
         assertTrue(npe);
     }
+
+    public void testInitializeDesktopProperties() {
+        // Regression for HARMONY-1483
+        Toolkit.getDefaultToolkit().initializeDesktopProperties();
+    }
 }
