@@ -137,7 +137,7 @@ public class InputMethodContext extends InputContext implements
                         nextComp = null;
                         client.requestFocusInWindow();
                     }
-                } else if (client != null) {
+                } else if ((client != null) && getCompositionWindow().isVisible()) {
                     // temporarily return focus back
                     // to previous client to be able
                     // to end composition
