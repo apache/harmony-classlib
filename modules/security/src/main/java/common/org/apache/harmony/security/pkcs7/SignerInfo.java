@@ -21,6 +21,7 @@
 */
 package org.apache.harmony.security.pkcs7;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.AttributeTypeAndValue;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
@@ -150,14 +152,25 @@ public class SignerInfo {
         return res.toString();
     }
 
+    
+    public static final ASN1Sequence ISSUER_AND_SERIAL_NUMBER = 
+            new ASN1Sequence(new ASN1Type[] { 
+                Name.ASN1,                       // issuer
+                ASN1Integer.getInstance(),       // serialNumber
+            }) 
+        {
+            // method to encode
+            public void getValues(Object object, Object[] values) {
+                Object [] issAndSerial = (Object[])object;
+                values[0] = issAndSerial[0];
+                values[1] = issAndSerial[1];
+        }
+    };
+    
     public static final ASN1Sequence ASN1 = 
         new ASN1Sequence(new ASN1Type[] {
                 ASN1Integer.getInstance(),         //version
-                new ASN1Sequence(new ASN1Type[]    //issuerAndSerialNumber
-                        {Name.ASN1,                    //issuer
-                        ASN1Integer.getInstance()      //serialNumber
-                        }
-                ),
+                ISSUER_AND_SERIAL_NUMBER,
                 AlgorithmIdentifier.ASN1,           //digestAlgorithm
                 new ASN1Implicit(0, AuthenticatedAttributes.ASN1),//authenticatedAttributes
                 AlgorithmIdentifier.ASN1,            //digestEncryptionAlgorithm
@@ -170,6 +183,27 @@ public class SignerInfo {
             setOptional(6); // unauthenticatedAttributes is optional
         }
 
+        protected void getValues(Object object, Object[] values) {
+            SignerInfo si = (SignerInfo) object;
+            values[0] = new byte[] {(byte)si.version};
+            try {
+                values[1] = new Object[] { new Name(si.issuer.getName()),
+                        si.serialNumber.toByteArray() };
+            } catch (IOException e) {
+                // The exception is never thrown, because si.issuer
+                // is created using Name.getX500Principal(). 
+                // Throw a RuntimeException just to be safe.
+                throw new RuntimeException(
+                        // Msg: "Failed to encode issuer name
+                        Messages.getString("security.1A2"), e);
+            } 
+            values[2] = si.digestAlgorithm;
+            values[3] = si.authenticatedAttributes;
+            values[4] = si.digestEncryptionAlgorithm;
+            values[5] = si.encryptedDigest;
+            values[6] = si.unauthenticatedAttributes;
+        }
+ 
         protected Object getDecodedObject(BerInputStream in) {
             Object[] values = (Object[]) in.content;
             return new SignerInfo(
