@@ -642,7 +642,7 @@ public class AffineTransformTest extends GeomTestCase {
         }
     }
 
-    public void testTransform2() {
+    public void testTransformPointArray() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         Point2D[] src = new Point2D[]{
                 null,
@@ -655,6 +655,35 @@ public class AffineTransformTest extends GeomTestCase {
         assertEquals(new Point2D.Float(1, 5), dst[3]);
     }
 
+    public void testTransformPointArrayBad() {
+        // Regression test HARMONY-1405
+        
+        AffineTransform at = new AffineTransform();
+        try {
+            at.transform(
+                    new Point2D[] { null, null, null, null },
+                    0,
+                    new Point2D[] { null, null, null, null },
+                    -1,
+                    1);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            at.transform(
+                    new Point2D[] { null, null, null, null },
+                    1,
+                    new Point2D[] { null, null, null, null },
+                    10,
+                    1);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }        
+    }
+    
     public void testTransform3() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         double[] src = new double[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0};

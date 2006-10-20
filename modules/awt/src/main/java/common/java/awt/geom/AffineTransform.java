@@ -421,10 +421,22 @@ public class AffineTransform implements Cloneable, Serializable {
 
     public void transform(Point2D[] src, int srcOff, Point2D[] dst, int dstOff, int length) {
         while (--length >= 0) {
-            dst[dstOff] = transform(src[srcOff++], dst[dstOff++]);
+            Point2D srcPoint = src[srcOff++]; 
+            double x = srcPoint.getX();
+            double y = srcPoint.getY();
+            Point2D dstPoint = dst[dstOff]; 
+            if (dstPoint == null) {
+                if (srcPoint instanceof Point2D.Double) {
+                    dstPoint = new Point2D.Double();
+                } else {
+                    dstPoint = new Point2D.Float();
+                }
+            }
+            dstPoint.setLocation(x * m00 + y * m01 + m02, x * m10 + y * m11 + m12);
+            dst[dstOff++] = dstPoint;
         }
     }
-
+    
     public void transform(double[] src, int srcOff, double[] dst, int dstOff, int length) {
         while (--length >= 0) {
             double x = src[srcOff++];
