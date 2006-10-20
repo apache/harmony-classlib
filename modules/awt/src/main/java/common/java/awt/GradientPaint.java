@@ -49,8 +49,15 @@ public class GradientPaint implements Paint {
      */
     boolean cyclic;
 
-    public GradientPaint(Point2D point1, Color color1, Point2D point2, Color color2,
-            boolean cyclic) {
+    public GradientPaint(Point2D point1, Color color1, Point2D point2,
+            Color color2, boolean cyclic) {
+        if (point1 == null || point2 == null) {
+            throw new NullPointerException("Point is null");
+        }
+        if (color1 == null || color2 == null) {
+            throw new NullPointerException("Color is null");
+        }
+
         this.point1 = point1;
         this.point2 = point2;
         this.color1 = color1;

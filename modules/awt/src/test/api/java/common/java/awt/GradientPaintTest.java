@@ -30,19 +30,60 @@ public class GradientPaintTest extends TestCase {
 
     GradientPaint gp;
 
-    public GradientPaintTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-//      gp = new GradientPaint();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void testContructorBad() {
+        // Regression for HARMONY-1470
+        try {
+            new GradientPaint(1, 2, null, 3, 4, new Color(255), false);
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(1, 2, new Color(255), 3, 4, null, false);
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(1, 2, null, 4, 5, new Color(255));
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(1, 2, new Color(255), 4, 5, null);
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(null, new Color(255), new Point2D.Float(),
+                    new Color(255));
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(new Point2D.Float(), null, new Point2D.Float(),
+                    new Color(255));
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(new Point2D.Float(), new Color(255), null,
+                    new Color(255));
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new GradientPaint(new Point2D.Float(), new Color(255),
+                    new Point2D.Float(), null);
+            fail("expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     public void testGetPoint1() {
