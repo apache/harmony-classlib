@@ -21,9 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.auth.internal.kerberos.v5.KrbConfig;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1StringType;
@@ -44,6 +47,9 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
     public static final int KRB_NT_UID = 5;
 
+    // default realm 
+    private static String defaultRealm;
+    
     // the full name of principal
     private transient String name;
 
@@ -63,19 +69,55 @@ public final class KerberosPrincipal implements Principal, Serializable {
         if (name == null || name.trim().length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.23")); //$NON-NLS-1$
         }
+
         int pos = name.indexOf('@');
         if (pos != -1) {
             realm = name.substring(pos + 1, name.length());
-        } else {
-            // look for local realm name
-            throw new UnsupportedOperationException();
-        }
-        this.name = name;
 
-        // verify realm name according to RFC 1964(2.1.1 (2))
-        // check invalid chars '/', ':' and null
-        if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1 || realm.indexOf(0) != -1) {
-            throw new IllegalArgumentException(Messages.getString("auth.24")); //$NON-NLS-1$
+            // verify realm name according to RFC 1964(2.1.1 (2))
+            // check invalid chars '/', ':' and null
+            if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1
+                    || realm.indexOf(0) != -1) {
+                throw new IllegalArgumentException(Messages
+                        .getString("auth.24")); //$NON-NLS-1$
+            }
+
+            this.name = name;
+        } else {
+            // look for default realm name
+            // TODO sync defaultRealm update
+            if (defaultRealm == null) {
+                defaultRealm = AccessController
+                        .doPrivileged(new PrivilegedAction<String>() {
+                            public String run() {
+
+                                String v = System
+                                        .getProperty("java.security.krb5.realm"); //$NON-NLS-1$
+                                if (v == null) {
+                                    // look in config files 
+                                    KrbConfig config = null;
+                                    try {
+                                        config = KrbConfig.getSystemConfig();
+                                    } catch (IOException e) {
+                                        // ignore
+                                    }
+                                    if (config != null) {
+                                        v = config.getValue("libdefaults", //$NON-NLS-1$
+                                                "default_realm"); //$NON-NLS-1$
+                                    }
+                                }
+                                return v;
+                            }
+                        });
+
+            }
+
+            realm = defaultRealm;
+            if (realm != null) {
+                this.name = name + '@' + defaultRealm;
+            } else {
+                this.name = name;
+            }
         }
     }
 

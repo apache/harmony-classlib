@@ -17,14 +17,30 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.kerberos;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import javax.security.auth.kerberos.KerberosPrincipal;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.auth.tests.support.TestUtils;
+
+import tests.support.Support_Exec;
 
 /**
  * Tests KerberosPrincipal class implementation.
  */
 public class KerberosPrincipalTest extends TestCase {
+
+    // system property for specifying the default realm
+    private static final String KRB5_REALM_SYS_PROP = "java.security.krb5.realm";
+
+    // system property for specifying the default kdc
+    private static final String KRB5_KDC_SYS_PROP = "java.security.krb5.kdc";
+
+    // system property for specifying the default config file
+    private static final String KRB5_CONF_SYS_PROP = "java.security.krb5.conf";
 
     /**
      * @tests javax.security.auth.kerberos.KerberosPrincipal#KerberosPrincipal(
@@ -61,7 +77,6 @@ public class KerberosPrincipalTest extends TestCase {
         assertEquals("apache.org", principal.getRealm());
         assertEquals(KerberosPrincipal.KRB_NT_PRINCIPAL, principal
                 .getNameType());
-
     }
 
     /**
@@ -98,6 +113,109 @@ public class KerberosPrincipalTest extends TestCase {
         assertEquals("name@apache.org", principal.getName());
         assertEquals("apache.org", principal.getRealm());
         assertEquals(KerberosPrincipal.KRB_NT_UNKNOWN, principal.getNameType());
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosPrincipal#KerberosPrincipal(
+     *        java.lang.String)
+     */
+    public void test_Ctor_defaultRealm() throws Exception {
+
+        // test: if the input name has no realm part then default realm is used.
+        //
+        // the test forks a separate VM for each case because   
+        // default realm value is cashed
+
+        // test: default realm is unset (has null value)
+        Support_Exec.execJava(new String[] { DefaultRealm_NullValue.class
+                .getName() }, null, true);
+
+        // test: default realm name is specified via system property
+        Support_Exec.execJava(new String[] { DefaultRealm_SystemProperty.class
+                .getName() }, null, true);
+
+        // test: default realm name is specified in config file
+        Support_Exec.execJava(new String[] { DefaultRealm_ConfigFile.class
+                .getName() }, null, true);
+    }
+
+    /**
+     * Test: default realm is unset
+     */
+    public static class DefaultRealm_NullValue {
+
+        // Regression for HARMONY-1090
+        public static void main(String[] av) throws Exception {
+
+            // clear system properties
+            TestUtils.setSystemProperty(KRB5_REALM_SYS_PROP, null);
+            TestUtils.setSystemProperty(KRB5_KDC_SYS_PROP, null);
+
+            // point to empty config file
+            File f = File.createTempFile("krb5", "conf");
+            f.deleteOnExit();
+            TestUtils.setSystemProperty(KRB5_CONF_SYS_PROP, f
+                    .getCanonicalPath());
+
+            // test: default realm value is 'null'
+            KerberosPrincipal principal = new KerberosPrincipal("name");
+            assertEquals("name", principal.getName());
+            assertNull(principal.getRealm());
+        }
+    }
+
+    /**
+     * Tests: default realm name is specified via system property
+     */
+    public static class DefaultRealm_SystemProperty {
+        public static void main(String[] av) {
+
+            String testRealm = "This_is_test_realm";
+
+            System.setProperty(KRB5_REALM_SYS_PROP, testRealm);
+            System.setProperty(KRB5_KDC_SYS_PROP, "some_value");
+
+            // test
+            KerberosPrincipal principal = new KerberosPrincipal("name");
+            assertEquals("name@" + testRealm, principal.getName());
+            assertEquals(testRealm, principal.getRealm());
+
+            // test: default realm value is cashed 
+            // change system property value 
+            System.setProperty(KRB5_REALM_SYS_PROP,
+                    "Another_test_realm");
+            principal = new KerberosPrincipal("name");
+            assertEquals("name@" + testRealm, principal.getName());
+            assertEquals(testRealm, principal.getRealm());
+        }
+    }
+
+    /**
+     * Tests: default realm name is specified in config file
+     */
+    public static class DefaultRealm_ConfigFile {
+        public static void main(String[] av) throws Exception {
+
+            // clear system properties
+            TestUtils.setSystemProperty(KRB5_REALM_SYS_PROP, null);
+            TestUtils.setSystemProperty(KRB5_KDC_SYS_PROP, null);
+
+            // point to config file
+            File f = File.createTempFile("krb5", "conf");
+            f.deleteOnExit();
+            FileOutputStream out = new FileOutputStream(f);
+            out.write("[libdefaults]\n".getBytes());
+            out.write("         default_realm = MY.TEST_REALM".getBytes());
+            out.close();
+            
+            TestUtils.setSystemProperty(KRB5_CONF_SYS_PROP, f
+                    .getCanonicalPath());
+
+            // test
+            KerberosPrincipal principal = new KerberosPrincipal("name");
+            assertEquals("name@MY.TEST_REALM", principal.getName());
+            assertEquals("MY.TEST_REALM", principal.getRealm());
+        }
     }
 
     /**
