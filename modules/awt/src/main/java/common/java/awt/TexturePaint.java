@@ -38,6 +38,12 @@ public class TexturePaint implements Paint {
     Rectangle2D anchor;
 
     public TexturePaint(BufferedImage img, Rectangle2D anchor) {
+        if (img == null) {
+            throw new NullPointerException("Image is null");
+        }
+        if (anchor == null) {
+            throw new NullPointerException("Anchor is null");
+        }
         this.img = img;
         this.anchor = anchor;
     }
