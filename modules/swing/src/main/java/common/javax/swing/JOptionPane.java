@@ -632,6 +632,9 @@ public class JOptionPane extends JComponent implements Accessible {
     }
     
     private static void setDialogDecorations(final JDialog dialog, final int messageType) {
+        if (!JDialog.isDefaultLookAndFeelDecorated()) {
+            return;
+        }
         dialog.getRootPane().setWindowDecorationStyle(messageTypeToRootPaneDecoration(messageType));
     }
 }
