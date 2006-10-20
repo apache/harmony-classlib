@@ -45,17 +45,21 @@ public final class WinClipboard extends NativeClipboard
         winEventQueue.addPreprocessor(this);
     }
 
+    @Override
     public void onShutdown() {
     }
 
+    @Override
     public void onRestart() {
     }
 
+    @Override
     public void setContents(Transferable contents, ClipboardOwner owner) {
         DataSource dc = new DataSource(contents);
         final DataSnapshot snapshot = new DataSnapshot(dc);
 
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 WinDataTransfer.setClipboardContents(snapshot);
             }
@@ -64,13 +68,16 @@ public final class WinClipboard extends NativeClipboard
         // TODO: fire flavor change events
     }
 
+    @Override
     public Object getData(DataFlavor flavor)
             throws UnsupportedFlavorException, IOException {
         return getContents(this).getTransferData(flavor);
     }
 
+    @Override
     public Transferable getContents(Object requestor) {
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 WinDataTransfer.IDataObject dataObject = 
                         WinDataTransfer.getClipboardContents();
@@ -83,6 +90,7 @@ public final class WinClipboard extends NativeClipboard
         return (DataProxy)task.returnValue;
     }
     
+    @Override
     public DataFlavor[] getAvailableDataFlavors() {
         Transferable t = getContents(this);
         return (t != null) ? 

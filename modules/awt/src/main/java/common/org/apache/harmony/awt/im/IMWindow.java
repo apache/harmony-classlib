@@ -35,11 +35,13 @@ public class IMWindow extends Frame {
         this("Input Window", null);
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
         IMManager.makeIMWindow(this);
     }
     
+    @Override
     public InputContext getInputContext() {
         if (inputContext != null) {
             return inputContext;

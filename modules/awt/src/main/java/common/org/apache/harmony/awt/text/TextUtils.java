@@ -332,7 +332,7 @@ public class TextUtils {
         if (pos < 0 || pos > length) {
             throwException("No word at " + pos, pos);
         }
-        String content = content = doc.getText(0, doc.getLength());
+        String content = doc.getText(0, doc.getLength());
         bi.setText(content);
         return (pos < bi.last()) ? bi.following(pos) : pos;
    }
@@ -579,19 +579,18 @@ public class TextUtils {
         if (direction == SwingConstants.WEST
                 || direction == SwingConstants.EAST) {
             return getNextVisualPosition(v, pos, bias, direction, biasRet);
-        } else {
-            Point pt = textKit.getCaret().getMagicCaretPosition();
-            if (direction == SwingConstants.NORTH) {
-                return TextUtils.getPositionAbove(textKit, pos,
-                                                  pt != null ? pt.x
-                        : v.modelToView(pos, shape, bias).getBounds().x);
-            } else if (direction == SwingConstants.SOUTH) {
-                return TextUtils.getPositionBelow(textKit, pos, pt != null ? pt.x
-                        : v.modelToView(pos, shape, bias).getBounds().x);
-            }
-
-            throw new IllegalArgumentException("Invalid direction");
         }
+        Point pt = textKit.getCaret().getMagicCaretPosition();
+        if (direction == SwingConstants.NORTH) {
+            return TextUtils.getPositionAbove(textKit, pos,
+                                              pt != null ? pt.x
+                    : v.modelToView(pos, shape, bias).getBounds().x);
+        } else if (direction == SwingConstants.SOUTH) {
+            return TextUtils.getPositionBelow(textKit, pos, pt != null ? pt.x
+                    : v.modelToView(pos, shape, bias).getBounds().x);
+        }
+
+        throw new IllegalArgumentException("Invalid direction");
     }
 
 
@@ -668,12 +667,11 @@ public class TextUtils {
             return pos;
         }
         if (b0 == forward && pos == endParagraph) {
-            if (nextIsLTR) {
-                return pos + 1;
-            } else {
+                if (nextIsLTR) {
+                    return pos + 1;
+                }
                 biasRet[0] = backward;
                 return neighboringElement.getEndOffset();
-            }
             }
         }
         return -1;
@@ -692,18 +690,16 @@ public class TextUtils {
         if (pos == end && direction && b0 == forward) {
             biasRet[0] = backward;
             return pos + 1;
-        } else if (pos == start + 1 && pos <= end  && !direction) {
+        } else if (pos == start + 1 && pos <= end && !direction) {
             return pos - 1;
         } else if (pos == start) {
             if (direction) {
                 return (b0 == forward) ? pos + 1 : pos - 1;
-            } else {
-                biasRet[0] = b0;
-                return neighbouringElement.getStartOffset();
             }
+            biasRet[0] = b0;
+            return neighbouringElement.getStartOffset();
         } else {
-            return getTrivialVisualPosition(toWest, pos, b0, length, biasRet,
-                                            isLTR);
+            return getTrivialVisualPosition(toWest, pos, b0, length, biasRet, isLTR);
         }
     }
 
@@ -734,7 +730,7 @@ public class TextUtils {
         int alignment = tfk.getHorizontalAlignment();
         boolean toLeft = isToLeft(orientation, alignment);
         int offset = 0;
-        if (alignment == View.CENTER) {
+        if (alignment == SwingConstants.CENTER) {
             offset = diff / 2;
         } else {
             offset = toLeft ? 0 : diff;
@@ -771,7 +767,7 @@ public class TextUtils {
         }
         Shape result = null;
         try {
-            result = (Rectangle)view.modelToView(Math.min(p0, p1),
+            result = view.modelToView(Math.min(p0, p1),
                                                    Position.Bias.Forward,
                                                    Math.max(p0, p1),
                                                    Position.Bias.Backward,
@@ -899,14 +895,12 @@ public class TextUtils {
         }
         DataFlavor[] flavors = t.getTransferDataFlavors();
         DataFlavor flavor = null;
-        for (int i = 0; i < flavors.length; i++) {
-            flavor = flavors[0];
-            if (String.class.isAssignableFrom(flavor
-                                              .getRepresentationClass())) {
+        for (DataFlavor element : flavors) {
+            flavor = element;
+            if (String.class.isAssignableFrom(flavor.getRepresentationClass())) {
                 break;
-            } else {
-                flavor = null;
             }
+            flavor = null;
         }
         if (flavor != null) {
             try {
@@ -1048,7 +1042,7 @@ public class TextUtils {
 
     public static int getCalendarField(final JFormattedTextField textField) {
         DateFormatter formatter = (DateFormatter)textField.getFormatter();
-        Field[] fields = fields = formatter.getFields(textField.getCaretPosition());
+        Field[] fields = formatter.getFields(textField.getCaretPosition());
 
         for (int i = textField.getCaretPosition(); fields.length == 0 || i < 0; i--) {
             fields = formatter.getFields(i);
@@ -1085,7 +1079,7 @@ public class TextUtils {
 
     public static Object getNextValue(final Date value,
                                       final int calendarField,
-                                      final Comparable end) {
+                                      final Comparable<Date> end) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(value);
         calendar.add(calendarField, 1);
@@ -1096,7 +1090,7 @@ public class TextUtils {
 
     public static Object getPreviousValue(final Date value,
                                           final int calendarField,
-                                          final Comparable start) {
+                                          final Comparable<Date> start) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(value);
         calendar.add(calendarField, -1);

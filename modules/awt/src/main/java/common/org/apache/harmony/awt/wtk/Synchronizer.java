@@ -41,28 +41,28 @@ public class Synchronizer {
      * To free synchronizer unlock method must be called $acquestCounter times.
      * Equals to 0 when synchronizer is free.
      */
-    protected int acquestCounter = 0;
+    protected int acquestCounter;
 
     /**
      * This field holds the owner of synchronizer.
-     * Owner of synchronizer is a last thread that succesfully locked synchronizer and
+     * Owner of synchronizer is a last thread that successfully locked synchronizer and
      * still havn't freed it. Equals to null when synchronizer is free.
      */
-    protected Thread owner = null;
+    protected Thread owner;
 
     /**
      * This field holds the wait queue.
      * Wait queue is a queue where thread wait for synchronizer access.
      * Empty when synchronizer is free.
      */
-    protected final LinkedList waitQueue = new LinkedList();
+    protected final LinkedList<Thread> waitQueue = new LinkedList<Thread>();
 
     /**
      * The event dispatch thread
      */
-    protected Thread dispatchThread = null;
+    protected Thread dispatchThread;
 
-    private final Hashtable storedStates = new Hashtable();
+    private final Hashtable<Thread, Integer> storedStates = new Hashtable<Thread, Integer>();
 
     /**
      * Acquire the lock for this synchronizer. Nested lock is supported.
@@ -119,7 +119,7 @@ public class Synchronizer {
             if (acquestCounter == 0) {
                 if (waitQueue.size() > 0) {
                     acquestCounter = 1;
-                    owner = (Thread) waitQueue.removeFirst();
+                    owner = waitQueue.removeFirst();
                     owner.interrupt();
                 } else {
                     owner = null;
@@ -170,7 +170,7 @@ public class Synchronizer {
             }
 
             lock();
-            acquestCounter = ((Integer) storedStates.get(curThread)).intValue();
+            acquestCounter = storedStates.get(curThread).intValue();
             storedStates.remove(curThread);
         }
     }

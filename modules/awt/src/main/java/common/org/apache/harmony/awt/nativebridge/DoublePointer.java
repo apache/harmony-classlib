@@ -22,7 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 public class DoublePointer extends VoidPointer {
 
-    private static int DOUBLE_SIZE_FACTOR = 8;
+    private static final int DOUBLE_SIZE_FACTOR = 8;
 
     DoublePointer(int size, boolean direct) {
         super(size * DOUBLE_SIZE_FACTOR, direct);
@@ -97,6 +97,7 @@ public class DoublePointer extends VoidPointer {
         }
     }
 
+    @Override
     public int size() {
         return byteBase.size() / DOUBLE_SIZE_FACTOR;
     }

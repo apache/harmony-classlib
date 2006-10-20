@@ -49,14 +49,17 @@ public final class WinDTK extends DTK implements Callback.Handler {
     private static final String windowClass = 
         "org.apache.harmony.awt.datatransfer.window";
 
+    @Override
     protected NativeClipboard newNativeClipboard() {
         return new WinClipboard();
     }
 
+    @Override
     protected NativeClipboard newNativeSelection() {
         return null;
     }
 
+    @Override
     public void initDragAndDrop() {
         WinDataTransfer.init();
         
@@ -70,6 +73,7 @@ public final class WinDTK extends DTK implements Callback.Handler {
                 WindowsDefs.HWND_MESSAGE, 0, 0, null);
     }
     
+    @Override
     public void runEventLoop() {
         Win32.MSG msg = win32.createMSG(false);
         while (win32.GetMessageW(msg, 0, 0, 0) != 0) {
@@ -77,16 +81,19 @@ public final class WinDTK extends DTK implements Callback.Handler {
         }
     }
 
+    @Override
     public DropTargetContextPeer createDropTargetContextPeer(
             DropTargetContext context) {
         return new WinDropTarget(this, context);
     }
 
+    @Override
     public DragSourceContextPeer createDragSourceContextPeer(
             DragGestureEvent dge) {
         return new WinDragSource();
     }
     
+    @Override
     public String getDefaultCharset() {
         return "utf-16le";
     }

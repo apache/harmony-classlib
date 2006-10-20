@@ -117,46 +117,57 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
         cm = new DirectColorModel(bits, rmask, gmask, bmask, amask);
     }
 
+    @Override
     public GraphicsDevice getDevice() {
         return device;
     }
 
+    @Override
     public Rectangle getBounds() {
         return device.getBounds();
     }
 
+    @Override
     public AffineTransform getDefaultTransform() {
         return new AffineTransform();
     }
 
+    @Override
     public AffineTransform getNormalizingTransform() {
         return new AffineTransform();
     }
 
+    @Override
     public BufferedImage createCompatibleImage(int width, int height) {
         return new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
     }
 
+    @Override
     public BufferedImage createCompatibleImage(int width, int height, int transparency) {
         ColorModel cmt = getColorModel(transparency);
-        if (cmt == null)
+        if (cmt == null) {
             throw new IllegalArgumentException("Transparency is not supported.");
+        }
 
         return new BufferedImage(cmt, cmt.createCompatibleWritableRaster(width, height), false, null);
     }
 
+    @Override
     public ColorModel getColorModel() {
         return cm;
     }
 
+    @Override
     public ColorModel getColorModel(int transparency) {
         return cm;
     }
 
+    @Override
     public VolatileImage createCompatibleVolatileImage(int width, int height) {
         return new WinVolatileImage(this, width, height);
     }
 
+    @Override
     public VolatileImage createCompatibleVolatileImage(int width, int height, int transparency) {
         return createCompatibleVolatileImage(width, height);
     }
@@ -165,9 +176,11 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
         return flags;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof WinGraphicsConfiguration))
+        if (!(obj instanceof WinGraphicsConfiguration)) {
             return false;
+        }
 
         WinGraphicsConfiguration gc = (WinGraphicsConfiguration)obj;
 
@@ -176,35 +189,45 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
         //if (flags != gc.flags)
         //  return false;
 
-        if (pixelType != gc.pixelType)
+        if (pixelType != gc.pixelType) {
             return false;
+        }
 
-        if (bits != gc.bits)
+        if (bits != gc.bits) {
             return false;
+        }
 
-        if (redBits != gc.redBits)
+        if (redBits != gc.redBits) {
             return false;
+        }
 
-        if (redShift != gc.redShift)
+        if (redShift != gc.redShift) {
             return false;
+        }
 
-        if (greenBits != gc.greenBits)
+        if (greenBits != gc.greenBits) {
             return false;
+        }
 
-        if (greenShift != gc.greenShift)
+        if (greenShift != gc.greenShift) {
             return false;
+        }
 
-        if (blueBits != gc.blueBits)
+        if (blueBits != gc.blueBits) {
             return false;
+        }
 
-        if (blueShift != gc.blueShift)
+        if (blueShift != gc.blueShift) {
             return false;
+        }
 
-        if (alphaBits != gc.alphaBits)
+        if (alphaBits != gc.alphaBits) {
             return false;
+        }
 
-        if (alphaShift != gc.alphaShift)
+        if (alphaShift != gc.alphaShift) {
             return false;
+        }
 
         return true;
     }

@@ -21,11 +21,9 @@
 package org.apache.harmony.awt.gl.font;
 
 import java.awt.Font;
-
-import java.util.*;
-
-import org.apache.harmony.awt.gl.font.FontManager;
-import org.apache.harmony.awt.gl.font.Glyph;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Hashtable;
 
 public class NativeFont {
 
@@ -33,33 +31,33 @@ public class NativeFont {
      * List of family indexes in families array corresponding to the faces 
      * indexing.
      */
-    public static int[] famIndices = null;
+    public static int[] famIndices;
     /**
      * List of font styles of system fonts initialized using GDI
      * corresponding to faces indexing.
      */
-    public static int[] fontStyles = null;
+    public static int[] fontStyles;
 
     /**
      * List of font types of system fonts initialized using GDI 
      * corresponding to the faces indexing.
      */
-    public static int[] fontTypes = null;
+    public static int[] fontTypes;
 
     /**
      * List of font types of system fonts initialized using GDI.
      */
-    public static String[] faces =  null;
+    public static String[] faces;
 
     /**
      * The number of different fonts installed onto the system.
      */
-    public static int fontsCount = 0;
+    public static int fontsCount;
 
     /**
      * List of all families installed onto the system.
      */
-    public static String[] families= null;
+    public static String[] families;
 
     /**
      * Native method returns list of all families installed onto the system.
@@ -67,7 +65,7 @@ public class NativeFont {
     public static native String[] getFontFamiliesNames();
 
     /** 
-     * Adds font resourse from file to the system. Returns true if font was added
+     * Adds font resource from file to the system. Returns true if font was added
      * successfully, false otherwise.
      *  
      * @param absolutePath String that represent absolute path to the font resource. 
@@ -75,7 +73,7 @@ public class NativeFont {
     public static native boolean embedFontNative(String absolutePath);
 
     /** 
-     * Initiailze native GDI font object and return font handle, also sets font 
+     * Initialize native GDI font object and return font handle, also sets font 
      * type and unicode ranges to the font peer parameter.
      * 
      * @param winFont Windows font peer
@@ -265,7 +263,7 @@ public class NativeFont {
     
     /**
      * Draws string at the specified coordinates using GDI+ objects defined in graphics info.
-     * This method is applicable for drawing without affine transformes.
+     * This method is applicable for drawing without affine transforms.
      */
     public static native int gdiPlusDrawText(long graphicsInfo, String text, int length, long font,
             float xOffset, float yOffset);
@@ -332,7 +330,7 @@ public class NativeFont {
     /**
      * Initializes LCID table
      */
-    public static void initLCIDsTable(Hashtable ht){
+    public static void initLCIDsTable(Hashtable<String, Short> ht){
         int count = nativeInitLCIDsTable(null, null);
 
         if (count != 0){
@@ -438,10 +436,10 @@ public class NativeFont {
     }
 
     /**
-     * Returns font family name that corresposnds to the face name with 
+     * Returns font family name that corresponds to the face name with 
      * specified index.
      *   
-     * @param faceIndex index of the font face name wich family name 
+     * @param faceIndex index of the font face name which family name 
      * is to be returned 
      */
     public static String getFamily(int faceIndex){
@@ -449,10 +447,10 @@ public class NativeFont {
     }
 
     /**
-     * Returns font family style that corresposnds to the face name with 
+     * Returns font family style that corresponds to the face name with 
      * specified index.
      *   
-     * @param faceIndex index of the font face name wich style is to be returned 
+     * @param faceIndex index of the font face name which style is to be returned 
      */
     public static int getFontStyle(int faceIndex){
         return fontStyles[faceIndex];
@@ -527,9 +525,9 @@ public class NativeFont {
 
     static void loadLibrary() {
         if(!isLibLoaded) {
-            java.security.AccessController.doPrivileged(
-                  new java.security.PrivilegedAction() {
-                    public Object run() {
+            AccessController.doPrivileged(
+                  new PrivilegedAction<Void>() {
+                    public Void run() {
                         System.loadLibrary("fontlib");
                         return null;
                     }

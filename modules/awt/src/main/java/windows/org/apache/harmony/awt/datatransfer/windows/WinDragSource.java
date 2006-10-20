@@ -76,6 +76,7 @@ public class WinDragSource implements DragSourceContextPeer {
         final int srcActions = getWinActions(context.getSourceActions());
 
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 WinDataTransfer.startDrag(snapshot, 
                         WinDragSource.this, srcActions);

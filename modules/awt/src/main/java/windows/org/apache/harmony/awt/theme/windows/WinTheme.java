@@ -58,6 +58,7 @@ public class WinTheme extends Theme {
         return getThemeMap().isEnabled();
     }
 
+    @Override
     protected void drawButtonBackground(Graphics g, ButtonState s) {
 
         if (! s.isBackgroundSet()) {
@@ -67,6 +68,7 @@ public class WinTheme extends Theme {
         }
     }
 
+    @Override
     protected void drawCheckboxBackground(Graphics g, CheckboxState s,
             Rectangle focusRect) {
         if (! s.isBackgroundSet()) {
@@ -76,19 +78,23 @@ public class WinTheme extends Theme {
         }
     }
 
+    @Override
     public void drawScrollbar(Graphics g, ScrollbarState s) {
         WinScrollbar.draw(g, s, this);
     }
 
 
+    @Override
     protected void drawChoiceBackground(Graphics g, ChoiceState s) {
         WinChoice.drawBackground(g, s, this);
     }
 
+    @Override
     public void drawTextComponentBackground(Graphics g, TextComponentState s) {
         WinTextComponent.drawBackground(g, s, this);
     }
 
+    @Override
     public boolean showFileDialog(FileDialog fd) {
         WinFileDialog dlg = WinFileDialog.getInstance(fd);
         if (dlg == null) {
@@ -97,6 +103,7 @@ public class WinTheme extends Theme {
         return dlg.show();
     }
 
+    @Override
     public boolean hideFileDialog(FileDialog fd) {
         WinFileDialog dlg = WinFileDialog.getInstance(fd);
         if (dlg != null) {

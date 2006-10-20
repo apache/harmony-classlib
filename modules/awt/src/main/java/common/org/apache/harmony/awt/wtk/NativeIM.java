@@ -30,11 +30,9 @@ import java.awt.im.spi.InputMethodDescriptor;
 import java.lang.Character.Subset;
 import java.util.Locale;
 
-import org.apache.harmony.awt.ContextStorage;
-
 /**
  * A cross-platform interface for native input
- * method subsysem functionality.
+ * method sub-system functionality.
  */
 public abstract class NativeIM implements InputMethod, InputMethodDescriptor {
     protected InputMethodContext imc;

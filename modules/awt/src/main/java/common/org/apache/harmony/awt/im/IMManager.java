@@ -85,6 +85,7 @@ public class IMManager {
                 return locale;
             }
     
+            @Override
             public String paramString() {
                 return super.paramString() + ",desc=" + 
                 getDesc() + ",locale=" + locale;
@@ -104,6 +105,7 @@ public class IMManager {
                 return desc;
             }
     
+            @Override
             public String paramString() {
                 return super.paramString() + ",desc=" + desc;
             }
@@ -111,8 +113,8 @@ public class IMManager {
             private void addLocales() {
                 try {
                     Locale[] locs = desc.getAvailableLocales();
-                    for (int j = 0; j < locs.length; j++) {
-                        addMenuItem(locs[j]);
+                    for (Locale element : locs) {
+                        addMenuItem(element);
                     }
                 } catch (AWTException e) {
                     e.printStackTrace();
@@ -132,7 +134,6 @@ public class IMManager {
                         item.setState(item.getLocale().equals(imContext.getLocale()));
                         // TODO: also check input method descriptor
                     } catch (Exception e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -142,7 +143,7 @@ public class IMManager {
         InputMethodContext imContext;
         
         public IMSelection() {            
-            Iterator it = getIMDescriptors().iterator();
+            Iterator<InputMethodDescriptor> it = getIMDescriptors().iterator();
             // native IM is always first
             addNativeIM(it);
             while (it.hasNext()) {
@@ -150,13 +151,13 @@ public class IMManager {
             }
         }
 
-        private void addIM(Iterator it) {
-            InputMethodDescriptor desc = (InputMethodDescriptor) it.next();
+        private void addIM(Iterator<InputMethodDescriptor> it) {
+            InputMethodDescriptor desc = it.next();
             IMSubmenu subMenu = new IMSubmenu(desc);
             add(subMenu);
         }
     
-        private void addNativeIM(Iterator it) {
+        private void addNativeIM(Iterator<InputMethodDescriptor> it) {
             if (it.hasNext()) {
                 addIM(it);
             }
@@ -199,14 +200,14 @@ public class IMManager {
         }        
     }
     
-    private static List imd; // available IM descriptors
+    private static List<InputMethodDescriptor> imd; // available IM descriptors
     private static IMSelection imPopup; // IM selection popup menu
     //  only 1 composition window is visible even if there're several InputContexts
     private static Window curCompositionWindow;
     // last InputMethodContext which had an active IM
     private static InputMethodContext lastActiveIMC;
     
-    static List getIMDescriptors() {
+    static List<InputMethodDescriptor> getIMDescriptors() {
         if (imd == null) {
             imd = loadIMDescriptors();
         }
@@ -220,20 +221,18 @@ public class IMManager {
      * Service.providers(InputMethodDescriptor.class)
      * @return list of input method descriptors
      */
-    private static List loadIMDescriptors() {
+    private static List<InputMethodDescriptor> loadIMDescriptors() {
         String nm = SERVICES + InputMethodDescriptor.class.getName();
-        Enumeration en;
-        LinkedList imdList = new LinkedList();
+        Enumeration<URL> en;
+        LinkedList<InputMethodDescriptor> imdList = new LinkedList<InputMethodDescriptor>();
         // first add native IM descriptor(is always present)
-        NativeIM nativeIM = ContextStorage.getNativeIM(); 
-        if (nativeIM instanceof InputMethodDescriptor) {
-            imdList.add(nativeIM);
-        }
+        NativeIM nativeIM = ContextStorage.getNativeIM();
+        imdList.add(nativeIM);
         try {
             en = ClassLoader.getSystemResources(nm);
             ClassLoader cl = ClassLoader.getSystemClassLoader();
             while (en.hasMoreElements()) {
-                URL url = (URL) en.nextElement();
+                URL url = en.nextElement();
                 InputStreamReader isr = new InputStreamReader(url.openStream(),
                                                               "UTF-8");
                 BufferedReader br = new BufferedReader(isr);
@@ -246,7 +245,7 @@ public class IMManager {
                         str = str.substring(0, comPos);
                     }
                     if (str.length() > 0) {
-                        imdList.add(cl.loadClass(str).newInstance());
+                        imdList.add((InputMethodDescriptor)cl.loadClass(str).newInstance());
                     }
                     str = br.readLine();
                 }
@@ -259,7 +258,7 @@ public class IMManager {
     }
     
     private static void showIMPopup(InputMethodContext imc, Window parent) {
-        List descriptors = getIMDescriptors();
+        List<InputMethodDescriptor> descriptors = getIMDescriptors();
         if ((descriptors == null) || descriptors.isEmpty()) {
             // show menu only if some non-native IMs are present
             return;
@@ -301,6 +300,7 @@ public class IMManager {
         }
     }
     
+    @SuppressWarnings("deprecation")
     static void showCompositionWindow(Window w) {
         
         if (curCompositionWindow != null) {

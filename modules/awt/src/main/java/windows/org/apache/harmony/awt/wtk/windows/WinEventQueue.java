@@ -47,9 +47,9 @@ public class WinEventQueue extends NativeEventQueue {
     static final ObjectAccessor objAccessor = AccessorFactory.getObjectAccessor();
 
     /**
-     * Invisible auxlitary window for service messages
+     * Invisible auxiliary window for service messages
      */
-    private long javaWindow;
+    private final long javaWindow;
     /**
      * Theme handles currently open
      */
@@ -79,7 +79,7 @@ public class WinEventQueue extends NativeEventQueue {
      * Keycodes and characters stored 
      * until WM_KEYUP or WM_SYSKEYUP message is received 
      */
-    private final HashMap keyCodeToChar = new HashMap();
+    private final HashMap<Integer, Character> keyCodeToChar = new HashMap<Integer, Character>();
 
     final WinWindowFactory factory;
 
@@ -92,10 +92,10 @@ public class WinEventQueue extends NativeEventQueue {
     public static final int WM_PERFORM_TASK = WindowsDefs.WM_USER + 1;
     public static final int WM_PERFORM_LATER = WindowsDefs.WM_USER + 2;
 
-    private LinkedList preprocessors = new LinkedList();
+    private final LinkedList<Preprocessor> preprocessors = new LinkedList<Preprocessor>();
 
     /**
-     * Initialize message pump, create auxlitary window for service messages 
+     * Initialize message pump, create auxiliary window for service messages 
      * @param systemProperties
      */
     public WinEventQueue(WinSystemProperties systemProperties) {
@@ -116,6 +116,7 @@ public class WinEventQueue extends NativeEventQueue {
      * may occur while waiting
      * @return false when WM_QUIT received
      */
+    @Override
     public boolean waitEvent() {
         win32.GetMessageW(lastMsg, 0, 0, 0);
 
@@ -123,9 +124,10 @@ public class WinEventQueue extends NativeEventQueue {
     }
 
     /**
-     * Post the service message to the auxlitary window to ensure
+     * Post the service message to the auxiliary window to ensure
      * the method waitEvent() will leave the waiting state
      */
+    @Override
     public void awake() {
         if (win32.GetCurrentThreadId() != dispatchThreadID) {
             win32.PostThreadMessageW(dispatchThreadID, WinEvent.WM_AWAKE, 0, 0);
@@ -217,7 +219,7 @@ public class WinEventQueue extends NativeEventQueue {
 
     private boolean handleEvent(long hwnd, int msg, long wParam, long lParam) {
         if (msg == WindowsDefs.WM_KEYUP || msg == WindowsDefs.WM_SYSKEYUP) {
-            Character ch = (Character)keyCodeToChar.remove(new Integer((int)wParam));
+            Character ch = keyCodeToChar.remove(new Integer((int)wParam));
             if (ch != null) {
                 lastChar = ch.charValue();
             } else {
@@ -266,8 +268,8 @@ public class WinEventQueue extends NativeEventQueue {
             objAccessor.releaseGlobalReference(lParam);
             return true;
         }
-        for (Iterator i = preprocessors.iterator(); i.hasNext(); ) {
-            if (((Preprocessor) i.next()).preprocess(hwnd, msg, wParam, lParam, result)) {
+        for (Iterator<Preprocessor> i = preprocessors.iterator(); i.hasNext(); ) {
+            if (i.next().preprocess(hwnd, msg, wParam, lParam, result)) {
                 return true;
             }
         }
@@ -421,6 +423,7 @@ public class WinEventQueue extends NativeEventQueue {
         return true;
     }
 
+    @Override
     public long getJavaWindow() {
         return javaWindow;
     }
@@ -438,7 +441,7 @@ public class WinEventQueue extends NativeEventQueue {
      * The Windows theme handles currently open, and their names
      */
     public class ThemeMap {
-        private final HashMap themes = new HashMap();
+        private final HashMap<String, Long> themes = new HashMap<String, Long>();
         private boolean enabled;
 
         ThemeMap() {
@@ -446,12 +449,12 @@ public class WinEventQueue extends NativeEventQueue {
         }
 
         public long get(String name) {
-            Long obj = (Long)themes.get(name);
+            Long obj = themes.get(name);
             if (obj != null) {
                 return obj.longValue();
             }
             long hTheme = open(name);
-            themes.put(new Long(hTheme), name);
+            themes.put(name, new Long(hTheme));
             return hTheme;
         }
 
@@ -469,14 +472,14 @@ public class WinEventQueue extends NativeEventQueue {
         void refresh() {
             enabled = (win32.IsThemeActive() != 0);
 
-            for (Iterator it = themes.entrySet().iterator(); it.hasNext();) {
-                Map.Entry e = (Map.Entry)it.next();
-                long hTheme = ((Long)e.getValue()).longValue();
+            for (Iterator<Map.Entry<String, Long>> it = themes.entrySet().iterator(); it.hasNext();) {
+                Map.Entry<String, Long> e = it.next();
+                long hTheme = e.getValue().longValue();
                 if (hTheme != 0) {
                     win32.CloseThemeData(hTheme);
                 }
                 if (enabled) {
-                    hTheme = open((String)e.getKey());
+                    hTheme = open(e.getKey());
                 } else {
                     hTheme = 0;
                 }
@@ -485,6 +488,7 @@ public class WinEventQueue extends NativeEventQueue {
         }
     }
 
+    @Override
     public void dispatchEvent() {
         if (lastMsg.get_hwnd() == 0) {
             processThreadMessage(lastMsg);
@@ -494,12 +498,14 @@ public class WinEventQueue extends NativeEventQueue {
         win32.DispatchMessageW(lastMsg);
     }
 
+    @Override
     public void performTask(Task task) {
         long ref = objAccessor.getGlobalReference(task);
         win32.SendMessageW(javaWindow, WM_PERFORM_TASK, 0, ref);
         objAccessor.releaseGlobalReference(ref);
     }
 
+    @Override
     public void performLater(Task task) {
         long ref = objAccessor.getGlobalReference(task);
         win32.PostMessageW(javaWindow, WM_PERFORM_LATER, 0, ref);

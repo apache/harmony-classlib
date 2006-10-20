@@ -77,15 +77,14 @@ public class WinCheckbox extends WinStyle {
                 return WindowsConsts.CBS_CHECKEDDISABLED;
             }
             return WindowsConsts.CBS_CHECKEDNORMAL;
-        } else {
-            if (s.isPressed()) {
-                return WindowsConsts.CBS_UNCHECKEDPRESSED;
-            }
-            if (!s.isEnabled()) {
-                return WindowsConsts.CBS_UNCHECKEDDISABLED;
-            }
-            return WindowsConsts.CBS_UNCHECKEDNORMAL;
         }
+        if (s.isPressed()) {
+            return WindowsConsts.CBS_UNCHECKEDPRESSED;
+        }
+        if (!s.isEnabled()) {
+            return WindowsConsts.CBS_UNCHECKEDDISABLED;
+        }
+        return WindowsConsts.CBS_UNCHECKEDNORMAL;
     }
 
     private static int getClassicState(CheckboxState s) {

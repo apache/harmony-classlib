@@ -250,6 +250,7 @@ public class WinRobot implements NativeRobot {
         return bmi;
     }
 
+    @Override
     protected void finalize() throws Throwable {
         super.finalize();
     }

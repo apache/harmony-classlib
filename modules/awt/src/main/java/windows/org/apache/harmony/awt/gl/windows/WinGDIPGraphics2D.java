@@ -111,8 +111,9 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
         dstSurf = new GDISurface(gi);
         blitter = GDIBlitter.getInstance();
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("WinGDIPGraphics2D("+nw+", "+tx+", "+ty+", "+width+", "+height+")");
+        }
         setTransform(getTransform());
 
     }
@@ -125,10 +126,11 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         super();
         size = new Dimension(width, height);
         this.img = img;
-        if (ogi != 0)
+        if (ogi != 0) {
             this.gi = copyImageInfo(ogi);
-        else
+        } else {
             this.gi = copyImageInfo(img.gi);
+        }
         setTransformedClip(this.clip);
         dstSurf = img.getImageSurface();
         blitter = GDIBlitter.getInstance();
@@ -136,22 +138,27 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         setTransform(getTransform());
     }
 
+    @Override
     public void addRenderingHints(Map<?,?> hints) {
         super.addRenderingHints(hints);
         Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (value == RenderingHints.VALUE_ANTIALIAS_ON) 
+        if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
             NativeFont.setAntialiasing(gi,true);
-        else
+        } else {
             NativeFont.setAntialiasing(gi,false);
+        }
     }
     
+    @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
         copyArea(gi, x, y, width, height, dx, dy);
     }
 
+    @Override
     public Graphics create() {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("WinGDIPGraphics2D.create()");
+        }
 
         WinGDIPGraphics2D res = null;
         if (img == null) {
@@ -163,6 +170,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         return res;
     }
 
+    @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         if (config == null) {
             if (img == null) {
@@ -175,11 +183,13 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         return config;
     }
 
+    @Override
     protected void fillMultiRectAreaPaint(MultiRectArea mra) {
-        if (nativeBrush)
+        if (nativeBrush) {
             fillRects(gi, mra.rect, mra.rect[0]-1);
-        else
+        } else {
             super.fillMultiRectAreaPaint(mra);
+        }
     }
 
 
@@ -191,9 +201,11 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void setColor(Color color) {
-        if (color == null)
+        if (color == null) {
             return;
+        }
         super.setColor(color);
         setSolidBrush(gi, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         nativeBrush = true;
@@ -203,6 +215,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     //REMARK: It seems that transfrom affects paints too
     //REMARK: Think how to implement this
+    @Override
     public void setPaint(Paint paint) {
         if (paint instanceof Color) {
             setColor((Color)paint);
@@ -211,8 +224,9 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
             nativeBrush = false;
             if (paint instanceof GradientPaint) {
                 GradientPaint p = (GradientPaint)paint;
-                if (!p.isCyclic())
+                if (!p.isCyclic()) {
                     return;
+                }
                 Color c1 = p.getColor1();
                 Color c2 = p.getColor2();
                 Point2D p1 = transform.transform(p.getPoint1(), null);
@@ -225,22 +239,28 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void dispose() {
-        if (gi == 0)
+        if (gi == 0) {
             return;
-        if (dstSurf instanceof GDISurface)
+        }
+        if (dstSurf instanceof GDISurface) {
             dstSurf.dispose();
+        }
         disposeGraphicsInfo(gi);
         gi = 0;
         super.dispose();
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("WinGDIPGraphics2D.dispose()");
+        }
     }
 
+    @Override
     public void drawGlyphVector(GlyphVector gv, float x, float y) {
         jtr.drawGlyphVector(this, gv, x, y);
     }
 
+    @Override
     public void drawString(String str, float x, float y) {
 //        XXX: GDITextRenderer provide faster text drawing,
 //             but there still conflict between GDI and GDI+ hdc usage.
@@ -270,6 +290,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         jtr.drawString(this, str, x, y);
     }
 
+    @Override
     public void setStroke(Stroke stroke) {
         super.setStroke(stroke);
         nativePen = nativeBrush && stroke instanceof BasicStroke;
@@ -284,6 +305,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
                 dash, (dash != null)?dash.length:0, bs.getDashPhase());
     }
 
+    @Override
     public void draw(Shape s) {
         if (!nativePen) {
             super.draw(s);
@@ -295,6 +317,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         drawShape(gi, pathArray, len, pi.getWindingRule());
     }
 
+    @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
         if (!nativePen) {
             super.drawLine(x1, y1, x2, y2);
@@ -304,6 +327,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         drawLine(gi, x1, y1, x2, y2);
     }
 
+    @Override
     public void drawRect(int x, int y, int width, int height) {
         if (!nativePen) {
             super.drawRect(x, y, width, height);
@@ -313,6 +337,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         drawRect(gi, x, y, width, height);
     }
 
+    @Override
     public void fill(Shape s) {
         if (!nativeBrush) {
             super.fill(s);
@@ -324,6 +349,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         fillShape(gi, pathArray, len, pi.getWindingRule());
     }
 
+    @Override
     public void fillRect(int x, int y, int width, int height) {
         if (!nativeBrush) {
             super.fillRect(x, y, width, height);
@@ -338,14 +364,17 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
      * 
      * @param clip Transformed clip to set
      */
+    @Override
     protected void setTransformedClip(MultiRectArea clip) {
         super.setTransformedClip(clip);
-        if (gi == 0)
+        if (gi == 0) {
             return;
-        if (clip == null)
+        }
+        if (clip == null) {
             resetClip(gi);
-        else
+        } else {
             setClip(gi, clip.rect, clip.rect[0]-1);
+        }
     }
 
     /***************************************************************************
@@ -354,50 +383,59 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     *
     ***************************************************************************/
 
+    @Override
     public void setTransform(AffineTransform transform) {
         super.setTransform(transform);
-        if (gi == 0)
+        if (gi == 0) {
             return;
+        }
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void rotate(double theta) {
         super.rotate(theta);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void rotate(double theta, double x, double y) {
         super.rotate(theta, x, y);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void scale(double sx, double sy) {
         super.scale(sx, sy);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void shear(double shx, double shy) {
         super.shear(shx, shy);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void transform(AffineTransform at) {
         super.transform(at);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void translate(double tx, double ty) {
         super.translate(tx, ty);
 
         setNativeTransform(gi, matrix);
     }
 
+    @Override
     public void translate(int tx, int ty) {
         super.translate(tx, ty);
 
@@ -414,8 +452,9 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
      * Returns handle to underlying device context
      */
     public long getDC() {
-        if (hdc == 0)
+        if (hdc == 0) {
             hdc = getDC(gi);
+        }
         return hdc;
     }
 
@@ -511,22 +550,26 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     // Fill native primitives
     private native void fillRect(long gi, int x, int y, int width, int height);
 
+    @Override
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         super.setRenderingHint(key,value);
         Object val = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (val == RenderingHints.VALUE_ANTIALIAS_ON) 
+        if (val == RenderingHints.VALUE_ANTIALIAS_ON) {
             NativeFont.setAntialiasing(gi,true);
-        else
+        } else {
             NativeFont.setAntialiasing(gi,false);
+        }
     }
 
+    @Override
     public void setRenderingHints(Map<?,?> hints) {
         super.setRenderingHints(hints);
         Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (value == RenderingHints.VALUE_ANTIALIAS_ON) 
+        if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
             NativeFont.setAntialiasing(gi,true);
-        else
+        } else {
             NativeFont.setAntialiasing(gi,false);
+        }
     }
 
 
@@ -548,6 +591,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
      * We need to shutdown GDI+ before exit.
      */
     private static class GDIPShutdown extends Thread {
+        @Override
         public void run() {
             WinGDIPGraphics2D.gdiPlusShutdown(WinGDIPGraphics2D.gdipToken);
         }

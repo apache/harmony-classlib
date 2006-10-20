@@ -25,10 +25,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.peer.FontPeer;
-
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.font.FontManager;
-import org.apache.harmony.awt.gl.font.FontProperty;
 
 
 /**
@@ -48,6 +46,7 @@ public interface GraphicsFactory {
      * @return New Graphics2D instance for specified native window
      * @deprecated
      */
+    @Deprecated
     Graphics2D getGraphics2D(NativeWindow win, int translateX, int translateY, MultiRectArea clip);
 
     /**

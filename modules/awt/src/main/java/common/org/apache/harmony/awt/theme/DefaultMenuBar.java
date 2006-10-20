@@ -116,8 +116,9 @@ public class DefaultMenuBar {
         for (int i=0; i<s.getItemCount(); i++) {
             MenuItemState is = s.getItem(i);
             Rectangle bounds = is.getItemBounds();
-            if (bounds.contains(p))
+            if (bounds.contains(p)) {
                 return i;
+            }
         }
 
         return -1;

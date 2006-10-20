@@ -79,7 +79,6 @@ public class DefaultButton extends DefaultStyle {
     }
 
     public static void drawText(Graphics g, ButtonState s) {
-        Rectangle rect = s.getBounds();
         String text = s.getText();
         boolean pressed = s.isPressed();
         Color foreColor = s.isTextColorSet() ?

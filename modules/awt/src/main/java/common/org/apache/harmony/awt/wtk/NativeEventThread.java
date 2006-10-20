@@ -40,6 +40,7 @@ public class NativeEventThread extends Thread {
         setDaemon(true);
     }
 
+    @Override
     public void run() {
         synchronized (this) {
             try {

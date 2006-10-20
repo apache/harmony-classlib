@@ -46,6 +46,7 @@ public class WinCursor implements NativeCursor {
      */
     public void setCursor(long winID) {
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 WinEventQueue.win32.SetCursor(hCursor);
             }

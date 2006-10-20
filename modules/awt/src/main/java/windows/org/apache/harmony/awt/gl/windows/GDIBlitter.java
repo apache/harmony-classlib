@@ -57,8 +57,8 @@ public class GDIBlitter implements Blitter {
         }else{
             double scaleX = xform.getScaleX();
             double scaleY = xform.getScaleY();
-            double scaledX = (double)dstX / scaleX;
-            double scaledY = (double)dstY / scaleY;
+            double scaledX = dstX / scaleX;
+            double scaledY = dstY / scaleY;
             AffineTransform at = new AffineTransform();
             at.setToTranslation(scaledX, scaledY);
             xform.concatenate(at);
@@ -97,7 +97,9 @@ public class GDIBlitter implements Blitter {
             }
 
             int numVertex = clipRects[0] - 1;
-            if(numVertex == 0) return;
+            if(numVertex == 0) {
+                return;
+            }
 
             if(comp instanceof AlphaComposite){
                 AlphaComposite ac = (AlphaComposite) comp;

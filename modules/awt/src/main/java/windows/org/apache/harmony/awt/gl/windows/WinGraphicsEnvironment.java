@@ -42,19 +42,22 @@ public class WinGraphicsEnvironment extends CommonGraphicsEnvironment {
     public WinGraphicsEnvironment(WindowFactory wf) {
     }
 
+    @Override
     public GraphicsDevice getDefaultScreenDevice() throws HeadlessException {
         if (defaultDevice == null) {
             WinGraphicsDevice []dvcs = (WinGraphicsDevice [])getScreenDevices();
-            for (int i = 0; i < dvcs.length; i++)
-                if (dvcs[i].isDefaultDevice()) {
-                    defaultDevice = dvcs[i];
+            for (WinGraphicsDevice element : dvcs) {
+                if (element.isDefaultDevice()) {
+                    defaultDevice = element;
                     break;
                 }
+            }
         }
 
         return defaultDevice;
     }
 
+    @Override
     public GraphicsDevice[] getScreenDevices() throws HeadlessException {
         if (devices == null) {
             devices = enumerateDisplayDevices();

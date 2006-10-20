@@ -28,7 +28,7 @@ package org.apache.harmony.awt.gl.font;
 public class WinFontProperty extends FontProperty {
     
     /** charset name that is applicable for windows font.properties */ 
-    String charset = null;
+    String charset;
 
     public WinFontProperty(String _fileName, String _name, String _charset, int _style, int[] exclusionRange, String _encoding){
         this.name = _name;
@@ -39,18 +39,19 @@ public class WinFontProperty extends FontProperty {
         this.encoding = _encoding;
     }
 
+    @Override
     public String getEncoding(){
         return this.encoding;
     }
+    @Override
     public String toString(){
-        return new String(this.getClass().getName() +
+        return this.getClass().getName() +
                 "[name=" + this.name +
                 ",fileName="+ this.fileName +
                 ",style=" + this.style +
                 ",Charset=" + this.charset +
                 ",exclRange=" + this.exclRange +
-                ",encoding=" + this.encoding + "]");
-
+                ",encoding=" + this.encoding + "]";
     }
 
 }

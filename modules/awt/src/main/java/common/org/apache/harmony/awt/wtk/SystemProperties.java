@@ -21,6 +21,7 @@
 package org.apache.harmony.awt.wtk;
 
 import java.awt.Font;
+import java.awt.font.TextAttribute;
 import java.awt.im.InputMethodHighlight;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public interface SystemProperties {
     /**
      * Fill the given Map with system properties
      */
-    void init(Map desktopProperties);
+    void init(Map<String, ?> desktopProperties);
 
     /**
      * Fills the given map with system-dependent visual text
@@ -54,5 +55,5 @@ public interface SystemProperties {
      * of the given input method highlight
      * @see java.awt.Toolkit.mapInputMethodHighlight()
      */
-    void mapInputMethodHighlight(InputMethodHighlight highlight, Map map);
+    void mapInputMethodHighlight(InputMethodHighlight highlight, Map<TextAttribute, ?> map);
 }

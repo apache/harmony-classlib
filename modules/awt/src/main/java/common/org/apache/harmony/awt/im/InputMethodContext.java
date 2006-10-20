@@ -59,9 +59,9 @@ public class InputMethodContext extends InputContext implements
     private InputMethod inputMethod; // current IM
     private Component client; // current "active" client component
     private CompositionWindow composeWindow; // composition Window    
-    private Map imInstances; // Map<InputMethodDescriptor, InputMethod>
-    private Map localeIM; // Map<Locale, InputMethod> last user-selected IM for locale
-    private Set notifyIM; // set of IMs to notify of client window bounds changes
+    private final Map<InputMethodDescriptor, InputMethod> imInstances; // Map<InputMethodDescriptor, InputMethod>
+    private final Map<Locale, InputMethod> localeIM; // Map<Locale, InputMethod> last user-selected IM for locale
+    private final Set<InputMethod> notifyIM; // set of IMs to notify of client window bounds changes
     /**
      * a flag indicating that IM should be notified of client window
      * position/visibility changes as soon as it is activated(new client
@@ -69,19 +69,20 @@ public class InputMethodContext extends InputContext implements
      */    
     private boolean pendingClientNotify;
     private Component nextComp; // component to gain focus after endComposition()
-    private Set imWindows; // set of all IM windows created by this instance
+    private final Set<Window> imWindows; // set of all IM windows created by this instance
     private final NativeIM nativeIM;
     
 
     public InputMethodContext() {
-        notifyIM = new HashSet();
-        imWindows = new HashSet();
-        imInstances = new HashMap();
-        localeIM = new HashMap();
+        notifyIM = new HashSet<InputMethod>();
+        imWindows = new HashSet<Window>();
+        imInstances = new HashMap<InputMethodDescriptor, InputMethod>();
+        localeIM = new HashMap<Locale, InputMethod>();
         selectInputMethod(Locale.US); // not default?
         nativeIM = (NativeIM) inputMethod;
     }
 
+    @Override
     public void dispatchEvent(AWTEvent event) {
         int id = event.getID(); 
         if ((id >= FocusEvent.FOCUS_FIRST) && (id <=FocusEvent.FOCUS_LAST)) {
@@ -165,6 +166,7 @@ public class InputMethodContext extends InputContext implements
         IMManager.setLastActiveIMC(this);
     }
 
+    @SuppressWarnings("deprecation")
     private void hideWindows() {
         if (inputMethod != null) {
             inputMethod.hideWindows();
@@ -219,6 +221,7 @@ public class InputMethodContext extends InputContext implements
         return getIMRequests();
     }
     
+    @Override
     public void dispose() {
         if (inputMethod != null) {
             closeIM(inputMethod);
@@ -228,6 +231,7 @@ public class InputMethodContext extends InputContext implements
         super.dispose();
     }
 
+    @Override
     public void endComposition() {
         if (inputMethod != null) {
             inputMethod.endComposition();
@@ -235,6 +239,7 @@ public class InputMethodContext extends InputContext implements
         super.endComposition();
     }
 
+    @Override
     public Object getInputMethodControlObject() {
         if (inputMethod != null) {
             return inputMethod.getControlObject();
@@ -242,6 +247,7 @@ public class InputMethodContext extends InputContext implements
         return super.getInputMethodControlObject();
     }
 
+    @Override
     public Locale getLocale() {
         if (inputMethod != null) {
             return inputMethod.getLocale();
@@ -249,6 +255,7 @@ public class InputMethodContext extends InputContext implements
         return super.getLocale();
     }
 
+    @Override
     public boolean isCompositionEnabled() {
         if (inputMethod != null) {
             return inputMethod.isCompositionEnabled();
@@ -256,6 +263,7 @@ public class InputMethodContext extends InputContext implements
         return super.isCompositionEnabled();
     }
 
+    @Override
     public void reconvert() {
         if (inputMethod != null) {
             inputMethod.reconvert();
@@ -263,6 +271,7 @@ public class InputMethodContext extends InputContext implements
         super.reconvert();
     }
 
+    @Override
     public void removeNotify(Component client) {
         if ((inputMethod != null) && (client == this.client)) {
             inputMethod.removeNotify();
@@ -275,29 +284,29 @@ public class InputMethodContext extends InputContext implements
         super.removeNotify(client);
     }
 
+    @Override
     public boolean selectInputMethod(Locale locale) {        
         
         if ((inputMethod != null) && inputMethod.setLocale(locale)) {
             return true;
-        } else {
-            // first
-            // take last user-selected IM for locale            
-            InputMethod newIM = (InputMethod) localeIM.get(locale);
-            
-            // if not found search through IM descriptors
-            // and take already created instance if exists
-            // or create, store new IM instance in descriptor->instance map
-            if (newIM == null) {
-                try {
-                    newIM = getIMInstance(IMManager.getIMDescriptors().iterator(),
-                                          locale);
-                } catch (Exception e) {
-                    // ignore exceptions - just return false
-                }
-            }
-            
-            return switchToIM(locale, newIM);
         }
+        // first
+        // take last user-selected IM for locale            
+        InputMethod newIM = localeIM.get(locale);
+        
+        // if not found search through IM descriptors
+        // and take already created instance if exists
+        // or create, store new IM instance in descriptor->instance map
+        if (newIM == null) {
+            try {
+                newIM = getIMInstance(IMManager.getIMDescriptors().iterator(),
+                                      locale);
+            } catch (Exception e) {
+                // ignore exceptions - just return false
+            }
+        }
+        
+        return switchToIM(locale, newIM);
     }
 
     private boolean switchToIM(Locale locale, InputMethod newIM) {
@@ -332,13 +341,13 @@ public class InputMethodContext extends InputContext implements
      * @return input method instance
      * @throws Exception
      */
-    private InputMethod getIMInstance(Iterator descriptors,
+    private InputMethod getIMInstance(Iterator<InputMethodDescriptor> descriptors,
                                       Locale locale) throws Exception {
         while (descriptors.hasNext()) {
-            InputMethodDescriptor desc = (InputMethodDescriptor) descriptors.next();
+            InputMethodDescriptor desc = descriptors.next();
             Locale[] locs = desc.getAvailableLocales();
-            for (int j = 0; j < locs.length; j++) {
-                if (locale.equals(locs[j])) {
+            for (Locale element : locs) {
+                if (locale.equals(element)) {
                     return getIMInstance(desc);
                 }
             }
@@ -347,7 +356,7 @@ public class InputMethodContext extends InputContext implements
     }
 
     private InputMethod getIMInstance(InputMethodDescriptor imd) throws Exception {
-        InputMethod im = (InputMethod) imInstances.get(imd);
+        InputMethod im = imInstances.get(imd);
         if (im == null) {
             im = imd.createInputMethod();
             im.setInputMethodContext(this);
@@ -385,6 +394,7 @@ public class InputMethodContext extends InputContext implements
         
     }
     
+    @Override
     public void setCharacterSubsets(Subset[] subsets) {
         if (inputMethod != null) {
             inputMethod.setCharacterSubsets(subsets);
@@ -392,6 +402,7 @@ public class InputMethodContext extends InputContext implements
         super.setCharacterSubsets(subsets);
     }
 
+    @Override
     public void setCompositionEnabled(boolean enable) {
         if (inputMethod != null) {
             inputMethod.setCompositionEnabled(enable);
@@ -413,6 +424,7 @@ public class InputMethodContext extends InputContext implements
         return w;
     }
 
+    @SuppressWarnings("deprecation")
     public void dispatchInputMethodEvent(int id,
                                          AttributedCharacterIterator text,
                                          int committedCharacterCount,

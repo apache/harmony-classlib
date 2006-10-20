@@ -26,7 +26,7 @@ package org.apache.harmony.awt.nativebridge;
  */
 public class Int16Pointer extends VoidPointer {
 
-    private static int INT16_SIZE_FACTOR = 2;
+    private static final int INT16_SIZE_FACTOR = 2;
 
     //-- TODO: char array support is unimplemented yet
     private char[] array;
@@ -63,6 +63,7 @@ public class Int16Pointer extends VoidPointer {
      * returns the number of elements in array referenced by this object.
      * If size is unknown returns -1.
      */
+    @Override
     public int size() {
         return byteBase.size() / INT16_SIZE_FACTOR;
     }
@@ -176,6 +177,7 @@ public class Int16Pointer extends VoidPointer {
     /**
      * @see VoidPointer#isDirect()
      */
+    @Override
     public boolean isDirect() {
         return byteBase != null ? byteBase.isDirect() : false;
     }
@@ -184,18 +186,16 @@ public class Int16Pointer extends VoidPointer {
     public String getString(){
         if(byteBase != null) {
             return byteBase.getString();
-        } else {
-            throw new UnsupportedOperationException("not inmplemented");
         }
+        throw new UnsupportedOperationException("not implemented");
     }
 
     /** convert UTF16 bytes to String */
     public String getString(long strlen){
         if(byteBase != null) {
             return byteBase.getString(strlen);
-        } else {
-            throw new UnsupportedOperationException("not inmplemented");
         }
+        throw new UnsupportedOperationException("not implemented");
     }
 
     /**

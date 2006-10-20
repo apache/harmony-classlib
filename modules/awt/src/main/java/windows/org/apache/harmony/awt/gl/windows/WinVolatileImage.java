@@ -51,8 +51,9 @@ public class WinVolatileImage extends GLVolatileImage {
     *
     ***************************************************************************/
     public WinVolatileImage(NativeWindow nw, int width, int height) {
-        if (width <= 0 || height <= 0)
+        if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Illegal size of volatile image.");
+        }
         hwnd = nw.getId();
         this.width = width;
         this.height = height;
@@ -61,8 +62,9 @@ public class WinVolatileImage extends GLVolatileImage {
     }
 
     public WinVolatileImage(WinGraphicsConfiguration gc, int width, int height) {
-        if (width <= 0 || height <= 0)
+        if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Illegal size of volatile image.");
+        }
         
         hwnd = 0;
         this.gc = gc;
@@ -72,10 +74,12 @@ public class WinVolatileImage extends GLVolatileImage {
         surface = new BitmapSurface(gi , width, height);
     }
 
+    @Override
     public boolean contentsLost() {
         return gi == 0;
     }
 
+    @Override
     public Graphics2D createGraphics() {
         if (gi == 0) {
             if (hwnd != 0 && gc == null) {
@@ -87,51 +91,63 @@ public class WinVolatileImage extends GLVolatileImage {
         return new WinGDIPGraphics2D(this, width, height);
     }
 
+    @Override
     public ImageCapabilities getCapabilities() {
         return new ImageCapabilities(false);
     }
 
+    @Override
     public int getHeight() {
         return height;
     }
 
+    @Override
     public BufferedImage getSnapshot() {
         return null;
     }
 
+    @Override
     public int getWidth() {
         return width;
     }
 
+    @Override
     public int validate(GraphicsConfiguration gc) {
-        if (gi != 0)
+        if (gi != 0) {
             return IMAGE_OK;
+        }
         
         gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);        
         return IMAGE_RESTORED;
     }
 
+    @Override
     public Object getProperty(String name, ImageObserver observer) {
         return UndefinedProperty;
     }
 
+    @Override
     public int getWidth(ImageObserver observer) {
         return width;
     }
 
+    @Override
     public int getHeight(ImageObserver observer) {
         return height;
     }
 
+    @Override
     protected void finalize() throws Throwable {
         flush();
         super.finalize();
     }
 
+    @Override
     public Surface getImageSurface(){
         return surface;
     }
 
+    @Override
     public void flush() {
         if (gi != 0) {
             WinGDIPGraphics2D.disposeGraphicsInfo(gi);

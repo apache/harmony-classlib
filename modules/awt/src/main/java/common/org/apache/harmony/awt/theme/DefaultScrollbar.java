@@ -44,9 +44,9 @@ public class DefaultScrollbar extends DefaultStyle {
     static final int SOUTH = 5;
     static final int WEST = 7;
 
-    private static Color trackHighlightColor = SystemColor.controlDkShadow;;
-    private static Color arrowColor = Color.BLACK;
-    private static Color focusColor = SystemColor.controlDkShadow;
+    private static final Color trackHighlightColor = SystemColor.controlDkShadow;;
+    private static final Color arrowColor = Color.BLACK;
+    private static final Color focusColor = SystemColor.controlDkShadow;
 
     public static void draw(Graphics g, ScrollbarState s) {
         Dimension size = s.getSize();

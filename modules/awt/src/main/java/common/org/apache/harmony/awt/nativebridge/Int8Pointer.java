@@ -51,6 +51,7 @@ public class Int8Pointer extends VoidPointer {
         super(base);
     }
 
+    @Override
     public int size() {
         return byteBase.size();
     }

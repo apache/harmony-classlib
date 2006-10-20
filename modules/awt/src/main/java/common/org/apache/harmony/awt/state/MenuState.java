@@ -20,7 +20,6 @@
  */
 package org.apache.harmony.awt.state;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;

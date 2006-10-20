@@ -45,9 +45,9 @@ public class WinIM extends NativeIM {
     
     private static final NativeBridge nb = NativeBridge.getInstance();
     private static final Win32 win32 = Win32.getInstance();
-    private static WinWindowFactory wwf = (WinWindowFactory) ContextStorage.getWindowFactory();
-    private static HashMap hkl2Locale = new HashMap();;
-    private static HashMap locale2HKL = new HashMap();
+    private static final WinWindowFactory wwf = (WinWindowFactory) ContextStorage.getWindowFactory();
+    private static final HashMap<Long, Locale> hkl2Locale = new HashMap<Long, Locale>();;
+    private static final HashMap<Locale, Long> locale2HKL = new HashMap<Locale, Long>();
     private Locale curLocale; // last locale set by user
     private long hIMC; // private native input context handle
     private long defaultIMC;
@@ -55,6 +55,7 @@ public class WinIM extends NativeIM {
     
     WinIM() {
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 hIMC = win32.ImmCreateContext();
             }
@@ -62,6 +63,7 @@ public class WinIM extends NativeIM {
         wwf.eventQueue.performTask(task);
     }
 
+    @Override
     public Locale[] getAvailableLocales() throws AWTException {
         int nBuff = win32.GetKeyboardLayoutList(0, null);
         PointerPointer buffPtr = nb.createPointerPointer(nBuff, false);
@@ -71,15 +73,17 @@ public class WinIM extends NativeIM {
             hkl2Locale(hkl);
         }
         
-        return (Locale[]) locale2HKL.keySet().toArray(new Locale[0]);
+        return locale2HKL.keySet().toArray(new Locale[0]);
     }
     
+    @Override
     public boolean setLocale(final Locale locale) {
         if (getLocale().equals(locale)) {
             curLocale = locale;
             return true;
         }
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 long hkl = locale2HKL(locale);
                 int flags = 0;
@@ -95,9 +99,11 @@ public class WinIM extends NativeIM {
         return result;
     }
     
+    @Override
     public Locale getLocale() {
        
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 returnValue =  new Long(win32.GetKeyboardLayout(0));                
             }
@@ -125,7 +131,7 @@ public class WinIM extends NativeIM {
     private static Locale hkl2Locale(long hkl) {
         Long key = new Long(hkl);
         if (hkl2Locale.containsKey(key)) {
-            return (Locale) hkl2Locale.get(key);
+            return hkl2Locale.get(key);
         }
         short langid = (short) hkl;
         short sortid = WindowsDefs.SORT_DEFAULT;        
@@ -149,7 +155,7 @@ public class WinIM extends NativeIM {
         // lcid from locale name
         // maybe have to call getAvailableLocales()
         // before to update map(?)
-        Long hkl = (Long) locale2HKL.get(locale);
+        Long hkl = locale2HKL.get(locale);
         if (hkl != null) {
             return hkl.longValue();
         }
@@ -160,15 +166,18 @@ public class WinIM extends NativeIM {
      * Must create new instance of this IM for
      * every instance of input context
      */
+    @Override
     public InputMethod createInputMethod() throws Exception {
         return new WinIM();
     }
     
+    @Override
     public void activate() {
         // reassociate focused window with
         // default native input context
         // if IME was previously disabled
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 final long hwnd = win32.GetFocus();
                 if (hwnd == 0l) {
@@ -322,12 +331,15 @@ public class WinIM extends NativeIM {
         return win32.ImmSetCompositionWindow(hIMC, form);
     }
     
+    @Override
     public void removeNotify() {
         disableIME();
     }
     
+    @Override
     public void dispose() {
         WinEventQueue.Task task = new WinEventQueue.Task() {
+            @Override
             public void perform() {
                 win32.ImmDestroyContext(hIMC);
             }
@@ -339,8 +351,10 @@ public class WinIM extends NativeIM {
      * Disables native input method support for the
      * focused window
      */
+    @Override
     public void disableIME() {        
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 final long hwnd = win32.GetFocus();
                 long curIMC = win32.ImmGetContext(hwnd); 

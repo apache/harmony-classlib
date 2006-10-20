@@ -30,6 +30,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getGraphicsFactory()
      */
+    @Override
     public GraphicsFactory getGraphicsFactory() {
         return graphicsFactory;
     }
@@ -37,6 +38,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeEventQueue()
      */
+    @Override
     public NativeEventQueue getNativeEventQueue() {
         return eventQueue;
     }
@@ -44,6 +46,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getWindowFactory()
      */
+    @Override
     public WindowFactory getWindowFactory() {
         return eventQueue.factory;
     }
@@ -51,6 +54,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getCursorFactory()
      */
+    @Override
     public CursorFactory getCursorFactory() {
         return cursorFactory;
     }
@@ -58,6 +62,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeMouseInfo()
      */
+    @Override
     public NativeMouseInfo getNativeMouseInfo() {
         return mouseInfo;
     }
@@ -65,6 +70,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getSystemProperties()
      */
+    @Override
     public SystemProperties getSystemProperties() {
         return systemProperties;
     }
@@ -76,6 +82,7 @@ public class WinWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeRobot(java.awt.GraphicsDevice)
      */
+    @Override
     public NativeRobot getNativeRobot(GraphicsDevice screen) {
         if (robot == null) {
             robot = new WinRobot();
@@ -83,6 +90,7 @@ public class WinWTK extends WTK {
         return robot;
     }
 
+    @Override
     public NativeIM getNativeIM() {
         if (im == null) {
             im = new WinIM();

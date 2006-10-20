@@ -29,10 +29,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.event.PaintEvent;
 import java.awt.event.WindowEvent;
-
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.nativebridge.Int8Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
@@ -62,11 +60,13 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
 
     private final WinWindowFactory factory;
 
+    @Override
     public boolean getTrigger() {
         return ((eventId == MouseEvent.MOUSE_RELEASED)
                 && (mouseButton == MouseEvent.BUTTON3));
     }
 
+    @Override
     public MultiRectArea getClipRects() {
         if (clipRgn == null) {
             Insets insets = factory.getInsets(windowId);
@@ -100,6 +100,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         return clipRgn;
     }
 
+    @Override
     public Rectangle getClipBounds() {
         if (clipRect == null) {
             getClipRects();
@@ -107,6 +108,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         return clipRect;
     }
 
+    @Override
     public Rectangle getWindowRect() {
         if (windowRect == null) {
             windowRect = factory.getWindowBounds(windowId);
@@ -114,10 +116,12 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         return windowRect;
     }
 
+    @Override
     public Insets getInsets() {
         return factory.getInsets(windowId);
     }
 
+    @Override
     public char getLastChar() {
         return lastChar;
     }
@@ -188,6 +192,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         }
     }
     
+    @Override
     public String toString() {
         return "hwnd=0x" + Long.toHexString(windowId) + ", msg=0x" + Integer.toHexString(msg);
     }
@@ -422,9 +427,8 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         if (winVKey == VK_SHIFT) {
             if (((((int) lParam) >> 16) & 0xff) == win32.MapVirtualKeyW(VK_SHIFT, 0)) {
                 return KeyEvent.KEY_LOCATION_LEFT;
-            } else {
-                return KeyEvent.KEY_LOCATION_RIGHT;
             }
+            return KeyEvent.KEY_LOCATION_RIGHT;
         }
         if (((winVKey >= VK_NUMPAD0) && (winVKey <= VK_NUMPAD9))
                 || (winVKey == VK_NUMLOCK) || (winVKey == VK_DECIMAL)
@@ -460,7 +464,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
             factory.lastHwndUnderPointer = 0;
         } else {
             setMouseEventIDAndButton();
-            if (eventId == MouseWheelEvent.MOUSE_WHEEL) {
+            if (eventId == MouseEvent.MOUSE_WHEEL) {
                 wheelRotation = computeMouseWheelRotation();
                 screenPos = computeMouseWheelScreenPosition();
             } else {
@@ -568,7 +572,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
                     MouseEvent.MOUSE_DRAGGED : MouseEvent.MOUSE_MOVED;
             break;
         case WM_MOUSEWHEEL:
-            eventId = MouseWheelEvent.MOUSE_WHEEL;
+            eventId = MouseEvent.MOUSE_WHEEL;
             break;
         }
     }

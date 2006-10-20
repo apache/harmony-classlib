@@ -22,7 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 public class PointerPointer extends VoidPointer {
 
-    private static int PP_SIZE_FACTOR = ByteBase.POINTER_SIZE;
+    private static final int PP_SIZE_FACTOR = ByteBase.POINTER_SIZE;
 
     PointerPointer(int size, boolean direct) {
         super(size * PP_SIZE_FACTOR, direct);
@@ -52,6 +52,7 @@ public class PointerPointer extends VoidPointer {
     }
 
     /** returns the number of elements in array referenced by this object. If size is unknown returns -1.  */
+    @Override
     public int size() {
     int tmp = byteBase.size();
         return  tmp == -1 ? -1 : tmp / PP_SIZE_FACTOR;

@@ -60,6 +60,7 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     class Separator extends Canvas {
         private static final long serialVersionUID = -9191946485695242726L;
 
+        @Override
         public void paint(Graphics g) {
             g.setColor(SystemColor.controlDkShadow);
             g.drawLine(0, 0, getWidth(), 0);

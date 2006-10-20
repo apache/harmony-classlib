@@ -40,15 +40,15 @@ public abstract class TextFactory {
     }
 
     private static TextFactory createTextFactory() {
-        PrivilegedAction createAction = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<TextFactory> createAction = new PrivilegedAction<TextFactory>() {
+            public TextFactory run() {
                 try {
-                    Class factoryImplClass = Class
+                    Class<?> factoryImplClass = Class
                         .forName(FACTORY_IMPL_CLS_NAME);
-                    Constructor defConstr =
+                    Constructor<?> defConstr =
                         factoryImplClass.getDeclaredConstructor(new Class[0]);
                     defConstr.setAccessible(true);
-                    return defConstr.newInstance(new Object[0]);
+                    return (TextFactory)defConstr.newInstance(new Object[0]);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
 
@@ -67,10 +67,7 @@ public abstract class TextFactory {
             }
         };
 
-        TextFactory factory =
-            (TextFactory)AccessController.doPrivileged(createAction);
-
-        return factory;
+        return AccessController.doPrivileged(createAction);
     }
 
     public abstract RootViewContext createRootView(final Element element);

@@ -43,7 +43,7 @@ import org.apache.harmony.awt.gl.font.LineMetricsImpl;
 public class WindowsFont extends FontPeerImpl{
     
     // table with loaded cached Glyphs
-    private Hashtable glyphs = new Hashtable();
+    private final Hashtable<Integer, WinGlyph> glyphs = new Hashtable<Integer, WinGlyph>();
 
     // Pairs of [begin, end],[..].. unicode ranges values 
     private int[] fontUnicodeRanges;
@@ -92,6 +92,7 @@ public class WindowsFont extends FontPeerImpl{
      * WindowsFont. 
      * @param chr the specified character
      */
+    @Override
     public boolean canDisplay(char chr) {
         return isGlyphExists(chr);
     }
@@ -127,7 +128,7 @@ public class WindowsFont extends FontPeerImpl{
         isEscape = ((uChar == '\t') || (uChar == '\n') || (uChar == '\r'));
 
         if (isEscape || this.isGlyphExists(uChar)) {
-                glyphs.put(new Integer(uChar), new WinGlyph(this.pFont,
+                glyphs.put(Integer.valueOf(uChar), new WinGlyph(this.pFont,
                         this.getSize(), uChar, NativeFont.getGlyphCodeNative(
                         this.pFont, uChar)));
                 result = true;
@@ -143,8 +144,9 @@ public class WindowsFont extends FontPeerImpl{
     public boolean isGlyphExists(char uIndex) {
         for (int i = 0; i < fontUnicodeRanges.length - 1; i += 2) {
             if (uIndex <= fontUnicodeRanges[i + 1]) {
-                if (uIndex >= fontUnicodeRanges[i])
+                if (uIndex >= fontUnicodeRanges[i]) {
                     return true;
+                }
                 return false;
             }
         }
@@ -180,14 +182,15 @@ public class WindowsFont extends FontPeerImpl{
      * doesn't exist in the WindowsFont  
      * @param index the specified character
      */
+    @Override
     public Glyph getGlyph(char index) {
         Glyph result = null;
-        Object key = new Integer(index);
+        Integer key = Integer.valueOf(index);
         if (glyphs.containsKey(key)) {
-            result = (Glyph) glyphs.get(key);
+            result = glyphs.get(key);
         } else {
             if (this.addGlyph(index)) {
-                result = (Glyph) glyphs.get(key);
+                result = glyphs.get(key);
             } else {
                 result = this.getDefaultGlyph();
             }
@@ -198,21 +201,22 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns default Glyph object of this WindowsFont.
      */
+    @Override
     public Glyph getDefaultGlyph() {
         Glyph result;
-        Object defaultKey = new Integer(defaultChar);
+        Integer defaultKey = Integer.valueOf(defaultChar);
 
         if (glyphs.containsKey(defaultKey)) {
-            result = (Glyph) glyphs.get(defaultKey);
+            result = glyphs.get(defaultKey);
         } else {
             if (this.fontType == FontManager.FONT_TYPE_T1){
                 // XXX: !! Type1 has no default glyphs
                 glyphs.put(defaultKey, new WinGlyph(defaultChar, defaultChar));
-                result = (Glyph) glyphs.get(defaultKey);
+                result = glyphs.get(defaultKey);
             } else {
                 glyphs.put(defaultKey, new WinGlyph(this.pFont,
                         this.getSize(), defaultChar, NativeFont.getGlyphCodeNative(this.pFont, defaultChar)));
-                result = (Glyph) glyphs.get(defaultKey);
+                result = glyphs.get(defaultKey);
             }
         }
 
@@ -241,8 +245,8 @@ public class WindowsFont extends FontPeerImpl{
         width = Math.max(-(int) gls[0].getGlyphPointMetrics().getLSB(), 0);
         baseXOffset = Math.max(-(int) gls[0].getGlyphPointMetrics().getLSB(), 0);
 
-        for (int i = 0; i < gls.length; i++) {
-            width += gls[i].getGlyphPointMetrics().getAdvanceX();
+        for (Glyph element : gls) {
+            width += element.getGlyphPointMetrics().getAdvanceX();
         }
 
         width += Math
@@ -251,8 +255,7 @@ public class WindowsFont extends FontPeerImpl{
         WritableRaster wr = Raster.createPackedRaster(DataBuffer.TYPE_BYTE,
                 width, height, 1, 1, null);
 
-        for (int i = 0; i < gls.length; i++) {
-            Glyph curGlyph = gls[i];
+        for (Glyph curGlyph : gls) {
             drawYOffset = this.ascent
                     + (int) Math.ceil(curGlyph.getGlyphPointMetrics().getBounds2D()
                             .getY()) - 1;
@@ -279,6 +282,7 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns locale dependent family name of this WindowsFont. 
      */
+    @Override
     public String getFamily(Locale l) {
         if (this.fontType == FontManager.FONT_TYPE_T1){
             return this.name;
@@ -291,6 +295,7 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns locale dependent face name of this WindowsFont.
      */
+    @Override
     public String getFontName(Locale l) {
         if (this.fontType == FontManager.FONT_TYPE_T1){
             return this.name;
@@ -319,6 +324,7 @@ public class WindowsFont extends FontPeerImpl{
      * Returns a LineMetrics object that contains text metrics of this 
      * WindowsFont.
      */
+    @Override
     public LineMetrics getLineMetrics(String str, FontRenderContext frc, AffineTransform at) {
         LineMetricsImpl lm = getDefaultLineMetrics();
         lm.setNumChars(str.length());
@@ -341,6 +347,7 @@ public class WindowsFont extends FontPeerImpl{
      * Dispose all native resources and deleting temporary font file
      * if this WindowsFont object was created from stream.
      */
+    @Override
     public void dispose(){
         if (pFont != 0){
             NativeFont.pFontFree(pFont);
@@ -356,6 +363,7 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns postscript name of this WindowsFont.
      */
+    @Override
     public String getPSName(){
         if (psName == null){
             // TODO: implement method
@@ -364,6 +372,7 @@ public class WindowsFont extends FontPeerImpl{
         return psName;
     }
 
+    @Override
     public int getMissingGlyphCode(){
         return getDefaultGlyph().getGlyphCode();
     }
@@ -373,6 +382,7 @@ public class WindowsFont extends FontPeerImpl{
      * @param ind the char which width is to be returned
      * @return the advance width of the specified char of this WindowsFont 
      */
+    @Override
     public int charWidth(int ind) {
         return charWidth((char)ind);
     }
@@ -380,12 +390,14 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns face name of this WindowsFont.
      */
+    @Override
     public String getFontName() {
         if (faceName == null){
-            if (this.fontType == FontManager.FONT_TYPE_T1)
+            if (this.fontType == FontManager.FONT_TYPE_T1) {
                 faceName = getFamily();
-            else
+            } else {
                 faceName = NativeFont.getFontNameNative(this.pFont);
+            }
         }
 
         return faceName;
@@ -394,6 +406,7 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Returns initiated FontExtraMetrics instance of this WindowsFont.
      */
+    @Override
     public FontExtraMetrics getExtraMetrics(){
         if (extraMetrix == null){
 

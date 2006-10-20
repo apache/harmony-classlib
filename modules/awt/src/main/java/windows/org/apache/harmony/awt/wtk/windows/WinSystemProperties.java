@@ -27,7 +27,6 @@ import java.awt.font.TextAttribute;
 import java.awt.im.InputMethodHighlight;
 import java.util.Map;
 import java.util.TreeSet;
-
 import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
@@ -49,7 +48,7 @@ public class WinSystemProperties implements SystemProperties {
     private static final int SPI_GETFONTSMOOTHINGCONTRAST = 0x200C;
     private static final int SPI_SETFONTSMOOTHINGCONTRAST = 0x200D;
 
-    private static int sysColorIndices[] = {    // SystemColor.* constants
+    private static final int sysColorIndices[] = {    // SystemColor.* constants
             WindowsDefs.COLOR_DESKTOP,          // 0 DESKTOP
             WindowsDefs.COLOR_ACTIVECAPTION,    // 1 ACTIVE_CAPTION
             WindowsDefs.COLOR_CAPTIONTEXT,      // 2 ACTIVE_CAPTION_TEXT
@@ -84,7 +83,7 @@ public class WinSystemProperties implements SystemProperties {
             WindowsDefs.COLOR_MENUBAR,
     };
     
-    private static String sysColorProps[] = { // color property names
+    private static final String sysColorProps[] = { // color property names
             "win.desktop.backgroundColor", // 0 DESKTOP
             "win.frame.activeCaptionColor", // 1 ACTIVE_CAPTION
             "win.frame.captionTextColor", // 2 ACTIVE_CAPTION_TEXT
@@ -120,7 +119,7 @@ public class WinSystemProperties implements SystemProperties {
     };
 
     
-    private static int sysFontIndices[] = {
+    private static final int sysFontIndices[] = {
 
         WindowsDefs.ANSI_FIXED_FONT, 
         WindowsDefs.ANSI_VAR_FONT,                                           
@@ -132,7 +131,7 @@ public class WinSystemProperties implements SystemProperties {
     
     };
     
-    private static String sysFontDesktopProps[] = { // color property names
+    private static final String sysFontDesktopProps[] = { // color property names
             "win.ansiFixed.font", // 0 ANSI_FIXED_FONT
             "win.ansiVar.font", // 1 ANSI_VAR_FONT
             "win.defaultGUI.font", // 2 DEFAULT_GUI_FONT
@@ -154,18 +153,20 @@ public class WinSystemProperties implements SystemProperties {
                                WindowsDefs.SND_NODEFAULT);
             // have to start another thread to wait until playing ends
             new Thread() {
+                @Override
                 public void run() {                    
                     win32.PlaySoundW(sndName, 0, flags);
                 }
             }.start();
         }
         
+        @Override
         public String toString() {
             return ("WinPlaySound(" + sndName + ")");
         }
     };
     
-    private int sysColorCache[] = null;
+    private int sysColorCache[];
 
     private Font defaultFont;
 
@@ -202,7 +203,7 @@ public class WinSystemProperties implements SystemProperties {
         }
     }
 
-    private void updateColorDesktopProperties(Map props) {
+    private void updateColorDesktopProperties(Map<String, Object> props) {
         for (int i = 0; i < sysColorIndices.length; i++) {
             String name = sysColorProps[i];
             Color val = new Color(sysColorCache[i]);
@@ -211,7 +212,7 @@ public class WinSystemProperties implements SystemProperties {
         }
     }
 
-    private void setDesktopProperty(String name, Object val, Map props) {
+    private void setDesktopProperty(String name, Object val, Map<String, Object> props) {
         if (props != null) {
             props.put(name, val);
             return; // skip firing property change
@@ -246,7 +247,7 @@ public class WinSystemProperties implements SystemProperties {
         return new Font(name, bold | italic, size);
     }
     
-    private void initSysFonts(Map props) {
+    private void initSysFonts(Map<String, Object> props) {
         for (int i = 0; i < sysFontIndices.length; i++) {
             long hFont = win32.GetStockObject(sysFontIndices[i]);            
             Font font = getFont(hFont);
@@ -257,21 +258,23 @@ public class WinSystemProperties implements SystemProperties {
         }       
     }
     
-    private void setBoolProperty(String propName, int val, Map props) {
+    private void setBoolProperty(String propName, int val, Map<String, Object> props) {
         setDesktopProperty(propName, (val != 0 ? Boolean.TRUE : Boolean.FALSE),
                            props);
     }
 
-    private void setIntProperty(String propName, int val, Map props) {
+    private void setIntProperty(String propName, int val, Map<String, Object> props) {
         setDesktopProperty(propName, new Integer(val), props);
     }
     
-    private void setFontProperty(String propName, Font font, Map props) {
+    private void setFontProperty(String propName, Font font, Map<String, Object> props) {
         setDesktopProperty(propName, font, props);
         setIntProperty(propName + ".height", font.getSize(), props);
     }
 
-    public void init(Map desktopProperties) {
+    @SuppressWarnings("unchecked")
+    public void init(Map<String, ?> deskProps) {
+        Map<String, Object> desktopProperties = (Map<String, Object>)deskProps;
         synchronized (cacheLock) {
             getDnDProps(desktopProperties);
             getShellProps(desktopProperties);
@@ -295,9 +298,9 @@ public class WinSystemProperties implements SystemProperties {
             getFontSmoothType(desktopProperties);
             getXPTheme(desktopProperties);
             initSoundProps(desktopProperties);
-            TreeSet keySet = new TreeSet(desktopProperties.keySet());
+            TreeSet<String> keySet = new TreeSet<String>(desktopProperties.keySet());
             keySet.add("awt.dynamicLayoutSupported");
-            String[] propNames = (String[]) keySet.toArray(new String[0]);            
+            String[] propNames = keySet.toArray(new String[0]);            
             desktopProperties.put("win.propNames", propNames);
             
         }
@@ -348,49 +351,49 @@ public class WinSystemProperties implements SystemProperties {
         
     }
     
-    private void getFullWindowDrags(Map props) {        
+    private void getFullWindowDrags(Map<String, Object> props) {        
         getBoolSPI("win.frame.fullWindowDragsOn", 
                    WindowsDefs.SPI_GETDRAGFULLWINDOWS, props);
         
     }
     
-    private void getGradientCaptions(Map props) {        
+    private void getGradientCaptions(Map<String, Object> props) {        
         getBoolSPI("win.frame.captionGradientsOn", 
                    WindowsDefs.SPI_GETGRADIENTCAPTIONS, props);        
     }
     
-    private void getHotTracking(Map props) {        
+    private void getHotTracking(Map<String, Object> props) {        
         getBoolSPI("win.item.hotTrackingOn", 
                    WindowsDefs.SPI_GETHOTTRACKING, props);        
     }
     
-    private void getKeyboardCues(Map props) {        
+    private void getKeyboardCues(Map<String, Object> props) {        
         getBoolSPI("win.menu.keyboardCuesOn", 
                    WindowsDefs.SPI_GETKEYBOARDCUES, props);        
     }
     
-    private void getFontSmooth(Map props) {        
+    private void getFontSmooth(Map<String, Object> props) {        
         getBoolSPI("win.text.fontSmoothingOn", 
                    WindowsDefs.SPI_GETFONTSMOOTHING, props);        
     }
     
-    private void getFontSmoothContrast(Map props) {
+    private void getFontSmoothContrast(Map<String, Object> props) {
         getIntSPI("win.text.fontSmoothingContrast",
                   SPI_GETFONTSMOOTHINGCONTRAST, props);
     }
     
-    private void getFontSmoothType(Map props) {
+    private void getFontSmoothType(Map<String, Object> props) {
         getIntSPI("win.text.fontSmoothingType", SPI_GETFONTSMOOTHINGTYPE, props);
     }
     
-    private void getDragSize(boolean cx, Map props) {
+    private void getDragSize(boolean cx, Map<String, Object> props) {
         int sm_idx = (cx ? WindowsDefs.SM_CXDRAG : WindowsDefs.SM_CYDRAG);
         String propName = "win.drag";
         propName += (cx ? ".width" : ".height");
         getSM(propName, sm_idx, props);
     }
 
-    private void getNonClientMetrics(Map props) {
+    private void getNonClientMetrics(Map<String, Object> props) {
         Win32.NONCLIENTMETRICSW ncm = win32.createNONCLIENTMETRICSW(false);
         ncm.set_cbSize(ncm.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETNONCLIENTMETRICS,
@@ -428,7 +431,7 @@ public class WinSystemProperties implements SystemProperties {
         setIntProperty("win.menu.height", ncm.get_iMenuHeight(), props);        
     }
     
-    private void getIconMetrics(Map props) {
+    private void getIconMetrics(Map<String, Object> props) {
         Win32.ICONMETRICSW im = win32.createICONMETRICSW(false);
         im.set_cbSize(im.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETICONMETRICS,
@@ -439,7 +442,7 @@ public class WinSystemProperties implements SystemProperties {
         setIntProperty("win.icon.vspacing", im.get_iVertSpacing(), props);
     }
     
-    private void getHighContrast(Map props) {
+    private void getHighContrast(Map<String, Object> props) {
         Win32.HIGHCONTRASTA hc = win32.createHIGHCONTRASTA(false);
         hc.set_cbSize(hc.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETHIGHCONTRAST,
@@ -449,7 +452,7 @@ public class WinSystemProperties implements SystemProperties {
                         props);
     }
     
-    private void getSM(String propName, int idx, Map props) {
+    private void getSM(String propName, int idx, Map<String, Object> props) {
         setIntProperty(propName, win32.GetSystemMetrics(idx), props);
     }
     
@@ -460,19 +463,19 @@ public class WinSystemProperties implements SystemProperties {
         return ptr;
     }
     
-    private void getBoolSPI(String propName, int idx, Map props) {
+    private void getBoolSPI(String propName, int idx, Map<String, Object> props) {
         setBoolProperty(propName, getIntSPI(idx).get(0), props);
     }
     
-    private void getIntSPI(String propName, int idx, Map props) {
+    private void getIntSPI(String propName, int idx, Map<String, Object> props) {
         setIntProperty(propName, getIntSPI(idx).get(0), props);
     }
     
-    void getXPTheme(Map props) {
+    void getXPTheme(Map<String, Object> props) {
         setBoolProperty("win.xpstyle.themeActive", win32.IsThemeActive(), props);
     }
     
-    private void getDnDProps(Map props) {
+    private void getDnDProps(Map<String, Object> props) {
         String propName = "DnD";
         setIntProperty(propName + ".gestureMotionThreshold",
                        WindowsDefs.DD_DEFDRAGMINDIST, props);
@@ -484,7 +487,7 @@ public class WinSystemProperties implements SystemProperties {
         
     }
     
-    private void getShellProps(Map props) {        
+    private void getShellProps(Map<String, Object> props) {        
         Win32.SHELLFLAGSTATE sfs = win32.createSHELLFLAGSTATE(false);
         int flags = (WindowsDefs.SSF_SHOWATTRIBCOL | 
                      WindowsDefs.SSF_SHOWALLOBJECTS);
@@ -496,7 +499,7 @@ public class WinSystemProperties implements SystemProperties {
                         (sfs.get_fShowAllObjects()), props);
     }
     
-    private void getMouseProps(Map props) {
+    private void getMouseProps(Map<String, Object> props) {
         String propName = "awt.";
         getSM(propName + "mouse.numButtons", WindowsDefs.SM_CMOUSEBUTTONS, props);
         setIntProperty(propName + "multiClickInterval", 
@@ -509,12 +512,12 @@ public class WinSystemProperties implements SystemProperties {
         
     }
     
-    private void setSoundProperty(String propName, String sndName, Map props) {
+    private void setSoundProperty(String propName, String sndName, Map<String, Object> props) {
         String base = "win.sound.";
         setDesktopProperty(base + propName, new WinPlaySound(sndName), props);
     }
     
-    private void initSoundProps(Map props) {
+    private void initSoundProps(Map<String, Object> props) {
         setSoundProperty("asterisk", "SystemAsterisk", props);
         setSoundProperty("close", "Close", props);
         setSoundProperty("default", ".Default", props);
@@ -533,25 +536,27 @@ public class WinSystemProperties implements SystemProperties {
     
     }
 
-    public void mapInputMethodHighlight(InputMethodHighlight highlight, Map map) {
+    @SuppressWarnings("unchecked")
+    public void mapInputMethodHighlight(InputMethodHighlight highlight, Map<TextAttribute, ?> map) {
+        Map<TextAttribute, Object> _map = (Map<TextAttribute, Object>)map;
         TextAttribute key = TextAttribute.INPUT_METHOD_UNDERLINE;
         boolean selected = highlight.isSelected();
         switch(highlight.getState()) {
         case InputMethodHighlight.RAW_TEXT:
-            map.put(key, selected ? TextAttribute.UNDERLINE_LOW_GRAY :
+            _map.put(key, selected ? TextAttribute.UNDERLINE_LOW_GRAY :
                 TextAttribute.UNDERLINE_LOW_DOTTED);
             break;
         case InputMethodHighlight.CONVERTED_TEXT:
-            map.put(key, selected ? TextAttribute.UNDERLINE_LOW_ONE_PIXEL :
+            _map.put(key, selected ? TextAttribute.UNDERLINE_LOW_ONE_PIXEL :
                 TextAttribute.UNDERLINE_LOW_DOTTED);
             if (selected) {
                 // maybe get colors from system properties?
                 key = TextAttribute.BACKGROUND;
-                map.put(key, Color.white);
+                _map.put(key, Color.white);
                 key = TextAttribute.FOREGROUND;
-                map.put(key, new Color(0, 0, 128));
+                _map.put(key, new Color(0, 0, 128));
                 key = TextAttribute.SWAP_COLORS;
-                map.put(key, TextAttribute.SWAP_COLORS_ON);
+                _map.put(key, TextAttribute.SWAP_COLORS_ON);
             }
             break;
         }

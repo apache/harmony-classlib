@@ -46,7 +46,7 @@ import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
  */
 public class WinGlyph extends Glyph{
     
-    // Win32 instanse 
+    // Win32 instance 
     private static final Win32 win32 = Win32.getInstance();
 
     // offset to the POINTFX array
@@ -121,6 +121,7 @@ public class WinGlyph extends Glyph{
     }
 
 
+    @Override
     public byte[] getBitmap(){
         if (this.bitmap == null){
             bitmap = NativeFont.NativeInitGlyphImage(this);
@@ -135,6 +136,7 @@ public class WinGlyph extends Glyph{
         return this.bitmap;
     }
 
+    @Override
     public BufferedImage getImage(){
         if ((this.getWidth()==0) || (this.getHeight()==0)){
             return null;
@@ -151,7 +153,7 @@ public class WinGlyph extends Glyph{
              *
              * Because of inability to create IndexedColorModel with data, represented as DataBuffer.TYPE_INT
              * Raster with additional width is created to cover all bits, which are extending meaningful bits
-             * to the DWORD-aligning. When we want to take an image of the glyhp - we have to copy only rectangle
+             * to the DWORD-aligning. When we want to take an image of the glyph - we have to copy only rectangle
              * that encloses the Glyph from the whole raster.
              *
              * */
@@ -170,6 +172,7 @@ public class WinGlyph extends Glyph{
         return this.image;
     }
 
+    @Override
     public Shape initOutline(char c){
         if ((this.getWidth()==0) || (this.getHeight()==0)){
             return new GeneralPath();
@@ -180,7 +183,7 @@ public class WinGlyph extends Glyph{
         long buffer = 0; // pointer for TTPolygonHeader structure
         int bufSize = 0; // size of buffer
 
-        /* gettins size of buffer */
+        /* getting size of buffer */
         bufSize = NativeFont.getGlyphOutline(this.pFont, c, buffer, bufSize);
 
         if (bufSize == 0){
@@ -307,5 +310,3 @@ public class WinGlyph extends Glyph{
      */
     public static native float[] getPoints(long addr, int count);
 }
-
-

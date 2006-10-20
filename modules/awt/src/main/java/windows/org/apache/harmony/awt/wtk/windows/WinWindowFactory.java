@@ -26,7 +26,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
-
+import java.util.Map;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
@@ -40,7 +40,7 @@ public final class WinWindowFactory implements WindowFactory {
     static final Win32 win32 = Win32.getInstance();
     static final NativeBridge bridge = NativeBridge.getInstance();
 
-    private final HashMap hwnd2winMap = new HashMap();
+    private final Map<Long, WinWindow> hwnd2winMap = new HashMap<Long, WinWindow>();
     private CreationParams creationParams = null;
 
     final WinEventQueue eventQueue;
@@ -57,6 +57,7 @@ public final class WinWindowFactory implements WindowFactory {
 
     public NativeWindow createWindow(final CreationParams p) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 String title = (p.name != null) ? p.name : "";
                 Rectangle rect = new Rectangle(p.x, p.y, p.w, p.h);
@@ -90,7 +91,7 @@ public final class WinWindowFactory implements WindowFactory {
     }
 
     public NativeWindow getWindowById(long id) {
-        return (WinWindow)hwnd2winMap.get(new Long(id));
+        return hwnd2winMap.get(new Long(id));
     }
 
     /**
@@ -99,7 +100,7 @@ public final class WinWindowFactory implements WindowFactory {
      * or null if given HWND doesn't belong to WTK
      */
     public WinWindow getWinWindowById(long id) {
-        return (WinWindow)hwnd2winMap.get(new Long(id));
+        return hwnd2winMap.get(new Long(id));
     }
 
     /**
@@ -361,7 +362,8 @@ public final class WinWindowFactory implements WindowFactory {
      */
     public void setCaretPosition(final int x, final int y) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
-           public void perform() {
+           @Override
+        public void perform() {
                 win32.SetCaretPos(x, y);
             }
         };

@@ -54,7 +54,7 @@ public class WinFontManager extends FontManager {
             "EASTEUROPE_CHARSET", "RUSSIAN_CHARSET", "MAC_CHARSET", "BALTIC_CHARSET"
     };
 
-    /** WinFontManager singleton instanse */
+    /** WinFontManager singleton instance */
     public static final WinFontManager inst = new WinFontManager();
 
     private WinFontManager() {
@@ -62,6 +62,7 @@ public class WinFontManager extends FontManager {
         initFontProperties();
     }
 
+    @Override
     public void initLCIDTable(){
         NativeFont.initLCIDsTable(this.tableLCID);
     }
@@ -71,7 +72,7 @@ public class WinFontManager extends FontManager {
      * property file.
      * 
      * @return true is success, false if font property doesn't exist or doesn't
-     * contain roperties. 
+     * contain properties. 
      */
     public boolean initFontProperties(){
         File fpFile = getFontPropertyFile();
@@ -84,9 +85,9 @@ public class WinFontManager extends FontManager {
             return false;
         }
 
-        for (int i=0; i < LOGICAL_FONT_NAMES.length; i++){
+        for (String element : LOGICAL_FONT_NAMES) {
             for (int j=0; j < STYLE_NAMES.length; j++){
-                Vector propsVector = new Vector();
+                Vector<FontProperty> propsVector = new Vector<FontProperty>();
 
                 // Number of entries for a logical font
                 int numComp = 0;
@@ -96,12 +97,12 @@ public class WinFontManager extends FontManager {
 
                 while(moreEntries){
                     // Component Font Mappings property name
-                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", LOGICAL_FONT_NAMES[i]).replaceAll("StyleName", STYLE_NAMES[j]).replaceAll("ComponentIndex", String.valueOf(numComp));
+                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", element).replaceAll("StyleName", STYLE_NAMES[j]).replaceAll("ComponentIndex", String.valueOf(numComp));
                     value = props.getProperty(property);
 
                     // If the StyleName is omitted, it's assumed to be plain
                     if ((j == 0) && (value == null)){
-                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", LOGICAL_FONT_NAMES[i]).replaceAll("ComponentIndex", String.valueOf(numComp));
+                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp));
                         value = props.getProperty(property);
                     }
 
@@ -125,11 +126,11 @@ public class WinFontManager extends FontManager {
                         String fileName = props.getProperty(FONT_FILE_NAME.replaceAll("PlatformFontName", fontName).replaceAll(" ", "_"));
 
                         // Exclusion Ranges property value
-                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", LOGICAL_FONT_NAMES[i]).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp)));
                         int[] exclRange = parseIntervals(exclString);
 
                         // Component Font Character Encodings property value
-                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", LOGICAL_FONT_NAMES[i]).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp)));
 
                         FontProperty fp = new WinFontProperty(fileName, fontName, charset, j, exclRange, encoding);
                         propsVector.add(fp);
@@ -138,7 +139,7 @@ public class WinFontManager extends FontManager {
                         moreEntries = false;
                     }
                 }
-                fProperties.put(LOGICAL_FONT_NAMES[i] + "." + j, propsVector);
+                fProperties.put(element + "." + j, propsVector);
             }
         }
 
@@ -146,14 +147,17 @@ public class WinFontManager extends FontManager {
 
     }
     
+    @Override
     public int getFaceIndex(String faceName){
         for (int i=0; i<NativeFont.faces.length; i++ ){
-            if (NativeFont.faces[i].equalsIgnoreCase(faceName))
+            if (NativeFont.faces[i].equalsIgnoreCase(faceName)) {
                 return i;
+            }
         }
         return -1;
     }
 
+    @Override
     public Font[] getAllFonts() {
         String faces[] = NativeFont.getAvailableFaces();
         int count = faces.length;
@@ -166,6 +170,7 @@ public class WinFontManager extends FontManager {
         return fonts;
     }
 
+    @Override
     public String[] getAllFamilies() {
         if (allFamilies == null){
             allFamilies = NativeFont.getFamilies();
@@ -173,6 +178,7 @@ public class WinFontManager extends FontManager {
         return allFamilies;
     }
 
+    @Override
     public FontPeer createPhysicalFontPeer(String name, int style, int size) {
         WindowsFont peer;
         if (isFamilyExist(name)){
@@ -192,6 +198,7 @@ public class WinFontManager extends FontManager {
         return null;
     }
 
+    @Override
     public FontPeer createDefaultFont(int style, int size) {
         return new WindowsFont(DEFAULT_NAME, style, size);
     }

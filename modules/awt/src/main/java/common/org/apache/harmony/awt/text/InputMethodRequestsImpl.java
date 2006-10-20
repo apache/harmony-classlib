@@ -86,6 +86,7 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
             return changeIndex(start);
         }
 
+        @Override
         public Object clone() {
             try {
                 IteratorConcatination newIterator = (IteratorConcatination)
@@ -96,9 +97,9 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
             }
         }
 
-        public Set getAllAttributeKeys() {
-            HashSet attributeKeys = new HashSet(first.
-                                                getAllAttributeKeys());
+        public Set<Attribute> getAllAttributeKeys() {
+            HashSet<Attribute> attributeKeys = new HashSet<Attribute>(first
+                    .getAllAttributeKeys());
             attributeKeys.addAll(second.getAllAttributeKeys());
             return attributeKeys;
         }
@@ -107,7 +108,7 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
             return iterator.getAttribute(attribute);
         }
 
-        public Map getAttributes() {
+        public Map<Attribute, Object> getAttributes() {
             return iterator.getAttributes();
         }
 
@@ -131,7 +132,7 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
             return iterator.getRunLimit(attribute);
         }
 
-        public int getRunLimit(final Set set) {
+        public int getRunLimit(final Set<? extends Attribute> set) {
             return iterator.getRunLimit(set);
         }
 
@@ -143,7 +144,7 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
             return iterator.getRunStart(attribute);
         }
 
-        public int getRunStart(final Set set) {
+        public int getRunStart(final Set<? extends Attribute> set) {
             return iterator.getRunStart(set);
         }
 
@@ -306,7 +307,7 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
         AttributedString attributedString = new AttributedString(s);
         for (int i = start; i < end; i++) {
             AttributeSet ass = getAttributeSet(i);
-            Enumeration names;
+            Enumeration<?> names;
             for (names = ass.getAttributeNames();
                  names.hasMoreElements();) {
                 Object key = names.nextElement();

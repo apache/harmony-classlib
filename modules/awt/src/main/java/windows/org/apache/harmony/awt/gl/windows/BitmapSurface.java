@@ -36,6 +36,7 @@ public class BitmapSurface extends Surface {
         this.height = height;
     }
 
+    @Override
     public void dispose() {
         dispose(surfaceDataPtr);
         surfaceDataPtr = 0L;
@@ -45,25 +46,31 @@ public class BitmapSurface extends Surface {
 
     private native void dispose(long structPtr);
 
+    @Override
     public long lock() {
         return 0;
     }
 
+    @Override
     public void unlock() {
     }
 
+    @Override
     public ColorModel getColorModel() {
         return null;
     }
 
+    @Override
     public WritableRaster getRaster() {
         return null;
     }
 
+    @Override
     public int getSurfaceType() {
         return 0;
     }
 
+    @Override
     public Surface getImageSurface() {
         return this;
     }

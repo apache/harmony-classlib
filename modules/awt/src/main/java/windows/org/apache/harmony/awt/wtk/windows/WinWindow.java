@@ -106,6 +106,7 @@ final class WinWindow implements NativeWindow {
 
     public void setVisible(final boolean visible) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 int cmd;
                 if (visible) {
@@ -122,6 +123,7 @@ final class WinWindow implements NativeWindow {
 
     public void setBounds(final int x, final int y, final int w, final int h, final int boundsMask) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 if (iconified || maximized) {
                     setNotNormalBounds(x, y, w, h, boundsMask);
@@ -200,6 +202,7 @@ final class WinWindow implements NativeWindow {
 
     public void setEnabled(final boolean value) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 win32.EnableWindow(hwnd, value ? 1 : 0);
             }
@@ -209,6 +212,7 @@ final class WinWindow implements NativeWindow {
 
     public void dispose() {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 factory.remove(WinWindow.this);
                 win32.DestroyWindow(hwnd);
@@ -222,6 +226,7 @@ final class WinWindow implements NativeWindow {
      */
     public void placeAfter(final NativeWindow w) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 long hwndPrev = (w == null ? WindowsDefs.HWND_TOP : w.getId());
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
@@ -233,6 +238,7 @@ final class WinWindow implements NativeWindow {
 
     public void toFront() {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
                 win32.SetWindowPos(hwnd, WindowsDefs.HWND_TOP, 0, 0, 0, 0, flags);
@@ -244,6 +250,7 @@ final class WinWindow implements NativeWindow {
 
     public void toBack() {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
                 win32.SetWindowPos(hwnd, WindowsDefs.HWND_BOTTOM, 0, 0, 0, 0, flags);
@@ -254,6 +261,7 @@ final class WinWindow implements NativeWindow {
 
     public boolean setFocus(final boolean focus) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 long res = win32.SetFocus(focus ? hwnd : 0);
                 returnValue = new Boolean(res != 0);
@@ -265,6 +273,7 @@ final class WinWindow implements NativeWindow {
 
     public void setTitle(final String title) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 win32.SetWindowTextW(hwnd, title);
             }
@@ -274,6 +283,7 @@ final class WinWindow implements NativeWindow {
 
     public void setResizable(final boolean value) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 modifyStyle(WindowsDefs.WS_SIZEBOX|WindowsDefs.WS_MAXIMIZEBOX, value);
             }
@@ -355,6 +365,7 @@ final class WinWindow implements NativeWindow {
 
     public void setState(final int state) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 if (state == Frame.NORMAL) {
                     win32.ShowWindow(hwnd, WindowsDefs.SW_SHOWNORMAL);
@@ -386,6 +397,7 @@ final class WinWindow implements NativeWindow {
      */
     public void setIconImage(final Image image) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 long hIcon = 0;
                 if (image != null) {
@@ -425,6 +437,7 @@ final class WinWindow implements NativeWindow {
      */
     public void setAlwaysOnTop(final boolean value) {
         WinEventQueue.Task task = new WinEventQueue.Task () {
+            @Override
             public void perform() {
                 int hwndInsertAfter = (value ? WindowsDefs.HWND_TOPMOST : WindowsDefs.HWND_NOTOPMOST);
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE |

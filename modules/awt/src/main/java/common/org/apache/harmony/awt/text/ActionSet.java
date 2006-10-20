@@ -47,6 +47,7 @@ public final class ActionSet implements ActionNames {
         public InsertBreakAction() {
             isEditAction = true;
         }
+        @Override
         public void internalPerformAction(final TextKit tk) {
             tk.replaceSelectedText("\n");
         }
@@ -56,6 +57,7 @@ public final class ActionSet implements ActionNames {
         public InsertTabAction() {
             isEditAction = true;
         }
+        @Override
         public void internalPerformAction(final TextKit tk) {
             tk.replaceSelectedText("\t");
         }
@@ -66,12 +68,14 @@ public final class ActionSet implements ActionNames {
             isEditAction = true;
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextUtils.cut(tk);
         }
     }
 
     private static class CopyAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextUtils.copy(tk);
         }
@@ -82,18 +86,21 @@ public final class ActionSet implements ActionNames {
             isEditAction = true;
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextUtils.paste(tk);
         }
     }
 
     private static class BeepAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Toolkit.getDefaultToolkit().beep();
         }
     }
 
     private static class SelectAllAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             int length = tk.getDocument().getLength();
@@ -103,6 +110,7 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class DumpModelAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Document doc = tk.getDocument();
             if (doc instanceof AbstractDocument) {
@@ -116,6 +124,7 @@ public final class ActionSet implements ActionNames {
             isEditAction = true;
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             int curPos = caret.getDot();
@@ -146,6 +155,7 @@ public final class ActionSet implements ActionNames {
                 selectionPreviousWordAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 int oldPos = tk.getCaret().getDot();
@@ -166,7 +176,7 @@ public final class ActionSet implements ActionNames {
 
         private boolean isMovingCaret;
 
-        private static Position.Bias[] auxBiasArray = new Position.Bias[1];
+        private static final Position.Bias[] auxBiasArray = new Position.Bias[1];
 
         public NextVisualPositionAction(final String name) {
             if (backwardAction.equals(name)) {
@@ -196,6 +206,7 @@ public final class ActionSet implements ActionNames {
             }
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             int oldPos = caret.getDot();
@@ -223,6 +234,7 @@ public final class ActionSet implements ActionNames {
         public DeleteNextCharAction() {
             isEditAction = true;
         }
+        @Override
         public void internalPerformAction(final TextKit tk) {
              TextCaret caret = tk.getCaret();
              int curPos = caret.getDot();
@@ -246,11 +258,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class EndAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public EndAction(final String name) {
             isMovingCaret = selectionEndAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
                 int length = tk.getDocument().getLength();
                 TextUtils.changeCaretPosition(tk, length, isMovingCaret);
@@ -260,11 +273,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class EndLineAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public EndLineAction(final String name) {
             isMovingCaret = selectionEndLineAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 TextCaret caret = tk.getCaret();
@@ -279,11 +293,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class EndParagraphAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public EndParagraphAction(final String name) {
             isMovingCaret = selectionEndParagraphAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Document doc = tk.getDocument();
             int curPos = tk.getCaret().getDot();
@@ -298,11 +313,12 @@ public final class ActionSet implements ActionNames {
 
 
     private static class BeginAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public BeginAction(final String name) {
             isMovingCaret = (selectionBeginAction.equals(name));
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
                 TextUtils.changeCaretPosition(tk, 0, isMovingCaret);
                 TextUtils.setCurrentPositionAsMagic(tk);
@@ -311,11 +327,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class BeginLineAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public BeginLineAction(final String name) {
             isMovingCaret = selectionBeginLineAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                TextCaret caret = tk.getCaret();
@@ -330,11 +347,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class BeginParagraphAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public BeginParagraphAction(final String name) {
             isMovingCaret =  selectionBeginParagraphAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Document doc = tk.getDocument();
             int curPos = tk.getCaret().getDot();
@@ -346,11 +364,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class BeginWordAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public BeginWordAction(final String name) {
             isMovingCaret = selectionBeginWordAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 int oldPos = tk.getCaret().getDot();
@@ -363,11 +382,12 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class EndWordAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public EndWordAction(final String name) {
             isMovingCaret = selectionEndWordAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 int oldPos = tk.getCaret().getDot();
@@ -385,11 +405,12 @@ public final class ActionSet implements ActionNames {
 
 
     private static class NextWordAction extends AWTTextAction {
-        private boolean isMovingCaret;
+        private final boolean isMovingCaret;
         public NextWordAction(final String name) {
              isMovingCaret = selectionNextWordAction.equals(name);
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 int oldPos = tk.getCaret().getDot();
@@ -444,6 +465,7 @@ public final class ActionSet implements ActionNames {
         }
 
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             try {
                 TextCaret caret = tk.getCaret();
@@ -488,6 +510,7 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class SelectLineAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             int curPos = caret.getDot();
@@ -503,6 +526,7 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class SelectParagraphAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Document doc = tk.getDocument();
             TextCaret caret = tk.getCaret();
@@ -520,6 +544,7 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class SelectWordAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             int curPos = caret.getDot();
@@ -538,6 +563,7 @@ public final class ActionSet implements ActionNames {
     }
 
     private static class UnselectAction extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             TextCaret caret = tk.getCaret();
             caret.setDot(caret.getDot(),
@@ -547,6 +573,7 @@ public final class ActionSet implements ActionNames {
 
     private static class ToggleComponentOrientationAction
         extends AWTTextAction {
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Component component = tk.getComponent();
             if (component.getComponentOrientation().isLeftToRight()) {
@@ -562,7 +589,7 @@ public final class ActionSet implements ActionNames {
     private static class PageAction extends AWTTextAction {
         protected int direction = 0;
 
-        private static Position.Bias[] biasRet = new Position.Bias[1];
+        private static final Position.Bias[] biasRet = new Position.Bias[1];
 
         public PageAction(final String name) {
             if (selectionPageLeftAction.equals(name)) {
@@ -572,6 +599,7 @@ public final class ActionSet implements ActionNames {
             }
         }
 
+        @Override
         public void internalPerformAction(final TextKit tk) {
             Rectangle rect = tk.getVisibleRect();
             Point pt;
@@ -599,9 +627,9 @@ public final class ActionSet implements ActionNames {
         return root.getElement(root.getElementIndex(offset));
     }
 
-    public static HashMap actionMap;
+    public static HashMap<String, AWTTextAction> actionMap;
     static {
-        actionMap = new HashMap();
+        actionMap = new HashMap<String, AWTTextAction>();
         actionMap.put(deletePrevCharAction,  new DeletePrevCharAction());
         actionMap.put(insertBreakAction, new InsertBreakAction());
         actionMap.put(previousWordAction, new PreviousWordAction(previousWordAction));

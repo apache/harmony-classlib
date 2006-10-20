@@ -51,7 +51,7 @@ public class WinFileDialog extends WinStyle {
     private static class OFNHookHandler implements Handler {
         
         public long windowProc(long hwnd, int msg, long wParam, long lParam) {
-            FileDialog fd = (FileDialog) thread2fd.get(Thread.currentThread());
+            FileDialog fd = thread2fd.get(Thread.currentThread());
             if (fd == null) {
                 return 0l;
             }
@@ -104,21 +104,21 @@ public class WinFileDialog extends WinStyle {
         
     }
     
-    private static Win32 win32 = Win32.getInstance();
-    private static NativeBridge nb = NativeBridge.getInstance();
-    private static ComponentInternals ci = ComponentInternals.
+    private static final Win32 win32 = Win32.getInstance();
+    private static final NativeBridge nb = NativeBridge.getInstance();
+    private static final ComponentInternals ci = ComponentInternals.
     getComponentInternals();
-    private static Map thread2fd = new HashMap();
-    private static Map fd2win = new HashMap();
-    private static OFNHookHandler handler = new OFNHookHandler();
-    private static long ofnHookPtr = Callback.registerCallbackOFN(handler);
+    private static final Map<Thread, FileDialog> thread2fd = new HashMap<Thread, FileDialog>();
+    private static final Map<FileDialog, WinFileDialog> fd2win = new HashMap<FileDialog, WinFileDialog>();
+    private static final OFNHookHandler handler = new OFNHookHandler();
+    private static final long ofnHookPtr = Callback.registerCallbackOFN(handler);
     private final FileDialog fileDialog;
     private final boolean modal;
     private final Win32.OPENFILENAMEW ofn;
     private long hwnd;
     
     public static WinFileDialog getInstance(FileDialog fd) {
-        return (WinFileDialog) fd2win.get(fd);
+        return fd2win.get(fd);
     }
     
     public WinFileDialog(FileDialog fd) {
@@ -244,6 +244,7 @@ public class WinFileDialog extends WinStyle {
                 // need to continue dispatching events
                 // so start inner modal loop:
                 new Thread() {
+                    @Override
                     public void run() {
                         show(fileDialog.getMode());
                         ci.endModalLoop(fileDialog);
@@ -258,6 +259,7 @@ public class WinFileDialog extends WinStyle {
             // start new thread here and
             // return immediately(return value is useless)
             new Thread() {
+                @Override
                 public void run() {
                     show(fileDialog.getMode());
                 }

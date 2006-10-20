@@ -40,6 +40,8 @@ public class WinGraphics2DFactory extends CommonGraphics2DFactory {
         inst = new WinGraphics2DFactory();
     }
 
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {
         Insets ins = nw.getInsets();
         return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
@@ -58,6 +60,7 @@ public class WinGraphics2DFactory extends CommonGraphics2DFactory {
         return WinFontManager.inst;
     }
 
+    @Override
     public Font embedFont(String fontFilePath) {
         return WindowsFont.embedFont(fontFilePath);
     }

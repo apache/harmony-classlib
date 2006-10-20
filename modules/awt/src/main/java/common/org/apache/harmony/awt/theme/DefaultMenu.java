@@ -216,7 +216,6 @@ public class DefaultMenu {
         int margin = spacing + itemHeight/4;
 
         Point location = s.getLocation();
-        Dimension itemSize = s.getItem(index).getMenuSize();
         Point result = new Point(location);
         result.translate(s.getWidth() - margin, y - spacing);
         // TODO: ajust position according to sumbenu size

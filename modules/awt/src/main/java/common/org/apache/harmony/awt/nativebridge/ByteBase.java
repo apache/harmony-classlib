@@ -96,9 +96,8 @@ public class ByteBase {
                 lock = arac.lockArrayLong(array);
             }
             return lock.getAddress() + offset;
-        } else {
-            return addr;
         }
+        return addr;
     }
 
     /**
@@ -110,9 +109,8 @@ public class ByteBase {
                 lock = arac.lockArrayShort(array);
             }
             return lock.getAddress() + offset;
-        } else {
-            return addr;
         }
+        return addr;
     }
 
     void unlock() {
@@ -151,10 +149,9 @@ public class ByteBase {
     public byte get(int index) {
         if (addr == 0) { // throws ArrayIndexOutofBounds
             return array[offset + index];
-        } else {
-            checkIndex(index, 1);
-            return macc.getByte(addr + index);
         }
+        checkIndex(index, 1);
+        return macc.getByte(addr + index);
     }
 
     /**
@@ -253,10 +250,9 @@ public class ByteBase {
     public char getChar(int index) {
         if(addr == 0){
             return getCharFromArray(index);
-        } else {
-            checkIndex(index, 2);
-            return macc.getChar(addr + index);
         }
+        checkIndex(index, 2);
+        return macc.getChar(addr + index);
     }
 
     /**
@@ -335,10 +331,9 @@ public class ByteBase {
     public short getInt16(int index) {
         if(addr == 0){
             return getInt16FromArray(index);
-        } else {
-            checkIndex(index, 2);
-            return macc.getShort(addr + index);
         }
+        checkIndex(index, 2);
+        return macc.getShort(addr + index);
     }
 
     /**
@@ -418,10 +413,9 @@ public class ByteBase {
     public float getFloat(int index) {
         if(addr == 0) {
             return Float.intBitsToFloat(getInt32FromArray(index));
-        } else {
-            checkIndex(index, 4);
-            return macc.getFloat(addr + index);
         }
+        checkIndex(index, 4);
+        return macc.getFloat(addr + index);
     }
 
 
@@ -453,10 +447,9 @@ public class ByteBase {
     public double getDouble(int index) {
         if(addr == 0) {
             return Double.longBitsToDouble(getInt64FromArray(index));
-        } else {
-            checkIndex(index, 8);
-            return macc.getDouble(addr + index);
         }
+        checkIndex(index, 8);
+        return macc.getDouble(addr + index);
     }
 
     /**
@@ -584,10 +577,9 @@ public class ByteBase {
     public int getInt32(int index) {
         if(addr == 0) {
             return getInt32FromArray(index);
-        } else {
-            checkIndex(index, 4);
-            return macc.getInt(addr + index);
         }
+        checkIndex(index, 4);
+        return macc.getInt(addr + index);
     }
 
     /**
@@ -666,10 +658,9 @@ public class ByteBase {
     public long getInt64(int index) {
         if(addr == 0) {
             return getInt64FromArray(index);
-        } else {
-            checkIndex(index, 8);
-            return macc.getLong(addr + index);
         }
+        checkIndex(index, 8);
+        return macc.getLong(addr + index);
     }
 
     /**
@@ -750,12 +741,12 @@ public class ByteBase {
             return CLONG_SIZE == 8
                     ? getInt64FromArray(index)
                     : getInt32FromArray(index) & 0x00000000ffffffffL;
-        } else { // native
-            checkIndex(index, CLONG_SIZE == 8 ? 8 : 4);
-            return CLONG_SIZE == 8
-                    ? macc.getLong(addr + index)
-                    : macc.getInt(addr + index) & 0x00000000ffffffffL;
         }
+        // native
+        checkIndex(index, CLONG_SIZE == 8 ? 8 : 4);
+        return CLONG_SIZE == 8
+                ? macc.getLong(addr + index)
+                : macc.getInt(addr + index) & 0x00000000ffffffffL;
     }
 
     /**
@@ -832,11 +823,10 @@ public class ByteBase {
         if(addr != 0) {
             checkIndex(index, POINTER_SIZE == 8 ? 8 : 4);
             return macc.getPointer(addr + index);
-        } else {
-            return POINTER_SIZE == 8
-                    ? getInt64FromArray(index)
-                    : getInt32FromArray(index);
         }
+        return POINTER_SIZE == 8
+                ? getInt64FromArray(index)
+                : getInt32FromArray(index);
     }
 
     /**
@@ -908,9 +898,8 @@ public class ByteBase {
                 max = (int) strlen;
             }
             return getStringFromArray(max);
-        } else {
-            return stac.createString(addr, strlen);
         }
+        return stac.createString(addr, strlen);
     }
 
     /**
@@ -1011,12 +1000,11 @@ public class ByteBase {
                     + ((array[index++] & 0xff) << 16)
                     + ((array[index++] & 0xff) << 8)
                     + array[index];
-        } else {
-            return (array[index++] & 0xff)
-                    + ((array[index++] & 0xff) << 8)
-                    + ((array[index++] & 0xff) << 16)
-                    + (array[index] << 24);
         }
+        return (array[index++] & 0xff)
+                + ((array[index++] & 0xff) << 8)
+                + ((array[index++] & 0xff) << 16)
+                + (array[index] << 24);
     }
 
     void setInt32InArray(int index, int value) {
@@ -1046,17 +1034,15 @@ public class ByteBase {
                     + ((array[index++] & 0xffl) << 16)
                     + ((array[index++] & 0xffl) << 8)
                     + array[index];
-        } else {
-            return (array[index++] & 0xffl)
-                    + ((array[index++] & 0xffl) << 8)
-                    + ((array[index++] & 0xffl) << 16)
-                    + ((array[index++] & 0xffl) << 24)
-                    + ((array[index++] & 0xffl) << 32)
-                    + ((array[index++] & 0xffl) << 40)
-                    + ((array[index++] & 0xffl) << 48)
-                    + ((array[index] & 0xffl) << 56);
-
         }
+        return (array[index++] & 0xffl)
+                + ((array[index++] & 0xffl) << 8)
+                + ((array[index++] & 0xffl) << 16)
+                + ((array[index++] & 0xffl) << 24)
+                + ((array[index++] & 0xffl) << 32)
+                + ((array[index++] & 0xffl) << 40)
+                + ((array[index++] & 0xffl) << 48)
+                + ((array[index] & 0xffl) << 56);
     }
 
     void setInt64InArray(int index, long value) {
@@ -1100,9 +1086,9 @@ public class ByteBase {
     void setStringInArray(String str) {
         char[] chars = str.toCharArray();
         int index = offset;
-        for (int i = 0; i < chars.length; i++) {
-            array[index++] = (byte) chars[i];
-            array[index++] = (byte) (chars[i] >> 8);
+        for (char element : chars) {
+            array[index++] = (byte) element;
+            array[index++] = (byte) (element >> 8);
         }
         //-- 2 null value are terminated the string
         array[index++] = 0;

@@ -47,7 +47,7 @@ public class GDIPTextRenderer extends TextRenderer {
     // GDI Pen object handle 
     long curPen;
     
-    // curPen's ñolor 
+    // curPen's ï¿½olor 
     int curPenColor;
     
     // Print debug output or not
@@ -57,6 +57,8 @@ public class GDIPTextRenderer extends TextRenderer {
 
     private GDIPTextRenderer() {}
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void drawGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
         FontPeerImpl fnt = (FontPeerImpl)gv.getFont().getPeer();
@@ -76,6 +78,7 @@ public class GDIPTextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void gdipDrawNormalGlyphVector(Graphics2D g, GlyphVector gv, 
             float x, float y) {
         int len = gv.getNumGlyphs();
@@ -111,8 +114,9 @@ public class GDIPTextRenderer extends TextRenderer {
 
                 Glyph gl = ((CommonGlyphVector)gv).vector[i];
 
-                if (gl.getPointWidth()==0)
+                if (gl.getPointWidth()==0) {
                     continue;
+                }
 
                 char chr = gl.getChar();
 
@@ -196,8 +200,9 @@ public class GDIPTextRenderer extends TextRenderer {
             for (int i=0; i < len ; i++){
                 Glyph gl = ((CommonGlyphVector)gv).vector[i];
                 
-                if (gl.getPointWidth()==0)
+                if (gl.getPointWidth()==0) {
                     continue;
+                }
 
                 chars[count] = gl.getChar();
                 int index = i * 2;
@@ -232,6 +237,7 @@ public class GDIPTextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void gdipDrawCompositeGlyphVector(Graphics2D g, GlyphVector gv, 
             float x, float y) {
         int status = 0;
@@ -361,6 +367,8 @@ public class GDIPTextRenderer extends TextRenderer {
 
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void drawString(Graphics2D g, String str, float x, float y) {
         int len = str.length();
         if (len == 0){
@@ -384,6 +392,7 @@ public class GDIPTextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void gdipDrawNormalString(Graphics2D g, String str, float x, float y) {
         long graphicsInfo = ((WinGDIPGraphics2D)g).getGraphicsInfo();
 
@@ -445,6 +454,7 @@ public class GDIPTextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void gdipDrawNormalChars(Graphics2D g, Font fnt, char str[], 
             int len, float x, float y) {
         long graphicsInfo = ((WinGDIPGraphics2D)g).getGraphicsInfo();
@@ -507,6 +517,7 @@ public class GDIPTextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void gdipDrawCompositeString(Graphics2D g, String str, float x, 
             float y) {
         int len = str.length();

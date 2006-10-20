@@ -37,18 +37,22 @@ public class GDISurface extends Surface {
     public GDISurface(long gi){
         surfaceDataPtr = createSurfData(gi);
     }
+    @Override
     public void dispose() {
-        if (surfaceDataPtr == 0)
+        if (surfaceDataPtr == 0) {
             return;
+        }
         
         dispose(surfaceDataPtr);
         surfaceDataPtr = 0;
     }
 
+    @Override
     public long lock() {
         return 0;
     }
 
+    @Override
     public void unlock() {
 
     }
@@ -57,18 +61,22 @@ public class GDISurface extends Surface {
 
     private native void dispose(long structPtr);
 
+    @Override
     public ColorModel getColorModel() {
         return null;
     }
 
+    @Override
     public WritableRaster getRaster() {
         return null;
     }
 
+    @Override
     public int getSurfaceType() {
         return 0;
     }
 
+    @Override
     public Surface getImageSurface() {
         return this;
     }

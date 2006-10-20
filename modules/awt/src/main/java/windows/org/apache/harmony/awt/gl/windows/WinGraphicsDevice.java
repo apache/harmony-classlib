@@ -65,13 +65,14 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         long hmon = win32.MonitorFromWindow(hwnd, WindowsDefs.MONITOR_DEFAULTTOPRIMARY);
         Win32.MONITORINFOEXW mi = win32.createMONITORINFOEXW(false);
         mi.get_MONITORINFO().set_cbSize(mi.size());
-        if (win32.GetMonitorInfoW(hmon, mi.shortLockPointer()) == 0)
+        if (win32.GetMonitorInfoW(hmon, mi.shortLockPointer()) == 0) {
             throw new RuntimeException("Can not get monitor info");
+        }
         Win32.RECT rect = mi.get_MONITORINFO().get_rcMonitor();
-        int x = (int)rect.get_left();
-        int y = (int)rect.get_top();
-        int width = (int)rect.get_right() - x;
-        int height = (int)rect.get_bottom() - y;
+        int x = rect.get_left();
+        int y = rect.get_top();
+        int width = rect.get_right() - x;
+        int height = rect.get_bottom() - y;
         bounds = new Rectangle(x, y, width, height);
         displayMode = new DisplayMode(bounds.width, bounds.height, DisplayMode.BIT_DEPTH_MULTI, DisplayMode.REFRESH_RATE_UNKNOWN);
         id = mi.get_szDevice().getString();
@@ -80,15 +81,18 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         mi.free();
     }
 
+    @Override
     public int getType() {
         return type;
     }
 
+    @Override
     public GraphicsConfiguration getDefaultConfiguration() {
         if (defaultConfig == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
-            if (hdc == 0)
+            if (hdc == 0) {
                 throw new RuntimeException("Can not create DC for device");
+            }
 
             int dci = win32.GetPixelFormat(hdc);
             Win32.PIXELFORMATDESCRIPTOR pfd = win32.createPIXELFORMATDESCRIPTOR(false);
@@ -103,11 +107,13 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         return defaultConfig;
     }
 
+    @Override
     public GraphicsConfiguration[] getConfigurations() {
         if (configs == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
-            if (hdc == 0)
+            if (hdc == 0) {
                 throw new RuntimeException("Can not create DC for device");
+            }
 
             // If we created DC why do not ask it about resolution?
             if (resolution == null) {
@@ -118,19 +124,21 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
 
             Win32.PIXELFORMATDESCRIPTOR pfd = win32.createPIXELFORMATDESCRIPTOR(false);
             int pfnum = win32.DescribePixelFormat(hdc, 1, pfd.size(), pfd);
-            if (pfnum == 0)
+            if (pfnum == 0) {
                 return null;
+            }
 
             // Choose default configuration
             int dci = win32.GetPixelFormat(hdc);
 
-            Vector gcv = new Vector(100);
+            Vector<WinGraphicsConfiguration> gcv = new Vector<WinGraphicsConfiguration>(100);
             int i = 1;
             while (win32.DescribePixelFormat(hdc, i, pfd.size(), pfd) > 0) {
                 WinGraphicsConfiguration gc = new WinGraphicsConfiguration(this, i, pfd);
 
-                if (!gcv.contains(gc))
+                if (!gcv.contains(gc)) {
                     gcv.add(gc);
+                }
 
                 // Is default PixelFormat?
                 if (dci == i) {
@@ -151,13 +159,15 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
             // If we can not find default PixelFormat
             // let's use first one
             // Probably not best idea...
-            if (defaultConfig == null)
+            if (defaultConfig == null) {
                 defaultConfig = configs[0];
+            }
         }
 
         return configs;
     }
 
+    @Override
     public String getIDstring() {
         return id;
     }
@@ -170,6 +180,7 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         return bounds;
     }
 
+    @Override
     public String toString() {
         return getClass().getName()+"[Bounds: "+bounds+", ID: "+id+", primary: "+primary+"]";
     }
@@ -182,20 +193,24 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         return idBytes;
     }
 
+    @Override
     public DisplayMode getDisplayMode() {
         return displayMode;
     }
 
+    @Override
     public DisplayMode[] getDisplayModes() {
         DisplayMode []dms = {displayMode};
         return  dms;
     }
 
+    @Override
     public Dimension getResolution() {
         if (resolution == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
-            if (hdc == 0)
+            if (hdc == 0) {
                 throw new RuntimeException("Can not create DC for device");
+            }
 
             if (resolution == null) {
                 int width = win32.GetDeviceCaps(hdc, WindowsDefs.LOGPIXELSY);

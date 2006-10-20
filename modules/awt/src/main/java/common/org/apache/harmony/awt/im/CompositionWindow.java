@@ -61,6 +61,7 @@ class CompositionWindow extends IMWindow {
             caret.setBlinkRate(0);
             caret.setVisible(true);
             imRequests = new InputMethodRequestsImpl(textKit) {
+                @Override
                 public TextHitInfo getLocationOffset(int x, int y) {
                     if (!isShowing()) {
                         return null;
@@ -69,6 +70,7 @@ class CompositionWindow extends IMWindow {
                 }
             };
             imListener = new InputMethodListenerImpl(textKit) {
+                @Override
                 public void inputMethodTextChanged(InputMethodEvent ime) {                   
                     super.inputMethodTextChanged(ime);
                     // create KEY_TYPED event for each committed char
@@ -121,10 +123,12 @@ class CompositionWindow extends IMWindow {
             
         }
 
+        @Override
         public InputMethodRequests getInputMethodRequests() {
             return imRequests;
         }
         
+        @Override
         public void paint(Graphics g) {
             caret.paint(g);
         }
@@ -132,7 +136,7 @@ class CompositionWindow extends IMWindow {
     }
     
     private Component client;
-    private ActiveClient activeClient;
+    private final ActiveClient activeClient;
 
     public CompositionWindow(Component client) {
         setClient(client);
@@ -150,6 +154,7 @@ class CompositionWindow extends IMWindow {
         return Toolkit.getDefaultToolkit().getScreenSize();
     }
     
+    @Override
     public InputMethodRequests getInputMethodRequests() {
         return getActiveClient().getInputMethodRequests();
     }

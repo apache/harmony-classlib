@@ -35,7 +35,7 @@ public abstract class NativeEventQueue {
     private ShutdownWatchdog shutdownWatchdog;
     private class EventMonitor {}
     private final Object eventMonitor = new EventMonitor();
-    private final LinkedList eventQueue = new LinkedList();
+    private final LinkedList<NativeEvent> eventQueue = new LinkedList<NativeEvent>();
 
     public static abstract class Task {
         public volatile Object returnValue;
@@ -72,7 +72,7 @@ public abstract class NativeEventQueue {
                 shutdownWatchdog.setNativeQueueEmpty(true);
                 return null;
             }
-            return (NativeEvent)eventQueue.remove(0);
+            return eventQueue.remove(0);
         }
     }
     

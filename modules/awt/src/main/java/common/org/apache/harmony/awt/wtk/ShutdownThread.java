@@ -32,6 +32,7 @@ public final class ShutdownThread extends Thread {
     
     private boolean shouldStop = false;
 
+    @Override
     public void run() {
         synchronized (this) {
             notifyAll(); // synchronize the startup
@@ -50,6 +51,7 @@ public final class ShutdownThread extends Thread {
         }
     }
 
+    @Override
     public void start() {
         synchronized (this) {
             super.start();

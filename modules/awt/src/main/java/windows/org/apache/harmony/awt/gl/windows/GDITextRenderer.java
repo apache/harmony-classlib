@@ -46,16 +46,16 @@ public class GDITextRenderer extends TextRenderer {
     // GDI Pen object handle 
     long curPen;
 
-    // curPen's ñolor 
+    // curPen's color 
     int curPenColor;
     
     // GDI clipped region 
     long hOldGDIRgn = 0;
     
-    // Win32 instanse
+    // Win32 instance
     private final Win32 win32 = Win32.getInstance();
     
-    /** GDITextRenderer singleton instanse */
+    /** GDITextRenderer singleton instance */
     public static final GDITextRenderer inst = new GDITextRenderer();
 
     private GDITextRenderer() {}
@@ -66,6 +66,8 @@ public class GDITextRenderer extends TextRenderer {
         (argbPix & 0x0000FF00) | ((argbPix & 0x000000FF) << 16);
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void drawGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
         FontPeerImpl fnt = (FontPeerImpl)gv.getFont().getPeer();
@@ -85,6 +87,7 @@ public class GDITextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void drawNormalGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
         AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
@@ -106,8 +109,9 @@ public class GDITextRenderer extends TextRenderer {
             Glyph gl = ((CommonGlyphVector)gv).vector[i];
             char chr = gl.getChar();
 
-            if (gl.getPointWidth()==0)
+            if (gl.getPointWidth()==0) {
                 continue;
+            }
 
             String sChar = String.valueOf(chr);
 
@@ -128,6 +132,7 @@ public class GDITextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void drawCompositeGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
         AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
@@ -149,8 +154,9 @@ public class GDITextRenderer extends TextRenderer {
             Glyph gl = ((CommonGlyphVector)gv).vector[i];
             char chr = gl.getChar();
 
-            if (gl.getPointWidth()==0)
+            if (gl.getPointWidth()==0) {
                 continue;
+            }
 
             String sChar = String.valueOf(chr);
 
@@ -166,6 +172,8 @@ public class GDITextRenderer extends TextRenderer {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void drawString(Graphics2D g, String str, float x, float y) {
         FontPeerImpl fnt = (FontPeerImpl)g.getFont().getPeer();
         if (fnt.getClass() == CompositeFont.class){
@@ -184,6 +192,7 @@ public class GDITextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void drawNormalString(Graphics2D g, String str, int x, int y) {
         AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
 
@@ -241,6 +250,7 @@ public class GDITextRenderer extends TextRenderer {
      * @param x starting X coordinate to draw at
      * @param y starting Y coordinate to draw at
      */
+    @SuppressWarnings("deprecation")
     public void drawCompositeString(Graphics2D g, String str, int x, int y) {
 
         int len = str.length();

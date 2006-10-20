@@ -22,7 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 public class CLongPointer extends VoidPointer {
 
-    private static int CLONG_SIZE_FACTOR = ByteBase.CLONG_SIZE;
+    private static final int CLONG_SIZE_FACTOR = ByteBase.CLONG_SIZE;
 
     CLongPointer(int size, boolean direct) {
         super(size * CLONG_SIZE_FACTOR, direct);
@@ -41,6 +41,7 @@ public class CLongPointer extends VoidPointer {
     }
 
     /** returns the number of elements in array referenced by this object. If size is unknown returns -1.  */
+    @Override
     public int size() {
         return byteBase.size() / CLONG_SIZE_FACTOR;
     }

@@ -91,6 +91,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_bottom() {
             return byteBase.getInt32(12);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -167,6 +168,7 @@ public class Win32 extends BasicLibWrapper {
         public final POINT get_pt() {
             return instance.createPOINT(getElementPointer(NativeBridge.is64 ? 36 : 20));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -208,6 +210,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_y() {
             return byteBase.getInt32(4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -391,6 +394,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_FlagsEx() {
             return byteBase.getInt32(NativeBridge.is64 ? 148 : 84);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -536,6 +540,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_lfFaceName() {
             return nb.createInt8Pointer(getElementPointer(28));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -844,6 +849,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dmPanningHeight() {
             return byteBase.getInt32(216);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -885,6 +891,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_y() {
             return byteBase.getInt32(4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -976,6 +983,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_hbmColor() {
             return byteBase.getAddress(NativeBridge.is64 ? 24 : 16);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1027,6 +1035,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_Buffer() {
             return nb.createInt8Pointer(getElementPointer(32));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1092,6 +1101,7 @@ public class Win32 extends BasicLibWrapper {
         public final float get_eDy() {
             return byteBase.getFloat(20);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1148,6 +1158,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.RECT get_rcBound() {
             return Win32.instance.createRECT(getElementPointer(16));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1225,6 +1236,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwHoverTime() {
             return byteBase.getInt32(NativeBridge.is64 ? 16 : 12);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1391,6 +1403,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_fRestFlags() {
             return byteBase.getInt32(52);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1482,6 +1495,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwFlags() {
             return byteBase.getInt32(36);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1567,6 +1581,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int16Pointer get_szTypeName() {
             return nb.createInt16Pointer(getElementPointer(NativeBridge.is64 ? 536 : 532));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1778,6 +1793,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwDamageMask() {
             return byteBase.getInt32(36);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1878,6 +1894,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.RECT get_rcNormalPosition() {
             return Win32.instance.createRECT(getElementPointer(28));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1966,6 +1983,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_Data4() {
             return nb.createInt8Pointer(getElementPointer(8));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -1998,6 +2016,7 @@ public class Win32 extends BasicLibWrapper {
         public final SHITEMID get_mkid() {
             return instance.createSHITEMID(getElementPointer(0));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2036,6 +2055,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_abID() {
             return nb.createInt8Pointer(getElementPointer(2));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2144,6 +2164,7 @@ public class Win32 extends BasicLibWrapper {
         public final int SetNameOf(long hwnd, Win32.ITEMIDLIST pidl, Int16Pointer pszName, int uFlags, PointerPointer ppidlOut) {
             return vtbl.SetNameOf(this, hwnd, pidl, pszName, uFlags, ppidlOut);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2188,6 +2209,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_cStr() {
             return nb.createInt8Pointer(getElementPointer(NativeBridge.is64 ? 8 : 4));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2255,6 +2277,7 @@ public class Win32 extends BasicLibWrapper {
         public final int RevokeObjectParam(Int16Pointer pszKey) {
             return vtbl.RevokeObjectParam(this, pszKey);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2606,6 +2629,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2643,6 +2667,7 @@ public class Win32 extends BasicLibWrapper {
         public final int Release() {
             return vtbl.Release(this);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2690,6 +2715,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwTickCountDeadline() {
             return byteBase.getInt32(12);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -2953,6 +2979,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3032,6 +3059,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3138,6 +3166,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_bmiColors() {
             return nb.createInt8Pointer(getElementPointer(40));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3233,6 +3262,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_biClrImportant() {
             return byteBase.getInt32(36);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3312,6 +3342,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.RECT get_rcArea() {
             return Win32.instance.createRECT(getElementPointer(12));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3366,6 +3397,7 @@ public class Win32 extends BasicLibWrapper {
         public final HARDWAREINPUT get_hi() {
             return instance.createHARDWAREINPUT(getElementPointer(NativeBridge.is64 ? 8 : 4));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3431,6 +3463,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_dwExtraInfo() {
             return byteBase.getCLong(NativeBridge.is64 ? 24 : 20);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3478,6 +3511,7 @@ public class Win32 extends BasicLibWrapper {
         public final short get_wParamH() {
             return byteBase.getInt16(6);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3537,6 +3571,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_dwExtraInfo() {
             return byteBase.getCLong(NativeBridge.is64 ? 16 : 12);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3664,6 +3699,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_hIconSm() {
             return byteBase.getAddress(NativeBridge.is64 ? 72 : 44);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -3810,6 +3846,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_lbHatch() {
             return byteBase.getCLong(8);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4117,6 +4154,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int16Pointer get_DeviceKey() {
             return nb.createInt16Pointer(getElementPointer(584));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4665,6 +4703,7 @@ public class Win32 extends BasicLibWrapper {
         public final int EvaluateMode(int param_1, Int32Pointer param_2) {
             return vtbl.EvaluateMode(this, param_1, param_2);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4756,6 +4795,7 @@ public class Win32 extends BasicLibWrapper {
         public final int WaitForVerticalBlank(int param_1, VoidPointer param_2) {
             return vtbl.WaitForVerticalBlank(this, param_1, param_2);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4799,6 +4839,7 @@ public class Win32 extends BasicLibWrapper {
         public final int Clone(PointerPointer ppenum) {
             return vtbl.Clone(this, ppenum);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4848,6 +4889,7 @@ public class Win32 extends BasicLibWrapper {
         public final int SetHWnd(int param_1, long param_2) {
             return vtbl.SetHWnd(this, param_1, param_2);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -4891,6 +4933,7 @@ public class Win32 extends BasicLibWrapper {
         public final int SetEntries(int param_1, int param_2, int param_3, PALETTEENTRY param_4) {
             return vtbl.SetEntries(this, param_1, param_2, param_3, param_4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -5040,6 +5083,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -5625,6 +5669,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -5816,6 +5861,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -5875,6 +5921,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwVolumeDepth() {
             return byteBase.getInt32(12);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6000,6 +6047,7 @@ public class Win32 extends BasicLibWrapper {
         public final DDSCAPS get_ddsCaps() {
             return instance.createDDSCAPS(getElementPointer(NativeBridge.is64 ? 112 : 104));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6032,6 +6080,7 @@ public class Win32 extends BasicLibWrapper {
         public final IDirectDrawSurfaceVtbl get_lpVtbl() {
             return instance.createIDirectDrawSurfaceVtbl(byteBase.getAddress(0));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6491,6 +6540,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6638,6 +6688,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6679,6 +6730,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_cy() {
             return byteBase.getInt32(4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -6732,6 +6784,7 @@ public class Win32 extends BasicLibWrapper {
         public final byte get_peFlags() {
             return byteBase.get(3);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7082,6 +7135,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.DDSCAPS2 get_ddsCaps() {
             return Win32.instance.createDDSCAPS2(getElementPointer(224));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7231,6 +7285,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwTextureStage() {
             return byteBase.getInt32(NativeBridge.is64 ? 128 : 120);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7406,6 +7461,7 @@ public class Win32 extends BasicLibWrapper {
         public final int GetLOD(Int32Pointer param_1) {
             return vtbl.GetLOD(this, param_1);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7471,6 +7527,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwWHQLLevel() {
             return byteBase.getInt32(1064);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7572,6 +7629,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwFlags() {
             return byteBase.getInt32(NativeBridge.is64 ? 68 : 52);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7760,6 +7818,7 @@ public class Win32 extends BasicLibWrapper {
         public final DDCOLORKEY get_ddckSrcColorkey() {
             return instance.createDDCOLORKEY(getElementPointer(NativeBridge.is64 ? 120 : 92));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -7975,6 +8034,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwYUVZBitMask() {
             return byteBase.getInt32(28);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -8894,6 +8954,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -8935,6 +8996,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwColorSpaceHighValue() {
             return byteBase.getInt32(4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -8982,6 +9044,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.DDBLTFX get_lpDDBltFx() {
             return Win32.instance.createDDBLTFX(byteBase.getAddress(NativeBridge.is64 ? 32 : 16));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -9017,6 +9080,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_dwCaps() {
             return byteBase.getInt32(0);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -9076,6 +9140,7 @@ public class Win32 extends BasicLibWrapper {
         public final long get_QuadPart() {
             return byteBase.getInt64(0);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -9769,6 +9834,7 @@ public class Win32 extends BasicLibWrapper {
             }
             return tmp_ret;
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10040,6 +10106,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int16Pointer get_lfFaceName() {
             return nb.createInt16Pointer(getElementPointer(28));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10087,6 +10154,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_lpszDefaultScheme() {
             return nb.createInt8Pointer(byteBase.getAddress(8));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10134,6 +10202,7 @@ public class Win32 extends BasicLibWrapper {
         public final VoidPointer get_pidl() {
             return nb.createInt8Pointer(byteBase.getAddress(NativeBridge.is64 ? 40 : 20));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10190,6 +10259,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.LOGFONTW get_lfFont() {
             return Win32.instance.createLOGFONTW(getElementPointer(16));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10234,6 +10304,7 @@ public class Win32 extends BasicLibWrapper {
         public final POINTFX get_pfxStart() {
             return instance.createPOINTFX(getElementPointer(8));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10338,6 +10409,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.LOGFONTW get_lfMessageFont() {
             return Win32.instance.createLOGFONTW(getElementPointer(408));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10382,6 +10454,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.POINT get_ptMaxTrackSize() {
             return Win32.instance.createPOINT(getElementPointer(32));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10420,6 +10493,7 @@ public class Win32 extends BasicLibWrapper {
         public final Win32.GUID get_clsid() {
             return Win32.instance.createGUID(getElementPointer(4));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10461,6 +10535,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_styleNew() {
             return byteBase.getInt32(4);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10505,6 +10580,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int8Pointer get_apfx() {
             return nb.createInt8Pointer(getElementPointer(4));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10540,6 +10616,7 @@ public class Win32 extends BasicLibWrapper {
         public final Int16Pointer get_szDevice() {
             return nb.createInt16Pointer(getElementPointer(40));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10611,6 +10688,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_flags() {
             return byteBase.getInt32(NativeBridge.is64 ? 32 : 24);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10658,6 +10736,7 @@ public class Win32 extends BasicLibWrapper {
         public final int get_code() {
             return byteBase.getInt32(NativeBridge.is64 ? 16 : 8);
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10693,6 +10772,7 @@ public class Win32 extends BasicLibWrapper {
         public final FIXED get_y() {
             return instance.createFIXED(getElementPointer(4));
         }
+        @Override
         public int size() {
             return sizeof;
         }
@@ -10734,6 +10814,7 @@ public class Win32 extends BasicLibWrapper {
         public final short get_value() {
             return byteBase.getInt16(2);
         }
+        @Override
         public int size() {
             return sizeof;
         }

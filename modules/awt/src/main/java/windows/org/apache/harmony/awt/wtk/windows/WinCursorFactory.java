@@ -67,6 +67,7 @@ public class WinCursorFactory extends CursorFactory {
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#createCursor(int)
      */
+    @Override
     public NativeCursor createCursor(int type) {
         if (type >= 0 && type < predefined.length) {
             long hCursor = win32.LoadCursorW(0l, predefined[type]);
@@ -78,6 +79,7 @@ public class WinCursorFactory extends CursorFactory {
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#createCustomCursor(java.awt.Image, int, int)
      */
+    @Override
     public NativeCursor createCustomCursor(Image img, int xHotSpot, int yHotSpot) {
         long hCursor = WinIcons.createIcon(false, img, xHotSpot, yHotSpot);
         return new WinCursor(eventQueue, hCursor, false);
@@ -86,6 +88,7 @@ public class WinCursorFactory extends CursorFactory {
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#getBestCursorSize(int, int)
      */
+    @Override
     public Dimension getBestCursorSize(int prefWidth, int prefHeight) {
         return new Dimension(win32.GetSystemMetrics(WindowsDefs.SM_CXCURSOR),
                 win32.GetSystemMetrics(WindowsDefs.SM_CYCURSOR));
@@ -94,6 +97,7 @@ public class WinCursorFactory extends CursorFactory {
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#getMaximumCursorColors()
      */
+    @Override
     public int getMaximumCursorColors() {
         long screenDC = win32.GetDC(0);
         int nColors = win32.GetDeviceCaps(screenDC, WindowsDefs.NUMCOLORS);

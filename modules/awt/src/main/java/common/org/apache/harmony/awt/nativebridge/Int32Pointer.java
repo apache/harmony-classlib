@@ -22,7 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 public class Int32Pointer extends VoidPointer {
 
-    private static int INT32_SIZE_FACTOR = 4;
+    private static final int INT32_SIZE_FACTOR = 4;
 
     Int32Pointer(int size, boolean direct) {
         super(size * INT32_SIZE_FACTOR, direct);
@@ -41,6 +41,7 @@ public class Int32Pointer extends VoidPointer {
     }
 
     /** returns the number of elements in array referenced by this object. If size is unknown returns -1.  */
+    @Override
     public int size() {
          return byteBase.size() / INT32_SIZE_FACTOR;
     }

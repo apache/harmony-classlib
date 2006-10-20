@@ -83,6 +83,7 @@ public class WinDropTarget implements DropTargetContextPeer, Runnable {
     
     private long registerDropTarget() {
         Task task = new Task() {
+            @Override
             public void perform() {
                 long ret = WinDataTransfer.registerDropTarget(
                         hwnd, WinDropTarget.this);

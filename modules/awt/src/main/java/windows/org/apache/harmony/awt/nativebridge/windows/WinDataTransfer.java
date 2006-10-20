@@ -89,12 +89,13 @@ public final class WinDataTransfer {
             return isDataObjectFormatAvailable(pointer, nativeFormat);
         }
         
-        public byte[] getSerializedObject(Class clazz) {
+        public byte[] getSerializedObject(Class<?> clazz) {
             String nativeFormat = SystemFlavorMap.encodeDataFlavor(
                     new DataFlavor(clazz, null));
             return getDataObjectSerialized(pointer, nativeFormat);
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof IDataObject) {
                 return pointer == ((IDataObject)obj).pointer;
@@ -102,6 +103,7 @@ public final class WinDataTransfer {
             return false;
         }
         
+        @Override
         public int hashCode() {
             return (int)pointer;
         }

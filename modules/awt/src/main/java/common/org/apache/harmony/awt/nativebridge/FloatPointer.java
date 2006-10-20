@@ -22,7 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 public class FloatPointer extends VoidPointer {
 
-    private static int FLOAT_SIZE_FACTOR = 4;
+    private static final int FLOAT_SIZE_FACTOR = 4;
 
     FloatPointer(int size, boolean direct) {
         super(size * FLOAT_SIZE_FACTOR, direct);
@@ -91,6 +91,7 @@ public class FloatPointer extends VoidPointer {
         return new FloatPointer(byteBase.getBytesBaseElementPointer(index * FLOAT_SIZE_FACTOR, FLOAT_SIZE_FACTOR));
     }
 
+    @Override
     public int size() {
         return byteBase.size() / FLOAT_SIZE_FACTOR;
     }

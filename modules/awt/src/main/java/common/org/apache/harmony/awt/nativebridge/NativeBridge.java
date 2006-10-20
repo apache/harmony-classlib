@@ -28,7 +28,7 @@ public class NativeBridge {
     private NativeBridge() {
     }
 
-    private static NativeBridge instance = new NativeBridge();
+    private static final NativeBridge instance = new NativeBridge();
     private static final MemoryAccessor memAccess = AccessorFactory.getMemoryAccessor();
     public static final int ptrSize = memAccess.getPointerSize();
     public static final boolean is64 = (ptrSize == 8);
