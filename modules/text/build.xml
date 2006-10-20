@@ -43,27 +43,29 @@
     <target name="test" depends="build, compile-tests, run-tests" />
     
     <target name="overlay-oss">
-    <mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
-    <unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
-    <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
-    <antcall target="copy-libs" inheritall="true" />
+        <mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
+        <unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
+        <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
+        <antcall target="copy-libs" inheritall="true" />
     </target>
+
     <target name="copy-libs" if="is.x86_64">
         <copy todir="${hy.text.src.main.native}/icu4c/unicode" overwrite="yes">
                 <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
         </copy>
     </target>
+
     <target name="clean-overlay-oss">
-    <delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
+        <delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
     </target>
     
     <!-- Build native code -->
     <target name="build-native" >
-    <make dir="${hy.text.src.main.native}/text/${hy.os}" />
+        <make dir="${hy.text.src.main.native}/text/${hy.os}" />
 
-    <!-- Copy the built shared libs over to the jre/bin dir -->
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.text.src.main.native}/text">
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.text.src.main.native}/text">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
@@ -71,11 +73,12 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-    <make dir="${hy.text.src.main.native}/text/${hy.os}" target="clean" />
+        <make dir="${hy.text.src.main.native}/text/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/text.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/text-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.text.bin.test}" />
@@ -120,8 +123,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/text-src.jar"
+             manifest="${hy.text}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.text.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

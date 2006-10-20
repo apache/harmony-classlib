@@ -42,6 +42,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/lib/tools.jar" />
+        <delete file="${hy.jdk}/lib/tools-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.tools.bin.test}" />
@@ -92,8 +93,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/lib/tools-src.jar"
+             manifest="${hy.tools}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.tools.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

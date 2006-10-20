@@ -42,6 +42,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/logging.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/logging-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.logging.bin.test}" />
@@ -77,8 +78,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/logging-src.jar"
+             manifest="${hy.logging}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.logging.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 
@@ -199,7 +212,7 @@
     </target>
 
     <target name="copy-resources">
-        <copy todir="${hy.jdk}/jre/lib" overwrite="yes" flatten="yes">
+        <copy todir="${hy.jdk}/jre/lib" flatten="yes">
             <fileset dir="${hy.logging.src.main.java}">
                 <include name="**/logging.properties" />
             </fileset>

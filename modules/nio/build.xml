@@ -63,6 +63,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/nio.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/nio-src.jar" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.nio.bin.test}" />
@@ -84,11 +85,11 @@
         <javac sourcepath=""
             srcdir="${hy.nio.src.main.java}"
             destdir="${hy.build}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+            compiler="${hy.javac.compiler}"
+            memoryMaximumSize="${hy.javac.maxmem}"
+            source="${hy.javac.source}" 
+            target="${hy.javac.target}"
+            debug="${hy.javac.debug}">
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
@@ -110,13 +111,24 @@
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/nio.jar"
             manifest="${hy.nio}/META-INF/MANIFEST.MF">
-
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/nio-src.jar"
+            manifest="${hy.nio}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.nio.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

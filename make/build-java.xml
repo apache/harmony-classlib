@@ -47,7 +47,7 @@
     <!-- ================================= 
           target: build
          ================================= -->
-    <target name="build" depends="-compile, -layout"
+    <target name="build" depends="-layout, -compile"
             description="Compile Java source and construct deploy directory." />
 
     <!-- ================================= 
@@ -55,7 +55,6 @@
          ================================= -->
     <target name="clean" depends="-clean-bin, -clean-layout"
         description="Remove compiled classes and delete the deploy directory."/>
-
 
     <!-- ================================= 
           target: -clean-bin
@@ -188,10 +187,7 @@ ${built.files.list}
             </classpath>
         </javac>
 
-        <mkdir dir="${hy.jdk}/jre/lib/boot" />
-
         <call-modules target="build" />
-
     </target>
 
 
@@ -199,17 +195,20 @@ ${built.files.list}
           target: -layout              
           Construct the correct directory structure for the class libs
          ================================= -->
-    <target name="-layout" depends="-compile">
-        
+    <target name="-layout" depends="-prepare-depends">
+
         <!-- Create the structure -->
         <mkdir dir="${hy.jdk}/jre/bin" />
         <mkdir dir="${hy.jdk}/jre/lib/boot" />
         <mkdir dir="${hy.jdk}/jre/lib/ext" />
         <mkdir dir="${hy.jdk}/jre/lib/security" />
 
+        <!-- Copy across the required files -->
+        <copy file="LICENSE" todir="${hy.hdk}" verbose="yes" />
+        <copy file="NOTICE" todir="${hy.hdk}" verbose="yes" />
+
         <!-- Copy across the boot dependency jars -->
-        <copy todir="${hy.jdk}/jre/lib/boot" overwrite="yes"
-              verbose="yes">
+        <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.jars}">
                 <patternset includes="*.jar" />
                 <patternset includes="xerces_2.8.0/*.jar" />
@@ -223,19 +222,17 @@ ${built.files.list}
         </copy>
 
         <!-- Copy across the extension dependency jars -->
-        <copy todir="${hy.jdk}/jre/lib/ext" overwrite="yes"
-              verbose="yes" flatten="yes">
+        <copy todir="${hy.jdk}/jre/lib/ext" flatten="yes">
             <fileset file="${bcprov.jar}" />
         </copy>
 
         <!-- Copy across the jdk/lib dependency jars -->
-        <copy todir="${hy.jdk}/lib" overwrite="yes"
-              verbose="yes" flatten="yes">
+        <copy todir="${hy.jdk}/lib" flatten="yes">
             <fileset file="${ecj.jar}" />
         </copy>
 
         <!-- Copy across the support files -->
-        <copy todir="${hy.jdk}/jre/lib/boot" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.files}">
                 <include name="bootclasspath.properties" />
             </fileset>
@@ -243,13 +240,12 @@ ${built.files.list}
         <fixcrlf srcdir="${hy.jdk}/jre/lib/boot"
             includes="bootclasspath.properties" />
 
-        <copy todir="${hy.jdk}/jre/lib/security" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/lib/security">
              <fileset dir="${depends.files}">
                  <include name="java.policy" />
                  <include name="java.security" />
              </fileset>
          </copy>
-
     </target>
 
 
@@ -262,6 +258,10 @@ ${built.files.list}
                 <exclude name="jre/bin/default/**" />
                 <exclude name="jre/bin/**" />
                 <exclude name="jre/lib/ext/**" />
+            </fileset>
+            <fileset dir="${hy.hdk}">
+                <include name="LICENSE" />
+                <include name="NOTICE" />
             </fileset>
         </delete>
     </target>

@@ -43,22 +43,22 @@
     <target name="test" depends="build, compile-tests, run-tests" />
     
     <target name="overlay-oss">
-    <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
-    <unzip src="${iculib.zip}" dest="${hy.instrument.src.main.native}/icu4c/unicode" />
-    <chmod dir="${hy.instrument.src.main.native}/icu4c/unicode" perm="ugo+r" />
+        <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
+        <unzip src="${iculib.zip}" dest="${hy.instrument.src.main.native}/icu4c/unicode" />
+        <chmod dir="${hy.instrument.src.main.native}/icu4c/unicode" perm="ugo+r" />
     </target>
     
     <target name="clean-overlay-oss">
-    <delete dir="${hy.instrument.src.main.native}/icu4c" quiet="true" />
+        <delete dir="${hy.instrument.src.main.native}/icu4c" quiet="true" />
     </target>
     
     <!-- Build native code -->
     <target name="build-native" >
-    <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" />
+        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" />
 
-    <!-- Copy the built shared libs over to the jre/bin dir -->
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.instrument.src.main.native}/instrument">
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.instrument.src.main.native}/instrument">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
@@ -66,11 +66,12 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-    <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" target="clean" />
+        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/instrument.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/instrument-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.instrument.bin.test}" />
@@ -115,8 +116,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/instrument-src.jar"
+             manifest="${hy.instrument}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.instrument.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

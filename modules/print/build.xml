@@ -50,6 +50,8 @@
     <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.print.bin.test}" />
@@ -57,7 +59,7 @@
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling Print classes" />
+        <echo message="Compiling PRINT classes" />
 
         <mkdir dir="${hy.build}" />
 
@@ -88,8 +90,6 @@
         </copy>
     </target>
 
-
-
     <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
@@ -102,18 +102,39 @@
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/print.jar"
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}.jar"
              manifest="${hy.print}/META-INF/MANIFEST.MF">
-            <metainf prefix="META-INF/services" dir="${hy.print.src.main.java}/org/apache/harmony/x/print"
+            <metainf prefix="META-INF/services"
+                dir="${hy.print.src.main.java}/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>
-            <metainf prefix="META-INF/services" dir="${hy.print.src.main.java.platform}/org/apache/harmony/x/print"
+            <metainf prefix="META-INF/services"
+                dir="${hy.print.src.main.java.platform}/org/apache/harmony/x/print"
                 includes="javax.print.PrintServiceLookup"/>
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}-src.jar"
+             manifest="${hy.print}/META-INF/MANIFEST.MF">
+            <metainf prefix="META-INF/services"
+                dir="${hy.print.src.main.java}/org/apache/harmony/x/print"
+                includes="javax.print.StreamPrintServiceFactory"/>
+            <metainf prefix="META-INF/services"
+                dir="${hy.print.src.main.java.platform}/org/apache/harmony/x/print"
+                includes="javax.print.PrintServiceLookup"/>
+            <fileset dir="${hy.print.src.main.java}" />
+            <fileset dir="${hy.print.src.main.java.platform}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

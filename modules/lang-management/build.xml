@@ -42,6 +42,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.lang-management.bin.test}" />
@@ -77,8 +78,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}-src.jar"
+             manifest="${hy.lang-management}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.lang-management.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

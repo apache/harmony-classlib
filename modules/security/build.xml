@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -68,7 +67,7 @@
 
 
     <target name="build-native" if="native.present" >
-    <make dir="${hy.security.src.main.native}/security/${hy.os}" />
+        <make dir="${hy.security.src.main.native}/security/${hy.os}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -88,6 +87,7 @@
     <property name="tests.resources.dir" value="${tests.hdk.dir}/resources/${hy.security.packaging.jarname}" />
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar" />
         <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api.jar" />
         <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar" />
         <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl.jar" />
@@ -142,8 +142,21 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar"
+             manifest="${hy.security}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.security.src.main.java}" />
+            <fileset dir="${hy.security.src.main.java.platform}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

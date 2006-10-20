@@ -56,6 +56,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/awt.jar" />
+	<delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.awt.bin.test}" />
@@ -104,8 +105,21 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/awt-src.jar"
+             manifest="${hy.awt}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.awt.src.main.java}" />
+            <fileset dir="${hy.awt.src.main.java.platform}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

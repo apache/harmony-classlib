@@ -48,6 +48,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.concurrent.bin.test}" />
@@ -83,8 +84,21 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}-src.jar"
+             manifest="${hy.concurrent}/META-INF/MANIFEST.MF">
+            <fileset dir="src/main/java" />
+            <fileset dir="standard/src/main/java" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

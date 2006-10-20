@@ -41,25 +41,25 @@
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
     <target name="copy-native-includes" depends="overlay-oss">
-    <copy todir="${hy.hdk}/include" overwrite="yes">
-        <fileset dir="${hy.archive.src.main.native}/include/shared">
-        <include name="zipsup.h" />
-        </fileset>
-        <fileset dir="${hy.archive.src.main.native}/zlib_dist">
-        <include name="zlib.h" />
-        <include name="zconf.h" />
-        </fileset>
-    </copy>
+        <copy todir="${hy.hdk}/include" overwrite="yes">
+            <fileset dir="${hy.archive.src.main.native}/include/shared">
+                <include name="zipsup.h" />
+            </fileset>
+            <fileset dir="${hy.archive.src.main.native}/zlib_dist">
+                <include name="zlib.h" />
+                <include name="zconf.h" />
+            </fileset>
+        </copy>
     </target>
     
     <target name="overlay-oss">
-    <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
-    <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
-    <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
+        <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
+        <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
+        <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
     </target>
     
     <target name="clean-overlay-oss">
-    <delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
+        <delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
     </target>
     
     <!-- Build native code -->
@@ -94,6 +94,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.archive.bin.test}" />
@@ -147,8 +148,20 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/archive-src.jar"
+             manifest="${hy.archive}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.archive.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
     </target>
 

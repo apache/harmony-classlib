@@ -44,6 +44,7 @@
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.rmi.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.rmi.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.rmi.bin.test}" />
@@ -88,10 +89,21 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-            <metainf file="${basedir}/../../NOTICE"/>
-            <metainf file="${basedir}/../../LICENSE"/>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
-    </target>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.rmi.packaging.jarname}.jar"
+             manifest="${hy.rmi}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.rmi.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>    </target>
 
     <target name="compile-tests">
 

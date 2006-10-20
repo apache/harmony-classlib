@@ -34,6 +34,7 @@
         <test location="bin/test" />
       </bin>
       <packaging>
+        <jarname>print</jarname>
       </packaging>
    </print>
 
