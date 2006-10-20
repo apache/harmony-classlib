@@ -17,7 +17,9 @@
 
 package org.apache.harmony.tools.toolutils.tests;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.KeyStore;
 
 import junit.framework.TestCase;
 
@@ -42,6 +44,27 @@ public class KeyStoreLoaderSaverTest extends TestCase {
             // IOException must be thrown, because file does not exist
             fail("No expected IOException");
         } catch (IOException ok) {
+        }
+    }
+    
+    /**
+     * @tests 'KeyStoreLoaderSaver.saveStore(KeyStore, String, char[], boolean)'
+     */
+    public void testSaveStore() throws Exception {
+
+        // Regression for HARMONY-1927
+        // create a path to save the store to
+        String tempDir = System.getProperty("java.io.tmpdir")
+                + File.separatorChar;
+        String keyStorePath = tempDir + "SaveStoreTestTemporaryFile";
+        try {
+            KeyStore keyStore = KeyStoreLoaderSaver.loadStore(null, "BKS",
+                    "pwd".toCharArray(), null);
+
+            KeyStoreLoaderSaver.saveStore(keyStore, keyStorePath, "pwd"
+                    .toCharArray(), false);
+        } finally {
+            new File(keyStorePath).delete();
         }
     }
 }

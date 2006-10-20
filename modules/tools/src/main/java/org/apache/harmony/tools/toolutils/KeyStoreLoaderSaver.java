@@ -159,6 +159,8 @@ public class KeyStoreLoaderSaver {
             ksFile = new File(uri);
         } catch (URISyntaxException e) {
             ksFile = new File(storePath);
+        } catch (IllegalArgumentException e) {
+            ksFile = new File(storePath);
         }
         
         // the file will be created if and only if one with the same name
