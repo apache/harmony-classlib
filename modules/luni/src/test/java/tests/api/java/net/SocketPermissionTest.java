@@ -86,6 +86,9 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 		SocketPermission sp2 = new SocketPermission("test1.com",
 				"resolve,connect");
 		assertTrue("Different cases should be equal", sp1.equals(sp2));
+
+        // Regression for HARMONY-1524
+        assertFalse(sp1.equals(null));
 	}
 
 	/**

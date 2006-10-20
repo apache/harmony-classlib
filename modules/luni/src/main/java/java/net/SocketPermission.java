@@ -148,10 +148,10 @@ public final class SocketPermission extends Permission implements Serializable {
 	 */
 	@Override
     public boolean equals(Object o) {
-		if (this == o) {
+        if (this == o) {
             return true;
         }
-		if (this.getClass() != o.getClass()) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
 		SocketPermission sp = (SocketPermission) o;
