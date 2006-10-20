@@ -37,17 +37,27 @@ public class GapContent_PositionTest extends BasicSwingTestCase {
      * Offsets in the document when the document is not changed.
      */
     private static final int[] offsets = {0, 5, 10, 15, 20};
+    private Position[] positions;
 
     protected void setUp() throws Exception {
+        super.setUp();
         content = new GapContent(30);
         content.insertString(0, "This is a test string.");
         content.shiftGap(7);
 
         // Add some positions to the content
         int[] offsets = {0, 10, 5, 20, 15};
+        positions = new Position[offsets.length];
         for (int i = 0; i < offsets.length; i++) {
-            content.createPosition(offsets[i]);
+            positions[i] = content.createPosition(offsets[i]);
         }
+    }
+    
+    protected void tearDown() throws Exception {
+        for (int i = 0; i < offsets.length; i++) {
+            positions[i] = null;
+        }
+        super.tearDown();
     }
 
     public void testShiftGapLeft() {
