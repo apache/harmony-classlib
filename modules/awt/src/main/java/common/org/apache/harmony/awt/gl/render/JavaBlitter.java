@@ -89,8 +89,8 @@ public class JavaBlitter implements Blitter {
         }else{
             double scaleX = xform.getScaleX();
             double scaleY = xform.getScaleY();
-            double scaledX = (double)dstX / scaleX;
-            double scaledY = (double)dstY / scaleY;
+            double scaledX = dstX / scaleX;
+            double scaledY = dstY / scaleY;
             AffineTransform at = new AffineTransform();
             at.setToTranslation(scaledX, scaledY);
             xform.concatenate(at);
@@ -105,7 +105,9 @@ public class JavaBlitter implements Blitter {
             Surface dstSurf, int width, int height, AffineTransform sysxform,
             Composite comp, Color bgcolor, MultiRectArea clip) {
 
-        if(sysxform == null) sysxform = new AffineTransform();
+        if(sysxform == null) {
+            sysxform = new AffineTransform();
+        }
         int type = sysxform.getType();
         switch(type){
             case AffineTransform.TYPE_TRANSLATION:
@@ -177,19 +179,36 @@ public class JavaBlitter implements Blitter {
             dstY = 0;
         }
 
-        if(srcX > srcX2 || srcY > srcY2) return;
-        if(dstX > dstX2 || dstY > dstY2) return;
+        if(srcX > srcX2 || srcY > srcY2) {
+            return;
+        }
+        if(dstX > dstX2 || dstY > dstY2) {
+            return;
+        }
 
-        if(srcX + width > srcX2) width = srcX2 - srcX + 1;
-        if(srcY + height > srcY2) height = srcY2 - srcY + 1;
-        if(dstX + width > dstX2) width = dstX2 - dstX + 1;
-        if(dstY + height > dstY2) height = dstY2 - dstY + 1;
+        if(srcX + width > srcX2) {
+            width = srcX2 - srcX + 1;
+        }
+        if(srcY + height > srcY2) {
+            height = srcY2 - srcY + 1;
+        }
+        if(dstX + width > dstX2) {
+            width = dstX2 - dstX + 1;
+        }
+        if(dstY + height > dstY2) {
+            height = dstY2 - dstY + 1;
+        }
 
-        if(width <= 0 || height <= 0) return;
+        if(width <= 0 || height <= 0) {
+            return;
+        }
 
         int clipRects[];
-        if(clip != null) clipRects = clip.rect;
-        else clipRects = new int[]{5, 0, 0, dstW - 1, dstH - 1};
+        if(clip != null) {
+            clipRects = clip.rect;
+        } else {
+            clipRects = new int[]{5, 0, 0, dstW - 1, dstH - 1};
+        }
 
         boolean isAlphaComp = false;
         int rule = 0;
@@ -226,7 +245,9 @@ public class JavaBlitter implements Blitter {
             int cx2 = clipRects[i + 2];     // Clipping right bottom X
             int cy2 = clipRects[i + 3];     // Clipping right bottom Y
 
-            if(_dx > cx2 || _dy > cy2 || dstX2 < cx || dstY2 < cy) continue;
+            if(_dx > cx2 || _dy > cy2 || dstX2 < cx || dstY2 < cy) {
+                continue;
+            }
 
             if(cx > _dx){
                 int shx = cx - _dx;
@@ -250,7 +271,9 @@ public class JavaBlitter implements Blitter {
                 _h = cy2 - _dy + 1;
             }
 
-            if(_sx > srcX2 || _sy > srcY2) continue;
+            if(_sx > srcX2 || _sy > srcY2) {
+                continue;
+            }
 
             if(isAlphaComp){
                 alphaCompose(_sx, _sy, srcCM, srcRast, _dx, _dy,
@@ -349,8 +372,11 @@ public class JavaBlitter implements Blitter {
         inv.getMatrix(m);
 
         int clipRects[];
-        if(clip != null) clipRects = clip.rect;
-        else clipRects = new int[]{5, 0, 0, dstR.getWidth(), dstR.getHeight()};
+        if(clip != null) {
+            clipRects = clip.rect;
+        } else {
+            clipRects = new int[]{5, 0, 0, dstR.getWidth(), dstR.getHeight()};
+        }
 
         int compType = 0;
         int srcConstAlpha = 0;
@@ -571,7 +597,9 @@ public class JavaBlitter implements Blitter {
                 db = divLUT[da][db] & 0xff;
             }
         }
-        if(!dstHasAlpha) da = 0xff;
+        if(!dstHasAlpha) {
+            da = 0xff;
+        }
         dstRGB = (da << 24) | (dr << 16) | (dg << 8) | db;
 
         return dstRGB;

@@ -422,6 +422,7 @@ public class DataFlavorTest extends TestCase {
         }), new DataFlavor("text/xml; class=java.lang.String; charset=UTF-16", ""));
     }
 
+    @SuppressWarnings("deprecation")
     public void testHarmony1477Regression() {
         // Regression for HARMONY-1477
         DataFlavor df = new DataFlavor();

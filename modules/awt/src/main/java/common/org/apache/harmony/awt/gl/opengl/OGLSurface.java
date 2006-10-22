@@ -49,10 +49,12 @@ public class OGLSurface extends Surface {
         oglg = g2d;
     }
 
+    @Override
     public ColorModel getColorModel() {
         return cm;
     }
 
+    @Override
     public WritableRaster getRaster() {
         WritableRaster res = cm.createCompatibleWritableRaster(width, height);
         DataBufferInt dbi = (DataBufferInt) res.getDataBuffer();
@@ -64,6 +66,7 @@ public class OGLSurface extends Surface {
      * Clients should use the returned data only for reading 
      * @return image data
      */
+    @Override
     public synchronized Object getData() {
         if (!sceneUpdated && cachedData != null && cachedTopToBottom) {
             return cachedData;
@@ -96,21 +99,26 @@ public class OGLSurface extends Surface {
         return cachedData;
     }
 
+    @Override
     public int getSurfaceType() {
         return BufferedImage.TYPE_INT_ARGB_PRE;
     }
 
+    @Override
     public long lock() {
         return 0;
     }
 
+    @Override
     public void unlock() {
     }
 
+    @Override
     public void dispose() {
         imageSurface.dispose();
     }
 
+    @Override
     public Surface getImageSurface() {
         if (imageSurface == null) {
             imageSurface = new ImageSurface(getColorModel(), getRaster());

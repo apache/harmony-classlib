@@ -134,7 +134,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
     // Can't use transform from CommonGraphics, want to get all mra's untransformed
     private AffineTransform glTransform = new AffineTransform();
 
-    private byte fgRgba[] = new byte[4];
+    private final byte fgRgba[] = new byte[4];
     boolean opaqueColor = true;
     private float acAlpha = 1.0f;
 
@@ -202,6 +202,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         this(nwin, tx, ty, new MultiRectArea(new Rectangle(width, height)));
     }
 
+    @Override
     public Graphics create() {
         OGLGraphics2D res = new OGLGraphics2D(
                 nwin,
@@ -213,14 +214,16 @@ public final class OGLGraphics2D extends CommonGraphics2D {
 
         // Have to copy transform and clip explicitly, since we use opengl transforms
         res.setTransform(new AffineTransform(glTransform));
-        if (clip == null)
+        if (clip == null) {
             res.setTransformedClip(null);
-        else
+        } else {
             res.setTransformedClip(new MultiRectArea(clip));
+        }
 
         return res;
     }
 
+    @Override
     public void finalize() {
         super.finalize();
         try {
@@ -234,11 +237,13 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         return env.getDefaultScreenDevice().getDefaultConfiguration();
     }
 
+    @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
         makeCurrent();
 
@@ -260,6 +265,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         getSurface().updateScene();
     }
 
+    @Override
     public void setPaint(Paint paint) {
         super.setPaint(paint);
 
@@ -298,9 +304,11 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void setColor(Color color) {
-        if (color == null)
+        if (color == null) {
             return;
+        }
 
         super.setColor(color);
 
@@ -344,6 +352,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         oglPaint = true;
     }
 
+    @Override
     public void dispose() {
         super.dispose();
         /*
@@ -388,6 +397,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         return res;
     }
 
+    @Override
     protected void fillMultiRectAreaColor(MultiRectArea mra) {
         makeCurrent();
 
@@ -405,10 +415,12 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         getSurface().updateScene();
     }
 
+    @Override
     public void drawString(String str, int x, int y) {
         // XXX - todo
     }
 
+    @Override
     protected void setTransformedClip(MultiRectArea clip) {
         super.setTransformedClip(clip);
         //if (oglContext != 0) {
@@ -472,6 +484,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void setTransform(AffineTransform transform) {
         // If transform is scaling drop native lines and use rasterizer
         if ((transform.getType() & AffineTransform.TYPE_MASK_SCALE) != 0) {
@@ -542,64 +555,77 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public Shape getClip() {
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
 
         MultiRectArea res = new MultiRectArea(clip);
         return res;
     }
 
+    @Override
     public Rectangle getClipBounds() {
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
 
         Rectangle res = (Rectangle) clip.getBounds().clone();
         return res;
     }
 
+    @Override
     public AffineTransform getTransform() {
         return (AffineTransform) glTransform.clone();
     }
 
+    @Override
     public void rotate(double theta) {
         glTransform.rotate(theta);
         setTransform(glTransform);
     }
 
+    @Override
     public void rotate(double theta, double x, double y) {
         glTransform.rotate(theta, x, y);
         setTransform(glTransform);
     }
 
+    @Override
     public void scale(double sx, double sy) {
         glTransform.scale(sx, sy);
         setTransform(glTransform);
     }
 
+    @Override
     public void shear(double shx, double shy) {
         glTransform.shear(shx, shy);
         setTransform(glTransform);
     }
 
+    @Override
     public void transform(AffineTransform at) {
         AffineTransform newTransform = (AffineTransform) glTransform.clone();
         newTransform.concatenate(at);
         setTransform(newTransform);
     }
 
+    @Override
     public void translate(double tx, double ty) {
         AffineTransform newTransform = (AffineTransform) glTransform.clone();
         newTransform.translate(tx, ty);
         setTransform(newTransform);
     }
 
+    @Override
     public void translate(int tx, int ty) {
         AffineTransform newTransform = (AffineTransform) glTransform.clone();
         newTransform.translate(tx, ty);
         setTransform(newTransform);
     }
 
+    @Override
     public void clipRect(int x, int y, int width, int height) {
         MultiRectArea mra = new MultiRectArea(x, y, x+width-1, y+height-1);
 
@@ -611,6 +637,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void fillRect(int x, int y, int width, int height) {
         if (oglPaint) {
             makeCurrent();
@@ -623,6 +650,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         getSurface().updateScene();
     }
 
+    @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
         if (nativeLines && !scalingTransform && oglPaint) {
             makeCurrent();
@@ -671,10 +699,10 @@ public final class OGLGraphics2D extends CommonGraphics2D {
     }
 
     private static class OGLContextValidator {
-        private static ThreadLocal localCurrentGraphics = new ThreadLocal();
+        private static final ThreadLocal<OGLGraphics2D> localCurrentGraphics = new ThreadLocal<OGLGraphics2D>();
 
         private static final void validateContext(OGLGraphics2D g) {
-            OGLGraphics2D lastGraphics = (OGLGraphics2D) localCurrentGraphics.get();
+            OGLGraphics2D lastGraphics = localCurrentGraphics.get();
 
             if (lastGraphics == null) {
                 // No graphics was used before in the current thread, so
@@ -693,18 +721,17 @@ public final class OGLGraphics2D extends CommonGraphics2D {
                     // Called from constructor, skipping validation.
                     // Everything will be done in the constructor.
                     return;
-                } else {
-                    // New context in the thread, but old graphics from other thread,
-                    // have to validate all.
-                    g.resetBounds();
-                    g.resetColor();
-                    g.resetTransform();
-                    g.resetClip();
-                    g.checkComposite();
-                    g.resetStroke();
-                    g.resetPaint();
-                    return;
                 }
+                // New context in the thread, but old graphics from other thread,
+                // have to validate all.
+                g.resetBounds();
+                g.resetColor();
+                g.resetTransform();
+                g.resetClip();
+                g.checkComposite();
+                g.resetStroke();
+                g.resetPaint();
+                return;
             } else if (g == lastGraphics) { // Should have all the attributes in place
                 return;
             }
@@ -746,6 +773,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void setComposite(Composite composite) {
         super.setComposite(composite);
 
@@ -847,7 +875,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
 
     void readPixels(int x, int y, int w, int h, Object buffer, boolean topToBottom) {
         // Save current graphics to restore current context after returning pixels
-        OGLGraphics2D currGraphics = (OGLGraphics2D) OGLContextValidator.localCurrentGraphics.get();
+        OGLGraphics2D currGraphics = OGLContextValidator.localCurrentGraphics.get();
         makeCurrent();
 /*
         x += glTransform.getTranslateX() + 0.5;
@@ -886,6 +914,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void setStroke(Stroke stroke) {
         super.setStroke(stroke);
         if (stroke instanceof BasicStroke) {
@@ -937,8 +966,9 @@ public final class OGLGraphics2D extends CommonGraphics2D {
 
         sum /= gcd.longValue();
 
-        if (sum > 16)
+        if (sum > 16) {
             return false;
+        }
 
         int repeatNum;
 
@@ -1001,14 +1031,17 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         }
     }
 
+    @Override
     public void drawPolygon(Polygon polygon) {
         drawPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
     }
 
+    @Override
     public void drawPolygon(int[] xpoints, int[] ypoints, int npoints) {
         drawPoly(xpoints, ypoints, npoints, true);
     }
 
+    @Override
     public void drawPolyline(int[] xpoints, int[] ypoints, int npoints) {
         drawPoly(xpoints, ypoints, npoints, false);
     }
@@ -1044,6 +1077,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         getSurface().updateScene();
     }
 
+    @Override
     public void draw(Shape s) {
         // To get proper rasterization quality need to
         // perform scaling before rasterization
@@ -1130,6 +1164,7 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         gl.glDisable(GLDefs.GL_TEXTURE_2D);
     }
 
+    @Override
     protected void fillMultiRectAreaPaint(MultiRectArea mra) {
         if (oglPaint) {
             fillMultiRectAreaColor(mra);
@@ -1260,16 +1295,18 @@ public final class OGLGraphics2D extends CommonGraphics2D {
      */
     private final boolean setCurrentRead(OGLGraphics2D read) {
         long oglContext = ctxmgr.getOGLContext();
-        if (read.ctxmgr.getOGLContext() != oglContext)
+        if (read.ctxmgr.getOGLContext() != oglContext) {
             return false;
+        }
 
         ctxmgr.makeContextCurrent(oglContext, nwin.getId(), read.nwin.getId());
         return true;
     }
 
     boolean copyArea(int x, int y, int width, int height, int dx, int dy, OGLGraphics2D read, boolean texture) {
-        if (!setCurrentRead(read))
+        if (!setCurrentRead(read)) {
             return false;
+        }
 
         gl.glPixelStoref(GLDefs.GL_UNPACK_SKIP_PIXELS, 0);
         gl.glPixelStoref(GLDefs.GL_UNPACK_SKIP_ROWS, 0);

@@ -46,8 +46,8 @@ public class JavaLineRasterizer {
 
             inv = new float[dash.length];
             int j = dash.length;
-            for(int i = 0; i < dash.length; i++) {
-                inv[--j] = dash[i];
+            for (float element : dash) {
+                inv[--j] = element;
             }
             index = 0;
             while (phase > dash[index]) {
@@ -181,6 +181,7 @@ public class JavaLineRasterizer {
                     xcount = adx;
                 }
 
+                @Override
                 void rasterize() {
                     e = eBase;
                     x = x1;
@@ -188,6 +189,7 @@ public class JavaLineRasterizer {
                     rasterize(xcount);
                 }
 
+                @Override
                 void rasterizeClipped(int nx1, int ny1, int nx2, int ny2) {
                     e = eBase + 2 * (ady * Math.abs(nx1 - x1) - adx * Math.abs(ny1 - y1));
                     x = nx1;
@@ -195,6 +197,7 @@ public class JavaLineRasterizer {
                     rasterize(dx > 0 ? nx2 - nx1 : nx1 - nx2);
                 }
 
+                @Override
                 void rasterize(int count) {
                     int px = x;
                     while (count-- > 0) {
@@ -220,6 +223,7 @@ public class JavaLineRasterizer {
                     }
                 }
 
+                @Override
                 void skip(int count) {
                     while (count-- > 0) {
                         x += sx;
@@ -244,6 +248,7 @@ public class JavaLineRasterizer {
                     xcount = ady;
                 }
 
+                @Override
                 void rasterize() {
                     e = eBase;
                     x = x1;
@@ -251,6 +256,7 @@ public class JavaLineRasterizer {
                     rasterize(xcount);
                 }
 
+                @Override
                 void rasterizeClipped(int nx1, int ny1, int nx2, int ny2) {
                     e = eBase + 2 * (adx * Math.abs(ny1 - y1) - ady * Math.abs(nx1 - x1));
                     x = nx1;
@@ -258,6 +264,7 @@ public class JavaLineRasterizer {
                     rasterize(ny2 - ny1);
                 }
 
+                @Override
                 void rasterize(int count) {
                     int py = y;
                     while (count-- > 0) {
@@ -275,6 +282,7 @@ public class JavaLineRasterizer {
                     dst.addRect(x, py, x, y);
                 }
 
+                @Override
                 void skip(int count) {
                     while (count-- > 0) {
                         y += sy;
@@ -299,6 +307,7 @@ public class JavaLineRasterizer {
                     local = dasher.createDiagonal(xcount / length, length, invert);
                 }
 
+                @Override
                 void rasterize() {
                     e = eBase;
                     x = x1;
@@ -306,6 +315,7 @@ public class JavaLineRasterizer {
                     rasterizeDash(xcount, local);
                 }
 
+                @Override
                 void rasterizeClipped(int nx1, int ny1, int nx2, int ny2) {
                     e = eBase + 2 * (ady * Math.abs(nx1 - x1) - adx * Math.abs(ny1 - y1));
                     x = nx1;
@@ -325,6 +335,7 @@ public class JavaLineRasterizer {
                     local = dasher.createDiagonal(xcount / length, length, invert);
                 }
 
+                @Override
                 void rasterize() {
                     e = eBase;
                     x = x1;
@@ -332,6 +343,7 @@ public class JavaLineRasterizer {
                     rasterizeDash(xcount, local);
                 }
 
+                @Override
                 void rasterizeClipped(int nx1, int ny1, int nx2, int ny2) {
                     e = eBase + 2 * (adx * Math.abs(ny1 - y1) - ady * Math.abs(nx1 - x1));
                     x = nx1;
@@ -341,6 +353,7 @@ public class JavaLineRasterizer {
 
             }
 
+            @Override
             void rasterize(int[] clip, int index) {
                 int cx1 = clip[index + 0];
                 int cy1 = clip[index + 1];
@@ -455,6 +468,7 @@ public class JavaLineRasterizer {
                     dx = x2 - x1;
                 }
 
+                @Override
                 void rasterize() {
                     if (dx > 0) {
                         dst.addRect(x1, y1, x2, y2);
@@ -463,6 +477,7 @@ public class JavaLineRasterizer {
                     }
                 }
 
+                @Override
                 void rasterize(int step) {
                     int px = x;
                     if (dx > 0) {
@@ -474,6 +489,7 @@ public class JavaLineRasterizer {
                     }
                 }
 
+                @Override
                 void skip(int step) {
                     if (dx > 0) {
                         x += step;
@@ -490,6 +506,7 @@ public class JavaLineRasterizer {
                     }
                 }
 
+                @Override
                 void rasterize(int[] clip, int index) {
                     if (y1 >= clip[index + 1] && y1 <= clip[index + 3]) {
                         int cx1 = clip[index + 0];
@@ -519,16 +536,19 @@ public class JavaLineRasterizer {
                     dy = y2 - y1;
                 }
 
+                @Override
                 void rasterize() {
                     dst.addRect(x1, y1, x2, y2);
                 }
 
+                @Override
                 void rasterize(int step) {
                     int py = y;
                     y += step;
                     dst.addRect(x1, py, x2, y - 1);
                 }
 
+                @Override
                 void skip(int step) {
                     y += step;
                 }
@@ -537,6 +557,7 @@ public class JavaLineRasterizer {
                     dst.addRect(x1, ny1, x1, ny2);
                 }
 
+                @Override
                 void rasterize(int[] clip, int index) {
                     if (x1 >= clip[index] && x1 <= clip[index + 2]) {
                         int cy1 = clip[index + 1];
@@ -559,12 +580,14 @@ public class JavaLineRasterizer {
                     local = dasher.createOrtogonal(Math.abs(dx), false);
                 }
 
+                @Override
                 void rasterize() {
                     x = x1;
                     y = y1;
                     rasterizeDash(Math.abs(dx), local);
                 }
 
+                @Override
                 void rasterizeClipped(int nx1, int nx2) {
                     x = nx1;
                     y = y1;
@@ -583,12 +606,14 @@ public class JavaLineRasterizer {
                     local = dasher.createOrtogonal(dy, invert);
                 }
 
+                @Override
                 void rasterize() {
                     x = x1;
                     y = y1;
                     rasterizeDash(dy, local);
                 }
 
+                @Override
                 void rasterizeClipped(int ny1, int ny2) {
                     x = x1;
                     y = ny1;
@@ -636,17 +661,16 @@ public class JavaLineRasterizer {
         if (adX1 <= adX2) {
             // obtuse intersection angle
             return ((dX1 << 1) * cX + (dX1 > 0 ? dX2 : -dX2)) / (dX2 << 1);
-        } else {
-            int k;
-            if (top) {
-                k = -dX1 + (dX2 < 0 ? 0 : dX1 > 0 ? (dX2 << 1) : -(dX2 << 1));
-            } else {
-                k = dX1 + (dX2 > 0 ? 0 : dX1 > 0 ? (dX2 << 1) : -(dX2 << 1));
-            }
-
-            k += dX1 > 0 == dX2 > 0 ? -1 : 1;
-            return ((dX1 << 1) * cX + k) / (dX2 << 1);
         }
+        int k;
+        if (top) {
+            k = -dX1 + (dX2 < 0 ? 0 : dX1 > 0 ? (dX2 << 1) : -(dX2 << 1));
+        } else {
+            k = dX1 + (dX2 > 0 ? 0 : dX1 > 0 ? (dX2 << 1) : -(dX2 << 1));
+        }
+
+        k += dX1 > 0 == dX2 > 0 ? -1 : 1;
+        return ((dX1 << 1) * cX + k) / (dX2 << 1);
     }
 
     /**

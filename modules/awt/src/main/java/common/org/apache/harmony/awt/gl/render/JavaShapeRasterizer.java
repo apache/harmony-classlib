@@ -58,6 +58,7 @@ public class JavaShapeRasterizer {
     static abstract class Filler {
 
         static class NonZero extends Filler {
+            @Override
             void add(MultiRectArea.LineCash rect, int[] points, int[] orient, int length, int y) {
 
                 int[] dst = new int[length];
@@ -93,6 +94,7 @@ public class JavaShapeRasterizer {
         }
 
         static class EvenOdd extends Filler {
+            @Override
             void add(MultiRectArea.LineCash rect, int[] points, int[] orient, int length, int y) {
     /*
                 int[] buf = new int[length];
@@ -200,8 +202,6 @@ public class JavaShapeRasterizer {
             filler = new Filler.NonZero();
         }
         float[] coords = new float[2];
-        int cx, cy, mx, my;
-        cx = cy = mx = my = 0;
         boolean closed = true;
         while (!path.isDone()) {
             switch(path.currentSegment(coords)) {
@@ -211,11 +211,11 @@ public class JavaShapeRasterizer {
                     bounds = checkBufSize(bounds, boundCount);
                     bounds[boundCount] = edgesCount;
                 }
-                addEdge(mx = (int)coords[0], my = (int)coords[1], boundCount);
+                addEdge((int)coords[0], (int)coords[1], boundCount);
                 closed = false;
                 break;
             case PathIterator.SEG_LINETO:
-                addEdge(cx = (int)coords[0], cy = (int)coords[1], boundCount);
+                addEdge((int)coords[0], (int)coords[1], boundCount);
                 break;
             case PathIterator.SEG_CLOSE:
                 boundCount++;
@@ -388,9 +388,8 @@ public class JavaShapeRasterizer {
 
         if (activeNext == edgesCount) {
             return edgesY[edgesCount - 1];
-        } else {
-            return edgesYS[activeNext];
         }
+        return edgesYS[activeNext];
     }
 
     /**

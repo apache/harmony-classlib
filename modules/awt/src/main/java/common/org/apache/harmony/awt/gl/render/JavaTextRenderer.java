@@ -39,6 +39,7 @@ public class JavaTextRenderer extends TextRenderer {
 
     public static final JavaTextRenderer inst = new JavaTextRenderer();
 
+    @Override
     public void drawGlyphVector(Graphics2D g, GlyphVector glyphVector,
             float x, float y) {
 
@@ -46,8 +47,9 @@ public class JavaTextRenderer extends TextRenderer {
         Rectangle c = g.getClipBounds();
         if (at != null){
             int atType = at.getType();
-            if (atType == AffineTransform.TYPE_TRANSLATION)
-                    c.translate((int)Math.round(at.getTranslateX()), (int)Math.round(at.getTranslateY()));
+            if (atType == AffineTransform.TYPE_TRANSLATION) {
+                c.translate((int)Math.round(at.getTranslateX()), (int)Math.round(at.getTranslateY()));
+            }
         }
 
         WritableRaster wr = ((BufferedImageGraphics2D)g).getWritableRaster();
@@ -65,13 +67,16 @@ public class JavaTextRenderer extends TextRenderer {
 
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void drawString(Graphics2D g, String str, float x, float y) {
         AffineTransform at = g.getTransform();
         Rectangle c = g.getClipBounds();
         if (at != null){
             int atType = at.getType();
-            if (atType == AffineTransform.TYPE_TRANSLATION)
-                    c.translate((int)Math.round(at.getTranslateX()), (int)Math.round(at.getTranslateY()));
+            if (atType == AffineTransform.TYPE_TRANSLATION) {
+                c.translate((int)Math.round(at.getTranslateX()), (int)Math.round(at.getTranslateY()));
+            }
         }
         WritableRaster wr = ((BufferedImageGraphics2D)g).getWritableRaster();
         ColorModel cm = ((BufferedImageGraphics2D)g).getColorModel();
@@ -108,7 +113,7 @@ public class JavaTextRenderer extends TextRenderer {
         // TODO: implement complex clipping
 
         int xSrcSurf, ySrcSurf; // Start point in String rectangle
-        int xDstSurf, yDstSurf; // Strart point in Surface rectangle
+        int xDstSurf, yDstSurf; // Start point in Surface rectangle
         int clWidth, clHeight;
 
         for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
@@ -187,7 +192,7 @@ public class JavaTextRenderer extends TextRenderer {
         // TODO: implement complex clipping
 
         int xSrcSurf, ySrcSurf; // Start point in String rectangle
-        int xDstSurf, yDstSurf; // Strart point in Surface rectangle
+        int xDstSurf, yDstSurf; // Start point in Surface rectangle
         int clWidth, clHeight;
 
         char[] chars = str.toCharArray();
@@ -195,8 +200,8 @@ public class JavaTextRenderer extends TextRenderer {
         int xBaseLine = x;
         int yBaseLine = y;
 
-        for (int i = 0; i < chars.length; i++) {
-            Glyph gl = font.getGlyph(chars[i]);
+        for (char element : chars) {
+            Glyph gl = font.getGlyph(element);
             GlyphMetrics pointMetrics = gl.getGlyphPointMetrics();
             if (gl.getWidth() == 0) {
                 xBaseLine += pointMetrics.getAdvanceX();

@@ -644,7 +644,7 @@ public class OGLBlitter implements Blitter {
                 srcX, srcY,
                 width, height,
                 dstX, dstY,
-                ((OGLSurface) srcSurf).oglg,
+                (srcSurf).oglg,
                 true
         );
 

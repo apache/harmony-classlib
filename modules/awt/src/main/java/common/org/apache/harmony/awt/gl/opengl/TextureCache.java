@@ -22,68 +22,60 @@
 
 package org.apache.harmony.awt.gl.opengl;
 
-import org.apache.harmony.awt.gl.Surface;
-
-import java.util.HashMap;
-import java.util.WeakHashMap;
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.WeakHashMap;
+import org.apache.harmony.awt.gl.Surface;
+import org.apache.harmony.awt.gl.opengl.OGLBlitter.OGLTextureParams;
 
-// XXX - todo - this class could be a prototype for the common resource cache.
+// TODO - this class could be a prototype for the common resource cache.
 // E.g. opengl contexts could be bounded to the thread that created the context and
 // this cache will manage the destruction of the contexts.
 public class TextureCache {
-    private static HashMap ref2texture = new HashMap();
+    private static final HashMap<WeakReference<Surface>, OGLTextureParams> ref2texture = new HashMap<WeakReference<Surface>, OGLTextureParams>();
 
-    private static ThreadLocal localInstance = new ThreadLocal() {
-        public Object initialValue() {
+    private static final ThreadLocal<TextureCache> localInstance = new ThreadLocal<TextureCache>() {
+        @Override
+        public TextureCache initialValue() {
             return new TextureCache();
         }
     };
 
     static TextureCache getInstance() {
-        return (TextureCache) localInstance.get();
+        return localInstance.get();
     }
 
-    private ReferenceQueue rq = new ReferenceQueue();
-    private WeakHashMap surface2ref = new WeakHashMap();
+    private final ReferenceQueue<Surface> rq = new ReferenceQueue<Surface>();
+
+    private final WeakHashMap<Surface, WeakReference<Surface>> surface2ref = new WeakHashMap<Surface, WeakReference<Surface>>();
 
     void add(Surface key, OGLBlitter.OGLTextureParams texture) {
-        WeakReference ref =
-                new WeakReference(key, rq);
-
+        WeakReference<Surface> ref = new WeakReference<Surface>(key, rq);
         surface2ref.put(key, ref);
         ref2texture.put(ref, texture);
-
-        //System.out.println("Entry added: " + key + ";" + texture);
     }
 
     void cleanupTextures() {
-        WeakReference ref;
-
-        while((ref = (WeakReference) rq.poll()) != null) {
-            OGLBlitter.OGLTextureParams tp =
-                    (OGLBlitter.OGLTextureParams) ref2texture.remove(ref);
+        Reference<? extends Surface> ref;
+        while ((ref = rq.poll()) != null) {
+            OGLBlitter.OGLTextureParams tp = ref2texture.remove(ref);
             tp.deleteTexture();
-            //System.out.println("Entry cleaned up: " + tp);
         }
     }
 
     OGLBlitter.OGLTextureParams findTexture(Surface key) {
-        OGLBlitter.OGLTextureParams tp =
-         (OGLBlitter.OGLTextureParams) ref2texture.get(surface2ref.get(key));
-        //System.out.println("Entry looked up: " + key + ";" + tp);
+        OGLBlitter.OGLTextureParams tp = ref2texture.get(surface2ref.get(key));
         return tp;
     }
 
     void remove(Surface key) {
-        WeakReference ref = (WeakReference) surface2ref.remove(key);
+        WeakReference<Surface> ref = surface2ref.remove(key);
         if (ref != null) {
             ref.clear();
-            OGLBlitter.OGLTextureParams tp =
-                    (OGLBlitter.OGLTextureParams) ref2texture.remove(ref);
+            OGLBlitter.OGLTextureParams tp = ref2texture.remove(ref);
             tp.deleteTexture();
-            //System.out.println("Entry removed: " + key + ";" + tp);
         }
     }
 }

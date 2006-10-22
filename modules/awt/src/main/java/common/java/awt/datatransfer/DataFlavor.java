@@ -413,9 +413,6 @@ public class DataFlavor implements Externalizable, Cloneable {
 
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean equals(String s) {
       if (s == null) {

@@ -64,8 +64,8 @@ public class NativeImageBlitter implements Blitter {
             }else{
                 double scaleX = xform.getScaleX();
                 double scaleY = xform.getScaleY();
-                double scaledX = (double)dstX / scaleX;
-                double scaledY = (double)dstY / scaleY;
+                double scaledX = dstX / scaleX;
+                double scaledY = dstY / scaleY;
                 AffineTransform at = new AffineTransform();
                 at.setToTranslation(scaledX, scaledY);
                 xform.concatenate(at);

@@ -41,7 +41,7 @@ public class OGLVolatileImage extends GLVolatileImage {
     private OGLContextManager ctxmgr;
     private OGLGraphics2D lastGraphics = null;
 
-    private Disposer disposer = new Disposer();
+    private final Disposer disposer = new Disposer();
 
     /**
      * Helps us use OGL graphics in the uniform way
@@ -136,14 +136,17 @@ public class OGLVolatileImage extends GLVolatileImage {
     }
 
 
+    @Override
     public Surface getImageSurface() {
         return lastGraphics.getSurface();
     }
 
+    @Override
     public boolean contentsLost() {
         return false;
     }
 
+    @Override
     public Graphics2D createGraphics() {/*
         boolean firstTime = false; // First time we need to clear buffer
         if (lastGraphics == null) {
@@ -160,47 +163,57 @@ public class OGLVolatileImage extends GLVolatileImage {
         return lastGraphics;
     }
 
+    @Override
     public ImageCapabilities getCapabilities() {
         return ic;
     }
 
+    @Override
     public int getHeight() {
         return h;
     }
 
+    @Override
     public BufferedImage getSnapshot() {
         Surface s = getImageSurface();
         return new BufferedImage(s.getColorModel(), s.getRaster(), true, null);
     }
 
+    @Override
     public int getWidth() {
         return w;
     }
 
+    @Override
     public int validate(GraphicsConfiguration gc) {
-        if (gc.equals(ctxmgr))
+        if (gc.equals(ctxmgr)) {
             return IMAGE_OK;
-        else
-            return IMAGE_INCOMPATIBLE;
+        }
+        return IMAGE_INCOMPATIBLE;
     }
 
+    @Override
     public Object getProperty(String name, ImageObserver observer) {
         return UndefinedProperty;
     }
 
+    @Override
     public int getWidth(ImageObserver observer) {
         return w;
     }
 
+    @Override
     public int getHeight(ImageObserver observer) {
         return h;
     }
 
+    @Override
     protected void finalize() throws Throwable {
         super.finalize();
         disposer.dispose();
     }
 
+    @Override
     public void flush() {
         super.flush();
         disposer.dispose();

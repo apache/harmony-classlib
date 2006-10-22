@@ -19,9 +19,8 @@ package java.awt;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Collections;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 public class FontTest extends TestCase {
@@ -83,8 +82,7 @@ public class FontTest extends TestCase {
     public void test_Font_getFamily_WithNullLocale() {
         // Regression for Harmony-1543
         try {
-            Font fnt = Font
-                    .getFont((Map<? extends TextAttribute, ?>) Collections.EMPTY_MAP);
+            Font fnt = Font.getFont(Collections.<Attribute, Object>emptyMap());
             fnt.getFamily(null);
             fail("NullPointerException expected!");
         } catch (NullPointerException e) {
