@@ -46,6 +46,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         Introspector.flushCaches();
@@ -367,6 +368,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         
         assertTrue(pd.mutatesTo("test1", "test1"));
         assertFalse(pd.mutatesTo(new Object(), new Object() {
+            @Override
             public int hashCode() {
                 return super.hashCode();
             }
@@ -383,6 +385,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
                 new String[] { "name" });
 
         assertFalse(pd.mutatesTo(new Object(), new Object() {
+            @Override
             public int hashCode() {
                 return super.hashCode();
             }
@@ -733,6 +736,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public static class MockNoGetterBeanBeanInfo extends SimpleBeanInfo {
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             try {
                 PropertyDescriptor pd = new PropertyDescriptor("name", null,
@@ -772,6 +776,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public static class MockNoSetterBeanBeanInfo extends SimpleBeanInfo {
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             try {
                 PropertyDescriptor pd = new PropertyDescriptor("name",
@@ -810,6 +815,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
             trans = b;
         }
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             try {
                 PropertyDescriptor pd = new PropertyDescriptor("name",
@@ -888,15 +894,18 @@ public class DefaultPersistenceDelegateTest extends TestCase {
             super(props);
         }
 
+        @Override
         public Expression instantiate(Object oldInstance, Encoder out) {
             return super.instantiate(oldInstance, out);
         }
 
+        @Override
         public void initialize(Class<?> type, Object oldInstance,
                 Object newInstance, Encoder enc) {
             super.initialize(type, oldInstance, newInstance, enc);
         }
 
+        @Override
         public boolean mutatesTo(Object oldInstance, Object newInstance) {
             return super.mutatesTo(oldInstance, newInstance);
         }
@@ -912,18 +921,22 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     static class MockEncoder extends Encoder {
 
+        @Override
         public ExceptionListener getExceptionListener() {
             return super.getExceptionListener();
         }
 
+        @Override
         public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
             return super.getPersistenceDelegate(type);
         }
 
+        @Override
         public void setExceptionListener(ExceptionListener exceptionListener) {
             super.setExceptionListener(exceptionListener);
         }
 
+        @Override
         public void setPersistenceDelegate(Class<?> type,
                 PersistenceDelegate persistenceDelegate) {
             super.setPersistenceDelegate(type, persistenceDelegate);
@@ -954,26 +967,31 @@ public class DefaultPersistenceDelegateTest extends TestCase {
             }
         }
 
+        @Override
         public Object get(Object oldInstance) {
             recordCall(oldInstance);
             return super.get(oldInstance);
         }
 
+        @Override
         public Object remove(Object oldInstance) {
             recordCall(oldInstance);
             return super.remove(oldInstance);
         }
 
+        @Override
         public void writeExpression(Expression oldExp) {
             recordCall(oldExp);
             super.writeExpression(oldExp);
         }
 
+        @Override
         public void writeStatement(Statement oldStm) {
             recordCall(oldStm);
             super.writeStatement(oldStm);
         }
 
+        @Override
         public void writeObject(Object o) {
             recordCall(o);
             super.writeObject(o);
@@ -981,14 +999,16 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     }
 
     public static class CollectingEncoder extends Encoder {
-        private Vector<Expression> expressions = new Vector<Expression>();
-        private Vector<Statement> statements = new Vector<Statement>();
+        private final Vector<Expression> expressions = new Vector<Expression>();
+        private final Vector<Statement> statements = new Vector<Statement>();
         
+        @Override
         public void writeExpression(Expression exp) {
             expressions.add(exp);
             super.writeExpression(exp);
         }
 
+        @Override
         public void writeStatement(Statement stm) {
             statements.add(stm);
             super.writeStatement(stm);

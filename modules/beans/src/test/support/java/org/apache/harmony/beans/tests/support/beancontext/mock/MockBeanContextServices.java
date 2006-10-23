@@ -40,6 +40,7 @@ import java.util.TooManyListenersException;
 /**
  * Mock of BeanContextServices
  */
+@SuppressWarnings("unchecked")
 public class MockBeanContextServices implements BeanContextServices {
 
     /*

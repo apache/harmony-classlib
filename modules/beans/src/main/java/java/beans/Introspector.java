@@ -229,6 +229,6 @@ public class Introspector {
 
     private static String[] path = { "org.apache.harmony.beans.infos" }; //$NON-NLS-1$
 
-    private static Map<String, List<BeanInfoData>> beanInfos = new HashMap<String, List<BeanInfoData>>();
+    private static final Map<String, List<BeanInfoData>> beanInfos = new HashMap<String, List<BeanInfoData>>();
 
 }

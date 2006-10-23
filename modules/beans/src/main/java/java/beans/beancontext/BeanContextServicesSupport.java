@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.TooManyListenersException;
 
 import org.apache.harmony.beans.internal.nls.Messages;
-
+@SuppressWarnings("unchecked")
 public class BeanContextServicesSupport extends BeanContextSupport implements
         BeanContextServices {
 

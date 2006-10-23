@@ -866,7 +866,7 @@ public class ExpressionTest extends TestCase {
 
         protected static String calledMethod = null;
 
-        protected static Vector receivedArguments = new Vector();
+        protected static Vector<Object> receivedArguments = new Vector<Object>();
 
         public Object method() {
             reset();
@@ -1054,7 +1054,7 @@ public class ExpressionTest extends TestCase {
         // return calledMethod;
         // }
 
-        public static Class forName(String o) {
+        public static Class<?> forName(String o) {
             reset();
             calledMethod = "forName";
             receivedArguments.add(o);

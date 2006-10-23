@@ -29,12 +29,13 @@ import org.apache.harmony.beans.tests.support.beancontext.MethodInvocationRecord
 /**
  * Mock of BeanContextServiceProvider
  */
+@SuppressWarnings("unchecked")
 public class MockBeanContextServiceProvider implements
         BeanContextServiceProvider {
 
     public MethodInvocationRecords records = new MethodInvocationRecords();
 
-    public List selectors = Arrays.asList(new Object[] { Integer.class });
+    public List<Object> selectors = Arrays.asList(new Object[] { Integer.class });
 
     /*
      * (non-Javadoc)
@@ -67,9 +68,9 @@ public class MockBeanContextServiceProvider implements
      * @see java.beans.beancontext.BeanContextServiceProvider#getCurrentServiceSelectors(java.beans.beancontext.BeanContextServices,
      *      java.lang.Class)
      */
-    public Iterator getCurrentServiceSelectors(BeanContextServices bcs,
+    public Iterator<Object> getCurrentServiceSelectors(BeanContextServices bcs,
             Class serviceClass) {
-        Iterator result = selectors.iterator();
+        Iterator<Object> result = selectors.iterator();
         records.add("getCurrentServiceSelectors", bcs, serviceClass, result);
         return result;
     }

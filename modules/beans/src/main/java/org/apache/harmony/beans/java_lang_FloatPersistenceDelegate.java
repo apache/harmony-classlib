@@ -22,16 +22,13 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 public class java_lang_FloatPersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Float value = (Float) oldInstance;
-        return new Expression(oldInstance, Float.class, "new", //$NON-NLS-1$
-                new Object[] { new Float(value.floatValue()) });
+        return new Expression(oldInstance, Float.class, "new", new Object[] { value }); //$NON-NLS-1$
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 }

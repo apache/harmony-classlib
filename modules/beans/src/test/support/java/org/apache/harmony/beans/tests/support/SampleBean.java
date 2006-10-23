@@ -44,7 +44,7 @@ public class SampleBean {
 
     private Object[] smthObjs;
 
-    private Vector listeners;
+    private Vector<SampleListener> listeners;
 
     public SampleBean() {
         this.text = null;
@@ -146,15 +146,14 @@ public class SampleBean {
     public void addSampleListener(SampleListener listener)
             throws TooManyListenersException {
         if (listeners == null) {
-            listeners = new Vector();
+            listeners = new Vector<SampleListener>();
         }
 
         if (listeners.size() >= 100) {
             throw new TooManyListenersException(
                     "Number of listeners could not exceed 100");
-        } else {
-            listeners.add(listener);
         }
+        listeners.add(listener);
     }
 
     public void removeSampleListener(SampleListener listener) {
@@ -167,16 +166,15 @@ public class SampleBean {
         if (listeners != null) {
             SampleListener[] result = new SampleListener[listeners.size()];
 
-            Iterator i = listeners.iterator();
+            Iterator<SampleListener> i = listeners.iterator();
 
             int idx = 0;
             while (i.hasNext()) {
-                result[idx++] = (SampleListener) i.next();
+                result[idx++] = i.next();
             }
 
             return result;
-        } else {
-            return new SampleListener[] {};
         }
+        return new SampleListener[] {};
     }
 }

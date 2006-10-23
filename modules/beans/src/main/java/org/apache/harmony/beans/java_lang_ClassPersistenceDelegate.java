@@ -23,14 +23,12 @@ import java.beans.PersistenceDelegate;
 import java.lang.reflect.Field;
 
 public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        Class value = (Class) oldInstance;
+        Class<?> value = (Class) oldInstance;
         Field fld = null;
         final String TYPE = "TYPE"; //$NON-NLS-1$
         Expression result;
-
         try {
             if (value.equals(Integer.TYPE)) {
                 fld = Integer.class.getField(TYPE);
@@ -52,29 +50,27 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         } catch (NoSuchFieldException e) {
             // impossible situation for valid java.lang classes
             // implementation with version >= 1.1
+            throw new AssertionError(e);
         }
         if (fld != null) {
             // we have primitive type
-            result = new Expression(oldInstance, fld, "get", //$NON-NLS-1$
-                    new Object[] { null });
+            result = new Expression(oldInstance, fld, "get", new Object[] { null }); //$NON-NLS-1$
         } else {
-            result = new Expression(oldInstance, Class.class, "forName", //$NON-NLS-1$
-                    new Object[] { new String(value.getName()) });
+            result = new Expression(oldInstance, Class.class, "forName", //$NON-NLS-1$ 
+                    new Object[] { value.getName() });
         }
         return result;
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         if (oldInstance instanceof Class && newInstance instanceof Class) {
-            Class c1 = (Class) oldInstance;
-            Class c2 = (Class) newInstance;
-
+            Class<?> c1 = (Class) oldInstance;
+            Class<?> c2 = (Class) newInstance;
             if (c1.getName().equals(c2.getName())) {
                 return true;
             }

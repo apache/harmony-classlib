@@ -19,7 +19,7 @@ package java.beans.beancontext;
 
 import java.util.Iterator;
 import java.util.TooManyListenersException;
-
+@SuppressWarnings("unchecked")
 public interface BeanContextServices extends BeanContext,
         BeanContextServicesListener {
 

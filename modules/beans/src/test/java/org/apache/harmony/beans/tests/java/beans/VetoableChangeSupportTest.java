@@ -461,12 +461,12 @@ public class VetoableChangeSupportTest extends TestCase {
 
         // Check the calling status of the first listener
         {
-            ArrayList oldValues = normal1.getOldValues();
+            ArrayList<Object> oldValues = normal1.getOldValues();
             assertEquals(2, oldValues.size());
             assertEquals("1", oldValues.get(0));
             assertEquals("5", oldValues.get(1));
 
-            ArrayList newValues = normal1.getNewValues();
+            ArrayList<Object> newValues = normal1.getNewValues();
             assertEquals(2, newValues.size());
             assertEquals("5", newValues.get(0));
             assertEquals("1", newValues.get(1));
@@ -474,12 +474,12 @@ public class VetoableChangeSupportTest extends TestCase {
 
         // Check the status of the second (Veto) listeners
         {
-            ArrayList oldValues = veto1.getOldValues();
+            ArrayList<Object> oldValues = veto1.getOldValues();
             assertEquals(2, oldValues.size());
             assertEquals("1", oldValues.get(0));
             assertEquals("5", oldValues.get(1));
 
-            ArrayList newValues = veto1.getNewValues();
+            ArrayList<Object> newValues = veto1.getNewValues();
             assertEquals(2, newValues.size());
             assertEquals("5", newValues.get(0));
             assertEquals("1", newValues.get(1));
@@ -487,22 +487,22 @@ public class VetoableChangeSupportTest extends TestCase {
 
         // Check the status of the third listeners
         {
-            ArrayList oldValues = normal2.getOldValues();
+            ArrayList<Object> oldValues = normal2.getOldValues();
             assertEquals(1, oldValues.size());
             assertEquals("5", oldValues.get(0));
 
-            ArrayList newValues = normal2.getNewValues();
+            ArrayList<Object> newValues = normal2.getNewValues();
             assertEquals(1, newValues.size());
             assertEquals("1", newValues.get(0));
         }
 
         // Check the status of the fourth (Veto) listeners
         {
-            ArrayList oldValues = veto2.getOldValues();
+            ArrayList<Object> oldValues = veto2.getOldValues();
             assertEquals(1, oldValues.size());
             assertEquals("5", oldValues.get(0));
 
-            ArrayList newValues = veto2.getNewValues();
+            ArrayList<Object> newValues = veto2.getNewValues();
             assertEquals(1, newValues.size());
             assertEquals("1", newValues.get(0));
         }
@@ -1772,9 +1772,9 @@ public class VetoableChangeSupportTest extends TestCase {
 
     public static class MockVetoListener implements VetoableChangeListener {
 
-        ArrayList oldValues = new ArrayList();
+        ArrayList<Object> oldValues = new ArrayList<Object>();
 
-        ArrayList newValues = new ArrayList();
+        ArrayList<Object> newValues = new ArrayList<Object>();
 
         boolean veto;
 
@@ -1799,11 +1799,11 @@ public class VetoableChangeSupportTest extends TestCase {
             }
         }
 
-        public ArrayList getOldValues() {
+        public ArrayList<Object> getOldValues() {
             return this.oldValues;
         }
 
-        public ArrayList getNewValues() {
+        public ArrayList<Object> getNewValues() {
             return this.newValues;
         }
 

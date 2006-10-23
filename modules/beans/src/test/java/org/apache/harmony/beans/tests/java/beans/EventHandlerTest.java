@@ -46,7 +46,7 @@ public class EventHandlerTest extends TestCase {
 
     private Object[] params;
 
-    private String text = "something";
+    private final String text = "something";
 
     /**
      * 

@@ -103,6 +103,7 @@ public class XMLEncoderTest extends TestCase {
             this.ident = ident;
         }
 
+        @Override
         public Object get(Object arg0) {
             String identStr = ident ? ident() : "";
             out.println(identStr + "get()> " + arg0);
@@ -111,11 +112,13 @@ public class XMLEncoderTest extends TestCase {
             return result;
         }
 
+        @Override
         public PersistenceDelegate getPersistenceDelegate(Class type) {
             PersistenceDelegate result = super.getPersistenceDelegate(type);
             return result;
         }
 
+        @Override
         public Object remove(Object arg0) {
             String identStr = ident ? ident() : "";
             out.println(identStr + "remove()> " + arg0);
@@ -124,6 +127,7 @@ public class XMLEncoderTest extends TestCase {
             return result;
         }
 
+        @Override
         public void writeExpression(Expression arg0) {
             String identStr = ident ? ident() : "";
             out.println(identStr + "writeExpression()> " + string(arg0));
@@ -131,6 +135,7 @@ public class XMLEncoderTest extends TestCase {
             out.println(identStr + "writeExpression()< ");
         }
 
+        @Override
         public void writeStatement(Statement arg0) {
             String identStr = ident ? ident() : "";
             out.println(identStr + "writeStatement()> " + string(arg0));
@@ -138,6 +143,7 @@ public class XMLEncoderTest extends TestCase {
             out.println(identStr + "writeStatement()< ");
         }
 
+        @Override
         public void writeObject(Object arg0) {
             String identStr = ident ? ident() : "";
             out.println(identStr + "writeObject()> " + arg0);
@@ -295,6 +301,7 @@ public class XMLEncoderTest extends TestCase {
         ByteArrayOutputStream out = new ByteArrayOutputStream() {
             boolean closeCalled = false;
 
+            @Override
             public void close() throws IOException {
                 if (closeCalled) {
                     throw new IOException("close already called!");
@@ -718,6 +725,7 @@ public class XMLEncoderTest extends TestCase {
             final Object object = new Object();
             e.setPersistenceDelegate(AType.class,
                     new DefaultPersistenceDelegate() {
+                        @Override
                         protected void initialize(Class type,
                                 Object oldInstance, Object newInstance,
                                 Encoder out) {

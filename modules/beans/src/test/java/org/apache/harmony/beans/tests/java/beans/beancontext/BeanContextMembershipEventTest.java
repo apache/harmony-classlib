@@ -36,6 +36,7 @@ import tests.util.SerializationTester;
 /**
  * Test BeanContextMembershipEvent
  */
+@SuppressWarnings("unchecked")
 public class BeanContextMembershipEventTest extends TestCase {
 
     private static class MockBeanContextMembershipEvent extends
@@ -55,7 +56,7 @@ public class BeanContextMembershipEventTest extends TestCase {
          * @param bc
          * @param changes
          */
-        public MockBeanContextMembershipEvent(BeanContext bc, Collection changes) {
+        public MockBeanContextMembershipEvent(BeanContext bc, Collection<String> changes) {
             super(bc, changes);
         }
 
@@ -91,7 +92,7 @@ public class BeanContextMembershipEventTest extends TestCase {
         }
 
         try {
-            new MockBeanContextMembershipEvent(ctx, (Collection) null);
+            new MockBeanContextMembershipEvent(ctx, (Collection<String>) null);
             fail("NPE expected");
         } catch (NullPointerException e) {
             // expected

@@ -23,7 +23,7 @@ import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
 public class MockFooLabelBeanInfo extends SimpleBeanInfo {
-    Class clazz = MockFooLabel.class;
+    Class<MockFooLabel> clazz = MockFooLabel.class;
 
     String suffix = ".MockFooLabelBeanInfo";
 

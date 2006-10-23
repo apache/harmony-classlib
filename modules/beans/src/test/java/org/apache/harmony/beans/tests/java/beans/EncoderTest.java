@@ -34,7 +34,7 @@ import org.apache.harmony.beans.tests.support.mock.MockBean4Codec;
 import org.apache.harmony.beans.tests.support.mock.MockBean4CodecBadGetter;
 import org.apache.harmony.beans.tests.support.mock.MockExceptionListener;
 import org.apache.harmony.beans.tests.support.mock.MockFooLiYang;
-
+@SuppressWarnings("unchecked")
 public class EncoderTest extends TestCase {
 
     public static void main(String[] args) throws Exception {

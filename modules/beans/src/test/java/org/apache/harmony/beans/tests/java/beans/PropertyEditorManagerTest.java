@@ -55,8 +55,8 @@ public class PropertyEditorManagerTest extends TestCase {
      * find the editor which has been registered through registerEditor.
      */
     public void testFindEditor_registered() {
-        Class editorClass = FozRegisteredEditor.class;
-        Class type = Foz.class;
+        Class<FozRegisteredEditor> editorClass = FozRegisteredEditor.class;
+        Class<Foz> type = Foz.class;
         PropertyEditorManager.registerEditor(type, editorClass);
         PropertyEditor editor = PropertyEditorManager.findEditor(type);
         assertTrue(editor instanceof FozRegisteredEditor);
@@ -132,7 +132,7 @@ public class PropertyEditorManagerTest extends TestCase {
      * RegisterEditor
      */
     public void testRegisterEditor() {
-        Class type = MockButton.class;
+        Class<MockButton> type = MockButton.class;
 
         PropertyEditorManager.registerEditor(type, ButtonEditor.class);
         PropertyEditor editor = PropertyEditorManager.findEditor(type);

@@ -19,20 +19,22 @@ package org.apache.harmony.beans;
 
 import java.beans.Expression;
 import java.beans.Statement;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 public class ObjectNode {
 
     private Expression initializer;
 
-    private Object objectValue = null;
+    private Object objectValue;
 
-    private HashMap<Object, ObjectNode> nodes;
+    private Map<Object, ObjectNode> nodes;
 
-    private LinkedHashSet<Statement> statements = new LinkedHashSet<Statement>();
+    private Set<Statement> statements = new LinkedHashSet<Statement>();
 
     private Vector<Expression> expressions = new Vector<Expression>();
 
@@ -40,9 +42,9 @@ public class ObjectNode {
     // private Vector<Expression> referencedExpressions = new
     // Vector<Expression>();
 
-    private int referencesNumber = 0;
+    private int referencesNumber;
 
-    private String id = null;
+    private String id;
 
     public ObjectNode(Expression initializer) {
         this.initializer = initializer;
@@ -87,7 +89,7 @@ public class ObjectNode {
         return objectValue;
     }
 
-    public Class getObjectType() throws Exception {
+    public Class<?> getObjectType() throws Exception {
         Object value = getObjectValue();
 
         return (value != null) ? value.getClass() : null;

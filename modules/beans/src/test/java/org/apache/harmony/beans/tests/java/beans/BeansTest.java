@@ -62,14 +62,14 @@ public class BeansTest extends TestCase {
      */
     public void testGetInstanceOf() {
         MockJavaBean bean = new MockJavaBean();
-        Class type = Component.class;
+        Class<Component> type = Component.class;
         Object obj = Beans.getInstanceOf(bean, type);
 
         assertSame(bean, obj);
     }
 
     public void testGetInstanceOf_BeanNull() {
-        Class type = Component.class;
+        Class<Component> type = Component.class;
         Object obj = Beans.getInstanceOf(null, type);
 
         assertNull(obj);
@@ -406,7 +406,7 @@ public class BeansTest extends TestCase {
     public void test_isInstanceOf_Object_Class() {
         ObjectBean bean = new ObjectBean();
         // correct non-null targetType
-        Class targetType = Externalizable.class;
+        Class<Externalizable> targetType = Externalizable.class;
 
         assertTrue(Beans.isInstanceOf(bean, targetType));
 

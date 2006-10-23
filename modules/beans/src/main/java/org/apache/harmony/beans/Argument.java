@@ -19,11 +19,11 @@ package org.apache.harmony.beans;
 
 public class Argument {
 
-    private Class type = null;
+    private Class<?> type;
 
-    private Object value = null;
+    private Object value;
 
-    private Class[] interfaces = null;
+    private Class[] interfaces;
 
     public Argument(Object value) {
         this.value = value;
@@ -33,13 +33,13 @@ public class Argument {
         }
     }
 
-    public Argument(Class type, Object value) {
+    public Argument(Class<?> type, Object value) {
         this.type = type;
         this.value = value;
         this.interfaces = type.getInterfaces();
     }
 
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 
@@ -51,7 +51,7 @@ public class Argument {
         return interfaces;
     }
 
-    public void setType(Class type) {
+    public void setType(Class<?> type) {
         this.type = type;
         this.interfaces = type.getInterfaces();
     }

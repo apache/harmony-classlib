@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
-
+@SuppressWarnings("unchecked")
 public class BeanContextMembershipEvent extends BeanContextEvent {
 
-    static final long serialVersionUID = 3499346510334590959L;
+    private static final long serialVersionUID = 3499346510334590959L;
 
     protected Collection children;
 

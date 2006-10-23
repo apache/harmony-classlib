@@ -850,7 +850,7 @@ public class StatementTest extends TestCase {
 
         protected static String calledMethod = null;
 
-        protected static Vector receivedArguments = new Vector();
+        protected static Vector<Object> receivedArguments = new Vector<Object>();
 
         public void method() {
             reset();

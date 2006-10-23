@@ -64,11 +64,13 @@ public class IntrospectorTest extends TestCase {
 
     private String[] defaultPackage;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         defaultPackage = Introspector.getBeanInfoSearchPath();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         Introspector.flushCaches();
@@ -131,23 +133,23 @@ public class IntrospectorTest extends TestCase {
         assertNotNull(info);
         EventSetDescriptor[] descriptors = info.getEventSetDescriptors();
         assertNotNull(descriptors);
-        for (EventSetDescriptor element : descriptors) {
-            Method m = element.getAddListenerMethod();
+        for (EventSetDescriptor descriptor : descriptors) {
+            Method m = descriptor.getAddListenerMethod();
             if (m != null) {
                 Class[] exceptionTypes = m.getExceptionTypes();
                 boolean found = false;
 
-                for (Class element0 : exceptionTypes) {
-                    if (element0
+                for (Class<?> et : exceptionTypes) {
+                    if (et
                             .equals(TooManyListenersException.class)) {
-                        assertTrue(element.isUnicast());
+                        assertTrue(descriptor.isUnicast());
                         found = true;
                         break;
                     }
                 }
 
                 if (!found) {
-                    assertFalse(element.isUnicast());
+                    assertFalse(descriptor.isUnicast());
                 }
             }
         }
@@ -338,7 +340,7 @@ public class IntrospectorTest extends TestCase {
      */
     public void testGetBeanInfoClass_no_BeanInfo()
             throws IntrospectionException {
-        Class beanClass = FakeFox.class;
+        Class<FakeFox> beanClass = FakeFox.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertNull(info.getAdditionalBeanInfo());
         BeanDescriptor beanDesc = info.getBeanDescriptor();
@@ -350,7 +352,7 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] methodDesc = info.getMethodDescriptors();
         Method[] methods = beanClass.getMethods();
         assertEquals(methods.length, methodDesc.length);
-        ArrayList methodList = new ArrayList();
+        ArrayList<Method> methodList = new ArrayList<Method>();
 
         for (Method element : methods) {
             methodList.add(element);
@@ -378,7 +380,7 @@ public class IntrospectorTest extends TestCase {
      */
     public void testGetBeanInfoClass_HaveBeanInfo()
             throws IntrospectionException {
-        Class beanClass = FakeFox01.class;
+        Class<FakeFox01> beanClass = FakeFox01.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         // printInfo(info);
 
@@ -693,7 +695,7 @@ public class IntrospectorTest extends TestCase {
      * Sub is PropertyDescriptor, Super is null
      */
     public void testIntrospection_1() throws IntrospectionException {
-        Class beanClass = FakeFox101.class;
+        Class<FakeFox101> beanClass = FakeFox101.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
         assertEquals(0, info.getEventSetDescriptors().length);
@@ -721,7 +723,7 @@ public class IntrospectorTest extends TestCase {
      * super
      */
     public void testIntrospection_2() throws IntrospectionException {
-        Class beanClass = FakeFox201.class;
+        Class<FakeFox201> beanClass = FakeFox201.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
         assertEquals(0, info.getEventSetDescriptors().length);
@@ -749,7 +751,7 @@ public class IntrospectorTest extends TestCase {
      * Integer, super set->String
      */
     public void testIntrospection_3() throws IntrospectionException {
-        Class beanClass = FakeFox202.class;
+        Class<FakeFox202> beanClass = FakeFox202.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
         assertEquals(0, info.getEventSetDescriptors().length);
@@ -777,7 +779,7 @@ public class IntrospectorTest extends TestCase {
      * super get -> Integer
      */
     public void testIntrospection_4() throws IntrospectionException {
-        Class beanClass = FakeFox301.class;
+        Class<FakeFox301> beanClass = FakeFox301.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
         assertEquals(0, info.getEventSetDescriptors().length);
@@ -804,7 +806,7 @@ public class IntrospectorTest extends TestCase {
      * Sub PropertyDescriptor, super IndexedPropertyDescriptor
      */
     public void testIntrospection_5() throws IntrospectionException {
-        Class beanClass = FakeFox401.class;
+        Class<FakeFox401> beanClass = FakeFox401.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(13, info.getMethodDescriptors().length);
@@ -836,7 +838,7 @@ public class IntrospectorTest extends TestCase {
      * mismatch
      */
     public void testIntrospection_6() throws IntrospectionException {
-        Class beanClass = FakeFox402.class;
+        Class<FakeFox402> beanClass = FakeFox402.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(13, info.getMethodDescriptors().length);
@@ -862,7 +864,7 @@ public class IntrospectorTest extends TestCase {
      * indexed get. Super get
      */
     public void testIntrospection_7() throws IntrospectionException {
-        Class beanClass = FakeFox501.class;
+        Class<FakeFox501> beanClass = FakeFox501.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(12, info.getMethodDescriptors().length);
@@ -894,7 +896,7 @@ public class IntrospectorTest extends TestCase {
      * set. Super get
      */
     public void testIntrospection_8() throws IntrospectionException {
-        Class beanClass = FakeFox502.class;
+        Class<FakeFox502> beanClass = FakeFox502.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(11, info.getMethodDescriptors().length);
@@ -926,7 +928,7 @@ public class IntrospectorTest extends TestCase {
      * set. Super get. Type is different
      */
     public void testIntrospection_9() throws IntrospectionException {
-        Class beanClass = FakeFox503.class;
+        Class<FakeFox503> beanClass = FakeFox503.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(11, info.getMethodDescriptors().length);
@@ -956,7 +958,7 @@ public class IntrospectorTest extends TestCase {
      * Test introspect events, add/remove
      */
     public void testIntrospection_10() throws IntrospectionException {
-        Class beanClass = FakeFox601.class;
+        Class<FakeFox601> beanClass = FakeFox601.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(1, info.getEventSetDescriptors().length);
         EventSetDescriptor eventDesc = info.getEventSetDescriptors()[0];
@@ -982,7 +984,7 @@ public class IntrospectorTest extends TestCase {
      * Test introspect events, add/remove/get
      */
     public void testIntrospection_11() throws IntrospectionException {
-        Class beanClass = FakeFox602.class;
+        Class<FakeFox602> beanClass = FakeFox602.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(1, info.getEventSetDescriptors().length);
         EventSetDescriptor eventDesc = info.getEventSetDescriptors()[0];
@@ -1009,7 +1011,7 @@ public class IntrospectorTest extends TestCase {
      * Test introspect events, add
      */
     public void testIntrospection_12() throws IntrospectionException {
-        Class beanClass = FakeFox603.class;
+        Class<FakeFox603> beanClass = FakeFox603.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(0, info.getEventSetDescriptors().length);
 
@@ -1030,7 +1032,7 @@ public class IntrospectorTest extends TestCase {
      * Test introspect events, add/remove Add throws TooManyListenersException
      */
     public void testIntrospection_13() throws IntrospectionException {
-        Class beanClass = FakeFox604.class;
+        Class<FakeFox604> beanClass = FakeFox604.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(1, info.getEventSetDescriptors().length);
         EventSetDescriptor eventDesc = info.getEventSetDescriptors()[0];
@@ -1055,7 +1057,7 @@ public class IntrospectorTest extends TestCase {
 
     // for test coverage
     public void testIntrospection_14() throws IntrospectionException {
-        Class beanClass = FakeFox5001.class;
+        Class<FakeFox5001> beanClass = FakeFox5001.class;
         Introspector.getBeanInfo(beanClass);
 
         // Introspector in = new Introspector();
@@ -1066,7 +1068,7 @@ public class IntrospectorTest extends TestCase {
      * BeanInfo
      */
     public void testBeanInfo_1() throws IntrospectionException {
-        Class beanClass = FakeFox011.class;
+        Class<FakeFox011> beanClass = FakeFox011.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertNull(info.getAdditionalBeanInfo());
         BeanDescriptor beanDesc = info.getBeanDescriptor();
@@ -1090,7 +1092,7 @@ public class IntrospectorTest extends TestCase {
     }
 
     public void testBeanInfo_2() throws IntrospectionException {
-        Class beanClass = FakeFox02.class;
+        Class<FakeFox02> beanClass = FakeFox02.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertNull(info.getAdditionalBeanInfo());
         BeanDescriptor beanDesc = info.getBeanDescriptor();
@@ -1113,7 +1115,7 @@ public class IntrospectorTest extends TestCase {
     }
 
     public void testPropertySort() throws IntrospectionException {
-        Class beanClass = FakeFox70.class;
+        Class<FakeFox70> beanClass = FakeFox70.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         PropertyDescriptor[] descs = info.getPropertyDescriptors();
         String[] names = { "a", "aaa", "bb", "bbb", "bc", "class", "ddd", "ff", };
@@ -1123,13 +1125,13 @@ public class IntrospectorTest extends TestCase {
     }
 
     public void testIntrospectProperties() throws IntrospectionException {
-        Class beanClass = FakeFox80.class;
+        Class<FakeFox80> beanClass = FakeFox80.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         assertEquals(2, info.getPropertyDescriptors().length);
     }
 
     public void testIntrospectProperties2() throws IntrospectionException {
-        Class beanClass = FakeFox90.class;
+        Class<FakeFox90> beanClass = FakeFox90.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         // printInfo(info);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
@@ -1215,7 +1217,7 @@ public class IntrospectorTest extends TestCase {
      * Introspector.getBeanInfo(Bean1) throws java.beans.IntrospectionException.
      */
     public void testIntrospectorGetBeanInfo() throws IntrospectionException {
-        Class clazz = FakeFoxInfo.class;
+        Class<FakeFoxInfo> clazz = FakeFoxInfo.class;
         BeanInfo info = Introspector.getBeanInfo(clazz);
         // printInfo(info);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
@@ -1289,6 +1291,7 @@ public class IntrospectorTest extends TestCase {
 
     static class MockSecurity1 extends SecurityManager {
 
+        @Override
         public void checkPermission(Permission p) {
 
         }
@@ -1320,6 +1323,7 @@ public class IntrospectorTest extends TestCase {
 
     static class MockSecurity2 extends SecurityManager {
 
+        @Override
         public void checkPermission(Permission p) {
             if (p instanceof PropertyPermission) {
                 throw new SecurityException("Expected exception.");
@@ -1332,7 +1336,7 @@ public class IntrospectorTest extends TestCase {
      * Introspector.getBeanInfo(Bean3.class).getBeanDescriptor() returns null.
      */
     public void testNullBeanDescriptor() throws IntrospectionException {
-        Class clazz = Bean3.class;
+        Class<Bean3> clazz = Bean3.class;
         BeanInfo info = Introspector.getBeanInfo(clazz);
         // printInfo(info);
         assertNotNull(info.getBeanDescriptor());
@@ -1358,7 +1362,7 @@ public class IntrospectorTest extends TestCase {
      * 
      */
     public void testGetPropertyDescriptors() throws IntrospectionException {
-        Class clazz = Bean2.class;
+        Class<Bean2> clazz = Bean2.class;
         BeanInfo info = Introspector.getBeanInfo(clazz);
         // printInfo(info);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
@@ -1382,6 +1386,7 @@ public class IntrospectorTest extends TestCase {
 
     public static class Bean1BeanInfo extends SimpleBeanInfo {
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             try {
                 PropertyDescriptor _property1 = new PropertyDescriptor(
@@ -1607,10 +1612,12 @@ public class IntrospectorTest extends TestCase {
 
     static class FakeFox602 extends FakeFox601 {
 
+        @Override
         public void addFakeFox601Listener(FakeFox601Listener listener) {
 
         }
 
+        @Override
         public void removeFakeFox601Listener(FakeFox601Listener listener) {
 
         }
@@ -1762,10 +1769,11 @@ public class IntrospectorTest extends TestCase {
 
     public static class MockFoo23BeanInfo extends SimpleBeanInfo {
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             // System.out.println("MockFoo23BeanInfo is called");
             PropertyDescriptor pd = null;
-            Class clazz = MockFoo23.class;
+            Class<MockFoo23> clazz = MockFoo23.class;
             try {
                 Method getter = clazz.getMethod("getName", new Class[] {});
                 pd = new PropertyDescriptor("name", getter, null);
@@ -1795,10 +1803,11 @@ public class IntrospectorTest extends TestCase {
 
     public static class MockFox00BeanInfo extends SimpleBeanInfo {
 
+        @Override
         public MethodDescriptor[] getMethodDescriptors() {
             MethodDescriptor md = null;
             try {
-                Class clz = MockFox00.class;
+                Class<MockFox00> clz = MockFox00.class;
                 Method method = clz.getMethod("getLabel", new Class[] {});
                 md = new MethodDescriptor(method);
 
@@ -1819,10 +1828,11 @@ public class IntrospectorTest extends TestCase {
 
     public static class MockFox001BeanInfo extends SimpleBeanInfo {
 
+        @Override
         public PropertyDescriptor[] getPropertyDescriptors() {
             // System.out.println("MockFox001BeanInfo is called");
             PropertyDescriptor pd = null;
-            Class clazz = MockFox001.class;
+            Class<MockFox001> clazz = MockFox001.class;
             try {
                 Method getter = clazz.getMethod("getName", new Class[] {});
                 pd = new PropertyDescriptor("name", getter, null);
@@ -1838,10 +1848,11 @@ public class IntrospectorTest extends TestCase {
             return new PropertyDescriptor[] { pd };
         }
 
+        @Override
         public MethodDescriptor[] getMethodDescriptors() {
             MethodDescriptor md = null;
             try {
-                Class clz = MockFox001.class;
+                Class<MockFox001> clz = MockFox001.class;
                 Method method = clz.getMethod("getName", new Class[] {});
                 md = new MethodDescriptor(method);
 
@@ -1873,10 +1884,11 @@ public class IntrospectorTest extends TestCase {
 
     public static class MockFox011BeanInfo extends SimpleBeanInfo {
 
+        @Override
         public MethodDescriptor[] getMethodDescriptors() {
             MethodDescriptor md = null;
             try {
-                Class clz = MockFox011.class;
+                Class<MockFox011> clz = MockFox011.class;
                 Method m = clz.getMethod("getName", new Class[] {});
                 md = new MethodDescriptor(m);
             } catch (Exception e) {

@@ -65,10 +65,10 @@ public class EventHandler implements InvocationHandler {
                 if (method.getDeclaringClass().equals(Object.class)) {
                     if (method.getName().equals("hashCode") && //$NON-NLS-1$
                             arguments.length == 0) {
-                        result = hashCode();
+                        result = Integer.valueOf(hashCode());
                     } else if (method.getName().equals("equals") && //$NON-NLS-1$
                             arguments.length == 1 && arguments[0] != null) {
-                        result = (proxy == arguments[0]);
+                        result = Boolean.valueOf(proxy == arguments[0]);
                     } else if (method.getName().equals("toString") && //$NON-NLS-1$
                             arguments.length == 0) {
                         result = proxy.getClass().getSimpleName()
@@ -112,25 +112,28 @@ public class EventHandler implements InvocationHandler {
         return target;
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target,
-            String action, String eventPropertyName, String listenerMethodName) {
-        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, eventPropertyName, listenerMethodName));
+    public static <T> T create(Class<T> listenerInterface, Object target, String action,
+            String eventPropertyName, String listenerMethodName) {
+        Object proxy = Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                new Class[] { listenerInterface }, new EventHandler(target, action,
+                        eventPropertyName, listenerMethodName));
+        return listenerInterface.cast(proxy);
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target,
-            String action, String eventPropertyName) {
-        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, eventPropertyName, null));
+    public static <T> T create(Class<T> listenerInterface, Object target, String action,
+            String eventPropertyName) {
+        Object proxy = Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                new Class[] { listenerInterface }, new EventHandler(target, action,
+                        eventPropertyName, null));
+        return listenerInterface.cast(proxy);
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target,
-            String action) {
-        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, null, null));
+    public static <T> T create(Class<T> listenerInterface, Object target, String action) {
+        Object proxy = Proxy
+                .newProxyInstance(target.getClass().getClassLoader(),
+                        new Class[] { listenerInterface }, new EventHandler(target, action,
+                                null, null));
+        return listenerInterface.cast(proxy);
     }
 
     private boolean isValidInvocation(Method method, Object[] arguments) {
@@ -210,8 +213,8 @@ public class EventHandler implements InvocationHandler {
         if (listenerMethodName == null) {
             Class[] proxyInterfaces = proxy.getClass().getInterfaces();
 
-            for (Class element : proxyInterfaces) {
-                Method[] interfaceMethods = element.getMethods();
+            for (Class<?> proxyInstance : proxyInterfaces) {
+                Method[] interfaceMethods = proxyInstance.getMethods();
 
                 for (Method listenerMethod : interfaceMethods) {
                     if (equalNames(listenerMethod, method)

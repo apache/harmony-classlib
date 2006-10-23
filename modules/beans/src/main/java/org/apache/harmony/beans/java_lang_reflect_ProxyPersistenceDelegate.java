@@ -23,24 +23,18 @@ import java.beans.PersistenceDelegate;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-public class java_lang_reflect_ProxyPersistenceDelegate extends
-        PersistenceDelegate {
-
+public class java_lang_reflect_ProxyPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         assert oldInstance instanceof Proxy : oldInstance;
-
         Class[] interfaces = oldInstance.getClass().getInterfaces();
         InvocationHandler handler = Proxy.getInvocationHandler(oldInstance);
-
         return new Expression(oldInstance, Proxy.class, "newProxyInstance", //$NON-NLS-1$
-                new Object[] { oldInstance.getClass().getClassLoader(),
-                        interfaces, handler });
+                new Object[] { oldInstance.getClass().getClassLoader(), interfaces, handler });
     }
 
     @Override
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
         // check for consistency
         assert oldInstance instanceof Proxy : oldInstance;
         assert newInstance instanceof Proxy : newInstance;
@@ -50,8 +44,6 @@ public class java_lang_reflect_ProxyPersistenceDelegate extends
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Proxy : oldInstance;
-
         return oldInstance == newInstance;
     }
-
 }

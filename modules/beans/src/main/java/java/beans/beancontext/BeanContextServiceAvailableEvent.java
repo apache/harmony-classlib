@@ -18,7 +18,7 @@
 package java.beans.beancontext;
 
 import java.util.Iterator;
-
+@SuppressWarnings("unchecked")
 public class BeanContextServiceAvailableEvent extends BeanContextEvent {
 
     static final long serialVersionUID = -5333985775656400778L;

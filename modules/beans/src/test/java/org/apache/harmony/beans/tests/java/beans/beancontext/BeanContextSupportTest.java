@@ -70,6 +70,7 @@ import tests.util.SerializationTester;
 /**
  * Test BeanContextSupport
  */
+@SuppressWarnings("unchecked")
 public class BeanContextSupportTest extends TestCase {
 
     private static class MockBeanContextSupport extends BeanContextSupport {
@@ -192,6 +193,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#bcsPreDeserializationHook(java.io.ObjectInputStream)
          */
+        @Override
         protected void bcsPreDeserializationHook(ObjectInputStream ois)
                 throws IOException, ClassNotFoundException {
             super.bcsPreDeserializationHook(ois);
@@ -206,6 +208,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#bcsPreSerializationHook(java.io.ObjectOutputStream)
          */
+        @Override
         protected void bcsPreSerializationHook(ObjectOutputStream oos)
                 throws IOException {
             super.bcsPreSerializationHook(oos);
@@ -218,6 +221,7 @@ public class BeanContextSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextSupport#childDeserializedHook(java.lang.Object,
          *      java.beans.beancontext.BeanContextSupport.BCSChild)
          */
+        @Override
         protected void childDeserializedHook(Object child, BCSChild bcsc) {
             super.childDeserializedHook(child, bcsc);
             records.add("childDeserializedHook", child, bcsc, null);
@@ -229,6 +233,7 @@ public class BeanContextSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextSupport#childJustAddedHook(java.lang.Object,
          *      java.beans.beancontext.BeanContextSupport.BCSChild)
          */
+        @Override
         protected void childJustAddedHook(Object child, BCSChild bcsc) {
             // check lock
             try {
@@ -246,6 +251,7 @@ public class BeanContextSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextSupport#childJustRemovedHook(java.lang.Object,
          *      java.beans.beancontext.BeanContextSupport.BCSChild)
          */
+        @Override
         protected void childJustRemovedHook(Object child, BCSChild bcsc) {
             // check lock
             try {
@@ -263,6 +269,7 @@ public class BeanContextSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextSupport#createBCSChild(java.lang.Object,
          *      java.lang.Object)
          */
+        @Override
         protected BCSChild createBCSChild(Object targetChild, Object peer) {
             BCSChild result = super.createBCSChild(targetChild, peer);
             records.add("createBCSChild", targetChild, peer, result);
@@ -274,6 +281,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#initialize()
          */
+        @Override
         protected void initialize() {
             super.initialize();
             if (records == null) {
@@ -287,6 +295,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
          */
+        @Override
         public void propertyChange(PropertyChangeEvent pce) {
             super.propertyChange(pce);
             records.add("propertyChange", pce, null);
@@ -297,6 +306,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#validatePendingAdd(java.lang.Object)
          */
+        @Override
         protected boolean validatePendingAdd(Object targetChild) {
             boolean result = vetoAddRemove ? false : super
                     .validatePendingAdd(targetChild);
@@ -310,6 +320,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#validatePendingRemove(java.lang.Object)
          */
+        @Override
         protected boolean validatePendingRemove(Object targetChild) {
             boolean result = vetoAddRemove ? false : super
                     .validatePendingRemove(targetChild);
@@ -323,6 +334,7 @@ public class BeanContextSupportTest extends TestCase {
          * 
          * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
          */
+        @Override
         public void vetoableChange(PropertyChangeEvent pce)
                 throws PropertyVetoException {
             super.vetoableChange(pce);
@@ -885,7 +897,7 @@ public class BeanContextSupportTest extends TestCase {
         support.add(c3);
 
         Object children[] = support.publicCopyChildren();
-        List childrenList = Arrays.asList(children);
+        List<Object> childrenList = Arrays.asList(children);
         assertEquals(3, childrenList.size());
         assertTrue(childrenList.contains(c1));
         assertTrue(childrenList.contains(c2));
@@ -940,7 +952,7 @@ public class BeanContextSupportTest extends TestCase {
         // Regression for HARMONY-1393
         class TestBeanException extends BeanContextChildSupport implements
                 BeanContextProxy {
-            private BeanContextChildSupport childSupport = new BeanContextChildSupport();
+            private final BeanContextChildSupport childSupport = new BeanContextChildSupport();
 
             public BeanContextChild getBeanContextProxy() {
                 return childSupport;
@@ -1872,7 +1884,7 @@ public class BeanContextSupportTest extends TestCase {
         String in[] = new String[] { "1" };
         String out[] = (String[]) support.toArray(in);
         assertNotSame(in, out);
-        List expected = Arrays.asList(new String[] { "a", "b", "c" });
+        List<String> expected = Arrays.asList(new String[] { "a", "b", "c" });
         assertEquals(expected.size(), out.length);
         for (String element : out) {
             assertTrue(expected.contains(element));
@@ -1890,7 +1902,7 @@ public class BeanContextSupportTest extends TestCase {
         String in[] = new String[3];
         String out[] = (String[]) support.toArray(in);
         assertSame(in, out);
-        List expected = Arrays.asList(new String[] { "a", "b", "c" });
+        List<String> expected = Arrays.asList(new String[] { "a", "b", "c" });
         assertEquals(expected.size(), out.length);
         for (String element : out) {
             assertTrue(expected.contains(element));
@@ -1908,7 +1920,7 @@ public class BeanContextSupportTest extends TestCase {
         String in[] = new String[5];
         String out[] = (String[]) support.toArray(in);
         assertSame(in, out);
-        List expected = Arrays.asList(new String[] { "a", "b", "c" });
+        List<String> expected = Arrays.asList(new String[] { "a", "b", "c" });
         for (int i = 0; i < expected.size(); i++) {
             assertTrue(expected.contains(out[i]));
         }

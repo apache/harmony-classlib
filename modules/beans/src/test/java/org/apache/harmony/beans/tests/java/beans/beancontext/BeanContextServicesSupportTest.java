@@ -54,6 +54,7 @@ import tests.util.SerializationTester;
 /**
  * Test BeanContextServicesSupport
  */
+@SuppressWarnings("unchecked")
 public class BeanContextServicesSupportTest extends TestCase {
 
     public static class MockBeanContextServicesSupport extends

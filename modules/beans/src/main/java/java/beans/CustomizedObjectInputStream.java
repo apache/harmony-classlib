@@ -39,6 +39,7 @@ class CustomizedObjectInputStream extends ObjectInputStream {
         this.cls = cls;
     }
 
+    @Override
     protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
             ClassNotFoundException {
         String className = desc.getName();

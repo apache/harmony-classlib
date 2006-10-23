@@ -47,6 +47,7 @@ public class Statement {
         }
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         String targetVar = target != null ? convertClassName(target.getClass())
@@ -224,8 +225,7 @@ public class Statement {
         Constructor<?> result = null;
         Constructor[] constructors = targetClass.getConstructors();
 
-        for (int i = 0; i < constructors.length; ++i) {
-            Constructor<?> constructor = constructors[i];
+        for (Constructor<?> constructor : constructors) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
 
             if (parameterTypes.length == argClasses.length) {
@@ -274,8 +274,7 @@ public class Statement {
         Vector<Method> foundMethods = new Vector<Method>();
         Method[] foundMethodsArr;
 
-        for (int i = 0; i < methods.length; ++i) {
-            Method method = methods[i];
+        for (Method method : methods) {
             int mods = method.getModifiers();
 
             if (method.getName().equals(methodName)
@@ -344,7 +343,7 @@ public class Statement {
      * The list of "method signatures" used by persistence delegates to create
      * objects. Not necessary reflects to real methods.
      */
-    private static String[][] pdConstructorSignatures = {
+    private static final String[][] pdConstructorSignatures = {
             { "java.lang.Class", "new", "java.lang.Boolean", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
             { "java.lang.Class", "new", "java.lang.Byte", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
             { "java.lang.Class", "new", "java.lang.Character", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
@@ -386,8 +385,8 @@ public class Statement {
 
         }
 
-        for (int i = 0; i < pdConstructorSignatures.length; i++) {
-            if (Arrays.equals(sig, pdConstructorSignatures[i])) {
+        for (String[] element : pdConstructorSignatures) {
+            if (Arrays.equals(sig, element)) {
                 return true;
             }
         }
@@ -406,9 +405,8 @@ public class Statement {
                 || (base == double.class) && (wrapper == Double.class);
     }
 
-    private static Class getPrimitiveWrapper(Class base) {
-        Class res = null;
-
+    private static Class<?> getPrimitiveWrapper(Class<?> base) {
+        Class<?> res = null;
         if (base == boolean.class) {
             res = Boolean.class;
         } else if (base == byte.class) {
@@ -455,6 +453,7 @@ public class Statement {
         return result;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Statement) {
             Statement s = (Statement) o;
@@ -492,7 +491,7 @@ public class Statement {
 
         private Class[] referenceMethodArgumentTypes;
 
-        private HashMap<Method, Integer> cache;
+        private final HashMap<Method, Integer> cache;
 
         public MethodComparator(String refMethodName, Class[] refArgumentTypes) {
             this.referenceMethodName = refMethodName;
@@ -505,14 +504,14 @@ public class Statement {
             Integer norm2 = cache.get(m2);
 
             if (norm1 == null) {
-                norm1 = getNorm(m1);
+                norm1 = Integer.valueOf(getNorm(m1));
                 cache.put(m1, norm1);
             }
             if (norm2 == null) {
-                norm2 = getNorm(m2);
+                norm2 = Integer.valueOf(getNorm(m2));
                 cache.put(m2, norm2);
             }
-            return (norm1 - norm2);
+            return (norm1.intValue() - norm2.intValue());
         }
 
         /**
@@ -568,7 +567,7 @@ public class Statement {
          *         clz2 is not assignable from clz1.
          */
         private static int getDistance(Class<?> clz1, Class<?> clz2) {
-            Class superClz;
+            Class<?> superClz;
             int superDist = INFINITY;
 
             if (!clz2.isAssignableFrom(clz1)) {
@@ -586,8 +585,8 @@ public class Statement {
                 Class[] interfaces = clz1.getInterfaces();
                 int bestDist = INFINITY;
 
-                for (int i = 0; i < interfaces.length; i++) {
-                    int curDist = getDistance(interfaces[i], clz2);
+                for (Class<?> element : interfaces) {
+                    int curDist = getDistance(element, clz2);
 
                     if (curDist < bestDist) {
                         bestDist = curDist;

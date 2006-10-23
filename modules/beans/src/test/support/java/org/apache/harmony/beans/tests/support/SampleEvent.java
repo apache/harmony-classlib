@@ -30,7 +30,7 @@ import java.util.EventObject;
 
 public class SampleEvent extends EventObject {
 
-    private int i = 7;
+    private final int i = 7;
 
     private static int j = 7;
 

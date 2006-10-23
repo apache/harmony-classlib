@@ -32,17 +32,17 @@ import org.apache.harmony.beans.internal.nls.Messages;
 
 class BeanInfoImpl implements BeanInfo {
 
-    private static int MT_OTHER = 0;
+    private static final int MT_OTHER = 0;
 
-    private static int MT_SETTER = 1;
+    private static final int MT_SETTER = 1;
 
-    private static int MT_GETTER = 2;
+    private static final int MT_GETTER = 2;
 
-    private static int MT_BOOLEAN_GETTER = 3;
+    private static final int MT_BOOLEAN_GETTER = 3;
 
-    private static int MT_INDEXED_SETTER = 4;
+    private static final int MT_INDEXED_SETTER = 4;
 
-    private static int MT_INDEXED_GETTER = 5;
+    private static final int MT_INDEXED_GETTER = 5;
 
     public BeanInfoImpl(Class<?> beanClass) {
         this.beanClass = beanClass;
@@ -461,8 +461,8 @@ class BeanInfoImpl implements BeanInfo {
 
     private EventSetDescriptor[] eventSetDescriptors = null;
 
-    private int defaultPropertyIndex = -1;
+    private final int defaultPropertyIndex = -1;
 
-    private int defaultEventIndex = -1;
+    private final int defaultEventIndex = -1;
 
 }

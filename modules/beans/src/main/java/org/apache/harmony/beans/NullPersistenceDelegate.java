@@ -22,7 +22,6 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 public class NullPersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         assert oldInstance == null;
@@ -30,8 +29,7 @@ public class NullPersistenceDelegate extends PersistenceDelegate {
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 
     @Override

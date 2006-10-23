@@ -37,7 +37,7 @@ public class XMLDecoder {
 
     private ExceptionListener exceptionListener = null;
 
-    private Vector<Object> objects = new Vector<Object>();
+    private final Vector<Object> objects = new Vector<Object>();
 
     private Iterator<Object> iterator = null;
     

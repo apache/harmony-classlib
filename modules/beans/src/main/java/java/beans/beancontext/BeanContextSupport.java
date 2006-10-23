@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import org.apache.harmony.beans.internal.nls.Messages;
-
+@SuppressWarnings("unchecked")
 public class BeanContextSupport extends BeanContextChildSupport implements
         BeanContext, Serializable, PropertyChangeListener,
         VetoableChangeListener {
@@ -544,9 +544,8 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         // or return null otherwise
         if ((child != null) && child instanceof BeanContextMembershipListener) {
             return (BeanContextMembershipListener) child;
-        } else {
-            return null;
         }
+        return null;
     }
 
     protected static final PropertyChangeListener getChildPropertyChangeListener(

@@ -24,9 +24,9 @@ import java.beans.SimpleBeanInfo;
  * test for DefaultPersistenceDelegate
  */
 public class MockFooBeanInfo extends SimpleBeanInfo {
-    private Class clazz = MockFoo.class;
+    private final Class<MockFoo> clazz = MockFoo.class;
 
-    private String suffix = ".BeanInfo";
+    private final String suffix = ".BeanInfo";
 
     @Override
     public BeanDescriptor getBeanDescriptor() {

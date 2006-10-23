@@ -40,6 +40,7 @@ import java.util.Locale;
 /**
  * Mock of BeanContext
  */
+@SuppressWarnings("unchecked")
 public class MockBeanContextDelegateS implements BeanContext, Serializable {
 
     public BeanContextSupport support = new BeanContextSupport(this, Locale.US);

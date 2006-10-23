@@ -29,7 +29,7 @@ public class MockBean4CodecAdv extends MockBean4Codec {
 
     String id;
 
-    ArrayList arraylist = new ArrayList();
+    ArrayList<Object> arraylist = new ArrayList<Object>();
 
     Calendar calendar = Calendar.getInstance();
 
@@ -58,7 +58,7 @@ public class MockBean4CodecAdv extends MockBean4Codec {
     /**
      * @return Returns the arraylist.
      */
-    public ArrayList getArraylist() {
+    public ArrayList<Object> getArraylist() {
         return arraylist;
     }
 
@@ -66,7 +66,7 @@ public class MockBean4CodecAdv extends MockBean4Codec {
      * @param arraylist
      *            The arraylist to set.
      */
-    public void setArraylist(ArrayList arraylist) {
+    public void setArraylist(ArrayList<Object> arraylist) {
         this.arraylist = arraylist;
     }
 

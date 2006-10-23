@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  */
 public class MockFooSubBeanInfo extends SimpleBeanInfo {
 
-    Class clazz = MockFooSub.class;
+    Class<MockFooSub> clazz = MockFooSub.class;
 
     String suffix = ".MockFooSubBeanInfo";
 

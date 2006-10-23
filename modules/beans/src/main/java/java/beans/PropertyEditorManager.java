@@ -24,7 +24,7 @@ public class PropertyEditorManager {
 
     private static String[] path = { "org.apache.harmony.beans.editors" }; //$NON-NLS-1$
 
-    private static Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
+    private static final Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
 
     public PropertyEditorManager() {
     }

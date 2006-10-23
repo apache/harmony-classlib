@@ -29,6 +29,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
@@ -36,19 +37,19 @@ import org.xml.sax.Attributes;
 
 public class Command {
 
-    private static int INITIALIZED = 0;
+    private static final int INITIALIZED = 0;
 
-    private static int CHILDREN_FILTERED = 1;
+    private static final int CHILDREN_FILTERED = 1;
 
-    private static int COMMAND_EXECUTED = 2;
+    private static final int COMMAND_EXECUTED = 2;
 
-    private static int CHILDREN_PROCESSED = 3;
+    private static final int CHILDREN_PROCESSED = 3;
 
     private String tagName; // tag name
 
-    private HashMap attrs; // set of attrs
+    private Map<String, String> attrs; // set of attrs
 
-    private String data = null; // string data
+    private String data; // string data
 
     // inner commands
     private Vector<Command> commands = new Vector<Command>();
@@ -59,16 +60,16 @@ public class Command {
     // operations
     private Vector<Command> operations = new Vector<Command>();
 
-    // additonal arguments placed before others
+    // additional arguments placed before others
     private Vector<Argument> auxArguments = new Vector<Argument>();
 
-    private Argument result = null; // result argument
+    private Argument result; // result argument
 
-    private Object target = null; // target to execute a command on
+    private Object target; // target to execute a command on
 
-    private String methodName = null; // method name
+    private String methodName; // method name
 
-    private Command ctx = null; // context for command
+    private Command ctx; // context for command
 
     private int status; // commands
 
@@ -76,13 +77,13 @@ public class Command {
 
     // private int tabCount = 0;
 
-    public Command(String tagName, HashMap attrs) {
+    public Command(String tagName, Map<String, String> attrs) {
         this.tagName = tagName;
         this.attrs = attrs;
         this.status = initializeStatus(tagName);
     }
 
-    public Command(XMLDecoder decoder, String tagName, HashMap attrs) {
+    public Command(XMLDecoder decoder, String tagName, Map<String, String> attrs) {
         this.decoder = decoder;
         this.tagName = tagName;
         this.attrs = attrs;
@@ -147,7 +148,7 @@ public class Command {
     }
 
     // execute command and return execution flags
-    public int exec(HashMap references) throws Exception {
+    public int exec(Map<String, Command> references) throws Exception {
         // System.out.println("in exec() status = " + translateStatus(status) +
         // "...");
         if (status < Command.CHILDREN_PROCESSED) {
@@ -175,7 +176,7 @@ public class Command {
     }
 
     // execute commands in backtrack order
-    public boolean backtrack(HashMap references) throws Exception {
+    public boolean backtrack(Map<String, Command> references) throws Exception {
         for (int i = 0; i < arguments.size(); ++i) {
             Command arg = arguments.elementAt(i);
             arg.backtrack(references);
@@ -195,7 +196,7 @@ public class Command {
     }
 
     // put command in one of two collections - arguments or operations
-    private int doBeforeRun(HashMap references) throws Exception {
+    private int doBeforeRun(Map<String, Command> references) throws Exception {
         if (status == Command.INITIALIZED) {
             for (int i = 0; i < commands.size(); ++i) {
                 Command cmd = commands.elementAt(i);
@@ -213,7 +214,7 @@ public class Command {
     }
 
     // run command
-    private int doRun(HashMap references) throws Exception {
+    private int doRun(Map<String, Command> references) throws Exception {
         if (status == Command.CHILDREN_FILTERED) {
             if (isRoot()) {
                 result = new Argument(decoder);
@@ -284,7 +285,7 @@ public class Command {
     }
 
     // run child commands
-    private int doAfterRun(HashMap references) throws Exception {
+    private int doAfterRun(Map<String, Command> references) throws Exception {
         if (status == Command.COMMAND_EXECUTED) {
             // System.out.println("doAfterRun(): command " + getResultType() + "
             // processed...");
@@ -367,7 +368,7 @@ public class Command {
     }
 
     // Returns result type
-    public Class getResultType() throws ClassNotFoundException {
+    public Class<?> getResultType() throws ClassNotFoundException {
         return (result != null) ? result.getType() : null;
     }
 
@@ -377,7 +378,7 @@ public class Command {
     }
 
     public String getAttr(String name) {
-        return (String) attrs.get(name);
+        return attrs.get(name);
     }
 
     public boolean isTag(String name) {
@@ -456,15 +457,15 @@ public class Command {
         return result;
     }
 
-    private Argument getReferencedArgument(HashMap references) {
-        return ((Command) references.get(getAttr("idref"))).getResult(); //$NON-NLS-1$
+    private Argument getReferencedArgument(Map<String, Command> references) {
+        return references.get(getAttr("idref")).getResult(); //$NON-NLS-1$
     }
 
     // get a target through tag and attrs analysis
-    private Object getTarget(HashMap references) throws Exception {
+    private Object getTarget(Map<String, Command> references) throws Exception {
         if (target == null) {
             if (isReference()) {
-                Command cmd = (Command) references.get(getAttr("idref")); //$NON-NLS-1$
+                Command cmd = references.get(getAttr("idref")); //$NON-NLS-1$
                 target = (cmd != null) ? cmd.getResultValue() : null;
             } else if (isExecutable()) {
                 String className = null;
@@ -477,7 +478,7 @@ public class Command {
                     className = getAttr("class"); //$NON-NLS-1$
                 } else if (isArray()) {
                     className = getAttr("class"); //$NON-NLS-1$
-                    Class componentType = isPrimitiveClassName(className) ? getPrimitiveClass(className)
+                    Class<?> componentType = isPrimitiveClassName(className) ? getPrimitiveClass(className)
                             : Class.forName(className, true, Thread
                                     .currentThread().getContextClassLoader());
                     className = Array.newInstance(componentType, 0).getClass()
@@ -510,7 +511,7 @@ public class Command {
     }
 
     // Return a method name of command
-    private String getMethodName(HashMap references)
+    private String getMethodName(Map<String, Command> references)
             throws NoSuchMethodException, IntrospectionException, Exception {
         if (methodName == null) {
             String methodValue = null;
@@ -704,8 +705,8 @@ public class Command {
         return "java.lang." + shortClassName; //$NON-NLS-1$
     }
 
-    public static Class getPrimitiveClass(String className) {
-        Class result = null;
+    public static Class<?> getPrimitiveClass(String className) {
+        Class<?> result = null;
         if (className.equals("boolean")) { //$NON-NLS-1$
             result = boolean.class;
         } else if (className.equals("byte")) { //$NON-NLS-1$
@@ -728,7 +729,7 @@ public class Command {
         return result;
     }
 
-    private boolean matchMethodParams(Method method, HashMap references) {
+    private boolean matchMethodParams(Method method, Map<String, Command> references) {
         Class<?>[] paramTypes = method.getParameterTypes();
         Argument[] args = getArguments();
         if (args == null) {
@@ -757,8 +758,8 @@ public class Command {
         return result;
     }
 
-    public static HashMap parseAttrs(String tagName, Attributes attrs) {
-        HashMap<String, String> result = new HashMap<String, String>();
+    public static Map<String, String> parseAttrs(String tagName, Attributes attrs) {
+        Map<String, String> result = new HashMap<String, String>();
         if (tagName.equals("object")) { //$NON-NLS-1$
             for (String name : objectAttrNames) {
                 String value = attrs.getValue(name);

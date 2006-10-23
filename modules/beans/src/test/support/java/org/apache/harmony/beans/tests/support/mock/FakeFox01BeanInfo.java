@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  */
 public class FakeFox01BeanInfo extends SimpleBeanInfo {
 
-    Class clazz = FakeFox01.class;
+    Class<FakeFox01> clazz = FakeFox01.class;
 
     String suffix = "." + clazz.getName();
 

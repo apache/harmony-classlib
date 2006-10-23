@@ -31,7 +31,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     private Class<?> listenerType = null;
 
-    private ArrayList<MethodDescriptor> listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
+    private final ArrayList<MethodDescriptor> listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
 
     private Method getListenerMethod = null;
 
@@ -316,9 +316,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
                         listenerType)) {
             throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
                     listenerMethod.getName(), listenerType.getName()));
-        } else {
-            return true;
         }
+        return true;
     }
 
     private Method findMethodByName(Class<?> listenerType,
@@ -345,10 +344,9 @@ public class EventSetDescriptor extends FeatureDescriptor {
         try {
             if (prefix.equals("get")) { //$NON-NLS-1$
                 return sourceClass.getMethod(methodName, new Class[] {});
-            } else {
-                return sourceClass.getMethod(methodName,
-                        new Class[] { listenerType });
             }
+            return sourceClass.getMethod(methodName,
+                    new Class[] { listenerType });
         } catch (NoSuchMethodException nsme) {
             return null;
         }
@@ -359,7 +357,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         if (addMethod != null) {
             Class[] exceptionTypes = addMethod.getExceptionTypes();
 
-            for (Class element : exceptionTypes) {
+            for (Class<?> element : exceptionTypes) {
                 if (element.equals(TooManyListenersException.class)) {
                     return true;
                 }
@@ -372,25 +370,24 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Method registrationMethod) throws IntrospectionException {
         if (registrationMethod == null) {
             return null;
+        }
+        Class<?> returnType = registrationMethod.getReturnType();
+        Class[] parameterTypes;
+
+        if (returnType != void.class) {
+            throw new IntrospectionException(Messages.getString(
+                    "beans.33", registrationMethod.getName())); //$NON-NLS-1$
+        }
+
+        parameterTypes = registrationMethod.getParameterTypes();
+        if (parameterTypes == null || parameterTypes.length != 1) {
+            throw new IntrospectionException(Messages.getString(
+                    "beans.34", registrationMethod.getName())); //$NON-NLS-1$
+        } else if (parameterTypes[0] != listenerType) {
+            throw new IntrospectionException(Messages.getString(
+                    "beans.35", listenerType.getName())); //$NON-NLS-1$
         } else {
-            Class<?> returnType = registrationMethod.getReturnType();
-            Class[] parameterTypes;
-
-            if (returnType != void.class) {
-                throw new IntrospectionException(Messages.getString(
-                        "beans.33", registrationMethod.getName())); //$NON-NLS-1$
-            }
-
-            parameterTypes = registrationMethod.getParameterTypes();
-            if (parameterTypes == null || parameterTypes.length != 1) {
-                throw new IntrospectionException(Messages.getString(
-                        "beans.34", registrationMethod.getName())); //$NON-NLS-1$
-            } else if (parameterTypes[0] != listenerType) {
-                throw new IntrospectionException(Messages.getString(
-                        "beans.35", listenerType.getName())); //$NON-NLS-1$
-            } else {
-                return registrationMethod;
-            }
+            return registrationMethod;
         }
     }
 
@@ -398,21 +395,19 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Method getListenerMethod) throws IntrospectionException {
         if (getListenerMethod == null) {
             return null;
-        } else {
-            Class[] parameterTypes = getListenerMethod.getParameterTypes();
-            Class<?> returnType;
-
-            if (parameterTypes.length != 0) {
-                throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
-            }
-
-            returnType = getListenerMethod.getReturnType();
-            if (returnType.isArray()
-                    && returnType.getComponentType() == listenerType) {
-                return getListenerMethod;
-            } else {
-                throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
-            }
         }
+        Class[] parameterTypes = getListenerMethod.getParameterTypes();
+        Class<?> returnType;
+
+        if (parameterTypes.length != 0) {
+            throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
+        }
+
+        returnType = getListenerMethod.getReturnType();
+        if (returnType.isArray()
+                && returnType.getComponentType() == listenerType) {
+            return getListenerMethod;
+        }
+        throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
     }
 }

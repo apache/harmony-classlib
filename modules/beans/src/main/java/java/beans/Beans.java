@@ -22,9 +22,6 @@ import java.beans.beancontext.BeanContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-import java.lang.reflect.Array;
-
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class Beans {
@@ -48,6 +45,7 @@ public class Beans {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     public static Object instantiate(ClassLoader cls, String beanName,
             BeanContext beanContext) throws IOException, ClassNotFoundException {
         Object result = instantiate(cls, beanName);

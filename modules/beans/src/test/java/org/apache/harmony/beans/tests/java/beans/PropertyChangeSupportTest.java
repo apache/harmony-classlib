@@ -1301,7 +1301,7 @@ public class PropertyChangeSupportTest extends TestCase {
 
         private transient PropertyChangeEvent event;
 
-        private transient boolean called = false;
+        private final transient boolean called = false;
 
         public MockPropertyChangeListener() {
         }
@@ -1339,6 +1339,7 @@ public class PropertyChangeSupportTest extends TestCase {
             assertFalse(called);
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof MockPropertyChangeListener) {
                 MockPropertyChangeListener l = (MockPropertyChangeListener) obj;

@@ -17,16 +17,17 @@
 
 package org.apache.harmony.beans;
 
-import java.beans.PersistenceDelegate;
 import java.beans.DefaultPersistenceDelegate;
-import java.util.StringTokenizer;
+import java.beans.PersistenceDelegate;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public final class DefaultPersistenceDelegatesFactory {
 
-    private static HashMap<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
+    private static Map<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
 
-    private static PersistenceDelegate createPersistenceDelegate(Class type) {
+    private static PersistenceDelegate createPersistenceDelegate(Class<?> type) {
         if (type == null) {
             return new NullPersistenceDelegate();
         }
@@ -38,7 +39,7 @@ public final class DefaultPersistenceDelegatesFactory {
             pd = (PersistenceDelegate) Class.forName(className, true,
                     type.getClassLoader()).newInstance();
         } catch (Exception e) {
-            Class ancestor = type.getSuperclass();
+            Class<?> ancestor = type.getSuperclass();
 
             while (pd == null && ancestor != null) {
                 try {
@@ -58,7 +59,7 @@ public final class DefaultPersistenceDelegatesFactory {
         return pd;
     }
 
-    public static PersistenceDelegate getPersistenceDelegate(Class type) {
+    public static PersistenceDelegate getPersistenceDelegate(Class<?> type) {
         String className = (type == null) ? null : type.getName();
         PersistenceDelegate result = persistenceDelegates.get(className);
 
@@ -75,7 +76,7 @@ public final class DefaultPersistenceDelegatesFactory {
     }
 
     private static String createDefaultNameForPersistenceDelegateClass(
-            Class type) {
+            Class<?> type) {
         String typeName = type.getName();
         StringTokenizer st = new StringTokenizer(typeName, "."); //$NON-NLS-1$
         String className = ""; //$NON-NLS-1$

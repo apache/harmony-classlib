@@ -54,7 +54,7 @@ public class BeanDescriptorTest extends TestCase {
     public void testBeanDescriptorClass() {
         String beanName = "BeanDescriptorTest.bean";
         MockJavaBean bean = new MockJavaBean(beanName);
-        Class beanClass = bean.getClass();
+        Class<? extends MockJavaBean> beanClass = bean.getClass();
         BeanDescriptor bd = new BeanDescriptor(beanClass);
 
         assertSame(beanClass, bd.getBeanClass());
@@ -114,8 +114,8 @@ public class BeanDescriptorTest extends TestCase {
     public void testBeanDescriptorClassClass_CustomizerClassNull() {
         String beanName = "BeanDescriptorTest.bean";
         MockJavaBean bean = new MockJavaBean(beanName);
-        Class beanClass = bean.getClass();
-        Class cusClass = null;
+        Class<? extends MockJavaBean> beanClass = bean.getClass();
+        Class<?> cusClass = null;
         BeanDescriptor bd = new BeanDescriptor(beanClass, cusClass);
 
         assertSame(beanClass, bd.getBeanClass());
@@ -135,12 +135,12 @@ public class BeanDescriptorTest extends TestCase {
 
     class MyCustomizer extends Component implements Customizer {
 
-        HashSet listeners;
+        HashSet<PropertyChangeListener> listeners;
 
         Object bean;
 
         public MyCustomizer() {
-            this.listeners = new HashSet();
+            this.listeners = new HashSet<PropertyChangeListener>();
             this.bean = null;
         }
 

@@ -56,7 +56,7 @@ public class MockBean4CodecPrimitives {
 
     Object nill = "start with not null";
 
-    Class clazz = Collection.class;
+    Class<?> clazz = Collection.class;
 
     int zarr[] = { 1, 2, 3, 4 };
 
@@ -361,7 +361,7 @@ public class MockBean4CodecPrimitives {
     /**
      * @return Returns the clazz.
      */
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 
@@ -369,7 +369,7 @@ public class MockBean4CodecPrimitives {
      * @param clazz
      *            The clazz to set.
      */
-    public void setClazz(Class clazz) {
+    public void setClazz(Class<?> clazz) {
         this.clazz = clazz;
     }
 

@@ -18,7 +18,7 @@
 package org.apache.harmony.beans.tests.support.beancontext;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import junit.framework.Assert;
 
 /**
@@ -28,7 +28,7 @@ public class MethodInvocationRecords extends Assert {
 
     public static final Object IGNORE = "IGNORE";
 
-    private ArrayList records = new ArrayList();
+    private final List<List<Object>> records = new ArrayList<List<Object>>();
 
     private int assertIndex = 0;
 
@@ -38,14 +38,14 @@ public class MethodInvocationRecords extends Assert {
     }
 
     public void add(String methodName, Object returnValue) {
-        ArrayList rec = new ArrayList();
+        List<Object> rec = new ArrayList<Object>();
         rec.add(methodName);
         rec.add(returnValue);
         records.add(rec);
     }
 
     public void add(String methodName, Object arg1, Object returnValue) {
-        ArrayList rec = new ArrayList();
+        List<Object> rec = new ArrayList<Object>();
         rec.add(methodName);
         rec.add(arg1);
         rec.add(returnValue);
@@ -54,7 +54,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void add(String methodName, Object arg1, Object arg2,
             Object returnValue) {
-        ArrayList rec = new ArrayList();
+        List<Object> rec = new ArrayList<Object>();
         rec.add(methodName);
         rec.add(arg1);
         rec.add(arg2);
@@ -64,7 +64,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void add(String methodName, Object arg1, Object arg2, Object arg3,
             Object returnValue) {
-        ArrayList rec = new ArrayList();
+        List<Object> rec = new ArrayList<Object>();
         rec.add(methodName);
         rec.add(arg1);
         rec.add(arg2);
@@ -75,7 +75,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void add(String methodName, Object arg1, Object arg2, Object arg3,
             Object arg4, Object returnValue) {
-        ArrayList rec = new ArrayList();
+        List<Object> rec = new ArrayList<Object>();
         rec.add(methodName);
         rec.add(arg1);
         rec.add(arg2);
@@ -86,7 +86,7 @@ public class MethodInvocationRecords extends Assert {
     }
 
     public void assertRecord(String methodName, Object returnValue) {
-        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        List<Object> rec = records.get(assertIndex++);
         int count = 0;
         assertEquals(methodName, rec.get(count++));
         if (returnValue != IGNORE) {
@@ -98,7 +98,7 @@ public class MethodInvocationRecords extends Assert {
     }
 
     public void assertRecord(String methodName, Object arg1, Object returnValue) {
-        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        List<Object> rec = records.get(assertIndex++);
         int count = 0;
         assertEquals(methodName, rec.get(count++));
         if (arg1 != IGNORE) {
@@ -116,7 +116,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void assertRecord(String methodName, Object arg1, Object arg2,
             Object returnValue) {
-        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        List<Object> rec = records.get(assertIndex++);
         int count = 0;
         assertEquals(methodName, rec.get(count++));
         if (arg1 != IGNORE) {
@@ -139,7 +139,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void assertRecord(String methodName, Object arg1, Object arg2,
             Object arg3, Object returnValue) {
-        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        List<Object> rec = records.get(assertIndex++);
         int count = 0;
         assertEquals(methodName, rec.get(count++));
         if (arg1 != IGNORE) {
@@ -167,7 +167,7 @@ public class MethodInvocationRecords extends Assert {
 
     public void assertRecord(String methodName, Object arg1, Object arg2,
             Object arg3, Object arg4, Object returnValue) {
-        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        List<Object> rec = records.get(assertIndex++);
         int count = 0;
         assertEquals(methodName, rec.get(count++));
         if (arg1 != IGNORE) {
@@ -203,17 +203,17 @@ public class MethodInvocationRecords extends Assert {
     }
 
     public String getMethodName() {
-        ArrayList rec = (ArrayList) records.get(assertIndex);
+        List<Object> rec = records.get(assertIndex);
         return (String) rec.get(0);
     }
 
     public Object getArg(int i) {
-        ArrayList rec = (ArrayList) records.get(assertIndex);
+        List<Object> rec = records.get(assertIndex);
         return rec.get(i + 1);
     }
 
     public Object getReturnValue(int i) {
-        ArrayList rec = (ArrayList) records.get(assertIndex);
+        List<Object> rec = records.get(assertIndex);
         return rec.get(rec.size() - 1);
     }
 

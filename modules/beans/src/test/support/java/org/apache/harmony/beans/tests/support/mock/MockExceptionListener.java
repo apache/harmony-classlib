@@ -27,9 +27,10 @@ import java.util.ListIterator;
 /**
  * Mock of ExceptionListener
  */
+@SuppressWarnings("unchecked")
 public class MockExceptionListener implements ExceptionListener {
 
-    public ArrayList exHistory = new ArrayList();
+    public ArrayList<Object> exHistory = new ArrayList<Object>();
 
     public void exceptionThrown(Exception ex) {
         exHistory.add(ex);
@@ -144,7 +145,7 @@ public class MockExceptionListener implements ExceptionListener {
     /**
      * @return
      */
-    public Iterator iterator() {
+    public Iterator<Object> iterator() {
         return exHistory.iterator();
     }
 
@@ -159,7 +160,7 @@ public class MockExceptionListener implements ExceptionListener {
     /**
      * @return
      */
-    public ListIterator listIterator() {
+    public ListIterator<Object> listIterator() {
         return exHistory.listIterator();
     }
 
@@ -167,7 +168,7 @@ public class MockExceptionListener implements ExceptionListener {
      * @param arg0
      * @return
      */
-    public ListIterator listIterator(int arg0) {
+    public ListIterator<Object> listIterator(int arg0) {
         return exHistory.listIterator(arg0);
     }
 
@@ -224,7 +225,7 @@ public class MockExceptionListener implements ExceptionListener {
      * @param arg1
      * @return
      */
-    public List subList(int arg0, int arg1) {
+    public List<Object> subList(int arg0, int arg1) {
         return exHistory.subList(arg0, arg1);
     }
 

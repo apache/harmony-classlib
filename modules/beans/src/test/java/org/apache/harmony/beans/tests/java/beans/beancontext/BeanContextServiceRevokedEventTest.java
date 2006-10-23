@@ -36,6 +36,7 @@ import tests.util.SerializationTester;
 /**
  * Test BeanContextServiceRevokedEvent
  */
+@SuppressWarnings("unchecked")
 public class BeanContextServiceRevokedEventTest extends TestCase {
 
     private static class MockBeanContextServiceRevokedEvent extends

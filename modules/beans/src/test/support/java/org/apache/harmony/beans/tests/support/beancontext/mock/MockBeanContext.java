@@ -32,6 +32,7 @@ import java.util.Iterator;
 /**
  * Mock of BeanContext
  */
+@SuppressWarnings("unchecked")
 public class MockBeanContext implements BeanContext {
 
     /*

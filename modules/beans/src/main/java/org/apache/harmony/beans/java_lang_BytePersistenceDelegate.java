@@ -22,16 +22,14 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 public class java_lang_BytePersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Byte value = (Byte) oldInstance;
         return new Expression(oldInstance, Byte.class, "new", //$NON-NLS-1$
-                new Object[] { new Byte(value.byteValue()) });
+                new Object[] { value });
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 }

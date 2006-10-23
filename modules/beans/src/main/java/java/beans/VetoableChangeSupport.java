@@ -211,6 +211,7 @@ public class VetoableChangeSupport implements Serializable {
         oos.writeInt(vetoableChangeSupportSerializedDataVersion);
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
 

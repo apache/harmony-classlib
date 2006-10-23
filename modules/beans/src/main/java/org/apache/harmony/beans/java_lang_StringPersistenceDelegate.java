@@ -22,18 +22,14 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 public class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         String value = (String) oldInstance;
-
-        return new Expression(oldInstance, String.class, "new", //$NON-NLS-1$
-                new Object[] { new String(value) });
+        return new Expression(oldInstance, String.class, "new", new Object[] { value }); //$NON-NLS-1$
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 
     @Override

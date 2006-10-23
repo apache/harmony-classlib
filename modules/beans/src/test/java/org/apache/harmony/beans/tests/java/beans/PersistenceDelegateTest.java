@@ -224,7 +224,7 @@ public class PersistenceDelegateTest extends TestCase {
     
     // <--
 
-    private void assertWasAdded(Class targetClass, String methodName,
+    private void assertWasAdded(Class<?> targetClass, String methodName,
                                  Object[] args, MockEncoder2 enc) {
         try {
             while (true) {
@@ -239,7 +239,7 @@ public class PersistenceDelegateTest extends TestCase {
         }
     }
 
-    private boolean equals(Statement stmt, Class targetClass,
+    private boolean equals(Statement stmt, Class<?> targetClass,
                               String methodName, Object[] args) {
            
         if (stmt == null || !methodName.equals(stmt.getMethodName())) {
@@ -438,16 +438,19 @@ public class PersistenceDelegateTest extends TestCase {
     static class MockEncoder2 extends Encoder {
         Stack<Statement> stmts = new Stack<Statement>();
         
+        @Override
         public void writeExpression(Expression expr) {
             stmts.push(expr);
             super.writeExpression(expr);
         }
 
+        @Override
         public void writeStatement(Statement stmt) {
             stmts.push(stmt);
             super.writeStatement(stmt);
         }
         
+        @Override
         public void writeObject(Object obj) {
             super.writeObject(obj);
         }
@@ -468,25 +471,27 @@ public class PersistenceDelegateTest extends TestCase {
             this.mutatesToFlag = mutatesToFlag;
         }
 
+        @Override
         public void initialize(Class<?> type, Object oldInstance,
                 Object newInstance, Encoder enc) {
             methods.push("initialize");
             super.initialize(type, oldInstance, newInstance, enc);
         }
         
+        @Override
         public Expression instantiate(Object oldInstance, Encoder out) {
             methods.push("instantiate");
             return new Expression(oldInstance.getClass(), "new", null);
         }
         
+        @Override
         public boolean mutatesTo(Object oldInstance, Object newInstance) {
             methods.push("mutatesTo");
 
             if (mutatesToFlag != null) {
                 return mutatesToFlag;
-            } else {
-                return super.mutatesTo(oldInstance, newInstance);
             }
+            return super.mutatesTo(oldInstance, newInstance);
         }
         
         String popMethod() {

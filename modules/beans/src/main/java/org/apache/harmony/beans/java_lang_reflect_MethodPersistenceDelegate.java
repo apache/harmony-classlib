@@ -25,25 +25,19 @@ import java.lang.reflect.Method;
 /**
  * Persistence delegate for {@link java.lang.reflect.Method} class.
  */
-public class java_lang_reflect_MethodPersistenceDelegate extends
-        PersistenceDelegate {
-
+public class java_lang_reflect_MethodPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         // should not be null or have a type other than Method
         assert oldInstance instanceof Method : oldInstance;
-
         Method oldMethod = (Method) oldInstance;
-        Class declClass = oldMethod.getDeclaringClass();
-
+        Class<?> declClass = oldMethod.getDeclaringClass();
         return new Expression(oldMethod, declClass, "getDeclaredMethod", //$NON-NLS-1$
-                new Object[] { oldMethod.getName(),
-                        oldMethod.getParameterTypes() });
+                new Object[] { oldMethod.getName(), oldMethod.getParameterTypes() });
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
         // check for consistency
         assert oldInstance instanceof Method : oldInstance;
         assert newInstance instanceof Method : newInstance;
@@ -53,13 +47,10 @@ public class java_lang_reflect_MethodPersistenceDelegate extends
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Method : oldInstance;
-
         if (!(newInstance instanceof Method)) {
             // if null or not a Method
             return false;
         }
-
         return oldInstance.equals(newInstance);
     }
-
 }

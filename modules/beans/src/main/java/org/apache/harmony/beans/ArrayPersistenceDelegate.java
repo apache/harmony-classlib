@@ -39,21 +39,21 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
         assert oldInstance != null && oldInstance.getClass().isArray() : oldInstance;
 
         int length = Array.getLength(oldInstance);
-        Class componentType = oldInstance.getClass().getComponentType();
+        Class<?> componentType = oldInstance.getClass().getComponentType();
 
         return new Expression(oldInstance, Array.class, "newInstance", //$NON-NLS-1$
                 new Object[] { componentType, new Integer(length) });
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
 
         assert oldInstance != null && oldInstance.getClass().isArray() : oldInstance;
         assert newInstance != null && newInstance.getClass().isArray() : newInstance;
 
         int length = Array.getLength(oldInstance);
-        Class componentType = type.getComponentType();
+        Class<?> componentType = type.getComponentType();
         Object nullValue = Array.get(Array.newInstance(componentType, 1), 0);
 
         for (int i = 0; i < length; ++i) {
@@ -78,7 +78,7 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
         assert oldInstance != null && oldInstance.getClass().isArray() : oldInstance;
 
         if (newInstance != null) {
-            Class newCl = newInstance.getClass();
+            Class<? extends Object> newCl = newInstance.getClass();
 
             if (!newCl.isArray()) {
                 return false;
@@ -86,8 +86,8 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
             // both are arrays
             int l1 = Array.getLength(oldInstance);
             int l2 = Array.getLength(newInstance);
-            Class cType1 = oldInstance.getClass().getComponentType();
-            Class cType2 = newCl.getComponentType();
+            Class<?> cType1 = oldInstance.getClass().getComponentType();
+            Class<?> cType2 = newCl.getComponentType();
 
             if (l1 == l2 && cType1.equals(cType2)) {
                 return true;

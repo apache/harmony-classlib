@@ -22,16 +22,13 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 public class java_lang_DoublePersistenceDelegate extends PersistenceDelegate {
-
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Double value = (Double) oldInstance;
-        return new Expression(oldInstance, Double.class, "new", //$NON-NLS-1$
-                new Object[] { new Double(value.doubleValue()) });
+        return new Expression(oldInstance, Double.class, "new", new Object[] { value }); //$NON-NLS-1$
     }
 
     @Override
-    protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out) {
+    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
     }
 }

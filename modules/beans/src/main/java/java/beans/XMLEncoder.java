@@ -34,7 +34,7 @@ public class XMLEncoder extends Encoder {
 
     private Object owner;
 
-    private Vector<ObjectNode> printed = new Vector<ObjectNode>();
+    private final Vector<ObjectNode> printed = new Vector<ObjectNode>();
 
     public XMLEncoder(OutputStream out) {
         this.out = out;
@@ -108,7 +108,7 @@ public class XMLEncoder extends Encoder {
 
     // FIXME processing of default constructor: investigate
     private void printObjectTag(int tabCount, Object object, ObjectNode node) {
-        Class nodeType = null;
+        Class<?> nodeType = null;
 
         try {
             nodeType = node.getObjectType();
@@ -151,7 +151,7 @@ public class XMLEncoder extends Encoder {
                     objectPrinted = true;
                 } else { // if(printed.contains(node) == false
                     try {
-                        Class type = node.getObjectType();
+                        Class<?> type = node.getObjectType();
 
                         if (type != null) {
                             // check if it is necessary to assign
@@ -508,20 +508,20 @@ public class XMLEncoder extends Encoder {
 
     static class NameMaker {
 
-        private static HashMap<String, Integer> numOfExemplars = new HashMap<String, Integer>();
+        private static final HashMap<String, Integer> numOfExemplars = new HashMap<String, Integer>();
 
         public static void clear() {
             numOfExemplars.clear();
         }
 
-        private static String getCompName(Class clz) {
+        private static String getCompName(Class<?> clz) {
             if (clz.isArray()) {
                 return getCompName(clz.getComponentType()) + "Array"; //$NON-NLS-1$
             }
             return clz.getName().substring(clz.getName().lastIndexOf(".") + 1); //$NON-NLS-1$
         }
 
-        public static String getInstanceName(Class type) {
+        public static String getInstanceName(Class<?> type) {
             String result = null;
 
             String fullName;

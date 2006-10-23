@@ -29,7 +29,7 @@ public class Encoder {
 
     private ExceptionListener exceptionListener = null;
 
-    private HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
+    private final HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
 
     Vector<Object> roots = new Vector<Object>();
 

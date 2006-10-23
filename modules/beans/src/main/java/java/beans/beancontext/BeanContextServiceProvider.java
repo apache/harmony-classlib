@@ -19,14 +19,12 @@ package java.beans.beancontext;
 
 import java.util.Iterator;
 
+@SuppressWarnings("unchecked")
 public interface BeanContextServiceProvider {
+    Iterator getCurrentServiceSelectors(BeanContextServices bcs, Class serviceClass);
 
-    public Iterator getCurrentServiceSelectors(BeanContextServices bcs,
-            Class serviceClass);
+    Object getService(BeanContextServices bcs, Object requestor, Class serviceClass,
+            Object serviceSelector);
 
-    public Object getService(BeanContextServices bcs, Object requestor,
-            Class serviceClass, Object serviceSelector);
-
-    public void releaseService(BeanContextServices bcs, Object requestor,
-            Object service);
+    void releaseService(BeanContextServices bcs, Object requestor, Object service);
 }

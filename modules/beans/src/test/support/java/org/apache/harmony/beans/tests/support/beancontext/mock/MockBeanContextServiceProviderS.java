@@ -25,6 +25,7 @@ import java.util.Iterator;
 /**
  * Mock of BeanContextServiceProvider
  */
+@SuppressWarnings("unchecked")
 public class MockBeanContextServiceProviderS implements
         BeanContextServiceProvider, Serializable {
 
@@ -62,7 +63,7 @@ public class MockBeanContextServiceProviderS implements
      * @see java.beans.beancontext.BeanContextServiceProvider#getCurrentServiceSelectors(java.beans.beancontext.BeanContextServices,
      *      java.lang.Class)
      */
-    public Iterator getCurrentServiceSelectors(BeanContextServices bcs,
+    public Iterator<Object> getCurrentServiceSelectors(BeanContextServices bcs,
             Class serviceClass) {
         return null;
     }

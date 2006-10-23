@@ -24,11 +24,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 
+@SuppressWarnings("unchecked")
 public interface BeanContext extends BeanContextChild, Collection, DesignMode,
         Visibility {
 
     /**
-     * @todo: find out what it should be initialized to
+     * TODO: find out what it should be initialized to
      */
     public static final Object globalHierarchyLock = new Object();
 

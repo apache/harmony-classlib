@@ -17,16 +17,15 @@
 
 package org.apache.harmony.beans;
 
+import java.beans.XMLDecoder;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.apache.harmony.beans.internal.nls.Messages;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.beans.XMLDecoder;
 
 public class Handler extends DefaultHandler {
 
@@ -36,7 +35,7 @@ public class Handler extends DefaultHandler {
 
     private XMLDecoder decoder;
 
-    private HashMap<String, Command> references;
+    private Map<String, Command> references;
 
     private Stack<Command> stack;
 

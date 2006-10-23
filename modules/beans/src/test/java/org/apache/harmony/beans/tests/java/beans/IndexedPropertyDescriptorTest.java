@@ -30,24 +30,10 @@ import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
  */
 public class IndexedPropertyDescriptorTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testEquals() throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -77,7 +63,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_ReadMethod() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("getPropertyFive",
                 (Class[]) null);
@@ -104,7 +90,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_ReadMethodNull() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = null;
         Method writeMethod = beanClass.getMethod("set" + propertyName,
@@ -127,7 +113,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_WriteMethod() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -154,7 +140,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_WriteMethodNull() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -180,7 +166,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_IndexedR() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -207,7 +193,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_IndexedRNull() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -233,7 +219,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_IndexedW() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -260,7 +246,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_IndexWNull() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -286,7 +272,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testEquals_PropertyType() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -314,7 +300,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, SecurityException,
             NoSuchMethodException {
         String propertyName = "propertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass);
 
@@ -363,7 +349,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_PropertyNameNull()
             throws IntrospectionException {
         String propertyName = null;
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
@@ -374,7 +360,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_PropertyNameEmpty()
             throws IntrospectionException {
         String propertyName = "";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
@@ -385,7 +371,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_PropertyNameInvalid()
             throws IntrospectionException {
         String propertyName = "Not a property";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
@@ -396,7 +382,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_NotIndexedProperty()
             throws IntrospectionException {
         String propertyName = "propertyOne";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
@@ -407,7 +393,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_ClassNull()
             throws IntrospectionException {
         String propertyName = "propertyFour";
-        Class beanClass = null;
+        Class<?> beanClass = null;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
@@ -421,7 +407,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClass_NotBeanClass()
             throws IntrospectionException {
         String propertyName = "propertyOne";
-        Class beanClass = NotJavaBean.class;
+        Class<NotJavaBean> beanClass = NotJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass);
         assertEquals(String.class, ipd.getIndexedPropertyType());
@@ -435,7 +421,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, SecurityException,
             NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + propertyName, "get" + propertyName, "set"
@@ -477,7 +463,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_propNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(null, beanClass,
                     "get" + propertyName, "set" + propertyName, "get"
@@ -489,7 +475,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_propEmpty() {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor("", beanClass, "get" + propertyName,
                     "set" + propertyName, "get" + propertyName, "set"
@@ -503,7 +489,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException {
         String propertyName = "PropertyFour";
         String invalidProp = "Not a prop";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 invalidProp, beanClass, "get" + propertyName, "set"
                         + propertyName, "get" + propertyName, "set"
@@ -516,7 +502,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_BeanClassNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = null;
+        Class<?> beanClass = null;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "set" + propertyName, "get" + propertyName,
@@ -529,7 +515,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_ReadMethodNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, null, "set" + propertyName, "get"
                         + propertyName, "set" + propertyName);
@@ -541,7 +527,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_WriteMethodNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, null, "get"
                         + propertyName, "set" + propertyName);
@@ -553,7 +539,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_IndexedReadMethodNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + propertyName, null, "set" + propertyName);
@@ -565,7 +551,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_IndexedWriteMethodNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + propertyName, "get" + propertyName, null);
@@ -581,7 +567,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_RWNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, null, null, "get" + propertyName,
                 "set" + propertyName);
@@ -598,7 +584,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_IndexedRWNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "set" + propertyName, null, null);
@@ -613,7 +599,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_RNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, null, "set" + propertyName, null,
                 "set" + propertyName);
@@ -629,7 +615,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_WNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, null, "get"
                         + propertyName, null);
@@ -642,7 +628,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_allNull()
             throws IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, null, null, null, null);
         assertNull(ipd.getIndexedPropertyType());
@@ -659,7 +645,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException {
         String propertyName = "PropertyFour";
         String anotherProp = "PropertyFive";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + anotherProp, "get" + propertyName, "set"
@@ -679,7 +665,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException {
         String propertyName = "PropertyFour";
         String anotherProp = "PropertyFive";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + propertyName, "get" + propertyName, "set"
@@ -697,7 +683,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException {
         String propertyName = "PropertyFour";
         String anotherProp = "PropertyFive";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, "get" + propertyName, "set"
                         + propertyName, "get" + anotherProp, "set"
@@ -715,7 +701,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -760,7 +746,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -785,7 +771,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testIndexedPropertyDescriptorStringMethodMethodMethodMethod_propEmpty()
             throws SecurityException, NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -809,7 +795,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             IntrospectionException {
         String propertyName = "PropertyFour";
         String invalidName = "An Invalid Property name";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -831,7 +817,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method writeMethod = beanClass.getMethod("set" + propertyName,
                 new Class[] { String[].class });
@@ -852,7 +838,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -873,7 +859,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -893,7 +879,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -914,7 +900,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -933,7 +919,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
                 new Class[] { Integer.TYPE });
@@ -956,7 +942,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             IntrospectionException {
         String propertyName = "PropertyFour";
         String anotherProp = "PropertyFive";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -984,7 +970,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             IntrospectionException {
         String propertyName = "PropertyFour";
         String anotherProp = "PropertyFive";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1007,7 +993,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testSetIndexedReadMethod() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1028,7 +1014,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testSetIndexedReadMethod_invalid() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
                 new Class[] { Integer.TYPE });
@@ -1051,7 +1037,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testSetIndexedReadMethod_null() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1077,7 +1063,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1106,7 +1092,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1135,7 +1121,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws SecurityException, NoSuchMethodException,
             IntrospectionException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1162,7 +1148,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testSetIndexedWriteMethod_null() throws IntrospectionException,
             NoSuchMethodException, NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1184,7 +1170,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
     public void testSetIndexedWriteMethod() throws IntrospectionException,
             NoSuchMethodException, NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1209,7 +1195,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, NoSuchMethodException,
             NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1235,7 +1221,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, NoSuchMethodException,
             NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1260,7 +1246,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, NoSuchMethodException,
             NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);
@@ -1285,7 +1271,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             throws IntrospectionException, NoSuchMethodException,
             NoSuchMethodException {
         String propertyName = "PropertyFour";
-        Class beanClass = MockJavaBean.class;
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
 
         Method readMethod = beanClass.getMethod("get" + propertyName,
                 (Class[]) null);

@@ -324,7 +324,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
 
         try {
-            Constructor constr;
+            Constructor<?> constr;
 
             try {
                 // try to look for the constructor with single Object argument
