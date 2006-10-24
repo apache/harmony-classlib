@@ -68,6 +68,32 @@ public class KerberosTicketTest extends TestCase {
     }
 
     /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#getAuthTime() 
+     */
+    public void test_getAuthTime() throws Exception {
+
+        KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, flags, authTime, startTime, endTime,
+                renewTill, addesses);
+
+        assertEquals(0, krbTicket.getAuthTime().getTime());
+
+        // initial value is copied
+        assertNotSame(authTime, krbTicket.getAuthTime());
+
+        // KerberosTicket instance is immutable 
+        assertNotSame(krbTicket.getAuthTime(), krbTicket.getAuthTime());
+
+        // auth time: null value is illegal for contructor
+        try {
+            new KerberosTicket(ticket, pClient, pServer, sessionKey, KEY_TYPE,
+                    flags, null, startTime, endTime, renewTill, addesses);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    /**
      * @tests javax.security.auth.kerberos.KerberosTicket#getClient() 
      */
     public void test_getClient() throws Exception {
@@ -132,6 +158,32 @@ public class KerberosTicketTest extends TestCase {
         try {
             new KerberosTicket(null, pClient, pServer, sessionKey, KEY_TYPE,
                     flags, authTime, startTime, endTime, renewTill, addesses);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#getEndTime() 
+     */
+    public void test_getEndTime() throws Exception {
+
+        KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, flags, authTime, startTime, endTime,
+                renewTill, addesses);
+
+        assertEquals(2, krbTicket.getEndTime().getTime());
+
+        // initial value is copied
+        assertNotSame(endTime, krbTicket.getEndTime());
+
+        // KerberosTicket instance is immutable 
+        assertNotSame(krbTicket.getEndTime(), krbTicket.getEndTime());
+
+        // end time: null value is illegal for contructor
+        try {
+            new KerberosTicket(ticket, pClient, pServer, sessionKey, KEY_TYPE,
+                    flags, authTime, startTime, null, renewTill, addesses);
             fail("No expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
         }
