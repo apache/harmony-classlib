@@ -157,7 +157,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
             this.startTime = authTime;
         }
 
-        if (startTime.getTime() > endTime.getTime()) {
+        if (this.startTime.getTime() > endTime.getTime()) {
             // TODO: make correct description of the exception  
             throw new IllegalArgumentException(Messages.getString("auth.42")); //$NON-NLS-1$
         }
@@ -251,7 +251,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
 
     public final Date getStartTime() {
         checkState();
-        return startTime;
+        return new Date(startTime.getTime());
     }
 
     public final Date getEndTime() {

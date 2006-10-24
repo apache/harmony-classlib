@@ -53,7 +53,9 @@ public class KerberosTicketTest extends TestCase {
 
     private static final Date authTime = new Date(AUTH_TIME);
 
-    private static final Date startTime = new Date(1);
+    private static final int START_TIME = 1;
+
+    private static final Date startTime = new Date(START_TIME);
 
     private static final int END_TIME = 2;
 
@@ -258,5 +260,30 @@ public class KerberosTicketTest extends TestCase {
                 renewTill, addesses);
 
         assertEquals(KEY_TYPE, krbTicket.getSessionKeyType());
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#getStartTime() 
+     */
+    public void test_getStartTime() throws Exception {
+
+        Date newStartTime = new Date(START_TIME);
+
+        KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, flags, authTime, newStartTime, endTime,
+                renewTill, addesses);
+
+        // initial value is copied
+        newStartTime.setTime(START_TIME + 1);
+        assertEquals(START_TIME + 1, krbTicket.getStartTime().getTime());
+
+        // returned value is copied 
+        assertNotSame(krbTicket.getStartTime(), krbTicket.getStartTime());
+
+        // start time: null value is valid for contructor
+        krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
+                KEY_TYPE, flags, authTime, null, endTime, renewTill, addesses);
+        assertEquals(authTime, krbTicket.getStartTime());
+        assertNotSame(authTime, krbTicket.getStartTime());
     }
 }
