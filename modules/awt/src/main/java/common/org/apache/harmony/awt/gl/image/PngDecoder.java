@@ -56,7 +56,7 @@ public class PngDecoder extends ImageDecoder {
     private static final int PNG_COLOR_TYPE_RGBA = 6;
 
     private static final int INPUT_BUFFER_SIZE = 4096;
-    private final byte buffer[] = new byte[INPUT_BUFFER_SIZE];
+    private byte buffer[] = new byte[INPUT_BUFFER_SIZE];
 
     // Buffers for decoded image data
     byte byteOut[];

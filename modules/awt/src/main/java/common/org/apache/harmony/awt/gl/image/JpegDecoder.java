@@ -47,7 +47,7 @@ public class JpegDecoder extends ImageDecoder {
 
     // Buffer for the stream
     private static final int BUFFER_SIZE = 1024;
-    private final byte buffer[] = new byte[BUFFER_SIZE];
+    private byte buffer[] = new byte[BUFFER_SIZE];
 
     // 3 possible color models only
     private static ColorModel cmRGB;
@@ -58,22 +58,22 @@ public class JpegDecoder extends ImageDecoder {
 
     // Pointer to native structure which store decoding state
     // between subsequent decoding/IO-suspension cycles
-    private final long hNativeDecoder = 0; // NULL initially
+    private long hNativeDecoder = 0; // NULL initially
 
     private boolean headerDone = false;
 
     // Next 4 members are filled by the native method (decompress).
     // We can simply check if imageWidth is still negative to find
     // out if they are already filled.
-    private final int imageWidth = -1;
-    private final int imageHeight = -1;
-    private final boolean progressive = false;
-    private final int jpegColorSpace = 0;
+    private int imageWidth = -1;
+    private int imageHeight = -1;
+    private boolean progressive = false;
+    private int jpegColorSpace = 0;
 
     // Stores number of bytes consumed by the native decoder
-    private final int bytesConsumed = 0;
+    private int bytesConsumed = 0;
     // Stores current scanline returned by the decoder
-    private final int currScanline = 0;
+    private int currScanline = 0;
 
     private ColorModel cm = null;
 

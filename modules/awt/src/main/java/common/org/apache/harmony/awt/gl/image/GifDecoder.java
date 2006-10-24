@@ -55,7 +55,7 @@ public class GifDecoder extends ImageDecoder {
 
     // I/O buffer
     private static final int BUFFER_SIZE = 1024;
-    private final byte buffer[] = new byte[BUFFER_SIZE];
+    private byte buffer[] = new byte[BUFFER_SIZE];
 
     GifDataStream gifDataStream = new GifDataStream();
     GifGraphicBlock currBlock;
@@ -68,7 +68,7 @@ public class GifDecoder extends ImageDecoder {
     private int bytesConsumed;
 
     private boolean consumersPrepared;
-    private final Hashtable<String, String> properties = new Hashtable<String, String>();
+    private Hashtable<String, String> properties = new Hashtable<String, String>();
 
     // Could be set up by java code or native method when
     // transparent pixel index changes or local color table encountered
