@@ -162,8 +162,8 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
             throw new IllegalArgumentException(Messages.getString("auth.42")); //$NON-NLS-1$
         }
 
-        this.authTime = new Date(authTime.getTime());
-        this.endTime = new Date(endTime.getTime());
+        this.authTime = authTime;
+        this.endTime = endTime;
 
         if (clientAddresses != null) {
             this.clientAddresses = new InetAddress[clientAddresses.length];

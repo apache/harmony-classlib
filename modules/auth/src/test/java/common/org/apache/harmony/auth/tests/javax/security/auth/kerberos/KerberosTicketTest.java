@@ -49,11 +49,15 @@ public class KerberosTicketTest extends TestCase {
     private static final boolean[] flags = { true, false, true, false, true,
             false, true, false, true, false, true, false, };
 
-    private static final Date authTime = new Date(0);
+    private static final int AUTH_TIME = 0;
+
+    private static final Date authTime = new Date(AUTH_TIME);
 
     private static final Date startTime = new Date(1);
 
-    private static final Date endTime = new Date(2);
+    private static final int END_TIME = 2;
+
+    private static final Date endTime = new Date(END_TIME);
 
     private static final Date renewTill = new Date(3);
 
@@ -72,16 +76,17 @@ public class KerberosTicketTest extends TestCase {
      */
     public void test_getAuthTime() throws Exception {
 
+        Date newAuthTime = new Date(AUTH_TIME);
+
         KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
-                sessionKey, KEY_TYPE, flags, authTime, startTime, endTime,
+                sessionKey, KEY_TYPE, flags, newAuthTime, startTime, endTime,
                 renewTill, addesses);
 
-        assertEquals(0, krbTicket.getAuthTime().getTime());
+        // initial value is not copied
+        newAuthTime.setTime(AUTH_TIME + 1);
+        assertEquals(AUTH_TIME + 1, krbTicket.getAuthTime().getTime());
 
-        // initial value is copied
-        assertNotSame(authTime, krbTicket.getAuthTime());
-
-        // KerberosTicket instance is immutable 
+        // returned value is copied
         assertNotSame(krbTicket.getAuthTime(), krbTicket.getAuthTime());
 
         // auth time: null value is illegal for contructor
@@ -168,16 +173,17 @@ public class KerberosTicketTest extends TestCase {
      */
     public void test_getEndTime() throws Exception {
 
+        Date newEndTime = new Date(END_TIME);
+
         KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
-                sessionKey, KEY_TYPE, flags, authTime, startTime, endTime,
+                sessionKey, KEY_TYPE, flags, authTime, startTime, newEndTime,
                 renewTill, addesses);
 
-        assertEquals(2, krbTicket.getEndTime().getTime());
+        // initial value is not copied
+        newEndTime.setTime(END_TIME + 1);
+        assertEquals(END_TIME + 1, krbTicket.getEndTime().getTime());
 
-        // initial value is copied
-        assertNotSame(endTime, krbTicket.getEndTime());
-
-        // KerberosTicket instance is immutable 
+        // returned value is copied
         assertNotSame(krbTicket.getEndTime(), krbTicket.getEndTime());
 
         // end time: null value is illegal for contructor
