@@ -22,20 +22,18 @@
  */
 package org.apache.harmony.rmi;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
 import java.io.File;
 import java.io.FilePermission;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.SocketPermission;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.rmi.server.LoaderHandler;
+import java.rmi.server.RMIClassLoaderSpi;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.CodeSource;
@@ -46,13 +44,16 @@ import java.security.Policy;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
-import java.rmi.server.LoaderHandler;
-import java.rmi.server.RMIClassLoaderSpi;
-
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
 import org.apache.harmony.rmi.internal.nls.Messages;
+import org.apache.harmony.security.fortress.PolicyUtils.URLLoader;
 
 
 /**
@@ -68,7 +69,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
     private static String userCodeBase;
 
     // table holding list of URLLoader-s
-    private static Hashtable table = new Hashtable();
+    private static final Map<TableKey, WeakReference<URLLoader>> urlLoaders = new HashMap<TableKey, WeakReference<URLLoader>>();
 
     static {
         String codebaseVal = (String) AccessController.doPrivileged(
@@ -449,37 +450,39 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         TableKey key = new TableKey(parentLoader, codebase);
         URLLoader loader = null;
 
-        if (table.containsKey(key)) {
-            loader = (URLLoader) ((WeakReference) table.get(key)).get();
-
-            if (loader == null) {
-                table.remove(key);
-            } else {
-                if (loader != null) {
-                    loader.checkPermissions();
+        synchronized (urlLoaders) {
+            if (urlLoaders.containsKey(key)) {
+                loader = urlLoaders.get(key).get();
+    
+                if (loader == null) {
+                    urlLoaders.remove(key);
+                } else {
+                    if (loader != null) {
+                        loader.checkPermissions();
+                    }
+                    return loader;
                 }
-                return loader;
             }
+            AccessControlContext ctx = createLoaderACC(key.getURLs());
+    
+            // PrivilegedAction for URLLoader creation
+            class CreateLoaderAction implements PrivilegedAction<URLLoader> {
+                URL[] urls;
+                ClassLoader parentLoader;
+    
+                public CreateLoaderAction(URL[] urls, ClassLoader parentLoader) {
+                    this.urls = urls;
+                    this.parentLoader = parentLoader;
+                }
+    
+                public URLLoader run() {
+                    return new URLLoader(urls, parentLoader);
+                }
+            }
+            loader = AccessController.doPrivileged(
+                    new CreateLoaderAction(key.getURLs(), parentLoader), ctx);
+            urlLoaders.put(key, new WeakReference<URLLoader>(loader));
         }
-        AccessControlContext ctx = createLoaderACC(key.getURLs());
-
-        // PrivilegedAction for URLLoader creation
-        class CreateLoaderAction implements PrivilegedAction {
-            URL[] urls;
-            ClassLoader parentLoader;
-
-            public CreateLoaderAction(URL[] urls, ClassLoader parentLoader) {
-                this.urls = urls;
-                this.parentLoader = parentLoader;
-            }
-
-            public Object run() {
-                return new URLLoader(urls, parentLoader);
-            }
-        }
-        loader = (URLLoader) AccessController.doPrivileged(
-                new CreateLoaderAction(key.getURLs(), parentLoader), ctx);
-        table.put(key, new WeakReference(loader));
 
         if (loader != null) {
             loader.checkPermissions();
@@ -709,7 +712,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
 
 
     /*
-     * Class representing key for storing classloaders in Hashtable. It consists
+     * Class representing key for storing classloaders in a Map. It consists
      * of a pair: loader/URL[].
      */
     private static class TableKey {
