@@ -44,26 +44,23 @@ public abstract class Pack200 {
 	 * @return a instance of Packer
 	 */
 	public static Pack200.Packer newPacker() {
-		Packer packer = (Packer) AccessController
+		return (Packer) AccessController
 				.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						String className = System
-								.getProperty(SYSTEM_PROPERTY_PACKER);
-						if (null != className) {
-							try {
-								return ClassLoader.getSystemClassLoader()
-										.loadClass(className);
-							} catch (ClassNotFoundException e) {
-								throw new Error();
-							}
+								.getProperty(SYSTEM_PROPERTY_PACKER,
+										"org.apache.harmony.archive.internal.pack200.Pack200PackerAdapter"); //$NON-NLS-1$
+						try {
+							// TODO Not sure if this will cause problems with
+							// loading the packer
+							return ClassLoader.getSystemClassLoader()
+									.loadClass(className).newInstance();
+						} catch (Exception e) {
+							throw new Error("Can't load class " + className, e);
 						}
-						return null;
 					}
 				});
-		if (null != packer) {
-            return packer;
-        }
-		return PackFactory.newPacker();
+
 	}
 
 	/**
@@ -74,26 +71,20 @@ public abstract class Pack200 {
 	 * @return a instance of Unpacker
 	 */
 	public static Pack200.Unpacker newUnpacker() {
-		Unpacker unpacker = (Unpacker) AccessController
+		return (Unpacker) AccessController
 				.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						String className = System
-								.getProperty(SYSTEM_PROPERTY_UNPACKER);
-						if (null != className) {
-							try {
-								return ClassLoader.getSystemClassLoader()
-										.loadClass(className);
-							} catch (ClassNotFoundException e) {
-								throw new Error();
-							}
+								.getProperty(SYSTEM_PROPERTY_UNPACKER,
+										"org.apache.harmony.archive.internal.pack200.Pack200UnpackerAdapter");//$NON-NLS-1$
+						try {
+							return ClassLoader.getSystemClassLoader()
+									.loadClass(className).newInstance();
+						} catch (Exception e) {
+							throw new Error("Can't load class " + className, e);
 						}
-						return null;
 					}
 				});
-		if (null != unpacker) {
-            return unpacker;
-        }
-		return PackFactory.newUnpacker();
 	}
 
 	/**
