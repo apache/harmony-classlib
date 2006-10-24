@@ -231,13 +231,12 @@ public class KerberosPrincipalTest extends TestCase {
      * @tests javax.security.auth.kerberos.KerberosPrincipal#toString()
      */
     public void test_toString() {
-        // FIXME
-        // KerberosPrincipal principal = new
-        // KerberosPrincipal("name@apache.org");
-        //
-        // assertEquals("javax.security.auth.kerberos.KerberosPrincipal@"
-        // + Integer.toHexString(principal.hashCode()), principal
-        // .toString());
+
+        String name = "name@apache.org";
+
+        KerberosPrincipal principal = new KerberosPrincipal(name);
+
+        assertEquals(name, principal.toString());
     }
 
     /**

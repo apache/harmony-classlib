@@ -59,9 +59,6 @@ public final class KerberosPrincipal implements Principal, Serializable {
     // type of the principal
     private transient int type;
 
-    // TODO: It is gag.
-    // When KerberosPrincipla will be realize then this method
-    // should be delete or modify
     private void init(String name) {
 
         // FIXME: correctly implement parsing name according to RFC 1964
@@ -122,19 +119,12 @@ public final class KerberosPrincipal implements Principal, Serializable {
     }
 
     public KerberosPrincipal(String name) {
-        // TODO: If principal name does't specify then a default realm
-        // should be read from krb.conf file else IllegalArgumentException
-        // should be throw
         init(name);
         type = KRB_NT_PRINCIPAL;
     }
 
     public KerberosPrincipal(String name, int type) {
-        // TODO: If principal name does't specify then a default realm
-        // should be read from krb.conf file else IllegalArgumentException
-        // should be throw
         init(name);
-        // TODO: it is gag
         if (type < 0 || type > KRB_NT_UID) {
             throw new IllegalArgumentException(Messages.getString("auth.25")); //$NON-NLS-1$
         }
@@ -174,7 +164,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
     @Override
     public String toString() {
-        return super.toString();
+        return name;
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
