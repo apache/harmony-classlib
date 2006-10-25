@@ -53,7 +53,6 @@ import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
 import org.apache.harmony.rmi.internal.nls.Messages;
-import org.apache.harmony.security.fortress.PolicyUtils.URLLoader;
 
 
 /**
