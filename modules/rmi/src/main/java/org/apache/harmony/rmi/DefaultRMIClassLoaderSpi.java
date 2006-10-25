@@ -420,7 +420,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
     /*
      * Finds loader in classloaders table. Returns it as a result if it's not
      * null, otherwise creates URLLoader, adds it to the table and returns it
-     * as a result.
+     * as a result. Checks persmission on found/created loader.
      *
      * @param codebase list of URLs separated by spaces
      *
@@ -446,6 +446,30 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                 return parentLoader;
             }
         }
+        URLLoader loader = getClassLoaderNoCheck(parentLoader, codebase);
+
+        if (loader != null) {
+            loader.checkPermissions();
+        }
+        return loader;
+    }
+    
+    /*
+     * Finds URLLoader in classloaders table. Returns it as a result if it's not
+     * null, otherwise creates URLLoader, adds it to the table and returns it
+     * as a result. Does not check permission on found/created loader.
+     *
+     * @param parentLoader parent classloader
+     * @param codebase list of URLs separated by spaces
+     *
+     * @return URLLoader found/created
+     *
+     * @throws MalformedURLException if the method was unable to parse one of
+     *         provided URLs
+     */
+    private static URLLoader getClassLoaderNoCheck(
+            ClassLoader parentLoader,
+            String codebase) throws MalformedURLException {
         TableKey key = new TableKey(parentLoader, codebase);
         URLLoader loader = null;
 
@@ -456,9 +480,6 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                 if (loader == null) {
                     urlLoaders.remove(key);
                 } else {
-                    if (loader != null) {
-                        loader.checkPermissions();
-                    }
                     return loader;
                 }
             }
@@ -481,12 +502,8 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
             loader = AccessController.doPrivileged(
                     new CreateLoaderAction(key.getURLs(), parentLoader), ctx);
             urlLoaders.put(key, new WeakReference<URLLoader>(loader));
+            return loader;
         }
-
-        if (loader != null) {
-            loader.checkPermissions();
-        }
-        return loader;
     }
 
     /*
