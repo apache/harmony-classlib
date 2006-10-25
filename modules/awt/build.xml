@@ -296,7 +296,6 @@
                     <exclude name="java/awt/geom/GeomTestCase.java"/>
                     <exclude name="java/awt/geom/PathIteratorTestCase.java"/>
                     <exclude name="org/apache/harmony/awt/gl/MultiRectAreaTestCase.java"/>
-                    <exclude name="java/awt/datatransfer/SystemFlavorMapTest.java"/>
                     <exclude name="java/awt/MenuTest.java"/>
 
                     <exclude name="java/awt/AccessibleAWTCanvasTest.java"/>

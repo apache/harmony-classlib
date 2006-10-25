@@ -93,7 +93,11 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized List<DataFlavor> getFlavorsForNative(String nat) {
         if (nat == null) {
-            return new ArrayList<DataFlavor>(flavor2Native.keySet());
+            ArrayList<DataFlavor> result = new ArrayList<DataFlavor>();
+            for (String key : native2Flavor.keySet()) {
+                result.addAll(native2Flavor.get(key));
+            }
+            return result;
         }
 
         List<DataFlavor> list = native2Flavor.get(nat);
@@ -110,7 +114,11 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized List<String> getNativesForFlavor(DataFlavor flav) {
         if (flav == null) {
-            return new ArrayList<String>(native2Flavor.keySet());
+            ArrayList<String> result = new ArrayList<String>();
+            for (DataFlavor key : flavor2Native.keySet()) {
+                result.addAll(flavor2Native.get(key));
+            }
+            return result;
         }
         
         List<String> list = flavor2Native.get(flav);
