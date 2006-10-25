@@ -571,12 +571,14 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void setUseParentHandlers(boolean notifyParentHandlers) {
+    public void setUseParentHandlers(boolean notifyParentHandlers) {
         // Anonymous loggers can always set the useParentHandlers flag
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        this.notifyParentHandlers = notifyParentHandlers;
+        synchronized(this){
+            this.notifyParentHandlers = notifyParentHandlers;
+        }
     }
 
     /**
@@ -616,7 +618,7 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void setParent(Logger parent) {
+    public void setParent(Logger parent) {
         if (null == parent) {
             // logging.B=The 'parent' parameter is null.
             throw new NullPointerException(Messages.getString("logging.B")); //$NON-NLS-1$
