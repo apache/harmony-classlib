@@ -138,6 +138,7 @@ public class Messages {
             try {
                 format = bundle.getString(msg);
             } catch (MissingResourceException e) {
+                //ignore
             }
         }
 
@@ -227,8 +228,8 @@ public class Messages {
                         }
                     });
         } catch (MissingResourceException e) {
+            return null;
         }
-        return null;
     }
 
     static {
