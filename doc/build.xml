@@ -88,6 +88,7 @@
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
             <env key="HARMONY_LUNI_NATIVES_DIR" value="${basedir}/../modules/luni/src/main/native" />
             <env key="HARMONY_ARCHIVE_NATIVES_DIR" value="${basedir}/../modules/archive/src/main/native" />
+            <env key="HARMONY_PORTLIB_NATIVES_DIR" value="${basedir}/../modules/portlib/src/main/native" />
             <env key="HARMONY_TARGET_PLATFORM" value="${target.platform}" />
         </exec>
     </target>
