@@ -82,8 +82,8 @@ public class FileSystemViewTest extends SwingTestCase {
         assertEquals(file.getName(), view.getSystemDisplayName(file));
         file = new File("/a/b");
         assertEquals(file.getName(), view.getSystemDisplayName(file));
-        file = File.listRoots()[0];
-        assertNotSame(file.getName(), view.getSystemDisplayName(file));
+        File f = File.listRoots()[0];
+        assertNotSame(f.getName(), view.getSystemDisplayName(f));
     }
 
     public void testGetSystemTypeDescription() throws Exception {
