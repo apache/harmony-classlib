@@ -26,4 +26,5 @@ Export-Package: java.rmi,
  java.rmi.activation,
  java.rmi.dgc,
  java.rmi.registry,
- java.rmi.server
+ java.rmi.server,
+ javax.activity
