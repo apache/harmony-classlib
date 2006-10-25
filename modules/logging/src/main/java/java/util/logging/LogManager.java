@@ -148,7 +148,7 @@ public class LogManager {
             "control", null); //$NON-NLS-1$
 
     // the singleton instance
-    private static LogManager manager;
+    static LogManager manager;
     
     /**
      * <p>The String value of the {@link LoggingMXBean}'s ObjectName.</p>
@@ -164,6 +164,7 @@ public class LogManager {
      * Instance variables
      * -------------------------------------------------------------------
      */
+    //FIXME: use weak reference to avoid heap memory leak    
     private Hashtable<String, Logger> loggers;
 
     // the configuration properties
@@ -405,9 +406,11 @@ public class LogManager {
                 input = new BufferedInputStream(new FileInputStream(configFile));
                 readConfigurationImpl(input);
             } finally {
-                try {
-                    input.close();
-                } catch (Exception e) {// ignore
+                if(input != null){
+                    try {
+                        input.close();
+                    } catch (Exception e) {// ignore
+                    }
                 }
             }
         }

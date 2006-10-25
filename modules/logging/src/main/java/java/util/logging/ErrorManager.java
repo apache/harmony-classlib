@@ -100,18 +100,17 @@ public class ErrorManager {
             if (called) {
                 return;
             }
-            synchronized (System.err) {
-                System.err.println(this.getClass().getName()+": "+FAILURES[errorCode]); //$NON-NLS-1$
-                if (message != null) {
-                    //logging.1E=Error message - {0}
-                    System.err.println(Messages.getString("logging.1E", message)); //$NON-NLS-1$
-                }
-                if (exception != null) {
-                    //logging.1F=Exception - {0}
-                    System.err.println(Messages.getString("logging.1F", exception)); //$NON-NLS-1$
-                }
-            }
             called = true;
+        }
+        System.err.println(this.getClass().getName()
+            + ": " + FAILURES[errorCode]); //$NON-NLS-1$
+        if (message != null) {
+            // logging.1E=Error message - {0}
+            System.err.println(Messages.getString("logging.1E", message)); //$NON-NLS-1$
+        }
+        if (exception != null) {
+            // logging.1F=Exception - {0}
+            System.err.println(Messages.getString("logging.1F", exception)); //$NON-NLS-1$
         }
     }
 }

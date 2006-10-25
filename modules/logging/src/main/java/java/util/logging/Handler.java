@@ -133,6 +133,7 @@ public abstract class Handler {
      * init the common properties, including filter, level, formatter, and
      * encoding
      */
+    @SuppressWarnings("unused")
     void initProperties(String defaultLevel, String defaultFilter,
             String defaultFormatter, String defaultEncoding) {
         LogManager manager = LogManager.getLogManager();

@@ -190,6 +190,7 @@ public class XMLFormatter extends Formatter {
      * @return the tail string for XML
      */
     @Override
+    @SuppressWarnings("unused")
     public String getTail(Handler h) {
         return "</log>"; //$NON-NLS-1$
     }

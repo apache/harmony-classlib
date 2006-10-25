@@ -201,7 +201,7 @@ public class FileHandler extends StreamHandler {
             //FIXME: improve performance here
             for (int generation = 0; generation < count; generation++) {
                 //cache all file names for rotation use
-                files[generation] = new File(parseFileName(generation, uniqueID));
+                files[generation] = new File(parseFileName(generation));
             }
             fileName = files[0].getAbsolutePath();
             synchronized (allLocks) {
@@ -264,7 +264,7 @@ public class FileHandler extends StreamHandler {
         files = new File[count];
     }
 
-    private void findNextGeneration() {
+    void findNextGeneration() {
         super.close();
         for (int i = count - 1; i > 0; i--) {
             if (files[i].exists()) {
@@ -289,10 +289,9 @@ public class FileHandler extends StreamHandler {
      *  present
      *
      *  @param gen generation of this file
-     *  @param uniqueID distinguishing id of this file
      *  @return transformed filename ready for use
      */
-    private String parseFileName(int gen, int uniqueID) {
+    private String parseFileName(int gen) {
         int cur = 0;
         int next = 0;
         boolean hasUniqueID = false;

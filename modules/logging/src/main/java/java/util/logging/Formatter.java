@@ -111,6 +111,7 @@ public abstract class Formatter {
      *            the target handler
      * @return the head string used to wrap a set of log records
      */
+    @SuppressWarnings("unused")
     public String getHead(Handler h) {
         return ""; //$NON-NLS-1$
     }
@@ -123,6 +124,7 @@ public abstract class Formatter {
      *            the target handler
      * @return the tail string used to wrap a set of log records
      */
+    @SuppressWarnings("unused")
     public String getTail(Handler h) {
         return ""; //$NON-NLS-1$
     }

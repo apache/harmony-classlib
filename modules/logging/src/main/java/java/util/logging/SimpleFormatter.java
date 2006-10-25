@@ -56,10 +56,12 @@ public class SimpleFormatter extends Formatter {
                 t.printStackTrace(pw);
                 sb.append(sw.toString());
             } finally {
-                try {
-                    pw.close();
-                } catch (Exception e) {
-                    // ignore
+                if(pw != null){
+                    try {
+                        pw.close();
+                    } catch (Exception e) {
+                        // ignore
+                    }
                 }
             }
         }

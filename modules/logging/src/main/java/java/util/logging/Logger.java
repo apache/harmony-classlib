@@ -346,18 +346,21 @@ public class Logger {
     private static Logger getLoggerWithRes(String name,
             String resourceBundleName, boolean hasResourceName) {
         LogManager man = LogManager.getLogManager();
+        Logger l = null;
         synchronized (man) {
             // Try to find an existing logger with the specified name
-            Logger l = man.getLogger(name);
+            l = man.getLogger(name);
             // If no existing logger with the same name, create a new one
             if (null == l) {
                 l = new Logger(name, resourceBundleName);
                 man.addLogger(l);
-            } else if (hasResourceName) {
-                updateResourceBundle(l, resourceBundleName);
+                return l;
             }
-            return l;
         }
+        if (hasResourceName) {
+            updateResourceBundle(l, resourceBundleName);
+        }
+        return l;
     }
 
     /**
@@ -399,7 +402,7 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void addHandler(Handler handler) {
+    public void addHandler(Handler handler) {
         if (null == handler) {
             // logging.A=The 'handler' parameter is null.
             throw new NullPointerException(Messages.getString("logging.A")); //$NON-NLS-1$
@@ -409,33 +412,49 @@ public class Logger {
             LogManager.getLogManager().checkAccess();
         }
         initHandler();
-        this.handlers.add(handler);
+        synchronized(this){
+            this.handlers.add(handler);
+        }
     }
     
+    /*
+     * Be cautious to avoid deadlock when using this method, it gets lock on manager 
+     * at first, and then gets lock on this Logger, so any methods should not hold 
+     * lock on this Logger when invoking this method. 
+     */
     private void initHandler() {
-      if(!handlerInited){
-          handlerInited = true;
-          if(handlers == null){
-              handlers = new ArrayList<Handler>();
-          }
-          if(manager == null){
-              return;
-          }
-          String handlerStr = manager.getProperty("".equals(name)?"handlers":name+".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-          if (null == handlerStr) {
-              return;
-          }
-          StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
-          while (st.hasMoreTokens()) {
-              String handlerName = st.nextToken();
-              Handler handler = (Handler)LogManager.getInstanceByClass(handlerName);
-              handlers.add(handler);
-              String level = manager.getProperty(handlerName + ".level"); //$NON-NLS-1$
-              if (null != level) {
-                  handler.setLevel(Level.parse(level));
-              }
-          }
-      }
+        if(!handlerInited){
+            synchronized(LogManager.getLogManager()){
+                synchronized (this) {
+                    if (!handlerInited) {
+                        if (handlers == null) {
+                            handlers = new ArrayList<Handler>();
+                        }
+                        if (manager == null) {
+                            return;
+                        }
+                        
+                        String handlerStr = manager
+                                .getProperty("".equals(name) ? "handlers" : name + ".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        if (null == handlerStr) {
+                            return;
+                        }
+                        StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
+                        while (st.hasMoreTokens()) {
+                            String handlerName = st.nextToken();
+                            Handler handler = (Handler) LogManager
+                                    .getInstanceByClass(handlerName);
+                            handlers.add(handler);
+                            String level = manager.getProperty(handlerName + ".level"); //$NON-NLS-1$
+                            if (null != level) {
+                                handler.setLevel(Level.parse(level));
+                            }
+                        }
+                        handlerInited = true;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -443,9 +462,11 @@ public class Logger {
      * 
      * @return an array of all the handlers associated with this logger
      */
-    public synchronized Handler[] getHandlers() {
+    public Handler[] getHandlers() {
         initHandler();
-        return handlers.toArray(new Handler[handlers.size()]);
+        synchronized(this){
+            return handlers.toArray(new Handler[handlers.size()]);
+        }
     }
 
     /**
@@ -458,7 +479,7 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void removeHandler(Handler handler) {
+    public void removeHandler(Handler handler) {
         // Anonymous loggers can always remove handlers
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
@@ -467,7 +488,9 @@ public class Logger {
             return;
         }
         initHandler();
-        this.handlers.remove(handler);
+        synchronized(this){
+            this.handlers.remove(handler);
+        }
     }
 
     /**
@@ -488,12 +511,14 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void setFilter(Filter newFilter) {
+    public void setFilter(Filter newFilter) {
         // Anonymous loggers can always set the filter
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        this.filter = newFilter;
+        synchronized(this){
+            this.filter = newFilter;
+        }
     }
 
     /**
@@ -1051,7 +1076,7 @@ public class Logger {
      * @param record
      *            the log record to be logged
      */
-    public synchronized void log(LogRecord record) {
+    public void log(LogRecord record) {
         /*
          * This method is synchronized so that all other log methods are
          * synchronized because they all call log(LogRecord) to actually perform
@@ -1069,29 +1094,33 @@ public class Logger {
          * approaches are ugly but might be more efficient.
          */
         if (internalIsLoggable(record.getLevel())) {
-            // apply the filter if any
-            if (null != this.filter) {
-                if (!this.filter.isLoggable(record)) {
-                    return;
+            synchronized(this){
+                // apply the filter if any
+                if (null != this.filter) {
+                    if (!this.filter.isLoggable(record)) {
+                        return;
+                    }
                 }
             }
+            initHandler();
             /*
              * call the handlers of this logger, throw any exception that
              * occurs
              */
-            initHandler();
-            for (Handler element : handlers) {
-                element.publish(record);
-            }
-            // call the parent's handlers if set useParentHandlers
-            Logger temp = this;
-            while (temp.parent != null && temp.getUseParentHandlers()) {
-                Logger anyParent = temp.parent;
-                Handler[] ha = anyParent.getHandlers();
-                for (Handler element : ha) {
+            synchronized(this){
+                for (Handler element : handlers) {
                     element.publish(record);
                 }
-                temp = anyParent;   
+                // call the parent's handlers if set useParentHandlers
+                Logger temp = this;
+                while (temp.parent != null && temp.getUseParentHandlers()) {
+                    Logger anyParent = temp.parent;
+                    Handler[] ha = anyParent.getHandlers();
+                    for (Handler element : ha) {
+                        element.publish(record);
+                    }
+                    temp = anyParent;   
+                }
             }
         }
     }
@@ -1359,7 +1388,7 @@ public class Logger {
     /*
      * This security manager is used to access the class context.
      */
-    private static class PrivateSecurityManager extends SecurityManager {
+    static class PrivateSecurityManager extends SecurityManager {
         public Class[] privateGetClassContext() {
             return super.getClassContext();
         }
@@ -1381,7 +1410,7 @@ public class Logger {
         }        
     }
 
-    void reset() {
+    synchronized void reset() {
         levelObjVal = null;
         levelIntVal = Level.INFO.intValue();
         if(handlers != null){
