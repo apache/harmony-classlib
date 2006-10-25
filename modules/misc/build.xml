@@ -92,8 +92,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.misc.packaging.jarname}-src.jar"
-             manifest="${hy.misc}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.misc.packaging.jarname}-src.jar">
             <fileset dir="${hy.misc.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

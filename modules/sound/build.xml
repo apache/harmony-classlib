@@ -92,8 +92,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar"
-             manifest="${hy.sound}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar">
             <fileset dir="${hy.sound.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

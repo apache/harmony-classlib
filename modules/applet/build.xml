@@ -92,8 +92,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>            
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/applet-src.jar"
-             manifest="${hy.applet}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/applet-src.jar">
             <fileset dir="${hy.applet.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

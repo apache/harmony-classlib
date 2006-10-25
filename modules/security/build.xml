@@ -147,8 +147,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar"
-             manifest="${hy.security}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar">
             <fileset dir="${hy.security.src.main.java}" />
             <fileset dir="${hy.security.src.main.java.platform}" />
             <manifest>

@@ -98,8 +98,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/lib/tools-src.jar"
-             manifest="${hy.tools}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/lib/tools-src.jar">
             <fileset dir="${hy.tools.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

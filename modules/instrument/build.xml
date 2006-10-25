@@ -121,8 +121,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/instrument-src.jar"
-             manifest="${hy.instrument}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/instrument-src.jar">
             <fileset dir="${hy.instrument.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

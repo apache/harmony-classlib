@@ -90,8 +90,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/suncompat-src.jar"
-             manifest="${hy.suncompat}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/suncompat-src.jar">
             <fileset dir="${hy.suncompat.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

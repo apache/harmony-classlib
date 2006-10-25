@@ -95,8 +95,8 @@
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.print.src.main.java}">
                 <exclude name="**/*.java" />
-		<exclude name="**/javax.print.StreamPrintServiceFactory" />
-		<exclude name="**/javax.print.PrintServiceLookup" />
+                <exclude name="**/javax.print.StreamPrintServiceFactory" />
+                <exclude name="**/javax.print.PrintServiceLookup" />
             </fileset>
         </copy>
     </target>
@@ -119,8 +119,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}-src.jar"
-             manifest="${hy.print}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}-src.jar">
             <metainf prefix="META-INF/services"
                 dir="${hy.print.src.main.java}/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>

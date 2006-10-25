@@ -93,8 +93,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}-src.jar"
-             manifest="${hy.crypto}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}-src.jar">
             <fileset dir="${hy.crypto.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

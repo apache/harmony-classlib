@@ -99,8 +99,7 @@
             <metainf file="${hy.hdk}/LICENSE"/>    
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar"
-             manifest="${hy.accessibility}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar">
             <fileset dir="${hy.accessibility.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
