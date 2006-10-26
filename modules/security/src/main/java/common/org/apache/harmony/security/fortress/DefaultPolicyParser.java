@@ -25,6 +25,7 @@ package org.apache.harmony.security.fortress;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.File;
 import java.io.Reader;
 import java.net.URL;
 import java.security.cert.Certificate;
@@ -193,6 +194,11 @@ public class DefaultPolicyParser {
         if (ge.codebase != null) {
             codebase = new URL(resolve ? PolicyUtils.expandURL(ge.codebase,
                     system) : ge.codebase);
+            //Fix HARMONY-1963
+            if ("file".equals(codebase.getProtocol())) { //$NON-NLS-1$
+                codebase = new URL("file:/" +  //$NON-NLS-1$
+                        new File(codebase.getFile()).getCanonicalPath());
+            }
         }
         if (ge.signers != null) {
             if (resolve) {
