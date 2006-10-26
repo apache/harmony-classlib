@@ -123,6 +123,10 @@ public class KeyStoreLoaderSaver {
         } catch (IOException e) {
             throw (IOException) new IOException("Failed to load the keystore. ")
                     .initCause(e);
+        } finally {
+            if (bis != null) {
+                bis.close();
+            }
         }
         return keyStore;
     }
@@ -180,6 +184,8 @@ public class KeyStoreLoaderSaver {
         } catch (IOException e) {
             throw (IOException) new IOException("Failed to save the keystore. ")
                     .initCause(e);
+        } finally {
+            bos.close();
         }
     }
 }
