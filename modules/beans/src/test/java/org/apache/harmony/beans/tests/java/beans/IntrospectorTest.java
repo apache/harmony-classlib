@@ -650,7 +650,7 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] pds2 = info.getPropertyDescriptors();
         assertEquals(pds.length, pds2.length);
         for (int i = 0; i < pds.length; i++) {
-            assertTrue(pds[i].equals(pds2[i]));
+            assertEquals(pds[i], pds2[i]);
         }
     }
 
@@ -681,7 +681,7 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         for (PropertyDescriptor element : pds) {
             String name = element.getName();
-            assertEquals(name, "text.MockFooLabelBeanInfo");
+            assertEquals("text.MockFooLabelBeanInfo", name);
         }
 
         String[] path = Introspector.getBeanInfoSearchPath();

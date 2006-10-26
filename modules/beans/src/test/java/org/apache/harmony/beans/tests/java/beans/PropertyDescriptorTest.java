@@ -592,16 +592,16 @@ public class PropertyDescriptorTest extends TestCase {
         PropertyDescriptor pd = new PropertyDescriptor(
                 "prop1", SubMockJavaBean.class, null, "setPropertyOne"); //$NON-NLS-1$ //$NON-NLS-2$
         assertNull(pd.getReadMethod());
-        assertEquals(pd.getWriteMethod().getName(), "setPropertyOne"); //$NON-NLS-1$			
+        assertEquals("setPropertyOne", pd.getWriteMethod().getName()); //$NON-NLS-1$			
 
         pd = new PropertyDescriptor(
                 "prop1", SubMockJavaBean.class, "getPropertyOne", "setPropertyOne"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        assertEquals(pd.getReadMethod().getName(), "getPropertyOne"); //$NON-NLS-1$
-        assertEquals(pd.getWriteMethod().getName(), "setPropertyOne"); //$NON-NLS-1$			
+        assertEquals("getPropertyOne", pd.getReadMethod().getName()); //$NON-NLS-1$
+        assertEquals("setPropertyOne", pd.getWriteMethod().getName()); //$NON-NLS-1$			
 
         pd = new PropertyDescriptor(
                 "prop1", SubMockJavaBean.class, "getPropertyOne", null); //$NON-NLS-1$ //$NON-NLS-2$ 
-        assertEquals(pd.getReadMethod().getName(), "getPropertyOne"); //$NON-NLS-1$
+        assertEquals("getPropertyOne", pd.getReadMethod().getName()); //$NON-NLS-1$
         assertNull(pd.getWriteMethod()); 
     }
 

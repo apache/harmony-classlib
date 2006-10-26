@@ -167,24 +167,24 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
 
         support.addPropertyChangeListener(propName, l2);
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), oldValue);
-        assertSame(l2.lastEvent.getNewValue(), newValue);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(oldValue, l2.lastEvent.getOldValue());
+        assertSame(newValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
 
         l1.clearLastEvent();
         l2.clearLastEvent();
@@ -233,24 +233,24 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.fireVetoableChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
 
         support.addVetoableChangeListener(propName, l2);
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.fireVetoableChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), oldValue);
-        assertSame(l2.lastEvent.getNewValue(), newValue);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(oldValue, l2.lastEvent.getOldValue());
+        assertSame(newValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
 
         l1.clearLastEvent();
         l2.clearLastEvent();
@@ -297,10 +297,10 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
     }
 
@@ -334,10 +334,10 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
         assertNull(l1.lastEvent.getOldValue());
         assertNull(l1.lastEvent.getNewValue());
-        assertSame(l1.lastEvent.getSource(), support);
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
     }
 
@@ -359,10 +359,10 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.fireVetoableChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
     }
 
@@ -387,18 +387,18 @@ public class BeanContextChildSupportTest extends TestCase {
         } catch (PropertyVetoException e) {
             // expected
         }
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), newValue);
-        assertSame(l1.lastEvent.getNewValue(), oldValue);
-        assertSame(l1.lastEvent.getSource(), support);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), newValue);
-        assertSame(l2.lastEvent.getNewValue(), oldValue);
-        assertSame(l2.lastEvent.getSource(), support);
-        assertEquals(l3.lastEvent.getPropertyName(), propName);
-        assertSame(l3.lastEvent.getOldValue(), newValue);
-        assertSame(l3.lastEvent.getNewValue(), oldValue);
-        assertSame(l3.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(newValue, l1.lastEvent.getOldValue());
+        assertSame(oldValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(newValue, l2.lastEvent.getOldValue());
+        assertSame(oldValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
+        assertEquals(propName, l3.lastEvent.getPropertyName());
+        assertSame(newValue, l3.lastEvent.getOldValue());
+        assertSame(oldValue, l3.lastEvent.getNewValue());
+        assertSame(support, l3.lastEvent.getSource());
     }
 
     public void testFireVetoableChange_OldEqualsNew()
@@ -433,10 +433,10 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.fireVetoableChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
         assertNull(l1.lastEvent.getOldValue());
         assertNull(l1.lastEvent.getNewValue());
-        assertSame(l1.lastEvent.getSource(), support);
+        assertSame(support, l1.lastEvent.getSource());
         assertNull(l2.lastEvent);
     }
 
@@ -448,7 +448,7 @@ public class BeanContextChildSupportTest extends TestCase {
         assertSame(mockBeanContext, support.getBeanContext());
     }
 
-    public void testGetBeanContextChildPeer() {
+    public void testGetBeanContextChildPeer() throws Exception {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
         assertSame(support, support.beanContextChildPeer);
         assertSame(support, support.getBeanContextChildPeer());
@@ -458,15 +458,9 @@ public class BeanContextChildSupportTest extends TestCase {
         assertSame(mockChild, support.beanContextChildPeer);
         assertSame(mockChild, support.getBeanContextChildPeer());
 
-        try {
-            BeanContextChildSupport sup = new BeanContextChildSupport();
+        BeanContextChildSupport sup = new BeanContextChildSupport();
 
-            if (!sup.getBeanContextChildPeer().equals(sup)) {
-                fail("The objects should be equal");
-            }
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        assertEquals(sup, sup.getBeanContextChildPeer());
     }
 
     public void testInitializeBeanContextResources()
@@ -498,7 +492,7 @@ public class BeanContextChildSupportTest extends TestCase {
         assertSame(ctx2, support.lastReleaseBeanContext);
     }
 
-    public void testIsDelegated() {
+    public void testIsDelegated() throws Exception {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
         assertFalse(support.isDelegated());
 
@@ -509,15 +503,10 @@ public class BeanContextChildSupportTest extends TestCase {
         support.beanContextChildPeer = support;
         assertFalse(support.isDelegated());
 
-        try {
-            BeanContextChildSupport sup = new BeanContextChildSupport();
+        BeanContextChildSupport sup = new BeanContextChildSupport();
 
-            if (sup.isDelegated()) {
-                fail("Child is not supposed to be delegated");
-            }
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        assertFalse("Child is not supposed to be delegated",
+                sup.isDelegated());
     }
 
     public void testReleaseBeanContextResources() throws PropertyVetoException {
@@ -566,24 +555,24 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), oldValue);
-        assertSame(l2.lastEvent.getNewValue(), newValue);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(oldValue, l2.lastEvent.getOldValue());
+        assertSame(newValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
 
         support.removePropertyChangeListener(propName, l1);
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.firePropertyChange(propName, oldValue, newValue);
         assertNull(l1.lastEvent);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), oldValue);
-        assertSame(l2.lastEvent.getNewValue(), newValue);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(oldValue, l2.lastEvent.getOldValue());
+        assertSame(newValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
 
         support.removePropertyChangeListener(propName, l2);
         l1.clearLastEvent();
@@ -614,14 +603,14 @@ public class BeanContextChildSupportTest extends TestCase {
         l1.clearLastEvent();
         l2.clearLastEvent();
         support.fireVetoableChange(propName, oldValue, newValue);
-        assertEquals(l1.lastEvent.getPropertyName(), propName);
-        assertSame(l1.lastEvent.getOldValue(), oldValue);
-        assertSame(l1.lastEvent.getNewValue(), newValue);
-        assertSame(l1.lastEvent.getSource(), support);
-        assertEquals(l2.lastEvent.getPropertyName(), propName);
-        assertSame(l2.lastEvent.getOldValue(), oldValue);
-        assertSame(l2.lastEvent.getNewValue(), newValue);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals(propName, l1.lastEvent.getPropertyName());
+        assertSame(oldValue, l1.lastEvent.getOldValue());
+        assertSame(newValue, l1.lastEvent.getNewValue());
+        assertSame(support, l1.lastEvent.getSource());
+        assertEquals(propName, l2.lastEvent.getPropertyName());
+        assertSame(oldValue, l2.lastEvent.getOldValue());
+        assertSame(newValue, l2.lastEvent.getNewValue());
+        assertSame(support, l2.lastEvent.getSource());
 
         support.removeVetoableChangeListener(propName, l1);
         l1.clearLastEvent();
@@ -689,14 +678,14 @@ public class BeanContextChildSupportTest extends TestCase {
         support.setBeanContext(ctx);
         assertSame(ctx, support.getBeanContext());
         assertSame(ctx, support.lastInitBeanContext);
-        assertEquals(l1.lastEvent.getPropertyName(), "beanContext");
+        assertEquals("beanContext", l1.lastEvent.getPropertyName());
         assertNull(l1.lastEvent.getOldValue());
-        assertSame(l1.lastEvent.getNewValue(), ctx);
-        assertSame(l1.lastEvent.getSource(), peer);
-        assertEquals(l2.lastEvent.getPropertyName(), "beanContext");
+        assertSame(ctx, l1.lastEvent.getNewValue());
+        assertSame(peer, l1.lastEvent.getSource());
+        assertEquals("beanContext", l2.lastEvent.getPropertyName());
         assertNull(l2.lastEvent.getOldValue());
-        assertSame(l2.lastEvent.getNewValue(), ctx);
-        assertSame(l2.lastEvent.getSource(), peer);
+        assertSame(ctx, l2.lastEvent.getNewValue());
+        assertSame(peer, l2.lastEvent.getSource());
 
         support.clearLastRecords();
         l1.clearLastEvent();
@@ -714,14 +703,14 @@ public class BeanContextChildSupportTest extends TestCase {
         assertNull(support.getBeanContext());
         assertNull(support.lastInitBeanContext);
         assertSame(ctx, support.lastReleaseBeanContext);
-        assertEquals(l1.lastEvent.getPropertyName(), "beanContext");
+        assertEquals("beanContext", l1.lastEvent.getPropertyName());
         assertNull(l1.lastEvent.getNewValue());
-        assertSame(l1.lastEvent.getOldValue(), ctx);
-        assertSame(l1.lastEvent.getSource(), peer);
-        assertEquals(l2.lastEvent.getPropertyName(), "beanContext");
+        assertSame(ctx, l1.lastEvent.getOldValue());
+        assertSame(peer, l1.lastEvent.getSource());
+        assertEquals("beanContext", l2.lastEvent.getPropertyName());
         assertNull(l2.lastEvent.getNewValue());
-        assertSame(l2.lastEvent.getOldValue(), ctx);
-        assertSame(l2.lastEvent.getSource(), peer);
+        assertSame(ctx, l2.lastEvent.getOldValue());
+        assertSame(peer, l2.lastEvent.getSource());
     }
 
     public void testSetBeanContext_VetoedByListener()
@@ -749,10 +738,10 @@ public class BeanContextChildSupportTest extends TestCase {
         assertNull(support.lastInitBeanContext);
         assertNull(support.lastReleaseBeanContext);
         assertNull(l1.lastEvent);
-        assertEquals(l2.lastEvent.getPropertyName(), "beanContext");
-        assertSame(l2.lastEvent.getNewValue(), oldCtx);
-        assertSame(l2.lastEvent.getOldValue(), ctx);
-        assertSame(l2.lastEvent.getSource(), support);
+        assertEquals("beanContext", l2.lastEvent.getPropertyName());
+        assertSame(oldCtx, l2.lastEvent.getNewValue());
+        assertSame(ctx, l2.lastEvent.getOldValue());
+        assertSame(support, l2.lastEvent.getSource());
         assertTrue(support.rejectedSetBCOnce());
     }
 

@@ -250,7 +250,7 @@ public class XMLDecoderTest extends TestCase {
                 "/xml/MockBean4Owner_SetOwner.xml"), o1);
         MockBean4Owner_Target t1 = (MockBean4Owner_Target) dec1.readObject();
 
-        assertEquals(o1.getV(), 1);
+        assertEquals(1, o1.getV());
         assertEquals(o1, t1.getV());
     }
 
@@ -260,7 +260,7 @@ public class XMLDecoderTest extends TestCase {
                 "/xml/MockBean4Owner_SetOwnerWithWriteStatement.xml"), o2);
         MockBean4Owner_Target t2 = (MockBean4Owner_Target) dec2.readObject();
 
-        assertEquals(o2.getV(), 999);
+        assertEquals(999, o2.getV());
         assertEquals(o2, t2.getV());
     }
 

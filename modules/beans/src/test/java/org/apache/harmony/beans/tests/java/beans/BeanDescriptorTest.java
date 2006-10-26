@@ -204,6 +204,6 @@ public class BeanDescriptorTest extends TestCase {
      */
     public void testNullaryConstructor() {
         BeanDescriptor bd = new BeanDescriptor(String.class);
-        assertEquals(bd.getName(), "String");
+        assertEquals("String", bd.getName());
     }
 }

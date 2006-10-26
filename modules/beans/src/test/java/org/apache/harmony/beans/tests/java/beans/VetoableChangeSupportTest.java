@@ -1163,9 +1163,9 @@ public class VetoableChangeSupportTest extends TestCase {
         try {
             support.fireVetoableChange("propName", 0, 1);
         } catch (PropertyVetoException pve) {
-            assertTrue("Illegal sequence:" + sb, sb.toString().equals("abBaAb"));
+            assertEquals("Illegal sequence:" + sb, "abBaAb", sb.toString());
             String message = pve.getMessage();
-            assertTrue("Illegal exception:" + message, message.equals(B_THROW));
+            assertEquals("Illegal exception:" + message, B_THROW, message);
             return;
         }
         fail("Unreachable path:" + sb);

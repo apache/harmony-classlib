@@ -406,9 +406,9 @@ public class BeanContextServicesSupportTest extends TestCase {
      */
     public void testBeanContextServicesSupport() {
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport();
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
         assertNull(support.proxy());
-        assertTrue(support.serializable() == 0);
+        assertEquals(0, support.serializable());
         assertTrue(support.services().isEmpty());
         assertSame(support, support.getBeanContextServicesPeer());
         assertSame(Locale.getDefault(), support.getLocale());
@@ -423,9 +423,9 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServices services = new MockBeanContextServices();
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport(
                 services);
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
         assertNull(support.proxy());
-        assertTrue(support.serializable() == 0);
+        assertEquals(0, support.serializable());
         assertTrue(support.services().isEmpty());
         assertSame(services, support.getBeanContextServicesPeer());
         assertSame(Locale.getDefault(), support.getLocale());
@@ -441,9 +441,9 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServices services = new MockBeanContextServices();
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport(
                 services, Locale.ITALY);
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
         assertNull(support.proxy());
-        assertTrue(support.serializable() == 0);
+        assertEquals(0, support.serializable());
         assertTrue(support.services().isEmpty());
         assertSame(services, support.getBeanContextServicesPeer());
         assertSame(Locale.ITALY, support.getLocale());
@@ -459,9 +459,9 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServices services = new MockBeanContextServices();
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport(
                 services, Locale.ITALY, true);
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
         assertNull(support.proxy());
-        assertTrue(support.serializable() == 0);
+        assertEquals(0, support.serializable());
         assertTrue(support.services().isEmpty());
         assertSame(services, support.getBeanContextServicesPeer());
         assertSame(Locale.ITALY, support.getLocale());
@@ -477,9 +477,9 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServices services = new MockBeanContextServices();
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport(
                 services, Locale.ITALY, true, true);
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
         assertNull(support.proxy());
-        assertTrue(support.serializable() == 0);
+        assertEquals(0, support.serializable());
         assertTrue(support.services().isEmpty());
         assertSame(services, support.getBeanContextServicesPeer());
         assertSame(Locale.ITALY, support.getLocale());
@@ -1088,14 +1088,14 @@ public class BeanContextServicesSupportTest extends TestCase {
     public void testRemoveBeanContextServicesListener() {
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport();
         MockBeanContextServicesListener l = new MockBeanContextServicesListener();
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
 
         support.addBeanContextServicesListener(l);
-        assertTrue(support.bcsListeners().size() == 1);
+        assertEquals(1, support.bcsListeners().size());
         assertSame(l, support.bcsListeners().get(0));
 
         support.removeBeanContextServicesListener(l);
-        assertTrue(support.bcsListeners().size() == 0);
+        assertEquals(0, support.bcsListeners().size());
     }
 
     public void testRevokeService_NullParam() {
@@ -1184,7 +1184,7 @@ public class BeanContextServicesSupportTest extends TestCase {
         l2.clearLastEvent();
 
         support.revokeService(Collection.class, provider, false);
-        assertTrue(support.services().size() == 0);
+        assertEquals(0, support.services().size());
 
         support.records.assertEndOfRecords();
         childSupport.records.assertEndOfRecords();

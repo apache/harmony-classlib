@@ -202,7 +202,7 @@ public class EventHandlerTest extends TestCase {
         listener.fireSampleEvent(event);
 
         assertEquals("doSomething", getMethodName());
-        assertTrue(event.getI() == invocationObject.getIntValue());
+        assertEquals(event.getI(), invocationObject.getIntValue());
     }
 
     /**

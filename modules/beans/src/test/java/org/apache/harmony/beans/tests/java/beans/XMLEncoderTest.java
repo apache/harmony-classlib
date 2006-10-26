@@ -313,7 +313,7 @@ public class XMLEncoderTest extends TestCase {
         };
         XMLEncoder enc = new XMLEncoder(out);
         enc.writeObject(new Integer(3));
-        assertTrue(out.size() == 0);
+        assertEquals(0, out.size());
 
         enc.close();
 
@@ -331,7 +331,7 @@ public class XMLEncoderTest extends TestCase {
         XMLEncoder enc = new XMLEncoder(out);
         Integer i = new Integer(3);
         enc.writeObject(i);
-        assertTrue(out.size() == 0);
+        assertEquals(0, out.size());
         assertNotNull(enc.get(i));
 
         enc.flush();
