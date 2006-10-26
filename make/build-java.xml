@@ -61,9 +61,7 @@
           Delete all built classes
          ================================= -->
     <target name="-clean-bin"
-            depends="-copy-kernel-patternsets,
-                     -modules-clean-bin,
-                     -clean-kernel-patternsets,
+            depends="-modules-clean-bin,
                      -clean-bin-catch-all-test,
                      -clean-bin-catch-all"/>
 
@@ -107,23 +105,10 @@ ${built.files.list}
         </fail>
     </target>
 
-    <target name="-copy-kernel-patternsets">
-        <mkdir dir="${hy.hdk}/build/patternsets" />
-        <copy file="modules/luni-kernel/make/patternset.txt"
-              tofile="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <copy file="modules/security-kernel/make/patternset.txt"
-              tofile="${hy.hdk}/build/patternsets/security-kernel.txt" />
-    </target>
-
-    <target name="-clean-kernel-patternsets">
-        <delete dir="${hy.hdk}/build/patternsets" />
-    </target>
-
     <!-- =================================
           target: -compile
          ================================= -->
-    <target name="-compile"
-            depends="-copy-kernel-patternsets,-prepare-depends">
+    <target name="-compile" depends="-prepare-depends">
         <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
             <condition>
                 <not>
