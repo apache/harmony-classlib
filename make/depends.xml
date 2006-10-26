@@ -85,11 +85,6 @@
 
     <target name="-check-unix" if="is.unix">
         
-        <condition property="hack.arch" value="ipf">
-            <isset property="is.x86_64" />
-        </condition>
-        <property name="hack.arch" value="ia32" />
-
         <property name="lcms.msg"
                   value="liblcms development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
@@ -97,7 +92,7 @@ ${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
 ${line.separator}For Fedora try: yum install lcms-devel" />
         <mkdir dir="depends/libs/build/lcms" />
         <check-one-link src="${lcms.home}/lib/liblcms.a"
-                        dest="depends/libs/build/lcms/liblcms.${hack.arch}"
+                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
                         message="${lcms.msg}" />
         <check-one-link src="${lcms.home}/include/icc34.h"
                         dest="depends/libs/build/lcms/icc34.h"
@@ -114,7 +109,7 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
 ${line.separator}For Fedora try: yum install libpng-devel" />
         <mkdir dir="depends/libs/build/png" />
         <check-one-link src="${png.home}/lib/libpng.a"
-                        dest="depends/libs/build/png/libpng.${hack.arch}"
+                        dest="depends/libs/build/png/libpng.${hy.platform}"
                         message="${png.msg}" />
         <check-one-link src="${png.home}/include/pngconf.h"
                         dest="depends/libs/build/png/pngconf.h"
@@ -131,7 +126,7 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
 ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <mkdir dir="depends/libs/build/jpeg" />
         <check-one-link src="${jpeg.home}/lib/libjpeg.a"
-                        dest="depends/libs/build/jpeg/libjpeg.${hack.arch}"
+                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
                         message="${jpeg.msg}" />
         <check-one-link src="${jpeg.home}/include/jconfig.h"
                         dest="depends/libs/build/jpeg/jconfig.lnx"

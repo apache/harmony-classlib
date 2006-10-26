@@ -37,5 +37,5 @@ DLLNAME=../libgl.so
 
 include $(HY_HDK)/build/make/rules.mk
 
-libpng.a: $(PNG_DIR)/libpng.ia32
+libpng.a: $(PNG_DIR)/libpng.$(HY_PLATFORM)
 	cp $< $@

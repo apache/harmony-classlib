@@ -36,6 +36,6 @@ $(SHAREDSUB)JpegEncoder.o: jconfig.h
 jconfig.h: $(JPEG_DIR)jconfig.lnx
 	cp $< $@
 
-libjpeg.a: $(JPEG_DIR)libjpeg.ia32
+libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
 	cp $< $@
 

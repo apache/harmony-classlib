@@ -35,5 +35,5 @@ DLLNAME=../liblcmm.so
 
 include $(HY_HDK)/build/make/rules.mk
 
-liblcms.a: $(LCMS_DIR)/liblcms.ia32
+liblcms.a: $(LCMS_DIR)/liblcms.$(HY_PLATFORM)
 	cp $< $@

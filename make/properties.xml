@@ -269,6 +269,8 @@ properties in preference to these:
                   dir="@{dir}">
                 <env key="HY_HDK" value="${hy.hdk}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
+                <env key="HY_OS" value="${hy.os}" />
+                <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_CFLAGS" value="${hy.cflags}" />
                 <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />
                 <arg line="@{target}" />

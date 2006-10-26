@@ -37,17 +37,19 @@ directory tree structure:
        |    +--- jerror.h
        |    +--- jpegint.h
        |    +--- jconfig.lnx and/or jconfig.vc
-       |    +--- libjpeg.lib and/or libjpeg.ia32 and/or libjpeg.ipf
+       |    +--- libjpeg.lib and/or libjpeg.linux.x86 and/or
+       |         libjpeg.linux.x86_64
        \---png
        |    |
        |    +--- png.h
        |    +--- pngconf.h
-       |    +--- libpng.lib and/or libpng.ia32 and/or libpng.ipf
+       |    +--- libpng.lib and/or libpng.linux.x86 and/or libpng.linux.x86_64
        \---lcms
        |    |
        |    +--- icc34.h
        |    +--- lcms.h
-       |    +--- lcms114.lib and/or liblcms.ia32 and/or liblcms.ipf
+       |    +--- lcms114.lib and/or liblcms.linux.x86 and/or
+       |         liblcms.linux.x86_64
        ...
 
 NOTE: The tree above indicates the files required for this contribution,
@@ -96,7 +98,7 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
 	    make
 
     5. Copy the resulting libjpeg.a file to the file
-       <EXTERNAL_LIBS_DIR>/jpeg/libjpeg.ia32.
+       <EXTERNAL_LIBS_DIR>/jpeg/libjpeg.linux.x86.
 
     6. Copy the required header files to the <EXTERNAL_LIBS_DIR>/jpeg
        directory.
@@ -143,7 +145,7 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
    	   make
 
    4. Copy the resulting ./.libs/libpng.a file the following file
-      <EXTERNAL_LIBS_DIR>/png/libpng.ia32
+      <EXTERNAL_LIBS_DIR>/png/libpng.linux.x86
 
    5. Copy the files png.h and pngconf.h to the
       <EXTERNAL_LIBS_DIR>/png directory.
@@ -187,7 +189,7 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
    	make
 
    4. Copy the file ./src/.libs/liblcms.a to the following file
-      <EXTERNAL_LIBS_DIR>/lcms/liblcms.ia32
+      <EXTERNAL_LIBS_DIR>/lcms/liblcms.linux.x86
 
    5. Copy the files ./include/icc34.h and ./include/lcms.h
       to the <EXTERNAL_LIBS_DIR>/lcms directory.
