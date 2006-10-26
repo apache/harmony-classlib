@@ -70,13 +70,13 @@
                 <isset property="is.x86_64" />
             </not>
             <or>
-                <os arch="x86"/>
-                <os arch="i386"/>
+                <equals arg1="x86" arg2="${os.arch}"/>
+                <equals arg1="i386" arg2="${os.arch}"/>
             </or>
         </and>
     </condition>
     <condition property="is.ia64">
-        <os arch="ia64" />
+        <equals arg1="ia64" arg2="${os.arch}"/>
     </condition>
     <condition property="is.64bit">
         <or>
