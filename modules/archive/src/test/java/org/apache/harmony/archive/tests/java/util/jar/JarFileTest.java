@@ -86,63 +86,52 @@ public class JarFileTest extends TestCase {
 	/**
 	 * @tests java.util.jar.JarFile#entries()
 	 */
-	public void test_entries() {
-		// Test for method java.util.Enumeration java.util.jar.JarFile.entries()
-
-		/*
-		 * Note only (and all of) the following should be contained in the file
-		 * META-INF/ META-INF/MANIFEST.MF foo/ foo/bar/ foo/bar/A.class Blah.txt
-		 */
-
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			JarFile jarFile = new JarFile(new File(resources, jarName));
-			Enumeration<JarEntry> e = jarFile.entries();
-			int i = 0;
-			while (e.hasMoreElements()) {
-				i++;
-				e.nextElement();
-			}
-			jarFile.close();
-			assertTrue("Wrong number of elements--wanted 6, got: " + i, i == 6);
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
-
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			JarFile jarFile = new JarFile(new File(resources, jarName));
-			Enumeration<JarEntry> enumeration = jarFile.entries();
-			jarFile.close();
-			boolean pass = false;
-			try {
-				enumeration.hasMoreElements();
-			} catch (IllegalStateException e) {
-				pass = true;
-			}
-			assertTrue("hasMoreElements did not detect closed jar file", pass);
-			Support_Resources.copyFile(resources, null, jarName);
-			jarFile = new JarFile(new File(resources, jarName));
-			enumeration = jarFile.entries();
-			jarFile.close();
-			pass = false;
-			try {
-				enumeration.nextElement();
-			} catch (IllegalStateException e) {
-				pass = true;
-			}
-			assertTrue("nextElement did not detect closed jar file", pass);
-		} catch (Exception e) {
-			fail("Exception during entries test: " + e.toString());
-		}
-	}
+	public void test_entries() throws Exception {
+        /*
+         * Note only (and all of) the following should be contained in the file
+         * META-INF/ META-INF/MANIFEST.MF foo/ foo/bar/ foo/bar/A.class Blah.txt
+         */
+        Support_Resources.copyFile(resources, null, jarName);
+        JarFile jarFile = new JarFile(new File(resources, jarName));
+        Enumeration<JarEntry> e = jarFile.entries();
+        int i = 0;
+        while (e.hasMoreElements()) {
+            i++;
+            e.nextElement();
+        }
+        jarFile.close();
+        assertEquals(6, i);
+    }
+    
+    public void test_entries2() throws Exception {
+        Support_Resources.copyFile(resources, null, jarName);
+        JarFile jarFile = new JarFile(new File(resources, jarName));
+        Enumeration<JarEntry> enumeration = jarFile.entries();
+        jarFile.close();
+        boolean pass = false;
+        try {
+            enumeration.hasMoreElements();
+        } catch (IllegalStateException e) {
+            pass = true;
+        }
+        assertTrue("hasMoreElements did not detect closed jar file", pass);
+        Support_Resources.copyFile(resources, null, jarName);
+        jarFile = new JarFile(new File(resources, jarName));
+        enumeration = jarFile.entries();
+        jarFile.close();
+        pass = false;
+        try {
+            enumeration.nextElement();
+        } catch (IllegalStateException e) {
+            pass = true;
+        }
+        assertTrue("nextElement did not detect closed jar file", pass);
+    }
 
 	/**
 	 * @tests java.util.jar.JarFile#getJarEntry(java.lang.String)
 	 */
 	public void test_getJarEntryLjava_lang_String() {
-		// Test for method java.util.jar.JarEntry
-		// java.util.jar.JarFile.getJarEntry(java.lang.String)
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));

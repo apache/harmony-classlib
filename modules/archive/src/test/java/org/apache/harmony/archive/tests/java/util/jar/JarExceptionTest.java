@@ -14,44 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.harmony.archive.tests.java.util.jar;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.jar.Manifest;
+import junit.framework.TestCase;
 
-public class JarExceptionTest extends junit.framework.TestCase {
-
-	/**
-	 * @tests java.util.jar.JarException#JarException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.util.jar.JarException(java.lang.String)
-		try {
-			new Manifest(new java.io.ByteArrayInputStream(
-					"jlkasj dl: dsklf jlks dslka : fdsfsd\n\n\n\ndsfas"
-							.getBytes()));
-			fail("Should have thrown exception");
-		} catch (IOException e) {
-			// correct
-		} catch (Exception e) {
-			fail("Threw the wrong exception: " + e.toString());
-		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	@Override
-    protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	@Override
-    protected void tearDown() {
-	}
-
+public class JarExceptionTest extends TestCase {
+    /**
+     * @tests java.util.jar.JarException#JarException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() throws Exception {
+        try {
+            new Manifest(new ByteArrayInputStream(
+                    "jlkasj dl: dsklf jlks dslka : fdsfsd\n\n\n\ndsfas".getBytes()));
+            fail("Should have thrown exception");
+        } catch (IOException e) {
+            // correct
+        }
+    }
 }

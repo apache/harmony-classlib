@@ -107,26 +107,19 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.jar.JarInputStream#getNextJarEntry()
 	 */
-	public void test_getNextJarEntry() {
-		// Test for method java.util.jar.JarEntry
-		// java.util.jar.JarInputStream.getNextJarEntry()
-		final Set<String> desired = new HashSet<String>(Arrays.asList(new String[] { "foo/",
-				"foo/bar/", "foo/bar/A.class", "Blah.txt" }));
-		Set<String> actual = new HashSet<String>();
-		try {
-			InputStream is = new URL(jarName).openConnection()
-					.getInputStream();
-			JarInputStream jis = new JarInputStream(is);
-			JarEntry je = jis.getNextJarEntry();
-			while (je != null) {
-				actual.add(je.toString());
-				je = jis.getNextJarEntry();
-			}
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
-		assertTrue("Set of entries is not correct", actual.equals(desired));
-	}
+	public void test_getNextJarEntry() throws Exception {
+        final Set<String> desired = new HashSet<String>(Arrays.asList(new String[] { "foo/",
+                "foo/bar/", "foo/bar/A.class", "Blah.txt" }));
+        Set<String> actual = new HashSet<String>();
+        InputStream is = new URL(jarName).openConnection().getInputStream();
+        JarInputStream jis = new JarInputStream(is);
+        JarEntry je = jis.getNextJarEntry();
+        while (je != null) {
+            actual.add(je.toString());
+            je = jis.getNextJarEntry();
+        }
+        assertEquals(actual, desired);
+    }
 
     public void test_JarInputStream_Integrate_Jar_getNextEntry()
             throws IOException {
