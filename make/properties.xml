@@ -19,7 +19,7 @@
 
  -->
 
-<project name="Common Platform definitions" default="echo" basedir="..">
+<project name="Top-Level property definitions" default="echo" basedir="..">
     <description>
         Ant file of common properties to be imported by other ant files
     </description>

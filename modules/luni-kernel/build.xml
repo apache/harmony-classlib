@@ -22,7 +22,8 @@
     <description>Build for luni kernel stub jar</description>
 
     <!-- import common properties -->
-    <import file="${basedir}/../../make/properties.xml" />
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="hy.jdk" location="../../deploy/jdk" />
     <property name="hy.build" location="../../build/classes" />

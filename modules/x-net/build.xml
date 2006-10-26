@@ -20,7 +20,8 @@
     <description>Build for X-NET component</description>
 
     <!-- import common properties -->
-    <import file="${basedir}/../../make/properties.xml" />
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
