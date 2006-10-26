@@ -138,6 +138,7 @@ ${built.files.list}
             <src path="modules/awt/src/main/java/common" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/concurrent/src/main/java/" />
+            <src path="modules/concurrent/standard/src/main/java/" />
             <src path="modules/crypto/src/main/java" />
             <src path="modules/instrument/src/main/java" />
             <src path="modules/imageio/src/main/java" />
