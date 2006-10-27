@@ -1390,16 +1390,17 @@ public class Logger {
     synchronized void reset() {
         levelObjVal = null;
         levelIntVal = Level.INFO.intValue();
-        Handler[] allHandlers = getHandlers();
-        for (Handler element : allHandlers) {
-            // close all handlers, when unknown exceptions happen,
-            // ignore them and go on
-            try {
-                element.close();
-            } catch (Exception e) {
-                // Ignored.
+        if(handlers != null){
+            for (Handler element : handlers) {
+                // close all handlers, when unknown exceptions happen,
+                // ignore them and go on
+                try {
+                    element.close();
+                } catch (Exception e) {
+                    // Ignored.
+                }
             }
-            removeHandler(element);
+            handlers.clear();
         }
         handlerInited = false;
     }
