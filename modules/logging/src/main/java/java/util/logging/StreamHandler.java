@@ -303,7 +303,7 @@ public class StreamHandler extends Handler {
      *            the log record to be logged
      */
     @Override
-    public void publish(LogRecord record) {
+    public synchronized void publish(LogRecord record) {
         try {
             if (this.isLoggable(record)) {
                 if (this.writerNotInitialized) {

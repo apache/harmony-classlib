@@ -201,7 +201,7 @@ public class MemoryHandler extends Handler {
      * @param record the log record.
      */
     @Override
-    public void publish(LogRecord record) {
+    public synchronized void publish(LogRecord record) {
         if (!isLoggable(record)) {
             return;
         }

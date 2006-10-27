@@ -424,34 +424,33 @@ public class Logger {
      */
     private void initHandler() {
         if(!handlerInited){
-            synchronized(LogManager.getLogManager()){
-                synchronized (this) {
-                    if (!handlerInited) {
-                        if (handlers == null) {
-                            handlers = new ArrayList<Handler>();
-                        }
-                        if (manager == null) {
-                            return;
-                        }
-                        
-                        String handlerStr = manager
-                                .getProperty("".equals(name) ? "handlers" : name + ".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        if (null == handlerStr) {
-                            return;
-                        }
-                        StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
-                        while (st.hasMoreTokens()) {
-                            String handlerName = st.nextToken();
-                            Handler handler = (Handler) LogManager
-                                    .getInstanceByClass(handlerName);
-                            handlers.add(handler);
-                            String level = manager.getProperty(handlerName + ".level"); //$NON-NLS-1$
-                            if (null != level) {
-                                handler.setLevel(Level.parse(level));
-                            }
-                        }
-                        handlerInited = true;
+            synchronized (this) {
+                if (!handlerInited) {
+                    if (handlers == null) {
+                        handlers = new ArrayList<Handler>();
                     }
+                    if (manager == null) {
+                        return;
+                    }
+
+                    String handlerStr = manager
+                            .getProperty("".equals(name) ? "handlers" : name + ".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    if (null == handlerStr) {
+                        return;
+                    }
+                    StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
+                    while (st.hasMoreTokens()) {
+                        String handlerName = st.nextToken();
+                        Handler handler = (Handler) LogManager
+                                .getInstanceByClass(handlerName);
+                        handlers.add(handler);
+                        String level = manager.getProperty(handlerName
+                                + ".level"); //$NON-NLS-1$
+                        if (null != level) {
+                            handler.setLevel(Level.parse(level));
+                        }
+                    }
+                    handlerInited = true;
                 }
             }
         }
@@ -498,7 +497,7 @@ public class Logger {
      * 
      * @return the filter used by this logger
      */
-    public synchronized Filter getFilter() {
+    public Filter getFilter() {
         return this.filter;
     }
 
@@ -516,9 +515,7 @@ public class Logger {
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        synchronized(this){
-            this.filter = newFilter;
-        }
+        filter = newFilter;
     }
 
     /**
@@ -557,7 +554,7 @@ public class Logger {
      * @return <code>true</code> if set to use parent's handlers, otherwise
      *         <code>false</code>
      */
-    public synchronized boolean getUseParentHandlers() {
+    public boolean getUseParentHandlers() {
         return this.notifyParentHandlers;
     }
 
@@ -576,9 +573,7 @@ public class Logger {
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        synchronized(this){
-            this.notifyParentHandlers = notifyParentHandlers;
-        }
+        this.notifyParentHandlers = notifyParentHandlers;
     }
 
     /**
@@ -586,8 +581,8 @@ public class Logger {
      * 
      * @return the parent of this logger in the namespace
      */
-    public synchronized Logger getParent() {
-        return this.parent;
+    public Logger getParent() {
+        return parent;
     }
 
     /**
@@ -598,14 +593,17 @@ public class Logger {
      * @param newParent
      *            the parent logger to set
      */
-    synchronized void internalSetParent(Logger newParent) {
-        this.parent = newParent;
-        //-- update level after setting a parent.
-        //-- if level == null we should inherit the parent's level
-        if (null == levelObjVal) {
-            setLevelImpl(levelObjVal);
+    void internalSetParent(Logger newParent) {
+        //All hierarchy related modifications should get LogManager lock at first
+        synchronized(LogManager.getLogManager()){
+            parent = newParent;
+            // -- update level after setting a parent.
+            // -- if level == null we should inherit the parent's level
+            if (null == levelObjVal) {
+                setLevelImpl(levelObjVal);
+            }
+            newParent.addChild(this);
         }
-        newParent.addChild(this);
     }
 
     /**
@@ -652,7 +650,7 @@ public class Logger {
      * 
      * @return the loaded resource bundle used by this logger
      */
-    public synchronized ResourceBundle getResourceBundle() {
+    public ResourceBundle getResourceBundle() {
         return this.resBundle;
     }
 
@@ -663,7 +661,7 @@ public class Logger {
      * 
      * @return the name of the loaded resource bundle used by this logger
      */
-    public synchronized String getResourceBundleName() {
+    public String getResourceBundleName() {
         return this.resBundleName;
     }
 
@@ -703,23 +701,19 @@ public class Logger {
      * namespace. Synchronize to ensure the consistency between resource bundle
      * and its name.
      */
-    private synchronized void setResourceBundle(LogRecord record) {
+    private void setResourceBundle(LogRecord record) {
         if (null != this.resBundleName) {
             record.setResourceBundle(this.resBundle);
             record.setResourceBundleName(this.resBundleName);
         } else {
             Logger anyParent = this.parent;
+            // no need to synchronize here, because if resBundleName
+            // is not null, there is no chance to modify it
             while (null != anyParent) {
-                /*
-                 * Synchronize to ensure the consistency between resource bundle
-                 * and its name.
-                 */
-                synchronized (anyParent) {
-                    if (null != anyParent.resBundleName) {
-                        record.setResourceBundle(anyParent.resBundle);
-                        record.setResourceBundleName(anyParent.resBundleName);
-                        return;
-                    }
+                if (null != anyParent.resBundleName) {
+                    record.setResourceBundle(anyParent.resBundle);
+                    record.setResourceBundleName(anyParent.resBundleName);
+                    return;
                 }
                 anyParent = anyParent.parent;
             }
@@ -1079,50 +1073,31 @@ public class Logger {
      *            the log record to be logged
      */
     public void log(LogRecord record) {
-        /*
-         * This method is synchronized so that all other log methods are
-         * synchronized because they all call log(LogRecord) to actually perform
-         * the action.
-         * 
-         * Also note all other logging methods checks whether to do the logging.
-         * Since they all call log(LogRecord) to actually perform the action,
-         * this check is done twice. This leaves some room for performance
-         * improvement. Possible ways: 1. Use an instance variable
-         * "lastLoggableRecord" to save the record that passed the first check,
-         * so that the second check may be skipped if log(LogRecord) detects the
-         * supplied record is the same as "lastLoggableRecord". This field is
-         * then reset. 2. Use the field "millis" of LogRecord, negative its
-         * value to indicate it's been checked, then revert its value. Both
-         * approaches are ugly but might be more efficient.
-         */
         if (internalIsLoggable(record.getLevel())) {
-            synchronized(this){
-                // apply the filter if any
-                if (null != this.filter) {
-                    if (!this.filter.isLoggable(record)) {
-                        return;
-                    }
-                }
+            // apply the filter if any
+            Filter f = filter;
+            if (null != f && !f.isLoggable(record)) {
+                return;
             }
             initHandler();
             /*
              * call the handlers of this logger, throw any exception that
              * occurs
              */
-            synchronized(this){
-                for (Handler element : handlers) {
+            Handler[] allHandlers = getHandlers();
+            for (Handler element : allHandlers) {
+                element.publish(record);
+            }
+            // call the parent's handlers if set useParentHandlers
+            Logger temp = this;
+            Logger theParent = temp.parent;
+            while (theParent != null && temp.getUseParentHandlers()) {
+                Handler[] ha = theParent.getHandlers();
+                for (Handler element : ha) {
                     element.publish(record);
                 }
-                // call the parent's handlers if set useParentHandlers
-                Logger temp = this;
-                while (temp.parent != null && temp.getUseParentHandlers()) {
-                    Logger anyParent = temp.parent;
-                    Handler[] ha = anyParent.getHandlers();
-                    for (Handler element : ha) {
-                        element.publish(record);
-                    }
-                    temp = anyParent;   
-                }
+                temp = theParent;
+                theParent = temp.parent;
             }
         }
     }
@@ -1415,19 +1390,18 @@ public class Logger {
     synchronized void reset() {
         levelObjVal = null;
         levelIntVal = Level.INFO.intValue();
-        if(handlers != null){
-            for (Handler element : handlers) {
-                // close all handlers, when unknown exceptions happen,
-                // ignore them and go on
-                try {
-                    element.close();
-                } catch (Exception e) {
-                    // Ignored.
-                }
+        Handler[] allHandlers = getHandlers();
+        for (Handler element : allHandlers) {
+            // close all handlers, when unknown exceptions happen,
+            // ignore them and go on
+            try {
+                element.close();
+            } catch (Exception e) {
+                // Ignored.
             }
-            handlers.clear();
-            handlerInited = false;
+            removeHandler(element);
         }
+        handlerInited = false;
     }
 }
 

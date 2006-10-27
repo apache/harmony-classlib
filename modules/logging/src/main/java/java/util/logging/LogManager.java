@@ -370,7 +370,7 @@ public class LogManager {
      *            the name of property
      * @return the value of property
      */
-    public synchronized String getProperty(String name) {
+    public String getProperty(String name) {
         return props.getProperty(name);
     }
 
@@ -506,13 +506,16 @@ public class LogManager {
      *             if security manager exists and it determines that caller does
      *             not have the required permissions to perform this action
      */
-    public synchronized void reset() {
+    public void reset() {
         checkAccess();
-        props.clear();
-        Iterator<Logger> it = loggers.values().iterator();
-        while (it.hasNext()) {
-            Logger l = it.next();
-            l.reset();
+        props = new Properties();
+        Enumeration<String> names = getLoggerNames();
+        while(names.hasMoreElements()){
+            String name = names.nextElement();
+            Logger logger = getLogger(name);
+            if(logger != null){
+                logger.reset();
+            }
         }
         Logger root = loggers.get(""); //$NON-NLS-1$
         if (null != root) {
