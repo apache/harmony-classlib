@@ -425,6 +425,30 @@ public class HandshakeIODataStream
     }
 
     /**
+     * Returns the MD5 digest of the data passed throught the stream
+     * except last message
+     * @return MD5 digest
+     */
+    protected byte[] getDigestMD5withoutLast() {
+        synchronized (md5) {
+            md5.update(buffer, 0, marked_pos);
+            return md5.digest();
+        }
+    }
+
+    /**
+     * Returns the SHA-1 digest of the data passed throught the stream
+     * except last message
+     * @return SHA-1 digest
+     */
+    protected byte[] getDigestSHAwithoutLast() {
+        synchronized (sha) {
+            sha.update(buffer, 0, marked_pos);
+            return sha.digest();
+        }
+    }
+
+    /**
      * Returns all the data passed throught the stream
      * @return all the data passed throught the stream at the moment
      */

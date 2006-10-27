@@ -184,29 +184,19 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
                     certificateVerify = new CertificateVerify(io_stream, length);
 
                     DigitalSignature ds = new DigitalSignature(session.cipherSuite.keyExchange);
+                    ds.init(serverCert.certs[0]);                 
                     byte[] md5_hash = null;
                     byte[] sha_hash = null;
-                    PublicKey pk = serverCert.certs[0].getPublicKey();
-                    if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA_EXPORT) {
-                        int l;
-                        try {
-                            l = getRSAKeyLength(pk);
-                        } catch (Exception e) {
-                            fatalAlert(AlertProtocol.INTERNAL_ERROR,
-                                    "INTERNAL ERROR", e);
-                            return;
-                        }
-                        if (l > 512) { // key is longer than 512 bits
-                            md5_hash = io_stream.getDigestMD5();
-                            sha_hash = io_stream.getDigestSHA();
-                        }
-                    } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA
+
+                    if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA_EXPORT
+                            || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA
+                            || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA
                             || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA_EXPORT) {
-                        md5_hash = io_stream.getDigestMD5();
-                        sha_hash = io_stream.getDigestSHA();
+                        md5_hash = io_stream.getDigestMD5withoutLast();
+                        sha_hash = io_stream.getDigestSHAwithoutLast();
                     } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS
                             || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS_EXPORT) {
-                        sha_hash = io_stream.getDigestSHA();
+                        sha_hash = io_stream.getDigestSHAwithoutLast();
                     } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon
                             || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon_EXPORT) {
                     }
@@ -712,7 +702,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
         } else {
             if ((parameters.getNeedClientAuth() && clientCert == null)
                     || clientKeyExchange == null
-                    || (clientKeyExchange.isEmpty() && certificateVerify == null)) {
+                    || (clientCert != null && !clientKeyExchange.isEmpty() && certificateVerify == null)) {
                 unexpectedMessage();
             } else {
                 changeCipherSpecReceived = true;

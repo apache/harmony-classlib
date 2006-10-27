@@ -29,6 +29,7 @@ import org.apache.harmony.xnet.provider.jsse.AlertProtocol;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.Vector;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -57,7 +58,7 @@ public class CertificateRequest extends Message {
     /**
      * Certificate authorities
      */
-    final X500Principal[] certificate_authorities;
+    X500Principal[] certificate_authorities;
 
     //Requested certificate types as Strings
     // ("RSA", "DSA", "DH_RSA" or "DH_DSA")
@@ -109,11 +110,16 @@ public class CertificateRequest extends Message {
         certificate_authorities = new X500Principal[size];
         int totalPrincipalsLength = 0;
         int principalLength = 0;
-        for (int i = 0; i < size; i++) {
+        Vector principals = new Vector();
+        while (totalPrincipalsLength < size) {            
             principalLength = in.readUint16(); // encoded X500Principal size
-            certificate_authorities[i] = new X500Principal(in);
+            principals.add(new X500Principal(in));
             totalPrincipalsLength += 2;
             totalPrincipalsLength += principalLength;
+        }
+        certificate_authorities = new X500Principal[principals.size()];
+        for (int i = 0; i < certificate_authorities.length; i++) {
+            certificate_authorities[i] = (X500Principal) principals.elementAt(i);
         }
         this.length = 3 + certificate_types.length + totalPrincipalsLength;
         if (this.length != length) {
@@ -134,7 +140,11 @@ public class CertificateRequest extends Message {
         for (int i = 0; i < certificate_types.length; i++) {
             out.write(certificate_types[i]);
         }
-        out.writeUint16(certificate_authorities.length);
+        int authoritiesLength = 0;
+        for (int i = 0; i < certificate_authorities.length; i++) {
+            authoritiesLength += encoded_principals[i].length +2;
+        }
+        out.writeUint16(authoritiesLength);
         for (int i = 0; i < certificate_authorities.length; i++) {
             out.writeUint16(encoded_principals[i].length);
             out.write(encoded_principals[i]);

@@ -71,6 +71,7 @@ public class DigitalSignature {
     public DigitalSignature(int keyExchange) {
         try { 
             if (keyExchange == CipherSuite.KeyExchange_RSA_EXPORT ||
+                    keyExchange == CipherSuite.KeyExchange_RSA ||
                     keyExchange == CipherSuite.KeyExchange_DHE_RSA ||
                     keyExchange == CipherSuite.KeyExchange_DHE_RSA_EXPORT) {
                 // SignatureAlgorithm is rsa

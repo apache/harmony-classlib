@@ -48,8 +48,12 @@ public class CertificateVerify extends Message {
      * @param hash
      */
     public CertificateVerify(byte[] hash) {
+        if (hash == null || hash.length == 0) {
+            fatalAlert(AlertProtocol.INTERNAL_ERROR,
+                    "INTERNAL ERROR: incorrect certificate verify hash");
+        }
         this.signedHash = hash;
-        length = hash.length;
+        length = hash.length + 2;
     }
 
     /**
@@ -62,12 +66,14 @@ public class CertificateVerify extends Message {
     public CertificateVerify(HandshakeIODataStream in, int length)
             throws IOException {
         if (length == 0) {
-            signedHash = new byte[0];
-        } else if (length == 20 || length == 36) {
-            signedHash = in.read(length);
-        } else {
             fatalAlert(AlertProtocol.DECODE_ERROR,
                     "DECODE ERROR: incorrect CertificateVerify");
+        } else {
+            if (in.readUint16() != length - 2) {
+                fatalAlert(AlertProtocol.DECODE_ERROR,
+                        "DECODE ERROR: incorrect CertificateVerify");
+            }
+            signedHash = in.read(length -2);
         }
         this.length = length;
     }
@@ -79,6 +85,7 @@ public class CertificateVerify extends Message {
      */
     public void send(HandshakeIODataStream out) {
         if (signedHash.length != 0) {
+            out.writeUint16(signedHash.length);
             out.write(signedHash);
         }
     }

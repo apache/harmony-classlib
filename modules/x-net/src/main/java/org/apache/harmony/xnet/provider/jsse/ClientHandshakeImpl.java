@@ -29,6 +29,7 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -366,6 +367,8 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
      * client messages, computers masterSecret, sends ChangeCipherSpec
      */
     void processServerHelloDone() {
+        PrivateKey clientKey = null;
+
         if (serverCert != null) {
             if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon
                     || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon_EXPORT) {
@@ -389,8 +392,10 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
                     .getTypesAsString(),
                     certificateRequest.certificate_authorities, null);
             if (clientAlias != null) {
-                certs = ((X509ExtendedKeyManager) parameters.getKeyManager())
-                        .getCertificateChain((clientAlias));
+                X509ExtendedKeyManager km = (X509ExtendedKeyManager) parameters
+                        .getKeyManager();
+                certs = km.getCertificateChain((clientAlias));
+                clientKey = km.getPrivateKey(clientAlias);
             }
             session.localCertificates = certs;
             clientCert = new CertificateMessage(certs);
@@ -503,27 +508,29 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
 
         computerMasterSecret();
 
-        if (clientCert != null) {
-            boolean[] keyUsage = clientCert.certs[0].getKeyUsage();
-            if (keyUsage != null && keyUsage[0]) {
-                // Certificate verify
-                DigitalSignature ds = new DigitalSignature(
-                        session.cipherSuite.keyExchange);
-                if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA_EXPORT
-                        || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA
-                        || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA_EXPORT) {
-                    ds.setMD5(io_stream.getDigestMD5());
-                    ds.setSHA(io_stream.getDigestSHA());
-                } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS
-                        || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS_EXPORT) {
-                    ds.setSHA(io_stream.getDigestSHA());
-                // The Signature should be empty in case of anonimous signature algorithm:
-                // } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon ||
-                // session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon_EXPORT) {
-                }
-                certificateVerify = new CertificateVerify(ds.sign());
-                send(certificateVerify);
+        // send certificate verify for all certificates except those containing
+        // fixed DH parameters
+        if (clientCert != null && !clientKeyExchange.isEmpty()) {
+            // Certificate verify
+            DigitalSignature ds = new DigitalSignature(
+                    session.cipherSuite.keyExchange);
+            ds.init(clientKey);
+
+            if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA_EXPORT
+                    || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_RSA
+                    || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA
+                    || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_RSA_EXPORT) { 
+                ds.setMD5(io_stream.getDigestMD5());
+                ds.setSHA(io_stream.getDigestSHA());
+            } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS
+                    || session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DHE_DSS_EXPORT) {
+                ds.setSHA(io_stream.getDigestSHA());
+            // The Signature should be empty in case of anonimous signature algorithm:
+            // } else if (session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon ||
+            //         session.cipherSuite.keyExchange == CipherSuite.KeyExchange_DH_anon_EXPORT) {
             }
+            certificateVerify = new CertificateVerify(ds.sign());
+            send(certificateVerify);
         }
 
         sendChangeCipherSpec();

@@ -37,8 +37,19 @@ public class CertificateVerifyTest extends TestCase {
 		byte[] DSAHash  = new byte[] {
 				1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
 				1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-		byte[][] signatures = new byte[][] { anonHash, RSAHash, DSAHash };
-		for (int i = 0; i < 3; i++) {
+		byte[][] signatures = new byte[][] { RSAHash, DSAHash };
+        try {
+            new CertificateVerify(anonHash);
+            fail("Anonymous: No expected AlertException");
+        } catch (AlertException e) {
+        }
+        try {
+            HandshakeIODataStream in = new HandshakeIODataStream();
+            new CertificateVerify(in, 0);
+            fail("Anonymous: No expected AlertException");
+        } catch (AlertException e) {
+        }
+		for (int i = 0; i < signatures.length; i++) {
 			CertificateVerify message = new CertificateVerify(signatures[i]);
             assertEquals("incorrect type", Handshake.CERTIFICATE_VERIFY,
                     message.getType());
