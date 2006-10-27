@@ -45,80 +45,57 @@ import org.apache.harmony.crypto.internal.nls.Messages;
  */
 public class NullCipherSpi extends CipherSpi {
 
-    /**
-     * See javax.crypto.CipherSpi#engineSetMode(java.lang.String)
-     */
+    @Override
     public void engineSetMode(String arg0) throws NoSuchAlgorithmException {
         // Do nothing
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineSetPadding(java.lang.String)
-     */
+    @Override
     public void engineSetPadding(String arg0) throws NoSuchPaddingException {
         // Do nothing
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineGetBlockSize()
-     */
+    @Override
     public int engineGetBlockSize() {
         return 1;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineGetOutputSize(int)
-     */
+    @Override
     public int engineGetOutputSize(int inputLen) {
         return inputLen;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineGetIV()
-     */
+    @Override
     public byte[] engineGetIV() {
         return new byte[8]; // compatible with RI
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineGetParameters()
-     */
+    @Override
     public AlgorithmParameters engineGetParameters() {
         return null;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineInit(int, java.security.Key,
-     * java.security.SecureRandom)
-     */
+    @Override
     public void engineInit(int opmode, Key key, SecureRandom random)
             throws InvalidKeyException {
         // Do nothing
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineInit(int, java.security.Key,
-     * java.security.spec.AlgorithmParameterSpec, java.security.SecureRandom)
-     */
+    @Override
     public void engineInit(int opmode, Key key, AlgorithmParameterSpec params,
             SecureRandom random) throws InvalidKeyException,
             InvalidAlgorithmParameterException {
         // Do nothing
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineInit(int, java.security.Key,
-     * java.security.AlgorithmParameters, java.security.SecureRandom)
-     */
+    @Override
     public void engineInit(int opmode, Key key, AlgorithmParameters params,
             SecureRandom random) throws InvalidKeyException,
             InvalidAlgorithmParameterException {
         // Do nothing
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineUpdate(byte[], int, int)
-     */
+    @Override
     public byte[] engineUpdate(byte[] input, int inputOffset, int inputLen) {
         if (input == null) {
             return null;
@@ -128,9 +105,7 @@ public class NullCipherSpi extends CipherSpi {
         return result;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineUpdate(byte[], int, int, byte[], int)
-     */
+    @Override
     public int engineUpdate(byte[] input, int inputOffset, int inputLen,
             byte[] output, int outputOffset) throws ShortBufferException {
         if (input == null) {
@@ -140,9 +115,7 @@ public class NullCipherSpi extends CipherSpi {
         return inputLen;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineUpdate(ByteBuffer, ByteBuffer)
-     */
+    @Override
     public int engineUpdate(ByteBuffer input, ByteBuffer output)
             throws ShortBufferException {
         if (input == null || output == null) {
@@ -157,9 +130,7 @@ public class NullCipherSpi extends CipherSpi {
         return result;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineDoFinal(byte[], int, int)
-     */
+    @Override
     public byte[] engineDoFinal(byte[] input, int inputOffset, int inputLen)
             throws IllegalBlockSizeException, BadPaddingException {
         if (input == null) {
@@ -168,9 +139,7 @@ public class NullCipherSpi extends CipherSpi {
         return engineUpdate(input, inputOffset, inputLen);
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineDoFinal(byte[], int, int, byte[], int)
-     */
+    @Override
     public int engineDoFinal(byte[] input, int inputOffset, int inputLen,
             byte[] output, int outputOffset) throws ShortBufferException,
             IllegalBlockSizeException, BadPaddingException {
@@ -179,35 +148,27 @@ public class NullCipherSpi extends CipherSpi {
         return result;
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineDoFinal(ByteBuffer, ByteBuffer)
-     */
+    @Override
     public int engineDoFinal(ByteBuffer input, ByteBuffer output)
             throws ShortBufferException, IllegalBlockSizeException,
             BadPaddingException {
         return engineUpdate(input, output);
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineWrap(Key)
-     */
+    @Override
     public byte[] engineWrap(Key key) throws IllegalBlockSizeException,
             InvalidKeyException {
         throw new UnsupportedOperationException(Messages.getString("crypto.44")); //$NON-NLS-1$
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineUnwrap(byte[], String, int)
-     */
+    @Override
     public Key engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm,
             int wrappedKeyType) throws InvalidKeyException,
             NoSuchAlgorithmException {
         throw new UnsupportedOperationException(Messages.getString("crypto.45")); //$NON-NLS-1$
     }
 
-    /**
-     * See javax.crypto.CipherSpi#engineGetKeySize(Key)
-     */
+    @Override
     public int engineGetKeySize(Key key) throws InvalidKeyException {
         throw new UnsupportedOperationException(Messages.getString("crypto.46")); //$NON-NLS-1$
     }

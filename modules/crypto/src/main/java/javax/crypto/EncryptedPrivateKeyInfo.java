@@ -359,14 +359,12 @@ public class EncryptedPrivateKeyInfo {
                 if (stdName == null) {
                     // no above mappings available
                     return false;
-                } else {
-                    this.oid = AlgNameMapper.map2OID(stdName);
-                    if (this.oid == null) {
-                        return false;
-                    } else {
-                        this.algName = stdName;
-                    }
                 }
+                this.oid = AlgNameMapper.map2OID(stdName);
+                if (this.oid == null) {
+                    return false;
+                }
+                this.algName = stdName;
             } else if (stdName != null) {
                 this.algName = stdName;
             }
@@ -390,6 +388,7 @@ public class EncryptedPrivateKeyInfo {
     private static final ASN1Sequence asn1 = new ASN1Sequence(new ASN1Type[] {
             AlgorithmIdentifier.ASN1, ASN1OctetString.getInstance() }) {
 
+                @Override
                 protected void getValues(Object object, Object[] values) {
         
                     EncryptedPrivateKeyInfo epki = (EncryptedPrivateKeyInfo) object;

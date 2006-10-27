@@ -34,8 +34,8 @@ import java.security.GeneralSecurityException;
 public class CipherInputStream extends FilterInputStream {
 
     private final Cipher cipher;
-    private int I_BUFFER_SIZE = 20;
-    private byte[] i_buffer = new byte[I_BUFFER_SIZE];
+    private final int I_BUFFER_SIZE = 20;
+    private final byte[] i_buffer = new byte[I_BUFFER_SIZE];
     private int index; // index of the butes to return from o_buffer
     private byte[] o_buffer;
     private boolean finished;
@@ -58,6 +58,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int read() throws IOException {
         if (finished) {
             return ((o_buffer == null) || (index == o_buffer.length)) 
@@ -88,6 +89,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
@@ -95,6 +97,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (in == null) {
             throw new NullPointerException("Underlying input stream is null");
@@ -116,6 +119,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public long skip(long n) throws IOException {
         long i = 0;
         int available = available();
@@ -131,6 +135,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int available() throws IOException {
         return 0;
     }
@@ -138,6 +143,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void close() throws IOException {
         in.close();
         try {
@@ -151,6 +157,7 @@ public class CipherInputStream extends FilterInputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public boolean markSupported() {
         return false;
     }

@@ -25,9 +25,9 @@ package org.apache.harmony.crypto.utils;
 import java.security.Provider;
 import java.security.Security;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
@@ -103,20 +103,19 @@ public class AlgNameMapper {
         {"2.23.42.9.11.4.1",        "ECDSA"}, //$NON-NLS-1$ //$NON-NLS-2$
     };
     // Maps alg name to OID
-    private static final HashMap alg2OidMap = new HashMap();
+    private static final Map<String, String> alg2OidMap = new HashMap<String, String>();
     // Maps OID to alg name
-    private static final HashMap oid2AlgMap = new HashMap();
+    private static final Map<String, String> oid2AlgMap = new HashMap<String, String>();
     // Maps aliases to alg names
-    private static final HashMap algAliasesMap = new HashMap();
+    private static final Map<String, String> algAliasesMap = new HashMap<String, String>();
 
     static {
-        // put known mappings before
-        for (int i = 0; i<knownAlgMappings.length; i++) {
-            String algUC = knownAlgMappings[i][1].toUpperCase();
-            alg2OidMap.put(algUC, knownAlgMappings[i][0]);
-            oid2AlgMap.put(knownAlgMappings[i][0], algUC);
+        for (String[] element : knownAlgMappings) {
+            String algUC = element[1].toUpperCase();
+            alg2OidMap.put(algUC, element[0]);
+            oid2AlgMap.put(element[0], algUC);
             // map upper case alg name to its original name
-            algAliasesMap.put(algUC, knownAlgMappings[i][1]);
+            algAliasesMap.put(algUC, element[1]);
         }
         //
         // Now search providers for mappings like
@@ -125,8 +124,8 @@ public class AlgNameMapper {
         // Alg.Alias.<service>.OID.<OID-INTS-DOT-SEPARATED>=<alg-name>
         //
         Provider[] pl = Security.getProviders();
-        for (int i = 0; i<pl.length; i++) {
-            selectEntries(pl[i]);
+        for (Provider element : pl) {
+            selectEntries(element);
         }
     }
 
@@ -142,7 +141,7 @@ public class AlgNameMapper {
      */
     public static String map2OID(String algName) {
         // alg2OidMap map contains upper case keys
-        return (String)alg2OidMap.get(algName.toUpperCase());
+        return alg2OidMap.get(algName.toUpperCase());
     }
 
     /**
@@ -153,9 +152,9 @@ public class AlgNameMapper {
      */
     public static String map2AlgName(String oid) {
         // oid2AlgMap map contains upper case values
-        String algUC = (String)oid2AlgMap.get(oid);
+        String algUC = oid2AlgMap.get(oid);
         // if not null there is always map UC->Orig
-        return algUC == null ? null : (String)algAliasesMap.get(algUC);
+        return algUC == null ? null : algAliasesMap.get(algUC);
     }
 
     /**
@@ -165,7 +164,7 @@ public class AlgNameMapper {
      * @return algorithm name
      */
     public static String getStandardName(String algName) {
-        return (String)algAliasesMap.get(algName.toUpperCase());
+        return algAliasesMap.get(algName.toUpperCase());
     }
 
     // Searches given provider for mappings like
@@ -174,11 +173,10 @@ public class AlgNameMapper {
     // Alg.Alias.<service>.OID.<OID-INTS-DOT-SEPARATED>=<alg-name>
     // Puts mappings found into appropriate internal maps
     private static void selectEntries(Provider p) {
-        Set entrySet = p.entrySet();
-        for (int i=0; i<serviceName.length; i++) {
-            String keyPrfix2find = "Alg.Alias." + serviceName[i] + ".";  //$NON-NLS-1$ //$NON-NLS-2$
-            for (Iterator it = entrySet.iterator(); it.hasNext();) {
-                Map.Entry me = (Map.Entry)it.next();
+        Set<Map.Entry<Object, Object>> entrySet = p.entrySet();
+        for (String service : serviceName) {
+            String keyPrfix2find = "Alg.Alias." + service + ".";  //$NON-NLS-1$ //$NON-NLS-2$
+            for (Entry<Object, Object> me : entrySet) {
                 String key = (String)me.getKey();
                 if (key.startsWith(keyPrfix2find)) {
                     String alias = key.substring(keyPrfix2find.length());

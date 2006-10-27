@@ -95,6 +95,7 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -110,13 +111,14 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int hashCode() {
         int result = effectiveKeyBits;
         if (iv == null) {
             return result;
         }
-        for (int i=0; i<iv.length; i++) {
-            result += iv[i];
+        for (byte element : iv) {
+            result += element;
         }
         return result;
     }

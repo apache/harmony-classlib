@@ -43,14 +43,11 @@ import org.apache.harmony.security.fortress.Engine;
 
 public class KeyAgreement {
 
-    // Store spi implementation service name
-    private static final String SERVICE = "KeyAgreement"; //$NON-NLS-1$
-
     // Used to access common engine functionality
-    private static Engine engine = new Engine(SERVICE);
+    private static final Engine engine = new Engine("KeyAgreement"); //$NON-NLS-1$
 
     // Store SecureRandom
-    private static SecureRandom rndm = new SecureRandom();
+    private static final SecureRandom rndm = new SecureRandom();
 
     // Store used provider
     private final Provider provider;

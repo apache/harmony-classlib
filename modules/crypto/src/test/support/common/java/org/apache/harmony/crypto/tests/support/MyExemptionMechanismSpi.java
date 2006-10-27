@@ -45,20 +45,24 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
     public static final int getLength() {
         return byteArrayLength;
     }
+    @Override
     protected byte[] engineGenExemptionBlob()
             throws ExemptionMechanismException {
         return new byte[byteArrayLength];
     }
 
+    @Override
     protected int engineGenExemptionBlob(byte[] output, int outputOffset)
             throws ShortBufferException, ExemptionMechanismException {
         return byteArrayLength;
     }
 
+    @Override
     protected int engineGetOutputSize(int inputLen) {
         return 10;
     }
 
+    @Override
     protected void engineInit(Key key) throws InvalidKeyException,
             ExemptionMechanismException {
         if (key == null) {
@@ -69,6 +73,7 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
         }
     }
 
+    @Override
     protected void engineInit(Key key, AlgorithmParameters params)
             throws InvalidKeyException, InvalidAlgorithmParameterException,
             ExemptionMechanismException {
@@ -80,6 +85,7 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
         }
     }
 
+    @Override
     protected void engineInit(Key key, AlgorithmParameterSpec params)
             throws InvalidKeyException, InvalidAlgorithmParameterException,
             ExemptionMechanismException {
@@ -91,6 +97,7 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
         }
     }
     
+    @SuppressWarnings("serial")
     public class tmpKey implements Key {
         private String alg;
         private byte[] enc;
@@ -108,6 +115,7 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
             return enc;
         }
     }
+    @SuppressWarnings("serial")
     public class tmp1Key implements Key {
         private byte[] enc;
         public tmp1Key(String alg, byte[] enc) {

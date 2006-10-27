@@ -40,11 +40,8 @@ import org.apache.harmony.security.fortress.Engine;
  */
 public class SecretKeyFactory {
 
-    // Store spi implementation service name
-    private static final String SERVICE = "SecretKeyFactory"; //$NON-NLS-1$
-
     // Used to access common engine functionality
-    private static Engine engine = new Engine(SERVICE);
+    private static final Engine engine = new Engine("SecretKeyFactory"); //$NON-NLS-1$
 
     // Store used provider
     private final Provider provider;
@@ -147,6 +144,7 @@ public class SecretKeyFactory {
      * @com.intel.drl.spec_ref
      *  
      */
+    @SuppressWarnings("unchecked")
     public final KeySpec getKeySpec(SecretKey key, Class keySpec)
             throws InvalidKeySpecException {
         return spiImpl.engineGetKeySpec(key, keySpec);

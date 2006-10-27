@@ -112,10 +112,11 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int hashCode() {
         int result = algorithm.length();
-        for (int i=0; i<key.length; i++) {
-            result += key[i];
+        for (byte element : key) {
+            result += element;
         }
         return result;
     }
@@ -123,6 +124,7 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

@@ -36,7 +36,6 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -102,7 +101,7 @@ public class Cipher {
     /**
      * Used to access common engine functionality
      */
-    private static Engine engine = new Engine(SERVICE);
+    private static final Engine engine = new Engine(SERVICE);
 
     /**
      * The provider
@@ -476,11 +475,10 @@ public class Cipher {
             throw new InvalidParameterException(Messages.getString("crypto.19")); //$NON-NLS-1$
         }
         if (certificate instanceof X509Certificate) {
-            Set ce = ((X509Certificate) certificate).getCriticalExtensionOIDs();
+            Set<String> ce = ((X509Certificate) certificate).getCriticalExtensionOIDs();
             boolean critical = false;
             if (ce != null && !ce.isEmpty()) {
-                for (Iterator i = ce.iterator(); i.hasNext();) {
-                    String oid = (String) i.next();
+                for (String oid : ce) {
                     if (oid.equals("2.5.29.15")) { //KeyUsage OID = 2.5.29.15 //$NON-NLS-1$
                         critical = true;
                         break;

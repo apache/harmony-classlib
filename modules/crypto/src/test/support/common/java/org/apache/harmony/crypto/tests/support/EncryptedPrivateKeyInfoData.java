@@ -1006,7 +1006,7 @@ public class EncryptedPrivateKeyInfoData {
     /**
      * Valid DSA parameters encoding
      */
-    private static byte[] dsaParamsEncoded = { (byte) 0x30, (byte) 0x82,
+    private static final byte[] dsaParamsEncoded = { (byte) 0x30, (byte) 0x82,
             (byte) 0x01, (byte) 0x1e, (byte) 0x02, (byte) 0x81, (byte) 0x81,
             (byte) 0x00, (byte) 0x9f, (byte) 0x5e, (byte) 0x76, (byte) 0x19,
             (byte) 0x59, (byte) 0xd8, (byte) 0xf7, (byte) 0x6b, (byte) 0x91,
@@ -1069,7 +1069,7 @@ public class EncryptedPrivateKeyInfoData {
     /**
      * Valid DH parameters encoding
      */
-    private static byte[] dhParamsEncoded = { (byte) 0x30, (byte) 0x82,
+    private static final byte[] dhParamsEncoded = { (byte) 0x30, (byte) 0x82,
             (byte) 0x01, (byte) 0x0b, (byte) 0x02, (byte) 0x81, (byte) 0x81,
             (byte) 0x00, (byte) 0xce, (byte) 0x2c, (byte) 0x4f, (byte) 0xea,
             (byte) 0xf2, (byte) 0x83, (byte) 0xc5, (byte) 0x38, (byte) 0xc9,
@@ -1130,11 +1130,11 @@ public class EncryptedPrivateKeyInfoData {
      */
     public static final byte[] encryptedData;
 
-    private static final HashMap validEPKIEncodings = new HashMap();
+    private static final HashMap<String, byte[]> validEPKIEncodings = new HashMap<String, byte[]>();
 
-    private static final HashMap validEPKIEncodingsNP = new HashMap();
+    private static final HashMap<String, byte[]> validEPKIEncodingsNP = new HashMap<String, byte[]>();
 
-    private static final HashMap validAPEncodings = new HashMap();
+    private static final HashMap<String, byte[]> validAPEncodings = new HashMap<String, byte[]>();
 
     static {
         validEPKIEncodings.put("DH", dhEncryptedPrivateKeyInfo);
@@ -1195,8 +1195,8 @@ public class EncryptedPrivateKeyInfoData {
             String algName, boolean includingAlgParameters)
             throws NoSuchAlgorithmException {
         String algNameUC = algName.toUpperCase();
-        byte[] ret = includingAlgParameters ? (byte[]) validEPKIEncodings
-                .get(algNameUC) : (byte[]) validEPKIEncodingsNP.get(algNameUC);
+        byte[] ret = includingAlgParameters ? validEPKIEncodings
+                .get(algNameUC) : validEPKIEncodingsNP.get(algNameUC);
         if (ret != null) {
             return ret.clone();
         }
@@ -1218,7 +1218,7 @@ public class EncryptedPrivateKeyInfoData {
     public static byte[] getParametersEncoding(String algName)
             throws NoSuchAlgorithmException {
         String algNameUC = algName.toUpperCase();
-        byte[] ret = (byte[]) validAPEncodings.get(algNameUC);
+        byte[] ret = validAPEncodings.get(algNameUC);
         if (ret != null) {
             return ret;
         }

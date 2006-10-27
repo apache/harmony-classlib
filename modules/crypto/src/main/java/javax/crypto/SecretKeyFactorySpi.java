@@ -50,6 +50,7 @@ public abstract class SecretKeyFactorySpi {
      * @com.intel.drl.spec_ref
      *  
      */
+    @SuppressWarnings("unchecked")
     protected abstract KeySpec engineGetKeySpec(SecretKey key, Class keySpec)
             throws InvalidKeySpecException;
 

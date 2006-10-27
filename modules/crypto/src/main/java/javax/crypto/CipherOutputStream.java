@@ -33,7 +33,7 @@ import javax.crypto.NullCipher;
 public class CipherOutputStream extends FilterOutputStream {
 
     private final Cipher cipher;
-    private byte[] arr = new byte[1];
+    private final byte[] arr = new byte[1];
 
     /**
      * @com.intel.drl.spec_ref
@@ -53,6 +53,7 @@ public class CipherOutputStream extends FilterOutputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void write(int b) throws IOException {
         byte[] result;
         arr[0] = (byte) b;
@@ -65,6 +66,7 @@ public class CipherOutputStream extends FilterOutputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void write(byte[] b) throws IOException {
         write(b, 0, b.length);
     }
@@ -72,6 +74,7 @@ public class CipherOutputStream extends FilterOutputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         if (len == 0) {
             return;
@@ -85,6 +88,7 @@ public class CipherOutputStream extends FilterOutputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void flush() throws IOException {
         out.flush();
     }
@@ -92,6 +96,7 @@ public class CipherOutputStream extends FilterOutputStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public void close() throws IOException {
         byte[] result;
         try {

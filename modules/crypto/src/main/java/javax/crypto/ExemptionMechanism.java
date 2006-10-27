@@ -33,14 +33,8 @@ import org.apache.harmony.security.fortress.Engine;
 
 public class ExemptionMechanism {
 
-    // Store spi implementation service name
-    private static final String SERVICE = "ExemptionMechanism"; //$NON-NLS-1$
-
     // Used to access common engine functionality
-    private static Engine engine = new Engine(SERVICE);
-
-    // Warning for reporting about not initializes ExemptionMechanism
-    private static final String NOTINITEMECH = Messages.getString("crypto.2D"); //$NON-NLS-1$
+    private static final Engine engine = new Engine("ExemptionMechanism");
 
     // Store used provider
     private final Provider provider;
@@ -132,7 +126,7 @@ public class ExemptionMechanism {
 
     public final int getOutputSize(int inputLen) throws IllegalStateException {
         if (!isInit) {
-            throw new IllegalStateException(NOTINITEMECH);
+            throw new IllegalStateException(Messages.getString("crypto.2D"));
         }
         return spiImpl.engineGetOutputSize(inputLen);
     }
@@ -166,7 +160,7 @@ public class ExemptionMechanism {
     public final byte[] genExemptionBlob() throws IllegalStateException,
             ExemptionMechanismException {
         if (!isInit) {
-            throw new IllegalStateException(NOTINITEMECH);
+            throw new IllegalStateException(Messages.getString("crypto.2D"));
         }
         generated = false;
         byte[] result = spiImpl.engineGenExemptionBlob();
@@ -184,7 +178,7 @@ public class ExemptionMechanism {
             throws IllegalStateException, ShortBufferException,
             ExemptionMechanismException {
         if (!isInit) {
-            throw new IllegalStateException(NOTINITEMECH);
+            throw new IllegalStateException(Messages.getString("crypto.2D"));
         }
         generated = false;
         int len = spiImpl.engineGenExemptionBlob(output, outputOffset);
@@ -192,6 +186,7 @@ public class ExemptionMechanism {
         return len;
     }
 
+    @Override
     protected void finalize() {
         initKey = null;
     }

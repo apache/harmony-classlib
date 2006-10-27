@@ -105,6 +105,7 @@ public abstract class MacSpi {
      * @com.intel.drl.spec_ref
      *  
      */
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

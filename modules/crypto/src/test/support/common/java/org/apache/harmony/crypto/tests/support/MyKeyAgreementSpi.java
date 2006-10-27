@@ -41,6 +41,7 @@ import javax.crypto.ShortBufferException;
 
 public class MyKeyAgreementSpi extends KeyAgreementSpi {
     
+    @Override
     protected Key engineDoPhase(Key key, boolean lastPhase)
             throws InvalidKeyException, IllegalStateException {
         if (!lastPhase) {
@@ -49,15 +50,18 @@ public class MyKeyAgreementSpi extends KeyAgreementSpi {
         return null;
     }
 
+    @Override
     protected byte[] engineGenerateSecret() throws IllegalStateException {
         return new byte[0];
     }
 
+    @Override
     protected int engineGenerateSecret(byte[] sharedSecret, int offset)
             throws IllegalStateException, ShortBufferException {
         return -1;
     }
 
+    @Override
     protected SecretKey engineGenerateSecret(String algorithm)
             throws IllegalStateException, NoSuchAlgorithmException,
             InvalidKeyException {
@@ -67,11 +71,13 @@ public class MyKeyAgreementSpi extends KeyAgreementSpi {
         return null;
     }
 
+    @Override
     protected void engineInit(Key key, SecureRandom random)
             throws InvalidKeyException {
         throw new IllegalArgumentException("Invalid parameter");
     }
 
+    @Override
     protected void engineInit(Key key, AlgorithmParameterSpec params,
             SecureRandom random) throws InvalidKeyException,
             InvalidAlgorithmParameterException {

@@ -123,6 +123,7 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -140,13 +141,14 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Override
     public int hashCode() {
         int result = version + rounds + wordSize;
         if (iv == null) {
             return result;
         }
-        for (int i=0; i<iv.length; i++) {
-            result += iv[i] & 0xFF;
+        for (byte element : iv) {
+            result += element & 0xFF;
         }
         return result;
     }

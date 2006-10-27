@@ -43,14 +43,8 @@ import org.apache.harmony.security.fortress.Engine;
 
 public class Mac implements Cloneable {
 
-    // Store spi implementation service name
-    private static final String SERVICE = "Mac"; //$NON-NLS-1$
-
     //Used to access common engine functionality
-    private static Engine engine = new Engine(SERVICE);
-
-    // Warning for reporting about not initialized Mac
-    private static final String NOTINITMAC = Messages.getString("crypto.01"); //$NON-NLS-1$
+    private static final Engine engine = new Engine("Mac"); //$NON-NLS-1$
 
     // Store used provider
     private final Provider provider;
@@ -189,7 +183,7 @@ public class Mac implements Cloneable {
      */
     public final void update(byte input) throws IllegalStateException {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         spiImpl.engineUpdate(input);
     }
@@ -201,7 +195,7 @@ public class Mac implements Cloneable {
     public final void update(byte[] input, int offset, int len)
             throws IllegalStateException {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         if (input == null) {
             return;
@@ -218,7 +212,7 @@ public class Mac implements Cloneable {
      */
     public final void update(byte[] input) throws IllegalStateException {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         if (input != null) {
             spiImpl.engineUpdate(input, 0, input.length);
@@ -231,7 +225,7 @@ public class Mac implements Cloneable {
      */
     public final void update(ByteBuffer input) {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         if (input != null) {
             spiImpl.engineUpdate(input);
@@ -246,7 +240,7 @@ public class Mac implements Cloneable {
      */
     public final byte[] doFinal() throws IllegalStateException {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         return spiImpl.engineDoFinal();
     }
@@ -258,7 +252,7 @@ public class Mac implements Cloneable {
     public final void doFinal(byte[] output, int outOffset)
             throws ShortBufferException, IllegalStateException {
         if (!isInitMac) {
-            throw new IllegalStateException(NOTINITMAC);
+            throw new IllegalStateException(Messages.getString("crypto.01"));
         }
         if (output == null) {
             throw new ShortBufferException(Messages.getString("crypto.08")); //$NON-NLS-1$
@@ -304,6 +298,7 @@ public class Mac implements Cloneable {
      * @com.intel.drl.spec_ref
      *  
      */
+    @Override
     public final Object clone() throws CloneNotSupportedException {
         MacSpi newSpiImpl = (MacSpi)spiImpl.clone(); 
         Mac mac = new Mac(newSpiImpl, this.provider, this.algorithm);

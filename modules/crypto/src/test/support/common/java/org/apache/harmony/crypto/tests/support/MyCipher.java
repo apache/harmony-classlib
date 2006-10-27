@@ -45,62 +45,75 @@ public class MyCipher extends CipherSpi {
 		super();
 	}
 
-	protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
+	@Override
+    protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
 	}
 
-	protected void engineSetPadding(String padding)
+	@Override
+    protected void engineSetPadding(String padding)
 			throws NoSuchPaddingException {
 		if (!"PKCS5Padding".equals(padding)) {
 			throw new  NoSuchPaddingException(padding);
 		}
 	}
 
-	protected int engineGetBlockSize() {
+	@Override
+    protected int engineGetBlockSize() {
 		return 111;
 	}
 
-	protected int engineGetOutputSize(int inputLen) {
+	@Override
+    protected int engineGetOutputSize(int inputLen) {
 		return inputLen + 10;
 	}
 
-	protected byte[] engineGetIV() {
+	@Override
+    protected byte[] engineGetIV() {
 		byte[] b = {1,2,3};
 		return b;
 	}
 
-	protected AlgorithmParameters engineGetParameters() {
+	@Override
+    protected AlgorithmParameters engineGetParameters() {
 		return null;
 	}
 
-	protected void engineInit(int opmode, Key key, SecureRandom random)
+	@Override
+    protected void engineInit(int opmode, Key key, SecureRandom random)
 			throws InvalidKeyException {
 	}
 
-	protected void engineInit(int opmode, Key key,
+	@Override
+    protected void engineInit(int opmode, Key key,
 			AlgorithmParameterSpec params, SecureRandom random)
 			throws InvalidKeyException, InvalidAlgorithmParameterException {
 	}
 
-	protected void engineInit(int opmode, Key key, AlgorithmParameters params,
+	@Override
+    protected void engineInit(int opmode, Key key, AlgorithmParameters params,
 			SecureRandom random) throws InvalidKeyException,
 			InvalidAlgorithmParameterException {
 	}
 
-	protected byte[] engineUpdate(byte[] input, int inputOffset, int inputLen) {
+	@Override
+    protected byte[] engineUpdate(byte[] input, int inputOffset, int inputLen) {
 		return null;
 	}
 
-	protected int engineUpdate(byte[] input, int inputOffset, int inputLen,
+	@Override
+    protected int engineUpdate(byte[] input, int inputOffset, int inputLen,
 			byte[] output, int outputOffset) throws ShortBufferException {
 		return 0;
 	}
 
-	protected byte[] engineDoFinal(byte[] input, int inputOffset, int inputLen)
+	@Override
+    protected byte[] engineDoFinal(byte[] input, int inputOffset, int inputLen)
 			throws IllegalBlockSizeException, BadPaddingException {
 		return null;
 	}
 
-	protected int engineDoFinal(byte[] input, int inputOffset, int inputLen,
+	@Override
+    protected int engineDoFinal(byte[] input, int inputOffset, int inputLen,
 			byte[] output, int outputOffset) throws ShortBufferException,
 			IllegalBlockSizeException, BadPaddingException {
 		return 0;
