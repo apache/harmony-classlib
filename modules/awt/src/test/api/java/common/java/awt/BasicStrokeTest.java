@@ -50,7 +50,7 @@ public class BasicStrokeTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         String basePath = System.getProperty("TEST_SRC_DIR");
-        assertNotNull(basePath, "Parameter TEST_SRC_DIR not defined");
+        assertNotNull("Parameter TEST_SRC_DIR not defined", basePath);
         if (!basePath.endsWith(File.separator)) {
             basePath += File.separator;
         }

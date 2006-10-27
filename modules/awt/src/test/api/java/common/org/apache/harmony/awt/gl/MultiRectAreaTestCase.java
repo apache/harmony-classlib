@@ -44,7 +44,7 @@ public class MultiRectAreaTestCase extends PathIteratorTestCase {
     public MultiRectAreaTestCase(String name) {
         super(name);
         String basePath = System.getProperty("TEST_SRC_DIR");
-        assertNotNull(basePath, "Parameter TEST_SRC_DIR not defined");
+        assertNotNull("Parameter TEST_SRC_DIR not defined", basePath);
         if (!basePath.endsWith(File.separator)) {
             basePath += File.separator;
         }
