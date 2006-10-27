@@ -58,7 +58,7 @@ public abstract class AbstractTableModel implements TableModel, Serializable {
         return result < getColumnCount() ? result : -1;
     }
 
-    public Class getColumnClass(final int columnIndex) {
+    public Class<?> getColumnClass(final int columnIndex) {
         return Object.class;
     }
 

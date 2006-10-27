@@ -110,7 +110,7 @@ public class StyleContext
             return attrs.getAttributeCount();
         }
 
-        public Enumeration getAttributeNames() {
+        public Enumeration<?> getAttributeNames() {
             return attrs.getAttributeNames();
         }
 
@@ -155,7 +155,7 @@ public class StyleContext
             fireStateChanged();
         }
 
-        public void removeAttributes(final Enumeration names) {
+        public void removeAttributes(final Enumeration<?> names) {
             attrs = StyleContext.this.removeAttributes(attrs, names);
             fireStateChanged();
         }
@@ -289,7 +289,7 @@ public class StyleContext
             return attributes.length / 2;
         }
 
-        public Enumeration getAttributeNames() {
+        public Enumeration<?> getAttributeNames() {
             return new Enumeration() {
 
                 private int count = 0;
@@ -641,7 +641,7 @@ public class StyleContext
     }
 
     public synchronized AttributeSet removeAttributes(final AttributeSet old,
-                                                      final Enumeration names) {
+                                                      final Enumeration<?> names) {
         attrSet.addAttributes(old);
         attrSet.removeAttributes(names);
 

@@ -107,7 +107,7 @@ public class SimpleAttributeSet
         return hashtable.size();
     }
 
-    public Enumeration getAttributeNames() {
+    public Enumeration<?> getAttributeNames() {
         return hashtable.keys();
     }
 
@@ -163,7 +163,7 @@ public class SimpleAttributeSet
         }
     }
 
-    public void removeAttributes(final Enumeration names) {
+    public void removeAttributes(final Enumeration<?> names) {
         while (names.hasMoreElements()) {
             removeAttribute(names.nextElement());
         }

@@ -114,7 +114,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
         return tableColumns.size();
     }
 
-    public Enumeration getColumns() {
+    public Enumeration<TableColumn> getColumns() {
         return Collections.enumeration(tableColumns);
     }
 

@@ -532,15 +532,15 @@ public abstract class AbstractLayoutCache implements RowMapper {
         return correspondingNode != null ? correspondingNode.getTotalChildrenCount() : 0;
     }
 
-    Enumeration getVisiblePathsFromImpl(final TreePath path) {
+    Enumeration<TreePath> getVisiblePathsFromImpl(final TreePath path) {
         if (!isModelPath(path) || !isRoot(path) && !isVisible(path)) {
             return null;
         }
 
-        return new Enumeration() {
+        return new Enumeration<TreePath>() {
             private TreePath currentPath = path;
 
-            public Object nextElement() {
+            public TreePath nextElement() {
                 if (currentPath == null) {
                     throw new NoSuchElementException();
                 }

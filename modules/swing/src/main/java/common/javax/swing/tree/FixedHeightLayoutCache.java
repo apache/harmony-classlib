@@ -148,7 +148,7 @@ public class FixedHeightLayoutCache extends AbstractLayoutCache {
         return getVisibleChildCountImpl(path);
     }
 
-    public Enumeration getVisiblePathsFrom(final TreePath path) {
+    public Enumeration<TreePath> getVisiblePathsFrom(final TreePath path) {
         return getVisiblePathsFromImpl(path);
     }
 

@@ -192,7 +192,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             return attrs.getAttributeCount();
         }
 
-        public Enumeration getAttributeNames() {
+        public Enumeration<?> getAttributeNames() {
             return attrs.getAttributeNames();
         }
 
@@ -267,7 +267,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             attrs = context.removeAttributes(attrs, attrSet);
         }
 
-        public void removeAttributes(final Enumeration attrNames) {
+        public void removeAttributes(final Enumeration<?> attrNames) {
             checkWriteLock();
 
             attrs = context.removeAttributes(attrs, attrNames);
