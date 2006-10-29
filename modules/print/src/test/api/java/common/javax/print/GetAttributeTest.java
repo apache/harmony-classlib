@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
 
 package javax.print;
 
@@ -29,33 +25,23 @@ import javax.print.attribute.standard.PrinterIsAcceptingJobs;
 import javax.print.attribute.standard.PrinterState;
 import javax.print.attribute.standard.QueuedJobCount;
 import javax.print.attribute.standard.RequestingUserName;
-
 import junit.framework.TestCase;
 
 public class GetAttributeTest extends TestCase {
-
+    @SuppressWarnings("unchecked")
     public void testGetAttribute() {
-        System.out
-                .println("============= START testGetAttribute ================");
-
         PrintService[] services;
         Object probe;
-        Class[] clazz = new Class[] { PrinterIsAcceptingJobs.ACCEPTING_JOBS
-                .getCategory(),
-                PrinterState.IDLE.getCategory(),
-                QueuedJobCount.class,
-                Destination.class,
-                JobName.class,
-                RequestingUserName.class };
+        Class[] clazz = new Class[] { PrinterIsAcceptingJobs.ACCEPTING_JOBS.getCategory(),
+                PrinterState.IDLE.getCategory(), QueuedJobCount.class, Destination.class,
+                JobName.class, RequestingUserName.class };
         services = PrintServiceLookup.lookupPrintServices(null, null);
         TestUtil.checkServices(services);
-
         for (int i = 0, ii = services.length; i < ii; i++) {
-            System.out.println("----" + services[i].getName() + "----");
             for (int j = 0, jj = clazz.length; j < jj; j++) {
                 if (PrintServiceAttribute.class.isAssignableFrom(clazz[j])) {
                     probe = services[i].getAttribute(clazz[j]);
-                    System.out.println(clazz[j] + ": " + probe);
+                    assertNotNull(probe);
                 }
             }
             try {
@@ -65,17 +51,13 @@ public class GetAttributeTest extends TestCase {
                 // OK
             }
             try {
-                probe = services[i].getAttribute(Copies.class);
+                Class<?> invalidClass = Copies.class;
+                probe = services[i]
+                        .getAttribute((Class<? extends PrintServiceAttribute>) invalidClass);
                 fail("IllegalArgumentException must be thrown - category is not a Class that implements interface PrintServiceAttribute.");
             } catch (IllegalArgumentException e) {
                 // OK
-            } catch (Exception e) {
-                fail("Exception " + e + "is thrown - something is wrong");
             }
         }
-
-        System.out
-                .println("============= END testGetAttribute ================");
     }
-
 }

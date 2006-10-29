@@ -35,19 +35,19 @@ public interface PrintService {
 
     boolean equals(Object object);
 
-    PrintServiceAttribute getAttribute(Class category);
+    <T extends PrintServiceAttribute> T getAttribute(Class<T> category);
 
     PrintServiceAttributeSet getAttributes();
 
-    Object getDefaultAttributeValue(Class category);
+    Object getDefaultAttributeValue(Class<? extends Attribute> category);
 
     String getName();
 
     ServiceUIFactory getServiceUIFactory();
 
-    Class[] getSupportedAttributeCategories();
+    Class<?>[] getSupportedAttributeCategories();
 
-    Object getSupportedAttributeValues(Class category, DocFlavor flavor,
+    Object getSupportedAttributeValues(Class<? extends Attribute> category, DocFlavor flavor,
             AttributeSet attributes);
 
     DocFlavor[] getSupportedDocFlavors();
@@ -57,7 +57,7 @@ public interface PrintService {
 
     int hashCode();
 
-    boolean isAttributeCategorySupported(Class category);
+    boolean isAttributeCategorySupported(Class<? extends Attribute> category);
 
     boolean isAttributeValueSupported(Attribute attrval, DocFlavor flavor, 
             AttributeSet attributes);
