@@ -622,28 +622,22 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
     }
 
     /*
-     * Converts string representation of urls to sorted array of URLs.
+     * Converts string representation of urls to array of URLs.
      *
      * @param list list of urls separated by spaces
      *
-     * @return sorted array of URLs from specified list
+     * @return array of URLs from specified list
      */
-    private static URL[] getSortedURLs(String list)
+    private static URL[] stringToURLs(String list)
             throws MalformedURLException {
         if (list == null) {
             return null;
         }
         StringTokenizer tok = new StringTokenizer(list);
-        String[] strs = new String[tok.countTokens()];
+        URL[] urls = new URL[tok.countTokens()];
 
-        for (int i = 0; i < strs.length; ++i) {
-            strs[i] = tok.nextToken();
-        }
-        Arrays.sort(strs);
-        URL[] urls = new URL[strs.length];
-
-        for (int i = 0; i < strs.length; ++i) {
-            urls[i] = new URL(strs[i]);
+        for (int i = 0; i < urls.length; ++i) {
+            urls[i] = new URL(tok.nextToken());
         }
         return urls;
     }
@@ -680,9 +674,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         private Permissions perms;
 
         /*
-         * Constructs URLLoader from sorted list of URLs and parent ClassLoader.
+         * Constructs URLLoader from list of URLs and parent ClassLoader.
          *
-         * @param urls sorted list of URLs
+         * @param urls list of URLs
          * @param parent parent ClassLoader
          */
         URLLoader(URL[] urls, ClassLoader parent) {
@@ -740,19 +734,19 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
          * Constructs TableKey from string representation of the list of URLs.
          *
          * @param loader ClassLoader
-         * @param codebase String represented codebase list (possibly unsorted)
+         * @param codebase String represented codebase list
          *        separated by <space>
          */
         TableKey(ClassLoader loader, String codebase)
                 throws MalformedURLException {
-            this(loader, getSortedURLs(codebase));
+            this(loader, stringToURLs(codebase));
         }
 
         /*
-         * Constructs TableKey from the specified sorted array of URLs.
+         * Constructs TableKey from the specified array of URLs.
          *
          * @param loader ClassLoader
-         * @param urls array of URLs (possibly unsorted)
+         * @param urls array of URLs
          */
          TableKey(ClassLoader loader, URL[] urls) {
              this.loader = loader;
@@ -776,9 +770,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         }
 
         /*
-         * Returns sorted list of URLs contained in this TableKey.
+         * Returns list of URLs contained in this TableKey.
          *
-         * @return sorted list of URLs contained in this TableKey
+         * @return list of URLs contained in this TableKey
          */
         public URL[] getURLs() {
             return urls;
