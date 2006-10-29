@@ -14,35 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
-
 public abstract class ResolutionSyntax implements Cloneable, Serializable {
-
+    private static final long serialVersionUID = 2706743076526672017L;
 
     public static final int DPI = 100;
 
     public static final int DPCM = 254;
 
+    private final int crossFeedRes;
 
-    private int crossFeedRes;
+    private final int feedRes;
 
-    private int feedRes;
-
-    
-    public ResolutionSyntax(int crossFeedResolution,
-                                        int feedResolution, int units) {
-
+    public ResolutionSyntax(int crossFeedResolution, int feedResolution, int units) {
         if (crossFeedResolution < 1) {
-            throw new IllegalArgumentException("CrossFeedResolution " +
-                                                    "is less than 1");
+            throw new IllegalArgumentException("CrossFeedResolution " + "is less than 1");
         }
         if (feedResolution < 1) {
             throw new IllegalArgumentException("FeedResolution is less than 1");
@@ -54,38 +44,32 @@ public abstract class ResolutionSyntax implements Cloneable, Serializable {
         feedRes = feedResolution * units;
     }
 
-
+    @Override
     public boolean equals(Object object) {
-
-        if ((object instanceof ResolutionSyntax) &&
-                crossFeedRes == ((ResolutionSyntax) object).crossFeedRes &&
-                feedRes == ((ResolutionSyntax) object).feedRes) {
-                            return true;
-        } else {
-            return false;
+        if ((object instanceof ResolutionSyntax)
+                && crossFeedRes == ((ResolutionSyntax) object).crossFeedRes
+                && feedRes == ((ResolutionSyntax) object).feedRes) {
+            return true;
         }
-
+        return false;
     }
 
     public int getCrossFeedResolution(int units) {
-
         if (units < 1) {
             throw new IllegalArgumentException("units is less than 1");
         }
-        return Math.round( ((float) crossFeedRes)/units);
-
+        return Math.round(((float) crossFeedRes) / units);
     }
 
     protected int getCrossFeedResolutionDphi() {
         return crossFeedRes;
     }
 
-    public int getFeedResolution (int units) {
-
+    public int getFeedResolution(int units) {
         if (units < 1) {
             throw new IllegalArgumentException("units is less than 1");
         }
-        return Math.round( ((float) feedRes)/units);
+        return Math.round(((float) feedRes) / units);
     }
 
     protected int getFeedResolutionDphi() {
@@ -93,36 +77,31 @@ public abstract class ResolutionSyntax implements Cloneable, Serializable {
     }
 
     public int[] getResolution(int units) {
-        return new int[] { getCrossFeedResolution(units),
-                           getFeedResolution(units) };
+        return new int[] { getCrossFeedResolution(units), getFeedResolution(units) };
     }
 
+    @Override
     public int hashCode() {
-        return ( crossFeedRes | (feedRes << 16) );
+        return (crossFeedRes | (feedRes << 16));
     }
 
-    public boolean lessThanOrEquals (ResolutionSyntax resolutionSyntax) {
-
-        if ( crossFeedRes <= resolutionSyntax.crossFeedRes &&
-                feedRes <= resolutionSyntax.feedRes ) {
-                    return true;
-        } else {
-            return false;
+    public boolean lessThanOrEquals(ResolutionSyntax resolutionSyntax) {
+        if (crossFeedRes <= resolutionSyntax.crossFeedRes
+                && feedRes <= resolutionSyntax.feedRes) {
+            return true;
         }
-
+        return false;
     }
 
+    @Override
     public String toString() {
         return (crossFeedRes + "x" + feedRes + " dphi");
     }
 
-    public String toString (int units, String unitsName) {
+    public String toString(int units, String unitsName) {
         if (unitsName == null) {
             unitsName = "";
         }
-        return (getCrossFeedResolution(units) + "x" + getFeedResolution(units) +
-                    " " + unitsName);
+        return (getCrossFeedResolution(units) + "x" + getFeedResolution(units) + " " + unitsName);
     }
-
-
 }

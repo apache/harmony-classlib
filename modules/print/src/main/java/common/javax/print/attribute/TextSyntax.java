@@ -14,65 +14,55 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-
 public abstract class TextSyntax implements Cloneable, Serializable {
+    private static final long serialVersionUID = -8130648736378144102L;
 
-
-    private String text;
+    private final String text;
 
     private Locale locale;
 
-
     protected TextSyntax(String textValue, Locale textLocale) {
-
         if (textValue == null) {
             throw new NullPointerException("Text is null");
-        } else {
-            text = textValue;
         }
-
+        text = textValue;
         if (textLocale == null) {
             locale = Locale.getDefault();
         } else {
             locale = textLocale;
         }
     }
-    
-    
-    public boolean equals(Object object) {
 
-        if ((object instanceof TextSyntax) &&
-                text.equals( ((TextSyntax) object).text ) &&
-                    locale.equals( ((TextSyntax) object).locale )) {
+    @Override
+    public boolean equals(Object object) {
+        if ((object instanceof TextSyntax) && text.equals(((TextSyntax) object).text)
+                && locale.equals(((TextSyntax) object).locale)) {
             return true;
         }
         return false;
     }
-    
+
     public Locale getLocale() {
         return locale;
-    } 
+    }
 
     public String getValue() {
         return text;
     }
 
+    @Override
     public int hashCode() {
         return text.hashCode() + locale.hashCode();
-    }   
-    
-    public String toString(){
+    }
+
+    @Override
+    public String toString() {
         return text;
     }
-           
 }

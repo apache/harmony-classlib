@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
@@ -25,38 +21,36 @@ import java.io.Serializable;
 import java.util.Date;
 
 public abstract class DateTimeSyntax implements Cloneable, Serializable {
-
-
-    private Date date;
+    private static final long serialVersionUID = -1400819079791208582L;
+    private final Date date;
 
     protected DateTimeSyntax(Date value) {
+        super();
         if (value == null) {
-            throw new NullPointerException("Null date value");
+            throw new NullPointerException();
         }
         date = value;
     }
 
+    @Override
     public boolean equals(Object object) {
-
-        if ((object instanceof DateTimeSyntax) &&
-                date.equals(((DateTimeSyntax) object).date) ) {
+        if ((object instanceof DateTimeSyntax) && date.equals(((DateTimeSyntax) object).date)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public Date getValue() {
-        return new Date ( date.getTime() );
+        return new Date(date.getTime());
     }
 
+    @Override
     public int hashCode() {
         return date.hashCode();
     }
 
+    @Override
     public String toString() {
         return date.toString();
     }
-
-
 }

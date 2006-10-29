@@ -14,19 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
-public class HashPrintRequestAttributeSet 
-    extends HashAttributeSet implements Serializable, PrintRequestAttributeSet {
+public class HashPrintRequestAttributeSet extends HashAttributeSet implements Serializable,
+        PrintRequestAttributeSet {
+    private static final long serialVersionUID = 2364756266107751933L;
 
-    
     public HashPrintRequestAttributeSet() {
         super(PrintRequestAttribute.class);
     }
@@ -42,5 +38,4 @@ public class HashPrintRequestAttributeSet
     public HashPrintRequestAttributeSet(PrintRequestAttributeSet attributeSet) {
         super(attributeSet, PrintRequestAttribute.class);
     }
-
 }

@@ -14,19 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
-public class HashDocAttributeSet 
-    extends HashAttributeSet implements Serializable, DocAttributeSet {
+public class HashDocAttributeSet extends HashAttributeSet implements Serializable,
+        DocAttributeSet {
+    private static final long serialVersionUID = -1128534486061432528L;
 
-    
     public HashDocAttributeSet() {
         super(DocAttribute.class);
     }
@@ -42,5 +38,4 @@ public class HashDocAttributeSet
     public HashDocAttributeSet(DocAttributeSet attributeSet) {
         super(attributeSet, DocAttribute.class);
     }
-
 }
