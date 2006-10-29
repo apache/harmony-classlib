@@ -16,28 +16,19 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
- */
 package org.apache.harmony.rmi.common;
 
 import java.security.PrivilegedAction;
 
-
 /**
  * Action for obtaining properties holding string values.
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
-public class GetStringPropAction implements PrivilegedAction {
-
+public class GetStringPropAction implements PrivilegedAction<String> {
     // the name of the property to be obtained
-    private String propName;
+    private final String propName;
 
     // default value for the property
-    private String defaultVal;
+    private final String defaultVal;
 
     /**
      * Constructs GetStringPropAction to read property with the given name.
@@ -67,7 +58,7 @@ public class GetStringPropAction implements PrivilegedAction {
      *
      * @return property read or defaultValue if property read is null
      */
-    public Object run() {
+    public String run() {
         return System.getProperty(propName, defaultVal);
     }
 }
