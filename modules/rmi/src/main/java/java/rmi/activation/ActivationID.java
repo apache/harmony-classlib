@@ -16,10 +16,6 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.15.2.3 $
- */
 package java.rmi.activation;
 
 import java.io.IOException;
@@ -34,23 +30,13 @@ import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteRef;
 import java.rmi.server.UID;
-
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.internal.nls.Messages;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.15.2.3 $
- */
 public class ActivationID implements Serializable {
-
-    /**
-     * Serial Version UID
-     */
     private static final long serialVersionUID = -4608673054848209235L;
+
+    private static final RMILog rlog = RMILog.getActivationLog();
 
     /**
      * A unique identifier for the object.
@@ -62,35 +48,24 @@ public class ActivationID implements Serializable {
      */
     private transient Activator activator;
 
-    private static RMILog rlog = RMILog.getActivationLog();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationID(Activator activator) {
+        super();
         this.activator = activator;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Remote activate(boolean force) throws ActivationException,
-            UnknownObjectException, RemoteException {
+    public Remote activate(boolean force) throws ActivationException, UnknownObjectException,
+            RemoteException {
         // rmi.log.00=ActivationID.activate: activator = {0}
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.00", activator)); //$NON-NLS-1$
-
         try {
-            MarshalledObject stub = (MarshalledObject) activator.activate(this,
-                    force);
+            MarshalledObject stub = activator.activate(this, force);
             // rmi.log.01=ActivationID.activate:stub={0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.01", stub)); //$NON-NLS-1$
             Remote deserialized_stub = (Remote) stub.get();
             // rmi.log.02=ActivationID.activate: deserialized_stub = {0}
-            rlog.log(RMILog.VERBOSE,
-                    Messages.getString("rmi.log.02", deserialized_stub)); //$NON-NLS-1$
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.02", deserialized_stub)); //$NON-NLS-1$
             // rmi.log.03=<<<<<<<<< ActivationID.activate COMPLETED.
-            rlog.log(RMILog.VERBOSE,Messages.getString("rmi.log.03")); //$NON-NLS-1$
-
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.03")); //$NON-NLS-1$
             return deserialized_stub;
         } catch (IOException ioe) {
             // rmi.0E=An IOException occured while deserializing the object from its internal representation.
@@ -101,9 +76,7 @@ public class ActivationID implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ActivationID) {
             ActivationID castedObj = (ActivationID) obj;
@@ -115,30 +88,22 @@ public class ActivationID implements Serializable {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return activator.hashCode() ^ uid.hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         // rmi.log.06=ActivationID.readObject:
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.06")); //$NON-NLS-1$
         try {
             uid = (UID) in.readObject();
             // rmi.log.07=UID={0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.07", uid)); //$NON-NLS-1$
-
             String refType = in.readUTF();
             // rmi.log.08=refType={0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.08", refType)); //$NON-NLS-1$
-
-            Class cl = Class.forName("org.apache.harmony.rmi.remoteref." //$NON-NLS-1$
+            Class<?> cl = Class.forName("org.apache.harmony.rmi.remoteref." //$NON-NLS-1$
                     + refType);
             RemoteRef ref = (RemoteRef) cl.newInstance();
             // rmi.log.09=ref = {0}
@@ -146,15 +111,13 @@ public class ActivationID implements Serializable {
             ref.readExternal(in);
             // rmi.log.0A=readExternal finished successfully.
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.0A")); //$NON-NLS-1$
-
-            Class activator_class = RMIClassLoader.loadClass((String) null,
+            Class<?> activator_class = RMIClassLoader.loadClass((String) null,
                     "org.apache.harmony.rmi.activation.Rmid_Stub"); //$NON-NLS-1$
-            Class constructor_parameter_classes[] = { RemoteRef.class };
-            Constructor constructor = activator_class
+            Class[] constructor_parameter_classes = { RemoteRef.class };
+            Constructor<?> constructor = activator_class
                     .getConstructor(constructor_parameter_classes);
             Object[] constructor_parameters = { ref };
-            activator = (Activator) constructor
-                    .newInstance(constructor_parameters);
+            activator = (Activator) constructor.newInstance(constructor_parameters);
             // rmi.log.0B=ActivationID.readObject COMPLETED.
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.0B")); //$NON-NLS-1$
         } catch (Throwable t) {
@@ -163,22 +126,16 @@ public class ActivationID implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private void writeObject(ObjectOutputStream out) throws IOException,
-            ClassNotFoundException {
+    private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException {
         // rmi.log.0C=ActivationID.writeObject:
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.0C")); //$NON-NLS-1$
         try {
             out.writeObject(uid);
             // rmi.log.0D=activator = {0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.0D", activator)); //$NON-NLS-1$
-
             RemoteRef ref = ((RemoteObject) activator).getRef();
             // rmi.log.09=ref = {0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.09", ref)); //$NON-NLS-1$
-
             String refType = ref.getRefClass(out);
             // rmi.log.08=refType={0}
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.08", refType)); //$NON-NLS-1$
@@ -186,18 +143,14 @@ public class ActivationID implements Serializable {
             ref.writeExternal(out);
             // rmi.log.04=ActivationID.writeObject COMPLETED.
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.04")); //$NON-NLS-1$
-
         } catch (Throwable t) {
             // rmi.0A=Unable to serialize ActivationID: {0}
             throw new IOException(Messages.getString("rmi.0A", t.getMessage()));//$NON-NLS-1$
-                    
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
-        return "ActivationID: " + "[" + uid + "; " + activator + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        return "ActivationID: [" + uid + "; " + activator + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
     }
 }

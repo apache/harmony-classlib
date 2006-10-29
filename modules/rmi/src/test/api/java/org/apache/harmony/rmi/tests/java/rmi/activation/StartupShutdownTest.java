@@ -16,26 +16,24 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
- */
-package org.apache.harmony.rmi.activation;
+package org.apache.harmony.rmi.tests.java.rmi.activation;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import java.rmi.activation.ActivationGroup;
+import java.rmi.activation.ActivationSystem;
+import org.apache.harmony.rmi.JavaInvoker;
+import org.apache.harmony.rmi.common.SubProcess;
+import junit.framework.TestCase;
 
-
-/**
- * The RMI Hello World application interface.
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
- */
-public interface HelloI extends Remote {
-
-    /**
-     * get() method returns java.lang.String object that should contain "Hello World!".
-     */
-    public String get() throws RemoteException;
+public class StartupShutdownTest extends TestCase {
+    public void testStartup() throws Exception {
+        SubProcess rmid = JavaInvoker.invokeSimilar((String[]) null,
+                "org.apache.harmony.rmi.activation.Rmid", (String[]) null, true, true);
+        rmid.pipeError();
+        rmid.pipeInput();
+        rmid.closeOutput();
+        Thread.sleep(5000);
+        ActivationSystem as = ActivationGroup.getSystem();
+        assertNotNull(as);
+        rmid.destroy();
+    }
 }

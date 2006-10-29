@@ -16,87 +16,42 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.2.3 $
- */
 package java.rmi.activation;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.2.3 $
- */
 public interface ActivationSystem extends Remote {
+    int SYSTEM_PORT = 1098;
 
-    public static final int SYSTEM_PORT = 1098;
+    ActivationMonitor activeGroup(ActivationGroupID gID, ActivationInstantiator aInst,
+            long incarnation) throws UnknownGroupException, ActivationException,
+            RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationMonitor activeGroup(ActivationGroupID gID,
-                                         ActivationInstantiator aInst,
-                                         long incarnation)
-            throws UnknownGroupException, ActivationException, RemoteException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationGroupDesc setActivationGroupDesc(ActivationGroupID gID,
-                                                      ActivationGroupDesc gDesc)
+    ActivationGroupDesc setActivationGroupDesc(ActivationGroupID gID, ActivationGroupDesc gDesc)
             throws ActivationException, UnknownGroupException, RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationDesc setActivationDesc(ActivationID aID,
-                                            ActivationDesc aDesc)
-            throws ActivationException, UnknownObjectException,
-                   UnknownGroupException, RemoteException;
+    ActivationDesc setActivationDesc(ActivationID aID, ActivationDesc aDesc)
+            throws ActivationException, UnknownObjectException, UnknownGroupException,
+            RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationID registerObject(ActivationDesc aDesc)
+    ActivationID registerObject(ActivationDesc aDesc) throws ActivationException,
+            UnknownGroupException, RemoteException;
+
+    ActivationGroupID registerGroup(ActivationGroupDesc gDesc) throws ActivationException,
+            RemoteException;
+
+    ActivationGroupDesc getActivationGroupDesc(ActivationGroupID gID)
             throws ActivationException, UnknownGroupException, RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationGroupID registerGroup(ActivationGroupDesc gDesc)
-            throws ActivationException, RemoteException;
+    ActivationDesc getActivationDesc(ActivationID aID) throws ActivationException,
+            UnknownObjectException, RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationGroupDesc getActivationGroupDesc(ActivationGroupID gID)
-            throws ActivationException, UnknownGroupException, RemoteException;
+    void unregisterObject(ActivationID aID) throws ActivationException, UnknownObjectException,
+            RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ActivationDesc getActivationDesc(ActivationID aID)
-            throws ActivationException, UnknownObjectException, RemoteException;
+    void unregisterGroup(ActivationGroupID gID) throws ActivationException,
+            UnknownGroupException, RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void unregisterObject(ActivationID aID)
-            throws ActivationException, UnknownObjectException, RemoteException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void unregisterGroup(ActivationGroupID gID)
-            throws ActivationException, UnknownGroupException, RemoteException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void shutdown() throws RemoteException;
+    void shutdown() throws RemoteException;
 }

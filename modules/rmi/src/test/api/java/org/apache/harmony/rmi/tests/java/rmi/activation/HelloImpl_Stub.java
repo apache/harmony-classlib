@@ -8,11 +8,11 @@
  * DO NOT EDIT!!!
  * Contents subject to change without notice!
  */
-package org.apache.harmony.rmi.activation;
+package org.apache.harmony.rmi.tests.java.rmi.activation;
 
 
 public final class HelloImpl_Stub extends java.rmi.server.RemoteStub
-        implements org.apache.harmony.rmi.activation.HelloI, java.rmi.Remote {
+        implements org.apache.harmony.rmi.tests.java.rmi.activation.HelloI, java.rmi.Remote {
 
     private static final long serialVersionUID = 2;
 
@@ -20,10 +20,10 @@ public final class HelloImpl_Stub extends java.rmi.server.RemoteStub
 
     static {
         try {
-            $method_get_0 = org.apache.harmony.rmi.activation.HelloI.class.getMethod("get", new java.lang.Class[] {});
+            $method_get_0 = org.apache.harmony.rmi.tests.java.rmi.activation.HelloI.class.getMethod("get", new java.lang.Class[] {});
         } catch (java.lang.NoSuchMethodException e) {
             throw new java.lang.NoSuchMethodError(
-                    "Stub class initialization failed: org.apache.harmony.rmi.activation.HelloImpl_Stub");
+                    "Stub class initialization failed: org.apache.harmony.rmi.tests.java.rmi.activation.HelloImpl_Stub");
         }
     }
 

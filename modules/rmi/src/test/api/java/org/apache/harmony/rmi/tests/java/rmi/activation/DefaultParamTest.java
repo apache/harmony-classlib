@@ -16,11 +16,7 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.5 $
- */
-package org.apache.harmony.rmi.activation;
+package org.apache.harmony.rmi.tests.java.rmi.activation;
 
 import java.rmi.MarshalledObject;
 import java.rmi.Remote;
@@ -40,19 +36,13 @@ import org.apache.harmony.rmi.common.SubProcess;
 
 import junit.framework.TestCase;
 
-
-/**
- * DefaultParamTest
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.5 $
- */
 public class DefaultParamTest extends TestCase {
 
-    SubProcess rmid;
+    private SubProcess rmid;
 
-    SubProcess rmiregistry;
+    private SubProcess rmiregistry;
 
+    @Override
     public void setUp() {
         try {
             rmid = JavaInvoker.invokeSimilar((String[]) null, "org.apache.harmony.rmi.activation.Rmid", (String[]) null, true, true);
@@ -73,6 +63,7 @@ public class DefaultParamTest extends TestCase {
         }
     }
 
+    @Override
     public void tearDown() {
         rmid.destroy();
         rmiregistry.destroy();
@@ -97,7 +88,7 @@ public class DefaultParamTest extends TestCase {
             MarshalledObject data = new MarshalledObject("HelloImpl");
             System.out.println("MarshalledObject data = " + data);
 
-            ActivationDesc desc = new ActivationDesc(groupID, "org.apache.harmony.rmi.activation.HelloImpl", "", null);
+            ActivationDesc desc = new ActivationDesc(groupID, "org.apache.harmony.rmi.tests.java.rmi.activation.HelloImpl", "", null);
             System.out.println("Registering ActivationDesc:");
             Remote stub = Activatable.register(desc);
             System.out.println("Activation descriptor registered: " + stub);

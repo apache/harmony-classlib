@@ -16,60 +16,41 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.7.4.2 $
- */
 package java.rmi.activation;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.7.4.2 $
- */
 public class ActivationException extends Exception {
-
     private static final long serialVersionUID = -4320118837291406071l;
 
     public Throwable detail;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationException(String message, Throwable detail) {
-        super(message);
+        // pass null for cause to ensure initCause can't be used
+        super(message, null);
         this.detail = detail;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationException(String message) {
-        super(message);
+        // pass null for cause to ensure initCause can't be used
+        super(message, null);
         this.detail = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationException() {
-        super();
+        // pass null for cause to ensure initCause can't be used
+        super(null, null);
         this.detail = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public Throwable getCause() {
         return detail;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String getMessage() {
-        return super.getMessage() + "[detail throwable = " + detail + "] "; //$NON-NLS-1$ //$NON-NLS-2$
+        if (detail != null) {
+            return super.getMessage() + "[detail throwable = " + detail + "] "; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return super.getMessage();
     }
 }

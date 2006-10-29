@@ -16,13 +16,21 @@
  * limitations under the License.
  */
 
-package java.rmi.activation;
-
-import java.rmi.MarshalledObject;
-import java.rmi.Remote;
+package org.apache.harmony.rmi.tests.java.rmi.activation;
 import java.rmi.RemoteException;
+import java.rmi.MarshalledObject;
+import java.rmi.activation.Activatable;
+import java.rmi.activation.ActivationID;
 
-public interface ActivationInstantiator extends Remote {
-    MarshalledObject newInstance(ActivationID id, ActivationDesc desc)
-            throws ActivationException, RemoteException;
+public class HelloImpl extends Activatable implements HelloI {
+
+    private static final long serialVersionUID = 7607383862878908241L;
+
+    public HelloImpl(ActivationID id, MarshalledObject data) throws RemoteException {
+        super(id, 0);
+    }
+
+    public String get() throws RemoteException {
+        return "Hello World!";
+    }
 }

@@ -20,26 +20,22 @@
  * @author  Victor A. Martynov
  * @version $Revision: 1.1.2.2 $
  */
-package org.apache.harmony.rmi.activation;
+package org.apache.harmony.rmi.tests.java.rmi.activation;
+
+import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.MarshalledObject;
-import java.rmi.activation.Activatable;
-import java.rmi.activation.ActivationID;
 
 
 /**
- * HelloI interface implementation.
+ * The RMI Hello World application interface.
  *
  * @author  Victor A. Martynov
  * @version $Revision: 1.1.2.2 $
  */
-public class HelloImpl extends Activatable implements HelloI {
+public interface HelloI extends Remote {
 
-    public HelloImpl(ActivationID id, MarshalledObject data) throws RemoteException {
-        super(id, 0);
-    }
-
-    public String get() throws RemoteException {
-        return "Hello World!";
-    }
+    /**
+     * get() method returns java.lang.String object that should contain "Hello World!".
+     */
+    public String get() throws RemoteException;
 }

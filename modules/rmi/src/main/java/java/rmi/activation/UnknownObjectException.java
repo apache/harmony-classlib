@@ -16,26 +16,11 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.7.4.3 $
- */
 package java.rmi.activation;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.7.4.3 $
- */
 public class UnknownObjectException extends ActivationException {
-
     private static final long serialVersionUID = 3425547551622251430L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public UnknownObjectException(String message) {
         super(message);
     }

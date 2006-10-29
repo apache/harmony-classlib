@@ -16,40 +16,18 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.5.4.2 $
- */
 package java.rmi.activation;
 
 import java.rmi.MarshalledObject;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.5.4.2 $
- */
 public interface ActivationMonitor extends Remote {
+    void activeObject(ActivationID id, MarshalledObject data) throws UnknownObjectException,
+            RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void activeObject(ActivationID a0, MarshalledObject a1)
-            throws UnknownObjectException, RemoteException;
+    void inactiveObject(ActivationID id) throws UnknownObjectException, RemoteException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void inactiveObject(ActivationID a0)
-            throws UnknownObjectException, RemoteException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void inactiveGroup(ActivationGroupID a0, long a1)
+    void inactiveGroup(ActivationGroupID groupId, long incarnation)
             throws UnknownGroupException, RemoteException;
 }

@@ -137,8 +137,8 @@
                         <include name="**/*Test.java"/>
                         <exclude name="org/apache/harmony/rmi/ConnectionTest.java" />
                         <exclude name="org/apache/harmony/rmi/DGCTest.java" />
-                        <exclude name="org/apache/harmony/rmi/activation/DefaultParamTest.java" />
-                        <exclude name="org/apache/harmony/rmi/activation/StartupShutdownTest.java" />
+                        <exclude name="org/apache/harmony/rmi/tests/java/rmi/activation/DefaultParamTest.java" />
+                        <exclude name="org/apache/harmony/rmi/tests/java/rmi/activation/StartupShutdownTest.java" />
                     </fileset>
                 </batchtest>
 

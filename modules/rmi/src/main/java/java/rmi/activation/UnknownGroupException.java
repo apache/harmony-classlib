@@ -16,26 +16,11 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.4.3 $
- */
 package java.rmi.activation;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.4.3 $
- */
 public class UnknownGroupException extends ActivationException {
-
     private static final long serialVersionUID = 7056094974750002460L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public UnknownGroupException(String message) {
         super(message);
     }

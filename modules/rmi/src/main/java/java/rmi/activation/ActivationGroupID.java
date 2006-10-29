@@ -16,68 +16,43 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.8.2.2 $
- */
 package java.rmi.activation;
 
 import java.io.Serializable;
 import java.rmi.server.UID;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.8.2.2 $
- */
 public class ActivationGroupID implements Serializable {
-
     private static final long serialVersionUID = -1648432278909740833L;
 
-    private UID uid;
+    private final UID uid;
 
-    private ActivationSystem system;
+    private final ActivationSystem system;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationGroupID(ActivationSystem system) {
+        super();
         this.system = system;
         uid = new UID();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ActivationGroupID) {
             ActivationGroupID id = (ActivationGroupID) obj;
             return (uid.equals(id.uid) && system.equals(id.system));
-        } else {
-            return false;
         }
+        return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ActivationSystem getSystem() {
         return system;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return uid.hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-
-     */
+    @Override
     public String toString() {
         return "ActivationGroupID[" + uid + "; " + system + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

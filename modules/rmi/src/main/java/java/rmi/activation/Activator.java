@@ -16,28 +16,13 @@
  * limitations under the License.
  */
 
-/**
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.4.2 $
- */
 package java.rmi.activation;
 
 import java.rmi.MarshalledObject;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Victor A. Martynov
- * @version $Revision: 1.6.4.2 $
- */
 public interface Activator extends Remote {
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public MarshalledObject activate(ActivationID id, boolean force)
-            throws ActivationException, UnknownObjectException, RemoteException;
+    MarshalledObject activate(ActivationID id, boolean force) throws ActivationException,
+            UnknownObjectException, RemoteException;
 }
