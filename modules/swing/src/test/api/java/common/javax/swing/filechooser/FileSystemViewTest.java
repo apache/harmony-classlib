@@ -57,11 +57,11 @@ public class FileSystemViewTest extends SwingTestCase {
     public void testIsRoot() throws Exception {
         assertFalse(view.isRoot(file));
         if (SystemUtils.getOS() == SystemUtils.OS_WINDOWS) {
-            assertTrue(view.getRoots().length == 1);
-            assertTrue(view.getRoots()[0].getName().equals("Desktop"));
+            assertEquals(1, view.getRoots().length);
+            assertNotEmpty(view.getRoots()[0].getName());
         } else if (SystemUtils.getOS() == SystemUtils.OS_LINUX) {
-            assertTrue(view.getRoots().length == 1);
-            assertTrue(view.getRoots()[0].getPath().equals("/"));
+            assertEquals(1, view.getRoots().length);
+            assertEquals("/", view.getRoots()[0].getPath());
         }
     }
 
@@ -88,15 +88,11 @@ public class FileSystemViewTest extends SwingTestCase {
 
     public void testGetSystemTypeDescription() throws Exception {
         file.createNewFile();
-        assertEquals("File", view.getSystemTypeDescription(file));
+        assertNotEmpty(view.getSystemTypeDescription(file));
 
         file.delete();
         file.mkdir();
-        if (SystemUtils.getOS() == SystemUtils.OS_WINDOWS) {
-            assertEquals("File Folder", view.getSystemTypeDescription(file));
-        } else {
-            assertEquals("Folder", view.getSystemTypeDescription(file));
-        }
+        assertNotEmpty(view.getSystemTypeDescription(file));
     }
 
     public void testGetRoot() throws Exception {
@@ -146,5 +142,10 @@ public class FileSystemViewTest extends SwingTestCase {
             f.delete();
             dir.delete();
         }
+    }
+
+    private static void assertNotEmpty(final String name) {
+        assertNotNull(name);
+        assertTrue("name is empty", name.length() > 0);
     }
 }
