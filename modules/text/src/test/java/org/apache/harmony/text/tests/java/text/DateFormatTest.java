@@ -19,6 +19,7 @@ package org.apache.harmony.text.tests.java.text;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -444,5 +445,18 @@ public class DateFormatTest extends junit.framework.TestCase {
 		NumberFormat f1 = NumberFormat.getInstance();
 		format.setNumberFormat(f1);
 		assertTrue("Not identical NumberFormat", f1 == format.getNumberFormat());
+	}
+	
+	/**
+	 * @tests java.text.DateFormat#parse(String)
+	 */
+	public void test_parse_LString() {
+		DateFormat format = DateFormat.getInstance();
+		try {
+			format.parse("not a Date");
+			fail("should throw ParseException first");
+		} catch (ParseException e) {
+			assertNotNull(e.getMessage());
+		}
 	}
 }

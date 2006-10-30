@@ -506,7 +506,9 @@ public abstract class DateFormat extends Format {
         ParsePosition position = new ParsePosition(0);
         Date date = parse(string, position);
         if (position.getErrorIndex() != -1 || position.getIndex() == 0) {
-            throw new ParseException(null, position.getErrorIndex());
+            // text.19=Unparseable date: {0}
+            throw new ParseException(
+                    Messages.getString("text.19", string), position.getErrorIndex()); //$NON-NLS-1$
         }
         return date;
     }
