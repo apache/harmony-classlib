@@ -14,29 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print;
 
-
 public class PrintException extends Exception {
+    private static final long serialVersionUID = -5932531546705242471L;
 
     public PrintException() {
         super();
     }
 
-    public PrintException(String string) {
-        super(string);
+    public PrintException(String message) {
+        super(message);
     }
 
-    public PrintException(Exception exception) {
-        super(exception);
+    public PrintException(Exception cause) {
+        super((cause != null ? cause.toString() : null), cause);
     }
 
-    public PrintException(String string, Exception exception) {
-        super(string, exception);
+    public PrintException(String message, Exception cause) {
+        super(message, cause);
     }
 }
