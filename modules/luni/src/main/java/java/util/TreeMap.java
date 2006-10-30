@@ -385,9 +385,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                 if (hasStart) {
                     Comparator<? super K> cmp = backingMap.comparator;
                     if (cmp == null) {
-                        return (toComparable(key).compareTo(endKey) >= 0);
+                        return (toComparable(key).compareTo(startKey) >= 0);
                     }
-                    return (cmp.compare(key, endKey) >= 0);
+                    return (cmp.compare(key, startKey) >= 0);
                 }
                 return true;
             }
