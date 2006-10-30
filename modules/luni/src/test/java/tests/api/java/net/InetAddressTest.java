@@ -517,6 +517,9 @@ public class InetAddressTest extends junit.framework.TestCase {
             if (permission.getName().equals("setSecurityManager")){
                 return;
             }
+            if (permission.getName().equals("3d.com")){
+                throw new SecurityException();
+            }
             super.checkPermission(permission);
         }
     }

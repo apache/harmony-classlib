@@ -17,37 +17,63 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import java.io.File;
 import java.security.AccessController;
 import java.security.AllPermission;
 import java.security.PrivilegedAction;
+
+import tests.support.Support_Exec;
 
 public class AccessController2Test extends junit.framework.TestCase {
 
 	/**
 	 * @tests java.security.AccessController#doPrivileged(java.security.PrivilegedAction)
 	 */
-	public void test_doPrivilegedLjava_security_PrivilegedAction() {
-		// Test for method java.lang.Object
-		// java.security.AccessController.doPrivileged(java.security.PrivilegedAction)
+	public void test_doPrivilegedLjava_security_PrivilegedAction() throws Exception {
 
-		// Pass fail flag...
-		Boolean pass;
+         // tmp user home to avoid presence of ${user.home}/.java.policy
+        String tmpUserHome = System.getProperty("java.io.tmpdir")
+                + File.separatorChar + "tmpUserHomeForAccessController2Test";
+        File dir = new File(tmpUserHome);
+        if (!dir.exists()) {
+            dir.mkdirs();
+            dir.deleteOnExit();
+        }
+        String javaPolycy = tmpUserHome + File.separatorChar
+                + ".java.policy";
+        assertFalse("There should be no java policy file: " + javaPolycy,
+                new File(javaPolycy).exists());
 
-		// First test 1 argument version (TBD).
+        String[] arg = new String[] { "-Duser.home=" + tmpUserHome,
+                doPrivilegedLjava_security_PrivilegedActionTesting.class.getName() };
 
-		// Then test 2 argument version. 
-		pass = (Boolean) AccessController.doPrivileged(new PrivilegedAction() {
-			public Object run() {
-				try {
-					AccessController.checkPermission(new AllPermission());
-					return new Boolean(false);
-				} catch (SecurityException ex) {
-					return new Boolean(true);
-				}
-			}
-		}, null);
-		assertTrue("Got AllPermission by passing in a null PD", pass
-				.booleanValue());
+        Support_Exec.execJava(arg, null, true);
+    }
+        
+    public static class doPrivilegedLjava_security_PrivilegedActionTesting {
+        public static void main(String[] args) {
 
-	}
+            // Pass fail flag...
+            Boolean pass;
+
+            // First test 1 argument version (TBD).
+
+            // Then test 2 argument version.
+            pass = (Boolean) AccessController.doPrivileged(
+                    new PrivilegedAction() {
+                        public Object run() {
+                            try {
+                                AccessController
+                                        .checkPermission(new AllPermission());
+                                return new Boolean(false);
+                            } catch (SecurityException ex) {
+                                return new Boolean(true);
+                            }
+                        }
+                    }, null);
+            assertTrue("Got AllPermission by passing in a null PD", pass
+                    .booleanValue());
+
+        }
+    }
 }

@@ -49,9 +49,13 @@ public class Policy2Test extends junit.framework.TestCase {
 
         SecurityManager sm = new SecurityManager() {
             public void checkPermission(Permission p) {
-                if( p == null || !"setSecurityManager".equals(p.getName()) ) {
-                    super.checkPermission(p);   
+                if ("setSecurityManager".equals(p.getName())) {
+                    return;
                 }
+                if ("getPolicy".equals(p.getName())) {
+                    throw new AccessControlException("getPolicy");
+                }
+                super.checkPermission(p);
             }
         };
         

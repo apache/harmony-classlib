@@ -25,6 +25,8 @@ class MutableSecurityManager extends SecurityManager {
     static final RuntimePermission SET_SECURITY_MANAGER = new RuntimePermission("setSecurityManager");
     
     private final Set<Permission> permissions;
+    
+    private String deny;
 
     public MutableSecurityManager() {
         super();
@@ -49,11 +51,18 @@ class MutableSecurityManager extends SecurityManager {
     void clearPermissions() {
         permissions.clear();
     }
+    
+    void denyPermission(String name) {
+        deny = name;
+    }
 
     @Override
     public void checkPermission(Permission permission) {
         if (permissions.contains(permission)) {
             return;
+        }
+        if (permission.getName().equals(deny)){
+            throw new SecurityException();
         }
         super.checkPermission(permission);
     }

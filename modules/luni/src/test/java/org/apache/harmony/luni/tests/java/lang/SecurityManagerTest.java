@@ -16,6 +16,10 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.io.File;
+
+import tests.support.Support_Exec;
+
 import junit.framework.TestCase;
 
 public class SecurityManagerTest extends TestCase {
@@ -26,6 +30,7 @@ public class SecurityManagerTest extends TestCase {
     public void test_checkMemberAccessLjava_lang_ClassI() {
         MutableSecurityManager sm = new MutableSecurityManager();
         sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+        sm.denyPermission("accessDeclaredMembers");
         System.setSecurityManager(sm);
         try {
             try {
@@ -48,19 +53,42 @@ public class SecurityManagerTest extends TestCase {
     /**
      * @tests java.lang.SecurityManager#checkPermission(java.security.Permission)
      */
-    public void test_checkPermissionLjava_security_Permission() {
-        MutableSecurityManager sm = new MutableSecurityManager();
-        sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
-        System.setSecurityManager(sm);
-        try {
+    public void test_checkPermissionLjava_security_Permission()
+            throws Exception {
+
+        // tmp user home to avoid presence of ${user.home}/.java.policy
+        String tmpUserHome = System.getProperty("java.io.tmpdir")
+                + File.separatorChar + "tmpUserHomeForSecurityManagerTest";
+        File dir = new File(tmpUserHome);
+        if (!dir.exists()) {
+            dir.mkdirs();
+            dir.deleteOnExit();
+        }
+        String javaPolycy = tmpUserHome + File.separatorChar + ".java.policy";
+        assertFalse("There should be no java policy file: " + javaPolycy,
+                new File(javaPolycy).exists());
+
+        String[] arg = new String[] { "-Duser.home=" + tmpUserHome,
+                checkPermissionLjava_security_PermissionTesting.class.getName() };
+
+        Support_Exec.execJava(arg, null, true);
+    }
+
+    private static class checkPermissionLjava_security_PermissionTesting {
+        public static void main(String[] args) {
+            MutableSecurityManager sm = new MutableSecurityManager();
+            sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+            System.setSecurityManager(sm);
             try {
-                System.getSecurityManager().checkPermission(
-                        new RuntimePermission("createClassLoader"));
-                fail("This should throw a SecurityException");
-            } catch (SecurityException e) {
+                try {
+                    System.getSecurityManager().checkPermission(
+                            new RuntimePermission("createClassLoader"));
+                    fail("This should throw a SecurityException");
+                } catch (SecurityException e) {
+                }
+            } finally {
+                System.setSecurityManager(null);
             }
-        } finally {
-            System.setSecurityManager(null);
         }
     }
 
