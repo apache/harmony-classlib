@@ -31,13 +31,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 /*
  *  auxilary class FactoryLocator 
  *  for abstract class javax.print.StreamPrintServiceFactory
  */
 public class FactoryLocator {    
-    ArrayList factoryClasses; /* List of accessible Factories */  
+    List factoryClasses; /* List of accessible Factories */  
              
     /*
      * Constructor for FactoryLocator
@@ -47,7 +48,7 @@ public class FactoryLocator {
         factoryClasses = new ArrayList();
     }
     
-    public ArrayList getFactoryClasses(){
+    public List getFactoryClasses(){
         return  factoryClasses;
     }
     

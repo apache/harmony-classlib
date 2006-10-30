@@ -49,7 +49,7 @@ public class DocFlavor implements Serializable, Cloneable {
     // Document media type (as defined in RFC 2045,2046, 822)
     private transient MimeType aType;
 
-    private String aClass; // Representation class name
+    private final String aClass; // Representation class name
 
     public DocFlavor(String mimeType, String className) {
         if ((mimeType == null) || (className == null)) {

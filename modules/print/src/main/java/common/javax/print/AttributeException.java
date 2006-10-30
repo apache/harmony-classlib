@@ -14,19 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print;
 
 import javax.print.attribute.Attribute;
 
 public interface AttributeException {
-
     Class[] getUnsupportedAttributes();
 
     Attribute[] getUnsupportedValues();
-
 }

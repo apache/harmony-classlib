@@ -14,18 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
 import javax.print.attribute.PrintRequestAttributeSet;
 
 public interface MultiDocPrintJob extends DocPrintJob {
-
-    void print(MultiDoc multiDoc, PrintRequestAttributeSet attributes)
-            throws PrintException;
-
+    void print(MultiDoc multiDoc, PrintRequestAttributeSet attributes) throws PrintException;
 }

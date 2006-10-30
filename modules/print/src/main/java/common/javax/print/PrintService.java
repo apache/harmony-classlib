@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
@@ -28,7 +24,6 @@ import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.event.PrintServiceAttributeListener;
 
 public interface PrintService {
-    
     void addPrintServiceAttributeListener(PrintServiceAttributeListener listener);
 
     DocPrintJob createPrintJob();
@@ -52,19 +47,16 @@ public interface PrintService {
 
     DocFlavor[] getSupportedDocFlavors();
 
-   AttributeSet getUnsupportedAttributes(DocFlavor flavor,
-            AttributeSet attributes);
+    AttributeSet getUnsupportedAttributes(DocFlavor flavor, AttributeSet attributes);
 
     int hashCode();
 
     boolean isAttributeCategorySupported(Class<? extends Attribute> category);
 
-    boolean isAttributeValueSupported(Attribute attrval, DocFlavor flavor, 
+    boolean isAttributeValueSupported(Attribute attrval, DocFlavor flavor,
             AttributeSet attributes);
 
     boolean isDocFlavorSupported(DocFlavor flavor);
 
-    void removePrintServiceAttributeListener(
-            PrintServiceAttributeListener listener);
-
+    void removePrintServiceAttributeListener(PrintServiceAttributeListener listener);
 }

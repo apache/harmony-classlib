@@ -14,21 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-
 import javax.print.attribute.DocAttributeSet;
 
 public interface Doc {
-    
     DocAttributeSet getAttributes();
 
     DocFlavor getDocFlavor();
@@ -38,5 +32,4 @@ public interface Doc {
     Reader getReaderForText() throws IOException;
 
     InputStream getStreamForBytes() throws IOException;
-
 }

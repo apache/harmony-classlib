@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
@@ -27,37 +23,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-
 import javax.print.attribute.DocAttributeSet;
 
 public final class SimpleDoc implements Doc {
-    
-    Object printdata;
-    DocFlavor flavor;
-    DocAttributeSet attributes;
-    Reader reader;
-    InputStream instream;
+    private Object printdata;
 
-    public SimpleDoc(Object printData, DocFlavor docflavor,
-            DocAttributeSet docattributes) {
-        // IllegalArgumentException - if flavor or printData is null, or the
-        // printData does not correspond to the specified doc flavor--for
-        // example, the data is not of the type specified as the representation
-        // in the DocFlavor.
+    private DocFlavor flavor;
+
+    private DocAttributeSet attributes;
+
+    private Reader reader;
+
+    private InputStream instream;
+
+    public SimpleDoc(Object printData, DocFlavor docflavor, DocAttributeSet docattributes) {
+        /*
+         * IllegalArgumentException - if flavor or printData is null, or the
+         * printData does not correspond to the specified doc flavor--for
+         * example, the data is not of the type specified as the representation
+         * in the DocFlavor.
+         */
         if (docflavor == null || printData == null) {
             throw new IllegalArgumentException("Argument is null");
         }
         try {
-            Class claz = null;
-            claz = Class.forName(docflavor.getRepresentationClassName());
-
-            if (!claz.isInstance(printData)) {
+            Class<?> clazz = Class.forName(docflavor.getRepresentationClassName());
+            if (!clazz.isInstance(printData)) {
                 throw new IllegalArgumentException("");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("Wrong type of print data");
         }
-
         this.printdata = printData;
         this.flavor = docflavor;
         this.attributes = docattributes;
@@ -82,7 +78,6 @@ public final class SimpleDoc implements Doc {
             if (reader != null) {
                 return reader;
             }
-
             if (printdata instanceof Reader) {
                 reader = (Reader) printdata;
             } else if (printdata instanceof char[]) {
@@ -99,7 +94,6 @@ public final class SimpleDoc implements Doc {
             if (instream != null) {
                 return instream;
             }
-
             if (printdata instanceof InputStream) {
                 instream = (InputStream) printdata;
             } else if (printdata instanceof byte[]) {

@@ -14,18 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
+
 package javax.print;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.io.IOException;
-import javax.print.DocFlavor;
-import javax.print.StreamPrintService;
-
+import java.util.List;
 import org.apache.harmony.x.print.PSStreamPrintServiceFactory;
 import org.apache.harmony.x.print.util.FactoryLocator;
 
@@ -33,7 +28,7 @@ import org.apache.harmony.x.print.util.FactoryLocator;
 public abstract class StreamPrintServiceFactory {
 
     //  static part of the class
-    private static ArrayList listOfSPSFactories = new ArrayList();      
+    private static List listOfSPSFactories = new ArrayList();      
        
     
     public static StreamPrintServiceFactory[] 
@@ -41,7 +36,7 @@ public abstract class StreamPrintServiceFactory {
                     DocFlavor flavor, String outputMimeType) {
         
         int l;
-        ArrayList selectedSPSFactories = new ArrayList();
+        ArrayList<StreamPrintServiceFactory> selectedSPSFactories = new ArrayList<StreamPrintServiceFactory>();
         StreamPrintServiceFactory factory;        
         StreamPrintServiceFactory[] a = {}; 
         
@@ -49,7 +44,7 @@ public abstract class StreamPrintServiceFactory {
         try {
             fl.lookupAllFactories();
         } catch (IOException io) {            
-            return (StreamPrintServiceFactory[]) selectedSPSFactories.toArray(a);            
+            return selectedSPSFactories.toArray(a);            
         }
         listOfSPSFactories = fl.getFactoryClasses();
 
@@ -71,7 +66,7 @@ public abstract class StreamPrintServiceFactory {
                    selectedSPSFactories.add(factory);
                }
         }
-        return (StreamPrintServiceFactory[]) selectedSPSFactories.toArray(a);
+        return selectedSPSFactories.toArray(a);
     }
     
     /*

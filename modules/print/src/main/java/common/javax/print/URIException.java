@@ -14,26 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
 import java.net.URI;
 
-
 public interface URIException {
+    int URIInaccessible = 1;
 
-    static final int URIInaccessible = 1;
+    int URISchemeNotSupported = 2;
 
-    static final int URISchemeNotSupported = 2;
-
-    static final int URIOtherProblem = -1;
+    int URIOtherProblem = -1;
 
     int getReason();
 
     URI getUnsupportedURI();
-
 }

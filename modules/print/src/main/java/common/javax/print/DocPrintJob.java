@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print;
 
@@ -28,7 +24,6 @@ import javax.print.event.PrintJobListener;
 import javax.print.PrintException;
 
 public interface DocPrintJob {
-
     PrintService getPrintService();
 
     PrintJobAttributeSet getAttributes();
@@ -37,12 +32,10 @@ public interface DocPrintJob {
 
     void removePrintJobListener(PrintJobListener listener);
 
-    void addPrintJobAttributeListener(PrintJobAttributeListener listener, 
+    void addPrintJobAttributeListener(PrintJobAttributeListener listener,
             PrintJobAttributeSet attributes);
 
     void removePrintJobAttributeListener(PrintJobAttributeListener listener);
 
-    void print(Doc doc, PrintRequestAttributeSet attributes) 
-            throws PrintException;
-
+    void print(Doc doc, PrintRequestAttributeSet attributes) throws PrintException;
 }

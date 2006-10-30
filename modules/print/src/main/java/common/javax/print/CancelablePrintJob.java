@@ -14,15 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
 public interface CancelablePrintJob extends DocPrintJob {
-    
     void cancel() throws PrintException;
-    
 }

@@ -14,43 +14,39 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-public abstract class StreamPrintService implements PrintService {  
-    private OutputStream outputStream;
-    private boolean disposed ;
-    
-    protected StreamPrintService(OutputStream out){
+public abstract class StreamPrintService implements PrintService {
+    private final OutputStream outputStream;
+
+    private boolean disposed;
+
+    protected StreamPrintService(OutputStream out) {
+        super();
         outputStream = out;
         disposed = false;
-    }  
-    
-    public abstract String getOutputFormat();     
-    
-    public OutputStream getOutputStream(){
+    }
+
+    public abstract String getOutputFormat();
+
+    public OutputStream getOutputStream() {
         return outputStream;
     }
-    
-    public void dispose() {     
+
+    public void dispose() {
         try {
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();            
+            e.printStackTrace();
         }
         disposed = true;
     }
-    
+
     public boolean isDisposed() {
         return disposed;
     }
 }
-
-
