@@ -33,8 +33,16 @@ public abstract class PersistenceDelegate {
                     .getSuperclass());
 
             if (pd != null) {
-                pd.initialize(type, oldInstance, newInstance, out);
+                try {
+                    pd.initialize(type, oldInstance, newInstance, out);
+                } catch (StackOverflowError err) {
+                    // circular redundancy
+                    // we should catch in order to be compatilbe with RI
+                }
             }
+        } else {
+            throw new NullPointerException(
+                    Messages.getString("beans.4C")); //$NON-NLS-1$
         }
     }
 
