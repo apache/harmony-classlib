@@ -56,13 +56,13 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
-                <include name="jvmti.h" />
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/shared">
                 <include name="jni.h" />
                 <include name="jniport.h" />
+                <include name="jvmti.h" />
             </fileset>
         </copy>
 
@@ -188,13 +188,13 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
-                <include name="jvmti.h" />
             </fileset>
         </delete>
         <delete failonerror="false">
             <fileset dir="${hy.jdk}/include">
                 <include name="jni.h" />
                 <include name="jniport.h" />
+                <include name="jvmti.h" />
             </fileset>
         </delete>
     </target>
