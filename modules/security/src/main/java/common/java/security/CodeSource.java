@@ -177,14 +177,12 @@ public class CodeSource implements Serializable {
     }
 
     public final CodeSigner[] getCodeSigners() {
-
         if (signers != null) {
             CodeSigner[] tmp = new CodeSigner[signers.length];
             System.arraycopy(signers, 0, tmp, 0, tmp.length);
             return tmp;
         }
-
-        if (factory != null) {
+        if(certs == null || factory != null){
             // factory != null means we've done this exercise already.
             return null;
         }

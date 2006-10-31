@@ -93,7 +93,11 @@ public class IdentityScopeTest extends TestCase {
      * just call IdentityScope.getSystemScope()
      */
     public final void testGetSystemScope() {
-        assertNotNull(IdentityScope.getSystemScope());
+        String name = Security.getProperty("system.scope");
+        assertNotNull(name);
+        IdentityScope scope = IdentityScope.getSystemScope(); 
+        assertNotNull(scope);
+        assertEquals(name, scope.getClass().getName());
     }
 
     /**
@@ -103,7 +107,9 @@ public class IdentityScopeTest extends TestCase {
      */
     
     public final void testSetSystemScope() {
+//      default implementation is specified by security property system.scope
         IdentityScope systemScope = IdentityScope.getSystemScope();
+        
         try {
             // all permissions are granted - sm is not installed
             is = new IdentityScopeStub("Aleksei Semenov");
@@ -133,6 +139,7 @@ public class IdentityScopeTest extends TestCase {
             IdentityScopeStub.mySetSystemScope(systemScope);
         }
     }
+    
 
     /**
      * Class under test for Identity getIdentity(Principal)

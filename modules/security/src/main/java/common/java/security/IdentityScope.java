@@ -67,9 +67,24 @@ public abstract class IdentityScope extends Identity {
      * @com.intel.drl.spec_ref 
      */
     public static IdentityScope getSystemScope() {
-
+        /* 
+         * Test shows that the implementation class name is read from security property
+         * "system.scope", and the class is only loaded from boot classpath. No default
+         * implementation as fallback, i.e., return null if fails to init an instance. 
+         */
         if (systemScope == null) {
-            systemScope = new SystemScope("System Scope"); //$NON-NLS-1$
+            String className = AccessController.doPrivileged(new PrivilegedAction<String>(){
+                public String run() {
+                    return Security.getProperty("system.scope"); //$NON-NLS-1$
+                }
+            });
+            if(className != null){
+                try {
+                    systemScope = (IdentityScope) Class.forName(className).newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return systemScope;
     }

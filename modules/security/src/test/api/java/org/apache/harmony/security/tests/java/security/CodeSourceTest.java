@@ -340,6 +340,10 @@ public class CodeSourceTest extends TestCase {
             assertTrue(found);
         }
     }
+    
+    public void testGetCoderSignersNull() throws Exception{
+        assertNull(new CodeSource(new URL("http://url"), (Certificate[])null).getCodeSigners()); //$NON-NLS-1$
+    }
 
     /**
      * Tests CodeSource.getLocation()
