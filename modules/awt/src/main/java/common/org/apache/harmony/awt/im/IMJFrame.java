@@ -33,7 +33,7 @@ public class IMJFrame extends JFrame {
     }
     
     IMJFrame() {
-        this("Input Window", null);
+        this("Input Window", null); //$NON-NLS-1$
     }
     
     @Override

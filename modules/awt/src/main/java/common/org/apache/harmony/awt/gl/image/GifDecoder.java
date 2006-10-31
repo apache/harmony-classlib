@@ -38,7 +38,7 @@ public class GifDecoder extends ImageDecoder {
     private static native void initIDs();
 
     static {
-        System.loadLibrary("gl");
+        System.loadLibrary("gl"); //$NON-NLS-1$
         initIDs();
     }
 
@@ -298,12 +298,12 @@ public class GifDecoder extends ImageDecoder {
     }
 
     void setComment(String newComment) {
-        Object currComment = properties.get("comment");
+        Object currComment = properties.get("comment"); //$NON-NLS-1$
 
         if (currComment == null) {
-            properties.put("comment", newComment);
+            properties.put("comment", newComment); //$NON-NLS-1$
         } else {
-            properties.put("comment", (String) currComment + "\n" + newComment);
+            properties.put("comment", (String) currComment + "\n" + newComment); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         setProperties(properties);

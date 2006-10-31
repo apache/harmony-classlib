@@ -25,111 +25,111 @@ package org.apache.harmony.awt.text;
  * Containts names of text actions.
  */
 public interface ActionNames {
-    String backwardAction = "caret-backward";
+    String backwardAction = "caret-backward"; //$NON-NLS-1$
 
-    String beepAction = "beep";
+    String beepAction = "beep"; //$NON-NLS-1$
 
-    String beginAction = "caret-begin";
+    String beginAction = "caret-begin"; //$NON-NLS-1$
 
-    String beginLineAction = "caret-begin-line";
+    String beginLineAction = "caret-begin-line"; //$NON-NLS-1$
 
-    String beginParagraphAction = "caret-begin-paragraph";
+    String beginParagraphAction = "caret-begin-paragraph"; //$NON-NLS-1$
 
-    String beginWordAction = "caret-begin-word";
+    String beginWordAction = "caret-begin-word"; //$NON-NLS-1$
 
-    String copyAction = "copy-to-clipboard";
+    String copyAction = "copy-to-clipboard"; //$NON-NLS-1$
 
-    String cutAction = "cut-to-clipboard";
+    String cutAction = "cut-to-clipboard"; //$NON-NLS-1$
 
-    String defaultKeyTypedAction = "default-typed";
+    String defaultKeyTypedAction = "default-typed"; //$NON-NLS-1$
 
-    String deleteNextCharAction = "delete-next";
+    String deleteNextCharAction = "delete-next"; //$NON-NLS-1$
 
-    String deletePrevCharAction = "delete-previous";
+    String deletePrevCharAction = "delete-previous"; //$NON-NLS-1$
 
-    String downAction = "caret-down";
+    String downAction = "caret-down"; //$NON-NLS-1$
 
-    String dumpModelAction = "dump-model";
+    String dumpModelAction = "dump-model"; //$NON-NLS-1$
 
-    String endAction = "caret-end";
+    String endAction = "caret-end"; //$NON-NLS-1$
 
-    String endLineAction = "caret-end-line";
+    String endLineAction = "caret-end-line"; //$NON-NLS-1$
 
-    String endParagraphAction = "caret-end-paragraph";
+    String endParagraphAction = "caret-end-paragraph"; //$NON-NLS-1$
 
-    String endWordAction = "caret-end-word";
+    String endWordAction = "caret-end-word"; //$NON-NLS-1$
 
-    String forwardAction = "caret-forward";
+    String forwardAction = "caret-forward"; //$NON-NLS-1$
 
-    String insertBreakAction = "insert-break";
+    String insertBreakAction = "insert-break"; //$NON-NLS-1$
 
-    String insertContentAction = "insert-content";
+    String insertContentAction = "insert-content"; //$NON-NLS-1$
 
-    String insertTabAction = "insert-tab";
+    String insertTabAction = "insert-tab"; //$NON-NLS-1$
 
-    String nextWordAction = "caret-next-word";
+    String nextWordAction = "caret-next-word"; //$NON-NLS-1$
 
-    String pageDownAction = "page-down";
+    String pageDownAction = "page-down"; //$NON-NLS-1$
 
-    String pageUpAction = "page-up";
+    String pageUpAction = "page-up"; //$NON-NLS-1$
 
-    String pasteAction = "paste-from-clipboard";
+    String pasteAction = "paste-from-clipboard"; //$NON-NLS-1$
 
-    String previousWordAction = "caret-previous-word";
+    String previousWordAction = "caret-previous-word"; //$NON-NLS-1$
 
-    String readOnlyAction = "set-read-only";
+    String readOnlyAction = "set-read-only"; //$NON-NLS-1$
 
-    String selectAllAction = "select-all";
+    String selectAllAction = "select-all"; //$NON-NLS-1$
 
-    String selectionBackwardAction = "selection-backward";
+    String selectionBackwardAction = "selection-backward"; //$NON-NLS-1$
 
-    String selectionBeginAction = "selection-begin";
+    String selectionBeginAction = "selection-begin"; //$NON-NLS-1$
 
-    String selectionBeginLineAction = "selection-begin-line";
+    String selectionBeginLineAction = "selection-begin-line"; //$NON-NLS-1$
 
-    String selectionBeginParagraphAction = "selection-begin-paragraph";
+    String selectionBeginParagraphAction = "selection-begin-paragraph"; //$NON-NLS-1$
 
-    String selectionBeginWordAction = "selection-begin-word";
+    String selectionBeginWordAction = "selection-begin-word"; //$NON-NLS-1$
 
-    String selectionDownAction = "selection-down";
+    String selectionDownAction = "selection-down"; //$NON-NLS-1$
 
-    String selectionEndAction = "selection-end";
+    String selectionEndAction = "selection-end"; //$NON-NLS-1$
 
-    String selectionEndLineAction = "selection-end-line";
+    String selectionEndLineAction = "selection-end-line"; //$NON-NLS-1$
 
-    String selectionEndParagraphAction = "selection-end-paragraph";
+    String selectionEndParagraphAction = "selection-end-paragraph"; //$NON-NLS-1$
 
-    String selectionEndWordAction = "selection-end-word";
+    String selectionEndWordAction = "selection-end-word"; //$NON-NLS-1$
 
-    String selectionForwardAction = "selection-forward";
+    String selectionForwardAction = "selection-forward"; //$NON-NLS-1$
 
-    String selectionNextWordAction = "selection-next-word";
+    String selectionNextWordAction = "selection-next-word"; //$NON-NLS-1$
 
-    String selectionPageDownAction = "selection-page-down";
+    String selectionPageDownAction = "selection-page-down"; //$NON-NLS-1$
 
-    String selectionPageLeftAction = "selection-page-left";
+    String selectionPageLeftAction = "selection-page-left"; //$NON-NLS-1$
 
-    String selectionPageRightAction = "selection-page-right";
+    String selectionPageRightAction = "selection-page-right"; //$NON-NLS-1$
 
-    String selectionPageUpAction = "selection-page-up";
+    String selectionPageUpAction = "selection-page-up"; //$NON-NLS-1$
 
-    String selectionPreviousWordAction = "selection-previous-word";
+    String selectionPreviousWordAction = "selection-previous-word"; //$NON-NLS-1$
 
-    String selectionUpAction = "selection-up";
+    String selectionUpAction = "selection-up"; //$NON-NLS-1$
 
-    String selectLineAction = "select-line";
+    String selectLineAction = "select-line"; //$NON-NLS-1$
 
-    String selectParagraphAction = "select-paragraph";
+    String selectParagraphAction = "select-paragraph"; //$NON-NLS-1$
 
-    String selectWordAction = "select-word";
+    String selectWordAction = "select-word"; //$NON-NLS-1$
 
-    String toggleComponentOrientationAction = "toggle-componentOrientation";
+    String toggleComponentOrientationAction = "toggle-componentOrientation"; //$NON-NLS-1$
 
-    String unselectAction = "unselect";
+    String unselectAction = "unselect"; //$NON-NLS-1$
 
-    String upAction = "caret-up";
+    String upAction = "caret-up"; //$NON-NLS-1$
 
-    String writableAction = "set-writable";
+    String writableAction = "set-writable"; //$NON-NLS-1$
 
     int NONE = 0;
 

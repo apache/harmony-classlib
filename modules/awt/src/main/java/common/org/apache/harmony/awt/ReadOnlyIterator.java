@@ -22,6 +22,8 @@ package org.apache.harmony.awt;
 
 import java.util.Iterator;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * ReadOnlyIterator
  */
@@ -37,7 +39,8 @@ public final class ReadOnlyIterator<E> implements Iterator<E> {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("Iterator is read-only");
+        // awt.50=Iterator is read-only
+        throw new UnsupportedOperationException(Messages.getString("awt.50")); //$NON-NLS-1$
     }
 
     public boolean hasNext() {

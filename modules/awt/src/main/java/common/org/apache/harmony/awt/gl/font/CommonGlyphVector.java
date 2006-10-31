@@ -32,6 +32,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * GlyphVector implementation
  */
@@ -313,8 +315,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public void setGlyphPosition(int glyphIndex, Point2D newPos) {
         if ((glyphIndex > vector.length) || (glyphIndex < 0)) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's limits");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         float x = (float)newPos.getX();
         float y = (float)newPos.getY();
@@ -336,8 +338,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public Point2D getGlyphPosition(int glyphIndex) {
         if ((glyphIndex > vector.length) || (glyphIndex < 0)) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's limits");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         int index = glyphIndex << 1;
         Point2D pos = new Point2D.Float(visualPositions[index], visualPositions[index+1]);
@@ -366,8 +368,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public void setGlyphTransform(int glyphIndex, AffineTransform trans) {
         if ((glyphIndex >= vector.length) || (glyphIndex < 0)) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's limits");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
 
         if ((trans == null) || (trans.isIdentity())) {
@@ -387,8 +389,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public AffineTransform getGlyphTransform(int glyphIndex) {
         if ((glyphIndex >= this.vector.length) || (glyphIndex < 0)) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's limits");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         return this.glsTransforms[glyphIndex];
     }
@@ -402,8 +404,8 @@ public class CommonGlyphVector extends GlyphVector {
     public GlyphMetrics getGlyphMetrics(int glyphIndex) {
 
         if ((glyphIndex < 0) || ((glyphIndex) >= this.getNumGlyphs())) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         // TODO: is there a sence in GlyphMetrics
         // if certain glyph or Font has a transform??
@@ -422,7 +424,7 @@ public class CommonGlyphVector extends GlyphVector {
     public GlyphJustificationInfo getGlyphJustificationInfo(int glyphIndex) {
         // TODO : Find out the source of Justification info
         if (true) {
-            throw new RuntimeException("Method is not implemented");
+            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
         }
         return null;
     }
@@ -443,8 +445,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public Shape getGlyphVisualBounds(int glyphIndex) {
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
 
         int idx  = glyphIndex << 1;
@@ -486,8 +488,8 @@ public class CommonGlyphVector extends GlyphVector {
             float x, float y) {
         // TODO : need to be implemented with FontRenderContext
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
 
         int idx  = glyphIndex << 1;
@@ -522,8 +524,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public Shape getGlyphOutline(int glyphIndex) {
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
 
         if (gvShapes[glyphIndex] == null) {
@@ -595,13 +597,13 @@ public class CommonGlyphVector extends GlyphVector {
             int[] codeReturn) {
 
         if ((beginGlyphIndex < 0) || ((numEntries + beginGlyphIndex) > this.getNumGlyphs())) {
-            throw new IndexOutOfBoundsException(
-                    "beginGlyphIndex is out of vector's range");
+            // awt.44=beginGlyphIndex is out of vector's range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.44")); //$NON-NLS-1$
         }
 
         if (numEntries < 0) {
-            throw new IllegalArgumentException(
-                    "numEntries is out of vector's range");
+            // awt.45=numEntries is out of vector's range
+            throw new IllegalArgumentException(Messages.getString("awt.45")); //$NON-NLS-1$
         }
 
         if (codeReturn == null) {
@@ -627,14 +629,14 @@ public class CommonGlyphVector extends GlyphVector {
     public int[] getGlyphCharIndices(int beginGlyphIndex, int numEntries,
             int[] codeReturn) {
         if ((beginGlyphIndex < 0) || (beginGlyphIndex >= this.getNumGlyphs())) {
-            throw new IllegalArgumentException(
-                    "beginGlyphIndex is out of vector range");
+            // awt.44=beginGlyphIndex is out of vector's range
+            throw new IllegalArgumentException(Messages.getString("awt.44")); //$NON-NLS-1$
         }
 
         if ((numEntries < 0)
                 || ((numEntries + beginGlyphIndex) > this.getNumGlyphs())) {
-            throw new IllegalArgumentException(
-                    "numEntries is out of vector range");
+            // awt.45=numEntries is out of vector's range
+            throw new IllegalArgumentException(Messages.getString("awt.45")); //$NON-NLS-1$
         }
 
         if (codeReturn == null) {
@@ -665,13 +667,13 @@ public class CommonGlyphVector extends GlyphVector {
         numEntries *= 2;
 
         if ((beginGlyphIndex < 0) || ((numEntries + beginGlyphIndex) > len)) {
-            throw new IndexOutOfBoundsException(
-                    "beginGlyphIndex is out of vector's range");
+            // awt.44=beginGlyphIndex is out of vector's range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.44")); //$NON-NLS-1$
         }
 
         if (numEntries < 0) {
-            throw new IllegalArgumentException(
-                    "numEntries is out of vector's range");
+            // awt.45=numEntries is out of vector's range
+            throw new IllegalArgumentException(Messages.getString("awt.45")); //$NON-NLS-1$
         }
 
         if (positionReturn == null) {
@@ -699,13 +701,13 @@ public class CommonGlyphVector extends GlyphVector {
         numEntries *= 2;
 
         if ((beginGlyphIndex < 0) || ((numEntries + beginGlyphIndex) > len)) {
-            throw new IndexOutOfBoundsException(
-                    "beginGlyphIndex is out of vector's range");
+            // awt.44=beginGlyphIndex is out of vector's range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.44")); //$NON-NLS-1$
         }
 
         if (numEntries < 0) {
-            throw new IllegalArgumentException(
-                    "numEntries is out of vector's range");
+            // awt.45=numEntries is out of vector's range
+            throw new IllegalArgumentException(Messages.getString("awt.45")); //$NON-NLS-1$
         }
 
         System.arraycopy(setPositions, 0, visualPositions, beginGlyphIndex, numEntries);
@@ -722,8 +724,8 @@ public class CommonGlyphVector extends GlyphVector {
 
         int len = (this.getNumGlyphs()+1) << 1;
         if (len != setPositions.length){
-            throw new IllegalArgumentException(
-                    "length of setPositions array differs from the length of positions array");
+            // awt.46=length of setPositions array differs from the length of positions array
+            throw new IllegalArgumentException(Messages.getString("awt.46")); //$NON-NLS-1$
         }
 
         System.arraycopy(setPositions, 0, visualPositions, 0, len);
@@ -740,8 +742,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public int getGlyphCode(int glyphIndex) {
         if (glyphIndex >= this.vector.length || glyphIndex < 0) {
-            throw new IndexOutOfBoundsException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         return this.vector[glyphIndex].getGlyphCode();
     }
@@ -755,8 +757,8 @@ public class CommonGlyphVector extends GlyphVector {
     public int getGlyphCharIndex(int glyphIndex) {
 
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
-            throw new IllegalArgumentException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IllegalArgumentException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
 
         if ((this.layoutFlags & Font.LAYOUT_RIGHT_TO_LEFT) != 0) {
@@ -774,8 +776,8 @@ public class CommonGlyphVector extends GlyphVector {
     public char getGlyphChar(int glyphIndex) {
 
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
-            throw new IllegalArgumentException(
-                    "glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IllegalArgumentException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         return this.charVector[glyphIndex];
     }
@@ -906,7 +908,8 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public Shape getGlyphLogicalBounds(int glyphIndex){
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())){
-            throw new IndexOutOfBoundsException("glyphIndex is out of vector's range");
+            // awt.43=glyphIndex is out of vector's limits
+            throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
         }
         Glyph glyph = this.vector[glyphIndex];
 

@@ -51,6 +51,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Wrapper for native data
  */
@@ -76,7 +78,7 @@ public final class DataProxy implements Transferable {
     public Object getTransferData(DataFlavor flavor)
             throws UnsupportedFlavorException, IOException {
         
-        String mimeType = flavor.getPrimaryType() + "/" + flavor.getSubType();
+        String mimeType = flavor.getPrimaryType() + "/" + flavor.getSubType(); //$NON-NLS-1$
         if (flavor.isFlavorTextType()) {
             if (mimeType.equalsIgnoreCase(DataProvider.TYPE_HTML)) {
                 return getHTML(flavor);
@@ -136,7 +138,8 @@ public final class DataProxy implements Transferable {
         }
         String str = data.getText();
         if (str == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         return getTextRepresentation(str, f);
     }
@@ -148,7 +151,8 @@ public final class DataProxy implements Transferable {
         }
         String[] files = data.getFileList();
         if (files == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         return Arrays.asList(files);
     }
@@ -160,7 +164,8 @@ public final class DataProxy implements Transferable {
         }
         String str = data.getHTML();
         if (str == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         return getTextRepresentation(str, f);
     }
@@ -172,7 +177,8 @@ public final class DataProxy implements Transferable {
         }
         String str = data.getURL();
         if (str == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         URL url = new URL(str);
         if (f.getRepresentationClass().isAssignableFrom(URL.class)) {
@@ -193,7 +199,8 @@ public final class DataProxy implements Transferable {
         }
         byte bytes[] = data.getSerializedObject(f.getRepresentationClass());
         if (bytes == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         ByteArrayInputStream str = new ByteArrayInputStream(bytes);
         try {
@@ -204,7 +211,7 @@ public final class DataProxy implements Transferable {
     }
     
     private String getCharset(DataFlavor f) {
-        return f.getParameter("charset");
+        return f.getParameter("charset"); //$NON-NLS-1$
     }
 
     private Object getTextRepresentation(String text, DataFlavor f)
@@ -246,7 +253,8 @@ public final class DataProxy implements Transferable {
         }
         RawBitmap bitmap = data.getRawBitmap();
         if (bitmap == null) {
-            throw new IOException("Data is not available");
+            // awt.4F=Data is not available
+            throw new IOException(Messages.getString("awt.4F")); //$NON-NLS-1$
         }
         return createBufferedImage(bitmap);
     }

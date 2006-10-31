@@ -22,6 +22,8 @@ package org.apache.harmony.awt.gl.font;
 
 import java.awt.font.LineMetrics;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  *
  * LineMetrics implementation class.
@@ -126,7 +128,8 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
      */
     public LineMetricsImpl(int len, float[] metrics, float[] _baselineData){
         if (metrics.length < 16){
-            throw new IllegalArgumentException("Wrong number of metrics!");
+            // awt.40=Wrong number of metrics\!
+            throw new IllegalArgumentException(Messages.getString("awt.40")); //$NON-NLS-1$
         }
         numChars = len;
 

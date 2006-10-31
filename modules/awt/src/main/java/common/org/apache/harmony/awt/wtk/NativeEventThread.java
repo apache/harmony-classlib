@@ -36,7 +36,7 @@ public class NativeEventThread extends Thread {
     private WTK wtk;
     
     public NativeEventThread() {
-        super("AWT-NativeEventThread");
+        super("AWT-NativeEventThread"); //$NON-NLS-1$
         setDaemon(true);
     }
 

@@ -72,6 +72,7 @@ import javax.swing.text.View;
 import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class TextUtils {
@@ -132,7 +133,8 @@ public class TextUtils {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = doc.getLength();
         if (pos < 0 || pos > length) {
-            throwException("No more words", pos);
+            // awt.2F=No more words
+            throwException(Messages.getString("awt.2F"), pos); //$NON-NLS-1$
         }
         String content = null;
 
@@ -158,7 +160,8 @@ public class TextUtils {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = doc.getLength();
         if (pos < 0 || pos > length) {
-            throwException("No more words", pos);
+            // awt.2F=No more words
+            throwException(Messages.getString("awt.2F"), pos); //$NON-NLS-1$
         }
         String content = null;
 
@@ -223,7 +226,7 @@ public class TextUtils {
                                                 final TabExpander t,
                                                 final int pos,
                                                 final boolean round) {
-        String str = "";
+        String str = ""; //$NON-NLS-1$
         int segmentOffset = pos - s.getBeginIndex();
         boolean isTab = false;
         boolean isNullTabExpander = (t == null);
@@ -237,7 +240,7 @@ public class TextUtils {
             if (isTab && !isNullTabExpander) {
                 tabEnd = (int)t.nextTabStop(currentEnd, s.getIndex()
                         + segmentOffset);
-                str = "";
+                str = ""; //$NON-NLS-1$
             } else {
                 str += (isTab) ? ' ' : c;
                 isTab = false;
@@ -311,7 +314,8 @@ public class TextUtils {
         }
         int length = tk.getDocument().getLength();
         if (pos < 0 || pos > length) {
-            throwException("Position not represented by view", pos);
+            // awt.2A=Position not represented by view
+            throwException(Messages.getString("awt.2A"), pos); //$NON-NLS-1$
         }
         int y = tk.modelToView(pos).y;
         Rectangle tmp = null;
@@ -330,7 +334,8 @@ public class TextUtils {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = doc.getLength();
         if (pos < 0 || pos > length) {
-            throwException("No word at " + pos, pos);
+            // awt.2B=No word at {0}
+            throwException(Messages.getString("awt.2B", pos), pos); //$NON-NLS-1$
         }
         String content = doc.getText(0, doc.getLength());
         bi.setText(content);
@@ -343,7 +348,8 @@ public class TextUtils {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = doc.getLength();
         if (pos < 0 || pos > length) {
-             throwException("No word at " + pos, pos);
+            // awt.2B=No word at {0}
+            throwException(Messages.getString("awt.2B", pos), pos); //$NON-NLS-1$
         }
         String content = null;
 
@@ -441,7 +447,8 @@ public class TextUtils {
         }
         int length = tk.getDocument().getLength();
         if (pos < 0 || pos > length) {
-            throwException("Position not represented by view", pos);
+            // awt.2A=Position not represented by view
+            throwException(Messages.getString("awt.2A"), pos); //$NON-NLS-1$
         }
 
         int y = tk.modelToView(pos).y;
@@ -513,10 +520,10 @@ public class TextUtils {
         int x1 = x < 0 ? x : 0;
         int res = x < 0 ? 0 : x;
         String buffer = s.toString();
-        int tabIndex = buffer.indexOf("\t");
+        int tabIndex = buffer.indexOf("\t"); //$NON-NLS-1$
         int currentIndex = pos - s.getBeginIndex() + s.offset;
         if (t == null) {
-            String buf =  buffer.replaceAll("\t", " ");
+            String buf =  buffer.replaceAll("\t", " "); //$NON-NLS-1$ //$NON-NLS-2$
             drawString(buf, needDraw, g, x, y);
             return fm.stringWidth(buf) + x;
         }
@@ -528,7 +535,7 @@ public class TextUtils {
             res = (int)t.nextTabStop(res + fm.stringWidth(substr),
                                      tabIndex + currentIndex);
             lastTabIndex = tabIndex;
-            tabIndex = buffer.indexOf("\t", tabIndex + 1);
+            tabIndex = buffer.indexOf("\t", tabIndex + 1); //$NON-NLS-1$
         }
         int tmp = res + x1;
         substr = buffer.substring(lastTabIndex + 1, buffer.length());
@@ -573,7 +580,8 @@ public class TextUtils {
             throws BadLocationException {
         int length = v.getDocument().getLength();
         if (pos < 0 || pos > length) {
-            throwException("Invalid position: " + pos, pos);
+            // awt.2C=Invalid position: {0}
+            throwException(Messages.getString("awt.2C", pos), pos); //$NON-NLS-1$
         }
         biasRet[0] = Position.Bias.Forward;
         if (direction == SwingConstants.WEST
@@ -590,7 +598,8 @@ public class TextUtils {
                     : v.modelToView(pos, shape, bias).getBounds().x);
         }
 
-        throw new IllegalArgumentException("Invalid direction");
+        // awt.2D=Invalid direction
+        throw new IllegalArgumentException(Messages.getString("awt.2D")); //$NON-NLS-1$
     }
 
 
@@ -883,7 +892,7 @@ public class TextUtils {
                                         final Transferable transferable,
                                         final int action) {
        if (textKit != null  && (action & ActionNames.MOVE) > 0) {
-           textKit.replaceSelectedText("");
+           textKit.replaceSelectedText(""); //$NON-NLS-1$
        }
     }
 
@@ -922,7 +931,7 @@ public class TextUtils {
 
     public static int getSourceActions(final TextKit textKit) {
         if (textKit != null
-            && !"javax.swing.JPasswordField".equals(textKit.getClass())) {
+            && !"javax.swing.JPasswordField".equals(textKit.getClass())) { //$NON-NLS-1$
             return (textKit.isEditable()) ? ActionNames.COPY_OR_MOVE
                     : ActionNames.COPY;
 
@@ -1125,9 +1134,10 @@ public class TextUtils {
         throws BadLocationException {
 
         if (pos < view.getStartOffset() || pos > view.getEndOffset()) {
-            throw new BadLocationException(pos + " not in range "
-                                           + view.getStartOffset() + ","
-                                           + view.getEndOffset(), pos);
+            // awt.2E={0} not in range {1},{2}
+            throw new BadLocationException(Messages.getString("awt.2E", //$NON-NLS-1$
+                    new Object[] { pos, view.getStartOffset(),
+                            view.getEndOffset() }), pos);
         }
     }
 }

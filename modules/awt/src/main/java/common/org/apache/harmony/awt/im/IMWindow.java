@@ -32,7 +32,7 @@ public class IMWindow extends Frame {
     }
     
     IMWindow() {
-        this("Input Window", null);
+        this("Input Window", null); //$NON-NLS-1$
     }
     
     @Override

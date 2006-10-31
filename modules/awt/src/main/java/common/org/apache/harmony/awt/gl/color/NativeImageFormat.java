@@ -30,6 +30,7 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.util.ArrayList;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 /**
@@ -204,8 +205,8 @@ class NativeImageFormat {
             cmmFormat |= bytesSh(1);
         }
         else
-            throw new IllegalArgumentException(
-                    "First argument should be byte or short array");
+            // awt.47=First argument should be byte or short array
+            throw new IllegalArgumentException(Messages.getString("awt.47")); //$NON-NLS-1$
 
         cmmFormat |= channelsSh(nChannels);
 

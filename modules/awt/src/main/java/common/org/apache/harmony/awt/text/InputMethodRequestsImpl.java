@@ -37,6 +37,8 @@ import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.Position;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class InputMethodRequestsImpl implements InputMethodRequests {
     private TextKit textKit;
     public InputMethodRequestsImpl(final TextKit textKit) {
@@ -162,7 +164,8 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
 
         public char setIndex(final int ind) {
             if (!inRange(ind)) {
-                throw new IllegalArgumentException("bad index: " + ind);
+                // awt.28=bad index: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.28", ind)); //$NON-NLS-1$
             }
             return changeIndex(ind, BACKWARD);
         }
@@ -226,7 +229,8 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
                                                        attributes) {
         if (beginIndex < 0 || endIndex < beginIndex
                 || endIndex > textKit.getDocument().getLength()) {
-            throw new IllegalArgumentException("Invalid range");
+            // awt.29=Invalid range
+            throw new IllegalArgumentException(Messages.getString("awt.29")); //$NON-NLS-1$
         }
         AttributedCharacterIterator result = null;
         ComposedTextParams composedTextParams = getComposedTextParams();

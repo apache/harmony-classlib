@@ -37,6 +37,7 @@ import java.awt.image.WritableRaster;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.XORComposite;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  * Java implenetation of the Blitter interface. Using when we can't 
@@ -458,8 +459,9 @@ public class JavaBlitter implements Blitter {
                                 break;
 
                             default:
-                                throw new IllegalArgumentException("Unknown  composite type " +
-                                        comp.getClass());
+                                // awt.37=Unknown  composite type {0}
+                                throw new IllegalArgumentException(Messages.getString("awt.37", //$NON-NLS-1$
+                                        comp.getClass()));
                         }
                     }
                     sx += hx;

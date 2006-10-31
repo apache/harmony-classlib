@@ -28,6 +28,7 @@ import java.awt.image.WritableRaster;
 
 import org.apache.harmony.awt.gl.ImageSurface;
 import org.apache.harmony.awt.gl.render.NativeImageBlitter;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 /**
@@ -52,19 +53,19 @@ public class ICompositeContext implements CompositeContext {
     public void compose(Raster srcIn, Raster dstIn, WritableRaster dstOut) {
 
         if(!srcCM.isCompatibleRaster(srcIn)) {
-            throw new IllegalArgumentException("The srcIn raster is " +
-                    "incompatible with src ColorModel");
+            // awt.48=The srcIn raster is incompatible with src ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.48")); //$NON-NLS-1$
         }
 
         if(!dstCM.isCompatibleRaster(dstIn)) {
-            throw new IllegalArgumentException("The dstIn raster is " +
-                    "incompatible with dst ColorModel");
+            // awt.49=The dstIn raster is incompatible with dst ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.49")); //$NON-NLS-1$
         }
 
         if(dstIn != dstOut){
             if(!dstCM.isCompatibleRaster(dstOut)) {
-                throw new IllegalArgumentException("The dstOut raster is " +
-                        "incompatible with dst ColorModel");
+                // awt.4A=The dstOut raster is incompatible with dst ColorModel
+                throw new IllegalArgumentException(Messages.getString("awt.4A")); //$NON-NLS-1$
             }
             dstOut.setDataElements(0, 0, dstIn);
         }

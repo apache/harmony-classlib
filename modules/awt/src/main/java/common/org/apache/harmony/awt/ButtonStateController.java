@@ -28,6 +28,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * ButtonStateController.
  * Changes Component state and fires [action] events in response to
@@ -96,7 +98,8 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     public void keyPressed(KeyEvent ke) {
-        assert focused == true : "Key event for unfocused component";
+        // awt.54=Key event for unfocused component
+        assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
         if (mousePressed || keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE)) {
             return;
@@ -107,7 +110,8 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     public void keyReleased(KeyEvent ke) {
-        assert focused == true : "Key event for unfocused component";
+        // awt.54=Key event for unfocused component
+        assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
         if (!keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE)) {
             return;
@@ -121,24 +125,28 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     public void mouseEntered(MouseEvent me) {
-        assert mouseInside == false : "Double mouse enter event for component";
+        // awt.55=Double mouse enter event for component
+        assert mouseInside == false : Messages.getString("awt.55"); //$NON-NLS-1$
         mouseCrossed(true);
     }
 
     public void mouseExited(MouseEvent me) {
-        assert mouseInside == true : "Double mouse exit event for component";
+        // awt.56=Double mouse exit event for component
+        assert mouseInside == true : Messages.getString("awt.56"); //$NON-NLS-1$
         mouseCrossed(false);
     }
 
     public void focusGained(FocusEvent fe) {
-        assert focused == false : "Double focus gained event for component";
+        // awt.57=Double focus gained event for component
+        assert focused == false : Messages.getString("awt.57"); //$NON-NLS-1$
 
         focused = true;
         component.repaint();
     }
 
     public void focusLost(FocusEvent fe) {
-        assert focused == true : "Double focus lost event for component";
+        // awt.58=Double focus lost event for component
+        assert focused == true : Messages.getString("awt.58"); //$NON-NLS-1$
 
         focused = false;
         keyPressed = false;

@@ -84,7 +84,7 @@ public class CompositeFont extends FontPeerImpl{
         this.fontProperties = fProperties;// !! Supposed that fProperties parameter != null
         fPhysicalFonts = physFonts;
         numFonts = fPhysicalFonts.length; 
-        setDefaultLineMetrics("", null);
+        setDefaultLineMetrics("", null); //$NON-NLS-1$
         this.uniformLM = false;
     }
 
@@ -180,7 +180,7 @@ public class CompositeFont extends FontPeerImpl{
     @Override
     public LineMetrics getLineMetrics(){
         if (nlm == null){
-            setDefaultLineMetrics("", null);
+            setDefaultLineMetrics("", null); //$NON-NLS-1$
         }
 
         return this.nlm;
@@ -451,9 +451,9 @@ public class CompositeFont extends FontPeerImpl{
     @Override
     public String toString(){
     return new String(this.getClass().getName() +
-            "[name=" + this.name +
-            ",style="+ this.style +
-            ",fps=" + this.fontProperties + "]");
+            "[name=" + this.name + //$NON-NLS-1$
+            ",style="+ this.style + //$NON-NLS-1$
+            ",fps=" + this.fontProperties + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

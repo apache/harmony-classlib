@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.harmony.awt.gl.ImageSurface;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 /**
@@ -75,7 +76,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
     @Override
     public Object getProperty(String name, ImageObserver observer) {
         if(name == null) {
-            throw new NullPointerException("Property name is not defined");
+            // awt.38=Property name is not defined
+            throw new NullPointerException(Messages.getString("awt.38")); //$NON-NLS-1$
         }
         if(properties == null){
             addObserver(observer);
@@ -122,8 +124,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
 
     @Override
     public Graphics getGraphics() {
-        throw new UnsupportedOperationException("This method is not " +
-                "implemented for image obtained from ImageProducer");
+        // awt.39=This method is not implemented for image obtained from ImageProducer
+        throw new UnsupportedOperationException(Messages.getString("awt.39")); //$NON-NLS-1$
     }
 
     @Override
@@ -164,7 +166,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
         if(raster == null){
             if(cm == null){
                 if(model == null) {
-                    throw new NullPointerException("Color Model is null");
+                    // awt.3A=Color Model is null
+                    throw new NullPointerException(Messages.getString("awt.3A")); //$NON-NLS-1$
                 }
                 cm = model;
             }
@@ -224,7 +227,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
         if(raster == null){
             if(cm == null){
                 if(model == null) {
-                    throw new NullPointerException("Color Model is null");
+                    // awt.3A=Color Model is null
+                    throw new NullPointerException(Messages.getString("awt.3A")); //$NON-NLS-1$
                 }
                 cm = model;
             }
@@ -320,8 +324,8 @@ public class OffscreenImage extends Image implements ImageConsumer {
             flag = ImageObserver.ALLBITS;
             break;
         default:
-            throw new IllegalArgumentException("Incorrect ImageConsumer "
-                    + "completion status");
+            // awt.3B=Incorrect ImageConsumer completion status
+            throw new IllegalArgumentException(Messages.getString("awt.3B")); //$NON-NLS-1$
         }
         imageUpdate(this, flag, 0, 0, width, height);
 

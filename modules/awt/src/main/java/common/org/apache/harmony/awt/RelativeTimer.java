@@ -23,6 +23,8 @@ package org.apache.harmony.awt;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Relative timer class. Basic class for PeriodicTimer and SingleShotTimer.
  * "Relative" means that there is no binding with absolute time.
@@ -40,10 +42,12 @@ public abstract class RelativeTimer {
 
     RelativeTimer(long interval, Runnable handler) {
         if (interval <= 0) {
-            throw new IllegalArgumentException("Time interval can't be <= 0");
+            // awt.52=Time interval can't be <= 0
+            throw new IllegalArgumentException(Messages.getString("awt.52")); //$NON-NLS-1$
         }
         if (handler == null) {
-            throw new IllegalArgumentException("Handler can't be null");
+            // awt.53=Handler can't be null
+            throw new IllegalArgumentException(Messages.getString("awt.53")); //$NON-NLS-1$
         }
 
         this.interval = interval;
@@ -141,7 +145,7 @@ public abstract class RelativeTimer {
                 time = Long.MAX_VALUE;
                 insert(entry, false);
                 thread = new DeltaThread();
-                thread.setName("Relative Timer");
+                thread.setName("Relative Timer"); //$NON-NLS-1$
                 thread.setDaemon(true);
                 thread.start();
             } else {

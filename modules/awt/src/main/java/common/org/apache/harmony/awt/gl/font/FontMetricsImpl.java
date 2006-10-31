@@ -76,7 +76,7 @@ public class FontMetricsImpl extends FontMetrics  {
             // scaleY = (float)at.getScaleY();
         }
 
-        LineMetricsImpl lm = (LineMetricsImpl)peer.getLineMetrics("", null, at);
+        LineMetricsImpl lm = (LineMetricsImpl)peer.getLineMetrics("", null, at); //$NON-NLS-1$
         
         this.ascent = lm.getLogicalAscent();
         this.descent = lm.getLogicalDescent();

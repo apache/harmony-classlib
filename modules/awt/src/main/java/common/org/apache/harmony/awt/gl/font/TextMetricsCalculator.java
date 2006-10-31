@@ -28,6 +28,8 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * This class operates with an arbitrary text string which can include
  * any number of style, font and direction runs. It is responsible for computation
@@ -67,7 +69,8 @@ public class TextMetricsCalculator {
         } else if (baselineIndex == GraphicAttribute.TOP_ALIGNMENT) {
             return -ascent;
         } else {
-            throw new IllegalArgumentException("Invalid baseline index");
+            // awt.3F=Invalid baseline index
+            throw new IllegalArgumentException(Messages.getString("awt.3F")); //$NON-NLS-1$
         }
     }
 

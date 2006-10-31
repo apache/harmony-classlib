@@ -42,9 +42,9 @@ public class TextFlavor {
                                          String nat,
                                          String subType) {
         for (int i = 0; i < unicodeTextClasses.length; i++) {
-            String type = "text/" + subType;
-            String params = ";class=\"" + 
-                    unicodeTextClasses[i].getName() + "\"";
+            String type = "text/" + subType; //$NON-NLS-1$
+            String params = ";class=\"" +  //$NON-NLS-1$
+                    unicodeTextClasses[i].getName() + "\""; //$NON-NLS-1$
             DataFlavor f = new DataFlavor(type + params, type);
             fm.addFlavorForUnencodedNative(nat, f);
             fm.addUnencodedNativeForFlavor(f, nat);
@@ -56,10 +56,10 @@ public class TextFlavor {
                                          String subType, 
                                          String charset) {
         for (int i = 0; i < charsetTextClasses.length; i++) {
-            String type = "text/" + subType;
-            String params = ";class=\"" + 
-                    charsetTextClasses[i].getName() + "\"" + 
-                    ";charset=\"" + charset + "\"";
+            String type = "text/" + subType; //$NON-NLS-1$
+            String params = ";class=\"" +  //$NON-NLS-1$
+                    charsetTextClasses[i].getName() + "\"" +  //$NON-NLS-1$
+                    ";charset=\"" + charset + "\""; //$NON-NLS-1$ //$NON-NLS-2$
             DataFlavor f = new DataFlavor(type + params, type);
             fm.addFlavorForUnencodedNative(nat, f);
             fm.addUnencodedNativeForFlavor(f, nat);

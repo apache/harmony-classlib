@@ -71,7 +71,7 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
 
     public DefaultFileDialog(FileDialog fd) {
         fileDialog = fd;
-        filterStr = "*";
+        filterStr = "*"; //$NON-NLS-1$
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -208,12 +208,12 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     }
 
     private void updateFilter() {
-        filterStr = filter.getText().replaceAll("\\.", "\\\\.");
-        filterStr = filterStr.replaceAll("\\*", ".*");
+        filterStr = filter.getText().replaceAll("\\.", "\\\\."); //$NON-NLS-1$ //$NON-NLS-2$
+        filterStr = filterStr.replaceAll("\\*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void resetFilter() {
-        filterStr = "*";
+        filterStr = "*"; //$NON-NLS-1$
         filter.setText(filterStr);
         updateFilter();
     }
@@ -222,14 +222,14 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
         if (folders.getItemCount() > 0) {
             folders.removeAll();
         }
-        folders.add("..");
+        folders.add(".."); //$NON-NLS-1$
         if (files.getItemCount() > 0) {
             files.removeAll();
         }
     }
 
     private File getDefaultFolder() {
-        return new File(System.getProperty("user.dir"));
+        return new File(System.getProperty("user.dir")); //$NON-NLS-1$
     }
 
     private void addListeners() {
@@ -255,9 +255,9 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
         filter = new TextField(filterStr);
         folders = new List();
         files = new List();
-        okButton = new Button("OK");
-        filterButton = new Button("Filter");
-        cancelButton = new Button("Cancel");
+        okButton = new Button("OK"); //$NON-NLS-1$
+        filterButton = new Button("Filter"); //$NON-NLS-1$
+        cancelButton = new Button("Cancel"); //$NON-NLS-1$
     }
 
     private Choice createCustomChoice() {
@@ -294,14 +294,14 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
 
         addPath(gbc);
 
-        fileDialog.add(new Label("Filter"), gbc);
+        fileDialog.add(new Label("Filter"), gbc); //$NON-NLS-1$
         fileDialog.add(filter, gbc);
 
         addLists(gbc);
 
         gbc.weighty = 0.0;
         gbc.weightx = 0.0;
-        fileDialog.add(new Label("Enter file name:"), gbc);
+        fileDialog.add(new Label("Enter file name:"), gbc); //$NON-NLS-1$
         fileDialog.add(fileName, gbc);
 
         Separator sep = new Separator();
@@ -317,7 +317,7 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     private void addPath(GridBagConstraints gbc) {
         gbc.weightx = 1.0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        fileDialog.add(new Label("Enter path or folder name:"), gbc);
+        fileDialog.add(new Label("Enter path or folder name:"), gbc); //$NON-NLS-1$
         Panel pathPanel = new Panel(new BorderLayout());
         pathPanel.add(path); // CENTER
         int cSize = DefaultScrollbar.BUTTON_SIZE + BORDER.top;
@@ -330,9 +330,9 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     private void addLists(GridBagConstraints gbc) {
         gbc.weightx = 1.0;
         gbc.gridwidth = 1;
-        fileDialog.add(new Label("Folders"), gbc);
+        fileDialog.add(new Label("Folders"), gbc); //$NON-NLS-1$
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        fileDialog.add(new Label("Files"), gbc);
+        fileDialog.add(new Label("Files"), gbc); //$NON-NLS-1$
         gbc.gridwidth = 1;
         gbc.weighty = 1.0;
         fileDialog.add(folders, gbc);

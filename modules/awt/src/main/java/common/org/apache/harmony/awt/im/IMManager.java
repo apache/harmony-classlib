@@ -55,10 +55,10 @@ import org.apache.harmony.awt.wtk.NativeIM;
  * window, etc
  */
 public class IMManager {
-    private static final String SEL_KEY_NODE = "java/awt/im/selectionKey";
-    private static final String INPUT_STYLE_PROP = "java.awt.im.style";
-    private static final String BELOW_THE_SPOT = "below-the-spot";
-    private static final String SERVICES = "META-INF/services/";
+    private static final String SEL_KEY_NODE = "java/awt/im/selectionKey"; //$NON-NLS-1$
+    private static final String INPUT_STYLE_PROP = "java.awt.im.style"; //$NON-NLS-1$
+    private static final String BELOW_THE_SPOT = "below-the-spot"; //$NON-NLS-1$
+    private static final String SERVICES = "META-INF/services/"; //$NON-NLS-1$
     
     /**
      * Input method selection popup menu
@@ -87,8 +87,8 @@ public class IMManager {
     
             @Override
             public String paramString() {
-                return super.paramString() + ",desc=" + 
-                getDesc() + ",locale=" + locale;
+                return super.paramString() + ",desc=" +  //$NON-NLS-1$
+                getDesc() + ",locale=" + locale; //$NON-NLS-1$
             }
             
         }
@@ -107,7 +107,7 @@ public class IMManager {
     
             @Override
             public String paramString() {
-                return super.paramString() + ",desc=" + desc;
+                return super.paramString() + ",desc=" + desc; //$NON-NLS-1$
             }
             
             private void addLocales() {
@@ -161,7 +161,7 @@ public class IMManager {
             if (it.hasNext()) {
                 addIM(it);
             }
-            add(new MenuItem("-")); //separator
+            add(new MenuItem("-")); //separator //$NON-NLS-1$
         }
         
         public void itemStateChanged(ItemEvent e) {
@@ -234,13 +234,13 @@ public class IMManager {
             while (en.hasMoreElements()) {
                 URL url = en.nextElement();
                 InputStreamReader isr = new InputStreamReader(url.openStream(),
-                                                              "UTF-8");
+                                                              "UTF-8"); //$NON-NLS-1$
                 BufferedReader br = new BufferedReader(isr);
                 String str = br.readLine();
                 
                 while (str != null) {
                     str = str.trim();
-                    int comPos = str.indexOf("#");
+                    int comPos = str.indexOf("#"); //$NON-NLS-1$
                     if (comPos >= 0) {
                         str = str.substring(0, comPos);
                     }
@@ -289,9 +289,9 @@ public class IMManager {
     
     static  void selectIM(KeyEvent ke, InputMethodContext imc, Window parent) {
         int def = KeyEvent.VK_UNDEFINED;
-        int keyCode = getPref("keyCode", def);
+        int keyCode = getPref("keyCode", def); //$NON-NLS-1$
         if (keyCode != def) {
-            int modifiers = getPref("modifiers", 0);
+            int modifiers = getPref("modifiers", 0); //$NON-NLS-1$
             if ((ke.getKeyCode() == keyCode)
                     && (ke.getModifiers() == modifiers)) {
                 IMManager.showIMPopup(imc, parent);

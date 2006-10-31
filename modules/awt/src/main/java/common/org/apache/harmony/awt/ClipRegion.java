@@ -24,6 +24,7 @@ import java.awt.Component;
 import java.awt.Rectangle;
 
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class ClipRegion extends Rectangle {
     private final MultiRectArea clip;
@@ -72,7 +73,8 @@ public class ClipRegion extends Rectangle {
             y += c.getY();
         }
         if (c == null) {
-            throw new IllegalArgumentException("Component expected to be a parent");
+            // awt.51=Component expected to be a parent
+            throw new IllegalArgumentException(Messages.getString("awt.51")); //$NON-NLS-1$
         }
         region.translate(x, y);
     }

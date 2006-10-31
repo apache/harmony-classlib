@@ -36,6 +36,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.ScrollbarState;
 
 
@@ -434,7 +435,8 @@ public abstract class ScrollbarStateController implements MouseListener,
     }
 
     public void keyPressed(KeyEvent e) {
-        assert focused : "Key event for unfocused component";
+        // awt.54=Key event for unfocused component
+        assert focused : Messages.getString("awt.54"); //$NON-NLS-1$
         int keyCode = e.getKeyCode();
         switch (keyCode) {
         case KeyEvent.VK_UP:

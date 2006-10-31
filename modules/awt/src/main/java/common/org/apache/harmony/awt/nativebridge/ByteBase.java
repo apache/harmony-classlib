@@ -22,6 +22,7 @@ package org.apache.harmony.awt.nativebridge;
 
 import java.util.Arrays;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.accessors.AccessorFactory;
 import org.apache.harmony.misc.accessors.ArrayAccessor;
 import org.apache.harmony.misc.accessors.LockedArray;
@@ -209,10 +210,12 @@ public class ByteBase {
      */
     void copy(ByteBase src, int dstOffset, int length) {
         if (src.size != -1 && src.size < length) {
-            throw new IndexOutOfBoundsException("wrong number of elements to copy: " + length + ", size: " + src.size);
+            // awt.30=wrong number of elements to copy: {0}, size: {1}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.30", length, src.size)); //$NON-NLS-1$
         }
         if (size != -1 && size - dstOffset < length) {
-            throw new IndexOutOfBoundsException("no room to copy: " + length + ", size: " + src.size);
+            // awt.31=no room to copy: {0}, size: {1}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.31", length, src.size)); //$NON-NLS-1$
         }
 
         byte[] tmp = new byte[length];
@@ -868,7 +871,8 @@ public class ByteBase {
      */
     public void setString(String str){
         if (str.length() * 2 > size - 2) { // 2 times lager than str.length and 2 bytes for termination zeroes
-            throw new IndexOutOfBoundsException("String: '" + str + "' does not fit");
+            // awt.32=String: '{0}' does not fit
+            throw new IndexOutOfBoundsException(Messages.getString("awt.32", str)); //$NON-NLS-1$
         }
         if (addr == 0) {
             setStringInArray(str);
@@ -1101,7 +1105,8 @@ public class ByteBase {
             return;
         }
         if (index < 0 || index + numBytes - 1 > size) {
-            throw new IndexOutOfBoundsException("index is out of range");
+            // awt.33=index is out of range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.33")); //$NON-NLS-1$
         }
     }
 
@@ -1110,10 +1115,12 @@ public class ByteBase {
             return;
         }
         if (toIdx < 0 || toIdx > srcDstLengh) {
-            throw new IndexOutOfBoundsException("Initial offset in the destination array is wrong: " + toIdx);
+            // awt.34=Initial offset in the destination array is wrong: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.34", toIdx)); //$NON-NLS-1$
         }
         if (copyLength < 0 || copyLength > srcDstLengh - toIdx || copyLength * bytesInData > size) {
-            throw new IndexOutOfBoundsException("Wrong number of elements to copy: " + copyLength);
+            // awt.35=Wrong number of elements to copy: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.35", copyLength)); //$NON-NLS-1$
         }
     }
 

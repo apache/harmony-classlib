@@ -20,13 +20,15 @@
  */
 package org.apache.harmony.awt.wtk;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class ShutdownThread extends Thread {
     
     public static final class Watchdog {
     }
 
     public ShutdownThread() {
-        setName("AWT-Shutdown");
+        setName("AWT-Shutdown"); //$NON-NLS-1$
         setDaemon(false);
     }
     
@@ -58,8 +60,9 @@ public final class ShutdownThread extends Thread {
             try {
                 wait();
             } catch (InterruptedException e) {
+                // awt.26=Shutdown thread was interrupted while starting
                 throw new RuntimeException(
-                        "Shutdown thread was interrupted while starting");
+                        Messages.getString("awt.26")); //$NON-NLS-1$
             }
         }
     }
@@ -71,8 +74,9 @@ public final class ShutdownThread extends Thread {
             try {
                 wait();
             } catch (InterruptedException e) {
+                // awt.27=Shutdown thread was interrupted while stopping
                 throw new RuntimeException(
-                        "Shutdown thread was interrupted while stopping");
+                        Messages.getString("awt.27")); //$NON-NLS-1$
             }
         }
     }

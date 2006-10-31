@@ -34,6 +34,7 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.*;
 
 import org.apache.harmony.awt.gl.font.TextDecorator.Decoration;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 // TODO - bidi not implemented yet
 
@@ -569,7 +570,8 @@ public class TextRunBreaker implements Cloneable {
             res.runSegments = newSegments;
             return res;
         } catch (CloneNotSupportedException e) {
-            throw new UnsupportedOperationException("Clone not supported");
+            // awt.3E=Clone not supported
+            throw new UnsupportedOperationException(Messages.getString("awt.3E")); //$NON-NLS-1$
         }
     }
 

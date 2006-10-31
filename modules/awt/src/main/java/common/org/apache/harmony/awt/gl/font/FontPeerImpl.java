@@ -30,6 +30,8 @@ import java.awt.font.LineMetrics;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Abstract class for platform dependent peer implementation of the Font class.
  */
@@ -268,8 +270,8 @@ public abstract class FontPeerImpl implements FontPeer{
         ArrayList<Glyph> lst = new ArrayList<Glyph>(len);
 
         if (size < 0) {
-            throw new IllegalArgumentException(
-                    "min range bound value is grater than max range bound");
+            // awt.09=min range bound value is greater than max range bound
+            throw new IllegalArgumentException(Messages.getString("awt.09")); //$NON-NLS-1$
         }
 
         while (i < uLast) {

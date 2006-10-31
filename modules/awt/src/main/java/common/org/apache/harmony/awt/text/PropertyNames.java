@@ -22,8 +22,8 @@
 package org.apache.harmony.awt.text;
 
 public interface PropertyNames {
-    String FILTER_NEW_LINES = "filterNewlines";
-    String COMPOSED_TEXT_PROPERTY = "composedText";
-    String AWT_DOCUMENT = "IsAwtDocument";
-    String LOAD_PRIORITY = "load priority";
+    String FILTER_NEW_LINES = "filterNewlines"; //$NON-NLS-1$
+    String COMPOSED_TEXT_PROPERTY = "composedText"; //$NON-NLS-1$
+    String AWT_DOCUMENT = "IsAwtDocument"; //$NON-NLS-1$
+    String LOAD_PRIORITY = "load priority"; //$NON-NLS-1$
 }

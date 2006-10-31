@@ -43,8 +43,8 @@ public abstract class FontManager {
      */
     public String[] allFamilies;
 
-    public static final String DEFAULT_NAME = "Default"; /* Default font name */
-    public static final String DIALOG_NAME = "Dialog";  /* Dialog font name */
+    public static final String DEFAULT_NAME = "Default"; /* Default font name */ //$NON-NLS-1$
+    public static final String DIALOG_NAME = "Dialog";  /* Dialog font name */ //$NON-NLS-1$
 
     /**
      * Set of constants applicable to the TrueType 'name' table.
@@ -73,48 +73,48 @@ public abstract class FontManager {
      * FontProperty related constants. 
      */
 
-    public static final String PLATFORM_FONT_NAME = "PlatformFontName";
-    public static final String LOGICAL_FONT_NAME = "LogicalFontName";
-    public static final String COMPONENT_INDEX = "ComponentIndex";
-    public static final String STYLE_INDEX = "StyleIndex";
+    public static final String PLATFORM_FONT_NAME = "PlatformFontName"; //$NON-NLS-1$
+    public static final String LOGICAL_FONT_NAME = "LogicalFontName"; //$NON-NLS-1$
+    public static final String COMPONENT_INDEX = "ComponentIndex"; //$NON-NLS-1$
+    public static final String STYLE_INDEX = "StyleIndex"; //$NON-NLS-1$
 
     public static final String[] FONT_MAPPING_KEYS = {
-            "LogicalFontName.StyleName.ComponentIndex", "LogicalFontName.ComponentIndex"
+            "LogicalFontName.StyleName.ComponentIndex", "LogicalFontName.ComponentIndex" //$NON-NLS-1$ //$NON-NLS-2$
     };
 
-    public static final String FONT_CHARACTER_ENCODING = "fontcharset.LogicalFontName.ComponentIndex";
+    public static final String FONT_CHARACTER_ENCODING = "fontcharset.LogicalFontName.ComponentIndex"; //$NON-NLS-1$
 
-    public static final String EXCLUSION_RANGES = "exclusion.LogicalFontName.ComponentIndex";
+    public static final String EXCLUSION_RANGES = "exclusion.LogicalFontName.ComponentIndex"; //$NON-NLS-1$
 
-    public static final String FONT_FILE_NAME = "filename.PlatformFontName";
+    public static final String FONT_FILE_NAME = "filename.PlatformFontName"; //$NON-NLS-1$
 
     /**
      * Available logical font families names.
      */
     public static final String[] LOGICAL_FONT_FAMILIES = {
-            "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
+            "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     };
 
     /**
      * Available logical font names.
      */
     public static final String[] LOGICAL_FONT_NAMES = {
-            "serif", "serif.plain", "serif.bold", "serif.italic", "serif.bolditalic",
-            "sansserif", "sansserif.plain", "sansserif.bold", "sansserif.italic", "sansserif.bolditalic",
-            "monospaced", "monospaced.plain", "monospaced.bold", "monospaced.italic", "monospaced.bolditalic",
-            "dialog", "dialog.plain", "dialog.bold", "dialog.italic", "dialog.bolditalic",
-            "dialoginput", "dialoginput.plain", "dialoginput.bold", "dialoginput.italic", "dialoginput.bolditalic"
+            "serif", "serif.plain", "serif.bold", "serif.italic", "serif.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "sansserif", "sansserif.plain", "sansserif.bold", "sansserif.italic", "sansserif.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "monospaced", "monospaced.plain", "monospaced.bold", "monospaced.italic", "monospaced.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "dialog", "dialog.plain", "dialog.bold", "dialog.italic", "dialog.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "dialoginput", "dialoginput.plain", "dialoginput.bold", "dialoginput.italic", "dialoginput.bolditalic" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     };
 
     /**
      * Available logical font face names.
      */
     public static final String[] LOGICAL_FONT_FACES = {
-            "Serif", "Serif.plain", "Serif.bold", "Serif.italic", "Serif.bolditalic",
-            "Sansserif", "Sansserif.plain", "Sansserif.bold", "Sansserif.italic", "Sansserif.bolditalic",
-            "Monospaced", "Monospaced.plain", "Monospaced.bold", "Monospaced.italic", "Monospaced.bolditalic",
-            "Dialog", "Dialog.plain", "Dialog.bold", "Dialog.italic", "Dialog.bolditalic",
-            "Dialoginput", "Dialoginput.plain", "Dialoginput.bold", "Dialoginput.italic", "Dialoginput.bolditalic"
+            "Serif", "Serif.plain", "Serif.bold", "Serif.italic", "Serif.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "Sansserif", "Sansserif.plain", "Sansserif.bold", "Sansserif.italic", "Sansserif.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "Monospaced", "Monospaced.plain", "Monospaced.bold", "Monospaced.italic", "Monospaced.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "Dialog", "Dialog.plain", "Dialog.bold", "Dialog.italic", "Dialog.bolditalic", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "Dialoginput", "Dialoginput.plain", "Dialoginput.bold", "Dialoginput.italic", "Dialoginput.bolditalic" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     };
 
     /**
@@ -122,7 +122,7 @@ public abstract class FontManager {
      * Font.getStyle() corresponds to indexes in STYLE_NAMES array.
      */
     public static final String[] STYLE_NAMES = {
-            "plain", "bold", "italic", "bolditalic"
+            "plain", "bold", "italic", "bolditalic" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     };
 
     /**
@@ -154,8 +154,8 @@ public abstract class FontManager {
      * Set of possible "os" property values.
      */
     public static final String[] OS_VALUES = {
-            "NT", "98", "2000", "Me", "XP", // For Windows
-            "Redhat", "Turbo", "SuSE"       // For Linux
+            "NT", "98", "2000", "Me", "XP", // For Windows //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "Redhat", "Turbo", "SuSE"       // For Linux //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     };
 
     /**
@@ -164,30 +164,30 @@ public abstract class FontManager {
      * the values from current configuration.
      */
     public static final String[] FP_FILE_NAMES = {
-            "/lib/font.properties.Language_Country_Encoding.OSVersion",
-            "/lib/font.properties.Language_Country_Encoding.OS",
-            "/lib/font.properties.Language_Country_Encoding.Version",
-            "/lib/font.properties.Language_Country_Encoding",
-            "/lib/font.properties.Language_Country.OSVersion",
-            "/lib/font.properties.Language_Country.OS",
-            "/lib/font.properties.Language_Country.Version",
-            "/lib/font.properties.Language_Country",
-            "/lib/font.properties.Language_Encoding.OSVersion",
-            "/lib/font.properties.Language_Encoding.OS",
-            "/lib/font.properties.Language_Encoding.Version",
-            "/lib/font.properties.Language_Encoding",
-            "/lib/font.properties.Language.OSVersion",
-            "/lib/font.properties.Language.OS",
-            "/lib/font.properties.Language.Version",
-            "/lib/font.properties.Language",
-            "/lib/font.properties.Encoding.OSVersion",
-            "/lib/font.properties.Encoding.OS",
-            "/lib/font.properties.Encoding.Version",
-            "/lib/font.properties.Encoding",
-            "/lib/font.properties.OSVersion",
-            "/lib/font.properties.OS",
-            "/lib/font.properties.Version",
-            "/lib/font.properties"
+            "/lib/font.properties.Language_Country_Encoding.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country_Encoding.OS", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country_Encoding.Version", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country_Encoding", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country.OS", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country.Version", //$NON-NLS-1$
+            "/lib/font.properties.Language_Country", //$NON-NLS-1$
+            "/lib/font.properties.Language_Encoding.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.Language_Encoding.OS", //$NON-NLS-1$
+            "/lib/font.properties.Language_Encoding.Version", //$NON-NLS-1$
+            "/lib/font.properties.Language_Encoding", //$NON-NLS-1$
+            "/lib/font.properties.Language.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.Language.OS", //$NON-NLS-1$
+            "/lib/font.properties.Language.Version", //$NON-NLS-1$
+            "/lib/font.properties.Language", //$NON-NLS-1$
+            "/lib/font.properties.Encoding.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.Encoding.OS", //$NON-NLS-1$
+            "/lib/font.properties.Encoding.Version", //$NON-NLS-1$
+            "/lib/font.properties.Encoding", //$NON-NLS-1$
+            "/lib/font.properties.OSVersion", //$NON-NLS-1$
+            "/lib/font.properties.OS", //$NON-NLS-1$
+            "/lib/font.properties.Version", //$NON-NLS-1$
+            "/lib/font.properties" //$NON-NLS-1$
     };
 
     /**
@@ -322,7 +322,7 @@ public abstract class FontManager {
      * @param faceName logical font face name
      */
     public String getFamilyFromLogicalFace(String faceName){
-        int pos = faceName.indexOf(".");
+        int pos = faceName.indexOf("."); //$NON-NLS-1$
         if (pos == -1){
             return faceName;
         }
@@ -341,7 +341,7 @@ public abstract class FontManager {
      */
     private FontPeer createLogicalFontPeer(String faceName, int style, int size){
         String family = getFamilyFromLogicalFace(faceName);
-        FontProperty[] fps = getFontProperties(family.toLowerCase() + "." + style);
+        FontProperty[] fps = getFontProperties(family.toLowerCase() + "." + style); //$NON-NLS-1$
         if (fps != null){
             int numFonts = fps.length;
             FontPeerImpl[] physicalFonts = new FontPeerImpl[numFonts];
@@ -443,7 +443,7 @@ public abstract class FontManager {
     public String getLogicalFaceFromFont(int fontStyle, int logicalIndex){
         int style = 0;
         String name = LOGICAL_FONT_FACES[logicalIndex];
-        int pos = name.indexOf(".");
+        int pos = name.indexOf("."); //$NON-NLS-1$
         
         if (pos == -1){
             return createLogicalFace(name, fontStyle);
@@ -466,7 +466,7 @@ public abstract class FontManager {
      */
     public int getStyleFromLogicalFace(String name){
         int style;
-        int pos = name.indexOf(".");
+        int pos = name.indexOf("."); //$NON-NLS-1$
         
         if (pos == -1){
             return Font.PLAIN;
@@ -487,7 +487,7 @@ public abstract class FontManager {
      * @param styleIndex index of the style name from the STYLE_NAMES array 
      */
     public String createLogicalFace(String family, int styleIndex){
-        return family + "." + STYLE_NAMES[styleIndex];
+        return family + "." + STYLE_NAMES[styleIndex]; //$NON-NLS-1$
     }
     
     /**
@@ -548,7 +548,7 @@ public abstract class FontManager {
      */
     public File getTempFontFile()throws IOException{
 
-        File fontFile = File.createTempFile("jFont", ".ttf");
+        File fontFile = File.createTempFile("jFont", ".ttf"); //$NON-NLS-1$ //$NON-NLS-2$
         fontFile.deleteOnExit();
 
         return fontFile;
@@ -562,13 +562,13 @@ public abstract class FontManager {
     public static File getFontPropertyFile(){
         File file = null;
 
-        String javaHome = System.getProperty("java.home");
+        String javaHome = System.getProperty("java.home"); //$NON-NLS-1$
         Locale l = Locale.getDefault();
         String language = l.getLanguage();
         String country = l.getCountry();
-        String fileEncoding = System.getProperty("file.encoding");
+        String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
 
-        String os = System.getProperty("os.name");
+        String os = System.getProperty("os.name"); //$NON-NLS-1$
 
         int i = 0;
 
@@ -585,21 +585,21 @@ public abstract class FontManager {
             os = null;
         }
 
-        String version = System.getProperty("os.version");
+        String version = System.getProperty("os.version"); //$NON-NLS-1$
         String pathname;
 
         for (i = 0; i < FP_FILE_NAMES.length; i++){
             pathname = FP_FILE_NAMES[i];
             if (os != null){
-                pathname = pathname.replaceFirst("OS", os);
+                pathname = pathname.replaceFirst("OS", os); //$NON-NLS-1$
             }
 
             pathname = javaHome + pathname;
 
-            pathname = pathname.replaceAll("Language", language).
-                                replaceAll("Country", country).
-                                replaceAll("Encoding", fileEncoding).
-                                replaceAll("Version", version);
+            pathname = pathname.replaceAll("Language", language). //$NON-NLS-1$
+                                replaceAll("Country", country). //$NON-NLS-1$
+                                replaceAll("Encoding", fileEncoding). //$NON-NLS-1$
+                                replaceAll("Version", version); //$NON-NLS-1$
 
             file = new File(pathname);
 
@@ -634,14 +634,14 @@ public abstract class FontManager {
             return null;
         }
 
-        String[] intervals = exclusionString.split(",");
+        String[] intervals = exclusionString.split(","); //$NON-NLS-1$
 
         if (intervals != null){
             int num = intervals.length;
             if (num > 0){
                 results = new int[intervals.length << 1];
                 for (int i = 0; i < intervals.length; i++){
-                    String ranges[] = intervals[i].split("-");
+                    String ranges[] = intervals[i].split("-"); //$NON-NLS-1$
                     results[i*2] = Integer.parseInt(ranges[0], 16);
                     results[i*2+1] = Integer.parseInt(ranges[1], 16);
 

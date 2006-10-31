@@ -30,12 +30,14 @@ import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.awt.*;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class PngDecoder extends ImageDecoder {
     // initializes proper field IDs
     private static native void initIDs();
 
     static {
-        System.loadLibrary("gl");
+        System.loadLibrary("gl"); //$NON-NLS-1$
         initIDs();
     }
 
@@ -138,7 +140,8 @@ public class PngDecoder extends ImageDecoder {
         switch (colorType) {
             case PNG_COLOR_TYPE_GRAY: {
                 if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1) {
-                    throw new IllegalArgumentException("Unknown PNG color type");
+                    // awt.3C=Unknown PNG color type
+                    throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
                 }
 
                 // Create gray color model
@@ -156,7 +159,8 @@ public class PngDecoder extends ImageDecoder {
 
             case PNG_COLOR_TYPE_RGB: {
                 if (bitDepth != 8) {
-                    throw new IllegalArgumentException("Unknown PNG color type");
+                    // awt.3C=Unknown PNG color type
+                    throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
                 }
 
                 cm = new DirectColorModel(24, 0xFF0000, 0xFF00, 0xFF);
@@ -167,7 +171,8 @@ public class PngDecoder extends ImageDecoder {
 
             case PNG_COLOR_TYPE_PLTE: {
                 if (bitDepth != 8 && bitDepth != 4 && bitDepth != 2 && bitDepth != 1) {
-                    throw new IllegalArgumentException("Unknown PNG color type");
+                    // awt.3C=Unknown PNG color type
+                    throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
                 }
 
                 cm = new IndexColorModel(/*bitDepth*/8, cmap.length / 3, cmap, 0, false);
@@ -178,7 +183,8 @@ public class PngDecoder extends ImageDecoder {
 
             case PNG_COLOR_TYPE_GRAY_ALPHA: {
                 if (bitDepth != 8) {
-                    throw new IllegalArgumentException("Unknown PNG color type");
+                    // awt.3C=Unknown PNG color type
+                    throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
                 }
 
                 cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY),
@@ -193,7 +199,8 @@ public class PngDecoder extends ImageDecoder {
 
             case PNG_COLOR_TYPE_RGBA: {
                 if (bitDepth != 8) {
-                    throw new IllegalArgumentException("Unknown PNG color type");
+                    // awt.3C=Unknown PNG color type
+                    throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
                 }
 
                 cm = ColorModel.getRGBdefault();
@@ -202,7 +209,8 @@ public class PngDecoder extends ImageDecoder {
                 break;
             }
             default:
-                throw new IllegalArgumentException("Unknown PNG color type");
+                // awt.3C=Unknown PNG color type
+                throw new IllegalArgumentException(Messages.getString("awt.3C")); //$NON-NLS-1$
         }
 
         // Create output buffer

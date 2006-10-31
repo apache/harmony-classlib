@@ -111,7 +111,7 @@ public abstract class NativeIM implements InputMethod, InputMethodDescriptor {
 
     public String getInputMethodDisplayName(Locale inputLocale,
                                             Locale displayLanguage) {
-        return "System input methods";
+        return "System input methods"; //$NON-NLS-1$
     }
 
     public Image getInputMethodIcon(Locale inputLocale) {

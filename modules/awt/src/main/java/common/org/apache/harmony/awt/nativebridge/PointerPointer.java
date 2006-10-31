@@ -91,12 +91,12 @@ public class PointerPointer extends VoidPointer {
      */
     public void get(VoidPointer[] dst, int offset, int length) {
         // TODO Implement
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented"); //$NON-NLS-1$
     }
 
     public void getAddress(long[] dst, int offset, int length) {
         // TODO Implement
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented"); //$NON-NLS-1$
     }
 
     /**
@@ -110,12 +110,12 @@ public class PointerPointer extends VoidPointer {
      */
     public void set(VoidPointer[] src, int offset, int length) {
         // TODO Implement
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented"); //$NON-NLS-1$
     }
 
     public void setAddress(long[] src, int offset, int length) {
         // TODO Implement
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented"); //$NON-NLS-1$
     }
 
     /**

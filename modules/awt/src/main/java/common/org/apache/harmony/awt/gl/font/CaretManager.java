@@ -30,6 +30,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.*;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * This class provides functionality for creating caret and highlight shapes
  * (bidirectional text is also supported, but, unfortunately, not tested yet).
@@ -50,7 +52,8 @@ public class CaretManager {
         int idx = info.getInsertionIndex();
 
         if (idx < 0 || idx > breaker.getCharCount()) {
-            throw new IllegalArgumentException("TextHitInfo out of range");
+            // awt.42=TextHitInfo out of range
+            throw new IllegalArgumentException(Messages.getString("awt.42")); //$NON-NLS-1$
         }
     }
 

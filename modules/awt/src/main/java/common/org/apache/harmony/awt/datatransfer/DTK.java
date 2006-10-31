@@ -29,6 +29,7 @@ import java.awt.dnd.peer.DropTargetContextPeer;
 import java.nio.charset.Charset;
 
 import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.SystemUtils;
 
 /**
@@ -130,13 +131,14 @@ public abstract class DTK {
         String name;
         switch (SystemUtils.getOS()) {
         case SystemUtils.OS_WINDOWS:
-            name = "org.apache.harmony.awt.datatransfer.windows.WinDTK";
+            name = "org.apache.harmony.awt.datatransfer.windows.WinDTK"; //$NON-NLS-1$
             break;
         case SystemUtils.OS_LINUX:
-            name = "org.apache.harmony.awt.datatransfer.linux.LinuxDTK";
+            name = "org.apache.harmony.awt.datatransfer.linux.LinuxDTK"; //$NON-NLS-1$
             break;
         default:
-            throw new RuntimeException("Unknown native platform.");
+            // awt.4E=Unknown native platform.
+            throw new RuntimeException(Messages.getString("awt.4E")); //$NON-NLS-1$
         }
         try {
             DTK dtk = (DTK) Class.forName(name).newInstance();
@@ -147,12 +149,12 @@ public abstract class DTK {
     }
     
     public String getDefaultCharset() {
-        return "unicode";
+        return "unicode"; //$NON-NLS-1$
     }
 
     protected String[] getCharsets() {
         return new String[] { 
-                "UTF-16", "UTF-8", "unicode", "ISO-8859-1", "US-ASCII" };
+                "UTF-16", "UTF-8", "unicode", "ISO-8859-1", "US-ASCII" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     }
 
     public void initSystemFlavorMap(SystemFlavorMap fm) {
@@ -162,18 +164,18 @@ public abstract class DTK {
                 DataFlavor.stringFlavor, 
                 DataProvider.FORMAT_TEXT);
         appendSystemFlavorMap(fm,
-                charsets, "plain",
+                charsets, "plain", //$NON-NLS-1$
                 DataProvider.FORMAT_TEXT);
 
         appendSystemFlavorMap(fm,
-                charsets, "html",
+                charsets, "html", //$NON-NLS-1$
                 DataProvider.FORMAT_HTML);
         
         appendSystemFlavorMap(fm,
                 DataProvider.urlFlavor, 
                 DataProvider.FORMAT_URL);
         appendSystemFlavorMap(fm,
-                charsets, "uri-list",
+                charsets, "uri-list", //$NON-NLS-1$
                 DataProvider.FORMAT_URL);
         
         appendSystemFlavorMap(fm,

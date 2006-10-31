@@ -23,6 +23,8 @@ package org.apache.harmony.awt.wtk;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Class synchronizer is to protect AWT state integrity in multithreading environment.
  * It is supposed to have a child class per native platform.
@@ -92,8 +94,9 @@ public class Synchronizer {
                     } catch (InterruptedException e) {
                         if (owner != curThread) {
                             waitQueue.remove(curThread);
-                            throw new RuntimeException(
-                                    "Waiting for resource access thread interrupted not from unlock method.");
+                            // awt.1F=Waiting for resource access thread interrupted not from unlock method.
+                            throw new RuntimeException(Messages
+                                    .getString("awt.1F")); //$NON-NLS-1$
                         }
                     }
                 }
@@ -109,10 +112,12 @@ public class Synchronizer {
     public void unlock() {
         synchronized (this) {
             if (acquestCounter == 0) {
-                throw new RuntimeException("Can't unlock not locked resource.");
+                // awt.20=Can't unlock not locked resource.
+                throw new RuntimeException(Messages.getString("awt.20")); //$NON-NLS-1$
             }
             if (owner != Thread.currentThread()) {
-                throw new RuntimeException("Not owner can't unlock resource.");
+                // awt.21=Not owner can't unlock resource.
+                throw new RuntimeException(Messages.getString("awt.21")); //$NON-NLS-1$
             }
 
             acquestCounter--;
@@ -139,10 +144,12 @@ public class Synchronizer {
             Thread curThread = Thread.currentThread();
 
             if (owner != curThread) {
-                throw new RuntimeException("Not owner can't free resource.");
+                // awt.22=Not owner can't free resource.
+                throw new RuntimeException(Messages.getString("awt.22")); //$NON-NLS-1$
             }
             if (storedStates.containsKey(curThread)) {
-                throw new RuntimeException("One thread can't store state several times in a row.");
+                // awt.23=One thread can't store state several times in a row.
+                throw new RuntimeException(Messages.getString("awt.23")); //$NON-NLS-1$
             }
 
             storedStates.put(curThread, new Integer(acquestCounter));
@@ -162,11 +169,13 @@ public class Synchronizer {
             Thread curThread = Thread.currentThread();
 
             if (owner == curThread) {
+                // awt.24=Owner can't overwrite resource state. Lock operations may be lost.
                 throw new RuntimeException(
-                        "Owner can't overwrite resource state. Lock operations may be lost.");
+                        Messages.getString("awt.24")); //$NON-NLS-1$
             }
             if (!storedStates.containsKey(curThread)) {
-                throw new RuntimeException("No state stored for current thread.");
+                // awt.25=No state stored for current thread.
+                throw new RuntimeException(Messages.getString("awt.25")); //$NON-NLS-1$
             }
 
             lock();

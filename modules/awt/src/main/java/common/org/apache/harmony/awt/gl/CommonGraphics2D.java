@@ -143,7 +143,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     protected JavaShapeRasterizer jsr = new JavaShapeRasterizer();
 
-    protected Font font = new Font("Dialog", Font.PLAIN, 12);;
+    protected Font font = new Font("Dialog", Font.PLAIN, 12);; //$NON-NLS-1$
 
     protected TextRenderer jtr = JavaTextRenderer.inst;
 
@@ -157,7 +157,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
 
     // Print debug output or not
-    protected static final boolean debugOutput = "1".equals(System.getProperty("g2d.debug"));
+    protected static final boolean debugOutput = "1".equals(System.getProperty("g2d.debug")); //$NON-NLS-1$ //$NON-NLS-2$
 
     // Constructors
     protected CommonGraphics2D() {
@@ -189,7 +189,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         setColor(c);
         setPaint(p);
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.clearRect("+x+", "+y+", "+width+", "+height+")");
+            System.err.println("CommonGraphics2D.clearRect("+x+", "+y+", "+width+", "+height+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
     }
 
@@ -520,7 +520,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.drawLine("+x1+", "+y1+", "+x2+", "+y2+")");
+            System.err.println("CommonGraphics2D.drawLine("+x1+", "+y1+", "+x2+", "+y2+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
 
         if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1) {
@@ -608,7 +608,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.drawRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")");
+            System.err.println("CommonGraphics2D.drawRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         }
 
         draw(new RoundRectangle2D.Float(x, y, width, height, arcWidth, arcHeight));
@@ -643,7 +643,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void drawString(String str, float x, float y) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.drawString("+str+", "+x+", "+y+")");
+            System.err.println("CommonGraphics2D.drawString("+str+", "+x+", "+y+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
 
         AffineTransform at = (AffineTransform)this.getTransform().clone();
@@ -747,7 +747,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void fillRect(int x, int y, int width, int height) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.fillRect("+x+", "+y+", "+width+", "+height+")");
+            System.err.println("CommonGraphics2D.fillRect("+x+", "+y+", "+width+", "+height+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
 
         fill(new Rectangle(x, y, width, height));
@@ -756,7 +756,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.fillRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")");
+            System.err.println("CommonGraphics2D.fillRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         }
 
         fill(new RoundRectangle2D.Float(x, y, width, height, arcWidth, arcHeight));
@@ -897,7 +897,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void translate(double tx, double ty) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")");
+            System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         transform.translate(tx, ty);
@@ -907,7 +907,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void translate(int tx, int ty) {
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")");
+            System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         transform.translate(tx, ty);
@@ -938,13 +938,13 @@ public abstract class CommonGraphics2D extends Graphics2D {
         if (s == null) {
             setTransformedClip(null);
             if (debugOutput) {
-                System.err.println("CommonGraphics2D.setClip(null)");
+                System.err.println("CommonGraphics2D.setClip(null)"); //$NON-NLS-1$
             }
             return;
         }
 
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.setClip("+s.getBounds()+")");
+            System.err.println("CommonGraphics2D.setClip("+s.getBounds()+")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (s instanceof MultiRectArea) {
@@ -1037,7 +1037,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         }
 
         if (debugOutput) {
-            System.err.println("CommonGraphics2D.fillMultiRectArea("+mra+")");
+            System.err.println("CommonGraphics2D.fillMultiRectArea("+mra+")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (paint instanceof Color){

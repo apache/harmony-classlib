@@ -54,7 +54,7 @@ public class DataSource implements DataProvider {
     }
 
     private boolean isHtmlFlavor(DataFlavor f) {
-        return "html".equalsIgnoreCase(f.getSubType());
+        return "html".equalsIgnoreCase(f.getSubType()); //$NON-NLS-1$
     }
     
     protected DataFlavor[] getDataFlavors() {

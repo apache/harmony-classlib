@@ -29,6 +29,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class MultiRectArea implements Shape {
 
     /**
@@ -270,7 +272,8 @@ public class MultiRectArea implements Shape {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iiterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type = 0;
 
@@ -308,7 +311,8 @@ public class MultiRectArea implements Shape {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iiterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type = 0;
 
@@ -367,7 +371,7 @@ public class MultiRectArea implements Shape {
         } else {
             rect = new int[mra.rect.length];
             System.arraycopy(mra.rect, 0, rect, 0, mra.rect.length);
-            check(this, "MultiRectArea(MRA)");
+            check(this, "MultiRectArea(MRA)"); //$NON-NLS-1$
         }
     }
 
@@ -383,7 +387,7 @@ public class MultiRectArea implements Shape {
             rect[3] = r.x + r.width - 1;
             rect[4] = r.y + r.height - 1;
         }
-        check(this, "MultiRectArea(Rectangle)");
+        check(this, "MultiRectArea(Rectangle)"); //$NON-NLS-1$
     }
 
     /**
@@ -398,7 +402,7 @@ public class MultiRectArea implements Shape {
             rect[3] = x1;
             rect[4] = y1;
         }
-        check(this, "MultiRectArea(Rectangle)");
+        check(this, "MultiRectArea(Rectangle)"); //$NON-NLS-1$
     }
 
     /**
@@ -474,7 +478,8 @@ public class MultiRectArea implements Shape {
     static MultiRectArea check(MultiRectArea mra, String msg) {
         if (CHECK && mra != null) {
             if (MultiRectArea.checkValidation(mra.getRectangles(), mra.sorted) != -1) {
-                new RuntimeException("Invalid MultiRectArea in method " + msg);
+                // awt.4C=Invalid MultiRectArea in method {0}
+                new RuntimeException(Messages.getString("awt.4C", msg)); //$NON-NLS-1$
             }
         }
         return mra;
@@ -582,7 +587,7 @@ public class MultiRectArea implements Shape {
      * Union two MutliRectareArea objects
      */
     public static MultiRectArea intersect(MultiRectArea src1, MultiRectArea src2) {
-        MultiRectArea res = check(MultiRectAreaOp.Intersection.getResult(src1, src2), "intersect(MRA,MRA)");
+        MultiRectArea res = check(MultiRectAreaOp.Intersection.getResult(src1, src2), "intersect(MRA,MRA)"); //$NON-NLS-1$
         return res;
     }
 
@@ -590,7 +595,7 @@ public class MultiRectArea implements Shape {
      * Intersect two MultiRectArea objects
      */
     public static MultiRectArea union(MultiRectArea src1, MultiRectArea src2) {
-        MultiRectArea res = check(new MultiRectAreaOp.Union().getResult(src1, src2), "union(MRA,MRA)");
+        MultiRectArea res = check(new MultiRectAreaOp.Union().getResult(src1, src2), "union(MRA,MRA)"); //$NON-NLS-1$
         return res;
     }
 
@@ -598,7 +603,7 @@ public class MultiRectArea implements Shape {
      * Subtract two MultiRectArea objects
      */
     public static MultiRectArea subtract(MultiRectArea src1, MultiRectArea src2) {
-        MultiRectArea res = check(MultiRectAreaOp.Subtraction.getResult(src1, src2), "subtract(MRA,MRA)");
+        MultiRectArea res = check(MultiRectAreaOp.Subtraction.getResult(src1, src2), "subtract(MRA,MRA)"); //$NON-NLS-1$
         return res;
     }
 
@@ -607,15 +612,15 @@ public class MultiRectArea implements Shape {
      */
     public static void print(MultiRectArea mra, String msg) {
         if (mra == null) {
-            System.out.println(msg + "=null");
+            System.out.println(msg + "=null"); //$NON-NLS-1$
         } else {
             Rectangle[] rects = mra.getRectangles();
-            System.out.println(msg + "(" + rects.length + ")");
+            System.out.println(msg + "(" + rects.length + ")"); //$NON-NLS-1$ //$NON-NLS-2$
             for (Rectangle element : rects) {
                 System.out.println(
-                        element.x + "," +
-                        element.y + "," +
-                        (element.x + element.width - 1) + "," +
+                        element.x + "," + //$NON-NLS-1$
+                        element.y + "," + //$NON-NLS-1$
+                        (element.x + element.width - 1) + "," + //$NON-NLS-1$
                         (element.y + element.height - 1));
             }
         }
@@ -763,14 +768,14 @@ public class MultiRectArea implements Shape {
      * Tests does rectangle lie inside MultiRectArea object
      */
     public boolean contains(double x, double y, double w, double h) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     /**
      * Tests does Rectangle2D lie inside MultiRectArea object
      */
     public boolean contains(Rectangle2D r) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     /**
@@ -818,13 +823,13 @@ public class MultiRectArea implements Shape {
     public String toString() {
         int cnt = getRectCount();
         StringBuffer sb = new StringBuffer((cnt << 5) + 128);
-        sb.append(getClass().getName()).append(" [");
+        sb.append(getClass().getName()).append(" ["); //$NON-NLS-1$
         for(int i = 1; i < rect[0]; i += 4) {
-            sb.append(i > 1 ? ", [" : "[").append(rect[i]).append(", ").append(rect[i + 1]).
-            append(", ").append(rect[i + 2] - rect[i] + 1).append(", ").
-            append(rect[i + 3] - rect[i + 1] + 1).append("]");
+            sb.append(i > 1 ? ", [" : "[").append(rect[i]).append(", ").append(rect[i + 1]). //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            append(", ").append(rect[i + 2] - rect[i] + 1).append(", "). //$NON-NLS-1$ //$NON-NLS-2$
+            append(rect[i + 3] - rect[i + 1] + 1).append("]"); //$NON-NLS-1$
         }
-        return sb.append("]").toString();
+        return sb.append("]").toString(); //$NON-NLS-1$
     }
 
 }

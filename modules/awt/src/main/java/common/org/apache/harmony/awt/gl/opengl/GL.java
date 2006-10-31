@@ -38,7 +38,7 @@ public class GL extends BasicLibWrapper {
     }
 
     private GL() {
-        System.loadLibrary("oglwrapper");
+        System.loadLibrary("oglwrapper"); //$NON-NLS-1$
         init();
     }
 

@@ -20,6 +20,8 @@
  */
 package org.apache.harmony.awt;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Analog of StringBuffer but works with bytes.
  */
@@ -116,7 +118,8 @@ public class ByteVector {
      */
     public byte get(int index) {
         if ((index < 0) || (index >= count)) {
-            throw new RuntimeException("Index out of range.");
+            // awt.33=index is out of range
+            throw new RuntimeException(Messages.getString("awt.33")); //$NON-NLS-1$
         }
 
         return value[index];

@@ -38,6 +38,7 @@ import java.awt.image.WritableRaster;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
 import org.apache.harmony.awt.gl.image.DataBufferListener;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 /**
@@ -65,8 +66,8 @@ public class ImageSurface extends Surface implements DataBufferListener {
 
     public ImageSurface(ColorModel cm, WritableRaster raster, int type){
         if (!cm.isCompatibleRaster(raster)) {
-            throw new IllegalArgumentException("The raster is" +
-                    " incompatible with this ColorModel");
+            // awt.4D=The raster is incompatible with this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.4D")); //$NON-NLS-1$
         }
         this.cm = cm;
         this.raster = raster;
@@ -183,8 +184,8 @@ public class ImageSurface extends Surface implements DataBufferListener {
                     (ComponentSampleModel) sm;
                 scanlineStride = csm.getScanlineStride();
             }else{
-                throw new IllegalArgumentException("The raster is" +
-                " incompatible with this ColorModel");
+                // awt.4D=The raster is incompatible with this ColorModel
+                throw new IllegalArgumentException(Messages.getString("awt.4D")); //$NON-NLS-1$
             }
 
         }else if(cm instanceof ComponentColorModel){
@@ -202,8 +203,8 @@ public class ImageSurface extends Surface implements DataBufferListener {
                     smType = CSM;
                 }
             }else{
-                throw new IllegalArgumentException("The raster is" +
-                " incompatible with this ColorModel");
+                // awt.4D=The raster is incompatible with this ColorModel
+                throw new IllegalArgumentException(Messages.getString("awt.4D")); //$NON-NLS-1$
             }
 
         }else{

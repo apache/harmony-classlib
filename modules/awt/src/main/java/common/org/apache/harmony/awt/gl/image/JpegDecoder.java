@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class JpegDecoder extends ImageDecoder {
     // Only 2 output colorspaces expected. Others are converted into
     // these ones.
@@ -78,7 +80,7 @@ public class JpegDecoder extends ImageDecoder {
     private ColorModel cm = null;
 
     static {
-        System.loadLibrary("jpegdecoder");
+        System.loadLibrary("jpegdecoder"); //$NON-NLS-1$
 
         cmGray = new ComponentColorModel(
                 ColorSpace.getInstance(ColorSpace.CS_GRAY),
@@ -192,7 +194,9 @@ public class JpegDecoder extends ImageDecoder {
         switch (jpegColorSpace) {
             case JCS_GRAYSCALE: cm = cmGray; break;
             case JCS_RGB: cm = cmRGB; break;
-            default: throw new IllegalArgumentException("Unknown colorspace");
+            default: 
+                // awt.3D=Unknown colorspace
+                throw new IllegalArgumentException(Messages.getString("awt.3D")); //$NON-NLS-1$
         }
         setColorModel(cm);
 

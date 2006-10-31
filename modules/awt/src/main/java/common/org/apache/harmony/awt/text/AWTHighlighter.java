@@ -31,6 +31,8 @@ import javax.swing.text.Document;
 import javax.swing.text.Position;
 import javax.swing.text.View;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  *
  * That's a simple highlighter for a text component.
@@ -51,7 +53,8 @@ public class AWTHighlighter {
     public Object addHighlight(final int p0, final int p1)
        throws BadLocationException {
         if (p0 < 0 || p1 < p0 || p1 > getDocumentLength()) {
-            throw new BadLocationException("invalid range", 0);
+            // awt.29=Invalid range
+            throw new BadLocationException(Messages.getString("awt.29"), 0); //$NON-NLS-1$
         }
         start = document.createPosition(p0);
         end = document.createPosition(p1);
@@ -62,7 +65,8 @@ public class AWTHighlighter {
     public void changeHighlight(final int p0, final int p1)
        throws BadLocationException {
         if (p0 < 0 || p1 < p0 || p1 > getDocumentLength()) {
-            throw new BadLocationException("invalid range", 0);
+            // awt.29=Invalid range
+            throw new BadLocationException(Messages.getString("awt.29"), 0); //$NON-NLS-1$
         }
         int oldStart = getStartOffset();
         int oldEnd = getEndOffset();

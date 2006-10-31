@@ -24,6 +24,7 @@ import java.awt.Shape;
 import java.awt.geom.PathIterator;
 
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class JavaShapeRasterizer {
 
@@ -224,7 +225,8 @@ public class JavaShapeRasterizer {
                 closed = true;
                 break;
             default:
-                throw new RuntimeException("Wrong segment");
+                // awt.36=Wrong segment
+                throw new RuntimeException(Messages.getString("awt.36")); //$NON-NLS-1$
             }
             path.next();
         }

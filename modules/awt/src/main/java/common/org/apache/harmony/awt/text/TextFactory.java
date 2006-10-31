@@ -31,7 +31,7 @@ import javax.swing.text.View;
 
 public abstract class TextFactory {
     private static final String FACTORY_IMPL_CLS_NAME =
-        "javax.swing.text.TextFactoryImpl";
+        "javax.swing.text.TextFactoryImpl"; //$NON-NLS-1$
 
     private static final TextFactory viewFactory = createTextFactory();
 

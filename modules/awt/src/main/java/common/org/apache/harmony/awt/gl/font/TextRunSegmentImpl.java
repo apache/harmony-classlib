@@ -32,6 +32,8 @@ import java.awt.geom.Point2D;
 //import java.text.Bidi;
 import java.util.Arrays;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * Date: Apr 25, 2005
  * Time: 4:33:18 PM
@@ -102,10 +104,9 @@ public class TextRunSegmentImpl {
             this.metrics = new BasicMetrics(lm, i.font);
 
             if (lm.getNumChars() != i.length) { // XXX todo - This should be handled
+                // awt.41=Font returned unsupported type of line metrics. This case is known, but not supported yet.
                 throw new UnsupportedOperationException(
-                        "Font returned unsupported type of line metrics. " +
-                        "This case is known, but not supported yet."
-                );
+                        Messages.getString("awt.41")); //$NON-NLS-1$
             }
         }
 

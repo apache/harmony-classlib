@@ -49,7 +49,7 @@ public final class ActionSet implements ActionNames {
         }
         @Override
         public void internalPerformAction(final TextKit tk) {
-            tk.replaceSelectedText("\n");
+            tk.replaceSelectedText("\n"); //$NON-NLS-1$
         }
     }
 
@@ -59,7 +59,7 @@ public final class ActionSet implements ActionNames {
         }
         @Override
         public void internalPerformAction(final TextKit tk) {
-            tk.replaceSelectedText("\t");
+            tk.replaceSelectedText("\t"); //$NON-NLS-1$
         }
     }
 

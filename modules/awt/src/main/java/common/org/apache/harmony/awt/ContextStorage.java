@@ -23,6 +23,7 @@ package org.apache.harmony.awt;
 import java.awt.*;
 
 import org.apache.harmony.awt.datatransfer.*;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.*;
 
 
@@ -122,7 +123,8 @@ public final class ContextStorage {
             }
             group = group.getParent();
         }
-        throw new RuntimeException("Application has run out of context thread group");
+        // awt.59=Application has run out of context thread group
+        throw new RuntimeException(Messages.getString("awt.59")); //$NON-NLS-1$
     }
 
     public static boolean shutdownPending() {

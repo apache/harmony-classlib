@@ -66,7 +66,7 @@ public class DefaultMenu {
 
             MenuItemState is = s.getItem(index);
             String label = is.getText();
-            if (!label.equals("-")) {
+            if (!label.equals("-")) { //$NON-NLS-1$
                 int dy = verticalPadding * 2 + itemHeight;
                 y += dy;
 
@@ -136,7 +136,7 @@ public class DefaultMenu {
             int dx = 0, dy = 0;
             MenuItemState is = s.getItem(index);
             String label = is.getText();
-            if (!label.equals("-")) {
+            if (!label.equals("-")) { //$NON-NLS-1$
                 dy = verticalPadding * 2 + itemHeight;
                 dx = fm.stringWidth(label);
             } else {
@@ -174,7 +174,7 @@ public class DefaultMenu {
         for (int index=0; index < s.getItemCount(); index++) {
 
             String label = s.getItem(index).getText();
-            if (!label.equals("-")) {
+            if (!label.equals("-")) { //$NON-NLS-1$
                 int dy = verticalPadding * 2 + itemHeight;
                 if ((p.y <= y + dy) && (p.y > y)) {
                     return index;
@@ -203,7 +203,7 @@ public class DefaultMenu {
         for (int i=0; i < index; i++) {
 
             String label = s.getItem(i).getText();
-            if (!label.equals("-")) {
+            if (!label.equals("-")) { //$NON-NLS-1$
                 int dy = verticalPadding * 2 + itemHeight;
                 y += dy;
             } else {

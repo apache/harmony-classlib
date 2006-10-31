@@ -28,7 +28,7 @@ public class DataTransferThread extends Thread {
     private final DTK dtk;
 
     public DataTransferThread(DTK dtk) {
-        super("AWT-DataTransferThread");
+        super("AWT-DataTransferThread"); //$NON-NLS-1$
         setDaemon(true);
         this.dtk = dtk;
     }
