@@ -286,4 +286,56 @@ public class KerberosTicketTest extends TestCase {
         assertEquals(authTime, krbTicket.getStartTime());
         assertNotSame(authTime, krbTicket.getStartTime());
     }
+    
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#destroy()
+     * @tests javax.security.auth.kerberos.KerberosTicket#isDestroyed()
+     */
+    public void test_Destroyable() throws Exception {
+
+        KerberosTicket kt = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, flags, authTime, startTime, endTime,
+                renewTill, addesses);
+
+        assertFalse(kt.isDestroyed());
+
+        kt.destroy();
+        assertTrue(kt.isDestroyed());
+
+        // no exceptions for second destroy
+        kt.destroy();
+
+        assertNull(kt.getAuthTime());
+        assertNull(kt.getClient());
+        assertNull(kt.getClientAddresses());
+
+        try {
+            kt.getEncoded();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        assertNull(kt.getEndTime());
+        assertNull(kt.getFlags());
+        assertNull(kt.getRenewTill());
+        assertNull(kt.getServer());
+
+        try {
+            kt.getSessionKey();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            kt.getSessionKeyType();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            kt.toString();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+    }
 }

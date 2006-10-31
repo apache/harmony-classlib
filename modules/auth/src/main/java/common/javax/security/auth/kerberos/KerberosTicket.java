@@ -174,12 +174,10 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     }
 
     public final KerberosPrincipal getClient() {
-        checkState();
         return client;
     }
 
     public final KerberosPrincipal getServer() {
-        checkState();
         return server;
     }
 
@@ -237,7 +235,9 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     }
 
     public final boolean[] getFlags() {
-        checkState();
+        if (destroyed) {
+            return null;
+        }
         boolean[] tmp = new boolean[flags.length];
         System.arraycopy(flags, 0, tmp, 0, tmp.length);
         return tmp;
@@ -245,7 +245,9 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     }
 
     public final Date getAuthTime() {
-        checkState();
+        if (destroyed) {
+            return null;
+        }
         return new Date(authTime.getTime());
     }
 
@@ -255,17 +257,20 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     }
 
     public final Date getEndTime() {
-        checkState();
+        if (destroyed) {
+            return null;
+        }
         return new Date(endTime.getTime());
     }
 
     public final Date getRenewTill() {
-        checkState();
+        if (destroyed) {
+            return null;
+        }
         return renewTill;
     }
 
     public final InetAddress[] getClientAddresses() {
-        checkState();
         if (this.clientAddresses != null) {
             InetAddress[] tmp = new InetAddress[this.clientAddresses.length];
             System.arraycopy(clientAddresses, 0, tmp, 0, tmp.length);
@@ -275,22 +280,20 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     }
 
     public void destroy() throws DestroyFailedException {
-        if (!destroyed) {
-            Arrays.fill(this.asn1Encoding, (byte) 0);
-            this.client = null;
-            this.server = null;
-            this.sessionKey.destroy();
-            this.flags = null;
-            this.authTime = null;
-            this.startTime = null;
-            this.endTime = null;
-            this.renewTill = null;
-            this.clientAddresses = null;
-            destroyed = true;
-        } else {
-            throw new DestroyFailedException(Messages.getString("auth.43")); //$NON-NLS-1$
+        if (destroyed) {
+            return;
         }
-
+        Arrays.fill(this.asn1Encoding, (byte) 0);
+        this.client = null;
+        this.server = null;
+        this.sessionKey.destroy();
+        this.flags = null;
+        this.authTime = null;
+        this.startTime = null;
+        this.endTime = null;
+        this.renewTill = null;
+        this.clientAddresses = null;
+        destroyed = true;
     }
 
     public boolean isDestroyed() {
