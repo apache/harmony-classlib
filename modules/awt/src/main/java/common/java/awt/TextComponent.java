@@ -349,7 +349,9 @@ public class TextComponent extends Component implements Accessible {
             try {
                 int start = Math.min(dot, mark);
                 int length = Math.abs(dot - mark);
-                document.replace(start, length, text, null);
+                synchronized(TextComponent.this) {
+                    document.replace(start, length, text, null);
+                }
             } catch (final BadLocationException e) {
             }
         }
@@ -823,7 +825,9 @@ public class TextComponent extends Component implements Accessible {
                 caret.setDot(0, caret.getDotBias());
             }
             int oldCaretPos = caret.getDot();
-            document.replace(0, document.getLength(), text, null);
+            synchronized (this) {
+                document.replace(0, document.getLength(), text, null);
+            }
             if (!isDisplayable() && (oldCaretPos != caret.getDot())) {
                 // return caret back to emulate "no movement"
                 caret.setDot(oldCaretPos, caret.getDotBias());
@@ -986,8 +990,14 @@ public class TextComponent extends Component implements Accessible {
         Rectangle client = getClient();
         Shape oldClip = g.getClip();
         g.clipRect(client.x, client.y, client.width, client.height);
-        rootViewContext.getView().paint(g, r);
-        caret.paint(g);
+        document.readLock();
+        try {
+            rootViewContext.getView().paint(g, r);
+            caret.paint(g);
+        } finally {
+            document.readUnlock();
+        }
+       
         g.setClip(oldClip);
     }
 
