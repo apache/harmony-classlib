@@ -100,3 +100,6 @@ keystore.type=BKS
 ssl.KeyManagerFactory.algorithm=X509
 ssl.TrustManagerFactory.algorithm=X509
 
+# system.scope is used to specify implementation class of IdentityScope
+# this class should can be loaded by boot classloader
+system.scope=org.apache.harmony.security.SystemScope
