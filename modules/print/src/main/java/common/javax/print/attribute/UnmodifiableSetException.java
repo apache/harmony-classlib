@@ -14,15 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
-
 public class UnmodifiableSetException extends RuntimeException {
+    private static final long serialVersionUID = 2255250308571511731L;
 
     public UnmodifiableSetException() {
         super();
@@ -30,7 +26,5 @@ public class UnmodifiableSetException extends RuntimeException {
 
     public UnmodifiableSetException(String exceptionInformation) {
         super(exceptionInformation);
-
     }
-
 }

@@ -14,80 +14,61 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
-
 public abstract class Size2DSyntax implements Cloneable, Serializable {
-
-
     public static final int INCH = 25400;
 
     public static final int MM = 1000;
 
-    private int x;
+    private final int x;
 
-    private int y;
-
+    private final int y;
 
     protected Size2DSyntax(int x, int y, int units) {
-
         if ((x < 0) || (y < 0) || (units < 1)) {
-            throw new IllegalArgumentException("Valid values are:" +
-                                            "x>=0, y>=0, units>=1");
+            throw new IllegalArgumentException("Valid values are:" + "x>=0, y>=0, units>=1");
         }
-        this.x = x*units;
-        this.y = y*units;
-
+        this.x = x * units;
+        this.y = y * units;
     }
 
     protected Size2DSyntax(float x, float y, int units) {
-
-        if ( (x < 0.0f) || (y < 0.0f) || (units < 1) ) {
-            throw new IllegalArgumentException("Valid values are:" +
-                                            "x>=0.0, y>=0.0, units>=1");
+        if ((x < 0.0f) || (y < 0.0f) || (units < 1)) {
+            throw new IllegalArgumentException("Valid values are:" + "x>=0.0, y>=0.0, units>=1");
         }
-        this.x = Math.round(x*units);
-        this.y = Math.round(y*units);
-
+        this.x = Math.round(x * units);
+        this.y = Math.round(y * units);
     }
 
+    @Override
     public boolean equals(Object object) {
-
-        if ((object instanceof Size2DSyntax) &&
-                (x == ((Size2DSyntax) object).x ) &&
-                    (y == ((Size2DSyntax) object).y)) {
-                            return true;
-        } else {
-            return false;
+        if ((object instanceof Size2DSyntax) && (x == ((Size2DSyntax) object).x)
+                && (y == ((Size2DSyntax) object).y)) {
+            return true;
         }
+        return false;
     }
 
     public float[] getSize(int units) {
-        return new float[] { getX(units),
-                             getY(units) };
+        return new float[] { getX(units), getY(units) };
     }
 
     public float getX(int units) {
-
         if (units < 1) {
             throw new IllegalArgumentException("units is less than 1");
         }
-        return ((float) x)/units;
+        return ((float) x) / units;
     }
 
     public float getY(int units) {
-
         if (units < 1) {
             throw new IllegalArgumentException("units is less than 1");
         }
-        return ((float) y)/units;
+        return ((float) y) / units;
     }
 
     protected int getXMicrometers() {
@@ -98,10 +79,12 @@ public abstract class Size2DSyntax implements Cloneable, Serializable {
         return y;
     }
 
+    @Override
     public int hashCode() {
-        return ( y | (x << 16) );
+        return (y | (x << 16));
     }
 
+    @Override
     public String toString() {
         return (x + "x" + y + " um");
     }
@@ -112,5 +95,4 @@ public abstract class Size2DSyntax implements Cloneable, Serializable {
         }
         return (getX(units) + "x" + getX(units) + " " + unitsName);
     }
-
 }

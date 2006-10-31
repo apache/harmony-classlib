@@ -14,56 +14,47 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
 public abstract class IntegerSyntax implements Cloneable, Serializable {
-
-
-    private int value;
-
+    private final int value;
 
     protected IntegerSyntax(int intValue) {
+        super();
         value = intValue;
     }
 
     protected IntegerSyntax(int intValue, int lowerBound, int upperBound) {
-
+        super();
         if ((intValue < lowerBound) || (intValue > upperBound)) {
-            throw new IllegalArgumentException("Value " + value +
-                    " not in valid range (" + lowerBound + "," +
-                        upperBound + ")" );
+            throw new IllegalArgumentException("Value " + intValue + " not in valid range ("
+                    + lowerBound + "," + upperBound + ")");
         }
         value = intValue;
-    }
-
-
-    public boolean equals(Object object) {
-
-        if ((object instanceof IntegerSyntax) &&
-                value == ((IntegerSyntax) object).value) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public int getValue() {
         return value;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if ((object instanceof IntegerSyntax) && value == ((IntegerSyntax) object).value) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public int hashCode() {
         return value;
     }
 
+    @Override
     public String toString() {
         return Integer.toString(value);
     }
-
 }

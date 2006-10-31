@@ -14,53 +14,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 import java.net.URI;
 
-
 public abstract class URISyntax implements Cloneable, Serializable {
+    private final URI uri;
 
-
-    private URI uri;
-
-
-    protected URISyntax (URI uriValue) {
-
+    protected URISyntax(URI uriValue) {
+        super();
         if (uriValue == null) {
             throw new NullPointerException("Null uri value");
-        } else {
-            uri = uriValue;
         }
+        uri = uriValue;
     }
 
-
+    @Override
     public boolean equals(Object object) {
-
-        if ((object instanceof URISyntax) &&
-                uri.equals (((URISyntax) object).uri)) {
+        if ((object instanceof URISyntax) && uri.equals(((URISyntax) object).uri)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public URI getURI()  {
+    public URI getURI() {
         return uri;
     }
 
+    @Override
     public int hashCode() {
         return uri.hashCode();
-     }
+    }
 
+    @Override
     public String toString() {
         return uri.toString();
     }
-
 }

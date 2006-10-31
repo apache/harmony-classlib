@@ -14,20 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.6 $ 
- */ 
 
 package javax.print.attribute;
 
 import java.io.Serializable;
 
 public interface Attribute extends Serializable {
-
-    Class getCategory();
-    //1.5 support requires the following changes
-    //Class<? extends Attribute> getCategory();
+    Class<? extends Attribute> getCategory();
 
     String getName();
 }

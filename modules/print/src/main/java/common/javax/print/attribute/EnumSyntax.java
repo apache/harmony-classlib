@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute;
 
@@ -26,75 +22,65 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 public abstract class EnumSyntax implements Cloneable, Serializable {
-
-
-    private int value;
+    private final int value;
 
     protected EnumSyntax(int intValue) {
+        super();
         value = intValue;
     }
 
-    public Object clone() {
-        return this;
-    }
-
-    protected  EnumSyntax[] getEnumValueTable() {
+    protected EnumSyntax[] getEnumValueTable() {
         return null;
     }
 
-    protected  int getOffset() {
+    protected int getOffset() {
         return 0;
     }
 
-    protected  String[] getStringTable() {
+    protected String[] getStringTable() {
         return null;
     }
 
     public int getValue() {
         return value;
-     }
+    }
 
+    @Override
     public int hashCode() {
         return value;
     }
 
-    protected Object readResolve() throws ObjectStreamException {
+    @Override
+    public Object clone() {
+        return this;
+    }
 
+    @Override
+    public String toString() {
+        int i = value - getOffset();
+        String[] stringTable = getStringTable();
+        if ((stringTable == null) || (i < 0) || (i > stringTable.length - 1)) {
+            //No string value corresponding to enumeration value
+            return Integer.toString(value);
+        }
+        return stringTable[i];
+    }
+
+    protected Object readResolve() throws ObjectStreamException {
         int offset = getOffset();
         int i = value - offset;
         EnumSyntax[] enumTable = getEnumValueTable();
-
         if (enumTable == null) {
             throw new InvalidObjectException("Null enumeration value table");
         }
-
-        if ( (i < 0) || (i > enumTable.length-1) ) {
-            throw new InvalidObjectException("Value = " + value +
-                    " is not in valid range (" + offset + ","
-                        +(offset + enumTable.length-1) + ")" );
+        if ((i < 0) || (i > enumTable.length - 1)) {
+            throw new InvalidObjectException("Value = " + value + " is not in valid range ("
+                    + offset + "," + (offset + enumTable.length - 1) + ")");
         }
-
         EnumSyntax outcome = enumTable[i];
-
         if (outcome == null) {
             throw new InvalidObjectException("Null enumeration value");
         }
-
         return outcome;
-
     }
-
-    public String toString() {
-
-        int i = value - getOffset();
-        String[] stringTable = getStringTable();
-        if ( (stringTable == null) || (i < 0) || (i > stringTable.length-1) ) {
-            //No string value corresponding to enumeration value
-            return Integer.toString(value);
-        } else {
-            return stringTable[i];
-        }
-    }
-
-
 }

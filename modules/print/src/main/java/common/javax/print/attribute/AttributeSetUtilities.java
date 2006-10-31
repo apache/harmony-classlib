@@ -323,54 +323,35 @@ public final class AttributeSetUtilities {
     }
 
     
-    public static Class
-        verifyAttributeCategory(Object object, Class interfaceName) {
-
-    //1.5 support requires the following changes 
-    //public static Class<?> verifyAttributeCategory(Object object,
-    //Class<?> interfaceName);   
-
-        if ( !(Attribute.class).isAssignableFrom(interfaceName) ){
-        throw new ClassCastException(interfaceName.getName()+" is not " +
-                            "interface Attribute or it's subinterface");
-        } else if ( interfaceName.isAssignableFrom((Class) object) ) {
-            return (Class) object;
+    public static Class<?> verifyAttributeCategory(Object object, Class<?> interfaceName) {
+        if (!(Attribute.class).isAssignableFrom(interfaceName)) {
+            throw new ClassCastException(interfaceName.getName() + " is not "
+                    + "interface Attribute or it's subinterface");
+        } else if (interfaceName.isAssignableFrom((Class<?>) object)) {
+            return (Class<?>) object;
         } else {
-            throw new ClassCastException(object.getClass().getName()+
-                    "doesn't implement"+interfaceName.getName());
+            throw new ClassCastException(object.getClass().getName() + "doesn't implement"
+                    + interfaceName.getName());
         }
     }
- 
-    public static Attribute 
-        verifyAttributeValue(Object attribute, Class interfaceName) {
-    
-    //1.5 support requires the following changes 
-    //public static Attribute verifyAttributeValue(Object object,
-    //Class<?> interfaceName);
-        
+
+    public static Attribute verifyAttributeValue(Object attribute, Class<?> interfaceName) {
         if (attribute == null) {
             throw new NullPointerException("Null attribute");
-        } else if ( interfaceName.isInstance(attribute) ) {
+        } else if (interfaceName.isInstance(attribute)) {
             return (Attribute) attribute;
         } else {
             throw new ClassCastException("Object is not an instance of "
-                            + interfaceName.getName());
+                    + interfaceName.getName());
         }
     }
-    
-    public static void 
-        verifyCategoryForValue(Class attributeCategory, Attribute attribute) {
-    
-    //1.5 support requires the following changes 
-    //public static void verifyCategoryForValue(Class<?> category,
-    //Attribute attribute);
-        
-        if (!attributeCategory.equals (attribute.getCategory())) {
-            throw new IllegalArgumentException(attributeCategory.getName()+
-                            "is not equal to the category of the attribute"+
-                                attribute.getCategory().getName());
-        }
 
+    public static void verifyCategoryForValue(Class<?> attributeCategory, Attribute attribute) {
+        if (!attributeCategory.equals(attribute.getCategory())) {
+            throw new IllegalArgumentException(attributeCategory.getName()
+                    + "is not equal to the category of the attribute"
+                    + attribute.getCategory().getName());
+        }
     }
 
 }
