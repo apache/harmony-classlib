@@ -33,6 +33,7 @@ import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.Glyph;
 import org.apache.harmony.awt.gl.font.NativeFont;
 import org.apache.harmony.awt.gl.font.WindowsFont;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 /**
@@ -47,11 +48,11 @@ public class GDIPTextRenderer extends TextRenderer {
     // GDI Pen object handle 
     long curPen;
     
-    // curPen's �olor 
+    // curPen's color 
     int curPenColor;
     
     // Print debug output or not
-    protected static final boolean debugOutput = "1".equals(System.getProperty("g2d.debug"));
+    protected static final boolean debugOutput = "1".equals(System.getProperty("g2d.debug")); //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final GDIPTextRenderer inst = new GDIPTextRenderer();
 
@@ -153,8 +154,8 @@ public class GDIPTextRenderer extends TextRenderer {
                         NativeFont.DriverStringOptionsCmapLookup,
                         fontMatrix);
                 if (status != 0 && debugOutput){
-                    System.err.println("GDIPlus DrawDriverString error status = " + 
-                            status);
+                    // awt.err.02=GDIPlus DrawDriverString error status = {0}
+                    System.err.println(Messages.getString("awt.err.02", status));  //$NON-NLS-1$
                 }
 
                 count = 0;
@@ -174,8 +175,8 @@ public class GDIPTextRenderer extends TextRenderer {
                         NativeFont.DriverStringOptionsCmapLookup,
                         matrix);
                 if (status != 0 && debugOutput){
-                    System.err.println("GDIPlus DrawDriverString error status = " + 
-                            status);
+                    // awt.err.02=GDIPlus DrawDriverString error status = {0}
+                    System.err.println(Messages.getString("awt.err.02", status)); //$NON-NLS-1$
                 }
 
             }
@@ -191,8 +192,8 @@ public class GDIPTextRenderer extends TextRenderer {
                         NativeFont.DriverStringOptionsCmapLookup,
                         fontMatrix);
                 if (status != 0 && debugOutput){
-                    System.err.println("GDIPlus DrawDriverString error status = " + 
-                            status);
+                    // awt.err.02=GDIPlus DrawDriverString error status = {0}
+                    System.err.println(Messages.getString("awt.err.02", status));  //$NON-NLS-1$
                 }
 
             }
@@ -224,7 +225,8 @@ public class GDIPTextRenderer extends TextRenderer {
         }
 
         if (status != 0 && debugOutput){
-            System.err.println("GDIPlus DrawDriverString error status = " + status);
+            // awt.err.02=GDIPlus DrawDriverString error status = {0}
+            System.err.println(Messages.getString("awt.err.02", status)); //$NON-NLS-1$
         }
     }
 
@@ -295,9 +297,8 @@ public class GDIPTextRenderer extends TextRenderer {
                             NativeFont.DriverStringOptionsCmapLookup,
                             fontMatrix);
                     if (status != 0 && debugOutput){
-                        System.err.println("gdipDrawCompositeGlyphVector: " +
-                                "GDIPlus DrawDriverString error status = " + 
-                                status);
+                        // awt.err.03=gdipDrawCompositeGlyphVector: GDIPlus DrawDriverString error status = {0}
+                        System.err.println(Messages.getString("awt.err.03", status));  //$NON-NLS-1$
                     }
 
                     count = 0;
@@ -326,8 +327,8 @@ public class GDIPTextRenderer extends TextRenderer {
                         NativeFont.DriverStringOptionsCmapLookup,
                         fontMatrix);
                 if (status != 0 && debugOutput){
-                    System.err.println("gdipDrawCompositeGlyphVector: GDIPlus " +
-                            "DrawDriverString error status = " + status);
+                    // awt.err.04=gdipDrawCompositeGlyphVector: GDIPlus DrawDriverString error status = {0}
+                    System.err.println(Messages.getString("awt.err.04", status)); //$NON-NLS-1$
                 }
                 count = 0;
             }
@@ -347,8 +348,8 @@ public class GDIPTextRenderer extends TextRenderer {
                     matrix);
 
             if (status != 0 && debugOutput){
-                System.err.println("gdipDrawCompositeGlyphVector: GDIPlus " +
-                        "DrawDriverChar error status = " + status);
+                // awt.err.04=gdipDrawCompositeGlyphVector: GDIPlus DrawDriverString error status = {0}
+                System.err.println(Messages.getString("awt.err.04", status)); //$NON-NLS-1$
             }
                 
         }
@@ -438,8 +439,8 @@ public class GDIPTextRenderer extends TextRenderer {
                 matrix);
 
         if (status != 0 && debugOutput){
-            System.err.println("GDIPlus DrawDriverString error status = " + 
-                    status);
+            // awt.err.02=GDIPlus DrawDriverString error status = {0}
+            System.err.println(Messages.getString("awt.err.02", status));  //$NON-NLS-1$
         }
     }
 
@@ -502,8 +503,8 @@ public class GDIPTextRenderer extends TextRenderer {
                 matrix);
 
         if (status != 0 && debugOutput){
-            System.err.println("GDIPlus DrawDriverString error status = " + 
-                    status);
+            // awt.err.02=GDIPlus DrawDriverString error status = {0}
+            System.err.println(Messages.getString("awt.err.02", status));  //$NON-NLS-1$
         }
 
     }
@@ -569,8 +570,8 @@ public class GDIPTextRenderer extends TextRenderer {
                         NativeFont.DriverStringOptionsCmapLookup,
                         matrix);
                 if (status != 0 && debugOutput){
-                    System.err.println("GDIPlus DrawDriverString error status = " + 
-                            status);
+                    // awt.err.02=GDIPlus DrawDriverString error status = {0}
+                    System.err.println(Messages.getString("awt.err.02", status));  //$NON-NLS-1$
                 }
 
                 count = 0;
@@ -594,7 +595,8 @@ public class GDIPTextRenderer extends TextRenderer {
               NativeFont.DriverStringOptionsCmapLookup,
               matrix);
       if (status != 0 && debugOutput){
-          System.err.println("GDIPlus DrawDriverString error status = " + status);
+          // awt.err.02=GDIPlus DrawDriverString error status = {0}
+          System.err.println(Messages.getString("awt.err.02", status)); //$NON-NLS-1$
       }
 
     }

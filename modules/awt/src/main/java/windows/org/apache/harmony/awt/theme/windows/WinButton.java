@@ -39,7 +39,7 @@ public class WinButton extends WinStyle {
         WinThemeGraphics wgr = new WinThemeGraphics(g);
 
         if (t.isXpThemeActive()) {
-            wgr.setTheme(t.getXpTheme("Button"));
+            wgr.setTheme(t.getXpTheme("Button")); //$NON-NLS-1$
             wgr.fillBackground(size, s.getBackground(), false);
             wgr.drawXpBackground(size, WindowsConsts.BP_PUSHBUTTON,
                     getXpState(s));

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.PointerPointer;
@@ -79,7 +80,7 @@ public class WinFileDialog extends WinStyle {
             File file = new File(fullName);
             String fName = file.getName();
             boolean res = true;
-            if (!"".equals(fName)) {
+            if (!"".equals(fName)) { //$NON-NLS-1$
                 res = ff.accept(file.getParentFile(), fName);
             }            
             return (res ? 1 : 0);
@@ -180,7 +181,8 @@ public class WinFileDialog extends WinStyle {
             }
         }
         if (error != null) {
-            System.err.println("file dialog " + error + " error!");
+            // awt.err.00=file dialog {0} error!
+            System.err.println(Messages.getString("awt.err.00", error )); //$NON-NLS-1$
         }
     }
 
@@ -190,7 +192,7 @@ public class WinFileDialog extends WinStyle {
         setFile(fileDialog.getFile());
         setDir(fileDialog.getDirectory());        
         setTitle(fileDialog.getTitle());
-        setFilter("All Files (*.*)\0*.*\0");
+        setFilter("All Files (*.*)"); //$NON-NLS-1$
         
         ofn.set_Flags(OFN_ENABLEHOOK | OFN_ENABLEINCLUDENOTIFY | OFN_EXPLORER |
                       OFN_ENABLESIZING);
@@ -221,7 +223,7 @@ public class WinFileDialog extends WinStyle {
 
     private void setDir(String dirName) {
         if (dirName == null) {
-            dirName = System.getProperty("user.dir");
+            dirName = System.getProperty("user.dir"); //$NON-NLS-1$
         }
         ofn.set_lpstrInitialDir(nb.createInt16Pointer(dirName, false));
     }
@@ -272,31 +274,31 @@ public class WinFileDialog extends WinStyle {
     private String getExtendedError(int code) {
         switch (code) {
         case CDERR_GENERALCODES:
-            return "general";
+            return "general"; //$NON-NLS-1$
         case CDERR_STRUCTSIZE:
-            return "structure size";
+            return "structure size"; //$NON-NLS-1$
         case CDERR_INITIALIZATION:
-            return "init";
+            return "init"; //$NON-NLS-1$
         case CDERR_NOTEMPLATE:
-            return "no template";
+            return "no template"; //$NON-NLS-1$
         case CDERR_NOHINSTANCE:
-            return "no hInstance";
+            return "no hInstance"; //$NON-NLS-1$
         case CDERR_LOADSTRFAILURE:
-            return "load string failure";
+            return "load string failure"; //$NON-NLS-1$
         case CDERR_FINDRESFAILURE:
-            return "find resource failure";
+            return "find resource failure"; //$NON-NLS-1$
         case CDERR_LOADRESFAILURE:
-            return "load resource failure";
+            return "load resource failure"; //$NON-NLS-1$
         case CDERR_LOCKRESFAILURE:
-            return "lock resource failure";
+            return "lock resource failure"; //$NON-NLS-1$
         case CDERR_MEMALLOCFAILURE:
-            return "mem alloc failure";
+            return "mem alloc failure"; //$NON-NLS-1$
         case CDERR_MEMLOCKFAILURE:
-            return "mem lock failure";
+            return "mem lock failure"; //$NON-NLS-1$
         case CDERR_NOHOOK:
-            return "no hook";
+            return "no hook"; //$NON-NLS-1$
         }
-        return "unknown";
+        return "unknown"; //$NON-NLS-1$
     }
     
     private void postEvent(AWTEvent e) {
@@ -311,7 +313,8 @@ public class WinFileDialog extends WinStyle {
         long res = win32.PostMessageW(hwnd, WM_COMMAND, IDCANCEL, 0);
         
         if (res == 0) {
-            System.err.println("error:" + win32.GetLastError());
+            // awt.err.01=error: {0}
+            System.err.println(Messages.getString("awt.err.01", win32.GetLastError())); //$NON-NLS-1$
         }
         return res;
     }

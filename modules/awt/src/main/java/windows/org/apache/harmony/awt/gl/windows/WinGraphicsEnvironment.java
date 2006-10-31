@@ -36,7 +36,7 @@ public class WinGraphicsEnvironment extends CommonGraphicsEnvironment {
     WinGraphicsDevice []devices = null;
 
     static {
-        System.loadLibrary("gl");
+        System.loadLibrary("gl"); //$NON-NLS-1$
     }
 
     public WinGraphicsEnvironment(WindowFactory wf) {

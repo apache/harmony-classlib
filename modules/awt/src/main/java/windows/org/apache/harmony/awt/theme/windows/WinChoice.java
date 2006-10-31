@@ -44,11 +44,11 @@ public class WinChoice extends WinStyle {
 
         if (t.isXpThemeActive()) {
 
-            wgr.setTheme(t.getXpTheme("Edit"));
+            wgr.setTheme(t.getXpTheme("Edit")); //$NON-NLS-1$
             wgr.drawXpBackground(size,
                     WindowsConsts.EP_EDITTEXT, WindowsConsts.ETS_NORMAL);
 
-            wgr.setTheme(t.getXpTheme("Combobox"));
+            wgr.setTheme(t.getXpTheme("Combobox")); //$NON-NLS-1$
             Rectangle r = s.getButtonBounds();
             r.grow(1, 1);
             wgr.drawXpBackground(r,

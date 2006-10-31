@@ -37,7 +37,7 @@ public class Win32 extends BasicLibWrapper {
     }
 
     private Win32() {
-        System.loadLibrary("Win32Wrapper");
+        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
         init();
     }
 

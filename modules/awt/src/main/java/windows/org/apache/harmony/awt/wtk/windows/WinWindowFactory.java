@@ -59,7 +59,7 @@ public final class WinWindowFactory implements WindowFactory {
         WinEventQueue.Task task = new WinEventQueue.Task () {
             @Override
             public void perform() {
-                String title = (p.name != null) ? p.name : "";
+                String title = (p.name != null) ? p.name : ""; //$NON-NLS-1$
                 Rectangle rect = new Rectangle(p.x, p.y, p.w, p.h);
                 int style = getStyle(p);
                 int styleEx = getStyleEx(p);

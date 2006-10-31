@@ -28,6 +28,7 @@ import org.apache.harmony.awt.datatransfer.DataSnapshot;
 import org.apache.harmony.awt.datatransfer.RawBitmap;
 import org.apache.harmony.awt.datatransfer.windows.WinDragSource;
 import org.apache.harmony.awt.datatransfer.windows.WinDropTarget;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  * Native support for data transfer on Windows
@@ -35,7 +36,7 @@ import org.apache.harmony.awt.datatransfer.windows.WinDropTarget;
 public final class WinDataTransfer {
     
     static {
-        System.loadLibrary("Win32Wrapper");
+        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
     }
 
     /**
@@ -50,8 +51,8 @@ public final class WinDataTransfer {
         
         public IDataObject(long p) {
             if (p == 0) {
-                throw new RuntimeException(
-                        "Cannot get data from OLE clipboard");
+                // awt.1D=Cannot get data from OLE clipboard
+                throw new RuntimeException(Messages.getString("awt.1D")); //$NON-NLS-1$
             }
             pointer = p;
         }

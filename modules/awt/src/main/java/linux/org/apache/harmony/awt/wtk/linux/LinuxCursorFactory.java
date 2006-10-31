@@ -29,6 +29,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 
 import org.apache.harmony.awt.gl.Utils;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
 import org.apache.harmony.awt.wtk.CursorFactory;
@@ -262,8 +263,8 @@ public class LinuxCursorFactory extends CursorFactory implements X11Defs {
                 x11.XDefaultColormap(display, factory.getScreen()),
                 strColor, color);
         if (status == 0) {
-            throw new RuntimeException("Cannot allocate color named '"
-                    + strColor + "'");
+            // awt.13=Cannot allocate color named '{0}'
+            throw new RuntimeException(Messages.getString("awt.13", strColor)); //$NON-NLS-1$
         }
         return color;
     }

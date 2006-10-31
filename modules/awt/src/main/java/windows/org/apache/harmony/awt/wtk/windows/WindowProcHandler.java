@@ -20,6 +20,7 @@
  */
 package org.apache.harmony.awt.wtk.windows;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.windows.Callback;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
@@ -39,7 +40,7 @@ public class WindowProcHandler implements Callback.Handler {
 
     private static WindowProcHandler instance;
 
-    static final String windowClassName = "org.apache.harmony.awt.wtk.window";
+    static final String windowClassName = "org.apache.harmony.awt.wtk.window"; //$NON-NLS-1$
 
     private final long windowProcPtr;
 
@@ -83,8 +84,9 @@ public class WindowProcHandler implements Callback.Handler {
         namePtr.unlock();
 
         if (classAtom == 0) {
-            throw new InternalError("Failed to register window class "
-                    + className + " GetLastError returned " + winError);
+            // awt.1A=Failed to register window class {0} GetLastError returned {1}
+            throw new InternalError(Messages.getString("awt.1A", //$NON-NLS-1$
+                    className, winError));
         }
     }
 }

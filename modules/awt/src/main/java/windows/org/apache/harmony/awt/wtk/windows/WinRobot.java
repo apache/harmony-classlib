@@ -27,6 +27,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
@@ -206,7 +207,8 @@ public class WinRobot implements NativeRobot {
             (vKey >= 0xC1) && (vKey <= 0xDA) || (vKey >= 0xE0) && (vKey <= 0xE1) ||
             (vKey >= 0xE3) && (vKey <= 0xE4) || (vKey == 0xE6) ||
             (vKey >= 0xE8) && (vKey <= 0xF5)) {
-            throw new IllegalArgumentException("Invalid key code");
+            // awt.1B=Invalid key code
+            throw new IllegalArgumentException(Messages.getString("awt.1B")); //$NON-NLS-1$
         }
         return (byte) vKey;
     }

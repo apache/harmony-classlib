@@ -84,38 +84,38 @@ public class WinSystemProperties implements SystemProperties {
     };
     
     private static final String sysColorProps[] = { // color property names
-            "win.desktop.backgroundColor", // 0 DESKTOP
-            "win.frame.activeCaptionColor", // 1 ACTIVE_CAPTION
-            "win.frame.captionTextColor", // 2 ACTIVE_CAPTION_TEXT
-            "win.frame.activeBorderColor", // 3 ACTIVE_CAPTION_BORDER
-            "win.frame.inactiveCaptionColor", // 4 INACTIVE_CAPTION
-            "win.frame.inactiveCaptionTextColor", // 5 INACTIVE_CAPTION_TEXT
-            "win.frame.inactiveBorderColor", // 6 INACTIVE_CAPTION_BORDER
-            "win.frame.backgroundColor", // 7 WINDOW
-            "win.frame.color", //? 8 WINDOW_BORDER
-            "win.frame.textColor", // 9 WINDOW_TEXT
-            "win.menu.backgroundColor", // 10 MENU
-            "win.menu.textColor", // 11 MENU_TEXT
-            "win.frame.backgroundColor", // 12 TEXT
-            "win.frame.textColor", // 13 TEXT_TEXT
-            "win.item.highlightColor", // 14 TEXT_HIGHLIGHT
-            "win.item.highlightTextColor", // 15 TEXT_HIGHLIGHT_TEXT
-            "win.text.grayedTextColor", // 16 TEXT_INACTIVE_TEXT
-            "win.3d.backgroundColor", // 17 CONTROL
-            "win.button.textColor", // 18 CONTROL_TEXT
-            "win.3d.lightColor", // 19 CONTROL_HIGHLIGHT
-            "win.3d.highlightColor", // 20 CONTROL_LT_HIGHLIGHT
-            "win.3d.shadowColor", // 21 CONTROL_SHADOW
-            "win.3d.darkShadowColor", // 22 CONTROL_DK_SHADOW
-            "win.scrollbar.backgroundColor", // 23 SCROLLBAR
-            "win.tooltip.backgroundColor", // 24 INFO
-            "win.tooltip.textColor", // 25 INFO_TEXT
+            "win.desktop.backgroundColor", // 0 DESKTOP //$NON-NLS-1$
+            "win.frame.activeCaptionColor", // 1 ACTIVE_CAPTION //$NON-NLS-1$
+            "win.frame.captionTextColor", // 2 ACTIVE_CAPTION_TEXT //$NON-NLS-1$
+            "win.frame.activeBorderColor", // 3 ACTIVE_CAPTION_BORDER //$NON-NLS-1$
+            "win.frame.inactiveCaptionColor", // 4 INACTIVE_CAPTION //$NON-NLS-1$
+            "win.frame.inactiveCaptionTextColor", // 5 INACTIVE_CAPTION_TEXT //$NON-NLS-1$
+            "win.frame.inactiveBorderColor", // 6 INACTIVE_CAPTION_BORDER //$NON-NLS-1$
+            "win.frame.backgroundColor", // 7 WINDOW //$NON-NLS-1$
+            "win.frame.color", //? 8 WINDOW_BORDER //$NON-NLS-1$
+            "win.frame.textColor", // 9 WINDOW_TEXT //$NON-NLS-1$
+            "win.menu.backgroundColor", // 10 MENU //$NON-NLS-1$
+            "win.menu.textColor", // 11 MENU_TEXT //$NON-NLS-1$
+            "win.frame.backgroundColor", // 12 TEXT //$NON-NLS-1$
+            "win.frame.textColor", // 13 TEXT_TEXT //$NON-NLS-1$
+            "win.item.highlightColor", // 14 TEXT_HIGHLIGHT //$NON-NLS-1$
+            "win.item.highlightTextColor", // 15 TEXT_HIGHLIGHT_TEXT //$NON-NLS-1$
+            "win.text.grayedTextColor", // 16 TEXT_INACTIVE_TEXT //$NON-NLS-1$
+            "win.3d.backgroundColor", // 17 CONTROL //$NON-NLS-1$
+            "win.button.textColor", // 18 CONTROL_TEXT //$NON-NLS-1$
+            "win.3d.lightColor", // 19 CONTROL_HIGHLIGHT //$NON-NLS-1$
+            "win.3d.highlightColor", // 20 CONTROL_LT_HIGHLIGHT //$NON-NLS-1$
+            "win.3d.shadowColor", // 21 CONTROL_SHADOW //$NON-NLS-1$
+            "win.3d.darkShadowColor", // 22 CONTROL_DK_SHADOW //$NON-NLS-1$
+            "win.scrollbar.backgroundColor", // 23 SCROLLBAR //$NON-NLS-1$
+            "win.tooltip.backgroundColor", // 24 INFO //$NON-NLS-1$
+            "win.tooltip.textColor", // 25 INFO_TEXT //$NON-NLS-1$
             // colors not present in SystemColor class:
-            "win.frame.activeCaptionGradientColor",
-            "win.frame.inactiveCaptionGradientColor",
-            "win.item.hotTrackedColor",
-            "win.mdi.backgroundColor",
-            "win.menubar.backgroundColor",
+            "win.frame.activeCaptionGradientColor", //$NON-NLS-1$
+            "win.frame.inactiveCaptionGradientColor", //$NON-NLS-1$
+            "win.item.hotTrackedColor", //$NON-NLS-1$
+            "win.mdi.backgroundColor", //$NON-NLS-1$
+            "win.menubar.backgroundColor", //$NON-NLS-1$
     };
 
     
@@ -132,13 +132,13 @@ public class WinSystemProperties implements SystemProperties {
     };
     
     private static final String sysFontDesktopProps[] = { // color property names
-            "win.ansiFixed.font", // 0 ANSI_FIXED_FONT
-            "win.ansiVar.font", // 1 ANSI_VAR_FONT
-            "win.defaultGUI.font", // 2 DEFAULT_GUI_FONT
-            "win.deviceDefault.font", // 3 DEVICE_DEFAULT_FONT            
-            "win.oemFixed.font", // 4 OEM_FIXED_FONT            
-            "win.system.font", // 5 SYSTEM_FONT
-            "win.systemFixed.font", // 6 SYSTEM_FIXED_FONT            
+            "win.ansiFixed.font", // 0 ANSI_FIXED_FONT //$NON-NLS-1$
+            "win.ansiVar.font", // 1 ANSI_VAR_FONT //$NON-NLS-1$
+            "win.defaultGUI.font", // 2 DEFAULT_GUI_FONT //$NON-NLS-1$
+            "win.deviceDefault.font", // 3 DEVICE_DEFAULT_FONT             //$NON-NLS-1$
+            "win.oemFixed.font", // 4 OEM_FIXED_FONT             //$NON-NLS-1$
+            "win.system.font", // 5 SYSTEM_FONT //$NON-NLS-1$
+            "win.systemFixed.font", // 6 SYSTEM_FIXED_FONT             //$NON-NLS-1$
     };    
 
     private class WinPlaySound implements Runnable {
@@ -162,7 +162,7 @@ public class WinSystemProperties implements SystemProperties {
         
         @Override
         public String toString() {
-            return ("WinPlaySound(" + sndName + ")");
+            return ("WinPlaySound(" + sndName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     };
     
@@ -225,7 +225,7 @@ public class WinSystemProperties implements SystemProperties {
         synchronized (cacheLock) {
             if (defaultFont == null) {
                 defaultFont = (Font) Toolkit.getDefaultToolkit().
-                getDesktopProperty("win.defaultGUI.font");
+                getDesktopProperty("win.defaultGUI.font"); //$NON-NLS-1$
             }
             return defaultFont;
         }
@@ -269,10 +269,10 @@ public class WinSystemProperties implements SystemProperties {
     
     private void setFontProperty(String propName, Font font, Map<String, Object> props) {
         setDesktopProperty(propName, font, props);
-        setIntProperty(propName + ".height", font.getSize(), props);
+        setIntProperty(propName + ".height", font.getSize(), props); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void init(Map<String, ?> deskProps) {
         Map<String, Object> desktopProperties = (Map<String, Object>)deskProps;
         synchronized (cacheLock) {
@@ -299,9 +299,9 @@ public class WinSystemProperties implements SystemProperties {
             getXPTheme(desktopProperties);
             initSoundProps(desktopProperties);
             TreeSet<String> keySet = new TreeSet<String>(desktopProperties.keySet());
-            keySet.add("awt.dynamicLayoutSupported");
+            keySet.add("awt.dynamicLayoutSupported"); //$NON-NLS-1$
             String[] propNames = keySet.toArray(new String[0]);            
-            desktopProperties.put("win.propNames", propNames);
+            desktopProperties.put("win.propNames", propNames); //$NON-NLS-1$
             
         }
 
@@ -352,44 +352,44 @@ public class WinSystemProperties implements SystemProperties {
     }
     
     private void getFullWindowDrags(Map<String, Object> props) {        
-        getBoolSPI("win.frame.fullWindowDragsOn", 
+        getBoolSPI("win.frame.fullWindowDragsOn",  //$NON-NLS-1$
                    WindowsDefs.SPI_GETDRAGFULLWINDOWS, props);
         
     }
     
     private void getGradientCaptions(Map<String, Object> props) {        
-        getBoolSPI("win.frame.captionGradientsOn", 
+        getBoolSPI("win.frame.captionGradientsOn",  //$NON-NLS-1$
                    WindowsDefs.SPI_GETGRADIENTCAPTIONS, props);        
     }
     
     private void getHotTracking(Map<String, Object> props) {        
-        getBoolSPI("win.item.hotTrackingOn", 
+        getBoolSPI("win.item.hotTrackingOn",  //$NON-NLS-1$
                    WindowsDefs.SPI_GETHOTTRACKING, props);        
     }
     
     private void getKeyboardCues(Map<String, Object> props) {        
-        getBoolSPI("win.menu.keyboardCuesOn", 
+        getBoolSPI("win.menu.keyboardCuesOn",  //$NON-NLS-1$
                    WindowsDefs.SPI_GETKEYBOARDCUES, props);        
     }
     
     private void getFontSmooth(Map<String, Object> props) {        
-        getBoolSPI("win.text.fontSmoothingOn", 
+        getBoolSPI("win.text.fontSmoothingOn",  //$NON-NLS-1$
                    WindowsDefs.SPI_GETFONTSMOOTHING, props);        
     }
     
     private void getFontSmoothContrast(Map<String, Object> props) {
-        getIntSPI("win.text.fontSmoothingContrast",
+        getIntSPI("win.text.fontSmoothingContrast", //$NON-NLS-1$
                   SPI_GETFONTSMOOTHINGCONTRAST, props);
     }
     
     private void getFontSmoothType(Map<String, Object> props) {
-        getIntSPI("win.text.fontSmoothingType", SPI_GETFONTSMOOTHINGTYPE, props);
+        getIntSPI("win.text.fontSmoothingType", SPI_GETFONTSMOOTHINGTYPE, props); //$NON-NLS-1$
     }
     
     private void getDragSize(boolean cx, Map<String, Object> props) {
         int sm_idx = (cx ? WindowsDefs.SM_CXDRAG : WindowsDefs.SM_CYDRAG);
-        String propName = "win.drag";
-        propName += (cx ? ".width" : ".height");
+        String propName = "win.drag"; //$NON-NLS-1$
+        propName += (cx ? ".width" : ".height"); //$NON-NLS-1$ //$NON-NLS-2$
         getSM(propName, sm_idx, props);
     }
 
@@ -398,37 +398,37 @@ public class WinSystemProperties implements SystemProperties {
         ncm.set_cbSize(ncm.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETNONCLIENTMETRICS,
                                     ncm.size(), ncm.getElementPointer(0), 0);
-        setFontProperty("win.frame.captionFont",
+        setFontProperty("win.frame.captionFont", //$NON-NLS-1$
                         getFont(ncm.get_lfCaptionFont()), props);
-        setFontProperty("win.frame.smallCaptionFont",
+        setFontProperty("win.frame.smallCaptionFont", //$NON-NLS-1$
                         getFont(ncm.get_lfSmCaptionFont()), props);
-        setFontProperty("win.menu.font", getFont(ncm.get_lfMenuFont()), props);
-        setFontProperty("win.messagebox.font",
+        setFontProperty("win.menu.font", getFont(ncm.get_lfMenuFont()), props); //$NON-NLS-1$
+        setFontProperty("win.messagebox.font", //$NON-NLS-1$
                         getFont(ncm.get_lfMessageFont()), props);
-        setFontProperty("win.status.font", getFont(ncm.get_lfStatusFont()),
+        setFontProperty("win.status.font", getFont(ncm.get_lfStatusFont()), //$NON-NLS-1$
                         props);
-        setFontProperty("win.tooltip.font", getFont(ncm.get_lfStatusFont()),
+        setFontProperty("win.tooltip.font", getFont(ncm.get_lfStatusFont()), //$NON-NLS-1$
                         props);
-        setIntProperty("win.frame.sizingBorderWidth", ncm.get_iBorderWidth(),
+        setIntProperty("win.frame.sizingBorderWidth", ncm.get_iBorderWidth(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.scrollbar.width", ncm.get_iScrollWidth(),
+        setIntProperty("win.scrollbar.width", ncm.get_iScrollWidth(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.scrollbar.height", ncm.get_iScrollHeight(),
+        setIntProperty("win.scrollbar.height", ncm.get_iScrollHeight(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.captionButtonWidth", ncm.get_iCaptionWidth(),
+        setIntProperty("win.frame.captionButtonWidth", ncm.get_iCaptionWidth(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.captionButtonHeight", ncm.get_iCaptionHeight(),
+        setIntProperty("win.frame.captionButtonHeight", ncm.get_iCaptionHeight(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.captionHeight", ncm.get_iCaptionHeight(),
+        setIntProperty("win.frame.captionHeight", ncm.get_iCaptionHeight(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.smallCaptionButtonWidth", ncm.get_iSmCaptionWidth(),
+        setIntProperty("win.frame.smallCaptionButtonWidth", ncm.get_iSmCaptionWidth(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.smallCaptionButtonHeight", ncm.get_iSmCaptionHeight(),
+        setIntProperty("win.frame.smallCaptionButtonHeight", ncm.get_iSmCaptionHeight(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.frame.smallCaptionHeight", ncm.get_iSmCaptionHeight(),
+        setIntProperty("win.frame.smallCaptionHeight", ncm.get_iSmCaptionHeight(), //$NON-NLS-1$
                        props);
-        setIntProperty("win.menu.buttonWidth", ncm.get_iMenuWidth(), props);
-        setIntProperty("win.menu.height", ncm.get_iMenuHeight(), props);        
+        setIntProperty("win.menu.buttonWidth", ncm.get_iMenuWidth(), props); //$NON-NLS-1$
+        setIntProperty("win.menu.height", ncm.get_iMenuHeight(), props);         //$NON-NLS-1$
     }
     
     private void getIconMetrics(Map<String, Object> props) {
@@ -436,10 +436,10 @@ public class WinSystemProperties implements SystemProperties {
         im.set_cbSize(im.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETICONMETRICS,
                                     im.size(), im.getElementPointer(0), 0);
-        setFontProperty("win.icon.font", getFont(im.get_lfFont()), props);
-        setIntProperty("win.icon.hspacing", im.get_iHorzSpacing(), props);
-        setBoolProperty("win.icon.titleWrappingOn", im.get_iTitleWrap(), props);
-        setIntProperty("win.icon.vspacing", im.get_iVertSpacing(), props);
+        setFontProperty("win.icon.font", getFont(im.get_lfFont()), props); //$NON-NLS-1$
+        setIntProperty("win.icon.hspacing", im.get_iHorzSpacing(), props); //$NON-NLS-1$
+        setBoolProperty("win.icon.titleWrappingOn", im.get_iTitleWrap(), props); //$NON-NLS-1$
+        setIntProperty("win.icon.vspacing", im.get_iVertSpacing(), props); //$NON-NLS-1$
     }
     
     private void getHighContrast(Map<String, Object> props) {
@@ -447,7 +447,7 @@ public class WinSystemProperties implements SystemProperties {
         hc.set_cbSize(hc.size());
         win32.SystemParametersInfoW(WindowsDefs.SPI_GETHIGHCONTRAST,
                                     hc.size(), hc.getElementPointer(0), 0);        
-        setBoolProperty("win.highContrast.on", 
+        setBoolProperty("win.highContrast.on",  //$NON-NLS-1$
                         hc.get_dwFlags() & WindowsDefs.HCF_HIGHCONTRASTON, 
                         props);
     }
@@ -472,17 +472,17 @@ public class WinSystemProperties implements SystemProperties {
     }
     
     void getXPTheme(Map<String, Object> props) {
-        setBoolProperty("win.xpstyle.themeActive", win32.IsThemeActive(), props);
+        setBoolProperty("win.xpstyle.themeActive", win32.IsThemeActive(), props); //$NON-NLS-1$
     }
     
     private void getDnDProps(Map<String, Object> props) {
-        String propName = "DnD";
-        setIntProperty(propName + ".gestureMotionThreshold",
+        String propName = "DnD"; //$NON-NLS-1$
+        setIntProperty(propName + ".gestureMotionThreshold", //$NON-NLS-1$
                        WindowsDefs.DD_DEFDRAGMINDIST, props);
-        propName += ".Autoscroll";
-        setIntProperty(propName + ".initialDelay",
+        propName += ".Autoscroll"; //$NON-NLS-1$
+        setIntProperty(propName + ".initialDelay", //$NON-NLS-1$
                        WindowsDefs.DD_DEFSCROLLDELAY, props);
-        setIntProperty(propName + ".interval",
+        setIntProperty(propName + ".interval", //$NON-NLS-1$
                        WindowsDefs.DD_DEFSCROLLINTERVAL, props);        
         
     }
@@ -492,47 +492,47 @@ public class WinSystemProperties implements SystemProperties {
         int flags = (WindowsDefs.SSF_SHOWATTRIBCOL | 
                      WindowsDefs.SSF_SHOWALLOBJECTS);
         win32.SHGetSettings(sfs, flags);
-        String propName = "awt.file";
-        setBoolProperty(propName + ".showAttribCol", 
+        String propName = "awt.file"; //$NON-NLS-1$
+        setBoolProperty(propName + ".showAttribCol",  //$NON-NLS-1$
                         sfs.get_fShowAttribCol(), props);
-        setBoolProperty(propName + ".showHiddenFiles", 
+        setBoolProperty(propName + ".showHiddenFiles",  //$NON-NLS-1$
                         (sfs.get_fShowAllObjects()), props);
     }
     
     private void getMouseProps(Map<String, Object> props) {
-        String propName = "awt.";
-        getSM(propName + "mouse.numButtons", WindowsDefs.SM_CMOUSEBUTTONS, props);
-        setIntProperty(propName + "multiClickInterval", 
+        String propName = "awt."; //$NON-NLS-1$
+        getSM(propName + "mouse.numButtons", WindowsDefs.SM_CMOUSEBUTTONS, props); //$NON-NLS-1$
+        setIntProperty(propName + "multiClickInterval",  //$NON-NLS-1$
                        win32.GetDoubleClickTime(), props);
-        setBoolProperty(propName + "wheelMousePresent",
+        setBoolProperty(propName + "wheelMousePresent", //$NON-NLS-1$
                         win32.GetSystemMetrics(WindowsDefs.SM_MOUSEWHEELPRESENT),
                         props);
-        getIntSPI(propName + "wheelScrollLines",
+        getIntSPI(propName + "wheelScrollLines", //$NON-NLS-1$
                   WindowsDefs.SPI_GETWHEELSCROLLLINES, props);
         
     }
     
     private void setSoundProperty(String propName, String sndName, Map<String, Object> props) {
-        String base = "win.sound.";
+        String base = "win.sound."; //$NON-NLS-1$
         setDesktopProperty(base + propName, new WinPlaySound(sndName), props);
     }
     
     private void initSoundProps(Map<String, Object> props) {
-        setSoundProperty("asterisk", "SystemAsterisk", props);
-        setSoundProperty("close", "Close", props);
-        setSoundProperty("default", ".Default", props);
-        setSoundProperty("exclamation", "SystemExclamation", props);
-        setSoundProperty("exit", "SystemExit", props);
-        setSoundProperty("hand", "SystemHand", props);
-        setSoundProperty("maximize", "Maximize", props);
-        setSoundProperty("menuCommand", "MenuCommand", props);
-        setSoundProperty("menuPopup", "MenuPopup", props);
-        setSoundProperty("minimize", "Minimize", props);
-        setSoundProperty("open", "Open", props);
-        setSoundProperty("question", "SystemQuestion", props);
-        setSoundProperty("restoreDown", "RestoreDown", props);
-        setSoundProperty("restoreUp", "RestoreUp", props);
-        setSoundProperty("start", "SystemStart", props);
+        setSoundProperty("asterisk", "SystemAsterisk", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("close", "Close", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("default", ".Default", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("exclamation", "SystemExclamation", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("exit", "SystemExit", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("hand", "SystemHand", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("maximize", "Maximize", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("menuCommand", "MenuCommand", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("menuPopup", "MenuPopup", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("minimize", "Minimize", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("open", "Open", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("question", "SystemQuestion", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("restoreDown", "RestoreDown", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("restoreUp", "RestoreUp", props); //$NON-NLS-1$ //$NON-NLS-2$
+        setSoundProperty("start", "SystemStart", props); //$NON-NLS-1$ //$NON-NLS-2$
     
     }
 

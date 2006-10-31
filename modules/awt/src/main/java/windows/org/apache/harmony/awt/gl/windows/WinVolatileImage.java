@@ -29,6 +29,7 @@ import java.awt.image.ImageObserver;
 import org.apache.harmony.awt.gl.GLVolatileImage;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.windows.BitmapSurface;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
 
@@ -52,7 +53,8 @@ public class WinVolatileImage extends GLVolatileImage {
     ***************************************************************************/
     public WinVolatileImage(NativeWindow nw, int width, int height) {
         if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Illegal size of volatile image.");
+            // awt.19=Illegal size of volatile image.
+            throw new IllegalArgumentException(Messages.getString("awt.19")); //$NON-NLS-1$
         }
         hwnd = nw.getId();
         this.width = width;
@@ -63,7 +65,8 @@ public class WinVolatileImage extends GLVolatileImage {
 
     public WinVolatileImage(WinGraphicsConfiguration gc, int width, int height) {
         if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Illegal size of volatile image.");
+            // awt.19=Illegal size of volatile image.
+            throw new IllegalArgumentException(Messages.getString("awt.19")); //$NON-NLS-1$
         }
         
         hwnd = 0;

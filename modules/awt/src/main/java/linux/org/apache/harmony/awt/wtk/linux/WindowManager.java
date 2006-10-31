@@ -85,33 +85,33 @@ class WindowManager {
         display = factory.getDisplay();
 
 
-        XA_ATOM = internAtom("ATOM");
-        XA_CARDINAL = internAtom("CARDINAL");
+        XA_ATOM = internAtom("ATOM"); //$NON-NLS-1$
+        XA_CARDINAL = internAtom("CARDINAL"); //$NON-NLS-1$
 
         // WM hints
-        WM_PROTOCOLS = internAtom("WM_PROTOCOLS");
-        WM_DELETE_WINDOW = internAtom("WM_DELETE_WINDOW");
-        WM_TAKE_FOCUS = internAtom("WM_TAKE_FOCUS");
+        WM_PROTOCOLS = internAtom("WM_PROTOCOLS"); //$NON-NLS-1$
+        WM_DELETE_WINDOW = internAtom("WM_DELETE_WINDOW"); //$NON-NLS-1$
+        WM_TAKE_FOCUS = internAtom("WM_TAKE_FOCUS"); //$NON-NLS-1$
 
         // _NET extended hints
-        NET_WM_WINDOW_TYPE = internAtom("_NET_WM_WINDOW_TYPE");
-        NET_WM_WINDOW_TYPE_DIALOG = internAtom("_NET_WM_WINDOW_TYPE_DIALOG");
-        NET_WM_WINDOW_TYPE_NORMAL = internAtom("_NET_WM_WINDOW_TYPE_NORMAL");
-        NET_REQUEST_FRAME_EXTENTS = internAtom("_NET_REQUEST_FRAME_EXTENTS");
-        NET_WM_STATE = internAtom("_NET_WM_STATE");
-        NET_WM_STATE_HIDDEN = internAtom("_NET_WM_STATE_HIDDEN");
-        NET_WM_STATE_MAXIMIZED_VERT = internAtom("_NET_WM_STATE_MAXIMIZED_VERT");
-        NET_WM_STATE_MAXIMIZED_HORZ = internAtom("_NET_WM_STATE_MAXIMIZED_HORZ");
-        NET_WM_STATE_ABOVE = internAtom("_NET_WM_STATE_ABOVE");
-        NET_WM_STATE_STAYS_ON_TOP = internAtom("_NET_WM_STATE_STAYS_ON_TOP");
-        NET_FRAME_EXTENTS = internAtom("_NET_FRAME_EXTENTS");
+        NET_WM_WINDOW_TYPE = internAtom("_NET_WM_WINDOW_TYPE"); //$NON-NLS-1$
+        NET_WM_WINDOW_TYPE_DIALOG = internAtom("_NET_WM_WINDOW_TYPE_DIALOG"); //$NON-NLS-1$
+        NET_WM_WINDOW_TYPE_NORMAL = internAtom("_NET_WM_WINDOW_TYPE_NORMAL"); //$NON-NLS-1$
+        NET_REQUEST_FRAME_EXTENTS = internAtom("_NET_REQUEST_FRAME_EXTENTS"); //$NON-NLS-1$
+        NET_WM_STATE = internAtom("_NET_WM_STATE"); //$NON-NLS-1$
+        NET_WM_STATE_HIDDEN = internAtom("_NET_WM_STATE_HIDDEN"); //$NON-NLS-1$
+        NET_WM_STATE_MAXIMIZED_VERT = internAtom("_NET_WM_STATE_MAXIMIZED_VERT"); //$NON-NLS-1$
+        NET_WM_STATE_MAXIMIZED_HORZ = internAtom("_NET_WM_STATE_MAXIMIZED_HORZ"); //$NON-NLS-1$
+        NET_WM_STATE_ABOVE = internAtom("_NET_WM_STATE_ABOVE"); //$NON-NLS-1$
+        NET_WM_STATE_STAYS_ON_TOP = internAtom("_NET_WM_STATE_STAYS_ON_TOP"); //$NON-NLS-1$
+        NET_FRAME_EXTENTS = internAtom("_NET_FRAME_EXTENTS"); //$NON-NLS-1$
 
         // KDE specific hints
-        KDE_NET_WM_WINDOW_TYPE_OVERRIDE = internAtom("_KDE_NET_WM_WINDOW_TYPE_OVERRIDE");
-        KDE_NET_WM_FRAME_STRUT = internAtom("_KDE_NET_WM_FRAME_STRUT");
+        KDE_NET_WM_WINDOW_TYPE_OVERRIDE = internAtom("_KDE_NET_WM_WINDOW_TYPE_OVERRIDE"); //$NON-NLS-1$
+        KDE_NET_WM_FRAME_STRUT = internAtom("_KDE_NET_WM_FRAME_STRUT"); //$NON-NLS-1$
 
         // Motif hints (for Gnome)
-        XA_MOTIF_WM_HINTS = internAtom("_MOTIF_WM_HINTS");
+        XA_MOTIF_WM_HINTS = internAtom("_MOTIF_WM_HINTS"); //$NON-NLS-1$
     }
 
     long internAtom(String atomName) {
@@ -360,7 +360,7 @@ class WindowManager {
     }
 
     long[] getSupportedHints() {
-        final long NET_SUPPORTED = internAtom("_NET_SUPPORTED");
+        final long NET_SUPPORTED = internAtom("_NET_SUPPORTED"); //$NON-NLS-1$
         long root = factory.getRootWindow();
         long [] supportedHints = getWindowProperty(root, NET_SUPPORTED);
         return supportedHints;

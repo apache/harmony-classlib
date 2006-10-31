@@ -46,12 +46,12 @@ public class WinFontProperty extends FontProperty {
     @Override
     public String toString(){
         return this.getClass().getName() +
-                "[name=" + this.name +
-                ",fileName="+ this.fileName +
-                ",style=" + this.style +
-                ",Charset=" + this.charset +
-                ",exclRange=" + this.exclRange +
-                ",encoding=" + this.encoding + "]";
+                "[name=" + this.name + //$NON-NLS-1$
+                ",fileName="+ this.fileName + //$NON-NLS-1$
+                ",style=" + this.style + //$NON-NLS-1$
+                ",Charset=" + this.charset + //$NON-NLS-1$
+                ",exclRange=" + this.exclRange + //$NON-NLS-1$
+                ",encoding=" + this.encoding + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

@@ -194,7 +194,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
     
     @Override
     public String toString() {
-        return "hwnd=0x" + Long.toHexString(windowId) + ", msg=0x" + Integer.toHexString(msg);
+        return "hwnd=0x" + Long.toHexString(windowId) + ", msg=0x" + Integer.toHexString(msg); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void processChar() {

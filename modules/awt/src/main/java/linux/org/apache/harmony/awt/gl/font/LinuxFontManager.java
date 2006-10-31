@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontProperty;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class LinuxFontManager extends FontManager {
 
@@ -37,12 +38,12 @@ public class LinuxFontManager extends FontManager {
 
     // weight names according to xlfd structure
     public static final String[] LINUX_WEIGHT_NAMES = {
-            "black", "bold", "demibold", "medium", "light"
+            "black", "bold", "demibold", "medium", "light" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     };
 
     // slant names according to xlfd structure
     public static final String[] LINUX_SLANT_NAMES = {
-            "i", "o", "r"
+            "i", "o", "r" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     };
 
     /** Singleton LinuxFontManager instance */
@@ -65,7 +66,7 @@ public class LinuxFontManager extends FontManager {
      * font files should be installed.
      */
     public File getTempFontFile()throws IOException{
-        File fontFile = File.createTempFile("jFont", ".ttf", new File(System.getProperty("user.home") +"/.fonts"));
+        File fontFile = File.createTempFile("jFont", ".ttf", new File(System.getProperty("user.home") +"/.fonts")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         fontFile.deleteOnExit();
 
         return fontFile;
@@ -106,12 +107,12 @@ public class LinuxFontManager extends FontManager {
 
                 while(moreEntries){
                     // Component Font Mappings property name
-                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", lName).replaceAll("StyleName", styleName).replaceAll("ComponentIndex", String.valueOf(numComp));
+                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", lName).replaceAll("StyleName", styleName).replaceAll("ComponentIndex", String.valueOf(numComp)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     value = props.getProperty(property);
 
                     // If the StyleName is omitted, it's assumed to be plain
                     if ((j == 0) && (value == null)){
-                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp));
+                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp)); //$NON-NLS-1$ //$NON-NLS-2$
                         value = props.getProperty(property);
                     }
 
@@ -119,7 +120,8 @@ public class LinuxFontManager extends FontManager {
                         String[] fields = parseXLFD(value);
 
                         if (fields == null){
-                            throw new RuntimeException("xfld parse string error: " + value);
+                            // awt.08=xfld parse string error: {0}
+                            throw new RuntimeException(Messages.getString("awt.08", value)); //$NON-NLS-1$
                         }
                         
                         String fontName = fields[1];
@@ -128,10 +130,10 @@ public class LinuxFontManager extends FontManager {
 
                         int style = getBoldStyle(weight) | getItalicStyle(italic);
                         // Component Font Character Encodings property value
-                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp))); //$NON-NLS-1$ //$NON-NLS-2$
 
                         // Exclusion Ranges property value
-                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", lName).replaceAll("ComponentIndex", String.valueOf(numComp))); //$NON-NLS-1$ //$NON-NLS-2$
                         int[] exclRange = parseIntervals(exclString);
 
                         FontProperty fp = new LinuxFontProperty(lName, styleName, null, fontName, value, style, exclRange, encoding);
@@ -142,7 +144,7 @@ public class LinuxFontManager extends FontManager {
                         moreEntries = false;
                     }
                 }
-                fProperties.put(LOGICAL_FONT_NAMES[i] + "." + j, propsVector);
+                fProperties.put(LOGICAL_FONT_NAMES[i] + "." + j, propsVector); //$NON-NLS-1$
             }
         }
 
@@ -190,7 +192,7 @@ public class LinuxFontManager extends FontManager {
      */
     public static String[] parseXLFD(String xlfd){
         int fieldsCount = 14;
-        String fieldsDelim = "-";
+        String fieldsDelim = "-"; //$NON-NLS-1$
         String[] res = new String[fieldsCount];
         if (!xlfd.startsWith(fieldsDelim)){
             return null;

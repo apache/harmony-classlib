@@ -58,7 +58,7 @@ public final class LinuxEventQueue extends NativeEventQueue {
         display = factory.getDisplay();
         curEvent = x11.createXEvent(false);
         performTaskAtom = x11.XInternAtom(display, 
-                "org.apache.harmony.awt.wtk.perform_task", 0);
+                "org.apache.harmony.awt.wtk.perform_task", 0); //$NON-NLS-1$
     }
     
     public boolean waitEvent() {

@@ -31,11 +31,11 @@ import org.apache.harmony.awt.datatransfer.NativeClipboard;
 public final class LinuxDTK extends DTK {
 
     protected NativeClipboard newNativeClipboard() {
-        return new LinuxSelection("CLIPBOARD");
+        return new LinuxSelection("CLIPBOARD"); //$NON-NLS-1$
     }
 
     protected NativeClipboard newNativeSelection() {
-        return new LinuxSelection("PRIMARY");
+        return new LinuxSelection("PRIMARY"); //$NON-NLS-1$
     }
 
     public void initDragAndDrop() {
@@ -55,6 +55,6 @@ public final class LinuxDTK extends DTK {
     }
 
     public String getDefaultCharset() {
-        return "iso-10646-ucs-2";
+        return "iso-10646-ucs-2"; //$NON-NLS-1$
     }
 }

@@ -47,11 +47,11 @@ public class WinFontManager extends FontManager {
 
     /** Available windows charset names */
     public static final String[] WINDOWS_CHARSET_NAMES = {
-            "ANSI_CHARSET", "DEFAULT_CHARSET", "SYMBOL_CHARSET", "SHIFTJIS_CHARSET",
-            "GB2312_CHARSET", "HANGEUL_CHARSET", "CHINESEBIG5_CHARSET",
-            "OEM_CHARSET", "JOHAB_CHARSET", "HEBREW_CHARSET", "ARABIC_CHARSET",
-            "GREEK_CHARSET", "TURKISH_CHARSET", "VIETNAMESE_CHARSET", "THAI_CHARSET",
-            "EASTEUROPE_CHARSET", "RUSSIAN_CHARSET", "MAC_CHARSET", "BALTIC_CHARSET"
+            "ANSI_CHARSET", "DEFAULT_CHARSET", "SYMBOL_CHARSET", "SHIFTJIS_CHARSET", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "GB2312_CHARSET", "HANGEUL_CHARSET", "CHINESEBIG5_CHARSET", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "OEM_CHARSET", "JOHAB_CHARSET", "HEBREW_CHARSET", "ARABIC_CHARSET", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "GREEK_CHARSET", "TURKISH_CHARSET", "VIETNAMESE_CHARSET", "THAI_CHARSET", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "EASTEUROPE_CHARSET", "RUSSIAN_CHARSET", "MAC_CHARSET", "BALTIC_CHARSET" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     };
 
     /** WinFontManager singleton instance */
@@ -97,40 +97,40 @@ public class WinFontManager extends FontManager {
 
                 while(moreEntries){
                     // Component Font Mappings property name
-                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", element).replaceAll("StyleName", STYLE_NAMES[j]).replaceAll("ComponentIndex", String.valueOf(numComp));
+                    String property = FONT_MAPPING_KEYS[0].replaceAll("LogicalFontName", element).replaceAll("StyleName", STYLE_NAMES[j]).replaceAll("ComponentIndex", String.valueOf(numComp)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     value = props.getProperty(property);
 
                     // If the StyleName is omitted, it's assumed to be plain
                     if ((j == 0) && (value == null)){
-                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp));
+                        property = FONT_MAPPING_KEYS[1].replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp)); //$NON-NLS-1$ //$NON-NLS-2$
                         value = props.getProperty(property);
                     }
 
                     if (value != null){
 
-                        String fontName = value.substring(0, value.indexOf(","));
-                        int ind = fontName.lastIndexOf("Bold");
+                        String fontName = value.substring(0, value.indexOf(",")); //$NON-NLS-1$
+                        int ind = fontName.lastIndexOf("Bold"); //$NON-NLS-1$
                         if (ind != -1){
                             fontName = fontName.substring(0, ind-1);
                         } else {
-                            ind = fontName.lastIndexOf("Italic");
+                            ind = fontName.lastIndexOf("Italic"); //$NON-NLS-1$
                             if(ind != -1){
                                 fontName = fontName.substring(0, ind-1);
                             }
                         }
 
 
-                        String charset = value.substring(value.indexOf(",") + 1, value.length());
+                        String charset = value.substring(value.indexOf(",") + 1, value.length()); //$NON-NLS-1$
 
                         // Font File Names property value
-                        String fileName = props.getProperty(FONT_FILE_NAME.replaceAll("PlatformFontName", fontName).replaceAll(" ", "_"));
+                        String fileName = props.getProperty(FONT_FILE_NAME.replaceAll("PlatformFontName", fontName).replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
                         // Exclusion Ranges property value
-                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String exclString = props.getProperty(EXCLUSION_RANGES.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp))); //$NON-NLS-1$ //$NON-NLS-2$
                         int[] exclRange = parseIntervals(exclString);
 
                         // Component Font Character Encodings property value
-                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp)));
+                        String encoding = props.getProperty(FONT_CHARACTER_ENCODING.replaceAll("LogicalFontName", element).replaceAll("ComponentIndex", String.valueOf(numComp))); //$NON-NLS-1$ //$NON-NLS-2$
 
                         FontProperty fp = new WinFontProperty(fileName, fontName, charset, j, exclRange, encoding);
                         propsVector.add(fp);
@@ -139,7 +139,7 @@ public class WinFontManager extends FontManager {
                         moreEntries = false;
                     }
                 }
-                fProperties.put(element + "." + j, propsVector);
+                fProperties.put(element + "." + j, propsVector); //$NON-NLS-1$
             }
         }
 

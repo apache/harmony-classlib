@@ -40,7 +40,7 @@ public final class WinClipboard extends NativeClipboard
     private final WinEventQueue winEventQueue;
     
     public WinClipboard() {
-        super("System");
+        super("System"); //$NON-NLS-1$
         winEventQueue = ((WinEventQueue) ContextStorage.getNativeEventQueue());
         winEventQueue.addPreprocessor(this);
     }

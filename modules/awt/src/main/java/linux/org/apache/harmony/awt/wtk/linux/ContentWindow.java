@@ -45,7 +45,7 @@ public class ContentWindow extends LinuxWindow {
             CreationParams p) {
         super(factory, p);
         frame = (LinuxWindow) factory.getWindowById(p.parentId);
-        super.setTitle("Content Window");
+        super.setTitle("Content Window"); //$NON-NLS-1$
     }
 
     /**

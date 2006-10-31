@@ -31,6 +31,7 @@ import java.awt.*;
 import org.apache.harmony.awt.gl.GLVolatileImage;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.Utils;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class XVolatileImage extends GLVolatileImage {
     private static final X11 x11 = X11.getInstance();
@@ -215,10 +216,9 @@ public class XVolatileImage extends GLVolatileImage {
                 break;
             }
             default: {
-                throw new InternalError(
-                        "Cannot use SinglePixedPackedSampleModel for bpp =" +
-                        xImage.get_bits_per_pixel()
-                );
+                // awt.0A=Cannot use SinglePixedPackedSampleModel for bpp = {0}
+                throw new InternalError(Messages.getString(
+                    "awt.0A", xImage.get_bits_per_pixel())); //$NON-NLS-1$
             }
         }
 
@@ -255,7 +255,8 @@ public class XVolatileImage extends GLVolatileImage {
                 );
             }
         } else {
-            throw new InternalError("Wrong color model created for drawable");
+            // awt.0B=Wrong color model created for drawable
+            throw new InternalError(Messages.getString("awt.0B")); //$NON-NLS-1$
         }
 
         return new BufferedImage(

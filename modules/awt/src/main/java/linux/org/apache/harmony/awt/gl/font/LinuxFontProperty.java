@@ -70,11 +70,11 @@ public class LinuxFontProperty extends FontProperty {
 
     public String toString(){
         return new String(this.getClass().getName() +
-                "[name=" + name +
-                ",fileName="+ fileName +
-                ",Charset=" + encoding +
-                ",exclRange=" + exclRange +
-                ",xlfd=" + xlfd + "]");
+                "[name=" + name + //$NON-NLS-1$
+                ",fileName="+ fileName + //$NON-NLS-1$
+                ",Charset=" + encoding + //$NON-NLS-1$
+                ",exclRange=" + exclRange + //$NON-NLS-1$
+                ",xlfd=" + xlfd + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 

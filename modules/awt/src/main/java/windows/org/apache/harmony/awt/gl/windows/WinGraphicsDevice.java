@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.util.Vector;
 
 import org.apache.harmony.awt.gl.GLGraphicsDevice;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 
@@ -66,7 +67,8 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         Win32.MONITORINFOEXW mi = win32.createMONITORINFOEXW(false);
         mi.get_MONITORINFO().set_cbSize(mi.size());
         if (win32.GetMonitorInfoW(hmon, mi.shortLockPointer()) == 0) {
-            throw new RuntimeException("Can not get monitor info");
+            // awt.15=Can not get monitor info
+            throw new RuntimeException(Messages.getString("awt.15")); //$NON-NLS-1$
         }
         Win32.RECT rect = mi.get_MONITORINFO().get_rcMonitor();
         int x = rect.get_left();
@@ -91,7 +93,8 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         if (defaultConfig == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
             if (hdc == 0) {
-                throw new RuntimeException("Can not create DC for device");
+                // awt.16=Can not create DC for device
+                throw new RuntimeException(Messages.getString("awt.16")); //$NON-NLS-1$
             }
 
             int dci = win32.GetPixelFormat(hdc);
@@ -112,7 +115,8 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         if (configs == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
             if (hdc == 0) {
-                throw new RuntimeException("Can not create DC for device");
+                // awt.16=Can not create DC for device
+                throw new RuntimeException(Messages.getString("awt.16")); //$NON-NLS-1$
             }
 
             // If we created DC why do not ask it about resolution?
@@ -182,12 +186,12 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
 
     @Override
     public String toString() {
-        return getClass().getName()+"[Bounds: "+bounds+", ID: "+id+", primary: "+primary+"]";
+        return getClass().getName()+"[Bounds: "+bounds+", ID: "+id+", primary: "+primary+"]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     byte[] getIDBytes() {
         if (idBytes == null) {
-            idBytes = (id + "\0x00").getBytes();
+            idBytes = (id + "\0x00").getBytes(); //$NON-NLS-1$
         }
 
         return idBytes;
@@ -209,7 +213,8 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         if (resolution == null) {
             long hdc = win32.CreateDCW(null, id, null, null);
             if (hdc == 0) {
-                throw new RuntimeException("Can not create DC for device");
+                // awt.16=Can not create DC for device
+                throw new RuntimeException(Messages.getString("awt.16")); //$NON-NLS-1$
             }
 
             if (resolution == null) {

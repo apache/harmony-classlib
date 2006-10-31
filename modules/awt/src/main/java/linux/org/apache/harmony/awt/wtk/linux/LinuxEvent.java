@@ -32,6 +32,7 @@ import java.awt.event.PaintEvent;
 import java.awt.event.WindowEvent;
 
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.CLongPointer;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
@@ -474,8 +475,8 @@ public final class LinuxEvent extends NativeEvent {
             CLongPointer types = bridge.createCLongPointer(propReturn.get(0));
             deriveNewWindowState(count, types);
         } else {
-            throw new RuntimeException(
-                "Only 32-bit format is supported for window state operations.");
+            // awt.10=Only 32-bit format is supported for window state operations.
+            throw new RuntimeException(Messages.getString("awt.10")); //$NON-NLS-1$
         }
     }
 
@@ -628,6 +629,6 @@ public final class LinuxEvent extends NativeEvent {
     }
     
        public String toString() {
-               return "window=0x" + Long.toHexString(windowId) + ", event=" + eventId;
+               return "window=0x" + Long.toHexString(windowId) + ", event=" + eventId; //$NON-NLS-1$ //$NON-NLS-2$
        }
 }

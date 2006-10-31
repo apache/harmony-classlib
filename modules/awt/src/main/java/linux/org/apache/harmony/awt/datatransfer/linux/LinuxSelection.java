@@ -39,16 +39,16 @@ public final class LinuxSelection extends NativeClipboard
     private final long xaSTRING;
 
     public LinuxSelection(String selection) {
-        super("System");
+        super("System"); //$NON-NLS-1$
 
         factory = (LinuxWindowFactory)ContextStorage.getWindowFactory();
 
         xaSelection = factory.internAtom(selection);
-        xaTargets = factory.internAtom("TARGETS");
-        xaMultiple = factory.internAtom("MULTIPLE");
-        xaText = factory.internAtom("TEXT");
-        xaUTF8 = factory.internAtom("UTF8_STRING");
-        xaSTRING = factory.internAtom("STRING");
+        xaTargets = factory.internAtom("TARGETS"); //$NON-NLS-1$
+        xaMultiple = factory.internAtom("MULTIPLE"); //$NON-NLS-1$
+        xaText = factory.internAtom("TEXT"); //$NON-NLS-1$
+        xaUTF8 = factory.internAtom("UTF8_STRING"); //$NON-NLS-1$
+        xaSTRING = factory.internAtom("STRING"); //$NON-NLS-1$
     }
 
     public boolean preprocess(XEvent event) {

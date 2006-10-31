@@ -36,6 +36,7 @@ import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.XORComposite;
 import org.apache.harmony.awt.gl.render.Blitter;
 import org.apache.harmony.awt.gl.render.JavaBlitter;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class GDIBlitter implements Blitter {
@@ -141,8 +142,9 @@ public class GDIBlitter implements Blitter {
                             matrix, clipRects, numVertex);
                 }
             }else{
-                throw new IllegalArgumentException("Unknown Composite type - " + 
-                        comp.getClass());
+                // awt.17=Unknown Composite type : {0}
+                throw new IllegalArgumentException(Messages.getString("awt.17",  //$NON-NLS-1$
+                        comp.getClass()));
             }
         }else{
             BufferedImage bi;

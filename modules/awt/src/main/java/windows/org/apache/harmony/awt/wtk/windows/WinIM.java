@@ -259,7 +259,6 @@ public class WinIM extends NativeIM {
                 Int8Pointer lpBuf = nb.createInt8Pointer(size, false);                
                 win32.ImmGetCompositionStringW(hIMC, WindowsDefs.GCS_COMPATTR,
                                                lpBuf, size);
-                System.out.print("attrs:");
                 processAttributes(size - 2, lpBuf);
             }
             if ((idx & WindowsDefs.GCS_COMPCLAUSE) != 0) {
@@ -294,30 +293,28 @@ public class WinIM extends NativeIM {
         // AttributedCharacterIterator attributes
         for (int i=0; i < size; i++) {
             byte attr = lpBuf.get(i);
-            String strAttr = "";
+            String strAttr = ""; //$NON-NLS-1$
             switch(attr) {
             case WindowsDefs.ATTR_INPUT:
-                strAttr = "INP";
+                strAttr = "INP"; //$NON-NLS-1$
                 break;
             case WindowsDefs.ATTR_INPUT_ERROR:
-                strAttr = "IE";
+                strAttr = "IE"; //$NON-NLS-1$
                 break;
             case WindowsDefs.ATTR_TARGET_CONVERTED:
-                strAttr = "T_CONV";
+                strAttr = "T_CONV"; //$NON-NLS-1$
                 break;
             case WindowsDefs.ATTR_CONVERTED:
-                strAttr = "CONV";
+                strAttr = "CONV"; //$NON-NLS-1$
                 break;
             case WindowsDefs.ATTR_TARGET_NOTCONVERTED:
-                strAttr = "T_NCONV";
+                strAttr = "T_NCONV"; //$NON-NLS-1$
                 break;
             case WindowsDefs.ATTR_FIXEDCONVERTED:
-                strAttr = "FIX_CONV";
+                strAttr = "FIX_CONV"; //$NON-NLS-1$
                 break;                        
             }
-            System.out.print( strAttr + ",");
         }
-        System.out.println();
     }
 
     

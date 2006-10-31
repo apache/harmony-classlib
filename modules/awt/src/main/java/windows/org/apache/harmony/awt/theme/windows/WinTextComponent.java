@@ -43,7 +43,7 @@ public class WinTextComponent extends WinStyle {
 
         if (t.isXpThemeActive()) {
 
-            wgr.setTheme(t.getXpTheme("Edit"));
+            wgr.setTheme(t.getXpTheme("Edit")); //$NON-NLS-1$
             int flags = (s.isEnabled() ? WindowsConsts.ETS_NORMAL :
                          WindowsConsts.ETS_DISABLED);
             wgr.drawXpBackground(s.getSize(),

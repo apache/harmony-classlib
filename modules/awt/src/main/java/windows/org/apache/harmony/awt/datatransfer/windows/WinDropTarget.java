@@ -36,6 +36,7 @@ import java.awt.dnd.peer.DropTargetContextPeer;
 import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.datatransfer.DataProxy;
 import org.apache.harmony.awt.datatransfer.DataSnapshot;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.windows.WinDataTransfer;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 import org.apache.harmony.awt.wtk.NativeWindow;
@@ -113,8 +114,8 @@ public class WinDropTarget implements DropTargetContextPeer, Runnable {
 
     public Transferable getTransferable() throws InvalidDnDOperationException {
         if (transferable == null) {
-            throw new InvalidDnDOperationException(
-                    "Transfer data is not available");
+            // awt.14=Transfer data is not available
+            throw new InvalidDnDOperationException(Messages.getString("awt.14")); //$NON-NLS-1$
         }
         return transferable;
     }

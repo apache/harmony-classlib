@@ -51,7 +51,7 @@ public class WinCheckbox extends WinStyle {
         wgr.fillBackground(size, s.getBackground(), true);
 
         if (t.isXpThemeActive()) {
-            wgr.setTheme(t.getXpTheme("Button"));
+            wgr.setTheme(t.getXpTheme("Button")); //$NON-NLS-1$
             wgr.drawXpBackground(bounds, getXpType(s), getXpState(s));
         } else {
             wgr.drawClassicBackground(bounds, WindowsDefs.DFC_BUTTON,

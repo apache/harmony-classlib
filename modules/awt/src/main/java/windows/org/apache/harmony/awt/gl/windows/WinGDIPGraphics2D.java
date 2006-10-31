@@ -74,7 +74,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     private static final long gdipToken;
 
     static {
-        System.loadLibrary("gl");
+        System.loadLibrary("gl"); //$NON-NLS-1$
 
         // GDI+ startup
         gdipToken = gdiPlusStartup();
@@ -112,7 +112,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         dstSurf = new GDISurface(gi);
         blitter = GDIBlitter.getInstance();
         if (debugOutput) {
-            System.err.println("WinGDIPGraphics2D("+nw+", "+tx+", "+ty+", "+width+", "+height+")");
+            System.err.println("WinGDIPGraphics2D("+nw+", "+tx+", "+ty+", "+width+", "+height+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }
         setTransform(getTransform());
 
@@ -157,7 +157,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public Graphics create() {
         if (debugOutput) {
-            System.err.println("WinGDIPGraphics2D.create()");
+            System.err.println("WinGDIPGraphics2D.create()"); //$NON-NLS-1$
         }
 
         WinGDIPGraphics2D res = null;
@@ -251,7 +251,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         gi = 0;
         super.dispose();
         if (debugOutput) {
-            System.err.println("WinGDIPGraphics2D.dispose()");
+            System.err.println("WinGDIPGraphics2D.dispose()"); //$NON-NLS-1$
         }
     }
 

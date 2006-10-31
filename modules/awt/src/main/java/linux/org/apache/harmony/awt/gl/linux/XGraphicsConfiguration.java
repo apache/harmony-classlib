@@ -23,6 +23,7 @@
 
 package org.apache.harmony.awt.gl.linux;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.*;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
@@ -234,7 +235,8 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
                     break;
                 }
                 default:
-                    throw new InternalError("Unknown visual class");
+                    // awt.0C=Unknown visual class
+                    throw new InternalError(Messages.getString("awt.0C")); //$NON-NLS-1$
             }
         }
 
@@ -250,15 +252,16 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
                 // Transparency unsupported yet, return default model again
                 return getColorModel();
             default:
-                throw new IllegalArgumentException("Invalid transparency");
+                // awt.0D=Invalid transparency
+                throw new IllegalArgumentException(Messages.getString("awt.0D")); //$NON-NLS-1$
         }
     }
 
     public VolatileImage createCompatibleVolatileImage(int width, int height) {
         if (width <= 0 || height <= 0)
-            throw new IllegalArgumentException(
-                    "Dimensions of the image should be positive"
-            );
+            // awt.0E=Dimensions of the image should be positive
+            throw new IllegalArgumentException(Messages.getString("awt.0E")); //$NON-NLS-1$
+            
 
         return new XVolatileImage(this, width, height);
     }

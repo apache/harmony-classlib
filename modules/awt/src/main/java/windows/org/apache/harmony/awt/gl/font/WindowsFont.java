@@ -36,6 +36,7 @@ import java.util.Locale;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.Glyph;
 import org.apache.harmony.awt.gl.font.LineMetricsImpl;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  * Windows platform font peer implementation based on GDI font object.
@@ -106,8 +107,8 @@ public class WindowsFont extends FontPeerImpl{
     public void addGlyphs(char uFirst, char uLast) {
         char index = uFirst;
         if (uLast < uFirst) {
-            throw new IllegalArgumentException(
-                    "min range bound value is grater than max range bound");
+            // awt.09=min range bound value is grater than max range bound
+            throw new IllegalArgumentException(Messages.getString("awt.09")); //$NON-NLS-1$
         }
         while (index < uLast) {
             addGlyph(index);

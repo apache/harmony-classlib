@@ -36,7 +36,7 @@ public class WinScrollbar extends WinStyle {
     public static void draw(Graphics g, ScrollbarState s, WinTheme t) {
         WinThemeGraphics wgr = new WinThemeGraphics(g);
         if (t.isXpThemeActive()) {
-            wgr.setTheme(t.getXpTheme("Scrollbar"));
+            wgr.setTheme(t.getXpTheme("Scrollbar")); //$NON-NLS-1$
             drawXp(wgr, s);
         } else {
             drawClassic(wgr, s);

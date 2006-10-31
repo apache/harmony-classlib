@@ -36,6 +36,7 @@ import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.Glyph;
 import org.apache.harmony.awt.gl.font.LineMetricsImpl;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.linux.LinuxWindowFactory;
 
 
@@ -84,7 +85,7 @@ public class LinuxFont extends FontPeerImpl {
                 this.italicAngle = LinuxNativeFont.getItalicAngleNative(pFont, this.fontType);
         }
         
-        this.nlm = new LinuxLineMetrics(this, null, " ");
+        this.nlm = new LinuxLineMetrics(this, null, " "); //$NON-NLS-1$
 
         this.ascent = nlm.getLogicalAscent();
         this.descent = nlm.getLogicalDescent();
@@ -246,8 +247,8 @@ public class LinuxFont extends FontPeerImpl {
     public void addGlyphs(char uFirst, char uLast) {
         char index = uFirst;
         if (uLast < uFirst) {
-            throw new IllegalArgumentException(
-                    "min range bound value is grater than max range bound");
+            // awt.09=min range bound value is grater than max range bound
+            throw new IllegalArgumentException(Messages.getString("awt.09")); //$NON-NLS-1$
         }
         while (index < uLast) {
             addGlyph(index);

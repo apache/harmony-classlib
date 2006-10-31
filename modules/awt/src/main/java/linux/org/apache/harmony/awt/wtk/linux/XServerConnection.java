@@ -20,6 +20,7 @@
  */
 package org.apache.harmony.awt.wtk.linux;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 
 class XServerConnection {
@@ -34,8 +35,10 @@ class XServerConnection {
         this.x11 = x11;
         display = x11.XOpenDisplay(0); //0 - we use default display only
         if (display == 0) {
-            String name = System.getProperty("DISPLAY");
-            throw new InternalError("Cannot open display '" + (name != null ? name : "") + "'");
+            String name = System.getProperty("DISPLAY"); //$NON-NLS-1$
+            // awt.0F=Cannot open display '{0}'
+            throw new InternalError(Messages.getString("awt.0F", //$NON-NLS-1$ 
+                    (name != null ? name : ""))); //$NON-NLS-1$
         }
         screen = x11.XDefaultScreen(display);
     }

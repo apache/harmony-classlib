@@ -29,6 +29,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.VolatileImage;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 
@@ -146,7 +147,8 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
     public BufferedImage createCompatibleImage(int width, int height, int transparency) {
         ColorModel cmt = getColorModel(transparency);
         if (cmt == null) {
-            throw new IllegalArgumentException("Transparency is not supported.");
+            // awt.18=Transparency is not supported.
+            throw new IllegalArgumentException(Messages.getString("awt.18")); //$NON-NLS-1$
         }
 
         return new BufferedImage(cmt, cmt.createCompatibleWritableRaster(width, height), false, null);

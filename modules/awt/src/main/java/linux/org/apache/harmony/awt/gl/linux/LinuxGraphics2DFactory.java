@@ -44,16 +44,16 @@ public class LinuxGraphics2DFactory extends CommonGraphics2DFactory {
         inst = new LinuxGraphics2DFactory();
     }
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {
-        String opengl = System.getProperty("java2d.opengl");
-        boolean useOpenGL = opengl != null && opengl.equals("true");
+        String opengl = System.getProperty("java2d.opengl"); //$NON-NLS-1$
+        boolean useOpenGL = opengl != null && opengl.equals("true"); //$NON-NLS-1$
         return useOpenGL ?
                 (Graphics2D) new OGLGraphics2D(nw, tx, ty, clip) :
                 new XGraphics2D(nw, tx, ty, clip);
     }
 
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, int width, int height) {
-        String opengl = System.getProperty("java2d.opengl");
-        boolean useOpenGL = opengl != null && opengl.equals("true");
+        String opengl = System.getProperty("java2d.opengl"); //$NON-NLS-1$
+        boolean useOpenGL = opengl != null && opengl.equals("true"); //$NON-NLS-1$
         return useOpenGL ?
                 (Graphics2D) new OGLGraphics2D(nw, tx, ty, width, height) :
                 new XGraphics2D(nw, tx, ty, width, height);

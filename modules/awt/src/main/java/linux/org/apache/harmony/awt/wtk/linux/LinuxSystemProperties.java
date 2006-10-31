@@ -126,7 +126,7 @@ public class LinuxSystemProperties implements SystemProperties {
     public Font getDefaultFont() {
         // Default font parameters are described 
         // in java.awt.Font specification
-        return new Font("Dialog", Font.PLAIN, 12);
+        return new Font("Dialog", Font.PLAIN, 12); //$NON-NLS-1$
     }
 
     public void init(Map desktopProperties) {

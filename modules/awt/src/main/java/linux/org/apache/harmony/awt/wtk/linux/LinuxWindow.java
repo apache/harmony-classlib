@@ -175,7 +175,7 @@ class LinuxWindow implements NativeWindow {
                                      X11Defs.InputOutput,
                                      X11Defs.CopyFromParent, 0, 0);
                                      */
-        String title = (p.name != null) ? p.name : "";
+        String title = (p.name != null) ? p.name : ""; //$NON-NLS-1$
         x11.XSetStandardProperties(display, windowID, title, title, 0,
                 null, 0, null);
         x11.XSelectInput(display, windowID, enabled ? DEFAULT_MASK : DISABLED_MASK);
@@ -482,7 +482,7 @@ class LinuxWindow implements NativeWindow {
 
     public void setTitle(String title) {
         if (title == null) {
-            title = "";
+            title = ""; //$NON-NLS-1$
         }
         x11.XStoreName(display, windowID, title);
         x11.XSetIconName(display, windowID, title);

@@ -131,8 +131,8 @@ public class XGraphicsDevice extends GLGraphicsDevice {
         // Allocate array for configurations
         configs = new XGraphicsConfiguration[numVisualInfos];
 
-        String opengl = System.getProperty("java2d.opengl");
-        boolean useOpenGL = opengl != null && opengl.equals("true");
+        String opengl = System.getProperty("java2d.opengl"); //$NON-NLS-1$
+        boolean useOpenGL = opengl != null && opengl.equals("true"); //$NON-NLS-1$
 
         for (int i=0; i<numVisualInfos; i++) {
             X11.XVisualInfo info = x11.createXVisualInfo(

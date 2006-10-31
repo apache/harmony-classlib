@@ -326,204 +326,204 @@ public class LinuxNativeFont {
             /*
              *  Language records with LCID values (0x04**).
              */
-             ht.put(new String("ar"), new Short((short)0x0401)); // ar-dz
-             ht.put(new String("bg"), new Short((short)0x0402));
-             ht.put(new String("ca"), new Short((short)0x0403));
-             ht.put(new String("zh"), new Short((short)0x0404)); // zh-tw
-             ht.put(new String("cs"), new Short((short)0x0405));
-             ht.put(new String("da"), new Short((short)0x0406));
-             ht.put(new String("de"), new Short((short)0x0407)); // de-de
-             ht.put(new String("el"), new Short((short)0x0408));
-             ht.put(new String("fi"), new Short((short)0x040b));
-             ht.put(new String("fr"), new Short((short)0x040c)); // fr-fr
-             ht.put(new String("iw"), new Short((short)0x040d)); // "he"
-             ht.put(new String("hu"), new Short((short)0x040e));
-             ht.put(new String("is"), new Short((short)0x040f));
-             ht.put(new String("it"), new Short((short)0x0410)); // it-it
-             ht.put(new String("ja"), new Short((short)0x0411));
-             ht.put(new String("ko"), new Short((short)0x0412));
-             ht.put(new String("nl"), new Short((short)0x0413)); // nl-nl
-             ht.put(new String("no"), new Short((short)0x0414)); // no_no
-             ht.put(new String("pl"), new Short((short)0x0415));
-             ht.put(new String("pt"), new Short((short)0x0416)); // pt-br
-             ht.put(new String("rm"), new Short((short)0x0417));
-             ht.put(new String("ro"), new Short((short)0x0418));
-             ht.put(new String("ru"), new Short((short)0x0419));
-             ht.put(new String("hr"), new Short((short)0x041a));
-             ht.put(new String("sk"), new Short((short)0x041b));
-             ht.put(new String("sq"), new Short((short)0x041c));
-             ht.put(new String("sv"), new Short((short)0x041d)); // sv-se
-             ht.put(new String("th"), new Short((short)0x041e));
-             ht.put(new String("tr"), new Short((short)0x041f));
-             ht.put(new String("ur"), new Short((short)0x0420));
-             ht.put(new String("in"), new Short((short)0x0421)); // "id"
-             ht.put(new String("uk"), new Short((short)0x0422));
-             ht.put(new String("be"), new Short((short)0x0423));
-             ht.put(new String("sl"), new Short((short)0x0424));
-             ht.put(new String("et"), new Short((short)0x0425));
-             ht.put(new String("lv"), new Short((short)0x0426));
-             ht.put(new String("lt"), new Short((short)0x0427));
-             ht.put(new String("fa"), new Short((short)0x0429));
-             ht.put(new String("vi"), new Short((short)0x042a));
-             ht.put(new String("hy"), new Short((short)0x042b));
-             ht.put(new String("eu"), new Short((short)0x042d));
-             ht.put(new String("sb"), new Short((short)0x042e));
-             ht.put(new String("mk"), new Short((short)0x042f));
-             ht.put(new String("sx"), new Short((short)0x0430));
-             ht.put(new String("ts"), new Short((short)0x0431));
-             ht.put(new String("tn"), new Short((short)0x0432));
-             ht.put(new String("xh"), new Short((short)0x0434));
-             ht.put(new String("zu"), new Short((short)0x0435));
-             ht.put(new String("af"), new Short((short)0x0436));
-             ht.put(new String("fo"), new Short((short)0x0438));
-             ht.put(new String("hi"), new Short((short)0x0439));
-             ht.put(new String("mt"), new Short((short)0x043a));
-             ht.put(new String("gd"), new Short((short)0x043c));
-             ht.put(new String("yi"), new Short((short)0x043d));
-             ht.put(new String("sw"), new Short((short)0x0441));
-             ht.put(new String("tt"), new Short((short)0x0444));
-             ht.put(new String("ta"), new Short((short)0x0449));
-             ht.put(new String("mr"), new Short((short)0x044e));
-             ht.put(new String("sa"), new Short((short)0x044f));
+             ht.put(new String("ar"), new Short((short)0x0401)); // ar-dz //$NON-NLS-1$
+             ht.put(new String("bg"), new Short((short)0x0402)); //$NON-NLS-1$
+             ht.put(new String("ca"), new Short((short)0x0403)); //$NON-NLS-1$
+             ht.put(new String("zh"), new Short((short)0x0404)); // zh-tw //$NON-NLS-1$
+             ht.put(new String("cs"), new Short((short)0x0405)); //$NON-NLS-1$
+             ht.put(new String("da"), new Short((short)0x0406)); //$NON-NLS-1$
+             ht.put(new String("de"), new Short((short)0x0407)); // de-de //$NON-NLS-1$
+             ht.put(new String("el"), new Short((short)0x0408)); //$NON-NLS-1$
+             ht.put(new String("fi"), new Short((short)0x040b)); //$NON-NLS-1$
+             ht.put(new String("fr"), new Short((short)0x040c)); // fr-fr //$NON-NLS-1$
+             ht.put(new String("iw"), new Short((short)0x040d)); // "he" //$NON-NLS-1$
+             ht.put(new String("hu"), new Short((short)0x040e)); //$NON-NLS-1$
+             ht.put(new String("is"), new Short((short)0x040f)); //$NON-NLS-1$
+             ht.put(new String("it"), new Short((short)0x0410)); // it-it //$NON-NLS-1$
+             ht.put(new String("ja"), new Short((short)0x0411)); //$NON-NLS-1$
+             ht.put(new String("ko"), new Short((short)0x0412)); //$NON-NLS-1$
+             ht.put(new String("nl"), new Short((short)0x0413)); // nl-nl //$NON-NLS-1$
+             ht.put(new String("no"), new Short((short)0x0414)); // no_no //$NON-NLS-1$
+             ht.put(new String("pl"), new Short((short)0x0415)); //$NON-NLS-1$
+             ht.put(new String("pt"), new Short((short)0x0416)); // pt-br //$NON-NLS-1$
+             ht.put(new String("rm"), new Short((short)0x0417)); //$NON-NLS-1$
+             ht.put(new String("ro"), new Short((short)0x0418)); //$NON-NLS-1$
+             ht.put(new String("ru"), new Short((short)0x0419)); //$NON-NLS-1$
+             ht.put(new String("hr"), new Short((short)0x041a)); //$NON-NLS-1$
+             ht.put(new String("sk"), new Short((short)0x041b)); //$NON-NLS-1$
+             ht.put(new String("sq"), new Short((short)0x041c)); //$NON-NLS-1$
+             ht.put(new String("sv"), new Short((short)0x041d)); // sv-se //$NON-NLS-1$
+             ht.put(new String("th"), new Short((short)0x041e)); //$NON-NLS-1$
+             ht.put(new String("tr"), new Short((short)0x041f)); //$NON-NLS-1$
+             ht.put(new String("ur"), new Short((short)0x0420)); //$NON-NLS-1$
+             ht.put(new String("in"), new Short((short)0x0421)); // "id" //$NON-NLS-1$
+             ht.put(new String("uk"), new Short((short)0x0422)); //$NON-NLS-1$
+             ht.put(new String("be"), new Short((short)0x0423)); //$NON-NLS-1$
+             ht.put(new String("sl"), new Short((short)0x0424)); //$NON-NLS-1$
+             ht.put(new String("et"), new Short((short)0x0425)); //$NON-NLS-1$
+             ht.put(new String("lv"), new Short((short)0x0426)); //$NON-NLS-1$
+             ht.put(new String("lt"), new Short((short)0x0427)); //$NON-NLS-1$
+             ht.put(new String("fa"), new Short((short)0x0429)); //$NON-NLS-1$
+             ht.put(new String("vi"), new Short((short)0x042a)); //$NON-NLS-1$
+             ht.put(new String("hy"), new Short((short)0x042b)); //$NON-NLS-1$
+             ht.put(new String("eu"), new Short((short)0x042d)); //$NON-NLS-1$
+             ht.put(new String("sb"), new Short((short)0x042e)); //$NON-NLS-1$
+             ht.put(new String("mk"), new Short((short)0x042f)); //$NON-NLS-1$
+             ht.put(new String("sx"), new Short((short)0x0430)); //$NON-NLS-1$
+             ht.put(new String("ts"), new Short((short)0x0431)); //$NON-NLS-1$
+             ht.put(new String("tn"), new Short((short)0x0432)); //$NON-NLS-1$
+             ht.put(new String("xh"), new Short((short)0x0434)); //$NON-NLS-1$
+             ht.put(new String("zu"), new Short((short)0x0435)); //$NON-NLS-1$
+             ht.put(new String("af"), new Short((short)0x0436)); //$NON-NLS-1$
+             ht.put(new String("fo"), new Short((short)0x0438)); //$NON-NLS-1$
+             ht.put(new String("hi"), new Short((short)0x0439)); //$NON-NLS-1$
+             ht.put(new String("mt"), new Short((short)0x043a)); //$NON-NLS-1$
+             ht.put(new String("gd"), new Short((short)0x043c)); //$NON-NLS-1$
+             ht.put(new String("yi"), new Short((short)0x043d)); //$NON-NLS-1$
+             ht.put(new String("sw"), new Short((short)0x0441)); //$NON-NLS-1$
+             ht.put(new String("tt"), new Short((short)0x0444)); //$NON-NLS-1$
+             ht.put(new String("ta"), new Short((short)0x0449)); //$NON-NLS-1$
+             ht.put(new String("mr"), new Short((short)0x044e)); //$NON-NLS-1$
+             ht.put(new String("sa"), new Short((short)0x044f)); //$NON-NLS-1$
 
             /*
              *  Language-country records.
              */
-             ht.put(new String("ar_SA"), new Short((short)0x401));
-             ht.put(new String("bg_BG"), new Short((short)0x402));
-             ht.put(new String("ca_ES"), new Short((short)0x403));
-             ht.put(new String("zh_TW"), new Short((short)0x404));
-             ht.put(new String("cs_CZ"), new Short((short)0x405));
-             ht.put(new String("da_DK"), new Short((short)0x406));
-             ht.put(new String("de_DE"), new Short((short)0x407));
-             ht.put(new String("el_GR"), new Short((short)0x408));
-             ht.put(new String("en_US"), new Short((short)0x409));
-             ht.put(new String("es_ES"), new Short((short)0x40a));
-             ht.put(new String("fi_FI"), new Short((short)0x40b));
-             ht.put(new String("fr_FR"), new Short((short)0x40c));
-             ht.put(new String("he_IL"), new Short((short)0x40d));
-             ht.put(new String("hu_HU"), new Short((short)0x40e));
-             ht.put(new String("is_IS"), new Short((short)0x40f));
-             ht.put(new String("it_IT"), new Short((short)0x410));
-             ht.put(new String("ja_JP"), new Short((short)0x411));
-             ht.put(new String("ko_KR"), new Short((short)0x412));
-             ht.put(new String("nl_NL"), new Short((short)0x413));
-             ht.put(new String("nb_NO"), new Short((short)0x414));
-             ht.put(new String("pl_PL"), new Short((short)0x415));
-             ht.put(new String("pt_BR"), new Short((short)0x416));
-             ht.put(new String("ro_RO"), new Short((short)0x418));
-             ht.put(new String("ru_RU"), new Short((short)0x419));
-             ht.put(new String("hr_HR"), new Short((short)0x41a));
-             ht.put(new String("sk_SK"), new Short((short)0x41b));
-             ht.put(new String("sq_AL"), new Short((short)0x41c));
-             ht.put(new String("sv_SE"), new Short((short)0x41d));
-             ht.put(new String("th_TH"), new Short((short)0x41e));
-             ht.put(new String("tr_TR"), new Short((short)0x41f));
-             ht.put(new String("ur_PK"), new Short((short)0x420));
-             ht.put(new String("id_ID"), new Short((short)0x421));
-             ht.put(new String("uk_UA"), new Short((short)0x422));
-             ht.put(new String("be_BY"), new Short((short)0x423));
-             ht.put(new String("sl_SI"), new Short((short)0x424));
-             ht.put(new String("et_EE"), new Short((short)0x425));
-             ht.put(new String("lv_LV"), new Short((short)0x426));
-             ht.put(new String("lt_LT"), new Short((short)0x427));
-             ht.put(new String("fa_IR"), new Short((short)0x429));
-             ht.put(new String("vi_VN"), new Short((short)0x42a));
-             ht.put(new String("hy_AM"), new Short((short)0x42b));
-             ht.put(new String("az_AZ"), new Short((short)0x42c));
-             ht.put(new String("eu_ES"), new Short((short)0x42d));
-             ht.put(new String("mk_MK"), new Short((short)0x42f));
-             ht.put(new String("af_ZA"), new Short((short)0x436));
-             ht.put(new String("ka_GE"), new Short((short)0x437));
-             ht.put(new String("fo_FO"), new Short((short)0x438));
-             ht.put(new String("hi_IN"), new Short((short)0x439));
-             ht.put(new String("ms_MY"), new Short((short)0x43e));
-             ht.put(new String("kk_KZ"), new Short((short)0x43f));
-             ht.put(new String("ky_KG"), new Short((short)0x440));
-             ht.put(new String("sw_KE"), new Short((short)0x441));
-             ht.put(new String("uz_UZ"), new Short((short)0x443));
-             ht.put(new String("tt_TA"), new Short((short)0x444));
-             ht.put(new String("pa_IN"), new Short((short)0x446));
-             ht.put(new String("gu_IN"), new Short((short)0x447));
-             ht.put(new String("ta_IN"), new Short((short)0x449));
-             ht.put(new String("te_IN"), new Short((short)0x44a));
-             ht.put(new String("kn_IN"), new Short((short)0x44b));
-             ht.put(new String("mr_IN"), new Short((short)0x44e));
-             ht.put(new String("sa_IN"), new Short((short)0x44f));
-             ht.put(new String("mn_MN"), new Short((short)0x450));
-             ht.put(new String("gl_ES"), new Short((short)0x456));
-             ht.put(new String("ko_IN"), new Short((short)0x457));
-             ht.put(new String("sy_SY"), new Short((short)0x45a));
-             ht.put(new String("di_MV"), new Short((short)0x465));
-             ht.put(new String("ar_IQ"), new Short((short)0x801));
-             ht.put(new String("zh_CN"), new Short((short)0x804));
-             ht.put(new String("de_CH"), new Short((short)0x807));
-             ht.put(new String("en_GB"), new Short((short)0x809));
-             ht.put(new String("es_MX"), new Short((short)0x80a));
-             ht.put(new String("fr_BE"), new Short((short)0x80c));
-             ht.put(new String("it_CH"), new Short((short)0x810));
-             ht.put(new String("nl_BE"), new Short((short)0x813));
-             ht.put(new String("nn_NO"), new Short((short)0x814));
-             ht.put(new String("pt_PT"), new Short((short)0x816));
-             ht.put(new String("sr_SP"), new Short((short)0x81a));
-             ht.put(new String("sv_FI"), new Short((short)0x81d));
-             ht.put(new String("az_AZ"), new Short((short)0x82c));
-             ht.put(new String("ms_BN"), new Short((short)0x83e));
-             ht.put(new String("uz_UZ"), new Short((short)0x843));
-             ht.put(new String("ar_EG"), new Short((short)0xc01));
-             ht.put(new String("zh_HK"), new Short((short)0xc04));
-             ht.put(new String("de_AT"), new Short((short)0xc07));
-             ht.put(new String("en_AU"), new Short((short)0xc09));
-             ht.put(new String("es_ES"), new Short((short)0xc0a));
-             ht.put(new String("fr_CA"), new Short((short)0xc0c));
-             ht.put(new String("sr_SP"), new Short((short)0xc1a));
-             ht.put(new String("ar_LY"), new Short((short)0x1001));
-             ht.put(new String("zh_SG"), new Short((short)0x1004));
-             ht.put(new String("de_LU"), new Short((short)0x1007));
-             ht.put(new String("en_CA"), new Short((short)0x1009));
-             ht.put(new String("es_GT"), new Short((short)0x100a));
-             ht.put(new String("fr_CH"), new Short((short)0x100c));
-             ht.put(new String("ar_DZ"), new Short((short)0x1401));
-             ht.put(new String("zh_MO"), new Short((short)0x1404));
-             ht.put(new String("de_LI"), new Short((short)0x1407));
-             ht.put(new String("en_NZ"), new Short((short)0x1409));
-             ht.put(new String("es_CR"), new Short((short)0x140a));
-             ht.put(new String("fr_LU"), new Short((short)0x140c));
-             ht.put(new String("ar_MA"), new Short((short)0x1801));
-             ht.put(new String("en_IE"), new Short((short)0x1809));
-             ht.put(new String("es_PA"), new Short((short)0x180a));
-             ht.put(new String("fr_MC"), new Short((short)0x180c));
-             ht.put(new String("ar_TN"), new Short((short)0x1c01));
-             ht.put(new String("en_ZA"), new Short((short)0x1c09));
-             ht.put(new String("es_DO"), new Short((short)0x1c0a));
-             ht.put(new String("ar_OM"), new Short((short)0x2001));
-             ht.put(new String("en_JM"), new Short((short)0x2009));
-             ht.put(new String("es_VE"), new Short((short)0x200a));
-             ht.put(new String("ar_YE"), new Short((short)0x2401));
-             ht.put(new String("en_CB"), new Short((short)0x2409));
-             ht.put(new String("es_CO"), new Short((short)0x240a));
-             ht.put(new String("ar_SY"), new Short((short)0x2801));
-             ht.put(new String("en_BZ"), new Short((short)0x2809));
-             ht.put(new String("es_PE"), new Short((short)0x280a));
-             ht.put(new String("ar_JO"), new Short((short)0x2c01));
-             ht.put(new String("en_TT"), new Short((short)0x2c09));
-             ht.put(new String("es_AR"), new Short((short)0x2c0a));
-             ht.put(new String("ar_LB"), new Short((short)0x3001));
-             ht.put(new String("en_ZW"), new Short((short)0x3009));
-             ht.put(new String("es_EC"), new Short((short)0x300a));
-             ht.put(new String("ar_KW"), new Short((short)0x3401));
-             ht.put(new String("en_PH"), new Short((short)0x3409));
-             ht.put(new String("es_CL"), new Short((short)0x340a));
-             ht.put(new String("ar_AE"), new Short((short)0x3801));
-             ht.put(new String("es_UY"), new Short((short)0x380a));
-             ht.put(new String("ar_BH"), new Short((short)0x3c01));
-             ht.put(new String("es_PY"), new Short((short)0x3c0a));
-             ht.put(new String("ar_QA"), new Short((short)0x4001));
-             ht.put(new String("es_BO"), new Short((short)0x400a));
-             ht.put(new String("es_SV"), new Short((short)0x440a));
-             ht.put(new String("es_HN"), new Short((short)0x480a));
-             ht.put(new String("es_NI"), new Short((short)0x4c0a));
-             ht.put(new String("es_PR"), new Short((short)0x500a));
+             ht.put(new String("ar_SA"), new Short((short)0x401)); //$NON-NLS-1$
+             ht.put(new String("bg_BG"), new Short((short)0x402)); //$NON-NLS-1$
+             ht.put(new String("ca_ES"), new Short((short)0x403)); //$NON-NLS-1$
+             ht.put(new String("zh_TW"), new Short((short)0x404)); //$NON-NLS-1$
+             ht.put(new String("cs_CZ"), new Short((short)0x405)); //$NON-NLS-1$
+             ht.put(new String("da_DK"), new Short((short)0x406)); //$NON-NLS-1$
+             ht.put(new String("de_DE"), new Short((short)0x407)); //$NON-NLS-1$
+             ht.put(new String("el_GR"), new Short((short)0x408)); //$NON-NLS-1$
+             ht.put(new String("en_US"), new Short((short)0x409)); //$NON-NLS-1$
+             ht.put(new String("es_ES"), new Short((short)0x40a)); //$NON-NLS-1$
+             ht.put(new String("fi_FI"), new Short((short)0x40b)); //$NON-NLS-1$
+             ht.put(new String("fr_FR"), new Short((short)0x40c)); //$NON-NLS-1$
+             ht.put(new String("he_IL"), new Short((short)0x40d)); //$NON-NLS-1$
+             ht.put(new String("hu_HU"), new Short((short)0x40e)); //$NON-NLS-1$
+             ht.put(new String("is_IS"), new Short((short)0x40f)); //$NON-NLS-1$
+             ht.put(new String("it_IT"), new Short((short)0x410)); //$NON-NLS-1$
+             ht.put(new String("ja_JP"), new Short((short)0x411)); //$NON-NLS-1$
+             ht.put(new String("ko_KR"), new Short((short)0x412)); //$NON-NLS-1$
+             ht.put(new String("nl_NL"), new Short((short)0x413)); //$NON-NLS-1$
+             ht.put(new String("nb_NO"), new Short((short)0x414)); //$NON-NLS-1$
+             ht.put(new String("pl_PL"), new Short((short)0x415)); //$NON-NLS-1$
+             ht.put(new String("pt_BR"), new Short((short)0x416)); //$NON-NLS-1$
+             ht.put(new String("ro_RO"), new Short((short)0x418)); //$NON-NLS-1$
+             ht.put(new String("ru_RU"), new Short((short)0x419)); //$NON-NLS-1$
+             ht.put(new String("hr_HR"), new Short((short)0x41a)); //$NON-NLS-1$
+             ht.put(new String("sk_SK"), new Short((short)0x41b)); //$NON-NLS-1$
+             ht.put(new String("sq_AL"), new Short((short)0x41c)); //$NON-NLS-1$
+             ht.put(new String("sv_SE"), new Short((short)0x41d)); //$NON-NLS-1$
+             ht.put(new String("th_TH"), new Short((short)0x41e)); //$NON-NLS-1$
+             ht.put(new String("tr_TR"), new Short((short)0x41f)); //$NON-NLS-1$
+             ht.put(new String("ur_PK"), new Short((short)0x420)); //$NON-NLS-1$
+             ht.put(new String("id_ID"), new Short((short)0x421)); //$NON-NLS-1$
+             ht.put(new String("uk_UA"), new Short((short)0x422)); //$NON-NLS-1$
+             ht.put(new String("be_BY"), new Short((short)0x423)); //$NON-NLS-1$
+             ht.put(new String("sl_SI"), new Short((short)0x424)); //$NON-NLS-1$
+             ht.put(new String("et_EE"), new Short((short)0x425)); //$NON-NLS-1$
+             ht.put(new String("lv_LV"), new Short((short)0x426)); //$NON-NLS-1$
+             ht.put(new String("lt_LT"), new Short((short)0x427)); //$NON-NLS-1$
+             ht.put(new String("fa_IR"), new Short((short)0x429)); //$NON-NLS-1$
+             ht.put(new String("vi_VN"), new Short((short)0x42a)); //$NON-NLS-1$
+             ht.put(new String("hy_AM"), new Short((short)0x42b)); //$NON-NLS-1$
+             ht.put(new String("az_AZ"), new Short((short)0x42c)); //$NON-NLS-1$
+             ht.put(new String("eu_ES"), new Short((short)0x42d)); //$NON-NLS-1$
+             ht.put(new String("mk_MK"), new Short((short)0x42f)); //$NON-NLS-1$
+             ht.put(new String("af_ZA"), new Short((short)0x436)); //$NON-NLS-1$
+             ht.put(new String("ka_GE"), new Short((short)0x437)); //$NON-NLS-1$
+             ht.put(new String("fo_FO"), new Short((short)0x438)); //$NON-NLS-1$
+             ht.put(new String("hi_IN"), new Short((short)0x439)); //$NON-NLS-1$
+             ht.put(new String("ms_MY"), new Short((short)0x43e)); //$NON-NLS-1$
+             ht.put(new String("kk_KZ"), new Short((short)0x43f)); //$NON-NLS-1$
+             ht.put(new String("ky_KG"), new Short((short)0x440)); //$NON-NLS-1$
+             ht.put(new String("sw_KE"), new Short((short)0x441)); //$NON-NLS-1$
+             ht.put(new String("uz_UZ"), new Short((short)0x443)); //$NON-NLS-1$
+             ht.put(new String("tt_TA"), new Short((short)0x444)); //$NON-NLS-1$
+             ht.put(new String("pa_IN"), new Short((short)0x446)); //$NON-NLS-1$
+             ht.put(new String("gu_IN"), new Short((short)0x447)); //$NON-NLS-1$
+             ht.put(new String("ta_IN"), new Short((short)0x449)); //$NON-NLS-1$
+             ht.put(new String("te_IN"), new Short((short)0x44a)); //$NON-NLS-1$
+             ht.put(new String("kn_IN"), new Short((short)0x44b)); //$NON-NLS-1$
+             ht.put(new String("mr_IN"), new Short((short)0x44e)); //$NON-NLS-1$
+             ht.put(new String("sa_IN"), new Short((short)0x44f)); //$NON-NLS-1$
+             ht.put(new String("mn_MN"), new Short((short)0x450)); //$NON-NLS-1$
+             ht.put(new String("gl_ES"), new Short((short)0x456)); //$NON-NLS-1$
+             ht.put(new String("ko_IN"), new Short((short)0x457)); //$NON-NLS-1$
+             ht.put(new String("sy_SY"), new Short((short)0x45a)); //$NON-NLS-1$
+             ht.put(new String("di_MV"), new Short((short)0x465)); //$NON-NLS-1$
+             ht.put(new String("ar_IQ"), new Short((short)0x801)); //$NON-NLS-1$
+             ht.put(new String("zh_CN"), new Short((short)0x804)); //$NON-NLS-1$
+             ht.put(new String("de_CH"), new Short((short)0x807)); //$NON-NLS-1$
+             ht.put(new String("en_GB"), new Short((short)0x809)); //$NON-NLS-1$
+             ht.put(new String("es_MX"), new Short((short)0x80a)); //$NON-NLS-1$
+             ht.put(new String("fr_BE"), new Short((short)0x80c)); //$NON-NLS-1$
+             ht.put(new String("it_CH"), new Short((short)0x810)); //$NON-NLS-1$
+             ht.put(new String("nl_BE"), new Short((short)0x813)); //$NON-NLS-1$
+             ht.put(new String("nn_NO"), new Short((short)0x814)); //$NON-NLS-1$
+             ht.put(new String("pt_PT"), new Short((short)0x816)); //$NON-NLS-1$
+             ht.put(new String("sr_SP"), new Short((short)0x81a)); //$NON-NLS-1$
+             ht.put(new String("sv_FI"), new Short((short)0x81d)); //$NON-NLS-1$
+             ht.put(new String("az_AZ"), new Short((short)0x82c)); //$NON-NLS-1$
+             ht.put(new String("ms_BN"), new Short((short)0x83e)); //$NON-NLS-1$
+             ht.put(new String("uz_UZ"), new Short((short)0x843)); //$NON-NLS-1$
+             ht.put(new String("ar_EG"), new Short((short)0xc01)); //$NON-NLS-1$
+             ht.put(new String("zh_HK"), new Short((short)0xc04)); //$NON-NLS-1$
+             ht.put(new String("de_AT"), new Short((short)0xc07)); //$NON-NLS-1$
+             ht.put(new String("en_AU"), new Short((short)0xc09)); //$NON-NLS-1$
+             ht.put(new String("es_ES"), new Short((short)0xc0a)); //$NON-NLS-1$
+             ht.put(new String("fr_CA"), new Short((short)0xc0c)); //$NON-NLS-1$
+             ht.put(new String("sr_SP"), new Short((short)0xc1a)); //$NON-NLS-1$
+             ht.put(new String("ar_LY"), new Short((short)0x1001)); //$NON-NLS-1$
+             ht.put(new String("zh_SG"), new Short((short)0x1004)); //$NON-NLS-1$
+             ht.put(new String("de_LU"), new Short((short)0x1007)); //$NON-NLS-1$
+             ht.put(new String("en_CA"), new Short((short)0x1009)); //$NON-NLS-1$
+             ht.put(new String("es_GT"), new Short((short)0x100a)); //$NON-NLS-1$
+             ht.put(new String("fr_CH"), new Short((short)0x100c)); //$NON-NLS-1$
+             ht.put(new String("ar_DZ"), new Short((short)0x1401)); //$NON-NLS-1$
+             ht.put(new String("zh_MO"), new Short((short)0x1404)); //$NON-NLS-1$
+             ht.put(new String("de_LI"), new Short((short)0x1407)); //$NON-NLS-1$
+             ht.put(new String("en_NZ"), new Short((short)0x1409)); //$NON-NLS-1$
+             ht.put(new String("es_CR"), new Short((short)0x140a)); //$NON-NLS-1$
+             ht.put(new String("fr_LU"), new Short((short)0x140c)); //$NON-NLS-1$
+             ht.put(new String("ar_MA"), new Short((short)0x1801)); //$NON-NLS-1$
+             ht.put(new String("en_IE"), new Short((short)0x1809)); //$NON-NLS-1$
+             ht.put(new String("es_PA"), new Short((short)0x180a)); //$NON-NLS-1$
+             ht.put(new String("fr_MC"), new Short((short)0x180c)); //$NON-NLS-1$
+             ht.put(new String("ar_TN"), new Short((short)0x1c01)); //$NON-NLS-1$
+             ht.put(new String("en_ZA"), new Short((short)0x1c09)); //$NON-NLS-1$
+             ht.put(new String("es_DO"), new Short((short)0x1c0a)); //$NON-NLS-1$
+             ht.put(new String("ar_OM"), new Short((short)0x2001)); //$NON-NLS-1$
+             ht.put(new String("en_JM"), new Short((short)0x2009)); //$NON-NLS-1$
+             ht.put(new String("es_VE"), new Short((short)0x200a)); //$NON-NLS-1$
+             ht.put(new String("ar_YE"), new Short((short)0x2401)); //$NON-NLS-1$
+             ht.put(new String("en_CB"), new Short((short)0x2409)); //$NON-NLS-1$
+             ht.put(new String("es_CO"), new Short((short)0x240a)); //$NON-NLS-1$
+             ht.put(new String("ar_SY"), new Short((short)0x2801)); //$NON-NLS-1$
+             ht.put(new String("en_BZ"), new Short((short)0x2809)); //$NON-NLS-1$
+             ht.put(new String("es_PE"), new Short((short)0x280a)); //$NON-NLS-1$
+             ht.put(new String("ar_JO"), new Short((short)0x2c01)); //$NON-NLS-1$
+             ht.put(new String("en_TT"), new Short((short)0x2c09)); //$NON-NLS-1$
+             ht.put(new String("es_AR"), new Short((short)0x2c0a)); //$NON-NLS-1$
+             ht.put(new String("ar_LB"), new Short((short)0x3001)); //$NON-NLS-1$
+             ht.put(new String("en_ZW"), new Short((short)0x3009)); //$NON-NLS-1$
+             ht.put(new String("es_EC"), new Short((short)0x300a)); //$NON-NLS-1$
+             ht.put(new String("ar_KW"), new Short((short)0x3401)); //$NON-NLS-1$
+             ht.put(new String("en_PH"), new Short((short)0x3409)); //$NON-NLS-1$
+             ht.put(new String("es_CL"), new Short((short)0x340a)); //$NON-NLS-1$
+             ht.put(new String("ar_AE"), new Short((short)0x3801)); //$NON-NLS-1$
+             ht.put(new String("es_UY"), new Short((short)0x380a)); //$NON-NLS-1$
+             ht.put(new String("ar_BH"), new Short((short)0x3c01)); //$NON-NLS-1$
+             ht.put(new String("es_PY"), new Short((short)0x3c0a)); //$NON-NLS-1$
+             ht.put(new String("ar_QA"), new Short((short)0x4001)); //$NON-NLS-1$
+             ht.put(new String("es_BO"), new Short((short)0x400a)); //$NON-NLS-1$
+             ht.put(new String("es_SV"), new Short((short)0x440a)); //$NON-NLS-1$
+             ht.put(new String("es_HN"), new Short((short)0x480a)); //$NON-NLS-1$
+             ht.put(new String("es_NI"), new Short((short)0x4c0a)); //$NON-NLS-1$
+             ht.put(new String("es_PR"), new Short((short)0x500a)); //$NON-NLS-1$
     }
 
     /**
@@ -626,7 +626,7 @@ public class LinuxNativeFont {
      * special format
      */
     public static void initFace(int index, String faceString){
-        String delim = "-";
+        String delim = "-"; //$NON-NLS-1$
         int pos;
         if (faceString == null) {
             return;
@@ -654,7 +654,7 @@ public class LinuxNativeFont {
         
         fontStyles[index] = style;
 
-        faces[index] = family + " " + styleNames[index];
+        faces[index] = family + " " + styleNames[index]; //$NON-NLS-1$
     }
 
     /** Returns the list of system font families names. */
@@ -703,7 +703,7 @@ public class LinuxNativeFont {
             java.security.AccessController
                     .doPrivileged(new java.security.PrivilegedAction() {
                         public Object run() {
-                            System.loadLibrary("linuxfont");
+                            System.loadLibrary("linuxfont"); //$NON-NLS-1$
                             return null;
                         }
                     });

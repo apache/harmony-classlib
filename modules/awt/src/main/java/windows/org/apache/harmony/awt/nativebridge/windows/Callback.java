@@ -20,6 +20,8 @@
  */
 package org.apache.harmony.awt.nativebridge.windows;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Callback {
 
     public interface Handler {
@@ -35,7 +37,7 @@ public class Callback {
     private static Handler handlerDataTransfer;
 
     static {
-        System.loadLibrary("Win32Wrapper");
+        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
         callbackWNDPROC = initCallBackWNDPROC();
         callbackOFNHOOKPROC = initCallBackOFNHOOKPROC();
         callbackDataTransferProc = initCallBackDataTransferProc();
@@ -43,7 +45,8 @@ public class Callback {
 
     public static long registerCallback(Handler h) {
         if (handler != null && handler != h) {
-            throw new RuntimeException("Attempt to replace WindowProc handler");
+            // awt.1E=Attempt to replace WindowProc handler
+            throw new RuntimeException(Messages.getString("awt.1E")); //$NON-NLS-1$
         }
         handler = h;
         return callbackWNDPROC;

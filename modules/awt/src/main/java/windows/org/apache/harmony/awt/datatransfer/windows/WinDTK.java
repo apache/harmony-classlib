@@ -47,7 +47,7 @@ public final class WinDTK extends DTK implements Callback.Handler {
     private long dataTransferWindow;
     private long windowProc;
     private static final String windowClass = 
-        "org.apache.harmony.awt.datatransfer.window";
+        "org.apache.harmony.awt.datatransfer.window"; //$NON-NLS-1$
 
     @Override
     protected NativeClipboard newNativeClipboard() {
@@ -95,7 +95,7 @@ public final class WinDTK extends DTK implements Callback.Handler {
     
     @Override
     public String getDefaultCharset() {
-        return "utf-16le";
+        return "utf-16le"; //$NON-NLS-1$
     }
 
     public long windowProc(long hwnd, int msg, long wParam, long lParam) {

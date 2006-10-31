@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import org.apache.harmony.awt.gl.linux.XGraphicsConfiguration;
 import org.apache.harmony.awt.gl.linux.XGraphicsDevice;
 import org.apache.harmony.awt.gl.linux.XVolatileImage;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeRobot;
 
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
@@ -106,7 +107,8 @@ public class XTestRobot implements NativeRobot {
     public void keyEvent(int keycode, boolean press) {
         int xKeySym = KeyCodeTranslator.VK2XK(keycode);
         if (xKeySym == X11Defs.NoSymbol) {
-            throw new IllegalArgumentException("Invalid key code");
+            // awt.11=Invalid key code
+            throw new IllegalArgumentException(Messages.getString("awt.11")); //$NON-NLS-1$
         }
         int xKeyCode = x11.XKeysymToKeycode(dpy, xKeySym);
         x11.XTestFakeKeyEvent(dpy, xKeyCode, getBool(press),
@@ -162,7 +164,8 @@ public class XTestRobot implements NativeRobot {
         res = x11.XTestQueryExtension(dpy, dummyPtr, dummyPtr,
                                       majorPtr, minorPtr);
         if (res != X11Defs.True) {
-            throw new AWTError("XTest is not supported by your X server!");
+            // awt.12=XTest is not supported by your X server\!
+            throw new AWTError(Messages.getString("awt.12")); //$NON-NLS-1$
         }
     }
 

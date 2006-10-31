@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
@@ -380,13 +381,14 @@ public class WinEventQueue extends NativeEventQueue {
      */
     private static long createJavaWindow() {
         long hwnd = win32.CreateWindowExW(0,
-                WindowProcHandler.windowClassName, "JavaWindow",
+                WindowProcHandler.windowClassName, "JavaWindow", //$NON-NLS-1$
                 0, 0, 0, 0, 0, 0, 0, 0, null);
         int winError = win32.GetLastError();
 
         if (hwnd == 0) {
-            throw new InternalError("Failure to create JavaWindow "
-                    + "GetLastError returned " + winError);
+            // awt.1C=Failure to create JavaWindow GetLastError returned {0}
+            throw new InternalError(Messages.getString("awt.1C", //$NON-NLS-1$
+                    winError));
         }
 
         return hwnd;

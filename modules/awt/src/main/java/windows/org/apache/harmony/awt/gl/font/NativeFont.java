@@ -347,65 +347,65 @@ public class NativeFont {
              * strings in language_country format we have to add manually just 
              * language strings that Java locale support with LCID values (0x04**).
              */
-             ht.put(new String("ar"), new Short((short)0x0401)); // ar-dz
-             ht.put(new String("bg"), new Short((short)0x0402));
-             ht.put(new String("ca"), new Short((short)0x0403));
-             ht.put(new String("zh"), new Short((short)0x0404)); // zh-tw
-             ht.put(new String("cs"), new Short((short)0x0405));
-             ht.put(new String("da"), new Short((short)0x0406));
-             ht.put(new String("de"), new Short((short)0x0407)); // de-de
-             ht.put(new String("el"), new Short((short)0x0408));
-             ht.put(new String("fi"), new Short((short)0x040b));
-             ht.put(new String("fr"), new Short((short)0x040c)); // fr-fr
-             ht.put(new String("iw"), new Short((short)0x040d)); // "he"
-             ht.put(new String("hu"), new Short((short)0x040e));
-             ht.put(new String("is"), new Short((short)0x040f));
-             ht.put(new String("it"), new Short((short)0x0410)); // it-it
-             ht.put(new String("ja"), new Short((short)0x0411));
-             ht.put(new String("ko"), new Short((short)0x0412));
-             ht.put(new String("nl"), new Short((short)0x0413)); // nl-nl
-             ht.put(new String("no"), new Short((short)0x0414)); // no_no
-             ht.put(new String("pl"), new Short((short)0x0415));
-             ht.put(new String("pt"), new Short((short)0x0416)); // pt-br
-             ht.put(new String("rm"), new Short((short)0x0417));
-             ht.put(new String("ro"), new Short((short)0x0418));
-             ht.put(new String("ru"), new Short((short)0x0419));
-             ht.put(new String("hr"), new Short((short)0x041a));
-             ht.put(new String("sk"), new Short((short)0x041b));
-             ht.put(new String("sq"), new Short((short)0x041c));
-             ht.put(new String("sv"), new Short((short)0x041d)); // sv-se
-             ht.put(new String("th"), new Short((short)0x041e));
-             ht.put(new String("tr"), new Short((short)0x041f));
-             ht.put(new String("ur"), new Short((short)0x0420));
-             ht.put(new String("in"), new Short((short)0x0421)); // "id"
-             ht.put(new String("uk"), new Short((short)0x0422));
-             ht.put(new String("be"), new Short((short)0x0423));
-             ht.put(new String("sl"), new Short((short)0x0424));
-             ht.put(new String("et"), new Short((short)0x0425));
-             ht.put(new String("lv"), new Short((short)0x0426));
-             ht.put(new String("lt"), new Short((short)0x0427));
-             ht.put(new String("fa"), new Short((short)0x0429));
-             ht.put(new String("vi"), new Short((short)0x042a));
-             ht.put(new String("hy"), new Short((short)0x042b));
-             ht.put(new String("eu"), new Short((short)0x042d));
-             ht.put(new String("sb"), new Short((short)0x042e));
-             ht.put(new String("mk"), new Short((short)0x042f));
-             ht.put(new String("sx"), new Short((short)0x0430));
-             ht.put(new String("ts"), new Short((short)0x0431));
-             ht.put(new String("tn"), new Short((short)0x0432));
-             ht.put(new String("xh"), new Short((short)0x0434));
-             ht.put(new String("zu"), new Short((short)0x0435));
-             ht.put(new String("af"), new Short((short)0x0436));
-             ht.put(new String("fo"), new Short((short)0x0438));
-             ht.put(new String("hi"), new Short((short)0x0439));
-             ht.put(new String("mt"), new Short((short)0x043a));
-             ht.put(new String("gd"), new Short((short)0x043c));
-             ht.put(new String("yi"), new Short((short)0x043d));
-             ht.put(new String("sw"), new Short((short)0x0441));
-             ht.put(new String("tt"), new Short((short)0x0444));
-             ht.put(new String("ta"), new Short((short)0x0449));
-             ht.put(new String("mr"), new Short((short)0x044e));
-             ht.put(new String("sa"), new Short((short)0x044f));
+             ht.put(new String("ar"), new Short((short)0x0401)); // ar-dz //$NON-NLS-1$
+             ht.put(new String("bg"), new Short((short)0x0402)); //$NON-NLS-1$
+             ht.put(new String("ca"), new Short((short)0x0403)); //$NON-NLS-1$
+             ht.put(new String("zh"), new Short((short)0x0404)); // zh-tw //$NON-NLS-1$
+             ht.put(new String("cs"), new Short((short)0x0405)); //$NON-NLS-1$
+             ht.put(new String("da"), new Short((short)0x0406)); //$NON-NLS-1$
+             ht.put(new String("de"), new Short((short)0x0407)); // de-de //$NON-NLS-1$
+             ht.put(new String("el"), new Short((short)0x0408)); //$NON-NLS-1$
+             ht.put(new String("fi"), new Short((short)0x040b)); //$NON-NLS-1$
+             ht.put(new String("fr"), new Short((short)0x040c)); // fr-fr //$NON-NLS-1$
+             ht.put(new String("iw"), new Short((short)0x040d)); // "he" //$NON-NLS-1$
+             ht.put(new String("hu"), new Short((short)0x040e)); //$NON-NLS-1$
+             ht.put(new String("is"), new Short((short)0x040f)); //$NON-NLS-1$
+             ht.put(new String("it"), new Short((short)0x0410)); // it-it //$NON-NLS-1$
+             ht.put(new String("ja"), new Short((short)0x0411)); //$NON-NLS-1$
+             ht.put(new String("ko"), new Short((short)0x0412)); //$NON-NLS-1$
+             ht.put(new String("nl"), new Short((short)0x0413)); // nl-nl //$NON-NLS-1$
+             ht.put(new String("no"), new Short((short)0x0414)); // no_no //$NON-NLS-1$
+             ht.put(new String("pl"), new Short((short)0x0415)); //$NON-NLS-1$
+             ht.put(new String("pt"), new Short((short)0x0416)); // pt-br //$NON-NLS-1$
+             ht.put(new String("rm"), new Short((short)0x0417)); //$NON-NLS-1$
+             ht.put(new String("ro"), new Short((short)0x0418)); //$NON-NLS-1$
+             ht.put(new String("ru"), new Short((short)0x0419)); //$NON-NLS-1$
+             ht.put(new String("hr"), new Short((short)0x041a)); //$NON-NLS-1$
+             ht.put(new String("sk"), new Short((short)0x041b)); //$NON-NLS-1$
+             ht.put(new String("sq"), new Short((short)0x041c)); //$NON-NLS-1$
+             ht.put(new String("sv"), new Short((short)0x041d)); // sv-se //$NON-NLS-1$
+             ht.put(new String("th"), new Short((short)0x041e)); //$NON-NLS-1$
+             ht.put(new String("tr"), new Short((short)0x041f)); //$NON-NLS-1$
+             ht.put(new String("ur"), new Short((short)0x0420)); //$NON-NLS-1$
+             ht.put(new String("in"), new Short((short)0x0421)); // "id" //$NON-NLS-1$
+             ht.put(new String("uk"), new Short((short)0x0422)); //$NON-NLS-1$
+             ht.put(new String("be"), new Short((short)0x0423)); //$NON-NLS-1$
+             ht.put(new String("sl"), new Short((short)0x0424)); //$NON-NLS-1$
+             ht.put(new String("et"), new Short((short)0x0425)); //$NON-NLS-1$
+             ht.put(new String("lv"), new Short((short)0x0426)); //$NON-NLS-1$
+             ht.put(new String("lt"), new Short((short)0x0427)); //$NON-NLS-1$
+             ht.put(new String("fa"), new Short((short)0x0429)); //$NON-NLS-1$
+             ht.put(new String("vi"), new Short((short)0x042a)); //$NON-NLS-1$
+             ht.put(new String("hy"), new Short((short)0x042b)); //$NON-NLS-1$
+             ht.put(new String("eu"), new Short((short)0x042d)); //$NON-NLS-1$
+             ht.put(new String("sb"), new Short((short)0x042e)); //$NON-NLS-1$
+             ht.put(new String("mk"), new Short((short)0x042f)); //$NON-NLS-1$
+             ht.put(new String("sx"), new Short((short)0x0430)); //$NON-NLS-1$
+             ht.put(new String("ts"), new Short((short)0x0431)); //$NON-NLS-1$
+             ht.put(new String("tn"), new Short((short)0x0432)); //$NON-NLS-1$
+             ht.put(new String("xh"), new Short((short)0x0434)); //$NON-NLS-1$
+             ht.put(new String("zu"), new Short((short)0x0435)); //$NON-NLS-1$
+             ht.put(new String("af"), new Short((short)0x0436)); //$NON-NLS-1$
+             ht.put(new String("fo"), new Short((short)0x0438)); //$NON-NLS-1$
+             ht.put(new String("hi"), new Short((short)0x0439)); //$NON-NLS-1$
+             ht.put(new String("mt"), new Short((short)0x043a)); //$NON-NLS-1$
+             ht.put(new String("gd"), new Short((short)0x043c)); //$NON-NLS-1$
+             ht.put(new String("yi"), new Short((short)0x043d)); //$NON-NLS-1$
+             ht.put(new String("sw"), new Short((short)0x0441)); //$NON-NLS-1$
+             ht.put(new String("tt"), new Short((short)0x0444)); //$NON-NLS-1$
+             ht.put(new String("ta"), new Short((short)0x0449)); //$NON-NLS-1$
+             ht.put(new String("mr"), new Short((short)0x044e)); //$NON-NLS-1$
+             ht.put(new String("sa"), new Short((short)0x044f)); //$NON-NLS-1$
         }
     }
 
@@ -528,7 +528,7 @@ public class NativeFont {
             AccessController.doPrivileged(
                   new PrivilegedAction<Void>() {
                     public Void run() {
-                        System.loadLibrary("fontlib");
+                        System.loadLibrary("fontlib"); //$NON-NLS-1$
                         return null;
                     }
             } );

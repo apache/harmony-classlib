@@ -28,6 +28,7 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.dnd.peer.DropTargetContextPeer;
 
 import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.linux.LinuxEventQueue;
 
 public class LinuxDropTarget implements DropTargetContextPeer {
@@ -68,8 +69,9 @@ public class LinuxDropTarget implements DropTargetContextPeer {
 
     public Transferable getTransferable() throws InvalidDnDOperationException {
         if (transferable == null) {
+            // awt.07=Transfer data is not available
             throw new InvalidDnDOperationException(
-                    "Transfer data is not available");
+                    Messages.getString("awt.07")); //$NON-NLS-1$
         }
         return transferable;
     }
