@@ -227,15 +227,14 @@ public abstract class Surface implements Transparency{
                 }
             }else if(cm instanceof IndexColorModel){
                 IndexColorModel icm = (IndexColorModel) cm;
-                int colorMapSize = icm.getMapSize();
                 int pixelBits = icm.getPixelSize();
-                if(sm instanceof MultiPixelPackedSampleModel && !hasAlpha &&
-                        (pixelBits == 1 && colorMapSize == 2 ||
-                        pixelBits == 2 && colorMapSize == 4 ||
-                        pixelBits == 4 && colorMapSize == 16)){
-                    return BufferedImage.TYPE_BYTE_BINARY;
-                }else if(pixelBits == 8 && colorMapSize == 256){
-                    return BufferedImage.TYPE_BYTE_INDEXED;
+                if(transferType == DataBuffer.TYPE_BYTE){
+                    if(sm instanceof MultiPixelPackedSampleModel && !hasAlpha &&
+                        pixelBits < 5){
+                            return BufferedImage.TYPE_BYTE_BINARY;
+                    }else if(pixelBits == 8){
+                        return BufferedImage.TYPE_BYTE_INDEXED;
+                    }
                 }
                 return BufferedImage.TYPE_CUSTOM;
             }else if(cm instanceof ComponentColorModel){
