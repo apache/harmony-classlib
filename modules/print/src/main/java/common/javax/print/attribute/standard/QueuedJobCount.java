@@ -14,42 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.PrintServiceAttribute;
 
-
-public final class QueuedJobCount extends IntegerSyntax 
-    implements PrintServiceAttribute {
-
+public final class QueuedJobCount extends IntegerSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = 7499723077864047742L;
 
     public QueuedJobCount(int value) {
         super(value, 0, Integer.MAX_VALUE);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof QueuedJobCount) ) {
+        if (!(object instanceof QueuedJobCount)) {
             return false;
         }
-        return super.equals (object);
+        return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return QueuedJobCount.class;
     }
 
     public final String getName() {
         return "queued-job-count";
     }
-
-
 }

@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute.standard;
 
@@ -28,9 +24,8 @@ import javax.print.attribute.EnumSyntax;
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, Appendix C, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
 public class MediaName extends Media implements Attribute {
-
+    private static final long serialVersionUID = 4653117714524155448L;
 
     public static final MediaName NA_LETTER_WHITE = new MediaName(0);
 
@@ -40,30 +35,23 @@ public class MediaName extends Media implements Attribute {
 
     public static final MediaName ISO_A4_TRANSPARENT = new MediaName(3);
 
+    private static final MediaName[] enumValueTable = { NA_LETTER_WHITE, NA_LETTER_TRANSPARENT,
+            ISO_A4_WHITE, ISO_A4_TRANSPARENT };
 
-    private static final MediaName[] enumValueTable = { NA_LETTER_WHITE,
-                                                        NA_LETTER_TRANSPARENT,
-                                                        ISO_A4_WHITE,
-                                                        ISO_A4_TRANSPARENT };
-
-    private static final String[] stringTable = { "na-letter-white",
-                                                  "na-letter-transparent",
-                                                  "iso-a4-white",
-                                                  "iso-a4-transparent" };
-
+    private static final String[] stringTable = { "na-letter-white", "na-letter-transparent",
+            "iso-a4-white", "iso-a4-transparent" };
 
     protected MediaName(int value) {
         super(value);
     }
 
-
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
 
+    @Override
     protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
+        return stringTable.clone();
     }
-
-
 }

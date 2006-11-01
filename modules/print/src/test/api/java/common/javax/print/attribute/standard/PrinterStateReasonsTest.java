@@ -138,20 +138,6 @@ public class PrinterStateReasonsTest extends TestCase {
     }
 
     /*
-     * put(PrinterStateReason reason, Severity severity) method testing.
-     */
-    public final void testPutPrinterStateReasonSeverity() {
-
-        try {
-            reasons = new PrinterStateReasons();
-            reasons.put(PrinterStateReason.MEDIA_LOW, PrintQuality.DRAFT);
-            fail("Metho doesn't throw ClassCastException if " +
-                    "adding value isn't Severity");
-        } catch (ClassCastException e) {
-        }
-    }
-
-    /*
      * printerStateReasonSet(Severity severity) method testing.
      */
     public final void testPrinterStateReasonSet() {

@@ -14,13 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintServiceAttribute;
 
@@ -28,10 +25,8 @@ import javax.print.attribute.PrintServiceAttribute;
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, section 4.4.11, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
-public final class PrinterState extends EnumSyntax 
-    implements PrintServiceAttribute {
-
+public final class PrinterState extends EnumSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = -649578618346507718L;
 
     public static final PrinterState UNKNOWN = new PrinterState(0);
 
@@ -41,34 +36,22 @@ public final class PrinterState extends EnumSyntax
 
     public static final PrinterState STOPPED = new PrinterState(5);
 
-    
-    
-    private static final PrinterState[] enumValueTable = { UNKNOWN,
-                                                           null,
-                                                           null,
-                                                           IDLE,
-                                                           PROCESSING,
-                                                           STOPPED };
+    private static final PrinterState[] enumValueTable = { UNKNOWN, null, null, IDLE,
+            PROCESSING, STOPPED };
 
-    private static final String[] stringTable = { "unknown",
-                                                  null,
-                                                  null,
-                                                  "idle",
-                                                  "processing",
-                                                  "stopped" };
-    
+    private static final String[] stringTable = { "unknown", null, null, "idle", "processing",
+            "stopped" };
+
     protected PrinterState(int value) {
         super(value);
     }
 
-    
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrinterState.class;
     }
 
@@ -76,9 +59,8 @@ public final class PrinterState extends EnumSyntax
         return "printer-state";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-
-    
 }

@@ -14,44 +14,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.net.URI;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintServiceAttribute;
 import javax.print.attribute.URISyntax;
 
-
-public final class PrinterMoreInfoManufacturer extends URISyntax 
-    implements PrintServiceAttribute {
-
+public final class PrinterMoreInfoManufacturer extends URISyntax implements
+        PrintServiceAttribute {
+    private static final long serialVersionUID = 3323271346485076608L;
 
     public PrinterMoreInfoManufacturer(URI uri) {
         super(uri);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( ! (object instanceof PrinterMoreInfoManufacturer) ) {
+        if (!(object instanceof PrinterMoreInfoManufacturer)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrinterMoreInfoManufacturer.class;
     }
 
     public final String getName() {
         return "printer-more-info-manufacturer";
     }
-
-
 }

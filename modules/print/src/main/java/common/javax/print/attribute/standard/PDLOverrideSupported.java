@@ -14,60 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintServiceAttribute;
 
+public class PDLOverrideSupported extends EnumSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = -4393264467928463934L;
 
-public class PDLOverrideSupported extends EnumSyntax 
-    implements PrintServiceAttribute {
+    public static final PDLOverrideSupported NOT_ATTEMPTED = new PDLOverrideSupported(0);
 
+    public static final PDLOverrideSupported ATTEMPTED = new PDLOverrideSupported(1);
 
-    public static final PDLOverrideSupported
-        NOT_ATTEMPTED = new PDLOverrideSupported(0);
+    private static final PDLOverrideSupported[] enumValueTable = { NOT_ATTEMPTED, ATTEMPTED };
 
-    public static final PDLOverrideSupported
-        ATTEMPTED = new PDLOverrideSupported(1);
-
-
-    private static final PDLOverrideSupported[] enumValueTable = {
-
-            NOT_ATTEMPTED,
-            ATTEMPTED
-    };
-
-    private static final String[] stringTable = { "not-attempted",
-                                                  "attempted" };
-
+    private static final String[] stringTable = { "not-attempted", "attempted" };
 
     protected PDLOverrideSupported(int value) {
         super(value);
     }
 
-
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PDLOverrideSupported.class;
     }
 
-    protected EnumSyntax[]  getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+    @Override
+    protected EnumSyntax[] getEnumValueTable() {
+        return enumValueTable.clone();
     }
 
     public final String getName() {
         return "pdl-override-supported";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
+        return stringTable.clone();
     }
-
-
 }

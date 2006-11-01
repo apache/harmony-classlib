@@ -14,69 +14,58 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-
 /*
  * table values are obtained from rfc2911: internet printing protocol/1.1: 
  * model and semantics, section 4.2.8 http://ietf.org/rfc/rfc2911.txt?number=2911
  */
+public final class Sides extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -6890309414893262822L;
 
-public final class Sides extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
-    
     public static final Sides ONE_SIDED = new Sides(0);
 
     public static final Sides TWO_SIDED_LONG_EDGE = new Sides(1);
-   
+
     public static final Sides TWO_SIDED_SHORT_EDGE = new Sides(2);
 
     public static final Sides DUPLEX = TWO_SIDED_LONG_EDGE;
 
     public static final Sides TUMBLE = TWO_SIDED_SHORT_EDGE;
-    
 
-    private static final Sides[] enumValueTable = { ONE_SIDED,
-                                                    TWO_SIDED_LONG_EDGE,
-                                                    TWO_SIDED_SHORT_EDGE };
-    
-    private static final String[] stringTable = { "one-sided",
-                                                  "two-sided-long-edge",
-                                                  "two-sided-short-edge" };
+    private static final Sides[] enumValueTable = { ONE_SIDED, TWO_SIDED_LONG_EDGE,
+            TWO_SIDED_SHORT_EDGE };
+
+    private static final String[] stringTable = { "one-sided", "two-sided-long-edge",
+            "two-sided-short-edge" };
 
     protected Sides(int value) {
         super(value);
     }
-    
-    
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+
+    public final Class<? extends Attribute> getCategory() {
         return Sides.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
 
     public final String getName() {
         return "sides";
     }
-    
-    protected String[] getStringTable() {
-        return stringTable;
-    }
-    
 
+    @Override
+    protected String[] getStringTable() {
+        return stringTable.clone();
+    }
 }

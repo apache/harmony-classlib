@@ -14,57 +14,46 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
+public final class SheetCollate extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = 7080587914259873003L;
 
-public final class SheetCollate extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
-    
     public static final SheetCollate UNCOLLATED = new SheetCollate(0);
 
     public static final SheetCollate COLLATED = new SheetCollate(1);
 
+    private static final String[] stringTable = { "uncollated", "collated" };
 
-    private static final String[] stringTable = { "uncollated",
-                                                  "collated" };
+    private static final SheetCollate[] enumValueTable = { UNCOLLATED, COLLATED };
 
-    private static final SheetCollate[] enumValueTable = { UNCOLLATED,
-                                                            COLLATED };
-    
-    
     protected SheetCollate(int value) {
         super(value);
     }
-    
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return SheetCollate.class;
     }
 
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
-    
+
     public final String getName() {
         return "sheet-collate";
     }
-    
+
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-
-
 }

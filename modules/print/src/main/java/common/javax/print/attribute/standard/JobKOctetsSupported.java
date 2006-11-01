@@ -14,48 +14,39 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.SetOfIntegerSyntax;
 import javax.print.attribute.SupportedValuesAttribute;
 
-public final class JobKOctetsSupported extends SetOfIntegerSyntax 
-    implements SupportedValuesAttribute {
-
+public final class JobKOctetsSupported extends SetOfIntegerSyntax implements
+        SupportedValuesAttribute {
+    private static final long serialVersionUID = -2867871140549897443L;
 
     public JobKOctetsSupported(int lowerBound, int upperBound) {
         super(lowerBound, upperBound);
         if (lowerBound > upperBound) {
-            throw new IllegalArgumentException("Null range: lowerBound " +
-                                                            "> upperBound");
+            throw new IllegalArgumentException("Null range: lowerBound " + "> upperBound");
         } else if (lowerBound < 0) {
-            throw new IllegalArgumentException("Lower bound " + lowerBound +
-                                                            " is less than 0");
+            throw new IllegalArgumentException("Lower bound " + lowerBound + " is less than 0");
         }
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if( !(object instanceof JobKOctetsSupported) ) {
+        if (!(object instanceof JobKOctetsSupported)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public Class<? extends Attribute> getCategory() {
         return JobKOctetsSupported.class;
     }
 
     public String getName() {
         return "job-k-octets-supported";
     }
-
-
 }

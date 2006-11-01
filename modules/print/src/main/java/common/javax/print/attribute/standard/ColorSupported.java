@@ -14,53 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintServiceAttribute;
 
-public final class ColorSupported extends EnumSyntax 
-    implements  PrintServiceAttribute {
-
+public final class ColorSupported extends EnumSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = -2700555589688535545L;
 
     public static final ColorSupported NOT_SUPPORTED = new ColorSupported(0);
 
     public static final ColorSupported SUPPORTED = new ColorSupported(1);
-    
-    
-    private static final String[] stringTable = { "false",
-                                                  "true" };
 
-    private static final ColorSupported[] enumValueTable = { NOT_SUPPORTED,
-                                                             SUPPORTED };
+    private static final String[] stringTable = { "false", "true" };
 
-    
+    private static final ColorSupported[] enumValueTable = { NOT_SUPPORTED, SUPPORTED };
+
     protected ColorSupported(int value) {
         super(value);
     }
-    
-    
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+
+    public final Class<? extends Attribute> getCategory() {
         return ColorSupported.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
         return enumValueTable;
     }
-    
+
     public final String getName() {
         return "color-supported";
     }
-    
+
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-    
 }

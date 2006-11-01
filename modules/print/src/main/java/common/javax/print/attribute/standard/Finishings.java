@@ -14,26 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-    /*
-     * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
-     * Model and Semantics, section 4.2.6, http://ietf.org/rfc/rfc2911.txt?number=2911
-     */
-
-public class Finishings extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
+/*
+ * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
+ * Model and Semantics, section 4.2.6, http://ietf.org/rfc/rfc2911.txt?number=2911
+ */
+public class Finishings extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -627840419548391754L;
 
     public static final Finishings NONE = new Finishings(3);
 
@@ -56,13 +52,13 @@ public class Finishings extends EnumSyntax
     public static final Finishings STAPLE_BOTTOM_RIGHT = new Finishings(23);
 
     public static final Finishings EDGE_STITCH_LEFT = new Finishings(24);
-   
+
     public static final Finishings EDGE_STITCH_TOP = new Finishings(25);
 
     public static final Finishings EDGE_STITCH_RIGHT = new Finishings(26);
-    
+
     public static final Finishings EDGE_STITCH_BOTTOM = new Finishings(27);
-    
+
     public static final Finishings STAPLE_DUAL_LEFT = new Finishings(28);
 
     public static final Finishings STAPLE_DUAL_TOP = new Finishings(29);
@@ -71,93 +67,43 @@ public class Finishings extends EnumSyntax
 
     public static final Finishings STAPLE_DUAL_BOTTOM = new Finishings(31);
 
-    
-    private static final Finishings[] enumValueTable = { NONE,
-                                                         STAPLE,
-                                                         null,
-                                                         COVER,
-                                                         BIND,
-                                                         SADDLE_STITCH,
-                                                         EDGE_STITCH,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         STAPLE_TOP_LEFT,
-                                                         STAPLE_BOTTOM_LEFT,
-                                                         STAPLE_TOP_RIGHT,
-                                                         STAPLE_BOTTOM_RIGHT,
-                                                         EDGE_STITCH_LEFT,
-                                                         EDGE_STITCH_TOP,
-                                                         EDGE_STITCH_RIGHT,
-                                                         EDGE_STITCH_BOTTOM,
-                                                         STAPLE_DUAL_LEFT,
-                                                         STAPLE_DUAL_TOP,
-                                                         STAPLE_DUAL_RIGHT,
-                                                         STAPLE_DUAL_BOTTOM };
-    
+    private static final Finishings[] enumValueTable = { NONE, STAPLE, null, COVER, BIND,
+            SADDLE_STITCH, EDGE_STITCH, null, null, null, null, null, null, null, null, null,
+            null, STAPLE_TOP_LEFT, STAPLE_BOTTOM_LEFT, STAPLE_TOP_RIGHT, STAPLE_BOTTOM_RIGHT,
+            EDGE_STITCH_LEFT, EDGE_STITCH_TOP, EDGE_STITCH_RIGHT, EDGE_STITCH_BOTTOM,
+            STAPLE_DUAL_LEFT, STAPLE_DUAL_TOP, STAPLE_DUAL_RIGHT, STAPLE_DUAL_BOTTOM };
 
-    private static final String[] stringTable = { "none",
-                                                  "staple",
-                                                  null,
-                                                  "cover",
-                                                  "bind",
-                                                  "saddle-stitch",
-                                                  "edge-stitch",
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  "staple-top-left",
-                                                  "staple-bottom-left",
-                                                  "staple-top-right",
-                                                  "staple-bottom-right",
-                                                  "edge-stitch-left",
-                                                  "edge-stitch-top",
-                                                  "edge-stitch-right",
-                                                  "edge-stitch-bottom",
-                                                  "staple-dual-left",
-                                                  "staple-dual-top",
-                                                  "staple-dual-right",
-                                                  "staple-dual-bottom" };
-    
-    protected Finishings(int value){
+    private static final String[] stringTable = { "none", "staple", null, "cover", "bind",
+            "saddle-stitch", "edge-stitch", null, null, null, null, null, null, null, null,
+            null, null, "staple-top-left", "staple-bottom-left", "staple-top-right",
+            "staple-bottom-right", "edge-stitch-left", "edge-stitch-top", "edge-stitch-right",
+            "edge-stitch-bottom", "staple-dual-left", "staple-dual-top", "staple-dual-right",
+            "staple-dual-bottom" };
+
+    protected Finishings(int value) {
         super(value);
     }
-    
-    
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+
+    public final Class<? extends Attribute> getCategory() {
         return Finishings.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
-    
+
     public final String getName() {
         return "finishings";
     }
-    
+
+    @Override
     protected int getOffset() {
         return 3;
     }
-    
-    protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
-    }
 
+    @Override
+    protected String[] getStringTable() {
+        return stringTable.clone();
+    }
 }

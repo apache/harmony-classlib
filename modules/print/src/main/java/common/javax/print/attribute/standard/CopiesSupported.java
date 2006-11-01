@@ -14,25 +14,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.SetOfIntegerSyntax;
 import javax.print.attribute.SupportedValuesAttribute;
 
-public final class CopiesSupported extends SetOfIntegerSyntax 
-    implements SupportedValuesAttribute {
-
+public final class CopiesSupported extends SetOfIntegerSyntax implements
+        SupportedValuesAttribute {
+    private static final long serialVersionUID = 6927711687034846001L;
 
     public CopiesSupported(int value) {
         super(value);
         if (value < 1) {
-            throw new IllegalArgumentException("Value" + value +
-                                                "is less than 1");
+            throw new IllegalArgumentException("Value" + value + "is less than 1");
         }
     }
 
@@ -41,27 +37,23 @@ public final class CopiesSupported extends SetOfIntegerSyntax
         if (lowerBound > upperBound) {
             throw new IllegalArgumentException("Null range");
         } else if (lowerBound < 1) {
-            throw new IllegalArgumentException("Lower bound" + lowerBound +
-                                                "is less than 1");
+            throw new IllegalArgumentException("Lower bound" + lowerBound + "is less than 1");
         }
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if( !(object instanceof CopiesSupported) ) {
+        if (!(object instanceof CopiesSupported)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public Class<? extends Attribute> getCategory() {
         return CopiesSupported.class;
     }
 
     public String getName() {
         return "copies-supported";
     }
-
 }

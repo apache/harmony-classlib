@@ -14,46 +14,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public abstract class Media extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
-
+public abstract class Media extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
     protected Media(int value) {
-           super(value);
+        super(value);
     }
 
-
-    public boolean equals (Object object) {
-
-        if ((object instanceof Media) &&
-                (object.getClass() == this.getClass()) &&
-                    ((Media)object).getValue() == this.getValue() ) {
+    @Override
+    public boolean equals(Object object) {
+        if ((object instanceof Media) && (object.getClass() == this.getClass())
+                && ((Media) object).getValue() == this.getValue()) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return Media.class;
     }
 
     public final String getName() {
         return "media";
     }
-
 }

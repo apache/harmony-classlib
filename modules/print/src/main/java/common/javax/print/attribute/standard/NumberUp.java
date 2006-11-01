@@ -14,43 +14,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public final class NumberUp extends IntegerSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
+public final class NumberUp extends IntegerSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -3040436486786527811L;
 
     public NumberUp(int value) {
         super(value, 1, Integer.MAX_VALUE);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof NumberUp) ) {
+        if (!(object instanceof NumberUp)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return NumberUp.class;
     }
 
     public final String getName() {
         return "number-up";
     }
-
-
 }

@@ -14,43 +14,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.net.URI;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 import javax.print.attribute.URISyntax;
 
-public final class Destination extends URISyntax 
-    implements PrintJobAttribute, PrintRequestAttribute {
-
+public final class Destination extends URISyntax implements PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = 6776739171700415321L;
 
     public Destination(URI uri) {
         super(uri);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof Destination) ) {
+        if (!(object instanceof Destination)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return Destination.class;
     }
 
     public final String getName() {
         return "spool-data-destination";
     }
-
 }

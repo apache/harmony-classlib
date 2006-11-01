@@ -14,43 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Date;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DateTimeSyntax;
 import javax.print.attribute.PrintJobAttribute;
 
-public final class DateTimeAtCompleted extends DateTimeSyntax 
-    implements PrintJobAttribute {
+public final class DateTimeAtCompleted extends DateTimeSyntax implements PrintJobAttribute {
+    private static final long serialVersionUID = 6497399708058490000L;
 
-    
     public DateTimeAtCompleted(Date value) {
-        super (value);
+        super(value);
     }
 
-
-    public boolean equals (Object object) {
-
-        if ( !(object instanceof DateTimeAtCompleted) ) {
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof DateTimeAtCompleted)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return DateTimeAtCompleted.class;
     }
 
     public final String getName() {
         return "date-time-at-completed";
     }
-
 }

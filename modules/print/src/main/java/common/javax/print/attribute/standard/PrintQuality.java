@@ -14,27 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-
 /*
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, section 4.2.13, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
-public class PrintQuality extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
+public class PrintQuality extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -3072341285225858365L;
 
     public static final PrintQuality DRAFT = new PrintQuality(3);
 
@@ -42,44 +37,34 @@ public class PrintQuality extends EnumSyntax
 
     public static final PrintQuality HIGH = new PrintQuality(5);
 
-    
-    private static final PrintQuality[] enumValueTable = { DRAFT,
-                                                           NORMAL,
-                                                           HIGH };
-    
-    private static final String[] stringTable = { "draft",
-                                                  "normal",
-                                                  "high" };
-    
-    
+    private static final PrintQuality[] enumValueTable = { DRAFT, NORMAL, HIGH };
+
+    private static final String[] stringTable = { "draft", "normal", "high" };
+
     protected PrintQuality(int value) {
         super(value);
     }
 
-
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrintQuality.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
-    
+
     public final String getName() {
         return "print-quality";
     }
-        
+
+    @Override
     protected int getOffset() {
         return 3;
-    } 
-
-    protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
     }
 
-    
+    @Override
+    protected String[] getStringTable() {
+        return stringTable.clone();
+    }
 }
-
-

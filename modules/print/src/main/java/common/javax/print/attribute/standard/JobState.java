@@ -14,78 +14,53 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
-
-/*
- * @author esayapin
- */
 
 /*
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, section 4.3.7, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
 public class JobState extends EnumSyntax implements PrintJobAttribute {
-
+    private static final long serialVersionUID = 400465010094018920L;
 
     public static final JobState UNKNOWN = new JobState(0);
 
     public static final JobState PENDING = new JobState(3);
 
     public static final JobState PENDING_HELD = new JobState(4);
-    
+
     public static final JobState PROCESSING = new JobState(5);
 
     public static final JobState PROCESSING_STOPPED = new JobState(6);
-    
+
     public static final JobState CANCELED = new JobState(7);
-    
+
     public static final JobState ABORTED = new JobState(8);
 
     public static final JobState COMPLETED = new JobState(9);
 
-    private static final JobState[] enumValueTable = { UNKNOWN,
-                                                       null,
-                                                       null,
-                                                       PENDING,
-                                                       PENDING_HELD,
-                                                       PROCESSING,
-                                                       PROCESSING_STOPPED,
-                                                       CANCELED,
-                                                       ABORTED,
-                                                       COMPLETED };
+    private static final JobState[] enumValueTable = { UNKNOWN, null, null, PENDING,
+            PENDING_HELD, PROCESSING, PROCESSING_STOPPED, CANCELED, ABORTED, COMPLETED };
 
-    private static final String[] stringTable = { "unknown",
-                                                  null,
-                                                  null,
-                                                  "pending",
-                                                  "pending-held",
-                                                  "processing",
-                                                  "processing-stopped",
-                                                  "canceled",
-                                                  "aborted",
-                                                  "completed" };
-    
+    private static final String[] stringTable = { "unknown", null, null, "pending",
+            "pending-held", "processing", "processing-stopped", "canceled", "aborted",
+            "completed" };
+
     protected JobState(int value) {
         super(value);
     }
 
-
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobState.class;
     }
 
@@ -93,9 +68,8 @@ public class JobState extends EnumSyntax implements PrintJobAttribute {
         return "job-state";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-
-
 }

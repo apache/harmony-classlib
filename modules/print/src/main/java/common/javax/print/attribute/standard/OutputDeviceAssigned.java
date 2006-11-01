@@ -14,43 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Locale;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.TextSyntax;
 
-public final class OutputDeviceAssigned extends TextSyntax 
-    implements PrintJobAttribute {
-
+public final class OutputDeviceAssigned extends TextSyntax implements PrintJobAttribute {
+    private static final long serialVersionUID = 5486733778854271081L;
 
     public OutputDeviceAssigned(String deviceName, Locale locale) {
         super(deviceName, locale);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof OutputDeviceAssigned)) {
+        if (!(object instanceof OutputDeviceAssigned)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return OutputDeviceAssigned.class;
     }
 
     public final String getName() {
         return "output-device-assigned";
     }
-
-
 }

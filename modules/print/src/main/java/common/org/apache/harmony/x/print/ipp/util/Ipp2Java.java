@@ -393,7 +393,7 @@ public class Ipp2Java {
                 a = (Attribute) IppAttributeUtils.getObject(
                         PrinterStateReason.class, r);
                 if (a != null) {
-                    rs.put(a, s);
+                    rs.put((PrinterStateReason)a, s);
                 }
             }
             if (rs.size() > 0) {

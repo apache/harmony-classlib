@@ -14,41 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Locale;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.TextSyntax;
 
 public final class DocumentName extends TextSyntax implements DocAttribute {
-
+    private static final long serialVersionUID = 7883105848533280430L;
 
     public DocumentName(String documentName, Locale locale) {
-        super (documentName, locale);
+        super(documentName, locale);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( ! (object instanceof DocumentName) ) {
+        if (!(object instanceof DocumentName)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return DocumentName.class;
     }
 
     public final String getName() {
         return "document-name";
     }
-
 }

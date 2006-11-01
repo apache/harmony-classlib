@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.4 $ 
- */ 
 
 package javax.print.attribute.standard;
 
@@ -28,9 +24,8 @@ import javax.print.attribute.EnumSyntax;
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, Appendix C, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
 public class MediaTray extends Media implements Attribute {
-
+    private static final long serialVersionUID = -982503611095214703L;
 
     public static final MediaTray TOP = new MediaTray(0);
 
@@ -47,38 +42,24 @@ public class MediaTray extends Media implements Attribute {
     public static final MediaTray MAIN = new MediaTray(6);
 
     public static final MediaTray SIDE = new MediaTray(7);
-    
 
-    private static final MediaTray[] enumValueTable = { TOP,
-                                                        MIDDLE,
-                                                        BOTTOM,
-                                                        ENVELOPE,
-                                                        MANUAL,
-                                                        LARGE_CAPACITY,
-                                                        MAIN,
-                                                        SIDE };
-    private static final String[] stringTable ={ "top",
-                                                 "middle",
-                                                 "bottom",
-                                                 "envelope",
-                                                 "manual",
-                                                 "large-capacity",
-                                                 "main",
-                                                 "side" };
-    
-    
+    private static final MediaTray[] enumValueTable = { TOP, MIDDLE, BOTTOM, ENVELOPE, MANUAL,
+            LARGE_CAPACITY, MAIN, SIDE };
+
+    private static final String[] stringTable = { "top", "middle", "bottom", "envelope",
+            "manual", "large-capacity", "main", "side" };
+
     protected MediaTray(int value) {
         super(value);
     }
-    
 
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
-    }
-    
-    protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
+        return enumValueTable.clone();
     }
 
-    
+    @Override
+    protected String[] getStringTable() {
+        return stringTable.clone();
+    }
 }

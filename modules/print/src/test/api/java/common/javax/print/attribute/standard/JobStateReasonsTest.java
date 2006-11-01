@@ -103,13 +103,6 @@ public class JobStateReasonsTest extends TestCase {
         assertFalse(jsreasons.add(JobStateReason.ABORTED_BY_SYSTEM));
 
         try {
-            assertTrue(jsreasons.add(MediaTray.BOTTOM));
-            fail("Method doesn't throw ClassCastException if " +
-                    "adding element isn't JobStateReason");
-        } catch (ClassCastException e) {
-        }
-
-        try {
             assertTrue(jsreasons.add(null));
             fail("Method doesn't throw NullPointerException if " +
                     "adding element is null");

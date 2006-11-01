@@ -14,43 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Locale;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintServiceAttribute;
 import javax.print.attribute.TextSyntax;
 
-public final class PrinterLocation extends TextSyntax 
-    implements PrintServiceAttribute {
-
+public final class PrinterLocation extends TextSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = -1598610039865566337L;
 
     public PrinterLocation(String printerLocation, Locale locale) {
         super(printerLocation, locale);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof PrinterLocation) ) {
+        if (!(object instanceof PrinterLocation)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrinterLocation.class;
     }
 
     public final String getName() {
         return "printer-location";
     }
-
-
 }

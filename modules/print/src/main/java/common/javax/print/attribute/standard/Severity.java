@@ -14,24 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 
-
 /*
  * table values are obtained from rfc2911: internet printing protocol/1.1: 
  * model and semantics, section 4.4.12 http://ietf.org/rfc/rfc2911.txt?number=2911
  */
-
 public final class Severity extends EnumSyntax implements Attribute {
-
+    private static final long serialVersionUID = 8781881462717925380L;
 
     public static final Severity REPORT = new Severity(0);
 
@@ -39,38 +33,29 @@ public final class Severity extends EnumSyntax implements Attribute {
 
     public static final Severity ERROR = new Severity(2);
 
+    private static final Severity[] enumValueTable = { REPORT, WARNING, ERROR };
 
-    private static final Severity[] enumValueTable = { REPORT,
-                                                       WARNING,
-                                                       ERROR };
-
-    private static final String[] stringTable = { "report",
-                                                  "warning",
-                                                  "error" };
-
+    private static final String[] stringTable = { "report", "warning", "error" };
 
     protected Severity(int value) {
         super(value);
     }
 
-
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return Severity.class;
     }
 
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
 
     public final String getName() {
         return "severity";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-
-
 }

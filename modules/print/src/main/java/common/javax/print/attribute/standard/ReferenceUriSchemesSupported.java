@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
@@ -28,69 +24,42 @@ import javax.print.attribute.EnumSyntax;
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, section 4.1.6, 4.4.27 http://ietf.org/rfc/rfc2911.txt?number=2911
  */
+public class ReferenceUriSchemesSupported extends EnumSyntax implements Attribute {
+    private static final long serialVersionUID = -8989076942813442805L;
 
-public class ReferenceUriSchemesSupported extends EnumSyntax 
-    implements Attribute {
+    public static final ReferenceUriSchemesSupported FTP = new ReferenceUriSchemesSupported(0);
 
-    public static final ReferenceUriSchemesSupported
-        FTP = new ReferenceUriSchemesSupported(0);
+    public static final ReferenceUriSchemesSupported HTTP = new ReferenceUriSchemesSupported(1);
 
-    public static final ReferenceUriSchemesSupported
-        HTTP = new ReferenceUriSchemesSupported(1);
+    public static final ReferenceUriSchemesSupported HTTPS = new ReferenceUriSchemesSupported(2);
 
-    public static final ReferenceUriSchemesSupported
-        HTTPS = new ReferenceUriSchemesSupported(2);
+    public static final ReferenceUriSchemesSupported GOPHER = new ReferenceUriSchemesSupported(
+            3);
 
-    public static final ReferenceUriSchemesSupported
-        GOPHER = new ReferenceUriSchemesSupported(3);
+    public static final ReferenceUriSchemesSupported NEWS = new ReferenceUriSchemesSupported(4);
 
-    public static final ReferenceUriSchemesSupported
-        NEWS = new ReferenceUriSchemesSupported(4);
+    public static final ReferenceUriSchemesSupported NNTP = new ReferenceUriSchemesSupported(5);
 
-    public static final ReferenceUriSchemesSupported
-        NNTP = new ReferenceUriSchemesSupported(5);
+    public static final ReferenceUriSchemesSupported WAIS = new ReferenceUriSchemesSupported(6);
 
-    public static final ReferenceUriSchemesSupported
-        WAIS = new ReferenceUriSchemesSupported(6);
+    public static final ReferenceUriSchemesSupported FILE = new ReferenceUriSchemesSupported(7);
 
-    public static final ReferenceUriSchemesSupported
-        FILE = new ReferenceUriSchemesSupported(7);
+    private static final ReferenceUriSchemesSupported[] enumValueTable = { FTP, HTTP, HTTPS,
+            GOPHER, NEWS, NNTP, WAIS, FILE, };
 
-
-    private static final ReferenceUriSchemesSupported[] enumValueTable = {
-
-        FTP,
-        HTTP,
-        HTTPS,
-        GOPHER,
-        NEWS,
-        NNTP,
-        WAIS,
-        FILE,
-    };
-
-    private static final String[] stringTable = { "ftp",
-                                                  "http",
-                                                  "https",
-                                                  "gopher",
-                                                  "news",
-                                                  "nntp",
-                                                  "wais",
-                                                  "file" };
-
+    private static final String[] stringTable = { "ftp", "http", "https", "gopher", "news",
+            "nntp", "wais", "file" };
 
     protected ReferenceUriSchemesSupported(int value) {
         super(value);
     }
 
-
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return ReferenceUriSchemesSupported.class;
     }
 
@@ -98,9 +67,8 @@ public class ReferenceUriSchemesSupported extends EnumSyntax
         return "reference-uri-schemes-supported";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return (String[])stringTable.clone();
+        return stringTable.clone();
     }
-
-
 }

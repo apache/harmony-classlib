@@ -14,43 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Locale;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintServiceAttribute;
 import javax.print.attribute.TextSyntax;
 
-public final class PrinterMakeAndModel extends TextSyntax 
-    implements PrintServiceAttribute {
-
+public final class PrinterMakeAndModel extends TextSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = 4580461489499351411L;
 
     public PrinterMakeAndModel(String makeAndModel, Locale locale) {
         super(makeAndModel, locale);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof PrinterMakeAndModel) ) {
+        if (!(object instanceof PrinterMakeAndModel)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrinterMakeAndModel.class;
     }
 
     public final String getName() {
         return "printer-make-and-model";
     }
-
-
 }

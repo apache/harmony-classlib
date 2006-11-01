@@ -14,43 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Locale;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.TextSyntax;
 
-public final class JobOriginatingUserName extends TextSyntax 
-    implements PrintJobAttribute {
-
+public final class JobOriginatingUserName extends TextSyntax implements PrintJobAttribute {
+    private static final long serialVersionUID = -8052537926362933477L;
 
     public JobOriginatingUserName(String jobName, Locale locale) {
         super(jobName, locale);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof JobOriginatingUserName) ) {
+        if (!(object instanceof JobOriginatingUserName)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobOriginatingUserName.class;
     }
 
     public final String getName() {
         return "job-originating-user-name";
     }
-
-
 }

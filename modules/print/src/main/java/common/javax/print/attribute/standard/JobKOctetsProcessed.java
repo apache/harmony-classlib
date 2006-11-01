@@ -14,41 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.PrintJobAttribute;
 
-public final class JobKOctetsProcessed extends IntegerSyntax 
-    implements PrintJobAttribute {
-
+public final class JobKOctetsProcessed extends IntegerSyntax implements PrintJobAttribute {
+    private static final long serialVersionUID = -6265238509657881806L;
 
     public JobKOctetsProcessed(int value) {
         super(value, 0, Integer.MAX_VALUE);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof JobKOctetsProcessed) ) {
+        if (!(object instanceof JobKOctetsProcessed)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobKOctetsProcessed.class;
     }
 
     public final String getName() {
         return "job-k-octets-processed";
     }
-
-
 }

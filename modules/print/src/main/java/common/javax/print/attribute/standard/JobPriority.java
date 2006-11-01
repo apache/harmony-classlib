@@ -14,42 +14,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public final class JobPriority extends IntegerSyntax 
-    implements PrintJobAttribute, PrintRequestAttribute {
-
+public final class JobPriority extends IntegerSyntax implements PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -4599900369040602769L;
 
     public JobPriority(int value) {
         super(value, 1, 100);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof JobPriority) ) {
+        if (!(object instanceof JobPriority)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobPriority.class;
     }
 
     public final String getName() {
         return "job-priority";
     }
-
-
 }

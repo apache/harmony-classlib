@@ -14,55 +14,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public class JobSheets extends EnumSyntax 
-    implements PrintJobAttribute, PrintRequestAttribute {
-
+public class JobSheets extends EnumSyntax implements PrintJobAttribute, PrintRequestAttribute {
+    private static final long serialVersionUID = -4735258056132519759L;
 
     public static final JobSheets NONE = new JobSheets(0);
 
     public static final JobSheets STANDARD = new JobSheets(1);
 
+    private static final JobSheets[] enumValueTable = { NONE, STANDARD };
 
-    private static final JobSheets[] enumValueTable = { NONE,
-                                                        STANDARD };
-
-    private static final String[] stringTable = { "none",
-                                                  "standard" };
-
+    private static final String[] stringTable = { "none", "standard" };
 
     protected JobSheets(int value) {
         super(value);
     }
 
-
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobSheets.class;
     }
 
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
 
     public final String getName() {
         return "job-sheets";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
+        return stringTable.clone();
     }
-
-
 }

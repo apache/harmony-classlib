@@ -14,41 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.PrintJobAttribute;
 
-public final class JobImpressionsCompleted extends IntegerSyntax 
-    implements PrintJobAttribute {
-
+public final class JobImpressionsCompleted extends IntegerSyntax implements PrintJobAttribute {
+    private static final long serialVersionUID = 6722648442432393294L;
 
     public JobImpressionsCompleted(int value) {
         super(value, 0, Integer.MAX_VALUE);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof JobImpressionsCompleted) ) {
+        if (!(object instanceof JobImpressionsCompleted)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobImpressionsCompleted.class;
     }
 
     public final String getName() {
         return "job-impressions-completed";
     }
-
-
 }

@@ -14,41 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.IntegerSyntax;
 import javax.print.attribute.SupportedValuesAttribute;
 
-public final class JobPrioritySupported extends IntegerSyntax 
-    implements SupportedValuesAttribute {
-
+public final class JobPrioritySupported extends IntegerSyntax implements
+        SupportedValuesAttribute {
+    private static final long serialVersionUID = 2564840378013555894L;
 
     public JobPrioritySupported(int value) {
         super(value, 1, 100);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if ( !(object instanceof JobPrioritySupported) ) {
+        if (!(object instanceof JobPrioritySupported)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobPrioritySupported.class;
     }
 
     public final String getName() {
         return "job-priority-supported";
     }
-
-
 }

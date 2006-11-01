@@ -14,33 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.6 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintServiceAttribute;
 
 /*
  * Table values are obtained from RFC2911: Internet Printing Protocol/1.1: 
  * Model and Semantics, section 4.4.11, http://ietf.org/rfc/rfc2911.txt?number=2911
  */
+public final class PrinterStateReasons extends HashMap<PrinterStateReason, Severity> implements
+        PrintServiceAttribute {
+    private static final long serialVersionUID = -3731791085163619457L;
 
-public final class PrinterStateReasons extends HashMap
-        implements PrintServiceAttribute {
-//public final class PrinterStateReasons extends 
-//HashMap<PrinterStateReason, Severity> implements PrintServiceAttribute {
-    
-    
     public PrinterStateReasons() {
         super();
     }
@@ -53,21 +45,14 @@ public final class PrinterStateReasons extends HashMap
         super(initialCapacity, loadFactor);
     }
 
-    public PrinterStateReasons(Map map) {
-    //1.5 support requires the following changes 
-    //public PrinterStateReasons(Map<PrinterStateReason, Severity> map) {
+    public PrinterStateReasons(Map<PrinterStateReason, Severity> map) {
         this();
-        Iterator iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry mapEntry = (Map.Entry) iterator.next();
+        for (Map.Entry<PrinterStateReason, Severity> mapEntry : map.entrySet()) {
             put(mapEntry.getKey(), mapEntry.getValue());
         }
     }
 
-
-    public final Class getCategory() {
-    //1.5 support requires the following changes
-    //Class<? extends Attribute> getCategory() {
+    public final Class<? extends Attribute> getCategory() {
         return PrinterStateReasons.class;
     }
 
@@ -75,37 +60,27 @@ public final class PrinterStateReasons extends HashMap
         return "printer-state-reasons";
     }
 
-    public Object put(Object reason, Object severity) {
-    //1.5 support requires the following changes 
-    //public Severity put(PrinterStateReason reason, Severity severity) {
-
+    @Override
+    public Severity put(PrinterStateReason reason, Severity severity) {
         if (reason == null) {
             throw new NullPointerException("Reason is null");
         }
         if (severity == null) {
             throw new NullPointerException("Severity is null");
         }
-        return super.put((PrinterStateReason) reason,
-                                            (Severity) severity);
+        return super.put(reason, severity);
     }
 
-    public Set printerStateReasonSet(Severity severity) {
-    //1.5 support requires the following changes 
-    //public Set<PrinterStateReason> printerStateReasonSet(Severity severity) {
-
+    public Set<PrinterStateReason> printerStateReasonSet(Severity severity) {
         if (severity == null) {
             throw new NullPointerException("Severity is null");
         }
-        Map.Entry mapEntry;
-        HashSet set = new HashSet();
-        Iterator iterator = entrySet().iterator();
-        while (iterator.hasNext()) {
-            mapEntry = (Map.Entry) iterator.next();
-            if ((Severity) mapEntry.getValue() == severity) {
-                set.add((PrinterStateReason) mapEntry.getKey());
+        Set<PrinterStateReason> set = new HashSet<PrinterStateReason>();
+        for (Map.Entry<PrinterStateReason, Severity> mapEntry : entrySet()) {
+            if (mapEntry.getValue() == severity) {
+                set.add(mapEntry.getKey());
             }
         }
         return Collections.unmodifiableSet(set);
     }
-
 }

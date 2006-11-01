@@ -14,68 +14,49 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.6 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.PrintJobAttribute;
 
-public final class JobStateReasons extends HashSet implements PrintJobAttribute {
-//1.5 support requires the following changes 
-//public final class JobStateReasons extends HashSet<JobStateReason> 
-//implements PrintJobAttribute {
+public final class JobStateReasons extends HashSet<JobStateReason> implements PrintJobAttribute {
+    private static final long serialVersionUID = 8849088261264331812L;
 
     public JobStateReasons() {
         super();
     }
 
-    public JobStateReasons(Collection collection) {
-    //1.5 support requires the following changes 
-    //public JobStateReasons(Collection<JobStateReason> collection) {
-
-        this();
-        Iterator iterator = collection.iterator();
-        while (iterator.hasNext()) {
-            add(iterator.next());
+    public JobStateReasons(Collection<JobStateReason> collection) {
+        super();
+        for (JobStateReason reason : collection) {
+            add(reason);
         }
     }
 
     public JobStateReasons(int initialCapacity) {
         super(initialCapacity);
-
     }
 
     public JobStateReasons(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
 
-
-    public boolean add(Object reason) {
-    //1.5 support requires the following changes 
-    //public boolean add(JobStateReason reason) {
-
+    @Override
+    public boolean add(JobStateReason reason) {
         if (reason == null) {
             throw new NullPointerException("Null JobStateReason");
         }
-        return super.add( (JobStateReason) reason);
+        return super.add(reason);
     }
 
-    public final Class getCategory() {
-    //1.5 support requires the following changes
-    //Class<? extends Attribute> getCategory() {
+    public final Class<? extends Attribute> getCategory() {
         return JobStateReasons.class;
     }
 
     public final String getName() {
         return "job-state-reasons";
     }
-
-
 }

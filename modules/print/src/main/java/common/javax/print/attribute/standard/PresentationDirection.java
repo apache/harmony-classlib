@@ -14,13 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
@@ -29,79 +26,53 @@ import javax.print.attribute.PrintRequestAttribute;
  * Table values are obtained from PWG 5100.3:Production Printing Attributes
  * Set1, section 3.17, ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf
  */
+public final class PresentationDirection extends EnumSyntax implements PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = 8294728067230931780L;
 
-public final class PresentationDirection extends EnumSyntax
-    implements PrintJobAttribute, PrintRequestAttribute {
+    public static final PresentationDirection TOBOTTOM_TORIGHT = new PresentationDirection(0);
 
-    public static final PresentationDirection
-        TOBOTTOM_TORIGHT = new PresentationDirection(0);
+    public static final PresentationDirection TOBOTTOM_TOLEFT = new PresentationDirection(1);
 
-    public static final PresentationDirection
-        TOBOTTOM_TOLEFT = new PresentationDirection(1);
+    public static final PresentationDirection TOTOP_TORIGHT = new PresentationDirection(2);
 
-    public static final PresentationDirection
-        TOTOP_TORIGHT = new PresentationDirection(2);
+    public static final PresentationDirection TOTOP_TOLEFT = new PresentationDirection(3);
 
-    public static final PresentationDirection
-        TOTOP_TOLEFT = new PresentationDirection(3);
+    public static final PresentationDirection TORIGHT_TOBOTTOM = new PresentationDirection(4);
 
-    public static final PresentationDirection
-        TORIGHT_TOBOTTOM = new PresentationDirection(4);
+    public static final PresentationDirection TORIGHT_TOTOP = new PresentationDirection(5);
 
-    public static final PresentationDirection
-        TORIGHT_TOTOP = new PresentationDirection(5);
+    public static final PresentationDirection TOLEFT_TOBOTTOM = new PresentationDirection(6);
 
-    public static final PresentationDirection
-        TOLEFT_TOBOTTOM = new PresentationDirection(6);
+    public static final PresentationDirection TOLEFT_TOTOP = new PresentationDirection(7);
 
-    public static final PresentationDirection
-        TOLEFT_TOTOP = new PresentationDirection(7);
+    private static final PresentationDirection[] enumValueTable = { TOBOTTOM_TORIGHT,
+            TOBOTTOM_TOLEFT, TOTOP_TORIGHT, TOTOP_TOLEFT, TORIGHT_TOBOTTOM, TORIGHT_TOTOP,
+            TOLEFT_TOBOTTOM, TOLEFT_TOTOP };
 
-
-    private static final PresentationDirection[] enumValueTable = {
-
-            TOBOTTOM_TORIGHT,
-            TOBOTTOM_TOLEFT,
-            TOTOP_TORIGHT,
-            TOTOP_TOLEFT,
-            TORIGHT_TOBOTTOM,
-            TORIGHT_TOTOP,
-            TOLEFT_TOBOTTOM,
-            TOLEFT_TOTOP
-    };
-
-    private static final String[] stringTable = { "tobottom-toright",
-                                                  "tobottom-toleft",
-                                                  "totop-toright",
-                                                  "totop-toleft",
-                                                  "toright-tobottom",
-                                                  "toright-totop",
-                                                  "toleft-tobottom",
-                                                  "toleft-totop" };
-
+    private static final String[] stringTable = { "tobottom-toright", "tobottom-toleft",
+            "totop-toright", "totop-toleft", "toright-tobottom", "toright-totop",
+            "toleft-tobottom", "toleft-totop" };
 
     PresentationDirection(int value) {
         super(value);
     }
 
-
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PresentationDirection.class;
     }
 
-    protected EnumSyntax[]  getEnumValueTable() {
-        return enumValueTable;
+    @Override
+    protected EnumSyntax[] getEnumValueTable() {
+        return enumValueTable.clone();
     }
 
     public final String getName() {
         return "presentation-direction";
     }
 
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
-
-
 }

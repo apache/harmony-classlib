@@ -14,59 +14,45 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintServiceAttribute;
 
+public final class PrinterIsAcceptingJobs extends EnumSyntax implements PrintServiceAttribute {
+    private static final long serialVersionUID = -5052010680537678061L;
 
-public final class PrinterIsAcceptingJobs extends EnumSyntax 
-    implements PrintServiceAttribute {
+    public static final PrinterIsAcceptingJobs NOT_ACCEPTING_JOBS = new PrinterIsAcceptingJobs(
+            0);
 
+    public static final PrinterIsAcceptingJobs ACCEPTING_JOBS = new PrinterIsAcceptingJobs(1);
 
-    public static final PrinterIsAcceptingJobs
-        NOT_ACCEPTING_JOBS = new PrinterIsAcceptingJobs(0);
+    private static final PrinterIsAcceptingJobs[] enumValueTable = { NOT_ACCEPTING_JOBS,
+            ACCEPTING_JOBS };
 
-    public static final PrinterIsAcceptingJobs
-        ACCEPTING_JOBS = new PrinterIsAcceptingJobs(1);
+    private static final String[] stringTable = { "false", "true" };
 
-    
-    private static final PrinterIsAcceptingJobs[] enumValueTable = { 
-        NOT_ACCEPTING_JOBS,
-        ACCEPTING_JOBS
-    };
-    
-    private static final String[] stringTable = { "false",
-                                                  "true" };
-
-    
     protected PrinterIsAcceptingJobs(int value) {
-        super (value);
+        super(value);
     }
 
- 
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return enumValueTable;
+        return enumValueTable.clone();
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return PrinterIsAcceptingJobs.class;
     }
 
     public final String getName() {
         return "printer-is-accepting-jobs";
     }
-    
-    protected String[] getStringTable() {
-        return stringTable;
-    }
 
-    
+    @Override
+    protected String[] getStringTable() {
+        return stringTable.clone();
+    }
 }

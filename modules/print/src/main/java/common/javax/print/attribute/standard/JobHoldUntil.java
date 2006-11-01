@@ -14,45 +14,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
 import java.util.Date;
-
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DateTimeSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public final class JobHoldUntil extends DateTimeSyntax 
-    implements PrintJobAttribute, PrintRequestAttribute {
+public final class JobHoldUntil extends DateTimeSyntax implements PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = -1664471048860415024L;
 
-
-    public JobHoldUntil(Date date){
+    public JobHoldUntil(Date date) {
         super(date);
     }
 
-
+    @Override
     public boolean equals(Object object) {
-
-        if ( !(object instanceof JobHoldUntil) ) {
+        if (!(object instanceof JobHoldUntil)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public final Class<? extends Attribute> getCategory() {
         return JobHoldUntil.class;
     }
 
     public final String getName() {
         return "job-hold-until";
     }
-
-
 }

@@ -14,36 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.SetOfIntegerSyntax;
 import javax.print.attribute.SupportedValuesAttribute;
 
-public final class NumberUpSupported extends SetOfIntegerSyntax 
-    implements SupportedValuesAttribute {
-
+public final class NumberUpSupported extends SetOfIntegerSyntax implements
+        SupportedValuesAttribute {
+    private static final long serialVersionUID = -1041573395759141805L;
 
     public NumberUpSupported(int value) {
         super(value);
         if (value < 1) {
-            throw new IllegalArgumentException("Value" + value +
-                                                    "is less than 1");
+            throw new IllegalArgumentException("Value" + value + "is less than 1");
         }
     }
 
     public NumberUpSupported(int lowerBound, int upperBound) {
         super(lowerBound, upperBound);
         if (lowerBound > upperBound) {
-            throw new IllegalArgumentException("Null range: lowerBound " +
-                                                            "> upperBound");
+            throw new IllegalArgumentException("Null range: lowerBound " + "> upperBound");
         } else if (lowerBound < 1) {
-            throw new IllegalArgumentException("Lower bound " + lowerBound +
-                                                            " is less than 1");
+            throw new IllegalArgumentException("Lower bound " + lowerBound + " is less than 1");
         }
     }
 
@@ -54,33 +48,28 @@ public final class NumberUpSupported extends SetOfIntegerSyntax
         }
         int[][] canonicalArray = getMembers();
         if (canonicalArray.length == 0) {
-                throw new IllegalArgumentException("Zero-length array");
+            throw new IllegalArgumentException("Zero-length array");
         }
         for (int i = 0; i < canonicalArray.length; i++) {
             if (canonicalArray[i][0] < 1) {
-                throw new IllegalArgumentException("Valid values are not " +
-                                                                "less than 1");
+                throw new IllegalArgumentException("Valid values are not " + "less than 1");
             }
         }
     }
 
-
+    @Override
     public boolean equals(Object object) {
-        if( !(object instanceof NumberUpSupported) ) {
+        if (!(object instanceof NumberUpSupported)) {
             return false;
         }
         return super.equals(object);
     }
 
-    public Class getCategory() {
-    /* 1.5 support requires the following changes
-       Class<? extends Attribute> getCategory() { */
+    public Class<? extends Attribute> getCategory() {
         return NumberUpSupported.class;
     }
 
     public String getName() {
         return "number-up-supported";
     }
-
-
 }

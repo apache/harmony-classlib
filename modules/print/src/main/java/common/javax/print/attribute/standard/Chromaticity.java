@@ -14,56 +14,46 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 import javax.print.attribute.PrintJobAttribute;
 import javax.print.attribute.PrintRequestAttribute;
 
-public final class Chromaticity extends EnumSyntax 
-    implements DocAttribute, PrintJobAttribute, PrintRequestAttribute {
-
+public final class Chromaticity extends EnumSyntax implements DocAttribute, PrintJobAttribute,
+        PrintRequestAttribute {
+    private static final long serialVersionUID = 4660543931355214012L;
 
     public static final Chromaticity MONOCHROME = new Chromaticity(0);
 
     public static final Chromaticity COLOR = new Chromaticity(1);
 
+    private static final Chromaticity[] enumValueTable = { MONOCHROME, COLOR };
 
-    private static final Chromaticity[] enumValueTable = { MONOCHROME,
-                                                           COLOR };
+    private static final String[] stringTable = { "monochrome", "color" };
 
-    private static final String[] stringTable = { "monochrome",
-                                                  "color" };
-    
-    
     protected Chromaticity(int value) {
         super(value);
     }
-    
-    
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+
+    public final Class<? extends Attribute> getCategory() {
         return Chromaticity.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
         return enumValueTable;
     }
-    
+
+    @Override
     protected String[] getStringTable() {
-        return stringTable;
+        return stringTable.clone();
     }
 
     public final String getName() {
         return "chromaticity";
     }
-
-
 }

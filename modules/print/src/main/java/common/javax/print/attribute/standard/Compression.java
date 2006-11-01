@@ -14,18 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Elena V. Sayapina 
- * @version $Revision: 1.5 $ 
- */ 
 
 package javax.print.attribute.standard;
 
+import javax.print.attribute.Attribute;
 import javax.print.attribute.DocAttribute;
 import javax.print.attribute.EnumSyntax;
 
 public class Compression extends EnumSyntax implements DocAttribute {
-
+    private static final long serialVersionUID = -5716748913324997674L;
 
     public static final Compression NONE = new Compression(0);
 
@@ -34,40 +31,30 @@ public class Compression extends EnumSyntax implements DocAttribute {
     public static final Compression GZIP = new Compression(2);
 
     public static final Compression COMPRESS = new Compression(3);
-    
 
-    private static final Compression[] enumValueTable = { NONE,
-                                                          DEFLATE,
-                                                          GZIP,
-                                                          COMPRESS };
-    
-    private static final String[] stringTable = { "none",
-                                                  "deflate",
-                                                  "gzip",
-                                                  "compress" };
+    private static final Compression[] enumValueTable = { NONE, DEFLATE, GZIP, COMPRESS };
 
-    
+    private static final String[] stringTable = { "none", "deflate", "gzip", "compress" };
+
     protected Compression(int value) {
         super(value);
     }
-    
-    
-    public final Class getCategory() {
-    /* 1.5 support requires the following changes 
-       Class<? extends Attribute> getCategory() { */
+
+    public final Class<? extends Attribute> getCategory() {
         return Compression.class;
     }
-    
+
+    @Override
     protected EnumSyntax[] getEnumValueTable() {
-        return (EnumSyntax[]) enumValueTable.clone();
+        return enumValueTable.clone();
     }
-    
+
     public final String getName() {
         return "compression";
     }
-    
+
+    @Override
     protected String[] getStringTable() {
-        return (String[]) stringTable.clone();
-    }   
-    
+        return stringTable.clone();
+    }
 }
