@@ -13,6 +13,7 @@ Import-Package: java.awt,
  java.lang,
  java.net,
  java.nio,
+ java.security,
  java.util,
  org.apache.harmony.awt.gl.image
 Export-Package: javax.imageio
