@@ -16,84 +16,115 @@
  */
 
 #include <unicode/ubidi.h>
+#include <stdlib.h>
 #include "vmi.h"
 #include "BidiWrapper.h"
 #include "exceptions.h"
+
+typedef struct {
+    UBiDi *pBiDi;
+    void *embeddingLevels;
+} BiDiData;
 
 void check_fail (JNIEnv * env, int err);
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1open
   (JNIEnv * env, jclass clazz)
 {
-  UBiDi *pBiDi = ubidi_open ();
-  return (jlong) ((IDATA) pBiDi);
+  PORT_ACCESS_FROM_ENV (env);
+  BiDiData *data = (BiDiData *)hymem_allocate_memory(sizeof(BiDiData)); 
+  (*data).pBiDi = ubidi_open ();
+  (*data).embeddingLevels = NULL;
+  return (jlong) (data);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1close
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  ubidi_close ((UBiDi *) ((IDATA) pBiDi));
+  PORT_ACCESS_FROM_ENV (env);
+  BiDiData *data = (BiDiData *)pBiDi;
+
+  ubidi_close ((*data).pBiDi);
+  
+  if ((*data).embeddingLevels != NULL)
+    hymem_free_memory((*data).embeddingLevels);
+  hymem_free_memory(data);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1setPara
   (JNIEnv * env, jclass clazz, jlong pBiDi, jcharArray text, jint length,
    jbyte paraLevel, jbyteArray embeddingLevels)
 {
+  PORT_ACCESS_FROM_ENV (env);
   UErrorCode err = 0;
   jchar *_text = NULL;
-  jbyte *_embeddingLevels = NULL;
-
+  BiDiData *data = (BiDiData *)pBiDi;
+  /* Remembering old embedding levels */
+  void *embLvls = (*data).embeddingLevels;
+  
   _text = (*env)->GetCharArrayElements (env, text, NULL);
 
   if (embeddingLevels != NULL)
+    {        
+        jbyte *el = (*env)->GetByteArrayElements (env, embeddingLevels, NULL);
+        (*data).embeddingLevels = hymem_allocate_memory(length);
+        memcpy(((*data).embeddingLevels), el, length);
+        (*env)->ReleaseByteArrayElements (env, embeddingLevels, el, 0);
+    } else
     {
-      _embeddingLevels =
-        (*env)->GetByteArrayElements (env, embeddingLevels, NULL);
+        (*data).embeddingLevels = NULL;
     }
 
-  ubidi_setPara ((UBiDi *) ((IDATA) pBiDi), _text, length, paraLevel,
-		 _embeddingLevels, &err);
+  ubidi_setPara ((*data).pBiDi, _text, length, paraLevel,
+		 ((*data).embeddingLevels), &err);
   check_fail (env, err);
 
+  /* Freeing old embedding levels */
+  if (embLvls != NULL) {
+    hymem_free_memory(embLvls);
+  }
+
   (*env)->ReleaseCharArrayElements (env, text, _text, 0);
-  if (_embeddingLevels != NULL)
-    {
-      (*env)->ReleaseByteArrayElements (env, embeddingLevels,
-                                        _embeddingLevels, 0);
-    }
 }
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1setLine
-  (JNIEnv * env, jclass clazz, jlong pParaBiDi, jint start, jint limit)
+  (JNIEnv * env, jclass clazz, jlong pBiDi, jint start, jint limit)
 {
+  PORT_ACCESS_FROM_ENV (env);
   UErrorCode err = 0;
+  BiDiData *data = (BiDiData *)pBiDi;
+  BiDiData *lineData = (BiDiData *)hymem_allocate_memory(sizeof(BiDiData));
+  (*lineData).embeddingLevels = NULL;
 
-  UBiDi *pLineBiDi = ubidi_openSized (limit - start, 0, &err);
+  (*lineData).pBiDi = ubidi_openSized (limit - start, 0, &err);
   check_fail (env, err);
 
-  ubidi_setLine ((UBiDi *) ((IDATA) pParaBiDi), start, limit, pLineBiDi,
+  ubidi_setLine ((*data).pBiDi, start, limit, (*lineData).pBiDi,
 		 &err);
   check_fail (env, err);
 
-  return (jlong) ((IDATA) pLineBiDi);
+  return (jlong) lineData;
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getDirection
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getDirection ((const UBiDi *) ((IDATA) pBiDi));
+  BiDiData *data = (BiDiData *)pBiDi;
+  return ubidi_getDirection ((*data).pBiDi);
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getLength
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getLength ((const UBiDi *) ((IDATA) pBiDi));
+  BiDiData *data = (BiDiData *)pBiDi;
+  return ubidi_getLength ((*data).pBiDi);
 }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getParaLevel
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getParaLevel ((const UBiDi *) ((IDATA) pBiDi));
+  BiDiData *data = (BiDiData *)pBiDi;
+  return ubidi_getParaLevel ((*data).pBiDi);
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getLevels
@@ -103,11 +134,12 @@ JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1get
   const UBiDiLevel *levels = NULL;
   jbyteArray result = NULL;
   int len = 0;
+  BiDiData *data = (BiDiData *)pBiDi;
 
-  levels = ubidi_getLevels ((UBiDi *) ((IDATA) pBiDi), &err);
+  levels = ubidi_getLevels ((*data).pBiDi, &err);
   check_fail (env, err);
 
-  len = ubidi_getLength ((const UBiDi *) ((IDATA) pBiDi));
+  len = ubidi_getLength ((*data).pBiDi);
   result = (*env)->NewByteArray (env, len);
   (*env)->SetByteArrayRegion (env, result, 0, len, (jbyte *) levels);
 
@@ -118,8 +150,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1countRuns
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
   UErrorCode err = 0;
+  BiDiData *data = (BiDiData *)pBiDi;
 
-  int count = ubidi_countRuns ((UBiDi *) ((IDATA) pBiDi), &err);
+  int count = ubidi_countRuns ((*data).pBiDi, &err);
   check_fail (env, err);
 
   return count;
@@ -138,16 +171,17 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1g
   jobject run = 0;
   jobjectArray runs;
   UErrorCode err = 0;
+  BiDiData *data = (BiDiData *)pBiDi;
 
   run_clazz = (*env)->FindClass (env, "org/apache/harmony/text/BidiRun");
   initID = (*env)->GetMethodID (env, run_clazz, "<init>", "(III)V");
 
-  runCount = ubidi_countRuns ((UBiDi *) ((IDATA) pBiDi), &err);
+  runCount = ubidi_countRuns ((*data).pBiDi, &err);
   check_fail (env, err);
   
   runs = (*env)->NewObjectArray(env, runCount,run_clazz, NULL);  
   for (i = 0; i < runCount; i++) {
-      ubidi_getLogicalRun((const UBiDi *)((IDATA)pBiDi), start, &limit, &level);
+      ubidi_getLogicalRun((*data).pBiDi, start, &limit, &level);
       run = (*env)->NewObject (env, run_clazz, initID, start, limit, level);
       (*env)->SetObjectArrayElement(env, runs, i, run);
       start = limit;	  
