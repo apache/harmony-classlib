@@ -80,8 +80,7 @@ public class Support_Exec extends TestCase {
         executable += "bin" + File.separator;
         execArgs[0] = executable + "java";
         execArgs[1] = "-cp";
-        execArgs[2] = "\"" + System.getProperty("java.class.path")
-                + classPathString + "\"";
+        execArgs[2] = System.getProperty("java.class.path") + classPathString;
 
         for (int i = 0; i < args.length; i++) {
             execArgs[baseArgs + i] = args[i];
