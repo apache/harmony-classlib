@@ -65,6 +65,8 @@ command line.  For example, to run only the luni tests:
         </echo>
     </target>
 
+    <property file="${user.home}/.harmony-classlib.properties" />
+
     <property name="hy.hdk" location="deploy" />
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
