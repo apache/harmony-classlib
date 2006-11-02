@@ -24,6 +24,7 @@ import java.net.CacheRequest;
 import java.net.CacheResponse;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ResponseCache;
 import java.net.URI;
 import java.net.URL;
@@ -136,10 +137,64 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 		} catch (UnsupportedOperationException e) {
 		}
 	}
+    
+    /**
+     * @tests java.net.HttpURLConnection#getRequestProperty(String)
+     */
+    public void test_getRequestPropertyLjava_lang_String_BeforeConnected()
+            throws MalformedURLException, IOException {
+        uc.setRequestProperty("whatever", "you like"); //$NON-NLS-1$//$NON-NLS-2$
+        String res = uc.getRequestProperty("whatever"); //$NON-NLS-1$
+        assertEquals("you like", res); //$NON-NLS-1$
 
+        uc.setRequestProperty("", "you like"); //$NON-NLS-1$//$NON-NLS-2$
+        res = uc.getRequestProperty(""); //$NON-NLS-1$
+        assertEquals("you like", res); //$NON-NLS-1$
+
+        uc.setRequestProperty("", null); //$NON-NLS-1$
+        res = uc.getRequestProperty(""); //$NON-NLS-1$
+        assertEquals(null, res);
+        try {
+            uc.setRequestProperty(null, "you like"); //$NON-NLS-1$
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.net.HttpURLConnection#getRequestProperty(String)
+     */
+    public void test_getRequestPropertyLjava_lang_String_AfterConnected()
+            throws IOException {
+        uc.connect();
+        try {
+            uc.setRequestProperty("whatever", "you like"); //$NON-NLS-1$//$NON-NLS-2$
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        try {
+            uc.setRequestProperty(null, "you like"); //$NON-NLS-1$
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        String res = uc.getRequestProperty("whatever"); //$NON-NLS-1$
+        assertEquals(null, res);
+        res = uc.getRequestProperty(null);
+        assertEquals(null, res);
+        try {
+            uc.getRequestProperties();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
+    
 	/**
-	 * @tests java.net.HttpURLConnection#usingProxy()
-	 */
+     * @tests java.net.HttpURLConnection#usingProxy()
+     */
 	public void test_usingProxy() {
 		try {
 			try {

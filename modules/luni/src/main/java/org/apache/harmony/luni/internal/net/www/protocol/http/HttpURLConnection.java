@@ -826,6 +826,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     @Override
     public Map<String, List<String>> getRequestProperties() {
+        if (connected) {
+            throw new IllegalStateException(Msg.getString("K0091")); //$NON-NLS-1$
+        }
         return reqHeader.getFieldMap();
     }
 
@@ -938,8 +941,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     @Override
     public String getRequestProperty(String field) {
-        if (connected) {
-            throw new IllegalAccessError(Msg.getString("K0091"));
+        if (null == field) {
+            return null;
         }
         return reqHeader.get(field);
     }
@@ -1215,7 +1218,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     @Override
     public void setRequestProperty(String field, String newValue) {
         if (connected) {
-            throw new IllegalAccessError(Msg.getString("K0092"));
+            throw new IllegalStateException(Msg.getString("K0092"));
         }
         if (field == null) {
             throw new NullPointerException();
