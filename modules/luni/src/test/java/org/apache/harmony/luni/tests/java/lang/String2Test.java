@@ -103,7 +103,7 @@ public class String2Test extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.String#String(byte[], int, int, java.lang.String)
 	 */
-	public void test_Constructor$BIILjava_lang_String() {
+	public void test_Constructor$BIILjava_lang_String() throws Exception {
 		// Test for method java.lang.String(byte [], int, int, java.lang.String)
 		String s = null;
 		try {
@@ -112,6 +112,8 @@ public class String2Test extends junit.framework.TestCase {
 			fail("Threw exception : " + e.getMessage());
 		}
 		assertTrue("Incorrect string returned: " + s, s.equals("ABCDE"));
+		//Regression for HARMONY-1111
+		assertNotNull(new String(new byte[] {(byte)0xC0}, 0, 1, "UTF-8"));
 	}
 
 	/**

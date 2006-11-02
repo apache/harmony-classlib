@@ -360,8 +360,14 @@ public final class String implements Serializable, Comparable<String>,
             Charset charset = getCharset(encoding);
 
             int result;
-            CharBuffer cb = charset
-                    .decode(ByteBuffer.wrap(data, start, length));
+        	CharBuffer cb;
+            try {
+            	cb = charset.decode(ByteBuffer.wrap(data, start, length));
+            } catch (Exception e) {
+            	// do nothing. according to spec: 
+            	// behavior is unspecified for invalid array
+            	cb = CharBuffer.wrap("\u003f".toCharArray());
+            }
             if ((result = cb.length()) > 0) {
                 value = cb.array();
                 count = result;
