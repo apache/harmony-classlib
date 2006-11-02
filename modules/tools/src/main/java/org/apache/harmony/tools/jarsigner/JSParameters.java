@@ -18,8 +18,16 @@
 package org.apache.harmony.tools.jarsigner;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.Proxy;
 import java.net.URI;
 import java.security.KeyStore;
+import java.util.jar.JarFile;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 
 /**
  * The class encapsulates paramaters for jarsigner most of which are ususally
@@ -33,8 +41,18 @@ public class JSParameters {
     public static final String defaultKeystorePath = System
             .getProperty("user.home")
             + File.separator + ".keystore";
+   
+    /**
+     * The name of the logger for JarSigner.
+     */
+    public static final String loggerName = 
+            "org.apache.harmony.tools.jarsigner.JarSignerLogger";
+
     // the keystore to work with
     private KeyStore keyStore;
+    
+    // JAR file to work with
+    private JarFile jarFile;
     
     // JAR file URL 
     private URI jarURI;
@@ -100,6 +118,12 @@ public class JSParameters {
     // name of the provider to work with keystore
     private String ksProviderName;
 
+    // class name of the provider to work with message digests
+    private String mdProvider;
+
+    // name of the provider to work with message digests
+    private String mdProviderName;
+
     // timestamp authority URL
     private URI tsaURI;
     
@@ -125,9 +149,22 @@ public class JSParameters {
     // algorithm of the signature used
     private String sigAlg;
     
+    // should the JarSigner turn off logging or not
+    private boolean isSilent;
+    
+    // proxy server address
+    private String proxy;
+    
+    // proxy server port
+    private int proxyPort;
+    
+    // proxy server type
+    private Proxy.Type proxyType;
+    
     // set the fields of the JSParameters object to default values
     void setDefault(){
         keyStore = null;
+        jarFile = null;
         jarURI = null;        
         alias = null;
         storeURI = null;        
@@ -149,6 +186,8 @@ public class JSParameters {
         sigProviderName = null;        
         ksProvider = null;        
         ksProviderName = null;
+        mdProvider = null;        
+        mdProviderName = null;
         tsaURI = null;        
         tsaCertAlias = null;        
         altSigner = null;        
@@ -157,6 +196,10 @@ public class JSParameters {
         isSFNameProcessed = false;
         keyAlg = null;
         sigAlg = null;
+        isSilent = false;
+        proxy = null;
+        proxyPort = 8888;
+        proxyType = null;
     }
     
     // Getters and setters down here
@@ -227,6 +270,19 @@ public class JSParameters {
      * @param isVerbose
      */
     public void setVerbose(boolean isVerbose) {
+        if (!isSilent) {
+            Logger logger = Logger.getLogger(loggerName);
+            Handler [] handlers = logger.getHandlers();
+            for (Handler handler : handlers) {
+                if (isVerbose) {
+                    logger.setLevel(Level.FINE);
+                    handler.setLevel(Level.FINE);
+                } else {
+                    logger.setLevel(Level.INFO);
+                    handler.setLevel(Level.INFO);
+                }
+            }
+        }
         this.isVerbose = isVerbose;
     }
 
@@ -235,6 +291,13 @@ public class JSParameters {
      */
     public void setVerify(boolean isVerify) {
         this.isVerify = isVerify;
+    }
+
+    /**
+     * @param jarFile
+     */
+    public void setJarFile(JarFile jarFile) {
+        this.jarFile = jarFile;
     }
 
     /**
@@ -280,6 +343,20 @@ public class JSParameters {
     }
 
     /**
+     * @param mdProvider
+     */
+    public void setMdProvider(String mdProvider) {
+        this.mdProvider = mdProvider;
+    }
+
+    /**
+     * @param mdProviderName
+     */
+    public void setMdProviderName(String mdProviderName) {
+        this.mdProviderName = mdProviderName;
+    }
+
+    /**
      * @param provider
      */
     public void setProvider(String provider) {
@@ -291,6 +368,27 @@ public class JSParameters {
      */
     public void setProviderName(String providerName) {
         this.providerName = providerName;
+    }
+
+    /**
+     * @param proxy 
+     */
+    public void setProxy(String proxy) {
+        this.proxy = proxy;
+    }
+
+    /**
+     * @param proxyPort 
+     */
+    public void setProxyPort(int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    /**
+     * @param proxyType 
+     */
+    public void setProxyType(Proxy.Type proxyType) {
+        this.proxyType = proxyType;
     }
 
     /**
@@ -327,6 +425,28 @@ public class JSParameters {
      */
     public void setSigProviderName(String sigProviderName) {
         this.sigProviderName = sigProviderName;
+    }
+
+    /**
+     * @param isSilent
+     */
+    public void setSilent(boolean isSilent) {
+        Logger logger = Logger.getLogger(loggerName);
+        Handler[] handlers = logger.getHandlers();
+        for (Handler handler : handlers) {
+            if (isSilent) {
+                logger.setLevel(Level.OFF);
+            } else {
+                if (isVerbose) {
+                    logger.setLevel(Level.FINE);
+                    handler.setLevel(Level.FINE);
+                } else {
+                    logger.setLevel(Level.INFO);
+                    handler.setLevel(Level.INFO);
+                }
+            }
+        }
+        this.isSilent = isSilent;
     }
 
     /**
@@ -430,6 +550,13 @@ public class JSParameters {
     /**
      * @return
      */
+    boolean isSilent() {
+        return isSilent;
+    }
+
+    /**
+     * @return
+     */
     boolean isVerbose() {
         return isVerbose;
     }
@@ -439,6 +566,22 @@ public class JSParameters {
      */
     boolean isVerify() {
         return isVerify;
+    }
+
+    /**
+     * @return
+     * @throws IOException 
+     */
+    JarFile getJarFile() throws IOException {
+        if (jarFile == null) {
+            try {
+                jarFile = new JarFile(new File(jarURI), isVerify);
+            } catch (IOException e) {
+                throw (IOException) new IOException("Failed to load JAR file "
+                        + jarURI).initCause(e);
+            }
+        }
+        return jarFile;
     }
 
     /**
@@ -464,9 +607,19 @@ public class JSParameters {
 
     /**
      * @return
+     * @throws JarSignerException
      */
-    KeyStore getKeyStore(){ 
-        // FIXME: use KeyStoreLoaderSaver
+    KeyStore getKeyStore() throws JarSignerException {
+        if (keyStore == null) {
+            String ksProvName = (ksProviderName != null) ? ksProviderName
+                    : providerName;
+            try {
+                keyStore = KeyStoreLoaderSaver.loadStore(storeURI, storeType,
+                        storePass, ksProvName);
+            } catch (Exception e) {
+                throw new JarSignerException("Cannot load the keystore " + storeURI, e);
+            }
+        }
         return keyStore;
     }
 
@@ -487,6 +640,20 @@ public class JSParameters {
     /**
      * @return
      */
+    String getMdProvider() {
+        return mdProvider;
+    }
+
+    /**
+     * @return
+     */
+    String getMdProviderName() {
+        return mdProviderName;
+    }
+
+    /**
+     * @return
+     */
     String getProvider() {
         return provider;
     }
@@ -496,6 +663,27 @@ public class JSParameters {
      */
     String getProviderName() {
         return providerName;
+    }
+
+    /**
+     * @return 
+     */
+    String getProxy() {
+        return proxy;
+    }
+
+    /**
+     * @return 
+     */
+    int getProxyPort() {
+        return proxyPort;
+    }
+
+    /**
+     * @return 
+     */
+    Proxy.Type getProxyType() {
+        return proxyType;
     }
 
     /**
@@ -550,6 +738,9 @@ public class JSParameters {
      * @return
      */
     String getStoreType() {
+        if (storeType == null){
+            storeType = KeyStore.getDefaultType();
+        }
         return storeType;
     }
 
