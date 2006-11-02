@@ -84,6 +84,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
       if(matrix != NULL){
 
           jdouble * mtrx = (jdouble *)env->GetPrimitiveArrayCritical(matrix, 0);
+          jdouble * old_mtrx = mtrx;
 
           transform.eM11 = (FLOAT)(*mtrx++);
           transform.eM12 = (FLOAT)(*mtrx++);
@@ -92,7 +93,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
           transform.eDx = (FLOAT)(*mtrx++);
           transform.eDy = (FLOAT)(*mtrx);
 
-          env->ReleasePrimitiveArrayCritical(matrix, mtrx, 0);
+          env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
 
           SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
           GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
@@ -201,6 +202,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       if(matrix != NULL){
 
           jdouble * mtrx = (jdouble *)env->GetPrimitiveArrayCritical(matrix, 0);
+          jdouble * old_mtrx = mtrx;
 
           transform.eM11 = (FLOAT)(*mtrx++);
           transform.eM12 = (FLOAT)(*mtrx++);
@@ -209,7 +211,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
           transform.eDx = (FLOAT)(*mtrx++);
           transform.eDy = (FLOAT)(*mtrx);
 
-          env->ReleasePrimitiveArrayCritical(matrix, mtrx, 0);
+          env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
 
           SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
           GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
@@ -258,6 +260,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
       if(matrix != NULL){
 
           jdouble * mtrx = (jdouble *)env->GetPrimitiveArrayCritical(matrix, 0);
+          jdouble * old_mtrx = mtrx;
 
           transform.eM11 = (FLOAT)(*mtrx++);
           transform.eM12 = (FLOAT)(*mtrx++);
@@ -266,7 +269,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
           transform.eDx = (FLOAT)(*mtrx++);
           transform.eDy = (FLOAT)(*mtrx);
 
-          env->ReleasePrimitiveArrayCritical(matrix, mtrx, 0);
+          env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
 
           SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
           GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
