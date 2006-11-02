@@ -262,4 +262,32 @@ public class AttributesTest extends TestCase {
             // Expected
         }
     }
+    
+    /**
+     * @tests java.util.jar.Attributes.put(java.lang.Object, java.lang.Object)
+     */
+    public void test_putLjava_lang_ObjectLjava_lang_Object_Null() {
+
+        Attributes attribute = new Attributes();
+
+        assertFalse(attribute.containsKey(null));
+        assertFalse(attribute.containsValue(null));
+        attribute.put(null, null);
+        attribute.put(null, null);
+        assertEquals(1, attribute.size());
+        assertTrue(attribute.containsKey(null));
+        assertTrue(attribute.containsValue(null));
+        assertNull(attribute.get(null));
+
+        String value = "It's null";
+        attribute.put(null, value);
+        assertEquals(1, attribute.size());
+        assertEquals(value, attribute.get(null));
+
+        Attributes.Name name = new Attributes.Name("null");
+        attribute.put(name, null);
+        assertEquals(2, attribute.size());
+        assertEquals(null, attribute.get(name));
+    }
+
 }

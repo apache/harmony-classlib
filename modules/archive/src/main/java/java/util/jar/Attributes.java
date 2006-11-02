@@ -232,13 +232,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *                String
      */
     public Object put(Object key, Object value) {
-        if (!(key instanceof Name)) {
-            throw new ClassCastException();
-        }
-        if (!(value instanceof String)) {
-            throw new ClassCastException();
-        }
-        return map.put(key, value);
+        return map.put((Name)key, (String)value);
     }
 
     /**
