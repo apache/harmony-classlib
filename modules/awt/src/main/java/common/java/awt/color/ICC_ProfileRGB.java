@@ -20,6 +20,8 @@
  */
 package java.awt.color;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class ICC_ProfileRGB extends ICC_Profile {
     private static final long serialVersionUID = 8505067385152579334L;
 
@@ -33,9 +35,9 @@ public class ICC_ProfileRGB extends ICC_Profile {
 
     public static final int BLUECOMPONENT = 2;
 
-    private static final String UNKNOWN_COMPONENT_MSG =
-        "Unknown component. Must be REDCOMPONENT, " +
-        "GREENCOMPONENT or BLUECOMPONENT.";
+    // awt.15E=Unknown component. Must be REDCOMPONENT, GREENCOMPONENT or BLUECOMPONENT.
+    private static final String UNKNOWN_COMPONENT_MSG = Messages
+            .getString("awt.15E"); //$NON-NLS-1$
 
     @Override
     public short[] getTRC(int component) {

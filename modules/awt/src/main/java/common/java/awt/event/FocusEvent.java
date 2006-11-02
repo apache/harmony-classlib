@@ -73,18 +73,18 @@ public class FocusEvent extends ComponentEvent {
 
         switch (id) {
         case FOCUS_GAINED:
-            idString = "FOCUS_GAINED";
+            idString = "FOCUS_GAINED"; //$NON-NLS-1$
             break;
         case FOCUS_LOST:
-            idString = "FOCUS_LOST";
+            idString = "FOCUS_LOST"; //$NON-NLS-1$
             break;
         default:
-            idString = "unknown type";
+            idString = "unknown type"; //$NON-NLS-1$
         }
 
         return (idString +
-                (temporary ? ",temporary" : ",permanent") +
-                ",opposite=" + opposite);
+                (temporary ? ",temporary" : ",permanent") + //$NON-NLS-1$ //$NON-NLS-2$
+                ",opposite=" + opposite); //$NON-NLS-1$
     }
 
 }

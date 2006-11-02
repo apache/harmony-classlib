@@ -25,6 +25,8 @@ import java.awt.Component;
 import java.awt.font.TextHitInfo;
 import java.text.AttributedCharacterIterator;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class InputMethodEvent extends AWTEvent {
 
     private static final long serialVersionUID = 4727190874778922661L;
@@ -65,17 +67,19 @@ public class InputMethodEvent extends AWTEvent {
         super(src, id);
 
         if ((id < INPUT_METHOD_FIRST) || (id > INPUT_METHOD_LAST)) {
-            throw new IllegalArgumentException("Wrong event id");
+            // awt.18E=Wrong event id
+            throw new IllegalArgumentException(Messages.getString("awt.18E")); //$NON-NLS-1$
         }
         if ((id == CARET_POSITION_CHANGED) && (text != null)) {
-            throw new IllegalArgumentException(
-                    "Text must be null for CARET_POSITION_CHANGED");
+            // awt.18F=Text must be null for CARET_POSITION_CHANGED
+            throw new IllegalArgumentException(Messages.getString("awt.18F")); //$NON-NLS-1$
         }
         if ((text != null) &&
                 ((committedCharacterCount < 0) ||
                  (committedCharacterCount > 
                         (text.getEndIndex() - text.getBeginIndex())))) {
-            throw new IllegalArgumentException("Wrong committedCharacterCount");
+            // awt.190=Wrong committedCharacterCount
+            throw new IllegalArgumentException(Messages.getString("awt.190")); //$NON-NLS-1$
         }
 
         this.when = when;
@@ -129,18 +133,18 @@ public class InputMethodEvent extends AWTEvent {
 
         switch (id) {
         case INPUT_METHOD_TEXT_CHANGED:
-            typeString = "INPUT_METHOD_TEXT_CHANGED";
+            typeString = "INPUT_METHOD_TEXT_CHANGED"; //$NON-NLS-1$
             break;
         case CARET_POSITION_CHANGED:
-            typeString = "CARET_POSITION_CHANGED";
+            typeString = "CARET_POSITION_CHANGED"; //$NON-NLS-1$
             break;
         default:
-            typeString = "unknown type";
+            typeString = "unknown type"; //$NON-NLS-1$
         }
 
-        return typeString + ",text=" + text + 
-                ",commitedCharCount=" + committedCharacterCount +
-                ",caret=" + caret + ",visiblePosition=" + visiblePosition;
+        return typeString + ",text=" + text +  //$NON-NLS-1$
+                ",commitedCharCount=" + committedCharacterCount + //$NON-NLS-1$
+                ",caret=" + caret + ",visiblePosition=" + visiblePosition; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

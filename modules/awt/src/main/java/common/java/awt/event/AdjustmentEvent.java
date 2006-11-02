@@ -87,31 +87,31 @@ public class AdjustmentEvent extends AWTEvent {
          */
 
         String idString = (id == ADJUSTMENT_VALUE_CHANGED ?
-                "ADJUSTMENT_VALUE_CHANGED" : "unknown type");
+                "ADJUSTMENT_VALUE_CHANGED" : "unknown type"); //$NON-NLS-1$ //$NON-NLS-2$
         String adjType = null;
 
         switch (type) {
         case UNIT_INCREMENT:
-            adjType = "UNIT_INCREMENT";
+            adjType = "UNIT_INCREMENT"; //$NON-NLS-1$
             break;
         case UNIT_DECREMENT:
-            adjType = "UNIT_DECREMENT";
+            adjType = "UNIT_DECREMENT"; //$NON-NLS-1$
             break;
         case BLOCK_INCREMENT:
-            adjType = "BLOCK_INCREMENT";
+            adjType = "BLOCK_INCREMENT"; //$NON-NLS-1$
             break;
         case BLOCK_DECREMENT:
-            adjType = "BLOCK_DECREMENT";
+            adjType = "BLOCK_DECREMENT"; //$NON-NLS-1$
             break;
         case TRACK:
-            adjType = "TRACK";
+            adjType = "TRACK"; //$NON-NLS-1$
             break;
         default:
-            adjType = "unknown type";
+            adjType = "unknown type"; //$NON-NLS-1$
         }
 
-        return (idString + ",adjType=" + adjType + ",value=" + value +
-                ",isAdjusting=" + isAdjusting);
+        return (idString + ",adjType=" + adjType + ",value=" + value + //$NON-NLS-1$ //$NON-NLS-2$
+                ",isAdjusting=" + isAdjusting); //$NON-NLS-1$
     }
 
 }

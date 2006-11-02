@@ -24,6 +24,8 @@ import java.awt.AWTEvent;
 
 import java.util.EventListenerProxy;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class AWTEventListenerProxy extends EventListenerProxy implements AWTEventListener {
 
     private AWTEventListener listener;
@@ -32,7 +34,8 @@ public class AWTEventListenerProxy extends EventListenerProxy implements AWTEven
     public AWTEventListenerProxy(long eventMask, AWTEventListener listener) {
         super(listener);
 
-        assert listener != null : "Listener can't be zero";
+        // awt.193=Listener can't be zero
+        assert listener != null : Messages.getString("awt.193"); //$NON-NLS-1$
 
         this.listener = listener;
         this.eventMask = eventMask;

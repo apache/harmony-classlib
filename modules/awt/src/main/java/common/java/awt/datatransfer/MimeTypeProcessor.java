@@ -55,9 +55,9 @@ final class MimeTypeProcessor {
             String name = keys.nextElement();
             String value = type.parameters.get(name);
 
-            buf.append("; ");
+            buf.append("; "); //$NON-NLS-1$
             buf.append(name);
-            buf.append("=\"");
+            buf.append("=\""); //$NON-NLS-1$
             buf.append(value);
             buf.append('"');
         }
@@ -216,7 +216,7 @@ final class MimeTypeProcessor {
         }
 
         String getFullType() {
-            return (primaryType + "/" + subType);
+            return (primaryType + "/" + subType); //$NON-NLS-1$
         }
 
         String getParameter(String name) {

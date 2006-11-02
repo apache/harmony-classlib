@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class DropTargetContext implements Serializable {
 
     private static final long serialVersionUID = -634158968993743371L;
@@ -111,7 +113,8 @@ public class DropTargetContext implements Serializable {
 
     protected Transferable getTransferable() throws InvalidDnDOperationException {
         if (peer == null) {
-            throw new InvalidDnDOperationException("Transfer data is not available");
+            // awt.07=Transfer data is not available
+            throw new InvalidDnDOperationException(Messages.getString("awt.07")); //$NON-NLS-1$
         }
         return new TransferableProxy(peer.isTransferableJVMLocal(), peer.getTransferable());
     }

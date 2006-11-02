@@ -78,18 +78,18 @@ public class MouseWheelEvent extends MouseEvent {
 
         switch (scrollType) {
         case WHEEL_UNIT_SCROLL:
-            typeString = "WHEEL_UNIT_SCROLL";
+            typeString = "WHEEL_UNIT_SCROLL"; //$NON-NLS-1$
             break;
         case WHEEL_BLOCK_SCROLL:
-            typeString = "WHEEL_BLOCK_SCROLL";
+            typeString = "WHEEL_BLOCK_SCROLL"; //$NON-NLS-1$
             break;
         default:
-            typeString = "unknown type";
+            typeString = "unknown type"; //$NON-NLS-1$
         }
 
-        paramString += ",scrollType=" + typeString +
-                ",scrollAmount=" + scrollAmount + 
-                ",wheelRotation=" + wheelRotation;
+        paramString += ",scrollType=" + typeString + //$NON-NLS-1$
+                ",scrollAmount=" + scrollAmount +  //$NON-NLS-1$
+                ",wheelRotation=" + wheelRotation; //$NON-NLS-1$
 
         return paramString;
     }

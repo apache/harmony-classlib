@@ -23,6 +23,8 @@ package java.awt.font;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class TransformAttribute implements Serializable {
     private static final long serialVersionUID = 3356247357827709530L;
 
@@ -31,7 +33,8 @@ public final class TransformAttribute implements Serializable {
 
     public TransformAttribute(AffineTransform transform) {
         if (transform == null) {
-            throw new IllegalArgumentException("transform can not be null");
+            // awt.94=transform can not be null
+            throw new IllegalArgumentException(Messages.getString("awt.94")); //$NON-NLS-1$
         }
         if (!transform.isIdentity()){
             this.fTransform = new AffineTransform(transform);

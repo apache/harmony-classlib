@@ -92,34 +92,34 @@ public class HierarchyEvent extends AWTEvent {
 
         switch (id) {
         case HIERARCHY_CHANGED:
-            paramString = "HIERARCHY_CHANGED";
+            paramString = "HIERARCHY_CHANGED"; //$NON-NLS-1$
             break;
         case ANCESTOR_MOVED:
-            paramString = "ANCESTOR_MOVED";
+            paramString = "ANCESTOR_MOVED"; //$NON-NLS-1$
             break;
         case ANCESTOR_RESIZED:
-            paramString = "ANCESTOR_RESIZED";
+            paramString = "ANCESTOR_RESIZED"; //$NON-NLS-1$
             break;
         default:
-            paramString = "unknown type";
+            paramString = "unknown type"; //$NON-NLS-1$
         }
 
-        paramString += " (";
+        paramString += " ("; //$NON-NLS-1$
 
         if (id == HIERARCHY_CHANGED) {
             if ((changeFlag & PARENT_CHANGED) > 0) {
-                paramString += "PARENT_CHANGED,";
+                paramString += "PARENT_CHANGED,"; //$NON-NLS-1$
             }
             if ((changeFlag & DISPLAYABILITY_CHANGED) > 0) {
-                paramString += "DISPLAYABILITY_CHANGED,";
+                paramString += "DISPLAYABILITY_CHANGED,"; //$NON-NLS-1$
             }
             if ((changeFlag & SHOWING_CHANGED) > 0) {
-                paramString += "SHOWING_CHANGED,";
+                paramString += "SHOWING_CHANGED,"; //$NON-NLS-1$
             }
         }
 
-        return paramString + "changed=" + changed + 
-                ",changedParent=" + changedParent + ")";
+        return paramString + "changed=" + changed +  //$NON-NLS-1$
+                ",changedParent=" + changedParent + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

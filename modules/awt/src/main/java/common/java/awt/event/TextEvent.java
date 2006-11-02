@@ -47,7 +47,7 @@ public class TextEvent extends AWTEvent {
          */
 
         return (id == TEXT_VALUE_CHANGED) ? 
-                "TEXT_VALUE_CHANGED" : "unknown type";
+                "TEXT_VALUE_CHANGED" : "unknown type"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

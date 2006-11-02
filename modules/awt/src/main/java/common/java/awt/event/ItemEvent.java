@@ -74,17 +74,17 @@ public class ItemEvent extends AWTEvent {
 
         switch (stateChange) {
         case SELECTED:
-            stateString = "SELECTED";
+            stateString = "SELECTED"; //$NON-NLS-1$
             break;
         case DESELECTED:
-            stateString = "DESELECTED";
+            stateString = "DESELECTED"; //$NON-NLS-1$
             break;
         default:
-            stateString = "unknown type";
+            stateString = "unknown type"; //$NON-NLS-1$
         }
 
-        return ((id == ITEM_STATE_CHANGED ? "ITEM_STATE_CHANGED" : "unknown type") +
-                ",item=" + item + ",stateChange=" + stateString);
+        return ((id == ITEM_STATE_CHANGED ? "ITEM_STATE_CHANGED" : "unknown type") + //$NON-NLS-1$ //$NON-NLS-2$
+                ",item=" + item + ",stateChange=" + stateString); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

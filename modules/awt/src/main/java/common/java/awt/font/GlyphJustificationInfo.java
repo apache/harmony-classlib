@@ -20,6 +20,8 @@
  */
 package java.awt.font;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class GlyphJustificationInfo {
 
     public static final int PRIORITY_KASHIDA = 0;
@@ -53,42 +55,44 @@ public final class GlyphJustificationInfo {
             int shrinkPriority, float shrinkLeftLimit, float shrinkRightLimit) {
 
         if (weight < 0) {
-            throw new IllegalArgumentException("weight must be a " + "positive number");
+            // awt.19C=weight must be a positive number
+            throw new IllegalArgumentException(Messages.getString("awt.19C")); //$NON-NLS-1$
         }
         this.weight = weight;
 
         if (growLeftLimit < 0) {
-            throw new IllegalArgumentException("growLeftLimit must be a " + "positive number");
+            // awt.19D=growLeftLimit must be a positive number
+            throw new IllegalArgumentException(Messages.getString("awt.19D")); //$NON-NLS-1$
         }
         this.growLeftLimit = growLeftLimit;
 
         if (growRightLimit < 0) {
-            throw new IllegalArgumentException("growRightLimit must be a " + "positive number");
+            // awt.19E=growRightLimit must be a positive number
+            throw new IllegalArgumentException(Messages.getString("awt.19E")); //$NON-NLS-1$
         }
         this.growRightLimit = growRightLimit;
 
         if ((shrinkPriority < 0) || (shrinkPriority > PRIORITY_NONE)) {
-            throw new IllegalArgumentException("incorrect value for "
-                    + "shrinkPriority, more than PRIORITY_NONE or less than "
-                    + "PRIORITY_KASHIDA value");
+            // awt.19F=incorrect value for shrinkPriority, more than PRIORITY_NONE or less than PRIORITY_KASHIDA value
+            throw new IllegalArgumentException(Messages.getString("awt.19F")); //$NON-NLS-1$
         }
         this.shrinkPriority = shrinkPriority;
 
         if ((growPriority < 0) || (growPriority > PRIORITY_NONE)) {
-            throw new IllegalArgumentException("incorrect value for "
-                    + "growPriority, more than PRIORITY_NONE or less than "
-                    + "PRIORITY_KASHIDA value");
+            // awt.200=incorrect value for growPriority, more than PRIORITY_NONE or less than PRIORITY_KASHIDA value
+            throw new IllegalArgumentException(Messages.getString("awt.200")); //$NON-NLS-1$
         }
         this.growPriority = growPriority;
 
         if (shrinkLeftLimit < 0) {
-            throw new IllegalArgumentException("shrinkLeftLimit must be a " + "positive number");
+            // awt.201=shrinkLeftLimit must be a positive number
+            throw new IllegalArgumentException(Messages.getString("awt.201")); //$NON-NLS-1$
         }
         this.shrinkLeftLimit = shrinkLeftLimit;
 
         if (shrinkRightLimit < 0) {
-            throw new IllegalArgumentException("shrinkRightLimit must be a "
-                    + "positive number");
+            // awt.202=shrinkRightLimit must be a positive number
+            throw new IllegalArgumentException(Messages.getString("awt.202")); //$NON-NLS-1$
         }
         this.shrinkRightLimit = shrinkRightLimit;
 

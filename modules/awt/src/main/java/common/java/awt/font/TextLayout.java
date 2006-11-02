@@ -72,14 +72,17 @@ public final class TextLayout implements Cloneable {
 
     public TextLayout(String string, Font font, FontRenderContext frc) {
         if (string == null){
+            // awt.01='{0}' parameter is null
             throw new IllegalArgumentException(Messages.getString("awt.01", "string")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (font == null){
+            // awt.01='{0}' parameter is null
             throw new IllegalArgumentException(Messages.getString("awt.01", "font")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (string.length() == 0){
+            // awt.02='{0}' parameter has zero length
             throw new IllegalArgumentException(Messages.getString("awt.02", "string")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
@@ -94,14 +97,17 @@ public final class TextLayout implements Cloneable {
             Map<? extends java.text.AttributedCharacterIterator.Attribute, ?> attributes,
             FontRenderContext frc ) {
         if (string == null){
+            // awt.01='{0}' parameter is null
             throw new IllegalArgumentException(Messages.getString("awt.01", "string")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (attributes == null){
+            // awt.01='{0}' parameter is null
             throw new IllegalArgumentException(Messages.getString("awt.01", "attributes")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (string.length() == 0){
+            // awt.02='{0}' parameter has zero length
             throw new IllegalArgumentException(Messages.getString("awt.02", "string")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
@@ -114,10 +120,12 @@ public final class TextLayout implements Cloneable {
 
     public TextLayout(AttributedCharacterIterator text, FontRenderContext frc) {
         if (text == null){
+            // awt.03='{0}' iterator parameter is null
             throw new IllegalArgumentException(Messages.getString("awt.03", "text")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         if (text.getBeginIndex() == text.getEndIndex()){
+            // awt.04='{0}' iterator parameter has zero length
             throw new IllegalArgumentException(Messages.getString("awt.04", "text")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
@@ -240,7 +248,8 @@ public final class TextLayout implements Cloneable {
 
     public Shape[] getCaretShapes(int offset, Rectangle2D bounds, TextLayout.CaretPolicy policy) {
         if (offset < 0 || offset > breaker.getCharCount()) {
-            throw new IllegalArgumentException("Offset is out of bounds");
+            // awt.195=Offset is out of bounds
+            throw new IllegalArgumentException(Messages.getString("awt.195")); //$NON-NLS-1$
         }
 
         updateMetrics();
@@ -267,7 +276,8 @@ public final class TextLayout implements Cloneable {
         float justification = breaker.getJustification();
 
         if (justification < 0) {
-            throw new Error("Justification impossible, layout already justified");
+            // awt.196=Justification impossible, layout already justified
+            throw new Error(Messages.getString("awt.196")); //$NON-NLS-1$
         } else if (justification == 0) {
             return this;
         }
@@ -296,7 +306,8 @@ public final class TextLayout implements Cloneable {
 
         if (firstEndpoint > secondEndpoint) {
             if (secondEndpoint < 0 || firstEndpoint > breaker.getCharCount()) {
-                throw new IllegalArgumentException("Endpoints are out of range");
+                // awt.197=Endpoints are out of range
+                throw new IllegalArgumentException(Messages.getString("awt.197")); //$NON-NLS-1$
             }
             return caretManager.getLogicalHighlightShape(
                     secondEndpoint,
@@ -306,7 +317,8 @@ public final class TextLayout implements Cloneable {
             );
         }
         if (firstEndpoint < 0 || secondEndpoint > breaker.getCharCount()) {
-            throw new IllegalArgumentException("Endpoints are out of range");
+            // awt.197=Endpoints are out of range
+            throw new IllegalArgumentException(Messages.getString("awt.197")); //$NON-NLS-1$
         }
         return caretManager.getLogicalHighlightShape(
                 firstEndpoint,
@@ -331,7 +343,8 @@ public final class TextLayout implements Cloneable {
 
     public TextHitInfo getNextLeftHit(int offset, TextLayout.CaretPolicy policy) {
         if (offset < 0 || offset > breaker.getCharCount()) {
-            throw new IllegalArgumentException("Offset is out of bounds");
+            // awt.195=Offset is out of bounds
+            throw new IllegalArgumentException(Messages.getString("awt.195")); //$NON-NLS-1$
         }
 
         TextHitInfo hit = TextHitInfo.afterOffset(offset);
@@ -355,7 +368,8 @@ public final class TextLayout implements Cloneable {
 
     public TextHitInfo getNextRightHit(int offset, TextLayout.CaretPolicy policy) {
         if (offset < 0 || offset > breaker.getCharCount()) {
-            throw new IllegalArgumentException("Offset is out of bounds");
+            // awt.195=Offset is out of bounds
+            throw new IllegalArgumentException(Messages.getString("awt.195")); //$NON-NLS-1$
         }
 
         TextHitInfo hit = TextHitInfo.afterOffset(offset);
@@ -426,7 +440,8 @@ public final class TextLayout implements Cloneable {
         float justification = breaker.getJustification();
 
         if (justification < 0) {
-            throw new IllegalStateException("Justification impossible, layout already justified");
+            // awt.196=Justification impossible, layout already justified
+            throw new IllegalStateException(Messages.getString("awt.196")); //$NON-NLS-1$
         } else if (justification == 0) {
             return;
         }

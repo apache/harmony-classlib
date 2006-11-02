@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.EventListener;
 
 import org.apache.harmony.awt.ListenerList;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 // TODO: think of synchronization
@@ -66,12 +67,12 @@ public class DragSource implements Serializable {
         } else {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-            DefaultMoveDrop = getDefaultCursor(toolkit, "dnd.MoveCursor");
-            DefaultMoveNoDrop = getDefaultCursor(toolkit, "dnd.NoMoveCursor");
-            DefaultCopyDrop = getDefaultCursor(toolkit, "dnd.CopyCursor");
-            DefaultCopyNoDrop = getDefaultCursor(toolkit, "dnd.NoCopyCursor");
-            DefaultLinkDrop = getDefaultCursor(toolkit, "dnd.LinkCursor");
-            DefaultLinkNoDrop = getDefaultCursor(toolkit, "dnd.NoLinkCursor");
+            DefaultMoveDrop = getDefaultCursor(toolkit, "dnd.MoveCursor"); //$NON-NLS-1$
+            DefaultMoveNoDrop = getDefaultCursor(toolkit, "dnd.NoMoveCursor"); //$NON-NLS-1$
+            DefaultCopyDrop = getDefaultCursor(toolkit, "dnd.CopyCursor"); //$NON-NLS-1$
+            DefaultCopyNoDrop = getDefaultCursor(toolkit, "dnd.NoCopyCursor"); //$NON-NLS-1$
+            DefaultLinkDrop = getDefaultCursor(toolkit, "dnd.LinkCursor"); //$NON-NLS-1$
+            DefaultLinkNoDrop = getDefaultCursor(toolkit, "dnd.NoLinkCursor"); //$NON-NLS-1$
         }
     }
 
@@ -80,7 +81,7 @@ public class DragSource implements Serializable {
             return (Cursor) toolkit.getDesktopProperty(name);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Can't create default D&D cursor: " + e);
+            throw new RuntimeException(Messages.getString("awt.170", e)); //$NON-NLS-1$
         }
     }
 
@@ -102,11 +103,11 @@ public class DragSource implements Serializable {
     }
 
     public static int getDragThreshold() {
-        int threshold = Integer.getInteger("awt.dnd.drag.threshold", -1).intValue();
+        int threshold = Integer.getInteger("awt.dnd.drag.threshold", -1).intValue(); //$NON-NLS-1$
 
         if (threshold <= 0) {
             Object val = Toolkit.getDefaultToolkit().getDesktopProperty(
-                    "DnD.gestureMotionThreshold"
+                    "DnD.gestureMotionThreshold" //$NON-NLS-1$
             );
 
             if (val != null && val instanceof Integer) {
@@ -187,9 +188,8 @@ public class DragSource implements Serializable {
             throws InvalidDnDOperationException {
 
         if (curContext != null) {
-            throw new InvalidDnDOperationException(
-                    "Attempt to start a drag while an existing " + 
-                    "drag operation is still executing.");
+            // awt.171=Attempt to start a drag while an existing drag operation is still executing.
+            throw new InvalidDnDOperationException(Messages.getString("awt.171"));  //$NON-NLS-1$
         }
 
         DragSourceContextPeer peer =

@@ -24,6 +24,8 @@ package java.awt.font;
 import java.text.AttributedCharacterIterator;
 import java.text.BreakIterator;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class LineBreakMeasurer {
     private TextMeasurer tm = null;
     private BreakIterator bi = null;
@@ -93,9 +95,8 @@ public final class LineBreakMeasurer {
 
     public int nextOffset(float wrappingWidth, int offsetLimit, boolean requireNextWord) {
         if (offsetLimit <= position) {
-            throw new IllegalArgumentException(
-                    "Offset limit should be greater than current position."
-            );
+            // awt.203=Offset limit should be greater than current position. 
+            throw new IllegalArgumentException(Messages.getString("awt.203")); //$NON-NLS-1$
         }
 
         if (position == maxpos) {
@@ -127,7 +128,8 @@ public final class LineBreakMeasurer {
 
     public void setPosition(int pos) {
         if (tm.aci.getBeginIndex() > pos || maxpos < pos) {
-            throw new IllegalArgumentException("Index is out of range");
+            // awt.33=index is out of range
+            throw new IllegalArgumentException(Messages.getString("awt.33")); //$NON-NLS-1$
         }
         position = pos;
     }

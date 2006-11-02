@@ -23,6 +23,8 @@ package java.awt.dnd;
 import java.awt.Point;
 import java.util.EventObject;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class DragSourceEvent extends EventObject {
 
     private static final long serialVersionUID = -763287114604032641L;
@@ -40,7 +42,8 @@ public class DragSourceEvent extends EventObject {
         super(dsc);
 
         if (dsc == null) {
-            throw new IllegalArgumentException("Context is null.");
+            // awt.18A=Context is null.
+            throw new IllegalArgumentException(Messages.getString("awt.18A")); //$NON-NLS-1$
         }
 
         context = dsc;

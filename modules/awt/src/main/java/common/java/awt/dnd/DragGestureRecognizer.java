@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.TooManyListenersException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class DragGestureRecognizer implements Serializable {
 
     private static final long serialVersionUID = 8996673345831063337L;
@@ -40,7 +42,8 @@ public abstract class DragGestureRecognizer implements Serializable {
 
     protected DragGestureRecognizer(DragSource ds, Component c, int sa, DragGestureListener dgl) {
         if (ds == null) {
-            throw new IllegalArgumentException("Drag source is null.");
+            // awt.172=Drag source is null.
+            throw new IllegalArgumentException(Messages.getString("awt.172")); //$NON-NLS-1$
         }
 
         dragSource = ds;
@@ -121,7 +124,8 @@ public abstract class DragGestureRecognizer implements Serializable {
             return;
         }
         if (dragGestureListener != null) {
-            throw new TooManyListenersException("One listener is already exist.");
+            // awt.173=One listener is already exist.
+            throw new TooManyListenersException(Messages.getString("awt.173")); //$NON-NLS-1$
         }
 
         dragGestureListener = dgl;
@@ -130,7 +134,8 @@ public abstract class DragGestureRecognizer implements Serializable {
 
     public synchronized void removeDragGestureListener(DragGestureListener dgl) {
         if (dragGestureListener != dgl) {
-            throw new IllegalArgumentException("dgl is not current listener.");
+            // awt.174=dgl is not current listener.
+            throw new IllegalArgumentException(Messages.getString("awt.174")); //$NON-NLS-1$
         }
         if (dragGestureListener == null) {
             return;

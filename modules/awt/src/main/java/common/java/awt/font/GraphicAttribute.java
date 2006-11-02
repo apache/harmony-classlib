@@ -23,6 +23,8 @@ package java.awt.font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class GraphicAttribute {
 
     public static final int TOP_ALIGNMENT = -1;
@@ -40,7 +42,8 @@ public abstract class GraphicAttribute {
 
     protected GraphicAttribute(int align) {
         if ((align < BOTTOM_ALIGNMENT) || (align > HANGING_BASELINE)) {
-            throw new IllegalArgumentException("illigal alignment argument");
+            // awt.198=Illegal alignment argument
+            throw new IllegalArgumentException(Messages.getString("awt.198")); //$NON-NLS-1$
         }
         this.alignment = align;
     }

@@ -24,6 +24,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Toolkit;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class MouseEvent extends InputEvent {
 
     private static final long serialVersionUID = -991214153494842848L;
@@ -68,16 +70,16 @@ public class MouseEvent extends InputEvent {
 
     static String addMouseModifiersExText(String text, int modifiersEx) {
         if ((modifiersEx & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.button1", "Button1");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.button1", "Button1"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.BUTTON2_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.button2", "Button2");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.button2", "Button2"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.button3", "Button3");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.button3", "Button3"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         return text;
@@ -97,7 +99,8 @@ public class MouseEvent extends InputEvent {
 
         if ((button != NOBUTTON) && (button != BUTTON1) &&
                 (button != BUTTON2) && (button != BUTTON3)) {
-            throw new IllegalArgumentException("Invalid button value");
+            // awt.18B=Invalid button value
+            throw new IllegalArgumentException(Messages.getString("awt.18B")); //$NON-NLS-1$
         }
 
         this.popupTrigger = popupTrigger;
@@ -153,41 +156,41 @@ public class MouseEvent extends InputEvent {
 
         switch (id) {
         case MOUSE_MOVED:
-            idString = "MOUSE_MOVED";
+            idString = "MOUSE_MOVED"; //$NON-NLS-1$
             break;
         case MOUSE_CLICKED:
-            idString = "MOUSE_CLICKED";
+            idString = "MOUSE_CLICKED"; //$NON-NLS-1$
             break;
         case MOUSE_PRESSED:
-            idString = "MOUSE_PRESSED";
+            idString = "MOUSE_PRESSED"; //$NON-NLS-1$
             break;
         case MOUSE_RELEASED:
-            idString = "MOUSE_RELEASED";
+            idString = "MOUSE_RELEASED"; //$NON-NLS-1$
             break;
         case MOUSE_DRAGGED:
-            idString = "MOUSE_DRAGGED";
+            idString = "MOUSE_DRAGGED"; //$NON-NLS-1$
             break;
         case MOUSE_ENTERED:
-            idString = "MOUSE_ENTERED";
+            idString = "MOUSE_ENTERED"; //$NON-NLS-1$
             break;
         case MOUSE_EXITED:
-            idString = "MOUSE_EXITED";
+            idString = "MOUSE_EXITED"; //$NON-NLS-1$
             break;
         case MOUSE_WHEEL:
-            idString = "MOUSE_WHEEL";
+            idString = "MOUSE_WHEEL"; //$NON-NLS-1$
             break;
         default:
-            idString = "unknown type";
+            idString = "unknown type"; //$NON-NLS-1$
         }
 
-        paramString = idString + ",(" + getX() + "," + getY() + ")" +
-                ",button=" + button;
+        paramString = idString + ",(" + getX() + "," + getY() + ")" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                ",button=" + button; //$NON-NLS-1$
         if (getModifiersEx() > 0) {
             paramString += 
-                    ",modifiers=" + getModifiersExText(getModifiersEx()) +
-                    ",extModifiers=" + getModifiersExText(getModifiersEx());
+                    ",modifiers=" + getModifiersExText(getModifiersEx()) + //$NON-NLS-1$
+                    ",extModifiers=" + getModifiersExText(getModifiersEx()); //$NON-NLS-1$
         }
-        paramString += ",clickCount=" + getClickCount();
+        paramString += ",clickCount=" + getClickCount(); //$NON-NLS-1$
 
         return paramString;
     }

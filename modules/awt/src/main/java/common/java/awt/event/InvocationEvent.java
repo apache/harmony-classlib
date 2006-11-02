@@ -23,6 +23,8 @@ package java.awt.event;
 import java.awt.AWTEvent;
 import java.awt.ActiveEvent;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class InvocationEvent extends AWTEvent implements ActiveEvent {
 
     private static final long serialVersionUID = 436056344909459450L;
@@ -56,10 +58,12 @@ public class InvocationEvent extends AWTEvent implements ActiveEvent {
     {
         super(source, id);
 
-        assert runnable != null : "Cannot invoke null runnable";
+        // awt.18C=Cannot invoke null runnable
+        assert runnable != null : Messages.getString("awt.18C"); //$NON-NLS-1$
 
         if (source == null) {
-            throw new IllegalArgumentException("Source is null");
+            // awt.18D=Source is null
+            throw new IllegalArgumentException(Messages.getString("awt.18D")); //$NON-NLS-1$
         }
         this.runnable = runnable;
         this.notifier = notifier;
@@ -118,11 +122,11 @@ public class InvocationEvent extends AWTEvent implements ActiveEvent {
          * System.out.println(e);
          */
 
-        return ((id == INVOCATION_DEFAULT ? "INVOCATION_DEFAULT" : "unknown type") +
-                ",runnable=" + runnable +
-                ",notifier=" + notifier +
-                ",catchExceptions=" + catchExceptions +
-                ",when=" + when);
+        return ((id == INVOCATION_DEFAULT ? "INVOCATION_DEFAULT" : "unknown type") + //$NON-NLS-1$ //$NON-NLS-2$
+                ",runnable=" + runnable + //$NON-NLS-1$
+                ",notifier=" + notifier + //$NON-NLS-1$
+                ",catchExceptions=" + catchExceptions + //$NON-NLS-1$
+                ",when=" + when); //$NON-NLS-1$
     }
 
 }

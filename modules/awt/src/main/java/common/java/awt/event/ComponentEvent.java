@@ -62,21 +62,21 @@ public class ComponentEvent extends AWTEvent {
 
         switch (id) {
         case COMPONENT_MOVED:
-            idString = "COMPONENT_MOVED";
+            idString = "COMPONENT_MOVED"; //$NON-NLS-1$
             break;
         case COMPONENT_RESIZED:
-            idString = "COMPONENT_RESIZED";
+            idString = "COMPONENT_RESIZED"; //$NON-NLS-1$
             break;
         case COMPONENT_SHOWN:
-            return "COMPONENT_SHOWN";
+            return "COMPONENT_SHOWN"; //$NON-NLS-1$
         case COMPONENT_HIDDEN:
-            return "COMPONENT_HIDDEN";
+            return "COMPONENT_HIDDEN"; //$NON-NLS-1$
         default:
-            return "unknown type";
+            return "unknown type"; //$NON-NLS-1$
         }
 
-        return (idString + " (" + c.getX() + "," + c.getY() + 
-                " " + c.getWidth()+ "x" + c.getHeight() + ")");
+        return (idString + " (" + c.getX() + "," + c.getY() +  //$NON-NLS-1$ //$NON-NLS-2$
+                " " + c.getWidth()+ "x" + c.getHeight() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 }

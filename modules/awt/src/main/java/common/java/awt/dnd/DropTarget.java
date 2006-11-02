@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.util.TooManyListenersException;
 
 import org.apache.harmony.awt.datatransfer.DTK;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class DropTarget implements DropTargetListener, Serializable {
 
@@ -128,7 +129,8 @@ public class DropTarget implements DropTargetListener, Serializable {
             return;
         }
         if (dtl != dropTargetListener) {
-            throw new IllegalArgumentException("Listener mismatch");
+            // awt.175=Listener mismatch
+            throw new IllegalArgumentException(Messages.getString("awt.175")); //$NON-NLS-1$
         }
         dropTargetListener = null;
     }
@@ -139,8 +141,8 @@ public class DropTarget implements DropTargetListener, Serializable {
             return;
         }
         if (dtl == this) {
-            throw new IllegalArgumentException(
-                    "DropTarget cannot be added as listener to itself");
+            // awt.176=DropTarget cannot be added as listener to itself
+            throw new IllegalArgumentException(Messages.getString("awt.176")); //$NON-NLS-1$
         }
         if (dropTargetListener != null) {
             throw new TooManyListenersException();

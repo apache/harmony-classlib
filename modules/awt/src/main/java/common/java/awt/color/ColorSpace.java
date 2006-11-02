@@ -23,6 +23,7 @@ package java.awt.color;
 import java.io.Serializable;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public abstract class ColorSpace implements Serializable {
@@ -105,11 +106,11 @@ public abstract class ColorSpace implements Serializable {
 
     public String getName(int idx) {
         if (idx < 0 || idx > numComponents - 1) {
-            throw new IllegalArgumentException(
-                        "Invalid component index: " + idx);
+            // awt.16A=Invalid component index: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.16A", idx)); //$NON-NLS-1$
         }
 
-      return "Unnamed color component #" + idx;
+      return "Unnamed color component #" + idx; //$NON-NLS-1$
     }
 
     public abstract float[] toRGB(float[] colorvalue);
@@ -122,16 +123,16 @@ public abstract class ColorSpace implements Serializable {
 
     public float getMinValue(int component) {
         if (component < 0 || component > numComponents - 1) {
-            throw new IllegalArgumentException(
-                    "Invalid component index: " + component);
+            // awt.16A=Invalid component index: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.16A", component)); //$NON-NLS-1$
         }
         return 0;
     }
 
     public float getMaxValue(int component) {
         if (component < 0 || component > numComponents - 1) {
-            throw new IllegalArgumentException(
-                    "Invalid component index: " + component);
+            // awt.16A=Invalid component index: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.16A", component)); //$NON-NLS-1$
         }
         return 1;
     }
@@ -194,6 +195,7 @@ public abstract class ColorSpace implements Serializable {
         }
 
         // Unknown argument passed
-        throw new IllegalArgumentException("Not a predefined colorspace");
+        // awt.16B=Not a predefined colorspace
+        throw new IllegalArgumentException(Messages.getString("awt.16B")); //$NON-NLS-1$
     }
 }

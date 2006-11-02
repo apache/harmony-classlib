@@ -65,16 +65,16 @@ public class ContainerEvent extends ComponentEvent {
 
         switch (id) {
         case COMPONENT_ADDED:
-            idString = "COMPONENT_ADDED";
+            idString = "COMPONENT_ADDED"; //$NON-NLS-1$
             break;
         case COMPONENT_REMOVED:
-            idString = "COMPONENT_REMOVED";
+            idString = "COMPONENT_REMOVED"; //$NON-NLS-1$
             break;
         default:
-            idString = "unknown type";
+            idString = "unknown type"; //$NON-NLS-1$
         }
 
-        return (idString + ",child=" + child.getName());
+        return (idString + ",child=" + child.getName()); //$NON-NLS-1$
     }
 
 }

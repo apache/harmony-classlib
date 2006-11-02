@@ -27,6 +27,8 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class DragGestureEvent extends EventObject {
 
     private static final long serialVersionUID = 9080172649166731306L;
@@ -45,22 +47,28 @@ public class DragGestureEvent extends EventObject {
         super(dgr);
 
         if (dgr.getComponent() == null) {
-            throw new IllegalArgumentException("Component is null.");
+            // awt.185=Component is null.
+            throw new IllegalArgumentException(Messages.getString("awt.185")); //$NON-NLS-1$
         }
         if (dgr.getDragSource() == null) {
-            throw new IllegalArgumentException("DragSource is null.");
+            // awt.186=DragSource is null.
+            throw new IllegalArgumentException(Messages.getString("awt.186")); //$NON-NLS-1$
         }
         if (!DnDConstants.isValidAction(act)) {
-            throw new IllegalArgumentException("Invalid action.");
+            // awt.184=Invalid action.
+            throw new IllegalArgumentException(Messages.getString("awt.184")); //$NON-NLS-1$
         }
         if (ori == null) {
-            throw new IllegalArgumentException("Origin is null.");
+            // awt.187=Origin is null.
+            throw new IllegalArgumentException(Messages.getString("awt.187")); //$NON-NLS-1$
         }
         if (evs == null) {
-            throw new IllegalArgumentException("Event list is null.");
+            // awt.188=Event list is null.
+            throw new IllegalArgumentException(Messages.getString("awt.188")); //$NON-NLS-1$
         }
         if (evs.isEmpty()) {
-            throw new IllegalArgumentException("Event list is empty.");
+            // awt.189=Event list is empty.
+            throw new IllegalArgumentException(Messages.getString("awt.189")); //$NON-NLS-1$
         }
 
         recognizer = dgr;

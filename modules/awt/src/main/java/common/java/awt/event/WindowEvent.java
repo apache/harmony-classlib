@@ -106,41 +106,41 @@ public class WindowEvent extends ComponentEvent {
 
         switch (id) {
         case WINDOW_OPENED:
-            typeString = "WINDOW_OPENED";
+            typeString = "WINDOW_OPENED"; //$NON-NLS-1$
             break;
         case WINDOW_CLOSING:
-            typeString = "WINDOW_CLOSING";
+            typeString = "WINDOW_CLOSING"; //$NON-NLS-1$
             break;
         case WINDOW_CLOSED:
-            typeString = "WINDOW_CLOSED";
+            typeString = "WINDOW_CLOSED"; //$NON-NLS-1$
             break;
         case WINDOW_ICONIFIED:
-            typeString = "WINDOW_ICONIFIED";
+            typeString = "WINDOW_ICONIFIED"; //$NON-NLS-1$
             break;
         case WINDOW_DEICONIFIED:
-            typeString = "WINDOW_DEICONIFIED";
+            typeString = "WINDOW_DEICONIFIED"; //$NON-NLS-1$
             break;
         case WINDOW_ACTIVATED:
-            typeString = "WINDOW_ACTIVATED";
+            typeString = "WINDOW_ACTIVATED"; //$NON-NLS-1$
             break;
         case WINDOW_DEACTIVATED:
-            typeString = "WINDOW_DEACTIVATED";
+            typeString = "WINDOW_DEACTIVATED"; //$NON-NLS-1$
             break;
         case WINDOW_GAINED_FOCUS:
-            typeString = "WINDOW_GAINED_FOCUS";
+            typeString = "WINDOW_GAINED_FOCUS"; //$NON-NLS-1$
             break;
         case WINDOW_LOST_FOCUS:
-            typeString = "WINDOW_LOST_FOCUS";
+            typeString = "WINDOW_LOST_FOCUS"; //$NON-NLS-1$
             break;
         case WINDOW_STATE_CHANGED:
-            typeString = "WINDOW_STATE_CHANGED";
+            typeString = "WINDOW_STATE_CHANGED"; //$NON-NLS-1$
             break;
         default:
-            typeString = "unknown type";
+            typeString = "unknown type"; //$NON-NLS-1$
         }
 
-        return typeString + ",opposite=" + oppositeWindow +
-                ",oldState=" + oldState + ",newState=" + newState;
+        return typeString + ",opposite=" + oppositeWindow + //$NON-NLS-1$
+                ",oldState=" + oldState + ",newState=" + newState; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

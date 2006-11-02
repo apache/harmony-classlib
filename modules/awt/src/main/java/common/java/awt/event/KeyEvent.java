@@ -25,6 +25,8 @@ import java.awt.Toolkit;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class KeyEvent extends InputEvent {
 
     private static final long serialVersionUID = -2352130953028126954L;
@@ -438,36 +440,36 @@ public class KeyEvent extends InputEvent {
     }
 
     static String getKeyModifiersExText(int modifiersEx) {
-        String text = "";
+        String text = ""; //$NON-NLS-1$
 
         if ((modifiersEx & InputEvent.META_DOWN_MASK) != 0) {
-            text += Toolkit.getProperty("AWT.meta", "Meta");
+            text += Toolkit.getProperty("AWT.meta", "Meta"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.control", "Ctrl");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.control", "Ctrl"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.ALT_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.alt", "Alt");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.alt", "Alt"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.SHIFT_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.shift", "Shift");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.shift", "Shift"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiersEx & InputEvent.ALT_GRAPH_DOWN_MASK) != 0) {
-            text += ((text.length() > 0) ? "+" : "") +
-                    Toolkit.getProperty("AWT.altGraph", "Alt Graph");
+            text += ((text.length() > 0) ? "+" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    Toolkit.getProperty("AWT.altGraph", "Alt Graph"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         return text;
     }
 
     public static String getKeyText(int keyCode) {
-        String[] rawName = getPublicStaticFinalIntFieldName(keyCode, "VK_".length());
+        String[] rawName = getPublicStaticFinalIntFieldName(keyCode, "VK_".length()); //$NON-NLS-1$
 
         if ((rawName == null) || (rawName.length == 0)) {
-            return ("Unknown keyCode: " + (keyCode >= 0 ? "0x" : "-0x") +
+            return ("Unknown keyCode: " + (keyCode >= 0 ? "0x" : "-0x") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     Integer.toHexString(Math.abs(keyCode)));
         }
 
@@ -478,7 +480,7 @@ public class KeyEvent extends InputEvent {
     }
 
     private static String getDefaultName(String[] rawName) {
-        String name = "";
+        String name = ""; //$NON-NLS-1$
 
         for (int i = 0; true; i++) {
             String part = rawName[i];
@@ -489,7 +491,7 @@ public class KeyEvent extends InputEvent {
             if (i == (rawName.length - 1)) {
                 break;
             }
-            name += " ";
+            name += " "; //$NON-NLS-1$
         }
 
         return name;
@@ -505,7 +507,7 @@ public class KeyEvent extends InputEvent {
                     part.substring(1).toLowerCase();
         }
 
-        return ("AWT." + name);
+        return ("AWT." + name); //$NON-NLS-1$
     }
 
     private static String[] getPublicStaticFinalIntFieldName(int value, int prefixLength) {
@@ -516,12 +518,12 @@ public class KeyEvent extends InputEvent {
                 Class<?> ssalc = field.getType();
                 int modifiers = field.getModifiers();
 
-                if (ssalc.isPrimitive() && ssalc.getName().equals("int") &&
+                if (ssalc.isPrimitive() && ssalc.getName().equals("int") && //$NON-NLS-1$
                         Modifier.isFinal(modifiers) && Modifier.isPublic(modifiers) &&
                         Modifier.isStatic(modifiers))
                 {
                     if (field.getInt(null) == value){
-                        return field.getName().substring(prefixLength).split("_");
+                        return field.getName().substring(prefixLength).split("_"); //$NON-NLS-1$
                     }
                 }
             }
@@ -554,12 +556,12 @@ public class KeyEvent extends InputEvent {
 
         if (id == KEY_TYPED) {
             if (keyCode != VK_UNDEFINED) {
-                throw new IllegalArgumentException(
-                    "Invalid keyCode for KEY_TYPED event, must be VK_UNDEFINED");
+                // awt.191=Invalid keyCode for KEY_TYPED event, must be VK_UNDEFINED
+                throw new IllegalArgumentException(Messages.getString("awt.191")); //$NON-NLS-1$
             }
             if (keyChar == CHAR_UNDEFINED) {
-                throw new IllegalArgumentException(
-                    "Invalid keyChar for KEY_TYPED event, can't be CHAR_UNDEFINED");
+                // awt.192=Invalid keyChar for KEY_TYPED event, can't be CHAR_UNDEFINED
+                throw new IllegalArgumentException(Messages.getString("awt.192")); //$NON-NLS-1$
             }
         }
 
@@ -617,53 +619,53 @@ public class KeyEvent extends InputEvent {
         String locString = null;
         String paramString = null;
         String keyCharString = (keyChar == '\n') ?
-                keyCharString = getKeyText(VK_ENTER) : "'" + keyChar + "'";
+                keyCharString = getKeyText(VK_ENTER) : "'" + keyChar + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 
         switch (id) {
         case KEY_PRESSED:
-            idString = "KEY_PRESSED";
+            idString = "KEY_PRESSED"; //$NON-NLS-1$
             break;
         case KEY_RELEASED:
-            idString = "KEY_RELEASED";
+            idString = "KEY_RELEASED"; //$NON-NLS-1$
             break;
         case KEY_TYPED:
-            idString = "KEY_TYPED";
+            idString = "KEY_TYPED"; //$NON-NLS-1$
             break;
         default:
-            idString = "unknown type";
+            idString = "unknown type"; //$NON-NLS-1$
         }
 
         switch(keyLocation){
         case KEY_LOCATION_STANDARD:
-            locString = "KEY_LOCATION_STANDARD";
+            locString = "KEY_LOCATION_STANDARD"; //$NON-NLS-1$
             break;
         case KEY_LOCATION_LEFT:
-            locString = "KEY_LOCATION_LEFT";
+            locString = "KEY_LOCATION_LEFT"; //$NON-NLS-1$
             break;
         case KEY_LOCATION_RIGHT:
-            locString = "KEY_LOCATION_RIGHT";
+            locString = "KEY_LOCATION_RIGHT"; //$NON-NLS-1$
             break;
         case KEY_LOCATION_NUMPAD:
-            locString = "KEY_LOCATION_NUMPAD";
+            locString = "KEY_LOCATION_NUMPAD"; //$NON-NLS-1$
             break;
         case KEY_LOCATION_UNKNOWN:
-            locString = "KEY_LOCATION_UNKNOWN";
+            locString = "KEY_LOCATION_UNKNOWN"; //$NON-NLS-1$
             break;
         default:
-            locString = "unknown type";
+            locString = "unknown type"; //$NON-NLS-1$
         }
 
-        paramString = idString + ",keyCode=" + keyCode;
+        paramString = idString + ",keyCode=" + keyCode; //$NON-NLS-1$
         if (isActionKey()) {
-            paramString += "," + getKeyText(keyCode);
+            paramString += "," + getKeyText(keyCode); //$NON-NLS-1$
         } else {
-            paramString += ",keyChar=" + keyCharString;
+            paramString += ",keyChar=" + keyCharString; //$NON-NLS-1$
         }
         if (getModifiersEx() > 0) {
-            paramString += ",modifiers=" + getModifiersExText(getModifiersEx()) +
-                    ",extModifiers=" + getModifiersExText(getModifiersEx());
+            paramString += ",modifiers=" + getModifiersExText(getModifiersEx()) + //$NON-NLS-1$
+                    ",extModifiers=" + getModifiersExText(getModifiersEx()); //$NON-NLS-1$
         }
-        paramString += ",keyLocation=" + locString;
+        paramString += ",keyLocation=" + locString; //$NON-NLS-1$
 
         return paramString;
     }

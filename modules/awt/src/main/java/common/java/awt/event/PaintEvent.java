@@ -65,16 +65,16 @@ public class PaintEvent extends ComponentEvent {
 
         switch (id) {
         case PAINT:
-            typeString = "PAINT";
+            typeString = "PAINT"; //$NON-NLS-1$
             break;
         case UPDATE:
-            typeString = "UPDATE";
+            typeString = "UPDATE"; //$NON-NLS-1$
             break;
         default:
-            typeString = "unknown type";
+            typeString = "unknown type"; //$NON-NLS-1$
         }
 
-        return typeString + ",updateRect=" + updateRect;
+        return typeString + ",updateRect=" + updateRect; //$NON-NLS-1$
     }
 
 }

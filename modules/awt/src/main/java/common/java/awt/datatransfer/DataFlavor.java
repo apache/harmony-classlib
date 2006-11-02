@@ -26,6 +26,7 @@ import java.nio.charset.*;
 import java.util.*;
 
 import org.apache.harmony.awt.datatransfer.*;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class DataFlavor implements Externalizable, Cloneable {
@@ -37,47 +38,47 @@ public class DataFlavor implements Externalizable, Cloneable {
      */
     @Deprecated
     public static final DataFlavor plainTextFlavor =
-            new DataFlavor("text/plain; charset=unicode; class=java.io.InputStream",
-                    "Plain Text");
+            new DataFlavor("text/plain; charset=unicode; class=java.io.InputStream", //$NON-NLS-1$
+                    "Plain Text"); //$NON-NLS-1$
 
     public static final DataFlavor stringFlavor =
-            new DataFlavor("application/x-java-serialized-object; class=java.lang.String",
-                    "Unicode String");
+            new DataFlavor("application/x-java-serialized-object; class=java.lang.String", //$NON-NLS-1$
+                    "Unicode String"); //$NON-NLS-1$
 
     public static final DataFlavor imageFlavor =
-            new DataFlavor("image/x-java-image; class=java.awt.Image",
-                    "Image");
+            new DataFlavor("image/x-java-image; class=java.awt.Image", //$NON-NLS-1$
+                    "Image"); //$NON-NLS-1$
 
     public static final DataFlavor javaFileListFlavor =
-            new DataFlavor("application/x-java-file-list; class=java.util.List",
-                    "application/x-java-file-list");
+            new DataFlavor("application/x-java-file-list; class=java.util.List", //$NON-NLS-1$
+                    "application/x-java-file-list"); //$NON-NLS-1$
 
     public static final String javaJVMLocalObjectMimeType =
-            "application/x-java-jvm-local-objectref";
+            "application/x-java-jvm-local-objectref"; //$NON-NLS-1$
 
     public static final String javaRemoteObjectMimeType =
-            "application/x-java-remote-object";
+            "application/x-java-remote-object"; //$NON-NLS-1$
 
     public static final String javaSerializedObjectMimeType =
-            "application/x-java-serialized-object";
+            "application/x-java-serialized-object"; //$NON-NLS-1$
 
     private static final String sortedTextFlavors[] = {
-            "text/sgml",
-            "text/xml",
-            "text/html",
-            "text/rtf",
-            "text/enriched",
-            "text/richtext",
-            "text/uri-list",
-            "text/tab-separated-values",
-            "text/t140" ,
-            "text/rfc822-headers",
-            "text/parityfec",
-            "text/directory",
-            "text/css",
-            "text/calendar",
-            "application/x-java-serialized-object",
-            "text/plain"
+            "text/sgml", //$NON-NLS-1$
+            "text/xml", //$NON-NLS-1$
+            "text/html", //$NON-NLS-1$
+            "text/rtf", //$NON-NLS-1$
+            "text/enriched", //$NON-NLS-1$
+            "text/richtext", //$NON-NLS-1$
+            "text/uri-list", //$NON-NLS-1$
+            "text/tab-separated-values", //$NON-NLS-1$
+            "text/t140" , //$NON-NLS-1$
+            "text/rfc822-headers", //$NON-NLS-1$
+            "text/parityfec", //$NON-NLS-1$
+            "text/directory", //$NON-NLS-1$
+            "text/css", //$NON-NLS-1$
+            "text/calendar", //$NON-NLS-1$
+            "application/x-java-serialized-object", //$NON-NLS-1$
+            "text/plain" //$NON-NLS-1$
     };
 
     private static DataFlavor plainUnicodeFlavor = null;
@@ -88,10 +89,10 @@ public class DataFlavor implements Externalizable, Cloneable {
 
     public static final DataFlavor getTextPlainUnicodeFlavor() {
         if (plainUnicodeFlavor == null) {
-            plainUnicodeFlavor = new DataFlavor("text/plain"
-                    + "; charset=" + DTK.getDTK().getDefaultCharset()
-                    + "; class=java.io.InputStream",
-                    "Plain Text");
+            plainUnicodeFlavor = new DataFlavor("text/plain" //$NON-NLS-1$
+                    + "; charset=" + DTK.getDTK().getDefaultCharset() //$NON-NLS-1$
+                    + "; class=java.io.InputStream", //$NON-NLS-1$
+                    "Plain Text"); //$NON-NLS-1$
         }
 
         return plainUnicodeFlavor;
@@ -135,15 +136,15 @@ public class DataFlavor implements Externalizable, Cloneable {
     }
 
     public DataFlavor(Class<?> representationClass, String humanPresentableName) {
-        mimeInfo = new MimeTypeProcessor.MimeType("application", "x-java-serialized-object");
+        mimeInfo = new MimeTypeProcessor.MimeType("application", "x-java-serialized-object"); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (humanPresentableName != null) {
             this.humanPresentableName = humanPresentableName;
         } else {
-            this.humanPresentableName = "application/x-java-serialized-object";
+            this.humanPresentableName = "application/x-java-serialized-object"; //$NON-NLS-1$
         }
 
-        mimeInfo.addParameter("class", representationClass.getName());
+        mimeInfo.addParameter("class", representationClass.getName()); //$NON-NLS-1$
         this.representationClass = representationClass;
     }
 
@@ -151,7 +152,8 @@ public class DataFlavor implements Externalizable, Cloneable {
         try {
             init(mimeType, humanPresentableName, null);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Can't load class: " + mimeInfo.getParameter("class"));
+            // awt.16C=Can't load class: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.16C", mimeInfo.getParameter("class")));  //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 
@@ -173,7 +175,8 @@ public class DataFlavor implements Externalizable, Cloneable {
         try {
             mimeInfo = MimeTypeProcessor.parse(mimeType);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Can't parse MIME type: " + mimeType);
+            // awt.16D=Can't parse MIME type: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.16D", mimeType)); //$NON-NLS-1$
         }
 
         if (humanPresentableName != null) {
@@ -182,10 +185,10 @@ public class DataFlavor implements Externalizable, Cloneable {
             this.humanPresentableName = mimeInfo.getPrimaryType() + '/' + mimeInfo.getSubType();
         }
 
-        className = mimeInfo.getParameter("class");
+        className = mimeInfo.getParameter("class"); //$NON-NLS-1$
         if (className == null) {
-            className = "java.io.InputStream";
-            mimeInfo.addParameter("class", className);
+            className = "java.io.InputStream"; //$NON-NLS-1$
+            mimeInfo.addParameter("class", className); //$NON-NLS-1$
         }
         representationClass = (classLoader == null) ?
                 Class.forName(className) :
@@ -194,15 +197,15 @@ public class DataFlavor implements Externalizable, Cloneable {
 
     private String getCharset() {
         if (isCharsetRedundant()) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
-        String charset = mimeInfo.getParameter("charset");
+        String charset = mimeInfo.getParameter("charset"); //$NON-NLS-1$
 
         if (isCharsetRequired() && ((charset == null) || (charset.length() == 0))) {
             return DTK.getDTK().getDefaultCharset();
         }
         if (charset == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         return charset;
@@ -211,27 +214,27 @@ public class DataFlavor implements Externalizable, Cloneable {
     private boolean isCharsetRequired() {
         String type = mimeInfo.getFullType();
 
-        return (type.equals("text/sgml") ||
-                type.equals("text/xml") ||
-                type.equals("text/html") ||
-                type.equals("text/enriched") ||
-                type.equals("text/richtext") ||
-                type.equals("text/uri-list") ||
-                type.equals("text/directory") ||
-                type.equals("text/css") ||
-                type.equals("text/calendar") ||
-                type.equals("application/x-java-serialized-object") ||
-                type.equals("text/plain"));
+        return (type.equals("text/sgml") || //$NON-NLS-1$
+                type.equals("text/xml") || //$NON-NLS-1$
+                type.equals("text/html") || //$NON-NLS-1$
+                type.equals("text/enriched") || //$NON-NLS-1$
+                type.equals("text/richtext") || //$NON-NLS-1$
+                type.equals("text/uri-list") || //$NON-NLS-1$
+                type.equals("text/directory") || //$NON-NLS-1$
+                type.equals("text/css") || //$NON-NLS-1$
+                type.equals("text/calendar") || //$NON-NLS-1$
+                type.equals("application/x-java-serialized-object") || //$NON-NLS-1$
+                type.equals("text/plain")); //$NON-NLS-1$
     }
 
     private boolean isCharsetRedundant() {
         String type = mimeInfo.getFullType();
 
-        return (type.equals("text/rtf") ||
-                type.equals("text/tab-separated-values") ||
-                type.equals("text/t140") ||
-                type.equals("text/rfc822-headers") ||
-                type.equals("text/parityfec"));
+        return (type.equals("text/rtf") || //$NON-NLS-1$
+                type.equals("text/tab-separated-values") || //$NON-NLS-1$
+                type.equals("text/t140") || //$NON-NLS-1$
+                type.equals("text/rfc822-headers") || //$NON-NLS-1$
+                type.equals("text/parityfec")); //$NON-NLS-1$
     }
 
     MimeTypeProcessor.MimeType getMimeInfo() {
@@ -253,7 +256,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     public String getParameter(String paramName) {
         String lowerName = paramName.toLowerCase();
 
-        if (lowerName.equals("humanpresentablename")) {
+        if (lowerName.equals("humanpresentablename")) { //$NON-NLS-1$
             return humanPresentableName;
         }
         return mimeInfo.getParameter(lowerName);
@@ -345,7 +348,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         mimeInfo = (MimeTypeProcessor.MimeType) is.readObject();
 
         representationClass = (mimeInfo != null) ?
-                Class.forName(mimeInfo.getParameter("class")) : null;
+                Class.forName(mimeInfo.getParameter("class")) : null; //$NON-NLS-1$
     }
 
     @Override
@@ -368,8 +371,8 @@ public class DataFlavor implements Externalizable, Cloneable {
          */
 
         return (getClass().getName()
-                + "[MimeType=(" + getMimeType()
-                + ");humanPresentableName=" + humanPresentableName + "]");
+                + "[MimeType=(" + getMimeType() //$NON-NLS-1$
+                + ");humanPresentableName=" + humanPresentableName + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public boolean isMimeTypeSerializedObject() {
@@ -399,7 +402,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         {
             return false;
         }
-        if (!mimeInfo.getPrimaryType().equals("text") || isUnicodeFlavor()) {
+        if (!mimeInfo.getPrimaryType().equals("text") || isUnicodeFlavor()) { //$NON-NLS-1$
             return true;
         }
 
@@ -432,13 +435,13 @@ public class DataFlavor implements Externalizable, Cloneable {
     }
 
     private String getKeyInfo() {
-        String key = mimeInfo.getFullType() + ";class=" + representationClass.getName();
+        String key = mimeInfo.getFullType() + ";class=" + representationClass.getName(); //$NON-NLS-1$
 
-        if (!mimeInfo.getPrimaryType().equals("text") || isUnicodeFlavor()) {
+        if (!mimeInfo.getPrimaryType().equals("text") || isUnicodeFlavor()) { //$NON-NLS-1$
             return key;
         }
 
-        return key + ";charset=" + getCharset().toLowerCase();
+        return key + ";charset=" + getCharset().toLowerCase(); //$NON-NLS-1$
     }
 
     public boolean isFlavorSerializedObjectType() {
@@ -460,7 +463,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         if (equals(stringFlavor) || equals(plainTextFlavor)) {
             return true;
         }
-        if (!mimeInfo.getPrimaryType().equals("text")) {
+        if (!mimeInfo.getPrimaryType().equals("text")) { //$NON-NLS-1$
             return false;
         }
 
@@ -483,7 +486,8 @@ public class DataFlavor implements Externalizable, Cloneable {
         Object data = transferable.getTransferData(this);
 
         if (data == null) {
-            throw new IllegalArgumentException("Transferable has null data");
+            // awt.16E=Transferable has null data
+            throw new IllegalArgumentException(Messages.getString("awt.16E")); //$NON-NLS-1$
         }
 
         if (data instanceof Reader) {
@@ -508,8 +512,8 @@ public class DataFlavor implements Externalizable, Cloneable {
             } else if (data instanceof byte[]) {
                 stream = new ByteArrayInputStream((byte[]) data);
             } else {
-                throw new IllegalArgumentException(
-                        "Can't create reader for this representation class");
+                // awt.16F=Can't create reader for this representation class
+                throw new IllegalArgumentException(Messages.getString("awt.16F")); //$NON-NLS-1$
             }
 
             if (charset.length() == 0) {
@@ -568,11 +572,11 @@ public class DataFlavor implements Externalizable, Cloneable {
     private static DataFlavor selectBestByCharset(List<DataFlavor> list) {
         List<DataFlavor> best;
 
-        best = getFlavors(list, new String[] {"UTF-16", "UTF-8", "UTF-16BE", "UTF-16LE"});
+        best = getFlavors(list, new String[] {"UTF-16", "UTF-8", "UTF-16BE", "UTF-16LE"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         if (best == null) {
             best = getFlavors(list, new String[] {DTK.getDTK().getDefaultCharset()});
             if (best == null) {
-                best = getFlavors(list, new String[] {"US-ASCII"});
+                best = getFlavors(list, new String[] {"US-ASCII"}); //$NON-NLS-1$
                 if (best == null) {
                     best = selectBestByAlphabet(list);
                 }

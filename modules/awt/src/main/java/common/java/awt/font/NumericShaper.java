@@ -23,6 +23,7 @@ package java.awt.font;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 
 
@@ -197,25 +198,25 @@ public final class NumericShaper implements Serializable {
 
     // Set of context names used in toString method
     private final String[] contexts = {
-            "EUROPEAN",
-            "ARABIC",
-            "EASTERN_ARABIC",
-            "DEVANAGARI",
-            "BENGALI",
-            "GURMUKHI",
-            "GUJARATI",
-            "ORIYA",
-            "TAMIL",
-            "TELUGU",
-            "KANNADA",
-            "MALAYALAM",
-            "THAI",
-            "LAO",
-            "TIBETAN",
-            "MYANMAR",
-            "ETHIOPIC",
-            "KHMER",
-            "MONGOLIAN"
+            "EUROPEAN", //$NON-NLS-1$
+            "ARABIC", //$NON-NLS-1$
+            "EASTERN_ARABIC", //$NON-NLS-1$
+            "DEVANAGARI", //$NON-NLS-1$
+            "BENGALI", //$NON-NLS-1$
+            "GURMUKHI", //$NON-NLS-1$
+            "GUJARATI", //$NON-NLS-1$
+            "ORIYA", //$NON-NLS-1$
+            "TAMIL", //$NON-NLS-1$
+            "TELUGU", //$NON-NLS-1$
+            "KANNADA", //$NON-NLS-1$
+            "MALAYALAM", //$NON-NLS-1$
+            "THAI", //$NON-NLS-1$
+            "LAO", //$NON-NLS-1$
+            "TIBETAN", //$NON-NLS-1$
+            "MYANMAR", //$NON-NLS-1$
+            "ETHIOPIC", //$NON-NLS-1$
+            "KHMER", //$NON-NLS-1$
+            "MONGOLIAN" //$NON-NLS-1$
     };
 
     /*
@@ -390,8 +391,9 @@ public final class NumericShaper implements Serializable {
      */
     private int getIndexFromRange(int range){
         if (range == 0){
-            throw new IllegalArgumentException("Illegal range argument value:"+
-                    range);
+            // awt.199=Illegal range argument value: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.199", //$NON-NLS-1$
+                    range));
         }
 
         int index = 0;
@@ -402,8 +404,9 @@ public final class NumericShaper implements Serializable {
             index++;
         }
 
-        throw new IllegalArgumentException("Illegal range argument value:" + 
-                range);
+        // awt.199=Illegal range argument value: {0}
+        throw new IllegalArgumentException(Messages.getString("awt.199",  //$NON-NLS-1$
+                range));
 
     }
 
@@ -415,8 +418,9 @@ public final class NumericShaper implements Serializable {
      */
     private int getRangeFromIndex(int index){
         if (index < 0 || index >= MAX_INDEX){
-            throw new IllegalArgumentException("Illegal range argument value:"+
-                    index);
+            // awt.199=Illegal range argument value: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.199", //$NON-NLS-1$
+                    index));
         }
 
         return 1 << index;
@@ -476,15 +480,15 @@ public final class NumericShaper implements Serializable {
          */
         StringBuffer sb = new StringBuffer(super.toString());
 
-        sb.append("[contextual:");
+        sb.append("[contextual:"); //$NON-NLS-1$
         sb.append(fContextual);
 
         if (fContextual){
-            sb.append(", context:");
+            sb.append(", context:"); //$NON-NLS-1$
             sb.append(contexts[fDefaultContextIndex]);
         }
 
-        sb.append(", range(s): ");
+        sb.append(", range(s): "); //$NON-NLS-1$
         if (fContextual) {
             int index = 0;
             boolean isFirst = true;
@@ -493,7 +497,7 @@ public final class NumericShaper implements Serializable {
                     if (isFirst){
                         isFirst = false;
                     } else {
-                        sb.append(", ");
+                        sb.append(", "); //$NON-NLS-1$
                     }
                     sb.append(contexts[index]);
                 }
@@ -502,7 +506,7 @@ public final class NumericShaper implements Serializable {
         } else {
             sb.append(contexts[fSingleRangeIndex]);
         }
-        sb.append("]");
+        sb.append("]"); //$NON-NLS-1$
 
         return sb.toString();
     }
@@ -536,13 +540,13 @@ public final class NumericShaper implements Serializable {
         int len = text.length;
 
         if ((start < 0) || ((start + count) > len)) {
-            throw new IndexOutOfBoundsException(
-                    "start or count arguments are out of text range");
+            // awt.19A=start or count arguments are out of text range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.19A")); //$NON-NLS-1$
         }
 
         if (count < 0) {
-            throw new IllegalArgumentException(
-                    "count argument must be positive");
+            // awt.19B=count argument must be positive
+            throw new IllegalArgumentException(Messages.getString("awt.19B")); //$NON-NLS-1$
         }
 
         if (isContextual()){
@@ -556,13 +560,13 @@ public final class NumericShaper implements Serializable {
         int len = text.length;
 
         if ((start < 0) || ((start + count) > len)) {
-            throw new IndexOutOfBoundsException(
-                    "start or count arguments are out of text range");
+            // awt.19A=start or count arguments are out of text range
+            throw new IndexOutOfBoundsException(Messages.getString("awt.19A")); //$NON-NLS-1$
         }
 
         if (count < 0) {
-            throw new IllegalArgumentException(
-                    "count argument must be positive");
+            // awt.19B=count argument must be positive
+            throw new IllegalArgumentException(Messages.getString("awt.19B")); //$NON-NLS-1$
         }
 
         if (isContextual()){

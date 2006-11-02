@@ -26,6 +26,8 @@ import java.awt.dnd.peer.DragSourceContextPeer;
 import java.io.Serializable;
 import java.util.TooManyListenersException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class DragSourceContext implements DragSourceListener,
         DragSourceMotionListener, Serializable
 {
@@ -60,31 +62,38 @@ public class DragSourceContext implements DragSourceListener,
             Transferable t, DragSourceListener dsl)
     {
         if (dscp == null) {
-            throw new NullPointerException("Context peer is null.");
+            // awt.179=Context peer is null.
+            throw new NullPointerException(Messages.getString("awt.179")); //$NON-NLS-1$
         }
         if (trigger == null) {
-            throw new NullPointerException("Trigger event is null.");
+            // awt.17A=Trigger event is null.
+            throw new NullPointerException(Messages.getString("awt.17A")); //$NON-NLS-1$
         }
         if (trigger.getDragAction() == DnDConstants.ACTION_NONE) {
-            throw new RuntimeException("Can't init ACTION_NONE drag.");
+            // awt.17B=Can't init ACTION_NONE drag.
+            throw new RuntimeException(Messages.getString("awt.17B")); //$NON-NLS-1$
         }
         if ((dragImage != null) && (offset == null)) {
-            throw new NullPointerException("Image offset is null.");
+            // awt.17C=Image offset is null.
+            throw new NullPointerException(Messages.getString("awt.17C")); //$NON-NLS-1$
         }
         if (t == null) {
-            throw new NullPointerException("Transferable is null.");
+            // awt.17D=Transferable is null.
+            throw new NullPointerException(Messages.getString("awt.17D")); //$NON-NLS-1$
         }
         if (trigger.getComponent() == null) {
-            throw new IllegalArgumentException(
-                    "Component associated with the trigger event is null.");
+            // awt.17E=Component associated with the trigger event is null.
+            throw new IllegalArgumentException(Messages.getString("awt.17E")); //$NON-NLS-1$
         }
         if (trigger.getDragSource() == null) {
-            throw new IllegalArgumentException("DragSource for the trigger event is null.");
+            // awt.17F=DragSource for the trigger event is null.
+            throw new IllegalArgumentException(Messages.getString("awt.17F")); //$NON-NLS-1$
         }
         if (trigger.getSourceAsDragGestureRecognizer().getSourceActions()
                 == DnDConstants.ACTION_NONE)
         {
-            throw new IllegalArgumentException("Source actions for the DragGestureRecognizer associated with the trigger event are equal to DnDConstants.ACTION_NONE.");
+            // awt.180=Source actions for the DragGestureRecognizer associated with the trigger event are equal to DnDConstants.ACTION_NONE.
+            throw new IllegalArgumentException(Messages.getString("awt.180")); //$NON-NLS-1$
         }
 
         this.trigger = trigger;
@@ -143,10 +152,12 @@ public class DragSourceContext implements DragSourceListener,
             return;
         }
         if (dsl == this) {
-            throw new IllegalArgumentException("Attempt to register context as its listener.");
+            // awt.181=Attempt to register context as its listener.
+            throw new IllegalArgumentException(Messages.getString("awt.181")); //$NON-NLS-1$
         }
         if (listener != null) {
-            throw new TooManyListenersException("One listener is already exist.");
+            // awt.173=One listener is already exist.
+            throw new TooManyListenersException(Messages.getString("awt.173")); //$NON-NLS-1$
         }
 
         listener = dsl;
@@ -154,7 +165,8 @@ public class DragSourceContext implements DragSourceListener,
 
     public synchronized void removeDragSourceListener(DragSourceListener dsl) {
         if (listener != dsl) {
-            throw new IllegalArgumentException("dsl is not current listener.");
+            // awt.182=dsl is not current listener.
+            throw new IllegalArgumentException(Messages.getString("awt.182")); //$NON-NLS-1$
         }
 
         listener = null;
@@ -165,7 +177,8 @@ public class DragSourceContext implements DragSourceListener,
             return;
         }
         if ((status < DEFAULT) || (status > CHANGED)) {
-            throw new RuntimeException("Invalid status.");
+            // awt.183=Invalid status.
+            throw new RuntimeException(Messages.getString("awt.183")); //$NON-NLS-1$
         }
 
         int possibleOps = dropOp & ((status == DEFAULT) ? DnDConstants.ACTION_NONE : targetAct);
@@ -211,7 +224,8 @@ public class DragSourceContext implements DragSourceListener,
         case DnDConstants.ACTION_LINK:
             return (enabled ? DragSource.DefaultLinkDrop : DragSource.DefaultLinkNoDrop);
         default:
-            throw new RuntimeException("Invalid action.");
+            // awt.184=Invalid action.
+            throw new RuntimeException(Messages.getString("awt.184")); //$NON-NLS-1$
         }
     }
 

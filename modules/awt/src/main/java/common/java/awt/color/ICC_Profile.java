@@ -37,6 +37,7 @@ import java.util.StringTokenizer;
 
 import org.apache.harmony.awt.gl.color.ICC_ProfileHelper;
 import org.apache.harmony.awt.gl.color.NativeCMM;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class ICC_Profile implements Serializable {
@@ -372,15 +373,15 @@ public class ICC_Profile implements Serializable {
         byte[] data = (byte[])s.readObject();
 
         if (colorSpaceStr != null) {
-            if (colorSpaceStr.equals("CS_sRGB")) {
+            if (colorSpaceStr.equals("CS_sRGB")) { //$NON-NLS-1$
                 openedProfileObject = getInstance(ColorSpace.CS_sRGB);
-            } else if (colorSpaceStr.equals("CS_GRAY")) {
+            } else if (colorSpaceStr.equals("CS_GRAY")) { //$NON-NLS-1$
                 openedProfileObject = getInstance(ColorSpace.CS_GRAY);
-            } else if (colorSpaceStr.equals("CS_LINEAR_RGB")) {
+            } else if (colorSpaceStr.equals("CS_LINEAR_RGB")) { //$NON-NLS-1$
                 openedProfileObject = getInstance(ColorSpace.CS_LINEAR_RGB);
-            } else if (colorSpaceStr.equals("CS_CIEXYZ")) {
+            } else if (colorSpaceStr.equals("CS_CIEXYZ")) { //$NON-NLS-1$
                 openedProfileObject = getInstance(ColorSpace.CS_CIEXYZ);
-            } else if (colorSpaceStr.equals("CS_PYCC")) {
+            } else if (colorSpaceStr.equals("CS_PYCC")) { //$NON-NLS-1$
                 openedProfileObject = getInstance(ColorSpace.CS_PYCC);
             } else {
                 openedProfileObject = ICC_Profile.getInstance(data);
@@ -464,9 +465,9 @@ public class ICC_Profile implements Serializable {
         }
 
         // Not an ICC profile class
-        throw new IllegalArgumentException(
-                "Profile class does not comply with ICC specification"
-        );
+        // awt.15F=Profile class does not comply with ICC specification
+        throw new IllegalArgumentException(Messages.getString("awt.15F")); //$NON-NLS-1$
+        
     }
 
     public int getPCSType() {
@@ -522,8 +523,8 @@ public class ICC_Profile implements Serializable {
             default:
         }
 
-        throw new ProfileDataException(
-                "Color space doesn't comply with ICC specification"
+        // awt.160=Color space doesn't comply with ICC specification
+        throw new ProfileDataException(Messages.getString("awt.160") //$NON-NLS-1$
         );
     }
 
@@ -585,23 +586,23 @@ public class ICC_Profile implements Serializable {
                         } catch (FileNotFoundException e) {}
 
                         // Check java.iccprofile.path entries
-                        fiStream = tryPath(System.getProperty("java.iccprofile.path"), fName);
+                        fiStream = tryPath(System.getProperty("java.iccprofile.path"), fName); //$NON-NLS-1$
                         if (fiStream != null) {
                             return fiStream;
                         }
 
                         // Check java.class.path entries
-                        fiStream = tryPath(System.getProperty("java.class.path"), fName);
+                        fiStream = tryPath(System.getProperty("java.class.path"), fName); //$NON-NLS-1$
                         if (fiStream != null) {
                             return fiStream;
                         }
 
                         // Check directory with java sample profiles
-                        String home = System.getProperty("java.home");
+                        String home = System.getProperty("java.home"); //$NON-NLS-1$
                         if (home != null) {
                             fiStream = tryPath(
                                     home + File.separatorChar +
-                                    "lib" + File.separatorChar + "cmm", fName
+                                    "lib" + File.separatorChar + "cmm", fName //$NON-NLS-1$ //$NON-NLS-2$
                             );
                         }
 
@@ -610,7 +611,8 @@ public class ICC_Profile implements Serializable {
                 });
 
         if (fiStream == null) {
-            throw new IOException("Unable to open file " + fileName);
+            // awt.161=Unable to open file {0}
+            throw new IOException(Messages.getString("awt.161", fileName)); //$NON-NLS-1$
         }
 
         ICC_Profile pf = getInstance(fiStream);
@@ -620,7 +622,8 @@ public class ICC_Profile implements Serializable {
 
     public static ICC_Profile getInstance(InputStream s) throws IOException {
         byte[] header = new byte[headerSize];
-        String invalidDataMessage = "Invalid ICC Profile Data";
+        // awt.162=Invalid ICC Profile Data
+        String invalidDataMessage = Messages.getString("awt.162"); //$NON-NLS-1$
 
         // Get header from the input stream
         if (s.read(header) != headerSize) {
@@ -659,10 +662,11 @@ public class ICC_Profile implements Serializable {
         try {
             res = new ICC_Profile(data);
         } catch (CMMException e) {
-            throw new IllegalArgumentException("Invalid ICC Profile data");
+            // awt.162=Invalid ICC Profile Data
+            throw new IllegalArgumentException(Messages.getString("awt.162")); //$NON-NLS-1$
         }
 
-      if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0) {
+      if (System.getProperty("os.name").toLowerCase().indexOf("windows") >= 0) { //$NON-NLS-1$ //$NON-NLS-2$
         try {
             if ( res.getColorSpaceType () == ColorSpace.TYPE_RGB &&
                  res.getDataSize(icSigMediaWhitePointTag) > 0 &&
@@ -693,40 +697,42 @@ public class ICC_Profile implements Serializable {
 
       case ColorSpace.CS_sRGB:
         if (sRGBProfile == null) {
-            sRGBProfile = getInstance("sRGB.pf");
+            sRGBProfile = getInstance("sRGB.pf"); //$NON-NLS-1$
         }
         return sRGBProfile;
 
       case ColorSpace.CS_CIEXYZ:
         if (xyzProfile == null) {
-            xyzProfile = getInstance("CIEXYZ.pf");
+            xyzProfile = getInstance("CIEXYZ.pf"); //$NON-NLS-1$
         }
         return xyzProfile;
 
       case ColorSpace.CS_GRAY:
         if (grayProfile == null) {
-            grayProfile = getInstance("GRAY.pf");
+            grayProfile = getInstance("GRAY.pf"); //$NON-NLS-1$
         }
         return grayProfile;
 
       case ColorSpace.CS_PYCC:
         if (pyccProfile == null) {
-            pyccProfile = getInstance("PYCC.pf");
+            pyccProfile = getInstance("PYCC.pf"); //$NON-NLS-1$
         }
         return pyccProfile;
 
       case ColorSpace.CS_LINEAR_RGB:
         if (linearRGBProfile == null) {
-            linearRGBProfile = getInstance("LINEAR_RGB.pf");
+            linearRGBProfile = getInstance("LINEAR_RGB.pf"); //$NON-NLS-1$
         }
         return linearRGBProfile;
       }
 
     } catch (IOException e) {
-      throw new IllegalArgumentException("Can't open color profile");
+        // awt.163=Can't open color profile 
+        throw new IllegalArgumentException(Messages.getString("awt.163")); //$NON-NLS-1$
     }
 
-    throw new IllegalArgumentException("Not a predefined color space");
+    // awt.164=Not a predefined color space
+    throw new IllegalArgumentException(Messages.getString("awt.164")); //$NON-NLS-1$
   }
 
     /**
@@ -819,9 +825,8 @@ public class ICC_Profile implements Serializable {
             default:
         }
 
-        throw new IllegalArgumentException (
-                "Color space doesn't comply with ICC specification"
-        );
+        // awt.165=Color space doesn't comply with ICC specification
+        throw new IllegalArgumentException (Messages.getString("awt.165")); //$NON-NLS-1$
     }
 
     private long getProfileHandle() {
@@ -899,7 +904,8 @@ public class ICC_Profile implements Serializable {
         if (dataTRC == null) {
             return gamma;
         }
-        throw new ProfileDataException("TRC is not a simple gamma value.");
+        // awt.166=TRC is not a simple gamma value.
+        throw new ProfileDataException(Messages.getString("awt.166")); //$NON-NLS-1$
     }
 
     short[] getTRC(int tagSignature) {
@@ -907,7 +913,8 @@ public class ICC_Profile implements Serializable {
         getGammaOrTRC(tagSignature, dataTRC);
 
         if (dataTRC == null) {
-            throw new ProfileDataException("TRC is a gamma value, not a table.");
+            // awt.167=TRC is a gamma value, not a table.
+            throw new ProfileDataException(Messages.getString("awt.167")); //$NON-NLS-1$
         }
         return dataTRC;
     }

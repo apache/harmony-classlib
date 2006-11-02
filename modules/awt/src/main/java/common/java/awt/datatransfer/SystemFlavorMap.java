@@ -34,7 +34,7 @@ import org.apache.harmony.awt.datatransfer.DTK;
 public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     private static final String SERIALIZED_PREFIX = 
-        "org.apache.harmony.awt.datatransfer:";
+        "org.apache.harmony.awt.datatransfer:"; //$NON-NLS-1$
 
     private final HashMap<DataFlavor, List<String>> flavor2Native = new HashMap<DataFlavor, List<String>>();
     private final HashMap<String, List<DataFlavor>> native2Flavor = new HashMap<String, List<DataFlavor>>();

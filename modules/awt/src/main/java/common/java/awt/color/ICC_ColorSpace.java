@@ -24,6 +24,7 @@ package java.awt.color;
 import org.apache.harmony.awt.gl.color.ColorConverter;
 import org.apache.harmony.awt.gl.color.ColorScaler;
 import org.apache.harmony.awt.gl.color.ICC_Transform;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 import java.io.*;
 
@@ -33,12 +34,12 @@ public class ICC_ColorSpace extends ColorSpace {
     // Need to keep compatibility with serialized form
     private static final ObjectStreamField[]
       serialPersistentFields = {
-        new ObjectStreamField("thisProfile", ICC_Profile.class),
-        new ObjectStreamField("minVal", float[].class),
-        new ObjectStreamField("maxVal", float[].class),
-        new ObjectStreamField("diffMinMax", float[].class),
-        new ObjectStreamField("invDiffMinMax", float[].class),
-        new ObjectStreamField("needScaleInit", Boolean.TYPE)
+        new ObjectStreamField("thisProfile", ICC_Profile.class), //$NON-NLS-1$
+        new ObjectStreamField("minVal", float[].class), //$NON-NLS-1$
+        new ObjectStreamField("maxVal", float[].class), //$NON-NLS-1$
+        new ObjectStreamField("diffMinMax", float[].class), //$NON-NLS-1$
+        new ObjectStreamField("invDiffMinMax", float[].class), //$NON-NLS-1$
+        new ObjectStreamField("needScaleInit", Boolean.TYPE) //$NON-NLS-1$
     };
 
 
@@ -82,7 +83,8 @@ public class ICC_ColorSpace extends ColorSpace {
             case ICC_Profile.CLASS_INPUT:
                 break; // OK, it is color conversion profile
             default:
-                throw new IllegalArgumentException("Invalid profile class.");
+                // awt.168=Invalid profile class.
+                throw new IllegalArgumentException(Messages.getString("awt.168")); //$NON-NLS-1$
         }
 
         profile = pf;
@@ -234,7 +236,8 @@ public class ICC_ColorSpace extends ColorSpace {
     @Override
     public float getMinValue(int component) {
         if ((component < 0) || (component > this.getNumComponents() - 1)) {
-            throw new IllegalArgumentException("Component index out of range");
+            // awt.169=Component index out of range
+            throw new IllegalArgumentException(Messages.getString("awt.169")); //$NON-NLS-1$
         }
 
         return minValues[component];
@@ -243,7 +246,8 @@ public class ICC_ColorSpace extends ColorSpace {
     @Override
     public float getMaxValue(int component) {
         if ((component < 0) || (component > this.getNumComponents() - 1)) {
-            throw new IllegalArgumentException("Component index out of range");
+            // awt.169=Component index out of range
+            throw new IllegalArgumentException(Messages.getString("awt.169")); //$NON-NLS-1$
         }
 
         return maxValues[component];
@@ -281,12 +285,12 @@ public class ICC_ColorSpace extends ColorSpace {
     private void writeObject(ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();
 
-        fields.put("thisProfile", profile);
-        fields.put("minVal", null);
-        fields.put("maxVal", null);
-        fields.put("diffMinMax", null);
-        fields.put("invDiffMinMax", null);
-        fields.put("needScaleInit", true);
+        fields.put("thisProfile", profile); //$NON-NLS-1$
+        fields.put("minVal", null); //$NON-NLS-1$
+        fields.put("maxVal", null); //$NON-NLS-1$
+        fields.put("diffMinMax", null); //$NON-NLS-1$
+        fields.put("invDiffMinMax", null); //$NON-NLS-1$
+        fields.put("needScaleInit", true); //$NON-NLS-1$
 
         out.writeFields();
     }
@@ -294,7 +298,7 @@ public class ICC_ColorSpace extends ColorSpace {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
         resolvedDeserializedInst =
-                new ICC_ColorSpace((ICC_Profile) fields.get("thisProfile", null));
+                new ICC_ColorSpace((ICC_Profile) fields.get("thisProfile", null)); //$NON-NLS-1$
     }
 
     Object readResolve() throws ObjectStreamException {

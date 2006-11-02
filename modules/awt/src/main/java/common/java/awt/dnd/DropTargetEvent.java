@@ -23,6 +23,8 @@ package java.awt.dnd;
 import java.awt.Point;
 import java.util.EventObject;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class DropTargetEvent extends EventObject {
 
     private static final long serialVersionUID = 2821229066521922993L;
@@ -49,10 +51,12 @@ public class DropTargetEvent extends EventObject {
         this(dtc);
 
         if (!DnDConstants.isValidAction(userAction)) {
-            throw new IllegalArgumentException("Invalid user action.");
+            // awt.177=Invalid user action.
+            throw new IllegalArgumentException(Messages.getString("awt.177")); //$NON-NLS-1$
         }
         if (!DnDConstants.isValidAction(sourceAction)) {
-            throw new IllegalArgumentException("Invalid source action.");
+            // awt.178=Invalid source action.
+            throw new IllegalArgumentException(Messages.getString("awt.178")); //$NON-NLS-1$
         }
 
         this.location = (Point) location.clone();

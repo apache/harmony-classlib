@@ -36,8 +36,8 @@ public final class TextHitInfo {
     @Override
     public String toString() {
         return new String(
-                "TextHitInfo[" + charIdx + ", " +
-                (isTrailing?"Trailing":"Leading") + "]"
+                "TextHitInfo[" + charIdx + ", " + //$NON-NLS-1$ //$NON-NLS-2$
+                (isTrailing?"Trailing":"Leading") + "]" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         );
     }
 

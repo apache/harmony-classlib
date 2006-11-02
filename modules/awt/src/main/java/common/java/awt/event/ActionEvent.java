@@ -85,24 +85,24 @@ public class ActionEvent extends AWTEvent {
          */
 
         String idString = (id == ACTION_PERFORMED) ? 
-                          "ACTION_PERFORMED" : "unknown type";
-        String modifiersString = "";
+                          "ACTION_PERFORMED" : "unknown type"; //$NON-NLS-1$ //$NON-NLS-2$
+        String modifiersString = ""; //$NON-NLS-1$
 
         if ((modifiers & SHIFT_MASK) > 0) {
-            modifiersString += "Shift";
+            modifiersString += "Shift"; //$NON-NLS-1$
         }
         if ((modifiers & CTRL_MASK) > 0) {
-            modifiersString += modifiersString.length() == 0 ? "Ctrl" : "+Ctrl";
+            modifiersString += modifiersString.length() == 0 ? "Ctrl" : "+Ctrl"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiers & META_MASK) > 0) {
-            modifiersString += modifiersString.length() == 0 ? "Meta" : "+Meta";
+            modifiersString += modifiersString.length() == 0 ? "Meta" : "+Meta"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((modifiers & ALT_MASK) > 0) {
-            modifiersString += modifiersString.length() == 0 ? "Alt" : "+Alt";
+            modifiersString += modifiersString.length() == 0 ? "Alt" : "+Alt"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        return (idString + ",cmd=" + command + ",when=" + when + 
-                ",modifiers=" + modifiersString);
+        return (idString + ",cmd=" + command + ",when=" + when +  //$NON-NLS-1$ //$NON-NLS-2$
+                ",modifiers=" + modifiersString); //$NON-NLS-1$
     }
 
 }
