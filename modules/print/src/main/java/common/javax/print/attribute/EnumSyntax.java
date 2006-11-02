@@ -22,6 +22,8 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 public abstract class EnumSyntax implements Cloneable, Serializable {
+    private static final long serialVersionUID = -2739521845085831642L;
+    
     private final int value;
 
     protected EnumSyntax(int intValue) {

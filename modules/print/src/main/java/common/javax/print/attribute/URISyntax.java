@@ -21,12 +21,14 @@ import java.io.Serializable;
 import java.net.URI;
 
 public abstract class URISyntax implements Cloneable, Serializable {
+    private static final long serialVersionUID = -7842661210486401678L;
+    
     private final URI uri;
 
     protected URISyntax(URI uriValue) {
         super();
         if (uriValue == null) {
-            throw new NullPointerException("Null uri value");
+            throw new NullPointerException();
         }
         uri = uriValue;
     }

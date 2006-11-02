@@ -20,6 +20,8 @@ package javax.print.attribute;
 import java.io.Serializable;
 
 public abstract class IntegerSyntax implements Cloneable, Serializable {
+    private static final long serialVersionUID = 3644574816328081943L;
+    
     private final int value;
 
     protected IntegerSyntax(int intValue) {

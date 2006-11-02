@@ -20,6 +20,8 @@ package javax.print.attribute;
 import java.io.Serializable;
 
 public abstract class Size2DSyntax implements Cloneable, Serializable {
+    private static final long serialVersionUID = 5584439964938660530L;
+    
     public static final int INCH = 25400;
 
     public static final int MM = 1000;
