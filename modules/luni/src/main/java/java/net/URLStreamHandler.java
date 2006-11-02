@@ -109,6 +109,11 @@ public abstract class URLStreamHandler {
 			int hostIdx = 2, portIdx = -1;
 			port = -1;
 			fileIdx = parseString.indexOf('/', hostIdx);
+            int questionMarkIndex = parseString.indexOf('?', hostIdx);
+            if ((questionMarkIndex != -1)
+                    && ((fileIdx == -1) || (fileIdx > questionMarkIndex))) {
+                fileIdx = questionMarkIndex;
+            }
 			if (fileIdx == -1) {
 				fileIdx = end;
 				// Use default
@@ -165,20 +170,25 @@ public abstract class URLStreamHandler {
 		int fileEnd = (refIdx == -1 ? end : refIdx);
 
 		int queryIdx = parseString.lastIndexOf('?', fileEnd);
-		if (queryIdx > -1) {
-			query = parseString.substring(queryIdx + 1, fileEnd);
-			// Don't inherit file if query is changed
-			if (queryIdx == 0 && file != null) {
-                file = "/";
+        boolean canonicalize = false;
+        if (queryIdx > -1) {
+            query = parseString.substring(queryIdx + 1, fileEnd);
+            if (queryIdx == 0 && file != null) {
+                if (file.equals("")) {
+                    file = "/";
+                } else if (file.startsWith("/")) {
+                    canonicalize = true;
+                }
+                int last = file.lastIndexOf('/') + 1;
+                file = file.substring(0, last);
             }
-			fileEnd = queryIdx;
-		} else
-		// Don't inherit query unless only the ref is changed
-		if (refIdx != 0) {
+            fileEnd = queryIdx;
+        } else
+        // Don't inherit query unless only the ref is changed
+        if (refIdx != 0) {
             query = null;
         }
 
-		boolean canonicalize = false;
 		if (fileIdx > -1) {
 			if (fileIdx < end && parseString.charAt(fileIdx) == '/') {
                 file = parseString.substring(fileIdx, fileEnd);

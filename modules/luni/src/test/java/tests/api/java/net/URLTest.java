@@ -1256,21 +1256,25 @@ public class URLTest extends junit.framework.TestCase {
             // Expected NullPointerException
         }
     }
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 	
+    public void test_toExternalForm_Absolute() throws MalformedURLException {
+        String strURL = "http://localhost?name=value";
+        URL url = new URL(strURL);
+        assertEquals(strURL, url.toExternalForm());
+        
+        strURL = "http://localhost?name=value/age=12";
+        url = new URL(strURL);
+        assertEquals(strURL, url.toExternalForm());
+    }
+
+    public void test_toExternalForm_Relative() throws MalformedURLException {
+        String strURL = "http://a/b/c/d;p?q";
+        String ref = "?y";
+        URL url = new URL(new URL(strURL), ref);
+        assertEquals("http://a/b/c/?y", url.toExternalForm());
+        
+    } 
+    
 	static class MockProxySelector extends ProxySelector {
 
 		public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
