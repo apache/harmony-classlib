@@ -15,34 +15,23 @@
  *  limitations under the License.
  */
 
-
 package org.apache.harmony.security.tests.provider.crypto;
 
-
-import org.apache.harmony.security.provider.crypto.CryptoProvider;
-
-import java.security.Security;
-import java.security.SecureRandom;
-import java.security.MessageDigest;
-import java.security.Signature;
 import java.security.KeyFactory;
-import java.security.DigestException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Signature;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-
 /**
  * Tests against CryptoProvider.
  */
-
-
 public class CryptoProviderTest extends TestCase {
-
 
     private static final String providerName = "Crypto";     // name of provider
     private static final String shaprng      = "SHA1PRNG";   // name of algorithm

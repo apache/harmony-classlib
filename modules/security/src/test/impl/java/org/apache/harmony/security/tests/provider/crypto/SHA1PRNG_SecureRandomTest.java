@@ -15,28 +15,20 @@
  *  limitations under the License.
  */
 
-
 package org.apache.harmony.security.tests.provider.crypto;
 
-
-import java.security.InvalidParameterException;
-import java.security.Security;
-import java.security.SecureRandom;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-
 /**
  * Tests against methods in SecureRandom class object using SHA1PRNG_SecureRandomImpl.
  */
-
-
 public class SHA1PRNG_SecureRandomTest extends TestCase {
-
 
     private static final int LENGTH = 100;               // constant defining loop limit
     private static final int INCR   = 10;                // constant defining loop increment
