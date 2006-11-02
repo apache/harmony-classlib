@@ -188,13 +188,19 @@ public class Timestamp extends Date {
      *         value >0 if this Timestamp object is after the supplied Timestamp
      */
     public int compareTo(Timestamp theTimestamp) {
-        if (this.before(theTimestamp)) {
-            return -1;
-        } else if (this.after(theTimestamp)) {
-            return +1;
-        } else {
-            return 0;
+        int result = super.compareTo(theTimestamp);
+        if (result == 0) {
+            int thisNano = this.getNanos();
+            int thatNano = theTimestamp.getNanos();
+            if (thisNano > thatNano) {
+                return 1;
+            } else if (thisNano == thatNano) {
+                return 0;
+            } else {
+                return -1;
+            }
         }
+        return result;
     }
 
     /**

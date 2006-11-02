@@ -525,6 +525,24 @@ public class TimestampTest extends TestCase {
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);
 			assertEquals(0, theTimestamp.compareTo(theTimestamp2));
 		} // end for
+        
+        Timestamp t1 = new Timestamp(-1L);
+        Timestamp t2 = new Timestamp(-1L);
+        
+        t1.setTime(Long.MIN_VALUE);
+        t2.setDate(Integer.MIN_VALUE);
+        assertEquals(1, t1.compareTo(t2));
+        assertEquals(-1, t2.compareTo(t1));
+
+        t1.setTime(Long.MAX_VALUE);
+        t2.setTime(Long.MAX_VALUE - 1);
+        assertEquals(1, t1.compareTo(t2));
+        assertEquals(-1, t2.compareTo(t1));
+
+        t1.setTime(Integer.MAX_VALUE);
+        t2.setTime(Integer.MAX_VALUE);
+        assertEquals(0, t1.compareTo(t2));
+        assertEquals(0, t2.compareTo(t1));
 
 	} // end method testcompareToTimestamp
 
