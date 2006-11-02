@@ -18,6 +18,7 @@
 package org.apache.harmony.sql.tests.java.sql;
 
 import java.sql.DriverPropertyInfo;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -72,11 +73,11 @@ public class DriverPropertyInfoTest extends TestCase {
 		DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
 				validName, validValue);
 
-		assertTrue(aDriverPropertyInfo.choices == testChoices);
-		assertTrue(aDriverPropertyInfo.value == testValue);
-		assertTrue(aDriverPropertyInfo.required == testRequired);
-		assertTrue(aDriverPropertyInfo.description == testDescription);
-		assertTrue(aDriverPropertyInfo.name == testName);
+		assertTrue(Arrays.equals(testChoices, aDriverPropertyInfo.choices));
+		assertEquals(testValue, aDriverPropertyInfo.value);
+		assertEquals(testRequired, aDriverPropertyInfo.required);
+		assertEquals(testDescription, aDriverPropertyInfo.description);
+		assertEquals(testName, aDriverPropertyInfo.name);
 
 		aDriverPropertyInfo.choices = updateChoices;
 		aDriverPropertyInfo.value = updateValue;
@@ -84,11 +85,11 @@ public class DriverPropertyInfoTest extends TestCase {
 		aDriverPropertyInfo.description = updateDescription;
 		aDriverPropertyInfo.name = updateName;
 
-		assertTrue(aDriverPropertyInfo.choices == updateChoices);
-		assertTrue(aDriverPropertyInfo.value == updateValue);
-		assertTrue(aDriverPropertyInfo.required == updateRequired);
-		assertTrue(aDriverPropertyInfo.description == updateDescription);
-		assertTrue(aDriverPropertyInfo.name == updateName);
+		assertTrue(Arrays.equals(updateChoices, aDriverPropertyInfo.choices));
+		assertEquals(updateValue, aDriverPropertyInfo.value);
+		assertEquals(updateRequired, aDriverPropertyInfo.required);
+		assertEquals(updateDescription, aDriverPropertyInfo.description);
+		assertEquals(updateName, aDriverPropertyInfo.name);
 
 	} // end method testPublicFields
 

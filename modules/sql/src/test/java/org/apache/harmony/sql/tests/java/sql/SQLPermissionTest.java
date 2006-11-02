@@ -42,10 +42,10 @@ public class SQLPermissionTest extends TestCase {
 		SQLPermission thePermission = new SQLPermission(validName, validActions);
 
 		assertNotNull(thePermission);
-		assertTrue(thePermission.getName().equals(validName));
+		assertEquals(validName, thePermission.getName());
 		// System.out.println("The actions: " + thePermission.getActions() + "."
 		// );
-		assertTrue(thePermission.getActions().equals(""));
+		assertEquals("", thePermission.getActions());
 	} // end method testSQLPermissionStringString
 
 	/*
@@ -57,7 +57,7 @@ public class SQLPermissionTest extends TestCase {
 		SQLPermission thePermission = new SQLPermission(validName);
 
 		assertNotNull(thePermission);
-		assertTrue(thePermission.getName().equals(validName));
+		assertEquals(validName, thePermission.getName());
 
 		// Set an invalid name ... 
 		String invalidName = "foo";
@@ -65,8 +65,8 @@ public class SQLPermissionTest extends TestCase {
 		thePermission = new SQLPermission(invalidName);
 
 		assertNotNull(thePermission);
-		assertTrue(thePermission.getName().equals(invalidName));
-		assertTrue(thePermission.getActions().equals(""));
+		assertEquals(invalidName, thePermission.getName());
+		assertEquals("", thePermission.getActions());
 	} // end method testSQLPermissionString
 
 } // end class SQLPermissionTest
