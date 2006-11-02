@@ -58,8 +58,8 @@ public class GenKeyTest extends TestCase {
         File keyStoreFile = new File(keyStorePath);
         // Quit if such file exists for some reason.
         if (keyStoreFile.exists()) {
-            fail("Cannot create a temporary file " + keyStorePath
-                    + ". File with such name already exists. ");
+            assertTrue("Cannot delete a temporary file " + keyStorePath,
+                    keyStoreFile.delete());
         }
         // The file will be created by the KeyStoreLoaderSaver,
         // delete it when exiting.
