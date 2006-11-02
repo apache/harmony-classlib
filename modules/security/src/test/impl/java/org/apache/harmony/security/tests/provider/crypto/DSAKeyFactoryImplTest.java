@@ -191,15 +191,15 @@ public class DSAKeyFactoryImplTest extends TestCase {
 
         DSAParams params = pk.getParams();
 
-        assertTrue("failure for 'pk.getY().compareTo(publicY)== 0'", 
-                   pk.getY().compareTo(publicY)== 0 );
+        assertEquals("failure for 'pk.getY().compareTo(publicY)'", 0, pk.getY()
+                .compareTo(publicY));
 
-        assertTrue("failure for 'params.getP().compareTo(publicP)== 0'", 
-                   params.getP().compareTo(publicP)== 0 );
-        assertTrue("failure for 'params.getQ().compareTo(publicQ)== 0'", 
-                   params.getQ().compareTo(publicQ)== 0 );
-        assertTrue("failure for 'params.getG().compareTo(publicG)== 0'", 
-                   params.getG().compareTo(publicG)== 0 );
+        assertEquals("failure for 'params.getP().compareTo(publicP)'", 0,
+                params.getP().compareTo(publicP));
+        assertEquals("failure for 'params.getQ().compareTo(publicQ)'", 0,
+                params.getQ().compareTo(publicQ));
+        assertEquals("failure for 'params.getG().compareTo(publicG)'", 0,
+                params.getG().compareTo(publicG));
     }
 
 
@@ -207,10 +207,11 @@ public class DSAKeyFactoryImplTest extends TestCase {
 
         checkPublicIntegers(pk);
 
-        assertTrue("failure for 'pk.getAlgorithm().compareTo(publicAlgorithm)== 0'", 
-                   pk.getAlgorithm().compareTo(publicAlgorithm)== 0 );
-        assertTrue("failure for 'pk.getFormat().compareTo(publicFormat)== 0'", 
-                   pk.getFormat().compareTo(publicFormat)== 0 );
+        assertEquals(
+                "failure for 'pk.getAlgorithm().compareTo(publicAlgorithm)'",
+                0, pk.getAlgorithm().compareTo(publicAlgorithm));
+        assertEquals("failure for 'pk.getFormat().compareTo(publicFormat)'", 0,
+                pk.getFormat().compareTo(publicFormat));
 
         if ( publicEncoding != null) {
             assertTrue("failure: encodings are not equal",
@@ -223,15 +224,15 @@ public class DSAKeyFactoryImplTest extends TestCase {
 
         DSAParams params = pk.getParams();
 
-        assertTrue("failure for 'pk.getX().compareTo(privateX)== 0'", 
-                   pk.getX().compareTo(privateX)== 0 );
+        assertEquals("failure for 'pk.getX().compareTo(privateX)'", 0, pk
+                .getX().compareTo(privateX));
 
-        assertTrue("failure for 'params.getP().compareTo(privateP)== 0'", 
-                   params.getP().compareTo(privateP)== 0 );
-        assertTrue("failure for 'params.getQ().compareTo(privateQ)== 0'", 
-                   params.getQ().compareTo(privateQ)== 0 );
-        assertTrue("failure for 'params.getG().compareTo(privateG)== 0'", 
-                   params.getG().compareTo(privateG)== 0 );
+        assertEquals("failure for 'params.getP().compareTo(privateP)'", 0,
+                params.getP().compareTo(privateP));
+        assertEquals("failure for 'params.getQ().compareTo(privateQ)'", 0,
+                params.getQ().compareTo(privateQ));
+        assertEquals("failure for 'params.getG().compareTo(privateG)'", 0,
+                params.getG().compareTo(privateG));
     }
 
 
@@ -239,10 +240,11 @@ public class DSAKeyFactoryImplTest extends TestCase {
 
         checkPrivateIntegers(pk);
 
-        assertTrue("failure for 'pk.getAlgorithm().compareTo(privateAlgorithm)== 0'", 
-                   pk.getAlgorithm().compareTo(privateAlgorithm)== 0 );
-        assertTrue("failure for 'pk.getFormat().compareTo(privateFormat)== 0'", 
-                   pk.getFormat().compareTo(privateFormat)== 0 );
+        assertEquals(
+                "failure for 'pk.getAlgorithm().compareTo(privateAlgorithm)'",
+                0, pk.getAlgorithm().compareTo(privateAlgorithm));
+        assertEquals("failure for 'pk.getFormat().compareTo(privateFormat)", 0,
+                pk.getFormat().compareTo(privateFormat));
 
         if ( privateEncoding != null) {
             assertTrue("failure: encodings are not equal",
@@ -370,7 +372,8 @@ public class DSAKeyFactoryImplTest extends TestCase {
         pubKey = (DSAPublicKey) kf.generatePublic((KeySpec)ks);
 
         String alg = pubKey.getAlgorithm();
-        assertTrue("test failure : " + alg, ( alg != null) && (!alg.equals("DSA")) );
+        assertNotNull(alg);
+        assertFalse(alg.equals("DSA"));
     }
 
 
@@ -494,7 +497,8 @@ public class DSAKeyFactoryImplTest extends TestCase {
         prKey = (DSAPrivateKey) kf.generatePrivate((KeySpec)ks);
 
         String alg = prKey.getAlgorithm();
-        assertTrue("test failure : " + alg, ( alg != null) && (!alg.equals("DSA")) );
+        assertNotNull(alg);
+        assertFalse("DSA".equals(alg));
     }
 
 
@@ -775,7 +779,8 @@ public class DSAKeyFactoryImplTest extends TestCase {
         pubKey = (DSAPublicKey) kf.translateKey( (Key)pubKey );
 
         String alg = pubKey.getAlgorithm();
-        assertTrue("test failure : alg=" + alg, alg != null && !alg.equals("X.509") );
+        assertNotNull(alg);
+        assertFalse("X.509".equals(alg));
     }
 
 
@@ -818,7 +823,8 @@ public class DSAKeyFactoryImplTest extends TestCase {
         prKey = (DSAPrivateKey) kf.translateKey( (Key)prKey );
 
         String alg = prKey.getAlgorithm();
-        assertTrue("test failure : alg=" + alg, alg != null && !alg.equals("PKCS8") );
+        assertNotNull(alg);
+        assertFalse("PKCS8".equals(alg));
     }
 
 
