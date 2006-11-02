@@ -1263,7 +1263,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private InetAddress getHostAddress() throws IOException {
         if (hostAddress == null) {
             // the value was not set yet
-            if (proxy != null) {
+            if (proxy != null && proxy.type() != Proxy.Type.DIRECT) {
                 hostAddress = ((InetSocketAddress) proxy.address()).getAddress();
             } else {
                 hostAddress = InetAddress.getByName(url.getHost());
@@ -1294,7 +1294,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     @Override
     public boolean usingProxy() {
-        return (proxy != null);
+        return (proxy != null && proxy.type() != Proxy.Type.DIRECT);
     }
 
     /**

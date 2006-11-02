@@ -210,6 +210,9 @@ public class HttpURLConnectionTest extends TestCase {
 
         assertTrue("Connection does not use proxy", connection.usingProxy());
         assertTrue("Proxy server was not used", proxy.accepted);
+        
+        HttpURLConnection huc = (HttpURLConnection)url.openConnection(Proxy.NO_PROXY);
+        assertFalse(huc.usingProxy());
     }
 
     /**
