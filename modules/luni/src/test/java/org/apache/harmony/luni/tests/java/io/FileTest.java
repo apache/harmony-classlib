@@ -97,4 +97,28 @@ public class FileTest extends TestCase {
         file = new File((String) null, "x/y/z");
         assertEquals("x" + separator + "y" + separator + "z", file.getPath());
     }
+    
+    /**
+     * @tests java.io.File#getPath()
+     */
+    public void test_getPath_With_Empty_FileName() {
+        // Regression for HARMONY-829
+        String f1ParentName = "01";
+        File f1 = new File(f1ParentName, "");
+        assertEquals(f1ParentName, f1.getPath());
+        
+        String f2ParentName = "0";
+        File f2 = new File(f2ParentName, "");
+
+        assertEquals(-1, f2.compareTo(f1));
+        assertEquals(1, f1.compareTo(f2));
+
+        File parent = new File(System.getProperty("user.dir"));
+        File f3 = new File(parent, "");
+
+        assertEquals(parent.getPath(), f3.getPath());
+        
+        
+    }
+
 }

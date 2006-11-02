@@ -169,19 +169,27 @@ public class File implements Serializable, Comparable<File> {
 	}
 
 	private String calculatePath(String dirPath, String name) {
-		// Remove all the proceeding separator chars from name
-		name = fixSlashes(name);
-		while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
-            name = name.substring(1, name.length());
+
+        dirPath = fixSlashes(dirPath);
+
+        if (name != ""){
+
+            // Remove all the proceeding separator chars from name
+            name = fixSlashes(name);
+            while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
+                name = name.substring(1, name.length());
+            }
+
+            // Ensure there is a separator char between dirPath and name
+            if (dirPath.length() > 0 && (dirPath.charAt(dirPath.length() - 1) == separatorChar)) {
+                return dirPath + name;
+            } else {
+                return dirPath + separatorChar + name;
+            }
+
         }
-
-		// Ensure there is a separator char between dirPath and name
-		dirPath = fixSlashes(dirPath);
-		if (dirPath.length() > 0 && (dirPath.charAt(dirPath.length() - 1) == separatorChar)) {
-			return dirPath + name;
-		}
-
-		return dirPath + separatorChar + name;
+        
+        return dirPath;
 	}
 
 	private void checkURI(URI uri) {
