@@ -24,6 +24,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * <p>
  * UUID is an immutable representation of a 128-bit universally unique
@@ -213,48 +215,44 @@ public final class UUID implements Serializable, Comparable<UUID> {
         if (uuid == null) {
             throw new NullPointerException();
         }
-        if (uuid.length() != 36) {
-            throw new IllegalArgumentException(
-                    "The UUID String must be 36 chars long.");
+        
+        int[] position = new int[5];
+        int lastPosition = 1;
+        int startPosition = 0;
+        
+        int i = 0;
+        for (; i < position.length  && lastPosition > 0; i++) {
+        	position[i] = uuid.indexOf("-", startPosition); //$NON-NLS-1$
+        	lastPosition = position[i];
+        	startPosition = position[i] + 1;
         }
 
-        try {
-            long m1 = Long.parseLong(uuid.substring(0, 8), 16);
-            if (uuid.charAt(8) != '-') {
-                throw new IllegalArgumentException();
-            }
-            long m2 = Long.parseLong(uuid.substring(9, 13), 16);
-            if (uuid.charAt(13) != '-') {
-                throw new IllegalArgumentException();
-            }
-            long m3 = Long.parseLong(uuid.substring(14, 18), 16);
-            if (uuid.charAt(18) != '-') {
-                throw new IllegalArgumentException();
-            }
-
-            long lsb1 = Long.parseLong(uuid.substring(19, 23), 16);
-            if (uuid.charAt(23) != '-') {
-                throw new IllegalArgumentException();
-            }
-            long lsb2 = Long.parseLong(uuid.substring(24), 16);
-
-            long msb = (m1 << 32) | (m2 << 16) | m3;
-            long lsb = (lsb1 << 48) | lsb2;
-            return new UUID(msb, lsb);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    "The UUID String contained invalid hexadecimal characters.",
-                    e);
+        // should have and only can have four "-" in UUID
+        if(i != position.length || lastPosition != -1)
+        {
+        	throw new IllegalArgumentException(Msg.getString("KA014") + uuid); //$NON-NLS-1$
         }
-    }
+
+		long m1 = Long.parseLong(uuid.substring(0, position[0]), 16);
+		long m2 = Long.parseLong(uuid.substring(position[0]+ 1, position[1]), 16);
+		long m3 = Long.parseLong(uuid.substring(position[1] + 1, position[2]), 16);
+
+		long lsb1 = Long.parseLong(uuid.substring(position[2] + 1, position[3]), 16);
+		long lsb2 = Long.parseLong(uuid.substring(position[3]+ 1), 16);
+
+		long msb = (m1 << 32) | (m2 << 16) | m3;
+		long lsb = (lsb1 << 48) | lsb2;
+		
+		return new UUID(msb, lsb);
+	}
 
     /**
-     * <p>
-     * The 64 least significant bits of the UUID.
-     * </p>
-     * 
-     * @return A long value.
-     */
+	 * <p>
+	 * The 64 least significant bits of the UUID.
+	 * </p>
+	 * 
+	 * @return A long value.
+	 */
     public long getLeastSignificantBits() {
         return leastSigBits;
     }

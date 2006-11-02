@@ -355,4 +355,103 @@ public class UUIDTest extends TestCase {
             fail("No IAE");
         } catch (IllegalArgumentException e) {}
     }
+
+	/**
+	 * @tests java.util.UUID#fromString(String)
+	 */
+	public void test_fromString_LString_Exception() {
+
+		UUID uuid = UUID.fromString("0-0-0-0-0");
+
+		try {
+			uuid = UUID.fromString("0-0-0-0-");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("-0-0-0-0-0");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("-0-0-0-0");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("-0-0-0-");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("0--0-0-0");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("0-0-0-0-");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("-1-0-0-0-0");
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		uuid = UUID.fromString("123456789-0-0-0-0");
+		assertEquals(0x2345678900000000L, uuid.getMostSignificantBits());
+		assertEquals(0x0L, uuid.getLeastSignificantBits());
+
+		uuid = UUID.fromString("111123456789-0-0-0-0");
+		assertEquals(0x2345678900000000L, uuid.getMostSignificantBits());
+		assertEquals(0x0L, uuid.getLeastSignificantBits());
+
+		uuid = UUID.fromString("7fffffffffffffff-0-0-0-0");
+		assertEquals(0xffffffff00000000L, uuid.getMostSignificantBits());
+		assertEquals(0x0L, uuid.getLeastSignificantBits());
+
+		try {
+			uuid = UUID.fromString("8000000000000000-0-0-0-0");
+			fail("should throw NumberFormatException");
+		} catch (NumberFormatException e) {
+			// expected
+		}
+
+		uuid = UUID
+				.fromString("7fffffffffffffff-7fffffffffffffff-7fffffffffffffff-0-0");
+		assertEquals(0xffffffffffffffffL, uuid.getMostSignificantBits());
+		assertEquals(0x0L, uuid.getLeastSignificantBits());
+
+		uuid = UUID.fromString("0-0-0-7fffffffffffffff-7fffffffffffffff");
+		assertEquals(0x0L, uuid.getMostSignificantBits());
+		assertEquals(0xffffffffffffffffL, uuid.getLeastSignificantBits());
+
+		try {
+			uuid = UUID.fromString("0-0-0-8000000000000000-0");
+			fail("should throw NumberFormatException");
+		} catch (NumberFormatException e) {
+			// expected
+		}
+
+		try {
+			uuid = UUID.fromString("0-0-0-0-8000000000000000");
+			fail("should throw NumberFormatException");
+		} catch (NumberFormatException e) {
+			// expected
+		}
+	}
 }
