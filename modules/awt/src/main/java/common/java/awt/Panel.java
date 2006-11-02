@@ -94,7 +94,7 @@ public class Panel extends Container implements Accessible {
 
     @Override
     String autoName() {
-        return ("panel" + toolkit.autoNumber.nextPanel++);
+        return ("panel" + toolkit.autoNumber.nextPanel++); //$NON-NLS-1$
     }
 }
 

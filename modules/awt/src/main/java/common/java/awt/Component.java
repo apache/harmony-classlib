@@ -78,6 +78,7 @@ import javax.accessibility.AccessibleStateSet;
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.State;
 import org.apache.harmony.awt.text.TextFieldKit;
 import org.apache.harmony.awt.text.TextKit;
@@ -566,14 +567,14 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
         protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         @Override
         public boolean contentsLost() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return false;
         }
@@ -581,14 +582,14 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         @Override
         public boolean contentsRestored() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return false;
         }
 
         protected void createBackBuffers(int numBuffers) {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
@@ -600,21 +601,21 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         @Override
         public Graphics getDrawGraphics() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return null;
         }
 
         protected void revalidate() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         @Override
         public void show() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
     }
@@ -633,7 +634,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         protected FlipBufferStrategy(int numBuffers, BufferCapabilities caps)
                 throws AWTException {
             if (!(Component.this instanceof Window) && !(Component.this instanceof Canvas)) {
-                throw new ClassCastException("OnlyCanvas or Window is allowed");
+                // awt.14B=Only Canvas or Window is allowed
+                throw new ClassCastException(Messages.getString("awt.14B")); //$NON-NLS-1$
             }
             // TODO: throw new AWTException("Capabilities are not supported");
             this.numBuffers = numBuffers;
@@ -643,7 +645,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         @Override
         public boolean contentsLost() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return false;
         }
@@ -651,7 +653,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         @Override
         public boolean contentsRestored() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return false;
         }
@@ -659,36 +661,38 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         protected void createBuffers(int numBuffers, BufferCapabilities caps)
                 throws AWTException {
             if (numBuffers < 2) {
-                throw new IllegalArgumentException("Number of buffers must be greater than one");
+                // awt.14C=Number of buffers must be greater than one
+                throw new IllegalArgumentException(Messages.getString("awt.14C")); //$NON-NLS-1$
             }
             if (!caps.isPageFlipping()) {
-                throw new IllegalArgumentException(
-                        "Buffer capabilities should support flipping");
+                // awt.14D=Buffer capabilities should support flipping
+                throw new IllegalArgumentException(Messages.getString("awt.14D")); //$NON-NLS-1$
             }
             if (!Component.this.behaviour.isDisplayable()) {
-                throw new IllegalStateException("Component should be displayable");
+                // awt.14E=Component should be displayable
+                throw new IllegalStateException(Messages.getString("awt.14E")); //$NON-NLS-1$
             }
             // TODO: throw new AWTException("Capabilities are not supported");
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         protected void destroyBuffers() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         protected void flip(BufferCapabilities.FlipContents flipAction) {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         protected Image getBackBuffer() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return null;
         }
@@ -701,21 +705,21 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         @Override
         public Graphics getDrawGraphics() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
             return null;
         }
 
         protected void revalidate() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
 
         @Override
         public void show() {
             if (true) {
-                throw new RuntimeException("Method is not implemented");
+                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }
         }
     }
@@ -941,8 +945,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
             public String[] run() {
                 String properties[] = new String[2];
-                properties[0] = System.getProperty("awt.image.redrawrate", "100");
-                properties[1] = System.getProperty("awt.image.incrementaldraw", "true");
+                properties[0] = System.getProperty("awt.image.redrawrate", "100"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties[1] = System.getProperty("awt.image.incrementaldraw", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 return properties;
             }
         };
@@ -956,7 +960,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         // } catch (NumberFormatException e) {
         // rate = 100;
         // }
-        incrementalImageUpdate = properties[1].equals("true");
+        incrementalImageUpdate = properties[1].equals("true"); //$NON-NLS-1$
     }
 
     protected Component() {
@@ -990,9 +994,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 Method coalesceMethod = null;
                 for (Class<?> c = thisClass; c != Component.class; c = c.getSuperclass()) {
                     try {
-                        coalesceMethod = c.getDeclaredMethod("coalesceEvents", new Class[] {
-                                Class.forName("java.awt.AWTEvent"),
-                                Class.forName("java.awt.AWTEvent") });
+                        coalesceMethod = c.getDeclaredMethod("coalesceEvents", new Class[] { //$NON-NLS-1$
+                                Class.forName("java.awt.AWTEvent"), //$NON-NLS-1$
+                                Class.forName("java.awt.AWTEvent") }); //$NON-NLS-1$
                     } catch (Exception e) {
                     }
                     if (coalesceMethod != null) {
@@ -1023,7 +1027,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("name", oldName, name);
+        firePropertyChange("name", oldName, name); //$NON-NLS-1$
     }
 
     public String getName() {
@@ -1040,11 +1044,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
     String autoName() {
         String name = getClass().getName();
-        if (name.indexOf("$") != -1) {
+        if (name.indexOf("$") != -1) { //$NON-NLS-1$
             return null;
         }
         int number = toolkit.autoNumber.nextComponent++;
-        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number);
+        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number); //$NON-NLS-1$
         return name;
     }
 
@@ -1059,7 +1063,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          */
         toolkit.lockAWT();
         try {
-            return getClass().getName() + "[" + paramString() + "]";
+            return getClass().getName() + "[" + paramString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -1480,7 +1484,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             if (traversalKeys.containsKey(Id)) {
                 return traversalKeys.get(Id) != null;
             }
-            throw new IllegalArgumentException("invalid focus traversal key identifier");
+            // awt.14F=invalid focus traversal key identifier
+            throw new IllegalArgumentException(Messages.getString("awt.14F")); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -1941,7 +1946,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                     if (this instanceof Window) {
                         return Locale.getDefault();
                     }
-                    throw new IllegalComponentStateException("no parent");
+                    // awt.150=no parent
+                    throw new IllegalComponentStateException(Messages.getString("awt.150")); //$NON-NLS-1$
                 }
                 return getParent().getLocale();
             }
@@ -1966,8 +1972,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 }
                 return p;
             }
-            throw new IllegalComponentStateException(
-                    "component must be showing on the screen to determine its location");
+            // awt.151=component must be showing on the screen to determine its location
+            throw new IllegalComponentStateException(Messages.getString("awt.151")); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -2390,8 +2396,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          */
         toolkit.lockAWT();
         try {
-            return getName() + "," + getX() + "," + getY() + "," + getWidth() + "x"
-                    + getHeight() + (!isVisible() ? ",hidden" : "");
+            return getName() + "," + getX() + "," + getY() + "," + getWidth() + "x" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + getHeight() + (!isVisible() ? ",hidden" : ""); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -2749,7 +2755,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("componentOrientation", oldOrientation, orientation);
+        firePropertyChange("componentOrientation", oldOrientation, orientation); //$NON-NLS-1$
         invalidate();
     }
 
@@ -2882,7 +2888,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
     public void setFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
         Set<? extends AWTKeyStroke> oldTraversalKeys;
-        String propName = "FocusTraversalKeys";
+        String propName = "FocusTraversalKeys"; //$NON-NLS-1$
         toolkit.lockAWT();
         try {
             Integer kId = new Integer(id);
@@ -2900,19 +2906,19 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 newKeys = new HashSet<AWTKeyStroke>(keystrokes);
             }
             traversalKeys.put(kId, newKeys);
-            String direction = "";
+            String direction = ""; //$NON-NLS-1$
             switch (id) {
                 case KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS:
-                    direction = "forward";
+                    direction = "forward"; //$NON-NLS-1$
                     break;
                 case KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS:
-                    direction = "backward";
+                    direction = "backward"; //$NON-NLS-1$
                     break;
                 case KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS:
-                    direction = "upCycle";
+                    direction = "upCycle"; //$NON-NLS-1$
                     break;
                 case KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS:
-                    direction = "downCycle";
+                    direction = "downCycle"; //$NON-NLS-1$
                     break;
             }
             propName = direction + propName;
@@ -2931,7 +2937,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusTraversalKeysEnabled", oldFocusTraversalKeysEnabled,
+        firePropertyChange("focusTraversalKeysEnabled", oldFocusTraversalKeysEnabled, //$NON-NLS-1$
                 focusTraversalKeysEnabled);
     }
 
@@ -2948,7 +2954,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusable", oldFocusable, focusable);
+        firePropertyChange("focusable", oldFocusable, focusable); //$NON-NLS-1$
     }
 
     public Font getFont() {
@@ -2975,7 +2981,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("font", oldFont, font);
+        firePropertyChange("font", oldFont, font); //$NON-NLS-1$
     }
 
     void setFontImpl(Font f) {
@@ -3013,7 +3019,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("foreground", oldFgColor, foreColor);
+        firePropertyChange("foreground", oldFgColor, foreColor); //$NON-NLS-1$
         repaint();
     }
 
@@ -3026,7 +3032,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("background", oldBkColor, backColor);
+        firePropertyChange("background", oldBkColor, backColor); //$NON-NLS-1$
         repaint();
     }
 
@@ -3048,7 +3054,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("locale", oldLocale, locale);
+        firePropertyChange("locale", oldLocale, locale); //$NON-NLS-1$
     }
 
     public void setLocation(Point p) {
@@ -3320,7 +3326,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("maximumSize", oldMaximumSize, this.maximumSize);
+        firePropertyChange("maximumSize", oldMaximumSize, this.maximumSize); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -3351,7 +3357,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("minimumSize", oldMinimumSize, this.minimumSize);
+        firePropertyChange("minimumSize", oldMinimumSize, this.minimumSize); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -3382,7 +3388,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("preferredSize", oldPreferredSize, this.preferredSize);
+        firePropertyChange("preferredSize", oldPreferredSize, this.preferredSize); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -4171,9 +4177,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             ClassNotFoundException {
         stream.defaultReadObject();
         FieldsAccessor accessor = new FieldsAccessor(Component.class, this);
-        accessor.set("toolkit", Toolkit.getDefaultToolkit());
-        accessor.set("behaviour", createBehavior());
-        accessor.set("componentLock", new Object()); // $NON-LOCK-1$
+        accessor.set("toolkit", Toolkit.getDefaultToolkit()); //$NON-NLS-1$
+        accessor.set("behaviour", createBehavior()); //$NON-NLS-1$
+        accessor.set("componentLock", new Object()); // $NON-LOCK-1$ //$NON-NLS-1$
     }
 
     final void onDrawImage(Image image, Point destLocation, Dimension destSize, Rectangle source) {

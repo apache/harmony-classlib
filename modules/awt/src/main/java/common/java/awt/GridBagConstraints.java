@@ -22,6 +22,8 @@ package java.awt;
 
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class GridBagConstraints implements Cloneable, Serializable {
     private static final long serialVersionUID = -1000070633030801713L;
 
@@ -108,51 +110,51 @@ public class GridBagConstraints implements Cloneable, Serializable {
         int maxN = GridBagLayout.MAXGRIDSIZE - 1;
 
         if (((gridx != RELATIVE) && (gridx < 0)) || (gridx >= maxN)) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' gridx");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "gridx")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (((gridy != RELATIVE) && (gridy < 0)) || (gridy >= maxN)) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' gridy");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "gridy")); //$NON-NLS-1$  //$NON-NLS-2$
         }
         if (((gridwidth != RELATIVE) && (gridwidth != REMAINDER) && (gridwidth < 0))
                 || (gridwidth > maxN))
         {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' gridwidth");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "gridwidth")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (((gridheight != RELATIVE) && (gridheight != REMAINDER) && (gridheight < 0))
                 || (gridheight > maxN))
         {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' gridheight");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "gridheight")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (((gridx >= 0) || (gridy >= 0))
                 && ((gridwidth <= 0) || (gridheight <= 0)))
         {
-            throw new IllegalArgumentException(
-                    "relative grid size parameter goes after absolute grid coordinate");
+            // awt.9D=relative grid size parameter goes after absolute grid coordinate
+            throw new IllegalArgumentException(Messages.getString("awt.9D")); //$NON-NLS-1$
         }
         if ((gridx != RELATIVE) && ((gridwidth + gridx) > maxN)) {
-            throw new IllegalArgumentException(
-                    "wrong values sum of GridBagConstraints' gridwidth and gridx");
+            // awt.9E=wrong values sum of GridBagConstraints' gridwidth and gridx
+            throw new IllegalArgumentException(Messages.getString("awt.9E")); //$NON-NLS-1$
         }
         if ((gridy != RELATIVE) && ((gridheight + gridy) > maxN)) {
-            throw new IllegalArgumentException(
-                    "wrong values sum of GridBagConstraints' gridheight and gridy");
+            // awt.9F=wrong values sum of GridBagConstraints' gridheight and gridy
+            throw new IllegalArgumentException(Messages.getString("awt.9F")); //$NON-NLS-1$
         }
         if ((gridwidth == RELATIVE) && (gridheight == RELATIVE)) {
-            throw new IllegalArgumentException(
-                    "component has RELATIVE width and height");
+            // awt.100=component has RELATIVE width and height
+            throw new IllegalArgumentException(Messages.getString("awt.100")); //$NON-NLS-1$
         }
 
         if (weightx < 0.) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' weightx");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "weightx")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (weighty < 0.) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' weighty");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "weighty")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if ((anchor != CENTER) && (anchor != NORTH) && (anchor != NORTHEAST)
@@ -163,27 +165,27 @@ public class GridBagConstraints implements Cloneable, Serializable {
                 && (anchor != LINE_START) && (anchor != LINE_END)
                 && (anchor != FIRST_LINE_START) && (anchor != FIRST_LINE_END)
                 && (anchor != LAST_LINE_START) && (anchor != LAST_LINE_END)) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' anchor");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "anchor")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((fill != NONE) && (fill != HORIZONTAL) && (fill != VERTICAL)
                 && (fill != BOTH)) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' fill");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "fill")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (ipadx < 0) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' ipadx");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "ipadx")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (ipady < 0) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' ipady");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "ipady")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if ((insets == null) || (insets.left < 0) || (insets.left < 0)
                 || (insets.left < 0) || (insets.left < 0)) {
-            throw new IllegalArgumentException(
-                    "wrong value of GridBagConstraints' insets");
+            // awt.9C=wrong value of GridBagConstraints: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.9C", "insets")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }

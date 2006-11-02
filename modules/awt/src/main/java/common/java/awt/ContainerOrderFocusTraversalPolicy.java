@@ -22,6 +22,8 @@ package java.awt;
 
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         implements Serializable {
     private static final long serialVersionUID = 486933713763926351L;
@@ -62,19 +64,19 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
 
     private void check(Container aContainer, Component component) {
         if (aContainer == null || component == null) {
-            throw new IllegalArgumentException("aContainer and aComponent " +
-                    "cannot be null");
+            // awt.10B=aContainer and aComponent cannot be null
+            throw new IllegalArgumentException(Messages.getString("awt.10B")); //$NON-NLS-1$
         }
 
         if (aContainer.isFocusCycleRoot()) {
             Component root = component.getFocusCycleRootAncestor();
             if ((root != aContainer) && (component != aContainer)) {
-                throw new IllegalArgumentException("aContainer is not " +
-                        "a focus cycle root of aComponent");
+                // awt.10C=aContainer is not a focus cycle root of aComponent
+                throw new IllegalArgumentException(Messages.getString("awt.10C")); //$NON-NLS-1$
             }
         } else if (!aContainer.isFocusTraversalPolicyProvider()) {
-            throw new IllegalArgumentException("aContainer should be " +
-                    "focus cycle root or focus traversal policy provider");
+            // awt.10D=aContainer should be focus cycle root or focus traversal policy provider
+            throw new IllegalArgumentException(Messages.getString("awt.10D")); //$NON-NLS-1$
         }
     }
 
@@ -164,8 +166,8 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         toolkit.lockAWT();
         try {
             if (container == null) {
-                throw new IllegalArgumentException(
-                        "focusCycleRoot cannot be null");
+                // awt.10E=focusCycleRoot cannot be null
+                throw new IllegalArgumentException(Messages.getString("awt.10E")); //$NON-NLS-1$
             }
             Component firstComp = getComponent(container, container, true, true);
             return firstComp;
@@ -435,7 +437,8 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         toolkit.lockAWT();
         try {
             if (container == null) {
-                throw new IllegalArgumentException("focusCycleRoot cannot be null");
+                // awt.10E=focusCycleRoot cannot be null
+                throw new IllegalArgumentException(Messages.getString("awt.10E")); //$NON-NLS-1$
             }
             int count = container.getComponentCount();
             if ( count <= 0) {

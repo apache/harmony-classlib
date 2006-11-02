@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeCursor;
 
 
@@ -70,11 +71,11 @@ public class Cursor implements Serializable {
     static Properties cursorProps;
 
     static final String[] predefinedNames = {
-            "Default", "Crosshair", "Text", "Wait",
-            "Southwest Resize", "Southeast Resize",
-            "Northwest Resize", "Northeast Resize",
-            "North Resize", "South Resize", "West Resize", "East Resize",
-            "Hand", "Move"
+            "Default", "Crosshair", "Text", "Wait", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "Southwest Resize", "Southeast Resize", //$NON-NLS-1$ //$NON-NLS-2$
+            "Northwest Resize", "Northeast Resize", //$NON-NLS-1$ //$NON-NLS-2$
+            "North Resize", "South Resize", "West Resize", "East Resize", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "Hand", "Move" //$NON-NLS-1$ //$NON-NLS-2$
 
     };
 
@@ -102,7 +103,7 @@ public class Cursor implements Serializable {
         checkType(type);
         this.type = type;
         if ((type >= 0) && (type < predefinedNames.length)) {
-            name = predefinedNames[type] + " Cursor";
+            name = predefinedNames[type] + " Cursor"; //$NON-NLS-1$
         }
     }
 
@@ -126,7 +127,7 @@ public class Cursor implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getName() + "[" + name + "]";
+        return getClass().getName() + "[" + name + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public int getType() {
@@ -163,11 +164,12 @@ public class Cursor implements Serializable {
         if (cursor != null) {
             return cursor;
         }
-        String exMsg = "failed to parse hotspot property for cursor: " + name;
-        String nm = "Cursor." + name;
-        String nameStr = cursorProps.getProperty(nm + ".Name");
-        String hotSpotStr = cursorProps.getProperty(nm + ".HotSpot");
-        String fileStr = cursorProps.getProperty(nm + ".File");
+        // awt.141=failed to parse hotspot property for cursor:
+        String exMsg = Messages.getString("awt.141") + name; //$NON-NLS-1$
+        String nm = "Cursor." + name; //$NON-NLS-1$
+        String nameStr = cursorProps.getProperty(nm + ".Name"); //$NON-NLS-1$
+        String hotSpotStr = cursorProps.getProperty(nm + ".HotSpot"); //$NON-NLS-1$
+        String fileStr = cursorProps.getProperty(nm + ".File"); //$NON-NLS-1$
         int idx = hotSpotStr.indexOf(',');
         if (idx < 0) {
             throw new AWTException(exMsg);
@@ -192,10 +194,10 @@ public class Cursor implements Serializable {
             return;
         }
         String sep = File.separator;
-        String cursorsDir = "lib" + sep + "images" + sep + "cursors";
-        String cursorsAbsDir = System.getProperty("java.home") + sep +
+        String cursorsDir = "lib" + sep + "images" + sep + "cursors"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String cursorsAbsDir = System.getProperty("java.home") + sep + //$NON-NLS-1$
                                 cursorsDir;
-        String cursorPropsFileName = "cursors.properties";
+        String cursorPropsFileName = "cursors.properties"; //$NON-NLS-1$
         String cursorPropsFullFileName = (cursorsAbsDir + sep +
                                           cursorPropsFileName);
         cursorProps = new Properties();
@@ -203,9 +205,9 @@ public class Cursor implements Serializable {
             cursorProps.load(new FileInputStream(new File(
                     cursorPropsFullFileName)));
         } catch (FileNotFoundException e) {
-            throw new AWTException("Exception: class " + e.getClass() + " " +
-                      e.getMessage() + "occurred while loading: " +
-                      cursorPropsFullFileName);
+            // awt.142=Exception: class {0} {1} occurred while loading: {2}
+            throw new AWTException(Messages.getString("awt.142",//$NON-NLS-1$
+                      new Object[]{e.getClass(), e.getMessage(), cursorPropsFullFileName}));
         } catch (IOException e) {
             throw new AWTException(e.getMessage());
         }
@@ -216,7 +218,8 @@ public class Cursor implements Serializable {
         // can't use predefined array here because it may not have been
         // initialized yet
         if ((type < 0) || (type >= predefinedNames.length)) {
-            throw new IllegalArgumentException("illegal cursor type");
+            // awt.143=illegal cursor type
+            throw new IllegalArgumentException(Messages.getString("awt.143")); //$NON-NLS-1$
         }
     }
 

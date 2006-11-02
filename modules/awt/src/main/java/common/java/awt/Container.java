@@ -33,6 +33,8 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Container extends Component {
     private static final long serialVersionUID = 4613797578919906343L;
 
@@ -392,15 +394,19 @@ public class Container extends Component {
         toolkit.lockAWT();
         try {
             if ((index < -1) || (index > children.size())) {
-                throw new IllegalArgumentException("illegal component position");
+                // awt.12A=illegal component position
+                throw new IllegalArgumentException(Messages.getString("awt.12A")); //$NON-NLS-1$
             }
             if ((comp instanceof Container)) {
                 if (comp == this) {
-                    throw new IllegalArgumentException("adding container to itself");
+                    // awt.12B=adding container to itself
+                    throw new IllegalArgumentException(Messages.getString("awt.12B")); //$NON-NLS-1$
                 } else if (((Container) comp).isAncestorOf(this)) {
-                    throw new IllegalArgumentException("adding container's parent to itself");
+                    // awt.12C=adding container's parent to itself
+                    throw new IllegalArgumentException(Messages.getString("awt.12C")); //$NON-NLS-1$
                 } else if (comp instanceof Window) {
-                    throw new IllegalArgumentException("adding a window to a container");
+                    // awt.12D=adding a window to a container
+                    throw new IllegalArgumentException(Messages.getString("awt.12D")); //$NON-NLS-1$
                 }
             }
 
@@ -949,8 +955,8 @@ public class Container extends Component {
 
         toolkit.lockAWT();
         try {
-            return super.paramString() + (!isValid() ? ",invalid" : "")
-                    + (layout != null ? ",layout=" + layout.getClass().getName() : "");
+            return super.paramString() + (!isValid() ? ",invalid" : "") //$NON-NLS-1$ //$NON-NLS-2$
+                    + (layout != null ? ",layout=" + layout.getClass().getName() : ""); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -1024,7 +1030,7 @@ public class Container extends Component {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusCycleRoot", wasFocusCycleRoot, focusCycleRoot);
+        firePropertyChange("focusCycleRoot", wasFocusCycleRoot, focusCycleRoot); //$NON-NLS-1$
     }
 
     @Override
@@ -1046,7 +1052,7 @@ public class Container extends Component {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusTraversalPolicy", oldPolicy, policy);
+        firePropertyChange("focusTraversalPolicy", oldPolicy, policy); //$NON-NLS-1$
     }
 
     @Override
@@ -1387,7 +1393,7 @@ public class Container extends Component {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusTraversalPolicyProvider", wasProvider,
+        firePropertyChange("focusTraversalPolicyProvider", wasProvider, //$NON-NLS-1$
                 focusTraversalPolicyProvider);
     }
 

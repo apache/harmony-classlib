@@ -30,6 +30,8 @@ import java.awt.image.WritableRaster;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Color implements Paint, Serializable {
     private static final long serialVersionUID = 118526816881161077L;
 
@@ -144,16 +146,16 @@ public class Color implements Paint, Serializable {
         for(int i=0 ; i<nComps; i++) {
             comp = components[i];
             if(comp < 0.0f || comp > 1.0f) {
+                // awt.107=Color parameter outside of expected range: component {0}.
                 throw new IllegalArgumentException(
-                        "Color parameter outside of expected range: " +
-                        "component " + i + ".");
+                        Messages.getString("awt.107", i)); //$NON-NLS-1$
             }
             fvalue[i] = components[i];
         }
 
         if (alpha < 0.0f || alpha > 1.0f) {
-            throw new IllegalArgumentException(
-                    "Alpha value outside of expected range.");
+            // awt.108=Alpha value outside of expected range.
+            throw new IllegalArgumentException(Messages.getString("awt.108")); //$NON-NLS-1$
         }
         falpha = alpha;
 
@@ -177,14 +179,16 @@ public class Color implements Paint, Serializable {
 
     public Color(int r, int g, int b, int a) {
         if ((r & 0xFF) != r || (g & 0xFF) != g || (b & 0xFF) != b || (a & 0xFF) != a) {
-            throw new IllegalArgumentException("Color parameter outside of expected range.");
+            // awt.109=Color parameter outside of expected range.
+            throw new IllegalArgumentException(Messages.getString("awt.109")); //$NON-NLS-1$
         }
         value = b | (g << 8) | (r << 16) | (a << 24);
     }
 
     public Color(int r, int g, int b) {
         if ((r & 0xFF) != r || (g & 0xFF) != g || (b & 0xFF) != b) {
-            throw new IllegalArgumentException("Color parameter outside of expected range.");
+            // awt.109=Color parameter outside of expected range.
+            throw new IllegalArgumentException(Messages.getString("awt.109")); //$NON-NLS-1$
         }
         // 0xFF for alpha channel
         value = b | (g << 8) | (r << 16) | 0xFF000000;
@@ -236,10 +240,10 @@ public class Color implements Paint, Serializable {
         */
         
         return getClass().getName() +
-                "[r=" + getRed() +
-                ",g=" + getGreen() +
-                ",b=" + getBlue() +
-                "]";
+                "[r=" + getRed() + //$NON-NLS-1$
+                ",g=" + getGreen() + //$NON-NLS-1$
+                ",b=" + getBlue() + //$NON-NLS-1$
+                "]"; //$NON-NLS-1$
     }
 
     @Override

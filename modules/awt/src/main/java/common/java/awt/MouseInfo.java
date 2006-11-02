@@ -35,7 +35,7 @@ public class MouseInfo {
         Toolkit.checkHeadless();
         SecurityManager secMan = System.getSecurityManager();
         if (secMan != null) {
-            secMan.checkPermission(new AWTPermission("watchMousePointer"));
+            secMan.checkPermission(new AWTPermission("watchMousePointer")); //$NON-NLS-1$
         }
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Point location = toolkit.getNativeMouseInfo().getLocation();

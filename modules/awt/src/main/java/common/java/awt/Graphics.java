@@ -159,7 +159,7 @@ public abstract class Graphics {
     @Override
     public String toString() {
         // TODO: Think about string representation of Graphics.
-        return "Graphics";
+        return "Graphics"; //$NON-NLS-1$
     }
 
     // Abstract methods

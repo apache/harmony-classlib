@@ -25,6 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class PopupMenu extends Menu {
 
 
@@ -42,7 +44,7 @@ public class PopupMenu extends Menu {
     }
 
     public PopupMenu() throws HeadlessException {
-        this("");
+        this(""); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -84,17 +86,21 @@ public class PopupMenu extends Menu {
         try {
             MenuContainer parent = getParent();
             if (parent == null) {
-                throw new NullPointerException("parent is null");
+                // awt.71=Parent is null
+                throw new NullPointerException(Messages.getString("awt.71")); //$NON-NLS-1$
             }
             if (!(parent instanceof Component)) {
-                throw new IllegalArgumentException("parent is not a component");
+                // awt.11F=parent is not a component
+                throw new IllegalArgumentException(Messages.getString("awt.11F")); //$NON-NLS-1$
             }
             if (parent != origin && !( (parent instanceof Container) &&
                     ((Container)parent).isAncestorOf(origin) ) ) {
-                throw new IllegalArgumentException("origin is not a descendant of parent");
+                // awt.120=origin is not a descendant of parent
+                throw new IllegalArgumentException(Messages.getString("awt.120")); //$NON-NLS-1$
             }
             if ( !((Component)parent).isShowing()) {
-                throw new RuntimeException("parent must be showing on the screen");
+                // awt.121=parent must be showing on the screen
+                throw new RuntimeException(Messages.getString("awt.121")); //$NON-NLS-1$
             }
 
             if (EventQueue.isDispatchThread()) {

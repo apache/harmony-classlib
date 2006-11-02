@@ -26,6 +26,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.text.CharacterIterator;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class FontMetrics implements Serializable {
     private static final long serialVersionUID = 1681126225205050147L;
 
@@ -38,10 +40,10 @@ public abstract class FontMetrics implements Serializable {
     @Override
     public String toString() {
         return this.getClass().getName() +
-                "[font=" + this.getFont() +
-                "ascent=" + this.getAscent() +
-                ", descent=" + this.getDescent() +
-                ", height=" + this.getHeight() + "]";
+                "[font=" + this.getFont() + //$NON-NLS-1$
+                "ascent=" + this.getAscent() + //$NON-NLS-1$
+                ", descent=" + this.getDescent() + //$NON-NLS-1$
+                ", height=" + this.getHeight() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public Font getFont() {
@@ -120,12 +122,13 @@ public abstract class FontMetrics implements Serializable {
     public int bytesWidth(byte[] data, int off, int len) {
         int width = 0;
         if ((off >= data.length) || (off < 0)){
-            throw new IllegalArgumentException("offset off is out of range");
+            // awt.13B=offset off is out of range
+            throw new IllegalArgumentException(Messages.getString("awt.13B")); //$NON-NLS-1$
         }
 
         if ((off+len > data.length)){
-            throw new IllegalArgumentException("number of elemets len is " +
-                    "out of range");
+            // awt.13C=number of elemets len is out of range
+            throw new IllegalArgumentException(Messages.getString("awt.13C")); //$NON-NLS-1$
         }
 
         for (int i = off; i < off+len; i++){
@@ -138,12 +141,13 @@ public abstract class FontMetrics implements Serializable {
     public int charsWidth(char[] data, int off , int len){
         int width = 0;
         if ((off >= data.length) || (off < 0)){
-            throw new IllegalArgumentException("offset off is out of range");
+            // awt.13B=offset off is out of range
+            throw new IllegalArgumentException(Messages.getString("awt.13B")); //$NON-NLS-1$
         }
 
         if ((off+len > data.length)){
-            throw new IllegalArgumentException("number of elemets len is " +
-                    "out of range");
+            // awt.13C=number of elemets len is out of range
+            throw new IllegalArgumentException(Messages.getString("awt.13C")); //$NON-NLS-1$
         }
 
         for (int i = off; i < off+len; i++){

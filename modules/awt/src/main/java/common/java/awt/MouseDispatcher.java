@@ -322,7 +322,7 @@ class MouseDispatcher {
                                      Point where) {
 
         Integer scrollAmountProperty =
-            (Integer)toolkit.getDesktopProperty("awt.wheelScrollingSize");
+            (Integer)toolkit.getDesktopProperty("awt.wheelScrollingSize"); //$NON-NLS-1$
         int amount = 1;
         int type = MouseWheelEvent.WHEEL_UNIT_SCROLL;
 

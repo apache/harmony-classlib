@@ -29,14 +29,14 @@ final class EventQueueThread extends Thread {
 
     private static final class StopThreadEvent extends ActionEvent {
         StopThreadEvent(Thread thread) {
-            super(thread, ACTION_PERFORMED, "stopThread");
+            super(thread, ACTION_PERFORMED, "stopThread"); //$NON-NLS-1$
         }
     }
 
     private final EventQueueCore core;
 
     EventQueueThread(EventQueueCore core) {
-        super("AWT-EventQueueThread");
+        super("AWT-EventQueueThread"); //$NON-NLS-1$
         this.core = core;
         setDaemon(false);
     }

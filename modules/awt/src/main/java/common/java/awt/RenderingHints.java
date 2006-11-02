@@ -201,7 +201,7 @@ public class RenderingHints implements Map<Object, Object>, Cloneable {
 
     @Override
     public String toString() {
-        return "RenderingHints["+map.toString()+"]";
+        return "RenderingHints["+map.toString()+"]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

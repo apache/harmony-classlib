@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.PaintEvent;
 import java.awt.event.WindowEvent;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeEvent;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
@@ -200,7 +201,8 @@ class Dispatcher {
                 mask = NativeWindow.BOUNDS_NOMOVE;
                 break;
             default:
-                throw new RuntimeException("Unknown component event id.");
+                // awt.12E=Unknown component event id.
+                throw new RuntimeException(Messages.getString("awt.12E")); //$NON-NLS-1$
             }
 
             if (!(src instanceof Window)) {
@@ -321,13 +323,14 @@ class Dispatcher {
          */
         void startGrab(Window grabWindow, Runnable whenCanceled) {
             if (nativeGrabOwner != null) {
-                throw new RuntimeException("Attempt to start nested mouse grab");
+                // awt.12F=Attempt to start nested mouse grab
+                throw new RuntimeException(Messages.getString("awt.12F")); //$NON-NLS-1$
             }
 
             NativeWindow win = grabWindow.getNativeWindow();
             if (win == null) {
-                throw new RuntimeException(
-                        "Attempt to grab mouse in not displayable window");
+                // awt.130=Attempt to grab mouse in not displayable window
+                throw new RuntimeException(Messages.getString("awt.130")); //$NON-NLS-1$
             }
 
             nativeGrabOwner = grabWindow;

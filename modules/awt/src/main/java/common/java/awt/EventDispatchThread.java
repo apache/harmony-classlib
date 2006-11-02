@@ -108,7 +108,7 @@ final class EventDispatchThread extends Thread  {
     EventDispatchThread(Toolkit toolkit, Dispatcher dispatcher ) {
         this.toolkit = toolkit;
         this.dispatcher = dispatcher;
-        setName("AWT-EventDispatchThread");
+        setName("AWT-EventDispatchThread"); //$NON-NLS-1$
         setDaemon(true);
     }
 

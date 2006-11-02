@@ -26,6 +26,7 @@ import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 
 import org.apache.harmony.awt.gl.ICompositeContext;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public final class AlphaComposite implements Composite {
@@ -83,10 +84,12 @@ public final class AlphaComposite implements Composite {
 
     private AlphaComposite(int rule, float alpha){
         if(rule < CLEAR || rule > XOR) {
-            throw new IllegalArgumentException("Unknown rule");
+            // awt.11D=Unknown rule
+            throw new IllegalArgumentException(Messages.getString("awt.11D")); //$NON-NLS-1$
         }
         if(alpha < 0.0f || alpha > 1.0f) {
-            throw new IllegalArgumentException("Wrong alpha value");
+            // awt.11E=Wrong alpha value
+            throw new IllegalArgumentException(Messages.getString("awt.11E")); //$NON-NLS-1$
         }
 
         this.rule = rule;
@@ -163,7 +166,8 @@ public final class AlphaComposite implements Composite {
         case XOR:
             return Xor;
         default:
-            throw new IllegalArgumentException("Unknown rule");
+            // awt.11D=Unknown rule
+            throw new IllegalArgumentException(Messages.getString("awt.11D")); //$NON-NLS-1$
         }
     }
 

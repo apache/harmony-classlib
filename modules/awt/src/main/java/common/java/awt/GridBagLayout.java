@@ -24,6 +24,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class GridBagLayout implements LayoutManager2, Serializable {
     private static final long serialVersionUID = 8838754796412211005L;
 
@@ -88,12 +90,14 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void addLayoutComponent(Component comp, Object constraints) {
         toolkit.lockAWT();
         try {
-            assert comp != null : "AddLayoutComponent: attempt to add null component";
+            // awt.7F=AddLayoutComponent: attempt to add null component
+            assert comp != null : Messages.getString("awt.7F"); //$NON-NLS-1$
             GridBagConstraints cons;
             if (constraints != null) {
                 if (!GridBagConstraints.class.isInstance(constraints)) {
+                    // awt.80=AddLayoutComponent: constraint object must be GridBagConstraints
                     throw new IllegalArgumentException(
-                            "AddLayoutComponent: constraint object must be GridBagConstraints");
+                            Messages.getString("awt.80")); //$NON-NLS-1$
                 }
                 cons = (GridBagConstraints) constraints;
             } else {
@@ -106,7 +110,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             try {
                 //cons.verify();
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("AddLayoutComponent: " + e.getMessage());
+                // awt.81=AddLayoutComponent: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.81", e.getMessage())); //$NON-NLS-1$
             }
             GridBagConstraints consClone = (GridBagConstraints) cons.clone();
             comptable.put(comp, consClone);
@@ -120,7 +125,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void removeLayoutComponent(Component comp) {
         toolkit.lockAWT();
         try {
-            assert comp != null : "RemoveLayoutComponent: attempt to remove null component";
+            // awt.82=RemoveLayoutComponent: attempt to remove null component
+            assert comp != null : Messages.getString("awt.82"); //$NON-NLS-1$
             Container parent = comp.getParent();
             if (parent != null) {
                 getParentInfo(parent).consTable.remove(comptable.get(comp));
@@ -148,13 +154,16 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void setConstraints(Component comp, GridBagConstraints constraints) {
         toolkit.lockAWT();
         try {
-            assert comp != null : "SetConstraints: attempt to get constraints of null component";
-            assert constraints != null : "SetConstraints: attempt to set null constraints";
+            // awt.83=SetConstraints: attempt to get constraints of null component
+            assert comp != null : Messages.getString("awt.83"); //$NON-NLS-1$
+            // awt.84=SetConstraints: attempt to set null constraints
+            assert constraints != null : Messages.getString("awt.84"); //$NON-NLS-1$
             GridBagConstraints consClone = (GridBagConstraints) constraints.clone();
             try {
                 //                consClone.verify();
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("SetConstraints: " + e.getMessage());
+                // awt.85=SetConstraints: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.85", e.getMessage())); //$NON-NLS-1$
             }
             ParentInfo info = getParentInfo(comp.getParent());
             if (info != null) {
@@ -214,7 +223,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             try {
                 validate(parent, info);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("MinimumLayoutSize: " + e.getMessage());
+                // awt.86=MinimumLayoutSize: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.86", e.getMessage())); //$NON-NLS-1$
             }
             return parent.addInsets(info.grid.minimumSize());
             //return addInsets(grid.minimumSize(), parent);
@@ -233,7 +243,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             try {
                 validate(parent, info);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("PreferredLayoutSize: " + e.getMessage());
+                // awt.87=PreferredLayoutSize: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.87", e.getMessage())); //$NON-NLS-1$
             }
             return parent.addInsets(info.grid.preferredSize());
             //return addInsets(grid.preferredSize(), parent);
@@ -261,7 +272,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             try {
                 arrangeGridImpl(parent, info);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("LayoutContainer: " + e.getMessage());
+                // awt.88=LayoutContainer: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.88", e.getMessage())); //$NON-NLS-1$
             }
             setComponentsBounds(info);
         } finally {
@@ -360,7 +372,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             try {
                 arrangeGridImpl(parent, info);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("MinimumLayoutSize: " + e.getMessage());
+                // awt.86=MinimumLayoutSize: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.86", e.getMessage())); //$NON-NLS-1$
             }
         } finally {
             toolkit.unlockAWT();
@@ -370,7 +383,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     protected GridBagConstraints lookupConstraints(Component comp) {
         toolkit.lockAWT();
         try {
-            assert comp != null : "LookupConstraints: attempt to get constraints of null component";
+            // awt.89=LookupConstraints: attempt to get constraints of null component
+            assert comp != null : Messages.getString("awt.89"); //$NON-NLS-1$
             GridBagConstraints cons = comptable.get(comp);
             if (cons == null) {
                 // if comp is not in the layout, return a copy of default constraints
@@ -421,12 +435,15 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     protected void AdjustForGravity(GridBagConstraints constraints, Rectangle r) {
         toolkit.lockAWT();
         try {
-            assert constraints != null : "AdjustForGravity: attempt to use null constraints";
-            assert r != null : "AdjustForGravity: attempt to use null rectangle";
+            // awt.8A=AdjustForGravity: attempt to use null constraints
+            assert constraints != null : Messages.getString("awt.8A"); //$NON-NLS-1$
+            // awt.8B=AdjustForGravity: attempt to use null rectangle
+            assert r != null : Messages.getString("awt.8B"); //$NON-NLS-1$
             try {
                 //                ((GridBagConstraints) constraints).verify();
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("AdjustForGravity: " + e.getMessage());
+                // awt.8C=AdjustForGravity: {0}
+                throw new IllegalArgumentException(Messages.getString("awt.8C", e.getMessage())); //$NON-NLS-1$
             }
             //Don't get parent as param, so have to use older info if exists
             if (layoutInfo == null) {
@@ -738,13 +755,16 @@ public class GridBagLayout implements LayoutManager2, Serializable {
         private void spreadComponents(ArrayList<MixedConstraints> allConstraints) {
             for (int i = 0; i < allConstraints.size(); i++) {
                 MixedConstraints mixCons = allConstraints.get(i);
-                assert !((relWComp && (mixCons.initial.width != GridBagConstraints.REMAINDER)) || (relHComp && (mixCons.initial.height != GridBagConstraints.REMAINDER))) : "REMINDER component expected after RELATIVE one";
+                // awt.8D=REMINDER component expected after RELATIVE one
+                assert !((relWComp && (mixCons.initial.width != GridBagConstraints.REMAINDER)) || (relHComp && (mixCons.initial.height != GridBagConstraints.REMAINDER))) : Messages.getString("awt.8D"); //$NON-NLS-1$
                 if (curY == MAXGRIDSIZE) {
-                    throw new RuntimeException("component is out of grid's range");
+                    // awt.8E=component is out of grid's range
+                    throw new RuntimeException(Messages.getString("awt.8E")); //$NON-NLS-1$
                 }
                 translateHor(mixCons, translateVert(mixCons, i, allConstraints));
             }
-            assert !(relWComp || relHComp) : "REMINDER component expected after RELATIVE one";
+            // awt.8D=REMINDER component expected after RELATIVE one
+            assert !(relWComp || relHComp) : Messages.getString("awt.8D"); //$NON-NLS-1$
         }
 
         private void applyOrientation(ParentInfo info) {
@@ -784,7 +804,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                 endY = mixCons.mapped.y + mixCons.mapped.height;
             }
             if (endY > MAXGRIDSIZE) {
-                throw new RuntimeException("component is out of grid's range");
+                // awt.8E=component is out of grid's range
+                throw new RuntimeException(Messages.getString("awt.8E")); //$NON-NLS-1$
             }
             maxH = Math.max(maxH, mixCons.mapped.y + mixCons.mapped.height);
             return endY;
@@ -795,7 +816,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             if (mixCons.initial.x != GridBagConstraints.RELATIVE) {
                 for (;; trueCurY++) {
                     if (trueCurY == MAXGRIDSIZE) {
-                        throw new RuntimeException("component is out of grid's range");
+                        // awt.8E=component is out of grid's range
+                        throw new RuntimeException(Messages.getString("awt.8E")); //$NON-NLS-1$
                     }
                     if (curX[trueCurY] <= mixCons.initial.x) {
                         break;
@@ -829,7 +851,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                 }
             }
             if ((mixCons.mapped.x + mixCons.mapped.width) > MAXGRIDSIZE) {
-                throw new RuntimeException("component is out of grid's range");
+                // awt.8E=component is out of grid's range
+                throw new RuntimeException(Messages.getString("awt.8E")); //$NON-NLS-1$
             }
             maxW = Math.max(maxW, mixCons.mapped.x + mixCons.mapped.width);
             //            if (curYBackup >= 0) { //FIX
@@ -1108,7 +1131,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             private void applyOverrides(int lengthsOverride[], double weightsOverride[]) {
                 if (weightsOverride != null) {
                     if (weightsOverride.length > MAXGRIDSIZE) {
-                        throw new RuntimeException("Weights' overrides array is too long");
+                        // awt.8F=Weights' overrides array is too long
+                        throw new RuntimeException(Messages.getString("awt.8F")); //$NON-NLS-1$
                     }
                     for (int i = 0; i < weightsOverride.length; i++) {
                         weights[i] = Math.max(weights[i], weightsOverride[i]);
@@ -1116,7 +1140,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                 }
                 if (lengthsOverride != null) {
                     if (lengthsOverride.length > MAXGRIDSIZE) {
-                        throw new RuntimeException("Lengths' overrides array is too long");
+                        // awt.90=Lengths' overrides array is too long
+                        throw new RuntimeException(Messages.getString("awt.90")); //$NON-NLS-1$
                     }
                     for (int i = 0; i < lengthsOverride.length; i++) {
                         minLengths[i] = lengthsOverride[i];

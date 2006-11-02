@@ -31,6 +31,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.View;
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
@@ -267,7 +268,7 @@ public class TextArea extends TextComponent {
         toolkit.lockAWT();
         try {
             Toolkit.checkHeadless();
-            setFont(new Font("Dialog", Font.PLAIN, 12)); // QUICK FIX
+            setFont(new Font("Dialog", Font.PLAIN, 12)); // QUICK FIX //$NON-NLS-1$
             setText(text);
             this.rows = Math.max(0, rows);
             this.columns = Math.max(0, columns);
@@ -538,20 +539,20 @@ public class TextArea extends TextComponent {
             String strScrollbarVis = null;
             switch (getScrollbarVisibility()) {
                 case SCROLLBARS_BOTH:
-                    strScrollbarVis = "both";
+                    strScrollbarVis = "both"; //$NON-NLS-1$
                     break;
                 case SCROLLBARS_HORIZONTAL_ONLY:
-                    strScrollbarVis = "horizontal only";
+                    strScrollbarVis = "horizontal only"; //$NON-NLS-1$
                     break;
                 case SCROLLBARS_NONE:
-                    strScrollbarVis = "none";
+                    strScrollbarVis = "none"; //$NON-NLS-1$
                     break;
                 case SCROLLBARS_VERTICAL_ONLY:
-                    strScrollbarVis = "vertical only";
+                    strScrollbarVis = "vertical only"; //$NON-NLS-1$
                     break;
             }
-            return (super.paramString() + ",rows=" + getRows() + ",columns=" + getColumns()
-                    + ",scrollbarVisibility=" + strScrollbarVis);
+            return (super.paramString() + ",rows=" + getRows() + ",columns=" + getColumns() //$NON-NLS-1$ //$NON-NLS-2$
+                    + ",scrollbarVisibility=" + strScrollbarVis); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -630,7 +631,8 @@ public class TextArea extends TextComponent {
         toolkit.lockAWT();
         try {
             if (columns < 0) {
-                throw new IllegalArgumentException("columns less than zero.");
+                // awt.69=columns less than zero.
+                throw new IllegalArgumentException(Messages.getString("awt.69")); //$NON-NLS-1$
             }
             this.columns = columns;
         } finally {
@@ -642,7 +644,8 @@ public class TextArea extends TextComponent {
         toolkit.lockAWT();
         try {
             if (rows < 0) {
-                throw new IllegalArgumentException("rows less than zero.");
+                // awt.6A=rows less than zero.
+                throw new IllegalArgumentException(Messages.getString("awt.6A")); //$NON-NLS-1$
             }
             this.rows = rows;
         } finally {
@@ -832,6 +835,6 @@ public class TextArea extends TextComponent {
 
     @Override
     String autoName() {
-        return ("text" + toolkit.autoNumber.nextTextArea++);
+        return ("text" + toolkit.autoNumber.nextTextArea++); //$NON-NLS-1$
     }
 }

@@ -53,6 +53,8 @@ import java.lang.reflect.Array;
 import java.util.EventListener;
 import java.util.LinkedList;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class AWTEventMulticaster implements ComponentListener, ContainerListener,
         FocusListener, KeyListener, MouseListener, MouseMotionListener, WindowListener,
         WindowFocusListener, WindowStateListener, ActionListener, ItemListener,
@@ -255,7 +257,8 @@ public class AWTEventMulticaster implements ComponentListener, ContainerListener
     }
 
     protected AWTEventMulticaster(EventListener a, EventListener b) {
-        assert (a != null) && (b != null) : "Input parameters a and b should not be null";
+        // awt.74=Input parameters a and b should not be null
+        assert (a != null) && (b != null) : Messages.getString("awt.74"); //$NON-NLS-1$
 
         this.a = a;
         this.b = b;

@@ -30,6 +30,8 @@ import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.View;
+
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.text.AWTTextAction;
 import org.apache.harmony.awt.text.ActionNames;
 import org.apache.harmony.awt.text.ActionSet;
@@ -283,7 +285,7 @@ public class TextField extends TextComponent {
         try {
             String paramStr = super.paramString();
             if (echoCharIsSet()) {
-                paramStr += ",echo=" + getEchoChar();
+                paramStr += ",echo=" + getEchoChar(); //$NON-NLS-1$
             }
             return paramStr;
         } finally {
@@ -331,7 +333,8 @@ public class TextField extends TextComponent {
         toolkit.lockAWT();
         try {
             if (columns < 0) {
-                throw new IllegalArgumentException("columns less than zero.");
+                // awt.102=columns less than zero.
+                throw new IllegalArgumentException(Messages.getString("awt.102")); //$NON-NLS-1$
             }
             this.columns = columns;
         } finally {
@@ -507,7 +510,7 @@ public class TextField extends TextComponent {
 
     @Override
     String autoName() {
-        return ("textfield" + toolkit.autoNumber.nextTextField++);
+        return ("textfield" + toolkit.autoNumber.nextTextField++); //$NON-NLS-1$
     }
 
     /**

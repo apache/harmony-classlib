@@ -137,7 +137,7 @@ public class Frame extends Window implements MenuContainer {
     }
 
     public Frame() throws HeadlessException {
-        this("");
+        this(""); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -146,7 +146,7 @@ public class Frame extends Window implements MenuContainer {
     }
 
     public Frame(GraphicsConfiguration gc) {
-        this("", gc);
+        this("", gc); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -207,30 +207,30 @@ public class Frame extends Window implements MenuContainer {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",title=" + getTitle() +
-                    (isResizable() ? ",resizable" : "") +
-                    "," + getStateString());
+            return (super.paramString() + ",title=" + getTitle() + //$NON-NLS-1$
+                    (isResizable() ? ",resizable" : "") + //$NON-NLS-1$ //$NON-NLS-2$
+                    "," + getStateString()); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
     }
 
     private String getStateString() {
-        String str = "";
+        String str = ""; //$NON-NLS-1$
         if ( (state & NORMAL) != 0) {
-            str = "normal";
+            str = "normal"; //$NON-NLS-1$
         }
         if ( (state & ICONIFIED) != 0) {
-            str = "iconified";
+            str = "iconified"; //$NON-NLS-1$
         }
         if ( (state & MAXIMIZED_VERT) != 0) {
-            str = "maximized_vert";
+            str = "maximized_vert"; //$NON-NLS-1$
         }
         if ( (state & MAXIMIZED_HORIZ) != 0) {
-            str = "maximized_horiz";
+            str = "maximized_horiz"; //$NON-NLS-1$
         }
         if ( (state & MAXIMIZED_BOTH) != 0) {
-            str = "maximized";
+            str = "maximized"; //$NON-NLS-1$
         }
 
         return str;
@@ -548,7 +548,7 @@ public class Frame extends Window implements MenuContainer {
     @Override
     String autoName() {
         int number = toolkit.autoNumber.nextFrame++;
-        return ("frame" + Integer.toString(number));
+        return ("frame" + Integer.toString(number)); //$NON-NLS-1$
     }
 
     @Override

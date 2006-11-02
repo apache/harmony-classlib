@@ -26,6 +26,8 @@ import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Dialog extends Window {
     private static final long serialVersionUID = 5920926903803293709L;
 
@@ -140,7 +142,7 @@ public class Dialog extends Window {
     }
 
     public Dialog(Frame owner, boolean modal) {
-        this(owner, "", modal, null);
+        this(owner, "", modal, null); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -149,7 +151,7 @@ public class Dialog extends Window {
     }
 
     public Dialog(Frame owner) {
-        this(owner, "", false, null);
+        this(owner, "", false, null); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -158,7 +160,7 @@ public class Dialog extends Window {
     }
 
     public Dialog(Dialog owner) {
-        this(owner, "", false, null);
+        this(owner, "", false, null); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -170,8 +172,8 @@ public class Dialog extends Window {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return super.paramString() + ",title=" + getTitle()
-                    + (isResizable() ? ",resizable" : "") + (isModal() ? ",modal" : "");
+            return super.paramString() + ",title=" + getTitle() //$NON-NLS-1$
+                    + (isResizable() ? ",resizable" : "") + (isModal() ? ",modal" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         } finally {
             toolkit.unlockAWT();
         }
@@ -311,8 +313,8 @@ public class Dialog extends Window {
                 return;
             }
             if (isVisible()) {
-                throw new IllegalComponentStateException(
-                        "Cannot change the modality while the dialog is visible");
+                // awt.124=Cannot change the modality while the dialog is visible
+                throw new IllegalComponentStateException(Messages.getString("awt.124")); //$NON-NLS-1$
             }
             modalContext = modal ? new DialogModalContext() : null;
         } finally {
@@ -393,7 +395,7 @@ public class Dialog extends Window {
     @Override
     String autoName() {
         int number = toolkit.autoNumber.nextDialog++;
-        return "dialog" + Integer.toString(number);
+        return "dialog" + Integer.toString(number); //$NON-NLS-1$
     }
 
     @Override

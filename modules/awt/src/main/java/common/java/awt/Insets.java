@@ -77,8 +77,8 @@ public class Insets implements Cloneable, Serializable {
          */
 
         return (getClass().getName() +
-                "[left=" + left + ",top=" + top +
-                ",right=" + right + ",bottom="  + bottom + "]");
+                "[left=" + left + ",top=" + top + //$NON-NLS-1$ //$NON-NLS-2$
+                ",right=" + right + ",bottom="  + bottom + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void set(int top, int left, int bottom, int right) {

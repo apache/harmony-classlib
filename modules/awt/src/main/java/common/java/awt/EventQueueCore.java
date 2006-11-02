@@ -27,6 +27,8 @@ import java.awt.event.InvocationEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 /**
  * The events storage for EventQueue
  */
@@ -187,7 +189,8 @@ final class EventQueueCore {
     synchronized void push(EventQueue newEventQueue) {
         // TODO: handle incorrect situations
         if (queueStack.isEmpty()) {
-            throw new IllegalStateException("Queue stack is empty");
+            // awt.6B=Queue stack is empty
+            throw new IllegalStateException(Messages.getString("awt.6B")); //$NON-NLS-1$
         }
         
         queueStack.addLast(newEventQueue);
@@ -198,7 +201,8 @@ final class EventQueueCore {
     synchronized void pop() {
         EventQueue removed = queueStack.removeLast();
         if (removed != activeQueue) {
-            throw new IllegalStateException("Event queue stack is broken");
+            // awt.6C=Event queue stack is broken
+            throw new IllegalStateException(Messages.getString("awt.6C")); //$NON-NLS-1$
         }
         activeQueue = queueStack.getLast();
         removed.setCore(null);

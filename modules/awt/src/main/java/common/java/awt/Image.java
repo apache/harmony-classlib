@@ -27,6 +27,8 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.image.ReplicateScaleFilter;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class Image {
 
     public static final Object UndefinedProperty = new Object();  //$NON-LOCK-1$
@@ -74,7 +76,8 @@ public abstract class Image {
 
     public void setAccelerationPriority(float priority) {
         if (priority < 0 || priority > 1) {
-            throw new IllegalArgumentException("Priority must be a value between 0 and 1, inclusive");
+            // awt.10A=Priority must be a value between 0 and 1, inclusive
+            throw new IllegalArgumentException(Messages.getString("awt.10A")); //$NON-NLS-1$
         }
         accelerationPriority = priority;
     }

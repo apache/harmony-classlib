@@ -71,7 +71,7 @@ public class MenuShortcut implements Serializable {
                 (shiftModifier ? InputEvent.SHIFT_DOWN_MASK : 0);
 
         return KeyEvent.getKeyModifiersText(modifiers) +
-                "+" + KeyEvent.getKeyText(keyCode);
+                "+" + KeyEvent.getKeyText(keyCode); //$NON-NLS-1$
     }
 
     public int getKey() {
@@ -86,9 +86,9 @@ public class MenuShortcut implements Serializable {
          * System.out.println(obj.toString());
          */
 
-        String str = "key=" + keyCode;
+        String str = "key=" + keyCode; //$NON-NLS-1$
         if (shiftModifier) {
-            str += ",usesShiftModifier";
+            str += ",usesShiftModifier"; //$NON-NLS-1$
         }
         return str;
     }

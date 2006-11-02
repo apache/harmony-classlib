@@ -80,6 +80,7 @@ import org.apache.harmony.awt.Theme;
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.datatransfer.NativeClipboard;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.text.TextFieldKit;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.wtk.CreationParams;
@@ -95,7 +96,7 @@ import org.apache.harmony.awt.wtk.WTK;
 import org.apache.harmony.awt.wtk.WindowFactory;
 
 public abstract class Toolkit {
-    private static final String RECOURCE_PATH = "org.apache.harmony.awt.resources.AWTProperties";
+    private static final String RECOURCE_PATH = "org.apache.harmony.awt.resources.AWTProperties"; //$NON-NLS-1$
 
     private static final ResourceBundle properties = loadResources(RECOURCE_PATH);
 
@@ -429,7 +430,8 @@ public abstract class Toolkit {
 
     public static String getProperty(String propName, String defVal) {
         if (propName == null) {
-            throw new NullPointerException("Property name is null");
+            // awt.7D=Property name is null
+            throw new NullPointerException(Messages.getString("awt.7D")); //$NON-NLS-1$
         }
         staticLockAWT();
         try {
@@ -483,13 +485,13 @@ public abstract class Toolkit {
     }
 
     private static String getWTKClassName() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux";
+        String osName = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+        String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (osName.startsWith(lin)) {
-            return packageBase + "." + lin + ".LinuxWTK";
+            return packageBase + "." + lin + ".LinuxWTK"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (osName.startsWith(win)) {
-            return packageBase + "." + win + ".WinWTK";
+            return packageBase + "." + win + ".WinWTK"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return null;
     }
@@ -685,7 +687,7 @@ public abstract class Toolkit {
             unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return null;
     }
@@ -724,7 +726,8 @@ public abstract class Toolkit {
             int w = img.getWidth(null), x = hotSpot.x;
             int h = img.getHeight(null), y = hotSpot.y;
             if (x < 0 || x >= w || y < 0 || y >= h) {
-                throw new IndexOutOfBoundsException("invalid hotSpot");
+                // awt.7E=invalid hotSpot
+                throw new IndexOutOfBoundsException(Messages.getString("awt.7E")); //$NON-NLS-1$
             }
             return new Cursor(name, img, hotSpot);
         } finally {
@@ -761,7 +764,7 @@ public abstract class Toolkit {
             if (desktopProperties.isEmpty()) {
                 initializeDesktopProperties();
             }
-            if (propName.equals("awt.dynamicLayoutSupported")) {
+            if (propName.equals("awt.dynamicLayoutSupported")) { //$NON-NLS-1$
                 // dynamicLayoutSupported is special case
                 return Boolean.valueOf(isDynamicLayoutActive());
             }
@@ -784,7 +787,7 @@ public abstract class Toolkit {
             unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return true;
     }
@@ -816,7 +819,7 @@ public abstract class Toolkit {
             unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return null;
     }
@@ -948,7 +951,7 @@ public abstract class Toolkit {
             unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return;
     }
@@ -1020,7 +1023,7 @@ public abstract class Toolkit {
         CreationParams cp = new CreationParams();
         cp.child = true;
         cp.disabled = false;
-        cp.name = "EmbeddedWindow";
+        cp.name = "EmbeddedWindow"; //$NON-NLS-1$
         cp.parentId = ew.nativeWindowId;
         cp.x = 0;
         cp.y = 0;
@@ -1258,19 +1261,19 @@ public abstract class Toolkit {
     }
 
     private static Theme createTheme() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux";
+        String osName = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+        String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         PrivilegedAction<String> action = new PrivilegedAction<String>() {
             public String run() {
-                return System.getProperty("awt.theme");
+                return System.getProperty("awt.theme"); //$NON-NLS-1$
             }
         };
         String className = AccessController.doPrivileged(action);
         if (className == null) {
             if (osName.startsWith(lin)) {
-                className = packageBase + "." + lin + ".LinuxTheme";
+                className = packageBase + "." + lin + ".LinuxTheme"; //$NON-NLS-1$ //$NON-NLS-2$
             } else if (osName.startsWith(win)) {
-                className = packageBase + "." + win + ".WinTheme";
+                className = packageBase + "." + win + ".WinTheme"; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         if (className != null) {
@@ -1283,7 +1286,7 @@ public abstract class Toolkit {
     }
 
     final class AWTEventsManager {
-        AWTPermission permission = new AWTPermission("listenToAllAWTEvents");
+        AWTPermission permission = new AWTPermission("listenToAllAWTEvents"); //$NON-NLS-1$
 
         private final AWTListenerList<AWTEventListenerProxy> listeners = new AWTListenerList<AWTEventListenerProxy>();
 

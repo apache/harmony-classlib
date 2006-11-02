@@ -21,6 +21,8 @@
 
 package java.awt;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class JobAttributes implements Cloneable {
 
     private int copies;
@@ -175,7 +177,8 @@ public final class JobAttributes implements Cloneable {
 
     public void setCopies(int copies) {
         if(copies <= 0) {
-            throw new IllegalArgumentException("Invalid number of copies");
+            // awt.152=Invalid number of copies
+            throw new IllegalArgumentException(Messages.getString("awt.152")); //$NON-NLS-1$
         }
         this.copies = copies;
     }
@@ -186,7 +189,8 @@ public final class JobAttributes implements Cloneable {
 
     public void setMaxPage(int imaxPage) {
         if (imaxPage <= 0 || imaxPage < minPage) {
-            throw new IllegalArgumentException("Invalid value for maxPage");
+            // awt.153=Invalid value for maxPage
+            throw new IllegalArgumentException(Messages.getString("awt.153")); //$NON-NLS-1$
         }
         maxPage = imaxPage;
     }
@@ -197,7 +201,8 @@ public final class JobAttributes implements Cloneable {
 
     public void setMinPage(int iminPage) {
         if (iminPage <= 0 || iminPage > maxPage) {
-            throw new IllegalArgumentException("Invalid value for minPage");
+            // awt.154=Invalid value for minPage
+            throw new IllegalArgumentException(Messages.getString("awt.154")); //$NON-NLS-1$
         }
         minPage = iminPage;
     }
@@ -218,7 +223,8 @@ public final class JobAttributes implements Cloneable {
     public void setFromPage(int ifromPage) {
         if (ifromPage <= 0 || ifromPage > toPage
                 || ifromPage < minPage || ifromPage > maxPage) {
-            throw new IllegalArgumentException("Invalid value for fromPage");
+            // awt.155=Invalid value for fromPage
+            throw new IllegalArgumentException(Messages.getString("awt.155")); //$NON-NLS-1$
         }
         fromPage = ifromPage;
     }
@@ -240,7 +246,8 @@ public final class JobAttributes implements Cloneable {
         if (itoPage <= 0 || itoPage < fromPage
                 || itoPage < minPage
                 || itoPage > maxPage) {
-            throw new IllegalArgumentException("Invalid value for toPage");
+            // awt.156=Invalid value for toPage
+            throw new IllegalArgumentException(Messages.getString("awt.156")); //$NON-NLS-1$
         }
         toPage = itoPage;
     }
@@ -284,7 +291,8 @@ public final class JobAttributes implements Cloneable {
     }
 
     public void setPageRanges(int[][] pr) {
-        String msg = "Invalid value for pageRanges";
+        // awt.157=Invalid value for pageRanges
+        String msg = Messages.getString("awt.157"); //$NON-NLS-1$
         int n1 = 0;
         int n2 = 0;
         int prl = pr.length;
@@ -325,7 +333,8 @@ public final class JobAttributes implements Cloneable {
 
     public void setDestination(JobAttributes.DestinationType destination) {
         if(destination == null){
-            throw new IllegalArgumentException("Invalid value for destination");
+            // awt.158=Invalid value for destination
+            throw new IllegalArgumentException(Messages.getString("awt.158")); //$NON-NLS-1$
         }
         this.destination = destination;
     }
@@ -336,7 +345,8 @@ public final class JobAttributes implements Cloneable {
 
     public void setDialog(JobAttributes.DialogType dialog) {
         if(dialog == null) {
-            throw new IllegalArgumentException("Invalid value for dialog");
+            // awt.159=Invalid value for dialog
+            throw new IllegalArgumentException(Messages.getString("awt.159")); //$NON-NLS-1$
         }
         this.dialog = dialog;
     }
@@ -349,8 +359,8 @@ public final class JobAttributes implements Cloneable {
     public void setDefaultSelection(
             JobAttributes.DefaultSelectionType a_defaultSelection) {
         if (a_defaultSelection == null) {
-            throw new IllegalArgumentException(
-                    "Invalid value for defaultSelection");
+            // awt.15A=Invalid value for defaultSelection
+            throw new IllegalArgumentException(Messages.getString("awt.15A")); //$NON-NLS-1$
         }
         this.defaultSelection = a_defaultSelection;
     }
@@ -364,8 +374,8 @@ public final class JobAttributes implements Cloneable {
         (JobAttributes.MultipleDocumentHandlingType multipleDocumentHandling){
 
         if(multipleDocumentHandling == null) {
-            throw new IllegalArgumentException
-                        ("Invalid value for multipleDocumentHandling");
+            // awt.15B=Invalid value for multipleDocumentHandling
+            throw new IllegalArgumentException(Messages.getString("awt.15B")); //$NON-NLS-1$
         }
         multiDocHandling = multipleDocumentHandling;
     }
@@ -377,8 +387,8 @@ public final class JobAttributes implements Cloneable {
     public void setSides(JobAttributes.SidesType sides){
 
         if(sides == null) {
-            throw new IllegalArgumentException
-                        ("Invalid value for attribute sides");
+            // awt.15C=Invalid value for attribute sides
+            throw new IllegalArgumentException(Messages.getString("awt.15C")); //$NON-NLS-1$
         }
         this.sides = sides;
     }
@@ -412,25 +422,25 @@ public final class JobAttributes implements Cloneable {
          * System.out.println(new JobAttributes());
          */
 
-        String s = "Page-ranges [";
+        String s = "Page-ranges ["; //$NON-NLS-1$
         int k = pageRanges.length-1;
         for(int i = 0; i <= k ; i++)            {
-            s += pageRanges[i][0] + "-"
-               + pageRanges[i][1] + ((i < k)? ",": "");
+            s += pageRanges[i][0] + "-" //$NON-NLS-1$
+               + pageRanges[i][1] + ((i < k)? ",": ""); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        s += "], copies=" + getCopies()
-            + ",defSelection=" + getDefaultSelection()
-            + ",dest=" + getDestination()
-            + ",fromPg=" + getFromPage()
-            + ",toPg=" + getToPage()
-            + ",minPg=" + getMinPage()
-            + ",maxPg=" + getMaxPage()
-            + ",multiple-document-handling="
+        s += "], copies=" + getCopies() //$NON-NLS-1$
+            + ",defSelection=" + getDefaultSelection() //$NON-NLS-1$
+            + ",dest=" + getDestination() //$NON-NLS-1$
+            + ",fromPg=" + getFromPage() //$NON-NLS-1$
+            + ",toPg=" + getToPage() //$NON-NLS-1$
+            + ",minPg=" + getMinPage() //$NON-NLS-1$
+            + ",maxPg=" + getMaxPage() //$NON-NLS-1$
+            + ",multiple-document-handling=" //$NON-NLS-1$
             + getMultipleDocumentHandling()
-            + ",fileName=" + getFileName()
-            + ",printer=" + getPrinter()
-            + ",dialog=" + getDialog()
-            + ",sides=" + getSides();
+            + ",fileName=" + getFileName() //$NON-NLS-1$
+            + ",printer=" + getPrinter() //$NON-NLS-1$
+            + ",dialog=" + getDialog() //$NON-NLS-1$
+            + ",sides=" + getSides(); //$NON-NLS-1$
         return s;
     }
 

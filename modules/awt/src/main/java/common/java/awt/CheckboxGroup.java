@@ -46,8 +46,8 @@ public class CheckboxGroup implements Serializable {
 
         toolkit.lockAWT();
         try {
-            return (getClass().getName() + "[" +
-                    "selectedCheckbox=" + current + "]");
+            return (getClass().getName() + "[" + //$NON-NLS-1$
+                    "selectedCheckbox=" + current + "]"); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }

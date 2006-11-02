@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.NoSuchElementException;
 
 import org.apache.harmony.awt.gl.*;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class Polygon implements Shape, Serializable {
@@ -94,7 +95,8 @@ public class Polygon implements Shape, Serializable {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                // awt.110=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.110")); //$NON-NLS-1$
             }
             if (index == p.npoints) {
                 return SEG_CLOSE;
@@ -109,7 +111,8 @@ public class Polygon implements Shape, Serializable {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                // awt.110=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.110")); //$NON-NLS-1$
             }
             if (index == p.npoints) {
                 return SEG_CLOSE;
@@ -130,10 +133,12 @@ public class Polygon implements Shape, Serializable {
 
     public Polygon(int[] xpoints, int[] ypoints, int npoints) {
         if (npoints > xpoints.length || npoints > ypoints.length) {
-            throw new IndexOutOfBoundsException("Parameter npoints is greater than array length");
+            // awt.111=Parameter npoints is greater than array length
+            throw new IndexOutOfBoundsException(Messages.getString("awt.111")); //$NON-NLS-1$
         }
         if (npoints < 0) {
-            throw new NegativeArraySizeException("Negative number of points");
+            // awt.112=Negative number of points
+            throw new NegativeArraySizeException(Messages.getString("awt.112")); //$NON-NLS-1$
         }
         this.npoints = npoints;
         this.xpoints = new int[npoints];

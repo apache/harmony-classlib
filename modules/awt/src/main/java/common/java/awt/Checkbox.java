@@ -261,7 +261,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
          */
         toolkit.lockAWT();
         try {
-            return super.paramString() + ",label=" + label + ",state=" + checked;
+            return super.paramString() + ",label=" + label + ",state=" + checked; //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -443,7 +443,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
 
     @Override
     String autoName() {
-        return ("checkbox" + toolkit.autoNumber.nextCheckBox++);
+        return ("checkbox" + toolkit.autoNumber.nextCheckBox++); //$NON-NLS-1$
     }
 
     @Override
@@ -477,8 +477,8 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             ClassNotFoundException {
         stream.defaultReadObject();
         FieldsAccessor accessor = new FieldsAccessor(Button.class, this);
-        accessor.set("stateController", createStateController());
-        accessor.set("state", new State());
+        accessor.set("stateController", createStateController()); //$NON-NLS-1$
+        accessor.set("state", new State()); //$NON-NLS-1$
     }
 
     @Override

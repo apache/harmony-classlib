@@ -26,6 +26,8 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class TexturePaint implements Paint {
     /**
      * The BufferedImage object used as texture  
@@ -39,10 +41,12 @@ public class TexturePaint implements Paint {
 
     public TexturePaint(BufferedImage img, Rectangle2D anchor) {
         if (img == null) {
-            throw new NullPointerException("Image is null");
+            // awt.114=Image is null
+            throw new NullPointerException(Messages.getString("awt.114")); //$NON-NLS-1$
         }
         if (anchor == null) {
-            throw new NullPointerException("Anchor is null");
+            // awt.115=Anchor is null
+            throw new NullPointerException(Messages.getString("awt.115")); //$NON-NLS-1$
         }
         this.img = img;
         this.anchor = anchor;

@@ -27,6 +27,7 @@ import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 import javax.accessibility.AccessibleValue;
 import org.apache.harmony.awt.ScrollbarStateController;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.ScrollbarState;
 
 public class Scrollbar extends Component implements Adjustable, Accessible {
@@ -458,9 +459,9 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
          */
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",val=" + getValue() + ",vis=" + getVisibleAmount()
-                    + ",min=" + getMinimum() + ",max=" + getMaximum()
-                    + (getOrientation() == HORIZONTAL ? ",horz" : ",vert") + ",isAdjusting=" + getValueIsAdjusting());
+            return (super.paramString() + ",val=" + getValue() + ",vis=" + getVisibleAmount() //$NON-NLS-1$ //$NON-NLS-2$
+                    + ",min=" + getMinimum() + ",max=" + getMaximum() //$NON-NLS-1$ //$NON-NLS-2$
+                    + (getOrientation() == HORIZONTAL ? ",horz" : ",vert") + ",isAdjusting=" + getValueIsAdjusting()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } finally {
             toolkit.unlockAWT();
         }
@@ -517,7 +518,8 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         toolkit.lockAWT();
         try {
             if ((orientation != HORIZONTAL) && (orientation != VERTICAL)) {
-                throw new IllegalArgumentException("illegal scrollbar orientation");
+                // awt.113=illegal scrollbar orientation
+                throw new IllegalArgumentException(Messages.getString("awt.113")); //$NON-NLS-1$
             }
             this.orientation = orientation;
             doRepaint();
@@ -617,7 +619,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
 
     @Override
     String autoName() {
-        return ("scrollbar" + toolkit.autoNumber.nextScrollbar++);
+        return ("scrollbar" + toolkit.autoNumber.nextScrollbar++); //$NON-NLS-1$
     }
 
     @Override

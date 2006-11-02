@@ -193,21 +193,21 @@ public abstract class AWTEvent extends EventObject {
          * AWTEvent event = new AWTEvent(new Component(){}, 1){};
          * System.out.println(event);
          */
-        String name = "";
+        String name = ""; //$NON-NLS-1$
         if (source instanceof Component && (source != null)) {
             Component comp = (Component) getSource();
             name = comp.getName();
             if (name == null) {
-                name = "";
+                name = ""; //$NON-NLS-1$
             }
         }
-        return (getClass().getName() + "[" + paramString() + "]"
-                + " on " + (name.length() > 0 ? name : source));
+        return (getClass().getName() + "[" + paramString() + "]" //$NON-NLS-1$ //$NON-NLS-2$
+                + " on " + (name.length() > 0 ? name : source)); //$NON-NLS-1$
     }
 
     public String paramString() {
         //nothing to implement: all event types must override this method
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     protected boolean isConsumed() {

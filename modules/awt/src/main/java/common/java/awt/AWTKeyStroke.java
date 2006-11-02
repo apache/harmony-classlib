@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class AWTKeyStroke implements Serializable {
     private static final long serialVersionUID = -6430539691155161871L;
 
@@ -38,9 +40,9 @@ public class AWTKeyStroke implements Serializable {
     private static Constructor<?> subConstructor;
     
     static {
-        keyEventTypesMap.put(new Integer(KeyEvent.KEY_PRESSED), "pressed");
-        keyEventTypesMap.put(new Integer(KeyEvent.KEY_RELEASED), "released");
-        keyEventTypesMap.put(new Integer(KeyEvent.KEY_TYPED), "typed");
+        keyEventTypesMap.put(new Integer(KeyEvent.KEY_PRESSED), "pressed"); //$NON-NLS-1$
+        keyEventTypesMap.put(new Integer(KeyEvent.KEY_RELEASED), "released"); //$NON-NLS-1$
+        keyEventTypesMap.put(new Integer(KeyEvent.KEY_TYPED), "typed"); //$NON-NLS-1$
     }
 
     private char keyChar;
@@ -90,8 +92,8 @@ public class AWTKeyStroke implements Serializable {
     @Override
     public String toString() {
         int type = getKeyEventType();
-        return InputEvent.getModifiersExText(getModifiers()) + " " +
-            keyEventTypesMap.get(new Integer(type)) +  " " +
+        return InputEvent.getModifiersExText(getModifiers()) + " " + //$NON-NLS-1$
+            keyEventTypesMap.get(new Integer(type)) +  " " + //$NON-NLS-1$
             (type == KeyEvent.KEY_TYPED ? new String(new char[] {keyChar}) :
                                           KeyEvent.getKeyText(keyCode));
     }
@@ -164,7 +166,8 @@ public class AWTKeyStroke implements Serializable {
 
     public static AWTKeyStroke getAWTKeyStroke(String s) {
         if (s == null) {
-            throw new IllegalArgumentException("null argument");
+            // awt.65=null argument
+            throw new IllegalArgumentException(Messages.getString("awt.65")); //$NON-NLS-1$
         }
 
         StringTokenizer tokenizer = new StringTokenizer(s);
@@ -197,7 +200,8 @@ public class AWTKeyStroke implements Serializable {
             keyCode = parseKey(token);
         }
         if (tokenizer.hasMoreTokens()) {
-            throw new IllegalArgumentException("Invalid format");
+            // awt.66=Invalid format
+            throw new IllegalArgumentException(Messages.getString("awt.66")); //$NON-NLS-1$
         }
 
         return getAWTKeyStroke(keyChar, keyCode, modifiers,
@@ -208,17 +212,19 @@ public class AWTKeyStroke implements Serializable {
         try {
             return tokenizer.nextToken();
         } catch (NoSuchElementException exception) {
-            throw new IllegalArgumentException("Invalid format");
+            // awt.66=Invalid format
+            throw new IllegalArgumentException(Messages.getString("awt.66")); //$NON-NLS-1$
         }
     }
 
     static int getKeyCode(String s) {
         try {
-            Field vk = KeyEvent.class.getField("VK_" + s);
+            Field vk = KeyEvent.class.getField("VK_" + s); //$NON-NLS-1$
             return vk.getInt(null);
         } catch (Exception e) {
             if (s.length() != 1) {
-                throw new IllegalArgumentException("Invalid format");
+                // awt.66=Invalid format
+                throw new IllegalArgumentException(Messages.getString("awt.66")); //$NON-NLS-1$
             }
             return KeyEvent.VK_UNDEFINED;
         }
@@ -236,7 +242,8 @@ public class AWTKeyStroke implements Serializable {
 
     public static AWTKeyStroke getAWTKeyStroke(Character keyChar, int modifiers) {
         if (keyChar == null) {
-            throw new IllegalArgumentException("keyChar cannot be null");
+            // awt.01='{0}' parameter is null
+            throw new IllegalArgumentException(Messages.getString("awt.01", "keyChar")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return getAWTKeyStroke(keyChar.charValue(), KeyEvent.VK_UNDEFINED,
                                modifiers, false);
@@ -275,10 +282,12 @@ public class AWTKeyStroke implements Serializable {
 
     protected static void registerSubclass(Class<?> subclass) {
         if (subclass == null) {
-            throw new IllegalArgumentException("subclass cannot be null");
+            // awt.01='{0}' parameter is null
+            throw new IllegalArgumentException(Messages.getString("awt.01", "subclass")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (! AWTKeyStroke.class.isAssignableFrom(subclass)) {
-            throw new ClassCastException("subclass is not derived from AWTKeyStroke");
+            // awt.67=subclass is not derived from AWTKeyStroke
+            throw new ClassCastException(Messages.getString("awt.67")); //$NON-NLS-1$
         }
         try {
             subConstructor = subclass.getDeclaredConstructor();
@@ -286,35 +295,36 @@ public class AWTKeyStroke implements Serializable {
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("subclass could not be instantiated");
+            // awt.68=subclass could not be instantiated
+            throw new IllegalArgumentException(Messages.getString("awt.68")); //$NON-NLS-1$
         }
         cache.clear(); //flush the cache
     }
 
     private static long parseModifier(String strMod) {
         long modifiers = 0l;
-        if (strMod.equals("shift")) {
+        if (strMod.equals("shift")) { //$NON-NLS-1$
             modifiers |= InputEvent.SHIFT_DOWN_MASK;
-        } else if (strMod.equals("control") || strMod.equals("ctrl")) {
+        } else if (strMod.equals("control") || strMod.equals("ctrl")) { //$NON-NLS-1$ //$NON-NLS-2$
             modifiers |= InputEvent.CTRL_DOWN_MASK;
-        } else if (strMod.equals("meta")) {
+        } else if (strMod.equals("meta")) { //$NON-NLS-1$
             modifiers |= InputEvent.META_DOWN_MASK;
-        } else if (strMod.equals("alt")) {
+        } else if (strMod.equals("alt")) { //$NON-NLS-1$
             modifiers |= InputEvent.ALT_DOWN_MASK;
-        } else if (strMod.equals("altGraph")) {
+        } else if (strMod.equals("altGraph")) { //$NON-NLS-1$
             modifiers |= InputEvent.ALT_GRAPH_DOWN_MASK;
-        } else if (strMod.equals("button1")) {
+        } else if (strMod.equals("button1")) { //$NON-NLS-1$
             modifiers |= InputEvent.BUTTON1_DOWN_MASK;
-        } else if (strMod.equals("button2")) {
+        } else if (strMod.equals("button2")) { //$NON-NLS-1$
             modifiers |= InputEvent.BUTTON2_DOWN_MASK;
-        } else if (strMod.equals("button3")) {
+        } else if (strMod.equals("button3")) { //$NON-NLS-1$
             modifiers |= InputEvent.BUTTON3_DOWN_MASK;
         }
         return modifiers;
     }
 
     private static boolean parseTypedID(String strTyped) {
-        if (strTyped.equals("typed")) {
+        if (strTyped.equals("typed")) { //$NON-NLS-1$
             return true;
         }
 
@@ -325,7 +335,8 @@ public class AWTKeyStroke implements Serializable {
         char keyChar = KeyEvent.CHAR_UNDEFINED;
 
         if (strChar.length() != 1) {
-            throw new IllegalArgumentException("Invalid format");
+            // awt.66=Invalid format
+            throw new IllegalArgumentException(Messages.getString("awt.66")); //$NON-NLS-1$
         }
         keyChar = strChar.charAt(0);
         return keyChar;
@@ -333,9 +344,9 @@ public class AWTKeyStroke implements Serializable {
 
     private static Boolean parsePressedReleasedID(String str) {
 
-        if (str.equals("pressed")) {
+        if (str.equals("pressed")) { //$NON-NLS-1$
             return Boolean.FALSE;
-        } else if (str.equals("released")) {
+        } else if (str.equals("released")) { //$NON-NLS-1$
             return Boolean.TRUE;
         }
         return null;
@@ -347,7 +358,8 @@ public class AWTKeyStroke implements Serializable {
         keyCode = getKeyCode(strCode);
 
         if (keyCode == KeyEvent.VK_UNDEFINED) {
-            throw new IllegalArgumentException("Invalid format");
+            // awt.66=Invalid format
+            throw new IllegalArgumentException(Messages.getString("awt.66")); //$NON-NLS-1$
         }
         return keyCode;
     }

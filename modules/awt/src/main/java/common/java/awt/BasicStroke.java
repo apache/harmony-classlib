@@ -23,6 +23,7 @@ package java.awt;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 
 public class BasicStroke implements Stroke {
@@ -109,34 +110,42 @@ public class BasicStroke implements Stroke {
 
     public BasicStroke(float width, int cap, int join, float miterLimit, float[] dash, float dashPhase) {
         if (width < 0.0f) {
-            throw new IllegalArgumentException("Negative width");
+            // awt.133=Negative width
+            throw new IllegalArgumentException(Messages.getString("awt.133")); //$NON-NLS-1$
         }
         if (cap != CAP_BUTT && cap != CAP_ROUND && cap != CAP_SQUARE) {
-            throw new IllegalArgumentException("Illegal cap");
+            // awt.134=Illegal cap
+            throw new IllegalArgumentException(Messages.getString("awt.134")); //$NON-NLS-1$
         }
         if (join != JOIN_MITER && join != JOIN_ROUND && join != JOIN_BEVEL) {
-            throw new IllegalArgumentException("Illegal join");
+            // awt.135=Illegal join
+            throw new IllegalArgumentException(Messages.getString("awt.135")); //$NON-NLS-1$
         }
         if (join == JOIN_MITER && miterLimit < 1.0f) {
-            throw new IllegalArgumentException("miterLimit less than 1.0f");
+            // awt.136=miterLimit less than 1.0f
+            throw new IllegalArgumentException(Messages.getString("awt.136")); //$NON-NLS-1$
         }
         if (dash != null) {
             if (dashPhase < 0.0f) {
-                throw new IllegalArgumentException("Negative dashPhase");
+                // awt.137=Negative dashPhase
+                throw new IllegalArgumentException(Messages.getString("awt.137")); //$NON-NLS-1$
             }
             if (dash.length == 0) {
-                throw new IllegalArgumentException("Zero dash length");
+                // awt.138=Zero dash length
+                throw new IllegalArgumentException(Messages.getString("awt.138")); //$NON-NLS-1$
             }
             ZERO: {
                 for(int i = 0; i < dash.length; i++) {
                     if (dash[i] < 0.0) {
-                        throw new IllegalArgumentException("Negative dash[" + i + "]");
+                        // awt.139=Negative dash[{0}]
+                        throw new IllegalArgumentException(Messages.getString("awt.139", i)); //$NON-NLS-1$
                     }
                     if (dash[i] > 0.0) {
                         break ZERO;
                     }
                 }
-                throw new IllegalArgumentException("All dash lengths zero");
+                // awt.13A=All dash lengths zero
+                throw new IllegalArgumentException(Messages.getString("awt.13A")); //$NON-NLS-1$
             }
         }
         this.width = width;

@@ -41,6 +41,7 @@ import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.ListState;
 
 public class List extends Component implements ItemSelectable, Accessible {
@@ -454,7 +455,8 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
 
         public void keyPressed(KeyEvent e) {
-            assert isFocusOwner() : "Key event for unfocused component";
+            // awt.72=Key event for unfocused component
+            assert isFocusOwner() : Messages.getString("awt.72"); //$NON-NLS-1$
             int keyCode = e.getKeyCode();
             switch (keyCode) {
                 case KeyEvent.VK_UP:
@@ -735,7 +737,7 @@ public class List extends Component implements ItemSelectable, Accessible {
     public void add(String item, int index) {
         toolkit.lockAWT();
         try {
-            String str = (item != null ? item : "");
+            String str = (item != null ? item : ""); //$NON-NLS-1$
             int pos = index;
             int size = items.size();
             if ((pos < 0) || (pos > size)) {
@@ -754,7 +756,8 @@ public class List extends Component implements ItemSelectable, Accessible {
         try {
             int index = items.indexOf(item);
             if (index < 0) {
-                throw new IllegalArgumentException("no such item");
+                // awt.73=no such item
+                throw new IllegalArgumentException(Messages.getString("awt.73")); //$NON-NLS-1$
             }
             remove(index);
         } finally {
@@ -816,7 +819,7 @@ public class List extends Component implements ItemSelectable, Accessible {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",selected=" + getSelectedItem());
+            return (super.paramString() + ",selected=" + getSelectedItem()); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -1381,7 +1384,7 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     @Override
     String autoName() {
-        return ("list" + toolkit.autoNumber.nextList++);
+        return ("list" + toolkit.autoNumber.nextList++); //$NON-NLS-1$
     }
 
     Dimension getMinimumSizeImpl() {
@@ -1407,7 +1410,7 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     private Dimension getMaxCharSize(Graphics g) {
         FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
-        return getFont().getStringBounds("W", frc).getBounds().getSize();
+        return getFont().getStringBounds("W", frc).getBounds().getSize(); //$NON-NLS-1$
     }
 
     private void doRepaint(Rectangle r) {

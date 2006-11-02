@@ -22,6 +22,8 @@ package java.awt;
 
 import java.util.Locale;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class PageAttributes implements Cloneable {
     private MediaType media;
     private ColorType color;
@@ -34,9 +36,9 @@ public final class PageAttributes implements Cloneable {
     public static final class ColorType {
         private final String name;
         public static final ColorType COLOR
-                                        = new ColorType(0, "COLOR");
+                                        = new ColorType(0, "COLOR"); //$NON-NLS-1$
         public static final ColorType MONOCHROME
-                                        = new ColorType(1, "MONOCHROME");
+                                        = new ColorType(1, "MONOCHROME"); //$NON-NLS-1$
 
         private ColorType(int i, String n){
             super();
@@ -44,121 +46,121 @@ public final class PageAttributes implements Cloneable {
         }
 
         private ColorType(){
-            this(1, "MONOCHROME");
+            this(1, "MONOCHROME"); //$NON-NLS-1$
         }
     }
 
     public static final class MediaType {
         private final String name;
 
-        public static final MediaType ISO_4A0 = new MediaType(71, "ISO_4A0");
-        public static final MediaType ISO_2A0 = new MediaType(70, "ISO_2A0");
+        public static final MediaType ISO_4A0 = new MediaType(71, "ISO_4A0"); //$NON-NLS-1$
+        public static final MediaType ISO_2A0 = new MediaType(70, "ISO_2A0"); //$NON-NLS-1$
 
-        public static final MediaType ISO_A0 = new MediaType(0, "ISO_A0");
-        public static final MediaType ISO_A1 = new MediaType(1, "ISO_A1");
-        public static final MediaType ISO_A2 = new MediaType(2, "ISO_A2");
-        public static final MediaType ISO_A3 = new MediaType(3, "ISO_A3");
-        public static final MediaType ISO_A4 = new MediaType(4, "ISO_A4");
-        public static final MediaType ISO_A5 = new MediaType(5, "ISO_A5");
-        public static final MediaType ISO_A6 = new MediaType(6, "ISO_A6");
-        public static final MediaType ISO_A7 = new MediaType(7, "ISO_A7");
-        public static final MediaType ISO_A8 = new MediaType(8, "ISO_A8");
-        public static final MediaType ISO_A9 = new MediaType(9, "ISO_A9");
-        public static final MediaType ISO_A10 = new MediaType(10, "ISO_A10");
+        public static final MediaType ISO_A0 = new MediaType(0, "ISO_A0"); //$NON-NLS-1$
+        public static final MediaType ISO_A1 = new MediaType(1, "ISO_A1"); //$NON-NLS-1$
+        public static final MediaType ISO_A2 = new MediaType(2, "ISO_A2"); //$NON-NLS-1$
+        public static final MediaType ISO_A3 = new MediaType(3, "ISO_A3"); //$NON-NLS-1$
+        public static final MediaType ISO_A4 = new MediaType(4, "ISO_A4"); //$NON-NLS-1$
+        public static final MediaType ISO_A5 = new MediaType(5, "ISO_A5"); //$NON-NLS-1$
+        public static final MediaType ISO_A6 = new MediaType(6, "ISO_A6"); //$NON-NLS-1$
+        public static final MediaType ISO_A7 = new MediaType(7, "ISO_A7"); //$NON-NLS-1$
+        public static final MediaType ISO_A8 = new MediaType(8, "ISO_A8"); //$NON-NLS-1$
+        public static final MediaType ISO_A9 = new MediaType(9, "ISO_A9"); //$NON-NLS-1$
+        public static final MediaType ISO_A10 = new MediaType(10, "ISO_A10"); //$NON-NLS-1$
 
-        public static final MediaType ISO_B0 = new MediaType(10, "ISO_B0");
-        public static final MediaType ISO_B1 = new MediaType(11, "ISO_B1");
-        public static final MediaType ISO_B2 = new MediaType(12, "ISO_B2");
-        public static final MediaType ISO_B3 = new MediaType(13, "ISO_B3");
-        public static final MediaType ISO_B4 = new MediaType(14, "ISO_B4");
-        public static final MediaType ISO_B5 = new MediaType(15, "ISO_B5");
-        public static final MediaType ISO_B6 = new MediaType(16, "ISO_B6");
-        public static final MediaType ISO_B7 = new MediaType(17, "ISO_B7");
-        public static final MediaType ISO_B8 = new MediaType(18, "ISO_B8");
-        public static final MediaType ISO_B9 = new MediaType(19, "ISO_B9");
-        public static final MediaType ISO_B10 = new MediaType(20, "ISO_B10");
+        public static final MediaType ISO_B0 = new MediaType(10, "ISO_B0"); //$NON-NLS-1$
+        public static final MediaType ISO_B1 = new MediaType(11, "ISO_B1"); //$NON-NLS-1$
+        public static final MediaType ISO_B2 = new MediaType(12, "ISO_B2"); //$NON-NLS-1$
+        public static final MediaType ISO_B3 = new MediaType(13, "ISO_B3"); //$NON-NLS-1$
+        public static final MediaType ISO_B4 = new MediaType(14, "ISO_B4"); //$NON-NLS-1$
+        public static final MediaType ISO_B5 = new MediaType(15, "ISO_B5"); //$NON-NLS-1$
+        public static final MediaType ISO_B6 = new MediaType(16, "ISO_B6"); //$NON-NLS-1$
+        public static final MediaType ISO_B7 = new MediaType(17, "ISO_B7"); //$NON-NLS-1$
+        public static final MediaType ISO_B8 = new MediaType(18, "ISO_B8"); //$NON-NLS-1$
+        public static final MediaType ISO_B9 = new MediaType(19, "ISO_B9"); //$NON-NLS-1$
+        public static final MediaType ISO_B10 = new MediaType(20, "ISO_B10"); //$NON-NLS-1$
 
-        public static final MediaType JIS_B0 = new MediaType(30, "JIS_B0");
-        public static final MediaType JIS_B1 = new MediaType(31, "JIS_B1");
-        public static final MediaType JIS_B2 = new MediaType(32, "JIS_B2");
-        public static final MediaType JIS_B3 = new MediaType(33, "JIS_B3");
-        public static final MediaType JIS_B4 = new MediaType(34, "JIS_B4");
-        public static final MediaType JIS_B5 = new MediaType(35, "JIS_B5");
-        public static final MediaType JIS_B6 = new MediaType(36, "JIS_B6");
-        public static final MediaType JIS_B7 = new MediaType(37, "JIS_B7");
-        public static final MediaType JIS_B8 = new MediaType(38, "JIS_B8");
-        public static final MediaType JIS_B9 = new MediaType(39, "JIS_B9");
-        public static final MediaType JIS_B10 = new MediaType(40, "JIS_B10");
+        public static final MediaType JIS_B0 = new MediaType(30, "JIS_B0"); //$NON-NLS-1$
+        public static final MediaType JIS_B1 = new MediaType(31, "JIS_B1"); //$NON-NLS-1$
+        public static final MediaType JIS_B2 = new MediaType(32, "JIS_B2"); //$NON-NLS-1$
+        public static final MediaType JIS_B3 = new MediaType(33, "JIS_B3"); //$NON-NLS-1$
+        public static final MediaType JIS_B4 = new MediaType(34, "JIS_B4"); //$NON-NLS-1$
+        public static final MediaType JIS_B5 = new MediaType(35, "JIS_B5"); //$NON-NLS-1$
+        public static final MediaType JIS_B6 = new MediaType(36, "JIS_B6"); //$NON-NLS-1$
+        public static final MediaType JIS_B7 = new MediaType(37, "JIS_B7"); //$NON-NLS-1$
+        public static final MediaType JIS_B8 = new MediaType(38, "JIS_B8"); //$NON-NLS-1$
+        public static final MediaType JIS_B9 = new MediaType(39, "JIS_B9"); //$NON-NLS-1$
+        public static final MediaType JIS_B10 = new MediaType(40, "JIS_B10"); //$NON-NLS-1$
 
-        public static final MediaType ISO_C0 = new MediaType(50, "ISO_C0");
-        public static final MediaType ISO_C1 = new MediaType(51, "ISO_C1");
-        public static final MediaType ISO_C2 = new MediaType(52, "ISO_C2");
-        public static final MediaType ISO_C3 = new MediaType(53, "ISO_C3");
-        public static final MediaType ISO_C4 = new MediaType(54, "ISO_C4");
-        public static final MediaType ISO_C5 = new MediaType(55, "ISO_C5");
-        public static final MediaType ISO_C6 = new MediaType(56, "ISO_C6");
-        public static final MediaType ISO_C7 = new MediaType(57, "ISO_C7");
-        public static final MediaType ISO_C8 = new MediaType(58, "ISO_C8");
-        public static final MediaType ISO_C9 = new MediaType(59, "ISO_C9");
-        public static final MediaType ISO_C10 = new MediaType(60, "ISO_C10");
+        public static final MediaType ISO_C0 = new MediaType(50, "ISO_C0"); //$NON-NLS-1$
+        public static final MediaType ISO_C1 = new MediaType(51, "ISO_C1"); //$NON-NLS-1$
+        public static final MediaType ISO_C2 = new MediaType(52, "ISO_C2"); //$NON-NLS-1$
+        public static final MediaType ISO_C3 = new MediaType(53, "ISO_C3"); //$NON-NLS-1$
+        public static final MediaType ISO_C4 = new MediaType(54, "ISO_C4"); //$NON-NLS-1$
+        public static final MediaType ISO_C5 = new MediaType(55, "ISO_C5"); //$NON-NLS-1$
+        public static final MediaType ISO_C6 = new MediaType(56, "ISO_C6"); //$NON-NLS-1$
+        public static final MediaType ISO_C7 = new MediaType(57, "ISO_C7"); //$NON-NLS-1$
+        public static final MediaType ISO_C8 = new MediaType(58, "ISO_C8"); //$NON-NLS-1$
+        public static final MediaType ISO_C9 = new MediaType(59, "ISO_C9"); //$NON-NLS-1$
+        public static final MediaType ISO_C10 = new MediaType(60, "ISO_C10"); //$NON-NLS-1$
 
         public static final MediaType ISO_DESIGNATED_LONG = new MediaType(100,
-                "ISO_DESIGNATED_LONG");
+                "ISO_DESIGNATED_LONG"); //$NON-NLS-1$
 
         public static final MediaType EXECUTIVE = new MediaType(101,
-                "EXECUTIVE");
+                "EXECUTIVE"); //$NON-NLS-1$
 
-        public static final MediaType FOLIO = new MediaType(102, "FOLIO");
+        public static final MediaType FOLIO = new MediaType(102, "FOLIO"); //$NON-NLS-1$
 
-        public static final MediaType INVOICE = new MediaType(103, "INVOICE");
+        public static final MediaType INVOICE = new MediaType(103, "INVOICE"); //$NON-NLS-1$
 
-        public static final MediaType LEDGER = new MediaType(104, "LEDGER");
+        public static final MediaType LEDGER = new MediaType(104, "LEDGER"); //$NON-NLS-1$
 
         public static final MediaType NA_LETTER = new MediaType(105,
-                "NA_LETTER");
+                "NA_LETTER"); //$NON-NLS-1$
 
-        public static final MediaType NA_LEGAL = new MediaType(106, "NA_LEGAL");
+        public static final MediaType NA_LEGAL = new MediaType(106, "NA_LEGAL"); //$NON-NLS-1$
 
-        public static final MediaType QUARTO = new MediaType(107, "QUARTO");
+        public static final MediaType QUARTO = new MediaType(107, "QUARTO"); //$NON-NLS-1$
 
-        public static final MediaType A = new MediaType(200, "A");
-        public static final MediaType B = new MediaType(201, "B");
-        public static final MediaType C = new MediaType(202, "C");
-        public static final MediaType D = new MediaType(203, "D");
-        public static final MediaType E = new MediaType(204, "E");
+        public static final MediaType A = new MediaType(200, "A"); //$NON-NLS-1$
+        public static final MediaType B = new MediaType(201, "B"); //$NON-NLS-1$
+        public static final MediaType C = new MediaType(202, "C"); //$NON-NLS-1$
+        public static final MediaType D = new MediaType(203, "D"); //$NON-NLS-1$
+        public static final MediaType E = new MediaType(204, "E"); //$NON-NLS-1$
 
         public static final MediaType NA_10X15_ENVELOPE = new MediaType(311,
-                "NA_10X15_ENVELOPE");
+                "NA_10X15_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_10X14_ENVELOPE = new MediaType(310,
-                "NA_10X14_ENVELOPE");
+                "NA_10X14_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_10X13_ENVELOPE = new MediaType(309,
-                "NA_10X13_ENVELOPE");
+                "NA_10X13_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_9X12_ENVELOPE = new MediaType(308,
-                "NA_9X12_ENVELOPE");
+                "NA_9X12_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_9X11_ENVELOPE = new MediaType(307,
-                "NA_9X11_ENVELOPE");
+                "NA_9X11_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_7X9_ENVELOPE = new MediaType(306,
-                "NA_7X9_ENVELOPE");
+                "NA_7X9_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_6X9_ENVELOPE = new MediaType(305,
-                "NA_6X9_ENVELOPE");
+                "NA_6X9_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_NUMBER_9_ENVELOPE = new MediaType(
-                312, "NA_NUMBER_9_ENVELOPE");
+                312, "NA_NUMBER_9_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_NUMBER_10_ENVELOPE = new MediaType(
-                313, "NA_NUMBER_10_ENVELOPE");
+                313, "NA_NUMBER_10_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_NUMBER_11_ENVELOPE = new MediaType(
-                314, "NA_NUMBER_11_ENVELOPE");
+                314, "NA_NUMBER_11_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_NUMBER_12_ENVELOPE = new MediaType(
-                315, "NA_NUMBER_12_ENVELOPE");
+                315, "NA_NUMBER_12_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType NA_NUMBER_14_ENVELOPE = new MediaType(
-                316, "NA_NUMBER_14_ENVELOPE");
+                316, "NA_NUMBER_14_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType INVITE_ENVELOPE = new MediaType(300,
-                "INVITE_ENVELOPE");
+                "INVITE_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType ITALY_ENVELOPE = new MediaType(301,
-                "ITALY_ENVELOPE");
+                "ITALY_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType MONARCH_ENVELOPE = new MediaType(302,
-                "MONARCH_ENVELOPE");
+                "MONARCH_ENVELOPE"); //$NON-NLS-1$
         public static final MediaType PERSONAL_ENVELOPE = new MediaType(304,
-                "PERSONAL_ENVELOPE");
+                "PERSONAL_ENVELOPE"); //$NON-NLS-1$
 
         /*aliases*/
         public static final MediaType A0 = ISO_A0;
@@ -250,7 +252,7 @@ public final class PageAttributes implements Cloneable {
             name = n;
         }
         private MediaType(){
-            this(4, "ISO_A4");
+            this(4, "ISO_A4"); //$NON-NLS-1$
         }
     }
 
@@ -258,16 +260,16 @@ public final class PageAttributes implements Cloneable {
         private final String name;
 
         public static final OrientationRequestedType PORTRAIT
-                            = new OrientationRequestedType(0, "PORTRAIT");
+                            = new OrientationRequestedType(0, "PORTRAIT"); //$NON-NLS-1$
         public static final OrientationRequestedType LANDSCAPE
-                            = new OrientationRequestedType(1, "LANDSCAPE");
+                            = new OrientationRequestedType(1, "LANDSCAPE"); //$NON-NLS-1$
 
         private OrientationRequestedType(int i, String n){
             super();
             name = n;
         }
         private OrientationRequestedType(){
-            this(0, "PORTRAIT");
+            this(0, "PORTRAIT"); //$NON-NLS-1$
         }
     }
 
@@ -275,16 +277,16 @@ public final class PageAttributes implements Cloneable {
         private final String name;
 
         public static final OriginType PHYSICAL
-                            = new OriginType(0, "PHYSICAL");
+                            = new OriginType(0, "PHYSICAL"); //$NON-NLS-1$
         public static final OriginType PRINTABLE
-                            = new OriginType(1, "PRINTABLE");
+                            = new OriginType(1, "PRINTABLE"); //$NON-NLS-1$
 
         private OriginType(int i, String n){
             super();
             name = n;
         }
         private OriginType(){
-            this(0, "PHYSICAL");
+            this(0, "PHYSICAL"); //$NON-NLS-1$
         }
     }
 
@@ -292,18 +294,18 @@ public final class PageAttributes implements Cloneable {
         private final String name;
 
         public static final PrintQualityType HIGH = new PrintQualityType(5,
-                "HIGH");
+                "HIGH"); //$NON-NLS-1$
         public static final PrintQualityType NORMAL = new PrintQualityType(4,
-                "NORMAL");
+                "NORMAL"); //$NON-NLS-1$
         public static final PrintQualityType DRAFT = new PrintQualityType(2,
-                "DRAFT");
+                "DRAFT"); //$NON-NLS-1$
 
         private PrintQualityType(int i, String n){
             name = n;
         }
 
         private PrintQualityType(){
-            this(4, "NORMAL");
+            this(4, "NORMAL"); //$NON-NLS-1$
         }
     }
  /*--------------- end of section of the nested classes ------------------*/
@@ -384,12 +386,12 @@ public final class PageAttributes implements Cloneable {
          */
 
         String s;
-        s = "color=" + getColor().name  + ",media=" + getMedia().name
-        + ",orientation-requested=" + getOrientationRequested().name
-        + ",origin=" + getOrigin().name
-        + ",print-quality=" + getPrintQuality().name
-        + ",printer-resolution=" + printerResolution[0] + "x"
-        + printerResolution[1] + (printerResolution[2]==3?"dpi":"dpcm");
+        s = "color=" + getColor().name  + ",media=" + getMedia().name //$NON-NLS-1$ //$NON-NLS-2$
+        + ",orientation-requested=" + getOrientationRequested().name //$NON-NLS-1$
+        + ",origin=" + getOrigin().name //$NON-NLS-1$
+        + ",print-quality=" + getPrintQuality().name //$NON-NLS-1$
+        + ",printer-resolution=" + printerResolution[0] + "x" //$NON-NLS-1$ //$NON-NLS-2$
+        + printerResolution[1] + (printerResolution[2]==3?"dpi":"dpcm"); //$NON-NLS-1$ //$NON-NLS-2$
         return s;
     }
 
@@ -410,7 +412,8 @@ public final class PageAttributes implements Cloneable {
 
     public void setColor(PageAttributes.ColorType color) {
         if (color == null) {
-            throw new IllegalArgumentException("Invalid value for color");
+            // awt.11C=Invalid value for color
+            throw new IllegalArgumentException(Messages.getString("awt.11C")); //$NON-NLS-1$
         }
         this.color = color;
     }
@@ -421,7 +424,8 @@ public final class PageAttributes implements Cloneable {
 
     public void setMedia(PageAttributes.MediaType media) {
         if(media == null) {
-            throw new IllegalArgumentException("Invalid value for media");
+            // awt.116=Invalid value for media
+            throw new IllegalArgumentException(Messages.getString("awt.116")); //$NON-NLS-1$
         }
         this.media = media;
     }
@@ -434,8 +438,8 @@ public final class PageAttributes implements Cloneable {
             PageAttributes.OrientationRequestedType orientationRequested) {
 
         if (orientationRequested == null) {
-            throw new IllegalArgumentException(
-                    "Invalid value for orientationRequested");
+            // awt.117=Invalid value for orientationRequested
+            throw new IllegalArgumentException(Messages.getString("awt.117")); //$NON-NLS-1$
         }
         this.orientationRequested = orientationRequested;
     }
@@ -449,8 +453,8 @@ public final class PageAttributes implements Cloneable {
             setOrientationRequested(OrientationRequestedType.LANDSCAPE);
             return;
         }
-        throw new IllegalArgumentException(
-                "Invalid value for orientationRequested");
+        // awt.117=Invalid value for orientationRequested
+        throw new IllegalArgumentException(Messages.getString("awt.117")); //$NON-NLS-1$
     }
 
     public PageAttributes.OrientationRequestedType getOrientationRequested() {
@@ -459,7 +463,8 @@ public final class PageAttributes implements Cloneable {
 
     public void setOrigin(PageAttributes.OriginType origin) {
         if (origin == null) {
-            throw new IllegalArgumentException("Invalid value for origin");
+            // awt.119=Invalid value for origin
+            throw new IllegalArgumentException(Messages.getString("awt.119")); //$NON-NLS-1$
         }
         this.origin = origin;
     }
@@ -470,8 +475,8 @@ public final class PageAttributes implements Cloneable {
 
     public void setPrintQuality(PageAttributes.PrintQualityType printQuality) {
         if (printQuality == null) {
-            throw new IllegalArgumentException(
-                    "Invalid value for printQuality");
+            // awt.11A=Invalid value for printQuality
+            throw new IllegalArgumentException(Messages.getString("awt.11A")); //$NON-NLS-1$
         }
         this.printQuality = printQuality;
     }
@@ -489,7 +494,8 @@ public final class PageAttributes implements Cloneable {
             setPrintQuality(PrintQualityType.HIGH);
             return;
         }
-        throw new IllegalArgumentException("Invalid value for printQuality");
+        // awt.11A=Invalid value for printQuality
+        throw new IllegalArgumentException(Messages.getString("awt.11A")); //$NON-NLS-1$
     }
 
     public PageAttributes.PrintQualityType getPrintQuality() {
@@ -502,8 +508,8 @@ public final class PageAttributes implements Cloneable {
                 || aprinterResolution[0] <= 0
                 || aprinterResolution[1] <= 0
                 || (aprinterResolution[2] != 3 && aprinterResolution[2] != 4)) {
-            throw new IllegalArgumentException(
-                    "Invalid value for printerResolution[]");
+            // awt.11B=Invalid value for printerResolution[]
+            throw new IllegalArgumentException(Messages.getString("awt.11B")); //$NON-NLS-1$
         }
         printerResolution = new int[3];
         printerResolution[0] = aprinterResolution[0];
@@ -513,8 +519,8 @@ public final class PageAttributes implements Cloneable {
 
     public void setPrinterResolution(int iprinterResolution) {
         if (iprinterResolution <= 0) {
-            throw new IllegalArgumentException(
-                    "Invalid value for printerResolution");
+            // awt.118=Invalid value for printerResolution
+            throw new IllegalArgumentException(Messages.getString("awt.118")); //$NON-NLS-1$
         }
         printerResolution = new int[3];
         printerResolution[0] = iprinterResolution;

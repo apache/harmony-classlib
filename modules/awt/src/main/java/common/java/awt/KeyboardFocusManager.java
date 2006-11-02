@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEventPostProcessor {
     public static final int FORWARD_TRAVERSAL_KEYS = 0;
 
@@ -226,8 +228,8 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
      */
     private void checkInstance() throws SecurityException {
         if (getCurrentKeyboardFocusManager() != this) {
-            throw new SecurityException("this KeyboardFocusManager is not installed "
-                    + "in the current thread's context");
+            // awt.7C=this KeyboardFocusManager is not installed in the current thread's context
+            throw new SecurityException(Messages.getString("awt.7C")); //$NON-NLS-1$
         }
     }
 
@@ -317,7 +319,7 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         toolkit.lockAWT();
         try {
             SecurityManager secMan = System.getSecurityManager();
-            String permission = "replaceKeyboardFocusManager";
+            String permission = "replaceKeyboardFocusManager"; //$NON-NLS-1$
             if (secMan != null) {
                 secMan.checkPermission(new AWTPermission(permission));
             }
@@ -330,7 +332,7 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         if (oldManager == newManager) {
             return;
         }
-        String propName = "managingFocus";
+        String propName = "managingFocus"; //$NON-NLS-1$
         if (oldManager != null) {
             oldManager.firePropertyChange(propName, Boolean.TRUE, Boolean.FALSE);
         }
@@ -346,16 +348,16 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         String propName = null;
         switch (id) {
             case FORWARD_TRAVERSAL_KEYS:
-                propName = "forwardDefaultFocusTraversalKeys";
+                propName = "forwardDefaultFocusTraversalKeys"; //$NON-NLS-1$
                 break;
             case BACKWARD_TRAVERSAL_KEYS:
-                propName = "backwardDefaultFocusTraversalKeys";
+                propName = "backwardDefaultFocusTraversalKeys"; //$NON-NLS-1$
                 break;
             case UP_CYCLE_TRAVERSAL_KEYS:
-                propName = "upCycleDefaultFocusTraversalKeys";
+                propName = "upCycleDefaultFocusTraversalKeys"; //$NON-NLS-1$
                 break;
             case DOWN_CYCLE_TRAVERSAL_KEYS:
-                propName = "downCycleDefaultFocusTraversalKeys";
+                propName = "downCycleDefaultFocusTraversalKeys"; //$NON-NLS-1$
                 break;
         }
         firePropertyChange(propName, oldKeyStrokes, keystrokes);
@@ -363,17 +365,17 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
 
     public void setDefaultFocusTraversalPolicy(FocusTraversalPolicy defaultPolicy) {
         if (defaultPolicy == null) {
-            throw new IllegalArgumentException("default focus traversal policy"
-                    + " cannot be null");
+            // awt.77=default focus traversal policy cannot be null
+            throw new IllegalArgumentException(Messages.getString("awt.77")); //$NON-NLS-1$
         }
         FocusTraversalPolicy oldPolicy = defaultFocusTraversalPolicy;
         defaultFocusTraversalPolicy = defaultPolicy;
-        firePropertyChange("defaultFocusTraversalPolicy", oldPolicy,
+        firePropertyChange("defaultFocusTraversalPolicy", oldPolicy, //$NON-NLS-1$
                 defaultFocusTraversalPolicy);
     }
 
     protected void setGlobalActiveWindow(Window activeWindow) {
-        String propName = "activeWindow";
+        String propName = "activeWindow"; //$NON-NLS-1$
         // fire Vetoable change[before it is reflected in Java focus state],
         // catch veto exception
         try {
@@ -392,11 +394,11 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     public void setGlobalCurrentFocusCycleRoot(Container newFocusCycleRoot) {
         Container oldFocusCycleRoot = currentFocusCycleRoot;
         currentFocusCycleRoot = newFocusCycleRoot;
-        firePropertyChange("currentFocusCycleRoot", oldFocusCycleRoot, currentFocusCycleRoot);
+        firePropertyChange("currentFocusCycleRoot", oldFocusCycleRoot, currentFocusCycleRoot); //$NON-NLS-1$
     }
 
     protected void setGlobalFocusOwner(Component focusOwner) {
-        String propName = "focusOwner";
+        String propName = "focusOwner"; //$NON-NLS-1$
         // fire Vetoable change[before it is reflected in Java focus state],
         // catch veto exception
         try {
@@ -425,7 +427,7 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     }
 
     protected void setGlobalFocusedWindow(Window focusedWindow) {
-        String propName = "focusedWindow";
+        String propName = "focusedWindow"; //$NON-NLS-1$
         // fire Vetoable change[before it is reflected in Java focus state],
         // catch veto exception
         try {
@@ -444,7 +446,7 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     }
 
     protected void setGlobalPermanentFocusOwner(Component permanentFocusOwner) {
-        String propName = "permanentFocusOwner";
+        String propName = "permanentFocusOwner"; //$NON-NLS-1$
         // fire Vetoable change[before it is reflected in Java focus state],
         // catch veto exception
         try {
@@ -473,7 +475,8 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
 
     static void checkTraversalKeysID(Map<?, ?> keysMap, Integer id) {
         if (!keysMap.containsKey(id)) {
-            throw new IllegalArgumentException("invalid focus traversal key identifier");
+            // awt.78=invalid focus traversal key identifier
+            throw new IllegalArgumentException(Messages.getString("awt.78")); //$NON-NLS-1$
         }
     }
 
@@ -485,11 +488,12 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         }
         for (AWTKeyStroke key : keystrokes) {
             if (key == null) {
-                throw new IllegalArgumentException("cannot set null focus traversal key");
+                // awt.79=cannot set null focus traversal key
+                throw new IllegalArgumentException(Messages.getString("awt.79")); //$NON-NLS-1$
             } // actually throw ClassCastException ??
             if (key.getKeyEventType() == KeyEvent.KEY_TYPED) {
-                throw new IllegalArgumentException(
-                        "focus traversal keys cannot map to KEY_TYPED events");
+                // awt.7A=focus traversal keys cannot map to KEY_TYPED events
+                throw new IllegalArgumentException(Messages.getString("awt.7A")); //$NON-NLS-1$
             }
             // throw exception if such a KeyStroke is already present for
             // another id
@@ -499,8 +503,8 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
                 if ((!theID.equals(kId)) &&
                         val != null && 
                         val.contains(key)) {
-                    throw new IllegalArgumentException("focus traversal keys must be unique"
-                            + " for a Component");
+                    // awt.7B=focus traversal keys must be unique for a Component
+                    throw new IllegalArgumentException(Messages.getString("awt.7B")); //$NON-NLS-1$
                 }
             }
         }

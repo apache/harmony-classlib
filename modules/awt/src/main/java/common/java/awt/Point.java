@@ -56,7 +56,7 @@ public class Point extends Point2D implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getName() + "[x=" + x + ",y=" + y + "]";
+        return getClass().getName() + "[x=" + x + ",y=" + y + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

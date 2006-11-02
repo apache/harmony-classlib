@@ -87,7 +87,7 @@ public class MenuItem extends MenuComponent implements Accessible {
             if (i != 0) {
                 return null;
             }
-            return "click";
+            return "click"; //$NON-NLS-1$
         }
 
         public Number getCurrentAccessibleValue() {
@@ -143,7 +143,7 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
 
         public String getShortcut() {
-            return (shortcut != null ? shortcut.toString() : "");
+            return (shortcut != null ? shortcut.toString() : ""); //$NON-NLS-1$
         }
 
         public Rectangle getShortcutBounds() {
@@ -160,7 +160,7 @@ public class MenuItem extends MenuComponent implements Accessible {
 
         public boolean isSeparator() {
             String label = MenuItem.this.getLabel();
-            return label != null && label.equals("-");
+            return label != null && label.equals("-"); //$NON-NLS-1$
         }
 
         public Dimension getMenuSize() {
@@ -188,7 +188,7 @@ public class MenuItem extends MenuComponent implements Accessible {
     final State itemState = new State();
 
     public MenuItem() throws HeadlessException {
-        this("", null);
+        this("", null); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -281,15 +281,15 @@ public class MenuItem extends MenuComponent implements Accessible {
          */
         toolkit.lockAWT();
         try {
-            String result = super.paramString() + ",label=" + label;
+            String result = super.paramString() + ",label=" + label; //$NON-NLS-1$
             if (!enabled) {
-                result += ",disabled";
+                result += ",disabled"; //$NON-NLS-1$
             }
             if (actionCommand != null) {
-                result += ",command=" + actionCommand;
+                result += ",command=" + actionCommand; //$NON-NLS-1$
             }
             if (shortcut != null) {
-                result += ",shortcut=" + shortcut.toString();
+                result += ",shortcut=" + shortcut.toString(); //$NON-NLS-1$
             }
             return result;
         } finally {

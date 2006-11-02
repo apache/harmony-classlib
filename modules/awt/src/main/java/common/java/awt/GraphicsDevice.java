@@ -20,6 +20,8 @@
  */
 package java.awt;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class GraphicsDevice {
     private DisplayMode displayMode;
 
@@ -101,7 +103,8 @@ public abstract class GraphicsDevice {
 
     public void setDisplayMode(DisplayMode dm) {
         if (!isDisplayChangeSupported()) {
-            throw new UnsupportedOperationException("Does not support display mode changes");
+            // awt.122=Does not support display mode changes
+            throw new UnsupportedOperationException(Messages.getString("awt.122")); //$NON-NLS-1$
         }
 
         DisplayMode []dms = getDisplayModes();
@@ -111,7 +114,8 @@ public abstract class GraphicsDevice {
                 return;
             }
         }
-        throw new IllegalArgumentException("Unsupported display mode: "+dm);
+        // awt.123=Unsupported display mode: {0}
+        throw new IllegalArgumentException(Messages.getString("awt.123", dm)); //$NON-NLS-1$
     }
 
     public void setFullScreenWindow(Window w) {

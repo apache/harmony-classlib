@@ -69,7 +69,7 @@ public class Dimension extends Dimension2D implements Serializable {
     public String toString() {
         // The output format based on 1.5 release behaviour. It could be obtained in the following way
         // System.out.println(new Dimension().toString())
-        return getClass().getName() + "[width=" + width + ",height=" + height + "]";
+        return getClass().getName() + "[width=" + width + ",height=" + height + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setSize(int width, int height) {

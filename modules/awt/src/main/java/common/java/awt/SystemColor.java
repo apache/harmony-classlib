@@ -145,7 +145,7 @@ public final class SystemColor extends Color implements Serializable {
     private final int index;
     @Override
     public String toString() {
-        return getClass().getName() + "[index=" + index + "]";
+        return getClass().getName() + "[index=" + index + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -174,7 +174,7 @@ public final class SystemColor extends Color implements Serializable {
         stream.defaultReadObject();
 
         FieldsAccessor accessor = new FieldsAccessor(Component.class, this);
-        accessor.set("toolkit", Toolkit.getDefaultToolkit());
+        accessor.set("toolkit", Toolkit.getDefaultToolkit()); //$NON-NLS-1$
     }
 
 }

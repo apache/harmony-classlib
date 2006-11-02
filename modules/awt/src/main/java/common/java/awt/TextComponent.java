@@ -47,6 +47,8 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.Position.Bias;
+
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.TextComponentState;
 import org.apache.harmony.awt.text.AWTTextAction;
 import org.apache.harmony.awt.text.ActionNames;
@@ -173,7 +175,7 @@ public class TextComponent extends Component implements Accessible {
 
         public String getSelectedText() {
             String selText = TextComponent.this.getSelectedText();
-            return ("".equals(selText) ? null : selText);
+            return ("".equals(selText) ? null : selText); //$NON-NLS-1$
         }
 
         public String getAfterIndex(int part, int index) {
@@ -508,7 +510,7 @@ public class TextComponent extends Component implements Accessible {
         state = new State();
         editable = true;
         dispatchToIM = true; // had been disabled by createBehavior()
-        setFont(new Font("DialogInput", Font.PLAIN, 12)); // QUICK FIX
+        setFont(new Font("DialogInput", Font.PLAIN, 12)); // QUICK FIX //$NON-NLS-1$
         document = new PlainDocument();
         //        text = new StringBuffer();
         setTextKit(new TextKitImpl());
@@ -619,7 +621,7 @@ public class TextComponent extends Component implements Accessible {
         try {
             return document.getText(0, document.getLength());
         } catch (BadLocationException e) {
-            return "";
+            return ""; //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -633,9 +635,9 @@ public class TextComponent extends Component implements Accessible {
          */
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",text=" + getText()
-                    + (isEditable() ? ",editable" : "") + ",selection=" + getSelectionStart()
-                    + "-" + getSelectionEnd());
+            return (super.paramString() + ",text=" + getText() //$NON-NLS-1$
+                    + (isEditable() ? ",editable" : "") + ",selection=" + getSelectionStart() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + "-" + getSelectionEnd()); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -759,7 +761,8 @@ public class TextComponent extends Component implements Accessible {
         toolkit.lockAWT();
         try {
             if (position < 0) {
-                throw new IllegalArgumentException("position less than zero.");
+                // awt.101=position less than zero.
+                throw new IllegalArgumentException(Messages.getString("awt.101")); //$NON-NLS-1$
             }
             position = Math.min(document.getLength(), position);
         } finally {
@@ -814,7 +817,7 @@ public class TextComponent extends Component implements Accessible {
         toolkit.lockAWT();
         try {
             if (text == null) {
-                text = "";
+                text = ""; //$NON-NLS-1$
             }
         } finally {
             toolkit.unlockAWT();
@@ -1057,7 +1060,8 @@ public class TextComponent extends Component implements Accessible {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = document.getLength();
         if (pos < 0 || pos > length) {
-            throwException("No word at " + pos, pos);
+            // awt.2B=No word at {0}
+            throwException(Messages.getString("awt.2B", pos), pos); //$NON-NLS-1$
         }
         String content = document.getText(0, length);
         bi.setText(content);
@@ -1068,7 +1072,8 @@ public class TextComponent extends Component implements Accessible {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = document.getLength();
         if (pos < 0 || pos > length) {
-            throwException("No word at " + pos, pos);
+            // awt.2B=No word at {0}
+            throwException(Messages.getString("awt.2B", pos), pos); //$NON-NLS-1$
         }
         String content = null;
         content = document.getText(0, length);

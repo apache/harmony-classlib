@@ -391,7 +391,7 @@ public abstract class MenuComponent implements Serializable {
     public String toString() {
         toolkit.lockAWT();
         try {
-            return getClass().getName() + "[" + paramString() + "]";
+            return getClass().getName() + "[" + paramString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -445,7 +445,7 @@ public abstract class MenuComponent implements Serializable {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return null;
     }
@@ -696,7 +696,7 @@ public abstract class MenuComponent implements Serializable {
             i = (forward ? (i + 1) : (i + count - 1)) % count;
             i %= count;
             MenuItem item = getItem(i);
-            if (!"-".equals(item.getLabel())) {
+            if (!"-".equals(item.getLabel())) { //$NON-NLS-1$
                 selectItem(i, showSubMenu);
                 return;
             }
@@ -805,11 +805,11 @@ public abstract class MenuComponent implements Serializable {
 
     String autoName() {
         String name = getClass().getName();
-        if (name.indexOf("$") != -1) {
+        if (name.indexOf("$") != -1) { //$NON-NLS-1$
             return null;
         }
         int number = toolkit.autoNumber.nextMenuComponent++;
-        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number);
+        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number); //$NON-NLS-1$
         return name;
     }
 

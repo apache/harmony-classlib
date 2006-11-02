@@ -24,6 +24,7 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.theme.DefaultButton;
 
 public class ScrollPane extends Container implements Accessible {
@@ -162,7 +163,8 @@ public class ScrollPane extends Container implements Accessible {
                 case SCROLLBARS_NEVER:
                     break;
                 default:
-                    throw new IllegalArgumentException("illegal scrollbar " + "display policy");
+                    // awt.146=illegal scrollbar display policy
+                    throw new IllegalArgumentException(Messages.getString("awt.146")); //$NON-NLS-1$
             }
             this.scrollbarDisplayPolicy = scrollbarDisplayPolicy;
             setWheelScrollingEnabled(true);
@@ -214,22 +216,22 @@ public class ScrollPane extends Container implements Accessible {
             } catch (NullPointerException npe) {
             }
             Insets ins = getInsets();
-            String strPolicy = "";
+            String strPolicy = ""; //$NON-NLS-1$
             switch (getScrollbarDisplayPolicy()) {
                 case SCROLLBARS_ALWAYS:
-                    strPolicy = "always";
+                    strPolicy = "always"; //$NON-NLS-1$
                     break;
                 case SCROLLBARS_AS_NEEDED:
-                    strPolicy = "as-needed";
+                    strPolicy = "as-needed"; //$NON-NLS-1$
                     break;
                 case SCROLLBARS_NEVER:
-                    strPolicy = "never";
+                    strPolicy = "never"; //$NON-NLS-1$
                     break;
             }
-            return (super.paramString() + ",ScrollPosition=(" + scrollPos.x + "," + scrollPos.x
-                    + ")" + ",Insets=(" + ins.left + "," + ins.top + "," + ins.right + ","
-                    + ins.bottom + ")" + ",ScrollbarDisplayPolicy=" + strPolicy
-                    + ",wheelScrollingEnabled=" + isWheelScrollingEnabled());
+            return (super.paramString() + ",ScrollPosition=(" + scrollPos.x + "," + scrollPos.x //$NON-NLS-1$ //$NON-NLS-2$
+                    + ")" + ",Insets=(" + ins.left + "," + ins.top + "," + ins.right + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    + ins.bottom + ")" + ",ScrollbarDisplayPolicy=" + strPolicy //$NON-NLS-1$ //$NON-NLS-2$
+                    + ",wheelScrollingEnabled=" + isWheelScrollingEnabled()); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -300,7 +302,8 @@ public class ScrollPane extends Container implements Accessible {
         toolkit.lockAWT();
         try {
             if (index > 0) {
-                throw new IllegalArgumentException("position greater than 0");
+                // awt.147=position greater than 0
+                throw new IllegalArgumentException(Messages.getString("awt.147")); //$NON-NLS-1$
             }
             if (getComponentCount() > 0) {
                 remove(0);
@@ -334,7 +337,8 @@ public class ScrollPane extends Container implements Accessible {
         try {
             Component comp = getComponent();
             if (comp == null) {
-                throw new NullPointerException("child is null");
+                // awt.148=child is null
+                throw new NullPointerException(Messages.getString("awt.148")); //$NON-NLS-1$
             }
             return new Point(hAdjustable.getValue(), vAdjustable.getValue());
         } finally {
@@ -404,7 +408,8 @@ public class ScrollPane extends Container implements Accessible {
         toolkit.lockAWT();
         try {
             //don't let user set layout: throw error
-            throw new AWTError("ScrollPane controls layout");
+            // awt.149=ScrollPane controls layout
+            throw new AWTError(Messages.getString("awt.149")); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -496,7 +501,7 @@ public class ScrollPane extends Container implements Accessible {
 
     @Override
     String autoName() {
-        return ("scrollpane" + toolkit.autoNumber.nextScrollPane++);
+        return ("scrollpane" + toolkit.autoNumber.nextScrollPane++); //$NON-NLS-1$
     }
 
     Dimension calculateMinimumSize() {

@@ -23,6 +23,7 @@ import java.awt.event.InvocationEvent;
 import java.io.Serializable;
 import java.util.Collection;
 import org.apache.harmony.awt.ScrollbarStateController;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.ScrollbarState;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
@@ -278,7 +279,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
 
     @Override
     public String toString() {
-        return (getClass().getName() + "[" + paramString() + "]");
+        return (getClass().getName() + "[" + paramString() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public int getValue() {
@@ -324,21 +325,21 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
          * System.out.println(new ScrollPane().getVAdjustable());
          * System.out.println(new ScrollPane().getHAdjustable());
          */
-        String orientStr = "";
+        String orientStr = ""; //$NON-NLS-1$
         switch (orientation) {
             case Adjustable.HORIZONTAL:
-                orientStr = "horizontal";
+                orientStr = "horizontal"; //$NON-NLS-1$
                 break;
             case Adjustable.VERTICAL:
-                orientStr = "vertical";
+                orientStr = "vertical"; //$NON-NLS-1$
                 break;
             case Adjustable.NO_ORIENTATION:
-                orientStr = "no orientation";
+                orientStr = "no orientation"; //$NON-NLS-1$
                 break;
         }
-        return (orientStr + ",val=" + value + ",vis=" + visibleAmount + ",[" + minimum + ".."
-                + maximum + "]" + ",unit=" + unitIncrement + ",block=" + blockIncrement
-                + ",isAdjusting=" + valueIsAdjusting);
+        return (orientStr + ",val=" + value + ",vis=" + visibleAmount + ",[" + minimum + ".." //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + maximum + "]" + ",unit=" + unitIncrement + ",block=" + blockIncrement //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ",isAdjusting=" + valueIsAdjusting); //$NON-NLS-1$
     }
 
     public void setBlockIncrement(int b) {
@@ -346,11 +347,13 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     }
 
     public void setMaximum(int max) {
-        throw new AWTError("Can be set by scrollpane only");
+        // awt.144=Can be set by scrollpane only
+        throw new AWTError(Messages.getString("awt.144")); //$NON-NLS-1$
     }
 
     public void setMinimum(int min) {
-        throw new AWTError("Can be set by scrollpane only");
+        // awt.144=Can be set by scrollpane only
+        throw new AWTError(Messages.getString("awt.144")); //$NON-NLS-1$
     }
 
     public void setUnitIncrement(int u) {
@@ -362,7 +365,8 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     }
 
     public void setVisibleAmount(int vis) {
-        throw new AWTError("Can be set by scrollpane only");
+        // awt.144=Can be set by scrollpane only
+        throw new AWTError(Messages.getString("awt.144")); //$NON-NLS-1$
     }
 
     public void addAdjustmentListener(AdjustmentListener l) {

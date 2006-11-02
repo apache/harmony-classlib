@@ -24,6 +24,7 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeRobot;
 
 
@@ -41,11 +42,12 @@ public class Robot {
     public Robot(GraphicsDevice screen) throws AWTException {
         Toolkit.checkHeadless();
         if (screen.getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
-            throw new IllegalArgumentException("not a screen device");
+            // awt.129=Not a screen device
+            throw new IllegalArgumentException(Messages.getString("awt.129")); //$NON-NLS-1$
         }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new AWTPermission("createRobot"));
+            sm.checkPermission(new AWTPermission("createRobot")); //$NON-NLS-1$
         }
         // create(or get) native robot instance
         // for the specified screen
@@ -60,18 +62,18 @@ public class Robot {
          * System.out.println(new Robot());
          */
 
-        return getClass().getName() + "[" + "autoDelay = " + autoDelay +
-        ", autoWaitForIdle = " + autoWaitForIdle + "]";
+        return getClass().getName() + "[" + "autoDelay = " + autoDelay + //$NON-NLS-1$ //$NON-NLS-2$
+        ", autoWaitForIdle = " + autoWaitForIdle + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public BufferedImage createScreenCapture(Rectangle screenRect) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new AWTPermission("readDisplayPixels"));
+            sm.checkPermission(new AWTPermission("readDisplayPixels")); //$NON-NLS-1$
         }
         if (screenRect.isEmpty()) {
-            throw new IllegalArgumentException("Rectangle width" +
-                    " and height must be > 0");
+            // awt.13D=Rectangle width and height must be > 0
+            throw new IllegalArgumentException(Messages.getString("awt.13D")); //$NON-NLS-1$
         }
 
         return nativeRobot.createScreenCapture(screenRect);
@@ -140,8 +142,8 @@ public class Robot {
 
     public void waitForIdle() {
         if (EventQueue.isDispatchThread()) {
-            throw new IllegalThreadStateException("Cannot call method " +
-                    "from the event dispatcher thread");
+            // awt.13E=Cannot call method from the event dispatcher thread
+            throw new IllegalThreadStateException(Messages.getString("awt.13E")); //$NON-NLS-1$
         }
         try {
             EventQueue.invokeAndWait(new Runnable() {
@@ -160,7 +162,8 @@ public class Robot {
 
     private void checkDelay(int ms) {
         if ((ms < 0) || (ms > 60000)) {
-            throw new IllegalArgumentException("Delay must be to 0 to 60,000ms");
+            // awt.13F=Delay must be to 0 to 60,000ms
+            throw new IllegalArgumentException(Messages.getString("awt.13F")); //$NON-NLS-1$
         }
     }
 
@@ -168,7 +171,8 @@ public class Robot {
         int mask = (InputEvent.BUTTON1_MASK | InputEvent.BUTTON2_MASK |
                     InputEvent.BUTTON3_MASK);
         if ((buttons & mask) != buttons) {
-            throw new IllegalArgumentException("Invalid combination of button flags");
+            // awt.140=Invalid combination of button flags
+            throw new IllegalArgumentException(Messages.getString("awt.140")); //$NON-NLS-1$
         }
     }
 

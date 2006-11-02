@@ -23,6 +23,8 @@ package java.awt;
 import java.io.Serializable;
 import java.util.Hashtable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class CardLayout implements LayoutManager2, Serializable {
     private static final long serialVersionUID = -4328196481005934313L;
 
@@ -69,7 +71,7 @@ public class CardLayout implements LayoutManager2, Serializable {
 
         toolkit.lockAWT();
         try {
-            return getClass().getName() + "[hgap=" + hGap + ",vgap=" +vGap + "]";
+            return getClass().getName() + "[hgap=" + hGap + ",vgap=" +vGap + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } finally {
             toolkit.unlockAWT();
         }
@@ -158,8 +160,8 @@ public class CardLayout implements LayoutManager2, Serializable {
         toolkit.lockAWT();
         try {
             if (!String.class.isInstance(constraints)) {
-                throw new IllegalArgumentException(
-                        "AddLayoutComponent: constraint object must be String");
+                // awt.131=AddLayoutComponent: constraint object must be String
+                throw new IllegalArgumentException(Messages.getString("awt.131")); //$NON-NLS-1$
             }
             addLayoutComponent((String) constraints, comp);
         } finally {
@@ -260,7 +262,8 @@ public class CardLayout implements LayoutManager2, Serializable {
 
     private void check(Container parent) {
         if (parent.getLayout() != this) {
-            throw new IllegalArgumentException("wrong parent for CardLayout");
+            // awt.132=wrong parent for CardLayout
+            throw new IllegalArgumentException(Messages.getString("awt.132")); //$NON-NLS-1$
         }
     }
 

@@ -201,26 +201,26 @@ public class Event implements Serializable {
          * System.out.println(e);
          */
 
-        return getClass().getName() + "[" + paramString() + "]";
+        return getClass().getName() + "[" + paramString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     protected String paramString() {
-        return "id=" + id + ",x=" + x + ",y=" + y +
-        (key != 0 ? ",key=" + key  + getModifiersString() : "") +
-        ",target=" + target +
-        (arg != null ? ",arg=" + arg : "");
+        return "id=" + id + ",x=" + x + ",y=" + y + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        (key != 0 ? ",key=" + key  + getModifiersString() : "") + //$NON-NLS-1$ //$NON-NLS-2$
+        ",target=" + target + //$NON-NLS-1$
+        (arg != null ? ",arg=" + arg : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getModifiersString() {
-        String strMod = "";
+        String strMod = ""; //$NON-NLS-1$
         if (shiftDown()) {
-            strMod += ",shift";
+            strMod += ",shift"; //$NON-NLS-1$
         }
         if (controlDown()) {
-            strMod += ",control";
+            strMod += ",control"; //$NON-NLS-1$
         }
         if (metaDown()) {
-            strMod += ",meta";
+            strMod += ",meta"; //$NON-NLS-1$
         }
         return strMod;
     }

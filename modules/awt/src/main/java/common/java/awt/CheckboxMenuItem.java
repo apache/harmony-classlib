@@ -146,7 +146,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
          */
         toolkit.lockAWT();
         try {
-            return super.paramString() + (checked ? ",checked" : "");
+            return super.paramString() + (checked ? ",checked" : ""); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }

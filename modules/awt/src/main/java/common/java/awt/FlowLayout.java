@@ -88,23 +88,23 @@ public class FlowLayout implements LayoutManager, Serializable {
             String alignStr;
             switch (alignment) {
             case LEFT:
-                alignStr = "left";
+                alignStr = "left"; //$NON-NLS-1$
                 break;
             case RIGHT:
-                alignStr = "right";
+                alignStr = "right"; //$NON-NLS-1$
                 break;
             case CENTER:
-                alignStr = "center";
+                alignStr = "center"; //$NON-NLS-1$
                 break;
             case TRAILING:
-                alignStr = "trailing";
+                alignStr = "trailing"; //$NON-NLS-1$
                 break;
             case LEADING:
             default:
-                alignStr = "leading";
+                alignStr = "leading"; //$NON-NLS-1$
             }
-            return (getClass().getName() + "[hgap=" + hGap + ",vgap=" +vGap + 
-                    ",align=" + alignStr + "]");
+            return (getClass().getName() + "[hgap=" + hGap + ",vgap=" +vGap +  //$NON-NLS-1$ //$NON-NLS-2$
+                    ",align=" + alignStr + "]"); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -334,6 +334,6 @@ public class FlowLayout implements LayoutManager, Serializable {
         stream.defaultReadObject();
 
         FieldsAccessor accessor = new FieldsAccessor(FlowLayout.class, this);
-        accessor.set("toolkit", Toolkit.getDefaultToolkit());
+        accessor.set("toolkit", Toolkit.getDefaultToolkit()); //$NON-NLS-1$
     }
 }

@@ -25,6 +25,7 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.MenuState;
 
 public class Menu extends MenuItem implements MenuContainer, Accessible {
@@ -119,7 +120,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     }
 
     public Menu() throws HeadlessException {
-        this("", false);
+        this("", false); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -204,10 +205,12 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
 
     void insertImpl(MenuItem item, int index) {
         if (index < 0) {
-            throw new IllegalArgumentException("Index less than zero");
+            // awt.6F=Index less than zero
+            throw new IllegalArgumentException(Messages.getString("awt.6F")); //$NON-NLS-1$
         }
         if (item == null) {
-            throw new NullPointerException("MenuItem is null");
+            // awt.70=MenuItem is null
+            throw new NullPointerException(Messages.getString("awt.70")); //$NON-NLS-1$
         }
         MenuContainer oldParent = item.getParent();
         if (oldParent != null) {
@@ -225,7 +228,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     public String paramString() {
         toolkit.lockAWT();
         try {
-            return super.paramString() + (tearOff ? ",tearOff" : "");
+            return super.paramString() + (tearOff ? ",tearOff" : ""); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -301,7 +304,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     public void addSeparator() {
         toolkit.lockAWT();
         try {
-            add(new MenuItem("-"));
+            add(new MenuItem("-")); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -310,7 +313,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     public void insertSeparator(int index) {
         toolkit.lockAWT();
         try {
-            insert(new MenuItem("-"), index);
+            insert(new MenuItem("-"), index); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -351,7 +354,8 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
      */
     void show(int x, int y, boolean modal) {
         if (parent == null) {
-            throw new NullPointerException("Parent is null");
+            // awt.71=Parent is null
+            throw new NullPointerException(Messages.getString("awt.71")); //$NON-NLS-1$
         }
         location.x = x;
         location.y = y;

@@ -31,24 +31,25 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.harmony.awt.FieldsAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class BorderLayout implements LayoutManager2, Serializable {
     private static final long serialVersionUID = -8658291919501921765L;
 
-    public static final String BEFORE_LINE_BEGINS = "Before";
-    public static final String BEFORE_FIRST_LINE = "First";
-    public static final String AFTER_LINE_ENDS = "After";
-    public static final String AFTER_LAST_LINE = "Last";
-    public static final String LINE_START = "Before";
-    public static final String PAGE_START = "First";
-    public static final String LINE_END = "After";
-    public static final String PAGE_END = "Last";
-    public static final String CENTER = "Center";
-    public static final String NORTH = "North";
-    public static final String SOUTH = "South";
-    public static final String EAST = "East";
-    public static final String WEST = "West";
+    public static final String BEFORE_LINE_BEGINS = "Before"; //$NON-NLS-1$
+    public static final String BEFORE_FIRST_LINE = "First"; //$NON-NLS-1$
+    public static final String AFTER_LINE_ENDS = "After"; //$NON-NLS-1$
+    public static final String AFTER_LAST_LINE = "Last"; //$NON-NLS-1$
+    public static final String LINE_START = "Before"; //$NON-NLS-1$
+    public static final String PAGE_START = "First"; //$NON-NLS-1$
+    public static final String LINE_END = "After"; //$NON-NLS-1$
+    public static final String PAGE_END = "Last"; //$NON-NLS-1$
+    public static final String CENTER = "Center"; //$NON-NLS-1$
+    public static final String NORTH = "North"; //$NON-NLS-1$
+    public static final String SOUTH = "South"; //$NON-NLS-1$
+    public static final String EAST = "East"; //$NON-NLS-1$
+    public static final String WEST = "West"; //$NON-NLS-1$
 
     private static final Set<String> supportedConstraints = new HashSet<String>();
 
@@ -141,7 +142,8 @@ public class BorderLayout implements LayoutManager2, Serializable {
             } else {
                 cons = name;
                 if (!supportedConstraints.contains(cons)) {
-                    throw new IllegalArgumentException("Unsupported constraints object: " + cons);
+                    // awt.91=Unsupported constraints object: {0}
+                    throw new IllegalArgumentException(Messages.getString("awt.91", cons)); //$NON-NLS-1$
                 }
             }
 
@@ -173,7 +175,8 @@ public class BorderLayout implements LayoutManager2, Serializable {
             if ((constraints == null) || (constraints instanceof String)) {
                 addLayoutComponent((String) constraints, comp);
             } else {
-                throw new IllegalArgumentException("Constraints object must be String");
+                // awt.92=Constraints object must be String
+                throw new IllegalArgumentException(Messages.getString("awt.92")); //$NON-NLS-1$
             }
         } finally {
             toolkit.unlockAWT();
@@ -198,7 +201,8 @@ public class BorderLayout implements LayoutManager2, Serializable {
         try {
             if (!supportedConstraints.contains(constraints)) {
                 throw new IllegalArgumentException(
-                        "Unsupported constraints object: " + constraints);
+                        // awt.91=Unsupported constraints object: {0}
+                        Messages.getString("awt.91", constraints)); //$NON-NLS-1$
             }
 
             return constraints2Components.get(constraints);
@@ -220,8 +224,9 @@ public class BorderLayout implements LayoutManager2, Serializable {
         } else if (CENTER.equals(constraints)) {
             return constraints2Components.get(CENTER);
         }
-        throw new IllegalArgumentException("cannot get component: " +
-                                           "invalid constraint: " + constraints);
+        // awt.93=cannot get component: invalid constraint: {0}
+        throw new IllegalArgumentException(Messages.getString("awt.93", //$NON-NLS-1$
+                                           constraints));
     }
 
     private Component getComponent(Object relCons, Object absCons) {
@@ -356,7 +361,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
 
         toolkit.lockAWT();
         try {
-            return getClass().getName() + "[hgap=" + hGap + ",vgap=" + vGap + "]";
+            return getClass().getName() + "[hgap=" + hGap + ",vgap=" + vGap + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } finally {
             toolkit.unlockAWT();
         }
@@ -519,7 +524,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
         stream.defaultReadObject();
 
         FieldsAccessor accessor = new FieldsAccessor(BorderLayout.class, this);
-        accessor.set("toolkit", Toolkit.getDefaultToolkit());
+        accessor.set("toolkit", Toolkit.getDefaultToolkit()); //$NON-NLS-1$
     }
 
     private void forgetComponent(Component comp, Object cons) {

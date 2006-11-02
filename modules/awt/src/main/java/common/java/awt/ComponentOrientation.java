@@ -39,10 +39,10 @@ public final class ComponentOrientation implements Serializable {
     private final boolean left2right;
 
     static {
-        rlLangs.add("ar");
-        rlLangs.add("fa");
-        rlLangs.add("iw");
-        rlLangs.add("ur");
+        rlLangs.add("ar"); //$NON-NLS-1$
+        rlLangs.add("fa"); //$NON-NLS-1$
+        rlLangs.add("iw"); //$NON-NLS-1$
+        rlLangs.add("ur"); //$NON-NLS-1$
     }
 
     /**
@@ -52,7 +52,7 @@ public final class ComponentOrientation implements Serializable {
     public static ComponentOrientation getOrientation(ResourceBundle bdl) {
         Object obj = null;
         try {
-            obj = bdl.getObject("Orientation");
+            obj = bdl.getObject("Orientation"); //$NON-NLS-1$
         }
         catch (MissingResourceException mre) {
             obj = null;

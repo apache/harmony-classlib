@@ -22,6 +22,8 @@ package java.awt;
 
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class GridLayout implements LayoutManager, Serializable {
     private static final long serialVersionUID = -7411804673224730901L;   
 
@@ -60,9 +62,11 @@ public class GridLayout implements LayoutManager, Serializable {
         toolkit.lockAWT();
         try {
             if ((rows == 0) && (cols == 0)) {
-                throw new IllegalArgumentException("rows and cols cannot both be zero");
+                // awt.75=rows and cols cannot both be zero
+                throw new IllegalArgumentException(Messages.getString("awt.75")); //$NON-NLS-1$
             }
-            assert (cols >= 0) && (rows >= 0) : "rows and cols cannot be negative";
+            // awt.76=rows and cols cannot be negative
+            assert (cols >= 0) && (rows >= 0) : Messages.getString("awt.76"); //$NON-NLS-1$
 
             this.rows = rows;
             columns = cols;
@@ -83,8 +87,8 @@ public class GridLayout implements LayoutManager, Serializable {
 
         toolkit.lockAWT();
         try {
-            return (getClass().getName() + "[hgap=" + hGap + ",vgap=" + vGap
-                    + ",rows=" + rows + ",cols=" + columns + "]");
+            return (getClass().getName() + "[hgap=" + hGap + ",vgap=" + vGap //$NON-NLS-1$ //$NON-NLS-2$
+                    + ",rows=" + rows + ",cols=" + columns + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } finally {
             toolkit.unlockAWT();
         }
@@ -148,7 +152,8 @@ public class GridLayout implements LayoutManager, Serializable {
         toolkit.lockAWT();
         try {
             if ((rows == 0) && (cols == 0)) {
-                throw new IllegalArgumentException("rows and cols cannot both be zero");
+                // awt.75=rows and cols cannot both be zero
+                throw new IllegalArgumentException(Messages.getString("awt.75")); //$NON-NLS-1$
             }            
 
             columns = cols;
@@ -161,7 +166,8 @@ public class GridLayout implements LayoutManager, Serializable {
         toolkit.lockAWT();
         try {
             if ((rows == 0) && (columns == 0)) {
-                throw new IllegalArgumentException("rows and cols cannot both be zero");
+                // awt.75=rows and cols cannot both be zero
+                throw new IllegalArgumentException(Messages.getString("awt.75")); //$NON-NLS-1$
             }            
 
             this.rows = rows;

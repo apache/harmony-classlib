@@ -48,7 +48,7 @@ public class Button extends Component implements Accessible {
 
         public String getAccessibleActionDescription(int i) {
             if (i == 0) {
-                return "click";
+                return "click"; //$NON-NLS-1$
             }
             return null;
         }
@@ -155,7 +155,7 @@ public class Button extends Component implements Accessible {
     }
 
     public Button() throws HeadlessException {
-        this("");
+        this(""); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -274,8 +274,8 @@ public class Button extends Component implements Accessible {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",label=" + label + "," + (stateController
-                    .isPressed() ? "pressed" : "unpressed"));
+            return (super.paramString() + ",label=" + label + "," + (stateController //$NON-NLS-1$ //$NON-NLS-2$
+                    .isPressed() ? "pressed" : "unpressed")); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -312,7 +312,7 @@ public class Button extends Component implements Accessible {
 
     @Override
     String autoName() {
-        return ("button" + Integer.toString(toolkit.autoNumber.nextButton++));
+        return ("button" + Integer.toString(toolkit.autoNumber.nextButton++)); //$NON-NLS-1$
     }
 
     @Override
@@ -359,8 +359,8 @@ public class Button extends Component implements Accessible {
             ClassNotFoundException {
         stream.defaultReadObject();
         FieldsAccessor accessor = new FieldsAccessor(Button.class, this);
-        accessor.set("stateController", createStateController());
-        accessor.set("state", new State());
+        accessor.set("stateController", createStateController()); //$NON-NLS-1$
+        accessor.set("state", new State()); //$NON-NLS-1$
     }
 
     @Override

@@ -25,6 +25,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.VolatileImage;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class GraphicsConfiguration {
    /***************************************************************************
     *
@@ -75,7 +77,8 @@ public abstract class GraphicsConfiguration {
             ImageCapabilities caps) throws AWTException {
         VolatileImage res = createCompatibleVolatileImage(width, height);
         if (!res.getCapabilities().equals(caps)) {
-            throw new AWTException("Can not create VolatileImage with specified capabilities");
+            // awt.14A=Can not create VolatileImage with specified capabilities
+            throw new AWTException(Messages.getString("awt.14A")); //$NON-NLS-1$
         }
         return res;
     }
@@ -84,7 +87,8 @@ public abstract class GraphicsConfiguration {
             ImageCapabilities caps, int transparency) throws AWTException {
         VolatileImage res = createCompatibleVolatileImage(width, height, transparency);
         if (!res.getCapabilities().equals(caps)) {
-            throw new AWTException("Can not create VolatileImage with specified capabilities");
+            // awt.14A=Can not create VolatileImage with specified capabilities
+            throw new AWTException(Messages.getString("awt.14A")); //$NON-NLS-1$
         }
         return res;
     }

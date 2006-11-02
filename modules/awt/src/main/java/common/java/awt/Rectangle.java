@@ -310,8 +310,8 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
     public String toString() {
         // The output format based on 1.5 release behaviour. It could be obtained in the following way
         // System.out.println(new Rectangle().toString())
-        return getClass().getName() + "[x=" + x + ",y=" + y +
-            ",width=" + width + ",height=" + height + "]";
+        return getClass().getName() + "[x=" + x + ",y=" + y + //$NON-NLS-1$ //$NON-NLS-2$
+            ",width=" + width + ",height=" + height + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 }

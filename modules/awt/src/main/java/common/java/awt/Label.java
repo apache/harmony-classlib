@@ -24,6 +24,7 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.LabelState;
 
 
@@ -103,7 +104,7 @@ public class Label extends Component implements Accessible {
     }
 
     public Label() throws HeadlessException {
-        this(new String(""), LEFT);
+        this(new String(""), LEFT); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -130,21 +131,21 @@ public class Label extends Component implements Accessible {
 
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",align=" + getAlignString() +
-                    ",text=" + text);
+            return (super.paramString() + ",align=" + getAlignString() + //$NON-NLS-1$
+                    ",text=" + text); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
     }
 
     private String getAlignString() {
-        String alignStr = "left";
+        String alignStr = "left"; //$NON-NLS-1$
         switch (alignment) {
         case CENTER:
-            alignStr = "center";
+            alignStr = "center"; //$NON-NLS-1$
             break;
         case RIGHT:
-            alignStr = "right";
+            alignStr = "right"; //$NON-NLS-1$
             break;
         }
         return alignStr;
@@ -200,8 +201,9 @@ public class Label extends Component implements Accessible {
 
     private void setAlignmentImpl(int alignment) {
         if ((alignment < LEFT) || (alignment > RIGHT)) {
-            throw new IllegalArgumentException("improper alignment: " +
-                                               alignment);
+            // awt.10F=improper alignment: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.10F", //$NON-NLS-1$
+                                               alignment));
         }
         this.alignment = alignment;
     }
@@ -237,7 +239,7 @@ public class Label extends Component implements Accessible {
 
     @Override
     String autoName() {
-        return ("label" + toolkit.autoNumber.nextLabel++);
+        return ("label" + toolkit.autoNumber.nextLabel++); //$NON-NLS-1$
     }
 
     @Override

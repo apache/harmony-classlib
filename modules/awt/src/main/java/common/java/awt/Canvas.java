@@ -81,7 +81,7 @@ public class Canvas extends Component implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return;
     }
@@ -93,7 +93,7 @@ public class Canvas extends Component implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return;
     }
@@ -110,7 +110,7 @@ public class Canvas extends Component implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
         }
         return null;
     }
@@ -132,7 +132,7 @@ public class Canvas extends Component implements Accessible {
 
     @Override
     String autoName() {
-        return ("canvas" + toolkit.autoNumber.nextCanvas++);
+        return ("canvas" + toolkit.autoNumber.nextCanvas++); //$NON-NLS-1$
     }
 
     @Override

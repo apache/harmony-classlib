@@ -36,6 +36,7 @@ import javax.accessibility.AccessibleRole;
 
 import org.apache.harmony.awt.ButtonStateController;
 import org.apache.harmony.awt.ChoiceStyle;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.ChoiceState;
 
 public class Choice extends Component implements ItemSelectable, Accessible {
@@ -277,7 +278,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             if (item == null) {
-                throw new NullPointerException("item is null");
+                // awt.103=item is null
+                throw new NullPointerException(Messages.getString("awt.103")); //$NON-NLS-1$
             }
             if (items.size() == 0) {
                 selectedIndex = 0;
@@ -294,7 +296,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         try {
             int index = items.indexOf(item);
             if (index == -1) {
-                throw new IllegalArgumentException("item doesn't exist in the choice menu");
+                // awt.104=item doesn't exist in the choice menu
+                throw new IllegalArgumentException(Messages.getString("awt.104")); //$NON-NLS-1$
             }
             if (selectedIndex == index) {
                 selectedIndex = 0;
@@ -342,7 +345,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             if (index < 0) {
-                throw new IllegalArgumentException("index less than zero");
+                // awt.105=index less than zero
+                throw new IllegalArgumentException(Messages.getString("awt.105")); //$NON-NLS-1$
             }
             int idx = Math.min(items.size(), index);
             if (items.size() == 0) {
@@ -387,7 +391,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",current=" + getSelectedItem());
+            return (super.paramString() + ",current=" + getSelectedItem()); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -470,8 +474,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             if (pos >= items.size() || pos < 0) {
-                throw new IllegalArgumentException(
-                        "specified position is greater than the number of items");
+                // awt.106=specified position is greater than the number of items
+                throw new IllegalArgumentException(Messages.getString("awt.106")); //$NON-NLS-1$
             }
             selectedIndex = pos;
             repaint();
@@ -541,7 +545,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     @Override
     String autoName() {
-        return ("choice" + toolkit.autoNumber.nextChoice++);
+        return ("choice" + toolkit.autoNumber.nextChoice++); //$NON-NLS-1$
     }
 
     /**

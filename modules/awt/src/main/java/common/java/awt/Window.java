@@ -43,6 +43,7 @@ import org.apache.harmony.awt.AWTPermissionCollection;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.im.InputMethodContext;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
 public class Window extends Container implements Accessible {
@@ -154,7 +155,8 @@ public class Window extends Container implements Accessible {
         try {
             if (!(this instanceof Frame) && !(this instanceof EmbeddedWindow)) {
                 if (owner == null) {
-                    throw new IllegalArgumentException("null owner window");
+                    // awt.125=null owner window
+                    throw new IllegalArgumentException(Messages.getString("awt.125")); //$NON-NLS-1$
                 }
                 owner.addWindow(this);
             }
@@ -175,7 +177,7 @@ public class Window extends Container implements Accessible {
             setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
                     .getDefaultFocusTraversalPolicy());
             redrawManager = new RedrawManager(this);
-            setFont(new Font("dialog", Font.PLAIN, 12)); // TODO: fix it
+            setFont(new Font("dialog", Font.PLAIN, 12)); // TODO: fix it //$NON-NLS-1$
             cursor = Cursor.getDefaultCursor(); // for Window cursor is always
                                                 // set(non-null)
         } finally {
@@ -276,7 +278,7 @@ public class Window extends Container implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented");
+            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
         }
         return;
     }
@@ -288,7 +290,7 @@ public class Window extends Container implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); // TODO:
+            throw new RuntimeException("Method is not implemented"); // TODO: //$NON-NLS-1$
                                                                         // implement
         }
         return;
@@ -351,7 +353,7 @@ public class Window extends Container implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); // TODO:
+            throw new RuntimeException("Method is not implemented"); // TODO: //$NON-NLS-1$
                                                                         // implement
         }
         return null;
@@ -658,7 +660,7 @@ public class Window extends Container implements Accessible {
         }
         PrivilegedAction<String> action = new PrivilegedAction<String>() {
             public String run() {
-                return System.getProperty("awt.appletWarning", "Warning: Java window");
+                return System.getProperty("awt.appletWarning", "Warning: Java window"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         };
         return AccessController.doPrivileged(action);
@@ -728,7 +730,7 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("alwaysOnTop", wasAlwaysOnTop, alwaysOnTop);
+        firePropertyChange("alwaysOnTop", wasAlwaysOnTop, alwaysOnTop); //$NON-NLS-1$
     }
 
     /**
@@ -774,7 +776,8 @@ public class Window extends Container implements Accessible {
         toolkit.lockAWT();
         try {
             if (byPlatform && visible && behaviour.isDisplayable()) {
-                throw new IllegalComponentStateException("Window is showing");
+                // awt.126=Window is showing
+                throw new IllegalComponentStateException(Messages.getString("awt.126")); //$NON-NLS-1$
             }
             locationByPlatform = byPlatform;
         } finally {
@@ -811,7 +814,7 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusableWindowState", oldState, focusableWindowState);
+        firePropertyChange("focusableWindowState", oldState, focusableWindowState); //$NON-NLS-1$
     }
 
     /**
@@ -931,8 +934,8 @@ public class Window extends Container implements Accessible {
             return;
         }
         if (isDisplayable()) {
-            throw new IllegalComponentStateException(
-                    "Cannot change the decorations while the window is visible");
+            // awt.127=Cannot change the decorations while the window is visible
+            throw new IllegalComponentStateException(Messages.getString("awt.127")); //$NON-NLS-1$
         }
         this.undecorated = undecorated;
     }
@@ -943,8 +946,8 @@ public class Window extends Container implements Accessible {
 
     void setPopup(boolean popup) {
         if (isDisplayable()) {
-            throw new IllegalComponentStateException(
-                    "Cannot change the decorations while the window is visible");
+            // awt.127=Cannot change the decorations while the window is visible
+            throw new IllegalComponentStateException(Messages.getString("awt.127")); //$NON-NLS-1$
         }
         this.popup = popup;
     }
@@ -972,7 +975,7 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("title", oldTitle, title);
+        firePropertyChange("title", oldTitle, title); //$NON-NLS-1$
     }
 
     @Override
@@ -1014,7 +1017,7 @@ public class Window extends Container implements Accessible {
     @Override
     String autoName() {
         int number = toolkit.autoNumber.nextWindow++;
-        return "window" + Integer.toString(number);
+        return "window" + Integer.toString(number); //$NON-NLS-1$
     }
 
     public void addWindowFocusListener(WindowFocusListener l) {
@@ -1156,10 +1159,12 @@ public class Window extends Container implements Accessible {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
         } else if (GraphicsEnvironment.isHeadless()) {
-            throw new IllegalArgumentException("Graphics environment is headless");
+            // awt.128=Graphics environment is headless
+            throw new IllegalArgumentException(Messages.getString("awt.128")); //$NON-NLS-1$
         }
         if (gc.getDevice().getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
-            throw new IllegalArgumentException("Not a screen device");
+            // awt.129=Not a screen device
+            throw new IllegalArgumentException(Messages.getString("awt.129")); //$NON-NLS-1$
         }
         return gc;
     }
@@ -1242,7 +1247,7 @@ public class Window extends Container implements Accessible {
             ClassNotFoundException {
         stream.defaultReadObject();
         FieldsAccessor accessor = new FieldsAccessor(Window.class, this);
-        accessor.set("graphicsConfiguration", getGraphicsConfiguration(null));
+        accessor.set("graphicsConfiguration", getGraphicsConfiguration(null)); //$NON-NLS-1$
         visible = false;
         redrawManager = new RedrawManager(this);
     }

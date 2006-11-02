@@ -312,7 +312,7 @@ public class Font implements Serializable {
             int[] glyphCodes) {
         // TODO : to find out, how to operate with glyphcodes
         if (true) {
-            throw new RuntimeException("Method is not implemented");
+            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
         }
         return null;
     }
@@ -402,7 +402,8 @@ public class Font implements Serializable {
     public Font deriveFont(AffineTransform trans) {
 
         if (trans == null) {
-            throw new IllegalArgumentException("transform must not be null");
+            // awt.94=transform can not be null
+            throw new IllegalArgumentException(Messages.getString("awt.94")); //$NON-NLS-1$
         }
 
         Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
@@ -446,7 +447,8 @@ public class Font implements Serializable {
     public Font deriveFont(int style, AffineTransform trans) {
 
         if (trans == null) {
-            throw new IllegalArgumentException("transform must not be null");
+            // awt.94=transform can not be null
+            throw new IllegalArgumentException(Messages.getString("awt.94")); //$NON-NLS-1$
         }
         Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
 
@@ -562,8 +564,9 @@ public class Font implements Serializable {
 
     public String getFamily(Locale l) {
         if (l == null) {
+            // awt.01='{0}' parameter is null
             throw new NullPointerException(Messages.getString(
-                    "awt.01", "Locale")); //$NON-NLS-1$ 
+                    "awt.01", "Locale")); //$NON-NLS-1$ //$NON-NLS-2$ 
         }
 
         FontPeerImpl peer = (FontPeerImpl) this.getPeer();
@@ -605,6 +608,7 @@ public class Font implements Serializable {
     public LineMetrics getLineMetrics(char[] chars, int start, int end,
             FontRenderContext frc) {
         if (frc == null) {
+            // awt.00=FontRenderContext is null
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
         }
 
@@ -618,6 +622,7 @@ public class Font implements Serializable {
             int end, FontRenderContext frc) {
 
         if (frc == null){
+            // awt.00=FontRenderContext is null
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
         }
 
@@ -644,6 +649,7 @@ public class Font implements Serializable {
     public LineMetrics getLineMetrics(String str, FontRenderContext frc) {
         
         if (frc == null){
+            // awt.00=FontRenderContext is null
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
         }
         
@@ -663,14 +669,17 @@ public class Font implements Serializable {
         char[] chars;
 
         if (start < first) {
-            throw new IndexOutOfBoundsException("Wrong start index: " + start);
+            // awt.95=Wrong start index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
         }
         if ( end > finish) {
-            throw new IndexOutOfBoundsException("Wrong finish index: " + end);
+            // awt.96=Wrong finish index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
         }
         if (start > end) {
-            throw new IndexOutOfBoundsException("Wrong range length: " +
-                    (end - start));
+            // awt.97=Wrong range length: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
+                    (end - start)));
         }
 
         chars = new char[end - start];
@@ -694,14 +703,17 @@ public class Font implements Serializable {
     public Rectangle2D getStringBounds(String str, int start, int end,
             FontRenderContext frc) {
         if (start < 0) {
-            throw new IndexOutOfBoundsException("Wrong start index: " + start);
+            // awt.95=Wrong start index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
         }
         if ( end > str.length()) {
-            throw new IndexOutOfBoundsException("Wrong finish index: " + end);
+            // awt.96=Wrong finish index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
         }
         if (start > end) {
-            throw new IndexOutOfBoundsException("Wrong range length: " +
-                    (end-start));
+            // awt.97=Wrong range length: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
+                    (end-start)));
         }
 
         return this.getStringBounds((str.substring(start, end)), frc);
@@ -712,14 +724,17 @@ public class Font implements Serializable {
         int finish = chars.length;
 
         if (start < 0) {
-            throw new IndexOutOfBoundsException("Wrong start index: " + start);
+            // awt.95=Wrong start index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
         }
         if ( end > finish) {
-            throw new IndexOutOfBoundsException("Wrong finish index: " + end);
+            // awt.96=Wrong finish index: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
         }
         if (start > end) {
-            throw new IndexOutOfBoundsException("Wrong range length: "
-                    + (end - start));
+            // awt.97=Wrong range length: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
+                    (end - start)));
         }
 
         FontPeerImpl peer = (FontPeerImpl) this.getPeer();
@@ -753,6 +768,7 @@ public class Font implements Serializable {
 
     public Rectangle2D getMaxCharBounds(FontRenderContext frc) {
         if (frc == null){
+            // awt.00=FontRenderContext is null
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$ 
         }
 
@@ -775,18 +791,21 @@ public class Font implements Serializable {
         // TODO: implement method for bidirectional text.
         // At the moment only LTR and RTL texts supported.
         if (start < 0) {
-            throw new ArrayIndexOutOfBoundsException("Wrong start index: " +
-                    start);
+            // awt.95=Wrong start index: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.95", //$NON-NLS-1$
+                    start));
         }
 
         if (count < 0) {
-            throw new ArrayIndexOutOfBoundsException("Wrong count value," +
-                    "can not be negative: " + count);
+            // awt.98=Wrong count value, can not be negative: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.98", //$NON-NLS-1$
+                    count));
         }
 
         if ( start + count > chars.length) {
-            throw new ArrayIndexOutOfBoundsException("Wrong [start + count]" +
-                    "is out of range: " + (start + count));
+            // awt.99=Wrong [start + count] is out of range: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.99", //$NON-NLS-1$
+                    (start + count)));
         }
 
         char[] out = new char[count];
@@ -940,7 +959,8 @@ public class Font implements Serializable {
         byte buf[] = new byte[size];
 
         if (fontFormat != TRUETYPE_FONT) {
-            throw new IllegalArgumentException ( "Unsupported font format" );
+            // awt.9A=Unsupported font format
+            throw new IllegalArgumentException ( Messages.getString("awt.9A") ); //$NON-NLS-1$
         }
 
         /* Get font file in system-specific directory */
@@ -964,7 +984,8 @@ public class Font implements Serializable {
 
         font = Toolkit.getDefaultToolkit().getGraphicsFactory().embedFont(fontFile.getAbsolutePath());
         if ( font == null ) {
-            throw new FontFormatException ( "Can't create font - bad font data" );
+            // awt.9B=Can't create font - bad font data
+            throw new FontFormatException ( Messages.getString("awt.9B") ); //$NON-NLS-1$
         }
         return font;
     }

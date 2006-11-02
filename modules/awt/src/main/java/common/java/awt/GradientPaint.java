@@ -22,6 +22,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class GradientPaint implements Paint {
     /**
      * The start point color
@@ -52,10 +54,12 @@ public class GradientPaint implements Paint {
     public GradientPaint(Point2D point1, Color color1, Point2D point2,
             Color color2, boolean cyclic) {
         if (point1 == null || point2 == null) {
-            throw new NullPointerException("Point is null");
+            // awt.6D=Point is null
+            throw new NullPointerException(Messages.getString("awt.6D")); //$NON-NLS-1$
         }
         if (color1 == null || color2 == null) {
-            throw new NullPointerException("Color is null");
+            // awt.6E=Color is null
+            throw new NullPointerException(Messages.getString("awt.6E")); //$NON-NLS-1$
         }
 
         this.point1 = point1;

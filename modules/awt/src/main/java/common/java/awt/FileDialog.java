@@ -22,6 +22,8 @@ package java.awt;
 
 import java.io.FilenameFilter;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class FileDialog extends Dialog {
     private static final long serialVersionUID = 5035145889651310422L;
 
@@ -35,7 +37,7 @@ public class FileDialog extends Dialog {
     private FilenameFilter filenameFilter;
 
     public FileDialog(Frame owner) {
-        this(owner, "");
+        this(owner, ""); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -64,7 +66,7 @@ public class FileDialog extends Dialog {
     }
     
     public FileDialog(Dialog owner) {
-        this(owner, "");
+        this(owner, ""); //$NON-NLS-1$
         toolkit.lockAWT();
         try {
         } finally {
@@ -110,9 +112,9 @@ public class FileDialog extends Dialog {
 
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",dir=" + directory +
-                    ",file=" + file + "," +
-                    (mode == LOAD ? "load" : "save"));
+            return (super.paramString() + ",dir=" + directory + //$NON-NLS-1$
+                    ",file=" + file + "," + //$NON-NLS-1$ //$NON-NLS-2$
+                    (mode == LOAD ? "load" : "save")); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             toolkit.unlockAWT();
         }
@@ -159,7 +161,7 @@ public class FileDialog extends Dialog {
     public void setDirectory(String dir) {
         toolkit.lockAWT();
         try {
-            directory = (dir == "" ? null : dir);
+            directory = (dir == "" ? null : dir); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -168,7 +170,7 @@ public class FileDialog extends Dialog {
     public void setFile(String file) {
         toolkit.lockAWT();
         try {
-            this.file = (file == "" ? null : file);
+            this.file = (file == "" ? null : file); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -187,7 +189,8 @@ public class FileDialog extends Dialog {
         toolkit.lockAWT();
         try {
             if (!((mode == LOAD) || (mode == SAVE))) {
-                throw new IllegalArgumentException("illegal file dialog mode");
+                // awt.145=illegal file dialog mode
+                throw new IllegalArgumentException(Messages.getString("awt.145")); //$NON-NLS-1$
             }
             this.mode = mode;
         } finally {
@@ -223,7 +226,7 @@ public class FileDialog extends Dialog {
     
     @Override
     String autoName() {
-        return "filedlg" + toolkit.autoNumber.nextFileDialog++;
+        return "filedlg" + toolkit.autoNumber.nextFileDialog++; //$NON-NLS-1$
     }
 }
 
