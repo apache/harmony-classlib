@@ -72,7 +72,8 @@ public class TimeTest extends TestCase {
 	static String[][] STRING_ARRAYS = { STRING_GMT_ARRAY, STRING_LA_ARRAY,
 			STRING_JP_ARRAY };
 
-	public void testTimeintintint() {
+	@SuppressWarnings("deprecation")
+    public void testTimeintintint() {
 		Time theTime = new Time(10, 45, 20);
 
 		// The date should have been created
@@ -98,8 +99,6 @@ public class TimeTest extends TestCase {
 			String[] theTimeStrings) {
 		// Set the timezone
 		TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
-		String theTimeZoneName = TimeZone.getDefault().getDisplayName();
-		/* System.out.println("testToString: Timezone is: " + theTimeZoneName ); */
 
 		for (int i = 0; i < theTimes.length; i++) {
 			// Create the Time object
@@ -128,9 +127,9 @@ public class TimeTest extends TestCase {
 				assertEquals(theReturns[i], theReturn);
 		} // end for
 		
-        for (int i = 0; i < invalidTime.length; i++) {
+        for (String element : invalidTime) {
             try {
-                Time theReturn = Time.valueOf(invalidTime[i]);
+                Time.valueOf(element);
                 fail("Should throw IllegalArgumentException");
             } catch (IllegalArgumentException e) {
                 //expected
@@ -150,7 +149,8 @@ public class TimeTest extends TestCase {
         assertEquals(STRING_TEST2, theTime.toString());
 	} // end method testSetTime()
 
-	public void testSetDate() {
+	@SuppressWarnings("deprecation")
+    public void testSetDate() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
@@ -161,7 +161,8 @@ public class TimeTest extends TestCase {
 		} // end try
 	} // end method testSetDate()
 
-	public void testSetMonth() {
+	@SuppressWarnings("deprecation")
+    public void testSetMonth() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
@@ -172,7 +173,8 @@ public class TimeTest extends TestCase {
 		} // end try
 	} // end method testSetMonth()
 
-	public void testSetYear() {
+	@SuppressWarnings("deprecation")
+    public void testSetYear() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
@@ -183,44 +185,48 @@ public class TimeTest extends TestCase {
 		} // end try
 	} // end method testSetYear()
 
-	public void testGetDate() {
+	@SuppressWarnings("deprecation")
+    public void testGetDate() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
-			int theDate = theTime.getDate();
+			theTime.getDate();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
             //expected
 		} // end try
 	} // end method test
 
-	public void testGetDay() {
+	@SuppressWarnings("deprecation")
+    public void testGetDay() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
-			int theDay = theTime.getDay();
+			theTime.getDay();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
             //expected
 		} // end try
 	} // end method test
 
-	public void testGetMonth() {
+	@SuppressWarnings("deprecation")
+    public void testGetMonth() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
-			int theDate = theTime.getMonth();
+			theTime.getMonth();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 		    //expected
 		} // end try
 	} // end method test
 
-	public void testGetYear() {
+	@SuppressWarnings("deprecation")
+    public void testGetYear() {
 		Time theTime = new Time(TIME_TEST1);
 
 		try {
-			int theDate = theTime.getYear();
+			theTime.getYear();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException e) {
 		    //expected

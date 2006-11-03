@@ -53,15 +53,17 @@ public class ConnectionEventTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aConnectionEvent = new ConnectionEvent(init1[i], init2[i]);
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Final state mismatch", aConnectionEvent
 						.getSource(), theFinalStates1[i]);
 				assertEquals(i + "Final state mismatch", aConnectionEvent
 						.getSQLException(), theFinalStates2[i]);
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				// assertEquals( i + "Exception mismatch", e.getMessage(),
@@ -89,16 +91,18 @@ public class ConnectionEventTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aConnectionEvent = new ConnectionEvent(init1[i]);
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Final state mismatch", aConnectionEvent
 						.getSource(), theFinalStates1[i]);
 				assertEquals(i + "Final state mismatch", aConnectionEvent
 						.getSQLException(), theFinalStates2[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				// assertEquals( i + "Exception mismatch", e.getMessage(),
@@ -132,8 +136,9 @@ public class ConnectionEventTest extends TestCase {
 			try {
 				aConnectionEvent = new ConnectionEvent(init1[i], init2[i]);
 				theReturn = aConnectionEvent.getSQLException();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertTrue(theReturn.equals(theReturns[i]));
 				assertEquals(i + "Final state mismatch", aConnectionEvent
 						.getSource(), theFinalStates1[i]);
@@ -141,8 +146,9 @@ public class ConnectionEventTest extends TestCase {
 						.getSQLException(), theFinalStates2[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),

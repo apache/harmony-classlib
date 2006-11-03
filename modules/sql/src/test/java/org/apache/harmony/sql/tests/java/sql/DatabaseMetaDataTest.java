@@ -30,7 +30,7 @@ public class DatabaseMetaDataTest extends TestCase {
 	 */
 	public void testPublicStatics() {
 
-		HashMap thePublicStatics = new HashMap();
+		HashMap<String, Number> thePublicStatics = new HashMap<String, Number>();
 		thePublicStatics.put("sqlStateSQL99", new Integer(2));
 		thePublicStatics.put("sqlStateXOpen", new Integer(1));
 		thePublicStatics.put("attributeNullableUnknown", new Short((short) 2));
@@ -80,7 +80,7 @@ public class DatabaseMetaDataTest extends TestCase {
 		thePublicStatics.put("procedureNoResult", new Integer(1));
 		thePublicStatics.put("procedureResultUnknown", new Integer(0));
 
-		Class databaseMetaDataClass;
+		Class<?> databaseMetaDataClass;
 		try {
 			databaseMetaDataClass = Class.forName("java.sql.DatabaseMetaData");
 		} catch (ClassNotFoundException e) {
@@ -93,12 +93,12 @@ public class DatabaseMetaDataTest extends TestCase {
 				+ Modifier.FINAL;
 
 		int countPublicStatics = 0;
-		for (int i = 0; i < theFields.length; i++) {
-			String fieldName = theFields[i].getName();
-			int theMods = theFields[i].getModifiers();
+		for (Field element : theFields) {
+			String fieldName = element.getName();
+			int theMods = element.getModifiers();
 			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
 				try {
-					Object fieldValue = theFields[i].get(null);
+					Object fieldValue = element.get(null);
 					Object expectedValue = thePublicStatics.get(fieldName);
 					if (expectedValue == null) {
 						fail("Field " + fieldName + " missing!");

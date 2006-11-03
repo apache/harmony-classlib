@@ -46,14 +46,16 @@ public class RowSetEventTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aRowSetEvent = new RowSetEvent(init1[i]);
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Final state mismatch", aRowSetEvent
 						.getSource(), theFinalStates[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				// assertEquals( i + "Exception mismatch", e.getMessage(),

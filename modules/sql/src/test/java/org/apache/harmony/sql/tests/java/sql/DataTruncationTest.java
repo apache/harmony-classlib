@@ -60,8 +60,9 @@ public class DataTruncationTest extends TestCase {
 			try {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + "  Final state mismatch", aDataTruncation
 						.getSQLState(), theFinalStates1[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -80,8 +81,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -128,8 +130,9 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				theReturn = aDataTruncation.getIndex();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -150,8 +153,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -198,8 +202,9 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				theReturn = aDataTruncation.getParameter();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -220,8 +225,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -268,8 +274,9 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				theReturn = aDataTruncation.getRead();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -290,8 +297,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -338,8 +346,9 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				theReturn = aDataTruncation.getDataSize();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -360,8 +369,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -408,8 +418,9 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				theReturn = aDataTruncation.getTransferSize();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
@@ -430,8 +441,9 @@ public class DataTruncationTest extends TestCase {
 						.getRead(), theFinalStates8[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),

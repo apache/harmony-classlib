@@ -30,7 +30,7 @@ public class ParameterMetaDataTest extends TestCase {
 	 */
 	public void testPublicStatics() {
 
-		HashMap thePublicStatics = new HashMap();
+		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
 		thePublicStatics.put("parameterModeOut", new Integer(4));
 		thePublicStatics.put("parameterModeInOut", new Integer(2));
 		thePublicStatics.put("parameterModeIn", new Integer(1));
@@ -53,7 +53,7 @@ public class ParameterMetaDataTest extends TestCase {
 		 * ParameterMetaData.parameterNoNulls );
 		 */
 
-		Class parameterMetaDataClass;
+		Class<?> parameterMetaDataClass;
 		try {
 			parameterMetaDataClass = Class
 					.forName("java.sql.ParameterMetaData");
@@ -67,12 +67,12 @@ public class ParameterMetaDataTest extends TestCase {
 				+ Modifier.FINAL;
 
 		int countPublicStatics = 0;
-		for (int i = 0; i < theFields.length; i++) {
-			String fieldName = theFields[i].getName();
-			int theMods = theFields[i].getModifiers();
+		for (Field element : theFields) {
+			String fieldName = element.getName();
+			int theMods = element.getModifiers();
 			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
 				try {
-					Object fieldValue = theFields[i].get(null);
+					Object fieldValue = element.get(null);
 					Object expectedValue = thePublicStatics.get(fieldName);
 					if (expectedValue == null) {
 						fail("Field " + fieldName + " missing!");

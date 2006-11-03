@@ -45,11 +45,13 @@ public class TestHelper_ClassLoader extends ClassLoader {
 	 * This classloader makes the assumption that any class it is asked to load
 	 * is in the current directory....
 	 */
-	public Class findClass(String className) throws ClassNotFoundException {
-		Class theClass = null;
+	@Override
+    public Class<?> findClass(String className) throws ClassNotFoundException {
+		Class<?> theClass = null;
 
-		if (!className.equals("org.apache.harmony.sql.tests.java.sql.TestHelper_DriverManager"))
-			return null;
+		if (!className.equals("org.apache.harmony.sql.tests.java.sql.TestHelper_DriverManager")) {
+            return null;
+        }
 
 		String classNameAsFile = className.replace('.', '/') + ".class";
 		// System.out.println("findClass - class filename = " + classNameAsFile
@@ -74,24 +76,26 @@ public class TestHelper_ClassLoader extends ClassLoader {
 		return theClass;
 	} // end method findClass( String )
 
-	public Class loadClass(String className) throws ClassNotFoundException {
+	@Override
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
 		// Allowed classes:
 		String[] disallowedClasses = { "org.apache.harmony.sql.tests.java.sql.TestHelper_Driver1",
 				"org.apache.harmony.sql.tests.java.sql.TestHelper_Driver2",
 				"org.apache.harmony.sql.tests.java.sql.TestHelper_Driver4",
 				"org.apache.harmony.sql.tests.java.sql.TestHelper_Driver5" };
 
-		Class theClass;
+		Class<?> theClass;
 
 		theClass = findLoadedClass(className);
-		if (theClass != null)
-			return theClass;
+		if (theClass != null) {
+            return theClass;
+        }
 
 		theClass = this.findClass(className);
 
 		if (theClass == null) {
-			for (int i = 0; i < disallowedClasses.length; i++) {
-				if (disallowedClasses[i].equals(className)) {
+			for (String element : disallowedClasses) {
+				if (element.equals(className)) {
 					return null;
 				} // end if
 			} // end for
@@ -101,9 +105,9 @@ public class TestHelper_ClassLoader extends ClassLoader {
 		return theClass;
 	} // end method loadClass( String )
 
-	private Class loadClassFromFile(String pathName, String className,
+	private Class<?> loadClassFromFile(String pathName, String className,
 			String classNameAsFile) {
-		Class theClass = null;
+		Class<?> theClass = null;
 		FileInputStream theInput = null;
 		File theFile = null;
 		try {
@@ -116,8 +120,9 @@ public class TestHelper_ClassLoader extends ClassLoader {
 				while (dataRead < length) {
 					int count = theInput.read(theBytes, dataRead,
 							theBytes.length - dataRead);
-					if (count == -1)
-						break;
+					if (count == -1) {
+                        break;
+                    }
 					dataRead += count;
 				}
 
@@ -135,8 +140,9 @@ public class TestHelper_ClassLoader extends ClassLoader {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (theInput != null)
-					theInput.close();
+				if (theInput != null) {
+                    theInput.close();
+                }
 			} catch (Exception e) {
 			}
 		}
@@ -146,9 +152,9 @@ public class TestHelper_ClassLoader extends ClassLoader {
 	/*
 	 * Loads a named class from a specified JAR file
 	 */
-	private Class loadClassFromJar(String jarfileName, String className,
+	private Class<?> loadClassFromJar(String jarfileName, String className,
 			String classNameAsFile) {
-		Class theClass = null;
+		Class<?> theClass = null;
 
 		// First, try to open the Jar file
 		JarFile theJar = null;
@@ -166,16 +172,18 @@ public class TestHelper_ClassLoader extends ClassLoader {
 			InputStream theStream = theJar.getInputStream(theEntry);
 
 			long size = theEntry.getSize();
-			if (size < 0)
-				size = 100000;
+			if (size < 0) {
+                size = 100000;
+            }
 			byte[] theBytes = new byte[(int) size + 100];
 
 			int dataRead = 0;
 			while (dataRead < size) {
 				int count = theStream.read(theBytes, dataRead, theBytes.length
 						- dataRead);
-				if (count == -1)
-					break;
+				if (count == -1) {
+                    break;
+                }
 				dataRead += count;
 			} // end while
 
@@ -206,8 +214,9 @@ public class TestHelper_ClassLoader extends ClassLoader {
 					.println("TestHelper_ClassLoader: ClassFormatException loading class from Jar ");
 		} finally {
 			try {
-				if (theJar != null)
-					theJar.close();
+				if (theJar != null) {
+                    theJar.close();
+                }
 			} catch (Exception e) {
 			} // end try
 		} // end try

@@ -119,7 +119,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Constructor test
 	 */
-	public void testTimestampintintintintintintint() {
+	@SuppressWarnings("deprecation")
+    public void testTimestampintintintintintintint() {
 		int[][] valid = { { 99, 2, 14, 17, 52, 3, 213577212 }, // 0 valid
 				{ 0, 0, 1, 0, 0, 0, 0 }, // 1 valid
 				{ 106, 11, 31, 23, 59, 59, 999999999 }, // 2 valid
@@ -143,10 +144,10 @@ public class TimestampTest extends TestCase {
 														// negative
 		};
 
-		for (int i = 0; i < valid.length; i++) {
-            Timestamp theTimestamp = new Timestamp(valid[i][0],
-                    valid[i][1], valid[i][2], valid[i][3],
-                    valid[i][4], valid[i][5], valid[i][6]);
+		for (int[] element : valid) {
+            Timestamp theTimestamp = new Timestamp(element[0],
+                    element[1], element[2], element[3],
+                    element[4], element[5], element[6]);
             assertNotNull("Timestamp not generated: ", theTimestamp);
         } // end for
         
@@ -154,11 +155,11 @@ public class TimestampTest extends TestCase {
                 { 106, 11, 31, 23, 59, 59, 1999999999 }, 
                 { 106, 11, 31, 23, 59, 59, -999999999 },
         };
-        for (int i = 0; i < invalid.length; i++) {
+        for (int[] element : invalid) {
             try {
-                Timestamp theTimestamp = new Timestamp(invalid[i][0],
-                        invalid[i][1], invalid[i][2], invalid[i][3],
-                        invalid[i][4], invalid[i][5], invalid[i][6]);
+                new Timestamp(element[0],
+                        element[1], element[2], element[3],
+                        element[4], element[5], element[6]);
                 fail("Should throw IllegalArgumentException");
             } catch (IllegalArgumentException e) {
                 // expected
@@ -192,9 +193,9 @@ public class TimestampTest extends TestCase {
 		// First set the timezone to GMT
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-            assertEquals(TIME_ARRAY[i], theTimestamp.getTime());
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
+            assertEquals(element, theTimestamp.getTime());
 		} // end for
 
 	} // end method testgetTime
@@ -202,7 +203,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getYear
 	 */
-	public void testGetYear() {
+	@SuppressWarnings("deprecation")
+    public void testGetYear() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(YEAR_ARRAY[i], theTimestamp.getYear());
@@ -213,7 +215,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getMonth
 	 */
-	public void testGetMonth() {
+	@SuppressWarnings("deprecation")
+    public void testGetMonth() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(MONTH_ARRAY[i], theTimestamp.getMonth());
@@ -224,7 +227,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getDate
 	 */
-	public void testGetDate() {
+	@SuppressWarnings("deprecation")
+    public void testGetDate() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(DATE_ARRAY[i], theTimestamp.getDate());
@@ -235,7 +239,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getHours
 	 */
-	public void testGetHours() {
+	@SuppressWarnings("deprecation")
+    public void testGetHours() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(HOURS_ARRAY[i], theTimestamp.getHours());
@@ -246,7 +251,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getMinutes
 	 */
-	public void testGetMinutes() {
+	@SuppressWarnings("deprecation")
+    public void testGetMinutes() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(MINUTES_ARRAY[i], theTimestamp.getMinutes());
@@ -257,7 +263,8 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for getSeconds
 	 */
-	public void testGetSeconds() {
+	@SuppressWarnings("deprecation")
+    public void testGetSeconds() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(SECONDS_ARRAY[i], theTimestamp.getSeconds());
@@ -280,15 +287,15 @@ public class TimestampTest extends TestCase {
 		// Test for a string in correct format but with number values out of
 		// range
 		Timestamp theTimestamp = Timestamp.valueOf(STRING_OUTRANGE);
+        assertNotNull(theTimestamp);
 		/*
 		 * System.out.println("testValueOfString: outrange timestamp: " +
 		 * theTimestamp.toString() );
 		 */
 
-		// Now test some truly invalid strings that should cause exceptions
-		for (int i = 0; i < INVALID_STRINGS.length; i++) {
+		for (String element : INVALID_STRINGS) {
 			try {
-				Timestamp theTimestamp2 = Timestamp.valueOf(INVALID_STRINGS[i]);
+				Timestamp.valueOf(element);
 				fail("Should throw IllegalArgumentException.");
 			} catch (IllegalArgumentException e) {
                 //expected
@@ -304,7 +311,6 @@ public class TimestampTest extends TestCase {
 	public void testValueOfString1() {
 
 		Timestamp theReturn;
-		Timestamp[] theReturns = {};
 		long[] theReturnTime = { 38720231, 38720231, 80279000, -38720691,
 				38720000};
 		int[] theReturnNanos = { 231000000, 231987654, 0, 309000000, 0,};
@@ -333,9 +339,9 @@ public class TimestampTest extends TestCase {
 				assertEquals(theReturnNanos[i], theReturn.getNanos());
 		} // end for
 
-        for (int i = 0; i < invalid.length; i++) {
+        for (String element : invalid) {
             try {
-                theReturn = Timestamp.valueOf(invalid[i]);
+                theReturn = Timestamp.valueOf(element);
                 fail("Should throw IllegalArgumentException.");
             } catch (IllegalArgumentException e) {
                 //expected
@@ -402,17 +408,17 @@ public class TimestampTest extends TestCase {
 	 * Method test for equals
 	 */
 	public void testEqualsTimestamp() {
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			Timestamp theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
+			Timestamp theTimestamp2 = new Timestamp(element);
 
 			assertTrue(theTimestamp.equals(theTimestamp2));
 		} // end for
 
 		Timestamp theTest = new Timestamp(TIME_COMPARE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 			assertFalse(theTimestamp.equals(theTest));
 		} // end for
         
@@ -424,18 +430,18 @@ public class TimestampTest extends TestCase {
 	 * Method test for equals
 	 */
 	public void testEqualsObject() {
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
-			Object theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
+			Object theTimestamp2 = new Timestamp(element);
 
 			assertTrue(theTimestamp.equals(theTimestamp2));
 		} // end for
 
 		Object theTest = new Timestamp(TIME_COMPARE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertFalse(theTimestamp.equals(theTest));
 		} // end for
@@ -454,23 +460,23 @@ public class TimestampTest extends TestCase {
 	public void testBeforeTimestamp() {
 		Timestamp theTest = new Timestamp(TIME_LATE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertTrue(theTimestamp.before(theTest));
 		} // end for
 
 		theTest = new Timestamp(TIME_EARLY);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertFalse(theTimestamp.before(theTest));
 		} // end for
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			theTest = new Timestamp(TIME_ARRAY[i]);
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			theTest = new Timestamp(element);
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertFalse(theTimestamp.before(theTest));
 			theTest.setNanos(theTest.getNanos() + 1);
@@ -485,23 +491,23 @@ public class TimestampTest extends TestCase {
 	public void testAfterTimestamp() {
 		Timestamp theTest = new Timestamp(TIME_LATE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertFalse(theTimestamp.after(theTest));
 		} // end for
 
 		theTest = new Timestamp(TIME_EARLY);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertTrue(theTimestamp.after(theTest));
 		} // end for
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			theTest = new Timestamp(TIME_ARRAY[i]);
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			theTest = new Timestamp(element);
+			Timestamp theTimestamp = new Timestamp(element);
 
 			assertFalse(theTimestamp.after(theTest));
 			theTimestamp.setNanos(theTimestamp.getNanos() + 1);
@@ -513,13 +519,14 @@ public class TimestampTest extends TestCase {
 	/*
 	 * Method test for compareTo
 	 */
-	public void testCompareToTimestamp() {
+	@SuppressWarnings("deprecation")
+    public void testCompareToTimestamp() {
 		Timestamp theTest = new Timestamp(TIME_EARLY);
 		Timestamp theTest2 = new Timestamp(TIME_LATE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			Timestamp theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
+			Timestamp theTimestamp2 = new Timestamp(element);
 
 			assertTrue(theTimestamp.compareTo(theTest) > 0);
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);
@@ -553,9 +560,9 @@ public class TimestampTest extends TestCase {
 		Date theTest = new Timestamp(TIME_EARLY);
 		Date theTest2 = new Timestamp(TIME_LATE);
 
-		for (int i = 0; i < TIME_ARRAY.length; i++) {
-			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			Date theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
+		for (long element : TIME_ARRAY) {
+			Timestamp theTimestamp = new Timestamp(element);
+			Date theTimestamp2 = new Timestamp(element);
 
 			assertTrue(theTimestamp.compareTo(theTest) > 0);
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);

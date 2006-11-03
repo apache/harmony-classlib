@@ -66,7 +66,8 @@ public class DriverManagerTest extends TestCase {
 	// Static initializer to load the drivers so that they are available to all
 	// the
 	// test methods as needed.
-	public void setUp() {
+	@Override
+    public void setUp() {
 		numberLoaded = loadDrivers();
 	} // end setUp()
 
@@ -98,9 +99,8 @@ public class DriverManagerTest extends TestCase {
 		// TODO - need to load a driver with a different classloader!!
 		aDriver = DriverManager.getDriver(baseURL1);
 
-		TestHelper_DriverManager testHelper;
 		try {
-			Class driverClass = Class.forName(
+			Class<?> driverClass = Class.forName(
 					"org.apache.harmony.sql.tests.java.sql.TestHelper_DriverManager", true,
 					testClassLoader);
 
@@ -125,17 +125,18 @@ public class DriverManagerTest extends TestCase {
 	} // end method testDeregisterDriver()
 
 	static void printClassLoader(Object theObject) {
-		Class theClass = theObject.getClass();
+		Class<? extends Object> theClass = theObject.getClass();
 		ClassLoader theClassLoader = theClass.getClassLoader();
 		System.out.println("ClassLoader is: " + theClassLoader.toString()
 				+ " for object: " + theObject.toString());
 	} // end method printClassLoader( Object )
 
 	static boolean isDriverLoaded(Driver theDriver) {
-		Enumeration driverList = DriverManager.getDrivers();
+		Enumeration<?> driverList = DriverManager.getDrivers();
 		while (driverList.hasMoreElements()) {
-			if ((Driver) driverList.nextElement() == theDriver)
-				return true;
+			if ((Driver) driverList.nextElement() == theDriver) {
+                return true;
+            }
 		} // end while
 		return false;
 	} // end method isDriverLoaded( Driver )
@@ -164,11 +165,10 @@ public class DriverManagerTest extends TestCase {
 		theConnection = DriverManager.getConnection(validConnectionURL);
 		assertNotNull(theConnection);
 
-		// invalid connections
-		for (int i = 0; i < invalidConnectionURLs.length; i++) {
+		for (String element : invalidConnectionURLs) {
 			try {
 				theConnection = DriverManager
-						.getConnection(invalidConnectionURLs[i]);
+						.getConnection(element);
 				fail("Should throw SQLException");
 			} catch (SQLException e) {
                 //expected
@@ -264,10 +264,8 @@ public class DriverManagerTest extends TestCase {
                 validpassword1);
         assertNotNull(theConnection);
 
-		// invalid Connections
-		for (int i = 0; i < invalid.length; i++) {
+		for (String[] theData : invalid) {
 			theConnection = null;
-			String[] theData = invalid[i];
 			try {
 				theConnection = DriverManager.getConnection(theData[0],
 						theData[1], theData[2]);
@@ -293,15 +291,14 @@ public class DriverManagerTest extends TestCase {
 	static String exceptionMsg1 = "No suitable driver";
 
 	public void testGetDriver() throws SQLException {
-		// valid URLs
-		for (int i = 0; i < validURLs.length; i++) {
-            Driver validDriver = DriverManager.getDriver(validURLs[i]);
+		for (String element : validURLs) {
+            Driver validDriver = DriverManager.getDriver(element);
+            assertNotNull(validDriver);
         } // end for
 
-		// invalid URLs
-		for (int i = 0; i < invalidURLs.length; i++) {
+		for (String element : invalidURLs) {
 			try {
-				Driver invalidDriver = DriverManager.getDriver(invalidURLs[i]);
+				DriverManager.getDriver(element);
                 fail("Should throw SQLException");
 			} catch (SQLException e) {
                 assertEquals("08001", e.getSQLState());
@@ -313,10 +310,11 @@ public class DriverManagerTest extends TestCase {
 
 	public void testGetDrivers() {
 		// Load a driver manager
-		Enumeration driverList = DriverManager.getDrivers();
+		Enumeration<Driver> driverList = DriverManager.getDrivers();
 		int i = 0;
 		while (driverList.hasMoreElements()) {
-			Driver theDriver = (Driver) driverList.nextElement();
+			Driver theDriver = driverList.nextElement();
+            assertNotNull(theDriver);
 			i++;
 		} // end while
 
@@ -334,7 +332,8 @@ public class DriverManagerTest extends TestCase {
 		assertEquals(timeout1, DriverManager.getLoginTimeout());
 	} // end method testGetLoginTimeout()
 
-	public void testGetLogStream() {
+	@SuppressWarnings("deprecation")
+    public void testGetLogStream() {
 		assertNull(DriverManager.getLogStream());
 
 		DriverManager.setLogStream(testPrintStream);
@@ -355,7 +354,8 @@ public class DriverManagerTest extends TestCase {
 
 	static String testMessage = "DriverManagerTest: test message for print stream";
 
-	public void testPrintln() {
+	@SuppressWarnings("deprecation")
+    public void testPrintln() {
 		// System.out.println("testPrintln");
 		DriverManager.println(testMessage);
 
@@ -391,7 +391,7 @@ public class DriverManagerTest extends TestCase {
 
         Driver theDriver = null;
         // Load another Driver that isn't in the basic set
-        Class driverClass = Class.forName(EXTRA_DRIVER_NAME);
+        Class<?> driverClass = Class.forName(EXTRA_DRIVER_NAME);
         theDriver = (Driver) driverClass.newInstance();
         DriverManager.registerDriver(theDriver);
 
@@ -409,11 +409,10 @@ public class DriverManagerTest extends TestCase {
 	static int invalidTimeout1 = -10;
 
 	public void testSetLoginTimeout() {
-		// Valid timeouts
-		for (int i = 0; i < validTimeouts.length; i++) {
-			DriverManager.setLoginTimeout(validTimeouts[i]);
+		for (int element : validTimeouts) {
+			DriverManager.setLoginTimeout(element);
 
-			assertEquals(validTimeouts[i], DriverManager.getLoginTimeout());
+			assertEquals(element, DriverManager.getLoginTimeout());
 		} // end for
 		// Invalid timeouts
 		DriverManager.setLoginTimeout(invalidTimeout1);
@@ -424,7 +423,8 @@ public class DriverManagerTest extends TestCase {
 
 	static PrintStream testPrintStream = new PrintStream(outputStream2);
 
-	public void testSetLogStream() {
+	@SuppressWarnings("deprecation")
+    public void testSetLogStream() {
 		// System.out.println("testSetLogStream");
 		DriverManager.setLogStream(testPrintStream);
 
@@ -500,8 +500,9 @@ public class DriverManagerTest extends TestCase {
 	static boolean driversLoaded = false;
 
 	private static int loadDrivers() {
-		if (driversLoaded)
-			return numberLoaded;
+		if (driversLoaded) {
+            return numberLoaded;
+        }
 		/*
 		 * First define a value for the System property "jdbc.drivers" - before
 		 * the DriverManager class is loaded - this property defines a set of
@@ -516,18 +517,16 @@ public class DriverManagerTest extends TestCase {
 		System.setProperty(JDBC_PROPERTY, theSystemDrivers);
 		numberLoaded += 2;
 
-		/*
-		 * Next, dynamically load a set of drivers
-		 */
-		for (int i = 0; i < driverNames.length; i++) {
+		for (String element : driverNames) {
 			try {
-				Class driverClass = Class.forName(driverNames[i]);
+				Class<?> driverClass = Class.forName(element);
+                assertNotNull(driverClass);
 				// System.out.println("Loaded driver - classloader = " +
 				// driverClass.getClassLoader());
 				numberLoaded++;
 			} catch (ClassNotFoundException e) {
 				System.out.println("DriverManagerTest: failed to load Driver: "
-						+ driverNames[i]);
+						+ element);
 			} // end try
 		} // end for
 		/*
@@ -555,7 +554,8 @@ public class DriverManagerTest extends TestCase {
 			logAccess = allow;
 		} // end method setLogAccess( boolean )
 
-		public void checkPermission(Permission thePermission) {
+		@Override
+        public void checkPermission(Permission thePermission) {
 			if (thePermission.equals(sqlPermission)) {
 				if (!logAccess) {
 					throw new SecurityException("Cannot set the sql Log Writer");

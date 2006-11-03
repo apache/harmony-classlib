@@ -30,7 +30,7 @@ public class ResultSetTest extends TestCase {
 	 */
 	public void testPublicStatics() {
 
-		HashMap thePublicStatics = new HashMap();
+		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
 		thePublicStatics.put("CLOSE_CURSORS_AT_COMMIT",
 				new java.lang.Integer(2));
 		thePublicStatics.put("HOLD_CURSORS_OVER_COMMIT", new java.lang.Integer(
@@ -62,7 +62,7 @@ public class ResultSetTest extends TestCase {
 		 * ResultSet.FETCH_FORWARD );
 		 */
 
-		Class resultSetClass;
+		Class<?> resultSetClass;
 		try {
 			resultSetClass = Class.forName("java.sql.ResultSet");
 		} catch (ClassNotFoundException e) {
@@ -75,12 +75,12 @@ public class ResultSetTest extends TestCase {
 				+ Modifier.FINAL;
 
 		int countPublicStatics = 0;
-		for (int i = 0; i < theFields.length; i++) {
-			String fieldName = theFields[i].getName();
-			int theMods = theFields[i].getModifiers();
+		for (Field element : theFields) {
+			String fieldName = element.getName();
+			int theMods = element.getModifiers();
 			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
 				try {
-					Object fieldValue = theFields[i].get(null);
+					Object fieldValue = element.get(null);
 					Object expectedValue = thePublicStatics.get(fieldName);
 					if (expectedValue == null) {
 						fail("Field " + fieldName + " missing!");

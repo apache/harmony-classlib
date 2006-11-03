@@ -30,7 +30,7 @@ public class TypesTest extends TestCase {
 	 */
 	public void testPublicStatics() {
 
-		HashMap thePublicStatics = new HashMap();
+		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
 		thePublicStatics.put("BOOLEAN", new Integer(16));
 		thePublicStatics.put("DATALINK", new Integer(70));
 		thePublicStatics.put("REF", new Integer(2006));
@@ -62,7 +62,7 @@ public class TypesTest extends TestCase {
 		thePublicStatics.put("TINYINT", new Integer(-6));
 		thePublicStatics.put("BIT", new Integer(-7));
 
-		Class typesClass;
+		Class<?> typesClass;
 		try {
 			typesClass = Class.forName("java.sql.Types");
 		} catch (ClassNotFoundException e) {
@@ -75,12 +75,12 @@ public class TypesTest extends TestCase {
 				+ Modifier.FINAL;
 
 		int countPublicStatics = 0;
-		for (int i = 0; i < theFields.length; i++) {
-			String fieldName = theFields[i].getName();
-			int theMods = theFields[i].getModifiers();
+		for (Field element : theFields) {
+			String fieldName = element.getName();
+			int theMods = element.getModifiers();
 			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
 				try {
-					Object fieldValue = theFields[i].get(null);
+					Object fieldValue = element.get(null);
 					Object expectedValue = thePublicStatics.get(fieldName);
 					if (expectedValue == null) {
 						fail("Field " + fieldName + " missing!");

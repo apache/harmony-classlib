@@ -30,7 +30,7 @@ public class ConnectionTest extends TestCase {
 	 */
 	public void testPublicStatics() {
 
-		HashMap thePublicStatics = new HashMap();
+		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
 		thePublicStatics.put("TRANSACTION_SERIALIZABLE", new Integer(8));
 		thePublicStatics.put("TRANSACTION_REPEATABLE_READ", new Integer(4));
 		thePublicStatics.put("TRANSACTION_READ_COMMITTED", new Integer(2));
@@ -49,7 +49,7 @@ public class ConnectionTest extends TestCase {
 		 * "TRANSACTION_NONE: " + Connection.TRANSACTION_NONE );
 		 */
 
-		Class connectionClass;
+		Class<?> connectionClass;
 		try {
 			connectionClass = Class.forName("java.sql.Connection");
 		} catch (ClassNotFoundException e) {
@@ -62,12 +62,12 @@ public class ConnectionTest extends TestCase {
 				+ Modifier.FINAL;
 
 		int countPublicStatics = 0;
-		for (int i = 0; i < theFields.length; i++) {
-			String fieldName = theFields[i].getName();
-			int theMods = theFields[i].getModifiers();
+		for (Field element : theFields) {
+			String fieldName = element.getName();
+			int theMods = element.getModifiers();
 			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
 				try {
-					Object fieldValue = theFields[i].get(null);
+					Object fieldValue = element.get(null);
 					Object expectedValue = thePublicStatics.get(fieldName);
 					if (expectedValue == null) {
 						fail("Field " + fieldName + " missing!");

@@ -41,15 +41,17 @@ public class InvalidTransactionExceptionTest extends TestCase {
 			try {
 				aInvalidTransactionException = new InvalidTransactionException(
 						init1[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + "  Final state mismatch",
 						aInvalidTransactionException.getMessage(),
 						theFinalStates1[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -73,15 +75,17 @@ public class InvalidTransactionExceptionTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aInvalidTransactionException = new InvalidTransactionException();
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + "  Final state mismatch",
 						aInvalidTransactionException.getMessage(),
 						theFinalStates1[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),

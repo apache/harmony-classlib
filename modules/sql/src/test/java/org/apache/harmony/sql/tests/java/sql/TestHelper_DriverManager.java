@@ -103,7 +103,7 @@ public class TestHelper_DriverManager extends TestCase {
 	} // end method testDeRegister
 
 	static void printClassLoader(Object theObject) {
-		Class theClass = theObject.getClass();
+		Class<? extends Object> theClass = theObject.getClass();
 		ClassLoader theClassLoader = theClass.getClassLoader();
 		System.out.println("ClassLoader is: " + theClassLoader.toString()
 				+ " for object: " + theObject.toString());

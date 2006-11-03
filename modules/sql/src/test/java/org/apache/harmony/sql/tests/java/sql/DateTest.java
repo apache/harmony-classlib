@@ -105,9 +105,10 @@ public class DateTest extends TestCase {
 
 	/*
 	 * Test of the Date(int, int, int) constructor - now deprecated but still
-	 * funtioning
+	 * functioning
 	 */
-	public void testDateintintint() {
+	@SuppressWarnings("deprecation")
+    public void testDateintintint() {
 
 		int init1[] = { 99, 8099, 9000, 99999, 99, 99, -1, -100 };
 		int init2[] = { 11, 0, 0, 0, 999, 0, 0, -111 };
@@ -129,8 +130,8 @@ public class DateTest extends TestCase {
 				TIME_NEGATIVE, TIME_LOWERLIMIT, TIME_UPPERLIMIT, TIME_EPOCH,
 				TIME_NOW };
 
-		for (int i = 0; i < init1.length; i++) {
-            Date theDate = new Date(init1[i]);
+		for (long element : init1) {
+            Date theDate = new Date(element);
             assertNotNull(theDate);
         } // end for
 
@@ -140,10 +141,11 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) int Date.getHours() method - which always throws
 	 * an IllegalArgumentException
 	 */
-	public void testGetHours() {
+	@SuppressWarnings("deprecation")
+    public void testGetHours() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
-			int theHours = theDate.getHours();
+			theDate.getHours();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
             //expected
@@ -154,10 +156,11 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) int Date.getMinutes() method - which always
 	 * throws an IllegalArgumentException
 	 */
-	public void testGetMinutes() {
+	@SuppressWarnings("deprecation")
+    public void testGetMinutes() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
-			int theMinutes = theDate.getMinutes();
+			theDate.getMinutes();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
 			//expected
@@ -168,10 +171,11 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) int Date.getSeconds() method - which always
 	 * throws an IllegalArgumentException
 	 */
-	public void testGetSeconds() {
+	@SuppressWarnings("deprecation")
+    public void testGetSeconds() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
-			int theSeconds = theDate.getSeconds();
+			theDate.getSeconds();
             fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
             //expected
@@ -182,7 +186,8 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) Date.setHours( int ) method - which always
 	 * throws an IllegalArgumentException
 	 */
-	public void testSetHours() {
+	@SuppressWarnings("deprecation")
+    public void testSetHours() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
 			theDate.setHours(22);
@@ -196,7 +201,8 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) Date.setMinutes( int ) method - which always
 	 * throws an IllegalArgumentException
 	 */
-	public void testSetMinutes() {
+	@SuppressWarnings("deprecation")
+    public void testSetMinutes() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
 			theDate.setMinutes(54);
@@ -211,7 +217,8 @@ public class DateTest extends TestCase {
 	 * Test of the (deprecated) Date.setSeconds( int ) method - which always
 	 * throws an IllegalArgumentException
 	 */
-	public void testSetSeconds() {
+	@SuppressWarnings("deprecation")
+    public void testSetSeconds() {
 		Date theDate = new Date(TIME_TESTDATE1);
 		try {
 			theDate.setSeconds(36);
@@ -284,16 +291,14 @@ public class DateTest extends TestCase {
 
 		Date theDate;
 
-		// Cases where the input date string is a valid format
-		for (int i = 0; i < SQL_DATEARRAY.length; i++) {
-			theDate = Date.valueOf(SQL_DATEARRAY[i]);
-            assertEquals(SQL_DATEARRAY[i], theDate.toString());
+		for (String element : SQL_DATEARRAY) {
+			theDate = Date.valueOf(element);
+            assertEquals(element, theDate.toString());
 		} // end for
 
-		// Cases where the input date string has an invalid format
-		for (int i = 0; i < SQL_INVALIDARRAY.length; i++) {
+		for (String element : SQL_INVALIDARRAY) {
 			try {
-				theDate = Date.valueOf(SQL_INVALIDARRAY[i]);
+				theDate = Date.valueOf(element);
                 fail("Should throw IllegalArgumentException.");
 			} catch (IllegalArgumentException e) {
                 //expected

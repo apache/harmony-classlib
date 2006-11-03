@@ -67,12 +67,14 @@ public class TestHelper_Driver1 implements Driver {
 	 */
 	public boolean acceptsURL(String url) throws SQLException {
 		// Check on the supplied String...
-		if (url == null)
-			return false;
+		if (url == null) {
+            return false;
+        }
 		// Everything's fine if the quoted url starts with the base url for this
 		// driver
-		if (url.startsWith(baseURL))
-			return true;
+		if (url.startsWith(baseURL)) {
+            return true;
+        }
 		return false;
 	} // end method acceptsURL
 
@@ -94,9 +96,8 @@ public class TestHelper_Driver1 implements Driver {
 		if (this.acceptsURL(url)) {
 			// The datasource name is the remainder of the url after the ":"
 			String datasource = url.substring(baseURL.length() + 1);
-			// Loop over the valid datasources supported by this driver
-			for (int i = 0; i < dataSources.length; i++) {
-				if (datasource.equals(dataSources[i])) {
+			for (String element : dataSources) {
+				if (datasource.equals(element)) {
 					// Check for user and password, except for datasource =
 					// data1
 					// which is set up not to require a user/password
@@ -104,8 +105,9 @@ public class TestHelper_Driver1 implements Driver {
 					if (datasource.equals("data1")) {
 						// do nothing...
 					} else {
-						if (info == null)
-							throw new SQLException("Properties bundle is null");
+						if (info == null) {
+                            throw new SQLException("Properties bundle is null");
+                        }
 						String user = (String) info.get(userProperty);
 						String password = (String) info.get(passwordProperty);
 						if (user == null || password == null) {

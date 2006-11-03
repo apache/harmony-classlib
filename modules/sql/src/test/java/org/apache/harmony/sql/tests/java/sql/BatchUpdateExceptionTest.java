@@ -45,8 +45,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aBatchUpdateException = new BatchUpdateException();
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -59,8 +60,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -89,8 +91,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 		for (int i = 0; i < loopCount; i++) {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -103,8 +106,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -142,8 +146,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -156,8 +161,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -197,8 +203,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i], init3[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -211,8 +218,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -253,8 +261,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i], init3[i], init4[i]);
-				if (theExceptions[i] != null)
-					fail();
+				if (theExceptions[i] != null) {
+                    fail();
+                }
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -267,8 +276,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
@@ -302,8 +312,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i]);
 				theReturn = aBatchUpdateException.getUpdateCounts();
-				if (theExceptions[i] != null)
-					fail(i + "Exception missed");
+				if (theExceptions[i] != null) {
+                    fail(i + "Exception missed");
+                }
 				assertEquals(i + "Return value mismatch", theReturn,
 						theReturns[i]);
 				assertEquals(i + " Final state mismatch: ",
@@ -318,8 +329,9 @@ public class BatchUpdateExceptionTest extends TestCase {
 						aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
 			} catch (Exception e) {
-				if (theExceptions[i] == null)
-					fail(i + "Unexpected exception");
+				if (theExceptions[i] == null) {
+                    fail(i + "Unexpected exception");
+                }
 				assertEquals(i + "Exception mismatch", e.getClass(),
 						theExceptions[i].getClass());
 				assertEquals(i + "Exception mismatch", e.getMessage(),
