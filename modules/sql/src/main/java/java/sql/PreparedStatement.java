@@ -612,6 +612,7 @@ public interface PreparedStatement extends Statement {
      * @throws SQLException
      *             if a database error happens
      */
+    @Deprecated
     public void setUnicodeStream(int parameterIndex,
             InputStream theInputStream, int length) throws SQLException;
 

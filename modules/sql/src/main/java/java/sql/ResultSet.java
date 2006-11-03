@@ -300,6 +300,7 @@ public interface ResultSet {
      * @throws SQLException
      *             if a database error happens
      */
+    @Deprecated
     public BigDecimal getBigDecimal(int columnIndex, int scale)
             throws SQLException;
 
@@ -326,6 +327,7 @@ public interface ResultSet {
      * @throws SQLException
      *             if a database error happens
      */
+    @Deprecated
     public BigDecimal getBigDecimal(String columnName, int scale)
             throws SQLException;
 
@@ -1013,6 +1015,7 @@ public interface ResultSet {
      * @throws SQLException
      *             if a database error happens
      */
+    @Deprecated
     public InputStream getUnicodeStream(int columnIndex) throws SQLException;
 
     /**
@@ -1027,6 +1030,7 @@ public interface ResultSet {
      * @throws SQLException
      *             if a database error happens
      */
+    @Deprecated
     public InputStream getUnicodeStream(String columnName) throws SQLException;
 
     /**

@@ -70,6 +70,8 @@ public class Timestamp extends Date {
      * @throws IllegalArgumentException
      *             if any of the parameters is out of range
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Timestamp(int theYear, int theMonth, int theDate, int theHour,
             int theMinute, int theSecond, int theNano)
             throws IllegalArgumentException {
@@ -173,6 +175,7 @@ public class Timestamp extends Date {
      * @throws ClassCastException
      *             if the supplied object is not a Timestamp object
      */
+    @Override
     public int compareTo(Date theObject) throws ClassCastException {
         return this.compareTo((Timestamp) theObject);
     }
@@ -211,6 +214,7 @@ public class Timestamp extends Date {
      *         object false if the object is not a Timestamp object or if the
      *         object is a Timestamp but represents a different instant in time
      */
+    @Override
     public boolean equals(Object theObject) {
         if (theObject instanceof Timestamp) {
             return equals((Timestamp) theObject);
@@ -250,6 +254,7 @@ public class Timestamp extends Date {
      * containing the number of milliseconds since the Epoch (January 1 1970,
      * 00:00:00.000 GMT)
      */
+    @Override
     public long getTime() {
         long theTime = super.getTime();
         theTime = theTime + (nanos / 1000000);
@@ -272,6 +277,7 @@ public class Timestamp extends Date {
      * defined as the number of milliseconds since the Epoch (January 1 1970,
      * 00:00:00.000 GMT)
      */
+    @Override
     public void setTime(long theTime) {
         /*
          * Deal with the nanoseconds value. The supplied time is in milliseconds -
@@ -300,6 +306,7 @@ public class Timestamp extends Date {
      * @return A string representing the instant defined by the Timestamp, in
      *         JDBC Timestamp escape format
      */
+    @SuppressWarnings("deprecation")
     @Override
     public String toString() {
         /*
@@ -360,9 +367,6 @@ public class Timestamp extends Date {
         return finalString;
     }
 
-    // sql.2=Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff
-    private static String valueOfExceptionMessage = Messages.getString("sql.2"); //$NON-NLS-1$
-
     /**
      * Creates a Timestamp object with a time value equal to the time specified
      * by a supplied String holding the time in JDBC timestamp escape format,
@@ -393,11 +397,11 @@ public class Timestamp extends Date {
         try {
             theDate = df.parse(s, pp);
         } catch (Exception e) {
-            throw new IllegalArgumentException(valueOfExceptionMessage);
+            throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
         }
 
         if (theDate == null) {
-            throw new IllegalArgumentException(valueOfExceptionMessage);
+            throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
         }
 
         /*
@@ -421,7 +425,7 @@ public class Timestamp extends Date {
              * plus the "." in the remaining part of the string...
              */
             if ((s.length() - position) < ".n".length()) { //$NON-NLS-1$
-                throw new IllegalArgumentException(valueOfExceptionMessage);
+                throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
             }
 
             /*
@@ -429,7 +433,7 @@ public class Timestamp extends Date {
              * the 9 digits
              */
             if ((s.length() - position) > ".nnnnnnnnn".length()) { //$NON-NLS-1$
-                throw new IllegalArgumentException(valueOfExceptionMessage);
+                throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
             }
 
             // Require the next character to be a "."
@@ -454,12 +458,12 @@ public class Timestamp extends Date {
                 theNanos = Integer.parseInt(theNanoString);
             } catch (Exception e) {
                 // If we get here, the string was not a number
-                throw new IllegalArgumentException(valueOfExceptionMessage);
+                throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
             }
         }
 
         if (theNanos < 0 || theNanos > 999999999) {
-            throw new IllegalArgumentException(valueOfExceptionMessage);
+            throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
         }
 
         Timestamp theTimestamp = new Timestamp(theDate.getTime());

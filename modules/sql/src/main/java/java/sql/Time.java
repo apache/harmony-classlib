@@ -47,6 +47,8 @@ public class Time extends Date {
      * @param theSecond
      *            a value from 0 - 59
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Time(int theHour, int theMinute, int theSecond) {
         super(70, 0, 1, theHour, theMinute, theSecond);
     }
@@ -69,6 +71,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getDate() {
         throw new IllegalArgumentException();
     }
@@ -80,6 +85,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getDay() {
         throw new IllegalArgumentException();
     }
@@ -91,6 +99,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getMonth() {
         throw new IllegalArgumentException();
     }
@@ -102,6 +113,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getYear() {
         throw new IllegalArgumentException();
     }
@@ -112,6 +126,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setDate(int i) {
         throw new IllegalArgumentException();
     }
@@ -122,6 +139,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setMonth(int i) {
         throw new IllegalArgumentException();
     }
@@ -132,6 +152,9 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setYear(int i) {
         throw new IllegalArgumentException();
     }
@@ -144,6 +167,7 @@ public class Time extends Date {
      *            Negative values are milliseconds before the Epoch. The Epoch
      *            is January 1 1970, 00:00:00.000
      */
+    @Override
     public void setTime(long time) {
         super.setTime(time);
     }
@@ -154,6 +178,7 @@ public class Time extends Date {
      * @return A String representing the Time value in JDBC escape format:
      *         HH:mm:ss
      */
+    @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
         return dateFormat.format(this);
@@ -179,7 +204,7 @@ public class Time extends Date {
         }
         int firstIndex = timeString.indexOf(':');
         int secondIndex = timeString.indexOf(':', firstIndex + 1);
-        // secondIndex == -1 means none or only one separater '-' has been found.
+        // secondIndex == -1 means none or only one separator '-' has been found.
         // The string is separated into three parts by two separator characters,
         // if the first or the third part is null string, we should throw
         // IllegalArgumentException to follow RI

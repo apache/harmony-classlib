@@ -50,6 +50,8 @@ public class Date extends java.util.Date {
      * @param theDay
      *            the day in the month. Must be in the range 1 to 31.
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Date(int theYear, int theMonth, int theDay) {
         super(theYear, theMonth, theDay);
     }
@@ -76,6 +78,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getHours() {
         throw new IllegalArgumentException();
     }
@@ -87,6 +92,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getMinutes() {
         throw new IllegalArgumentException();
     }
@@ -98,6 +106,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public int getSeconds() {
         throw new IllegalArgumentException();
     }
@@ -110,6 +121,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setHours(int theHours) {
         throw new IllegalArgumentException();
     }
@@ -122,6 +136,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setMinutes(int theMinutes) {
         throw new IllegalArgumentException();
     }
@@ -134,6 +151,9 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void setSeconds(int theSeconds) {
         throw new IllegalArgumentException();
     }
@@ -146,6 +166,7 @@ public class Date extends java.util.Date {
      * @param theTime
      *            the time in milliseconds since the Epoch
      */
+    @Override
     public void setTime(long theTime) {
         /*
          * Store the Date based on the supplied time after removing any time
@@ -159,6 +180,7 @@ public class Date extends java.util.Date {
      * 
      * @return a string representation of the Date in SQL format - "yyyy-mm-dd".
      */
+    @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
         return dateFormat.format(this);

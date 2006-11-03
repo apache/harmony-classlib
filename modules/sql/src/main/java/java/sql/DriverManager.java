@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Vector;
-import org.apache.harmony.sql.internal.common.ClassUtils;
 import org.apache.harmony.sql.internal.nls.Messages;
 import org.apache.harmony.kernel.vm.VM;
 
@@ -41,9 +40,9 @@ public class DriverManager {
      * Facilities for logging. The Print Stream is deprecated but is maintained
      * here for compatibility.
      */
-    private static PrintStream thePrintStream = null;
+    private static PrintStream thePrintStream;
 
-    private static PrintWriter thePrintWriter = null;
+    private static PrintWriter thePrintWriter;
 
     // Login timeout value - by default set to 0 -> "wait forever"
     private static int loginTimeout = 0;
@@ -52,10 +51,10 @@ public class DriverManager {
      * Set to hold Registered Drivers - initial capacity 10 drivers (will expand
      * automatically if necessary.
      */
-    private static Set<Driver> theDriverSet = new HashSet<Driver>(10);
+    private static final Set<Driver> theDriverSet = new HashSet<Driver>(10);
 
     // Permission for setting log
-    private static SQLPermission logPermission = new SQLPermission("setLog"); //$NON-NLS-1$
+    private static final SQLPermission logPermission = new SQLPermission("setLog"); //$NON-NLS-1$
 
     /*
      * Load drivers on initialization
@@ -118,7 +117,7 @@ public class DriverManager {
         }
         ClassLoader callerClassLoader = VM.callerClassLoader();
 
-        if (!ClassUtils.isClassFromClassLoader(driver, callerClassLoader)) {
+        if (!DriverManager.isClassFromClassLoader(driver, callerClassLoader)) {
             // sql.1=DriverManager: calling class not authorized to deregister JDBC driver
             throw new SecurityException(Messages.getString("sql.1")); //$NON-NLS-1$
         } // end if
@@ -175,9 +174,7 @@ public class DriverManager {
              * open a connection to the supplied URL - return the first
              * connection which is returned
              */
-            Iterator theIterator = theDriverSet.iterator();
-            while (theIterator.hasNext()) {
-                Driver theDriver = (Driver) theIterator.next();
+            for (Driver theDriver : theDriverSet) {
                 Connection theConnection = theDriver.connect(url, info);
                 if (theConnection != null) {
                     return theConnection;
@@ -186,7 +183,7 @@ public class DriverManager {
         }
         // If we get here, none of the drivers are able to resolve the URL
         // sql.6=No suitable driver
-        throw new SQLException(Messages.getString("sql.6"), sqlState); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new SQLException(Messages.getString("sql.6"), sqlState); //$NON-NLS-1$ 
     }
 
     /**
@@ -239,7 +236,7 @@ public class DriverManager {
             while (theIterator.hasNext()) {
                 Driver theDriver = theIterator.next();
                 if (theDriver.acceptsURL(url)
-                        && ClassUtils.isClassFromClassLoader(theDriver,
+                        && DriverManager.isClassFromClassLoader(theDriver,
                                 callerClassLoader)) {
                     return theDriver;
                 }
@@ -273,7 +270,7 @@ public class DriverManager {
             Iterator<Driver> theIterator = theDriverSet.iterator();
             while (theIterator.hasNext()) {
                 Driver theDriver = theIterator.next();
-                if (ClassUtils.isClassFromClassLoader(theDriver,
+                if (DriverManager.isClassFromClassLoader(theDriver,
                         callerClassLoader)) {
                     theVector.add(theDriver);
                 }
@@ -296,6 +293,7 @@ public class DriverManager {
      *             the JDBC Drivers.
      * @return the PrintStream used for logging activity
      */
+    @Deprecated
     public static PrintStream getLogStream() {
         return thePrintStream;
     }
@@ -371,6 +369,7 @@ public class DriverManager {
      * @param out
      *            the PrintStream to use for logging.
      */
+    @Deprecated
     public static void setLogStream(PrintStream out) {
         checkLogSecurity();
         thePrintStream = out;
@@ -398,5 +397,36 @@ public class DriverManager {
             // Throws a SecurityException if setting the log is not permitted
             securityManager.checkPermission(logPermission);
         }
+    }
+
+    /**
+     * Finds if a supplied Object belongs to the given ClassLoader.
+     * 
+     * @param theObject
+     *            the object to check
+     * @param theClassLoader
+     *            the ClassLoader
+     * @return true if the Object does belong to the ClassLoader, false
+     *         otherwise
+     */
+    private static boolean isClassFromClassLoader(Object theObject,
+            ClassLoader theClassLoader) {
+    
+        if ((theObject == null) || (theClassLoader == null)) {
+            return false;
+        }
+    
+        Class<?> objectClass = theObject.getClass();
+    
+        try {
+            Class<?> checkClass = Class.forName(objectClass.getName(), true,
+                    theClassLoader);
+            if (checkClass == objectClass) {
+                return true;
+            }
+        } catch (Throwable t) {
+            // Empty
+        }
+        return false;
     }
 }
