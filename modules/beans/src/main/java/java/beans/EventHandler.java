@@ -85,9 +85,17 @@ public class EventHandler implements InvocationHandler {
 
                         // we have a valid listener method at this point
                         result = m.invoke(target, args);
+                    } catch (RuntimeException e) {
+                        throw e;
                     } catch (Throwable t) {
                         System.out
                                 .println(t.getClass() + ": " + t.getMessage()); //$NON-NLS-1$
+                    }
+                } else {
+                    // in order to be compatible with RI
+                    if (listenerMethodName.equals(method.getName())) {
+                        throw new IllegalArgumentException(Messages.getString(
+                                "beans.4D"));
                     }
                 }
             }
@@ -112,28 +120,28 @@ public class EventHandler implements InvocationHandler {
         return target;
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target, String action,
-            String eventPropertyName, String listenerMethodName) {
-        Object proxy = Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target, action,
-                        eventPropertyName, listenerMethodName));
-        return listenerInterface.cast(proxy);
+    @SuppressWarnings("unchecked")
+    public static <T> T create(Class<T> listenerInterface, Object target,
+            String action, String eventPropertyName, String listenerMethodName) {
+        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, eventPropertyName, listenerMethodName));
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target, String action,
-            String eventPropertyName) {
-        Object proxy = Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target, action,
-                        eventPropertyName, null));
-        return listenerInterface.cast(proxy);
+    @SuppressWarnings("unchecked")
+    public static <T> T create(Class<T> listenerInterface, Object target,
+            String action, String eventPropertyName) {
+        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, eventPropertyName, null));
     }
 
-    public static <T> T create(Class<T> listenerInterface, Object target, String action) {
-        Object proxy = Proxy
-                .newProxyInstance(target.getClass().getClassLoader(),
-                        new Class[] { listenerInterface }, new EventHandler(target, action,
-                                null, null));
-        return listenerInterface.cast(proxy);
+    @SuppressWarnings("unchecked")
+    public static <T> T create(Class<T> listenerInterface, Object target,
+            String action) {
+        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, null, null));
     }
 
     private boolean isValidInvocation(Method method, Object[] arguments) {
@@ -164,8 +172,8 @@ public class EventHandler implements InvocationHandler {
     private Object[] getArgs(Object[] arguments) throws Exception {
         if (eventPropertyName == null) {
             return new Object[] {};
-        } else if ((arguments == null) || (arguments.length == 0)
-                || (arguments[0] == null)) {
+        } else if ((arguments == null) || (arguments.length == 0)) {
+//                || (arguments[0] == null)) {
             return arguments;
         } else {
             Object arg = arguments[0];
@@ -174,7 +182,7 @@ public class EventHandler implements InvocationHandler {
             while (st.hasMoreTokens()) {
                 String propertyName = st.nextToken();
                 PropertyDescriptor pd = findPropertyDescriptor(arg.getClass(),
-                        propertyName);
+                        propertyName);;
 
                 if (pd != null) {
                     Method getter = pd.getReadMethod();
@@ -192,7 +200,9 @@ public class EventHandler implements InvocationHandler {
                     if (method != null) {
                         arg = method.invoke(null, new Object[] {});
                     } else {
-                        throw new IntrospectionException(Messages.getString(
+                        // cannot access property getter
+                        // RI thorws NPE here so we should do the same
+                        throw new NullPointerException(Messages.getString(
                                 "beans.12", propertyName)); //$NON-NLS-1$
                     }
                 }
@@ -253,13 +263,15 @@ public class EventHandler implements InvocationHandler {
                                 "beans.13", action)); //$NON-NLS-1$
                     }
                 } else {
-                    throw new Exception(Messages.getString("beans.14")); //$NON-NLS-1$
+                    throw new IndexOutOfBoundsException(
+                            Messages.getString("beans.14")); //$NON-NLS-1$
                 }
             } else {
                 return result;
             }
         } catch (IntrospectionException ie) {
-            throw new Exception(Messages.getString("beans.14")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(
+                    Messages.getString("beans.14")); //$NON-NLS-1$
         }
 
         return result;

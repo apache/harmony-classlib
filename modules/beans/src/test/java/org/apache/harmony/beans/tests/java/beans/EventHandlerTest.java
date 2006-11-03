@@ -224,10 +224,10 @@ public class EventHandlerTest extends TestCase {
      * 
      */
     public static Test suite() {
-//         TestSuite suite = new TestSuite();
-//         
-//         suite.addTest(new EventHandlerTest("testInvokeWithNullPropertyName"));
-//         return suite;
+//        TestSuite suite = new TestSuite();
+//
+//        suite.addTest(new EventHandlerTest("testCreateClassObjectStringStringString_PropertyNull"));
+//        return suite;
         return new TestSuite(EventHandlerTest.class);
     }
 
@@ -453,10 +453,12 @@ public class EventHandlerTest extends TestCase {
         PropertyChangeListener proxy = EventHandler.create(
                 PropertyChangeListener.class, target, "text",
                 "source.label_invalid");
+
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
 
         button.addPropertyChangeListener(proxy);
         String newLabel = "New Value: set text.";
+
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
@@ -568,17 +570,18 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectStringStringString_PropertyNull() {
         MockTarget target = new MockTarget();
         MockButton button = new MockButton();
+        String newLabel = "New Value: set text.";
         PropertyChangeListener proxy = EventHandler.create(
                 PropertyChangeListener.class, target, "text", null,
                 "propertyChange");
-        assertTrue(Proxy.isProxyClass(proxy.getClass()));
 
+        assertTrue(Proxy.isProxyClass(proxy.getClass()));
         button.addPropertyChangeListener(proxy);
-        String newLabel = "New Value: set text.";
+
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (Exception e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
     }
 
@@ -819,20 +822,6 @@ public class EventHandlerTest extends TestCase {
 
     }
 
-    public void testInvoke_extend2_2() {
-        MockFish fish = new MockFish();
-        MockFishTarget target = new MockFishTarget();
-        PropertyChangeSupport support = new PropertyChangeSupport(fish);
-        Object proxy = EventHandler.create(PropertyChangeListener.class,
-                target, "action3");
-        support.addPropertyChangeListener((PropertyChangeListener) proxy);
-        PropertyChangeEvent event = new PropertyChangeEvent(fish, "name", "1",
-                "5");
-        support.firePropertyChange(event);
-
-        assertEquals("action3", target.getActionRecord());
-    }
-
     public void testInvoke_extend3() {
         MockFish fish = new MockFish();
         MockFishTarget target = new MockFishTarget();
@@ -1070,10 +1059,6 @@ public class EventHandlerTest extends TestCase {
 
         public void setAction2(String value) {
             this.actionRecord = "action2";
-        }
-
-        public void setAction3() {
-            this.actionRecord = "action3";
         }
 
         public void action4() {
