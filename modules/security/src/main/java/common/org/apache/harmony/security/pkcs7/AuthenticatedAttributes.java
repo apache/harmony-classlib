@@ -59,8 +59,9 @@ class AuthenticatedAttributes {
     public static final ASN1SetOf ASN1 =
         new ASN1SetOf(AttributeTypeAndValue.ASN1) {
         public Object getDecodedObject(BerInputStream in) {
-            Object[] values = (Object[]) in.content;
-            return new AuthenticatedAttributes(in.getEncoded(), (List) values[0]);
+            return new AuthenticatedAttributes(in.getEncoded(),
+                    (List) in.content);
         }
     };
 }
+
