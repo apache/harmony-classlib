@@ -14,19 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
-public class PrintEvent extends java.util.EventObject {
+import java.util.EventObject;
+
+public class PrintEvent extends EventObject {
+    private static final long serialVersionUID = 2286914924430763847L;
 
     public PrintEvent(Object source) {
         super(source);
     }
 
+    @Override
     public String toString() {
         return getSource().toString();
     }

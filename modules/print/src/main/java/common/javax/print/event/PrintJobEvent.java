@@ -14,16 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
 import javax.print.DocPrintJob;
 
 public class PrintJobEvent extends PrintEvent {
+    private static final long serialVersionUID = -1711656903622072997L;
 
     public static final int DATA_TRANSFER_COMPLETE = 106;
 
@@ -37,7 +34,7 @@ public class PrintJobEvent extends PrintEvent {
 
     public static final int REQUIRES_ATTENTION = 104;
 
-    private int reason;
+    private final int reason;
 
     public PrintJobEvent(DocPrintJob source, int reason) {
         super(source);
@@ -49,6 +46,6 @@ public class PrintJobEvent extends PrintEvent {
     }
 
     public DocPrintJob getPrintJob() {
-        return (DocPrintJob)getSource();
+        return (DocPrintJob) getSource();
     }
 }

@@ -14,24 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
 public interface PrintJobListener {
+    void printDataTransferCompleted(PrintJobEvent event);
 
-    public void printDataTransferCompleted(PrintJobEvent event);
+    void printJobCanceled(PrintJobEvent event);
 
-    public void printJobCanceled(PrintJobEvent event);
+    void printJobCompleted(PrintJobEvent event);
 
-    public void printJobCompleted(PrintJobEvent event);
+    void printJobFailed(PrintJobEvent event);
 
-    public void printJobFailed(PrintJobEvent event);
+    void printJobNoMoreEvents(PrintJobEvent event);
 
-    public void printJobNoMoreEvents(PrintJobEvent event);
-
-    public void printJobRequiresAttention(PrintJobEvent event);
+    void printJobRequiresAttention(PrintJobEvent event);
 }

@@ -14,14 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
 public interface PrintJobAttributeListener {
-
-    public void attributeUpdate(PrintJobAttributeEvent event);
+    void attributeUpdate(PrintJobAttributeEvent event);
 }

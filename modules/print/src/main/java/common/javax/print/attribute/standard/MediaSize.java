@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.Size2DSyntax;
 
+@SuppressWarnings("unused")
 public class MediaSize extends Size2DSyntax implements Attribute {
     private static final long serialVersionUID = -1967958664615414771L;
 
@@ -322,12 +323,10 @@ public class MediaSize extends Size2DSyntax implements Attribute {
     }
 
     /*
-     * Loading nested classes and initializing it's static fields.
-     * It is necessary to put MediaSize instances into ArrayList
-     * and HashMap used in static MediaSize methods.
+     * Force the load and initialization of inner classes.
      */
-    //TODO This comment and code need to be validated; this seems unnecessary
     static {
+        
         MediaSize initClass = MediaSize.Engineering.A;
         initClass = MediaSize.ISO.A0;
         initClass = MediaSize.JIS.B0;

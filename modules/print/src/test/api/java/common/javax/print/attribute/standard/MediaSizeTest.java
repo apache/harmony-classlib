@@ -25,17 +25,8 @@ import org.apache.harmony.x.print.attributes.PPDMediaSizeName;
 
 import junit.framework.TestCase;
 
-
+@SuppressWarnings("static-access")
 public class MediaSizeTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(MediaSizeTest.class);
-    }
-
-    static {
-        System.out.println("MediaSize testing...");
-    }
-
 
     /*
      * MediaSize constructor testing.
@@ -75,6 +66,7 @@ public class MediaSizeTest extends TestCase {
         MediaSizeName msn3 = new mediaSizeName(113);
         MediaSize ms1 = new MediaSize(Integer.MAX_VALUE / 15,
                 Integer.MAX_VALUE / 15, 1, msn1);
+        
         MediaSize ms2 = new MediaSize(Integer.MAX_VALUE / 5,
                 Integer.MAX_VALUE / 5, 1, msn2);
         MediaSize ms3 = new MediaSize(Integer.MAX_VALUE, Integer.MAX_VALUE, 1,
@@ -95,12 +87,12 @@ public class MediaSizeTest extends TestCase {
 
         assertTrue((MediaSizeName.JIS_B0 ==
                 MediaSize.findMedia(5000, 5000, MediaSize.MM)) ||
-                ((MediaSizeName) PPDMediaSizeName.B0 ==
+                (PPDMediaSizeName.B0 ==
                 MediaSize.findMedia(5000, 5000, MediaSize.MM)));
 
         assertTrue((MediaSizeName.ISO_A10 ==
             MediaSize.findMedia(20, 20, MediaSize.MM)) ||
-            ((MediaSizeName) PPDMediaSizeName.A10 ==
+            (PPDMediaSizeName.A10 ==
             MediaSize.findMedia(20, 20, MediaSize.MM)));
     }
 
@@ -221,6 +213,7 @@ public class MediaSizeTest extends TestCase {
     /*
      * Auxiliary class
      */
+    @SuppressWarnings("serial")
     public class mediaSizeName extends MediaSizeName {
 
         public mediaSizeName(int value) {

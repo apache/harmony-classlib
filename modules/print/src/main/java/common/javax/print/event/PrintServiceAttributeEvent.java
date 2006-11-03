@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
@@ -25,11 +21,11 @@ import javax.print.PrintService;
 import javax.print.attribute.PrintServiceAttributeSet;
 
 public class PrintServiceAttributeEvent extends PrintEvent {
+    private static final long serialVersionUID = -7565987018140326600L;
 
-    private PrintServiceAttributeSet attributes;
+    private final PrintServiceAttributeSet attributes;
 
-    public PrintServiceAttributeEvent(PrintService source,
-            PrintServiceAttributeSet attributes) {
+    public PrintServiceAttributeEvent(PrintService source, PrintServiceAttributeSet attributes) {
         super(source);
         this.attributes = attributes;
     }
@@ -39,6 +35,6 @@ public class PrintServiceAttributeEvent extends PrintEvent {
     }
 
     public PrintService getPrintService() {
-        return (PrintService)getSource();
+        return (PrintService) getSource();
     }
 }

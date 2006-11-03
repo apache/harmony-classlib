@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
- */ 
 
 package javax.print.event;
 
@@ -25,11 +21,11 @@ import javax.print.DocPrintJob;
 import javax.print.attribute.PrintJobAttributeSet;
 
 public class PrintJobAttributeEvent extends PrintEvent {
+    private static final long serialVersionUID = -6534469883874742101L;
 
-    private PrintJobAttributeSet attributes;
+    private final PrintJobAttributeSet attributes;
 
-    public PrintJobAttributeEvent(DocPrintJob source,
-            PrintJobAttributeSet attributes) {
+    public PrintJobAttributeEvent(DocPrintJob source, PrintJobAttributeSet attributes) {
         super(source);
         this.attributes = attributes;
     }
@@ -39,6 +35,6 @@ public class PrintJobAttributeEvent extends PrintEvent {
     }
 
     public DocPrintJob getPrintJob() {
-        return (DocPrintJob)getSource();
+        return (DocPrintJob) getSource();
     }
 }
