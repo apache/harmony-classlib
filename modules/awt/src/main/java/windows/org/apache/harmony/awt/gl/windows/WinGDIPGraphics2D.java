@@ -217,6 +217,9 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     //REMARK: Think how to implement this
     @Override
     public void setPaint(Paint paint) {
+        if (paint == null)
+            return;
+            
         if (paint instanceof Color) {
             setColor((Color)paint);
         } else {

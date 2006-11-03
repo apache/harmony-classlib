@@ -267,6 +267,9 @@ public final class OGLGraphics2D extends CommonGraphics2D {
 
     @Override
     public void setPaint(Paint paint) {
+        if (paint == null)
+            return;
+                
         super.setPaint(paint);
 
         makeCurrent();

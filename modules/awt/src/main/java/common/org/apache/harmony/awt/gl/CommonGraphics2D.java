@@ -975,6 +975,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     @Override
     public void setPaint(Paint paint) {
+        if (paint == null)
+            return;
+            
         this.paint = paint;
         if (paint instanceof Color) {
             fgColor = (Color)paint;

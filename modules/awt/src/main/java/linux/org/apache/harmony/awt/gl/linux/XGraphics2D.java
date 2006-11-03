@@ -167,6 +167,9 @@ public class XGraphics2D extends CommonGraphics2D {
     }
 
     public void setPaint(Paint paint) {
+        if (paint == null)
+            return;
+            
         if (paint instanceof Color) {
             setColor((Color)paint);
             nativePaint = true;
