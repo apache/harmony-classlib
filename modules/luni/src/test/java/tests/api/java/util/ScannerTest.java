@@ -3383,6 +3383,29 @@ public class ScannerTest extends TestCase {
 
     /**
      * @throws IOException
+     * @tests java.util.Scanner#hasNextInt(int)
+     */
+    public void test_hasNextIntI_cache() throws IOException {
+    	s = new Scanner("123 456");
+		assertTrue(s.hasNextInt(16));
+		assertEquals(291, s.nextInt());
+		assertEquals(456, s.nextInt());
+
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextInt(16));
+		assertTrue(s.hasNextInt(8));
+		assertEquals(83, s.nextInt());
+		assertEquals(456, s.nextInt());
+
+		s = new Scanner("-123 -456 -789");
+		assertTrue(s.hasNextInt(8));
+		assertEquals(-123, s.nextShort());
+		assertEquals(-456, s.nextInt());
+		assertTrue(s.hasNextShort(16));
+		assertEquals(-789, s.nextInt());
+    }
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNextInt()
      */
     public void test_hasNextInt() throws IOException {
@@ -4013,9 +4036,33 @@ public class ScannerTest extends TestCase {
     }
     
     /**
-     * @throws IOException
-     * @tests java.util.Scanner#hasNextLong(int)
-     */
+	 * @throws IOException
+	 * @tests java.util.Scanner#hasNextShort(int)
+	 */
+	public void test_hasNextShortI_cache() throws IOException {
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextShort(16));
+		assertEquals(291, s.nextShort());
+		assertEquals(456, s.nextShort());
+
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextShort(16));
+		assertTrue(s.hasNextShort(8));
+		assertEquals(83, s.nextShort());
+		assertEquals(456, s.nextShort());
+
+		s = new Scanner("-123 -456 -789");
+		assertTrue(s.hasNextShort(8));
+		assertEquals(-123, s.nextInt());
+		assertEquals(-456, s.nextShort());
+		assertTrue(s.hasNextInt(16));
+		assertEquals(-789, s.nextShort());
+	}
+    
+    /**
+	 * @throws IOException
+	 * @tests java.util.Scanner#hasNextLong(int)
+	 */
     public void test_hasNextLongI() throws IOException {
         s = new Scanner("123 456");
         assertTrue(s.hasNextLong(10));

@@ -137,6 +137,10 @@ public final class Scanner implements Iterator<String> {
     // Records whether the underlying readable has more input.
     private boolean inputExhausted = false;
     
+    private Object cacheHasNextValue = null;
+    
+    private int cachehasNextIndex = -1;
+    
     private enum DataType{
         /*
          * Stands for Integer
@@ -571,6 +575,7 @@ public final class Scanner implements Iterator<String> {
         boolean hasNext = false;
         //check whether next token matches the specified pattern
         if (matcher.matches()) {
+            cachehasNextIndex = findStartIndex;
             matchSuccessful = true;
             hasNext = true;
         }
@@ -805,7 +810,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-                Integer.parseInt(intString, radix);
+            	cacheHasNextValue = Integer.parseInt(intString, radix);
                 isIntValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -927,7 +932,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-                Short.parseShort(intString, radix);
+            	cacheHasNextValue = Short.parseShort(intString, radix);
                 isShortValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -1385,6 +1390,12 @@ public final class Scanner implements Iterator<String> {
      *             value
      */
     public int nextInt(int radix) {
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj != null && obj instanceof Integer) {
+			findStartIndex = cachehasNextIndex;
+			return (Integer) obj;
+		}
         Pattern integerPattern = getIntegerPattern(radix);
         String intString=next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1566,6 +1577,12 @@ public final class Scanner implements Iterator<String> {
      *             value, or it is out of range
      */
     public short nextShort(int radix) {
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj != null && obj instanceof Short) {
+			findStartIndex = cachehasNextIndex;
+			return (Short) obj;
+		}
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
