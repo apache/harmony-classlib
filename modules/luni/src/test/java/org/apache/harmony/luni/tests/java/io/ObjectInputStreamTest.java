@@ -19,9 +19,12 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -111,7 +114,56 @@ public class ObjectInputStreamTest extends TestCase {
             // expected
         }
     }
-    
+
+    static class TestObjectInputStream extends ObjectInputStream {
+        public TestObjectInputStream(InputStream in) throws IOException {
+            super(in);
+        }
+
+        protected Class resolveClass(ObjectStreamClass desc)
+                throws IOException, ClassNotFoundException {
+            if (desc.getName().endsWith("ObjectInputStreamTest$TestClass1")) {
+                return TestClass2.class;
+            }
+            return super.resolveClass(desc);
+        }
+    }
+
+    static class TestClass1 implements Serializable { 
+        private static final long serialVersionUID = 11111L;
+        int i = 0;
+    }
+
+    static class TestClass2 implements Serializable {
+        private static final long serialVersionUID = 11111L;
+        int i = 0;
+    }
+
+    public void test_resolveClass_invalidClassName()
+            throws Exception {
+        // Regression test for HARMONY-1920
+        TestClass1 to1 = new TestClass1();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        ByteArrayInputStream bais;
+        ObjectInputStream ois;
+
+        to1.i = 555;
+        oos.writeObject(to1);
+        oos.flush();
+        byte[] bytes = baos.toByteArray();
+        bais = new ByteArrayInputStream(bytes);
+        ois = new TestObjectInputStream(bais);
+
+        try {
+            TestClass2 to2 = (TestClass2) ois.readObject();
+
+            fail("Should throw InvalidClassException");
+        } catch (InvalidClassException ice) {
+            // valid
+            ice.printStackTrace();
+        }
+    }
 }
 
 

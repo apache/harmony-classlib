@@ -1661,6 +1661,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             newClassDesc.setClass(resolveClass(newClassDesc));
             // Check SUIDs
             verifySUID(newClassDesc);
+            // Check base name of the class
+            verifyBaseName(newClassDesc);           
         } catch (ClassNotFoundException e) {
             if (mustResolve) {
                 throw e;
@@ -2677,5 +2679,40 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     .getString("K00da", loadedStreamClass, //$NON-NLS-1$
                             localStreamClass));
         }
+    }
+
+    /**
+     * Verify if the base name for descriptor <code>loadedStreamClass</code>
+     * matches the base name of the corresponding loaded class.
+     * 
+     * @param loadedStreamClass
+     *            An ObjectStreamClass that was loaded from the stream.
+     * 
+     * @throws InvalidClassException
+     *          If the base name of the stream class does not match the VM class
+     */
+    private void verifyBaseName(ObjectStreamClass loadedStreamClass)
+            throws InvalidClassException {
+        Class<?> localClass = loadedStreamClass.forClass();
+        ObjectStreamClass localStreamClass = ObjectStreamClass
+                .lookupStreamClass(localClass);
+        String loadedClassBaseName = getBaseName(loadedStreamClass.getName());
+        String localClassBaseName = getBaseName(localStreamClass.getName());
+
+        if (!loadedClassBaseName.equals(localClassBaseName)) {
+            throw new InvalidClassException(loadedStreamClass.getName(), Msg
+                    .getString("KA015", loadedClassBaseName, //$NON-NLS-1$
+                            localClassBaseName));
+        }
+    }
+
+    private static String getBaseName(String fullName) {
+        int k = fullName.lastIndexOf(".");
+
+        if (k == -1 || k == (fullName.length() - 1)) {
+            return fullName;
+        } else {
+            return fullName.substring(k + 1);
+        }        
     }
 }
