@@ -40,8 +40,8 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testConstructorNoResBundle_Normal() {
 		MockLevel l = new MockLevel("level1", 1);
-		assertEquals(l.getName(), "level1");
-		assertEquals(l.intValue(), 1);
+		assertEquals("level1", l.getName());
+		assertEquals(1, l.intValue());
 		assertNull(l.getResourceBundleName());
 	}
 
@@ -54,6 +54,7 @@ public class LevelTest extends TestCase implements Serializable {
             new MockLevel(null, -2);
             fail("No expected NullPointerException");
         } catch (NullPointerException ignore) {
+        	// expected
         }
     }
 
@@ -62,11 +63,11 @@ public class LevelTest extends TestCase implements Serializable {
 	 * As byproducts, getName & intValue are also tested.
 	 */
 	 public void testConstructorNoResBundle_EmptyName() {
-	 MockLevel l = new MockLevel("", -3);
-	 assertEquals(l.getName(), "");
-	 assertEquals(l.intValue(), -3);
-	 assertNull(l.getResourceBundleName());
-	 }
+		MockLevel l = new MockLevel("", -3);
+		assertEquals("", l.getName());
+		assertEquals(-3, l.intValue());
+		assertNull(l.getResourceBundleName());
+	}
      
 	/*
 	 * Test the constructor having resource bundle parameter using normal
@@ -74,9 +75,9 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testConstructorHavingResBundle_Normal() {
 		MockLevel l = new MockLevel("level1", 1, "resourceBundle");
-		assertEquals(l.getName(), "level1");
-		assertEquals(l.intValue(), 1);
-		assertEquals(l.getResourceBundleName(), "resourceBundle");
+		assertEquals("level1", l.getName());
+		assertEquals(1, l.intValue());
+		assertEquals("resourceBundle", l.getResourceBundleName());
 	}
 
 	/*
@@ -88,6 +89,7 @@ public class LevelTest extends TestCase implements Serializable {
             new MockLevel(null, -123, "qwe");
             fail("No expected NullPointerException");
         } catch (NullPointerException ignore) {
+        	// expected
         }
     }
 
@@ -98,24 +100,24 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	 public void testConstructorHavingResBundle_EmptyName() {
 	 MockLevel l = new MockLevel("", -1000, "");
-	 assertEquals(l.getName(), "");
-	 assertEquals(l.intValue(), -1000);
-	 assertEquals(l.getResourceBundleName(), "");
+	 assertEquals("", l.getName());
+	 assertEquals(-1000, l.intValue());
+	 assertEquals("", l.getResourceBundleName());
 	 }
 
 	/*
 	 * Test method parse, with the pre-defined string consts.
 	 */
 	public void testParse_PredefinedConstStrings() {
-		assertSame(Level.parse("SEVERE"), Level.SEVERE);
-		assertSame(Level.parse("WARNING"), Level.WARNING);
-		assertSame(Level.parse("INFO"), Level.INFO);
-		assertSame(Level.parse("CONFIG"), Level.CONFIG);
-		assertSame(Level.parse("FINE"), Level.FINE);
-		assertSame(Level.parse("FINER"), Level.FINER);
-		assertSame(Level.parse("FINEST"), Level.FINEST);
-		assertSame(Level.parse("OFF"), Level.OFF);
-		assertSame(Level.parse("ALL"), Level.ALL);
+		assertSame(Level.SEVERE, Level.parse("SEVERE"));
+		assertSame(Level.WARNING, Level.parse("WARNING"));
+		assertSame(Level.INFO, Level.parse("INFO"));
+		assertSame(Level.CONFIG, Level.parse("CONFIG"));
+		assertSame(Level.FINE, Level.parse("FINE"));
+		assertSame(Level.FINER, Level.parse("FINER"));
+		assertSame(Level.FINEST, Level.parse("FINEST"));
+		assertSame(Level.OFF, Level.parse("OFF"));
+		assertSame(Level.ALL, Level.parse("ALL"));
 	}
 
 	/*
@@ -126,6 +128,7 @@ public class LevelTest extends TestCase implements Serializable {
 			Level.parse("SEVERe");
 			fail("Should throw IllegalArgumentException if undefined string.");
 		} catch (IllegalArgumentException e) {
+			// expected
 		}
 	}
 
@@ -137,6 +140,7 @@ public class LevelTest extends TestCase implements Serializable {
 			Level.parse(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
+			// expected
 		}
 	}
 
@@ -144,24 +148,24 @@ public class LevelTest extends TestCase implements Serializable {
 	 * Test method parse, with pre-defined valid number strings.
 	 */
 	public void testParse_PredefinedNumber() {
-		assertSame(Level.parse("SEVERE"), Level.SEVERE);
-		assertSame(Level.parse("WARNING"), Level.WARNING);
-		assertSame(Level.parse("INFO"), Level.INFO);
-		assertSame(Level.parse("CONFIG"), Level.CONFIG);
-		assertSame(Level.parse("FINE"), Level.FINE);
-		assertSame(Level.parse("FINER"), Level.FINER);
-		assertSame(Level.parse("FINEST"), Level.FINEST);
-		assertSame(Level.parse("OFF"), Level.OFF);
-		assertSame(Level.parse("ALL"), Level.ALL);
-		assertSame(Level.parse("1000"), Level.SEVERE);
-		assertSame(Level.parse("900"), Level.WARNING);
-		assertSame(Level.parse("800"), Level.INFO);
-		assertSame(Level.parse("700"), Level.CONFIG);
-		assertSame(Level.parse("500"), Level.FINE);
-		assertSame(Level.parse("400"), Level.FINER);
-		assertSame(Level.parse("300"), Level.FINEST);
-		assertSame(Level.parse(String.valueOf(Integer.MAX_VALUE)), Level.OFF);
-		assertSame(Level.parse(String.valueOf(Integer.MIN_VALUE)), Level.ALL);
+		assertSame(Level.SEVERE, Level.parse("SEVERE"));
+		assertSame(Level.WARNING, Level.parse("WARNING"));
+		assertSame(Level.INFO, Level.parse("INFO"));
+		assertSame(Level.CONFIG, Level.parse("CONFIG"));
+		assertSame(Level.FINE, Level.parse("FINE"));
+		assertSame(Level.FINER, Level.parse("FINER"));
+		assertSame(Level.FINEST, Level.parse("FINEST"));
+		assertSame(Level.OFF, Level.parse("OFF"));
+		assertSame(Level.ALL, Level.parse("ALL"));
+		assertSame(Level.SEVERE, Level.parse("1000"));
+		assertSame(Level.WARNING, Level.parse("900"));
+		assertSame(Level.INFO, Level.parse("800"));
+		assertSame(Level.CONFIG, Level.parse("700"));
+		assertSame(Level.FINE, Level.parse("500"));
+		assertSame(Level.FINER, Level.parse("400"));
+		assertSame(Level.FINEST, Level.parse("300"));
+		assertSame(Level.OFF, Level.parse(String.valueOf(Integer.MAX_VALUE)));
+		assertSame(Level.ALL, Level.parse(String.valueOf(Integer.MIN_VALUE)));
 	}
 
 	/*
@@ -169,8 +173,8 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testParse_UndefinedNumber() {
 		Level l = Level.parse("0");
-		assertEquals(l.intValue(), 0);
-		assertEquals(l.getName(), "0");
+		assertEquals(0, l.intValue());
+		assertEquals("0", l.getName());
 		assertNull(l.getResourceBundleName());
 	}
 
@@ -181,12 +185,13 @@ public class LevelTest extends TestCase implements Serializable {
 		try {
 			Level.parse(" 0");
 		} catch (IllegalArgumentException e) {
+			// expected
 		}
 	}
 
 	public void testParse_NegativeNumber() {
 		Level l = Level.parse("-4");
-		assertEquals(l.intValue(), -4);
+		assertEquals(-4, l.intValue());
 		assertEquals("-4", l.getName());
 		assertNull(l.getResourceBundleName());
 	}
@@ -204,10 +209,10 @@ public class LevelTest extends TestCase implements Serializable {
 	 * Test method hashCode, with normal fields.
 	 */
 	public void testHashCode_Normal() {
-		assertEquals(Level.parse("100").hashCode(), 100);
-		assertEquals(Level.parse("-1").hashCode(), -1);
-		assertEquals(Level.parse("0").hashCode(), 0);
-		assertEquals(Level.parse("ALL").hashCode(), Integer.MIN_VALUE);
+		assertEquals(100, Level.parse("100").hashCode());
+		assertEquals(-1, Level.parse("-1").hashCode());
+		assertEquals(0, Level.parse("0").hashCode());
+		assertEquals(Integer.MIN_VALUE, Level.parse("ALL").hashCode());
 	}
 
 	/*
@@ -255,7 +260,7 @@ public class LevelTest extends TestCase implements Serializable {
 	 * Test toString of a normal Level.
 	 */
 	public void testToString_Normal() {
-		assertEquals(Level.ALL.toString(), "ALL");
+		assertEquals("ALL", Level.ALL.toString());
 
 		MockLevel l = new MockLevel("name", 2);
 		assertEquals("name", l.toString());
@@ -348,19 +353,19 @@ public class LevelTest extends TestCase implements Serializable {
 		MyLevel.DUPLICATENAME.getName();// just to load MyLevel class
         
 		// test duplicated name and num
-		assertEquals(MyLevel.parse("800").getName(), "INFO");
-		assertEquals(MyLevel.parse("INFO").intValue(), 800);
+		assertEquals("INFO", MyLevel.parse("800").getName());
+		assertEquals(800, MyLevel.parse("INFO").intValue());
 		// test duplicated name
-		assertEquals(MyLevel.parse("499").getName(), "FINE");
-		assertEquals(MyLevel.parse("500").getName(), "FINE");
-		assertEquals(MyLevel.parse("FINE").intValue(), 500);
+		assertEquals("FINE", MyLevel.parse("499").getName());
+		assertEquals("FINE", MyLevel.parse("500").getName());
+		assertEquals(500, MyLevel.parse("FINE").intValue());
 		// test duplicated number
-		assertEquals(MyLevel.parse("300").getName(), "FINEST");
-		assertEquals(MyLevel.parse("FINEST").intValue(), 300);
-		assertEquals(MyLevel.parse("MYLEVEL1").intValue(), 300);
+		assertEquals("FINEST", MyLevel.parse("300").getName());
+		assertEquals(300, MyLevel.parse("FINEST").intValue());
+		assertEquals(300, MyLevel.parse("MYLEVEL1").intValue());
 		// test a normal new level, without duplicated elements
-		assertEquals(MyLevel.parse("299").getName(), "MYLEVEL2");
-		assertEquals(MyLevel.parse("MYLEVEL2").intValue(), 299);
+		assertEquals("MYLEVEL2", MyLevel.parse("299").getName());
+		assertEquals(299, MyLevel.parse("MYLEVEL2").intValue());
 	}
 
 	/*
