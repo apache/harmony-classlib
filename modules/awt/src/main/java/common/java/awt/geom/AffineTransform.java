@@ -24,6 +24,7 @@ import java.awt.Shape;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 
 public class AffineTransform implements Cloneable, Serializable {
@@ -391,7 +392,8 @@ public class AffineTransform implements Cloneable, Serializable {
     public AffineTransform createInverse() throws NoninvertibleTransformException {
         double det = getDeterminant();
         if (Math.abs(det) < ZERO) {
-            throw new NoninvertibleTransformException("Determinant is zero");
+            // awt.204=Determinant is zero
+            throw new NoninvertibleTransformException(Messages.getString("awt.204")); //$NON-NLS-1$
         }
         return new AffineTransform(
                  m11 / det, // m00
@@ -501,7 +503,8 @@ public class AffineTransform implements Cloneable, Serializable {
     public Point2D inverseTransform(Point2D src, Point2D dst) throws NoninvertibleTransformException {
         double det = getDeterminant();
         if (Math.abs(det) < ZERO) {
-            throw new NoninvertibleTransformException("Determinant is zero");
+            // awt.204=Determinant is zero
+            throw new NoninvertibleTransformException(Messages.getString("awt.204")); //$NON-NLS-1$
         }
 
         if (dst == null) {
@@ -524,7 +527,8 @@ public class AffineTransform implements Cloneable, Serializable {
     {
         double det = getDeterminant();
         if (Math.abs(det) < ZERO) {
-            throw new NoninvertibleTransformException("Determinant is zero");
+            // awt.204=Determinant is zero
+            throw new NoninvertibleTransformException(Messages.getString("awt.204")); //$NON-NLS-1$
         }
 
         while (--length >= 0) {
@@ -552,8 +556,8 @@ public class AffineTransform implements Cloneable, Serializable {
     public String toString() {
         return
             getClass().getName() +
-            "[[" + m00 + ", " + m01 + ", " + m02 + "], ["
-                + m10 + ", " + m11 + ", " + m12 + "]]";
+            "[[" + m00 + ", " + m01 + ", " + m02 + "], [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + m10 + ", " + m11 + ", " + m12 + "]]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

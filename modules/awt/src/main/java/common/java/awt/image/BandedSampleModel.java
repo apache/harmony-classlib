@@ -20,6 +20,8 @@
  */
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public final class BandedSampleModel extends ComponentSampleModel {
 
     private static int[] createIndices(int numBands) {
@@ -85,9 +87,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public SampleModel createSubsetSampleModel(int[] bands) {
         if (bands.length > numBands) {
-            throw new RasterFormatException("The number of the bands" +
-                    " in the subset is greater than the number of bands" +
-                    " in the sample model");
+            // awt.64=The number of the bands in the subset is greater than the number of bands in the sample model
+            throw new RasterFormatException(Messages.getString("awt.64")); //$NON-NLS-1$
         }
 
         int indices[] = new int[bands.length];
@@ -233,8 +234,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException(
-                    "Coordinates are not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         return data.getElem(bankIndices[b], y * scanlineStride + x +
@@ -244,8 +245,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public double getSampleDouble(int x, int y, int b, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are" +
-                    " not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         return data.getElemDouble(bankIndices[b], y * scanlineStride + x +
@@ -255,8 +256,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public float getSampleFloat(int x, int y, int b, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are" +
-                    " not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         return data.getElemFloat(bankIndices[b], y * scanlineStride + x +
@@ -359,8 +360,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public void setSample(int x, int y, int b, double s, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are" +
-                    " not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         data.setElemDouble(bankIndices[b], y * scanlineStride + x +
@@ -370,8 +371,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public void setSample(int x, int y, int b, float s, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are" +
-                    " not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         data.setElemFloat(bankIndices[b], y * scanlineStride + x +
@@ -381,8 +382,8 @@ public final class BandedSampleModel extends ComponentSampleModel {
     @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are" +
-                    " not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         data.setElem(bankIndices[b], y * scanlineStride + x +

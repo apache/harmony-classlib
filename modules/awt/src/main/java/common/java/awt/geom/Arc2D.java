@@ -22,6 +22,8 @@ package java.awt.geom;
 
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class Arc2D extends RectangularShape {
 
     public final static int OPEN = 0;
@@ -394,7 +396,8 @@ public abstract class Arc2D extends RectangularShape {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type;
             int count;
@@ -438,7 +441,8 @@ public abstract class Arc2D extends RectangularShape {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type;
             int count;
@@ -510,7 +514,8 @@ public abstract class Arc2D extends RectangularShape {
 
     public void setArcType(int type) {
         if (type != OPEN && type != CHORD && type != PIE) {
-            throw new IllegalArgumentException("Invalid type of Arc: " + type);
+            // awt.205=Invalid type of Arc: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.205", type)); //$NON-NLS-1$
         }
         this.type = type;
     }

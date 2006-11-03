@@ -23,6 +23,8 @@ package java.awt.image;
 import java.awt.Image;
 import java.util.Hashtable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class PixelGrabber implements ImageConsumer {
 
     int width;
@@ -306,8 +308,8 @@ public class PixelGrabber implements ImageConsumer {
             grabberStatus |= ImageObserver.ALLBITS;
             break;
         default:
-            throw new IllegalArgumentException("Incorrect ImageConsumer "
-                    + "completion status");
+            // awt.26A=Incorrect ImageConsumer completion status
+            throw new IllegalArgumentException(Messages.getString("awt.26A")); //$NON-NLS-1$
         }
         isGrabbing = false;
         producer.removeConsumer(this);

@@ -22,6 +22,7 @@ package java.awt.geom;
 
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 
 public abstract class Rectangle2D extends RectangularShape {
@@ -153,7 +154,7 @@ public abstract class Rectangle2D extends RectangularShape {
         public String toString() {
             // The output format based on 1.5 release behaviour. It could be obtained in the following way
             // System.out.println(new Rectangle2D.Float().toString())
-            return getClass().getName() + "[x=" + x + ",y=" + y + ",width=" + width + ",height=" + height + "]";
+            return getClass().getName() + "[x=" + x + ",y=" + y + ",width=" + width + ",height=" + height + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
     }
 
@@ -262,7 +263,7 @@ public abstract class Rectangle2D extends RectangularShape {
         public String toString() {
             // The output format based on 1.5 release behaviour. It could be obtained in the following way
             // System.out.println(new Rectangle2D.Double().toString())
-            return getClass().getName() + "[x=" + x + ",y=" + y + ",width=" + width + ",height=" + height + "]";
+            return getClass().getName() + "[x=" + x + ",y=" + y + ",width=" + width + ",height=" + height + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
     }
 
@@ -332,7 +333,7 @@ public abstract class Rectangle2D extends RectangularShape {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == 5) {
                 return SEG_CLOSE;
@@ -371,7 +372,7 @@ public abstract class Rectangle2D extends RectangularShape {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == 5) {
                 return SEG_CLOSE;

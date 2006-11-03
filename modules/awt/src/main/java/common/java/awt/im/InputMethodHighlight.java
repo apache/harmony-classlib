@@ -23,6 +23,8 @@ package java.awt.im;
 import java.util.Map;
 import java.awt.font.TextAttribute;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class InputMethodHighlight {
 
     public static final int RAW_TEXT = 0;
@@ -55,8 +57,8 @@ public class InputMethodHighlight {
     public InputMethodHighlight(boolean selected, int state,
                                 int variation, Map<java.awt.font.TextAttribute, ?> style) {
         if ((state != RAW_TEXT) && (state != CONVERTED_TEXT)) {
-            throw new IllegalArgumentException("unknown input method" +
-                    " highlight state");
+            // awt.20B=unknown input method highlight state
+            throw new IllegalArgumentException(Messages.getString("awt.20B")); //$NON-NLS-1$
         }
         this.selected = selected;
         this.state = state;

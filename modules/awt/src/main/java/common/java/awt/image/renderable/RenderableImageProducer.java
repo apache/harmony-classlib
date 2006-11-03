@@ -48,7 +48,7 @@ public class RenderableImageProducer implements ImageProducer, Runnable {
 
     public synchronized void startProduction(ImageConsumer ic) {
         addConsumer(ic);
-        Thread t = new Thread(this, "RenderableImageProducer thread");
+        Thread t = new Thread(this, "RenderableImageProducer thread"); //$NON-NLS-1$
         t.start();
     }
 

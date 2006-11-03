@@ -26,7 +26,7 @@ import java.util.Vector;
 
 public interface RenderableImage {
 
-    public static final String HINTS_OBSERVED = "HINTS_OBSERVED";
+    public static final String HINTS_OBSERVED = "HINTS_OBSERVED"; //$NON-NLS-1$
 
     public Object getProperty(String name);
 

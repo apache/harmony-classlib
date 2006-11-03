@@ -309,7 +309,6 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         if (createdValidBuffer == false) {
             cm = ColorModel.getRGBdefault();
             raster = cm.createCompatibleWritableRaster(width, height);
-            System.out.println(raster +" "+ width +" "+ height);
             iData = accessor.getDataInt(raster.getDataBuffer());
             bData = null;
             forcedRGB = true;

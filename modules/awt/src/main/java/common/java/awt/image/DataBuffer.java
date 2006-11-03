@@ -21,6 +21,7 @@
 package java.awt.image;
 
 import org.apache.harmony.awt.gl.image.DataBufferListener;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public abstract class DataBuffer {
 
@@ -174,7 +175,8 @@ public abstract class DataBuffer {
             return 64;
 
         default:
-            throw new IllegalArgumentException("Unknown data type " + type);
+            // awt.22C=Unknown data type {0}
+            throw new IllegalArgumentException(Messages.getString("awt.22C", type)); //$NON-NLS-1$
         }
     }
     

@@ -35,6 +35,7 @@ import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
 import org.apache.harmony.awt.gl.GLVolatileImage;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.image.DataBufferListener;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  * This class not part of public API. It useful for receiving package private
@@ -76,8 +77,9 @@ class AwtImageBackdoorAccessorImpl extends AwtImageBackdoorAccessor {
         } else if (db instanceof DataBufferDouble){
             return ((DataBufferDouble)db).getData();
         } else {
-            throw new IllegalArgumentException("Wrong Data Buffer type - " +
-                    db.getClass());
+            // awt.235=Wrong Data Buffer type : {0}
+            throw new IllegalArgumentException(Messages.getString("awt.235", //$NON-NLS-1$
+                    db.getClass()));
         }
     }
 

@@ -23,6 +23,7 @@ package java.awt.image;
 import java.awt.color.ColorSpace;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class ComponentColorModel extends ColorModel {
@@ -136,10 +137,11 @@ public class ComponentColorModel extends ColorModel {
             donotSupportUnnormalized = true;
             break;
         default:
-            throw new IllegalArgumentException("transferType is not " +
-                    "one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT, " +
-                    "DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT, " +
-                    "DataBuffer.TYPE_FLOAT, or DataBuffer.TYPE_DOUBLE");
+            // awt.215=transferType is not one of DataBuffer.TYPE_BYTE,
+            //          DataBuffer.TYPE_USHORT, DataBuffer.TYPE_INT,
+            //          DataBuffer.TYPE_SHORT, DataBuffer.TYPE_FLOAT, or
+            //          DataBuffer.TYPE_DOUBLE
+            throw new IllegalArgumentException(Messages.getString("awt.215")); //$NON-NLS-1$
         }
 
         needAlphaDivide = hasAlpha && isAlphaPremultiplied;
@@ -206,13 +208,13 @@ public class ComponentColorModel extends ColorModel {
     @Override
     public Object getDataElements(int components[], int offset, Object obj) {
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
 
         if (offset + numComponents > components.length) {
-            throw new IllegalArgumentException("The components array is not " +
-                    "large enough to hold all the color and alpha components ");
+            // awt.216=The components array is not large enough to hold all the color and alpha components
+            throw new IllegalArgumentException(Messages.getString("awt.216")); //$NON-NLS-1$
         }
 
         switch (transferType) {
@@ -250,11 +252,11 @@ public class ComponentColorModel extends ColorModel {
             }
             return ia;
         default:
-            throw new UnsupportedOperationException(
-                    "The transfer type of this ComponentColorModel" +
-                    " is not one of the following transfer types: " +
-                    "DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT, " +
-                    "or DataBuffer.TYPE_INT");
+            // awt.217=The transfer type of this ComponentColorModel is not one
+            //          of the following transfer types: DataBuffer.TYPE_BYTE,
+            //          DataBuffer.TYPE_USHORT, or DataBuffer.TYPE_INT
+            throw new UnsupportedOperationException(Messages
+                    .getString("awt.217")); //$NON-NLS-1$
         }
     }
 
@@ -415,9 +417,8 @@ public class ComponentColorModel extends ColorModel {
             return da;
 
         default:
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
-
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
     }
 
@@ -606,8 +607,8 @@ public class ComponentColorModel extends ColorModel {
                 break;
 
             default:
-                throw new UnsupportedOperationException("This transferType " +
-                        "is not supported by this color model");
+                // awt.219=This transferType is not supported by this color model
+                throw new UnsupportedOperationException(Messages.getString("awt.219")); //$NON-NLS-1$
             }
         } else {
             switch (transferType) {
@@ -707,8 +708,8 @@ public class ComponentColorModel extends ColorModel {
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("This transferType " +
-                        "is not supported by this color model");
+                // awt.219=This transferType is not supported by this color model
+                throw new UnsupportedOperationException(Messages.getString("awt.219")); //$NON-NLS-1$
             }
         }
 
@@ -724,15 +725,15 @@ public class ComponentColorModel extends ColorModel {
     @Override
     public int[] getComponents(Object pixel, int[] components, int offset) {
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
 
         if (components == null) {
             components = new int[offset + numComponents];
         } else if (offset + numComponents > components.length) {
-            throw new IllegalArgumentException("The components array is not " +
-                    "large enough to hold all the color and alpha components ");
+            // awt.218=The components array is not large enough to hold all the color and alpha components
+            throw new IllegalArgumentException(Messages.getString("awt.218")); //$NON-NLS-1$
         }
 
         switch (transferType) {
@@ -759,10 +760,11 @@ public class ComponentColorModel extends ColorModel {
             return components;
 
         default:
-            throw new UnsupportedOperationException("The transfer type " +
-                    "of this ComponentColorModel is not one of the " +
-                    "following transfer types: DataBuffer.TYPE_BYTE, " +
-                    "DataBuffer.TYPE_USHORT, or DataBuffer.TYPE_INT");
+            // awt.217=The transfer type of this ComponentColorModel is not one
+            //          of the following transfer types: DataBuffer.TYPE_BYTE,
+            //          DataBuffer.TYPE_USHORT, or DataBuffer.TYPE_INT
+            throw new UnsupportedOperationException(Messages
+                    .getString("awt.217")); //$NON-NLS-1$
         }
 
     }
@@ -820,8 +822,8 @@ public class ComponentColorModel extends ColorModel {
             break;
 
         default:
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support this transferType");
+            // awt.21A=This ComponentColorModel does not support this transferType
+            throw new IllegalArgumentException(Messages.getString("awt.21A")); //$NON-NLS-1$
         }
 
         if (needAlphaDivide) {
@@ -925,8 +927,8 @@ public class ComponentColorModel extends ColorModel {
             return (int) (da[numColorComponents] * 255.0 + 0.5);
         }
         default: {
-            throw new UnsupportedOperationException("This Color Model " +
-                    "doesn't support this transferType");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         }
     }
@@ -998,8 +1000,8 @@ public class ComponentColorModel extends ColorModel {
     public float[] getNormalizedComponents(int components[], int offset,
             float normComponents[], int normOffset) {
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
 
         return super.getNormalizedComponents(components, offset,
@@ -1009,12 +1011,12 @@ public class ComponentColorModel extends ColorModel {
     @Override
     public int getDataElement(int[] components, int offset) {
         if (numComponents > 1) {
-            throw new IllegalArgumentException("There is more than one " +
-                    "component in this ColorModel");
+            // awt.212=There is more than one component in this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.212")); //$NON-NLS-1$
         }
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
         return components[offset];
     }
@@ -1024,14 +1026,13 @@ public class ComponentColorModel extends ColorModel {
             int normOffset, int[] components, int offset) {
 
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form ");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
 
         if (normComponents.length - normOffset < numComponents) {
-            throw new IllegalArgumentException("The length of " +
-                    "normComponents minus normOffset is less than" + 
-                    " numComponents");
+            // awt.21B=The length of normComponents minus normOffset is less than numComponents
+            throw new IllegalArgumentException(Messages.getString("awt.21B")); //$NON-NLS-1$
         }
 
         return super.getUnnormalizedComponents(normComponents, normOffset,
@@ -1041,12 +1042,12 @@ public class ComponentColorModel extends ColorModel {
     @Override
     public int getDataElement(float normComponents[], int normOffset) {
         if (numComponents > 1) {
-            throw new IllegalArgumentException("There is more than one " +
-                    "component in this ColorModel");
+            // awt.212=There is more than one component in this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.212")); //$NON-NLS-1$
         }
         if (signed) {
-            throw new IllegalArgumentException("The component value for " +
-                    "this ColorModel is signed");
+            // awt.210=The component value for this ColorModel is signed
+            throw new IllegalArgumentException(Messages.getString("awt.210")); //$NON-NLS-1$
         }
 
         Object pixel = getDataElements(normComponents, normOffset, null);
@@ -1062,21 +1063,21 @@ public class ComponentColorModel extends ColorModel {
             int ia[] = (int[]) pixel;
             return ia[0];
         default:
-            throw new IllegalArgumentException("Pixel values for " +
-                    "this ColorModel are not conveniently representable " +
-                    "as a single int ");
+            // awt.211=Pixel values for this ColorModel are not conveniently
+            //          representable as a single int
+            throw new IllegalArgumentException(Messages.getString("awt.211")); //$NON-NLS-1$
         }
     }
 
     @Override
     public int[] getComponents(int pixel, int components[], int offset) {
         if (numComponents > 1) {
-            throw new IllegalArgumentException("There is more than one " +
-                    "component in this ColorModel");
+            // awt.212=There is more than one component in this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.212")); //$NON-NLS-1$
         }
         if (donotSupportUnnormalized) {
-            throw new IllegalArgumentException("This ComponentColorModel " +
-                    "does not support the unnormalized form");
+            // awt.213=This ComponentColorModel does not support the unnormalized form
+            throw new IllegalArgumentException(Messages.getString("awt.213")); //$NON-NLS-1$
         }
 
         if (components == null) {
@@ -1117,13 +1118,13 @@ public class ComponentColorModel extends ColorModel {
         // This method throw IllegalArgumentException according to 
         // Java API Spacification
         if (signed) {
-            throw new IllegalArgumentException("The component value " +
-                    "for this ColorModel is signed");
+            // awt.210=The component value for this ColorModel is signed
+            throw new IllegalArgumentException(Messages.getString("awt.210")); //$NON-NLS-1$
         }
 
         if (numComponents > 1) {
-            throw new IllegalArgumentException("There is more than one " +
-                    "component in this ColorModel");
+            // awt.212=There is more than one component in this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.212")); //$NON-NLS-1$
         }
 
         return 255;
@@ -1221,13 +1222,13 @@ public class ComponentColorModel extends ColorModel {
         // This method throw IllegalArgumentException according to 
         // Java API Spacification
         if (signed) {
-            throw new IllegalArgumentException("The component value " +
-                    "for this ColorModel is signed");
+            // awt.210=The component value for this ColorModel is signed
+            throw new IllegalArgumentException(Messages.getString("awt.210")); //$NON-NLS-1$
         }
 
         if (numComponents > 1) {
-            throw new IllegalArgumentException("There is more than " +
-                    "one component in this ColorModel");
+            // awt.212=There is more than one component in this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.212")); //$NON-NLS-1$
         }
 
         Object obj = null;
@@ -1382,8 +1383,8 @@ public class ComponentColorModel extends ColorModel {
             return comp;
 
         default:
-            throw new UnsupportedOperationException("This Color Model " +
-                    "doesn't support this transferType");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
     }
 

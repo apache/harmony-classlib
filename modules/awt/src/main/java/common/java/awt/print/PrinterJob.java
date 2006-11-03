@@ -27,6 +27,8 @@ import javax.print.PrintServiceLookup;
 import javax.print.StreamPrintServiceFactory;
 import javax.print.attribute.PrintRequestAttributeSet;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class PrinterJob {
 
     /* abstract section */
@@ -75,22 +77,22 @@ public abstract class PrinterJob {
         return AccessController.doPrivileged(
                 new PrivilegedAction<PrinterJob>() {
             public PrinterJob run() {
-                String s = System.getProperty("java.awt.printerjob");
+                String s = System.getProperty("java.awt.printerjob"); //$NON-NLS-1$
 
-                if (s == null || s.equals("")){
-                    s = "org.apache.harmony.x.print.awt.PSPrinterJob";
+                if (s == null || s.equals("")){ //$NON-NLS-1$
+                    s = "org.apache.harmony.x.print.awt.PSPrinterJob"; //$NON-NLS-1$
                 }
                 try {
                     return (PrinterJob) Class.forName(s).newInstance();
                 } catch (ClassNotFoundException cnfe) {
-                    throw new AWTError(
-                            "Default class for PrinterJob is not found");
+                    // awt.5A=Default class for PrinterJob is not found
+                    throw new AWTError(Messages.getString("awt.5A")); //$NON-NLS-1$
                 } catch (IllegalAccessException iae) {
-                    throw new AWTError(
-                            "No access to default class for PrinterJob");
+                    // awt.5B=No access to default class for PrinterJob
+                    throw new AWTError(Messages.getString("awt.5B")); //$NON-NLS-1$
                 } catch (InstantiationException ie) {
-                    throw new AWTError(
-                            "Instantiation exception for PrinterJob");
+                    // awt.5C=Instantiation exception for PrinterJob
+                    throw new AWTError(Messages.getString("awt.5C")); //$NON-NLS-1$
                 }
             }
         });
@@ -130,8 +132,8 @@ public abstract class PrinterJob {
     public boolean printDialog(PrintRequestAttributeSet attributes)
             throws HeadlessException {
         if (attributes == null) {
-            throw new NullPointerException(
-                    "The parameter 'attributes' is null");
+            // awt.01='{0}' parameter is null
+            throw new NullPointerException(Messages.getString("awt.01", "attributes")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         //This implementation ignores the attribute set.
         return printDialog();
@@ -139,16 +141,17 @@ public abstract class PrinterJob {
 
     public void setPrintService(PrintService printservice)
             throws PrinterException {
-        throw new PrinterException(printservice.toString()
-                    + "is not supported");
+        // awt.5D={0} is not supported
+        throw new PrinterException(Messages.getString(
+                "awt.5D", printservice.toString())); //$NON-NLS-1$
     }
 
     public PageFormat pageDialog(PrintRequestAttributeSet attributes)
         throws HeadlessException {
         //This implementation ignores the attribute set.
         if(attributes == null) {
-            throw new NullPointerException(
-                    "The parameter 'attributes' is null");
+            // awt.01='{0}' parameter is null
+            throw new NullPointerException(Messages.getString("awt.01", "attributes")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return pageDialog(defaultPage());
     }

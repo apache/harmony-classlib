@@ -22,6 +22,8 @@ package java.awt.image;
 
 import java.util.Arrays;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class SinglePixelPackedSampleModel extends SampleModel {
 
     private int bitMasks[];
@@ -47,8 +49,9 @@ public class SinglePixelPackedSampleModel extends SampleModel {
         if (dataType != DataBuffer.TYPE_BYTE &&
                 dataType != DataBuffer.TYPE_USHORT &&
                 dataType != DataBuffer.TYPE_INT) {
-            throw new IllegalArgumentException("Unsupported data type:"
-                    + dataType);
+            // awt.61=Unsupported data type: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.61", //$NON-NLS-1$
+                    dataType));
         }
 
         this.scanlineStride = scanlineStride;
@@ -75,8 +78,9 @@ public class SinglePixelPackedSampleModel extends SampleModel {
                 }
 
                 if (mask != 0) {
-                    throw new IllegalArgumentException("Wrong mask :"
-                            + bitMasks[i]);
+                    // awt.62=Wrong mask : {0}
+                    throw new IllegalArgumentException(Messages.getString(
+                            "awt.62", bitMasks[i])); //$NON-NLS-1$
                 }
             }
 
@@ -94,8 +98,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         switch (getTransferType()) {
         case DataBuffer.TYPE_BYTE:
@@ -138,8 +142,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public void setDataElements(int x, int y, Object obj, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         switch (getTransferType()) {
         case DataBuffer.TYPE_BYTE:
@@ -174,9 +178,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public SampleModel createSubsetSampleModel(int bands[]) {
         if (bands.length > this.numBands) {
-            throw new RasterFormatException("The number of the bands " +
-                    "in the subset is greater than the number of bands " +
-                    "in the sample model");
+            // awt.64=The number of the bands in the subset is greater than the number of bands in the sample model
+            throw new RasterFormatException(Messages.getString("awt.64")); //$NON-NLS-1$
         }
 
         int masks[] = new int[bands.length];
@@ -196,8 +199,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public int[] getPixel(int x, int y, int iArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int pixel[];
         if (iArray == null) {
@@ -216,8 +219,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public void setPixel(int x, int y, int iArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         for (int i = 0; i < this.numBands; i++) {
             setSample(x, y, i, iArray[i], data);
@@ -227,8 +230,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int sample = data.getElem(y * scanlineStride + x);
         return ((sample & this.bitMasks[b]) >>> this.bitOffsets[b]);
@@ -238,8 +241,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         int pixels[];
@@ -266,8 +269,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     public void setPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         int idx = 0;
@@ -284,8 +287,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int tmp = data.getElem(y * scanlineStride + x);
         tmp &= ~this.bitMasks[b];
@@ -297,8 +300,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     public int[] getSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         int samples[];
@@ -323,8 +326,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     public void setSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         int idx = 0;

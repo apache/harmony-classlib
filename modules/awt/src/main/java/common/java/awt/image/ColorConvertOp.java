@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import org.apache.harmony.awt.gl.color.ColorConverter;
 import org.apache.harmony.awt.gl.color.ColorScaler;
 import org.apache.harmony.awt.gl.color.ICC_Transform;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class ColorConvertOp implements BufferedImageOp, RasterOp {
     // Unused but required by interfaces
@@ -225,7 +226,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
     
     public ColorConvertOp(ColorSpace srcCS, ColorSpace dstCS, RenderingHints hints) {
         if (srcCS == null || dstCS == null) {
-            throw new NullPointerException("Null ColorSpace passed as a parameter");
+            throw new NullPointerException(Messages.getString("awt.25B")); //$NON-NLS-1$
         }
         
         renderingHints = hints;
@@ -255,7 +256,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
 
     public ColorConvertOp(ICC_Profile profiles[], RenderingHints hints) {
         if (profiles == null) {
-            throw new NullPointerException("Null profiles passed as a parameter");
+            throw new NullPointerException(Messages.getString("awt.25C")); //$NON-NLS-1$
         }
 
         renderingHints = hints;
@@ -274,7 +275,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
 
     public ColorConvertOp(ColorSpace cs, RenderingHints hints) {
         if (cs == null) {
-            throw new NullPointerException("Null ColorSpace passed as a parameter");
+            throw new NullPointerException(Messages.getString("awt.25B")); //$NON-NLS-1$
         }
         
         renderingHints = hints;
@@ -295,8 +296,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
 
     public final WritableRaster filter(Raster src, WritableRaster dst) {
         if (conversionSequence.length < 2) {
-            throw new IllegalArgumentException(
-                    "Source or destination color space is not defined");
+            throw new IllegalArgumentException(Messages.getString("awt.25D")); //$NON-NLS-1$
         }
 
         ICC_Profile srcPf = null, dstPf = null; // unused if isICC is false
@@ -329,25 +329,23 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         // Check that source and destination rasters are compatible with
         // transforms and with each other
         if (src.getNumBands() != nSrcColorComps) {
-            throw new IllegalArgumentException(
-                    "Incorrect number of source raster bands. " +
-                    "Should be equal to the number of color " + 
-                    "components of source colorspace.");
+            // awt.25E=Incorrect number of source raster bands. Should be equal
+            //          to the number of color components of source colorspace.
+            throw new IllegalArgumentException(Messages.getString("awt.25E")); //$NON-NLS-1$
         }
         
         if (dst != null) { // Check destination raster
             if (dst.getNumBands() !=
                 nDstColorComps) {
-                throw new IllegalArgumentException(
-                        "Incorrect number of destination raster bands. " +
-                        "Should be equal to the number of color " + 
-                        "components of destination colorspace.");
+                // awt.25F=Incorrect number of destination raster bands. Should
+                //          be equal to the number of color components of destination
+                //          colorspace.
+                throw new IllegalArgumentException(Messages.getString("awt.25F")); //$NON-NLS-1$
             }
             
             if (src.getWidth() != dst.getWidth() ||
                src.getHeight() != dst.getHeight()) {
-                throw new IllegalArgumentException(
-                    "Incompatible rasters - width or height differs");
+                throw new IllegalArgumentException(Messages.getString("awt.260")); //$NON-NLS-1$
             }
             
         } else {
@@ -396,7 +394,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         int nSpaces = conversionSequence.length;
         
         if (nSpaces < 1) {
-            throw new IllegalArgumentException("Destination color space is undefined");
+            throw new IllegalArgumentException(Messages.getString("awt.261")); //$NON-NLS-1$
         }
         
         // Get destination color space
@@ -421,7 +419,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
 
     public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (dst == null && conversionSequence.length < 1) {
-            throw new IllegalArgumentException("Destionation color space should be defined");
+            throw new IllegalArgumentException(Messages.getString("awt.262")); //$NON-NLS-1$
         }
 
         ColorModel srcCM = src.getColorModel();
@@ -437,8 +435,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
           
           if (src.getWidth() != dst.getWidth() ||
              src.getHeight() != dst.getHeight()) {
-              throw new IllegalArgumentException(
-                  "Incompatible images - width or height differs");
+              throw new IllegalArgumentException(Messages.getString("awt.263")); //$NON-NLS-1$
           }
 
             if (dst.getColorModel() instanceof IndexColorModel) {
@@ -593,7 +590,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         int nSpaces = conversionSequence.length;
         
         if (nSpaces < 2) {
-            throw new IllegalArgumentException("Destination color space is undefined");
+            throw new IllegalArgumentException(Messages.getString("awt.261")); //$NON-NLS-1$
         }
         
         Object lastCS = conversionSequence[nSpaces-1];

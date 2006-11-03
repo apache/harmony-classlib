@@ -29,6 +29,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class BandCombineOp implements RasterOp {
     static final int offsets3c[] = {16, 8, 0};
@@ -95,8 +96,10 @@ public class BandCombineOp implements RasterOp {
     public WritableRaster createCompatibleDestRaster (Raster src) {
         int numBands = src.getNumBands();
         if (mxWidth != numBands && mxWidth != (numBands+1) || numBands != mxHeight) {
-            throw new IllegalArgumentException("Number of bands in the source raster ("+ numBands
-                    + ") is incompatible with the matrix [" + mxWidth + "x" + mxHeight + "]");
+            // awt.254=Number of bands in the source raster ({0}) is
+            //          incompatible with the matrix [{1}x{2}]
+            throw new IllegalArgumentException(Messages.getString("awt.254", //$NON-NLS-1$
+                    new Object[]{numBands, mxWidth, mxHeight}));
         }
 
         return src.createCompatibleWritableRaster(src.getWidth(), src.getHeight());
@@ -106,27 +109,26 @@ public class BandCombineOp implements RasterOp {
         int numBands = src.getNumBands();
 
         if (mxWidth != numBands && mxWidth != (numBands+1)) {
+            // awt.254=Number of bands in the source raster ({0}) is
+            //          incompatible with the matrix [{1}x{2}]
             throw new IllegalArgumentException(
-                    "Number of bands in the source raster ("+ numBands
-                    + ") is incompatible with the matrix [" + mxWidth +
-                    "x" + mxHeight + "]"
-            );
+                    Messages.getString("awt.254", //$NON-NLS-1$
+                    new Object[]{numBands, mxWidth, mxHeight}));
         }
 
         if (dst == null) {
             dst = createCompatibleDestRaster(src);
         } else if (dst.getNumBands() != mxHeight) {
-            throw new IllegalArgumentException(
-                    "Number of bands in the destination raster (" +
-                    dst.getNumBands() + ") is incompatible with the matrix [" +
-                    mxWidth + "x" + mxHeight + "]"
-            );
+            // awt.255=Number of bands in the destination raster ({0}) is incompatible with the matrix [{1}x{2}]
+            throw new IllegalArgumentException(Messages.getString("awt.255", //$NON-NLS-1$
+                    new Object[]{dst.getNumBands(), mxWidth, mxHeight}));
         }
 
         // XXX - todo
         //if (ippFilter(src, dst) != 0)
         if (verySlowFilter(src, dst) != 0) {
-            throw new ImagingOpException ("Unable to transform source");
+            // awt.21F=Unable to transform source
+            throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
         }
 
         return dst;

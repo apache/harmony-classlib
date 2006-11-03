@@ -26,6 +26,8 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Area implements Shape, Cloneable {
 
     /**
@@ -51,11 +53,13 @@ public class Area implements Shape, Cloneable {
         }
 
         public int currentSegment(double[] coords) {
-            throw new NoSuchElementException("Iterator out of bounds");
+            // awt.4B=Iterator out of bounds
+            throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
         }
 
         public int currentSegment(float[] coords) {
-            throw new NoSuchElementException("Iterator out of bounds");
+            // awt.4B=Iterator out of bounds
+            throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
         }
 
     }
@@ -93,7 +97,7 @@ public class Area implements Shape, Cloneable {
     }
 
     public boolean equals(Area obj) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public boolean intersects(double x, double y, double width, double height) {
@@ -124,11 +128,11 @@ public class Area implements Shape, Cloneable {
     }
 
     public void add(Area area) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public void exclusiveOr(Area area) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     /**
@@ -169,27 +173,27 @@ public class Area implements Shape, Cloneable {
     }
 
     public void subtract(Area area) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public boolean isEmpty() {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public boolean isPolygonal() {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public boolean isRectangular() {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public boolean isSingular() {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public void reset() {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
     public void transform(AffineTransform t) {

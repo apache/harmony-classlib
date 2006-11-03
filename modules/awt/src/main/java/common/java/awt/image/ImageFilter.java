@@ -44,14 +44,14 @@ public class ImageFilter implements ImageConsumer, Cloneable {
         } else {
             fprops = (Hashtable<Object, Object>) props.clone();
         }
-        String propName = "Filters";
-        String prop = "Null filter";
+        String propName = "Filters"; //$NON-NLS-1$
+        String prop = "Null filter"; //$NON-NLS-1$
         Object o = fprops.get(propName);
         if (o != null) {
             if (o instanceof String) {
-                prop = (String) o + "; " + prop;
+                prop = (String) o + "; " + prop; //$NON-NLS-1$
             } else {
-                prop = o.toString() + "; " + prop;
+                prop = o.toString() + "; " + prop; //$NON-NLS-1$
             }
         }
         fprops.put(propName, prop);

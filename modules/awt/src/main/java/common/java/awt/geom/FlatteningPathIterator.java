@@ -22,6 +22,8 @@ package java.awt.geom;
 
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class FlatteningPathIterator implements PathIterator {
 
     /**
@@ -110,13 +112,16 @@ public class FlatteningPathIterator implements PathIterator {
 
     public FlatteningPathIterator(PathIterator path, double flatness, int limit) {
         if (flatness < 0.0) {
-            throw new IllegalArgumentException("Flatness is less then zero");
+            // awt.206=Flatness is less then zero
+            throw new IllegalArgumentException(Messages.getString("awt.206")); //$NON-NLS-1$
         }
         if (limit < 0) {
-            throw new IllegalArgumentException("Limit is less then zero");
+            // awt.207=Limit is less then zero
+            throw new IllegalArgumentException(Messages.getString("awt.207")); //$NON-NLS-1$
         }
         if (path == null) {
-            throw new NullPointerException("Path is null");
+            // awt.208=Path is null
+            throw new NullPointerException(Messages.getString("awt.208")); //$NON-NLS-1$
         }
         this.p = path;
         this.flatness = flatness;
@@ -262,7 +267,8 @@ public class FlatteningPathIterator implements PathIterator {
 
     public int currentSegment(float[] coords) {
         if (isDone()) {
-            throw new NoSuchElementException("Iiterator out of bounds");
+            // awt.4B=Iterator out of bounds
+            throw new NoSuchElementException(Messages.getString("awt.4Bx")); //$NON-NLS-1$
         }
         evaluate();
         int type = bufType;
@@ -278,7 +284,8 @@ public class FlatteningPathIterator implements PathIterator {
 
     public int currentSegment(double[] coords) {
         if (isDone()) {
-            throw new NoSuchElementException("Iterator out of bounds");
+            // awt.4B=Iterator out of bounds
+            throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
         }
         evaluate();
         int type = bufType;

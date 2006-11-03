@@ -29,6 +29,7 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class LookupOp implements BufferedImageOp, RasterOp {
     private final LookupTable lut;
@@ -131,23 +132,20 @@ public class LookupOp implements BufferedImageOp, RasterOp {
         if (dst == null) {
             dst = createCompatibleDestRaster(src);
         } else if (src.getNumBands() != dst.getNumBands()) {
-            throw new IllegalArgumentException(
-                    "Source and destinations rasters do not have " +
-                    "the same number of bands"
-            );
+            // awt.237=Source and destinations rasters do not have the same number of bands
+            throw new IllegalArgumentException(Messages.getString("awt.237")); //$NON-NLS-1$
         }
 
         if (lut.getNumComponents() != 1 && lut.getNumComponents() != src.getNumBands()) {
-            throw new IllegalArgumentException(
-                    "The number of arrays in the LookupTable does not " +
-                    "meet the restrictions"
-            );
+            // awt.238=The number of arrays in the LookupTable does not meet the restrictions
+            throw new IllegalArgumentException(Messages.getString("awt.238")); //$NON-NLS-1$
         }
 
         // TODO
         // if (!canUseIpp || ippFilter(src, dst, BufferedImage.TYPE_CUSTOM, false) != 0)
             if (slowFilter(src, dst, false) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         return dst;
@@ -157,9 +155,8 @@ public class LookupOp implements BufferedImageOp, RasterOp {
         ColorModel srcCM = src.getColorModel();
 
         if (srcCM instanceof IndexColorModel) {
-            throw new IllegalArgumentException(
-                    "Source should not have IndexColorModel"
-            );
+            // awt.220=Source should not have IndexColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.220")); //$NON-NLS-1$
         }
 
         // Check if the number of scaling factors matches the number of bands
@@ -172,18 +169,14 @@ public class LookupOp implements BufferedImageOp, RasterOp {
             } else if (nLUTComponents == nComponents) {
                 skipAlpha = false;
             } else {
-                throw new IllegalArgumentException(
-                        "Number of components in the LUT does not " +
-                        "match the number of bands"
-                );
+                // awt.229=Number of components in the LUT does not match the number of bands
+                throw new IllegalArgumentException(Messages.getString("awt.229")); //$NON-NLS-1$
             }
         } else if (nLUTComponents == 1 || nLUTComponents == nComponents) {
             skipAlpha = false;
         } else {
-            throw new IllegalArgumentException(
-                    "Number of components in the LUT does not " +
-                    "match the number of bands"
-            );
+            // awt.229=Number of components in the LUT does not match the number of bands
+            throw new IllegalArgumentException(Messages.getString("awt.229")); //$NON-NLS-1$
         }
 
         BufferedImage finalDst = null;
@@ -206,7 +199,8 @@ public class LookupOp implements BufferedImageOp, RasterOp {
         // TODO
         //if (!canUseIpp || ippFilter(src.getRaster(), dst.getRaster(), src.getType(), skipAlpha) != 0)
             if (slowFilter(src.getRaster(), dst.getRaster(), skipAlpha) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         if (finalDst != null) {

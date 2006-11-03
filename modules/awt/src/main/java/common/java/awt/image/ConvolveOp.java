@@ -29,6 +29,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class ConvolveOp implements BufferedImageOp, RasterOp {
 
@@ -113,26 +114,28 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
 
     public final WritableRaster filter(Raster src, WritableRaster dst) {
         if (src == null) { // Should throw according to spec
-            throw new NullPointerException("Source raster is null");
+            // awt.256=Source raster is null
+            throw new NullPointerException(Messages.getString("awt.256")); //$NON-NLS-1$
         }
 
         if (src == dst){
-            throw new IllegalArgumentException("Source raster is equal to destination");
+            // awt.257=Source raster is equal to destination
+            throw new IllegalArgumentException(Messages.getString("awt.257")); //$NON-NLS-1$
         }
 
         if (dst == null) {
             dst = createCompatibleDestRaster(src);
         } else if (src.getNumBands() != dst.getNumBands()) {
+            // awt.258=Number of source bands ({0}) is not equal to number of destination bands ({1})
             throw new IllegalArgumentException(
-                "Number of source bands (" + src.getNumBands() +
-                 ") is not equal to number of destination bands (" + dst.getNumBands() + ")"
-            );
+                Messages.getString("awt.258", src.getNumBands(), dst.getNumBands())); //$NON-NLS-1$
         }
 
         // TODO
         //if (ippFilter(src, dst, BufferedImage.TYPE_CUSTOM) != 0)
             if (slowFilter(src, dst) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         return dst;
@@ -240,11 +243,13 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
 
     public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
-            throw new NullPointerException("Source image is null");
+            // awt.259=Source image is null
+            throw new NullPointerException(Messages.getString("awt.259")); //$NON-NLS-1$
         }
 
         if (src == dst){
-            throw new IllegalArgumentException("Source equals to destination");
+            // awt.25A=Source equals to destination
+            throw new IllegalArgumentException(Messages.getString("awt.25A")); //$NON-NLS-1$
         }
 
         ColorModel srcCM = src.getColorModel();
@@ -276,7 +281,8 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
         // TODO
         //if (ippFilter(src.getRaster(), dst.getRaster(), src.getType()) != 0)
             if (slowFilter(src.getRaster(), dst.getRaster()) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         if (finalDst != null) {

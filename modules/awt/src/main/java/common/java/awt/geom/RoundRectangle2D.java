@@ -22,6 +22,8 @@ package java.awt.geom;
 
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class RoundRectangle2D extends RectangularShape {
 
     public static class Float extends RoundRectangle2D {
@@ -307,8 +309,8 @@ public abstract class RoundRectangle2D extends RectangularShape {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException(
-                        "RoundRectangle2D iterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == points.length) {
                 return SEG_CLOSE;
@@ -327,8 +329,8 @@ public abstract class RoundRectangle2D extends RectangularShape {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException(
-                        "RoundRectangle2D iterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == points.length) {
                 return SEG_CLOSE;

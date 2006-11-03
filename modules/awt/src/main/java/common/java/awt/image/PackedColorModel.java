@@ -24,6 +24,8 @@ import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.util.Arrays;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class PackedColorModel extends ColorModel {
 
     int componentMasks[];
@@ -41,8 +43,8 @@ public abstract class PackedColorModel extends ColorModel {
                 validateTransferType(transferType));
 
         if (pixel_bits < 1 || pixel_bits > 32) {
-            throw new IllegalArgumentException("The bits is less than 1 or " +
-                    "greater than 32");
+            // awt.236=The bits is less than 1 or greater than 32
+            throw new IllegalArgumentException(Messages.getString("awt.236")); //$NON-NLS-1$
         }
 
         componentMasks = new int[numComponents];
@@ -69,19 +71,19 @@ public abstract class PackedColorModel extends ColorModel {
                 validateTransferType(transferType));
 
         if (pixel_bits < 1 || pixel_bits > 32) {
-            throw new IllegalArgumentException("The bits is less than 1 or " +
-                    "greater than 32");
+            // awt.236=The bits is less than 1 or greater than 32
+            throw new IllegalArgumentException(Messages.getString("awt.236")); //$NON-NLS-1$
         }
 
         if (cs.getType() != ColorSpace.TYPE_RGB) {
-            throw new IllegalArgumentException("The space is not a TYPE_RGB " +
-                    "space");
+            // awt.239=The space is not a TYPE_RGB space
+            throw new IllegalArgumentException(Messages.getString("awt.239")); //$NON-NLS-1$
         }
 
         for (int i = 0; i < numColorComponents; i++) {
             if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f) {
-                throw new IllegalArgumentException("The min/max normalized " +
-                        "component values are not 0.0/1.0");
+                // awt.23A=The min/max normalized component values are not 0.0/1.0
+                throw new IllegalArgumentException(Messages.getString("awt.23A")); //$NON-NLS-1$
             }
         }
         componentMasks = new int[numComponents];
@@ -179,8 +181,8 @@ public abstract class PackedColorModel extends ColorModel {
         for (; i < colorMaskArray.length; i++) {
             bits[i] = countCompBits(colorMaskArray[i]);
             if (bits[i] < 0) {
-                throw new IllegalArgumentException("The mask of the " + i
-                        + " component is not contiguous");
+                // awt.23B=The mask of the {0} component is not contiguous
+                throw new IllegalArgumentException(Messages.getString("awt.23B", i)); //$NON-NLS-1$
             }
         }
 
@@ -188,8 +190,8 @@ public abstract class PackedColorModel extends ColorModel {
             bits[i] = countCompBits(alphaMask);
 
             if (bits[i] < 0) {
-                throw new IllegalArgumentException("The mask of the alpha " +
-                        "component is not contiguous");
+                // awt.23C=The mask of the alpha component is not contiguous
+                throw new IllegalArgumentException(Messages.getString("awt.23C")); //$NON-NLS-1$
             }
         }
 
@@ -209,27 +211,27 @@ public abstract class PackedColorModel extends ColorModel {
 
         bits[0] = countCompBits(rmask);
         if (bits[0] < 0) {
-            throw new IllegalArgumentException("The mask of the red " +
-                    "component is not contiguous");
+            // awt.23D=The mask of the red component is not contiguous
+            throw new IllegalArgumentException(Messages.getString("awt.23D")); //$NON-NLS-1$
         }
 
         bits[1] = countCompBits(gmask);
         if (bits[1] < 0) {
-            throw new IllegalArgumentException("The mask of the green " +
-                    "component is not contiguous");
+            // awt.23E=The mask of the green component is not contiguous
+            throw new IllegalArgumentException(Messages.getString("awt.23E")); //$NON-NLS-1$
         }
 
         bits[2] = countCompBits(bmask);
         if (bits[2] < 0) {
-            throw new IllegalArgumentException("The mask of the blue " +
-                    "component is not contiguous");
+            // awt.23F=The mask of the blue component is not contiguous
+            throw new IllegalArgumentException(Messages.getString("awt.23F")); //$NON-NLS-1$
         }
 
         if (amask != 0) {
             bits[3] = countCompBits(amask);
             if (bits[3] < 0) {
-                throw new IllegalArgumentException("The mask of the alpha " +
-                        "component is not contiguous");
+                // awt.23C=The mask of the alpha component is not contiguous
+                throw new IllegalArgumentException(Messages.getString("awt.23C")); //$NON-NLS-1$
             }
         }
 
@@ -261,9 +263,9 @@ public abstract class PackedColorModel extends ColorModel {
         if (transferType != DataBuffer.TYPE_BYTE &&
                 transferType != DataBuffer.TYPE_USHORT &&
                 transferType != DataBuffer.TYPE_INT) {
-            throw new IllegalArgumentException("The transferType is not " +
-                    "one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT " +
-                    "or DataBuffer.TYPE_INT");
+            // awt.240=The transferType not is one of DataBuffer.TYPE_BYTE,
+            //          DataBuffer.TYPE_USHORT or DataBuffer.TYPE_INT
+            throw new IllegalArgumentException(Messages.getString("awt.240")); //$NON-NLS-1$
         }
         return transferType;
     }

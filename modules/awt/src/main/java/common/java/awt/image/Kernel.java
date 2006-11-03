@@ -23,6 +23,8 @@
 
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Kernel implements Cloneable {
     private final int xOrigin;
     private final int yOrigin;
@@ -33,8 +35,8 @@ public class Kernel implements Cloneable {
     public Kernel(int width, int height, float[] data) {
         int dataLength = width*height;
         if (data.length < dataLength) {
-            throw new IllegalArgumentException(
-                    "Length of data should not be less than width*height");
+            // awt.22B=Length of data should not be less than width*height
+            throw new IllegalArgumentException(Messages.getString("awt.22B")); //$NON-NLS-1$
         }
 
         this.width = width;

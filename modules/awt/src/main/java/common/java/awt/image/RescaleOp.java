@@ -29,6 +29,7 @@ import java.awt.*;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class RescaleOp implements BufferedImageOp, RasterOp {
@@ -45,9 +46,8 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
         int numFactors = Math.min(scaleFactors.length, offsets.length);
 
         if (numFactors == 0) {
-            throw new IllegalArgumentException(
-                    "The number of scale factors should not be zero"
-            );
+            // awt.21C=The number of scale factors should not be zero 
+            throw new IllegalArgumentException(Messages.getString("awt.21C")); //$NON-NLS-1$
         }
 
         this.scaleFactors = new float[numFactors];
@@ -143,12 +143,9 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
             dst = createCompatibleDestRaster(src);
         } else {
             if (src.getNumBands() != dst.getNumBands()) {
-                throw new IllegalArgumentException(
-                        "Number of src bands ("+
-                        src.getNumBands()+
-                        ") does not match number of dst bands (" +
-                        dst.getNumBands()+")"
-                );
+                // awt.21D=Number of src bands ({0}) does not match number of dst bands ({1})
+                throw new IllegalArgumentException(Messages.getString("awt.21D", //$NON-NLS-1$
+                        src.getNumBands(), dst.getNumBands()));
             }
         }
 
@@ -156,16 +153,15 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
                 this.scaleFactors.length != 1 &&
                 this.scaleFactors.length != src.getNumBands()
         ) {
-            throw new IllegalArgumentException(
-                    "Number of scaling constants is not equal " +
-                    "to the number of bands"
-            );
+            // awt.21E=Number of scaling constants is not equal to the number of bands
+            throw new IllegalArgumentException(Messages.getString("awt.21E")); //$NON-NLS-1$
         }
 
         // TODO
         //if (ippFilter(src, dst, BufferedImage.TYPE_CUSTOM, false) != 0)
             if (slowFilter(src, dst, false) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         return dst;
@@ -272,7 +268,8 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
         ColorModel srcCM = src.getColorModel();
 
         if (srcCM instanceof IndexColorModel) {
-            throw new IllegalArgumentException("Source should not have IndexColorModel");
+            // awt.220=Source should not have IndexColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.220")); //$NON-NLS-1$
         }
 
         // Check if the number of scaling factors matches the number of bands
@@ -284,16 +281,14 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
             } else if (scaleFactors.length == nComponents) {
                 skipAlpha = false;
             } else {
-                throw new IllegalArgumentException(
-                        "Number of scaling constants does not match the number of bands"
-                );
+                // awt.21E=Number of scaling constants is not equal to the number of bands
+                throw new IllegalArgumentException(Messages.getString("awt.21E")); //$NON-NLS-1$
             }
         } else if (scaleFactors.length == 1 || scaleFactors.length == nComponents) {
             skipAlpha = false;
         } else {
-            throw new IllegalArgumentException(
-                    "Number of scaling constants does not match the number of bands"
-            );
+            // awt.21E=Number of scaling constants is not equal to the number of bands
+            throw new IllegalArgumentException(Messages.getString("awt.21E")); //$NON-NLS-1$
         }
 
         BufferedImage finalDst = null;
@@ -316,7 +311,8 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
         // TODO
         //if (ippFilter(src.getRaster(), dst.getRaster(), src.getType(), skipAlpha) != 0)
             if (slowFilter(src.getRaster(), dst.getRaster(), skipAlpha) != 0) {
-                throw new ImagingOpException ("Unable to transform source");
+                // awt.21F=Unable to transform source
+                throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
             }
 
         if (finalDst != null) {

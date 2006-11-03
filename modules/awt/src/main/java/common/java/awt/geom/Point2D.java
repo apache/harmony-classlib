@@ -60,7 +60,7 @@ public abstract class Point2D implements Cloneable {
 
         @Override
         public String toString() {
-            return getClass().getName() + "[x=" + x + ",y=" + y + "]";
+            return getClass().getName() + "[x=" + x + ",y=" + y + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -95,7 +95,7 @@ public abstract class Point2D implements Cloneable {
 
         @Override
         public String toString() {
-            return getClass().getName() + "[x=" + x + ",y=" + y + "]";
+            return getClass().getName() + "[x=" + x + ",y=" + y + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

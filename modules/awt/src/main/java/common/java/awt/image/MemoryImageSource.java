@@ -23,6 +23,8 @@ package java.awt.image;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class MemoryImageSource implements ImageProducer {
 
     int width;
@@ -276,7 +278,8 @@ public class MemoryImageSource implements ImageProducer {
             con.setPixels(x, y, w, h, cm, iData, pixelOff, scanline);
             break;
         default:
-            throw new IllegalArgumentException("Wrong type of pixels array");
+            // awt.22A=Wrong type of pixels array
+            throw new IllegalArgumentException(Messages.getString("awt.22A")); //$NON-NLS-1$
         }
     }
 

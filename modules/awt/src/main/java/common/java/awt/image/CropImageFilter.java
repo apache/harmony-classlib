@@ -42,15 +42,15 @@ public class CropImageFilter extends ImageFilter {
         } else {
             fprops = (Hashtable<Object, Object>) props.clone();
         }
-        String propName = "Crop Filters";
-        String prop = "x=" + X + "; y=" + Y + "; width=" +
-        WIDTH + "; height=" + HEIGHT;
+        String propName = "Crop Filters"; //$NON-NLS-1$
+        String prop = "x=" + X + "; y=" + Y + "; width=" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        WIDTH + "; height=" + HEIGHT; //$NON-NLS-1$
         Object o = fprops.get(propName);
         if(o != null){
             if(o instanceof String){
-                prop = (String)o + "; " + prop;
+                prop = (String)o + "; " + prop; //$NON-NLS-1$
             }else{
-                prop =  o.toString() + "; " + prop;
+                prop =  o.toString() + "; " + prop; //$NON-NLS-1$
             }
         }
         fprops.put(propName, prop);

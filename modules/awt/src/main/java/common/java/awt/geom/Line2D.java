@@ -24,6 +24,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class Line2D implements Shape, Cloneable {
 
     public static class Float extends Line2D {
@@ -247,7 +249,8 @@ public abstract class Line2D implements Shape, Cloneable {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type;
             if (index == 0) {
@@ -267,7 +270,8 @@ public abstract class Line2D implements Shape, Cloneable {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type;
             if (index == 0) {

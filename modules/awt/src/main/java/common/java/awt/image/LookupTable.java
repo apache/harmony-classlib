@@ -23,20 +23,20 @@
 
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class LookupTable {
     private int offset;
     private int numComponents;
 
     protected LookupTable(int offset, int numComponents) {
         if (offset < 0) {
-            throw new IllegalArgumentException(
-                    "Offset should be not less than zero"
-            );
+            // awt.232=Offset should be not less than zero
+            throw new IllegalArgumentException(Messages.getString("awt.232")); //$NON-NLS-1$
         }
         if (numComponents < 1) {
-            throw new IllegalArgumentException(
-                    "Number of components should be positive"
-            );
+            // awt.233=Number of components should be positive
+            throw new IllegalArgumentException(Messages.getString("awt.233")); //$NON-NLS-1$
         }
 
         this.offset = offset;

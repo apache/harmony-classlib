@@ -23,6 +23,8 @@ package java.awt.image;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class WritableRaster extends Raster {
 
     protected WritableRaster(SampleModel sampleModel, DataBuffer dataBuffer,
@@ -56,36 +58,38 @@ public class WritableRaster extends Raster {
     public WritableRaster createWritableChild(int parentX, int parentY, int w,
             int h, int childMinX, int childMinY, int bandList[]) {
         if (w <= 0 || h <= 0) {
-            throw new RasterFormatException("Width or Height of child " +
-                    "Raster is less than or equal to zero");
+            // awt.244=Width or Height of child Raster is less than or equal to zero
+            throw new RasterFormatException(Messages.getString("awt.244")); //$NON-NLS-1$
         }
 
         if (parentX < this.minX || parentX + w > this.minX + this.width) {
-            throw new RasterFormatException("parentX disposes outside Raster");
+            // awt.245=parentX disposes outside Raster
+            throw new RasterFormatException(Messages.getString("awt.245")); //$NON-NLS-1$
         }
 
         if (parentY < this.minY || parentY + h > this.minY + this.height) {
-            throw new RasterFormatException("parentY disposes outside Raster");
+            // awt.246=parentY disposes outside Raster
+            throw new RasterFormatException(Messages.getString("awt.246")); //$NON-NLS-1$
         }
 
         if ((long) parentX + w > Integer.MAX_VALUE) {
-            throw new RasterFormatException("parentX + w results in " +
-                    "integer overflow");
+            // awt.247=parentX + w results in integer overflow
+            throw new RasterFormatException(Messages.getString("awt.247")); //$NON-NLS-1$
         }
 
         if ((long) parentY + h > Integer.MAX_VALUE) {
-            throw new RasterFormatException("parentY + h results in " +
-                    "integer overflow");
+            // awt.248=parentY + h results in integer overflow
+            throw new RasterFormatException(Messages.getString("awt.248")); //$NON-NLS-1$
         }
 
         if ((long) childMinX + w > Integer.MAX_VALUE) {
-            throw new RasterFormatException("childMinX + w results in " +
-                    "integer overflow");
+            // awt.249=childMinX + w results in integer overflow
+            throw new RasterFormatException(Messages.getString("awt.249")); //$NON-NLS-1$
         }
 
         if ((long) childMinY + h > Integer.MAX_VALUE) {
-            throw new RasterFormatException("childMinY + h results in " +
-                    "integer overflow");
+            // awt.24A=childMinY + h results in integer overflow
+            throw new RasterFormatException(Messages.getString("awt.24A")); //$NON-NLS-1$
         }
 
         SampleModel childModel;
@@ -200,8 +204,8 @@ public class WritableRaster extends Raster {
 
         if (dstX < this.minX || dstX + w > this.minX + this.width ||
                 dstY < this.minY || dstY + h > this.minY + this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
         int srcX = inRaster.getMinX();

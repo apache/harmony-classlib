@@ -20,6 +20,8 @@
  */
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class PixelInterleavedSampleModel extends ComponentSampleModel {
 
     public PixelInterleavedSampleModel(int dataType, int w, int h,
@@ -41,18 +43,18 @@ public class PixelInterleavedSampleModel extends ComponentSampleModel {
         maxOffset -= minOffset;
 
         if (maxOffset > scanlineStride) {
-            throw new IllegalArgumentException("Any offset between bands " +
-                    "is greater than the Scanline stride");
+            // awt.241=Any offset between bands is greater than the Scanline stride
+            throw new IllegalArgumentException(Messages.getString("awt.241")); //$NON-NLS-1$
         }
 
         if (maxOffset > pixelStride) {
-            throw new IllegalArgumentException("Pixel stride is less than " +
-                    "any offset between bands");
+            // awt.242=Pixel stride is less than any offset between bands
+            throw new IllegalArgumentException(Messages.getString("awt.242")); //$NON-NLS-1$
         }
 
         if (pixelStride * w > scanlineStride) {
-            throw new IllegalArgumentException("Product of Pixel stride and " +
-                    "w is greater than Scanline stride ");
+            // awt.243=Product of Pixel stride and w is greater than Scanline stride
+            throw new IllegalArgumentException(Messages.getString("awt.243")); //$NON-NLS-1$
         }
 
     }

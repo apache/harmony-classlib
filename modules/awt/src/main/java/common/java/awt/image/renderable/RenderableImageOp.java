@@ -26,6 +26,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.util.Vector;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class RenderableImageOp implements RenderableImage {
 
     ContextualRenderedImageFactory CRIF;
@@ -79,7 +81,8 @@ public class RenderableImageOp implements RenderableImage {
 
     public RenderedImage createScaledRendering(int w, int h, RenderingHints hints) {
         if(w == 0 && h == 0) {
-            throw new IllegalArgumentException("Width and Height mustn't be equal zero both");
+            // awt.60=Width and Height mustn't be equal zero both
+            throw new IllegalArgumentException(Messages.getString("awt.60")); //$NON-NLS-1$
         }
         if(w == 0){
             w = Math.round(h*(getWidth()/getHeight()));

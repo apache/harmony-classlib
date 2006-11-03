@@ -35,6 +35,7 @@ import java.util.Vector;
 import org.apache.harmony.awt.gl.ImageSurface;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.image.BufferedImageSource;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class BufferedImage extends 
@@ -109,13 +110,13 @@ Image implements WritableRenderedImage, Transparency{
     public BufferedImage(ColorModel cm, WritableRaster raster,
             boolean isRasterPremultiplied, Hashtable<?, ?> properties) {
         if (!cm.isCompatibleRaster(raster)) {
-            throw new IllegalArgumentException("The raster is" +
-                    " incompatible with this ColorModel");
+            // awt.4D=The raster is incompatible with this ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.4D")); //$NON-NLS-1$
         }
 
         if (raster.getMinX() != 0 || raster.getMinY() != 0) {
-            throw new IllegalArgumentException("minX or minY of" +
-                    " this raster not equal to zero");
+            // awt.228=minX or minY of this raster not equal to zero
+            throw new IllegalArgumentException(Messages.getString("awt.228")); //$NON-NLS-1$
         }
 
         this.cm  = cm;
@@ -134,8 +135,8 @@ Image implements WritableRenderedImage, Transparency{
         switch (imageType) {
         case TYPE_BYTE_BINARY:
             if (cm.hasAlpha()) {
-                throw new IllegalArgumentException("This image type" +
-                        " can't have alpha");
+                // awt.227=This image type can't have alpha
+                throw new IllegalArgumentException(Messages.getString("awt.227")); //$NON-NLS-1$
             }
             int pixel_bits = 0;
             int mapSize = cm.getMapSize();
@@ -146,9 +147,8 @@ Image implements WritableRenderedImage, Transparency{
             } else if (mapSize <= 16) {
                 pixel_bits = 4;
             } else {
-                throw new IllegalArgumentException("The imageType is" +
-                        " TYPE_BYTE_BINARY and the color map has more" +
-                        " than 16 entries");
+                // awt.221=The imageType is TYPE_BYTE_BINARY and the color map has more than 16 entries
+                throw new IllegalArgumentException(Messages.getString("awt.221")); //$NON-NLS-1$
             }
 
             raster = Raster.createPackedRaster(DataBuffer.TYPE_BYTE, width,
@@ -161,14 +161,14 @@ Image implements WritableRenderedImage, Transparency{
             break;
 
         default:
-            throw new IllegalArgumentException("The imageType is not" +
-                    " TYPE_BYTE_BINARY or TYPE_BYTE_INDEXED ");
+            // awt.222=The imageType is not TYPE_BYTE_BINARY or TYPE_BYTE_INDEXED
+            throw new IllegalArgumentException(Messages.getString("awt.222")); //$NON-NLS-1$
 
         }
 
         if (!cm.isCompatibleRaster(raster)) {
-            throw new IllegalArgumentException("The imageType is" +
-                    " not compatible with ColorModel");
+            // awt.223=The imageType is not compatible with ColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.223")); //$NON-NLS-1$
         }
 
         this.cm = cm;
@@ -349,7 +349,8 @@ Image implements WritableRenderedImage, Transparency{
             }
             break;
         default:
-            throw new IllegalArgumentException("Unknown image type");
+            // awt.224=Unknown image type
+            throw new IllegalArgumentException(Messages.getString("awt.224")); //$NON-NLS-1$
         }
         this.imageType = imageType;
         imageSurf = createImageSurface(imageType);
@@ -362,7 +363,8 @@ Image implements WritableRenderedImage, Transparency{
 
     public Object getProperty(String name) {
         if(name == null) {
-            throw new NullPointerException("Property name is null");
+            // awt.225=Property name is null
+            throw new NullPointerException(Messages.getString("awt.225")); //$NON-NLS-1$
         }
         if (properties == null) {
             return null;
@@ -439,16 +441,16 @@ Image implements WritableRenderedImage, Transparency{
 
     @Override
     public String toString() {
-        return "BufferedImage@" + Integer.toHexString(hashCode()) +
-            ": type = " + imageType + " " + cm + " " + raster;
+        return "BufferedImage@" + Integer.toHexString(hashCode()) + //$NON-NLS-1$
+            ": type = " + imageType + " " + cm + " " + raster; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public WritableRaster getWritableTile(int tileX, int tileY) {
         if (tileX == 0 && tileY == 0) {
             return raster;
         }
-        throw new ArrayIndexOutOfBoundsException("Both tileX and" +
-                " tileY are not equal to 0");
+        // awt.226=Both tileX and tileY are not equal to 0
+        throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.226")); //$NON-NLS-1$
     }
 
     public WritableRaster getRaster() {
@@ -490,8 +492,8 @@ Image implements WritableRenderedImage, Transparency{
         if (tileX == 0 && tileY == 0) {
             return raster;
         }
-        throw new ArrayIndexOutOfBoundsException("Both tileX and" +
-                " tileY are not equal to 0");
+        // awt.226=Both tileX and tileY are not equal to 0
+        throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.226")); //$NON-NLS-1$
     }
 
     public Raster getData() {
@@ -597,8 +599,8 @@ Image implements WritableRenderedImage, Transparency{
         if (tileX == 0 && tileY == 0) {
             return true;
         }
-        throw new ArrayIndexOutOfBoundsException("Both tileX and tileY" +
-                " are not equal to 0");
+        // awt.226=Both tileX and tileY are not equal to 0
+        throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.226")); //$NON-NLS-1$
     }
 
     public void releaseWritableTile(int tileX, int tileY) {

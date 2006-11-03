@@ -20,6 +20,8 @@
  */
 package java.awt.print;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class PageFormat implements Cloneable {
     public static final int LANDSCAPE = 0;
     public static final int PORTRAIT = 1;
@@ -155,7 +157,8 @@ public class PageFormat implements Cloneable {
                 || orientation == REVERSE_LANDSCAPE) {
             this.pageOrientation = orientation;
         } else {
-            throw new IllegalArgumentException("wrong orientation");
+            // awt.5F=wrong orientation
+            throw new IllegalArgumentException(Messages.getString("awt.5F")); //$NON-NLS-1$
         }
     }
 

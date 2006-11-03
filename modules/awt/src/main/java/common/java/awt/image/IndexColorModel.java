@@ -24,6 +24,8 @@ import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.math.BigInteger;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class IndexColorModel extends ColorModel {
 
     private int colorMap[];        // Color Map  
@@ -57,8 +59,8 @@ public class IndexColorModel extends ColorModel {
                 Transparency.OPAQUE, validateTransferType(transferType));
 
         if (size < 1) {
-            throw new IllegalArgumentException("Size of the color map is " +
-                    "less than 1");
+            // awt.264=Size of the color map is less than 1
+            throw new IllegalArgumentException(Messages.getString("awt.264")); //$NON-NLS-1$
         }
 
         mapSize = size;
@@ -111,8 +113,8 @@ public class IndexColorModel extends ColorModel {
                 validateTransferType(transferType));
 
         if (size < 1) {
-            throw new IllegalArgumentException("Size of the color map " +
-                    "is less than 1");
+            // awt.264=Size of the color map is less than 1
+            throw new IllegalArgumentException(Messages.getString("awt.264")); //$NON-NLS-1$
         }
 
         mapSize = size;
@@ -202,8 +204,8 @@ public class IndexColorModel extends ColorModel {
                 validateTransferType(ColorModel.getTransferType(bits)));
 
         if (size < 1) {
-            throw new IllegalArgumentException("Size of the color map " +
-                    "is less than 1");
+            // awt.264=Size of the color map is less than 1
+            throw new IllegalArgumentException(Messages.getString("awt.264")); //$NON-NLS-1$
         }
 
         mapSize = size;
@@ -354,8 +356,8 @@ public class IndexColorModel extends ColorModel {
             boolean forceARGB) {
 
         if (!isCompatibleRaster(raster)) {
-            throw new IllegalArgumentException("The raster argument is " +
-                    "not compatible with this IndexColorModel");
+            // awt.265=The raster argument is not compatible with this IndexColorModel
+            throw new IllegalArgumentException(Messages.getString("awt.265")); //$NON-NLS-1$
         }
 
         ColorModel model;
@@ -425,20 +427,20 @@ public class IndexColorModel extends ColorModel {
         // BufferedImage bi = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
         // ColorModel cm = bi.getColorModel();
         // System.out.println(cm.toString());
-        String str = "IndexColorModel: #pixel_bits = " + pixel_bits +
-               " numComponents = " + numComponents + " color space = " + cs +
-               " transparency = ";
+        String str = "IndexColorModel: #pixel_bits = " + pixel_bits + //$NON-NLS-1$
+               " numComponents = " + numComponents + " color space = " + cs + //$NON-NLS-1$ //$NON-NLS-2$
+               " transparency = "; //$NON-NLS-1$
 
         if (transparency == Transparency.OPAQUE) {
-            str = str + "Transparency.OPAQUE";
+            str = str + "Transparency.OPAQUE"; //$NON-NLS-1$
         } else if (transparency == Transparency.BITMASK) {
-            str = str + "Transparency.BITMASK";
+            str = str + "Transparency.BITMASK"; //$NON-NLS-1$
         } else {
-            str = str + "Transparency.TRANSLUCENT";
+            str = str + "Transparency.TRANSLUCENT"; //$NON-NLS-1$
         }
 
-        str = str + " transIndex = " + transparentIndex + " has alpha = " +
-               hasAlpha + " isAlphaPre = " + isAlphaPremultiplied;
+        str = str + " transIndex = " + transparentIndex + " has alpha = " + //$NON-NLS-1$ //$NON-NLS-2$
+               hasAlpha + " isAlphaPre = " + isAlphaPremultiplied; //$NON-NLS-1$
 
         return str;
     }
@@ -456,8 +458,8 @@ public class IndexColorModel extends ColorModel {
             int ia[] = (int[]) pixel;
             pixIdx = ia[0];
         } else {
-            throw new UnsupportedOperationException("The transferType is " +
-                    "not one of the supported transer types");
+            // awt.219=This transferType is not supported by this color model
+            throw new UnsupportedOperationException(Messages.getString("awt.219")); //$NON-NLS-1$
         }
 
         return getComponents(pixIdx, components, offset);
@@ -476,8 +478,8 @@ public class IndexColorModel extends ColorModel {
             raster = Raster.createInterleavedRaster(DataBuffer.TYPE_USHORT, w,
                     h, 1, null);
         } else {
-            throw new UnsupportedOperationException("The number of bits " +
-                    "in a pixel is greater than 16");
+            // awt.266=The number of bits in a pixel is greater than 16
+            throw new UnsupportedOperationException(Messages.getString("awt.266")); //$NON-NLS-1$
         }
 
         return raster;
@@ -546,8 +548,8 @@ public class IndexColorModel extends ColorModel {
             pixel = sa[0] & 0xffff;
             break;
         default:
-            throw new UnsupportedOperationException("The transferType " +
-                    "is invalid");
+            // awt.267=The transferType is invalid
+            throw new UnsupportedOperationException(Messages.getString("awt.267")); //$NON-NLS-1$
         }
 
         return pixel;
@@ -660,8 +662,8 @@ public class IndexColorModel extends ColorModel {
     private void createColorMap(int size, byte r[], byte g[], byte b[],
             byte a[], int trans) {
         if (size < 1) {
-            throw new IllegalArgumentException("Size of the color map is " +
-                    "less than 1");
+            // awt.264=Size of the color map is less than 1
+            throw new IllegalArgumentException(Messages.getString("awt.264")); //$NON-NLS-1$
         }
 
         mapSize = size;
@@ -748,8 +750,8 @@ public class IndexColorModel extends ColorModel {
                 pixel = sa;
                 break;
             default:
-                throw new UnsupportedOperationException("The transferType " +
-                        "is invalid");
+                // awt.267=The transferType is invalid
+                throw new UnsupportedOperationException(Messages.getString("awt.267")); //$NON-NLS-1$
             }
         } else if (pixel instanceof byte[]
                 && transferType == DataBuffer.TYPE_BYTE) {
@@ -766,8 +768,8 @@ public class IndexColorModel extends ColorModel {
             ia[0] = colorMapIdx;
             pixel = ia;
         } else {
-            throw new ClassCastException("The pixel is not a primitive " +
-                    "array of type transferType");
+            // awt.268=The pixel is not a primitive array of type transferType
+            throw new ClassCastException(Messages.getString("awt.268")); //$NON-NLS-1$
         }
         return pixel;
     }
@@ -793,8 +795,8 @@ public class IndexColorModel extends ColorModel {
     private static int validateTransferType(int transferType) {
         if (transferType != DataBuffer.TYPE_BYTE &&
                transferType != DataBuffer.TYPE_USHORT) {
-            throw new IllegalArgumentException("The transferType is not " +
-                    "one of DataBuffer.TYPE_BYTE or DataBuffer.TYPE_USHORT");
+            // awt.269=The transferType is not one of DataBuffer.TYPE_BYTE or DataBuffer.TYPE_USHORT
+            throw new IllegalArgumentException(Messages.getString("awt.269")); //$NON-NLS-1$
         }
         return transferType;
     }

@@ -22,6 +22,8 @@ package java.awt.print;
 
 import java.util.Vector;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class Book implements Pageable {
 
     private final Vector<innerPage> bookPages;
@@ -35,10 +37,14 @@ public class Book implements Pageable {
         innerPage(Printable painter, PageFormat page) {
             super();
             if (painter == null) {
-                throw new NullPointerException("painter is null");
+                // awt.01='{0}' parameter is null
+                throw new NullPointerException(Messages.getString(
+                        "awt.01", "painter")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (page == null) {
-                throw new NullPointerException("page is null");
+                // awt.01='{0}' parameter is null
+                throw new NullPointerException(Messages.getString(
+                        "awt.01", "page")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             pagePainter = painter;
             pageFormat = page;
@@ -80,8 +86,8 @@ public class Book implements Pageable {
             throws IndexOutOfBoundsException {
 
         if (pageIndex >= getNumberOfPages()) {
-            throw new IndexOutOfBoundsException(
-                    "pageIndex is more than book size");
+            // awt.5E=pageIndex is more than book size
+            throw new IndexOutOfBoundsException(Messages.getString("awt.5E")); //$NON-NLS-1$
         }
         return bookPages.elementAt(pageIndex).getPageFormat();
     }
@@ -90,8 +96,8 @@ public class Book implements Pageable {
             throws IndexOutOfBoundsException {
 
         if (pageIndex >= getNumberOfPages()) {
-            throw new IndexOutOfBoundsException(
-                    "pageIndex is more than book size");
+            // awt.5E=pageIndex is more than book size
+            throw new IndexOutOfBoundsException(Messages.getString("awt.5E")); //$NON-NLS-1$
         }
         return bookPages.elementAt(pageIndex).getPrintable();
     }
@@ -100,8 +106,8 @@ public class Book implements Pageable {
             throws IndexOutOfBoundsException {
 
         if (pageIndex >= getNumberOfPages()) {
-            throw new IndexOutOfBoundsException(
-                    "pageIndex is more than book size");
+            // awt.5E=pageIndex is more than book size
+            throw new IndexOutOfBoundsException(Messages.getString("awt.5E")); //$NON-NLS-1$
         }
         bookPages.setElementAt(new innerPage(painter, page), pageIndex);
     }

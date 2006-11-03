@@ -22,6 +22,8 @@ package java.awt.image;
 
 import java.util.Hashtable;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public class ReplicateScaleFilter extends ImageFilter {
 
     protected int srcWidth;
@@ -40,7 +42,8 @@ public class ReplicateScaleFilter extends ImageFilter {
 
     public ReplicateScaleFilter(int width, int height) {
         if(width == 0 || height == 0) {
-            throw new IllegalArgumentException("Width or Height equals zero");
+            // awt.234=Width or Height equals zero
+            throw new IllegalArgumentException(Messages.getString("awt.234")); //$NON-NLS-1$
         }
 
         this.destWidth = width;
@@ -56,15 +59,15 @@ public class ReplicateScaleFilter extends ImageFilter {
         } else {
             fprops = (Hashtable<Object, Object>) props.clone();
         }
-        String propName = "Rescale Filters";
-        String prop = "destWidth=" + destWidth + "; " + 
-        "destHeight=" + destHeight;
+        String propName = "Rescale Filters"; //$NON-NLS-1$
+        String prop = "destWidth=" + destWidth + "; " +  //$NON-NLS-1$ //$NON-NLS-2$
+        "destHeight=" + destHeight; //$NON-NLS-1$
         Object o = fprops.get(propName);
         if(o != null){
             if(o instanceof String){
-                prop = (String)o + "; " + prop;
+                prop = (String)o + "; " + prop; //$NON-NLS-1$
             }else{
-                prop =  o.toString() + "; " + prop;
+                prop =  o.toString() + "; " + prop; //$NON-NLS-1$
             }
         }
         fprops.put(propName, prop);

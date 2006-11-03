@@ -25,6 +25,7 @@ import java.awt.Transparency;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 
 public class DirectColorModel extends PackedColorModel {
@@ -121,8 +122,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This transferType is " +
-                    "not supported by this color model");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
 
         return obj;
@@ -247,8 +248,8 @@ public class DirectColorModel extends PackedColorModel {
             return ia;
 
         default:
-            throw new UnsupportedOperationException("This transferType " +
-                    "is not supported by this color model");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
     }
 
@@ -296,8 +297,8 @@ public class DirectColorModel extends PackedColorModel {
                 break;
 
             default:
-                throw new UnsupportedOperationException("This transferType " +
-                        "is not supported by this color model");
+                // awt.214=This Color Model doesn't support this transferType
+                throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
             }
         } else {
             switch (transferType) {
@@ -322,8 +323,8 @@ public class DirectColorModel extends PackedColorModel {
                 break;
 
             default:
-                throw new UnsupportedOperationException("This transferType " +
-                        "is not supported by this color model");
+                // awt.214=This Color Model doesn't support this transferType
+                throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
             }
 
         }
@@ -340,11 +341,11 @@ public class DirectColorModel extends PackedColorModel {
         // BufferedImage bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         // ColorModel cm = bi.getColorModel();
         // System.out.println(cm.toString());
-        String str = "DirectColorModel:" + " rmask = " +
-               Integer.toHexString(componentMasks[0]) + " gmask = " +
-               Integer.toHexString(componentMasks[1]) + " bmask = " +
-               Integer.toHexString(componentMasks[2]) + " amask = " +
-               (!hasAlpha ? "0" : Integer.toHexString(componentMasks[3]));
+        String str = "DirectColorModel:" + " rmask = " + //$NON-NLS-1$ //$NON-NLS-2$
+               Integer.toHexString(componentMasks[0]) + " gmask = " + //$NON-NLS-1$
+               Integer.toHexString(componentMasks[1]) + " bmask = " + //$NON-NLS-1$
+               Integer.toHexString(componentMasks[2]) + " amask = " + //$NON-NLS-1$
+               (!hasAlpha ? "0" : Integer.toHexString(componentMasks[3])); //$NON-NLS-1$
 
         return str;
     }
@@ -376,8 +377,9 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This transferType ( " +
-                   transferType + " ) is not supported by this color model");
+            // awt.22D=This transferType ( {0} ) is not supported by this color model
+            throw new UnsupportedOperationException(Messages.getString("awt.22D", //$NON-NLS-1$
+                   transferType));
         }
 
         return getComponents(intPixel, components, offset);
@@ -403,8 +405,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This tranferType is " +
-                    "not supported by this ColorModel");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         return getRed(pixel);
     }
@@ -429,8 +431,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This tranferType is " +
-                    "not supported by this ColorModel");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         return getRGB(pixel);
     }
@@ -455,8 +457,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This tranferType is " +
-                    "not supported by this ColorModel");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         return getGreen(pixel);
     }
@@ -481,8 +483,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This tranferType is " +
-                    "not supported by this ColorModel");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         return getBlue(pixel);
     }
@@ -507,8 +509,8 @@ public class DirectColorModel extends PackedColorModel {
             break;
 
         default:
-            throw new UnsupportedOperationException("This tranferType is " +
-                    "not supported by this ColorModel");
+            // awt.214=This Color Model doesn't support this transferType
+            throw new UnsupportedOperationException(Messages.getString("awt.214")); //$NON-NLS-1$
         }
         return getAlpha(pixel);
     }
@@ -516,8 +518,8 @@ public class DirectColorModel extends PackedColorModel {
     @Override
     public final WritableRaster createCompatibleWritableRaster(int w, int h) {
         if (w <= 0 || h <= 0) {
-            throw new IllegalArgumentException("w or h is less than or " +
-                    "equal to zero");
+            // awt.22E=w or h is less than or equal to zero
+            throw new IllegalArgumentException(Messages.getString("awt.22E")); //$NON-NLS-1$
         }
 
         int bandMasks[] = componentMasks.clone();

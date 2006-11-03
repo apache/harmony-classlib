@@ -29,6 +29,7 @@ import java.awt.*;
 import java.util.Arrays;
 
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class AffineTransformOp implements BufferedImageOp, RasterOp {
     public static final int TYPE_NEAREST_NEIGHBOR = 1;
@@ -70,13 +71,15 @@ public class AffineTransformOp implements BufferedImageOp, RasterOp {
 
     public AffineTransformOp(AffineTransform xform, int interp) {
         if (Math.abs(xform.getDeterminant()) <= Double.MIN_VALUE) {
-            throw new ImagingOpException("Unable to invert transform " + xform);
+            // awt.24F=Unable to invert transform {0}
+            throw new ImagingOpException(Messages.getString("awt.24F", xform)); //$NON-NLS-1$
         }
 
         this.at = (AffineTransform) xform.clone();
 
         if (interp != TYPE_NEAREST_NEIGHBOR && interp != TYPE_BILINEAR && interp != TYPE_BICUBIC) {
-            throw new IllegalArgumentException("Unknown interpolation type: " + interp);
+            // awt.250=Unknown interpolation type: {0}
+            throw new IllegalArgumentException(Messages.getString("awt.250", interp)); //$NON-NLS-1$
         }
 
         this.iType = interp;
@@ -154,10 +157,9 @@ public class AffineTransformOp implements BufferedImageOp, RasterOp {
         double dstHeight = newBounds.getY() + newBounds.getHeight();
 
         if (dstWidth <= 0 || dstHeight <= 0) {
+            // awt.251=Transformed width ({0}) and height ({1}) should be greater than 0
             throw new RasterFormatException(
-                    "Transformed width ("+dstWidth+") and " +
-                    "height ("+dstHeight+") should be greater than 0"
-            );
+                    Messages.getString("awt.251", dstWidth, dstHeight)); //$NON-NLS-1$
         }
 
         if (destCM != null) {
@@ -198,7 +200,8 @@ public class AffineTransformOp implements BufferedImageOp, RasterOp {
 
     public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == dst) {
-            throw new IllegalArgumentException("Source can't be same as the destination");
+            // awt.252=Source can't be same as the destination
+            throw new IllegalArgumentException(Messages.getString("awt.252")); //$NON-NLS-1$
         }
 
         ColorModel srcCM = src.getColorModel();
@@ -233,7 +236,8 @@ public class AffineTransformOp implements BufferedImageOp, RasterOp {
 
         // Skip alpha channel for TYPE_INT_RGB images
         if (slowFilter(src.getRaster(), dst.getRaster()) != 0) {
-            throw new ImagingOpException ("Unable to transform source");
+            // awt.21F=Unable to transform source
+            throw new ImagingOpException (Messages.getString("awt.21F")); //$NON-NLS-1$
         // TODO - uncomment
         //if (ippFilter(src.getRaster(), dst.getRaster(), src.getType()) != 0)
             //throw new ImagingOpException ("Unable to transform source");
@@ -252,19 +256,20 @@ public class AffineTransformOp implements BufferedImageOp, RasterOp {
 
     public final WritableRaster filter(Raster src, WritableRaster dst) {
         if (src == dst) {
-            throw new IllegalArgumentException("Source can't be same as the destination");
+            // awt.252=Source can't be same as the destination
+            throw new IllegalArgumentException(Messages.getString("awt.252")); //$NON-NLS-1$
         }
 
         if (dst == null) {
             dst = createCompatibleDestRaster(src);
         } else if (src.getNumBands() != dst.getNumBands()) {
-            throw new IllegalArgumentException(
-                    "Different number of bands in source and destination"
-            );
+            // awt.253=Different number of bands in source and destination
+            throw new IllegalArgumentException(Messages.getString("awt.253")); //$NON-NLS-1$
         }
 
         if (slowFilter(src, dst) != 0) {
-            throw new ImagingOpException("Unable to transform source");
+            // awt.21F=Unable to transform source
+            throw new ImagingOpException(Messages.getString("awt.21F")); //$NON-NLS-1$
         // TODO - uncomment
         //if (ippFilter(src, dst, BufferedImage.TYPE_CUSTOM) != 0)
         //    throw new ImagingOpException("Unable to transform source");

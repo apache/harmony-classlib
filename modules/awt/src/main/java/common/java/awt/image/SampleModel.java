@@ -20,6 +20,8 @@
  */
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class SampleModel {
 
     protected int width;
@@ -32,26 +34,26 @@ public abstract class SampleModel {
 
     public SampleModel(int dataType, int w, int h, int numBands) {
         if (w <= 0 || h <= 0) {
-            throw new IllegalArgumentException("Width or Height is not " +
-                    "greater than 0");
+            // awt.22E=w or h is less than or equal to zero
+            throw new IllegalArgumentException(Messages.getString("awt.22E")); //$NON-NLS-1$
         }
 
         double squre = ((double) w) * ((double) h);
         if (squre >= Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("The product of w and h is " +
-                    "greater than Integer.MAX_VALUE ");
+            // awt.22F=The product of w and h is greater than Integer.MAX_VALUE
+            throw new IllegalArgumentException(Messages.getString("awt.22F")); //$NON-NLS-1$
         }
 
         if (dataType < DataBuffer.TYPE_BYTE ||
                 dataType > DataBuffer.TYPE_DOUBLE &&
                 dataType != DataBuffer.TYPE_UNDEFINED) {
-            throw new IllegalArgumentException("dataType is not one " +
-                    "of the supported data types");
+            // awt.230=dataType is not one of the supported data types
+            throw new IllegalArgumentException(Messages.getString("awt.230")); //$NON-NLS-1$
         }
 
         if (numBands < 1) {
-            throw new IllegalArgumentException("Number of bands must " +
-                    "be more then 0");
+            // awt.231=Number of bands must be more then 0
+            throw new IllegalArgumentException(Messages.getString("awt.231")); //$NON-NLS-1$
         }
 
         this.dataType = dataType;
@@ -261,8 +263,8 @@ public abstract class SampleModel {
 
     public int[] getPixel(int x, int y, int iArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int pixel[];
 
@@ -281,8 +283,8 @@ public abstract class SampleModel {
 
     public void setPixel(int x, int y, int iArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         for (int i = 0; i < numBands; i++) {
             setSample(x, y, i, iArray[i], data);
@@ -291,8 +293,8 @@ public abstract class SampleModel {
 
     public float[] getPixel(int x, int y, float fArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         float pixel[];
 
@@ -311,8 +313,8 @@ public abstract class SampleModel {
 
     public void setPixel(int x, int y, float fArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         for (int i = 0; i < numBands; i++) {
             setSample(x, y, i, fArray[i], data);
@@ -321,8 +323,8 @@ public abstract class SampleModel {
 
     public double[] getPixel(int x, int y, double dArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         double pixel[];
 
@@ -341,8 +343,8 @@ public abstract class SampleModel {
 
     public void setPixel(int x, int y, double dArray[], DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         for (int i = 0; i < numBands; i++) {
             setSample(x, y, i, dArray[i], data);
@@ -362,8 +364,8 @@ public abstract class SampleModel {
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int pixels[];
         int idx = 0;
@@ -387,8 +389,8 @@ public abstract class SampleModel {
     public void setPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int idx = 0;
         for (int i = y; i < y + h; i++) {
@@ -403,8 +405,8 @@ public abstract class SampleModel {
     public float[] getPixels(int x, int y, int w, int h, float fArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         float pixels[];
         int idx = 0;
@@ -428,8 +430,8 @@ public abstract class SampleModel {
     public void setPixels(int x, int y, int w, int h, float fArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int idx = 0;
         for (int i = y; i < y + h; i++) {
@@ -444,8 +446,8 @@ public abstract class SampleModel {
     public double[] getPixels(int x, int y, int w, int h, double dArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         double pixels[];
         int idx = 0;
@@ -469,8 +471,8 @@ public abstract class SampleModel {
     public void setPixels(int x, int y, int w, int h, double dArray[],
             DataBuffer data) {
         if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
-            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
-                    "not in bounds");
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
         int idx = 0;
         for (int i = y; i < y + h; i++) {

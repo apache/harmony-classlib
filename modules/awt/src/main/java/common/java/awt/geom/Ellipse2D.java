@@ -22,6 +22,8 @@ package java.awt.geom;
 
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 public abstract class Ellipse2D extends RectangularShape {
 
     public static class Float extends Ellipse2D {
@@ -222,7 +224,8 @@ public abstract class Ellipse2D extends RectangularShape {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == 5) {
                 return SEG_CLOSE;
@@ -253,7 +256,8 @@ public abstract class Ellipse2D extends RectangularShape {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             if (index == 5) {
                 return SEG_CLOSE;

@@ -25,6 +25,7 @@ import java.awt.Shape;
 import java.util.NoSuchElementException;
 
 import org.apache.harmony.awt.gl.Crossing;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public final class GeneralPath implements Shape, Cloneable {
 
@@ -133,7 +134,8 @@ public final class GeneralPath implements Shape, Cloneable {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type = p.types[typeIndex];
             int count = GeneralPath.pointShift[type];
@@ -149,7 +151,8 @@ public final class GeneralPath implements Shape, Cloneable {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iterator out of bounds");
+                // awt.4B=Iterator out of bounds
+                throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
             }
             int type = p.types[typeIndex];
             int count = GeneralPath.pointShift[type];
@@ -186,7 +189,8 @@ public final class GeneralPath implements Shape, Cloneable {
 
     public void setWindingRule(int rule) {
         if (rule != WIND_EVEN_ODD && rule != WIND_NON_ZERO) {
-            throw new java.lang.IllegalArgumentException("Invalid winding rule value");
+            // awt.209=Invalid winding rule value
+            throw new java.lang.IllegalArgumentException(Messages.getString("awt.209")); //$NON-NLS-1$
         }
         this.rule = rule;
     }
@@ -201,8 +205,8 @@ public final class GeneralPath implements Shape, Cloneable {
      */
     void checkBuf(int pointCount, boolean checkMove) {
         if (checkMove && typeSize == 0) {
-            throw new IllegalPathStateException(
-                    "First segment should be SEG_MOVETO type");
+            // awt.20A=First segment should be SEG_MOVETO type
+            throw new IllegalPathStateException(Messages.getString("awt.20A")); //$NON-NLS-1$
         }
         if (typeSize == types.length) {
             byte tmp[] = new byte[typeSize + BUFFER_CAPACITY];
