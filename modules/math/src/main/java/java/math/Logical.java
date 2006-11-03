@@ -532,6 +532,7 @@ class Logical {
         int iNeg = negative.getFirstNonzeroDigit();
         int iPos = positive.getFirstNonzeroDigit();
         int i;
+        int limit;
         
         // Look if the trailing zeros of the positive will "copy" all
         // the negative digits
@@ -544,19 +545,34 @@ class Logical {
         if (iNeg < iPos ) {
             // We know for sure that this will
             // be the first non zero digit in the result
-            // resDigits[first non zero] = - (-negative.digits[i])
-            i = iNeg;
+            for (i = iNeg; i < iPos; i++) {
             resDigits[i] = negative.digits[i];
+            }
         } else if (iPos < iNeg) {
             i = iPos;
             resDigits[i] = -positive.digits[i];
+            limit = Math.min(positive.numberLength, iNeg);
+            for(i++; i < limit; i++ ) {
+                resDigits[i] = ~positive.digits[i];
+            }
+            if (i != positive.numberLength) {               
+                resDigits[i] = ~(-negative.digits[i] | positive.digits[i]);                
+            } else{
+                  for (; i<iNeg; i++) {
+                      resDigits[i] = -1;
+                  }
+                  // resDigits[i] = ~(-negative.digits[i] | 0);
+                  resDigits[i] = negative.digits[i] - 1;
+            }
+            i++;
         } else {// iNeg == iPos
             // Applying two complement to negative and to result
             i = iPos;
             resDigits[i] = -(-negative.digits[i] | positive.digits[i]);
+            i++;
         }
-        int limit = Math.min(negative.numberLength, positive.numberLength);
-        for (i++ ; i < limit; i++) {
+        limit = Math.min(negative.numberLength, positive.numberLength);
+        for (; i < limit; i++) {
             // Applying two complement to negative and to result
             // resDigits[i] = ~(~negative.digits[i] | positive.digits[i] );
             resDigits[i] = negative.digits[i] & ~positive.digits[i];

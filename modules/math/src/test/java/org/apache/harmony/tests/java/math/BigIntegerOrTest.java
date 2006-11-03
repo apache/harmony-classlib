@@ -408,4 +408,13 @@ public class BigIntegerOrTest extends TestCase {
         }
         assertEquals("incorrect sign", -1, result.signum());
     }
+    
+    public void testRegression() {
+        // Regression test for HARMONY-1996
+        BigInteger x = new BigInteger("-1023");
+        BigInteger r1 = x.and((BigInteger.ZERO.not()).shiftLeft(32));
+        BigInteger r3 = x.and((BigInteger.ZERO.not().shiftLeft(32) ).not());
+        BigInteger result = r1.or(r3);
+        assertEquals(x, result);
+    } 
 }
