@@ -100,10 +100,10 @@ public class StreamHandlerTest extends TestCase {
 				"java.util.logging.StreamHandler.encoding"));
 
 		StreamHandler h = new StreamHandler();
-		assertSame(h.getLevel(), Level.INFO);
+		assertSame(Level.INFO, h.getLevel());
 		assertTrue(h.getFormatter() instanceof SimpleFormatter);
 		assertNull(h.getFilter());
-		assertSame(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 	}
 
 	/*
@@ -124,10 +124,10 @@ public class StreamHandlerTest extends TestCase {
 		// set a normal value
 		try {
 			StreamHandler h = new StreamHandler();
-			assertSame(h.getLevel(), Level.INFO);
+			assertSame(Level.INFO, h.getLevel());
 			assertTrue(h.getFormatter() instanceof SimpleFormatter);
 			assertNull(h.getFilter());
-			assertSame(h.getEncoding(), null);
+			assertNull(h.getEncoding());
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -148,15 +148,15 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), "FINE");
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
+		assertEquals("FINE", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("iso-8859-1", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		StreamHandler h = new StreamHandler();
 		assertSame(h.getLevel(), Level.parse("FINE"));
 		assertTrue(h.getFormatter() instanceof MockFormatter);
 		assertTrue(h.getFilter() instanceof MockFilter);
-		assertEquals(h.getEncoding(), "iso-8859-1");
+		assertEquals("iso-8859-1", h.getEncoding());
 	}
 
 	/*
@@ -173,12 +173,12 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), INVALID_LEVEL);
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "XXXX");
+		assertEquals(INVALID_LEVEL, LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("XXXX", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		StreamHandler h = new StreamHandler();
-		assertSame(h.getLevel(), Level.INFO);
+		assertSame(Level.INFO, h.getLevel());
 		assertTrue(h.getFormatter() instanceof SimpleFormatter);
 		assertNull(h.getFilter());
 		assertNull(h.getEncoding());
@@ -203,10 +203,10 @@ public class StreamHandlerTest extends TestCase {
 
 		StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
 				new MockFormatter2());
-		assertSame(h.getLevel(), Level.INFO);
+		assertSame(Level.INFO, h.getLevel());
 		assertTrue(h.getFormatter() instanceof MockFormatter2);
 		assertNull(h.getFilter());
-		assertSame(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 	}
 
 	/*
@@ -228,10 +228,10 @@ public class StreamHandlerTest extends TestCase {
 		try {
 			StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
 					new MockFormatter2());
-			assertSame(h.getLevel(), Level.INFO);
+			assertSame(Level.INFO, h.getLevel());
 			assertTrue(h.getFormatter() instanceof MockFormatter2);
 			assertNull(h.getFilter());
-			assertSame(h.getEncoding(), null);
+			assertNull(h.getEncoding());
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -253,16 +253,16 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), "FINE");
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
+		assertEquals("FINE", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("iso-8859-1", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
 				new MockFormatter2());
 		assertSame(h.getLevel(), Level.parse("FINE"));
 		assertTrue(h.getFormatter() instanceof MockFormatter2);
 		assertTrue(h.getFilter() instanceof MockFilter);
-		assertEquals(h.getEncoding(), "iso-8859-1");
+		assertEquals("iso-8859-1", h.getEncoding());
 	}
 
 	/*
@@ -279,13 +279,13 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), INVALID_LEVEL);
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "XXXX");
+		assertEquals(INVALID_LEVEL, LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("XXXX", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
 				new MockFormatter2());
-		assertSame(h.getLevel(), Level.INFO);
+		assertSame(Level.INFO, h.getLevel());
 		assertTrue(h.getFormatter() instanceof MockFormatter2);
 		assertNull(h.getFilter());
 		assertNull(h.getEncoding());
@@ -307,14 +307,15 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), "FINE");
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
+		assertEquals("FINE", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("iso-8859-1", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		try {
 			new StreamHandler(new ByteArrayOutputStream(), null);
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
+			// expected
 		}
 	}
 
@@ -334,14 +335,15 @@ public class StreamHandlerTest extends TestCase {
 		LogManager.getLogManager().readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.level"), "FINE");
-		assertEquals(LogManager.getLogManager().getProperty(
-				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
+		assertEquals("FINE", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.level"));
+		assertEquals("iso-8859-1", LogManager.getLogManager().getProperty(
+				"java.util.logging.StreamHandler.encoding"));
 		try {
 			new StreamHandler(null, new MockFormatter2());
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
+			// expected
 		}
 	}
 
@@ -408,6 +410,7 @@ public class StreamHandlerTest extends TestCase {
 			h.close();
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
+			// expected
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -751,6 +754,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setEncoding("impossible");
 			fail("Should throw UnsupportedEncodingException!");
 		} catch (UnsupportedEncodingException e) {
+			// expected
 		}
 		assertNull(h.getEncoding());
 	}
@@ -767,6 +771,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setEncoding("iso-8859-1");
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
+			// expected
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -778,6 +783,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setEncoding("impossible");
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
+			// expected
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -807,6 +813,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setOutputStream(null);
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
+			// expected
 		}
 	}
 
@@ -883,6 +890,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setOutputStream(new ByteArrayOutputStream());
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
+			// expected
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
@@ -893,6 +901,7 @@ public class StreamHandlerTest extends TestCase {
 			h.setOutputStream(null);
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
+			// expected
 		} finally {
 			System.setSecurityManager(oldMan);
 		}
