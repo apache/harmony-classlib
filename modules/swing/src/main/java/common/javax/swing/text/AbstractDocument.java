@@ -226,7 +226,9 @@ public abstract class AbstractDocument implements Document, Serializable {
         }
 
         public String getName() {
-            return (String)getAttribute(ElementNameAttribute);
+            return isDefined(ElementNameAttribute)
+            ? (String)getAttribute(ElementNameAttribute)
+            : null;
         }
 
         public TreeNode getParent() {
