@@ -888,6 +888,9 @@ public class InetAddress extends Object implements Serializable {
                 reached = true;
             }
         }
+        
+        NETIMPL.socketClose(fd);
+        
         return reached;
     }
 
