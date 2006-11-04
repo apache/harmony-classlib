@@ -40,7 +40,6 @@ public class ConnectionEvent extends EventObject implements Serializable {
      */
     public ConnectionEvent(PooledConnection theConnection) {
         super(theConnection);
-        theSQLException = null;
     }
 
     /**
