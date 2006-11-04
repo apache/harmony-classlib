@@ -326,8 +326,6 @@ public class DriverManagerTest extends TestCase {
 	static int timeout1 = 25;
 
 	public void testGetLoginTimeout() {
-		int theTimeout = DriverManager.getLoginTimeout();
-		// System.out.println("Default Login Timeout: " + theTimeout );
 		DriverManager.setLoginTimeout(timeout1);
 		assertEquals(timeout1, DriverManager.getLoginTimeout());
 	} // end method testGetLoginTimeout()

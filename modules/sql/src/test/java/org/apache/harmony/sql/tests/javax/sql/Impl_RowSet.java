@@ -27,900 +27,712 @@ import java.sql.Clob;
 import java.sql.Date;
 import java.sql.Ref;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
-
 import javax.sql.RowSet;
 import javax.sql.RowSetListener;
 
-public class Impl_RowSet implements RowSet {
+@SuppressWarnings("deprecation")
+class Impl_RowSet implements RowSet {
+    public void addRowSetListener(RowSetListener theListener) {
+    }
 
-	public Impl_RowSet() {
-		super();
-	} // end constructor
+    public void clearParameters() throws SQLException {
+    }
 
-	public String getUrl() {
+    public void execute() throws SQLException {
+    }
 
-		return null;
-	} // end method getUrl
+    public String getCommand() {
+        return null;
+    }
 
-	public void setUrl(String parm1) {
+    public String getDataSourceName() {
+        return null;
+    }
 
-	} // end method setUrl
+    public boolean getEscapeProcessing() throws SQLException {
+        return false;
+    }
 
-	public String getDataSourceName() {
+    public int getMaxFieldSize() throws SQLException {
+        return 0;
+    }
 
-		return null;
-	} // end method getDataSourceName
+    public int getMaxRows() throws SQLException {
+        return 0;
+    }
 
-	public void setDataSourceName(String parm1) {
+    public String getPassword() {
+        return null;
+    }
 
-	} // end method setDataSourceName
+    public int getQueryTimeout() throws SQLException {
+        return 0;
+    }
 
-	public String getUsername() {
+    public int getTransactionIsolation() {
+        return 0;
+    }
 
-		return null;
-	} // end method getUsername
+    public Map<String, Class<?>> getTypeMap() throws SQLException {
+        return null;
+    }
 
-	public void setUsername(String parm1) {
+    public String getUrl() throws SQLException {
+        return null;
+    }
 
-	} // end method setUsername
+    public String getUsername() {
+        return null;
+    }
 
-	public String getPassword() {
+    public boolean isReadOnly() {
+        return false;
+    }
 
-		return null;
-	} // end method getPassword
+    public void removeRowSetListener(RowSetListener theListener) {
+    }
 
-	public void setPassword(String parm1) {
+    public void setArray(int parameterIndex, Array theArray) throws SQLException {
+    }
 
-	} // end method setPassword
+    public void setAsciiStream(int parameterIndex, InputStream theInputStream, int length)
+            throws SQLException {
+    }
 
-	public int getTransactionIsolation() {
+    public void setBigDecimal(int parameterIndex, BigDecimal theBigDecimal) throws SQLException {
+    }
 
-		return -1678466229;
-	} // end method getTransactionIsolation
+    public void setBinaryStream(int parameterIndex, InputStream theInputStream, int length)
+            throws SQLException {
+    }
 
-	public void setTransactionIsolation(int parm1) {
+    public void setBlob(int parameterIndex, Blob theBlob) throws SQLException {
+    }
 
-	} // end method setTransactionIsolation
+    public void setBoolean(int parameterIndex, boolean theBoolean) throws SQLException {
+    }
 
-	public Map getTypeMap() {
+    public void setByte(int parameterIndex, byte theByte) throws SQLException {
+    }
 
-		return null;
-	} // end method getTypeMap
+    public void setBytes(int parameterIndex, byte[] theByteArray) throws SQLException {
+    }
 
-	public void setTypeMap(Map parm1) {
+    public void setCharacterStream(int parameterIndex, Reader theReader, int length)
+            throws SQLException {
+    }
 
-	} // end method setTypeMap
+    public void setClob(int parameterIndex, Clob theClob) throws SQLException {
+    }
 
-	public String getCommand() {
+    public void setCommand(String cmd) throws SQLException {
+    }
 
-		return null;
-	} // end method getCommand
+    public void setConcurrency(int concurrency) throws SQLException {
+    }
 
-	public void setCommand(String parm1) {
+    public void setDataSourceName(String name) throws SQLException {
+    }
 
-	} // end method setCommand
+    public void setDate(int parameterIndex, Date theDate, Calendar theCalendar)
+            throws SQLException {
+    }
 
-	public boolean isReadOnly() {
+    public void setDate(int parameterIndex, Date theDate) throws SQLException {
+    }
 
-		return false;
-	} // end method isReadOnly
+    public void setDouble(int parameterIndex, double theDouble) throws SQLException {
+    }
 
-	public void setReadOnly(boolean parm1) {
+    public void setEscapeProcessing(boolean enable) throws SQLException {
+    }
 
-	} // end method setReadOnly
+    public void setFloat(int parameterIndex, float theFloat) throws SQLException {
+    }
 
-	public int getMaxFieldSize() {
+    public void setInt(int parameterIndex, int theInteger) throws SQLException {
+    }
 
-		return 1160759662;
-	} // end method getMaxFieldSize
+    public void setLong(int parameterIndex, long theLong) throws SQLException {
+    }
 
-	public void setMaxFieldSize(int parm1) {
+    public void setMaxFieldSize(int max) throws SQLException {
+    }
 
-	} // end method setMaxFieldSize
+    public void setMaxRows(int max) throws SQLException {
+    }
 
-	public int getMaxRows() {
+    public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
+    }
 
-		return 1352057609;
-	} // end method getMaxRows
+    public void setNull(int parameterIndex, int sqlType) throws SQLException {
+    }
 
-	public void setMaxRows(int parm1) {
+    public void setObject(int parameterIndex, Object theObject, int targetSqlType, int scale)
+            throws SQLException {
+    }
 
-	} // end method setMaxRows
+    public void setObject(int parameterIndex, Object theObject, int targetSqlType)
+            throws SQLException {
+    }
 
-	public boolean getEscapeProcessing() {
+    public void setObject(int parameterIndex, Object theObject) throws SQLException {
+    }
 
-		return false;
-	} // end method getEscapeProcessing
+    public void setPassword(String password) throws SQLException {
+    }
 
-	public void setEscapeProcessing(boolean parm1) {
+    public void setQueryTimeout(int seconds) throws SQLException {
+    }
 
-	} // end method setEscapeProcessing
+    public void setReadOnly(boolean readOnly) throws SQLException {
+    }
 
-	public int getQueryTimeout() {
+    public void setRef(int parameterIndex, Ref theRef) throws SQLException {
+    }
 
-		return 1902594213;
-	} // end method getQueryTimeout
+    public void setShort(int parameterIndex, short theShort) throws SQLException {
+    }
 
-	public void setQueryTimeout(int parm1) {
+    public void setString(int parameterIndex, String theString) throws SQLException {
+    }
 
-	} // end method setQueryTimeout
+    public void setTime(int parameterIndex, Time theTime, Calendar theCalendar)
+            throws SQLException {
+    }
 
-	public void setType(int parm1) {
+    public void setTime(int parameterIndex, Time theTime) throws SQLException {
+    }
 
-	} // end method setType
+    public void setTimestamp(int parameterIndex, Timestamp theTimestamp, Calendar theCalendar)
+            throws SQLException {
+    }
 
-	public void setConcurrency(int parm1) {
+    public void setTimestamp(int parameterIndex, Timestamp theTimestamp) throws SQLException {
+    }
 
-	} // end method setConcurrency
+    public void setTransactionIsolation(int level) throws SQLException {
+    }
 
-	public void setNull(int parm1, int parm2) {
+    public void setType(int type) throws SQLException {
+    }
 
-	} // end method setNull
+    public void setTypeMap(Map<String, Class<?>> theTypeMap) throws SQLException {
+    }
 
-	public void setNull(int parm1, int parm2, String parm3) {
+    public void setUrl(String theURL) throws SQLException {
+    }
 
-	} // end method setNull
+    public void setUsername(String theUsername) throws SQLException {
+    }
 
-	public void setBoolean(int parm1, boolean parm2) {
+    public boolean absolute(int row) throws SQLException {
+        return false;
+    }
 
-	} // end method setBoolean
+    public void afterLast() throws SQLException {
+    }
 
-	public void setByte(int parm1, byte parm2) {
+    public void beforeFirst() throws SQLException {
+    }
 
-	} // end method setByte
+    public void cancelRowUpdates() throws SQLException {
+    }
 
-	public void setShort(int parm1, short parm2) {
+    public void clearWarnings() throws SQLException {
+    }
 
-	} // end method setShort
+    public void close() throws SQLException {
+    }
 
-	public void setInt(int parm1, int parm2) {
+    public void deleteRow() throws SQLException {
+    }
 
-	} // end method setInt
+    public int findColumn(String columnName) throws SQLException {
+        return 0;
+    }
 
-	public void setLong(int parm1, long parm2) {
+    public boolean first() throws SQLException {
+        return false;
+    }
 
-	} // end method setLong
+    public Array getArray(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setFloat(int parm1, float parm2) {
+    public Array getArray(String colName) throws SQLException {
+        return null;
+    }
 
-	} // end method setFloat
+    public InputStream getAsciiStream(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setDouble(int parm1, double parm2) {
+    public InputStream getAsciiStream(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setDouble
+    public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
+        return null;
+    }
 
-	public void setBigDecimal(int parm1, BigDecimal parm2) {
+    public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	} // end method setBigDecimal
+    public BigDecimal getBigDecimal(String columnName, int scale) throws SQLException {
+        return null;
+    }
 
-	public void setString(int parm1, String parm2) {
+    public BigDecimal getBigDecimal(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setString
+    public InputStream getBinaryStream(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setBytes(int parm1, byte[] parm2) {
+    public InputStream getBinaryStream(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setBytes
+    public Blob getBlob(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setDate(int parm1, Date parm2) {
+    public Blob getBlob(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setDate
+    public boolean getBoolean(int columnIndex) throws SQLException {
+        return false;
+    }
 
-	public void setTime(int parm1, Time parm2) {
+    public boolean getBoolean(String columnName) throws SQLException {
+        return false;
+    }
 
-	} // end method setTime
+    public byte getByte(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void setTimestamp(int parm1, Timestamp parm2) {
+    public byte getByte(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method setTimestamp
+    public byte[] getBytes(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setAsciiStream(int parm1, InputStream parm2, int parm3) {
+    public byte[] getBytes(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setAsciiStream
+    public Reader getCharacterStream(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setBinaryStream(int parm1, InputStream parm2, int parm3) {
+    public Reader getCharacterStream(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setBinaryStream
+    public Clob getClob(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setCharacterStream(int parm1, Reader parm2, int parm3) {
+    public Clob getClob(String colName) throws SQLException {
+        return null;
+    }
 
-	} // end method setCharacterStream
+    public int getConcurrency() throws SQLException {
+        return 0;
+    }
 
-	public void setObject(int parm1, Object parm2, int parm3, int parm4) {
+    public String getCursorName() throws SQLException {
+        return null;
+    }
 
-	} // end method setObject
+    public Date getDate(int columnIndex, Calendar cal) throws SQLException {
+        return null;
+    }
 
-	public void setObject(int parm1, Object parm2, int parm3) {
+    public Date getDate(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	} // end method setObject
+    public Date getDate(String columnName, Calendar cal) throws SQLException {
+        return null;
+    }
 
-	public void setObject(int parm1, Object parm2) {
+    public Date getDate(String columnName) throws SQLException {
+        return null;
+    }
 
-	} // end method setObject
+    public double getDouble(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void setRef(int parm1, Ref parm2) {
+    public double getDouble(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method setRef
+    public int getFetchDirection() throws SQLException {
+        return 0;
+    }
 
-	public void setBlob(int parm1, Blob parm2) {
+    public int getFetchSize() throws SQLException {
+        return 0;
+    }
 
-	} // end method setBlob
+    public float getFloat(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void setClob(int parm1, Clob parm2) {
+    public float getFloat(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method setClob
+    public int getInt(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void setArray(int parm1, Array parm2) {
+    public int getInt(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method setArray
+    public long getLong(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void setDate(int parm1, Date parm2, Calendar parm3) {
+    public long getLong(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method setDate
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return null;
+    }
 
-	public void setTime(int parm1, Time parm2, Calendar parm3) {
+    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-	} // end method setTime
+    public Object getObject(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void setTimestamp(int parm1, Timestamp parm2, Calendar parm3) {
+    public Object getObject(String columnName, Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-	} // end method setTimestamp
+    public Object getObject(String columnName) throws SQLException {
+        return null;
+    }
 
-	public void clearParameters() {
+    public Ref getRef(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	} // end method clearParameters
+    public Ref getRef(String colName) throws SQLException {
+        return null;
+    }
 
-	public void execute() {
+    public int getRow() throws SQLException {
+        return 0;
+    }
 
-	} // end method execute
+    public short getShort(int columnIndex) throws SQLException {
+        return 0;
+    }
 
-	public void addRowSetListener(RowSetListener parm1) {
+    public short getShort(String columnName) throws SQLException {
+        return 0;
+    }
 
-	} // end method addRowSetListener
+    public Statement getStatement() throws SQLException {
+        return null;
+    }
 
-	public void removeRowSetListener(RowSetListener parm1) {
+    public String getString(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	} // end method removeRowSetListener
+    public String getString(String columnName) throws SQLException {
+        return null;
+    }
 
-	public boolean next() {
+    public Time getTime(int columnIndex, Calendar cal) throws SQLException {
+        return null;
+    }
 
-		return false;
-	} // end method next
+    public Time getTime(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public void close() {
+    public Time getTime(String columnName, Calendar cal) throws SQLException {
+        return null;
+    }
 
-	} // end method close
+    public Time getTime(String columnName) throws SQLException {
+        return null;
+    }
 
-	public boolean wasNull() {
+    public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
+        return null;
+    }
 
-		return false;
-	} // end method wasNull
+    public Timestamp getTimestamp(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public String getString(int parm1) {
+    public Timestamp getTimestamp(String columnName, Calendar cal) throws SQLException {
+        return null;
+    }
 
-		return null;
-	} // end method getString
+    public Timestamp getTimestamp(String columnName) throws SQLException {
+        return null;
+    }
 
-	public boolean getBoolean(int parm1) {
+    public int getType() throws SQLException {
+        return 0;
+    }
 
-		return true;
-	} // end method getBoolean
+    public InputStream getUnicodeStream(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public byte getByte(int parm1) {
+    public InputStream getUnicodeStream(String columnName) throws SQLException {
+        return null;
+    }
 
-		return 20;
-	} // end method getByte
+    public URL getURL(int columnIndex) throws SQLException {
+        return null;
+    }
 
-	public short getShort(int parm1) {
+    public URL getURL(String columnName) throws SQLException {
+        return null;
+    }
 
-		return -14773;
-	} // end method getShort
+    public SQLWarning getWarnings() throws SQLException {
+        return null;
+    }
 
-	public int getInt(int parm1) {
+    public void insertRow() throws SQLException {
+    }
 
-		return 1336230020;
-	} // end method getInt
+    public boolean isAfterLast() throws SQLException {
+        return false;
+    }
 
-	public long getLong(int parm1) {
+    public boolean isBeforeFirst() throws SQLException {
+        return false;
+    }
 
-		return 2893649549072652188L;
-	} // end method getLong
+    public boolean isFirst() throws SQLException {
+        return false;
+    }
 
-	public float getFloat(int parm1) {
+    public boolean isLast() throws SQLException {
+        return false;
+    }
 
-		return -3.022368858327717E38F;
-	} // end method getFloat
+    public boolean last() throws SQLException {
+        return false;
+    }
 
-	public double getDouble(int parm1) {
+    public void moveToCurrentRow() throws SQLException {
+    }
 
-		return -9.31296588344137E307;
-	} // end method getDouble
+    public void moveToInsertRow() throws SQLException {
+    }
 
-	public BigDecimal getBigDecimal(int parm1, int parm2) {
+    public boolean next() throws SQLException {
+        return false;
+    }
 
-		return null;
-	} // end method getBigDecimal
+    public boolean previous() throws SQLException {
+        return false;
+    }
 
-	public byte[] getBytes(int parm1) {
+    public void refreshRow() throws SQLException {
+    }
 
-		return null;
-	} // end method getBytes
+    public boolean relative(int rows) throws SQLException {
+        return false;
+    }
 
-	public Date getDate(int parm1) {
+    public boolean rowDeleted() throws SQLException {
+        return false;
+    }
 
-		return null;
-	} // end method getDate
+    public boolean rowInserted() throws SQLException {
+        return false;
+    }
 
-	public Time getTime(int parm1) {
+    public boolean rowUpdated() throws SQLException {
+        return false;
+    }
 
-		return null;
-	} // end method getTime
+    public void setFetchDirection(int direction) throws SQLException {
+    }
 
-	public Timestamp getTimestamp(int parm1) {
+    public void setFetchSize(int rows) throws SQLException {
+    }
 
-		return null;
-	} // end method getTimestamp
+    public void updateArray(int columnIndex, Array x) throws SQLException {
+    }
 
-	public InputStream getAsciiStream(int parm1) {
+    public void updateArray(String columnName, Array x) throws SQLException {
+    }
 
-		return null;
-	} // end method getAsciiStream
+    public void updateAsciiStream(int columnIndex, InputStream x, int length)
+            throws SQLException {
+    }
 
-	public InputStream getUnicodeStream(int parm1) {
+    public void updateAsciiStream(String columnName, InputStream x, int length)
+            throws SQLException {
+    }
 
-		return null;
-	} // end method getUnicodeStream
+    public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
+    }
 
-	public InputStream getBinaryStream(int parm1) {
+    public void updateBigDecimal(String columnName, BigDecimal x) throws SQLException {
+    }
 
-		return null;
-	} // end method getBinaryStream
+    public void updateBinaryStream(int columnIndex, InputStream x, int length)
+            throws SQLException {
+    }
 
-	public String getString(String parm1) {
+    public void updateBinaryStream(String columnName, InputStream x, int length)
+            throws SQLException {
+    }
 
-		return null;
-	} // end method getString
+    public void updateBlob(int columnIndex, Blob x) throws SQLException {
+    }
 
-	public boolean getBoolean(String parm1) {
+    public void updateBlob(String columnName, Blob x) throws SQLException {
+    }
 
-		return true;
-	} // end method getBoolean
+    public void updateBoolean(int columnIndex, boolean x) throws SQLException {
+    }
 
-	public byte getByte(String parm1) {
+    public void updateBoolean(String columnName, boolean x) throws SQLException {
+    }
 
-		return 74;
-	} // end method getByte
+    public void updateByte(int columnIndex, byte x) throws SQLException {
+    }
 
-	public short getShort(String parm1) {
+    public void updateByte(String columnName, byte x) throws SQLException {
+    }
 
-		return -976;
-	} // end method getShort
+    public void updateBytes(int columnIndex, byte[] x) throws SQLException {
+    }
 
-	public int getInt(String parm1) {
+    public void updateBytes(String columnName, byte[] x) throws SQLException {
+    }
 
-		return -1946722832;
-	} // end method getInt
+    public void updateCharacterStream(int columnIndex, Reader x, int length)
+            throws SQLException {
+    }
 
-	public long getLong(String parm1) {
+    public void updateCharacterStream(String columnName, Reader reader, int length)
+            throws SQLException {
+    }
 
-		return -5026748552689033827L;
-	} // end method getLong
+    public void updateClob(int columnIndex, Clob x) throws SQLException {
+    }
 
-	public float getFloat(String parm1) {
+    public void updateClob(String columnName, Clob x) throws SQLException {
+    }
 
-		return 2.9913193284709667E38F;
-	} // end method getFloat
+    public void updateDate(int columnIndex, Date x) throws SQLException {
+    }
 
-	public double getDouble(String parm1) {
+    public void updateDate(String columnName, Date x) throws SQLException {
+    }
 
-		return 9.101225161150468E307;
-	} // end method getDouble
+    public void updateDouble(int columnIndex, double x) throws SQLException {
+    }
 
-	public BigDecimal getBigDecimal(String parm1, int parm2) {
+    public void updateDouble(String columnName, double x) throws SQLException {
+    }
 
-		return null;
-	} // end method getBigDecimal
+    public void updateFloat(int columnIndex, float x) throws SQLException {
+    }
 
-	public byte[] getBytes(String parm1) {
+    public void updateFloat(String columnName, float x) throws SQLException {
+    }
 
-		return null;
-	} // end method getBytes
+    public void updateInt(int columnIndex, int x) throws SQLException {
+    }
 
-	public Date getDate(String parm1) {
+    public void updateInt(String columnName, int x) throws SQLException {
+    }
 
-		return null;
-	} // end method getDate
+    public void updateLong(int columnIndex, long x) throws SQLException {
+    }
 
-	public Time getTime(String parm1) {
+    public void updateLong(String columnName, long x) throws SQLException {
+    }
 
-		return null;
-	} // end method getTime
+    public void updateNull(int columnIndex) throws SQLException {
+    }
 
-	public Timestamp getTimestamp(String parm1) {
+    public void updateNull(String columnName) throws SQLException {
+    }
 
-		return null;
-	} // end method getTimestamp
+    public void updateObject(int columnIndex, Object x, int scale) throws SQLException {
+    }
 
-	public InputStream getAsciiStream(String parm1) {
+    public void updateObject(int columnIndex, Object x) throws SQLException {
+    }
 
-		return null;
-	} // end method getAsciiStream
+    public void updateObject(String columnName, Object x, int scale) throws SQLException {
+    }
 
-	public InputStream getUnicodeStream(String parm1) {
+    public void updateObject(String columnName, Object x) throws SQLException {
+    }
 
-		return null;
-	} // end method getUnicodeStream
+    public void updateRef(int columnIndex, Ref x) throws SQLException {
+    }
 
-	public InputStream getBinaryStream(String parm1) {
+    public void updateRef(String columnName, Ref x) throws SQLException {
+    }
 
-		return null;
-	} // end method getBinaryStream
+    public void updateRow() throws SQLException {
+    }
 
-	public SQLWarning getWarnings() {
+    public void updateShort(int columnIndex, short x) throws SQLException {
+    }
 
-		return null;
-	} // end method getWarnings
+    public void updateShort(String columnName, short x) throws SQLException {
+    }
 
-	public void clearWarnings() {
+    public void updateString(int columnIndex, String x) throws SQLException {
+    }
 
-	} // end method clearWarnings
+    public void updateString(String columnName, String x) throws SQLException {
+    }
 
-	public String getCursorName() {
+    public void updateTime(int columnIndex, Time x) throws SQLException {
+    }
 
-		return null;
-	} // end method getCursorName
+    public void updateTime(String columnName, Time x) throws SQLException {
+    }
 
-	public ResultSetMetaData getMetaData() {
+    public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
+    }
 
-		return null;
-	} // end method getMetaData
+    public void updateTimestamp(String columnName, Timestamp x) throws SQLException {
+    }
 
-	public Object getObject(int parm1) {
-
-		return null;
-	} // end method getObject
-
-	public Object getObject(String parm1) {
-
-		return null;
-	} // end method getObject
-
-	public int findColumn(String parm1) {
-
-		return 567655775;
-	} // end method findColumn
-
-	public Reader getCharacterStream(int parm1) {
-
-		return null;
-	} // end method getCharacterStream
-
-	public Reader getCharacterStream(String parm1) {
-
-		return null;
-	} // end method getCharacterStream
-
-	public BigDecimal getBigDecimal(int parm1) {
-
-		return null;
-	} // end method getBigDecimal
-
-	public BigDecimal getBigDecimal(String parm1) {
-
-		return null;
-	} // end method getBigDecimal
-
-	public boolean isBeforeFirst() {
-
-		return false;
-	} // end method isBeforeFirst
-
-	public boolean isAfterLast() {
-
-		return false;
-	} // end method isAfterLast
-
-	public boolean isFirst() {
-
-		return true;
-	} // end method isFirst
-
-	public boolean isLast() {
-
-		return false;
-	} // end method isLast
-
-	public void beforeFirst() {
-
-	} // end method beforeFirst
-
-	public void afterLast() {
-
-	} // end method afterLast
-
-	public boolean first() {
-
-		return true;
-	} // end method first
-
-	public boolean last() {
-
-		return false;
-	} // end method last
-
-	public int getRow() {
-
-		return 1158714017;
-	} // end method getRow
-
-	public boolean absolute(int parm1) {
-
-		return false;
-	} // end method absolute
-
-	public boolean relative(int parm1) {
-
-		return false;
-	} // end method relative
-
-	public boolean previous() {
-
-		return false;
-	} // end method previous
-
-	public void setFetchDirection(int parm1) {
-
-	} // end method setFetchDirection
-
-	public int getFetchDirection() {
-
-		return 1957979730;
-	} // end method getFetchDirection
-
-	public void setFetchSize(int parm1) {
-
-	} // end method setFetchSize
-
-	public int getFetchSize() {
-
-		return -2014456736;
-	} // end method getFetchSize
-
-	public int getType() {
-
-		return -1351227638;
-	} // end method getType
-
-	public int getConcurrency() {
-
-		return -1448914510;
-	} // end method getConcurrency
-
-	public boolean rowUpdated() {
-
-		return false;
-	} // end method rowUpdated
-
-	public boolean rowInserted() {
-
-		return true;
-	} // end method rowInserted
-
-	public boolean rowDeleted() {
-
-		return true;
-	} // end method rowDeleted
-
-	public void updateNull(int parm1) {
-
-	} // end method updateNull
-
-	public void updateBoolean(int parm1, boolean parm2) {
-
-	} // end method updateBoolean
-
-	public void updateByte(int parm1, byte parm2) {
-
-	} // end method updateByte
-
-	public void updateShort(int parm1, short parm2) {
-
-	} // end method updateShort
-
-	public void updateInt(int parm1, int parm2) {
-
-	} // end method updateInt
-
-	public void updateLong(int parm1, long parm2) {
-
-	} // end method updateLong
-
-	public void updateFloat(int parm1, float parm2) {
-
-	} // end method updateFloat
-
-	public void updateDouble(int parm1, double parm2) {
-
-	} // end method updateDouble
-
-	public void updateBigDecimal(int parm1, BigDecimal parm2) {
-
-	} // end method updateBigDecimal
-
-	public void updateString(int parm1, String parm2) {
-
-	} // end method updateString
-
-	public void updateBytes(int parm1, byte[] parm2) {
-
-	} // end method updateBytes
-
-	public void updateDate(int parm1, Date parm2) {
-
-	} // end method updateDate
-
-	public void updateTime(int parm1, Time parm2) {
-
-	} // end method updateTime
-
-	public void updateTimestamp(int parm1, Timestamp parm2) {
-
-	} // end method updateTimestamp
-
-	public void updateAsciiStream(int parm1, InputStream parm2, int parm3) {
-
-	} // end method updateAsciiStream
-
-	public void updateBinaryStream(int parm1, InputStream parm2, int parm3) {
-
-	} // end method updateBinaryStream
-
-	public void updateCharacterStream(int parm1, Reader parm2, int parm3) {
-
-	} // end method updateCharacterStream
-
-	public void updateObject(int parm1, Object parm2, int parm3) {
-
-	} // end method updateObject
-
-	public void updateObject(int parm1, Object parm2) {
-
-	} // end method updateObject
-
-	public void updateNull(String parm1) {
-
-	} // end method updateNull
-
-	public void updateBoolean(String parm1, boolean parm2) {
-
-	} // end method updateBoolean
-
-	public void updateByte(String parm1, byte parm2) {
-
-	} // end method updateByte
-
-	public void updateShort(String parm1, short parm2) {
-
-	} // end method updateShort
-
-	public void updateInt(String parm1, int parm2) {
-
-	} // end method updateInt
-
-	public void updateLong(String parm1, long parm2) {
-
-	} // end method updateLong
-
-	public void updateFloat(String parm1, float parm2) {
-
-	} // end method updateFloat
-
-	public void updateDouble(String parm1, double parm2) {
-
-	} // end method updateDouble
-
-	public void updateBigDecimal(String parm1, BigDecimal parm2) {
-
-	} // end method updateBigDecimal
-
-	public void updateString(String parm1, String parm2) {
-
-	} // end method updateString
-
-	public void updateBytes(String parm1, byte[] parm2) {
-
-	} // end method updateBytes
-
-	public void updateDate(String parm1, Date parm2) {
-
-	} // end method updateDate
-
-	public void updateTime(String parm1, Time parm2) {
-
-	} // end method updateTime
-
-	public void updateTimestamp(String parm1, Timestamp parm2) {
-
-	} // end method updateTimestamp
-
-	public void updateAsciiStream(String parm1, InputStream parm2, int parm3) {
-
-	} // end method updateAsciiStream
-
-	public void updateBinaryStream(String parm1, InputStream parm2, int parm3) {
-
-	} // end method updateBinaryStream
-
-	public void updateCharacterStream(String parm1, Reader parm2, int parm3) {
-
-	} // end method updateCharacterStream
-
-	public void updateObject(String parm1, Object parm2, int parm3) {
-
-	} // end method updateObject
-
-	public void updateObject(String parm1, Object parm2) {
-
-	} // end method updateObject
-
-	public void insertRow() {
-
-	} // end method insertRow
-
-	public void updateRow() {
-
-	} // end method updateRow
-
-	public void deleteRow() {
-
-	} // end method deleteRow
-
-	public void refreshRow() {
-
-	} // end method refreshRow
-
-	public void cancelRowUpdates() {
-
-	} // end method cancelRowUpdates
-
-	public void moveToInsertRow() {
-
-	} // end method moveToInsertRow
-
-	public void moveToCurrentRow() {
-
-	} // end method moveToCurrentRow
-
-	public Statement getStatement() {
-
-		return null;
-	} // end method getStatement
-
-	public Object getObject(int parm1, Map parm2) {
-
-		return null;
-	} // end method getObject
-
-	public Ref getRef(int parm1) {
-
-		return null;
-	} // end method getRef
-
-	public Blob getBlob(int parm1) {
-
-		return null;
-	} // end method getBlob
-
-	public Clob getClob(int parm1) {
-
-		return null;
-	} // end method getClob
-
-	public Array getArray(int parm1) {
-
-		return null;
-	} // end method getArray
-
-	public Object getObject(String parm1, Map parm2) {
-
-		return null;
-	} // end method getObject
-
-	public Ref getRef(String parm1) {
-
-		return null;
-	} // end method getRef
-
-	public Blob getBlob(String parm1) {
-
-		return null;
-	} // end method getBlob
-
-	public Clob getClob(String parm1) {
-
-		return null;
-	} // end method getClob
-
-	public Array getArray(String parm1) {
-
-		return null;
-	} // end method getArray
-
-	public Date getDate(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getDate
-
-	public Date getDate(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getDate
-
-	public Time getTime(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTime
-
-	public Time getTime(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTime
-
-	public Timestamp getTimestamp(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTimestamp
-
-	public Timestamp getTimestamp(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTimestamp
-
-	public URL getURL(int parm1) {
-
-		return null;
-	} // end method getURL
-
-	public URL getURL(String parm1) {
-
-		return null;
-	} // end method getURL
-
-	public void updateRef(int parm1, Ref parm2) {
-
-	} // end method updateRef
-
-	public void updateRef(String parm1, Ref parm2) {
-
-	} // end method updateRef
-
-	public void updateBlob(int parm1, Blob parm2) {
-
-	} // end method updateBlob
-
-	public void updateBlob(String parm1, Blob parm2) {
-
-	} // end method updateBlob
-
-	public void updateClob(int parm1, Clob parm2) {
-
-	} // end method updateClob
-
-	public void updateClob(String parm1, Clob parm2) {
-
-	} // end method updateClob
-
-	public void updateArray(int parm1, Array parm2) {
-
-	} // end method updateArray
-
-	public void updateArray(String parm1, Array parm2) {
-
-	} // end method updateArray
-
-} // end class RowSetTest
+    public boolean wasNull() throws SQLException {
+        return false;
+    }
+}

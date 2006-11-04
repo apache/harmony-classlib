@@ -19,63 +19,53 @@ package org.apache.harmony.sql.tests.java.sql;
 
 import java.sql.Array;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 public class Impl_Array implements Array {
+    public Impl_Array() {
+        super();
+    }
 
-	public Impl_Array() {
-		super();
-	} // end constructor
+    public String getBaseTypeName() {
+        return null;
+    }
 
-	public String getBaseTypeName() {
+    public int getBaseType() {
+        return 2000135303;
+    }
 
-		return null;
-	} // end method getBaseTypeName
+    public Object getArray() {
+        return null;
+    }
 
-	public int getBaseType() {
+    public Object getArray(Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-		return 2000135303;
-	} // end method getBaseType
+    public Object getArray(long parm1, int parm2) {
+        return null;
+    }
 
-	public Object getArray() {
+    public Object getArray(long index, int count, Map<String, Class<?>> map)
+            throws SQLException {
+        return null;
+    }
 
-		return null;
-	} // end method getArray
+    public ResultSet getResultSet() {
+        return null;
+    }
 
-	public Object getArray(Map parm1) {
+    public ResultSet getResultSet(Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-		return null;
-	} // end method getArray
+    public ResultSet getResultSet(long parm1, int parm2) {
+        return null;
+    }
 
-	public Object getArray(long parm1, int parm2) {
-
-		return null;
-	} // end method getArray
-
-	public Object getArray(long parm1, int parm2, Map parm3) {
-
-		return null;
-	} // end method getArray
-
-	public ResultSet getResultSet() {
-
-		return null;
-	} // end method getResultSet
-
-	public ResultSet getResultSet(Map parm1) {
-
-		return null;
-	} // end method getResultSet
-
-	public ResultSet getResultSet(long parm1, int parm2) {
-
-		return null;
-	} // end method getResultSet
-
-	public ResultSet getResultSet(long parm1, int parm2, Map parm3) {
-
-		return null;
-	} // end method getResultSet
-
-} // end class ArrayTest
-
+    public ResultSet getResultSet(long index, int count, Map<String, Class<?>> map)
+            throws SQLException {
+        return null;
+    }
+}

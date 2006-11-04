@@ -21,186 +21,146 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.Map;
 
 public class Impl_Connection implements Connection {
+    public Impl_Connection() {
+        super();
+    }
 
-	public Impl_Connection() {
-		super();
-	} // end constructor
+    public Statement createStatement() {
+        return null;
+    }
 
-	public Statement createStatement() {
+    public PreparedStatement prepareStatement(String parm1) {
+        return null;
+    }
 
-		return null;
-	} // end method createStatement
+    public CallableStatement prepareCall(String parm1) {
+        return null;
+    }
 
-	public PreparedStatement prepareStatement(String parm1) {
+    public String nativeSQL(String parm1) {
+        return null;
+    }
 
-		return null;
-	} // end method prepareStatement
+    public void setAutoCommit(boolean parm1) {
+    }
 
-	public CallableStatement prepareCall(String parm1) {
+    public boolean getAutoCommit() {
+        return false;
+    }
 
-		return null;
-	} // end method prepareCall
+    public void commit() {
+    }
 
-	public String nativeSQL(String parm1) {
+    public void rollback() {
+    }
 
-		return null;
-	} // end method nativeSQL
+    public void close() {
+    }
 
-	public void setAutoCommit(boolean parm1) {
+    public boolean isClosed() {
+        return false;
+    }
 
-	} // end method setAutoCommit
+    public DatabaseMetaData getMetaData() {
+        return null;
+    }
 
-	public boolean getAutoCommit() {
+    public void setReadOnly(boolean parm1) {
+    }
 
-		return false;
-	} // end method getAutoCommit
+    public boolean isReadOnly() {
+        return true;
+    }
 
-	public void commit() {
+    public void setCatalog(String parm1) {
+    }
 
-	} // end method commit
+    public String getCatalog() {
+        return null;
+    }
 
-	public void rollback() {
+    public void setTransactionIsolation(int parm1) {
+    }
 
-	} // end method rollback
+    public int getTransactionIsolation() {
+        return -1980410800;
+    }
 
-	public void close() {
+    public SQLWarning getWarnings() {
+        return null;
+    }
 
-	} // end method close
+    public void clearWarnings() {
+    }
 
-	public boolean isClosed() {
+    public Statement createStatement(int parm1, int parm2) {
+        return null;
+    }
 
-		return false;
-	} // end method isClosed
+    public PreparedStatement prepareStatement(String parm1, int parm2, int parm3) {
+        return null;
+    }
 
-	public DatabaseMetaData getMetaData() {
+    public CallableStatement prepareCall(String parm1, int parm2, int parm3) {
+        return null;
+    }
 
-		return null;
-	} // end method getMetaData
+    public Map<String, Class<?>> getTypeMap() throws SQLException {
+        return null;
+    }
 
-	public void setReadOnly(boolean parm1) {
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+    }
 
-	} // end method setReadOnly
+    public void setHoldability(int parm1) {
+    }
 
-	public boolean isReadOnly() {
+    public int getHoldability() {
+        return 632720050;
+    }
 
-		return true;
-	} // end method isReadOnly
+    public Savepoint setSavepoint() {
+        return null;
+    }
 
-	public void setCatalog(String parm1) {
+    public Savepoint setSavepoint(String parm1) {
+        return null;
+    }
 
-	} // end method setCatalog
+    public void rollback(Savepoint parm1) {
+    }
 
-	public String getCatalog() {
+    public void releaseSavepoint(Savepoint parm1) {
+    }
 
-		return null;
-	} // end method getCatalog
+    public Statement createStatement(int parm1, int parm2, int parm3) {
+        return null;
+    }
 
-	public void setTransactionIsolation(int parm1) {
+    public PreparedStatement prepareStatement(String parm1, int parm2, int parm3, int parm4) {
+        return null;
+    }
 
-	} // end method setTransactionIsolation
+    public CallableStatement prepareCall(String parm1, int parm2, int parm3, int parm4) {
+        return null;
+    }
 
-	public int getTransactionIsolation() {
+    public PreparedStatement prepareStatement(String parm1, int parm2) {
+        return null;
+    }
 
-		return -1980410800;
-	} // end method getTransactionIsolation
+    public PreparedStatement prepareStatement(String parm1, int[] parm2) {
+        return null;
+    }
 
-	public SQLWarning getWarnings() {
-
-		return null;
-	} // end method getWarnings
-
-	public void clearWarnings() {
-
-	} // end method clearWarnings
-
-	public Statement createStatement(int parm1, int parm2) {
-
-		return null;
-	} // end method createStatement
-
-	public PreparedStatement prepareStatement(String parm1, int parm2, int parm3) {
-
-		return null;
-	} // end method prepareStatement
-
-	public CallableStatement prepareCall(String parm1, int parm2, int parm3) {
-
-		return null;
-	} // end method prepareCall
-
-	public Map getTypeMap() {
-
-		return null;
-	} // end method getTypeMap
-
-	public void setTypeMap(Map parm1) {
-
-	} // end method setTypeMap
-
-	public void setHoldability(int parm1) {
-
-	} // end method setHoldability
-
-	public int getHoldability() {
-
-		return 632720050;
-	} // end method getHoldability
-
-	public Savepoint setSavepoint() {
-
-		return null;
-	} // end method setSavepoint
-
-	public Savepoint setSavepoint(String parm1) {
-
-		return null;
-	} // end method setSavepoint
-
-	public void rollback(Savepoint parm1) {
-
-	} // end method rollback
-
-	public void releaseSavepoint(Savepoint parm1) {
-
-	} // end method releaseSavepoint
-
-	public Statement createStatement(int parm1, int parm2, int parm3) {
-
-		return null;
-	} // end method createStatement
-
-	public PreparedStatement prepareStatement(String parm1, int parm2,
-			int parm3, int parm4) {
-
-		return null;
-	} // end method prepareStatement
-
-	public CallableStatement prepareCall(String parm1, int parm2, int parm3,
-			int parm4) {
-
-		return null;
-	} // end method prepareCall
-
-	public PreparedStatement prepareStatement(String parm1, int parm2) {
-
-		return null;
-	} // end method prepareStatement
-
-	public PreparedStatement prepareStatement(String parm1, int[] parm2) {
-
-		return null;
-	} // end method prepareStatement
-
-	public PreparedStatement prepareStatement(String parm1, String[] parm2) {
-
-		return null;
-	} // end method prepareStatement
-
-} // end class ConnectionTest
-
+    public PreparedStatement prepareStatement(String parm1, String[] parm2) {
+        return null;
+    }
+}

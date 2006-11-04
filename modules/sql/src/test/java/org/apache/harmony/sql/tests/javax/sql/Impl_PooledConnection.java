@@ -18,37 +18,21 @@
 package org.apache.harmony.sql.tests.javax.sql;
 
 import java.sql.Connection;
-
+import java.sql.SQLException;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 
-import org.apache.harmony.sql.tests.java.sql.TestHelper_Connection1;
+class Impl_PooledConnection implements PooledConnection {
+    public void addConnectionEventListener(ConnectionEventListener theListener) {
+    }
 
-/**
- * Helper implementation for the interface javax.sql.PooledConnection
- * 
- */
+    public void close() throws SQLException {
+    }
 
-public class Impl_PooledConnection implements PooledConnection {
+    public Connection getConnection() throws SQLException {
+        return null;
+    }
 
-	public Impl_PooledConnection() {
-		super();
-	} // end constructor
-
-	public Connection getConnection() {
-		return new TestHelper_Connection1();
-	} // end method getConnection
-
-	public void close() {
-
-	} // end method close
-
-	public void addConnectionEventListener(ConnectionEventListener parm1) {
-
-	} // end method addConnectionEventListener
-
-	public void removeConnectionEventListener(ConnectionEventListener parm1) {
-
-	} // end method removeConnectionEventListener
-
-} // end class PooledConnectionTest
+    public void removeConnectionEventListener(ConnectionEventListener theListener) {
+    }
+}

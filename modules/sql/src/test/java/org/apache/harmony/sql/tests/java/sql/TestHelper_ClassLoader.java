@@ -24,20 +24,11 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-/**
- * TODO Type description
- * 
- */
 public class TestHelper_ClassLoader extends ClassLoader {
 
 	public TestHelper_ClassLoader() {
 		super(null);
-		// System.out.println("Test class loader - loaded.");
-		/*
-		 * System.out.println("Test class loader = " + this );
-		 * System.out.println("Test class loader parent = " + this.getParent() );
-		 */
-	} // end method TestClassLoader
+	}
 
 	/**
 	 * Loads a class specified by its name
@@ -168,7 +159,7 @@ public class TestHelper_ClassLoader extends ClassLoader {
 				return theClass;
 			} // end if
 
-			int theMethod = theEntry.getMethod();
+			theEntry.getMethod();
 			InputStream theStream = theJar.getInputStream(theEntry);
 
 			long size = theEntry.getSize();

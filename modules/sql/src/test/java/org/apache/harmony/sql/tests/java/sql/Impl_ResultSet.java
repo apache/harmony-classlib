@@ -28,6 +28,7 @@ import java.sql.Date;
 import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Time;
@@ -35,647 +36,506 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class Impl_ResultSet implements ResultSet {
+    public Impl_ResultSet() {
+        super();
+    }
 
-	public Impl_ResultSet() {
-		super();
-	} // end constructor
+    public boolean next() {
+        return true;
+    }
 
-	public boolean next() {
+    public void close() {
+    }
+
+    public boolean wasNull() {
+        return true;
+    }
+
+    public String getString(int parm1) {
+        return null;
+    }
+
+    public boolean getBoolean(int parm1) {
+        return true;
+    }
+
+    public byte getByte(int parm1) {
+        return -8;
+    }
+
+    public short getShort(int parm1) {
+        return -12790;
+    }
+
+    public int getInt(int parm1) {
+        return -1790920813;
+    }
+
+    public long getLong(int parm1) {
+        return -7236492308370801956L;
+    }
+
+    public float getFloat(int parm1) {
+        return -1.4686295075661984E37F;
+    }
+
+    public double getDouble(int parm1) {
+        return -1.6820553969741622E308;
+    }
+
+    public BigDecimal getBigDecimal(int parm1, int parm2) {
+        return null;
+    }
 
-		return true;
-	} // end method next
+    public byte[] getBytes(int parm1) {
+        return null;
+    }
 
-	public void close() {
+    public Date getDate(int parm1) {
+        return null;
+    }
 
-	} // end method close
+    public Time getTime(int parm1) {
+        return null;
+    }
 
-	public boolean wasNull() {
+    public Timestamp getTimestamp(int parm1) {
+        return null;
+    }
 
-		return true;
-	} // end method wasNull
+    public InputStream getAsciiStream(int parm1) {
+        return null;
+    }
 
-	public String getString(int parm1) {
+    public InputStream getUnicodeStream(int parm1) {
+        return null;
+    }
 
-		return null;
-	} // end method getString
+    public InputStream getBinaryStream(int parm1) {
+        return null;
+    }
 
-	public boolean getBoolean(int parm1) {
+    public String getString(String parm1) {
+        return null;
+    }
 
-		return true;
-	} // end method getBoolean
+    public boolean getBoolean(String parm1) {
+        return false;
+    }
 
-	public byte getByte(int parm1) {
+    public byte getByte(String parm1) {
+        return -10;
+    }
 
-		return -8;
-	} // end method getByte
+    public short getShort(String parm1) {
+        return 13590;
+    } // end method getShort
 
-	public short getShort(int parm1) {
+    public int getInt(String parm1) {
+        return 522475063;
+    } // end method getInt
 
-		return -12790;
-	} // end method getShort
+    public long getLong(String parm1) {
+        return 6637918619301232066L;
+    } // end method getLong
 
-	public int getInt(int parm1) {
+    public float getFloat(String parm1) {
+        return 8.388008941813566E37F;
+    } // end method getFloat
 
-		return -1790920813;
-	} // end method getInt
+    public double getDouble(String parm1) {
+        return 4.221562126032334E307;
+    } // end method getDouble
 
-	public long getLong(int parm1) {
+    public BigDecimal getBigDecimal(String parm1, int parm2) {
+        return null;
+    } // end method getBigDecimal
 
-		return -7236492308370801956L;
-	} // end method getLong
+    public byte[] getBytes(String parm1) {
+        return null;
+    } // end method getBytes
 
-	public float getFloat(int parm1) {
+    public Date getDate(String parm1) {
+        return null;
+    } // end method getDate
 
-		return -1.4686295075661984E37F;
-	} // end method getFloat
+    public Time getTime(String parm1) {
+        return null;
+    } // end method getTime
 
-	public double getDouble(int parm1) {
+    public Timestamp getTimestamp(String parm1) {
+        return null;
+    } // end method getTimestamp
 
-		return -1.6820553969741622E308;
-	} // end method getDouble
+    public InputStream getAsciiStream(String parm1) {
+        return null;
+    } // end method getAsciiStream
 
-	public BigDecimal getBigDecimal(int parm1, int parm2) {
+    public InputStream getUnicodeStream(String parm1) {
+        return null;
+    } // end method getUnicodeStream
 
-		return null;
-	} // end method getBigDecimal
+    public InputStream getBinaryStream(String parm1) {
+        return null;
+    } // end method getBinaryStream
 
-	public byte[] getBytes(int parm1) {
+    public SQLWarning getWarnings() {
+        return null;
+    } // end method getWarnings
 
-		return null;
-	} // end method getBytes
+    public void clearWarnings() {
+    } // end method clearWarnings
 
-	public Date getDate(int parm1) {
+    public String getCursorName() {
+        return null;
+    } // end method getCursorName
 
-		return null;
-	} // end method getDate
+    public ResultSetMetaData getMetaData() {
+        return null;
+    } // end method getMetaData
 
-	public Time getTime(int parm1) {
+    public Object getObject(int parm1) {
+        return null;
+    } // end method getObject
 
-		return null;
-	} // end method getTime
+    public Object getObject(String parm1) {
+        return null;
+    } // end method getObject
 
-	public Timestamp getTimestamp(int parm1) {
+    public int findColumn(String parm1) {
+        return 24975593;
+    } // end method findColumn
 
-		return null;
-	} // end method getTimestamp
+    public Reader getCharacterStream(int parm1) {
+        return null;
+    } // end method getCharacterStream
 
-	public InputStream getAsciiStream(int parm1) {
+    public Reader getCharacterStream(String parm1) {
+        return null;
+    } // end method getCharacterStream
 
-		return null;
-	} // end method getAsciiStream
+    public BigDecimal getBigDecimal(int parm1) {
+        return null;
+    } // end method getBigDecimal
 
-	public InputStream getUnicodeStream(int parm1) {
+    public BigDecimal getBigDecimal(String parm1) {
+        return null;
+    } // end method getBigDecimal
 
-		return null;
-	} // end method getUnicodeStream
+    public boolean isBeforeFirst() {
+        return false;
+    } // end method isBeforeFirst
 
-	public InputStream getBinaryStream(int parm1) {
+    public boolean isAfterLast() {
+        return true;
+    } // end method isAfterLast
 
-		return null;
-	} // end method getBinaryStream
+    public boolean isFirst() {
+        return true;
+    } // end method isFirst
 
-	public String getString(String parm1) {
+    public boolean isLast() {
+        return true;
+    } // end method isLast
 
-		return null;
-	} // end method getString
+    public void beforeFirst() {
+    } // end method beforeFirst
 
-	public boolean getBoolean(String parm1) {
+    public void afterLast() {
+    } // end method afterLast
 
-		return false;
-	} // end method getBoolean
+    public boolean first() {
+        return true;
+    } // end method first
 
-	public byte getByte(String parm1) {
+    public boolean last() {
+        return false;
+    } // end method last
 
-		return -10;
-	} // end method getByte
+    public int getRow() {
+        return -1536752422;
+    } // end method getRow
 
-	public short getShort(String parm1) {
+    public boolean absolute(int parm1) {
+        return false;
+    } // end method absolute
 
-		return 13590;
-	} // end method getShort
+    public boolean relative(int parm1) {
+        return true;
+    } // end method relative
 
-	public int getInt(String parm1) {
+    public boolean previous() {
+        return true;
+    } // end method previous
 
-		return 522475063;
-	} // end method getInt
+    public void setFetchDirection(int parm1) {
+    } // end method setFetchDirection
 
-	public long getLong(String parm1) {
+    public int getFetchDirection() {
+        return -1136843877;
+    } // end method getFetchDirection
 
-		return 6637918619301232066L;
-	} // end method getLong
+    public void setFetchSize(int parm1) {
+    } // end method setFetchSize
 
-	public float getFloat(String parm1) {
+    public int getFetchSize() {
+        return -2139697329;
+    } // end method getFetchSize
 
-		return 8.388008941813566E37F;
-	} // end method getFloat
+    public int getType() {
+        return -631961459;
+    } // end method getType
 
-	public double getDouble(String parm1) {
+    public int getConcurrency() {
+        return 6231768;
+    } // end method getConcurrency
 
-		return 4.221562126032334E307;
-	} // end method getDouble
+    public boolean rowUpdated() {
+        return true;
+    } // end method rowUpdated
 
-	public BigDecimal getBigDecimal(String parm1, int parm2) {
+    public boolean rowInserted() {
+        return true;
+    } // end method rowInserted
 
-		return null;
-	} // end method getBigDecimal
+    public boolean rowDeleted() {
+        return true;
+    } // end method rowDeleted
 
-	public byte[] getBytes(String parm1) {
+    public void updateNull(int parm1) {
+    } // end method updateNull
 
-		return null;
-	} // end method getBytes
+    public void updateBoolean(int parm1, boolean parm2) {
+    } // end method updateBoolean
 
-	public Date getDate(String parm1) {
+    public void updateByte(int parm1, byte parm2) {
+    } // end method updateByte
 
-		return null;
-	} // end method getDate
+    public void updateShort(int parm1, short parm2) {
+    } // end method updateShort
 
-	public Time getTime(String parm1) {
+    public void updateInt(int parm1, int parm2) {
+    } // end method updateInt
 
-		return null;
-	} // end method getTime
+    public void updateLong(int parm1, long parm2) {
+    } // end method updateLong
 
-	public Timestamp getTimestamp(String parm1) {
+    public void updateFloat(int parm1, float parm2) {
+    } // end method updateFloat
 
-		return null;
-	} // end method getTimestamp
+    public void updateDouble(int parm1, double parm2) {
+    } // end method updateDouble
 
-	public InputStream getAsciiStream(String parm1) {
+    public void updateBigDecimal(int parm1, BigDecimal parm2) {
+    } // end method updateBigDecimal
 
-		return null;
-	} // end method getAsciiStream
+    public void updateString(int parm1, String parm2) {
+    } // end method updateString
 
-	public InputStream getUnicodeStream(String parm1) {
+    public void updateBytes(int parm1, byte[] parm2) {
+    } // end method updateBytes
 
-		return null;
-	} // end method getUnicodeStream
+    public void updateDate(int parm1, Date parm2) {
+    } // end method updateDate
 
-	public InputStream getBinaryStream(String parm1) {
+    public void updateTime(int parm1, Time parm2) {
+    } // end method updateTime
 
-		return null;
-	} // end method getBinaryStream
+    public void updateTimestamp(int parm1, Timestamp parm2) {
+    } // end method updateTimestamp
 
-	public SQLWarning getWarnings() {
+    public void updateAsciiStream(int parm1, InputStream parm2, int parm3) {
+    } // end method updateAsciiStream
 
-		return null;
-	} // end method getWarnings
+    public void updateBinaryStream(int parm1, InputStream parm2, int parm3) {
+    } // end method updateBinaryStream
 
-	public void clearWarnings() {
+    public void updateCharacterStream(int parm1, Reader parm2, int parm3) {
+    } // end method updateCharacterStream
 
-	} // end method clearWarnings
+    public void updateObject(int parm1, Object parm2, int parm3) {
+    } // end method updateObject
 
-	public String getCursorName() {
+    public void updateObject(int parm1, Object parm2) {
+    } // end method updateObject
 
-		return null;
-	} // end method getCursorName
+    public void updateNull(String parm1) {
+    } // end method updateNull
 
-	public ResultSetMetaData getMetaData() {
+    public void updateBoolean(String parm1, boolean parm2) {
+    } // end method updateBoolean
 
-		return null;
-	} // end method getMetaData
+    public void updateByte(String parm1, byte parm2) {
+    } // end method updateByte
 
-	public Object getObject(int parm1) {
+    public void updateShort(String parm1, short parm2) {
+    } // end method updateShort
 
-		return null;
-	} // end method getObject
+    public void updateInt(String parm1, int parm2) {
+    } // end method updateInt
 
-	public Object getObject(String parm1) {
+    public void updateLong(String parm1, long parm2) {
+    } // end method updateLong
 
-		return null;
-	} // end method getObject
+    public void updateFloat(String parm1, float parm2) {
+    } // end method updateFloat
 
-	public int findColumn(String parm1) {
+    public void updateDouble(String parm1, double parm2) {
+    } // end method updateDouble
 
-		return 24975593;
-	} // end method findColumn
+    public void updateBigDecimal(String parm1, BigDecimal parm2) {
+    } // end method updateBigDecimal
 
-	public Reader getCharacterStream(int parm1) {
+    public void updateString(String parm1, String parm2) {
+    } // end method updateString
 
-		return null;
-	} // end method getCharacterStream
+    public void updateBytes(String parm1, byte[] parm2) {
+    } // end method updateBytes
 
-	public Reader getCharacterStream(String parm1) {
+    public void updateDate(String parm1, Date parm2) {
+    } // end method updateDate
 
-		return null;
-	} // end method getCharacterStream
+    public void updateTime(String parm1, Time parm2) {
+    } // end method updateTime
 
-	public BigDecimal getBigDecimal(int parm1) {
+    public void updateTimestamp(String parm1, Timestamp parm2) {
+    } // end method updateTimestamp
 
-		return null;
-	} // end method getBigDecimal
+    public void updateAsciiStream(String parm1, InputStream parm2, int parm3) {
+    } // end method updateAsciiStream
 
-	public BigDecimal getBigDecimal(String parm1) {
+    public void updateBinaryStream(String parm1, InputStream parm2, int parm3) {
+    } // end method updateBinaryStream
 
-		return null;
-	} // end method getBigDecimal
+    public void updateCharacterStream(String parm1, Reader parm2, int parm3) {
+    } // end method updateCharacterStream
 
-	public boolean isBeforeFirst() {
+    public void updateObject(String parm1, Object parm2, int parm3) {
+    } // end method updateObject
 
-		return false;
-	} // end method isBeforeFirst
+    public void updateObject(String parm1, Object parm2) {
+    } // end method updateObject
 
-	public boolean isAfterLast() {
+    public void insertRow() {
+    } // end method insertRow
 
-		return true;
-	} // end method isAfterLast
+    public void updateRow() {
+    } // end method updateRow
 
-	public boolean isFirst() {
+    public void deleteRow() {
+    } // end method deleteRow
 
-		return true;
-	} // end method isFirst
+    public void refreshRow() {
+    } // end method refreshRow
 
-	public boolean isLast() {
+    public void cancelRowUpdates() {
+    } // end method cancelRowUpdates
 
-		return true;
-	} // end method isLast
+    public void moveToInsertRow() {
+    } // end method moveToInsertRow
 
-	public void beforeFirst() {
+    public void moveToCurrentRow() {
+    } // end method moveToCurrentRow
 
-	} // end method beforeFirst
+    public Statement getStatement() {
+        return null;
+    } // end method getStatement
 
-	public void afterLast() {
+    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-	} // end method afterLast
+    public Ref getRef(int parm1) {
+        return null;
+    } // end method getRef
 
-	public boolean first() {
+    public Blob getBlob(int parm1) {
+        return null;
+    } // end method getBlob
 
-		return true;
-	} // end method first
+    public Clob getClob(int parm1) {
+        return null;
+    } // end method getClob
 
-	public boolean last() {
+    public Array getArray(int parm1) {
+        return null;
+    } // end method getArray
 
-		return false;
-	} // end method last
+    public Object getObject(String columnName, Map<String, Class<?>> map) throws SQLException {
+        return null;
+    }
 
-	public int getRow() {
+    public Ref getRef(String parm1) {
+        return null;
+    } // end method getRef
 
-		return -1536752422;
-	} // end method getRow
+    public Blob getBlob(String parm1) {
+        return null;
+    } // end method getBlob
 
-	public boolean absolute(int parm1) {
+    public Clob getClob(String parm1) {
+        return null;
+    } // end method getClob
 
-		return false;
-	} // end method absolute
+    public Array getArray(String parm1) {
+        return null;
+    } // end method getArray
 
-	public boolean relative(int parm1) {
+    public Date getDate(int parm1, Calendar parm2) {
+        return null;
+    } // end method getDate
 
-		return true;
-	} // end method relative
+    public Date getDate(String parm1, Calendar parm2) {
+        return null;
+    } // end method getDate
 
-	public boolean previous() {
+    public Time getTime(int parm1, Calendar parm2) {
+        return null;
+    } // end method getTime
 
-		return true;
-	} // end method previous
+    public Time getTime(String parm1, Calendar parm2) {
+        return null;
+    } // end method getTime
 
-	public void setFetchDirection(int parm1) {
+    public Timestamp getTimestamp(int parm1, Calendar parm2) {
+        return null;
+    } // end method getTimestamp
 
-	} // end method setFetchDirection
+    public Timestamp getTimestamp(String parm1, Calendar parm2) {
+        return null;
+    } // end method getTimestamp
 
-	public int getFetchDirection() {
+    public URL getURL(int parm1) {
+        return null;
+    } // end method getURL
 
-		return -1136843877;
-	} // end method getFetchDirection
+    public URL getURL(String parm1) {
+        return null;
+    } // end method getURL
 
-	public void setFetchSize(int parm1) {
+    public void updateRef(int parm1, Ref parm2) {
+    } // end method updateRef
 
-	} // end method setFetchSize
+    public void updateRef(String parm1, Ref parm2) {
+    } // end method updateRef
 
-	public int getFetchSize() {
+    public void updateBlob(int parm1, Blob parm2) {
+    } // end method updateBlob
 
-		return -2139697329;
-	} // end method getFetchSize
+    public void updateBlob(String parm1, Blob parm2) {
+    } // end method updateBlob
 
-	public int getType() {
+    public void updateClob(int parm1, Clob parm2) {
+    } // end method updateClob
 
-		return -631961459;
-	} // end method getType
+    public void updateClob(String parm1, Clob parm2) {
+    } // end method updateClob
 
-	public int getConcurrency() {
+    public void updateArray(int parm1, Array parm2) {
+    } // end method updateArray
 
-		return 6231768;
-	} // end method getConcurrency
-
-	public boolean rowUpdated() {
-
-		return true;
-	} // end method rowUpdated
-
-	public boolean rowInserted() {
-
-		return true;
-	} // end method rowInserted
-
-	public boolean rowDeleted() {
-
-		return true;
-	} // end method rowDeleted
-
-	public void updateNull(int parm1) {
-
-	} // end method updateNull
-
-	public void updateBoolean(int parm1, boolean parm2) {
-
-	} // end method updateBoolean
-
-	public void updateByte(int parm1, byte parm2) {
-
-	} // end method updateByte
-
-	public void updateShort(int parm1, short parm2) {
-
-	} // end method updateShort
-
-	public void updateInt(int parm1, int parm2) {
-
-	} // end method updateInt
-
-	public void updateLong(int parm1, long parm2) {
-
-	} // end method updateLong
-
-	public void updateFloat(int parm1, float parm2) {
-
-	} // end method updateFloat
-
-	public void updateDouble(int parm1, double parm2) {
-
-	} // end method updateDouble
-
-	public void updateBigDecimal(int parm1, BigDecimal parm2) {
-
-	} // end method updateBigDecimal
-
-	public void updateString(int parm1, String parm2) {
-
-	} // end method updateString
-
-	public void updateBytes(int parm1, byte[] parm2) {
-
-	} // end method updateBytes
-
-	public void updateDate(int parm1, Date parm2) {
-
-	} // end method updateDate
-
-	public void updateTime(int parm1, Time parm2) {
-
-	} // end method updateTime
-
-	public void updateTimestamp(int parm1, Timestamp parm2) {
-
-	} // end method updateTimestamp
-
-	public void updateAsciiStream(int parm1, InputStream parm2, int parm3) {
-
-	} // end method updateAsciiStream
-
-	public void updateBinaryStream(int parm1, InputStream parm2, int parm3) {
-
-	} // end method updateBinaryStream
-
-	public void updateCharacterStream(int parm1, Reader parm2, int parm3) {
-
-	} // end method updateCharacterStream
-
-	public void updateObject(int parm1, Object parm2, int parm3) {
-
-	} // end method updateObject
-
-	public void updateObject(int parm1, Object parm2) {
-
-	} // end method updateObject
-
-	public void updateNull(String parm1) {
-
-	} // end method updateNull
-
-	public void updateBoolean(String parm1, boolean parm2) {
-
-	} // end method updateBoolean
-
-	public void updateByte(String parm1, byte parm2) {
-
-	} // end method updateByte
-
-	public void updateShort(String parm1, short parm2) {
-
-	} // end method updateShort
-
-	public void updateInt(String parm1, int parm2) {
-
-	} // end method updateInt
-
-	public void updateLong(String parm1, long parm2) {
-
-	} // end method updateLong
-
-	public void updateFloat(String parm1, float parm2) {
-
-	} // end method updateFloat
-
-	public void updateDouble(String parm1, double parm2) {
-
-	} // end method updateDouble
-
-	public void updateBigDecimal(String parm1, BigDecimal parm2) {
-
-	} // end method updateBigDecimal
-
-	public void updateString(String parm1, String parm2) {
-
-	} // end method updateString
-
-	public void updateBytes(String parm1, byte[] parm2) {
-
-	} // end method updateBytes
-
-	public void updateDate(String parm1, Date parm2) {
-
-	} // end method updateDate
-
-	public void updateTime(String parm1, Time parm2) {
-
-	} // end method updateTime
-
-	public void updateTimestamp(String parm1, Timestamp parm2) {
-
-	} // end method updateTimestamp
-
-	public void updateAsciiStream(String parm1, InputStream parm2, int parm3) {
-
-	} // end method updateAsciiStream
-
-	public void updateBinaryStream(String parm1, InputStream parm2, int parm3) {
-
-	} // end method updateBinaryStream
-
-	public void updateCharacterStream(String parm1, Reader parm2, int parm3) {
-
-	} // end method updateCharacterStream
-
-	public void updateObject(String parm1, Object parm2, int parm3) {
-
-	} // end method updateObject
-
-	public void updateObject(String parm1, Object parm2) {
-
-	} // end method updateObject
-
-	public void insertRow() {
-
-	} // end method insertRow
-
-	public void updateRow() {
-
-	} // end method updateRow
-
-	public void deleteRow() {
-
-	} // end method deleteRow
-
-	public void refreshRow() {
-
-	} // end method refreshRow
-
-	public void cancelRowUpdates() {
-
-	} // end method cancelRowUpdates
-
-	public void moveToInsertRow() {
-
-	} // end method moveToInsertRow
-
-	public void moveToCurrentRow() {
-
-	} // end method moveToCurrentRow
-
-	public Statement getStatement() {
-
-		return null;
-	} // end method getStatement
-
-	public Object getObject(int parm1, Map parm2) {
-
-		return null;
-	} // end method getObject
-
-	public Ref getRef(int parm1) {
-
-		return null;
-	} // end method getRef
-
-	public Blob getBlob(int parm1) {
-
-		return null;
-	} // end method getBlob
-
-	public Clob getClob(int parm1) {
-
-		return null;
-	} // end method getClob
-
-	public Array getArray(int parm1) {
-
-		return null;
-	} // end method getArray
-
-	public Object getObject(String parm1, Map parm2) {
-
-		return null;
-	} // end method getObject
-
-	public Ref getRef(String parm1) {
-
-		return null;
-	} // end method getRef
-
-	public Blob getBlob(String parm1) {
-
-		return null;
-	} // end method getBlob
-
-	public Clob getClob(String parm1) {
-
-		return null;
-	} // end method getClob
-
-	public Array getArray(String parm1) {
-
-		return null;
-	} // end method getArray
-
-	public Date getDate(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getDate
-
-	public Date getDate(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getDate
-
-	public Time getTime(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTime
-
-	public Time getTime(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTime
-
-	public Timestamp getTimestamp(int parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTimestamp
-
-	public Timestamp getTimestamp(String parm1, Calendar parm2) {
-
-		return null;
-	} // end method getTimestamp
-
-	public URL getURL(int parm1) {
-
-		return null;
-	} // end method getURL
-
-	public URL getURL(String parm1) {
-
-		return null;
-	} // end method getURL
-
-	public void updateRef(int parm1, Ref parm2) {
-
-	} // end method updateRef
-
-	public void updateRef(String parm1, Ref parm2) {
-
-	} // end method updateRef
-
-	public void updateBlob(int parm1, Blob parm2) {
-
-	} // end method updateBlob
-
-	public void updateBlob(String parm1, Blob parm2) {
-
-	} // end method updateBlob
-
-	public void updateClob(int parm1, Clob parm2) {
-
-	} // end method updateClob
-
-	public void updateClob(String parm1, Clob parm2) {
-
-	} // end method updateClob
-
-	public void updateArray(int parm1, Array parm2) {
-
-	} // end method updateArray
-
-	public void updateArray(String parm1, Array parm2) {
-
-	} // end method updateArray
-
+    public void updateArray(String parm1, Array parm2) {
+    } // end method updateArray
 } // end class ResultSetTest
-
