@@ -34,7 +34,7 @@ public class XidTest extends TestCase {
 		thePublicStatics.put("MAXBQUALSIZE", new Integer(64));
 		thePublicStatics.put("MAXGTRIDSIZE", new Integer(64));
 
-		Class xidClass;
+		Class<?> xidClass;
 		try {
 			xidClass = Class.forName("javax.transaction.xa.Xid");
 		} catch (ClassNotFoundException e) {

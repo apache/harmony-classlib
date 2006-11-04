@@ -43,7 +43,7 @@ public class XAResourceTest extends TestCase {
 		thePublicStatics.put("TMFAIL", new Integer(536870912));
 		thePublicStatics.put("TMENDRSCAN", new Integer(8388608));
 
-		Class xAResourceClass;
+		Class<?> xAResourceClass;
 		try {
 			xAResourceClass = Class.forName("javax.transaction.xa.XAResource");
 		} catch (ClassNotFoundException e) {
