@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 /**
  * An XAException is an exception thrown by a Resource Manager to inform the
- * Transaction Manaqer of an error which has occurred in relation to a
+ * Transaction Manager of an error which has occurred in relation to a
  * transaction branch. In addition to the usual exception message, an
  * XAException carries an errorCode value which provides information about the
  * error, as defined by the series of integer values defined by the XAException
@@ -30,11 +30,6 @@ import java.io.Serializable;
 public class XAException extends Exception implements Serializable {
 
     private static final long serialVersionUID = -8249683284832867751L;
-
-    /**
-     * The errorCode which details the error that has occurred
-     */
-    public int errorCode = 0;
 
     /**
      * Code which contains the inclusive lower bound of the rollback error codes
@@ -106,7 +101,7 @@ public class XAException extends Exception implements Serializable {
     public static final int XA_HEURCOM = 7;
 
     /**
-     * Code which means that the transaction branch has been neuristically
+     * Code which means that the transaction branch has been heuristically
      * rolled back
      */
     public static final int XA_HEURRB = 6;
@@ -152,7 +147,7 @@ public class XAException extends Exception implements Serializable {
     public static final int XAER_INVAL = -5;
 
     /**
-     * Code which means that the method was invoked in an impropoer context
+     * Code which means that the method was invoked in an improper context
      */
     public static final int XAER_PROTO = -6;
 
@@ -171,16 +166,21 @@ public class XAException extends Exception implements Serializable {
      * global transaction.
      */
     public static final int XAER_OUTSIDE = -9;
+    
+    /**
+     * The errorCode which details the error that has occurred
+     */
+    public int errorCode;
 
     /**
-     * Creates an XAException with no message or errorcode
+     * Creates an XAException with no message or error code
      */
     public XAException() {
         super();
     }
 
     /**
-     * Creates an XAException with a supplied message and no errorcode
+     * Creates an XAException with a supplied message and no error code
      * 
      * @param theMessage
      *            a String containing the exception message
@@ -190,13 +190,13 @@ public class XAException extends Exception implements Serializable {
     }
 
     /**
-     * Creates an XAException with a specified errorcode but no message
+     * Creates an XAException with a specified error code but no message
      * 
-     * @param errcode
+     * @param errorCode
      *            an integer containing one of the XAException errorCode values
      */
-    public XAException(int errcode) {
+    public XAException(int errorCode) {
         super();
-        errorCode = errcode;
+        this.errorCode = errorCode;
     }
 }
