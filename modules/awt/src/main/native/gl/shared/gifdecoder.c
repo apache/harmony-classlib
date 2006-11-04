@@ -785,6 +785,8 @@ GIF_RETVAL decompress(JNIEnv *env, jobject currBlock, GifDecoder *decoder) {
           // Now process the obtained code
           if (di->currCode == di->eoiCode) { // EOI encountered, stop processing
             decoder->inputPtr += blockSize;
+            // Ensure that no more data will be decoded
+            di->shiftState = 0;
             blockSize = 0;
             decoder->doProcessing = FALSE;
           } else if(di->currCode == di->clearCode) { // Clear code - reset code size
@@ -979,6 +981,8 @@ GIF_RETVAL decompressInterlaced(JNIEnv *env, jobject currBlock, GifDecoder *deco
           if (di->currCode == di->eoiCode) { // EOI encountered, stop processing
             decoder->inputPtr += blockSize;
             decoder->leftInBlock = 0;
+            // Ensure that no more data will be decoded
+            di->shiftState = 0;            
             blockSize = 0;
             decoder->doProcessing = FALSE;
           } else if(di->currCode == di->clearCode) { // Clear code - reset code size
