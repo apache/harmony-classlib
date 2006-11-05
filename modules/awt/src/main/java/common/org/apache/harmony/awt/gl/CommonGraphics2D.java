@@ -209,10 +209,19 @@ public abstract class CommonGraphics2D extends Graphics2D {
         MultiRectArea mra = null;
         if (s instanceof MultiRectArea) {
             mra = new MultiRectArea((MultiRectArea)s);
-            mra.translate(Math.round((float)transform.getTranslateX()), Math.round((float)transform.getTranslateY()));
+            mra.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
         } else {
-            s = transform.createTransformedShape(s);
-            mra = jsr.rasterize(s, 0.5);
+            int type = transform.getType();
+            if(s instanceof Rectangle && (type & (AffineTransform.TYPE_IDENTITY |
+                AffineTransform.TYPE_TRANSLATION)) != 0){
+                    mra = new MultiRectArea((Rectangle)s);
+                    if(type == AffineTransform.TYPE_TRANSLATION){
+                        mra.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
+                    }
+            } else {
+                s = transform.createTransformedShape(s);
+                mra = jsr.rasterize(s, 0.5);
+            }
         }
 
         if (clip == null) {
@@ -952,8 +961,18 @@ public abstract class CommonGraphics2D extends Graphics2D {
             nclip.translate(Math.round((float)transform.getTranslateX()), Math.round((float)transform.getTranslateY()));
             setTransformedClip(nclip);
         } else {
-            s = transform.createTransformedShape(s);
-            setTransformedClip(jsr.rasterize(s, 0.5));
+            int type = transform.getType();
+            if(s instanceof Rectangle && (type & (AffineTransform.TYPE_IDENTITY |
+                AffineTransform.TYPE_TRANSLATION)) != 0){
+                    MultiRectArea nclip = new MultiRectArea((Rectangle)s);
+                    if(type == AffineTransform.TYPE_TRANSLATION){
+                        nclip.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
+                    }
+                    setTransformedClip(nclip);
+            } else {
+                s = transform.createTransformedShape(s);
+                setTransformedClip(jsr.rasterize(s, 0.5));
+            }
         }
     }
 
