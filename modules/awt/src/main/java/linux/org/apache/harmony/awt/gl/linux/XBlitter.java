@@ -248,7 +248,11 @@ public class XBlitter implements Blitter {
             int width, int height,
             Composite comp, Color bgcolor, MultiRectArea clip
     ) {
-        clip = new MultiRectArea(clip);
+        if (clip == null) {
+            clip = new MultiRectArea(new Rectangle(dstX, dstY, width, height));
+        } else {
+            clip = new MultiRectArea(clip);
+        }
         // XXX - todo - need to do smth with bgcolor
         ColorModel srcCM = srcSurf.getColorModel();
         XSurface xDstSurf = (XSurface) dstSurf;

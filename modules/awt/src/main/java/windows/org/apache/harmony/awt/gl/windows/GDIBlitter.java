@@ -89,17 +89,11 @@ public class GDIBlitter implements Blitter {
             }
             long dstSurfStruct = dstSurf.getSurfaceDataPtr();
             long srcSurfStruct = srcSurf.getSurfaceDataPtr();
-            int clipRects[];
+            int clipRects[] = null;
+            int numVertex = 0;
             if(clip != null){
                 clipRects = clip.rect;
-            }else{
-                clipRects = new int[]{5, 0, 0, dstSurf.getWidth(),
-                        dstSurf.getHeight()};
-            }
-
-            int numVertex = clipRects[0] - 1;
-            if(numVertex == 0) {
-                return;
+                numVertex = clipRects[0] - 1;
             }
 
             if(comp instanceof AlphaComposite){
