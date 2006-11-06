@@ -2784,6 +2784,38 @@ public class ScannerTest extends TestCase {
 
     /**
      * @throws IOException
+     * @tests java.util.Scanner#hasNextByte(int)
+     */
+    public void test_hasNextByteI_cache() throws IOException{
+        //regression for HARMONY-2063
+    	s = new Scanner("123 45");
+		assertTrue(s.hasNextByte(8));
+		assertEquals(83, s.nextByte());
+		assertEquals(45, s.nextByte());
+
+		s = new Scanner("123 45");
+		assertTrue(s.hasNextByte(10));
+		assertTrue(s.hasNextByte(8));
+		assertEquals(83, s.nextByte());
+		assertEquals(45, s.nextByte());
+
+		s = new Scanner("-123 -45");
+		assertTrue(s.hasNextByte(8));
+		assertEquals(-123, s.nextInt());
+		assertEquals(-45, s.nextByte());
+		
+		s = new Scanner("123 45");
+		assertTrue(s.hasNextByte());
+		s.close();
+		try {
+			s.nextByte();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException e) {
+			// expected
+		}
+    }
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNextByte()
      */
     public void test_hasNextByte() throws IOException {
@@ -3037,6 +3069,39 @@ public class ScannerTest extends TestCase {
         s.useLocale(new Locale("mk", "MK"));
         assertTrue(s.hasNextBigInteger(10));
         assertEquals(new BigInteger("-123"), s.nextBigInteger(10));
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextBigInteger(int)
+     */
+    public void test_hasNextBigIntegerI_cache() throws IOException {
+        //regression for HARMONY-2063
+    	s = new Scanner("123 123456789123456789");
+		assertTrue(s.hasNextBigInteger(16));
+		assertEquals(new BigInteger("291"), s.nextBigInteger());
+		assertEquals(new BigInteger("123456789123456789"), s.nextBigInteger());
+
+		s = new Scanner("123456789123456789 456");
+		assertTrue(s.hasNextBigInteger(16));
+		assertTrue(s.hasNextBigInteger(10));
+		assertEquals(new BigInteger("123456789123456789"), s.nextBigInteger());
+		assertEquals(new BigInteger("456"), s.nextBigInteger());
+
+		s = new Scanner("-123 -123456789123456789");
+		assertTrue(s.hasNextBigInteger(8));
+		assertEquals(-123, s.nextShort());
+		assertEquals(new BigInteger("-123456789123456789"), s.nextBigInteger());
+		
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextBigInteger());
+		s.close();
+		try {
+			s.nextBigInteger();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException e) {
+			// expected
+		}
     }
     
     /**
@@ -3386,9 +3451,10 @@ public class ScannerTest extends TestCase {
      * @tests java.util.Scanner#hasNextInt(int)
      */
     public void test_hasNextIntI_cache() throws IOException {
+        //regression for HARMONY-2063
     	s = new Scanner("123 456");
 		assertTrue(s.hasNextInt(16));
-		assertEquals(291, s.nextInt());
+		assertEquals(291, s.nextInt(10));
 		assertEquals(456, s.nextInt());
 
 		s = new Scanner("123 456");
@@ -3403,6 +3469,16 @@ public class ScannerTest extends TestCase {
 		assertEquals(-456, s.nextInt());
 		assertTrue(s.hasNextShort(16));
 		assertEquals(-789, s.nextInt());
+		
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextInt());
+		s.close();
+		try {
+			s.nextInt();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException e) {
+			// expected
+		}
     }
     /**
      * @throws IOException
@@ -3690,6 +3766,17 @@ public class ScannerTest extends TestCase {
         assertEquals("123-", s.next());
         assertTrue(s.hasNextFloat());
         assertEquals((float)-123.0, s.nextFloat());
+        
+        s = new Scanner("+123.4 -456.7");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        s.close();
+        try{
+        	s.nextFloat();
+        	fail("Should throw IllegalStateException");
+        }catch(IllegalStateException e){
+        	//expected
+        }
 
     }
     
@@ -4040,6 +4127,7 @@ public class ScannerTest extends TestCase {
 	 * @tests java.util.Scanner#hasNextShort(int)
 	 */
 	public void test_hasNextShortI_cache() throws IOException {
+        //regression for HARMONY-2063
 		s = new Scanner("123 456");
 		assertTrue(s.hasNextShort(16));
 		assertEquals(291, s.nextShort());
@@ -4057,6 +4145,16 @@ public class ScannerTest extends TestCase {
 		assertEquals(-456, s.nextShort());
 		assertTrue(s.hasNextInt(16));
 		assertEquals(-789, s.nextShort());
+		
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextShort());
+		s.close();
+		try {
+			s.nextShort();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException e) {
+			// expected
+		}
 	}
     
     /**
@@ -4227,6 +4325,41 @@ public class ScannerTest extends TestCase {
         s.useLocale(new Locale("mk", "MK"));
         assertTrue(s.hasNextLong(10));
         assertEquals(-123, s.nextLong(10));
+    }
+    
+    /**
+	 * @throws IOException
+	 * @tests java.util.Scanner#hasNextLong(int)
+	 */
+    public void test_hasNextLongI_cache() throws IOException {
+        //regression for HARMONY-2063
+    	s = new Scanner("123 456");
+		assertTrue(s.hasNextLong(16));
+		assertEquals(291, s.nextLong());
+		assertEquals(456, s.nextLong());
+
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextLong(16));
+		assertTrue(s.hasNextLong(8));
+		assertEquals(83, s.nextLong());
+		assertEquals(456, s.nextLong());
+
+		s = new Scanner("-123 -456 -789");
+		assertTrue(s.hasNextLong(8));
+		assertEquals(-123, s.nextInt());
+		assertEquals(-456, s.nextLong());
+		assertTrue(s.hasNextShort(16));
+		assertEquals(-789, s.nextLong());
+		
+		s = new Scanner("123 456");
+		assertTrue(s.hasNextLong());
+		s.close();
+		try {
+			s.nextLong();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException e) {
+			// expected
+		}
     }
 
     /**
@@ -4495,6 +4628,17 @@ public class ScannerTest extends TestCase {
         s.useLocale(Locale.ENGLISH);
         assertTrue(s.hasNextDouble());
         assertEquals(-123.4, s.nextDouble());
+        
+        s = new Scanner("+123.4 -456.7");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        s.close();
+        try{
+        	s.nextDouble();
+        	fail("Should throw IllegalStateException");
+        }catch(IllegalStateException e){
+        	//expected
+        }
     }
     
     /**

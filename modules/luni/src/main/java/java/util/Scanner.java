@@ -620,7 +620,7 @@ public final class Scanner implements Iterator<String> {
             String floatString = matcher.group();
             floatString = removeLocaleInfoFromFloat(floatString);
             try {
-                new BigDecimal(floatString);
+                cacheHasNextValue = new BigDecimal(floatString);
                 isBigDecimalValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -662,7 +662,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-                new BigInteger(intString, radix);
+                cacheHasNextValue = new BigInteger(intString, radix);
                 isBigIntegerValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -718,7 +718,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-                Byte.parseByte(intString, radix);
+                cacheHasNextValue = Byte.valueOf(intString, radix);
                 isByteValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -743,7 +743,7 @@ public final class Scanner implements Iterator<String> {
             String floatString = matcher.group();
             floatString = removeLocaleInfoFromFloat(floatString);
             try {
-                Double.parseDouble(floatString);
+                cacheHasNextValue = Double.valueOf(floatString);
                 isDoubleValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -768,7 +768,7 @@ public final class Scanner implements Iterator<String> {
             String floatString = matcher.group();
             floatString = removeLocaleInfoFromFloat(floatString);
             try {
-                Float.parseFloat(floatString);
+                cacheHasNextValue = Float.valueOf(floatString);
                 isFloatValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -810,7 +810,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-            	cacheHasNextValue = Integer.parseInt(intString, radix);
+            	cacheHasNextValue = Integer.valueOf(intString, radix);
                 isIntValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -889,7 +889,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-                Long.parseLong(intString, radix);
+                cacheHasNextValue = Long.valueOf(intString, radix);
                 isLongValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -932,7 +932,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-            	cacheHasNextValue = Short.parseShort(intString, radix);
+            	cacheHasNextValue = Short.valueOf(intString, radix);
                 isShortValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -1089,6 +1089,13 @@ public final class Scanner implements Iterator<String> {
      *             BigDecimal
      */
     public BigDecimal nextBigDecimal() {
+    	checkClosed();
+		Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof BigDecimal) {
+			findStartIndex = cachehasNextIndex;
+			return (BigDecimal) obj;
+		}
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1155,6 +1162,13 @@ public final class Scanner implements Iterator<String> {
      *             BigInteger, or it is out of range
      */
     public BigInteger nextBigInteger(int radix) {
+    	checkClosed();
+		Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof BigInteger) {
+			findStartIndex = cachehasNextIndex;
+			return (BigInteger) obj;
+		}
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1240,7 +1254,15 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid byte
      *             value, or it is out of range
      */
+    @SuppressWarnings("boxing")
     public byte nextByte(int radix) {
+    	checkClosed();
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof Byte) {
+			findStartIndex = cachehasNextIndex;
+			return (Byte) obj;
+		}
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1283,7 +1305,15 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid double
      *             value
      */
+    @SuppressWarnings("boxing")
     public double nextDouble() {
+    	checkClosed();
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof Double) {
+			findStartIndex = cachehasNextIndex;
+			return (Double) obj;
+		}
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1324,7 +1354,15 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid float
      *             value
      */
+    @SuppressWarnings("boxing")
     public float nextFloat() {
+    	checkClosed();
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof Float) {
+			findStartIndex = cachehasNextIndex;
+			return (Float) obj;
+		}
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1389,10 +1427,12 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid int
      *             value
      */
+    @SuppressWarnings("boxing")
     public int nextInt(int radix) {
+    	checkClosed();
     	Object obj = cacheHasNextValue;
 		cacheHasNextValue = null;
-		if (obj != null && obj instanceof Integer) {
+		if (obj instanceof Integer) {
 			findStartIndex = cachehasNextIndex;
 			return (Integer) obj;
 		}
@@ -1510,7 +1550,15 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid long
      *             value, or it is out of range
      */
+    @SuppressWarnings("boxing")
     public long nextLong(int radix) {
+    	checkClosed();
+    	Object obj = cacheHasNextValue;
+		cacheHasNextValue = null;
+		if (obj instanceof Long) {
+			findStartIndex = cachehasNextIndex;
+			return (Long) obj;
+		}
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1576,10 +1624,12 @@ public final class Scanner implements Iterator<String> {
      *             if the next token can not be translated into a valid short
      *             value, or it is out of range
      */
+    @SuppressWarnings("boxing")
     public short nextShort(int radix) {
+    	checkClosed();
     	Object obj = cacheHasNextValue;
 		cacheHasNextValue = null;
-		if (obj != null && obj instanceof Short) {
+		if (obj instanceof Short) {
 			findStartIndex = cachehasNextIndex;
 			return (Short) obj;
 		}
