@@ -73,15 +73,15 @@ public class CharsetTest extends TestCase {
 		assertTrue(Charset.isSupported("UTF-16LE"));
 
 		Charset c1 = Charset.forName("US-ASCII");
-		assertEquals(Charset.forName("US-ASCII").name(), "US-ASCII");
-		assertEquals(Charset.forName("ASCII").name(), "US-ASCII");
-		assertEquals(Charset.forName("ISO-8859-1").name(), "ISO-8859-1");
-		assertEquals(Charset.forName("ISO8859_1").name(), "ISO-8859-1");
-		assertEquals(Charset.forName("UTF-8").name(), "UTF-8");
-		assertEquals(Charset.forName("UTF8").name(), "UTF-8");
-		assertEquals(Charset.forName("UTF-16").name(), "UTF-16");
-		assertEquals(Charset.forName("UTF-16BE").name(), "UTF-16BE");
-		assertEquals(Charset.forName("UTF-16LE").name(), "UTF-16LE");
+		assertEquals("US-ASCII", Charset.forName("US-ASCII").name());
+		assertEquals("US-ASCII", Charset.forName("ASCII").name());
+		assertEquals("ISO-8859-1", Charset.forName("ISO-8859-1").name());
+		assertEquals("ISO-8859-1", Charset.forName("ISO8859_1").name());
+		assertEquals("UTF-8", Charset.forName("UTF-8").name());
+		assertEquals("UTF-8", Charset.forName("UTF8").name());
+		assertEquals("UTF-16", Charset.forName("UTF-16").name());
+		assertEquals("UTF-16BE", Charset.forName("UTF-16BE").name());
+		assertEquals("UTF-16LE", Charset.forName("UTF-16LE").name());
 
 		assertNotSame(Charset.availableCharsets(), Charset.availableCharsets());
 		// assertSame(Charset.forName("US-ASCII"), Charset.availableCharsets()
@@ -217,11 +217,11 @@ public class CharsetTest extends TestCase {
 	public void testConstructor_Normal() {
 		final String mockName = "mockChar1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:-_";
 		MockCharset c = new MockCharset(mockName, new String[] { "mock" });
-		assertEquals(c.name(), mockName);
-		assertEquals(c.displayName(), mockName);
-		assertEquals(c.displayName(Locale.getDefault()), mockName);
-		assertEquals(c.aliases().toArray()[0], "mock");
-		assertEquals(c.aliases().toArray().length, 1);
+		assertEquals(mockName, c.name());
+		assertEquals(mockName, c.displayName());
+		assertEquals(mockName, c.displayName(Locale.getDefault()));
+		assertEquals("mock", c.aliases().toArray()[0]);
+		assertEquals(1, c.aliases().toArray().length);
 	}
 
 	/*
@@ -286,10 +286,10 @@ public class CharsetTest extends TestCase {
 	 */
 	public void testConstructor_NullAliases() {
 		MockCharset c = new MockCharset("mockChar", null);
-		assertEquals(c.name(), "mockChar");
-		assertEquals(c.displayName(), "mockChar");
-		assertEquals(c.displayName(Locale.getDefault()), "mockChar");
-		assertEquals(c.aliases().toArray().length, 0);
+		assertEquals("mockChar", c.name());
+		assertEquals("mockChar", c.displayName());
+		assertEquals("mockChar", c.displayName(Locale.getDefault()));
+		assertEquals(0, c.aliases().toArray().length);
 	}
 
 	/*
@@ -309,10 +309,10 @@ public class CharsetTest extends TestCase {
 	 */
 	public void testConstructor_NoAliases() {
 		MockCharset c = new MockCharset("mockChar", new String[0]);
-		assertEquals(c.name(), "mockChar");
-		assertEquals(c.displayName(), "mockChar");
-		assertEquals(c.displayName(Locale.getDefault()), "mockChar");
-		assertEquals(c.aliases().toArray().length, 0);
+		assertEquals("mockChar", c.name());
+		assertEquals("mockChar", c.displayName());
+		assertEquals("mockChar", c.displayName(Locale.getDefault()));
+		assertEquals(0, c.aliases().toArray().length);
 	}
 
 	/*
@@ -368,7 +368,7 @@ public class CharsetTest extends TestCase {
 		final String mockName = "mockChar1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:-_";
 		MockCharset c = new MockCharset("mockChar", new String[] { "mock",
 				mockName, "mock2" });
-		assertEquals(c.name(), "mockChar");
+		assertEquals("mockChar", c.name());
 		assertEquals(3, c.aliases().size());
 		assertTrue(c.aliases().contains("mock"));
 		assertTrue(c.aliases().contains(mockName));
@@ -390,7 +390,7 @@ public class CharsetTest extends TestCase {
 		final String mockName = "mockChar1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:-_";
 		MockCharset c = new MockCharset("mockChar", new String[] { "mockChar",
 				"mock", mockName, "mock", "mockChar", "mock", "mock2" });
-		assertEquals(c.name(), "mockChar");
+		assertEquals("mockChar", c.name());
 		assertEquals(4, c.aliases().size());
 		assertTrue(c.aliases().contains("mockChar"));
 		assertTrue(c.aliases().contains("mock"));
@@ -460,8 +460,8 @@ public class CharsetTest extends TestCase {
 		assertTrue(c2.compareTo(c1) < 0);
 
 		c2 = new MockCharset("m:", null);
-		assertTrue(c1.compareTo(c2) == "mock".compareToIgnoreCase("m:"));
-		assertTrue(c2.compareTo(c1) == "m:".compareToIgnoreCase("mock"));
+		assertEquals("mock".compareToIgnoreCase("m:"), c1.compareTo(c2));
+		assertEquals("m:".compareToIgnoreCase("mock"), c2.compareTo(c1));
 
 		c2 = new MockCharset("m-", null);
 		assertTrue(c1.compareTo(c2) > 0);
@@ -545,7 +545,7 @@ public class CharsetTest extends TestCase {
 		final String mockName = "mockChar1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:-_";
 		c1 = new MockCharset(mockName, new String[] { "mockChar", "mock",
 				mockName, "mock", "mockChar", "mock", "mock2" });
-		assertEquals(c1.hashCode(), mockName.hashCode());
+		assertEquals(mockName.hashCode(), c1.hashCode());
 	}
 
 	/*
@@ -554,9 +554,9 @@ public class CharsetTest extends TestCase {
 	public void testEncode_CharBuffer_Normal() throws Exception {
 		MockCharset c1 = new MockCharset("testEncode_CharBuffer_Normal_mock", null);
 		ByteBuffer bb = c1.encode(CharBuffer.wrap("abcdefg"));
-		assertEquals(new String(bb.array(), "iso8859-1"), "abcdefg");
+		assertEquals("abcdefg", new String(bb.array(), "iso8859-1"));
 		bb = c1.encode(CharBuffer.wrap(""));
-		assertEquals(new String(bb.array(), "iso8859-1"), "");
+		assertEquals("", new String(bb.array(), "iso8859-1"));
 	}
 
 	/*
@@ -602,9 +602,9 @@ public class CharsetTest extends TestCase {
 	public void testEncode_String_Normal() throws Exception {
 		MockCharset c1 = new MockCharset("testEncode_String_Normal_mock", null);
 		ByteBuffer bb = c1.encode("abcdefg");
-		assertEquals(new String(bb.array(), "iso8859-1"), "abcdefg");
+		assertEquals("abcdefg", new String(bb.array(), "iso8859-1"));
 		bb = c1.encode("");
-		assertEquals(new String(bb.array(), "iso8859-1"), "");
+		assertEquals("", new String(bb.array(), "iso8859-1"));
 	}
 
 	/*
@@ -652,9 +652,9 @@ public class CharsetTest extends TestCase {
 		MockCharset c1 = new MockCharset("mock", null);
 		CharBuffer cb = c1.decode(ByteBuffer.wrap("abcdefg"
 				.getBytes("iso8859-1")));
-		assertEquals(new String(cb.array()), "abcdefg");
+		assertEquals("abcdefg", new String(cb.array()));
 		cb = c1.decode(ByteBuffer.wrap("".getBytes("iso8859-1")));
-		assertEquals(new String(cb.array()), "");
+		assertEquals("", new String(cb.array()));
 	}
 
 	/*
