@@ -212,7 +212,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   int size = sizeof(struct ICMPHeader);
   int result;
   struct timeval timeP;
-  fd_set * fdset_read;
+  fd_set * fdset_read = 0;
   SOCKET sock;
   unsigned short header_len;
   int sockadd_size = sizeof (source);
