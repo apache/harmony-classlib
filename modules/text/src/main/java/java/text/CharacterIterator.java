@@ -27,7 +27,7 @@ public interface CharacterIterator extends Cloneable {
     /**
      * A constant which indicates there is no character.
      */
-    public static char DONE = '\uffff';
+    public static final char DONE = '\uffff';
 
     /**
      * Answers a new CharacterIterator with the same properties.

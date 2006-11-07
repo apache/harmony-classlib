@@ -23,31 +23,31 @@ package java.net;
  */
 public interface SocketOptions {
 
-	public static int SO_LINGER = 128;
+	public static final int SO_LINGER = 128;
 
-	public static int SO_TIMEOUT = 4102;
+	public static final int SO_TIMEOUT = 4102;
 
-	public static int TCP_NODELAY = 1;
+	public static final int TCP_NODELAY = 1;
 
 	// For 5 and 6 see MulticastSocket
 
 	// For 7 see PlainDatagramSocketImpl
 	
-	public static int IP_MULTICAST_IF = 16;
+	public static final int IP_MULTICAST_IF = 16;
 
-	public static int SO_BINDADDR = 15;
+	public static final int SO_BINDADDR = 15;
 
-	public static int SO_REUSEADDR = 4;
+	public static final int SO_REUSEADDR = 4;
 
 	// 10 not currently used
 	
-	public static int SO_SNDBUF = 4097;
+	public static final int SO_SNDBUF = 4097;
 
-	public static int SO_RCVBUF = 4098;
+	public static final int SO_RCVBUF = 4098;
 
 	// For 13, see DatagramSocket
 	
-	public static int SO_KEEPALIVE = 8;
+	public static final int SO_KEEPALIVE = 8;
 
 	public static final int IP_TOS = 3;
 

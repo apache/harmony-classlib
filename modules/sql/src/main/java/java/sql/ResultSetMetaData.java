@@ -25,17 +25,17 @@ public interface ResultSetMetaData {
     /**
      * Indicates that a column cannot contain NULL values
      */
-    public static int columnNoNulls = 0;
+    public static final int columnNoNulls = 0;
 
     /**
      * Indicates that a column can contain NULL values
      */
-    public static int columnNullable = 1;
+    public static final int columnNullable = 1;
 
     /**
      * Indicates that it is unknown whether a column can contain NULLs or not
      */
-    public static int columnNullableUnknown = 2;
+    public static final int columnNullableUnknown = 2;
 
     /**
      * Returns the title of indexed columns catalog
