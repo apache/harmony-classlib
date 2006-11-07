@@ -108,7 +108,7 @@ public final class Channels {
     public static Reader newReader(ReadableByteChannel channel,
             CharsetDecoder decoder, int minBufferCapacity) {
         return new ByteChannelReader(
-                new ReadableByteChannelInputStream(channel), decoder,
+                new ReaderInputStream(channel), decoder,
                 minBufferCapacity);
     }
 
@@ -178,74 +178,115 @@ public final class Channels {
     // Wrapper classes
     // -------------------------------------------------------------------
 
+    private static class ChannelInputStream extends InputStream {
+
+		protected ReadableByteChannel channel;
+
+		public ChannelInputStream(ReadableByteChannel aChannel) {
+			super();
+			channel = aChannel;
+		}
+
+		/*
+		 * @see java.io.InputStream#read()
+		 */
+		@Override
+		public synchronized int read() throws IOException {
+			byte[] oneByte = new byte[1];
+			int n = read(oneByte);
+			if (n == 1) {
+				// reads a single byte 0-255
+				return oneByte[0] & 0xff;
+			}
+			return -1;
+		}
+
+		/*
+		 * @see java.io.InputStream#close()
+		 */
+		@Override
+		public synchronized void close() throws IOException {
+			channel.close();
+		}
+	}
+
+	/*
+	 * Wrapper class used for newInputStream(ReadableByteChannel channel)
+	 */
+	private static class ReadableByteChannelInputStream extends
+			ChannelInputStream {
+
+		/*
+		 * @param someChannel
+		 */
+		public ReadableByteChannelInputStream(ReadableByteChannel aChannel) {
+			super(aChannel);
+		}
+
+		/*
+		 * @see java.io.InputStream#read(byte[], int, int)
+		 */
+		@Override
+		public synchronized int read(byte[] target, int offset, int length)
+				throws IOException {
+			// avoid int overflow, check null target
+			if (length + offset > target.length || length < 0 || offset < 0) {
+				throw new ArrayIndexOutOfBoundsException();
+			}
+			if (0 == length) {
+				return 0;
+			}
+			if (channel instanceof SelectableChannel) {
+				if (!((SelectableChannel) channel).isBlocking()) {
+					throw new IllegalBlockingModeException();
+				}
+			}
+			ByteBuffer buffer = ByteBuffer.wrap(target, offset, length);
+			return channel.read(buffer);
+		}
+	}
+
+	/*
+	 * Wrapper class used for newReader(ReadableByteChannel channel,
+	 * CharsetDecoder decoder, int minBufferCapacity)
+	 */
+	private static class ReaderInputStream extends ChannelInputStream {
+
+		/*
+		 * @param someChannel
+		 */
+		public ReaderInputStream(ReadableByteChannel aChannel) {
+			super(aChannel);
+		}
+
+		/*
+		 * @see java.io.InputStream#read(byte[], int, int)
+		 */
+		@Override
+		public synchronized int read(byte[] target, int offset, int length)
+				throws IOException {
+			// avoid int overflow, check null target
+			if (length + offset > target.length || length < 0 || offset < 0) {
+				throw new ArrayIndexOutOfBoundsException();
+			}
+			if (0 == length) {
+				return 0;
+			}
+			ByteBuffer buffer = ByteBuffer.wrap(target, offset, length);
+			return channel.read(buffer);
+		}
+	}
+
     /*
-     * Wrapper class used for newInputStream(ReadableByteChannel channel)
-     */
-    private static class ReadableByteChannelInputStream extends InputStream {
-
-        private ReadableByteChannel channel;
-
-        /*
-         * @param someChannel
-         */
-        public ReadableByteChannelInputStream(ReadableByteChannel aChannel) {
-            super();
-            channel = aChannel;
-        }
-
-        /*
-         * @see java.io.InputStream#read()
-         */
-        public synchronized int read() throws IOException {
-            byte[] oneByte = new byte[1];
-            int n = read(oneByte);
-            if (n == 1) {
-                // reads a single byte 0-255
-                return oneByte[0] & 0xff;
-            }
-            return -1;
-        }
-
-        /*
-         * @see java.io.InputStream#read(byte[], int, int)
-         */
-        public synchronized int read(byte[] target, int offset, int length)
-                throws IOException {
-            // avoid int overflow, check null target
-            if (length + offset > target.length || length < 0 || offset < 0) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-            if (0 == length) {
-                return 0;
-            }
-            if (channel instanceof SelectableChannel) {
-                if (!((SelectableChannel) channel).isBlocking()) {
-                    throw new IllegalBlockingModeException();
-                }
-            }
-            ByteBuffer buffer = ByteBuffer.wrap(target, offset, length);
-            return channel.read(buffer);
-
-        }
-
-        /*
-         * @see java.io.InputStream#close()
-         */
-        public synchronized void close() throws IOException {
-            channel.close();
-        }
-    }
-
-    /*
-     * Wrapper class used for newOutputStream(WritableByteChannel channel)
-     */
+	 * Wrapper class used for newOutputStream(WritableByteChannel channel)
+	 */
     private static class WritableByteChannelOutputStream extends OutputStream {
 
         private WritableByteChannel channel;
 
         /*
-         * @param someChannel
-         */
+		 * @param someChannel
+		 */
         public WritableByteChannelOutputStream(WritableByteChannel aChannel) {
             super();
             channel = aChannel;

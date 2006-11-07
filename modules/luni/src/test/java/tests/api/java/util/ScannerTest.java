@@ -34,6 +34,7 @@ import java.net.SocketAddress;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -43,6 +44,8 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+
+import tests.support.Support_PortManager;
 
 import junit.framework.TestCase;
 
@@ -5673,4 +5676,31 @@ public class ScannerTest extends TestCase {
             // do nothing
         }
     }
+    
+    /**
+     * @tests java.util.Scanner#Scanner(ReadableByteChannel)
+     */   
+    public void test_Constructor_LReadableByteChannel()
+			throws IOException {
+		InetSocketAddress localAddr = new InetSocketAddress("127.0.0.1",
+				Support_PortManager.getNextPort());
+		ServerSocketChannel ssc = ServerSocketChannel.open();
+		ssc.socket().bind(localAddr);
+
+		SocketChannel sc = SocketChannel.open();
+		sc.connect(localAddr);
+		sc.configureBlocking(false);
+		assertFalse(sc.isBlocking());
+
+		ssc.accept().close();
+		ssc.close();
+		assertFalse(sc.isBlocking());
+
+		Scanner s = new Scanner(sc);
+		while (s.hasNextInt()) {
+			s.nextInt();
+		}
+
+		sc.close();
+	}
 }

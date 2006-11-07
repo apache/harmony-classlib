@@ -292,12 +292,7 @@ public final class Scanner implements Iterator<String> {
             throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
                     .getString("KA009")); //$NON-NLS-1$
         }
-        try {
-            input = new InputStreamReader(Channels.newInputStream(src),
-                    charsetName);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        input = Channels.newReader(src, charsetName);
         initialization();
     }
 

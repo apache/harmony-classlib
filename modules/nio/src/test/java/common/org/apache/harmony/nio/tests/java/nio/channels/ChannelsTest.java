@@ -24,14 +24,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+
+import tests.support.Support_PortManager;
 
 import junit.framework.TestCase;
 
@@ -640,4 +646,38 @@ public class ChannelsTest extends TestCase {
         testWriter.flush();
         this.assertFileSizeSame(tmpFile, this.writebufSize / 2 + 1);
     }
+	
+    /**
+	 * @tests java.nio.channesl.Channels#newReader(ReadableByteChannel channel,
+	 *        String charsetName)
+	 */
+	public void test_newReader_LReadableByteChannel_LString()
+			throws IOException {
+		InetSocketAddress localAddr = new InetSocketAddress("127.0.0.1",
+				Support_PortManager.getNextPort());
+		ServerSocketChannel ssc = ServerSocketChannel.open();
+		ssc.socket().bind(localAddr);
+
+		SocketChannel sc = SocketChannel.open();
+		sc.connect(localAddr);
+		sc.configureBlocking(false);
+		assertFalse(sc.isBlocking());
+
+		ssc.accept().close();
+		ssc.close();
+		assertFalse(sc.isBlocking());
+
+		Reader reader = Channels.newReader(sc, "UTF16");
+		int i = reader.read();
+		assertEquals(-1, i);
+
+		try {
+			Channels.newInputStream(sc).read();
+			fail("should throw IllegalBlockingModeException");
+		} catch (IllegalBlockingModeException e) {
+			// expected
+		}
+
+		sc.close();
+	}
 }
