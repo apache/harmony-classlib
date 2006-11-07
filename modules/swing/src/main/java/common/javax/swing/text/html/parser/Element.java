@@ -113,17 +113,7 @@ public final class Element implements DTDConstants, Serializable {
     }
 
     public String toString() {
-        return "javax.swing.text.html.parser.Element["
-               + "index=" + index + ","
-               + "name=" + name + ","
-               + "oStart=" + oStart + ","
-               + "oEnd=" + oEnd + ","
-               + "inclusions=" + inclusions + ","
-               + "exclusions=" + exclusions + ","
-               + "type=" + type + ","
-               + "content=" +  content + ","
-               + "atts=" +  atts + ","
-               + "data=" +  data + "]";
+        return name;
     }
 
     public boolean isEmpty() {
