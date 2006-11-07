@@ -244,19 +244,21 @@ class Multiplication {
         int[] aDigits = a.digits;
         int[] bDigits = b.digits;
         int resDigits[] = new int[resLength];
+        long carry;
+        long bDigit;
+        int i, j, m;
         // Common case
-        for (int j = 0; j < bLen; j++) {
-            long carry = 0;
-            int i;
-            for (i = 0; i < aLen; i++) {
-                int m = i + j;
+        for (j = 0; j < bLen; j++) {
+            carry = 0;
+            bDigit = (bDigits[j] & 0xFFFFFFFFL);
+            for (i = 0, m = j; i < aLen; i++, m++) {
                 carry += (aDigits[i] & 0xFFFFFFFFL)
-                * (bDigits[j] & 0xFFFFFFFFL)
+                * bDigit
                 + (resDigits[m] & 0xFFFFFFFFL);
                 resDigits[m] = (int)carry;
                 carry >>>= 32;
             }
-            resDigits[i + j] = (int) carry;
+            resDigits[m] = (int) carry;
         }
         BigInteger result = new BigInteger(resSign, resLength, resDigits);
         result.cutOffLeadingZeroes();
@@ -326,12 +328,6 @@ class Multiplication {
         return result;
     }
 
-    /**
-     * Exponentiation algorithm using squaring algorithm.
-     * @param base
-     * @param exponent must be positive
-     * @ar.org.fitc.ref "http://en.wikipedia.org/wiki/Exponentiating_by_squaring"
-     */
     static BigInteger pow(BigInteger base, int exponent) {
         // PRE: exp > 0
         BigInteger res = BigInteger.ONE;
@@ -343,11 +339,53 @@ class Multiplication {
                 res = res.multiply(acc);
             }
             // acc = base^(2^i)
-            acc = acc.multiply(acc); // squaring            
+            //a limit where karatsuba performs a faster square than the square algorithm
+            if ( acc.numberLength == 1 ){
+                acc = acc.multiply(acc); // square
+            }
+            else{
+                acc = new BigInteger(1, square(acc.digits, acc.numberLength));
+            }
         }
         // exponent == 1, multiply one more time
         res = res.multiply(acc);
         return res;
+    }
+
+    /**
+     *  Performs a<sup>2</sup>
+     *  @param a The number to square.
+     *  @param length The lenght of the number to square.
+     */ 
+    static int[] square(int[] a, int s) {
+        int [] t = new int [s<<1];
+        long cs;
+        long aI;
+        for(int i=0; i<s; i++){
+            cs = 0;
+            aI = (0xFFFFFFFFL & a[i]);
+            for (int j=i+1; j<s; j++){
+                cs += (0xFFFFFFFFL & t[i+j]) + aI * (0xFFFFFFFFL & a[j]) ;
+                t[i+j] = (int) cs;
+                cs >>>= 32;
+            }
+            
+            t[i+s] = (int) cs;
+        }
+        BitLevel.shiftLeft( t, t, 0, 1 );
+        cs = 0;
+        
+        for(int i=0, index = 0; i< s; i++, index++){
+            aI = (0xFFFFFFFFL & a[i]);
+            cs += aI * aI  + (t[index] & 0xFFFFFFFFL);
+            t[index] = (int) cs;
+            cs >>>= 32;
+            index++;
+            cs += t[index] & 0xFFFFFFFFL ;
+            t[index] = (int)cs;
+            cs >>>= 32;
+        }
+        return t;
     }
 
     /**

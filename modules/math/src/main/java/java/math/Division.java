@@ -530,16 +530,83 @@ class Division {
         return s; // a^(-1) mod m
     }
 
+    
+    /*Implements the Montgomery modular exponentiation based in <i>The square and multiply algorithm and the
+     * Montgomery Reduction</i>.
+     *@ar.org.fitc.ref "C. K. Koc - Analyzing and Comparing Montgomery
+     *                  Multiplication Algorithms"
+     *@see #oddModPow(BigInteger, BigInteger,
+     *                           BigInteger)
+     */
+    static BigInteger squareAndMultiply(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, long n2  ){
+        BigInteger res = x2;
+        for (int i = exponent.bitLength() - 1; i >= 0; i--) {
+            res = monPro(res,res,modulus, n2);
+            if (BitLevel.testBit(exponent, i)) {
+                res = monPro(res, a2, modulus, n2);
+            }
+        }
+        return res;
+    }
+    
+    /*Implements the Montgomery modular exponentiation based in <i>The sliding windows algorithm and the Mongomery
+     *Reduction</i>.
+     *@ar.org.fitc.ref "A. Menezes,P. van Oorschot, S. Vanstone - Handbook of Applied Cryptography";
+     *@see #oddModPow(BigInteger, BigInteger,
+     *                           BigInteger)
+     */
+    static BigInteger slidingWindow(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, long n2){
+        // fill odd low pows of a2
+        BigInteger pows[] = new BigInteger[8];
+        BigInteger res = x2;
+        int lowexp;
+        BigInteger x3;
+        int acc3;
+        pows[0] = a2;
+        
+        x3 = monSquare(a2,modulus,n2);
+        for (int i = 1; i <= 7; i++){
+            pows[i] = monPro(pows[i-1],x3,modulus,n2) ;
+        }
+        
+        for (int i = exponent.bitLength()-1; i>=0;i--){
+            if( BitLevel.testBit(exponent,i) ) {
+                lowexp = 1;
+                acc3 = i;
+                
+                for(int j = Math.max(i-3,0);j <= i-1 ;j++) {
+                    if (BitLevel.testBit(exponent,j)) {
+                        if (j<acc3) {
+                            acc3 = j;
+                            lowexp = (lowexp << (i-j))^1;
+                        } else {
+                            lowexp = lowexp^(1<<(j-acc3));
+                        }
+                    }
+                }
+                
+                for(int j = acc3; j <= i; j++) {
+                    res = monSquare(res,modulus,n2);
+                }
+                res = monPro(pows[(lowexp-1)>>1], res, modulus,n2);
+                i = acc3 ;
+            }else{
+                res = monSquare(res, modulus, n2) ;
+            }
+        }
+        return res;
+    }
+    
     /**
      * Performs modular exponentiation using the Montgomery Reduction. It
-     * requires that all parameters be postivive and the mudulus be odd. Based
-     * in <i>The square and multiply algorithm and the Montgomery Reduction (C.
-     * K. Koc - Analyzing and Comparing Montgomery Multiplication Algorithms)</i>
+     * requires that all parameters be postivive and the mudulus be odd. >
      * 
      * @see BigInteger#modPow(BigInteger, BigInteger)
      * @see #monPro(BigInteger, BigInteger, BigInteger, long)
-     * @ar.org.fitc.ref "C. K. Koc - Analyzing and Comparing Montgomery
-     *                  Multiplication Algorithms"
+     * @see #slidingWindow(BigInteger, BigInteger, BigInteger, BigInteger,
+     *                      long)
+     * @see #squareAndMultiply(BigInteger, BigInteger, BigInteger, BigInteger,
+     *                      long)
      */
     static BigInteger oddModPow(BigInteger base, BigInteger exponent,
             BigInteger modulus) {
@@ -549,11 +616,13 @@ class Division {
         BigInteger a2 = base.shiftLeft(k).mod(modulus);
         // n-residue of base [1 * r (mod modulus)]
         BigInteger x2 = BigInteger.ZERO.setBit(k).mod(modulus);
+        BigInteger res;
         // Compute (modulus[0]^(-1)) (mod 2^32) for odd modulus
+        
         long m0 = modulus.digits[0] & 0xFFFFFFFFL;
         long n2 = 1L; // this is n'[0]
         long powerOfTwo = 2L;
-
+        // compute n2
         do {
             if (((m0 * n2) & powerOfTwo) != 0) {
                 n2 |= powerOfTwo;
@@ -562,13 +631,13 @@ class Division {
         } while (powerOfTwo < 0x100000000L);
         n2 = -n2;
 
-        for (int i = exponent.bitLength() - 1; i >= 0; i--) {
-            x2 = monPro(x2, x2, modulus, n2);
-            if (BitLevel.testBit(exponent, i)) {
-                x2 = monPro(x2, a2, modulus, n2);
-            }
+        if( modulus.numberLength == 1 ){
+            res = squareAndMultiply(x2,a2, exponent, modulus,n2);
+        } else {
+            res = slidingWindow(x2, a2, exponent, modulus, n2);
         }
-        return monPro(x2, BigInteger.ONE, modulus, n2);
+        
+        return monPro(res, BigInteger.ONE, modulus, n2);
     }
 
     /**
@@ -639,11 +708,80 @@ class Division {
         return res;
     }
 
+    /** Implements the Montgomery Square of a BigInteger.
+     * @see #monPro(BigInteger, BigInteger, BigInteger,
+     * long)
+     */
+    static BigInteger monSquare(BigInteger aBig, BigInteger modulus,
+            long n2){
+        if(modulus.numberLength == 1){
+            return monPro(aBig, aBig, modulus, n2);
+        }
+        //Squaring
+        int [] a = aBig.digits;
+        int [] n = modulus.digits;
+        int s = modulus.numberLength;
+        
+        //Multiplying...
+        int [] t = new int [(s<<1) + 1];
+        long cs;
+        
+        int limit = Math.min(s,aBig.numberLength );
+        for(int i=0; i<limit; i++){
+            cs = 0;
+            for (int j=i+1; j<limit; j++){
+                cs += (0xFFFFFFFFL & t[i+j]) + (0xFFFFFFFFL & a[i]) * (0xFFFFFFFFL & a[j]) ;
+                t[i+j] = (int) cs;
+                cs >>>= 32;
+            }
+            
+            t[i+limit] = (int) cs;
+        }
+        BitLevel.shiftLeft( t, t, 0, 1 );
+        
+        cs = 0;
+        long carry = 0;
+        for(int i=0, index = 0; i< s; i++, index++){
+            cs += (0xFFFFFFFFL & a[i]) * (0xFFFFFFFFL & a[i]) + (t[index] & 0xFFFFFFFFL);
+            t[index] = (int) cs;
+            cs >>>= 32;
+            index++;
+            cs += t[index] & 0xFFFFFFFFL ;
+            t[index] = (int)cs;
+            cs >>>= 32;
+        }
+        
+        //Reducing...
+        /* t + m*n */
+        int m = 0;
+        int i, j;
+        cs = carry = 0;
+        for (i=0; i<s; i++){
+            cs = 0;
+            m = (int) ((t[i] & 0xFFFFFFFFL) * (n2 & 0xFFFFFFFFL));
+            for(j=0; j<s; j++){
+                cs = (t[i+j] & 0xFFFFFFFFL) +  (m & 0xFFFFFFFFL)  * (n[j] & 0xFFFFFFFFL) + (cs >>> 32);
+                t[i+j] = (int) cs;
+            }
+            //Adding C to the result
+            carry += (t[i+s] & 0xFFFFFFFFL) + ( (cs>>>32) & 0xFFFFFFFFL);
+            t[i+s] = (int) carry;
+            carry >>>=32;
+        }
+        
+        t[s<<1] = (int) carry;
+        
+        /* t / r  */
+        for(j=0; j<s+1; j++){
+            t[j] = t[j+s];
+        }
+        /*step 3*/
+        return finalSubtraction(t, s, s, modulus );
+    }
+    
     /**
-     * Implements the Montgomery Product of two integres represented by
-     * {@code int} arrays. Based in <i>The square and multiply algorithm and the
-     * Montgomery Reduction (C. K. Koc - Analyzing and Comparing Montgomery
-     * Multiplication Algorithms)</i> The arrays are suposed in <i>little
+     * Implements the Montgomery Product of two integers represented by
+     * {@code int} arrays. The arrays are suposed in <i>little
      * endian</i> notation.
      * 
      * @param a The first factor of the product.
@@ -667,7 +805,6 @@ class Division {
         long product;
         long C;
         long aI;
-        boolean lower = false;
 
         for (i = 0; i < s; i++) {
             C = 0;
@@ -698,20 +835,33 @@ class Division {
             t[s - 1] = (int) product;
             t[s] = t[s + 1] + (int) C;
         }
+        
+        return finalSubtraction(t, t.length-1 ,s, modulus);
+        
+    }
+    /*Performs the final reduction of the Montgomery algorithm.
+     *@see monPro(BigInteger, BigInteger, BigInteger,
+     *long )
+     *@see monSquare(BigInteger, BigInteger ,
+     *long)
+     */
+    static BigInteger finalSubtraction(int t[], int tLength ,int s, BigInteger modulus){
         // skipping leading zeros
-        for (i = t.length - 1; (i > 0) && (t[i] == 0); i--) {
+        int i;
+        int n[] = modulus.digits;
+        boolean lower = false;
+        
+        for (i = tLength; (i > 0) && (t[i] == 0); i--)
             ;
-        }
 
         if (i == s - 1) {
-            for (; (i >= 0) && (t[i] == n[i]); i--) {
+            for (; (i >= 0) && (t[i] == n[i]); i--)
                 ;
-            }
             lower = (i >= 0) && (t[i] & 0xFFFFFFFFL) < (n[i] & 0xFFFFFFFFL);
         } else {
             lower = (i < s - 1);
         }
-        BigInteger res = new BigInteger(1, t.length, t);
+        BigInteger res = new BigInteger(1, s+1, t);
         // if (t >= n) compute (t - n)
         if (!lower) {
             Elementary.inplaceSubtract(res, modulus);

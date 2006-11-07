@@ -613,14 +613,17 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** @ar.org.fitc.spec_ref */
     public BigInteger pow(int exp) {
-        if (exp > 0) {
-            return Multiplication.pow(this, exp);
-        } else if (exp == 0) {
-            return ONE;
-        } else {// (exp < 0)
+        if (exp < 0){
             // math.16=Negative exponent
             throw new ArithmeticException(Messages.getString("math.16")); //$NON-NLS-1$
         }
+        if (exp == 0) {
+            return ONE;
+        } else if(exp == 1 || equals(ONE) || equals(ZERO)) {
+            return this;
+        }
+        return Multiplication.pow(this, exp);
+        
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -760,6 +763,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             throw new ArithmeticException(Messages.getString("math.18")); //$NON-NLS-1$
         }
         BigInteger base = this;
+        
+        if(m.isOne() | ( exponent.sign>0 & base.sign == 0)){
+            return BigInteger.ZERO;
+        }
+        if(base.sign==0 && exponent.sign == 0){
+            return BigInteger.ONE;
+        }
         if (exponent.sign < 0) {
             base = modInverse(m);
             exponent = exponent.negate();

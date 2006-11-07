@@ -1937,12 +1937,6 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             ClassNotFoundException {
         in.defaultReadObject();
 
-        // see comment to getUnscaledValue()
-//        if (getUnscaledValue() == null) {
-//            // math.0B=null unscaled value
-//            throw new StreamCorruptedException(Messages.getString("math.0B")); //$NON-NLS-1$
-//        }
-
         this.bitLength = intVal.bitLength();
         if (this.bitLength < 64) {
             this.smallValue = intVal.longValue();
@@ -1954,9 +1948,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         out.defaultWriteObject();
     }
 
-
     private BigInteger getUnscaledValue() {
-        // This method is not supposed to return null. Otherwise uncomment 'if' in readObject 
         if(intVal == null) {
             intVal = BigInteger.valueOf(smallValue);
         }
