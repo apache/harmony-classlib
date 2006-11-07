@@ -59,28 +59,52 @@ public class PointTest extends SerializeTestCase {
         assertEquals(new Point(1, 2), new Point(1, 2).getLocation());
     }
 
-    public void testSetLocation1() {
+    public void testSetLocationInt() {
         Point p = new Point(1, 2);
         p.setLocation(3, 4);
         assertEquals(new Point(3, 4), p);
     }
 
-    public void testSetLocation2() {
+    public void testSetLocationDouble1() {
         Point p = new Point(1, 2);
         p.setLocation(3.0, 4.0);
         assertEquals(new Point(3, 4), p);
+    }
+
+    public void testSetLocationDouble2() {
+        Point p = new Point(1, 2);
         p.setLocation(5.3, 6.7);
         assertEquals(new Point(5, 7), p);
+    }
+
+    public void testSetLocationDouble3() {
+        Point p = new Point(1, 2);
         p.setLocation(7.5, 8.5);
         assertEquals(new Point(8, 9), p);
     }
 
-    public void testSetLocation3() {
+    public void testSetLocationDouble4() {
+        // Regression test HARMONY-1878
+        Point p = new Point(1, 2);
+        double x = (double)Integer.MAX_VALUE + (double)1;
+        double y = (double)Integer.MIN_VALUE - (double)1;
+        p.setLocation(x, y);
+        assertEquals(new Point(Integer.MAX_VALUE, Integer.MIN_VALUE), p);
+    }    
+
+    public void testSetLocationDouble5() {
+        // Regression test HARMONY-1878
+        Point p = new Point(1, 2);
+        p.setLocation(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        assertEquals(new Point(Integer.MAX_VALUE, Integer.MIN_VALUE), p);
+    }    
+
+    public void testSetLocationPoint() {
         Point p = new Point(1, 2);
         p.setLocation(new Point(3, 4));
         assertEquals(new Point(3, 4), p);
     }
-
+    
     public void testMove() {
         Point p = new Point(1, 2);
         p.move(3, 4);

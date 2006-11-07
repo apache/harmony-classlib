@@ -84,6 +84,8 @@ public class Point extends Point2D implements Serializable {
 
     @Override
     public void setLocation(double x, double y) {
+        x = x < Integer.MIN_VALUE ? Integer.MIN_VALUE : x > Integer.MAX_VALUE ? Integer.MAX_VALUE : x;
+        y = y < Integer.MIN_VALUE ? Integer.MIN_VALUE : y > Integer.MAX_VALUE ? Integer.MAX_VALUE : y;
         setLocation((int)Math.round(x), (int)Math.round(y));
     }
 
