@@ -26,12 +26,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.swing.text.ContentPositions.DocumentMark;
 import javax.swing.undo.UndoableEdit;
 
+@SuppressWarnings("serial")
 public class GapContent
     implements AbstractDocument.Content, Serializable {
 
-    private final class GapContentEdit extends AbstractContentUndoableEdit implements UndoableEdit {
+    private final class GapContentEdit extends AbstractContentUndoableEdit
+            implements UndoableEdit {
 
         public GapContentEdit(final int where, final String chars,
                               final boolean isInsertCommand)
@@ -40,6 +43,7 @@ public class GapContent
             super(where, chars, isInsertCommand);
         }
 
+        @Override
         protected Vector getPositionsInRange(final Vector positions,
                                              final int where,
                                              final int length) {
@@ -47,11 +51,13 @@ public class GapContent
                                                            length);
         }
 
+        @Override
         protected void updateUndoPositions(final Vector undoPos) {
             GapContent.this.updateUndoPositions(undoPos, pos, len);
 
         }
 
+        @Override
         protected void insertItems(final int where, final String chars) {
             try {
                 GapContent.this.insertItems(where, chars.toCharArray(), len);
@@ -59,6 +65,7 @@ public class GapContent
 
         }
 
+        @Override
         protected void removeItems(final int where, final int length) {
             try {
                 GapContent.this.removeItems(where, length);
@@ -66,7 +73,7 @@ public class GapContent
         }
     }
 
-    private class GapContentPositions extends ContentPositions {
+    private final class GapContentPositions extends ContentPositions {
         /**
          * Resets internal index in Position implementation to be zero if
          * the position offset is zero. This ensures that position isn't moved
@@ -76,6 +83,7 @@ public class GapContent
            GapContent.this.resetMarksAtZero();
         }
 
+        @Override
         protected int setOffsetForDocumentMark(final int offset) {
             if (offset == 0 || offset < gapStart) {
                 return offset;
@@ -83,6 +91,7 @@ public class GapContent
             return offset + (gapEnd - gapStart);
         }
 
+        @Override
         protected int getOffsetForDocumentMark(final int index) {
             if (index == 0 || index < gapStart) {
                 return index;
@@ -203,7 +212,7 @@ public class GapContent
         return new char[len];
     }
 
-    protected Object getArray() {
+    protected final Object getArray() {
         return array;
     }
 
@@ -214,14 +223,14 @@ public class GapContent
     /**
      * Returns the index of the first character right after the gap.
      */
-    protected int getGapEnd() {
+    protected final int getGapEnd() {
         return gapEnd;
     }
 
     /**
      * Returns the index of the first character in the gap.
      */
-    protected int getGapStart() {
+    protected final int getGapStart() {
         return gapStart;
     }
 
@@ -237,11 +246,12 @@ public class GapContent
     }
 
     protected void replace(final int position, final int rmSize,
-                           final Object addItems, final int addSize)
-        throws BadLocationException {
-
-        removeItems(position, rmSize);
-        insertItems(position, addItems, addSize);
+                           final Object addItems, final int addSize) {
+        try {
+            removeItems(position, rmSize);
+            insertItems(position, addItems, addSize);
+        } catch (BadLocationException e) {
+        }
     }
 
     protected void resetMarksAtZero() {
@@ -252,9 +262,8 @@ public class GapContent
         }
 
         for (int i = 0; i < gapContentPositions.positionList.size(); i++) {
-            ContentPositions.DocumentMark dm =
-                (ContentPositions.DocumentMark)gapContentPositions.positionList
-                .get(i);
+            DocumentMark dm =
+                (DocumentMark)gapContentPositions.positionList.get(i);
 
             if (dm.index <= gapEnd) {
                 dm.index = 0;
