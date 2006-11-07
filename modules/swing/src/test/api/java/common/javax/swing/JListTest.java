@@ -129,6 +129,20 @@ public class JListTest extends SwingTestCase {
         list.addSelectionInterval(1, 2);
         assertFalse(list.isSelectionEmpty());
         assertFalse(list.getSelectionModel().isSelectionEmpty());
+
+        try {
+            // Regression for HARMONY-1965
+            list.addSelectionInterval(1, -2);
+            fail("IndexOutOfBoundsException expected.");
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            // Regression for HARMONY-1965
+            list.addSelectionInterval(-2, 2);
+            fail("IndexOutOfBoundsException expected.");
+        } catch (IndexOutOfBoundsException e) {            
+        }
     }
 
     public void testClearSelection() throws Exception {

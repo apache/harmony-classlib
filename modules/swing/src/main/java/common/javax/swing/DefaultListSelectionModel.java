@@ -494,6 +494,14 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
     }
 
     private boolean isValidInterval(final int n1, final int n2) {
-        return n1 >= 0 && n2 >= 0;
+        if (n1 == -1 || n2 == -1) {
+            return false;
+        }
+
+        if (n1 < -1 || n2 < -1) {
+            throw new IndexOutOfBoundsException(); // According to the API specification
+        }
+
+        return true;
     }
 }

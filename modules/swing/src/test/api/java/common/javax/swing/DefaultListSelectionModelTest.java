@@ -660,4 +660,60 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
             events.clear();
         }
     }
+
+    public void testIsValidInterval() throws Exception {
+        // regression test for HARMONY-1965
+        try {
+            model.addSelectionInterval(-2, 0);
+            fail("addSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.addSelectionInterval(0, -2);
+            fail("addSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.setSelectionInterval(-2, 0);
+            fail("setSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.setSelectionInterval(0, -2);
+            fail("setSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.removeSelectionInterval(-2, 0);
+            fail("removeSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.removeSelectionInterval(0, -2);
+            fail("removeSelectionInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.insertIndexInterval(-2, 0, true);
+            fail("insertIndexInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        if (isHarmony()) {
+            try {
+                model.insertIndexInterval(0, -2, true);
+                fail("insertIndexInterval should throw IndexOutOfBoundsException");
+            } catch (IndexOutOfBoundsException e) {
+            }
+        }
+        try {
+            model.removeIndexInterval(-2, 0);
+            fail("removeIndexInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        try {
+            model.removeIndexInterval(0, -2);
+            fail("removeIndexInterval should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
 }
