@@ -36,7 +36,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Explicit;
+import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs7.ContentInfo;
@@ -288,13 +293,9 @@ public class X509CertPathImpl extends CertPath {
         } else {
             // PKCS7 encoded form
             if (pkcs7Encoding == null) {
-                SignedData sd = new SignedData(1, new ArrayList(),
-                        new ContentInfo(ContentInfo.DATA, null), certificates,
-                        null, new ArrayList());
-                ContentInfo ci = new ContentInfo(ContentInfo.SIGNED_DATA, sd);
-                pkcs7Encoding = ci.getEncoded();
+                pkcs7Encoding = PKCS7_SIGNED_DATA_OBJECT.encode(this);
             }
-            byte[] result = new byte[pkiPathEncoding.length];
+            byte[] result = new byte[pkcs7Encoding.length];
             System.arraycopy(pkcs7Encoding, 0, result, 0,
                                         pkcs7Encoding.length);
             return result;
@@ -363,6 +364,69 @@ public class X509CertPathImpl extends CertPath {
                 throw new IllegalArgumentException(Messages.getString("security.161")); //$NON-NLS-1$
             }
             return encodings;
+        }
+    };
+    
+
+    //
+    // encoder for PKCS#7 SignedData
+    // it is assumed that only certificate field is important
+    // all other fields contain precalculated encodings:
+    //
+    // encodes X509CertPathImpl objects
+    //
+    private static final ASN1Sequence ASN1_SIGNED_DATA = new ASN1Sequence(
+            new ASN1Type[] {
+                    // version ,digestAlgorithms, content info
+                    ASN1Any.getInstance(),
+                    // certificates
+                    new ASN1Implicit(0, ASN1),
+                    // set of crls is optional and is missed here
+                    ASN1Any.getInstance(),// signers info
+            }) {
+
+        // precalculated ASN.1 encodings for
+        // version ,digestAlgorithms, content info field of SignedData
+        private final byte[] PRECALCULATED_HEAD = new byte[] { 0x02, 0x01,
+                0x01,// version (v1)
+                0x31, 0x00,// empty set of DigestAlgorithms
+                0x30, 0x03, 0x06, 0x01, 0x00 // empty ContentInfo with oid=0
+        };
+
+        // precalculated empty set of SignerInfos
+        private final byte[] SIGNERS_INFO = new byte[] { 0x31, 0x00 };
+
+        protected void getValues(Object object, Object[] values) {
+            values[0] = PRECALCULATED_HEAD;
+            values[1] = object; // pass X509CertPathImpl object
+            values[2] = SIGNERS_INFO;
+        }
+
+        // stub to prevent using the instance as decoder
+        public Object decode(BerInputStream in) throws IOException {
+            throw new RuntimeException(
+                    "Invalid use of encoder for PKCS#7 SignedData object");
+        }
+    };
+    
+    private static final ASN1Sequence PKCS7_SIGNED_DATA_OBJECT = new ASN1Sequence(
+            new ASN1Type[] { ASN1Any.getInstance(), // contentType
+                    new ASN1Explicit(0, ASN1_SIGNED_DATA) // SignedData
+            }) {
+
+        // precalculated ASN.1 encoding for SignedData object oid
+        private final byte[] SIGNED_DATA_OID = ASN1Oid.getInstance().encode(
+                ContentInfo.SIGNED_DATA);
+
+        protected void getValues(Object object, Object[] values) {
+            values[0] = SIGNED_DATA_OID;
+            values[1] = object; // pass X509CertPathImpl object
+        }
+
+        // stub to prevent using the instance as decoder
+        public Object decode(BerInputStream in) throws IOException {
+            throw new RuntimeException(
+                    "Invalid use of encoder for PKCS#7 SignedData object");
         }
     };
 }

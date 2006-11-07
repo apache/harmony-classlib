@@ -23,8 +23,10 @@
 package org.apache.harmony.security.tests.provider.cert;
 
 import java.io.ByteArrayInputStream;
+import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -110,7 +112,36 @@ public class X509CertPathImplTest extends TestCase {
                     + e.getMessage());
         }
     }
-        
+
+    /**
+     * @tests org.apache.harmony.security.provider.cert.getInstance(byte[], java.lang.String)
+     */
+    public void test_getInstance$BLjava_lang_String() throws Exception {
+
+        // Test: getInstance(byte[] in, "PKCS7")
+        // reconverting of the encoded form: from default (PkiPath) to PKCS7
+        byte[] encoding = certPath.getEncoded();
+
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(encoding);
+
+        CertPath cert_path = factory.generateCertPath(bais);
+
+        encoding = cert_path.getEncoded("PKCS7");
+
+        X509CertPathImpl cpath = X509CertPathImpl
+                .getInstance(encoding, "PKCS7");
+        assertEquals("Certificate list size missmatch", certList.size(), cpath
+                .getCertificates().size());
+
+        bais = new ByteArrayInputStream(encoding);
+
+        cpath = X509CertPathImpl.getInstance(bais, "PKCS7");
+        assertEquals("Certificate list size missmatch", certList.size(), cpath
+                .getCertificates().size());
+    }
+
     /**
      * getCertificates() method testing.
      */
