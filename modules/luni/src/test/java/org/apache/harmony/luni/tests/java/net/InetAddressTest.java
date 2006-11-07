@@ -15,21 +15,22 @@
  *  limitations under the License.
  */
 
-package tests.api.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
+import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.Permission;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+
 import tests.support.Support_Configuration;
-import tests.util.SerializationTester;
 
 public class InetAddressTest extends junit.framework.TestCase {
     
-    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/InetAddressTest.golden.ser";
-
 	private static boolean someoneDone[] = new boolean[2];
 
 	protected static boolean threadedTestSucceeded;
@@ -483,39 +484,41 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertFalse(ia.isReachable(null, 0, 1000));
     } 
 
-    /*
-     * Test serialization/deserilazation.
+    // comparator for InetAddress objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            InetAddress initAddr = (InetAddress) initial;
+            InetAddress desrAddr = (InetAddress) deserialized;
+
+            byte[] iaAddresss = initAddr.getAddress();
+            byte[] deIAAddresss = desrAddr.getAddress();
+            for (int i = 0; i < iaAddresss.length; i++) {
+                assertEquals(iaAddresss[i], deIAAddresss[i]);
+            }
+            assertEquals(initAddr.getHostName(), desrAddr.getHostName());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization compatibility.
      */
-    public void testSerialization() throws Exception {
-        InetAddress ia= InetAddress.getByName("localhost");
-        InetAddress deIA = (InetAddress) SerializationTester
-                .getDeserilizedObject(ia);
-        byte[] iaAddresss= ia.getAddress();
-        byte[] deIAAddresss= deIA.getAddress();
-        for (int i = 0; i < iaAddresss.length; i++) {
-            assertEquals(iaAddresss[i], deIAAddresss[i]);
-        }        
-        assertEquals(ia.getHostName(), deIA.getHostName());
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(InetAddress.getByName("localhost"),
+                COMPARATOR);
     }
 
-    /*
-     * Test serialization/deserilazation compatibility with RI.
+    /**
+     * @tests serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        InetAddress ia= InetAddress.getByName("localhost");
-        // the ser file was serialized by InetAddress.getByName("localhost");
-        InetAddress deIA = (InetAddress) SerializationTester
-                .readObject(ia,
-                        SERIALIZATION_FILE_NAME);
-        byte[] iaAddresss= ia.getAddress();
-        byte[] deIAAddresss= deIA.getAddress();
-        for (int i = 0; i < iaAddresss.length; i++) {
-            assertEquals(iaAddresss[i], deIAAddresss[i]);
-        } 
-        assertEquals(ia.getHostName(), deIA.getHostName());
+
+        SerializationTest.verifyGolden(this,
+                InetAddress.getByName("localhost"), COMPARATOR);
     }
-    
-    
+
     class MockSecurityManager extends SecurityManager {        
         public void checkPermission(Permission permission) {
             if (permission.getName().equals("setSecurityManager")){

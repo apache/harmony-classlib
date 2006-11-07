@@ -15,17 +15,17 @@
  *  limitations under the License.
  */
 
-package tests.api.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
+import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 
-import tests.util.SerializationTester;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class Inet4AddressTest extends junit.framework.TestCase {
 
-    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/Inet4AddressTest.golden.ser";
-    
 	/**
 	 * @tests java.net.Inet4Address#isMulticastAddress()
 	 */
@@ -363,37 +363,39 @@ public class Inet4AddressTest extends junit.framework.TestCase {
 		}
 	}
     
-    
-    /*
-    * Test serialization/deserilazation.
-    */
-   public void testSerialization() throws Exception {
-       InetAddress ia= Inet4Address.getByName("localhost");
-       InetAddress deIA = (Inet4Address) SerializationTester
-               .getDeserilizedObject(ia);
-       byte[] iaAddresss= ia.getAddress();
-       byte[] deIAAddresss= deIA.getAddress();
-       for (int i = 0; i < iaAddresss.length; i++) {
-           assertEquals(iaAddresss[i], deIAAddresss[i]);
-       } 
-       assertEquals(4, iaAddresss.length);
-       assertEquals(ia.getHostName(), deIA.getHostName());
-   }
+    // comparator for Inet4Address objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-   /*
-    * Test serialization/deserilazation compatibility with RI.
-    */
-   public void testSerializationCompatibility() throws Exception {
-       InetAddress ia= Inet4Address.getByName("localhost");
-       InetAddress deIA = (Inet4Address) SerializationTester
-               .readObject(ia,
-                       SERIALIZATION_FILE_NAME);
-       byte[] iaAddresss= ia.getAddress();
-       byte[] deIAAddresss= deIA.getAddress();
-       for (int i = 0; i < iaAddresss.length; i++) {
-           assertEquals(iaAddresss[i], deIAAddresss[i]);
-       } 
-       assertEquals(4, iaAddresss.length);
-       assertEquals(ia.getHostName(), deIA.getHostName());
-   }
+            Inet4Address initAddr = (Inet4Address) initial;
+            Inet4Address desrAddr = (Inet4Address) deserialized;
+
+            byte[] iaAddresss = initAddr.getAddress();
+            byte[] deIAAddresss = desrAddr.getAddress();
+            for (int i = 0; i < iaAddresss.length; i++) {
+                assertEquals(iaAddresss[i], deIAAddresss[i]);
+            }
+            assertEquals(4, deIAAddresss.length);
+            assertEquals(initAddr.getHostName(), desrAddr.getHostName());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(Inet4Address.getByName("localhost"),
+                COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, Inet4Address
+                .getByName("localhost"), COMPARATOR);
+    }
 }

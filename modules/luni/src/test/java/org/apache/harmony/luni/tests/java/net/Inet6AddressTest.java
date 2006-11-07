@@ -15,20 +15,18 @@
  *  limitations under the License.
  */
 
-package tests.api.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
+import java.io.Serializable;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
-import tests.util.SerializationTester;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class Inet6AddressTest extends junit.framework.TestCase {
-
-    private static final String SERIALIZATION_FILE_NAME0 = "serialization/java/net/Inet6Address.golden.0.ser";
-    
-    private static final String SERIALIZATION_FILE_NAME1 = "serialization/java/net/Inet6Address.golden.1.ser";
 
 	/**
 	 * @tests java.net.Inet6Address#isMulticastAddress()
@@ -966,53 +964,48 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 		return fullString.toUpperCase();
 	}
 
-    /*
-     * Test serialization/deserilazation.
-     */
-    public void testSerialization() throws Exception {       
-        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };        
-        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
-        Inet6Address deIA = (Inet6Address) SerializationTester
-                .getDeserilizedObject(ia);
-        byte[] deAddr = deIA.getAddress();
-        for (int i = 0; i < localv6.length; i++) {
-            assertEquals(localv6[i], deAddr[i]);
+    // comparator for Inet6Address objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            Inet6Address initAddr = (Inet6Address) initial;
+            Inet6Address desrAddr = (Inet6Address) deserialized;
+
+            byte[] iaAddresss = initAddr.getAddress();
+            byte[] deIAAddresss = desrAddr.getAddress();
+            for (int i = 0; i < iaAddresss.length; i++) {
+                assertEquals(iaAddresss[i], deIAAddresss[i]);
+            }
+            assertEquals(initAddr.getScopeId(), desrAddr.getScopeId());
+            assertEquals(initAddr.getScopedInterface(), desrAddr
+                    .getScopedInterface());
         }
-        assertEquals(ia.getScopeId(), deIA.getScopeId());
-        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
+    };
+
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+
+        SerializationTest.verifySelf(InetAddress.getByAddress(localv6),
+                COMPARATOR);
     }
 
-    /*
-     * Test serialization/deserilazation compatibility with RI.
+    /**
+     * @tests serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
+
         byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
-        Inet6Address deIA = (Inet6Address) SerializationTester.readObject(ia,
-                SERIALIZATION_FILE_NAME0);
-        byte[] deAddr = deIA.getAddress();
-        for (int i = 0; i < localv6.length; i++) {
-            assertEquals(localv6[i], deAddr[i]);
-        }
-        assertEquals(ia.getScopeId(), deIA.getScopeId());
-        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
-    }
-    
-    /*
-     * Test serialization/deserilazation compatibility with RI.
-     */
-    public void testSerializationCompatibility_NullInterfaceName()
-            throws Exception {
-        // regression test for Harmony-1039
-        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
-        Inet6Address deIA = (Inet6Address) SerializationTester.readObject(ia,
-                SERIALIZATION_FILE_NAME1);
-        byte[] deAddr = deIA.getAddress();
-        for (int i = 0; i < localv6.length; i++) {
-            assertEquals(localv6[i], deAddr[i]);
-        }
-        assertEquals(ia.getScopeId(), deIA.getScopeId());
-        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
+
+        Object[] addresses = { InetAddress.getByAddress(localv6),
+                // Regression for Harmony-1039: ser-form has
+                // null interface name
+                InetAddress.getByAddress(localv6) };
+
+        SerializationTest.verifyGolden(this, addresses, COMPARATOR);
     }
 }
