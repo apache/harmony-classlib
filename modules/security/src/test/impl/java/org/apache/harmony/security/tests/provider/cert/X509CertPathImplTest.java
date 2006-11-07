@@ -65,56 +65,36 @@ public class X509CertPathImplTest extends TestCase {
     }
     
     /**
-     * X509CertPathImpl(List certificates) method testing.
+     * @tests org.apache.harmony.security.provider.cert.X509CertPathImpl.X509CertPathImpl(List)
      */
-    public void testX509CertPathImpl1() throws Exception {
-        assertTrue("Certificate list size missmatch", 
-                certList.size() == certPath.getCertificates().size());
+    public void test_X509CertPathImpl_List() throws Exception {
+        assertEquals("Certificate list size missmatch", 
+                certList.size(), certPath.getCertificates().size());
     }
     
     /**
-     * getInstance(InputStream in) method testing.
+     * @tests org.apache.harmony.security.provider.cert.X509CertPathImpl.getInstance(InputStream)
      */
-    public void testX509CertPathImpl2() {
-        try {
-            byte[] encoding = certPath.getEncoded();
-            ByteArrayInputStream bais = new ByteArrayInputStream(encoding);
-            X509CertPathImpl cpath = X509CertPathImpl.getInstance(bais);
-            assertTrue("Certificate list size missmatch", 
-                    certList.size() == cpath.getCertificates().size());
-        } catch (CertificateEncodingException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateEncodingException was thrown:"
-                    + e.getMessage());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown:"
-                    + e.getMessage());
-        }
+    public void test_getInstance_InputStream() throws Exception {
+        byte[] encoding = certPath.getEncoded();
+        ByteArrayInputStream bais = new ByteArrayInputStream(encoding);
+        X509CertPathImpl cpath = X509CertPathImpl.getInstance(bais);
+        assertEquals("Certificate list size missmatch", certList.size(), cpath
+                .getCertificates().size());
     }
     
     /**
-     * getInstance(byte[] in) method testing.
+     * @tests org.apache.harmony.security.provider.cert.X509CertPathImpl.getInstance(byte[])
      */
-    public void testX509CertPathImpl3() {
-        try {
-            byte[] encoding = certPath.getEncoded();
-            X509CertPathImpl cpath = X509CertPathImpl.getInstance(encoding);
-            assertTrue("Certificate list size missmatch", 
-                    certList.size() == cpath.getCertificates().size());
-        } catch (CertificateEncodingException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateEncodingException was thrown:"
-                    + e.getMessage());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown:"
-                    + e.getMessage());
-        }
+    public void test_getInstance_$B() throws Exception {
+        byte[] encoding = certPath.getEncoded();
+        X509CertPathImpl cpath = X509CertPathImpl.getInstance(encoding);
+        assertEquals("Certificate list size missmatch", certList.size(), cpath
+                .getCertificates().size());
     }
 
     /**
-     * @tests org.apache.harmony.security.provider.cert.getInstance(byte[], java.lang.String)
+     * @tests org.apache.harmony.security.provider.cert.X509CertPathImpl.getInstance(byte[], String)
      */
     public void test_getInstance$BLjava_lang_String() throws Exception {
 
@@ -143,26 +123,18 @@ public class X509CertPathImplTest extends TestCase {
     }
 
     /**
-     * getCertificates() method testing.
+     * @tests org.apache.harmony.security.provider.cert.X509CertPathImpl.getCertificates()
      */
-    public void testGetCertificates() {
+    public void test_getCertificates() throws Exception {
         try {
             byte[] encoding = certPath.getEncoded();
             X509CertPathImpl cpath = X509CertPathImpl.getInstance(encoding);
-            assertTrue("Certificate list size missmatch", 
-                    certList.size() == cpath.getCertificates().size());
+            assertEquals("Certificate list size missmatch", certList.size(),
+                    cpath.getCertificates().size());
             cpath.getCertificates().remove(0);
             fail("UnsupportedOperationException should be thrown");
         } catch (UnsupportedOperationException e) {
             //pass
-        } catch (CertificateEncodingException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateEncodingException was thrown:"
-                    + e.getMessage());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown:"
-                    + e.getMessage());
         }
     }
     
