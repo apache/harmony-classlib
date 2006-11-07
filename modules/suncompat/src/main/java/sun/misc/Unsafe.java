@@ -23,6 +23,7 @@ import java.security.PrivilegedAction;
 
 import org.apache.harmony.kernel.vm.Objects;
 import org.apache.harmony.kernel.vm.Threads;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * <p>The Unsafe service.</p>
@@ -40,6 +41,9 @@ public class Unsafe {
      * @return An instance of Unsafe.
      */
     public static Unsafe getUnsafe() {
+        if (VM.callerClassLoader() != null) {
+            throw new SecurityException("Unsafe");
+        }
         return AccessController.doPrivileged(new PrivilegedAction<Unsafe>() {
             public Unsafe run() {
                 return INSTANCE;
@@ -53,6 +57,7 @@ public class Unsafe {
     private Unsafe() {
         super();
         this.objects = Objects.getInstance();
+        this.threads = Threads.getInstance();
     }
 
     /**
