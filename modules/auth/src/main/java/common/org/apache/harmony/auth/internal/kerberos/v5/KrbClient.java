@@ -23,6 +23,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import javax.crypto.SecretKey;
+
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.DerInputStream;
 
@@ -46,10 +48,12 @@ public class KrbClient {
      * @param realm - client's realm
      * @return - ticket
      */
-    public static Ticket doAS(InetAddress address, int port, PrincipalName cname, String realm,
-            PrincipalName sname) {
+    public static KDCReply doAS(InetAddress address, int port,
+            PrincipalName cname, String realm, PrincipalName sname,
+            SecretKey key) {
 
-        KDCRequest request = new KDCRequest(KDCRequest.AS_REQ, cname, realm, sname);
+        KDCRequest request = new KDCRequest(KDCRequest.AS_REQ, cname, realm,
+                sname);
 
         try {
             DatagramSocket socket = request.send(address, port);
@@ -70,11 +74,16 @@ public class KrbClient {
             DerInputStream in = new DerInputStream(out.toByteArray());
 
             if (in.tag == KDCReply.AS_REP_ASN1.constrId) { //TODO AS reply
-                throw new RuntimeException();//FIXME
+                KDCReply reply = (KDCReply) KDCReply.AS_REP_ASN1.decode(in);
+
+                reply.decrypt(key);
+
+                return reply;
             } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
                 KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
                 // auth.52=Error code: {0}
-                throw new RuntimeException(Messages.getString("auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
+                throw new RuntimeException(Messages.getString(
+                        "auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
             } else {
                 new RuntimeException(); //FIXME
             }

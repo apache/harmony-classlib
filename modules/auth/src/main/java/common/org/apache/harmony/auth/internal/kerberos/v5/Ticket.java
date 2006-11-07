@@ -37,6 +37,9 @@ public class Ticket {
 
     private final String realm;
 
+    // ASN.1 encoding of this ticket
+    private byte[] encoded;
+    
     private Ticket(String realm, PrincipalName sname) {
         this.sname = sname;
         this.realm = realm;
@@ -48,6 +51,10 @@ public class Ticket {
 
     public PrincipalName getSname() {
         return sname;
+    }
+
+    public byte[] getEncoded() {
+        return encoded;
     }
 
     /**
@@ -72,7 +79,11 @@ public class Ticket {
 
             Object[] values = (Object[]) in.content;
 
-            return new Ticket((String) values[1], (PrincipalName) values[2]);
+            Ticket ticket = new Ticket((String) values[1],
+                    (PrincipalName) values[2]);
+            ticket.encoded = in.getEncoded();
+
+            return ticket;
         }
 
         @Override
