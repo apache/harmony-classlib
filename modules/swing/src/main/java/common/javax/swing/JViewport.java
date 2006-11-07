@@ -50,6 +50,7 @@ import org.apache.harmony.x.swing.BlitSupport;
 public class JViewport extends JComponent implements Accessible {
 
     protected class ViewListener extends ComponentAdapter implements Serializable {
+        @Override
         public void componentResized(final ComponentEvent e) {
             fireStateChanged();
             revalidate();
@@ -57,6 +58,7 @@ public class JViewport extends JComponent implements Accessible {
     }
 
     protected class AccessibleJViewport extends AccessibleJComponent {
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.VIEWPORT;
         }
@@ -69,15 +71,16 @@ public class JViewport extends JComponent implements Accessible {
 
     protected Point lastPaintPosition;
     protected boolean isViewSizeSet;
+    @Deprecated
     protected boolean backingStore;
     protected transient Image backingStoreImage;
     protected boolean scrollUnderway;
 
-    private EventListenerList eventListenerList;
+    private final EventListenerList eventListenerList;
     private ViewportLayout viewportLayout;
     private int scrollMode = BLIT_SCROLL_MODE;
 
-    private ComponentListener viewListener = new ViewListener();
+    private final ComponentListener viewListener = new ViewListener();
 
     private BlitSupport blitSupport;
 
@@ -96,6 +99,7 @@ public class JViewport extends JComponent implements Accessible {
         return new Dimension(d);
     }
 
+    @Override
     public final Insets getInsets(final Insets insets) {
         insets.top = 0;
         insets.left = 0;
@@ -113,6 +117,7 @@ public class JViewport extends JComponent implements Accessible {
         return (ViewportUI)ui;
     }
 
+    @Override
     public void updateUI() {
         setUI((ViewportUI)UIManager.getUI(this));
     }
@@ -126,9 +131,10 @@ public class JViewport extends JComponent implements Accessible {
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])eventListenerList.getListeners(ChangeListener.class);
+        return eventListenerList.getListeners(ChangeListener.class);
     }
 
+    @Override
     public final void setBorder(final Border b) {
         if (b != null) {
             throw new IllegalArgumentException("method is not implemented");
@@ -139,10 +145,12 @@ public class JViewport extends JComponent implements Accessible {
         return new ViewListener();
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return new AccessibleJViewport();
     }
 
+    @Override
     protected String paramString() {
         StringBuffer result = new StringBuffer(super.paramString());
         result.append(",isViewSizeSet=").append(isViewSizeSet)
@@ -152,10 +160,12 @@ public class JViewport extends JComponent implements Accessible {
         return result.toString();
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
+    @Override
     public void scrollRectToVisible(final Rectangle r) {
         Point viewPos = getViewPosition();
         Dimension viewSize = getExtentSize();
@@ -264,6 +274,7 @@ public class JViewport extends JComponent implements Accessible {
         return viewportLayout;
     }
 
+    @Override
     public final Insets getInsets() {
         return new Insets(0, 0, 0, 0);
     }
@@ -314,6 +325,7 @@ public class JViewport extends JComponent implements Accessible {
         }
     }
 
+    @Override
     public void remove(final Component c) {
         if (c == null) {
             return;
@@ -325,15 +337,16 @@ public class JViewport extends JComponent implements Accessible {
     public Component getView() {
         if (getComponentCount() > 0) {
             return getComponent(0);
-        } else {
-            return null;
         }
+        return null;
     }
 
+    @Deprecated
     public void setBackingStoreEnabled(final boolean b) {
         backingStore = b;
     }
 
+    @Override
     public void paint(final Graphics g) {
         lastPaintPosition = getViewPosition();
         if (blitSupport != null) {
@@ -354,10 +367,12 @@ public class JViewport extends JComponent implements Accessible {
         scrollMode = mode;
     }
 
+    @Override
     public boolean isOptimizedDrawingEnabled() {
         return false;
     }
 
+    @Deprecated
     public boolean isBackingStoreEnabled() {
         return backingStore;
     }
@@ -366,6 +381,8 @@ public class JViewport extends JComponent implements Accessible {
         return scrollMode;
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void reshape(final int x, final int y, final int w, final int h) {
         boolean fireEvent = getWidth() != w || getHeight() != h;
         super.reshape(x, y, w, h);
@@ -410,15 +427,17 @@ public class JViewport extends JComponent implements Accessible {
     protected void fireStateChanged() {
         ChangeListener[] changeListeners = getChangeListeners();
         ChangeEvent changeEvent = new ChangeEvent(this);
-        for (int i = 0; i < changeListeners.length; i++) {
-            changeListeners[i].stateChanged(changeEvent);
+        for (ChangeListener element : changeListeners) {
+            element.stateChanged(changeEvent);
         }
     }
 
+    @Override
     protected void firePropertyChange(final String propName, final Object oldVal, final Object newVal) {
         super.firePropertyChange(propName, oldVal, newVal);
     }
 
+    @Override
     protected void addImpl(final Component c, final Object obj, final int index) {
         if (c != null) {
             super.addImpl(c, null, 0);
