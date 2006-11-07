@@ -4168,7 +4168,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         r.translate(x, y);
         MultiRectArea ret = parent.getObscuredRegion(r);
         if (ret != null) {
+            parent.addObscuredRegions(ret, this);
             ret.translate(-x, -y);
+            ret.intersect(new Rectangle(0, 0, w, h));
         }
         return ret;
     }

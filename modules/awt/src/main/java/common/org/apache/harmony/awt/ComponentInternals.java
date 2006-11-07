@@ -21,6 +21,7 @@
 package org.apache.harmony.awt;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -178,6 +179,13 @@ public abstract class ComponentInternals {
      * heavyweight components overlapping with passed component
      */
     public abstract MultiRectArea getObscuredRegion(Component c);
+    
+    /**
+     * An accessor to Container.addObscuredRegions() method
+     * @see java.awt.Container#addObscuredRegions(MultiRectArea, Component)
+     */
+    public abstract void addObscuredRegions(MultiRectArea mra, Component c,
+                                            Container container);
     
     /**
      * Makes it possible to call protected Toolkit.setDesktopProperty()

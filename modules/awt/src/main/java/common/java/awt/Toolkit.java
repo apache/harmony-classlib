@@ -368,6 +368,13 @@ public abstract class Toolkit {
         public void setVisibleFlag(Component comp, boolean visible) {
             comp.visible = visible;
         }
+
+        @Override
+        public void addObscuredRegions(MultiRectArea mra, Component c, Container container) {
+            if (container != null) {
+                container.addObscuredRegions(mra, c);
+            }            
+        }
     }
 
     /*
@@ -542,7 +549,7 @@ public abstract class Toolkit {
                 public WTK init() {
                     wtk = createWTK(className);
                     wtk.getNativeEventQueue().setShutdownWatchdog(shutdownWatchdog);
-                    synchronizer.setEnvironment(wtk, nativeThread);
+                    synchronizer.setEnvironment(wtk, dispatchThread);
                     ContextStorage.setWTK(wtk);
                     dtk.initDragAndDrop();
                     return wtk;

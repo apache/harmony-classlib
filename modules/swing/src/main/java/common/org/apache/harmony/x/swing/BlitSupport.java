@@ -20,6 +20,7 @@
  */
 package org.apache.harmony.x.swing;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -92,10 +93,6 @@ public class BlitSupport {
         }
 
         Rectangle parentBounds = parent.getVisibleRect();
-        if (Utilities.getDrawingRoot(parent, parentBounds) != parent) {
-            resetBlitting();
-            return false;
-        }
 
         Graphics g = parent.getGraphics();
         if (g == null) {
@@ -189,7 +186,9 @@ public class BlitSupport {
     }
 
     private boolean isObscured(final int x, final int y, final int width, final int height) {
-        MultiRectArea obscuredArea = ComponentInternals.getComponentInternals().getObscuredRegion(parent);
+        ComponentInternals ci = ComponentInternals.getComponentInternals();
+        MultiRectArea obscuredArea = ci.getObscuredRegion(parent);
+        ci.addObscuredRegions(obscuredArea, blitingComponent, parent);
         if (obscuredArea == null || obscuredArea.isEmpty()) {
             return false;
         }

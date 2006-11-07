@@ -35,6 +35,8 @@ import javax.accessibility.AccessibleContext;
 
 import org.apache.harmony.awt.internal.nls.Messages;
 
+import org.apache.harmony.awt.gl.MultiRectArea;
+
 public class Container extends Component {
     private static final long serialVersionUID = 4613797578919906343L;
 
@@ -1411,5 +1413,29 @@ public class Container extends Component {
             container = container.getFocusCycleRootAncestor();
         }
         return (container == root) ? root : null;
+    }
+
+    /**
+     * Adds parts obscured by components which
+     * are above the given component
+     * in this container to mra
+     * @param mra MultiRectArea to add regions to
+     * @param component obscured regions of this component are added
+     */
+    void addObscuredRegions(MultiRectArea mra, Component component) {
+        int z = getComponentZOrder(component);
+        int i;
+        for (i = 0; i < z; i++) {
+            Component comp = getComponent(i);
+            if (comp.isDisplayable()&& comp.isVisible()&& comp.isOpaque()) {
+                mra.add(comp.getBounds());
+            }
+        }
+        for (i = z + 1; i < getComponentCount(); i++) {
+            Component comp = getComponent(i);
+            if (comp.isVisible() && !comp.isLightweight()) {
+                mra.add(comp.getBounds());
+            }
+        }
     }
 }
