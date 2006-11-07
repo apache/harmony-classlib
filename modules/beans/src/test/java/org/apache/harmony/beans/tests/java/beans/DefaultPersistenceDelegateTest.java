@@ -31,17 +31,26 @@ import java.util.Vector;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFoo2;
 import org.apache.harmony.beans.tests.support.mock.MockFooStop;
+import org.apache.harmony.beans.tests.support.mock.MockFooLabel;
 
 import tests.util.CallVerificationStack;
 
 /**
  * Tests the class java.beans.DefaultPersistenceDelegate
+ * TODO refactor the class and remove all references to CallVerificationStack 
  */
 public class DefaultPersistenceDelegateTest extends TestCase {
+    
+    public DefaultPersistenceDelegateTest() {}
+
+    public DefaultPersistenceDelegateTest(String s) {
+        super(s);
+    }
 
     /*
      * @see TestCase#setUp()
@@ -51,6 +60,15 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         super.setUp();
         Introspector.flushCaches();
         CallVerificationStack.getInstance().clear();
+    }
+    
+    public static TestSuite suite() {
+//        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(DefaultPersistenceDelegateTest.class);
+  
+//        suite.addTest(new DefaultPersistenceDelegateTest(
+//              "testInitialize_NotRegularGetter"));
+        return suite;
     }
 
     /*
@@ -359,6 +377,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertEquals(1, e.getArguments().length);
         assertEquals(new Integer(2), e.getArguments()[0]);
     }
+        
 
     /*
      * Tests mutatesTo() under normal conditions without any properties.
@@ -452,38 +471,34 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * bean info class.
      */
     public void testInitialize_Normal() throws Exception {
-        CollectingEncoder enc = new CollectingEncoder();
+        CollectingEncoder enc;
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        MockFoo oldBean = new MockFoo();
-        Iterator<Statement> iter;
-        boolean found1 = false;
-        boolean found2 = false;
+        MockFoo oldBean;
+        MockFoo newBean;
+        MockFooLabel complexLabel;
 
+        enc = new CollectingEncoder();
+        oldBean = new MockFoo();
         oldBean.setName("myName");
         oldBean.setLabel("myLabel");
+        pd.writeObject(oldBean, enc);
+        enc.clearCache();
         pd.initialize(MockFoo.class, oldBean, new MockFoo(), enc);
-        iter = enc.statements();
-
-        while (iter.hasNext()) {
-            Statement stmt = iter.next();
-            
-            if (stmt.getMethodName().equals("setName") ||
-                    stmt.getMethodName().equals("setLabel")) {
-                assertSame(oldBean, stmt.getTarget());
-                assertNotNull(stmt.getArguments());
-                assertEquals(1, stmt.getArguments().length);
-                    
-                if (stmt.getMethodName().equals("setName")) {
-                    assertEquals(oldBean.getName(), stmt.getArguments()[0]);
-                    found1 = true;
-                } else {
-                    assertEquals(oldBean.getLabel(), stmt.getArguments()[0]);
-                    found2 = true;
-                }
-            }
-        }
-        assertTrue("Required statement was not found", found1);
-        assertTrue("Required statement was not found", found2);
+        
+        assertNotNull(findStatement(enc.statements(), oldBean, "setName",
+                new Object[] { oldBean.getName() }));
+        assertNotNull(findStatement(enc.statements(), oldBean, "setLabel",
+                new Object[] { oldBean.getLabel() }));
+        
+        enc = new CollectingEncoder();
+        oldBean = new MockFoo();
+        oldBean.setComplexLabel(new MockFooLabel("myComplexLabel"));
+        pd.writeObject(oldBean, enc);
+        newBean = new MockFoo();
+        newBean.setComplexLabel(new MockFooLabel("complexLabel2"));
+        pd.writeObject(newBean, enc);
+        enc.clearCache();
+        pd.initialize(MockFoo.class, oldBean, newBean, enc);
     }
 
     /*
@@ -491,88 +506,66 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * info class.
      */
     public void testInitialize_NormalBeanInfo() throws Exception {
-        MockEncoder enc = new MockEncoder();
+        CollectingEncoder enc = new CollectingEncoder();
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
         MockFoo2 b = new MockFoo2(2);
+        MockFoo2 b2 = new MockFoo2(3);
+        Iterator<Statement> iter;
 
-        enc.writeObject(b);
-        CallVerificationStack.getInstance().clear();
-        MockFoo2 b2 = (MockFoo2) enc.get(b);
-        b2.myset(3);
-
+        pd.writeObject(b, enc);
+        pd.writeObject(b2, enc);
+        enc.clearCache();
         pd.initialize(MockFoo2.class, b, b2, enc);
 
-        // should have called writeStatement()
-        Statement stm = (Statement) CallVerificationStack.getInstance().pop();
-        assertSame(b, stm.getTarget());
-        assertEquals("myset", stm.getMethodName());
-        assertEquals(1, stm.getArguments().length);
-        assertEquals(new Integer(2), stm.getArguments()[0]);
-
-        // should have called get()
-        assertEquals(new Integer(2), CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        Expression exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertEquals(new Integer(2), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("myget", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
-
-        assertTrue(CallVerificationStack.getInstance().empty());
+        // XXX RI stores much more statements to the stream
+        iter = enc.statements();     
+//        assertNotNull("required statement not found",
+//                findStatement(iter, b, "myget", null));
+        assertNotNull("required statement not found",
+                findStatement(iter, null, "myset",
+                        new Object[] {new Integer(2)}));
     }
 
     /*
      * Test initialize() when oldInstance == newInstance.
+     * XXX The current implementation outputs nothing to the stream. And this
+     * seems to be correct from the spec point of view since we need not to do
+     * any actions to convert the object to itself. However, RI outputs a lot
+     * of stuff to the stream here. 
      */
-    public void testInitialize_SameInstance() throws Exception {
-        MockEncoder enc = new MockEncoder();
-        MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        MockFoo b = new MockFoo();
-        b.setName("mymyName");
-        // b.setLabel("myLabel");
-
-        pd.initialize(MockFoo.class, b, b, enc);
-
-        // should have called get()
-        assertEquals("mymyName", CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        Expression exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertSame(b.getName(), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("getName", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
-
-        // should have called get()
-        assertNull(CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertSame(b.getLabel(), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("getLabel", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
-
-        assertTrue(CallVerificationStack.getInstance().empty());
-    }
+//    public void testInitialize_SameInstance() throws Exception {
+//        CollectingEncoder enc = new CollectingEncoder();
+//        MockPersistenceDelegate pd = new MockPersistenceDelegate();
+//        MockFoo b = new MockFoo();
+//        Iterator<Statement> iter;
+//        
+//        b.setName("mymyName");
+//        // b.setLabel("myLabel");
+//
+//        pd.initialize(MockFoo.class, b, b, enc);
+//
+//    }
 
     /*
      * Test initialize() with a bean with a transient property.
      */
     public void testInitialize_TransientProperty() throws Exception {
-        MockEncoder enc = new MockEncoder();
+        CollectingEncoder enc = new CollectingEncoder();
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
         MockTransientBean b = new MockTransientBean();
+        
         b.setName("myName");
+        pd.writeObject(b, enc);
+        enc.clearCache();
         pd.initialize(MockTransientBean.class, b, new MockTransientBean(), enc);
-        assertTrue(CallVerificationStack.getInstance().empty());
+        assertFalse("transient fields should not be affected",
+                enc.statements().hasNext());
+        
         // set transient to false
         Introspector.flushCaches();
         MockTransientBeanBeanInfo.setTransient(false);
-        pd.initialize(MockTransientBean.class, new MockTransientBean(),
-                new MockTransientBean(), enc);
-        assertFalse(CallVerificationStack.getInstance().empty());
+        pd.initialize(MockTransientBean.class, b, new MockTransientBean(), enc);
+        assertTrue(enc.statements().hasNext());
     }
 
     /*
@@ -688,37 +681,6 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         } catch (NullPointerException ex) {
             // expected
         }
-    }
-
-    /*
-     * Test initialize() with a property name that has an unregular getter
-     * method, defined by its beaninfo.
-     */
-    public void testInitialize_NotRegularGetter() throws Exception {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        // new String[] { "prop1" });
-        MockEncoder enc = new MockEncoder();
-
-        MockFoo2 b = new MockFoo2(2);
-        MockFoo2 b2 = new MockFoo2(1);
-        pd.initialize(MockFoo2.class, b, b2, enc);
-
-        // should have called writeStatement()
-        Statement stm = (Statement) CallVerificationStack.getInstance().pop();
-        assertSame(b, stm.getTarget());
-        assertEquals("myset", stm.getMethodName());
-        assertEquals(1, stm.getArguments().length);
-        assertEquals(new Integer(2), stm.getArguments()[0]);
-
-        // should have called get()
-        assertEquals(new Integer(2), CallVerificationStack.getInstance().pop());
-
-        // should have called writeExpression()
-        Expression exp = (Expression) CallVerificationStack.getInstance().pop();
-        assertEquals(new Integer(2), exp.getValue());
-        assertSame(b, exp.getTarget());
-        assertEquals("myget", exp.getMethodName());
-        assertEquals(0, exp.getArguments().length);
     }
 
     /*
@@ -998,13 +960,59 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         }
     }
 
+    /**
+     * Searches for the statement with given parameters.
+     * @param iter iterator to search through, null means ignore this parameter
+     * @param target
+     * @param methodName
+     * @param args
+     * @return found statement or null
+     */
+    static Statement findStatement(Iterator<Statement> iter, Object target,
+            String methodName, Object[] args) {
+
+        while (iter.hasNext()) {
+            Statement stmt = iter.next();
+            
+            if (target != null && stmt.getTarget() != target) {
+                continue;
+            }
+            
+            if (methodName != null && !methodName.equals(stmt.getMethodName()))
+            {
+                continue;
+            }
+
+            if (args != null) {
+                if ((stmt.getArguments() != null &&
+                         args.length != stmt.getArguments().length)
+                         || stmt.getArguments() == null)
+                {
+                    continue;
+                } 
+                
+                for (int i = 0; i < args.length; i++) {
+                    if ((args[i] == null && stmt.getArguments()[i] != null) ||
+                        (args[i] != null && stmt.getArguments()[i] == null) ||
+                        !args[i].equals(stmt.getArguments()[i]))
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            return stmt;
+        }
+        
+        return null;
+    }
+    
     public static class CollectingEncoder extends Encoder {
-        private final Vector<Expression> expressions = new Vector<Expression>();
-        private final Vector<Statement> statements = new Vector<Statement>();
+        private Vector<Statement> statements = new Vector<Statement>();
         
         @Override
         public void writeExpression(Expression exp) {
-            expressions.add(exp);
+            statements.add(exp);
             super.writeExpression(exp);
         }
 
@@ -1014,12 +1022,12 @@ public class DefaultPersistenceDelegateTest extends TestCase {
             super.writeStatement(stm);
         }
         
-        public Iterator<Expression> expressions() {
-            return expressions.iterator();
-        }
-
         public Iterator<Statement> statements() {
             return statements.iterator();
+        }
+        
+        public void clearCache() {
+            statements = new Vector<Statement>();
         }
     }
 }

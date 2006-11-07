@@ -25,6 +25,12 @@ import java.io.Serializable;
 public class MockFooLabel implements Serializable {
     private String text;
 
+    public MockFooLabel() {}
+    
+    public MockFooLabel(String text) {
+        this.text = text; 
+    }
+    
     /**
      * @return Returns the text.
      */
@@ -38,5 +44,12 @@ public class MockFooLabel implements Serializable {
      */
     public void setText(String text) {
         this.text = text;
+    }
+    
+    public boolean equals(Object obj) {
+        if (obj instanceof MockFooLabel) {
+            return false;
+        }
+        return false;
     }
 }

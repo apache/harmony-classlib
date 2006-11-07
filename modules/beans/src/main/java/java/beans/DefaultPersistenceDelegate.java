@@ -54,12 +54,19 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
 
+        // added for compatibility with RI
+        if (out == null) {
+            throw new NullPointerException(
+                    Messages.getString("beans.4C")); //$NON-NLS-1$
+        }
+
+        // added for compatibility with RI
         if (newInstance == null) {
             out.getExceptionListener().exceptionThrown(
                     new NullPointerException(Messages.getString("beans.4A"))); //$NON-NLS-1$
             return;
         }
-
+      
         try {
             PropertyDescriptor[] pds = Introspector.getBeanInfo(type)
                     .getPropertyDescriptors();

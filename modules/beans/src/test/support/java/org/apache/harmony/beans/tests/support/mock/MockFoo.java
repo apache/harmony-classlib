@@ -30,6 +30,7 @@ public class MockFoo extends MockFooStop implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
+    private MockFooLabel complexLabel;
 
     /**
      * @return Returns the name.
@@ -39,10 +40,17 @@ public class MockFoo extends MockFooStop implements Serializable {
     }
 
     /**
-     * @param name
-     *            The name to set.
+     * @param name The name to set.
      */
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public MockFooLabel getComplexLabel() {
+        return complexLabel;
+    }
+    
+    public void setComplexLabel(MockFooLabel label) {
+        this.complexLabel = label;
     }
 }
