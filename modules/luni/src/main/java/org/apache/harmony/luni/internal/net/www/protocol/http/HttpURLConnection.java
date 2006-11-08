@@ -1398,6 +1398,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                             setProxy(location.substring(start));
                         } else {
                             url = new URL(url, location);
+                            hostName = url.getHost();
                             // update the port
                             hostPort = -1;
                         }
