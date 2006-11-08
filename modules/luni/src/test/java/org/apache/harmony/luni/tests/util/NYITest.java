@@ -19,7 +19,7 @@ package org.apache.harmony.luni.tests.util;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 /**
  * Testing the NYI framework code.
@@ -27,13 +27,13 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
 public class NYITest extends TestCase {
 
     public void testNYI() {
-        System.err.println("Test suite -> expect a Not yet implemented output >>>");
+        System.err.println("Test suite -> expect a not implemented output >>>");
         try {
-            throw new NotYetImplementedException();
-        } catch (NotYetImplementedException exception) {
+            throw new NotImplementedException();
+        } catch (NotImplementedException exception) {
             // Expected
         }
-        System.err.println("Test suite finished Not yet implemented output <<<");
+        System.err.println("Test suite finished not implemented output <<<");
     }
 
 }

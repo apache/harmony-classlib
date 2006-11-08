@@ -22,7 +22,7 @@ package org.apache.harmony.luni.util;
  * that programs that call the stubs fail early and predictably.
  * 
  */
-public class NotYetImplementedException extends RuntimeException {
+public class NotImplementedException extends RuntimeException {
 
 	/**
 	 * Comment for <code>serialVersionUID</code>
@@ -32,9 +32,9 @@ public class NotYetImplementedException extends RuntimeException {
 	/**
 	 * Default constructor.
 	 */
-	public NotYetImplementedException() {
+	public NotImplementedException() {
 		super();
-		System.err.println("*** NOT YET IMPLEMENTED EXCEPTION ***"); //$NON-NLS-1$
+		System.err.println("*** NOT IMPLEMENTED EXCEPTION ***"); //$NON-NLS-1$
 		StackTraceElement thrower = getStackTrace()[0];
 		System.err
 				.println("*** thrown from class  -> " + thrower.getClassName()); //$NON-NLS-1$
@@ -64,7 +64,7 @@ public class NotYetImplementedException extends RuntimeException {
 	 * 
 	 * @param detailMessage
 	 */
-	public NotYetImplementedException(String detailMessage) {
+	public NotImplementedException(String detailMessage) {
 		super(detailMessage);
 	}
 
@@ -74,7 +74,7 @@ public class NotYetImplementedException extends RuntimeException {
 	 * @param detailMessage
 	 * @param throwable
 	 */
-	public NotYetImplementedException(String detailMessage, Throwable throwable) {
+	public NotImplementedException(String detailMessage, Throwable throwable) {
 		super(detailMessage, throwable);
 	}
 
@@ -83,7 +83,7 @@ public class NotYetImplementedException extends RuntimeException {
 	 * 
 	 * @param throwable
 	 */
-	public NotYetImplementedException(Throwable throwable) {
+	public NotImplementedException(Throwable throwable) {
 		super(throwable);
 	}
 
