@@ -222,6 +222,10 @@ public class LoginContext {
         return null;
     }
 
+    /**
+     * Warning: calling the method more than once may result in undefined
+     * behaviour if logout() method is not invoked before.
+     */
     public void login() throws LoginException {
         PrivilegedExceptionAction<Void> action = new PrivilegedExceptionAction<Void>() {
             public Void run() throws LoginException {
