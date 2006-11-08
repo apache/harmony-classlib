@@ -3746,6 +3746,24 @@ public class Win32 extends BasicLibWrapper {
 
     public final native int DestroyCursor(long hCursor);
 
+    public final int GetCurrentThemeName(Int16Pointer pszThemeFileName, int cchMaxNameChars, Int16Pointer pszColorBuff, int cchMaxColorChars, Int16Pointer pszSizeBuff, int cchMaxSizeChars) {
+        long tmp_0 = pszThemeFileName == null ? 0 : pszThemeFileName.longLockPointer();
+        long tmp_1 = pszColorBuff == null ? 0 : pszColorBuff.longLockPointer();
+        long tmp_2 = pszSizeBuff == null ? 0 : pszSizeBuff.longLockPointer();
+        int tmp_ret = GetCurrentThemeName(tmp_0, cchMaxNameChars, tmp_1, cchMaxColorChars, tmp_2, cchMaxSizeChars);
+        if (pszThemeFileName != null) {
+            pszThemeFileName.unlock();
+        }
+        if (pszColorBuff != null) {
+            pszColorBuff.unlock();
+        }
+        if (pszSizeBuff != null) {
+            pszSizeBuff.unlock();
+        }
+        return tmp_ret;
+    }
+    public final native int GetCurrentThemeName(long pszThemeFileName, int cchMaxNameChars, long pszColorBuff, int cchMaxColorChars, long pszSizeBuff, int cchMaxSizeChars);
+
     public final native long GetClipboardData(int uFormat);
 
     public final int MoveToEx(long param_0, int param_1, int param_2, Win32.POINT param_3) {

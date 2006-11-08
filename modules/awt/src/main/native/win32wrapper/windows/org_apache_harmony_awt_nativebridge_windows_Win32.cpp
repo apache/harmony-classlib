@@ -878,6 +878,15 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_D
     return (jint) (* p_nbridge_DestroyCursor)((void *) hCursor);
 }
 
+long  (__stdcall * p_nbridge_GetCurrentThemeName) (void *, int, void *, int, void *, int) = NULL;
+
+JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetCurrentThemeName( JNIEnv *env, jobject self, jlong pszThemeFileName, jint cchMaxNameChars, jlong pszColorBuff, jint cchMaxColorChars, jlong pszSizeBuff, jint cchMaxSizeChars) {
+    if (p_nbridge_GetCurrentThemeName == NULL) {
+        p_nbridge_GetCurrentThemeName = (long  (__stdcall *) (void *, int, void *, int, void *, int)) FindFunction(libUxTheme, "GetCurrentThemeName");
+    }
+    return (jint) (* p_nbridge_GetCurrentThemeName)((void *) pszThemeFileName, (int) cchMaxNameChars, (void *) pszColorBuff, (int) cchMaxColorChars, (void *) pszSizeBuff, (int) cchMaxSizeChars);
+}
+
 void * (__stdcall * p_nbridge_GetClipboardData) (int) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetClipboardData( JNIEnv *env, jobject self, jint uFormat) {

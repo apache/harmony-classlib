@@ -28,6 +28,7 @@ import java.awt.im.InputMethodHighlight;
 import java.util.Map;
 import java.util.TreeSet;
 import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
@@ -472,7 +473,23 @@ public class WinSystemProperties implements SystemProperties {
     }
     
     void getXPTheme(Map<String, Object> props) {
-        setBoolProperty("win.xpstyle.themeActive", win32.IsThemeActive(), props); //$NON-NLS-1$
+        String style = "win.xpstyle."; //$NON-NLS-1$
+        String nm = "Name"; //$NON-NLS-1$
+        setBoolProperty(style + "themeActive", win32.IsThemeActive(), props);//$NON-NLS-1$
+        int bufSize = 256;
+        NativeBridge nb = NativeBridge.getInstance();
+        Int16Pointer ptrs[] = new Int16Pointer[3];
+        for (int i = 0; i < ptrs.length; i++) {
+            ptrs[i] = nb.createInt16Pointer(bufSize, false);
+        }
+        String[] names = new String[] {"dll", "color", "size"};//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        int res = win32.GetCurrentThemeName(ptrs[0], bufSize, ptrs[1], bufSize,
+                                            ptrs[2], bufSize);
+        boolean ok = (res == WindowsDefs.S_OK); 
+        for (int i = 0; i < ptrs.length; i++) {
+            String val = (ok ? ptrs[i].getString() : null);
+            setDesktopProperty(style + names[i] + nm, val, props);
+        }
     }
     
     private void getDnDProps(Map<String, Object> props) {

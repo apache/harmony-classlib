@@ -228,6 +228,8 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_DestroyCursor(JNIEnv *, jobject, jlong);
 
+JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetCurrentThemeName(JNIEnv *, jobject, jlong, jint, jlong, jint, jlong, jint);
+
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetClipboardData(JNIEnv *, jobject, jint);
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_MoveToEx(JNIEnv *, jobject, jlong, jint, jint, jlong);
