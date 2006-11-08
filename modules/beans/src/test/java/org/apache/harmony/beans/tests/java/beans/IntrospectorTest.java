@@ -296,7 +296,7 @@ public class IntrospectorTest extends TestCase {
         assertEquals("x", Introspector.decapitalize("X"));
         assertNull(Introspector.decapitalize(null));
         assertEquals("", Introspector.decapitalize(""));
-
+        assertEquals("a1", Introspector.decapitalize("A1"));
     }
 
     public void testFlushCaches() throws IntrospectionException {

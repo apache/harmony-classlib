@@ -36,16 +36,20 @@ public class Introspector {
 
     public static String decapitalize(String name) {
         if ((name != null) && (name.length() > 0)) {
+            String result;
+            
             // first two letters are capital
             if ((name.length() > 1)
-                    && name.substring(0, 2).equals(
-                            name.substring(0, 2).toUpperCase())) {
+                    && Character.isUpperCase(name.charAt(0))
+                    && Character.isUpperCase(name.charAt(1))) {
                 return name;
             }
-            String result = name.substring(0, 1).toLowerCase();
+            
+            result = name.substring(0, 1).toLowerCase();
             if (name.length() > 1) {
                 result += name.substring(1);
             }
+            
             return result;
         }
         return name;
