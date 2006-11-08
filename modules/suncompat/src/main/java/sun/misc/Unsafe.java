@@ -41,9 +41,14 @@ public class Unsafe {
      * @return An instance of Unsafe.
      */
     public static Unsafe getUnsafe() {
+        /* Check that the caller of this method is in system code (i.e. on the
+         * bootclasspath).  Unsafe methods are not designed to be called directly
+         * by applications.  We assume that system code will not reveal the instance.
+         */
         if (VM.callerClassLoader() != null) {
             throw new SecurityException("Unsafe");
         }
+
         return AccessController.doPrivileged(new PrivilegedAction<Unsafe>() {
             public Unsafe run() {
                 return INSTANCE;
