@@ -17,9 +17,7 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
-import java.security.Principal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -34,66 +32,67 @@ import javax.security.auth.spi.LoginModule;
 import junit.framework.TestCase;
 
 public class LoginContext2Test extends TestCase {
-    private static final String VALID_NAME = "name1";
-    private static final String INVALID_NAME = "name2";
 
-    public void testLogin() throws Exception{
-        MyPrincipal pri = new MyPrincipal();
-        HashSet<Principal> set = new HashSet<Principal>();
-        set.add(pri);
-        Subject sub = new Subject(false, set, new HashSet<Object>(), new HashSet<Object>());
-        Configuration.setConfiguration(new MyConfig());
-        LoginContext context = new LoginContext("moduleName", sub);
+    /**
+     * @tests javax.security.auth.login.LoginContext.login()
+     */
+    public void test_login_resourcesLeakage() throws Exception {
+
+        // This is a compatibility test.
+        // The test verifies that LoginContext allows to invoke login() method
+        // multiple times without invoking logout() before. In testing scenario
+        // each login() invocation adds new credentials to the passed subject.
+        Configuration.setConfiguration(new Configuration() {
+
+            @Override
+            public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
+                return new AppConfigurationEntry[] { new AppConfigurationEntry(
+                        MyModule.class.getName(),
+                        LoginModuleControlFlag.REQUIRED,
+                        new HashMap<String, Object>()) };
+            }
+
+            @Override
+            public void refresh() {
+            }
+        });
+
+        LoginContext context = new LoginContext("moduleName", new Subject());
+
         context.login();
-        assertNotNull(context.getSubject());
-        pri.name = INVALID_NAME;
-        assertNotNull(context.getSubject());
-        try{
-            context.login();
-            fail("Should throw LoginException");
-        }catch(LoginException e){
-        }
-        assertNotNull(context.getSubject());
-    }    
-    static class MyConfig extends Configuration{
-        AppConfigurationEntry[] entries = new AppConfigurationEntry[]{new AppConfigurationEntry(MyModule.class.getName(), LoginModuleControlFlag.REQUIRED, new HashMap<String, Object>())};
-        @Override
-        public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
-            return entries;
-        }
-        @Override
-        public void refresh() {
-        }
+        context.login();
+
+        Subject subject = context.getSubject();
+
+        assertEquals(2, subject.getPrivateCredentials().size());
+        assertEquals(2, subject.getPublicCredentials().size());
     }
-    public static class MyModule implements LoginModule{
+
+    public static class MyModule implements LoginModule {
+
         Subject sub;
-        public MyModule(){
-        }
+
         public boolean abort() throws LoginException {
             return false;
         }
+
         public boolean commit() throws LoginException {
+            sub.getPrivateCredentials().add(new Object());
             return true;
         }
-        public void initialize(Subject arg0, CallbackHandler arg1, Map<String, ?> arg2, Map<String, ?> arg3) {
+
+        public void initialize(Subject arg0, CallbackHandler arg1,
+                Map<String, ?> arg2, Map<String, ?> arg3) {
             sub = arg0;
         }
+
         public boolean login() throws LoginException {
-            Principal[] pris = sub.getPrincipals().toArray(new Principal[0]);
-            return VALID_NAME.equals(pris[0].getName());
+            sub.getPublicCredentials().add(new Object());
+            return true;
         }
+
         public boolean logout() throws LoginException {
             return false;
         }
     }
-    public static class MyPrincipal implements Principal{
-        public String name = VALID_NAME;
-        public String getName() {
-            return name;
-        }
-        @Override
-        public String toString(){
-            return name; 
-        }
-    };
 }
