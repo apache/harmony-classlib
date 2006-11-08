@@ -19,7 +19,8 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic -Wall -Werror 
+# CFLAGS += -fpic -Wall -Werror 
+CFLAGS += -fpic -Wall
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \

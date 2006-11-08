@@ -50,7 +50,7 @@
         <antcall target="copy-libs" inheritall="true" />
     </target>
 
-    <target name="copy-libs" if="is.x86_64">
+    <target name="copy-libs" if="is.64bit">
         <copy todir="${hy.text.src.main.native}/icu4c/unicode" overwrite="yes">
                 <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
         </copy>

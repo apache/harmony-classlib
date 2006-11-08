@@ -24,6 +24,7 @@
 #include <semaphore.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <jsig.h>
 
@@ -605,6 +606,10 @@ infoForFPR (struct HyPortLibrary *portLibrary,
     "xmm7"
   };
 
+#ifdef HYIA64
+  assert(0); // should never be here
+#endif
+
   switch (index)
     {
     default:
@@ -622,6 +627,10 @@ infoForGPR (struct HyPortLibrary *portLibrary,
             void **value)
 {
   *name = "";
+
+#ifdef HYIA64
+  assert(0); // should never be here
+#endif
 
   switch (index)
     {
@@ -715,6 +724,10 @@ infoForControl (struct HyPortLibrary *portLibrary,
   *name = "";
   U_8 *eip;
 
+#ifdef HYIA64
+  assert(0); // should never be here
+#endif
+
   switch (index)
     {
     case HYPORT_SIG_CONTROL_PC:
@@ -750,12 +763,14 @@ infoForControl (struct HyPortLibrary *portLibrary,
 #endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case 4:
+#ifndef HYIA64
       *name = "EFlags";
       *value = (void *) &(info->sigContext->eflags);
       return HYPORT_SIG_VALUE_ADDRESS;
     case 5:
       *name = "CS";
       *value = (void *) &(info->sigContext->cs);
+#endif
       return HYPORT_SIG_VALUE_ADDRESS;
 #ifdef HYX86
     case 6:
@@ -792,6 +807,10 @@ infoForModule (struct HyPortLibrary *portLibrary,
   Dl_info *dl_info = &(info->dl_info);
   *name = "";
 
+#ifdef HYIA64
+  assert(0); // should never be here
+#endif
+
 #ifdef HYX86
   address = (void *) info->sigContext->eip;
   int dl_result = dladdr ((void *) info->sigContext->eip, dl_info);
@@ -800,7 +819,9 @@ infoForModule (struct HyPortLibrary *portLibrary,
   address = (void *) info->sigContext->rip;
   int dl_result = dladdr ((void *) info->sigContext->rip, dl_info);
 #endif
-
+#ifdef HYIA64
+  int dl_result = 0;
+#endif
   switch (index)
     {
     case HYPORT_SIG_MODULE_NAME:
@@ -860,6 +881,10 @@ fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary,
 {
   struct sigcontext *sigContext;
   ucontext_t *uContext;
+
+#ifdef HYIA64
+  assert(0); // should never be here
+#endif
 
   uContext = (ucontext_t *) contextInfo;
   sigContext = (struct sigcontext *) &uContext->uc_mcontext;

@@ -27,8 +27,7 @@ MDLLIBFILES = \
 
 ifeq ($(HY_ARCH),x86_64)
  SYSLIBFILES = -L/usr/X11R6/lib64 -lX11 -lXft
-endif
-ifeq ($(HY_ARCH),x86)
+else
  SYSLIBFILES = -L/usr/X11R6/lib -lX11 -lXft
 endif
 

@@ -48,7 +48,7 @@ EXE_EXTENSION_CHAR: the executable has a delimiter that we want to stop at as pa
 #define HY_PLATFORM_DOUBLE_ORDER
 #if defined(LINUX)
 /* NOTE: Linux supports different processors -- do not assume 386 */
-#if defined(HYX86_64)
+#if defined(HYX86_64) || defined(HYIA64)
 #define DATA_TYPES_DEFINED
 typedef unsigned long int UDATA;        /* 64bits */
 typedef unsigned long int U_64;
