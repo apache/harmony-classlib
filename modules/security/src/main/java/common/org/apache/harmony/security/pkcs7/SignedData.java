@@ -83,6 +83,27 @@ public class SignedData {
         return signerInfos;
     }
 
+    /**
+     * @return Returns the contentInfo.
+     */
+    public ContentInfo getContentInfo() {
+        return contentInfo;
+    }
+
+    /**
+     * @return Returns the digestAlgorithms.
+     */
+    public List getDigestAlgorithms() {
+        return digestAlgorithms;
+    }
+
+    /**
+     * @return Returns the version.
+     */
+    public int getVersion() {
+        return version;
+    }
+
     public String toString() {
         StringBuffer res = new StringBuffer();
         res.append("---- SignedData:"); //$NON-NLS-1$

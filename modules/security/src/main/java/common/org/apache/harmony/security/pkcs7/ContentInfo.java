@@ -74,6 +74,14 @@ public class ContentInfo {
         return null;
     }
 
+    public Object getContent() {
+        return content;
+    }
+    
+    public int[] getContentType() {
+        return oid;
+    }
+    
     public byte[] getEncoded() {
         if (encoding == null) {
             encoding = ASN1.encode(this);
