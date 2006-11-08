@@ -354,11 +354,17 @@ gpProtectedMain (struct haCmdlineOptions *args)
     }
 
   /* main launcher processing in this function */
-  if (invocation
+  rc = invocation
       (PORTLIB, argc, argv, handle, JNI_VERSION_1_4, JNI_TRUE, mainClass,
-       classArg, propertiesFileName, isStandaloneJar, vmdllsubdir))
+       classArg, propertiesFileName, isStandaloneJar, vmdllsubdir);
+  if (rc)
     {
-      hytty_printf (PORTLIB, "FAILED to invoke JVM.\n");
+	  /* Print an error message except in the case where an uncaught Exception 
+	     has terminated the VM */
+	  if (rc != 100)
+	  {
+		  hytty_printf (PORTLIB, "FAILED to invoke JVM.\n");
+	  }                                                     
       goto bail;
     }
 
