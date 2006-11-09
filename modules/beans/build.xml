@@ -179,7 +179,8 @@
         <!-- internal tests that need to run on the bootclasspath -->
         <echo message="Running internal BEANS tests" />
         <junit fork="yes"
-               forkmode="once"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"
@@ -213,7 +214,8 @@
         <!-- API tests -->
         <echo message="Running BEANS tests" />
         <junit fork="yes"
-               forkmode="once"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"

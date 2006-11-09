@@ -32,6 +32,10 @@
     <property name="hy.javac.debug" value="on" />
     <property name="hy.javac.maxmem" value="384M" />
 
+    <!-- Test run property -->
+    <property name="hy.test.forkmode" value="once" />
+    <property name="hy.test.timeout" value="900000" />
+
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
         <os family="Windows" />
