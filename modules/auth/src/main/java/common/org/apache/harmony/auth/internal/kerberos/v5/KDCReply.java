@@ -79,7 +79,7 @@ public class KDCReply {
     private PrincipalName sname;
 
     // session key
-    private Object[] key;
+    private EncryptionKey key;
 
     private BitString flags;
 
@@ -98,7 +98,7 @@ public class KDCReply {
 
         Object[] values = (Object[]) ENC_AS_REP_PART.decode(in);
 
-        this.key = (Object[]) values[0];
+        this.key = (EncryptionKey) values[0];
         flags = (BitString) values[4];
         authtime = (Date) values[5];
         starttime = (Date) values[6];
@@ -156,7 +156,7 @@ public class KDCReply {
         return sname;
     }
 
-    public Object[] getKey() {
+    public EncryptionKey getKey() {
         return key;
     }
 
@@ -213,13 +213,6 @@ public class KDCReply {
     public static final ASN1Explicit AS_REP_ASN1 = new ASN1Explicit(
             ASN1Constants.CLASS_APPLICATION, AS_REP, KDC_REP_ASN1);
 
-    private static final ASN1Sequence ENCRYPTION_KEY = new ASN1Sequence(
-            new ASN1Type[] {
-            // TODO should we define Int32 type?
-                    new ASN1Explicit(0, ASN1Integer.getInstance()), // keytype
-                    new ASN1Explicit(1, ASN1OctetString.getInstance()), // keyvalue
-            });
-
     private static final ASN1SequenceOf LAST_REQ = new ASN1SequenceOf(
             new ASN1Sequence(new ASN1Type[] {
             // TODO should we define Int32 type?
@@ -235,7 +228,7 @@ public class KDCReply {
             });
 
     private static final ASN1Sequence ENC_KDC_REP_PART = new ASN1Sequence(
-            new ASN1Type[] { new ASN1Explicit(0, ENCRYPTION_KEY), // key
+            new ASN1Type[] { new ASN1Explicit(0, EncryptionKey.ASN1), // key
                     new ASN1Explicit(1, LAST_REQ), // last-req
                     // TODO should we define UInt32 type?
                     new ASN1Explicit(2, ASN1Integer.getInstance()), // nonce

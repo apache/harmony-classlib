@@ -144,8 +144,8 @@ public class Krb5LoginModule implements LoginModule {
             KerberosPrincipal server = new KerberosPrincipal(buf.toString(),
                     reply.getSname().getType());
 
-            int keyType = (int) ((byte[]) reply.getKey()[0])[0];
-            byte[] sessionKey = (byte[]) reply.getKey()[1];
+            int keyType = reply.getKey().getType();
+            byte[] sessionKey = reply.getKey().getValue();
 
             boolean[] flags = reply.getFlags().toBooleanArray();
 

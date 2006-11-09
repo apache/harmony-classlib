@@ -30,6 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import org.apache.harmony.auth.internal.kerberos.v5.EncryptionKey;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.utils.Array;
 
@@ -292,19 +293,27 @@ public String toString() {
        }
    }
 
-   // TODO: read a object from a stream
    private void readObject(ObjectInputStream s) throws IOException,
-       ClassNotFoundException {
-       s.defaultReadObject();
-   }
+            ClassNotFoundException {
 
-   // TODO: write a object to a stream
-   private void writeObject(ObjectOutputStream s) throws IOException {
-       
-       if(destroyed){
-           throw new IOException(Messages.getString("auth.48")); //$NON-NLS-1$
-       }
-       s.defaultWriteObject();
-   }
+        s.defaultReadObject();
 
+        EncryptionKey ekey = (EncryptionKey) EncryptionKey.ASN1
+                .decode((byte[]) s.readObject());
+
+        keyType = ekey.getType();
+        keyBytes = ekey.getValue();
+    }
+
+    private void writeObject(ObjectOutputStream s) throws IOException {
+
+        if (destroyed) {
+            throw new IOException(Messages.getString("auth.48")); //$NON-NLS-1$
+        }
+        s.defaultWriteObject();
+
+        byte[] enc = EncryptionKey.ASN1.encode(new EncryptionKey(keyType,
+                keyBytes));
+        s.writeObject(enc);
+    }
 }
