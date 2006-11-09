@@ -49,21 +49,42 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     public IndexedPropertyDescriptor(String propertyName, Class<?> beanClass)
             throws IntrospectionException {
 
-        super(propertyName, beanClass);
-        String indexedGetterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
-        if (hasMethod(beanClass, indexedGetterName)) {
-            setIndexedReadMethod(beanClass, indexedGetterName);
-        } else {
-            throw new IntrospectionException(Messages.getString(
-                    "beans.1F", propertyName)); //$NON-NLS-1$
+        super(propertyName, beanClass, null, null);
+
+        String getterName;
+        String setterName;
+        String indexedGetterName;
+        String indexedSetterName;
+
+        // array getter
+        getterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
+        if (hasMethod(beanClass, getterName)) {
+            setReadMethod(beanClass, getterName);
         }
 
-        String indexedSetterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
+        // array setter
+        setterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
+        if (hasMethod(beanClass, setterName)) {
+            setWriteMethod(beanClass, setterName);
+        }        
+        
+        // indexed getter
+        indexedGetterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
+        if (hasMethod(beanClass, indexedGetterName)) {
+            setIndexedReadMethod(beanClass, indexedGetterName);
+        }
+
+        // indexed setter
+        indexedSetterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
         if (hasMethod(beanClass, indexedSetterName)) {
             setIndexedWriteMethod(beanClass, indexedSetterName);
-        } else {
+        }
+
+        // RI seems to behave a bit differently
+        if (indexedGetter == null && indexedSetter == null &&
+                getReadMethod() == null && getWriteMethod() == null) {
             throw new IntrospectionException(Messages.getString(
-                    "beans.20", propertyName)); //$NON-NLS-1$
+                    "beans.01", propertyName)); //$NON-NLS-1$
         }
     }
 
@@ -71,11 +92,15 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             throws IntrospectionException {
         if (indexedGetter != null) {
             int modifiers = indexedGetter.getModifiers();
+            Class[] parameterTypes;
+            Class<?> returnType;
+            Class<?> indexedPropertyType;
+
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(Messages.getString("beans.21")); //$NON-NLS-1$
             }
 
-            Class[] parameterTypes = indexedGetter.getParameterTypes();
+            parameterTypes = indexedGetter.getParameterTypes();
             if (parameterTypes.length != 1) {
                 throw new IntrospectionException(Messages.getString("beans.22")); //$NON-NLS-1$
             }
@@ -84,8 +109,8 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
                 throw new IntrospectionException(Messages.getString("beans.23")); //$NON-NLS-1$
             }
 
-            Class<?> returnType = indexedGetter.getReturnType();
-            Class<?> indexedPropertyType = getIndexedPropertyType();
+            returnType = indexedGetter.getReturnType();
+            indexedPropertyType = getIndexedPropertyType();
             if ((indexedPropertyType != null)
                     && !returnType.equals(indexedPropertyType)) {
                 throw new IntrospectionException(Messages.getString("beans.24")); //$NON-NLS-1$
@@ -97,24 +122,31 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 
     public void setIndexedWriteMethod(Method indexedSetter)
             throws IntrospectionException {
+
         if (indexedSetter != null) {
             int modifiers = indexedSetter.getModifiers();
+            Class[] parameterTypes;
+            Class<?> firstParameterType;
+            Class<?> secondParameterType;
+            Class<?> propType;
+            
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(Messages.getString("beans.25")); //$NON-NLS-1$
             }
 
-            Class[] parameterTypes = indexedSetter.getParameterTypes();
+            parameterTypes = indexedSetter.getParameterTypes();
             if (parameterTypes.length != 2) {
                 throw new IntrospectionException(Messages.getString("beans.26")); //$NON-NLS-1$
             }
 
-            Class<?> firstParameterType = parameterTypes[0];
+            firstParameterType = parameterTypes[0];
             if (!firstParameterType.equals(int.class)) {
                 throw new IntrospectionException(Messages.getString("beans.27")); //$NON-NLS-1$
             }
 
-            Class<?> secondParameterType = parameterTypes[1];
-            if (!secondParameterType.equals(getIndexedPropertyType())) {
+            secondParameterType = parameterTypes[1];
+            propType = getIndexedPropertyType();
+            if (propType != null && !secondParameterType.equals(propType)) {
                 throw new IntrospectionException(Messages.getString("beans.28")); //$NON-NLS-1$
             }
         }
@@ -157,12 +189,13 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             String indexedGetterName) {
         Method[] getters = findMethods(beanClass, indexedGetterName);
         boolean result = false;
+
         for (Method element : getters) {
             try {
                 setIndexedReadMethod(element);
                 result = true;
-            } catch (IntrospectionException ie) {
-            }
+            } catch (IntrospectionException ie) {}
+
             if (result) {
                 break;
             }

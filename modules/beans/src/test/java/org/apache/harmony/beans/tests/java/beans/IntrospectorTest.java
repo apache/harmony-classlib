@@ -36,6 +36,7 @@ import java.util.PropertyPermission;
 import java.util.TooManyListenersException;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.harmony.beans.tests.support.ChildBean;
 import org.apache.harmony.beans.tests.support.GrannyBean;
@@ -63,6 +64,12 @@ import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 public class IntrospectorTest extends TestCase {
 
     private String[] defaultPackage;
+    
+    public IntrospectorTest(String str) {
+        super(str);
+    }
+    
+    public IntrospectorTest() {}
 
     @Override
     protected void setUp() throws Exception {
@@ -1358,19 +1365,51 @@ public class IntrospectorTest extends TestCase {
     public static class Bean3BeanInfo extends SimpleBeanInfo {
     }
 
+    public void testGetPropertyDescriptors_H1838()
+            throws IntrospectionException {
+        // Regression for HARMONY-1838
+        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(
+                Bean.class).getPropertyDescriptors();
+
+        for (PropertyDescriptor elem : propertyDescriptors) {
+            System.out.println("UUU " + elem.getName());
+        }
+        assertEquals("class", propertyDescriptors[0].getName());
+        assertEquals("prop1", propertyDescriptors[1].getName());
+        assertEquals("prop2", propertyDescriptors[2].getName());
+        assertEquals(3, propertyDescriptors.length);
+    }
+
+    public static class Bean {
+        public String getProp1(int i) {
+            return null;
+        }
+
+        public void setProp2(int i, String str) {
+        }
+    }
+
     /*
      * 
      */
     public void testGetPropertyDescriptors() throws IntrospectionException {
         Class<Bean2> clazz = Bean2.class;
         BeanInfo info = Introspector.getBeanInfo(clazz);
-        // printInfo(info);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
+
         assertEquals(2, pds.length);
         assertEquals("property1", pds[0].getName());
         assertEquals("property8", pds[1].getName());
     }
 
+    public static TestSuite suite() {
+//        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(IntrospectorTest.class);
+        
+//        suite.addTest(new IntrospectorTest("testGetPropertyDescriptors_H1838"));
+        return suite;
+    }
+    
     public static class Bean1 {
 
         private int i;
