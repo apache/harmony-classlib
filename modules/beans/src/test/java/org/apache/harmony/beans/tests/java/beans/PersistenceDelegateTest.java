@@ -177,13 +177,13 @@ public class PersistenceDelegateTest extends TestCase {
      * Circular redundancy check. Should not hang. 
      * Regression test for HARMONY-2073
      */
-//    public void testInitialize_circularRedundancy() {
-//        Encoder enc = new Encoder();
-//        DummyPersistenceDelegate pd = new DummyPersistenceDelegate();
-//        
-//        enc.setPersistenceDelegate(MockFooStop.class, pd);
-//        pd.initialize(MockFoo.class, new MockFoo(), new MockFoo(), enc);
-//    }
+    public void testInitialize_circularRedundancy() {
+        Encoder enc = new Encoder();
+        DummyPersistenceDelegate pd = new DummyPersistenceDelegate();
+        
+        enc.setPersistenceDelegate(MockFooStop.class, pd);
+        pd.initialize(MockFoo.class, new MockFoo(), new MockFoo(), enc);
+    }
 
     /*
      * Tests mutatesTo() under normal conditions.
