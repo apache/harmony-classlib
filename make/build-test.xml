@@ -110,6 +110,11 @@
             <src path="${support.dir}/src/test/java" />
             <classpath location="${junit.jar}" />
             <classpath location="${tests.support.output}" />
+            <classpath>
+                <fileset dir="${jetty.dir}">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
             <bootclasspath>
                 <fileset dir="${tests.depends.jars}">
                     <include name="**/*.jar" />
