@@ -2562,7 +2562,7 @@ hysock_readfrom (struct HyPortLibrary * portLibrary, hysocket_t sock,
  * @param[in] exceptfds The set of descriptors to be checked for exceptional conditions.
  * @param[in] timeout Pointer to the timeout (a hytimeval struct).
  *
- * @return	0 if no error occurs, otherwise return the (negative) error code.
+ * @return	0 if timeout, number of ready FDs, or  otherwise return the (negative) error code.
  */
 I_32 VMCALL
 hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
