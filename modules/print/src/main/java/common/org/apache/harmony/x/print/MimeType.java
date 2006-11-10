@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Irina A. Arkhipets 
- * @version $Revision: 1.3 $ 
- */ 
 
 /*
  * MimeType.java
@@ -31,6 +27,8 @@ import java.io.Serializable;
 import java.util.Vector;
 
 public class MimeType implements Serializable, Cloneable {
+    
+    static final long serialVersionUID = -1062742668693502508L;
 
     private String aType = null; // Media type
     private String aSubtype = null; // Media subtype

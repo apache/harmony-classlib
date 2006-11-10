@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
 
 package org.apache.harmony.x.print.attributes;
 
@@ -43,6 +39,9 @@ import javax.print.attribute.standard.MediaSizeName;
  * 
  */
 public class PPDMediaSizeName extends MediaSizeName {
+    
+    static final long serialVersionUID = -2117680157822011363L;
+    
     public static final PPDMediaSizeName s10x11 = new PPDMediaSizeName(0, 720, 792);
     public static final PPDMediaSizeName s10x13 = new PPDMediaSizeName(1, 720, 936);
     public static final PPDMediaSizeName s10x14 = new PPDMediaSizeName(2, 720, 1008);

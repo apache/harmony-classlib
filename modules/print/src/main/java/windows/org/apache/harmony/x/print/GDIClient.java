@@ -663,6 +663,8 @@ class GDIClient implements PrintClient {
 //----------------------- Internal classes -------------------------------------
     
     private static class GDIMediaName extends MediaSizeName {
+        
+        static final long serialVersionUID = 8176250163720875699L;
 
         private static GDIMediaName staticMediaName = new GDIMediaName(-1);
         private String mediaName = null;

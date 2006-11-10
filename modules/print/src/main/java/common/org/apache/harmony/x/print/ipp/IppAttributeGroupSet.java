@@ -14,11 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
-
 package org.apache.harmony.x.print.ipp;
 
 import java.io.ByteArrayOutputStream;
@@ -32,6 +27,8 @@ import java.util.Vector;
  * Set of IppAttributeGroup
  */
 public class IppAttributeGroupSet extends Hashtable {
+    
+    static final long serialVersionUID = -1273600082773438491L;
 
     static protected void sortAttributes(Vector va) {
         Object v1, v2;

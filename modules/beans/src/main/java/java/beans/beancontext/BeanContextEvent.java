@@ -21,6 +21,8 @@ import java.util.EventObject;
 
 public abstract class BeanContextEvent extends EventObject {
 
+    static final long serialVersionUID = 7267998073569045052L;
+    
     /**
      * @serial
      */

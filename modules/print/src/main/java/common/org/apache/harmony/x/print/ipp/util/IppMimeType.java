@@ -14,17 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
-
 package org.apache.harmony.x.print.ipp.util;
 
 import org.apache.harmony.x.print.MimeType;
 
 public class IppMimeType extends MimeType {
 
+    static final long serialVersionUID = 1492779006204043813L;
+    
     /*
      * @param mimeType
      */

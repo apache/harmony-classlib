@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
 package org.apache.harmony.x.print.ipp;
 
 import java.io.ByteArrayOutputStream;
@@ -29,6 +25,9 @@ import java.util.Vector;
  * class IppAttributeGroup stores IPP attributes group
  */
 public class IppAttributeGroup extends Vector {
+    
+    static final long serialVersionUID = -2197671478629444252L;
+    
     /* According to RFC2910 (http://ietf.org/rfc/rfc2910.txt?number=2910):
      *
      * Each "attribute-group" field MUST be encoded with the "begin-
