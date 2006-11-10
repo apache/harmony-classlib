@@ -298,7 +298,10 @@ gpProtectedMain (struct haCmdlineOptions *args)
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
         PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
                             HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+                            
+        goto bail;
     }
+    
     vmiPath[0] = '\0';
     strcpy (newPathToAdd, exeName);
     strcat (newPathToAdd, vmdllsubdir);

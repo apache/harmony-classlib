@@ -808,7 +808,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_ava
   char message[MSGLEN];	
 
   I_32 result, flags = 0;
-
+  I_32 loopFlag = 1;
+  
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
@@ -816,17 +817,23 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_ava
       return (jint) 0;
     }
 
-  result = hysock_select_read (hysocketP, 0, 1,	FALSE);	
+  do {
+      result = hysock_select_read (hysocketP, 0, 1,	FALSE);	
 
-  if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
-    {
-      return (jint) 0;	  /* The read operation	timed out, so answer 0 bytes available */
-    }
-  else if (0 > result)
-    {
-      throwJavaNetSocketException (env,	result);
-      return (jint) 0;
-    }
+      if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
+      {
+        return (jint) 0;	  /* The read operation	timed out, so answer 0 bytes available */
+      }
+      else if (HYPORT_ERROR_SOCKET_INTERRUPTED == result)  {
+          continue;
+      }
+      else if (0 > result)
+      {
+        throwJavaNetSocketException (env,	result);
+        return (jint) 0;
+      }
+    } while (HYPORT_ERROR_SOCKET_INTERRUPTED == result);
+        
   result = hysock_setflag (HYSOCK_MSG_PEEK, &flags);  /* Create	a 'peek' flag argument for the read operation */
   if (0	> result)
     {
