@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
 package javax.swing;
 
 import java.io.Serializable;
@@ -58,7 +54,7 @@ public abstract class AbstractCellEditor implements CellEditor, Serializable {
     }
 
     public CellEditorListener[] getCellEditorListeners() {
-        return (CellEditorListener[])listenerList.getListeners(CellEditorListener.class);
+        return listenerList.getListeners(CellEditorListener.class);
     }
 
 

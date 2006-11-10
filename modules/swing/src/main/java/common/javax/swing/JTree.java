@@ -77,9 +77,13 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 public class JTree extends JComponent implements Scrollable, Accessible {
+    private static final long serialVersionUID = -3884445419090632712L;
+    
     protected class AccessibleJTree extends AccessibleJComponent implements AccessibleSelection, TreeSelectionListener, TreeModelListener, TreeExpansionListener {
+        private static final long serialVersionUID = -8714565563782619758L;
+        
         protected class AccessibleJTreeNode extends AccessibleContext implements Accessible, AccessibleComponent, AccessibleSelection, AccessibleAction {
-            public AccessibleJTreeNode(final JTree t, final TreePath p, final Accessible ap) {
+            public AccessibleJTreeNode(JTree t, TreePath p, Accessible ap) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
@@ -87,74 +91,92 @@ public class JTree extends JComponent implements Scrollable, Accessible {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public String getAccessibleName() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public void setAccessibleName(final String s) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public String getAccessibleDescription() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public void setAccessibleDescription(final String s) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleRole getAccessibleRole() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleStateSet getAccessibleStateSet() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public Accessible getAccessibleParent() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public int getAccessibleIndexInParent() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public int getAccessibleChildrenCount() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public Accessible getAccessibleChild(final int i) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public Locale getLocale() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public void addPropertyChangeListener(final PropertyChangeListener l) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public void removePropertyChangeListener(final PropertyChangeListener l) {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleAction getAccessibleAction() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleComponent getAccessibleComponent() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleSelection getAccessibleSelection() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleText getAccessibleText() {
                 throw new UnsupportedOperationException("Not implemented");
             }
 
+            @Override
             public AccessibleValue getAccessibleValue() {
                 throw new UnsupportedOperationException("Not implemented");
             }
@@ -348,26 +370,32 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public Accessible getAccessibleAt(final Point p) {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public Accessible getAccessibleChild(final int i) {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public int getAccessibleIndexInParent() {
             throw new UnsupportedOperationException("Not implemented");
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
             throw new UnsupportedOperationException("Not implemented");
         }
@@ -402,6 +430,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     public static class DynamicUtilTreeNode extends DefaultMutableTreeNode {
+        private static final long serialVersionUID = -2795134038906279615L;
+        
         protected boolean hasChildren;
         protected Object childValue;
         protected boolean loadedChildren;
@@ -419,10 +449,12 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             setAllowsChildren(!loadedChildren);
         }
 
+        @Override
         public boolean isLeaf() {
             return !getAllowsChildren();
         }
 
+        @Override
         public int getChildCount() {
             loadChildrenIfRequired();
             return super.getChildCount();
@@ -433,11 +465,14 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             loadChildren(this, childValue);
         }
 
+        @Override
         public TreeNode getChildAt(final int index) {
             loadChildrenIfRequired();
             return super.getChildAt(index);
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
         public Enumeration children() {
             loadChildrenIfRequired();
             return super.children();
@@ -454,18 +489,18 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             boolean hasChildren = false;
             if (nodeChildren instanceof Object[]) {
                 Object[] children = (Object[])nodeChildren;
-                for (int i = 0; i < children.length; i++) {
-                    node.add(new DynamicUtilTreeNode(children[i], children[i]));
+                for (Object element : children) {
+                    node.add(new DynamicUtilTreeNode(element, element));
                     hasChildren = true;
                 }
             } else if (nodeChildren instanceof Vector) {
-                for (Iterator it = ((Vector)nodeChildren).iterator(); it.hasNext(); ) {
+                for (Iterator<?> it = ((Vector)nodeChildren).iterator(); it.hasNext(); ) {
                     Object child = it.next();
                     node.add(new DynamicUtilTreeNode(child, child));
                     hasChildren = true;
                 }
             } else if (nodeChildren instanceof Hashtable) {
-                for (Iterator it = ((Hashtable)nodeChildren).keySet().iterator(); it.hasNext(); ) {
+                for (Iterator<?> it = ((Hashtable)nodeChildren).keySet().iterator(); it.hasNext(); ) {
                     Object child = it.next();
                     node.add(new DynamicUtilTreeNode(child, child));
                     hasChildren = true;
@@ -478,18 +513,23 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     protected static class EmptySelectionModel extends DefaultTreeSelectionModel {
+        private static final long serialVersionUID = -2866787372484669512L;
+        
         protected static final EmptySelectionModel sharedInstance = new EmptySelectionModel();
 
         public static EmptySelectionModel sharedInstance() {
             return sharedInstance;
         }
 
+        @Override
         public void setSelectionPaths(final TreePath[] pPaths) {
         }
 
+        @Override
         public void addSelectionPaths(final TreePath[] paths) {
         }
 
+        @Override
         public void removeSelectionPaths(final TreePath[] paths) {
         }
     }
@@ -508,8 +548,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             if (parentPath == null || children == null) {
                 return;
             }
-            for (int i = 0; i < children.length; i++) {
-                TreePath childPath = parentPath.pathByAddingChild(children[i]);
+            for (Object element : children) {
+                TreePath childPath = parentPath.pathByAddingChild(element);
                 removeDescendantToggledPaths(getDescendantToggledPaths(childPath));
             }
 
@@ -530,6 +570,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     protected class TreeSelectionRedirector implements Serializable, TreeSelectionListener {
+        private static final long serialVersionUID = -5457497600720267892L;
+        
         public void valueChanged(final TreeSelectionEvent e) {
             fireValueChanged((TreeSelectionEvent)e.cloneWithSource(JTree.this));
         }
@@ -573,7 +615,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     private boolean dragEnabled;
     private TreePath leadSelectionPath;
     private TreePath anchorSelectionPath;
-    private Map togglePaths = new HashMap();
+    private final Map<TreePath, Object> togglePaths = new HashMap<TreePath, Object>();
 
 
     private static final String UI_CLASS_ID = "TreeUI";
@@ -623,10 +665,12 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         super.setUI(ui);
     }
 
+    @Override
     public void updateUI() {
         setUI((TreeUI)UIManager.getUI(this));
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
@@ -784,6 +828,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         return isEditable();
     }
 
+    @Override
     public String getToolTipText(final MouseEvent event) {
         if (event == null) {
             return null;
@@ -907,20 +952,20 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     public Enumeration<TreePath> getExpandedDescendants(final TreePath parent) {
-        final Enumeration toggled = getDescendantToggledPaths(parent);
+        final Enumeration<TreePath> toggled = getDescendantToggledPaths(parent);
         if (toggled == null) {
             return null;
         }
 
-        return new Enumeration() {
+        return new Enumeration<TreePath>() {
             private TreePath nextElement = getNextExpandedPath();
 
-            public Object nextElement() {
+            public TreePath nextElement() {
                 if (nextElement == null) {
                     throw new NoSuchElementException("No next element in enumeration");
                 }
 
-                Object currentValue = nextElement;
+                TreePath currentValue = nextElement;
                 nextElement = getNextExpandedPath();
                 return currentValue;
             }
@@ -931,7 +976,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
             private TreePath getNextExpandedPath() {
                 while (toggled.hasMoreElements()) {
-                    TreePath nextPath = (TreePath)toggled.nextElement();
+                    TreePath nextPath = toggled.nextElement();
                     if (isExpanded(nextPath)) {
                         return nextPath;
                     }
@@ -1129,7 +1174,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     public TreeExpansionListener[] getTreeExpansionListeners() {
-        return (TreeExpansionListener[])listenerList.getListeners(TreeExpansionListener.class);
+        return listenerList.getListeners(TreeExpansionListener.class);
     }
 
     public void addTreeWillExpandListener(final TreeWillExpandListener l) {
@@ -1141,7 +1186,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     public TreeWillExpandListener[] getTreeWillExpandListeners() {
-        return (TreeWillExpandListener[])listenerList.getListeners(TreeWillExpandListener.class);
+        return listenerList.getListeners(TreeWillExpandListener.class);
     }
 
     public void fireTreeExpanded(final TreePath path) {
@@ -1151,8 +1196,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         }
 
         TreeExpansionEvent event = new TreeExpansionEvent(this, path);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].treeExpanded(event);
+        for (TreeExpansionListener element : listeners) {
+            element.treeExpanded(event);
         }
     }
 
@@ -1163,8 +1208,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         }
 
         TreeExpansionEvent event = new TreeExpansionEvent(this, path);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].treeCollapsed(event);
+        for (TreeExpansionListener element : listeners) {
+            element.treeCollapsed(event);
         }
     }
 
@@ -1175,8 +1220,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         }
 
         TreeExpansionEvent event = new TreeExpansionEvent(this, path);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].treeWillExpand(event);
+        for (TreeWillExpandListener element : listeners) {
+            element.treeWillExpand(event);
         }
     }
 
@@ -1187,8 +1232,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         }
 
         TreeExpansionEvent event = new TreeExpansionEvent(this, path);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].treeWillCollapse(event);
+        for (TreeWillExpandListener element : listeners) {
+            element.treeWillCollapse(event);
         }
     }
 
@@ -1205,13 +1250,13 @@ public class JTree extends JComponent implements Scrollable, Accessible {
     }
 
     public TreeSelectionListener[] getTreeSelectionListeners() {
-        return (TreeSelectionListener[])listenerList.getListeners(TreeSelectionListener.class);
+        return listenerList.getListeners(TreeSelectionListener.class);
     }
 
     protected void fireValueChanged(final TreeSelectionEvent e) {
         TreeSelectionListener[] listeners = getTreeSelectionListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].valueChanged(e);
+        for (TreeSelectionListener element : listeners) {
+            element.valueChanged(e);
         }
     }
 
@@ -1235,7 +1280,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             throw new IllegalArgumentException("Prefix must be specified");
         }
         if (startingRow < 0 || startingRow >= getRowCount()) {
-            throw new IllegalArgumentException("Illegal startingRow is psecified. Must be in the valid range");
+            throw new IllegalArgumentException("Illegal startingRow is specified. Must be in the valid range");
         }
         if (bias == Position.Bias.Forward) {
             int rowCount = getRowCount();
@@ -1298,19 +1343,19 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         Rectangle pathBounds = getPathBounds(closestPath);
         if (direction >= 0) {
             return pathBounds.y + pathBounds.height - visibleRect.y;
-        } else {
-            int increment = visibleRect.y - pathBounds.y;
-            if (increment > 0) {
-                return increment;
-            }
-
-            int row = getRowForPath(closestPath);
-            if (row == 0) {
-                return 0;
-            }
-            pathBounds = getRowBounds(row - 1);
-            return pathBounds.height;
         }
+        
+        int increment = visibleRect.y - pathBounds.y;
+        if (increment > 0) {
+            return increment;
+        }
+
+        int row = getRowForPath(closestPath);
+        if (row == 0) {
+            return 0;
+        }
+        pathBounds = getRowBounds(row - 1);
+        return pathBounds.height;
     }
 
     public int getScrollableBlockIncrement(final Rectangle visibleRect,
@@ -1336,6 +1381,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         return parent.getSize().height > getPreferredSize().height;
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJTree();
@@ -1360,11 +1406,11 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             return null;
         }
 
-        final Iterator toggled = (new HashSet(togglePaths.keySet())).iterator();
-        return new Enumeration() {
+        final Iterator<TreePath> toggled = (new HashSet<TreePath>(togglePaths.keySet())).iterator();
+        return new Enumeration<TreePath>() {
             private TreePath nextElement = getNextDescendPath();
 
-            public Object nextElement() {
+            public TreePath nextElement() {
                 if (nextElement == null) {
                     throw new NoSuchElementException("No next element in enumeration");
                 }
@@ -1380,7 +1426,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
             private TreePath getNextDescendPath() {
                 while (toggled.hasNext()) {
-                    TreePath nextPath = (TreePath)toggled.next();
+                    TreePath nextPath = toggled.next();
                     if (parent.isDescendant(nextPath)) {
                         return nextPath;
                     }
@@ -1418,9 +1464,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             return false;
         }
 
-        List toRemove = new LinkedList();
-        for (int i = 0; i < selectedPaths.length; i++) {
-            TreePath selectedPath = selectedPaths[i];
+        List<TreePath> toRemove = new LinkedList<TreePath>();
+        for (TreePath selectedPath : selectedPaths) {
             if (path.isDescendant(selectedPath)
                 && (includePath || !path.equals(selectedPath))) {
 
@@ -1431,7 +1476,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             return false;
         }
 
-        removeSelectionPaths((TreePath[])toRemove.toArray(new TreePath[toRemove.size()]));
+        removeSelectionPaths(toRemove.toArray(new TreePath[toRemove.size()]));
         return true;
     }
 
@@ -1518,15 +1563,14 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             return new TreePath[0];
         }
 
-        List paths = new ArrayList();
-        for (int i = 0; i < rows.length; i++) {
-            int row = rows[i];
+        List<TreePath> paths = new ArrayList<TreePath>();
+        for (int row : rows) {
             TreePath path = getPathForRow(row);
             if (path != null) {
                 paths.add(path);
             }
         }
-        return (TreePath[])paths.toArray(new TreePath[paths.size()]);
+        return paths.toArray(new TreePath[paths.size()]);
     }
 
     private boolean pathMatches(final String prefix, final TreePath path, final int row) {

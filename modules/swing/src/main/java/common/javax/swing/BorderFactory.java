@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Color;
@@ -40,6 +37,7 @@ public class BorderFactory {
     static final Border emptyBorder = new EmptyBorder(0, 0, 0, 0);
 
     private BorderFactory() {
+        super();
     }
 
     public static TitledBorder createTitledBorder(final Border border, final String title, final int titleJustification, final int titlePosition, final Font titleFont, final Color titleColor) {
@@ -133,6 +131,4 @@ public class BorderFactory {
     public static Border createEmptyBorder() {
         return new EmptyBorder(0, 0, 0, 0);
     }
-
 }
-

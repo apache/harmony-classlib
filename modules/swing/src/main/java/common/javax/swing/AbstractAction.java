@@ -14,45 +14,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.HashMap;
-
 import javax.swing.event.SwingPropertyChangeSupport;
-
 import org.apache.harmony.x.swing.StringConstants;
 
-
 public abstract class AbstractAction implements Action, Cloneable, Serializable {
-
     protected boolean enabled = true;
+
     protected SwingPropertyChangeSupport changeSupport = new SwingPropertyChangeSupport(this);
 
-    private HashMap properties;
+    private HashMap<String, Object> properties;
 
     public AbstractAction() {
+        super();
     }
 
     public AbstractAction(final String name) {
-        properties = new HashMap();
+        super();
+        properties = new HashMap<String, Object>();
         properties.put(Action.NAME, name);
     }
 
     public AbstractAction(final String name, final Icon icon) {
-        properties = new HashMap();
+        super();
+        properties = new HashMap<String, Object>();
         properties.put(Action.NAME, name);
         properties.put(Action.SMALL_ICON, icon);
     }
 
     public void putValue(final String name, final Object value) {
         if (properties == null) {
-            properties = new HashMap();
+            properties = new HashMap<String, Object>();
         }
         Object oldValue = properties.get(name);
         if (value != oldValue) {
@@ -69,10 +66,12 @@ public abstract class AbstractAction implements Action, Cloneable, Serializable 
         return (properties != null) ? properties.keySet().toArray() : new Object[0];
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     protected Object clone() throws CloneNotSupportedException {
-        AbstractAction cloned = (AbstractAction)super.clone();
+        AbstractAction cloned = (AbstractAction) super.clone();
         if (properties != null) {
-            cloned.properties = (HashMap)properties.clone();
+            cloned.properties = (HashMap<String, Object>) properties.clone();
         }
         return cloned;
     }
@@ -89,23 +88,19 @@ public abstract class AbstractAction implements Action, Cloneable, Serializable 
         return changeSupport.getPropertyChangeListeners();
     }
 
-    protected void firePropertyChange(final String propertyName,
-                                      final Object oldValue,
-                                      final Object newValue) {
+    protected void firePropertyChange(final String propertyName, final Object oldValue,
+            final Object newValue) {
         changeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     public void setEnabled(final boolean enabled) {
         boolean oldValue = this.enabled;
         this.enabled = enabled;
-        firePropertyChange(StringConstants.ENABLED_PROPERTY_CHANGED,
-                           Boolean.valueOf(oldValue),
-                           Boolean.valueOf(enabled));
+        firePropertyChange(StringConstants.ENABLED_PROPERTY_CHANGED, Boolean.valueOf(oldValue),
+                Boolean.valueOf(enabled));
     }
 
     public boolean isEnabled() {
         return enabled;
     }
-
 }
-

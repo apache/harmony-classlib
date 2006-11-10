@@ -15,15 +15,7 @@
  *  limitations under the License.
  */
 
-
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
-
 package javax.swing;
-
-import java.util.EventListener;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -42,7 +34,7 @@ public abstract class AbstractSpinnerModel implements SpinnerModel {
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList.getListeners(ChangeListener.class);
+        return listenerList.getListeners(ChangeListener.class);
     }
 
     protected void fireStateChanged() {

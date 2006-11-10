@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.ItemSelectable;
@@ -26,37 +23,45 @@ import java.awt.event.ItemListener;
 import javax.swing.event.ChangeListener;
 
 public interface ButtonModel extends ItemSelectable {
+    void addItemListener(ItemListener listener);
 
-    public void addItemListener(final ItemListener listener);
-    public void removeItemListener(final ItemListener listener);
+    void removeItemListener(ItemListener listener);
 
-    public void addActionListener(final ActionListener listener);
-    public void removeActionListener(final ActionListener listener);
+    void addActionListener(ActionListener listener);
 
-    public void addChangeListener(final ChangeListener listener);
-    public void removeChangeListener(final ChangeListener listener);
+    void removeActionListener(ActionListener listener);
 
-    public void setSelected(final boolean selected);
-    public boolean isSelected();
+    void addChangeListener(ChangeListener listener);
 
-    public void setRollover(final boolean rollover);
-    public boolean isRollover();
+    void removeChangeListener(ChangeListener listener);
 
-    public void setPressed(final boolean pressed);
-    public boolean isPressed();
+    void setSelected(boolean selected);
 
-    public void setEnabled(final boolean enabled);
-    public boolean isEnabled();
+    boolean isSelected();
 
-    public void setArmed(final boolean armed);
-    public boolean isArmed();
+    void setRollover(boolean rollover);
 
-    public void setMnemonic(final int mnemonic);
-    public int getMnemonic();
+    boolean isRollover();
 
-    public void setGroup(final ButtonGroup group);
+    void setPressed(boolean pressed);
 
-    public void setActionCommand(final String command);
-    public String getActionCommand();
+    boolean isPressed();
+
+    void setEnabled(boolean enabled);
+
+    boolean isEnabled();
+
+    void setArmed(boolean armed);
+
+    boolean isArmed();
+
+    void setMnemonic(int mnemonic);
+
+    int getMnemonic();
+
+    void setGroup(ButtonGroup group);
+
+    void setActionCommand(String command);
+
+    String getActionCommand();
 }
-

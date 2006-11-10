@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Graphics;
@@ -61,6 +58,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
                     implements AccessibleAction, AccessibleValue, AccessibleText,
                     AccessibleExtendedComponent, Serializable {
 
+        @Override
         public AccessibleKeyBinding getAccessibleKeyBinding() {
             return null;
         }
@@ -69,29 +67,36 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
             return 1;
         }
 
+        @Override
         public String getToolTipText() {
             return AbstractButton.this.getToolTipText();
         }
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
 
+        @Override
         public AccessibleText getAccessibleText() {
             return null;
         }
 
+        @Override
         public String getAccessibleName() {
             return (super.getAccessibleName() != null) ? super.getAccessibleName() : getText();
         }
 
+        @Override
         public AccessibleRelationSet getAccessibleRelationSet() {
             return super.getAccessibleRelationSet();
         }
 
+        @Override
         public String getTitledBorderText() {
             return super.getTitledBorderText();
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet set = super.getAccessibleStateSet();
             if (isSelected()) {
@@ -101,6 +106,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
             return set;
         }
 
+        @Override
         public AccessibleIcon[] getAccessibleIcon() {
             if (icon != null && icon instanceof ImageIcon) {
                 return new AccessibleIcon[] { (AccessibleIcon)((ImageIcon)icon).getAccessibleContext() };
@@ -109,6 +115,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
             return null;
         }
 
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
@@ -249,6 +256,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     public static final String DISABLED_SELECTED_ICON_CHANGED_PROPERTY = "disabledSelectedIcon";
 
     private static final Object ALL_ACTION_PROPERTIES = new Object() {  //$NON-LOCK-1$
+        @Override
         public boolean equals(final Object o) {
             return true;
         }
@@ -256,7 +264,9 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
 
     private static final Action CLEAR_ACTION_PROPERTIES = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {}
+        @Override
         public void putValue(final String name, final Object value) {}
+        @Override
         public void setEnabled(final boolean enabled) {}
     };
 
@@ -331,7 +341,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList.getListeners(ChangeListener.class);
+        return listenerList.getListeners(ChangeListener.class);
     }
 
     protected ChangeListener createChangeListener() {
@@ -545,9 +555,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
         }
     }
 
-    /**
-     * @deprecated
-     */
+    @Deprecated
     public void setLabel(final String label) {
         setText(label);
     }
@@ -568,9 +576,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
         return text;
     }
 
-    /**
-     * @deprecated
-     */
+    @Deprecated
     public String getLabel() {
         return getText();
     }
@@ -593,7 +599,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     }
 
     public ItemListener[] getItemListeners() {
-        return (ItemListener[])listenerList.getListeners(ItemListener.class);
+        return listenerList.getListeners(ItemListener.class);
     }
 
     protected ItemListener createItemListener() {
@@ -619,7 +625,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[])listenerList.getListeners(ActionListener.class);
+        return listenerList.getListeners(ActionListener.class);
     }
 
     protected ActionListener createActionListener() {
@@ -647,6 +653,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
         return margin;
     }
 
+    @Override
     public boolean imageUpdate(final Image img, final int infoflags, final int x, final int y, final int w, final int h) {
         Icon curIcon = ButtonCommons.getCurrentIcon(this);
         if ((curIcon == null) ||
@@ -658,6 +665,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
         return super.imageUpdate(img, infoflags, x, y, w, h);
     }
 
+    @Override
     protected void paintBorder(final Graphics g) {
         if (isBorderPainted()) {
             super.paintBorder(g);
@@ -712,6 +720,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
         firePropertyChange(FOCUS_PAINTED_CHANGED_PROPERTY, oldValue, painted);
     }
 
+    @Override
     public void setEnabled(final boolean enabled) {
         model.setEnabled(enabled);
         super.setEnabled(enabled);

@@ -14,30 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.util.EventObject;
 import javax.swing.event.CellEditorListener;
 
 public interface CellEditor {
+    void addCellEditorListener(CellEditorListener l);
 
-    public void addCellEditorListener(final CellEditorListener l);
+    void cancelCellEditing();
 
-    public void cancelCellEditing();
+    Object getCellEditorValue();
 
-    public Object getCellEditorValue();
+    boolean isCellEditable(EventObject anEvent);
 
-    public boolean isCellEditable(final EventObject anEvent);
+    void removeCellEditorListener(CellEditorListener l);
 
-    public void removeCellEditorListener(final CellEditorListener l);
+    boolean shouldSelectCell(EventObject anEvent);
 
-    public boolean shouldSelectCell(final EventObject anEvent);
-
-    public boolean stopCellEditing();
-
+    boolean stopCellEditing();
 }
-

@@ -14,12 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- * Created on 07.07.2005
- *
- */
+
 package javax.swing;
 
 import java.awt.Component;
@@ -27,9 +22,10 @@ import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
 
 class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
-
     private final FocusTraversalPolicy ancestor;
+
     private final Component fixedComponent;
+
     private final Component fixedNextComponent;
 
     /**
@@ -41,8 +37,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
      * @throws <code>IllegalArgumentException</code> if <code>ancestor</code> is <code>null</code>
      */
     public BequestedFocusTraversalPolicy(final FocusTraversalPolicy ancestor,
-                                         final Component fixedComponent,
-                                         final Component fixedNextComponent) {
+            final Component fixedComponent, final Component fixedNextComponent) {
         super();
         this.ancestor = ancestor;
         if (this.ancestor == null) {
@@ -56,6 +51,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
      * returns <code>fixedNextComponent</code> for <code>fixedComponent</code> or
      * delegates call to <code>ancestor</code>
      */
+    @Override
     public Component getComponentAfter(final Container container, final Component c) {
         if (c == fixedComponent) {
             return fixedNextComponent;
@@ -67,6 +63,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
      * returns <code>fixedComponent</code> for <code>fixedNextComponent</code> or
      * delegates call to <code>ancestor</code>
      */
+    @Override
     public Component getComponentBefore(final Container container, final Component c) {
         if (c == fixedNextComponent) {
             return fixedComponent;
@@ -77,6 +74,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
     /**
      * delegates call to <code>ancestor</code>
      */
+    @Override
     public Component getDefaultComponent(final Container container) {
         return ancestor.getDefaultComponent(container);
     }
@@ -84,6 +82,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
     /**
      * delegates call to <code>ancestor</code>
      */
+    @Override
     public Component getFirstComponent(final Container container) {
         return ancestor.getFirstComponent(container);
     }
@@ -91,6 +90,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
     /**
      * delegates call to <code>ancestor</code>
      */
+    @Override
     public Component getLastComponent(final Container container) {
         return ancestor.getLastComponent(container);
     }

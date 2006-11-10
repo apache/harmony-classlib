@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.AWTError;
@@ -28,18 +25,23 @@ import java.awt.LayoutManager2;
 import java.io.Serializable;
 
 public class BoxLayout implements LayoutManager2, Serializable {
+    private static final long serialVersionUID = -2474455742719112368L;
 
     public static final int X_AXIS = 0;
+
     public static final int Y_AXIS = 1;
+
     public static final int LINE_AXIS = 2;
+
     public static final int PAGE_AXIS = 3;
 
     private final Container target;
-    transient private final LayoutParameters layoutParams;
+
+    private final transient LayoutParameters layoutParams;
 
     public BoxLayout(final Container target, final int axis) {
+        super();
         int alignment = axisToAlignment(target, axis);
-
         this.target = target;
         layoutParams = new LayoutParameters(target, alignment);
     }
@@ -51,21 +53,18 @@ public class BoxLayout implements LayoutManager2, Serializable {
     public Dimension preferredLayoutSize(final Container target) {
         checkTarget(target);
         layoutParams.calculateLayoutParameters();
-
         return layoutParams.preferredSize;
     }
 
     public Dimension minimumLayoutSize(final Container target) {
         checkTarget(target);
         layoutParams.calculateLayoutParameters();
-
         return layoutParams.minimumSize;
     }
 
     public Dimension maximumLayoutSize(final Container target) {
         checkTarget(target);
         layoutParams.calculateLayoutParameters();
-
         return layoutParams.maximumSize;
     }
 
@@ -81,14 +80,12 @@ public class BoxLayout implements LayoutManager2, Serializable {
     public synchronized float getLayoutAlignmentY(final Container target) {
         checkTarget(target);
         layoutParams.calculateLayoutParameters();
-
         return layoutParams.alignmentY;
     }
 
     public synchronized float getLayoutAlignmentX(final Container target) {
         checkTarget(target);
         layoutParams.calculateLayoutParameters();
-
         return layoutParams.alignmentX;
     }
 
@@ -113,13 +110,13 @@ public class BoxLayout implements LayoutManager2, Serializable {
             alignment = LayoutParameters.VERTICAL_ALIGNMENT;
         } else if (axis == LINE_AXIS) {
             if (target != null) {
-                alignment = target.getComponentOrientation().isHorizontal() ? LayoutParameters.HORIZONTAL_ALIGNMENT :
-                                                                              LayoutParameters.VERTICAL_ALIGNMENT;
+                alignment = target.getComponentOrientation().isHorizontal() ? LayoutParameters.HORIZONTAL_ALIGNMENT
+                        : LayoutParameters.VERTICAL_ALIGNMENT;
             }
-        } else if(axis == PAGE_AXIS) {
+        } else if (axis == PAGE_AXIS) {
             if (target != null) {
-                alignment = target.getComponentOrientation().isHorizontal() ? LayoutParameters.VERTICAL_ALIGNMENT :
-                                                                              LayoutParameters.HORIZONTAL_ALIGNMENT;
+                alignment = target.getComponentOrientation().isHorizontal() ? LayoutParameters.VERTICAL_ALIGNMENT
+                        : LayoutParameters.HORIZONTAL_ALIGNMENT;
             }
         } else {
             throw new AWTError("Invalid axis");
@@ -137,5 +134,4 @@ public class BoxLayout implements LayoutManager2, Serializable {
             throw new AWTError("BoxLayout should be used for one container only");
         }
     }
-
 }

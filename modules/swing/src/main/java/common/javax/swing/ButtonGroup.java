@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.io.Serializable;
@@ -25,8 +22,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 public class ButtonGroup implements Serializable {
+    private static final long serialVersionUID = 4259076101881721375L;
 
-    protected Vector<javax.swing.AbstractButton> buttons = new Vector<javax.swing.AbstractButton>();
+    protected Vector<AbstractButton> buttons = new Vector<AbstractButton>();
 
     private ButtonModel selection;
 
@@ -90,6 +88,4 @@ public class ButtonGroup implements Serializable {
             prevSelection.setSelected(false);
         }
     }
-
 }
-

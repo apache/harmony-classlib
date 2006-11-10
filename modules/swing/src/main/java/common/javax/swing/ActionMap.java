@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.io.Serializable;
@@ -26,14 +23,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class ActionMap implements Serializable {
+    private static final long serialVersionUID = -6277518704513986346L;
 
     private ActionMap parent;
-    private HashMap table;
+
+    private HashMap<Object, Action> table;
 
     public void put(final Object key, final Action action) {
         if (action != null) {
             if (table == null) {
-                table = new HashMap();
+                table = new HashMap<Object, Action>();
             }
             table.put(key, action);
         } else {
@@ -44,12 +43,11 @@ public class ActionMap implements Serializable {
     public Action get(final Object key) {
         Action action = null;
         if (table != null) {
-            action = (Action)table.get(key);
+            action = table.get(key);
         }
         if (action == null && getParent() != null) {
             action = getParent().get(key);
         }
-
         return action;
     }
 
@@ -86,7 +84,7 @@ public class ActionMap implements Serializable {
         if (parentKeys.length == 0) {
             return keys;
         }
-        HashSet keySet = new HashSet(Arrays.asList(keys));
+        HashSet<Object> keySet = new HashSet<Object>(Arrays.asList(keys));
         keySet.addAll(Arrays.asList(parentKeys));
         return keySet.toArray(new Object[keySet.size()]);
     }
@@ -100,6 +98,4 @@ public class ActionMap implements Serializable {
     public int size() {
         return (table != null) ? table.size() : 0;
     }
-
 }
-

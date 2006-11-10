@@ -14,17 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
+
 package javax.swing;
 
 import javax.swing.event.ChangeListener;
 
 public interface BoundedRangeModel {
-
-    void addChangeListener(final ChangeListener x);
+    void addChangeListener(ChangeListener x);
 
     int getExtent();
 
@@ -36,20 +32,17 @@ public interface BoundedRangeModel {
 
     boolean getValueIsAdjusting();
 
-    void removeChangeListener(final ChangeListener x);
+    void removeChangeListener(ChangeListener x);
 
-    void setExtent(final int newExtent);
+    void setExtent(int newExtent);
 
-    void setMaximum(final int newMaximum);
+    void setMaximum(int newMaximum);
 
-    void setMinimum(final int newMinimum);
+    void setMinimum(int newMinimum);
 
-    void setRangeProperties(final int value, final int extent, final int min,
-                            final int max,
-            final boolean adjusting);
+    void setRangeProperties(int value, int extent, int min, int max, boolean adjusting);
 
-    void setValue(final int newValue);
+    void setValue(int newValue);
 
-    void setValueIsAdjusting(final boolean b);
-
+    void setValueIsAdjusting(boolean b);
 }

@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.AWTError;
@@ -30,26 +27,38 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
 public class Box extends JComponent implements Accessible {
+    private static final long serialVersionUID = 1525417495883046342L;
 
     protected class AccessibleBox extends Container.AccessibleAWTContainer {
+        private static final long serialVersionUID = -7676166747466316885L;
+
         protected AccessibleBox() {
+            super();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.FILLER;
         }
     };
 
     public static class Filler extends JComponent implements Accessible {
+        private static final long serialVersionUID = -1204263191910183998L;
 
         private Dimension minimumBoxSize;
+
         private Dimension preferredBoxSize;
+
         private Dimension maximumBoxSize;
 
         protected class AccessibleBoxFiller extends Component.AccessibleAWTComponent {
+            private static final long serialVersionUID = 2256123275413517188L;
+
             protected AccessibleBoxFiller() {
+                super();
             }
 
+            @Override
             public AccessibleRole getAccessibleRole() {
                 return AccessibleRole.FILLER;
             }
@@ -57,62 +66,62 @@ public class Box extends JComponent implements Accessible {
 
         protected AccessibleContext accessibleContext;
 
-        public Filler(final Dimension minimumSize, final Dimension preferredSize,
-                      final Dimension maximumSize) {
+        public Filler(Dimension minimumSize, Dimension preferredSize, Dimension maximumSize) {
             super();
-
             minimumBoxSize = minimumSize;
             preferredBoxSize = preferredSize;
             maximumBoxSize = maximumSize;
         }
 
-        public void changeShape(final Dimension minimumSize,
-                                final Dimension preferredSize,
-                                final Dimension maximumSize) {
+        public void changeShape(Dimension minimumSize, Dimension preferredSize,
+                Dimension maximumSize) {
             minimumBoxSize = minimumSize;
             preferredBoxSize = preferredSize;
             maximumBoxSize = maximumSize;
-
             invalidate();
         }
 
+        @Override
         public AccessibleContext getAccessibleContext() {
             return (accessibleContext == null) ? (accessibleContext = new AccessibleBoxFiller())
-                                               : accessibleContext;
+                    : accessibleContext;
         }
 
+        @Override
         public Dimension getPreferredSize() {
             return preferredBoxSize;
         }
 
+        @Override
         public Dimension getMinimumSize() {
             return minimumBoxSize;
         }
 
+        @Override
         public Dimension getMaximumSize() {
             return maximumBoxSize;
         }
-
     }
 
     protected AccessibleContext accessibleContext;
 
-    public Box(final int axisType) {
+    public Box(int axisType) {
         super.setLayout(new BoxLayout(this, axisType));
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return (accessibleContext == null) ? (accessibleContext = new AccessibleBox())
-                                           : accessibleContext;
+                : accessibleContext;
     }
 
-    public void setLayout(final LayoutManager layout) {
+    @Override
+    public void setLayout(LayoutManager layout) {
         throw new AWTError("Illegal request");
     }
 
-    public static Component createRigidArea(final Dimension size) {
-        return new Filler(new Dimension(size), new Dimension(size),
-                          new Dimension(size));
+    public static Component createRigidArea(Dimension size) {
+        return new Filler(new Dimension(size), new Dimension(size), new Dimension(size));
     }
 
     public static Box createVerticalBox() {
@@ -123,30 +132,28 @@ public class Box extends JComponent implements Accessible {
         return new Box(BoxLayout.X_AXIS);
     }
 
-    public static Component createVerticalStrut(final int height) {
-        return new Filler(new Dimension(0, height), new Dimension(0, height),
-                          new Dimension(Short.MAX_VALUE, height));
+    public static Component createVerticalStrut(int height) {
+        return new Filler(new Dimension(0, height), new Dimension(0, height), new Dimension(
+                Short.MAX_VALUE, height));
     }
 
-    public static Component createHorizontalStrut(final int width) {
-        return new Filler(new Dimension(width, 0), new Dimension(width, 0),
-                          new Dimension(width, Short.MAX_VALUE));
+    public static Component createHorizontalStrut(int width) {
+        return new Filler(new Dimension(width, 0), new Dimension(width, 0), new Dimension(
+                width, Short.MAX_VALUE));
     }
 
     public static Component createVerticalGlue() {
-        return new Filler(new Dimension(0, 0), new Dimension(0, 0),
-                          new Dimension(0, Short.MAX_VALUE));
+        return new Filler(new Dimension(0, 0), new Dimension(0, 0), new Dimension(0,
+                Short.MAX_VALUE));
     }
 
     public static Component createHorizontalGlue() {
-        return new Filler(new Dimension(0, 0), new Dimension(0, 0),
-                          new Dimension(Short.MAX_VALUE, 0));
+        return new Filler(new Dimension(0, 0), new Dimension(0, 0), new Dimension(
+                Short.MAX_VALUE, 0));
     }
 
     public static Component createGlue() {
-        return new Filler(new Dimension(0, 0), new Dimension(0, 0),
-                          new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        return new Filler(new Dimension(0, 0), new Dimension(0, 0), new Dimension(
+                Short.MAX_VALUE, Short.MAX_VALUE));
     }
-
 }
-

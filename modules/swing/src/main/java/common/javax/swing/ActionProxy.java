@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.event.ActionEvent;
@@ -25,11 +22,14 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 final class ActionProxy implements Action, Serializable {
     private final String command;
+
     private final ActionListener listener;
 
     public ActionProxy(final String command, final ActionListener listener) {
+        super();
         this.command = command;
         this.listener = listener;
     }
@@ -64,4 +64,3 @@ final class ActionProxy implements Action, Serializable {
         listener.actionPerformed(event);
     }
 }
-

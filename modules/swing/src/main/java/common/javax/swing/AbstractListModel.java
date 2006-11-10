@@ -15,16 +15,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.io.Serializable;
-import java.util.EventListener;
-
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -41,7 +34,7 @@ public abstract class AbstractListModel implements ListModel, Serializable {
     }
 
     public ListDataListener[] getListDataListeners() {
-        return (ListDataListener[])getListeners(ListDataListener.class);
+        return getListeners(ListDataListener.class);
     }
 
     public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {

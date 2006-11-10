@@ -48,8 +48,11 @@ import org.apache.harmony.x.swing.BlitSupport;
 
 
 public class JViewport extends JComponent implements Accessible {
-
+    private static final long serialVersionUID = -633250949788872287L;
+    
     protected class ViewListener extends ComponentAdapter implements Serializable {
+        private static final long serialVersionUID = 6947347842254105360L;
+        
         @Override
         public void componentResized(final ComponentEvent e) {
             fireStateChanged();
@@ -58,6 +61,8 @@ public class JViewport extends JComponent implements Accessible {
     }
 
     protected class AccessibleJViewport extends AccessibleJComponent {
+        private static final long serialVersionUID = 481322936279100213L;
+        
         @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.VIEWPORT;

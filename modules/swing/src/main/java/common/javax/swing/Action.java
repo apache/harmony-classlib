@@ -15,39 +15,37 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
 public interface Action extends ActionListener {
+    String DEFAULT = "Default";
 
-    public static final String DEFAULT = "Default";
-    public static final String NAME = "Name";
-    public static final String SHORT_DESCRIPTION = "ShortDescription";
-    public static final String LONG_DESCRIPTION = "LongDescription";
-    public static final String SMALL_ICON = "SmallIcon";
-    public static final String ACTION_COMMAND_KEY = "ActionCommandKey";
-    public static final String ACCELERATOR_KEY = "AcceleratorKey";
-    public static final String MNEMONIC_KEY = "MnemonicKey";
+    String NAME = "Name";
 
-    public void putValue(final String key, final Object value);
+    String SHORT_DESCRIPTION = "ShortDescription";
 
-    public Object getValue(final String key);
+    String LONG_DESCRIPTION = "LongDescription";
 
-    public void removePropertyChangeListener(final PropertyChangeListener l);
+    String SMALL_ICON = "SmallIcon";
 
-    public void addPropertyChangeListener(final PropertyChangeListener l);
+    String ACTION_COMMAND_KEY = "ActionCommandKey";
 
-    public void setEnabled(final boolean b);
+    String ACCELERATOR_KEY = "AcceleratorKey";
 
-    public boolean isEnabled();
+    String MNEMONIC_KEY = "MnemonicKey";
 
+    void putValue(String key, Object value);
+
+    Object getValue(String key);
+
+    void removePropertyChangeListener(PropertyChangeListener l);
+
+    void addPropertyChangeListener(PropertyChangeListener l);
+
+    void setEnabled(boolean b);
+
+    boolean isEnabled();
 }
-
-
