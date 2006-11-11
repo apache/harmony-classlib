@@ -20,6 +20,7 @@ package org.apache.harmony.text.tests.java.text;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.AttributedCharacterIterator;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
@@ -27,7 +28,6 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
-
 import junit.framework.TestCase;
 import tests.support.Support_BitSet;
 import tests.support.Support_DecimalFormat;
@@ -35,6 +35,13 @@ import tests.util.SerializationTester;
 
 public class DecimalFormatTest extends TestCase {
 
+    public void testAttributedCharacterIterator() throws Exception {
+        // Regression for http://issues.apache.org/jira/browse/HARMONY-333
+        AttributedCharacterIterator iterator = new DecimalFormat().formatToCharacterIterator(new Integer(1));
+        assertNotNull(iterator);
+        assertFalse("attributes should exist", iterator.getAttributes().isEmpty());
+    } 
+    
     /*
      * Test the getter and setter of parseBigDecimal and parseIntegerOnly and
      * test the default value of them.
