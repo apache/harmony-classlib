@@ -105,7 +105,7 @@ public class DriverManagerTest extends TestCase {
 					testClassLoader);
 
 			// Give the Helper class one of our drivers....
-			Class[] methodClasses = { Class.forName("java.sql.Driver") };
+			Class<?>[] methodClasses = { Class.forName("java.sql.Driver") };
 			Method theMethod = driverClass.getDeclaredMethod("setDriver",
 					methodClasses);
 			Object[] args = { aDriver };
