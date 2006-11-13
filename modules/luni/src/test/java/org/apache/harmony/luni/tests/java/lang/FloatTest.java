@@ -994,6 +994,9 @@ public class FloatTest extends TestCase {
         assertEquals("0x1.295788p23", Float.toHexString(9743299.65000F));
         assertEquals("0x1.295788p23", Float.toHexString(9743299.650001234F));
         assertEquals("0x1.700d1p33", Float.toHexString(12349743299.65000F));
+        
+        // test HARMONY-2132
+        assertEquals("0x1.01p10", Float.toHexString(0x1.01p10f));
     }
 
     /**

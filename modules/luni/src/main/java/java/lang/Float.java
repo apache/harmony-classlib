@@ -456,7 +456,7 @@ public final class Float extends Number implements Comparable<Float> {
         }
 
         int bitValue = floatToIntBits(f);
-
+        
         boolean negative = (bitValue & 0x80000000) != 0;
         // mask exponent bits and shift down
         int exponent = (bitValue & 0x7f800000) >>> 23;
@@ -489,7 +489,7 @@ public final class Float extends Number implements Comparable<Float> {
             String hexSignificand = Integer.toHexString(significand);
 
             // if there are digits left, then insert some '0' chars first
-            if (fractionDigits > hexSignificand.length()) {
+            if (significand != 0 && fractionDigits > hexSignificand.length()) {
                 int digitDiff = fractionDigits - hexSignificand.length();
                 while (digitDiff-- != 0) {
                     hexString.append('0');
@@ -499,14 +499,24 @@ public final class Float extends Number implements Comparable<Float> {
             hexString.append("p-126");
         } else { // normal value
             hexString.append("1.");
+            // significand is 23-bits, so there can be 6 hex digits
+            int fractionDigits = 6;
             // remove trailing hex zeros, so Integer.toHexString() won't print
             // them
             while ((significand != 0) && ((significand & 0xF) == 0)) {
                 significand >>>= 4;
+                fractionDigits--;
             }
             // this assumes Integer.toHexString() returns lowercase characters
             String hexSignificand = Integer.toHexString(significand);
 
+            // if there are digits left, then insert some '0' chars first
+            if (significand != 0 && fractionDigits > hexSignificand.length()) {
+                int digitDiff = fractionDigits - hexSignificand.length();
+                while (digitDiff-- != 0) {
+                    hexString.append('0');
+                }
+            }
             hexString.append(hexSignificand);
             hexString.append('p');
             // remove exponent's 'bias' and convert to a string

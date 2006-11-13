@@ -1383,6 +1383,9 @@ public class DoubleTest extends TestCase {
         assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65000D));
         assertEquals("0x1.2957874cccf63p23", Double.toHexString(9743299.650001234D));
         assertEquals("0x1.700d1061d3333p33", Double.toHexString(12349743299.65000D));
+        
+        // test HARMONY-2132
+        assertEquals("0x1.01p10", Double.toHexString(0x1.01p10));
     }
 
     /**

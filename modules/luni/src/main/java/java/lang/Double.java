@@ -477,7 +477,7 @@ public final class Double extends Number implements Comparable<Double> {
             String hexSignificand = Long.toHexString(significand);
 
             // if there are digits left, then insert some '0' chars first
-            if (fractionDigits > hexSignificand.length()) {
+            if (significand != 0 && fractionDigits > hexSignificand.length()) {
                 int digitDiff = fractionDigits - hexSignificand.length();
                 while (digitDiff-- != 0) {
                     hexString.append('0');
@@ -487,13 +487,24 @@ public final class Double extends Number implements Comparable<Double> {
             hexString.append("p-1022");
         } else { // normal value
             hexString.append("1.");
+            // significand is 52-bits, so there can be 13 hex digits
+            int fractionDigits = 13;
             // remove trailing hex zeros, so Integer.toHexString() won't print
             // them
             while ((significand != 0) && ((significand & 0xF) == 0)) {
                 significand >>>= 4;
+                fractionDigits--;
             }
             // this assumes Integer.toHexString() returns lowercase characters
             String hexSignificand = Long.toHexString(significand);
+            
+            // if there are digits left, then insert some '0' chars first
+            if (significand != 0 && fractionDigits > hexSignificand.length()) {
+                int digitDiff = fractionDigits - hexSignificand.length();
+                while (digitDiff-- != 0) {
+                    hexString.append('0');
+                }
+            }
 
             hexString.append(hexSignificand);
             hexString.append('p');
