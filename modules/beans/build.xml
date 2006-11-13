@@ -241,10 +241,8 @@
 
                 <fileset dir="${hy.beans.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/EventHandlerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/DefaultPersistenceDelegateTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EncoderTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/EventHandlerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java" />
