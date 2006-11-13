@@ -17,6 +17,8 @@
 
 package java.math;
 
+import org.apache.harmony.math.internal.nls.Messages;
+
 /**
  * Static library that provides all operations related with division and modular
  * arithmetic to {@link BigInteger}. Some methos are provided in both mutable
@@ -377,47 +379,68 @@ class Division {
     }
 
     /**
-     * Return the greatest common divisor of op1 and op2, based in The Binary
-     * GCD Algorithm of D. Knuth.
+     * @param m a positive modulus
+     * Return the greatest common divisor of op1 and op2,
      * 
-     * @param op1 must be greater than zero
-     * @param op2 must be greater than zero
+     * @param op1
+     *            must be greater than zero
+     * @param op2
+     *            must be greater than zero
      * @see BigInteger#gcd(BigInteger)
-     * @ar.org.fitc.ref "The Art of Computer Programming Vo.2, Section 4.5.2,
-     *                  Algorithm B by D. Knuth."
      * @return {@code GCD(op1, op2)}
      */
     static BigInteger gcdBinary(BigInteger op1, BigInteger op2) {
         // PRE: (op1 > 0) and (op2 > 0)
+        
         /*
          * Divide both number the maximal possible times by 2 without rounding
-         * gcd(2*a, 2*b) = 2 * gcd(a,n)
+                 * gcd(2*a, 2*b) = 2 * gcd(a,b)
          */
         int lsb1 = op1.getLowestSetBit();
         int lsb2 = op2.getLowestSetBit();
         int pow2Count = Math.min(lsb1, lsb2);
 
-        if (lsb1 != 0) {
             BitLevel.inplaceShiftRight(op1, lsb1);
-        }
-        if (lsb2 != 0) {
             BitLevel.inplaceShiftRight(op2, lsb2);
+        
+        BigInteger swap;
+        // I want op2 > op1
+        if (op1.compareTo(op2) == BigInteger.GREATER) {
+            swap = op1;
+            op1 = op2;
+            op2 = swap;
+        } 
+        
+        do { // INV: op2 >= op1 && both are odd unless op1 = 0
+            
+            // Optimization for small operands
+            // (op2.bitLength() < 64) implies by INV (op1.bitLength() < 64)
+            if (( op2.numberLength == 1 )
+            || ( ( op2.numberLength == 2 ) && ( op2.digits[1] > 0 ) )) {
+                op2 = BigInteger.valueOf(Division.gcdBinary(op1.longValue(),
+                        op2.longValue()));
+                break;
         }
-        do {// gcd(2*k+1,2*n) = gcd(2*k+1, n)
-            lsb1 = op1.getLowestSetBit();
-            if (lsb1 != 0) {
-                BitLevel.inplaceShiftRight(op1, lsb1);
+            
+            // Implements one step of the Euclidean algorithm
+            // To reduce one operand if it's much smaller than the other one
+            if (op2.numberLength > op1.numberLength * 1.2) {
+                op2 = op2.remainder(op1);
+                if (op2.signum() != 0) {
+                    BitLevel.inplaceShiftRight(op2, op2.getLowestSetBit());
             }
-            // gcd(2*n,2*k+1) = gcd(n,2*k+1)
-            lsb2 = op2.getLowestSetBit();
-            if (lsb2 != 0) {
-                BitLevel.inplaceShiftRight(op2, lsb2);
-            }
-            if (op1.compareTo(op2) >= BigInteger.EQUALS) {
-                Elementary.inplaceSubtract(op1, op2);
             } else {
-                Elementary.inplaceSubtract(op2, op1);
+                
+                // Use Knuth's algorithm of sucessive subtract and shifting
+                do {
+                    Elementary.inplaceSubtract(op2, op1); // both are odd
+                    BitLevel.inplaceShiftRight(op2, op2.getLowestSetBit()); // op2 is even
+                } while (op2.compareTo(op1) >= BigInteger.EQUALS);
             }
+            // now op1 >= op2
+            swap = op2;
+            op2 = op1;
+            op1 = swap;
         } while (op1.sign != 0);
         return op2.shiftLeft(pow2Count);
     }
@@ -427,8 +450,10 @@ class Division {
      * with numbers of 63 bits, represented in positives values of {@code long}
      * type.
      * 
-     * @param op1 a postive number
-     * @param op2 a postive number
+     * @param op1
+     *            a postive number
+     * @param op2
+     *            a postive number
      * @see #gcdBinary(BigInteger, BigInteger)
      * @return <code>GCD(op1, op2)</code>
      */
@@ -445,99 +470,290 @@ class Division {
             op2 >>>= lsb2;
         }
         do {
-            lsb1 = Long.numberOfTrailingZeros(op1);
-            if (lsb1 != 0) {
-                op1 >>>= lsb1;
-            }
-            lsb2 = Long.numberOfTrailingZeros(op2);
-            if (lsb2 != 0) {
-                op2 >>>= lsb2;
-            }
             if (op1 >= op2) {
                 op1 -= op2;
+                op1 >>>= Long.numberOfTrailingZeros(op1);
             } else {
                 op2 -= op1;
+                op2 >>>= Long.numberOfTrailingZeros(op2);
             }
         } while (op1 != 0);
-        return (op2 << pow2Count);
-    }
-
-    /**
-     * Implements the "Shifting Euclidean modular inverse algorithm".
-     * 
-     * @see BigInteger#modInverse(BigInteger)
-     * @param a a positive number
-     * @param m a positive modulus
-     * @ar.org.fitc.ref "Laszlo Hars - Modular Inverse Algorithms Without
-     *                  Multiplications for Cryptographic Applications"
-     */
-    static BigInteger modInverse(BigInteger a, BigInteger m) {
-        // PRE: (a > 0) and (m > 0)
-        BigInteger u, v, r, s, temp;
-        // u = MAX(a,m), v = MIN(a,m)
-        if (a.compareTo(m) == BigInteger.LESS) {
-            u = m;
-            v = a;
-            r = BigInteger.ZERO;
-            s = BigInteger.ONE;
-        } else {
-            v = m;
-            u = a;
-            s = BigInteger.ZERO;
-            r = BigInteger.ONE;
-        }
-        int uLen = u.bitLength();
-        int vLen = v.bitLength();
-        int f = uLen - vLen;
-
-        while (vLen > 1) {
-            if (u.sign == v.sign) {
-                u = u.subtract(v.shiftLeft(f));
-                r = r.subtract(s.shiftLeft(f));
-            } else {
-                u = u.add(v.shiftLeft(f));
-                r = r.add(s.shiftLeft(f));
-            }
-            uLen = u.abs().bitLength();
-            vLen = v.abs().bitLength();
-            f = uLen - vLen;
-            if (f < 0) {
-                // SWAP(u,v)
-                temp = u;
-                u = v;
-                v = temp;
-                // SWAP(r,s)
-                temp = r;
-                r = s;
-                s = temp;
-
-                f = -f;
-                vLen = uLen;
-            }
-        }
-        if (v.sign == 0) {
-            return BigInteger.ZERO;
-        }
-        if (v.sign < 0) {
-            s = s.negate();
-        }
-        if (s.compareTo(m) == BigInteger.GREATER) {
-            return s.subtract(m);
-        }
-        if (s.sign < 0) {
-            return s.add(m);
-        }
-        return s; // a^(-1) mod m
+        return ( op2 << pow2Count );
     }
 
     
-    /*Implements the Montgomery modular exponentiation based in <i>The square and multiply algorithm and the
-     * Montgomery Reduction</i>.
-     *@ar.org.fitc.ref "C. K. Koc - Analyzing and Comparing Montgomery
-     *                  Multiplication Algorithms"
-     *@see #oddModPow(BigInteger, BigInteger,
-     *                           BigInteger)
+    
+    
+    /**
+     * Calculates a.modInverse(p) Based on: Savas, E; Koc, C "The Montgomery Modular
+     * Inverse - Revisted"
      */
+    static BigInteger modInverseMontgomery(BigInteger a, BigInteger p) {
+
+        if (a.sign == 0){
+            // ZERO hasn't inverse
+            // math.19: BigInteger not invertible
+            throw new ArithmeticException(Messages.getString("math.19"));
+            }
+        
+        
+        if (!p.testBit(0)){
+            // montgomery inverse require even modulo
+            return modInverseLorencz(a, p);
+        }
+        
+        int m = p.numberLength * 32;
+        
+        Object[] save = almostMonInv(a, p);
+        BigInteger r = ( (BigInteger) save[0] );
+        int k = ( (Integer) save[1] ).intValue();
+//		assert ( k >= n && k <= m + n );
+        
+        long n1 = calcN(p);
+        
+        if (k > m) {
+            r = monPro(r, BigInteger.ONE, p, n1);
+            k = k - m;
+//			assert k < m;
+        }
+        r = monPro(r, BigInteger.ONE.shiftLeft(m - k), p, n1);
+        return r;
+        }
+    
+    /**
+     * Calculate the first digit of the inverse
+     */
+    private static long calcN(BigInteger a) {
+        long m0 = a.digits[0] & 0xFFFFFFFFL;
+        long n2 = 1L; // this is a'[0]
+        long powerOfTwo = 2L;
+        
+        do {
+            if (( ( m0 * n2 ) & powerOfTwo ) != 0) {
+                n2 |= powerOfTwo;
+        }
+            powerOfTwo <<= 1;
+        } while (powerOfTwo < 0x100000000L);
+        n2 = -n2;
+        return n2;
+        }
+    
+    /**
+     * Used for an intermediate result of the modInverse algorithm
+     * @return the pair: ((BigInteger)r, (Integer)k) where r == a^(-1) * 2^k mod (module)
+     */
+    private static Object[] almostMonInv(BigInteger a, BigInteger module) {
+        // PRE: a \in [1, p - 1]
+        BigInteger u, v, r, s;
+        // make copy to use inplace method
+        u = module.copy();
+        v = a.copy();
+        
+        int max = Math.max(v.numberLength, u.numberLength);
+        r = new BigInteger(1, 1, new int[max + 1]);
+        s = new BigInteger(1, 1, new int[max + 1]);
+        s.digits[0] = 1;
+        // s == 1 && v == 0
+        
+        int k = 0;
+        
+        int lsbu = u.getLowestSetBit();
+        int lsbv = v.getLowestSetBit();
+        int toShift;
+        
+        if (lsbu > lsbv) {
+            BitLevel.inplaceShiftRight(u, lsbu);
+            BitLevel.inplaceShiftRight(v, lsbv);
+            BitLevel.inplaceShiftLeft(r, lsbv);
+            k += lsbu - lsbv;
+        } else {
+            BitLevel.inplaceShiftRight(u, lsbu);
+            BitLevel.inplaceShiftRight(v, lsbv);
+            BitLevel.inplaceShiftLeft(s, lsbu);
+            k += lsbv - lsbu;
+            
+    }
+
+        r.sign = 1;
+        while (v.signum() > 0) {
+            // INV v >= 0, u >= 0, v odd, u odd (excepto last iteration when v is even (0))
+    
+            while (u.compareTo(v) > BigInteger.EQUALS) {
+                Elementary.inplaceSubtract(u, v);
+                toShift = u.getLowestSetBit();
+                BitLevel.inplaceShiftRight(u, toShift);
+                Elementary.inplaceAdd(r, s);
+                BitLevel.inplaceShiftLeft(s, toShift);
+                k += toShift;
+                
+            }
+            
+            while (u.compareTo(v) <= BigInteger.EQUALS) {
+                Elementary.inplaceSubtract(v, u);
+                if (v.signum() == 0)
+                    break;
+                toShift = v.getLowestSetBit();
+                BitLevel.inplaceShiftRight(v, toShift);
+                Elementary.inplaceAdd(s, r);
+                BitLevel.inplaceShiftLeft(r, toShift);
+                k += toShift;
+                
+            }
+            
+        }
+        if (!u.isOne()){
+            // in u is stored the gcd
+            // math.19: BigInteger not invertible.
+            throw new ArithmeticException(Messages.getString("math.19"));
+        }
+        
+        if (r.compareTo(module) >= BigInteger.EQUALS) {
+            Elementary.inplaceSubtract(r, module);
+        }
+        r = module.subtract(r);
+        
+        return new Object[] { r, k };
+    }
+    
+    /**
+     * @return bi == abs(2^exp)
+     */
+    private static boolean isPowerOfTwo(BigInteger bi, int exp) {
+        boolean result = false;
+        result = ( exp >> 5 == bi.numberLength - 1 )
+        && ( bi.digits[bi.numberLength - 1] == 1 << ( exp & 31 ) );
+        if (result) {
+            for (int i = 0; result && i < bi.numberLength - 1; i++) {
+                result = bi.digits[i] == 0;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Calculate how many iteration of Lorencz's algorithm would perform the
+     * same operation
+     *
+     * @param bi
+     * @param n
+     * @return
+     */
+    private static int howManyIterations(BigInteger bi, int n) {
+        int i = n - 1;
+        if (bi.sign > 0) {
+            while (!bi.testBit(i))
+                i--;
+            return n - 1 - i;
+        } else {
+            while (bi.testBit(i))
+                i--;
+            return n - 1 - Math.max(i, bi.getLowestSetBit());
+        }
+        
+    }
+    
+    /**
+     *
+     * Based on "New Algorithm for Classical Modular Inverse" Róbert Lórencz.
+     * LNCS 2523 (2002)
+     *
+     * @return a^(-1) mod m
+     */
+    static BigInteger modInverseLorencz(BigInteger a, BigInteger modulo) {
+        // PRE: a is coprime with modulo, a < modulo
+        
+        int max = Math.max(a.numberLength, modulo.numberLength);
+        int uDigits[] = new int[max + 1]; // enough place to make all the inplace operation
+        int vDigits[] = new int[max + 1];
+        System.arraycopy(modulo.digits, 0, uDigits, 0, modulo.numberLength);
+        System.arraycopy(a.digits, 0, vDigits, 0, a.numberLength);
+        BigInteger u = new BigInteger(modulo.sign, modulo.numberLength,
+                uDigits);
+        BigInteger v = new BigInteger(a.sign, a.numberLength, vDigits);
+        
+        BigInteger r = new BigInteger(0, 1, new int[max + 1]); // BigInteger.ZERO;
+        BigInteger s = new BigInteger(1, 1, new int[max + 1]);
+        s.digits[0] = 1;
+        // r == 0 && s == 1, but with enough place
+        
+        int coefU = 0, coefV = 0;
+        int n = modulo.bitLength();
+        int k;
+        while (!isPowerOfTwo(u, coefU) && !isPowerOfTwo(v, coefV)) {
+            
+            // modification of orignal algorithm: I calculate how many times the algorithm will enter in the same branch of if
+            k = howManyIterations(u, n);
+            
+            if (k != 0) {
+                BitLevel.inplaceShiftLeft(u, k);
+                if (coefU >= coefV) {
+                    BitLevel.inplaceShiftLeft(r, k);
+                } else {
+                    BitLevel.inplaceShiftRight(s, Math.min(coefV - coefU, k));
+                    if (k - ( coefV - coefU ) > 0) {
+                        BitLevel.inplaceShiftLeft(r, k - coefV + coefU);
+                    }
+                }
+                coefU += k;
+            }
+            
+            k = howManyIterations(v, n);
+            if (k != 0) {
+                BitLevel.inplaceShiftLeft(v, k);
+                if (coefV >= coefU) {
+                    BitLevel.inplaceShiftLeft(s, k);
+                } else {
+                    BitLevel.inplaceShiftRight(r, Math.min(coefU - coefV, k));
+                    if (k - ( coefU - coefV ) > 0) {
+                        BitLevel.inplaceShiftLeft(s, k - coefU + coefV);
+                    }
+                }
+                coefV += k;
+                
+            }
+            
+            if (u.signum() == v.signum()) {
+                if (coefU <= coefV) {
+                    Elementary.completeInPlaceSubtract(u, v);
+                    Elementary.completeInPlaceSubtract(r, s);
+                } else {
+                    Elementary.completeInPlaceSubtract(v, u);
+                    Elementary.completeInPlaceSubtract(s, r);
+                }
+            } else {
+                if (coefU <= coefV) {
+                    Elementary.completeInPlaceAdd(u, v);
+                    Elementary.completeInPlaceAdd(r, s);
+                } else {
+                    Elementary.completeInPlaceAdd(v, u);
+                    Elementary.completeInPlaceAdd(s, r);
+                }
+            }
+            if (v.signum() == 0 || u.signum() == 0){
+                // math.19: BigInteger not invertible
+                throw new ArithmeticException(Messages.getString("math.19"));
+            }
+        }
+        
+        if (isPowerOfTwo(v, coefV)) {
+            r = s;
+            if (v.signum() != u.signum())
+                u = u.negate();
+        }
+        if (u.testBit(n)) {
+            if (r.signum() < 0) {
+                r = r.negate();
+            } else {
+                r = modulo.subtract(r);
+            }
+        }
+        if (r.signum() < 0) {
+            r = r.add(modulo);
+        }
+        
+        return r;
+    }
+    
     static BigInteger squareAndMultiply(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, long n2  ){
         BigInteger res = x2;
         for (int i = exponent.bitLength() - 1; i >= 0; i--) {

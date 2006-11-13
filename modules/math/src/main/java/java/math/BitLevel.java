@@ -115,8 +115,9 @@ class BitLevel {
     /** @see BigInteger#shiftLeft(int) */
     static BigInteger shiftLeft(BigInteger source, int count) {
         int intCount = count >> 5;
-        count &= 31;
-        int resLength = source.numberLength + intCount + ((count == 0) ? 0 : 1);
+        count &= 31; // %= 32
+        int resLength = source.numberLength + intCount
+                + ( ( count == 0 ) ? 0 : 1 );
         int resDigits[] = new int[resLength];
 
         shiftLeft(resDigits, source.digits, intCount, count);
@@ -126,8 +127,23 @@ class BitLevel {
     }
 
     /**
-     * Shifts left an array of integers. Total shift distance in bits is
-     * intCount * 32 + count
+     * Performs {@code val <<= count}.
+     */
+    // val should have enough place (and one digit more)
+    static void inplaceShiftLeft(BigInteger val, int count) {
+        int intCount = count >> 5; // count of integers
+        val.numberLength += intCount
+                + ( Integer
+                .numberOfLeadingZeros(val.digits[val.numberLength - 1])
+                - ( count & 31 ) >= 0 ? 0 : 1 );
+        shiftLeft(val.digits, val.digits, intCount, count & 31);
+        val.cutOffLeadingZeroes();
+        val.unCache();
+    }
+    
+    /**
+     * Abstractly shifts left an array of integers in little endian (i.e. shift
+     * it right). Total shift distance in bits is intCount * 32 + count
      * 
      * @param result the destination array
      * @param source the source array
@@ -146,6 +162,10 @@ class BitLevel {
                 result[i] |= source[i - intCount - 1] >>> rightShiftCount;
                 result[i - 1] = source[i - intCount - 1] << count;
             }
+        }
+        
+        for (int i = 0; i < intCount; i++) {
+            result[i] = 0;
         }
     }
 
@@ -188,40 +208,69 @@ class BitLevel {
      * Performs {@code val >>= count} where {@code val} is a positive number.
      */
     static void inplaceShiftRight(BigInteger val, int count) {
-        // PRE: val > 0
+        int sign = val.signum();
+        if (count == 0 || val.signum() == 0)
+            return;
         int intCount = count >> 5; // count of integers
         val.numberLength -= intCount;
-        shiftRight(val.digits, val.numberLength, val.digits, intCount,
-                count & 31);
+        if (!shiftRight(val.digits, val.numberLength, val.digits, intCount,
+                count & 31)
+                && sign < 0) {
+            // remainder not zero: add one to the result
+            int i;
+            for (i = 0; ( i < val.numberLength ) && ( val.digits[i] == -1 ); i++) {
+                val.digits[i] = 0;
+            }
+            if (i == val.numberLength) {
+                val.numberLength++;
+            }
+            val.digits[i]++;
+        }
         val.cutOffLeadingZeroes();
+        val.unCache();
     }
 
     /**
      * Shifts right an array of integers. Total shift distance in bits is
      * intCount * 32 + count.
      * 
-     * @param result the destination array
-     * @param resultLen the destination array's length
-     * @param source the source array
-     * @param intCount the number of elements to be shifted
-     * @param count the number of bits to be shifted
+     * @param result
+     *            the destination array
+     * @param resultLen
+     *            the destination array's length
+     * @param source
+     *            the source array
+     * @param intCount
+     *            the number of elements to be shifted
+     * @param count
+     *            the number of bits to be shifted
+     * @return dropped bit's are all zero (i.e. remaider is zero)
      */
-    static void shiftRight(int result[], int resultLen, int source[],
+    static boolean shiftRight(int result[], int resultLen, int source[],
             int intCount, int count) {
+        int i;
+        boolean allZero = true;
+        for (i = 0; i < intCount; i++)
+            allZero &= source[i] == 0;
         if (count == 0) {
             System.arraycopy(source, intCount, result, 0, resultLen);
+            i = resultLen;
         } else {
-            int i;
             int leftShiftCount = 32 - count;
 
+            allZero &= ( source[i] << leftShiftCount ) == 0;
             for (i = 0; i < resultLen - 1; i++) {
-                result[i] = (source[i + intCount] >>> count)
-                        | (source[i + intCount + 1] << leftShiftCount);
+                result[i] = ( source[i + intCount] >>> count )
+                | ( source[i + intCount + 1] << leftShiftCount );
             }
-            result[i] = (source[i + intCount] >>> count);
+            result[i] = ( source[i + intCount] >>> count );
+            i++;
         }
+        
+        return allZero;
     }
 
+    
     /**
      * Performs a flipBit on the BigInteger, returning a BigInteger with the the
      * specified bit flipped.

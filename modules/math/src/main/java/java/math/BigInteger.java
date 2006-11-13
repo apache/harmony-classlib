@@ -569,34 +569,23 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         BigInteger val1 = this.abs();
         BigInteger val2 = val.abs();
         // To avoid a possible division by zero
-        if (sign == 0) {
+        if (val1.signum() == 0) {
             return val2;
-        }
-        if (val.sign == 0) {
+        } else if (val2.signum() == 0) {
             return val1;
         }
-        /* Implements one step of the Euclidean algorithm
-         * To reduce some operand if it's much smaller than the other one */
-        if (val1.numberLength > val2.numberLength) {
-            val1 = val1.remainder(val2);
-            if (val1.sign == 0) {
-                return val2;
-            }
-        } else if (val2.numberLength > val1.numberLength) {
-            val2 = val2.remainder(val1);
-            if (val2.sign == 0) {
-                return val1;
-            }
+        	
+        // Optimization for small operands
+        // (op2.bitLength() < 64) and (op1.bitLength() < 64)
+    	if ((( val1.numberLength == 1 )
+    			|| ( ( val1.numberLength == 2 ) && ( val1.digits[1] > 0 ) ))
+            && (val2.numberLength == 1 || (val2.numberLength == 2 && val2.digits[1] > 0) )) {
+                return BigInteger.valueOf(Division.gcdBinary(val1.longValue(),
+                        val2.longValue()));
         }
-        /* Optimization for small operands
-         * (val1.bitLength() < 64)   and   (val2.bitLength() < 64) */
-        if (((val1.numberLength == 1) || ((val1.numberLength == 2) && (val1.digits[1] > 0)))
-                && ((val2.numberLength == 1) || ((val2.numberLength == 2) && (val2.digits[1] > 0)))) {
-            return BigInteger.valueOf(Division.gcdBinary(val1.longValue(), val2
-                    .longValue()));
-        }
-        // Now 'val1' and 'val2' will be muttable
+    	
         return Division.gcdBinary(val1.copy(), val2.copy());
+    
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -740,20 +729,24 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             throw new ArithmeticException(Messages.getString("math.18")); //$NON-NLS-1$
         }
         // If both are even, no inverse exists
-        if (!(testBit(0) || m.testBit(0))) {
+        if (!( testBit(0) || m.testBit(0) )) {
             // math.19=BigInteger not invertible.
             throw new ArithmeticException(Messages.getString("math.19")); //$NON-NLS-1$
         }
         if (m.isOne()) {
             return ZERO;
         }
+        
         // From now on: (m > 1)
-        BigInteger res = Division.modInverse(abs(), m);
+        BigInteger res = Division.modInverseMontgomery(abs().mod(m), m);
         if (res.sign == 0) {
             // math.19=BigInteger not invertible.
             throw new ArithmeticException(Messages.getString("math.19")); //$NON-NLS-1$
         }
-        return ((sign < 0) ? m.subtract(res) : res);
+        
+        res = ( ( sign < 0 ) ? m.subtract(res) : res );
+        return res;
+        
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -941,4 +934,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         out.defaultWriteObject();
     }
 
+    
+    void unCache(){
+    	firstNonzeroDigit = -2;
+    }
 }
