@@ -16,13 +16,16 @@
 
 #include <jni.h>
 
+JNIEXPORT jobject JNICALL NewDirectByteBuffer(JNIEnv * , void*, jlong );
+JNIEXPORT void* JNICALL GetDirectBufferAddress(JNIEnv * , jobject );
+JNIEXPORT jlong JNICALL GetDirectBufferCapacity(JNIEnv * , jobject );
+
 /*
- * For JNI
- * Method:    NewDirectByteBuffer
- * Signature: (JJ)Ljava/nio/ByteBuffer;
+ * Reference implementation of NewDirectByteBuffer() functionality (JNI 1.4 NIO support).
+ * To be included to JNI function table either directly or wrapped.
  */
-jobject NewDirectByteBuffer
-  (JNIEnv * env, jlong address, jlong capacity){
+JNIEXPORT jobject JNICALL NewDirectByteBuffer
+  (JNIEnv * env, void* address, jlong capacity){
 	  jmethodID newBufferMethod;
 	  jclass directBufferClass;
 	  jclass platformaddressClass;
@@ -37,7 +40,7 @@ jobject NewDirectByteBuffer
 	  if (!newBufferMethod){
 	      	  return NULL;
 	  }
-	  platformaddressClass = (*env)->FindClass (env, "org/apache/harmony/luni/platform/PlatformAddress");
+	  platformaddressClass = (*env)->FindClass (env, "org/apache/harmony/luni/platform/PlatformAddressFactory");
 	  if (!platformaddressClass){
 	      	  return NULL;
 	  }
@@ -46,16 +49,17 @@ jobject NewDirectByteBuffer
 	  if (!onMethod){
 	      	  return NULL;
 	  }
-	  platformaddress = (*env)->CallStaticObjectMethod(env, platformaddressClass, onMethod, address);
-	  return (*env)->NewObject(env, directBufferClass, newBufferMethod, platformaddress, capacity, 0);
+	  platformaddress = (*env)->CallStaticObjectMethod(env, platformaddressClass, onMethod, (jlong)address);
+	  return (*env)->NewObject(env, directBufferClass, newBufferMethod, 
+                                platformaddress, (jint)capacity, (jint)0);
   }
 
 /*
- * For JNI
- * Method:    GetDirectBufferAddress
- * Signature: (Ljava/nio/Buffer;)J
+ * Reference implementation of GetDirectBufferAddress() functionality 
+ * (JNI 1.4 NIO support).
+ * To be included to JNI function table either directly or wrapped.
  */
-jlong GetDirectBufferAddress
+JNIEXPORT void* JNICALL GetDirectBufferAddress
   (JNIEnv * env, jobject buf){
 	  jmethodID tempMethod;
 	  jclass tempClass;
@@ -85,15 +89,15 @@ jlong GetDirectBufferAddress
 	  if (!toLongMethod){
 	      	  return 0;
 	  }
-	  return  (*env)->CallLongMethod(env, platformAddr, toLongMethod);	  
+	  return (void*)(*env)->CallLongMethod(env, platformAddr, toLongMethod);	  
   }
 
 /*
- * For JNI
- * Method:    GetDirectBufferCapacity
- * Signature: (Ljava/nio/Buffer;)J
+ * Reference implementation of GetDirectBufferCapacity() functionality 
+ * (JNI 1.4 NIO support).
+ * To be included to JNI function table either directly or wrapped.
  */
-jlong GetDirectBufferCapacity
+JNIEXPORT jlong JNICALL GetDirectBufferCapacity
   (JNIEnv * env, jobject buf){
 	  jfieldID fieldCapacity;
 	  jclass directBufferClass;
@@ -116,5 +120,3 @@ jlong GetDirectBufferCapacity
 	  }
 	  return (*env)->GetIntField(env, buf, fieldCapacity);
   }
-
-
