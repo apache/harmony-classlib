@@ -854,6 +854,7 @@ public class EventHandlerTest extends TestCase {
         PropertyChangeSupport support = new PropertyChangeSupport(fish);
         Object proxy = EventHandler.create(PropertyChangeListener.class,
                 target, "a", "source.booleanObject");
+        
         support.addPropertyChangeListener((PropertyChangeListener) proxy);
         PropertyChangeEvent event = new PropertyChangeEvent(fish, "name", "1",
                 "5");
@@ -962,6 +963,54 @@ public class EventHandlerTest extends TestCase {
                 .fireFredEvent(new FredEvent("bean2"));
     }
 
+    
+    /**
+     * Checks some invalid property cases
+     * Regression for HARMONY-1884 
+     */
+    public void testInvalidProperties_HY1884() {
+        BeanWithInvalidProps bean = new BeanWithInvalidProps(); 
+        Object proxy;  
+
+        // "prop1" and "prop2" is neither the name of valid property nor the 
+        // name of any public method 
+        
+        // setter without parameter
+        proxy = EventHandler.create( 
+                PropertyChangeListener.class, bean, "prop1");
+        try { 
+            ((PropertyChangeListener) proxy).propertyChange( 
+                    new PropertyChangeEvent(bean, "prop1", "1", "2")); 
+            //fail(); 
+        } catch (Exception e) { 
+            // expected 
+        } 
+
+        // "is" prefix for big Boolean
+        proxy = EventHandler.create( 
+                PropertyChangeListener.class, bean, "goodProp3", "source.prop2");
+        try { 
+            ((PropertyChangeListener) proxy).propertyChange( 
+                    new PropertyChangeEvent(bean, "goodProp3", true, false)); 
+            fail(); 
+        } catch (Exception e) { 
+            // expected 
+        } 
+    }
+    
+    public static class BeanWithInvalidProps {
+        // setter should have a parameter
+        public void setProp1() {}
+        
+        // Introspector doesn't support "is" prefix for big Boolean 
+        public Boolean isProp2() {
+            return new Boolean(true);
+        }
+
+        // needed to test prop2
+        public void setGoodProp3(boolean value) {}
+    }
+    
     public interface FredListener extends EventListener {
 
         public void fireFredEvent(FredEvent event);
@@ -1016,8 +1065,8 @@ public class EventHandlerTest extends TestCase {
             return true;
         }
 
-        public Boolean isBooleanObject() {
-            return new Boolean(true);
+        public boolean isBooleanObject() {
+            return true;
         }
 
         public int getInt() {
