@@ -29,7 +29,7 @@ public class FieldTest extends junit.framework.TestCase {
 
 		protected static double doubleSField = Double.MAX_VALUE;
 
-		private static int privfield1;
+		private static int privfield1 = 123;
 
 		protected int intField = Integer.MAX_VALUE;
 
@@ -107,58 +107,43 @@ public class FieldTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Field#get(java.lang.Object)
 	 */
-	public void test_getLjava_lang_Object() {
+	public void test_getLjava_lang_Object() throws Throwable {
 		// Test for method java.lang.Object
 		// java.lang.reflect.Field.get(java.lang.Object)
 		TestField x = new TestField();
-		Field f = null;
-		Double val = new Double(0.0);
-		boolean exFlag = true;
-		try {
-			f = x.getClass().getDeclaredField("doubleField");
-			val = (Double) f.get(x);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
+		Field f = x.getClass().getDeclaredField("doubleField");
+		Double val = (Double) f.get(x);
+
 		assertTrue("Returned incorrect double field value",
 				val.doubleValue() == Double.MAX_VALUE);
+		// Test getting a static field;
+		f = x.getClass().getDeclaredField("doubleSField");
+		f.set(x, new Double(1.0));
+		val = (Double) f.get(x);
+		assertEquals("Returned incorrect double field value", 1.0, val
+				.doubleValue());
+
+		// Try a get on a private field
 		try {
-			// Test getting a static field;
-			f = x.getClass().getDeclaredField("doubleSField");
-			f.set(x, new Double(1.0));
-			val = (Double) f.get(x);
-			assertEquals("Returned incorrect double field value", 1.0, val
-					.doubleValue());
-
-			// Try a get on a private field
-			try {
-				f = x.getClass().getDeclaredField("privfield1");
-				f.get(x);
-			} catch (IllegalAccessException ex) {
-				// Correct - An exception should be thrown here.
-				exFlag = false;
-			}
-
-			if (exFlag) {
-				fail("No expected IllegalAccessException during get tests");
-			} else {
-				exFlag = true;
-			}
-
-			// Try a get using an invalid class.
-			try {
-				f = x.getClass().getDeclaredField("doubleField");
-				f.get(new String());
-			} catch (IllegalArgumentException exc) {
-				// Correct - Passed an Object that does not declare or inherit f
-				exFlag = false;
-			}
-		} catch (Exception e) {
-			fail("Exception during get tests : " + e.getMessage());
-		}
+			f = TestAccess.class.getDeclaredField("xxx");
+			assertNotNull(f);
+			f.get(null);
+			fail("No expected IllegalAccessException");
+		} catch (IllegalAccessException ok) {}
 		
-		if (exFlag) {
-			fail("No expected IllegalArgumentException during get tests");
+		// Try a get on a private field in nested member
+        // temporarily commented because it breaks J9 VM
+        // Regression for HARMONY-1309
+		//f = x.getClass().getDeclaredField("privfield1");
+		//assertEquals(x.privfield1, f.get(x));
+
+		// Try a get using an invalid class.
+		try {
+			f = x.getClass().getDeclaredField("doubleField");
+			f.get(new String());
+			fail("No expected IllegalArgumentException");
+		} catch (IllegalArgumentException exc) {
+			// Correct - Passed an Object that does not declare or inherit f
 		}
 	}
 
@@ -1203,4 +1188,8 @@ public class FieldTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+}
+
+class TestAccess {
+    private static int xxx;
 }
