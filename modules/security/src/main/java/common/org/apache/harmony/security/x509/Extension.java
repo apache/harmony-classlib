@@ -23,25 +23,15 @@
 package org.apache.harmony.security.x509;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
-import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Boolean;
-import org.apache.harmony.security.asn1.ASN1Enumerated;
-import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
-import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
-import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
-import org.apache.harmony.security.asn1.BitString;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
-import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.utils.Array;
 
 /**
