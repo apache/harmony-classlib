@@ -186,7 +186,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 								entry = entry.next;
 							}
 							if (entry != null) {
-								entry = lastEntry.next;
+								entry.next = lastEntry.next;
 								removed = true;
 							}
 						}

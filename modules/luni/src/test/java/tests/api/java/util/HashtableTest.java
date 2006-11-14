@@ -633,6 +633,28 @@ public class HashtableTest extends junit.framework.TestCase {
 				"Removing from the values collection should remove from the original map",
 				!myHashtable.containsValue(new Integer(0)));
 	}
+    
+    /**
+     * Regression Test for JIRA 2181
+     */
+    public void test_entrySet_remove()
+    {
+        Hashtable<String,String> hashtable = new Hashtable<String,String>();
+        hashtable.put("my.nonexistent.prop", "AAA");
+        hashtable.put( "parse.error", "BBB" );
+        Iterator<Map.Entry<String,String>> iterator = 
+            hashtable.entrySet().iterator();
+        while(iterator.hasNext())
+        {
+            Map.Entry entry = iterator.next();
+            final Object value = entry.getValue();           
+            if(value.equals("AAA"))
+            {
+               iterator.remove();
+            }
+        }
+        assertFalse(hashtable.containsKey("my.nonexistent.prop"));
+    }
 
 	protected Hashtable hashtableClone(Hashtable s) {
 		return (Hashtable) s.clone();
