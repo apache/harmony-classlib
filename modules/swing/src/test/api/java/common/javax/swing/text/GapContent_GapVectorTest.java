@@ -14,11 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import junit.framework.TestCase;
@@ -26,7 +21,7 @@ import junit.framework.TestCase;
 public class GapContent_GapVectorTest extends TestCase {
     private GapContent gv;
 
-
+    @Override
     protected void setUp() throws BadLocationException {
         gv = new GapContent(20);
         gv.insertString(0, "abcdefghij");
@@ -79,9 +74,15 @@ public class GapContent_GapVectorTest extends TestCase {
         assertEquals(1, gv.getGapStart());
     }
 
+    public void testInsertStringEnd() throws BadLocationException {
+        gv.insertString(11, "z");
+        assertEquals(12, gv.getGapStart());
+        assertEquals("abcdefghij\nz", gv.getString(0, gv.length()));
+    }
+
     public void testInsertStringInvalid() {
         try {
-            gv.insertString(11, "z");
+            gv.insertString(12, "z");
 
             fail("BadLocationException must be thrown");
         } catch (BadLocationException e) { }
