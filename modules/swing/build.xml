@@ -228,7 +228,6 @@
                     <exclude name="javax/swing/plaf/basic/BasicSplitPaneUITest.java"/>
                     <exclude name="javax/swing/plaf/metal/MetalComboBoxUITest.java"/>
                     <exclude name="javax/swing/plaf/metal/MetalLookAndFeelTest.java"/>
-                    <exclude name="javax/swing/text/GapContent_GapVectorTest.java"/>
                     <exclude name="javax/swing/text/GlyphView_AttributesTest.java"/>
                     <exclude name="org/apache/harmony/x/swing/plaf/resources/basic/BasicResourceBundleTest.java"/>
 
