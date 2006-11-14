@@ -155,6 +155,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			t1.join();
 		} catch (InterruptedException e) {
 		}
+		// cleanup
+		tg.destroy();
 	}
 
 	/**
@@ -339,7 +341,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		ThreadGroup testRoot = new ThreadGroup(originalCurrent, "Test group");
 
 		boolean passed = true;
-		passed = true;
 		try {
 			testRoot.setMaxPriority(Thread.MIN_PRIORITY);
 		} catch (IllegalArgumentException iae) {
@@ -450,7 +451,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// java.lang.Thread
 		boolean result = wipeSideEffectThreads(originalCurrent);
 		if (result == false) {
-            System.out.println("wipe threads in test_list() not successful");
+            fail("wipe threads in test_list() not successful");
         }
 		final ThreadGroup testRoot = new ThreadGroup(originalCurrent,
 				"Test group");
@@ -467,7 +468,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			System.setOut(newOut);
 
 			originalCurrent.list();
-			byte[] contents = contentsStream.toByteArray();
 
 			/*
 			 * The output has to look like this
@@ -477,15 +477,13 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			 * 
 			 */
 
-			boolean passed = verifyThreadList(originalCurrent, testRoot,
-					contents);
-
-			assertTrue(
-					"Either 'list' is wrong or other tests are leaving side-effects.\n"
-							+ "Result from list:\n " + "-----------------\n "
-							+ new String(contents, 0, contents.length)
-							+ "\n-----------------\n ", passed);
-
+            String contents = new String(contentsStream.toByteArray());
+            boolean passed = (contents.indexOf("ThreadGroup[name=main") != -1) &&
+                             (contents.indexOf("Thread[") != -1) &&
+                             (contents.indexOf("ThreadGroup[name=Test group") != -1);
+            assertTrue("'list()' does not print expected contents. " 
+                    + "Result from list: "
+                    + contents, passed);
 			// Do proper cleanup
 			testRoot.destroy();
 
@@ -853,7 +851,22 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 			// We can't destroy a ThreadGroup if we do not make sure it has no
 			// threads at all
-
+            testRoot.stop();
+            long waitTime = 5000;
+            for (int i = 0; i < threads.size(); i++) {
+                Thread t = threads.elementAt(i);
+                while (t.isAlive() && waitTime >= 0) {
+                   try {
+                      Thread.sleep(10);
+                      waitTime -= 10;
+                   } catch (InterruptedException e) {
+                      fail("unexpected interruption");
+                   }
+                }
+                if (waitTime < 0) {
+                   fail("stop() has not stopped threads in ThreadGroup 'testRoot'");
+                }
+             }
 			// Make sure we cleanup before returning from the method
 			testRoot.destroy();
 		}
@@ -1314,29 +1327,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		asyncBuildRandomTreeUnder(aGroup, depth, result);
 		return result;
 
-	}
-
-	private boolean verifyThreadList(ThreadGroup root,
-			ThreadGroup onlyChildGroup, byte[] listOutput) {
-		// We expect that @root has only 1 subgroup, @onlyChildGroup. The
-		// output from  method 'list' is stored in @listOutput
-		if (listOutput.length == 0) {
-			return false;
-		}
-
-		// If we got a long output, it means some previous test must have left
-		// side-effects (more subgroups and threads);
-		final int MAX_SIZE = 200;
-		if (listOutput.length > MAX_SIZE) {
-			return false;
-		}
-
-		// Here we compare actual result to expected result
-
-		// Due to extremely weak API in String, comparing substrings, etc would
-		// take too much work at this time.
-		// We defer the actual implementation for now.
-		return true;
 	}
 
 	private boolean allSuspended(Vector<MyThread> threads) {
