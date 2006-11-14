@@ -417,9 +417,10 @@ public class IntrospectorTest extends TestCase {
         BeanInfo info = Introspector.getBeanInfo(MockFoo.class,
                 MockFooStop.class);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        assertEquals(1, pds.length);
-        assertEquals("name", pds[0].getName());
-        assertEquals(String.class, pds[0].getPropertyType());
+
+        assertEquals(2, pds.length);
+        assertTrue(contains("name", String.class, pds));
+        assertTrue(contains("complexLabel", MockFooLabel.class, pds));
     }
 
     public void testGetBeanInfoClassClass_Method()
@@ -427,11 +428,12 @@ public class IntrospectorTest extends TestCase {
         BeanInfo info = Introspector.getBeanInfo(MockFoo.class,
                 MockFooStop.class);
         MethodDescriptor[] mds = info.getMethodDescriptors();
-        assertEquals(2, mds.length);
-
-        for (MethodDescriptor element : mds) {
-            assertTrue(element.getName().endsWith("Name"));
-        }
+        
+        assertEquals(4, mds.length);
+        assertTrue(contains("getName", mds));
+        assertTrue(contains("setName", mds));
+        assertTrue(contains("getComplexLabel", mds));
+        assertTrue(contains("setComplexLabel", mds));
     }
 
     public void testGetBeanInfoClassClass_StopNull()
@@ -581,11 +583,10 @@ public class IntrospectorTest extends TestCase {
         BeanInfo info = Introspector.getBeanInfo(MockFooSub.class,
                 Introspector.IGNORE_IMMEDIATE_BEANINFO);
         EventSetDescriptor[] esds = info.getEventSetDescriptors();
-        assertEquals(1, esds.length);
-        for (EventSetDescriptor element : esds) {
-            String name = element.getName();
-            assertEquals("mockPropertyChange.MockFooChildBeanInfo", name);
-        }
+
+        assertEquals(2, esds.length);
+        assertTrue(contains("mockPropertyChange", esds));
+        assertTrue(contains("mockPropertyChange.MockFooChildBeanInfo", esds));
     }
 
     /*
@@ -641,7 +642,9 @@ public class IntrospectorTest extends TestCase {
         BeanInfo info = Introspector.getBeanInfo(MockFooSub.class,
                 Introspector.IGNORE_ALL_BEANINFO);
         EventSetDescriptor[] esds = info.getEventSetDescriptors();
-        assertEquals(0, esds.length);
+
+        assertEquals(1, esds.length);
+        assertTrue(contains("mockPropertyChange", esds));
     }
 
     /*
@@ -1451,7 +1454,7 @@ public class IntrospectorTest extends TestCase {
         }
     }
 
-    private void assertBeanInfoEquals(BeanInfo beanInfo, BeanInfo info) {
+    private static void assertBeanInfoEquals(BeanInfo beanInfo, BeanInfo info) {
         // compare BeanDescriptor
         assertEquals(beanInfo.getBeanDescriptor().getDisplayName(), info
                 .getBeanDescriptor().getDisplayName());
@@ -1501,6 +1504,43 @@ public class IntrospectorTest extends TestCase {
 
     }
 
+    private static boolean contains(String propName, Class<?> propClass,
+            PropertyDescriptor[] pds)
+    {
+        for (PropertyDescriptor pd : pds) {
+            if (propName.equals(pd.getName()) &&
+                    propClass.equals(pd.getPropertyType())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private static boolean contains(String methodName,
+            MethodDescriptor[] mds)
+    {
+        for (MethodDescriptor md : mds) {
+            if (methodName.equals(md.getName())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private static boolean contains(String methodName,
+            EventSetDescriptor[] esds)
+    {
+        for (EventSetDescriptor esd : esds) {
+            if (methodName.equals(esd.getName())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     /*
      * The following classes are used to test introspect properties
      */

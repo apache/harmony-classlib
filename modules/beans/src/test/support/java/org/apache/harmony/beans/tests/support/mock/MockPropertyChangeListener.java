@@ -17,10 +17,12 @@
 
 package org.apache.harmony.beans.tests.support.mock;
 
+import java.util.EventListener;
+
 /**
  * TODO Type description
  */
-public interface MockPropertyChangeListener {
+public interface MockPropertyChangeListener extends EventListener {
     /*
      * fire MockPropertyChange event.
      */

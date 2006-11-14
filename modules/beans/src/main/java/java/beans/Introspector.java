@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
+
 public class Introspector {
 
     public static final int USE_ALL_BEANINFO = 1;
@@ -106,12 +109,23 @@ public class Introspector {
 
     private static BeanInfoWrapper getBeanInfo(Class<?> beanClass,
             Class<?> stopClass, boolean ignoreBeanClassBeanInfo,
-            boolean ignoreSuperClassBeanInfo) {
+            boolean ignoreSuperClassBeanInfo) throws IntrospectionException {
+        BeanInfoWrapper beanInfoWrapper;
+        BeanInfo beanInfo;
+        BeanInfoImpl beanInfoImpl;
+        BeanInfoWrapper wrapper;
+        Class<?> parent;
+        
         if (beanClass == null) {
             throw new java.lang.NullPointerException();
         }
+        
+        if (stopClass != null && !stopClass.isAssignableFrom(beanClass)) {
+            throw new IntrospectionException(
+                    Messages.getString("beans.4E")); //$NON-NLS-1$
+        }
 
-        BeanInfoWrapper beanInfoWrapper = findBeanInfoClassInCache(beanClass,
+        beanInfoWrapper = findBeanInfoClassInCache(beanClass,
                 stopClass, ignoreBeanClassBeanInfo, ignoreSuperClassBeanInfo);
 
         if (beanInfoWrapper != null) {
@@ -120,10 +134,12 @@ public class Introspector {
 
         // find bean info as a separate class
 
-        BeanInfo beanInfo = null;
+        beanInfo = null;
+
         if (!ignoreBeanClassBeanInfo) {
             try {
                 Class<?> beanInfoClass = findBeanInfoClass(beanClass);
+
                 if (beanInfoClass != null) {
                     beanInfo = (BeanInfo) beanInfoClass.newInstance();
                 }
@@ -135,14 +151,15 @@ public class Introspector {
 
         // generate bean info automatically
 
-        BeanInfoImpl beanInfoImpl = new BeanInfoImpl(beanClass);
+        beanInfoImpl = new BeanInfoImpl(beanClass);
 
         // ...
 
-        BeanInfoWrapper wrapper = new BeanInfoWrapper(beanInfo, beanInfoImpl);
+        wrapper = new BeanInfoWrapper(beanInfo, beanInfoImpl);
 
-        Class<?> parent = beanClass.getSuperclass();
-        if ((parent != null) && (parent != stopClass)) {
+        parent = beanClass.getSuperclass();
+        
+        if (parent != null && parent != stopClass) {
             BeanInfoWrapper parentBeanInfo = getBeanInfo(parent, stopClass,
                     ignoreSuperClassBeanInfo, ignoreSuperClassBeanInfo);
 
@@ -233,6 +250,7 @@ public class Introspector {
 
     private static String[] path = { "org.apache.harmony.beans.infos" }; //$NON-NLS-1$
 
-    private static final Map<String, List<BeanInfoData>> beanInfos = new HashMap<String, List<BeanInfoData>>();
+    private static final Map<String, List<BeanInfoData>> beanInfos =
+            new HashMap<String, List<BeanInfoData>>();
 
 }
