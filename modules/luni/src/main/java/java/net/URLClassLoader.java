@@ -1054,7 +1054,12 @@ public class URLClassLoader extends SecureClassLoader {
                                     name).toString();
                         }
 
-                        filename = URLDecoder.decode(filename, "UTF-8");
+                        //Just return null for caller to throw ClassNotFoundException.
+                        try {
+                            filename = URLDecoder.decode(filename, "UTF-8");
+                        } catch (IllegalArgumentException e) {
+                            return null;
+                        }
 
                         File file = new File(filename);
                         // Don't throw exceptions for speed

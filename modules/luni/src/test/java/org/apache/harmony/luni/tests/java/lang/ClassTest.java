@@ -148,6 +148,13 @@ public class ClassTest extends junit.framework.TestCase {
             fail();
         } catch (ClassNotFoundException e) {
         }
+        
+        //regression test for JIRA 2162
+        try {
+            Class.forName("%");
+            fail("should throw ClassNotFoundException.");
+        } catch (ClassNotFoundException e) {
+        }
     }
 
     /**
