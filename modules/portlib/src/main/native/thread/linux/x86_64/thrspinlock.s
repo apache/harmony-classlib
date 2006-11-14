@@ -42,7 +42,7 @@ HYTHREAD_MONITOR_SPINLOCK_UNOWNED = 0
 ## Defined in: #THREAD Args: 2
 
         .text
-        .align 4
+        .align 8
 hythread_spinlock_acquire:
         push %rbp
         mov %rsp, %rbp
@@ -79,7 +79,7 @@ hythread_spinlock_acquire:
         jnz .L3
         mov %rcx, 64(%rsp)                      ## save VMtemp3_1_3_(HyThreadAbstractMonitor->spinCount3)
         mov %rdx, 68(%rsp)                      ## save VMtemp3_1_2_(struct HyThreadAbstractMonitor*) in_HyVMThreadSpinlocks>>#hythread_spinlock_acquire
-        call hythread_yield
+        call hythread_yield@PLT
         mov 64(%rsp), %rcx                      ## load VMtemp3_1_3_(HyThreadAbstractMonitor->spinCount3)
         dec %rcx                                ## setFlags: true(Converted subtract 1 to dec)
         mov 68(%rsp), %rdx                      ## load VMtemp3_1_2_(struct HyThreadAbstractMonitor*) in_HyVMThreadSpinlocks>>#hythread_spinlock_acquire
@@ -100,7 +100,7 @@ END_hythread_spinlock_acquire:
 ## Defined in: #THREAD Args: 2
 
         .text
-        .align 4
+        .align 8
 hythread_spinlock_swapState:
         push %rbp
         mov %rsp, %rbp

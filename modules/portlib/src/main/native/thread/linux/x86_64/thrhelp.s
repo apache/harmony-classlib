@@ -41,7 +41,7 @@ eqSS_hythread_monitor_unpin = 64
         .type hythread_monitor_unpin,@function
 
         .text
-        .align 4
+        .align 8
 current_stack_depth:
         push %rbp
         mov %rsp, %rbp
@@ -73,7 +73,7 @@ END_current_stack_depth:
 ## Defined in: #THREAD Args: 2
 
         .text
-        .align 4
+        .align 8
 hythread_monitor_pin:
         push %rbp
         mov %rsp, %rbp
@@ -98,7 +98,7 @@ END_hythread_monitor_pin:
 ## Defined in: #THREAD Args: 2
 
         .text
-        .align 4
+        .align 8
 hythread_monitor_unpin:
         push %rbp
         mov %rsp, %rbp
