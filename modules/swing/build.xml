@@ -153,8 +153,8 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-               timeout="900000"
-               forkmode="perTest"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"
