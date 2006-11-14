@@ -186,7 +186,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
         @Override
         public boolean hasNext() {
-            return (node != null) && (cmp.compare(node.key, endKey) < 0);
+            return (node != null && endKey != null) && (cmp.compare(node.key, endKey) < 0);
         }
     }
 

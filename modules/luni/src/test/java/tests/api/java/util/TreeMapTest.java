@@ -18,6 +18,8 @@
 package tests.api.java.util;
 
 import java.io.Serializable;
+import java.text.CollationKey;
+import java.text.Collator;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
@@ -293,11 +295,33 @@ public class TreeMapTest extends junit.framework.TestCase {
         
         // Regression for Harmony-1066
         assertTrue(head instanceof Serializable);
+        
+        // Regression for ill-behaved collator
+        Collator c = new Collator() {
+            public int compare(String o1, String o2) {
+                if (o1 == null) {
+                    return 0;
+                }
+                return o1.compareTo(o2);
+            }
+
+            public CollationKey getCollationKey(String string) {
+                return null;
+            }
+
+            public int hashCode() {
+                return 0;
+            }
+        };
+
+        TreeMap<String, String> treemap = new TreeMap<String, String>(c);
+        treemap.put("key", "value"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(0, treemap.headMap(null).size());
 	}
 
 	/**
-	 * @tests java.util.TreeMap#keySet()
-	 */
+     * @tests java.util.TreeMap#keySet()
+     */
 	public void test_keySet() {
 		// Test for method java.util.Set java.util.TreeMap.keySet()
 		Set ks = tm.keySet();
