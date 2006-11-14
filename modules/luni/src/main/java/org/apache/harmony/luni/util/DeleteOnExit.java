@@ -35,6 +35,12 @@ public class DeleteOnExit {
 	}
 
 	public static void deleteOnExit() {
+        java.util.Collections.sort(deleteList,
+                new java.util.Comparator<String>() {
+                    public int compare(String s1, String s2) {
+                        return s2.length() - s1.length();
+                    }
+                });
 		for (int i = 0; i < deleteList.size(); i++) {
 			String name = deleteList.elementAt(i);
 			new File(name).delete();
