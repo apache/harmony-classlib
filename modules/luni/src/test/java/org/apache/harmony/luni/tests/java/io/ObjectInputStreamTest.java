@@ -161,7 +161,6 @@ public class ObjectInputStreamTest extends TestCase {
             fail("Should throw InvalidClassException");
         } catch (InvalidClassException ice) {
             // valid
-            ice.printStackTrace();
         }
     }
 }
