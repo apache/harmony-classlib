@@ -2,15 +2,7 @@ README
 ======
 
 
-This directory contain the Apache Harmony class library code.
-
-Apache Harmony is an effort undergoing incubation at the Apache Software
-Foundation (ASF). Incubation is required of all newly accepted projects
-until a further review indicates that the infrastructure, communications,
-and decision making process have stabilized in a manner consistent with
-other successful ASF projects. While incubation status is not necessarily
-a reflection of the completeness or stability of the code, it does indicate
-that the project has yet to be fully endorsed by the ASF.
+This directory contains the Apache Harmony class library code.
 
 
 Contents
@@ -33,6 +25,38 @@ following directories under <EXTRACT_DIR> :
               class library component files.
 
 *  support  - Java source files used to support test cases across various modules.
+
+
+Export Notice
+-------------
+
+This distribution includes cryptographic software.  The country in 
+which you currently reside may have restrictions on the import, 
+possession, use, and/or re-export to another country, of 
+encryption software.  BEFORE using any encryption software, please 
+check your country's laws, regulations and policies concerning the
+import, possession, or use, and re-export of encryption software, to 
+see if this is permitted.  See http://www.wassenaar.org/ for more
+information.
+
+The U.S. Government Department of Commerce, Bureau of Industry and
+Security (BIS), has classified this software as Export Commodity 
+Control Number (ECCN) 5D002.C.1, which includes information security
+software using or performing cryptographic functions with asymmetric
+algorithms.  The form and manner of this Apache Software Foundation
+distribution makes it eligible for export under the License Exception
+ENC Technology Software Unrestricted (TSU) exception (see the BIS 
+Export Administration Regulations, Section 740.13) for both object 
+code and source code.
+
+The following provides more details on the included cryptographic
+software:
+
+Apache Harmony contains code that is specifically designed to enable
+cryptography.  In particular Apache Harmony contains an implementation
+the Java cryptographic extensions.  In addition, binary distributions
+of Apache Harmony may contain cryptographic functionality provided by
+The Legion of the Bouncy Castle (http://www.bouncycastle.org).
 
 
 Pre-requisites for Building
@@ -80,7 +104,7 @@ Building
 The simplest way to get started is to change directory into <EXTRACT_DIR> and
 then type "ant" to run Apache Ant against the default target of the build.xml
 file. Provided that the required compilers are available, Ant will proceed to
-compile all the class library source code .
+compile all the class library source code.
 
 
 Building Java
@@ -177,6 +201,7 @@ element.
 The compiler can be set to "modern", as per the Ant manual, which will cause Ant
 to use the JDK's 'javac' tool.
 
+
 Options for ECJ compiler
 ------------------------
 
@@ -194,7 +219,6 @@ is only a subset of the Java 1.5 API.
 To test out the functionality of the built class library components a compatible
 VM needs to be obtained.  A compatible VM implements the Virtual Machine Interface
 as described in the documentation above.
-
 
 
 Troubleshooting & Known Problems
