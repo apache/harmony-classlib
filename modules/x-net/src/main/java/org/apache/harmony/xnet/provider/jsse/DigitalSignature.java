@@ -77,7 +77,7 @@ public class DigitalSignature {
                 // SignatureAlgorithm is rsa
                 md5 = MessageDigest.getInstance("MD5");
                 sha = MessageDigest.getInstance("SHA-1");
-                cipher = Cipher.getInstance("RSA");
+                cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             } else if (keyExchange == CipherSuite.KeyExchange_DHE_DSS ||
                     keyExchange == CipherSuite.KeyExchange_DHE_DSS_EXPORT ) {
                 // SignatureAlgorithm is dsa
