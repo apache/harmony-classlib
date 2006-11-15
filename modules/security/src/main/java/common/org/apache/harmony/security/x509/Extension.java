@@ -315,6 +315,8 @@ public class Extension {
             extnValueObject = new CRLNumber(extnValue);
         } else if (oidEquals(extnID, ISSUING_DISTR_POINTS)) {
             extnValueObject = IssuingDistributionPoint.decode(extnValue);
+        } else if (oidEquals(extnID, AUTHORITY_INFO_ACCESS)) {
+            extnValueObject = InfoAccessSyntax.decode(extnValue);
         }
     }
 
