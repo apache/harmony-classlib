@@ -114,7 +114,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   int i;
   char *vmdllsubdir;
   char *vmiPath = NULL;
-  char *newPathToAdd;
+  char *newPathToAdd = NULL;
   char *propertiesFileName = NULL;
   char *exeName = NULL;
   char *exeBaseName;
