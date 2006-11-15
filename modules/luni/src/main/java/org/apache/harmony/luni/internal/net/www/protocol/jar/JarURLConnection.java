@@ -21,6 +21,7 @@ package org.apache.harmony.luni.internal.net.www.protocol.jar;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.ReferenceQueue;
@@ -302,7 +303,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 			return jarInput;
 		if (jarEntry == null)
 			throw new IOException(Msg.getString("K00fc")); //$NON-NLS-1$
-		return jarInput = jarFile.getInputStream(jarEntry);
+		return jarInput = new JarURLConnectionInputStream(jarFile.getInputStream(jarEntry),jarFile);
 	}
 
 	/**
@@ -397,4 +398,35 @@ public class JarURLConnection extends java.net.JarURLConnection {
 			}
 		}
 	}
+    
+    private class JarURLConnectionInputStream extends FilterInputStream {
+        InputStream inputStream;
+        JarFile jarFile;
+
+        protected JarURLConnectionInputStream(InputStream in, JarFile file) {
+            super(in);
+            inputStream = in;
+            jarFile = file;
+        }
+
+        public void close() throws IOException {
+            super.close();
+            if (!useCaches) {
+                connected = false;
+                jarFile.close();
+            }
+        }
+       
+        public int read() throws IOException {
+            return inputStream.read();
+        }
+
+        public int read(byte[] buf, int off, int nbytes) throws IOException {
+            return inputStream.read(buf, off, nbytes);
+        }
+
+        public long skip(long nbytes) throws IOException {
+            return inputStream.skip(nbytes);
+        }
+    }
 }

@@ -17,13 +17,16 @@
 
 package tests.api.java.net;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -166,6 +169,31 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         assertEquals("Returned incorrect Attributes", "1.0", a
                 .get(java.util.jar.Attributes.Name.MANIFEST_VERSION));
     }
+    
+    /**
+     * @tests java.net.JarURLConnection#getInputStream()
+     */
+    public void test_getInputStream_DeleteJarFileUsingURLConnection()
+            throws Exception {
+        String jarFileName = "file.jar";
+        String entry = "text.txt";
+        File file = new File(jarFileName);
+        FileOutputStream jarFile = new FileOutputStream(jarFileName);
+        JarOutputStream out = new JarOutputStream(new BufferedOutputStream(
+                jarFile));
+        JarEntry jarEntry = new JarEntry(entry);
+        out.putNextEntry(jarEntry);
+        out.write(new byte[] { 'a', 'b', 'c' });
+        out.close();
+
+        URL url = new URL("jar:file:" + jarFileName + "!/" + entry);
+        URLConnection conn = url.openConnection();
+        conn.setUseCaches(false);
+        InputStream is = conn.getInputStream();
+        is.close();
+        assertTrue(file.delete());
+    }
+
 
 	protected void setUp() {
 	}
