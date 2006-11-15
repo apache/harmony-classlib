@@ -325,13 +325,8 @@ public class DTD implements DTDConstants {
         return result;
     }
 
-    /**
-     *
-     * @return if index < 0 or elements.size() <= index returns null.
-     */
     public Element getElement(final int index) {
-        return index >= 0 && index < elements.size() ? (Element)
-                elements.get(index) : null;
+        return elements.elementAt(index);
     }
 
     public Element getElement(final String name) {
