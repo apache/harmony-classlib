@@ -317,6 +317,8 @@ public class Extension {
             extnValueObject = IssuingDistributionPoint.decode(extnValue);
         } else if (oidEquals(extnID, AUTHORITY_INFO_ACCESS)) {
             extnValueObject = InfoAccessSyntax.decode(extnValue);
+        } else if (oidEquals(extnID, SUBJECT_INFO_ACCESS)) {
+            extnValueObject = InfoAccessSyntax.decode(extnValue);
         }
     }
 
