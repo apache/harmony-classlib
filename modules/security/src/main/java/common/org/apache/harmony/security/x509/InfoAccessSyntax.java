@@ -30,7 +30,7 @@ import org.apache.harmony.security.internal.nls.Messages;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work
- * with the SubjectInfoAccessSyntax and SubjectInfoAccessSyntax 
+ * with the SubjectInfoAccessSyntax and AuthorityInfoAccessSyntax 
  * which are a part of X.509 framework
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
