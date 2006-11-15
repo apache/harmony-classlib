@@ -612,6 +612,9 @@ public abstract class Calendar implements Serializable, Cloneable,
 		if (field == HOUR || field == HOUR_OF_DAY) {
             lastTimeFieldSet = field;
         }
+        if (field == AM_PM) {
+            lastTimeFieldSet = HOUR;
+        }
 	}
 
 	/**
