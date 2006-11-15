@@ -218,6 +218,11 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 }
             }
         }
+
+        if (imageSurf != null) {
+            imageSurf.invalidate();
+        }
+
         imageUpdate(this, ImageObserver.SOMEBITS, 0, 0, width, height);
     }
 
@@ -288,8 +293,12 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 }
             }
         }
-        imageUpdate(this, ImageObserver.SOMEBITS, 0, 0, width, height);
 
+        if (imageSurf != null) {
+            imageSurf.invalidate();
+        }
+
+        imageUpdate(this, ImageObserver.SOMEBITS, 0, 0, width, height);
     }
 
     public void setDimensions(int width, int height) {
