@@ -426,30 +426,44 @@ public class InitialContext implements Context {
         return getURLOrDefaultInitCtx(name).getNameParser(name);
     }
 
+    /**
+     * Composes the name of this context with a name relative to this context.
+     * Because an initial context could not be named relative to any context
+     * except itself, the value of the prefix parameter must be an empty name.
+     * 
+     * @param name
+     *            a name relative to this context.
+     * @param prefix
+     *            the name of this context relative to one of its ancestors.
+     * 
+     * @return the composition of prefix and name.
+     * @throws NamingException
+     *             if a naming exception happens.
+     */
     public Name composeName(Name name, Name prefix) throws NamingException {
         if (null == name) {
-            // jndi.02=Invalid name.
-            throw new InvalidNameException(Messages.getString("jndi.02"));  //$NON-NLS-1$
+            throw new NullPointerException();
         }
-        if (prefix == null) {
-            prefix = new CompositeName(""); //$NON-NLS-1$
-        }
-        Name comName = (Name) prefix.clone();
-        comName.addAll(name);
-        return comName;
+        return (Name) name.clone();
     }
 
+    /**
+     * Composes the name of this context with a name relative to this context.
+     * Because an initial context could not be named relative to any context
+     * except itself, the value of the prefix parameter must be an empty name.
+     * 
+     * @param name
+     *            a name relative to this context.
+     * @param prefix
+     *            the name of this context relative to one of its ancestors.
+     * 
+     * @return the composition of prefix and name.
+     * @throws NamingException
+     *             if a naming exception happens.
+     */
     public String composeName(String name, String prefix)
-        throws NamingException {
-        if (null == name) {
-            // jndi.02=Invalid name.
-            throw new InvalidNameException(Messages.getString("jndi.02"));  //$NON-NLS-1$
-        }
-        if (prefix == null) {
-            prefix = ""; //$NON-NLS-1$
-        }
-        return composeName(new CompositeName(name), new CompositeName(prefix))
-            .toString();
+            throws NamingException {
+        return name;
     }
 
     public Object addToEnvironment(String propName, Object propVal)

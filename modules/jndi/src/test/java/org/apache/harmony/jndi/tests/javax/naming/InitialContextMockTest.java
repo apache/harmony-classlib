@@ -178,17 +178,7 @@ public class InitialContextMockTest extends TestCase {
         gContext.composeName(name, pfx);
         // assertTrue(InvokeRecord.equals(null, name, pfx));
     }
-
-    public void testComposeName_name_null() throws NamingException {
-        log.setMethod("testComposeName_name_null");
-        Name empty = new CompositeName("");
-        try {
-            gContext.composeName((Name) null, empty);
-            fail("Should throw InvalidNameException.");
-        } catch (InvalidNameException e) {}
-        // assertFalse(InvokeRecord.equals(null, null, empty));
-    }
-
+    
     public void testComposeName_name_pfx_null() throws NamingException {
         log.setMethod("testComposeName_name_pfx_null");
         Name name = new CompositeName("namepfxnull");
@@ -196,14 +186,76 @@ public class InitialContextMockTest extends TestCase {
         // assertFalse(InvokeRecord.equals(null, name, null));
     }
 
-    public void testComposeName_string_null() throws NamingException {
-        log.setMethod("testComposeName_string_null");
-        String pfx = "";
+    /**
+     * @tests javax.naming.InitialContext#composeName(Name,Name)
+     */
+    public void testComposeNameLjavax_naming_NameLjavax_naming_Name()
+            throws NamingException {
+        log.setMethod("testComposeName_string_null"); //$NON-NLS-1$
+        InitialContext initialContext = new InitialContext();
+
         try {
-            gContext.composeName((String) null, pfx);
-            fail("Should throw InvalidNameException.");
-        } catch (InvalidNameException e) {}
-        // assertFalse(InvokeRecord.equals(null, null, pfx));
+            initialContext.composeName((CompositeName) null,
+                    (CompositeName) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            initialContext.composeName(null, new CompositeName("prefix")); //$NON-NLS-1$
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        Name result = initialContext.composeName(
+                new CompositeName("a/b/c"), (CompositeName) null); //$NON-NLS-1$
+        assertEquals("a/b/c", result.toString()); //$NON-NLS-1$
+
+        result = initialContext.composeName(
+                new CompositeName("a/b/c"), new CompositeName("")); //$NON-NLS-1$//$NON-NLS-2$
+        assertEquals("a/b/c", result.toString()); //$NON-NLS-1$
+        
+        result = initialContext.composeName(
+                new CompositeName("a/b/c"), new CompositeName("prefix")); //$NON-NLS-1$//$NON-NLS-2$
+        assertEquals("a/b/c", result.toString()); //$NON-NLS-1$
+
+        result = initialContext.composeName(
+                new CompositeName("testString"), new CompositeName("a/b/c/d")); //$NON-NLS-1$//$NON-NLS-2$
+        assertEquals("testString", result.toString()); //$NON-NLS-1$
+        
+        CompositeName cn = new CompositeName("a/b/c"); //$NON-NLS-1$
+        result = initialContext.composeName(cn, new CompositeName("prefix")); //$NON-NLS-1$
+        cn.add("/d"); //$NON-NLS-1$
+        assertEquals("a/b/c", result.toString()); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests javax.naming.InitialContext#composeName(String,String)
+     */
+    public void testComposeNameLjava_lang_StringLjava_lang_String()
+            throws NamingException {
+        log.setMethod("testComposeName_string_null"); //$NON-NLS-1$
+        InitialContext initialContext = new InitialContext();
+
+        String result = initialContext.composeName((String) null, (String) null);
+        assertNull(result);
+
+        result = initialContext.composeName((String) null, ""); //$NON-NLS-1$
+        assertNull(result);
+
+        result = initialContext.composeName("a/b/c", (String) null); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a/b/c", result); //$NON-NLS-1$
+        
+        result = initialContext.composeName("a/b/c", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a/b/c", result); //$NON-NLS-1$
+        
+        result = initialContext.composeName("a/b/c", "prefix"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a/b/c", result); //$NON-NLS-1$
+
+        result = initialContext.composeName("testString", "a/b/c/d"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("testString", result); //$NON-NLS-1$
     }
 
     public void testComposeName_string_pfx_null() throws NamingException {
