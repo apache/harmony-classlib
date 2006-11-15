@@ -170,10 +170,13 @@ public class IntrospectorTest extends TestCase {
     public void testEventSetDescriptorWithoutAddListenerMethod()
             throws IntrospectionException {
         BeanInfo info = Introspector.getBeanInfo(OtherBean.class);
+        EventSetDescriptor[] descriptors;
+
         assertNotNull(info);
-        EventSetDescriptor[] descriptors = info.getEventSetDescriptors();
+        descriptors = info.getEventSetDescriptors();
         assertNotNull(descriptors);
-        assertEquals(0, descriptors.length);
+        assertEquals(1, descriptors.length);
+        assertTrue(contains("sample", descriptors));
     }
 
     /**
@@ -673,12 +676,13 @@ public class IntrospectorTest extends TestCase {
     public void testGetBeanInfoSearchPath_Default()
             throws IntrospectionException, ClassNotFoundException {
         BeanInfo info = Introspector.getBeanInfo(MockFooButton.class);
-
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
+        BeanDescriptor beanDesc;
+
         assertEquals(1, pds.length);
         assertEquals("text.MockFooButtonBeanInfo", pds[0].getName());
 
-        BeanDescriptor beanDesc = info.getBeanDescriptor();
+        beanDesc = info.getBeanDescriptor();
         assertEquals("MockFooButton.MockFooButtonBeanInfo", beanDesc.getName());
     }
 
@@ -818,18 +822,22 @@ public class IntrospectorTest extends TestCase {
     public void testIntrospection_5() throws IntrospectionException {
         Class<FakeFox401> beanClass = FakeFox401.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor[] pds;
+
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(13, info.getMethodDescriptors().length);
 
-        PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
-        assertEquals(2, propertyDesc.length);
+        pds = info.getPropertyDescriptors();
+        assertEquals(2, pds.length);
 
-        for (PropertyDescriptor element : propertyDesc) {
+        for (PropertyDescriptor element : pds) {
             if (element.getName().equals("class")) {
                 assertNull(element.getWriteMethod());
                 assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                IndexedPropertyDescriptor indexedDesc =
+                        (IndexedPropertyDescriptor) element;
+                
                 assertEquals("fox401", element.getName());
                 assertEquals(String[].class.getName(), element
                         .getPropertyType().getName());
@@ -1374,9 +1382,6 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(
                 Bean.class).getPropertyDescriptors();
 
-        for (PropertyDescriptor elem : propertyDescriptors) {
-            System.out.println("UUU " + elem.getName());
-        }
         assertEquals("class", propertyDescriptors[0].getName());
         assertEquals("prop1", propertyDescriptors[1].getName());
         assertEquals("prop2", propertyDescriptors[2].getName());
@@ -1529,11 +1534,11 @@ public class IntrospectorTest extends TestCase {
         return false;
     }
 
-    private static boolean contains(String methodName,
+    private static boolean contains(String eventSetName,
             EventSetDescriptor[] esds)
     {
         for (EventSetDescriptor esd : esds) {
-            if (methodName.equals(esd.getName())) {
+            if (eventSetName.equals(esd.getName())) {
                 return true;
             }
         }

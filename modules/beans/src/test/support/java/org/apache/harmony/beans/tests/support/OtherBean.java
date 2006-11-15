@@ -15,16 +15,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
+import java.beans.PropertyChangeListener;
 
 public class OtherBean {
 
@@ -34,6 +27,10 @@ public class OtherBean {
     public void removeSampleListener(SampleListener listener) {
     }
 
+    // no corresponding add method
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    }
+   
     public void setNumber(int a) {
     }
 
