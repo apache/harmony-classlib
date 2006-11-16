@@ -83,7 +83,66 @@
 
     </target>
 
-    <target name="-check-unix" if="is.unix">
+    <!-- 
+       *  FIXME : the following awful little hack is because we noticed that for whatever
+       *  reason, we can't link with libjpg.a on at least to kinds of 65-bit linux
+      -->
+
+    <target name="-check-unix-common">
+        <property name="png.msg"
+                  value="libpng development package not installed
+${line.separator}See depends/libs/build/README.txt for further details.
+${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
+${line.separator}For Fedora try: yum install libpng-devel" />
+        <mkdir dir="depends/libs/build/png" />
+        <check-one-link src="${png.home}/include/pngconf.h"
+                        dest="depends/libs/build/png/pngconf.h"
+                        message="${png.msg}" />
+        <check-one-link src="${png.home}/include/png.h"
+                        dest="depends/libs/build/png/png.h"
+                        message="${png.msg}" />
+
+        <property name="jpeg.msg"
+                  value="libjpeg development package not installed
+${line.separator}See depends/libs/build/README.txt for further details.
+${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
+${line.separator}For Fedora try: yum install libjpeg-devel" />
+        <mkdir dir="depends/libs/build/jpeg" />
+        <check-one-link src="${jpeg.home}/include/jconfig.h"
+                        dest="depends/libs/build/jpeg/jconfig.lnx"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jpeglib.h"
+                        dest="depends/libs/build/jpeg/jpeglib.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jmorecfg.h"
+                        dest="depends/libs/build/jpeg/jmorecfg.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jerror.h"
+                        dest="depends/libs/build/jpeg/jerror.h"
+                        message="${jpeg.msg}" />
+    </target>
+
+    <target name="-check-unix-x86" if="is.x86" depends="-check-unix-common">
+        <check-one-link src="${png.home}/lib/libpng.a"
+                        dest="depends/libs/build/png/libpng.${hy.platform}"
+                        message="${png.msg}" />
+
+        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
+                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
+                        message="${jpeg.msg}" />
+    </target>
+
+    <target name="-check-unix-x86_64" if="is.x86_64" depends="-check-unix-common">
+        <check-one-link src="${png.home}/lib/libpng.so"
+                        dest="depends/libs/build/png/libpng.${hy.platform}"
+                        message="${png.msg}" />
+
+        <check-one-link src="${jpeg.home}/lib/libjpeg.so"
+                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
+                        message="${jpeg.msg}" />
+    </target>
+
+    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64">
         
         <property name="lcms.msg"
                   value="liblcms development package not installed
@@ -102,7 +161,7 @@ ${line.separator}For Fedora try: yum install lcms-devel" />
                         message="${lcms.msg}" />
 
 
-        <property name="png.msg"
+  <!--      <property name="png.msg"
                   value="libpng development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
@@ -119,7 +178,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
                         message="${png.msg}" />
 
 
-        <property name="jpeg.msg"
+       <property name="jpeg.msg"
                   value="libjpeg development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
@@ -140,6 +199,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <check-one-link src="${jpeg.home}/include/jerror.h"
                         dest="depends/libs/build/jpeg/jerror.h"
                         message="${jpeg.msg}" />
+    -->
 
     </target>
 
