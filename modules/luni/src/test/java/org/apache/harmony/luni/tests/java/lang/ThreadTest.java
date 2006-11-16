@@ -332,50 +332,87 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#enumerate(java.lang.Thread[])
 	 */
-	public void test_enumerate$Ljava_lang_Thread() {
-		// Test for method int java.lang.Thread.enumerate(java.lang.Thread [])
-		Thread[] tarray = new Thread[10];
-		int initialCount = Thread.enumerate(tarray);
-		ThreadGroup mytg = new ThreadGroup("jp");
-		SimpleThread st1 = new SimpleThread(-1);
-		SimpleThread st2 = new SimpleThread(-1);
-		Thread firstOne = new Thread(mytg, st1, "firstOne2");
-		Thread secondOne = new Thread(mytg, st2, "secondOne1");
-		assertTrue("Incorrect value returned1",
-				Thread.enumerate(tarray) == initialCount);
-		synchronized (st1) {
-			firstOne.start();
-			try {
-				st1.wait();
-			} catch (InterruptedException e) {
-			}
-		}
-		assertTrue("Incorrect value returned2",
-				Thread.enumerate(tarray) == (initialCount + 1));
+    public void test_enumerate$Ljava_lang_Thread() {
+        // Test for method int java.lang.Thread.enumerate(java.lang.Thread [])
+        // The test has been updated according to HARMONY-1974 JIRA issue.
 
-		synchronized (st2) {
-			secondOne.start();
-			try {
-				st2.wait();
-			} catch (InterruptedException e) {
-			}
-		}
-		assertTrue("Incorrect value returned3",
-				Thread.enumerate(tarray) == (initialCount + 2));
+    	class MyThread extends Thread {
+            MyThread(ThreadGroup tg, String name) {
+                super(tg, name);
+            }
+            
+            boolean failed = false;
+            String failMessage = null;
 
-		synchronized (st1) {
-			firstOne.interrupt();
-		}
-		synchronized (st2) {
-			secondOne.interrupt();
-		}
-		try {
-			firstOne.join();
-			secondOne.join();
-		} catch (InterruptedException e) {
-		}
-		mytg.destroy();
-	}
+            public void run() {
+            	SimpleThread st1 = null;
+            	SimpleThread st2 = null;
+            	ThreadGroup mytg = null;
+            	Thread firstOne = null;
+            	Thread secondOne = null;
+                try {
+                    int arrayLength = 10;
+                    Thread[] tarray = new Thread[arrayLength];
+                    st1 = new SimpleThread(-1);
+                    st2 = new SimpleThread(-1);
+                    mytg = new ThreadGroup("jp");
+                    firstOne = new Thread(mytg, st1, "firstOne2");
+                    secondOne = new Thread(mytg, st2, "secondOne1");
+                    int count = Thread.enumerate(tarray);
+                    assertEquals("Incorrect value returned1",
+                            1, count);
+                    synchronized (st1) {
+                        firstOne.start();
+                        try {
+                            st1.wait();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    count = Thread.enumerate(tarray);
+                    assertEquals("Incorrect value returned2",
+                            2, count);
+                    synchronized (st2) {
+                        secondOne.start();
+                        try {
+                            st2.wait();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    count = Thread.enumerate(tarray);
+                    assertEquals("Incorrect value returned3",
+                            3, count);
+                } catch (junit.framework.AssertionFailedError e) {
+                    failed = true;
+                    failMessage = e.getMessage();
+                } finally {
+                    synchronized (st1) {
+                        firstOne.interrupt();
+                    }
+                    synchronized (st2) {
+                        secondOne.interrupt();
+                    }
+                    try {
+                        firstOne.join();
+                        secondOne.join();
+                    } catch (InterruptedException e) {
+                    }
+                    mytg.destroy();
+                }
+            }
+        };
+        
+        ThreadGroup tg = new ThreadGroup("tg");
+        MyThread t = new MyThread(tg, "top");
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            fail("Unexpected interrupt");
+        } finally {
+            tg.destroy();
+        }
+        assertFalse(t.failMessage, t.failed);
+    }
 
 	/**
 	 * @tests java.lang.Thread#getContextClassLoader()
