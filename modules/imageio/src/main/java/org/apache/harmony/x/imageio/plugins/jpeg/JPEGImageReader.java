@@ -24,6 +24,7 @@ package org.apache.harmony.x.imageio.plugins.jpeg;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
@@ -110,5 +111,10 @@ public class JPEGImageReader extends ImageReader {
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
         iis = (ImageInputStream) input;
+    }
+
+    @Override
+    public ImageReadParam getDefaultReadParam() {
+        return new JPEGImageReadParam();
     }
 }

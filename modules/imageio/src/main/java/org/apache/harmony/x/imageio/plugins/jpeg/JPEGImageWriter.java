@@ -24,6 +24,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriteParam;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.metadata.IIOMetadata;
@@ -327,5 +328,9 @@ public class JPEGImageWriter extends ImageWriter {
             }
         }
         return type;
+    }
+
+    public ImageWriteParam getDefaultWriteParam() {
+        return new JPEGImageWriteParam(getLocale());
     }
 }

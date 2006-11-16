@@ -252,13 +252,17 @@ public class ImageWriteParam extends IIOParam {
     public void setCompressionMode(int mode) {
         checkWriteCompressed();
         switch (mode) {
-            case MODE_EXPLICIT:
+            case MODE_EXPLICIT: {
+                compressionMode = mode;
                 unsetCompression();
+                break;
+            }
             case MODE_COPY_FROM_METADATA:
             case MODE_DISABLED:
-            case MODE_DEFAULT:
+            case MODE_DEFAULT: {
                 compressionMode = mode;
                 break;
+            }
             default: {
                 throw new IllegalArgumentException("Illegal value for mode!");
             }
@@ -347,13 +351,17 @@ public class ImageWriteParam extends IIOParam {
         checkTiling();
 
         switch (mode) {
-            case MODE_EXPLICIT:
+            case MODE_EXPLICIT: {
+                tilingMode = mode;
                 unsetTiling();
+                break;
+            }
             case MODE_COPY_FROM_METADATA:
             case MODE_DISABLED:
-            case MODE_DEFAULT:
+            case MODE_DEFAULT: {
                 tilingMode = mode;
                 break;
+            }
             default: {
                 throw new IllegalArgumentException("Illegal value for mode!");
             }

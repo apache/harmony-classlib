@@ -39,4 +39,6 @@ public class JPEGConsts {
     public static final int JCS_YCCK = 11;
 
     public static int[][] BAND_OFFSETS = {{}, {0}, {0, 1}, {0, 1, 2}, {0, 1, 2, 3}};
+
+    public static final float DEFAULT_JPEG_COMPRESSION_QUALITY = 0.75f;
 }
