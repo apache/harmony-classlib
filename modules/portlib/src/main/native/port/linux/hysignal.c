@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <errno.h>
 
 #include <jsig.h>
 
@@ -918,7 +919,8 @@ asynchSignalReporter (void *userData)
   /* Need an exit condition... */
   for (;;)
     {
-      sem_wait (&wakeUpASynchReporter);
+      while (sem_wait(&wakeUpASynchReporter) == -1 && errno == EINTR)
+        ;
 
       /* we get woken up if there is a signal pending or it is time to shutdown */
       if (shutDownASynchReporter)
