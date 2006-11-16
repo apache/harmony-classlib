@@ -43,7 +43,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 
         super(propertyName, getter, setter);
         setIndexedReadMethod(indexedGetter);
-        setIndexedWriteMethod(indexedGetter);
+        setIndexedWriteMethod(indexedSetter);
     }
 
     public IndexedPropertyDescriptor(String propertyName, Class<?> beanClass)

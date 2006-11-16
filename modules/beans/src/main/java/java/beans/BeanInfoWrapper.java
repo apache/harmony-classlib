@@ -27,8 +27,10 @@ import java.util.Map;
 
 class BeanInfoWrapper implements BeanInfo {
 
+    // external BeanInfo class if it was specified 
     private BeanInfo info;
 
+    // information gathered by means of reflection API
     private BeanInfoImpl impl;
 
     private BeanInfoWrapper parentBeanInfoWrapper;
@@ -42,6 +44,7 @@ class BeanInfoWrapper implements BeanInfo {
         PropertyDescriptor[] result = null;
         PropertyDescriptor[] infoResult = null;
 
+        // if external BeanInfo class was specified
         if (info != null) {
             BeanInfo[] infos = info.getAdditionalBeanInfo();
 
@@ -59,6 +62,8 @@ class BeanInfoWrapper implements BeanInfo {
             }
         }
 
+        // if no external BeanInfo class was specified or we fail to 
+        // to obtain the result on the previous step by some reason
         if (info == null || infoResult == null) {
             PropertyDescriptor[] implResult = impl.getPropertyDescriptors();
 
@@ -66,19 +71,8 @@ class BeanInfoWrapper implements BeanInfo {
             if (parentBeanInfoWrapper != null) {
                 PropertyDescriptor[] parentResult = parentBeanInfoWrapper
                         .getPropertyDescriptors();
-                Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
-                        implResult, parentResult);
 
-                Collection<FeatureDescriptor> values = hm.values();
-                Iterator<FeatureDescriptor> iterator;
-                int idx = 0;
-
-                result = new PropertyDescriptor[values.size()];
-                iterator = values.iterator();
-                while (iterator.hasNext()) {
-                    result[idx++] = (PropertyDescriptor) iterator.next();
-                }
-
+                result = concatArraysToOneArray(implResult, parentResult);
                 Arrays.sort(result, new Comparator<PropertyDescriptor>() {
                     public int compare(PropertyDescriptor pd1,
                             PropertyDescriptor pd2) {
@@ -185,13 +179,12 @@ class BeanInfoWrapper implements BeanInfo {
                         implResult, parentResult);
 
                 Collection<FeatureDescriptor> values = hm.values();
-                Iterator<FeatureDescriptor> iterator;
                 int idx = 0;
 
                 result = new EventSetDescriptor[values.size()];
-                iterator = values.iterator();
-                while (iterator.hasNext()) {
-                    result[idx++] = (EventSetDescriptor) iterator.next();
+                
+                for (FeatureDescriptor fd : values) {
+                    result[idx++] = (EventSetDescriptor) fd;
                 }
 
                 Arrays.sort(result, new Comparator<EventSetDescriptor>() {
@@ -277,7 +270,7 @@ class BeanInfoWrapper implements BeanInfo {
         return result;
     }
 
-    void merge(BeanInfoWrapper parentBeanInfoWrapper) {
+    void setParentToMerge(BeanInfoWrapper parentBeanInfoWrapper) {
         this.parentBeanInfoWrapper = parentBeanInfoWrapper;
     }
 
@@ -305,20 +298,101 @@ class BeanInfoWrapper implements BeanInfo {
     private static PropertyDescriptor[] concatArraysToOneArray(
             PropertyDescriptor[] childs, PropertyDescriptor[] parents) {
         if (childs != null || parents != null) {
-            Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
-                    childs, parents);
-            PropertyDescriptor[] result = new PropertyDescriptor[hm.size()];
+            Map<String, PropertyDescriptor> resultHM =
+                    new HashMap<String, PropertyDescriptor>();
 
-            Iterator<String> iterator = hm.keySet().iterator();
-            int idx = 0;
-
-            while (iterator.hasNext()) {
-                String name = iterator.next();
-
-                result[idx++] = (PropertyDescriptor) hm.get(name);
+            if (childs != null) {
+                for (PropertyDescriptor element : childs) {
+                    resultHM.put(element.getName(), element);
+                }
             }
 
-            return result;
+            if (parents != null) {
+                for (PropertyDescriptor parentPD : parents) {
+                    PropertyDescriptor childPD =
+                            resultHM.get(parentPD.getName());
+                    
+                    if (childPD == null) {
+                        resultHM.put(parentPD.getName(), parentPD);
+                    } else {
+                        boolean childIsIndexed =
+                                childPD instanceof IndexedPropertyDescriptor; 
+                        boolean parentIsIndexed =
+                                parentPD instanceof IndexedPropertyDescriptor;
+                        boolean shouldBeMerged;
+                        Class<?> childPropType = childPD.getPropertyType();
+                        Class<?> childIdxPropType = childIsIndexed ?
+                               ((IndexedPropertyDescriptor) childPD)
+                                   .getIndexedPropertyType() : null;
+                        Class<?> parentPropType = parentPD.getPropertyType();
+                        Class<?> parentIdxPropType = parentIsIndexed ?
+                               ((IndexedPropertyDescriptor) parentPD)
+                                   .getIndexedPropertyType() : null;
+                        
+                        // additional consistency checks
+                        // for child
+                        assert (!childIsIndexed ? childPropType != null : true);
+                        assert (childIsIndexed ?
+                                childIdxPropType != null : true);
+                        assert (childIsIndexed ? childPropType == null ||
+                                childPropType.isArray() : true);
+                        assert (childIsIndexed && childPropType != null ?
+                                childPropType.getComponentType() ==
+                                        childIdxPropType : true);
+                        // for parent
+                        assert (!parentIsIndexed ?
+                                parentPropType != null : true);
+                        assert (parentIsIndexed ?
+                                parentIdxPropType != null : true);
+                        assert (parentIsIndexed ? parentPropType == null ||
+                                parentPropType.isArray() : true);
+                        assert (parentIsIndexed && parentPropType != null ?
+                                parentPropType.getComponentType() ==
+                                        parentIdxPropType : true);
+
+                        // let's check types
+                        shouldBeMerged = childPropType != null &&
+                                childPropType == parentPropType;
+                        if (childIsIndexed) {
+                            shouldBeMerged |=
+                                childPropType == null
+                                && parentPropType != null
+                                && parentPropType.isArray()
+                                && childIdxPropType ==
+                                    parentPropType.getComponentType();                                
+                        } 
+                        if (parentIsIndexed) {
+                            shouldBeMerged |=
+                                parentPropType == null
+                                && childPropType != null
+                                && childPropType.isArray()
+                                && parentIdxPropType ==
+                                    childPropType.getComponentType();                                
+                            
+                        }
+                        if (childIsIndexed && parentIsIndexed) {
+                            shouldBeMerged |=
+                                childIdxPropType == parentIdxPropType;
+                        }
+                        
+                        // merge if descriptors are compatible
+                        if (shouldBeMerged) {
+                            try {
+                                resultHM.put(parentPD.getName(),
+                                        mergePDs(childPD, parentPD));
+                            } catch (IntrospectionException e) {
+                                // should be logged
+                                //e.printStackTrace();
+                            }
+                        }
+                        // we should not do anything if parent is not
+                        // compatible with the child
+                    }
+                }
+            }
+
+            return resultHM.values().toArray(
+                    new PropertyDescriptor[resultHM.size()]);
         }
 
         return null;
@@ -380,5 +454,87 @@ class BeanInfoWrapper implements BeanInfo {
         }
 
         return null;
+    }
+    
+    /**
+     * Merges two property descriptors. 
+     * @param childPD child property descriptor
+     * @param parentPD parent property descriptor
+     * @return merged descriptor 
+     * XXX 
+     */
+    private static PropertyDescriptor mergePDs(PropertyDescriptor childPD,
+            PropertyDescriptor parentPD) throws IntrospectionException {
+
+        assert childPD != null;
+        assert childPD instanceof IndexedPropertyDescriptor ?
+                (childPD.getPropertyType() != null ||
+                        ((IndexedPropertyDescriptor) childPD)
+                                .getIndexedPropertyType() != null)
+                : childPD.getPropertyType() != null;
+        assert parentPD != null;
+        assert parentPD instanceof IndexedPropertyDescriptor ?
+                (parentPD.getPropertyType() != null ||
+                        ((IndexedPropertyDescriptor) parentPD)
+                                .getIndexedPropertyType() != null)
+                : parentPD.getPropertyType() != null;
+        
+        PropertyDescriptor result;
+
+        if (childPD instanceof IndexedPropertyDescriptor) {
+            result = new IndexedPropertyDescriptor(childPD.getName(),
+                    childPD.getReadMethod(), childPD.getWriteMethod(),
+                    ((IndexedPropertyDescriptor) childPD).getIndexedReadMethod(),
+                    ((IndexedPropertyDescriptor) childPD).getIndexedWriteMethod());
+        } else if (parentPD instanceof IndexedPropertyDescriptor) {
+            result = new IndexedPropertyDescriptor(childPD.getName(),
+                    childPD.getReadMethod(), childPD.getWriteMethod(),
+                    ((IndexedPropertyDescriptor) parentPD).getIndexedReadMethod(),
+                    ((IndexedPropertyDescriptor) parentPD).getIndexedWriteMethod());
+        } else {
+            result = new PropertyDescriptor(childPD.getName(),
+                    childPD.getReadMethod(), childPD.getWriteMethod());
+        }
+        copy(result, childPD);
+
+        if (result.getReadMethod() == null &&
+                parentPD.getReadMethod() != null) {
+            result.setReadMethod(parentPD.getReadMethod());
+        }
+        if (result.getWriteMethod() == null &&
+                parentPD.getWriteMethod() != null) {
+            result.setWriteMethod(parentPD.getWriteMethod());
+        }
+        
+        if (result instanceof IndexedPropertyDescriptor) {
+            IndexedPropertyDescriptor result2 =
+                    (IndexedPropertyDescriptor) result;
+            IndexedPropertyDescriptor parentPD2 =
+                    (IndexedPropertyDescriptor) parentPD;
+            
+            if (result2.getIndexedReadMethod() == null &&
+                    parentPD2.getIndexedReadMethod() != null) {
+                result2.setIndexedReadMethod(parentPD2.getIndexedReadMethod());
+            }
+            if (result2.getIndexedWriteMethod() == null &&
+                    parentPD2.getIndexedWriteMethod() != null) {
+                result2.setIndexedWriteMethod(parentPD2.getIndexedWriteMethod());
+            }
+        }
+
+        return result;
+    }
+    
+    private static void copy(PropertyDescriptor target, 
+            PropertyDescriptor source) throws IntrospectionException {
+        target.setBound(source.isBound());
+        target.setConstrained(source.isConstrained());
+        target.setDisplayName(source.getDisplayName());
+        target.setExpert(source.isExpert());
+        target.setHidden(source.isHidden());
+        target.setPreferred(source.isPreferred());
+        target.setPropertyEditorClass(source.getPropertyEditorClass());
+        target.setShortDescription(source.getShortDescription());
+        // XXX Attributes?
     }
 }

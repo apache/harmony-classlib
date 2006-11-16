@@ -163,7 +163,7 @@ public class Introspector {
             BeanInfoWrapper parentBeanInfo = getBeanInfo(parent, stopClass,
                     ignoreSuperClassBeanInfo, ignoreSuperClassBeanInfo);
 
-            wrapper.merge(parentBeanInfo);
+            wrapper.setParentToMerge(parentBeanInfo);
         }
 
         // ...

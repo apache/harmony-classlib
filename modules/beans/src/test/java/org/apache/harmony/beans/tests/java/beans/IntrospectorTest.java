@@ -824,6 +824,7 @@ public class IntrospectorTest extends TestCase {
         BeanInfo info = Introspector.getBeanInfo(beanClass);
         PropertyDescriptor[] pds;
 
+        
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(13, info.getMethodDescriptors().length);
 
@@ -831,6 +832,9 @@ public class IntrospectorTest extends TestCase {
         assertEquals(2, pds.length);
 
         for (PropertyDescriptor element : pds) {
+            System.out.println("QQQ " + element.getName() + " " +
+                    (element instanceof IndexedPropertyDescriptor));
+            
             if (element.getName().equals("class")) {
                 assertNull(element.getWriteMethod());
                 assertNotNull(element.getReadMethod());
@@ -884,10 +888,12 @@ public class IntrospectorTest extends TestCase {
     public void testIntrospection_7() throws IntrospectionException {
         Class<FakeFox501> beanClass = FakeFox501.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor[] propertyDesc;
+        
         assertEquals(0, info.getEventSetDescriptors().length);
         assertEquals(12, info.getMethodDescriptors().length);
 
-        PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
+        propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
         for (PropertyDescriptor element : propertyDesc) {
@@ -895,7 +901,9 @@ public class IntrospectorTest extends TestCase {
                 assertNull(element.getWriteMethod());
                 assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                IndexedPropertyDescriptor indexedDesc =
+                        (IndexedPropertyDescriptor) element;
+                
                 assertEquals("fox501", element.getName());
                 assertEquals(String[].class.getName(), element
                         .getPropertyType().getName());
@@ -1414,7 +1422,7 @@ public class IntrospectorTest extends TestCase {
 //        TestSuite suite = new TestSuite();
         TestSuite suite = new TestSuite(IntrospectorTest.class);
         
-//        suite.addTest(new IntrospectorTest("testGetPropertyDescriptors_H1838"));
+//        suite.addTest(new IntrospectorTest("testIntrospection_7"));
         return suite;
     }
     
