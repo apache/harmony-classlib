@@ -49,7 +49,7 @@
     </target>
 
     <target name="test-modules" depends="support-jar">
-        <call-modules target="test" />
+        <call-modules target="-test-module" />
     </target>
 
     <target name="gen-report" depends="full-report,short-report" />

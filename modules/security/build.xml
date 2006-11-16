@@ -60,8 +60,19 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile-tests, test-jar, copy-tests-resources, run-tests" />
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
 
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, compile-tests, test-jar, copy-tests-resources, run-tests" />
 
     <!-- Build native code -->
     <available file="${hy.security.src.main.native}/security/${hy.os}" property="native.present" />

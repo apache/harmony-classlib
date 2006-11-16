@@ -45,7 +45,19 @@
 
     <target name="build" depends="compile-java, build-jar" />
 
-    <target name="test" ><!-- depends="build, compile-tests, run-tests" --></target>
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar" />

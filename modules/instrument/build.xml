@@ -41,7 +41,19 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile-tests, run-tests" />
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, compile-tests, run-tests" />
     
     <target name="overlay-oss">
         <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
