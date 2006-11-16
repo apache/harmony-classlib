@@ -31,7 +31,10 @@ public class PatternTest extends TestCase {
 			"(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ)*",
 			"(a|b)*(a|b)*A(a|b)*lice.*",
 			"(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)(a|b|c|d|e|f|g|h|"
-					+ "i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)*(1|2|3|4|5|6|7|8|9|0)*|while|for|struct|if|do"
+					+ "i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)*(1|2|3|4|5|6|7|8|9|0)*|while|for|struct|if|do",
+             "x(?c)y",
+             "x(?cc)y",
+             "x(?:c)y"                
 
 	};
 
@@ -322,38 +325,49 @@ public class PatternTest extends TestCase {
 		 */
 		String pattern = "b)a";
 		try {
-			Pattern pat = Pattern.compile(pattern);
+			Pattern.compile(pattern);
+            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
-			System.out.println(e);
+			// pass
 		}
 		pattern = "bcde)a";
 		try {
-			Pattern pat = Pattern.compile(pattern);
+			Pattern.compile(pattern);
+            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
-			System.out.println(e);
+			// pass
 		}
 		pattern = "bbg())a";
 		try {
 			Pattern pat = Pattern.compile(pattern);
+            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
-			System.out.println(e);
+			// pass
 		}
 
 		pattern = "cdb(?i))a";
 		try {
 			Pattern pat = Pattern.compile(pattern);
-		} catch (Exception e) {
-			System.out.println(e);
+            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
+		} catch (PatternSyntaxException e) {
+			// pass
 		}
+        
+        /*
+         * This pattern should compile - HARMONY-2127
+         */
+        pattern = "x(?c)y";
+        Pattern.compile(pattern);
+
 
 		/*
 		 * this pattern doesn't match any string, but should be compiled anyway
 		 */
 		pattern = "(b\\1)a";
-		Pattern pat = Pattern.compile(pattern);
+		Pattern.compile(pattern);
 
 	}
-
+    
 	/*
 	 * Class under test for Pattern compile(String)
 	 */
@@ -403,7 +417,10 @@ public class PatternTest extends TestCase {
 								+ "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" },
 				{ "ababbaAabababblice", "ababbaAliceababab", "ababbAabliceaaa",
 						"abbbAbbbliceaaa", "Alice" },
-				{ "a123", "bnxnvgds156", "for", "while", "if", "struct" }
+				{ "a123", "bnxnvgds156", "for", "while", "if", "struct" },
+                { "xy" },
+                { "xy" },
+                { "xcy" }
 
 		};
 
@@ -414,7 +431,7 @@ public class PatternTest extends TestCase {
 						posSeq[i][j]));
 			}
 		}
-	}
+  	}
 
 	public void testTimeZoneIssue() {
 		Pattern p = Pattern.compile("GMT(\\+|\\-)(\\d+)(:(\\d+))?");

@@ -1093,8 +1093,7 @@ class Lexer {
                 return res | (1 << 8);
                 
             default:
-                throw new PatternSyntaxException(Messages.getString("regex.1A"), //$NON-NLS-1$
-                                               this.toString(), index);
+                // ignore invalid flags (HARMONY-2127)
             }
             nextIndex();
         }
