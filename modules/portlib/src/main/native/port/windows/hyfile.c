@@ -330,12 +330,45 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 I_32 VMCALL
 hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
 {
-  if (CreateDirectory (path, 0))
+    char *canonicalpath;
+    int returnVar;
+    int len = strlen(path);
+    int i=0;
+    int j=0;
+    int lastbackslash=0;
+    if(len >= 248){
+        len =len + 4;
+        canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len);
+        strcpy(canonicalpath,"\\\\?\\");
+        for(i==0,j=4;i<len;i++){
+            if(path[i]=='.'){
+                if(path[i+1]=='\\'){
+                    i++;
+                }
+                if(path[i+1]=='.'){
+                    j=lastbackslash;
+                }
+            }
+            else{
+                if(path[i]=='\\'){
+                    lastbackslash = i;
+                }
+                canonicalpath[j]=path[i];
+                j++;
+            }
+        }
+        returnVar = CreateDirectory (canonicalpath, 0);
+        portLibrary->mem_free_memory(portLibrary, canonicalpath);
+    }else{
+        returnVar = CreateDirectory (path, 0);
+    }
+    
+  if (returnVar)
     {
       return 0;
     }
   else
-    {
+    { 
       I_32 error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error,
 					 findError (error));
