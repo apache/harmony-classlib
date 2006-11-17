@@ -85,10 +85,24 @@
 
     <!-- 
        *  FIXME : the following awful little hack is because we noticed that for whatever
-       *  reason, we can't link with libjpg.a on at least to kinds of 65-bit linux
+       *  reason, we can't link with libjpg.a et al on at least to kinds of 64-bit linux
       -->
 
     <target name="-check-unix-common">
+        
+        <property name="lcms.msg"
+                  value="liblcms development package not installed
+${line.separator}See depends/libs/build/README.txt for further details.
+${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
+${line.separator}For Fedora try: yum install lcms-devel" />
+        <mkdir dir="depends/libs/build/lcms" />
+        <check-one-link src="${lcms.home}/include/icc34.h"
+                        dest="depends/libs/build/lcms/icc34.h"
+                        message="${lcms.msg}" />
+        <check-one-link src="${lcms.home}/include/lcms.h"
+                        dest="depends/libs/build/lcms/lcms.h"
+                        message="${lcms.msg}" />
+
         <property name="png.msg"
                   value="libpng development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
@@ -123,6 +137,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     </target>
 
     <target name="-check-unix-x86" if="is.x86" depends="-check-unix-common">
+        <check-one-link src="${lcms.home}/lib/liblcms.a"
+                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
+                        message="${lcms.msg}" />
+
         <check-one-link src="${png.home}/lib/libpng.a"
                         dest="depends/libs/build/png/libpng.${hy.platform}"
                         message="${png.msg}" />
@@ -133,6 +151,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     </target>
 
     <target name="-check-unix-x86_64" if="is.x86_64" depends="-check-unix-common">
+        <check-one-link src="${lcms.home}/lib/liblcms.so"
+                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
+                        message="${lcms.msg}" />
+
         <check-one-link src="${png.home}/lib/libpng.so"
                         dest="depends/libs/build/png/libpng.${hy.platform}"
                         message="${png.msg}" />
@@ -144,7 +166,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64">
         
-        <property name="lcms.msg"
+<!--        <property name="lcms.msg"
                   value="liblcms development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
@@ -161,7 +183,7 @@ ${line.separator}For Fedora try: yum install lcms-devel" />
                         message="${lcms.msg}" />
 
 
-  <!--      <property name="png.msg"
+      <property name="png.msg"
                   value="libpng development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
