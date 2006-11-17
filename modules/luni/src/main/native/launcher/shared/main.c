@@ -393,8 +393,8 @@ bail:
   if (newPathToAdd) {
     hymem_free_memory (newPathToAdd);
   }
-  
-  return 0;
+  // error code should be equal to 1 because of compatibility
+  return rc == 0 ? 0 : 1;
 }
 
 
