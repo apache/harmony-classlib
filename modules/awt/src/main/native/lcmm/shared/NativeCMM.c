@@ -27,7 +27,7 @@ static char *errMsg = NULL;
 
 int gl_cmsErrorHandler(int errorCode, const char *msg) {
   if(errorCode == LCMS_ERRC_ABORTED) {
-    errMsg = msg; // Throw exception later, after returning control from cmm
+    errMsg = strdup(msg); // Throw exception later, after returning control from cmm
   }
 
   return 1;
@@ -56,8 +56,11 @@ JNIEXPORT jlong JNICALL
 
     (*env)->ReleaseByteArrayElements (env, data, byteData, 0);
 
-    if(hProfile == NULL)
+    if(hProfile == NULL) {
         newCMMException(env, errMsg); // Throw java exception if error occured
+        free(errMsg);
+        errMsg = NULL;
+    }
 
   // Return obtained handle
   return (jlong) ((IDATA)hProfile);
@@ -73,8 +76,11 @@ JNIEXPORT void JNICALL
 {
   cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
 
-    if(!cmsCloseProfile(hProfile))
+    if(!cmsCloseProfile(hProfile)) {
         newCMMException(env, errMsg); // Throw java exception if error occured
+        free(errMsg);
+        errMsg = NULL;
+    }        
 }
 
 /*
@@ -125,11 +131,17 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
 
 
   if(ts == HEADER_TAG_ID) {
-        if(!cmmGetProfileHeader(hProfile, byteData, dataSize))
+        if(!cmmGetProfileHeader(hProfile, byteData, dataSize)) {
             newCMMException(env, errMsg); // Throw java exception if error occured
+            free(errMsg);
+            errMsg = NULL;
+        }
     } else {
-        if(!cmmGetProfileElement(hProfile, ts, byteData, &dataSize))
+        if(!cmmGetProfileElement(hProfile, ts, byteData, &dataSize)) {
             newCMMException(env, errMsg); // Throw java exception if error occured
+            free(errMsg);
+            errMsg = NULL;
+        }
     }
 
     (*env)->ReleaseByteArrayElements (env, data, byteData, 0);
@@ -181,8 +193,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmSetProf
             newCMMException(env, "Invalid header data"); // Throw java exception if error occured
 
     } else {
-      if(!cmmSetProfileElement(hProfile, ts, byteData, dataSize))
+      if(!cmmSetProfileElement(hProfile, ts, byteData, dataSize)) {
             newCMMException(env, errMsg); // Throw java exception if error occured
+            free(errMsg);
+            errMsg = NULL;
+      }
     }
 
     (*env)->ReleaseByteArrayElements (env, data, byteData, 0);
