@@ -32,55 +32,33 @@
             depends="-check,-check-win,-check-unix" />
 
     <target name="-check">
-
-	<check-one-file src="${yoko.url}" dest="${yoko.jar}" />
-
-	<check-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}" />
-
-	<check-one-file src="${bcel.url}" dest="${bcel.jar}" />
-
-	<check-one-file src="${xalan.url}" dest="${xalan.jar}" />
-
-	<check-one-file src="${resolver.url}" dest="${resolver.jar}" />
-
-	<check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
-
-	<check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
-
-	<check-one-file src="${junit.url}" dest="${junit.jar}" />
-
-	<check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
-
-	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
-
-	<check-one-file src="${mx4j.url}" dest="${mx4j.jar}" />
-
-	<check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
-
-	<check-one-file src="${ecj.url}" dest="${ecj.jar}" />
-	
-	<check-one-file src="${jetty.url}" dest="${jetty.jar}" /> 
-	
-        <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" /> 
-  
-        <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" /> 
-
+        <check-one-file src="${yoko.url}" dest="${yoko.jar}" />
+        <check-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}" />
+        <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
+        <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
+        <check-one-file src="${resolver.url}" dest="${resolver.jar}" />
+        <check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
+        <check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
+        <check-one-file src="${junit.url}" dest="${junit.jar}" />
+        <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
+        <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
+        <check-one-file src="${mx4j.url}" dest="${mx4j.jar}" />
+        <check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
+        <check-one-file src="${ecj.url}" dest="${ecj.jar}" />
+        <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
+        <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
+        <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
     </target>
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
     <target name="-really-check-win" if="is.windows">
-        
-	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
-
+        <check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
         <check-one-file src="${awtdeps.url}" dest="${awtdeps.tar}" />
-
-	<uptodate property="awtdeps.uptodate"
+        <uptodate property="awtdeps.uptodate"
                   srcfile="${awtdeps.tar}"
                   targetfile="${awtdeps.testfile}" />
-
         <antcall target="-awt-tar-extract" />
-
     </target>
 
     <!-- 
@@ -230,60 +208,60 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     <target name="-download">
 
-	<mkdir dir="${yoko.dir}" />
-	<download-one-file src="${yoko.url}" dest="${yoko.jar}"
+    <mkdir dir="${yoko.dir}" />
+    <download-one-file src="${yoko.url}" dest="${yoko.jar}"
                            md5="${yoko.md5}" />
 
-	<mkdir dir="${yoko-rmi.dir}" />
-	<download-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}"
+    <mkdir dir="${yoko-rmi.dir}" />
+    <download-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}"
                            md5="${yoko-rmi.md5}" />
 
-	<mkdir dir="${bcel.dir}" />
-	<download-one-file src="${bcel.url}" dest="${bcel.jar}"
+    <mkdir dir="${bcel.dir}" />
+    <download-one-file src="${bcel.url}" dest="${bcel.jar}"
                            md5="${bcel.md5}" />
 
-	<mkdir dir="${xalan.dir}" />
-	<download-one-file src="${xalan.url}" dest="${xalan.jar}"
+    <mkdir dir="${xalan.dir}" />
+    <download-one-file src="${xalan.url}" dest="${xalan.jar}"
                            md5="${xalan.md5}" />
 
-	<mkdir dir="${xerces.dir}" />
-	<download-one-file src="${resolver.url}" dest="${resolver.jar}"
+    <mkdir dir="${xerces.dir}" />
+    <download-one-file src="${resolver.url}" dest="${resolver.jar}"
                            md5="${resolver.md5}" />
 
-	<download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
+    <download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
                            md5="${xerces.impl.md5}" />
 
-	<download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
+    <download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
                            md5="${xml.apis.md5}" />
 
-	<mkdir dir="${junit.dir}" />
-	<download-one-file src="${junit.url}" dest="${junit.jar}"
+    <mkdir dir="${junit.dir}" />
+    <download-one-file src="${junit.url}" dest="${junit.jar}"
                            md5="${junit.md5}" />
 
-	<mkdir dir="${bcprov.dir}" />
-	<download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
+    <mkdir dir="${bcprov.dir}" />
+    <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
                            md5="${bcprov.md5}" />
 
-	<mkdir dir="${icu4j.dir}" />
-	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
+    <mkdir dir="${icu4j.dir}" />
+    <download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
                            md5="${icu4j.md5}" />
 
-	<mkdir dir="${mx4j.dir}" />
-	<download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
+    <mkdir dir="${mx4j.dir}" />
+    <download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
                            md5="${mx4j.md5}" />
 
-	<download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
+    <download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
                            md5="${mx4j.remote.md5}" />
 
-	<mkdir dir="${ecj.dir}" />
-	<download-one-file src="${ecj.url}" dest="${ecj.jar}"
+    <mkdir dir="${ecj.dir}" />
+    <download-one-file src="${ecj.url}" dest="${ecj.jar}"
                            md5="${ecj.md5}" />
         
         <mkdir dir="${jetty.dir}" />
-	<download-one-file src="${jetty.url}" dest="${jetty.jar}"
+    <download-one-file src="${jetty.url}" dest="${jetty.jar}"
                            md5="${jetty.md5}" />
  
-	<download-one-file src="${jetty-util.url}" dest="${jetty-util.jar}"
+    <download-one-file src="${jetty-util.url}" dest="${jetty-util.jar}"
                            md5="${jetty-util.md5}" />
                            
         <download-one-file src="${servlet-api.url}" dest="${servlet-api.jar}"
@@ -293,12 +271,12 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     <target name="-download-win" if="is.windows">
         
-	<mkdir dir="${msvcr71.dir}" />
-	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
+    <mkdir dir="${msvcr71.dir}" />
+    <download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
                            md5="${msvcr71.md5}" />
 
-	<mkdir dir="${awtdeps.dir}" />
-	<download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
+    <mkdir dir="${awtdeps.dir}" />
+    <download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
                            md5="${awtdeps.md5}" />
 
     </target>
@@ -309,7 +287,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <attribute name="md5" />
         <sequential>
             <echo>Checking @{dest}</echo>
-	    <available file="@{dest}" type="file"
+        <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
             <antcall target="-really-download">
                 <param name="src" value="@{src}" />
@@ -322,7 +300,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
             <antcall target="-remove-file-if-bad">
                 <param name="jar" value="@{dest}" />
             </antcall>
-	    <fail unless="@{dest}.md5.verified">
+        <fail unless="@{dest}.md5.verified">
 ...
 
 File @{dest} has incorrect md5 checksum.  Expected:
@@ -337,7 +315,7 @@ found:
 
     <target name="-really-download" unless="${dest}.exists">
         <echo>Fetching ${dest}</echo>
-	<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
+    <get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
     </target>
 
     <target name="-remove-file-if-bad" unless="${dest}.md5.verified">
@@ -349,14 +327,14 @@ found:
         <attribute name="dest" />
         <sequential>
             <echo>Checking for @{dest}</echo>
-	    <available file="@{dest}" type="file"
+        <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
-	    <fail>
-		<condition>
-		    <not>
-			<isset property="@{dest}.exists" />
-		    </not>
-		</condition>
+        <fail>
+        <condition>
+            <not>
+            <isset property="@{dest}.exists" />
+            </not>
+        </condition>
 ...
 
 Missing dependency.  The jar from:
@@ -376,7 +354,7 @@ than the Apache License v2.
 
     <target name="-awt-tar-extract" unless="awtdeps.uptodate">
         <echo>Extracting awt dependencies</echo>
-	<untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
+    <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
                compression="gzip" />
         <echo file="${awtdeps.testfile}"
               message="${awtdeps.tar} extracted${line.separator}" />
@@ -388,21 +366,21 @@ than the Apache License v2.
         <attribute name="message" />
         <sequential>
             <echo>Checking for @{dest}</echo>
-	    <available file="@{dest}" type="file"
+        <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
-	    <available file="@{src}" type="file"
+        <available file="@{src}" type="file"
                        property="@{src}.exists" />
-	    <fail>
-		<condition>
+        <fail>
+        <condition>
                     <and>
-		        <not>
-			    <isset property="@{dest}.exists" />
+                <not>
+                <isset property="@{dest}.exists" />
                         </not>
                         <not>
-			    <isset property="@{src}.exists" />
-		        </not>
+                <isset property="@{src}.exists" />
+                </not>
                     </and>
-		</condition>
+        </condition>
 ...
 
 Missing dependency.  The file from:
