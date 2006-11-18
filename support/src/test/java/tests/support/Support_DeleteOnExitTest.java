@@ -22,7 +22,9 @@ import java.io.File;
 public class Support_DeleteOnExitTest {
 
 	public static void main(java.lang.String[] args) {
-		File f1 = new File(args[0]);
-		f1.deleteOnExit();
-	}
+        for (int i = 0; i < args.length; i++) {
+            File f1 = new File(args[i]);
+            f1.deleteOnExit();
+        }
+    }
 }

@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import tests.support.Support_Exec;
 import tests.support.Support_PlatformFile;
 
 public class FileTest extends junit.framework.TestCase {
@@ -2158,7 +2159,26 @@ public class FileTest extends junit.framework.TestCase {
 			fail("Unexpected MalformedURLException," + e);
 		}
 	}
+    
+    /**
+     * @tests java.io.File#deleteOnExit()
+     */
+    public void test_deleteOnExit() throws IOException, InterruptedException {
+        File dir = new File("dir4filetest");
+        dir.mkdir();
+        assertTrue(dir.exists());
+        File subDir = new File("dir4filetest/subdir");
+        subDir.mkdir();
+        assertTrue(subDir.exists());
 
+        Support_Exec.execJava(new String[] {
+                "tests.support.Support_DeleteOnExitTest",
+                dir.getAbsolutePath(), subDir.getAbsolutePath() },
+                new String[] {}, false);
+        assertFalse(dir.exists());
+        assertFalse(subDir.exists());
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
