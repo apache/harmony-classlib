@@ -153,7 +153,7 @@ class BeanInfoImpl implements BeanInfo {
                     }
 
                     if (result.get(listenerName) == null) {
-                        Class[] parameterTypes = method.getParameterTypes();
+                        Class<?>[] parameterTypes = method.getParameterTypes();
 
                         if (parameterTypes.length == 1) {
                             Class<?> listenerType = parameterTypes[0];
@@ -199,7 +199,7 @@ class BeanInfoImpl implements BeanInfo {
                             Method[] methods = listenerType.getMethods();
                             Vector<Method> listenerMethodsVec = new Vector<Method>();
                             for (Method element : methods) {
-                                Class[] listenerMethodParams = element
+                                Class<?>[] listenerMethodParams = element
                                         .getParameterTypes();
 
                                 if (listenerMethodParams.length == 1
@@ -320,7 +320,7 @@ class BeanInfoImpl implements BeanInfo {
             int modifiers = method.getModifiers();
 
             if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
-                Class[] parameterTypes = method.getParameterTypes();
+                Class<?>[] parameterTypes = method.getParameterTypes();
                 Class<?> returnType = method.getReturnType();
 
                 if (name.startsWith("get") && (parameterTypes.length == 0) //$NON-NLS-1$

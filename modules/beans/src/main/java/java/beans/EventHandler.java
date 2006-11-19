@@ -221,7 +221,7 @@ public class EventHandler implements InvocationHandler {
 
         // can be invoke with any listener method
         if (listenerMethodName == null) {
-            Class[] proxyInterfaces = proxy.getClass().getInterfaces();
+            Class<?>[] proxyInterfaces = proxy.getClass().getInterfaces();
 
             for (Class<?> proxyInstance : proxyInterfaces) {
                 Method[] interfaceMethods = proxyInstance.getMethods();
@@ -353,7 +353,7 @@ public class EventHandler implements InvocationHandler {
     }
 
     private static boolean canInvokeWithArguments(Method m, Object[] arguments) {
-        Class[] parameterTypes = m.getParameterTypes();
+        Class<?>[] parameterTypes = m.getParameterTypes();
 
         if (parameterTypes.length == arguments.length) {
             for (int i = 0; i < arguments.length; ++i) {
