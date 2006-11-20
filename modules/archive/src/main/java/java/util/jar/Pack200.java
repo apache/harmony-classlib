@@ -36,6 +36,13 @@ public abstract class Pack200 {
 
 	private static final String SYSTEM_PROPERTY_UNPACKER = "java.util.jar.Pack200.Unpacker"; //$NON-NLS-1$
 
+    /**
+     * Prevent this class from being instantiated.
+     */
+    private Pack200(){
+        //do nothing
+    }
+
 	/**
 	 * The method first read from system property for the classname of a Packer,
 	 * if such property exsists,the class shall be initialized; or the default
