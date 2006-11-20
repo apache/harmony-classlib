@@ -22,6 +22,11 @@ package java.util;
  */
 
 public class FormattableFlags {
+    
+    private FormattableFlags(){
+        //prevent this class to be instantialized
+    }
+    
     /**
      * Denotes the output to be left-justified. In order to fill the minimum
      * width requirement, spaces('\u0020') will be appended at the end of the

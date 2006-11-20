@@ -52,7 +52,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	/**
 	 * The elements of the vector.
 	 */
-	protected E[] elementData;
+	protected Object[] elementData;
 
 	/**
 	 * How many elements should be added to the vector when it is detected that
@@ -323,7 +323,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 */
 	public synchronized E elementAt(int location) {
 		if (location < elementCount) {
-			return elementData[location];
+			return (E)elementData[location];
 		}
 		throw new ArrayIndexOutOfBoundsException(location);
 	}
@@ -348,7 +348,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 			public E nextElement() {
 				synchronized (Vector.this) {
 					if (pos < elementCount) {
-						return elementData[pos++];
+						return (E)elementData[pos++];
 					}
 				}
 				throw new NoSuchElementException();
@@ -425,7 +425,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 */
 	public synchronized E firstElement() {
 		if (elementCount > 0) {
-			return elementData[0];
+			return (E)elementData[0];
 		}
 		throw new NoSuchElementException();
 	}
@@ -627,7 +627,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 */
 	public synchronized E lastElement() {
 		try {
-			return elementData[elementCount - 1];
+			return (E)elementData[elementCount - 1];
 		} catch (IndexOutOfBoundsException e) {
 			throw new NoSuchElementException();
 		}
@@ -699,7 +699,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	@Override
     public synchronized E remove(int location) {
 		if (location < elementCount) {
-			E result = elementData[location];
+			E result = (E)elementData[location];
 			elementCount--;
 			int size = elementCount - location;
 			if (size > 0) {
@@ -872,7 +872,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	@Override
     public synchronized E set(int location, E object) {
 		if (location < elementCount) {
-			E result = elementData[location];
+			E result = (E)elementData[location];
 			elementData[location] = object;
 			return result;
 		}

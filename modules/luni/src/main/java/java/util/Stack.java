@@ -53,7 +53,7 @@ public class Stack<E> extends Vector<E> {
 	 */
 	public synchronized E peek() {
 		try {
-			return elementData[elementCount - 1];
+			return (E)elementData[elementCount - 1];
 		} catch (IndexOutOfBoundsException e) {
 			throw new EmptyStackException();
 		}
@@ -71,7 +71,7 @@ public class Stack<E> extends Vector<E> {
 	public synchronized E pop() {
 		try {
 			int index = elementCount - 1;
-			E obj = elementData[index];
+			E obj = (E)elementData[index];
 			removeElementAt(index);
 			return obj;
 		} catch (IndexOutOfBoundsException e) {
