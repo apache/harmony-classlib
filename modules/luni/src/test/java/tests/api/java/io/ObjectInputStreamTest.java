@@ -19,6 +19,9 @@ package tests.api.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotActiveException;
@@ -28,6 +31,7 @@ import java.io.Serializable;
 import java.io.SerializablePermission;
 import java.io.StreamCorruptedException;
 import java.security.Permission;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -634,6 +638,23 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
             fail("NullPointerException expected");
         } catch (NullPointerException e) {}
     }
+    
+    // Regression Test for JIRA 2192
+	public void test_readObject_withPrimitiveClass() throws Exception {
+		File file = new File("test.ser");
+		file.deleteOnExit();
+		Test test = new Test();
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
+				file));
+		out.writeObject(test);
+		out.close();
+
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+		Test another = (Test) in.readObject();
+		in.close();
+		assertEquals(test, another);
+	}  
+   
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
@@ -643,4 +664,19 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         super.setUp();
         oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
     }
+}
+
+
+class Test implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	Class classes[] = new Class[] { byte.class, short.class, int.class,
+			long.class, boolean.class, char.class, float.class, double.class };
+
+	public boolean equals(Object o) {
+		if (!(o instanceof Test)) {
+			return false;
+		}
+		return Arrays.equals(classes, ((Test) o).classes);
+	}
 }

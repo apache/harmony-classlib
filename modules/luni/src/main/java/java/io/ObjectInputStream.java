@@ -107,6 +107,19 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
     // cache for readResolve methods
     private IdentityHashMap<Class<?>, Object> readResolveCache;
+    
+    private static final Hashtable<String, Class> PRIMITIVE_CLASSES = new Hashtable<String,Class>();
+    
+    static {
+		PRIMITIVE_CLASSES.put("byte", byte.class);
+		PRIMITIVE_CLASSES.put("short", short.class);
+		PRIMITIVE_CLASSES.put("int", int.class);
+		PRIMITIVE_CLASSES.put("long", long.class);
+		PRIMITIVE_CLASSES.put("boolean", boolean.class);
+		PRIMITIVE_CLASSES.put("char", char.class);
+		PRIMITIVE_CLASSES.put("float", float.class);
+		PRIMITIVE_CLASSES.put("double", double.class);
+	}
 
     // Internal type used to keep track of validators & corresponding priority
     class InputValidationDesc {
@@ -2350,11 +2363,18 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      *             If the corresponding class cannot be found.
      */
     protected Class<?> resolveClass(ObjectStreamClass osClass)
-            throws IOException, ClassNotFoundException {
-        // Use the first non-null ClassLoader on the stack. If null, use the
-        // system class loader
-        return Class.forName(osClass.getName(), true, callerClassLoader);
-    }
+			throws IOException, ClassNotFoundException {		
+		String className = osClass.getName();
+		//if it is primitive class, for example, long.class
+		Class cls = PRIMITIVE_CLASSES.get(className);
+		if (null == cls) {
+			//not primitive class
+            //Use the first non-null ClassLoader on the stack. If null, use the
+			// system class loader
+			return cls = Class.forName(className, true, callerClassLoader);
+		}
+		return cls;
+	}
 
     /**
      * If <code>enableResolveObject()</code> was activated, computes the
