@@ -27,7 +27,7 @@ import java.security.SecurityPermission;
  * 
  * @since 1.5
  */
-public class ManagementPermission extends BasicPermission {
+public final class ManagementPermission extends BasicPermission {
     private static final long serialVersionUID = 1897496590799378737L;
 
     /**
