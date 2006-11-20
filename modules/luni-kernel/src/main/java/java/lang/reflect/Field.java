@@ -24,6 +24,13 @@ package java.lang.reflect;
  * 
  */
 public final class Field extends AccessibleObject implements Member {
+    
+    /**
+     * Prevent this class from being instantiated
+     */
+    private Field(){
+        //do nothing
+    }
 
     /**
      * <p>TODO Document this method. Is it used?</p>

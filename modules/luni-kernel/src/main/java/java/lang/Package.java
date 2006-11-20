@@ -38,6 +38,13 @@ import java.net.URL;
 public class Package implements AnnotatedElement {
 
     /**
+     * Prevent this class from being instantiated
+     */
+    private Package(){
+        //do nothing
+    }
+    
+    /**
      * Gets the annotation associated with the given annotation type and this
      * package.
      * 

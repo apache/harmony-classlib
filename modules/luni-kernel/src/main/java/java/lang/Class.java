@@ -78,6 +78,10 @@ import java.security.ProtectionDomain;
 public final class Class<T> implements Serializable, AnnotatedElement, GenericDeclaration, Type {
 
     private static final long serialVersionUID = 3206093459760846163L;
+    
+    private Class(){
+        //prevent this class to be instantiated, instance should be created by JVM only
+    }
 
     /**
      * This must be provided by the VM vendor, as it is used by other provided

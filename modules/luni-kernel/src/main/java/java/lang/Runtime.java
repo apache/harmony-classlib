@@ -28,6 +28,14 @@ import java.io.OutputStream;
  * The Runtime interface.
  */
 public class Runtime {
+    
+    /**
+     * Prevent this class from being instantiated
+     */
+    private Runtime(){
+        //do nothing
+    }
+    
     /**
      * Execute progAray[0] in a separate platform process The new process
      * inherits the environment of the caller.

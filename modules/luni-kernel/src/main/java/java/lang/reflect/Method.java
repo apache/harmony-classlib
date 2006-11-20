@@ -27,6 +27,13 @@ import java.lang.annotation.Annotation;
  */
 public final class Method extends AccessibleObject implements GenericDeclaration, Member {
     
+    /**
+     * Prevent this class from being instantiated
+     */
+    private Method(){
+        //do nothing
+    }
+    
     public TypeVariable<Method>[] getTypeParameters() {
         return null;
     }

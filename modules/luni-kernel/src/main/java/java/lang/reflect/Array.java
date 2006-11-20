@@ -22,6 +22,14 @@ package java.lang.reflect;
  * to dynamically create and access arrays.
  */
 public final class Array {
+    
+    /**
+     * Prevent this class from being instantiated
+     */
+    private Array(){
+        //do nothing
+    }
+    
     /**
      * <p>TODO Document this method. Is it actually used?</p>
      * @param componentType

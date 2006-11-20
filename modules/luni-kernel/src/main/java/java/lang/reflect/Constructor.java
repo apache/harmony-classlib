@@ -27,6 +27,12 @@ import java.lang.annotation.Annotation;
  */
 public final class Constructor<T> extends AccessibleObject implements GenericDeclaration,
         Member {
+    /**
+     * Prevent this class from being instantiated
+     */
+    private Constructor(){
+        //do nothing
+    }
 
     public TypeVariable<Constructor<T>>[] getTypeParameters() {
         return null;

@@ -27,6 +27,13 @@ package java.lang;
 public final class Compiler {
 
     /**
+     * Prevent this class from being instantiated.
+     */
+    private Compiler(){
+        //do nothing
+    }
+
+    /**
      * Low level interface to the JIT compiler. Can return any object, or null
      * if no JIT compiler is available.
      * 
