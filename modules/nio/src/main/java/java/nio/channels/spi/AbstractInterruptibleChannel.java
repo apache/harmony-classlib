@@ -63,7 +63,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 
 	private volatile boolean closed = false;
 
-	public volatile boolean interrupted = false;
+	volatile boolean interrupted = false;
 
 	/**
 	 * Default constructor.
