@@ -252,10 +252,7 @@ public final class Math {
      *            the value to compute the log10 of
      * @return the natural logarithm of the argument.
      */
-    public static double log10(double d) {
-        //TODO: this is a stub to integrate HARMONY-935
-        return log(d)/log(10);
-    }
+    public static native double log10(double d);
     
     /**
      * Answers the closest double approximation of the natural logarithm of the

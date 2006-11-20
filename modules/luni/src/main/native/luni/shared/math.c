@@ -492,6 +492,11 @@ Java_java_lang_StrictMath_log10 (JNIEnv * env, jclass jclazz, jdouble arg1)
   return internal_log10 (arg1);
 }
 
+jdouble JNICALL
+Java_java_lang_Math_log10 (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_log10 (arg1);
+}
 
 jdouble JNICALL
 Java_java_lang_StrictMath_log1p (JNIEnv * env, jclass jclazz, jdouble arg1)
