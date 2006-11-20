@@ -403,7 +403,7 @@ But @{src} doesn't exist.
 
     <target name="-really-link" unless="${dest}.exists">
         <echo>Linking ${dest}</echo>
-        <symlink resource="${src}" link="${dest}" />
+        <symlink resource="${src}" link="${basedir}/${dest}" />
     </target>
 
 </project>
