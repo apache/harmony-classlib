@@ -98,6 +98,16 @@ public class ThreadLocalTest extends TestCase {
 		assertTrue("ThreadLocal's initial value in other Thread should be "
 				+ INITIAL_VALUE, THREADVALUE.result == INITIAL_VALUE);
 
+        /* Regression test for implementation vulnerability reported
+         * on Harmony dev list.
+         */
+       ThreadLocal<Object> thrVar = new ThreadLocal<Object>() {
+           public int hashCode() {
+               fail("ThreadLocal should not be asked for it's hashCode");
+               return 0; // never reached
+           }
+       };
+       thrVar.get();
 	}
 
 	/**
