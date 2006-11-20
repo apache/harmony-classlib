@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 public class URITest extends TestCase {
-
 	/**
 	 * @tests java.net.URI(java.lang.String)
 	 */
@@ -97,6 +96,22 @@ public class URITest extends TestCase {
 		assertEquals("Assert 4: URI relativized incorrectly,",
 				new URI("file:///~/first"), b.relativize(a));
 	}
+    
+    public void test_relativizeBasedOneEclipseCoreResources() throws URISyntaxException {
+        URI one = new URI("file:/C:/test/ws");
+        URI two = new URI("file:/C:/test/ws");
+        
+        URI empty = new URI("");
+        assertEquals(empty, one.relativize(two));
+        
+        one = new URI("file:/C:/test/ws");
+        two = new URI("file:/C:/test/ws/p1");
+        URI result = new URI("p1");
+        assertEquals(result, one.relativize(two));
+        
+        one = new URI("file:/C:/test/ws/");
+        assertEquals(result, one.relativize(two));
+    }
 	
 	/**
 	 * @tests java.net.URI#compareTo(java.net.URI)

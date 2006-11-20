@@ -1304,31 +1304,37 @@ public final class URI implements Comparable<URI>, Serializable {
 		if (authority == null ? relative.authority != null : !authority
 				.equals(relative.authority)) {
             return relative;
-        }
-
-		// append a slash to the end if necessary
-		// (for a case like: "dir1" against "dir1/hi" should return "hi", not
-		// "/hi")
-		String tempPath = null;
-		if (path.endsWith("/")) {
-            tempPath = path;
-        } else {
-            tempPath = path + "/";
-        }
+        }        
 
 		// normalize both paths
-		String normrel = normalize(relative.path);
-		tempPath = normalize(tempPath);
+        String thisPath = normalize(path);
+		String relativePath = normalize(relative.path);
 
-		if (!normrel.startsWith(tempPath)) {
-            return relative;
+        /*
+         * if the paths aren't equal, then we need to determine if this
+         * URI's path is a parent path (begins with) the relative URI's
+         * path
+         */
+		if (!thisPath.equals(relativePath)) {
+            // if this URI's path doesn't end in a '/', add one 
+            if (!thisPath.endsWith("/")) {
+                thisPath = thisPath + '/';
+            }
+            /*
+             * if the relative URI's path doesn't start with this URI's path,
+             * then just return the relative URI; the URIs have nothing in
+             * common
+             */
+            if (!relativePath.startsWith(thisPath)) {
+                return relative;
+            }
         }
 
 		URI result = new URI();
 		result.fragment = relative.fragment;
 		result.query = relative.query;
-		result.path = normrel.substring(tempPath.length());
-
+        // the result URI is the remainder of the relative URI's path
+		result.path = relativePath.substring(thisPath.length());
 		return result;
 	}
 
