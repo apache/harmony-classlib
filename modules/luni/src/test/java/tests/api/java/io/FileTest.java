@@ -1770,9 +1770,10 @@ public class FileTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.io.File#mkdir()
 	 */
-	public void test_mkdir() {
+	public void test_mkdir() throws IOException {
 		// Test for method boolean java.io.File.mkdir()
 
 		String base = System.getProperty("user.dir");
@@ -1790,16 +1791,31 @@ public class FileTest extends junit.framework.TestCase {
 				dirExists = false;
 			}
 		}
-		try {
-			assertTrue("mkdir failed", dir.mkdir() && dir.exists());
-		} finally {
-			dir.delete();
-		}
+		
+		assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+        dir.deleteOnExit();
+
+        // Test make a long path
+        String longDirName = "abcdefghijklmnopqrstuvwx";// 24 chars
+        StringBuilder sb = new StringBuilder(dir + File.separator);
+        while (dir.getCanonicalPath().length() < 256 - longDirName.length()) {
+            sb.append(longDirName + File.separator);
+            dir = new File(sb.toString());
+            assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }
+        while (dir.getCanonicalPath().length() < 256) {
+            sb.append(0);
+            dir = new File(sb.toString());
+            assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
+                    dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }
 	}
 
 	/**
-	 * @tests java.io.File#mkdirs()
-	 */
+     * @tests java.io.File#mkdirs()
+     */
 	public void test_mkdirs() {
 		// Test for method boolean java.io.File.mkdirs()
 
