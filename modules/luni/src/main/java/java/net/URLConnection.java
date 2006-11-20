@@ -648,14 +648,19 @@ public abstract class URLConnection {
 	 * @param field
 	 *            the field to get the property for
 	 * @return the field to look up
+	 * @throws IllegalStateException -
+	 *             if connection already established
 	 * 
 	 * @see #getDefaultRequestProperty
 	 * @see #setDefaultRequestProperty
 	 * @see #setRequestProperty
 	 */
-	public String getRequestProperty(String field) {
-		return null;
-	}
+    public String getRequestProperty(String field) {
+        if (this.connected == true) {
+            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+        }
+        return null;
+    }
 
 	/**
 	 * Answers the <code>URL</code> of this connection

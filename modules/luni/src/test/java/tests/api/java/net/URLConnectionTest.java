@@ -34,6 +34,7 @@ import java.net.ProtocolException;
 import java.net.SocketPermission;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.security.Permission;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -838,6 +839,43 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		assertNull("Wrong property returned: " + uc.getRequestProperty("No"),
 				uc.getRequestProperty("No"));
 	}
+	
+	/**
+	 * @tests java.net.URLConnection#getRequestProperty(java.lang.String)
+	 */
+	public void test_getRequestProperty_LString_Exception() throws IOException {
+        class NewHandler extends URLStreamHandler {
+            protected URLConnection openConnection(URL u)
+                    throws java.io.IOException {
+                return new HttpURLConnection(u) {
+                    @Override
+                    public void disconnect() {
+                        // do nothing
+                    }
+                    @Override
+                    public boolean usingProxy() {
+                        return false;
+                    }
+                    @Override
+                    public void connect() throws IOException {
+                        connected = true;
+                    }
+                };
+            }
+        }
+        URL url = new URL("http", "test", 80, "index.html", new NewHandler());
+        URLConnection urlCon = url.openConnection();
+        urlCon.setRequestProperty("test", "testProperty");
+        assertNull(urlCon.getRequestProperty("test"));
+        
+        urlCon.connect();
+        try {
+            urlCon.getRequestProperty("test");
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.net.URLConnection#getURL()
