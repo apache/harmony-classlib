@@ -29,6 +29,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.ObjectStreamException;
 import java.io.ObjectStreamField;
 import java.io.OutputStream;
@@ -454,6 +455,22 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			return new Integer(42);
 		}
 	}
+	
+	private static class WriteReplaceObject implements Serializable {
+        private Object replaceObject;
+
+        private static enum Color {
+            red, blue, green
+        };
+
+        public WriteReplaceObject(Object o) {
+            replaceObject = o;
+        }
+
+        protected Object writeReplace() throws ObjectStreamException {
+            return replaceObject;
+        }
+    }
 
 	private static class ExternalizableWithReplace implements Externalizable {
 		private int foo;
@@ -484,6 +501,19 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
             } else {
                 return obj;
             }
+        }
+    }
+        
+    private static class ObjectOutputStreamWithReplace2 extends
+            ObjectOutputStream {
+        public ObjectOutputStreamWithReplace2(OutputStream out)
+                throws IOException {
+            super(out);
+            enableReplaceObject(true);
+        }
+
+        protected Object replaceObject(Object obj) throws IOException {
+            return new Long(10);
         }
     }
 
@@ -1185,5 +1215,43 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         oos.close();
         ois.close();
         assertTrue("replaceObject has not been called", (obj instanceof Long));
-    }
+
+		//Regression for HARMONY-2239
+		Object replaceObject = int.class;
+		baos = new ByteArrayOutputStream();
+		ObjectOutputStreamWithReplace2 oos2 = new ObjectOutputStreamWithReplace2(
+				baos);
+		oos2.writeObject(new WriteReplaceObject(replaceObject));
+		oos2.flush();
+		ois = new ObjectInputStream(
+				new ByteArrayInputStream(baos.toByteArray()));
+		obj = ois.readObject();
+		oos.close();
+		ois.close();
+		assertTrue("replaceObject has not been called", (obj instanceof Long));
+
+		replaceObject = ObjectStreamClass.lookup(Integer.class);
+		baos = new ByteArrayOutputStream();
+		oos2 = new ObjectOutputStreamWithReplace2(baos);
+		oos2.writeObject(new WriteReplaceObject(replaceObject));
+		oos2.flush();
+		ois = new ObjectInputStream(
+				new ByteArrayInputStream(baos.toByteArray()));
+		obj = ois.readObject();
+		oos.close();
+		ois.close();
+		assertTrue("replaceObject has not been called", (obj instanceof Long));
+
+		replaceObject = WriteReplaceObject.Color.red;
+		baos = new ByteArrayOutputStream();
+		oos2 = new ObjectOutputStreamWithReplace2(baos);
+		oos2.writeObject(new WriteReplaceObject(replaceObject));
+		oos2.flush();
+		ois = new ObjectInputStream(
+				new ByteArrayInputStream(baos.toByteArray()));
+		obj = ois.readObject();
+		oos.close();
+		ois.close();
+		assertTrue("replaceObject has not been called", (obj instanceof Long));
+	}
 }
