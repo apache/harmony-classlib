@@ -36,6 +36,7 @@ import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Window;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionListener;
@@ -85,6 +86,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.plaf.ComponentUI;
 
 import org.apache.harmony.awt.ClipRegion;
+import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -873,21 +875,84 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     protected void paintChildren(final Graphics graphics) {
-        for (int i = getComponentCount() - 1; i >= 0; i--) {
-            Component comp = getComponent(i);
-            if (comp.isVisible()) {
-                if (!comp.isLightweight()) {
-                    continue;
+        Rectangle clipBounds = graphics.getClipBounds();
+        if (clipBounds != null && clipBounds.isEmpty()) {
+            return;
+        }
+
+        int cc = getComponentCount();
+        if (!isOptimizedDrawingEnabled()) {
+            MultiRectArea childrenCoverage = null;
+            Component compList[] = new Component[cc];
+            Shape clipList[] = new Shape[cc];
+            int rc = -1;
+
+            for (int i = 0; i < cc; i++) {
+                Component comp = getComponent(i);
+                if (comp.isVisible()) {
+                    if (!comp.isLightweight()) {
+                        continue;
+                    }
+                    MultiRectArea clip;
+                    Rectangle bounds = comp.getBounds();
+                    if (childrenCoverage == null && comp.isOpaque()) {
+                        childrenCoverage = new MultiRectArea(bounds);
+                        clip = new MultiRectArea(bounds);
+                    } else {
+                        clip = new MultiRectArea(bounds);
+                        clip.substract(childrenCoverage);
+                        if (clip.isEmpty()) {
+                            continue;
+                        }
+                        if (comp.isOpaque()) {
+                            childrenCoverage = MultiRectArea.union(
+                                    childrenCoverage, clip);
+                        }
+                    }
+                    rc++;
+                    if (clipBounds != null) {
+                        clip.intersect(clipBounds);
+                    }
+                    clip.translate(-bounds.x, -bounds.y);
+                    compList[rc] = comp;
+                    clipList[rc] = clip;
                 }
+            }
+
+            while (rc >= 0) {
+                Component comp = compList[rc];
                 Graphics gComp = getChildJComponentGraphics(graphics, comp);
                 if (gComp != null) {
-                    Rectangle componentBounds = getComponentVisibleRect(comp, SwingUtilities.getLocalBounds(comp));
-                    gComp.clipRect(componentBounds.x, componentBounds.y, componentBounds.width, componentBounds.height);
-                    Rectangle clipBounds = gComp.getClipBounds();
-                    if (!clipBounds.isEmpty()) {
+                    ((Graphics2D) gComp).clip(clipList[rc]);
+                    if (!gComp.getClipBounds().isEmpty()) {
                         comp.paint(gComp);
                     }
                     gComp.dispose();
+                }
+                rc--;
+            }
+        } else {
+            for (int i = cc - 1; i >= 0; i--) {
+                Component comp = getComponent(i);
+                if (comp.isVisible()) {
+                    if (!comp.isLightweight()) {
+                        continue;
+                    }
+                    Graphics gComp = getChildJComponentGraphics(graphics, comp);
+                    if (gComp != null) {
+                        Rectangle bounds = comp.getBounds();
+                        int x = bounds.x;
+                        int y = bounds.y;
+                        if(clipBounds != null){
+                            bounds = bounds.intersection(clipBounds);
+                        }
+                        bounds.translate(-x, -y);
+                        gComp.clipRect(bounds.x, bounds.y, bounds.width, bounds.height);
+                        if (!gComp.getClipBounds().isEmpty()) {
+                            comp.paint(gComp);
+                        }
+                        gComp.dispose();
+                    }
                 }
             }
         }
