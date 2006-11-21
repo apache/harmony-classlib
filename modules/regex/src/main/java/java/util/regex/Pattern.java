@@ -87,7 +87,7 @@ public final class Pattern implements Serializable {
     /**
      * Current <code>pattern</code> to be compiled;
      */
-    private Lexer lexemes = null;
+    private transient Lexer lexemes = null;
 
     /**
      * Pattern compile flags;
@@ -278,6 +278,7 @@ public final class Pattern implements Serializable {
             throws PatternSyntaxException {
         this.lexemes = new Lexer(regex, flags);
         this.flags = flags;
+        this.pattern = regex;
 
         start = processExpression(-1, this.flags, null);
         if (!lexemes.isEmpty()) {
@@ -610,6 +611,7 @@ public final class Pattern implements Serializable {
                     // ////
                     && !(cur instanceof CompositeQuantifierSet)
                     && !(cur instanceof GroupQuantifierSet)
+                    && !(cur instanceof AltQuantifierSet)
                     && !next.first(((LeafQuantifierSet) cur).getInnerSet())) {
                 cur = new UnifiedQuantifierSet((LeafQuantifierSet) cur);
             }
@@ -1244,6 +1246,7 @@ public final class Pattern implements Serializable {
         globalGroupIndex = -1;
         compCount = -1;
         consCount = -1;
+        backRefs = new FSet [BACK_REF_NUMBER];
 
         compileImpl(pattern, flags);
 

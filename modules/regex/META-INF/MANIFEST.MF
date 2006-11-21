@@ -13,8 +13,9 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
- java.text,
- java.util,
  java.security,
- org.apache.harmony.kernel.vm
+ java.util,
+ java.text,
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: java.util.regex

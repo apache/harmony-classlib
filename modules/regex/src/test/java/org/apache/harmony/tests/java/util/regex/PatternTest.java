@@ -17,10 +17,15 @@
 
 package org.apache.harmony.tests.java.util.regex;
 
-import junit.framework.TestCase;
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class PatternTest extends TestCase {
 	String[] testPatterns = {
@@ -697,6 +702,17 @@ public class PatternTest extends TestCase {
 		mat.matches();
 		assertEquals(15, mat.end());
 	}
+    
+    public void testSerialization() throws Exception {
+        Pattern pat = Pattern.compile("a*bc");
+        SerializableAssert comparator = new SerializableAssert(){
+                    public void assertDeserialized(Serializable initial, Serializable deserialized) {
+                        assertEquals(((Pattern)initial).toString(), ((Pattern)deserialized).toString());
+                    }
+                };
+        SerializationTest.verifyGolden(this, pat, comparator);
+        SerializationTest.verifySelf(pat, comparator);
+    }
 
 	public void testSOLQuant() {
 		Pattern pat = Pattern.compile("$*", Pattern.MULTILINE);

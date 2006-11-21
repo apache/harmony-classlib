@@ -66,7 +66,7 @@ class ReluctantCompositeQuantifierSet extends CompositeQuantifierSet {
                 i++;
             }
 
-        } while (shift >= 1 && i < max);
+        } while (shift >= 1 && i <= max);
 
         return -1;
     }

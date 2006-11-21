@@ -136,6 +136,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
         </javac>
     </target>
@@ -159,6 +160,7 @@
             <classpath>
                 <pathelement path="${hy.regex.bin.test}"/>
             </classpath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
 
             <formatter type="xml" />
