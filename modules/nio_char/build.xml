@@ -39,6 +39,8 @@
         </or>
     </fileset>
 
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -177,17 +179,7 @@
 
                 <fileset dir="${hy.nio_char.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="tests/api/java/nio/charset/ASCCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/CharsetProviderTest.java"/>
-                    <!-- No public constructor? -->
-                    <exclude name="tests/api/java/nio/charset/ConcreteCharsetTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/GBCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/ISOCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UTF16BECharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UTF16CharsetDecoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UTF16CharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UTF16LECharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UTFCharsetEncoderTest.java"/>
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

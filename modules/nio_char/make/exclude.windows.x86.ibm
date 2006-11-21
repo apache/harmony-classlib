@@ -1,0 +1,10 @@
+tests/api/java/nio/charset/ASCCharsetEncoderTest.java
+tests/api/java/nio/charset/CharsetProviderTest.java
+tests/api/java/nio/charset/ConcreteCharsetTest.java
+tests/api/java/nio/charset/GBCharsetEncoderTest.java
+tests/api/java/nio/charset/ISOCharsetEncoderTest.java
+tests/api/java/nio/charset/UTF16BECharsetEncoderTest.java
+tests/api/java/nio/charset/UTF16CharsetDecoderTest.java
+tests/api/java/nio/charset/UTF16CharsetEncoderTest.java
+tests/api/java/nio/charset/UTF16LECharsetEncoderTest.java
+tests/api/java/nio/charset/UTFCharsetEncoderTest.java

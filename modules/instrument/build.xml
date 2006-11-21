@@ -38,6 +38,7 @@
     </fileset>
     
     <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -199,7 +200,7 @@
 
                 <fileset dir="${hy.instrument.src.test.java}">
                     <include name="**/*Test.java" />
-                    <exclude name="org/apache/harmony/tests/java/lang/instrument/InstrumentTest.java" />
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

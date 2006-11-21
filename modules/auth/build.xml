@@ -51,6 +51,7 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -224,13 +225,10 @@
                 </fileset>
                 <fileset dir="${hy.auth.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <excludesfile name="${exclude.file}" />
 
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
-                	
-                    <!-- The test is under development     -->
-                    <!-- excluded to avoid random failures -->
-                    <exclude name="org/apache/harmony/auth/tests/module/Krb5LoginModuleTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

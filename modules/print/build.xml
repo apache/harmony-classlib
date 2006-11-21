@@ -46,6 +46,8 @@
         </or>
     </fileset>
 
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -204,22 +206,8 @@
                 unless="test.case">
 
                 <fileset dir="${hy.print.src.test.java}">
-                    <exclude name="javax/print/GetAttributesTest.java" />
-                    <exclude name="javax/print/GetAttributeTest.java" />
-                    <exclude name="javax/print/GetDefaultAttributeValueTest.java" />
-                    <exclude name="javax/print/GetSupportedAttributeCategoriesTest.java" />
-                    <exclude name="javax/print/GetSupportedAttributeValuesTest.java" />
-                    <exclude name="javax/print/GetSupportedDocFlavorsTest.java" />
-                    <exclude name="javax/print/GetUnsupportedAttributesTest.java" />
-                    <exclude name="javax/print/IsAttributeCategorySupportedTest.java" />
-                    <exclude name="javax/print/IsAttributeValueSupportedTest.java" />
-                    <exclude name="javax/print/LookupDefaultPrintServiceTest.java" />
-                    <exclude name="javax/print/LookupPrintServicesTest.java" />
-                    <exclude name="javax/print/PrintAutosenseTest.java" />
-                    <exclude name="javax/print/PrintJpegTest.java" />
-                    <exclude name="javax/print/PrintTest.java" />
-                    <exclude name="javax/print/ValueTests.java" />
-                    <exclude name="javax/print/attribute/ExtendEnumSyntax.java" />
+                    <!--include name="**/*Test.java"/-->
+                    <excludesfile name="${exclude.file}" />
 		</fileset>
             </batchtest>
         </junit>

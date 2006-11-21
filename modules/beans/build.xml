@@ -38,6 +38,7 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -253,24 +254,7 @@
 
                 <fileset dir="${hy.beans.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/DefaultPersistenceDelegateTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/EncoderTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/PersistenceDelegateTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyChangeSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyEditorManagerTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeListenerProxyTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/XMLDecoderTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/XMLEncoderTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextChildSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextMembershipEventTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServiceRevokedEventTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServicesSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextSupportTest.java" />
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

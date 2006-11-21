@@ -39,6 +39,8 @@
         </or>
     </fileset>
 
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -194,7 +196,7 @@
 
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.java"/>
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

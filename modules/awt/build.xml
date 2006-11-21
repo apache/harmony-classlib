@@ -50,6 +50,7 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
+    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -299,70 +300,11 @@
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
                     <include name="**/*Test*.java"/>
-                    <!-- Failing with SEGV in XmuLookupStandardColormap -->
-                    <exclude name="java/awt/ToolkitRTest.java" />
-
-                    <exclude name="java/awt/AWTTestCase.java"/>
-                    <exclude name="java/awt/ButtonTest.java"/>
-                    <exclude name="java/awt/SerializeTestCase.java"/>
-                    <exclude name="java/awt/geom/ShapeTest.java"/>
-                    <exclude name="java/awt/geom/ShapeTestCase.java"/>
-                    <exclude name="java/awt/geom/GeomTestCase.java"/>
-                    <exclude name="java/awt/geom/PathIteratorTestCase.java"/>
-                    <exclude name="org/apache/harmony/awt/gl/MultiRectAreaTestCase.java"/>
-                    <exclude name="java/awt/MenuTest.java"/>
-
-                    <exclude name="java/awt/AccessibleAWTCanvasTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTComponentTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTContainerTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTListChildTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTMenuItemTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTWindowTest.java"/>
-                    <exclude name="java/awt/FileDialogTest.java"/>
-                    <exclude name="java/awt/FlowLayoutTest.java"/>
-                    <exclude name="java/awt/GridBagLayoutTest.java"/>
-                    <exclude name="java/awt/GridLayoutTest.java"/>
-                    <exclude name="java/awt/RobotTest.java"/>
-                    <exclude name="java/awt/WindowTest.java"/>
-                    <exclude name="java/awt/WindowRTest.java"/>
-                    <exclude name="java/awt/datatransfer/ClipboardTest.java"/>
-                    <exclude name="java/awt/BorderLayoutTest.java"/>
-                    <exclude name="java/awt/ButtonRTest.java"/>
-                    <exclude name="java/awt/CardLayoutTest.java"/>
-                    <exclude name="java/awt/ChoiceTest.java"/>
-                    <exclude name="java/awt/ComponentTest.java"/>
-                    <exclude name="java/awt/ContainerOrderFocusTraversalPolicyTest.java"/>
-                    <exclude name="java/awt/DialogRTest.java"/>
-                    <exclude name="java/awt/KeyboardFocusManagerRTest.java"/>
-                    <exclude name="java/awt/ListTest.java"/>
-                    <exclude name="java/awt/ScrollPaneAdjustableTest.java"/>
-                    <exclude name="java/awt/TextAreaTest.java"/>
-                    <exclude name="java/awt/TextComponentTest.java"/>
-                    <exclude name="java/awt/TextFieldTest.java"/>
-                    <exclude name="java/awt/dnd/DropTargetTest.java"/>
-                    <exclude name="java/awt/event/ContainerEventTest.java"/>
-                    <exclude name="java/awt/WinWindowRTest.java"/>
-                    <exclude name="org/apache/harmony/awt/gl/render/JavaBlitterTest.java"/>
-                    <exclude name="org/apache/harmony/awt/wtk/ShutdownWatchdogTest.java"/>
-
-                    <exclude name="java/awt/AccessibleAWTButtonTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTDialogTest.java"/>
-                    <exclude name="java/awt/AccessibleAWTFrameTest.java"/>
-                    <exclude name="java/awt/FrameRTest.java"/>
-                    <exclude name="java/awt/KeyboardFocusManagerTest.java"/>
-                    <exclude name="java/awt/event/WindowEventTest.java"/>
-                    <exclude name="java/awt/font/LineBreakMeasurerTest.java"/>
-                    <exclude name="java/awt/font/TextLayoutTest.java"/>
-                    <exclude name="java/awt/font/TextMeasurerTest.java"/>
-                    <exclude name="org/apache/harmony/awt/gl/MultiRectAreaLineCashTest.java"/>
-                    <exclude name="org/apache/harmony/awt/gl/MultiRectAreaRectCashTest.java"/>
-
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
                     <include name="**/*Test*.java"/>
-
-                    <exclude name="java/awt/WinWindowRTest.java"/>
-                    <exclude name="org/apache/harmony/awt/gl/linux/XGraphics2DRTest.java"/>
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>  
         </junit>
