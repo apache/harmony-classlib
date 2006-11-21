@@ -333,6 +333,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
     }
 
+    @SuppressWarnings("serial")
     public class BranchElement extends AbstractElement {
         Element[] elements =  new Element[0];
 
@@ -344,6 +345,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             super(parent, attributes);
         }
 
+        @Override
         public Enumeration children() {
             if (elements == null || elements.length == 0) {
                 return null;
@@ -362,10 +364,12 @@ public abstract class AbstractDocument implements Document, Serializable {
             }
         }
 
+        @Override
         public boolean getAllowsChildren() {
             return true;
         }
 
+        @Override
         public Element getElement(final int index) {
             if (0 <= index && index < elements.length) {
                 return elements[index];
@@ -374,10 +378,12 @@ public abstract class AbstractDocument implements Document, Serializable {
             }
         }
 
+        @Override
         public int getElementCount() {
             return elements.length;
         }
 
+        @Override
         public int getElementIndex(final int offset) {
             if (offset < 0 && elements.length > 0) {
                 return 0;
@@ -397,19 +403,23 @@ public abstract class AbstractDocument implements Document, Serializable {
             return result;
         }
 
+        @Override
         public int getEndOffset() {
             return elements[elements.length - 1].getEndOffset();
         }
 
+        @Override
         public String getName() {
             final String inherited = super.getName();
             return inherited != null ? inherited : ParagraphElementName;
         }
 
+        @Override
         public int getStartOffset() {
             return elements[0].getStartOffset();
         }
 
+        @Override
         public boolean isLeaf() {
             return false;
         }
@@ -447,6 +457,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             elements = newArray;
         }
 
+        @Override
         public String toString() {
             return "BranchElement(" + getName() + ") "
                     + getStartOffset() + "," + getEndOffset() + "\n";
@@ -474,12 +485,13 @@ public abstract class AbstractDocument implements Document, Serializable {
 
     }
 
+    @SuppressWarnings("serial")
     public class DefaultDocumentEvent extends CompoundEdit
         implements DocumentEvent {
 
         private static final int THRESHOLD = 10;
 
-        private HashMap   changes;
+        private HashMap<Element, ElementChange> changes;
         private int       length;
         private int       offset;
         private EventType type;
@@ -491,25 +503,23 @@ public abstract class AbstractDocument implements Document, Serializable {
             this.type    = type;
         }
 
+        @Override
         public boolean addEdit(final UndoableEdit anEdit) {
             boolean result = super.addEdit(anEdit);
 
             if (result && edits.size() > THRESHOLD) {
                 if (changes == null) {
-                    changes = new HashMap();
+                    changes = new HashMap<Element, ElementChange>();
 
-                    for (int i = 0; i < edits.size(); i++) {
-                        if (edits.get(i)
-                                instanceof DocumentEvent.ElementChange) {
-                            DocumentEvent.ElementChange change =
-                                (DocumentEvent.ElementChange)edits.get(i);
+                    for (UndoableEdit edit : edits) {
+                        if (edit instanceof ElementChange) {
+                            ElementChange change = (ElementChange)edit;
                             changes.put(change.getElement(), change);
                         }
                     }
                 } else {
-                    if (anEdit instanceof DocumentEvent.ElementChange) {
-                        DocumentEvent.ElementChange change =
-                            (DocumentEvent.ElementChange)anEdit;
+                    if (anEdit instanceof ElementChange) {
+                        ElementChange change = (ElementChange)anEdit;
                         changes.put(change.getElement(), change);
                     }
                 }
@@ -520,11 +530,10 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         public ElementChange getChange(final Element element) {
             if (changes != null) {
-                return (ElementChange)changes.get(element);
+                return changes.get(element);
             }
 
-            for (int i = 0; i < edits.size(); i++) {
-                Object edit = edits.get(i);
+            for (UndoableEdit edit : edits) {
                 if (edit instanceof ElementChange) {
                     ElementChange change = (ElementChange)edit;
                     if (change.getElement() == element) {
@@ -547,6 +556,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             return offset;
         }
 
+        @Override
         public String getPresentationName() {
             if (type == EventType.INSERT) {
                 return getLocalizedString("AbstractDocument.additionText");
@@ -561,22 +571,26 @@ public abstract class AbstractDocument implements Document, Serializable {
             return null;
         }
 
+        @Override
         public String getRedoPresentationName() {
-            return getRedoName() + " " + getPresentationName();
+            return getLocalizedRedoName() + " " + getPresentationName();
         }
 
         public EventType getType() {
             return type;
         }
 
+        @Override
         public String getUndoPresentationName() {
-            return getUndoName() + " " + getPresentationName();
+            return getLocalizedUndoName() + " " + getPresentationName();
         }
 
+        @Override
         public boolean isSignificant() {
             return true;
         }
 
+        @Override
         public void redo() {
             writeLock();
             try {
@@ -588,19 +602,19 @@ public abstract class AbstractDocument implements Document, Serializable {
             }
         }
 
+        @Override
         public String toString() {
-            String result = "[";
-            for (int i = 0; i < edits.size(); i++) {
-                UndoableEdit edit = (UndoableEdit)edits.get(i);
-                if (i != 0) {
-                    result += ", ";
-                }
-                result += edit.toString();
+            StringBuffer result = new StringBuffer();
+            for (UndoableEdit edit : edits) {
+                result.append(", ")
+                      .append(edit.toString());
             }
-            result += "]";
-            return result;
+            result.replace(0, 2, "[")
+                  .append("]");
+            return result.toString();
         }
 
+        @Override
         public void undo() {
             writeLock();
             try {
@@ -628,15 +642,16 @@ public abstract class AbstractDocument implements Document, Serializable {
             }
         }
 
-        private String getUndoName() {
+        private String getLocalizedUndoName() {
             return UIManager.getString("AbstractDocument.undoText");
         }
 
-        private String getRedoName() {
+        private String getLocalizedRedoName() {
             return UIManager.getString("AbstractDocument.redoText");
         }
     }
 
+    @SuppressWarnings("serial")
     public static class ElementEdit extends AbstractUndoableEdit
         implements ElementChange {
 
@@ -669,6 +684,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             return index;
         }
 
+        @Override
         public void redo() {
             super.redo();
             Element[] temp = added;
@@ -677,6 +693,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             ((BranchElement)element).replace(index, removed.length, added);
         }
 
+        @Override
         public void undo() {
             super.undo();
             ((BranchElement)element).replace(index, added.length, removed);
@@ -687,6 +704,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
     }
 
+    @SuppressWarnings("serial")
     public class LeafElement extends AbstractElement {
         private transient Position end;
         private transient Position start;
@@ -709,43 +727,53 @@ public abstract class AbstractDocument implements Document, Serializable {
             initPositions(adjustedStartOffset, adjustedEndOffset);
         }
 
+        @Override
         public Enumeration children() {
             return null;
         }
 
+        @Override
         public boolean getAllowsChildren() {
             return false;
         }
 
+        @Override
         public Element getElement(final int offset) {
             return null;
         }
 
+        @Override
         public int getElementCount() {
             return 0;
         }
 
+        @Override
         public int getElementIndex(final int offset) {
             return -1;
         }
 
+        @Override
         public int getEndOffset() {
             return end.getOffset();
         }
 
+        @Override
         public String getName() {
             final String inherited = super.getName();
             return inherited != null ? inherited : ContentElementName;
         }
 
+        @Override
         public int getStartOffset() {
             return start.getOffset();
         }
 
+        @Override
         public boolean isLeaf() {
             return true;
         }
 
+        @Override
         public String toString() {
             return "LeafElement(" + getName() + ") " + getStartOffset()
                     + "," + getEndOffset() + "\n";
@@ -779,6 +807,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
     }
 
+    @SuppressWarnings("serial")
     private class BidiElement extends LeafElement {
         public BidiElement(final AttributeSet attributes,
                            final int startOffset,
@@ -786,23 +815,26 @@ public abstract class AbstractDocument implements Document, Serializable {
             super(getBidiRootElement(), attributes, startOffset, endOffset);
         }
 
+        @Override
         public String getName() {
             return BidiElementName;
         }
     }
 
+    @SuppressWarnings("serial")
     private class BidiRoot extends BranchElement {
         public BidiRoot() {
             super(null, null);
         }
 
+        @Override
         public String getName() {
             return "bidi root";
         }
     }
 
     private static class ReadWriteLock {
-        private List readers = new ArrayList();
+        private List<Thread> readers = new ArrayList<Thread>();
         private Thread writer;
         private int writerCount;
         private boolean callingListeners;
@@ -887,12 +919,14 @@ public abstract class AbstractDocument implements Document, Serializable {
      * Object of this class serves as key when searching for element index.
      * @see BranchElement#getElementIndex(int)
      */
+    @SuppressWarnings("serial")
     private static final class SearchElement implements Serializable {
         /**
          * Indicates the offset of interest.
          */
         public transient int offset;
 
+        @Override
         public String toString() {
             return "SearchElement(none) " + offset + ", " + offset + "\n";
         }
@@ -906,8 +940,9 @@ public abstract class AbstractDocument implements Document, Serializable {
      * does not override <code>equals</code>.
      * @see BranchElement#getElementIndex(int)
      */
+    @SuppressWarnings("serial")
     private static final class ElementComparator
-        implements Comparator, Serializable {
+        implements Comparator<Object>, Serializable {
 
         /**
          * It is expected that the first argument is the <code>Element</code>
@@ -1007,9 +1042,9 @@ public abstract class AbstractDocument implements Document, Serializable {
     public void dump(final PrintStream ps) {
         Element[] roots = getRootElements();
 
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i] instanceof AbstractElement) {
-                ((AbstractElement)roots[i]).dump(ps, 0);
+        for (Element root : roots) {
+            if (root instanceof AbstractElement) {
+                ((AbstractElement)root).dump(ps, 0);
             }
         }
     }
@@ -1028,8 +1063,7 @@ public abstract class AbstractDocument implements Document, Serializable {
     }
 
     public DocumentListener[] getDocumentListeners() {
-        return (DocumentListener[])listenerList
-                .getListeners(DocumentListener.class);
+        return listenerList.getListeners(DocumentListener.class);
     }
 
     public Dictionary<Object, Object> getDocumentProperties() {
@@ -1073,8 +1107,7 @@ public abstract class AbstractDocument implements Document, Serializable {
     }
 
     public UndoableEditListener[] getUndoableEditListeners() {
-        return (UndoableEditListener[])listenerList
-                .getListeners(UndoableEditListener.class);
+        return listenerList.getListeners(UndoableEditListener.class);
     }
 
     public void insertString(final int offset,
@@ -1196,8 +1229,8 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         try {
             DocumentListener[] listeners = getDocumentListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].changedUpdate(event);
+            for (DocumentListener listener : listeners) {
+                listener.changedUpdate(event);
             }
         } finally {
             lock.setCallingListeners(false);
@@ -1209,8 +1242,8 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         try {
             DocumentListener[] listeners = getDocumentListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].insertUpdate(event);
+            for (DocumentListener listener : listeners) {
+                listener.insertUpdate(event);
             }
         } finally {
             lock.setCallingListeners(false);
@@ -1222,8 +1255,8 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         try {
             DocumentListener[] listeners = getDocumentListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].removeUpdate(event);
+            for (DocumentListener listener : listeners) {
+                listener.removeUpdate(event);
             }
         } finally {
             lock.setCallingListeners(false);
@@ -1235,8 +1268,8 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         try {
             UndoableEditListener[] listeners = getUndoableEditListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].undoableEditHappened(event);
+            for (UndoableEditListener listener : listeners) {
+                listener.undoableEditHappened(event);
             }
         } finally {
             lock.setCallingListeners(false);
@@ -1270,7 +1303,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             return;
         }
 
-        final List added = new ArrayList();
+        final List<Element> added = new ArrayList<Element>();
         Element par;
         int nextOffset = offset;
         do {
@@ -1288,7 +1321,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             return;
         }
 
-        final List added = new ArrayList();
+        final List<Element> added = new ArrayList<Element>();
 
         bidiParseParagraph(added,
                            getParagraphElement(event.getOffset()),
@@ -1384,10 +1417,10 @@ public abstract class AbstractDocument implements Document, Serializable {
         return TextUtils.isLTR(getBidiLevel(e));
     }
 
-    private int bidiAdjustFirstElement(final List added, final Element par) {
+    private int bidiAdjustFirstElement(final List<Element> added, final Element par) {
         int prevParIndex = bidiRoot.getElementIndex(par.getStartOffset() - 1);
         final Element prevParBidi = bidiRoot.getElement(prevParIndex);
-        final Element firstAdded = (Element)added.get(0);
+        final Element firstAdded = added.get(0);
 
         if (getBidiLevel(prevParBidi) == getBidiLevel(firstAdded)) {
             // Combine these two
@@ -1413,8 +1446,8 @@ public abstract class AbstractDocument implements Document, Serializable {
         return prevParIndex;
     }
 
-    private int bidiAdjustLastElement(final List added) {
-        final Element lastAdded = (Element)added.get(added.size() - 1);
+    private int bidiAdjustLastElement(final List<Element> added) {
+        final Element lastAdded = added.get(added.size() - 1);
         int nextParIndex  =
                 bidiRoot.getElementIndex(lastAdded.getEndOffset() + 1);
         final Element nextParBidi = bidiRoot.getElement(nextParIndex);
@@ -1442,7 +1475,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         return nextParIndex;
     }
 
-    private void bidiParseParagraph(final List added, final Element par,
+    private void bidiParseParagraph(final List<Element> added, final Element par,
                                     final Segment text) {
         final int parStart = par.getStartOffset();
         final int parEnd   = par.getEndOffset();
@@ -1460,7 +1493,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             int level = bidi.getRunLevel(i);
 
             if (i == 0 && added.size() > 0) {
-                Element prevBidi = (Element)added.get(added.size() - 1);
+                Element prevBidi = added.get(added.size() - 1);
                 if (getBidiLevel(prevBidi) == level) {
                     added.remove(added.size() - 1);
                     added.add(new BidiElement(prevBidi.getAttributes(),
@@ -1506,7 +1539,7 @@ public abstract class AbstractDocument implements Document, Serializable {
     }
 
     private void bidiUpdateStructure(final DefaultDocumentEvent event,
-                                     final List added) {
+                                     final List<Element> added) {
         Element par = getParagraphElement(event.getOffset());
 
         int prevParIndex = bidiAdjustFirstElement(added, par);
@@ -1521,8 +1554,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         System.arraycopy(bidiRoot.elements, prevParIndex, removed, 0,
                          removedLength);
 
-        Element[] addedElements =
-            (Element[])added.toArray(new Element[added.size()]);
+        Element[] addedElements = added.toArray(new Element[added.size()]);
         bidiRoot.replace(prevParIndex, removedLength, addedElements);
 
         ElementEdit edit = new ElementEdit(bidiRoot, prevParIndex, removed,
@@ -1586,10 +1618,12 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         filterBypasser = new DocumentFilter.FilterBypass() {
 
+            @Override
             public Document getDocument() {
                 return AbstractDocument.this;
             }
 
+            @Override
             public void insertString(final int offset,
                                      final String text,
                                      final AttributeSet attrs)
@@ -1598,12 +1632,14 @@ public abstract class AbstractDocument implements Document, Serializable {
                 doInsert(offset, text, attrs);
             }
 
+            @Override
             public void remove(final int offset, final int length)
                 throws BadLocationException {
 
                 doRemove(offset, length);
             }
 
+            @Override
             public void replace(final int offset,
                                 final int length,
                                 final String newText,
