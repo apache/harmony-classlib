@@ -58,8 +58,12 @@ public class FileURLConnection extends URLConnection {
      */
     public FileURLConnection(URL url) {
         super(url);
-        if ((fileName = url.getFile()) == null) {
-            fileName = "";
+        fileName = url.getFile(); 
+        if (url.getRef() != null) { 
+            fileName += "#" + url.getRef(); 
+        } 
+        if (fileName == null) { 
+            fileName = ""; 
         }
         String host = url.getHost();
         if (host != null && host.length() > 0) {

@@ -18,6 +18,7 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.CodeSource;
 import java.security.Permission;
@@ -115,6 +116,15 @@ public class ClassLoaderTest extends TestCase {
         assertNotNull("Failed to find resource: hyts_Foo.c", ClassLoader
                 .getSystemResource("hyts_Foo.c"));
     }
+    
+    
+    //Regression Test for JIRA-2047
+    public void test_getResourceAsStream_withSharpChar() throws Exception {
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(
+				ClassTest.FILENAME);
+		assertNotNull(in);
+		in.close();
+	}
 }
 
 class DynamicPolicy extends Policy {

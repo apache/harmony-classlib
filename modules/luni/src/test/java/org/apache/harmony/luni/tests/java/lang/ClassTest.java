@@ -19,6 +19,7 @@ package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -43,6 +44,8 @@ import tests.support.resource.Support_Resources;
 
 public class ClassTest extends junit.framework.TestCase {
 
+    public static final String FILENAME = ClassTest.class.getPackage().getName().replace('.', '/')+"/test#.properties";
+    
     static class StaticMember$Class {
         class Member2$A {
         }
@@ -712,4 +715,20 @@ public class ClassTest extends junit.framework.TestCase {
         assertEquals("Class toString printed wrong value",
                      "class [Ljava.lang.Object;", clazz.toString());
     }
+    
+    
+    // Regression Test for JIRA-2047
+	public void test_getResourceAsStream_withSharpChar() throws Exception{
+		InputStream in = getClass().getResourceAsStream("/"+FILENAME);
+		assertNotNull(in);
+		in.close();
+        
+        in = getClass().getResourceAsStream(FILENAME);
+        assertNull(in);
+		
+		in = this.getClass().getClassLoader().getResourceAsStream(
+				FILENAME);
+		assertNotNull(in);
+		in.close();		
+	}
 }

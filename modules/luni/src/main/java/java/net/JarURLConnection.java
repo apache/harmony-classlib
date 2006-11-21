@@ -59,6 +59,9 @@ public abstract class JarURLConnection extends URLConnection {
 			return;
 		}
 		entryName = file.substring(sepIdx + 2, file.length());
+		if (null != url.getRef()) {
+			entryName += "#" + url.getRef();
+		}
 	}
 
 	/**
