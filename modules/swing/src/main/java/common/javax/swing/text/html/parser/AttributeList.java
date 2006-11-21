@@ -99,13 +99,7 @@ public final class AttributeList implements DTDConstants, Serializable {
     }
 
     public String toString() {
-        return "AttributeList["
-               + "name=" + name + ", "
-               + "type=" + type + ", "
-               + "modifier=" + modifier + ", "
-               + "value=" + value + ", "
-               + "values=" + values + ", "
-               + "next=" + next + "]";
+        return name;
     }
 
     final String paramString() {
