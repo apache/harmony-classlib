@@ -32,7 +32,7 @@ import javax.swing.Action;
 
 import org.apache.harmony.awt.text.ActionSet;
 
-
+@SuppressWarnings("serial")
 public class DefaultEditorKit extends EditorKit {
     private static class KitAction extends TextAction {
         public KitAction(final String name) {
@@ -294,34 +294,41 @@ public class DefaultEditorKit extends EditorKit {
      */
     private static Action[] actions;
 
+    @Override
     public Caret createCaret() {
         return null;
     }
 
+    @Override
     public Document createDefaultDocument() {
         return new PlainDocument();
     }
 
+    @Override
     public Action[] getActions() {
         if (actions == null) {
             initActions();
         }
-        return (Action[])actions.clone();
+        return actions.clone();
     }
 
+    @Override
     public String getContentType() {
         return CONTENT_TYPE;
     }
 
+    @Override
     public ViewFactory getViewFactory() {
         return null;
     }
 
+    @Override
     public void read(final InputStream in, final Document doc, final int pos)
             throws IOException, BadLocationException {
         read(new InputStreamReader(in), doc, pos);
     }
 
+    @Override
     public void read(final Reader in, final Document doc, final int pos)
             throws IOException, BadLocationException {
         if (!in.ready()) {
@@ -351,12 +358,14 @@ public class DefaultEditorKit extends EditorKit {
         }
     }
 
+    @Override
     public void write(final OutputStream out, final Document doc,
             final int pos, final int len) throws IOException,
             BadLocationException {
         write(new OutputStreamWriter(out), doc, pos, len);
     }
 
+    @Override
     public void write(final Writer out, final Document doc, final int pos,
             final int len) throws IOException, BadLocationException {
         String writeStr = doc.getText(pos, len);
@@ -366,6 +375,7 @@ public class DefaultEditorKit extends EditorKit {
                     .getProperty(EndOfLineStringProperty));
         }
         out.write(writeStr);
+        out.flush();
     }
 
     private String checkDelimiters(final String str) {
