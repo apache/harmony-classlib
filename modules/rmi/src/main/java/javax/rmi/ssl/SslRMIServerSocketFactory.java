@@ -68,7 +68,8 @@ public class SslRMIServerSocketFactory implements RMIServerSocketFactory {
         } finally {
             try {
                 soc.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
 
     }
@@ -88,7 +89,7 @@ public class SslRMIServerSocketFactory implements RMIServerSocketFactory {
     public ServerSocket createServerSocket(int port) throws IOException {
         SSLServerSocket soc;
 
-        soc = (SSLServerSocket) factory.createServerSocket();
+        soc = (SSLServerSocket) factory.createServerSocket(port);
         if (enabledProtocols != null) {
             soc.setEnabledProtocols(enabledProtocols);
         }
@@ -102,13 +103,14 @@ public class SslRMIServerSocketFactory implements RMIServerSocketFactory {
     public boolean equals(Object obj) {
 
         if (obj instanceof SslRMIServerSocketFactory
-                || Arrays.equals(enabledCipherSuites,
+                && Arrays.equals(enabledCipherSuites,
                         ((SslRMIServerSocketFactory) obj)
-                                .getEnabledCipherSuites())
-                || Arrays
-                        .equals(enabledProtocols,
-                                ((SslRMIServerSocketFactory) obj)
-                                        .getEnabledProtocols())) {
+                            .getEnabledCipherSuites())
+                && Arrays.equals(enabledProtocols,
+                         ((SslRMIServerSocketFactory) obj)
+                            .getEnabledProtocols())
+                && (this.needClientAuth == ((SslRMIServerSocketFactory) obj)
+                        .getNeedClientAuth())) {
             return true;
         }
         return false;
@@ -116,7 +118,7 @@ public class SslRMIServerSocketFactory implements RMIServerSocketFactory {
 
     public int hashCode() {
 
-        String hashSting = "javax.rmi.ssl.SslRMIServerSocketFactory";
+        String hashSting = "javax.rmi.ssl.SslRMIServerSocketFactory"; //$NON-NLS-1$
         if (enabledCipherSuites != null) {
             for (int i = 0; i < enabledCipherSuites.length; i++) {
                 hashSting = hashSting + enabledCipherSuites[i];

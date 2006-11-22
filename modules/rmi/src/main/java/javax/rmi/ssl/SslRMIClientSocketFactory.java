@@ -27,18 +27,14 @@ import java.security.AccessController;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 public class SslRMIClientSocketFactory implements RMIClientSocketFactory,
         Serializable {
 
     private static final long serialVersionUID = -8310631444933958385L;
 
     private static SSLSocketFactory factory;
-
-    private static String enabledCipherSuites;
-
-    private static String enabledProtocols;
-
-    private static boolean isEnabledInitialized;
 
     public SslRMIClientSocketFactory() {
         if (factory == null) {
@@ -49,25 +45,28 @@ public class SslRMIClientSocketFactory implements RMIClientSocketFactory,
     public Socket createSocket(String host, int port) throws IOException {
 
         SSLSocket soc = (SSLSocket) factory.createSocket(host, port);
-        if (!isEnabledInitialized) {
-            isEnabledInitialized = true;
-            AccessController.doPrivileged(new java.security.PrivilegedAction() {
-
-                public Object run() {
-                    enabledCipherSuites = System
-                            .getProperty("javax.rmi.ssl.client.enabledCipherSuites");
-                    enabledProtocols = System
-                            .getProperty("javax.rmi.ssl.client.enabledProtocols");
-                    return null;
+        String[] enabled =
+            AccessController.doPrivileged(new java.security.PrivilegedAction<String[]>() {
+                public String[] run() {
+                    return new String[] {
+                        System.getProperty("javax.rmi.ssl.client.enabledCipherSuites"), //$NON-NLS-1$
+                        System.getProperty("javax.rmi.ssl.client.enabledProtocols")}; //$NON-NLS-1$
                 }
             });
-        }
-        if (enabledCipherSuites != null) {
-            soc.setEnabledCipherSuites(enabledCipherSuites.split(","));
-        }
+        try {
+            if (enabled[0] != null) { //enabledCipherSuites
+                soc.setEnabledCipherSuites(enabled[0].split(",")); //$NON-NLS-1$
+            }
 
-        if (enabledProtocols != null) {
-            soc.setEnabledProtocols(enabledProtocols.split(","));
+            if (enabled[1]!= null) { //enabledProtocols
+                soc.setEnabledProtocols(enabled[1].split(",")); //$NON-NLS-1$
+            }
+        } catch (IllegalArgumentException e) {
+            // rmi.96=Error in socket creation
+            IOException ioe = new IOException(Messages.getString("rmi.96")); //$NON-NLS-1$
+            ioe.initCause(e);
+            soc.close();
+            throw ioe;
         }
 
         return soc;
@@ -78,7 +77,7 @@ public class SslRMIClientSocketFactory implements RMIClientSocketFactory,
     }
 
     public int hashCode() {
-        return "javax.rmi.ssl.SslRMIClientSocketFactory".hashCode();
+        return "javax.rmi.ssl.SslRMIClientSocketFactory".hashCode(); //$NON-NLS-1$
     }
 
 }
