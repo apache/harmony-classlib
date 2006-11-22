@@ -18,7 +18,6 @@ javax/swing/plaf/basic/BasicOptionPaneUITest.java
 javax/swing/plaf/basic/BasicTreeUITest.java
 javax/swing/table/BasicSwingTableTestCase.java
 javax/swing/text/DefaultCaret_MultithreadedTest.java
-javax/swing/text/DefaultEditorKitTest.java
 javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java
 javax/swing/text/FlowViewTest.java
 javax/swing/text/GapContentTest.java
