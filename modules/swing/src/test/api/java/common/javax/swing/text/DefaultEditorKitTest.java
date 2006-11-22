@@ -36,6 +36,7 @@ import javax.swing.Action;
 
 public class DefaultEditorKitTest extends EditorKitTest {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -129,6 +130,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
         inFile.close();
 
         testExceptionalCase(new BadLocationCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 kit.read(new ByteArrayInputStream(outFile.toByteArray()), doc, 1000);
             }
@@ -160,6 +162,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
         inFile.close();
 
         testExceptionalCase(new BadLocationCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 kit.read(new InputStreamReader(new ByteArrayInputStream(outFile.toByteArray())), doc, 1000);
             }
@@ -189,6 +192,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
                      strRead);
 
         testExceptionalCase(new BadLocationCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 kit.write(outputStream, doc, 0, 1000);
             }
@@ -218,6 +222,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
                      strRead);
 
         testExceptionalCase(new BadLocationCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 kit.write(new OutputStreamWriter(outputStream), doc, 0, 1000);
             }
@@ -232,10 +237,12 @@ public class DefaultEditorKitTest extends EditorKitTest {
         final Marker flushMarker = new Marker();
         final Marker closeMarker = new Marker();
         StringWriter writer = new StringWriter() {
+            @Override
             public void close() throws IOException {
                 closeMarker.setOccurred();
                 super.close();
             }
+            @Override
             public void flush() {
                 flushMarker.setOccurred();
                 super.flush();
@@ -255,10 +262,12 @@ public class DefaultEditorKitTest extends EditorKitTest {
         final Marker flushMarker = new Marker();
         final Marker closeMarker = new Marker();
         OutputStream stream = new ByteArrayOutputStream() {
+            @Override
             public void close() throws IOException {
                 closeMarker.setOccurred();
                 super.close();
             }
+            @Override
             public void flush() throws IOException {
                 flushMarker.setOccurred();
                 super.flush();
@@ -393,12 +402,5 @@ public class DefaultEditorKitTest extends EditorKitTest {
                               final int length) throws Exception {
         kit.write(outputStream, doc, pos, length);
         outputStream.close();
-    }
-
-
-    private abstract class BadLocationCase extends ExceptionalCase {
-        public Class expectedExceptionClass() {
-            return BadLocationException.class;
-        }
     }
 }
