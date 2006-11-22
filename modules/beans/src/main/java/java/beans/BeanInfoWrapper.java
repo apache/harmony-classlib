@@ -18,6 +18,7 @@
 package java.beans;
 
 import java.awt.Image;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -63,7 +64,7 @@ class BeanInfoWrapper implements BeanInfo {
         }
 
         // if no external BeanInfo class was specified or we fail to 
-        // to obtain the result on the previous step by some reason
+        // to obtain the result on the previous step
         if (info == null || infoResult == null) {
             PropertyDescriptor[] implResult = impl.getPropertyDescriptors();
 
@@ -400,38 +401,45 @@ class BeanInfoWrapper implements BeanInfo {
 
     private static MethodDescriptor[] concatArraysToOneArray(
             MethodDescriptor[] childs, MethodDescriptor[] parents) {
-        MethodDescriptor[] result = null;
 
         if (childs != null || parents != null) {
-            int resultLength = 0;
+            HashMap<String, MethodDescriptor> result =
+                    new HashMap<String, MethodDescriptor>(
+                            childs.length + parents.length);
 
             if (childs != null) {
-                resultLength = childs.length;
-            }
-
-            if (parents != null) {
-                resultLength += parents.length;
-            }
-
-            result = new MethodDescriptor[resultLength];
-
-            if (childs != null) {
-                for (int i = 0; i < childs.length; ++i) {
-                    result[i] = childs[i];
+                for (MethodDescriptor md : childs) {
+                    result.put(getMethodId(md.getMethod()), md);
                 }
             }
 
             if (parents != null) {
-                int shift = (childs == null) ? 0 : childs.length;
-
-                for (int i = 0; i < parents.length; ++i) {
-                    result[shift + i] = parents[i];
+                for (MethodDescriptor md : parents) {
+                    String id = getMethodId(md.getMethod());
+                    
+                    if (!result.containsKey(id)) {
+                        result.put(id, md);
+                    }
                 }
             }
-
+            
+            return result.values().toArray(new MethodDescriptor[result.size()]);
         }
 
-        return result;
+        return null;
+    }
+    
+    private static String getMethodId(Method m) {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(m.getName());
+        sb.append(' ');
+        
+        for (Class<?> pType : m.getParameterTypes()) {
+            sb.append(pType.getName());
+            sb.append(' ');
+        }
+        return sb.toString();
     }
 
     private static EventSetDescriptor[] concatArraysToOneArray(
@@ -506,7 +514,7 @@ class BeanInfoWrapper implements BeanInfo {
             result.setWriteMethod(parentPD.getWriteMethod());
         }
         
-        if (result instanceof IndexedPropertyDescriptor) {
+        if (parentPD instanceof IndexedPropertyDescriptor) {
             IndexedPropertyDescriptor result2 =
                     (IndexedPropertyDescriptor) result;
             IndexedPropertyDescriptor parentPD2 =

@@ -793,6 +793,7 @@ public class IntrospectorTest extends TestCase {
      * super get -> Integer
      */
     public void testIntrospection_4() throws IntrospectionException {
+        // XXX will fail on RI, see HARMONY-xxxx
         Class<FakeFox301> beanClass = FakeFox301.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
@@ -808,10 +809,10 @@ public class IntrospectorTest extends TestCase {
                 assertNotNull(element.getReadMethod());
             } else {
                 assertEquals("fox301", element.getName());
-                assertEquals(Integer.class.getName(), element
+                assertEquals(String.class.getName(), element
                         .getPropertyType().getName());
-                assertNull(element.getWriteMethod());
-                assertNotNull(element.getReadMethod());
+                assertNotNull(element.getWriteMethod());
+                assertNull(element.getReadMethod());
             }
         }
     }
@@ -832,9 +833,6 @@ public class IntrospectorTest extends TestCase {
         assertEquals(2, pds.length);
 
         for (PropertyDescriptor element : pds) {
-            System.out.println("QQQ " + element.getName() + " " +
-                    (element instanceof IndexedPropertyDescriptor));
-            
             if (element.getName().equals("class")) {
                 assertNull(element.getWriteMethod());
                 assertNotNull(element.getReadMethod());
@@ -986,8 +984,11 @@ public class IntrospectorTest extends TestCase {
     public void testIntrospection_10() throws IntrospectionException {
         Class<FakeFox601> beanClass = FakeFox601.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor[] propertyDesc;
+        EventSetDescriptor eventDesc;
+        
         assertEquals(1, info.getEventSetDescriptors().length);
-        EventSetDescriptor eventDesc = info.getEventSetDescriptors()[0];
+        eventDesc = info.getEventSetDescriptors()[0];
         assertNotNull(eventDesc.getAddListenerMethod());
         assertNotNull(eventDesc.getRemoveListenerMethod());
         assertNull(eventDesc.getGetListenerMethod());
@@ -995,7 +996,7 @@ public class IntrospectorTest extends TestCase {
 
         assertEquals(11, info.getMethodDescriptors().length);
 
-        PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
+        propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
 
         for (PropertyDescriptor element : propertyDesc) {
@@ -1012,8 +1013,11 @@ public class IntrospectorTest extends TestCase {
     public void testIntrospection_11() throws IntrospectionException {
         Class<FakeFox602> beanClass = FakeFox602.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
+        EventSetDescriptor eventDesc;
+        PropertyDescriptor[] propertyDesc;
+
         assertEquals(1, info.getEventSetDescriptors().length);
-        EventSetDescriptor eventDesc = info.getEventSetDescriptors()[0];
+        eventDesc = info.getEventSetDescriptors()[0];
         assertFalse(eventDesc.isUnicast());
         assertNotNull(eventDesc.getAddListenerMethod());
         assertNotNull(eventDesc.getRemoveListenerMethod());
@@ -1022,7 +1026,7 @@ public class IntrospectorTest extends TestCase {
 
         assertEquals(12, info.getMethodDescriptors().length);
 
-        PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
+        propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
         for (PropertyDescriptor element : propertyDesc) {

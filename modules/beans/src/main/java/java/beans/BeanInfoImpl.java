@@ -82,15 +82,18 @@ class BeanInfoImpl implements BeanInfo {
                         indexedGetters.add(method);
                     }
                 }
+
                 try {
-                    addIndexedPropertyDescriptorsFromMethodList(result,
-                            indexedGetters, false);
-                    addIndexedPropertyDescriptorsFromMethodList(result,
-                            indexedSetters, true);
-                    addPropertyDescriptorsFromMethodList(result,
-                            booleanGetters, false);
-                    addPropertyDescriptorsFromMethodList(result, setters, true);
-                    addPropertyDescriptorsFromMethodList(result, getters, true);
+                    addPropertyDescriptorsFromMethods(result, indexedGetters,
+                            MT_INDEXED_GETTER);
+                    addPropertyDescriptorsFromMethods(result, indexedSetters,
+                            MT_INDEXED_SETTER);
+                    addPropertyDescriptorsFromMethods(result, booleanGetters,
+                            MT_BOOLEAN_GETTER);
+                    addPropertyDescriptorsFromMethods(result, getters,
+                            MT_GETTER);
+                    addPropertyDescriptorsFromMethods(result, setters,
+                            MT_SETTER);
                 } catch (Exception e) {
                 }
 
@@ -107,21 +110,15 @@ class BeanInfoImpl implements BeanInfo {
 
     public MethodDescriptor[] getMethodDescriptors() {
         if (methodDescriptors == null) {
-            List<MethodDescriptor> result = new ArrayList<MethodDescriptor>();
             List<Method> beanClassMethodsArrayList = getPublicMethods(beanClass);
 
-            Iterator<Method> iterator = beanClassMethodsArrayList.iterator();
+            methodDescriptors = new MethodDescriptor[
+                    beanClassMethodsArrayList.size()];
 
-            while (iterator.hasNext()) {
-                Method method = iterator.next();
-                result.add(new MethodDescriptor(method));
+            for (int i = 0; i < beanClassMethodsArrayList.size(); ++i) {
+                methodDescriptors[i] = new MethodDescriptor(
+                        beanClassMethodsArrayList.get(i));
             }
-
-            methodDescriptors = new MethodDescriptor[result.size()];
-            for (int i = 0; i < methodDescriptors.length; ++i) {
-                methodDescriptors[i] = result.get(i);
-            }
-
         }
 
         return methodDescriptors;
@@ -132,27 +129,24 @@ class BeanInfoImpl implements BeanInfo {
             Map<String, EventSetDescriptor> result = new HashMap<String, EventSetDescriptor>();
             List<Method> beanClassMethodsArrayList = getPublicMethods(beanClass);
 
-            Iterator<Method> iterator = beanClassMethodsArrayList.iterator();
-
-            while (iterator.hasNext()) {
-                Method method = iterator.next();
+            for (Method method : beanClassMethodsArrayList) {
                 String methodName = method.getName();
 
-                String listenerName = null;
+                String listenerCoreName = null;
 
                 if (methodName.endsWith("Listener")) { //$NON-NLS-1$
-                    listenerName = methodName.substring(0, methodName
+                    listenerCoreName = methodName.substring(0, methodName
                             .lastIndexOf("Listener")); //$NON-NLS-1$
 
                     if (methodName.startsWith("add")) { //$NON-NLS-1$
-                        listenerName = listenerName.substring(3);
+                        listenerCoreName = listenerCoreName.substring(3);
                     } else if (methodName.startsWith("remove")) { //$NON-NLS-1$
-                        listenerName = listenerName.substring(6);
+                        listenerCoreName = listenerCoreName.substring(6);
                     } else {
                         continue;
                     }
 
-                    if (result.get(listenerName) == null) {
+                    if (result.get(listenerCoreName) == null) {
                         Class<?>[] parameterTypes = method.getParameterTypes();
 
                         if (parameterTypes.length == 1) {
@@ -165,11 +159,15 @@ class BeanInfoImpl implements BeanInfo {
                             // name and
                             // listener name extracted from registration method
                             // are the same
-                            String listenerNameFromParam = listenerTypeName
-                                    .substring(listenerTypeName
-                                            .lastIndexOf(".") + 1); //$NON-NLS-1$
+                            int k = listenerTypeName.lastIndexOf('$');
+                            String listenerNameFromParam;
+                            
+                            k = (k == -1 ?
+                                    listenerTypeName.lastIndexOf('.') : k);
+                            listenerNameFromParam = listenerTypeName
+                                    .substring(k + 1); //$NON-NLS-1$
 
-                            String listenerNameFromMethod = listenerName
+                            String listenerNameFromMethod = listenerCoreName
                                     + "Listener"; //$NON-NLS-1$
 
                             if (!listenerNameFromParam
@@ -177,9 +175,12 @@ class BeanInfoImpl implements BeanInfo {
                                 continue;
                             }
 
+                            // FIXME valid only for events that have the same
+                            // package (and encapsulating type if any) 
+                            // with listener
                             String eventTypeName = listenerTypeName.substring(
-                                    0, listenerTypeName.lastIndexOf(".") + 1) //$NON-NLS-1$
-                                    + listenerName + "Event"; //$NON-NLS-1$
+                                    0, k + 1) //$NON-NLS-1$
+                                    + listenerCoreName + "Event"; //$NON-NLS-1$
 
                             // classes generated from classes names
                             Class<?> eventType = null;
@@ -208,22 +209,16 @@ class BeanInfoImpl implements BeanInfo {
                                 }
                             }
 
-                            Method[] listenerMethods = new Method[listenerMethodsVec
-                                    .size()];
-                            Iterator<Method> iter = listenerMethodsVec
-                                    .iterator();
-                            int idx2 = 0;
-                            while (iter.hasNext()) {
-                                listenerMethods[idx2] = iter.next();
-                                idx2++;
-                            }
-
+                            Method[] listenerMethods =
+                                  listenerMethodsVec.toArray(
+                                        new Method[listenerMethodsVec.size()]);
+                                
                             Method addListenerMethod = null;
-                            String addListenerMethodName = "add" + listenerName //$NON-NLS-1$
-                                    + "Listener"; //$NON-NLS-1$
+
                             try {
                                 addListenerMethod = beanClass.getMethod(
-                                        addListenerMethodName,
+                                        "add" + listenerCoreName //$NON-NLS-1$
+                                        + "Listener", //$NON-NLS-1$
                                         new Class[] { listenerType });
                             } catch (NoSuchMethodException nsme) {
                                 // no adder found
@@ -231,11 +226,11 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method removeListenerMethod = null;
-                            String removeListenerMethodName = "remove" //$NON-NLS-1$
-                                    + listenerName + "Listener"; //$NON-NLS-1$
+
                             try {
                                 removeListenerMethod = beanClass.getMethod(
-                                        removeListenerMethodName,
+                                        "remove" + listenerCoreName //$NON-NLS-1$
+                                        + "Listener", //$NON-NLS-1$
                                         new Class[] { listenerType });
                             } catch (NoSuchMethodException nsme) {
                                 // no remover found
@@ -243,47 +238,43 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method getListenerMethod = null;
-                            String getListenerMethodName = "get" + listenerName //$NON-NLS-1$
-                                    + "Listeners"; //$NON-NLS-1$
+
                             try {
                                 getListenerMethod = beanClass.getMethod(
-                                        getListenerMethodName, new Class[] {});
+                                        "get" + listenerCoreName //$NON-NLS-1$
+                                        + "Listeners", //$NON-NLS-1$
+                                        new Class[] {});
                             } catch (NoSuchMethodException nsme) {
                                 // no action - getter is not a mandatory method
                                 // in event set descriptor pattern
                             }
 
                             try {
-                                listenerName = Introspector
-                                        .decapitalize(listenerName);
+                                listenerCoreName = Introspector
+                                        .decapitalize(listenerCoreName);
                                 EventSetDescriptor esd = new EventSetDescriptor(
-                                        listenerName, listenerType,
+                                        listenerCoreName, listenerType,
                                         listenerMethods, addListenerMethod,
                                         removeListenerMethod, getListenerMethod);
-                                result.put(listenerName, esd);
+                                result.put(listenerCoreName, esd);
                             } catch (IntrospectionException ie) {
                                 System.out.println(Messages.getString(
-                                        "beans.39", listenerName)); //$NON-NLS-1$
+                                        "beans.39", listenerCoreName)); //$NON-NLS-1$
                             }
 
-                        }
-                    }
-                }
-            }
+                        } // if length of parameters list equals to 1
+                    } // if no descriptors for given listener name yet
+                } // if method name ends with Lister
+            } // methods loop
 
-            String[] eventSetDescriptorNames = new String[result.keySet()
-                    .size()];
-            Iterator<String> i = result.keySet().iterator();
-            int idx = 0;
-
-            while (i.hasNext()) {
-                eventSetDescriptorNames[idx++] = result.get(i.next()).getName();
-            }
-
+            String[] eventSetDescriptorNames = result.keySet().toArray(
+                    new String[result.size()]);
+            
             Arrays.sort(eventSetDescriptorNames);
 
-            eventSetDescriptors = new EventSetDescriptor[eventSetDescriptorNames.length];
-            for (int j = 0; j < eventSetDescriptors.length; ++j) {
+            eventSetDescriptors =
+                    new EventSetDescriptor[eventSetDescriptorNames.length];
+            for (int j = 0; j < eventSetDescriptorNames.length; ++j) {
                 eventSetDescriptors[j] = result.get(eventSetDescriptorNames[j]);
             }
 
@@ -292,7 +283,7 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     public BeanInfo[] getAdditionalBeanInfo() {
-        // no info is obtained thru automatic introspection
+        // no info is obtained through automatic introspection
         return null;
     }
 
@@ -383,75 +374,82 @@ class BeanInfoImpl implements BeanInfo {
         return result;
     }
 
-    private void addPropertyDescriptorsFromMethodList(
-            HashMap<String, PropertyDescriptor> hmPropertyDescriptors,
-            List<Method> methods, boolean checkExisting) throws Exception {
-        for (Method method : methods) {
-            String methodName = method.getName();
-            String propertyName = extractPropertyName(methodName);
-
-            if ((!checkExisting)
-                    || (hmPropertyDescriptors.get(propertyName) == null)) {
-                PropertyDescriptor propertyDescriptor = null;
-
-                try {
-                    propertyDescriptor = new PropertyDescriptor(propertyName,
-                            beanClass);
-                } catch (IntrospectionException ie) {
-                    // no setter or getter
-                    if (methodName.startsWith("set")) { //$NON-NLS-1$
-                        try {
-                            propertyDescriptor = new PropertyDescriptor(
-                                    propertyName, beanClass, null, methodName);
-                        } catch (IntrospectionException e) {
-                            // no getter
-                        }
-                    } else if (methodName.startsWith("get") //$NON-NLS-1$
-                            || methodName.startsWith("is")) { //$NON-NLS-1$
-                        try {
-                            propertyDescriptor = new PropertyDescriptor(
-                                    propertyName, beanClass, methodName, null);
-                        } catch (IntrospectionException e) {
-                            // no setter
-                        }
-                    } else {
-                        try {
-                            propertyDescriptor = new PropertyDescriptor(
-                                    propertyName, beanClass, null, null);
-                        } catch (IntrospectionException e) {
-                        }
-                    }
-                }
-                if (propertyDescriptor != null) {
-                    hmPropertyDescriptors.put(propertyName, propertyDescriptor);
-                }
-            }
-        }
-    }
-
-    private void addIndexedPropertyDescriptorsFromMethodList(
+    // XXX
+    private void addPropertyDescriptorsFromMethods(
             Map<String, PropertyDescriptor> hmPropertyDescriptors,
-            List<Method> methods, boolean checkExisting) throws Exception {
+            List<Method> methods, int typeOfMethods) throws Exception {
+        
+        assert typeOfMethods == MT_INDEXED_GETTER ||       
+                typeOfMethods == MT_INDEXED_SETTER ||
+                typeOfMethods == MT_GETTER ||
+                typeOfMethods == MT_SETTER ||
+                typeOfMethods == MT_BOOLEAN_GETTER;
+
         for (Method method : methods) {
-            String methodName = method.getName();
-            String propertyName = extractPropertyName(methodName);
-
-            if ((!checkExisting)
-                    || (hmPropertyDescriptors.get(propertyName) == null)) {
-                IndexedPropertyDescriptor indexedPropertyDescriptor = null;
-
-                try {
-                    indexedPropertyDescriptor = new IndexedPropertyDescriptor(
-                            propertyName, beanClass);
-                    hmPropertyDescriptors.put(propertyName,
-                            indexedPropertyDescriptor);
-                } catch (IntrospectionException ie) {
-                    // System.out.println(ie.getClass() + ": " +
-                    // ie.getMessage()); //$NON-NLS-1$
+            String propertyName = extractPropertyName(method.getName());
+            PropertyDescriptor pd = hmPropertyDescriptors.get(propertyName);
+            
+            if (pd == null) {
+                switch (typeOfMethods) {
+                case MT_INDEXED_GETTER:
+                    pd = new IndexedPropertyDescriptor(propertyName, null,
+                            null, method, null);
+                    break;
+                case MT_INDEXED_SETTER:
+                    pd = new IndexedPropertyDescriptor(propertyName, null,
+                            null, null, method);
+                    break;
+                case MT_GETTER:
+                case MT_BOOLEAN_GETTER:    
+                    pd = new PropertyDescriptor(propertyName, method, null);
+                    break;                    
+                case MT_SETTER:
+                    pd = new PropertyDescriptor(propertyName, null, method);
+                    break;                    
                 }
-            }
-        }
-    }
+                
+                hmPropertyDescriptors.put(propertyName, pd);
+            } else {
+                Method oldM;
+
+                switch (typeOfMethods) {
+                case MT_INDEXED_GETTER:
+                    assert (pd instanceof IndexedPropertyDescriptor);
+                    
+                    oldM = ((IndexedPropertyDescriptor) pd)
+                            .getIndexedReadMethod();
+                    if (oldM == null) {
+                        ((IndexedPropertyDescriptor) pd).setIndexedReadMethod(
+                                method);
+                    }
+                    break;
+                case MT_INDEXED_SETTER:
+                    assert (pd instanceof IndexedPropertyDescriptor);
+                    
+                    oldM = ((IndexedPropertyDescriptor) pd)
+                            .getIndexedWriteMethod();
+                    if (oldM == null) {
+                        ((IndexedPropertyDescriptor) pd).setIndexedWriteMethod(
+                                method);
+                    }
+                    break;
+                case MT_GETTER:
+                case MT_BOOLEAN_GETTER:    
+                    oldM = pd.getReadMethod();
+                    if (oldM == null) {
+                        pd.setReadMethod(method);
+                    }
+                    break;
+                case MT_SETTER:
+                    oldM = pd.getWriteMethod();
+                    if (oldM == null) {
+                        pd.setWriteMethod(method);
+                    }
+                    break;
+                }
+            } // if pd not null
+        } // methods loop
+    } // end of method
 
     private Class<?> beanClass = null;
 
