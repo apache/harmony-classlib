@@ -63,7 +63,7 @@ public interface Mixer extends Line {
         }
     }
 
-    Line getLine(Line.Info info);
+    Line getLine(Line.Info info) throws LineUnavailableException;
     
     int getMaxLines(Line.Info info);
     

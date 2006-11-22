@@ -63,6 +63,6 @@ public abstract class Control {
     }
 
     public String toString() {
-        throw new Error("Not yet imlemented");
+        return type + " Control"; //$NON-NLS-1$
     }
 }

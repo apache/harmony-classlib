@@ -37,6 +37,7 @@ public abstract class CompoundControl extends Control {
     }
 
     public String toString() {
-        throw new Error("Not yet implemented");
+        return getType() + "CompoundControl containing "  //$NON-NLS-1$
+            + String.valueOf(memberControls) + " Controls."; //$NON-NLS-1$
     }
 }

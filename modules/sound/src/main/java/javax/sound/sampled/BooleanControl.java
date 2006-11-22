@@ -20,16 +20,16 @@ package javax.sound.sampled;
 public abstract class BooleanControl extends Control {
 
     public static class Type extends Control.Type {
-        public static final Type APPLY_REVERB = new Type("APPLY_REVERB");
+        public static final Type APPLY_REVERB = new Type("Apply Reverb"); //$NON-NLS-1$
 
-        public static final Type MUTE = new Type("MUTE");
+        public static final Type MUTE = new Type("Mute"); //$NON-NLS-1$
 
         protected Type(String name) {
             super(name);
         }
     }
 
-    protected boolean value;
+    private boolean value;
 
     private String trueStateLabel;
 
@@ -44,8 +44,7 @@ public abstract class BooleanControl extends Control {
     }
 
     protected BooleanControl(BooleanControl.Type type, boolean initialValue) {
-        super(type);
-        this.value = initialValue;
+        this(type, initialValue, "true", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void setValue(boolean value) {
@@ -57,7 +56,7 @@ public abstract class BooleanControl extends Control {
     }
 
     public String getStateLabel(boolean state) {
-        if (state == true) {
+        if (state) {
             return this.trueStateLabel;
         } else {
             return this.falseStateLabel;
@@ -65,6 +64,6 @@ public abstract class BooleanControl extends Control {
     }
 
     public String toString() {
-        throw new Error("Not yet implemented");
+        return getType() + " Control with current value: " + value; //$NON-NLS-1$
     }
 }

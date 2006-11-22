@@ -17,8 +17,75 @@
 
 package javax.sound.sampled;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class AudioFileFormat {
 
+    private AudioFileFormat.Type type;
+    private int byteLength = AudioSystem.NOT_SPECIFIED;
+    private AudioFormat format;
+    private int frameLength;
+    private HashMap<String, Object> prop;
+
+    protected AudioFileFormat(AudioFileFormat.Type type,
+            int byteLength,
+            AudioFormat format,
+            int frameLength) {
+        this.type = type;
+        this.byteLength = byteLength;
+        this.format = format;
+        this.frameLength = frameLength;
+    }
+    
+    public AudioFileFormat(AudioFileFormat.Type type,
+            AudioFormat format,
+            int frameLength) {
+        this.type = type;
+        this.format = format;
+        this.frameLength = frameLength;
+    }
+
+    public AudioFileFormat(AudioFileFormat.Type type,
+            AudioFormat format,
+            int frameLength,
+            Map<String,Object> properties) {
+        this.type = type;
+        this.format = format;
+        this.frameLength = frameLength;
+        prop = new HashMap<String, Object>();
+        prop.putAll(properties);
+    }
+    
+    public AudioFileFormat.Type getType() {
+        return type;
+    }
+    
+    public int getByteLength() {
+        return byteLength;
+    }
+
+    public AudioFormat getFormat() {
+        return format;
+    }
+    
+    public int getFrameLength() {
+        return frameLength;
+    }
+    
+    public Map<String,Object> properties() {
+        if (prop == null) {
+            return null;
+        }
+        return Collections.unmodifiableMap(prop);
+    }
+    
+    public String toString() {
+        return type + " (." + type.getExtension() + ") file, data format: " + format + //$NON-NLS-1$ //$NON-NLS-2$
+            " frame length: " + frameLength; //$NON-NLS-1$
+    }
+    
     public static class Type {
 
         private String name;

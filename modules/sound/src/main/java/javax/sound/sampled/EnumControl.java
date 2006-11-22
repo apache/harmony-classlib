@@ -17,9 +17,11 @@
 
 package javax.sound.sampled;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public abstract class EnumControl extends Control {
     public static class Type extends Control.Type {
-        public static final Type REVERB = new Type("REVERB");
+        public static final Type REVERB = new Type("REVERB"); //$NON-NLS-1$
 
         protected Type(String name) {
             super(name);
@@ -37,7 +39,14 @@ public abstract class EnumControl extends Control {
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        for (Object val : values) {
+            if (val.equals(value)) {
+                this.value = value;
+                return;
+            }
+        }
+        // sound.0D=The value is not supported
+        throw new IllegalArgumentException(Messages.getString("sound.0D")); //$NON-NLS-1$
     }
 
     public Object getValue() {
@@ -49,6 +58,6 @@ public abstract class EnumControl extends Control {
     }
 
     public String toString() {
-        throw new Error("Not yet implemented");
+        return getType() + " with current value: " + value; //$NON-NLS-1$
     }
 }

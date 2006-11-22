@@ -53,7 +53,15 @@ public interface DataLine extends Line {
         }
         
         public boolean isFormatSupported(AudioFormat format) {
-            throw new Error("not yet implemented");
+            if (formats == null) {
+                return false;
+            }
+            for (AudioFormat supported : formats) {
+                if (format.matches(supported)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public int getMinBufferSize() {
@@ -66,12 +74,36 @@ public interface DataLine extends Line {
 
         @Override
         public boolean matches(Line.Info info) {
-            throw new Error("not yet implemented");
+            
+            if (!super.matches(info)) {
+                return false;
+            }
+            
+            DataLine.Info inf = (DataLine.Info)info;
+            if (minBufferSize < inf.getMinBufferSize() ||
+                    maxBufferSize > inf.getMaxBufferSize()) {
+                return false;
+            }
+            
+            for (AudioFormat supported : formats) {
+                if (!inf.isFormatSupported(supported)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
         
         @Override
         public String toString() {
-            throw new Error("not yet implemented");
+            String formatStr = (formats.length == 1? formats[0].toString()
+                    : formats.length + " audio formats"); //$NON-NLS-1$
+            String bufStr = ""; //$NON-NLS-1$
+            if (minBufferSize != AudioSystem.NOT_SPECIFIED) {
+                bufStr = ", and buffers of " + minBufferSize + //$NON-NLS-1$
+                    "to " + maxBufferSize + " bytes"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            return getLineClass() + " supporting " + formatStr + bufStr; //$NON-NLS-1$
         }
     }
 

@@ -62,7 +62,7 @@ public class LineEvent extends EventObject {
         }
 
         @Override
-        public final String toString() {
+        public String toString() {
             return name;
         }
     }
