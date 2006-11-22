@@ -1,9 +1,7 @@
-org/apache/harmony/beans/tests/java/beans/DefaultPersistenceDelegateTest.java
 org/apache/harmony/beans/tests/java/beans/EncoderTest.java
 org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java
 org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java
 org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java
-org/apache/harmony/beans/tests/java/beans/PersistenceDelegateTest.java
 org/apache/harmony/beans/tests/java/beans/PropertyChangeSupportTest.java
 org/apache/harmony/beans/tests/java/beans/PropertyEditorManagerTest.java
 org/apache/harmony/beans/tests/java/beans/VetoableChangeListenerProxyTest.java
