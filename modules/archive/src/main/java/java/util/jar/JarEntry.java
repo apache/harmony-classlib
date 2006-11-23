@@ -90,7 +90,12 @@ public class JarEntry extends ZipEntry {
      * @return java.security.cert.Certificate[] Certificates for this entry
      */
     public Certificate[] getCertificates() {
-        return certificates;
+        if (certificates == null) {
+            return null;
+        }
+        Certificate[] copy = new Certificate[certificates.length];
+        System.arraycopy(certificates, 0, copy, 0, copy.length);
+        return copy;
     }
 
     void setAttributes(Attributes attrib) {
@@ -132,7 +137,6 @@ public class JarEntry extends ZipEntry {
         CodeSigner[] tmp = new CodeSigner[signers.length];
         System.arraycopy(signers, 0, tmp, 0, tmp.length);
         return tmp;
-
     }
 
     private CodeSigner[] getCodeSigners(Certificate[] certs) {
