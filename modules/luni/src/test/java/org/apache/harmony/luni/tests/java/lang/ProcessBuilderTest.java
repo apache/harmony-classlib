@@ -90,6 +90,24 @@ public class ProcessBuilderTest extends TestCase {
         env.clear();
         env = pb.environment();
         assertTrue(env.isEmpty());
+        try {
+            env.put(null,"");
+            fail("should throw NPE.");
+        } catch (NullPointerException e) {
+            // expected;
+        }
+        try {
+            env.put("",null);
+            fail("should throw NPE.");
+        } catch (NullPointerException e) {
+            // expected;
+        }
+        try {
+            env.get(null);
+            fail("should throw NPE.");
+        } catch (NullPointerException e) {
+            // expected;
+        }
     }
 
     public void testRedirectErrorStream() {

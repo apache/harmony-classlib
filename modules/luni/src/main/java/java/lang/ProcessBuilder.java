@@ -66,7 +66,7 @@ public final class ProcessBuilder {
             throw new NullPointerException();
         }
         this.command = command;
-        this.environment = new HashMap<String, String>(System.getenv());
+        this.environment = new ProcessHashMap<String, String>(System.getenv());
     }
 
     /**
@@ -216,4 +216,28 @@ public final class ProcessBuilder {
         // TODO implement support for redirectErrorStream
         return process;
     }
+    
+    private class ProcessHashMap<K, V> extends HashMap<K, V> {
+
+        private static final long serialVersionUID = 1L;
+
+        public ProcessHashMap(Map<K, V> env) {
+            super(env);
+        }
+        @Override
+        public V put(K key, V value) {
+            if(key == null || value == null){
+                throw new NullPointerException();
+            }
+            return super.put(key, value);
+        }
+        @Override
+        public V get(Object key) {
+            if(key == null){
+                throw new NullPointerException();
+            }
+            return super.get(key);
+        }
+    }
 }
+
