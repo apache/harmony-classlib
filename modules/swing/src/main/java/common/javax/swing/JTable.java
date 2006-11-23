@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Anton Avtamonov, Sergey Burlak
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Color;
@@ -33,17 +30,19 @@ import java.awt.Rectangle;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Vector;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleComponent;
@@ -56,6 +55,7 @@ import javax.accessibility.AccessibleTable;
 import javax.accessibility.AccessibleTableModelChange;
 import javax.accessibility.AccessibleText;
 import javax.accessibility.AccessibleValue;
+import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.border.Border;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -75,461 +75,514 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
+/**
+ * <p>
+ * <i>JTable</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+@SuppressWarnings("unchecked")
+public class JTable extends JComponent implements TableModelListener, Scrollable,
+        TableColumnModelListener, ListSelectionListener, CellEditorListener, Accessible {
+    private static final long serialVersionUID = -506121678825692843L;
 
-public class JTable extends JComponent implements TableModelListener, Scrollable, TableColumnModelListener, ListSelectionListener, CellEditorListener, Accessible {
     public static final int AUTO_RESIZE_OFF = 0;
+
     public static final int AUTO_RESIZE_NEXT_COLUMN = 1;
+
     public static final int AUTO_RESIZE_SUBSEQUENT_COLUMNS = 2;
+
     public static final int AUTO_RESIZE_LAST_COLUMN = 3;
+
     public static final int AUTO_RESIZE_ALL_COLUMNS = 4;
 
-    protected class AccessibleJTable extends AccessibleJComponent implements AccessibleSelection, ListSelectionListener, TableModelListener, TableColumnModelListener, CellEditorListener, PropertyChangeListener, AccessibleExtendedTable {
-        protected class AccessibleJTableCell extends AccessibleContext implements Accessible, AccessibleComponent {
-            public AccessibleJTableCell(final JTable t, final int r, final int c, final int i) {
-                throw new UnsupportedOperationException("Not implemented");
+    protected class AccessibleJTable extends AccessibleJComponent implements
+            AccessibleSelection, ListSelectionListener, TableModelListener,
+            TableColumnModelListener, CellEditorListener, PropertyChangeListener,
+            AccessibleExtendedTable {
+        private static final long serialVersionUID = 1L;
+
+        protected class AccessibleJTableCell extends AccessibleContext implements Accessible,
+                AccessibleComponent {
+            public AccessibleJTableCell(JTable t, int r, int c, int i) {
+                throw new NotImplementedException();
             }
 
             public AccessibleContext getAccessibleContext() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public String getAccessibleName() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setAccessibleName(final String s) {
-                throw new UnsupportedOperationException("Not implemented");
+            @Override
+            public void setAccessibleName(String s) {
+                throw new NotImplementedException();
             }
 
+            @Override
             public String getAccessibleDescription() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setAccessibleDescription(final String s) {
-                throw new UnsupportedOperationException("Not implemented");
+            @Override
+            public void setAccessibleDescription(String s) {
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleRole getAccessibleRole() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleStateSet getAccessibleStateSet() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public Accessible getAccessibleParent() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public int getAccessibleIndexInParent() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public int getAccessibleChildrenCount() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public Accessible getAccessibleChild(final int i) {
-                throw new UnsupportedOperationException("Not implemented");
+            @Override
+            public Accessible getAccessibleChild(int i) {
+                throw new NotImplementedException();
             }
 
+            @Override
             public Locale getLocale() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void addPropertyChangeListener(final PropertyChangeListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+            @Override
+            public void addPropertyChangeListener(PropertyChangeListener l) {
+                throw new NotImplementedException();
             }
 
-            public void removePropertyChangeListener(final PropertyChangeListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+            @Override
+            public void removePropertyChangeListener(PropertyChangeListener l) {
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleAction getAccessibleAction() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleComponent getAccessibleComponent() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleSelection getAccessibleSelection() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleText getAccessibleText() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
+            @Override
             public AccessibleValue getAccessibleValue() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public Color getBackground() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setBackground(final Color c) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setBackground(Color c) {
+                throw new NotImplementedException();
             }
 
             public Color getForeground() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setForeground(final Color c) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setForeground(Color c) {
+                throw new NotImplementedException();
             }
 
             public Cursor getCursor() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setCursor(final Cursor c) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setCursor(Cursor c) {
+                throw new NotImplementedException();
             }
 
             public Font getFont() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setFont(final Font f) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setFont(Font f) {
+                throw new NotImplementedException();
             }
 
-            public FontMetrics getFontMetrics(final Font f) {
-                throw new UnsupportedOperationException("Not implemented");
+            public FontMetrics getFontMetrics(Font f) {
+                throw new NotImplementedException();
             }
 
             public boolean isEnabled() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setEnabled(final boolean b) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setEnabled(boolean b) {
+                throw new NotImplementedException();
             }
 
             public boolean isVisible() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setVisible(final boolean b) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setVisible(boolean b) {
+                throw new NotImplementedException();
             }
 
             public boolean isShowing() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public boolean contains(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+            public boolean contains(Point p) {
+                throw new NotImplementedException();
             }
 
             public Point getLocationOnScreen() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public Point getLocation() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setLocation(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setLocation(Point p) {
+                throw new NotImplementedException();
             }
 
             public Rectangle getBounds() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setBounds(final Rectangle r) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setBounds(Rectangle r) {
+                throw new NotImplementedException();
             }
 
             public Dimension getSize() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void setSize(final Dimension d) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void setSize(Dimension d) {
+                throw new NotImplementedException();
             }
 
-            public Accessible getAccessibleAt(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+            public Accessible getAccessibleAt(Point p) {
+                throw new NotImplementedException();
             }
 
             public boolean isFocusTraversable() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public void requestFocus() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
-            public void addFocusListener(final FocusListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void addFocusListener(FocusListener l) {
+                throw new NotImplementedException();
             }
 
-            public void removeFocusListener(final FocusListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+            public void removeFocusListener(FocusListener l) {
+                throw new NotImplementedException();
             }
         }
 
         protected class AccessibleJTableModelChange implements AccessibleTableModelChange {
             protected int type;
+
             protected int firstRow;
+
             protected int lastRow;
+
             protected int firstColumn;
+
             protected int lastColumn;
 
-            protected AccessibleJTableModelChange(final int type, final int firstRow, final int lastRow, final int firstColumn, final int lastColumn) {
-                throw new UnsupportedOperationException("Not implemented");
+            protected AccessibleJTableModelChange(int type, int firstRow, int lastRow,
+                    int firstColumn, int lastColumn) {
+                throw new NotImplementedException();
             }
 
             public int getType() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public int getFirstRow() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public int getLastRow() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public int getFirstColumn() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
 
             public int getLastColumn() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new NotImplementedException();
             }
         }
 
-        public void propertyChange(final PropertyChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void propertyChange(PropertyChangeEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void tableChanged(final TableModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void tableChanged(TableModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void tableRowsInserted(final TableModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void tableRowsInserted(TableModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void tableRowsDeleted(final TableModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void tableRowsDeleted(TableModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void columnAdded(final TableColumnModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void columnAdded(TableColumnModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void columnRemoved(final TableColumnModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void columnRemoved(TableColumnModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void columnMoved(final TableColumnModelEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void columnMoved(TableColumnModelEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void columnMarginChanged(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void columnMarginChanged(ChangeEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void columnSelectionChanged(final ListSelectionEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void columnSelectionChanged(ListSelectionEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void editingStopped(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void editingStopped(ChangeEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void editingCanceled(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void editingCanceled(ChangeEvent e) {
+            throw new NotImplementedException();
         }
 
-        public void valueChanged(final ListSelectionEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void valueChanged(ListSelectionEvent e) {
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleAt(final Point p) {
-            throw new UnsupportedOperationException("Not implemented");
+        @Override
+        public Accessible getAccessibleAt(Point p) {
+            throw new NotImplementedException();
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
 
         public int getAccessibleSelectionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleChildSelected(int i) {
+            throw new NotImplementedException();
         }
 
-        public void addAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void addAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void removeAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void clearAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
         public void selectAllAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleRow(final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleRow(int index) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleColumn(final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleColumn(int index) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleIndex(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleIndex(int r, int c) {
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleTable getAccessibleTable() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
         public Accessible getAccessibleCaption() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleCaption(final Accessible a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleCaption(Accessible a) {
+            throw new NotImplementedException();
         }
 
         public Accessible getAccessibleSummary() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleSummary(final Accessible a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleSummary(Accessible a) {
+            throw new NotImplementedException();
         }
 
         public int getAccessibleRowCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
         public int getAccessibleColumnCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleAt(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleAt(int r, int c) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleRowExtentAt(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleRowExtentAt(int r, int c) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleColumnExtentAt(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleColumnExtentAt(int r, int c) {
+            throw new NotImplementedException();
         }
 
         public AccessibleTable getAccessibleRowHeader() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleRowHeader(final AccessibleTable a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleRowHeader(AccessibleTable a) {
+            throw new NotImplementedException();
         }
 
         public AccessibleTable getAccessibleColumnHeader() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleColumnHeader(final AccessibleTable a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleColumnHeader(AccessibleTable a) {
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleRowDescription(final int r) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleRowDescription(int r) {
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleRowDescription(final int r, final Accessible a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleRowDescription(int r, Accessible a) {
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleColumnDescription(final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleColumnDescription(int c) {
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleColumnDescription(final int c, final Accessible a) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void setAccessibleColumnDescription(int c, Accessible a) {
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleSelected(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleSelected(int r, int c) {
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleRowSelected(final int r) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleRowSelected(int r) {
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleColumnSelected(final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleColumnSelected(int c) {
+            throw new NotImplementedException();
         }
 
         public int[] getSelectedAccessibleRows() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
         public int[] getSelectedAccessibleColumns() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleRowAtIndex(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleRowAtIndex(int i) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleColumnAtIndex(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleColumnAtIndex(int i) {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleIndexAt(final int r, final int c) {
-            throw new UnsupportedOperationException("Not implemented");
+        public int getAccessibleIndexAt(int r, int c) {
+            throw new NotImplementedException();
         }
     }
 
-
     private class TableEditor extends DefaultCellEditor {
-        public TableEditor(final JCheckBox checkBox) {
+        private static final long serialVersionUID = -1840776223246975853L;
+
+        public TableEditor(JCheckBox checkBox) {
             super(checkBox);
             setNormalEditorView();
         }
 
-        public TableEditor(final JTextField textField) {
+        public TableEditor(JTextField textField) {
             super(textField);
             setNormalEditorView();
         }
@@ -538,215 +591,258 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             return verifyInput(delegate.getCellEditorValue());
         }
 
-        protected boolean verifyInput(final Object value) {
+        protected boolean verifyInput(Object value) {
             return true;
         }
 
+        @Override
         protected void fireEditingStopped() {
             if (!isInputValid()) {
                 setErrorEditorView();
                 return;
             }
-
             setNormalEditorView();
             super.fireEditingStopped();
         }
 
+        @Override
         protected void fireEditingCanceled() {
             setNormalEditorView();
             super.fireEditingCanceled();
         }
 
-
         protected void setNormalEditorView() {
-            ((JComponent)getComponent()).setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            ((JComponent) getComponent())
+                    .setBorder(BorderFactory.createLineBorder(Color.BLACK));
         }
 
         protected void setErrorEditorView() {
-            ((JComponent)getComponent()).setBorder(BorderFactory.createLineBorder(Color.RED));
+            ((JComponent) getComponent()).setBorder(BorderFactory.createLineBorder(Color.RED));
         }
     }
 
     private class ObjectEditor extends TableEditor {
+        private static final long serialVersionUID = 1L;
+
         public ObjectEditor() {
             super(new JTextField());
         }
 
-        public boolean isCellEditable(final EventObject event) {
+        @Override
+        public boolean isCellEditable(EventObject event) {
             return getObjectConstructor() != null && super.isCellEditable(event);
         }
 
+        @Override
         public Object getCellEditorValue() {
             Object value = delegate.getCellEditorValue();
             if (value == null) {
                 return null;
             }
-
             try {
-                return getObjectConstructor().newInstance(new Object[] {value.toString()});
+                return getObjectConstructor().newInstance(new Object[] { value.toString() });
             } catch (Exception e) {
                 return null;
             }
         }
 
-        protected boolean verifyInput(final Object value) {
+        @Override
+        protected boolean verifyInput(Object value) {
             if (value == null || value.toString().trim().equals("")) {
                 return true;
             }
             try {
-                getObjectConstructor().newInstance(new Object[] {value.toString()});
+                getObjectConstructor().newInstance(new Object[] { value.toString() });
                 return true;
             } catch (Exception e) {
                 return false;
             }
         }
 
-        private Constructor getObjectConstructor() {
+        private Constructor<?> getObjectConstructor() {
             try {
-                return getColumnClass().getConstructor(new Class[] {String.class});
+                return getColumnClass().getConstructor(new Class[] { String.class });
             } catch (NoSuchMethodException e) {
                 return null;
             }
         }
 
         private Class<?> getColumnClass() {
-            Class<?> columnClass =  JTable.this.getColumnClass(getEditingColumn());
+            Class<?> columnClass = JTable.this.getColumnClass(getEditingColumn());
             return columnClass == Object.class ? String.class : columnClass;
         }
     }
 
     private class NumberEditor extends ObjectEditor {
+        private static final long serialVersionUID = 1L;
+
         public NumberEditor() {
-            ((JTextField)getComponent()).setHorizontalAlignment(JTextField.RIGHT);
+            ((JTextField) getComponent()).setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
 
     private class BooleanEditor extends TableEditor {
+        private static final long serialVersionUID = 1L;
+
         public BooleanEditor() {
             super(new JCheckBox());
-            ((JCheckBox)getComponent()).setHorizontalAlignment(JCheckBox.CENTER);
+            ((JCheckBox) getComponent()).setHorizontalAlignment(SwingConstants.CENTER);
         }
 
+        @Override
         protected void setNormalEditorView() {
-            ((JComponent)getComponent()).setBorder(null);
+            ((JComponent) getComponent()).setBorder(null);
         }
     }
 
     protected TableModel dataModel;
+
     protected TableColumnModel columnModel;
+
     protected ListSelectionModel selectionModel;
+
     protected JTableHeader tableHeader;
+
     protected int rowHeight;
+
     protected int rowMargin;
+
     protected Color gridColor;
+
     protected boolean showHorizontalLines;
+
     protected boolean showVerticalLines;
+
     protected int autoResizeMode;
+
     protected boolean autoCreateColumnsFromModel = true;
+
     protected Dimension preferredViewportSize;
+
     protected boolean rowSelectionAllowed;
+
     protected boolean cellSelectionEnabled;
+
     protected transient Component editorComp;
+
     protected transient TableCellEditor cellEditor;
+
     protected transient int editingColumn = -1;
+
     protected transient int editingRow = -1;
+
     protected transient Hashtable defaultEditorsByColumnClass;
+
     protected transient Hashtable defaultRenderersByColumnClass;
+
     protected Color selectionBackground;
+
     protected Color selectionForeground;
 
     private boolean dragEnabled;
-    private Vector rowHeights = new Vector();
+
+    private final Vector rowHeights = new Vector();
+
     private boolean surrendersFocusOnKeystroke;
+
     private boolean wasConsumed;
 
-
     private static final String HEADER_PROPERTY = "tableHeader";
+
     private static final String ROW_HEIGHT_PROPERTY = "rowHeight";
+
     private static final String ROW_MARGIN_PROPERTY = "rowMargin";
+
     private static final String GRID_COLOR_PROPERTY = "gridColor";
+
     private static final String SHOW_HORIZONTAL_LINES_PROPERTY = "showHorizontalLines";
+
     private static final String SHOW_VERTICAL_LINES_PROPERTY = "showVerticalLines";
+
     private static final String AUTO_RESIZE_MODE_PROPERTY = "autoResizeMode";
+
     private static final String AUTO_CREATE_COLUMNS_FROM_MODEL_PROPERTY = "autoCreateColumnsFromModel";
+
     private static final String ROW_SELECTION_ALLOWED_PROPERTY = "rowSelectionAllowed";
+
     private static final String COLUMN_SELECTION_ALLOWED_PROPERTY = "columnSelectionAllowed";
+
     private static final String CELL_SELECTION_ENABLED_PROPERTY = "cellSelectionEnabled";
+
     private static final String SELECTION_FOREGROUND_PROPERTY = "selectionForeground";
+
     private static final String SELECTION_BACKGROUND_PROPERTY = "selectionBackground";
 
     private static final String UI_CLASS_ID = "TableUI";
 
-    public static JScrollPane createScrollPaneForTable(final JTable table) {
+    public static JScrollPane createScrollPaneForTable(JTable table) {
         return new JScrollPane(table);
     }
-
 
     public JTable() {
         this(null, null, null);
     }
 
-    public JTable(final TableModel model) {
+    public JTable(TableModel model) {
         this(model, null, null);
     }
 
-    public JTable(final TableModel model, final TableColumnModel columnModel) {
+    public JTable(TableModel model, TableColumnModel columnModel) {
         this(model, columnModel, null);
     }
 
-    public JTable(final TableModel model, final TableColumnModel columnModel, final ListSelectionModel selectionModel) {
+    public JTable(TableModel model, TableColumnModel columnModel,
+            ListSelectionModel selectionModel) {
         setColumnModel(columnModel != null ? columnModel : createDefaultColumnModel());
         setModel(model != null ? model : createDefaultDataModel());
-        setSelectionModel(selectionModel != null ? selectionModel : createDefaultSelectionModel());
-
+        setSelectionModel(selectionModel != null ? selectionModel
+                : createDefaultSelectionModel());
         initializeLocalVars();
-
         updateUI();
     }
 
-    public JTable(final int numRows, final int numColumns) {
+    public JTable(int numRows, int numColumns) {
         this(new DefaultTableModel(numRows, numColumns));
         if (getAutoCreateColumnsFromModel()) {
             createDefaultColumnsFromModel();
         }
     }
 
-    public JTable(final Vector rowData, final Vector columnNames) {
+    public JTable(Vector rowData, Vector columnNames) {
         this(new DefaultTableModel(rowData, columnNames));
         if (getAutoCreateColumnsFromModel()) {
             createDefaultColumnsFromModel();
         }
     }
 
-    public JTable(final Object[][] rowData, final Object[] columnNames) {
+    public JTable(Object[][] rowData, Object[] columnNames) {
         this(new DefaultTableModel(rowData, columnNames));
         if (getAutoCreateColumnsFromModel()) {
             createDefaultColumnsFromModel();
         }
     }
 
-
+    @Override
     public void addNotify() {
         configureEnclosingScrollPane();
         super.addNotify();
     }
 
+    @Override
     public void removeNotify() {
         super.removeNotify();
         unconfigureEnclosingScrollPane();
     }
 
-    public void setTableHeader(final JTableHeader header) {
+    public void setTableHeader(JTableHeader header) {
         JTableHeader oldValue = this.tableHeader;
         if (oldValue != null) {
             oldValue.setTable(null);
         }
-
         this.tableHeader = header;
         if (header != null) {
             this.tableHeader.setTable(this);
         }
-
         firePropertyChange(HEADER_PROPERTY, oldValue, header);
     }
 
@@ -754,15 +850,12 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return tableHeader;
     }
 
-
-    public void setRowHeight(final int rowHeight) {
+    public void setRowHeight(int rowHeight) {
         if (rowHeight <= 0) {
-            throw new IllegalArgumentException("Row height must be posittive");
+            throw new IllegalArgumentException("Row height must be positive");
         }
-
         int oldValue = this.rowHeight;
         this.rowHeight = rowHeight;
-
         firePropertyChange(ROW_HEIGHT_PROPERTY, oldValue, rowHeight);
     }
 
@@ -770,32 +863,31 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return rowHeight;
     }
 
-    public void setRowHeight(final int row, final int height) {
+    public void setRowHeight(int row, int height) {
         if (height <= 0) {
-            throw new IllegalArgumentException("Row height must be posittive");
+            throw new IllegalArgumentException("Row height must be positive");
         }
-
         if (rowHeights.size() <= row) {
             rowHeights.setSize(row + 1);
         }
-
         if (rowHeights.get(row) == null) {
             rowHeights.set(row, new MutableInteger());
         }
         if (row < getRowCount()) {
-            ((MutableInteger)rowHeights.get(row)).setValue(height);
+            ((MutableInteger) rowHeights.get(row)).setValue(height);
         }
     }
 
-    public int getRowHeight(final int row) {
-        int result = rowHeights.size() > row && rowHeights.get(row) != null ? ((MutableInteger)rowHeights.get(row)).getValue() : -1;
+    public int getRowHeight(int row) {
+        int result = rowHeights.size() > row && rowHeights.get(row) != null ? ((MutableInteger) rowHeights
+                .get(row)).getValue()
+                : -1;
         return result != -1 ? result : getRowHeight();
     }
 
-    public void setRowMargin(final int margin) {
+    public void setRowMargin(int margin) {
         int oldValue = this.rowMargin;
         this.rowMargin = margin;
-
         firePropertyChange(ROW_MARGIN_PROPERTY, oldValue, margin);
     }
 
@@ -803,7 +895,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return rowMargin;
     }
 
-    public void setIntercellSpacing(final Dimension spacing) {
+    public void setIntercellSpacing(Dimension spacing) {
         setRowMargin(spacing.height);
         columnModel.setColumnMargin(spacing.width);
     }
@@ -812,10 +904,9 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return new Dimension(columnModel.getColumnMargin(), getRowMargin());
     }
 
-    public void setGridColor(final Color color) {
+    public void setGridColor(Color color) {
         Color oldValue = this.gridColor;
         this.gridColor = color;
-
         firePropertyChange(GRID_COLOR_PROPERTY, oldValue, color);
     }
 
@@ -823,15 +914,14 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return gridColor;
     }
 
-    public void setShowGrid(final boolean show) {
+    public void setShowGrid(boolean show) {
         setShowHorizontalLines(show);
         setShowVerticalLines(show);
     }
 
-    public void setShowHorizontalLines(final boolean show) {
+    public void setShowHorizontalLines(boolean show) {
         boolean oldValue = this.showHorizontalLines;
         this.showHorizontalLines = show;
-
         firePropertyChange(SHOW_HORIZONTAL_LINES_PROPERTY, oldValue, show);
     }
 
@@ -839,10 +929,9 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return showHorizontalLines;
     }
 
-    public void setShowVerticalLines(final boolean show) {
+    public void setShowVerticalLines(boolean show) {
         boolean oldValue = this.showVerticalLines;
         this.showVerticalLines = show;
-
         firePropertyChange(SHOW_VERTICAL_LINES_PROPERTY, oldValue, show);
     }
 
@@ -850,14 +939,12 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return showVerticalLines;
     }
 
-    public void setAutoResizeMode(final int mode) {
+    public void setAutoResizeMode(int mode) {
         if (mode < 0 || mode > 4) {
             return;
         }
-
         int oldValue = this.autoResizeMode;
         this.autoResizeMode = mode;
-
         firePropertyChange(AUTO_RESIZE_MODE_PROPERTY, oldValue, mode);
     }
 
@@ -865,14 +952,12 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return autoResizeMode;
     }
 
-    public void setAutoCreateColumnsFromModel(final boolean autoCreate) {
+    public void setAutoCreateColumnsFromModel(boolean autoCreate) {
         boolean oldValue = autoCreateColumnsFromModel;
         autoCreateColumnsFromModel = autoCreate;
-
         if (getAutoCreateColumnsFromModel()) {
             createDefaultColumnsFromModel();
         }
-
         firePropertyChange(AUTO_CREATE_COLUMNS_FROM_MODEL_PROPERTY, oldValue, autoCreate);
     }
 
@@ -885,7 +970,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         for (int i = 0; i < columnCount; i++) {
             columnModel.removeColumn(columnModel.getColumn(0));
         }
-
         for (int i = 0; i < getModel().getColumnCount(); i++) {
             TableColumn column = new TableColumn(i);
             column.setHeaderValue(getModel().getColumnName(i));
@@ -893,7 +977,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public void setDefaultRenderer(final Class<?> columnClass, final TableCellRenderer renderer) {
+    public void setDefaultRenderer(Class<?> columnClass, TableCellRenderer renderer) {
         if (renderer != null) {
             defaultRenderersByColumnClass.put(columnClass, renderer);
         } else {
@@ -901,11 +985,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public TableCellRenderer getDefaultRenderer(final Class<?> columnClass) {
-        return (TableCellRenderer)getClosestClass(columnClass, defaultRenderersByColumnClass);
+    public TableCellRenderer getDefaultRenderer(Class<?> columnClass) {
+        return (TableCellRenderer) getClosestClass(columnClass, defaultRenderersByColumnClass);
     }
 
-    public void setDefaultEditor(final Class<?> columnClass, final TableCellEditor editor) {
+    public void setDefaultEditor(Class<?> columnClass, TableCellEditor editor) {
         if (editor != null) {
             defaultEditorsByColumnClass.put(columnClass, editor);
         } else {
@@ -913,11 +997,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public TableCellEditor getDefaultEditor(final Class<?> columnClass) {
-        return (TableCellEditor)getClosestClass(columnClass, defaultEditorsByColumnClass);
+    public TableCellEditor getDefaultEditor(Class<?> columnClass) {
+        return (TableCellEditor) getClosestClass(columnClass, defaultEditorsByColumnClass);
     }
 
-    public void setDragEnabled(final boolean enabled) {
+    public void setDragEnabled(boolean enabled) {
         if (enabled && GraphicsEnvironment.isHeadless()) {
             throw new HeadlessException();
         }
@@ -928,15 +1012,14 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return dragEnabled;
     }
 
-    public void setSelectionMode(final int mode) {
+    public void setSelectionMode(int mode) {
         getSelectionModel().setSelectionMode(mode);
         getColumnModel().getSelectionModel().setSelectionMode(mode);
     }
 
-    public void setRowSelectionAllowed(final boolean allowed) {
+    public void setRowSelectionAllowed(boolean allowed) {
         boolean oldValue = rowSelectionAllowed;
         rowSelectionAllowed = allowed;
-
         firePropertyChange(ROW_SELECTION_ALLOWED_PROPERTY, oldValue, allowed);
     }
 
@@ -944,10 +1027,9 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return rowSelectionAllowed;
     }
 
-    public void setColumnSelectionAllowed(final boolean allowed) {
+    public void setColumnSelectionAllowed(boolean allowed) {
         boolean oldValue = getColumnModel().getColumnSelectionAllowed();
         getColumnModel().setColumnSelectionAllowed(allowed);
-
         firePropertyChange(COLUMN_SELECTION_ALLOWED_PROPERTY, oldValue, allowed);
     }
 
@@ -955,14 +1037,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getColumnModel().getColumnSelectionAllowed();
     }
 
-
-
-    public void setCellSelectionEnabled(final boolean enabled) {
+    public void setCellSelectionEnabled(boolean enabled) {
         boolean oldValue = cellSelectionEnabled;
         cellSelectionEnabled = enabled;
         setRowSelectionAllowed(enabled);
         setColumnSelectionAllowed(enabled);
-
         firePropertyChange(CELL_SELECTION_ENABLED_PROPERTY, oldValue, enabled);
     }
 
@@ -970,13 +1049,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getRowSelectionAllowed() && getColumnSelectionAllowed();
     }
 
-
     public void selectAll() {
         int rowLead = getSelectionModel().getLeadSelectionIndex();
         int rowAnchor = getSelectionModel().getAnchorSelectionIndex();
         int columnLead = getColumnModel().getSelectionModel().getLeadSelectionIndex();
         int columnAnchor = getColumnModel().getSelectionModel().getAnchorSelectionIndex();
-
         getSelectionModel().setValueIsAdjusting(true);
         getColumnModel().getSelectionModel().setValueIsAdjusting(true);
         setRowSelectionInterval(0, getRowCount() - 1);
@@ -992,32 +1069,32 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         getColumnModel().getSelectionModel().clearSelection();
     }
 
-    public void setRowSelectionInterval(final int start, final int end) {
+    public void setRowSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getRowCount());
         getSelectionModel().setSelectionInterval(start, end);
     }
 
-    public void setColumnSelectionInterval(final int start, final int end) {
+    public void setColumnSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getColumnCount());
         getColumnModel().getSelectionModel().setSelectionInterval(start, end);
     }
 
-    public void addRowSelectionInterval(final int start, final int end) {
+    public void addRowSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getRowCount());
         getSelectionModel().addSelectionInterval(start, end);
     }
 
-    public void addColumnSelectionInterval(final int start, final int end) {
+    public void addColumnSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getColumnCount());
         getColumnModel().getSelectionModel().addSelectionInterval(start, end);
     }
 
-    public void removeRowSelectionInterval(final int start, final int end) {
+    public void removeRowSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getRowCount());
         getSelectionModel().removeSelectionInterval(start, end);
     }
 
-    public void removeColumnSelectionInterval(final int start, final int end) {
+    public void removeColumnSelectionInterval(int start, int end) {
         checkSelectionInterval(start, end, getColumnCount());
         getColumnModel().getSelectionModel().removeSelectionInterval(start, end);
     }
@@ -1046,26 +1123,29 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getSelectedCount(getColumnModel().getSelectionModel());
     }
 
-    public boolean isRowSelected(final int row) {
+    public boolean isRowSelected(int row) {
         return getSelectionModel().isSelectedIndex(row);
     }
 
-    public boolean isColumnSelected(final int column) {
+    public boolean isColumnSelected(int column) {
         return getColumnModel().getSelectionModel().isSelectedIndex(column);
     }
 
-    public boolean isCellSelected(final int row, final int column) {
-        return getRowSelectionAllowed() && isRowSelected(row) && (!getColumnSelectionAllowed() || isColumnSelected(column))
-               || getColumnSelectionAllowed() && isColumnSelected(column) && (!getRowSelectionAllowed() || isRowSelected(row));
+    public boolean isCellSelected(int row, int column) {
+        return getRowSelectionAllowed() && isRowSelected(row)
+                && (!getColumnSelectionAllowed() || isColumnSelected(column))
+                || getColumnSelectionAllowed() && isColumnSelected(column)
+                && (!getRowSelectionAllowed() || isRowSelected(row));
     }
 
-    public void changeSelection(final int row, final int column, final boolean toggle, final boolean extend) {
+    public void changeSelection(int row, int column, boolean toggle, boolean extend) {
         if (!toggle && !extend) {
             setRowSelectionInterval(row, row);
             setColumnSelectionInterval(column, column);
         } else if (!toggle && extend) {
             setRowSelectionInterval(getSelectionModel().getAnchorSelectionIndex(), row);
-            setColumnSelectionInterval(getColumnModel().getSelectionModel().getAnchorSelectionIndex(), column);
+            setColumnSelectionInterval(getColumnModel().getSelectionModel()
+                    .getAnchorSelectionIndex(), column);
         } else if (toggle && !extend) {
             if (isCellSelected(row, column)) {
                 removeRowSelectionInterval(row, row);
@@ -1078,10 +1158,8 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             getSelectionModel().setAnchorSelectionIndex(row);
             getColumnModel().getSelectionModel().setAnchorSelectionIndex(column);
         }
-
         int currentRow = getSelectionModel().getLeadSelectionIndex();
         int currentColumn = getColumnModel().getSelectionModel().getLeadSelectionIndex();
-
         if (currentRow != -1 && currentColumn != -1) {
             scrollRectToVisible(getCellRect(currentRow, currentColumn, true));
         }
@@ -1091,10 +1169,9 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return selectionForeground;
     }
 
-    public void setSelectionForeground(final Color fg) {
+    public void setSelectionForeground(Color fg) {
         Color oldValue = selectionForeground;
         selectionForeground = fg;
-
         firePropertyChange(SELECTION_FOREGROUND_PROPERTY, oldValue, fg);
     }
 
@@ -1102,14 +1179,13 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return selectionBackground;
     }
 
-    public void setSelectionBackground(final Color bg) {
+    public void setSelectionBackground(Color bg) {
         Color oldValue = selectionBackground;
         selectionBackground = bg;
-
         firePropertyChange(SELECTION_BACKGROUND_PROPERTY, oldValue, bg);
     }
 
-    public TableColumn getColumn(final Object identifier) {
+    public TableColumn getColumn(Object identifier) {
         int index = getColumnModel().getColumnIndex(identifier);
         if (index == -1) {
             throw new IllegalArgumentException("Column does not exist");
@@ -1117,26 +1193,23 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getColumnModel().getColumn(index);
     }
 
-    public int convertColumnIndexToModel(final int viewIndex) {
+    public int convertColumnIndexToModel(int viewIndex) {
         if (viewIndex < 0) {
             return viewIndex;
         }
-
         return getColumnModel().getColumn(viewIndex).getModelIndex();
     }
 
-    public int convertColumnIndexToView(final int modelIndex) {
+    public int convertColumnIndexToView(int modelIndex) {
         if (modelIndex < 0) {
             return modelIndex;
         }
-
         TableColumnModel columnModel = getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
             if (columnModel.getColumn(i).getModelIndex() == modelIndex) {
                 return i;
             }
         }
-
         return -1;
     }
 
@@ -1148,47 +1221,46 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getColumnModel().getColumnCount();
     }
 
-    public String getColumnName(final int viewIndex) {
+    public String getColumnName(int viewIndex) {
         return getModel().getColumnName(convertColumnIndexToModel(viewIndex));
     }
 
-    public Class<?> getColumnClass(final int viewIndex) {
+    public Class<?> getColumnClass(int viewIndex) {
         return getModel().getColumnClass(convertColumnIndexToModel(viewIndex));
     }
 
-    public Object getValueAt(final int row, final int viewColumn) {
+    public Object getValueAt(int row, int viewColumn) {
         return getModel().getValueAt(row, convertColumnIndexToModel(viewColumn));
     }
 
-    public void setValueAt(final Object value, final int row, final int viewColumn) {
+    public void setValueAt(Object value, int row, int viewColumn) {
         getModel().setValueAt(value, row, convertColumnIndexToModel(viewColumn));
     }
 
-    public boolean isCellEditable(final int row, final int viewColumn) {
+    public boolean isCellEditable(int row, int viewColumn) {
         return getModel().isCellEditable(row, convertColumnIndexToModel(viewColumn));
     }
 
-    public void addColumn(final TableColumn column) {
+    public void addColumn(TableColumn column) {
         if (column.getHeaderValue() == null) {
             column.setHeaderValue(getModel().getColumnName(column.getModelIndex()));
         }
-
         getColumnModel().addColumn(column);
     }
 
-    public void removeColumn(final TableColumn column) {
+    public void removeColumn(TableColumn column) {
         getColumnModel().removeColumn(column);
     }
 
-    public void moveColumn(final int viewColumn, final int targetViewColumn) {
+    public void moveColumn(int viewColumn, int targetViewColumn) {
         getColumnModel().moveColumn(viewColumn, targetViewColumn);
     }
 
-    public int columnAtPoint(final Point p) {
+    public int columnAtPoint(Point p) {
         return getTableHeader().columnAtPoint(p);
     }
 
-    public int rowAtPoint(final Point p) {
+    public int rowAtPoint(Point p) {
         int previousWidth = 0;
         for (int i = 0; i < getRowCount(); i++) {
             int height = getRowHeight(i);
@@ -1197,13 +1269,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             }
             previousWidth += height;
         }
-
         return -1;
     }
 
-    public Rectangle getCellRect(final int row, final int viewColumn, final boolean includeSpacing) {
+    public Rectangle getCellRect(int row, int viewColumn, boolean includeSpacing) {
         Rectangle result = new Rectangle();
-
         boolean useSpacing = includeSpacing;
         if (row >= 0 && row < getRowCount()) {
             for (int i = 0; i < row; i++) {
@@ -1213,7 +1283,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         } else {
             useSpacing = true;
         }
-
         if (viewColumn >= 0 && viewColumn < getColumnCount()) {
             TableColumnModel columnModel = getColumnModel();
             if (getComponentOrientation().isLeftToRight()) {
@@ -1232,7 +1301,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         } else {
             useSpacing = true;
         }
-
         if (!useSpacing) {
             Dimension spacing = getIntercellSpacing();
             result.x += spacing.width / 2;
@@ -1240,11 +1308,10 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             result.y += spacing.height / 2;
             result.height -= spacing.height;
         }
-
         return result;
     }
 
-    public void sizeColumnsToFit(final boolean lastColumnOnly) {
+    public void sizeColumnsToFit(boolean lastColumnOnly) {
         int previousSetting = getAutoResizeMode();
         if (lastColumnOnly) {
             setAutoResizeMode(AUTO_RESIZE_LAST_COLUMN);
@@ -1255,26 +1322,27 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         setAutoResizeMode(previousSetting);
     }
 
-    public void sizeColumnsToFit(final int resizingColumn) {
+    public void sizeColumnsToFit(int resizingColumn) {
     }
 
-    public String getToolTipText(final MouseEvent me) {
+    @Override
+    public String getToolTipText(MouseEvent me) {
         int row = rowAtPoint(me.getPoint());
         int column = columnAtPoint(me.getPoint());
-
         if (row == -1 || column == -1) {
             return null;
         }
-
         TableCellRenderer renderer = getCellRenderer(row, column);
         if (renderer == null) {
             return null;
         }
-        Component renderingComponent = renderer.getTableCellRendererComponent(this, getValueAt(row, column), isCellSelected(row, column), false, row, column);
-        return renderer instanceof JComponent ? ((JComponent)renderingComponent).getToolTipText() : null;
+        Component renderingComponent = renderer.getTableCellRendererComponent(this, getValueAt(
+                row, column), isCellSelected(row, column), false, row, column);
+        return renderer instanceof JComponent ? ((JComponent) renderingComponent)
+                .getToolTipText() : null;
     }
 
-    public void setSurrendersFocusOnKeystroke(final boolean surrendersFocusOnKeystroke) {
+    public void setSurrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke) {
         this.surrendersFocusOnKeystroke = surrendersFocusOnKeystroke;
     }
 
@@ -1282,36 +1350,32 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return surrendersFocusOnKeystroke;
     }
 
-    public boolean editCellAt(final int row, final int column) {
+    public boolean editCellAt(int row, int column) {
         return editCellAt(row, column, null);
     }
 
-    public boolean editCellAt(final int row, final int viewColumn, final EventObject e) {
+    public boolean editCellAt(int row, int viewColumn, EventObject e) {
         if (isEditing()) {
             getCellEditor().stopCellEditing();
             if (isEditing()) {
                 return false;
             }
         }
-
         if (row >= getRowCount() || viewColumn > getColumnModel().getColumnCount()) {
             return false;
         }
         if (!isCellEditable(row, viewColumn)) {
             return false;
         }
-
         TableCellEditor editor = getCellEditor(row, viewColumn);
         if (editor == null) {
             return false;
         }
-
         editingColumn = viewColumn;
         if (!editor.isCellEditable(e)) {
             editingColumn = -1;
             return false;
         }
-
         setCellEditor(editor);
         setEditingRow(row);
         setEditingColumn(viewColumn);
@@ -1319,7 +1383,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         getCellEditor().addCellEditorListener(this);
         add(editorComp);
         editorComp.setBounds(getCellRect(row, viewColumn, false));
-
         return true;
     }
 
@@ -1335,7 +1398,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return editingRow;
     }
 
-    public void setEditingRow(final int row) {
+    public void setEditingRow(int row) {
         editingRow = row;
     }
 
@@ -1343,42 +1406,43 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return editingColumn;
     }
 
-    public void setEditingColumn(final int column) {
+    public void setEditingColumn(int column) {
         editingColumn = column;
     }
 
     public TableUI getUI() {
-        return (TableUI)ui;
+        return (TableUI) ui;
     }
 
-    public void setUI(final TableUI ui) {
+    public void setUI(TableUI ui) {
         super.setUI(ui);
     }
 
+    @Override
     public void updateUI() {
-        setUI((TableUI)UIManager.getUI(this));
+        setUI((TableUI) UIManager.getUI(this));
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
-    public void setModel(final TableModel model) {
+    public void setModel(TableModel model) {
         if (model == null) {
             throw new IllegalArgumentException("Model must be not null");
         }
-
         TableModel oldValue = dataModel;
         if (oldValue != null) {
             oldValue.removeTableModelListener(this);
         }
-
         dataModel = model;
         dataModel.addTableModelListener(this);
         firePropertyChange(StringConstants.MODEL_PROPERTY_CHANGED, oldValue, model);
-
         if (oldValue != dataModel) {
-            tableChanged(new TableModelEvent(dataModel, TableModelEvent.HEADER_ROW, TableModelEvent.HEADER_ROW, TableModelEvent.ALL_COLUMNS, TableModelEvent.UPDATE));
+            tableChanged(new TableModelEvent(dataModel, TableModelEvent.HEADER_ROW,
+                    TableModelEvent.HEADER_ROW, TableModelEvent.ALL_COLUMNS,
+                    TableModelEvent.UPDATE));
         }
     }
 
@@ -1386,17 +1450,15 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return dataModel;
     }
 
-    public void setColumnModel(final TableColumnModel model) {
+    public void setColumnModel(TableColumnModel model) {
         if (model == null) {
             throw new IllegalArgumentException("Column model must be not null");
         }
-
         TableColumnModel oldValue = columnModel;
         if (oldValue != null) {
             oldValue.removeColumnModelListener(this);
             oldValue.removeColumnModelListener(getTableHeader());
         }
-
         columnModel = model;
         JTableHeader header = getTableHeader();
         if (header != null) {
@@ -1409,20 +1471,17 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return columnModel;
     }
 
-    public void setSelectionModel(final ListSelectionModel model) {
+    public void setSelectionModel(ListSelectionModel model) {
         if (model == null) {
             throw new IllegalArgumentException("Selection model must be not null");
         }
-
         ListSelectionModel oldValue = selectionModel;
         if (oldValue != null) {
             oldValue.removeListSelectionListener(this);
         }
-
         selectionModel = model;
         selectionModel.addListSelectionListener(this);
         alignSelectionModelToRows();
-
         firePropertyChange(StringConstants.SELECTION_MODEL_PROPERTY, oldValue, model);
     }
 
@@ -1430,77 +1489,75 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return selectionModel;
     }
 
-    public void tableChanged(final TableModelEvent e) {
+    public void tableChanged(TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE
-            && e.getFirstRow() == TableModelEvent.HEADER_ROW
-            && e.getLastRow() == TableModelEvent.HEADER_ROW) {
-
+                && e.getFirstRow() == TableModelEvent.HEADER_ROW
+                && e.getLastRow() == TableModelEvent.HEADER_ROW) {
             if (getAutoCreateColumnsFromModel()) {
                 createDefaultColumnsFromModel();
             }
         }
-
         if (getSelectionModel() != null) {
             updateSelectionModel(getSelectionModel(), e);
         }
         if (getColumnModel().getSelectionModel() != null) {
             updateColumnSelectionModel(getColumnModel().getSelectionModel(), e);
         }
-
         revalidate();
         repaint();
     }
 
-    public void columnAdded(final TableColumnModelEvent e) {
+    public void columnAdded(TableColumnModelEvent e) {
         if (isEditing()) {
             getCellEditor().cancelCellEditing();
         }
         resizeAndRepaint();
     }
 
-    public void columnRemoved(final TableColumnModelEvent e) {
+    public void columnRemoved(TableColumnModelEvent e) {
         if (isEditing()) {
             getCellEditor().cancelCellEditing();
         }
         resizeAndRepaint();
     }
 
-    public void columnMoved(final TableColumnModelEvent e) {
+    public void columnMoved(TableColumnModelEvent e) {
         if (isEditing()) {
             getCellEditor().cancelCellEditing();
         }
         repaint();
     }
 
-    public void columnMarginChanged(final ChangeEvent e) {
+    public void columnMarginChanged(ChangeEvent e) {
         if (isEditing()) {
             getCellEditor().cancelCellEditing();
         }
         resizeAndRepaint();
     }
 
-    public void columnSelectionChanged(final ListSelectionEvent e) {
+    public void columnSelectionChanged(ListSelectionEvent e) {
         repaint();
     }
 
-    public void valueChanged(final ListSelectionEvent e) {
+    public void valueChanged(ListSelectionEvent e) {
         repaint();
     }
 
-    public void editingStopped(final ChangeEvent e) {
+    public void editingStopped(ChangeEvent e) {
         if (isEditing()) {
-            setValueAt(getCellEditor().getCellEditorValue(), getEditingRow(), getEditingColumn());
+            setValueAt(getCellEditor().getCellEditorValue(), getEditingRow(),
+                    getEditingColumn());
             cleanUpAfterEditing();
         }
     }
 
-    public void editingCanceled(final ChangeEvent e) {
+    public void editingCanceled(ChangeEvent e) {
         if (isEditing()) {
             cleanUpAfterEditing();
         }
     }
 
-    public void setPreferredScrollableViewportSize(final Dimension size) {
+    public void setPreferredScrollableViewportSize(Dimension size) {
         preferredViewportSize = size;
     }
 
@@ -1508,20 +1565,18 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return preferredViewportSize;
     }
 
-    public int getScrollableUnitIncrement(final Rectangle visibleRect, final int orientation, final int direction) {
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
         if (orientation == SwingConstants.HORIZONTAL) {
             return 100;
-        } else {
-            return getRowHeight();
         }
+        return getRowHeight();
     }
 
-    public int getScrollableBlockIncrement(final Rectangle visibleRect, final int orientation, final int direction) {
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
         if (orientation == SwingConstants.HORIZONTAL) {
             return visibleRect.width;
-        } else {
-            return visibleRect.height;
         }
+        return visibleRect.height;
     }
 
     public boolean getScrollableTracksViewportWidth() {
@@ -1532,7 +1587,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return false;
     }
 
-    public void setCellEditor(final TableCellEditor editor) {
+    public void setCellEditor(TableCellEditor editor) {
         cellEditor = editor;
     }
 
@@ -1540,39 +1595,37 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return cellEditor;
     }
 
-    public TableCellRenderer getCellRenderer(final int row, final int viewColumn) {
+    public TableCellRenderer getCellRenderer(int row, int viewColumn) {
         TableCellRenderer result = getColumnModel().getColumn(viewColumn).getCellRenderer();
         if (result == null) {
             result = getDefaultRenderer(getColumnClass(viewColumn));
         }
-
         return result;
     }
 
-    public Component prepareRenderer(final TableCellRenderer renderer, final int row, final int viewColumn) {
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int viewColumn) {
         boolean hasFocus = false;
-
-        return renderer.getTableCellRendererComponent(this, getValueAt(row, viewColumn), isCellSelected(row, viewColumn), hasFocus, row, viewColumn);
+        return renderer.getTableCellRendererComponent(this, getValueAt(row, viewColumn),
+                isCellSelected(row, viewColumn), hasFocus, row, viewColumn);
     }
 
-    public TableCellEditor getCellEditor(final int row, final int viewColumn) {
+    public TableCellEditor getCellEditor(int row, int viewColumn) {
         TableCellEditor result = getColumnModel().getColumn(viewColumn).getCellEditor();
         if (result == null) {
             result = getDefaultEditor(getColumnClass(viewColumn));
         }
-
         return result;
     }
 
-    public Component prepareEditor(final TableCellEditor editor, final int row, final int viewColumn) {
-        return editor.getTableCellEditorComponent(this, getValueAt(row, viewColumn), isCellSelected(row, viewColumn), row, viewColumn);
+    public Component prepareEditor(TableCellEditor editor, int row, int viewColumn) {
+        return editor.getTableCellEditorComponent(this, getValueAt(row, viewColumn),
+                isCellSelected(row, viewColumn), row, viewColumn);
     }
 
     public void removeEditor() {
         if (!isEditing()) {
             return;
         }
-
         setCellEditor(null);
         remove(getEditorComponent());
         editorComp = null;
@@ -1580,6 +1633,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         setEditingColumn(-1);
     }
 
+    @Override
     public void doLayout() {
         if (getAutoResizeMode() == AUTO_RESIZE_OFF) {
             return;
@@ -1591,20 +1645,20 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                     return getColumnCount();
                 }
 
-                public TableColumn getElement(final int i) {
+                public TableColumn getElement(int i) {
                     return getColumnModel().getColumn(i);
                 }
             };
             adjustColumns(getWidth(), resizable);
         } else {
-            final int resizingColIndex = getColumnModel().getColumnIndex(resizingColumn.getIdentifier());
+            int resizingColIndex = getColumnModel().getColumnIndex(
+                    resizingColumn.getIdentifier());
             if (resizingColIndex + 1 == getColumnCount()) {
                 int remWidth = getWidth();
                 for (int i = 0; i < getColumnCount() - 1; i++) {
                     remWidth -= getColumnModel().getColumn(i).getWidth();
                 }
                 resizingColumn.setWidth(remWidth);
-
                 return;
             }
             if (getAutoResizeMode() == AUTO_RESIZE_NEXT_COLUMN) {
@@ -1625,7 +1679,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                         return getColumnCount();
                     }
 
-                    public TableColumn getElement(final int i) {
+                    public TableColumn getElement(int i) {
                         return getColumnModel().getColumn(i);
                     }
                 };
@@ -1634,41 +1688,42 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJTable();
         }
-
         return accessibleContext;
     }
 
-// TODO: 1.5 migration
-//    public boolean print() throws PrinterException {
-//        return false;
-//    }
-//
-//    public boolean print(PrintMode printMode) throws PrinterException {
-//        return false;
-//    }
-//
-//    public boolean print(PrintMode printMode, MessageFormat headerFormat, MessageFormat footerFormat) throws PrinterException {
-//        return false;
-//    }
-//
-//    public boolean print(PrintMode printMode, MessageFormat headerFormat, MessageFormat footerFormat,
-//                         boolean showPrintDialog, PrintRequestAttributeSet attr, boolean interactive) throws PrinterException, HeadlessException {
-//
-//        return false;
-//    }
-//
-//    public Printable getPrintable(PrintMode printMode, MessageFormat headerFormat, MessageFormat footerFormat) {
-//
-//        return null;
-//    }
-//
-//    public static enum PrintMode extends Enum {
-//
-//    }
+    public boolean print() throws PrinterException, NotImplementedException {
+        throw new NotImplementedException();
+    }
+
+    public boolean print(PrintMode printMode) throws PrinterException, NotImplementedException {
+        throw new NotImplementedException();
+    }
+
+    public boolean print(PrintMode printMode, MessageFormat headerFormat,
+            MessageFormat footerFormat) throws PrinterException, NotImplementedException {
+        throw new NotImplementedException();
+    }
+
+    public boolean print(PrintMode printMode, MessageFormat headerFormat,
+            MessageFormat footerFormat, boolean showPrintDialog, PrintRequestAttributeSet attr,
+            boolean interactive) throws PrinterException, HeadlessException,
+            NotImplementedException {
+        throw new NotImplementedException();
+    }
+
+    public Printable getPrintable(PrintMode printMode, MessageFormat headerFormat,
+            MessageFormat footerFormat) throws NotImplementedException {
+        throw new NotImplementedException();
+    }
+
+    public static enum PrintMode {
+        NORMAL, FIT_WIDTH
+    }
 
     protected void initializeLocalVars() {
         dragEnabled = false;
@@ -1682,7 +1737,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         setRowSelectionAllowed(true);
         createDefaultRenderers();
         createDefaultEditors();
-
         ToolTipManager.sharedInstance().registerComponent(this);
     }
 
@@ -1693,7 +1747,6 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
         enclosingScrollPane.setColumnHeaderView(getTableHeader());
         enclosingScrollPane.setBorder(UIManager.getBorder("Table.scrollPaneBorder"));
-
     }
 
     protected void unconfigureEnclosingScrollPane() {
@@ -1745,12 +1798,12 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         repaint();
     }
 
-    protected void processKeyEvent(final KeyEvent event) {
+    @Override
+    protected void processKeyEvent(KeyEvent event) {
         super.processKeyEvent(event);
         if (event.isConsumed()) {
             wasConsumed = true;
         }
-
         if (event.getID() == KeyEvent.KEY_RELEASED) {
             wasConsumed = false;
             return;
@@ -1758,21 +1811,16 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         if (wasConsumed) {
             return;
         }
-
-        if (event.getKeyCode() == KeyEvent.VK_SHIFT
-            || event.getKeyCode() == KeyEvent.VK_ALT
-            || event.getKeyCode() == KeyEvent.VK_ALT_GRAPH
-            || event.getKeyCode() == KeyEvent.VK_CONTROL
-            || event.getKeyCode() == KeyEvent.VK_PRINTSCREEN
-            || event.getKeyCode() == KeyEvent.VK_CAPS_LOCK
-            || event.getKeyCode() == KeyEvent.VK_NUM_LOCK
-            || event.getKeyCode() == KeyEvent.VK_SCROLL_LOCK
-            || event.isAltDown()
-            || event.isControlDown()) {
-
+        if (event.getKeyCode() == KeyEvent.VK_SHIFT || event.getKeyCode() == KeyEvent.VK_ALT
+                || event.getKeyCode() == KeyEvent.VK_ALT_GRAPH
+                || event.getKeyCode() == KeyEvent.VK_CONTROL
+                || event.getKeyCode() == KeyEvent.VK_PRINTSCREEN
+                || event.getKeyCode() == KeyEvent.VK_CAPS_LOCK
+                || event.getKeyCode() == KeyEvent.VK_NUM_LOCK
+                || event.getKeyCode() == KeyEvent.VK_SCROLL_LOCK || event.isAltDown()
+                || event.isControlDown()) {
             return;
         }
-
         if (!isEditing()) {
             int currentRow = getSelectionModel().getLeadSelectionIndex();
             int currentColumn = getColumnModel().getSelectionModel().getLeadSelectionIndex();
@@ -1786,112 +1834,106 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                 getEditorComponent().requestFocus();
             }
         }
-
         if (isEditing() && getEditorComponent() instanceof JComponent) {
-            KeyEvent editorEvent = new KeyEvent(getEditorComponent(), event.getID(), event.getWhen(), event.getModifiers(), event.getKeyCode(), event.getKeyChar(), event.getKeyLocation());
-            ((JComponent)getEditorComponent()).processKeyEvent(editorEvent);
+            KeyEvent editorEvent = new KeyEvent(getEditorComponent(), event.getID(), event
+                    .getWhen(), event.getModifiers(), event.getKeyCode(), event.getKeyChar(),
+                    event.getKeyLocation());
+            ((JComponent) getEditorComponent()).processKeyEvent(editorEvent);
         }
     }
 
     private JScrollPane getEnclosingScrollPane() {
-        if (getParent() instanceof JViewport
-            && ((JViewport)getParent()).getView() == this) {
-
+        if (getParent() instanceof JViewport && ((JViewport) getParent()).getView() == this) {
             if (getParent().getParent() instanceof JScrollPane) {
-                return (JScrollPane)getParent().getParent();
+                return (JScrollPane) getParent().getParent();
             }
         }
-
         return null;
     }
 
-    private Object getClosestClass(final Class columnClass, final Hashtable classes) {
-        Class currentClass = columnClass;
+    private Object getClosestClass(Class<?> columnClass, Hashtable classes) {
+        Class<?> currentClass = columnClass;
         do {
             Object value = classes.get(currentClass);
             if (value != null) {
                 return value;
             }
             currentClass = currentClass.getSuperclass();
-        } while(currentClass != null);
-
+        } while (currentClass != null);
         return null;
     }
 
-    private void checkSelectionInterval(final int start, final int end, final int bound) {
+    private void checkSelectionInterval(int start, int end, int bound) {
         if (start < 0 || end < 0 || start >= bound || end >= bound) {
-            throw new IllegalArgumentException("Illegal selection interval is specified. Should be in [0, " + (bound - 1) + "]");
+            throw new IllegalArgumentException(
+                    "Illegal selection interval is specified. Should be in [0, " + (bound - 1)
+                            + "]");
         }
     }
 
-    private int[] getSelectedIndices(final ListSelectionModel selModel) {
+    private int[] getSelectedIndices(ListSelectionModel selModel) {
         int size = getSelectedCount(selModel);
         int[] result = new int[size];
         if (size == 0) {
             return result;
         }
-
         int count = 0;
         for (int i = selModel.getMinSelectionIndex(); i <= selModel.getMaxSelectionIndex(); i++) {
             if (selModel.isSelectedIndex(i)) {
                 result[count++] = i;
             }
         }
-
         return result;
     }
 
-    private int getSelectedCount(final ListSelectionModel selModel) {
+    private int getSelectedCount(ListSelectionModel selModel) {
         if (selModel.isSelectionEmpty()) {
             return 0;
         }
-
         int result = 0;
         for (int i = selModel.getMinSelectionIndex(); i <= selModel.getMaxSelectionIndex(); i++) {
             if (selModel.isSelectedIndex(i)) {
                 result++;
             }
         }
-
         return result;
     }
 
-    private void updateSelectionModel(final ListSelectionModel model, final TableModelEvent e) {
+    private void updateSelectionModel(ListSelectionModel model, TableModelEvent e) {
         if (e.getType() == TableModelEvent.INSERT) {
-            model.insertIndexInterval(e.getFirstRow(), e.getLastRow() - e.getFirstRow() + 1, true);
+            model.insertIndexInterval(e.getFirstRow(), e.getLastRow() - e.getFirstRow() + 1,
+                    true);
             alignSelectionModelToRows();
         }
         if (e.getType() == TableModelEvent.DELETE) {
             model.removeIndexInterval(e.getFirstRow(), e.getLastRow());
             alignSelectionModelToRows();
         }
-
         if (e.getType() == TableModelEvent.UPDATE
-            && e.getColumn() == TableModelEvent.ALL_COLUMNS) {
-
+                && e.getColumn() == TableModelEvent.ALL_COLUMNS) {
             model.clearSelection();
         }
     }
 
-    private void updateColumnSelectionModel(final ListSelectionModel model, final TableModelEvent e) {
+    private void updateColumnSelectionModel(ListSelectionModel model, TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE
-            && e.getFirstRow() == TableModelEvent.HEADER_ROW
-            && e.getLastRow() == TableModelEvent.HEADER_ROW) {
-
+                && e.getFirstRow() == TableModelEvent.HEADER_ROW
+                && e.getLastRow() == TableModelEvent.HEADER_ROW) {
             model.setAnchorSelectionIndex(-1);
             model.setLeadSelectionIndex(0);
             model.clearSelection();
         }
     }
 
-    private void autoResizeSubsequentColumns(final TableColumn resizingColumn) {
-        final int resizingColIndex = getColumnModel().getColumnIndex(resizingColumn.getIdentifier());
+    private void autoResizeSubsequentColumns(TableColumn resizingColumn) {
+        final int resizingColIndex = getColumnModel().getColumnIndex(
+                resizingColumn.getIdentifier());
         ResizableElements resizable = new ResizableElements() {
             public int getElementsCount() {
                 return getColumnCount() - (resizingColIndex + 1);
             }
 
-            public TableColumn getElement(final int i) {
+            public TableColumn getElement(int i) {
                 return getColumnModel().getColumn(i + (resizingColIndex + 1));
             }
         };
@@ -1911,13 +1953,14 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                 width += getColumnModel().getColumn(i).getWidth();
             }
             for (int i = resizingColIndex + 1; i < getColumnCount(); i++) {
-                getColumnModel().getColumn(i).setWidth(getColumnModel().getColumn(i).getMinWidth());
+                getColumnModel().getColumn(i).setWidth(
+                        getColumnModel().getColumn(i).getMinWidth());
             }
             resizingColumn.setWidth(getWidth() - width - minSize);
         }
     }
 
-    private void autoResizeNextColumn(final TableColumn resizingColumn) {
+    private void autoResizeNextColumn(TableColumn resizingColumn) {
         int resColIndex = getColumnModel().getColumnIndex(resizingColumn.getIdentifier());
         TableColumn nextColumn = getColumnModel().getColumn(resColIndex + 1);
         int colsSumWidth = getWidth();
@@ -1935,7 +1978,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    private void autoResizeLastColumn(final TableColumn resizingColumn) {
+    private void autoResizeLastColumn(TableColumn resizingColumn) {
         int resColIndex = getColumnModel().getColumnIndex(resizingColumn.getIdentifier());
         TableColumn lastColumn = getColumnModel().getColumn(getColumnCount() - 1);
         int colsSumWidth = getWidth();
@@ -1953,11 +1996,10 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    private void adjustColumns(final long targetSize, final ResizableElements resizable) {
+    private void adjustColumns(long targetSize, ResizableElements resizable) {
         if (resizable.getElementsCount() == 0) {
             return;
         }
-
         long minColsWidth = 0;
         long maxColsWidth = 0;
         long colsWidth = 0;
@@ -1975,10 +2017,10 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             int maxWidth = column.getMaxWidth();
             int minWidth = column.getMinWidth();
             int curWidth = column.getPreferredWidth();
-            double multiplier = (colsDelta > 0)
-                    ? (double)(maxWidth - curWidth) / (double)(maxColsWidth - colsWidth)
-                    : (double)(curWidth - minWidth) / (double)(colsWidth - minColsWidth);
-            int delta = (int)(colsDelta * multiplier);
+            double multiplier = (colsDelta > 0) ? (double) (maxWidth - curWidth)
+                    / (double) (maxColsWidth - colsWidth) : (double) (curWidth - minWidth)
+                    / (double) (colsWidth - minColsWidth);
+            int delta = (int) (colsDelta * multiplier);
             int newWidth = curWidth + delta;
             if (newWidth > maxWidth) {
                 newWidth = maxWidth;
@@ -1989,7 +2031,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             newWidthes[i] = newWidth;
             newTableWidth += newWidthes[i];
         }
-        int diff = (int)targetSize - newTableWidth;
+        int diff = (int) targetSize - newTableWidth;
         int absDiff = Math.abs(diff);
         while (absDiff != 0) {
             if (diff > 0) {
@@ -2011,27 +2053,25 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         requestFocus();
     }
 
-    private void adjustNewWidthesToDecreaseSize(final int[] widths) {
+    private void adjustNewWidthesToDecreaseSize(int[] widths) {
         int result = widths.length - 1;
         int max = widths[widths.length - 1];
-        for (int i = widths.length - 1; i >=0 ; i--) {
+        for (int i = widths.length - 1; i >= 0; i--) {
             if (widths[i] > max) {
                 result = i;
             }
         }
-
         widths[result]--;
     }
 
-    private void adjustNewWidthesToIncreaseSize(final int[] widths) {
+    private void adjustNewWidthesToIncreaseSize(int[] widths) {
         int result = widths.length - 1;
         int min = widths[widths.length - 1];
-        for (int i = widths.length - 1; i >=0 ; i--) {
+        for (int i = widths.length - 1; i >= 0; i--) {
             if (widths[i] < min) {
                 result = i;
             }
         }
-
         widths[result]++;
     }
 
@@ -2046,17 +2086,18 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         } else if (selectionModel.getLeadSelectionIndex() < 0) {
             selectionModel.removeSelectionInterval(0, 0);
         }
-     }
+    }
 
     private interface ResizableElements {
         int getElementsCount();
+
         TableColumn getElement(int i);
     }
 
     private class MutableInteger {
         private int value = -1;
 
-        public void setValue(final int value) {
+        public void setValue(int value) {
             this.value = value;
         }
 
@@ -2066,15 +2107,21 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     }
 
     private class BooleanTableCellRenderer extends JCheckBox implements TableCellRenderer {
-        private Border noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+        private static final long serialVersionUID = 1L;
+
+        private final Border noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+
         private Border focusBorder;
+
         private Color focusCellBackground;
+
         private Color focusCellForeground;
 
         public BooleanTableCellRenderer() {
             updateUI();
         }
 
+        @Override
         public void updateUI() {
             super.updateUI();
             focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
@@ -2082,14 +2129,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             focusCellForeground = UIManager.getColor("Table.focusCellForeground");
         }
 
-        public Component getTableCellRendererComponent(final JTable table,
-                                                       final Object value,
-                                                       final boolean isSelected,
-                                                       final boolean hasFocus,
-                                                       final int row, final int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
             setValue(value);
             setFont(table.getFont());
-            setHorizontalAlignment(JCheckBox.CENTER);
+            setHorizontalAlignment(SwingConstants.CENTER);
             if (hasFocus) {
                 setBorder(focusBorder);
                 if (isSelected) {
@@ -2112,15 +2156,15 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                     setForeground(table.getForeground());
                 }
             }
-
             return this;
         }
 
+        @Override
         public boolean isOpaque() {
             return true;
         }
 
-        private void setValue(final Object value) {
+        private void setValue(Object value) {
             if (value == null) {
                 setSelected(false);
             } else {
@@ -2130,44 +2174,45 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     }
 
     private class DateTableCellRenderer extends DefaultTableCellRenderer.UIResource {
-        public Component getTableCellRendererComponent(final JTable table,
-                final Object value,
-                final boolean isSelected,
-                final boolean hasFocus,
-                final int row, final int column) {
+        private static final long serialVersionUID = 1L;
 
-            return super.getTableCellRendererComponent(table, value != null ? DateFormat.getDateInstance().format((Date)value) : null, isSelected, hasFocus, row, column);
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            return super.getTableCellRendererComponent(table, value != null ? DateFormat
+                    .getDateInstance().format((Date) value) : null, isSelected, hasFocus, row,
+                    column);
         }
     }
 
     private class NumberTableCellRenderer extends DefaultTableCellRenderer.UIResource {
+        private static final long serialVersionUID = 1L;
+
         public NumberTableCellRenderer() {
             super();
-            setHorizontalAlignment(JLabel.RIGHT);
+            setHorizontalAlignment(SwingConstants.RIGHT);
         }
 
-        public Component getTableCellRendererComponent(final JTable table,
-                final Object value,
-                final boolean isSelected,
-                final boolean hasFocus,
-                final int row, final int column) {
-
-            return super.getTableCellRendererComponent(table, value != null ? NumberFormat.getNumberInstance().format(value) : null, isSelected, hasFocus, row, column);
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            return super.getTableCellRendererComponent(table, value != null ? NumberFormat
+                    .getNumberInstance().format(value) : null, isSelected, hasFocus, row,
+                    column);
         }
     }
 
     private class IconTableCellRenderer extends DefaultTableCellRenderer {
-        public Component getTableCellRendererComponent(final JTable table,
-                final Object value,
-                final boolean isSelected,
-                final boolean hasFocus,
-                final int row, final int column) {
+        private static final long serialVersionUID = 1L;
 
-            
-            JLabel result = (JLabel)super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel result = (JLabel) super.getTableCellRendererComponent(table, null,
+                    isSelected, hasFocus, row, column);
             if (value != null) {
                 if (value instanceof Icon) {
-                    result.setIcon((Icon)value);
+                    result.setIcon((Icon) value);
                 } else {
                     result.setIcon(new ImageIcon(value.toString()));
                 }
@@ -2176,9 +2221,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             } else {
                 result.setIcon(null);
             }
-
             return result;
         }
     }
 }
-
