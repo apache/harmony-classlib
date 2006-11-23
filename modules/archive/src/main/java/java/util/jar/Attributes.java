@@ -231,6 +231,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *                when key is not an Attributes.Name or value is not a
      *                String
      */
+    @SuppressWarnings("cast") // Require cast to force ClassCastException
     public Object put(Object key, Object value) {
         return map.put((Name)key, (String)value);
     }
