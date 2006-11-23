@@ -92,9 +92,6 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         if ((start < 0 ) || (end < 0) || (long)start + (long)end > src.length()) {
             throw new IndexOutOfBoundsException();
         }
-        if(src == null){
-            throw new NullPointerException();
-        }
         throw new ReadOnlyBufferException();
     }
 
@@ -102,5 +99,4 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
 		return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
 				+ position);
 	}
-
 }

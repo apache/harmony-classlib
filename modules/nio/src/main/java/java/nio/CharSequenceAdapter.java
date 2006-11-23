@@ -125,20 +125,12 @@ final class CharSequenceAdapter extends CharBuffer {
             throw new BufferOverflowException();
         }
         
-        if(src == null){
-            throw new NullPointerException();
-        }
-        
         throw new ReadOnlyBufferException();
     }
 
     public CharBuffer put(String src, int start, int end) {
-        int length = src.length();
-        if ((start < 0 ) || (end < 0) || (long)start + (long)end > length) {
+        if ((start < 0 ) || (end < 0) || (long)start + (long)end > src.length()) {
             throw new IndexOutOfBoundsException();
-        }
-        if(src == null){
-            throw new NullPointerException();
         }
         throw new ReadOnlyBufferException();
     }  
