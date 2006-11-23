@@ -68,7 +68,7 @@ public class Introspector {
             case IGNORE_ALL_BEANINFO:
                 return getBeanInfo(beanClass, null, true, true);
             default:
-                // TODO: verify that default beahvior complies with RI
+                // TODO: verify that default behavior complies with RI
                 return getBeanInfo(beanClass, null, false, false);
         }
     }
@@ -84,17 +84,23 @@ public class Introspector {
     }
 
     public static synchronized void setBeanInfoSearchPath(String[] searchPath) {
-        if (searchPath != null) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPropertiesAccess();
-            }
-            path = searchPath;
+        SecurityManager sm = System.getSecurityManager();
+
+        if (sm != null) {
+            sm.checkPropertiesAccess();
         }
+        
+        path = searchPath;
     }
 
     public static synchronized String[] getBeanInfoSearchPath() {
-        return path;
+        // compatible with RI
+        if (path == null) {
+            throw new NullPointerException(
+                    Messages.getString("beans.4F")); //$NON-NLS-1$
+        }
+
+        return path.clone();
     }
 
     public static void flushFromCaches(Class<?> clz) {

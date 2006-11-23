@@ -297,11 +297,11 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     public int getDefaultPropertyIndex() {
-        return defaultPropertyIndex;
+        return -1;
     }
 
     public int getDefaultEventIndex() {
-        return defaultEventIndex;
+        return -1;
     }
 
     private static int getMethodType(Method method) {
@@ -458,9 +458,5 @@ class BeanInfoImpl implements BeanInfo {
     private MethodDescriptor[] methodDescriptors = null;
 
     private EventSetDescriptor[] eventSetDescriptors = null;
-
-    private final int defaultPropertyIndex = -1;
-
-    private final int defaultEventIndex = -1;
 
 }

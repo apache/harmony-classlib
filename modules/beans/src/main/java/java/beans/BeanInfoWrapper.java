@@ -248,10 +248,8 @@ class BeanInfoWrapper implements BeanInfo {
 
         if (info != null) {
             result = info.getDefaultPropertyIndex();
-        }
-
-        if (info == null || result == -1) {
-            result = impl.getDefaultPropertyIndex();
+        } else if (parentBeanInfoWrapper != null) {
+            result = parentBeanInfoWrapper.getDefaultPropertyIndex();
         }
 
         return result;
@@ -262,10 +260,8 @@ class BeanInfoWrapper implements BeanInfo {
 
         if (info != null) {
             result = info.getDefaultEventIndex();
-        }
-
-        if (info == null || result == -1) {
-            result = impl.getDefaultEventIndex();
+        } else if (parentBeanInfoWrapper != null) {
+            result = parentBeanInfoWrapper.getDefaultEventIndex();
         }
 
         return result;
