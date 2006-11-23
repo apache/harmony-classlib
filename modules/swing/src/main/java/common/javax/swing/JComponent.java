@@ -1237,15 +1237,6 @@ public abstract class JComponent extends Container implements Serializable {
         return false;
     }
 
-    public void setBounds(final int x, final int y, final int w, final int h) {
-        int oldH = getHeight();
-        int oldW = getWidth();
-        super.setBounds(x, y, w, h);
-        if (oldH != h || oldW != w) {
-            revalidate();
-        }
-    }
-
     public boolean isOptimizedDrawingEnabled() {
         return true;
     }

@@ -22,7 +22,7 @@ package javax.swing;
 
 import java.awt.event.ActionListener;
 
-public class JComponentRTest extends BasicSwingTestCase {
+public class JComponentRTest extends SwingTestCase {
     public void testComponentInstantiation() throws Exception {
         Object result = (ActionListener)new JComboBox();
         result = JPanel.class;
@@ -36,5 +36,20 @@ public class JComponentRTest extends BasicSwingTestCase {
     public void testResetKeyboardActions() throws Exception {
         JComponent c = new JComponent() {};
         c.resetKeyboardActions();
+    }
+
+    public void testSetBounds() throws Throwable {
+        final Marker marker = new Marker();
+        final JComponent button = new JButton("JButton") {
+            @Override
+            public void revalidate() {
+                marker.setOccurred();
+                super.revalidate();
+            }
+        };
+        marker.reset();
+
+        button.setSize(50, 500);
+        assertFalse(marker.isOccurred());
     }
 }

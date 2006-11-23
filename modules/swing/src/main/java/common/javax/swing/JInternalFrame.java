@@ -1501,6 +1501,7 @@ public class JInternalFrame extends JComponent
         Dimension oldSize = getSize();
         super.setBounds(x, y, w, h);
         if (oldSize.width != w || oldSize.height != h) {
+            validate();
             return;
         }
 

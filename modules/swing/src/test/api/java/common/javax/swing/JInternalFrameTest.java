@@ -47,6 +47,7 @@ import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
+@SuppressWarnings("serial")
 public class JInternalFrameTest extends SwingTestCase {
     /*
      * This class is used to test that some methods were called.
@@ -56,11 +57,13 @@ public class JInternalFrameTest extends SwingTestCase {
         public static boolean setRootPaneCalled = false;
         public static boolean disposeCalled = false;
 
+        @Override
         public JRootPane createRootPane() {
             createRootPaneCalled = true;
             return super.createRootPane();
         }
 
+        @Override
         public void setRootPane(final JRootPane root) {
             setRootPaneCalled = true;
             super.setRootPane(root);
@@ -72,6 +75,7 @@ public class JInternalFrameTest extends SwingTestCase {
             disposeCalled = false;
         }
 
+        @Override
         public void dispose() {
             disposeCalled = true;
             super.dispose();
@@ -177,6 +181,7 @@ public class JInternalFrameTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JInternalFrame();
@@ -186,6 +191,7 @@ public class JInternalFrameTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         if (rootFrame != null) {
             rootFrame.dispose();
@@ -1690,5 +1696,30 @@ public class JInternalFrameTest extends SwingTestCase {
             assertFalse("INTERNAL_FRAME_CLOSED was not fired",
                         l.closedFired());
         }
+    }
+
+    public void testSetBounds() throws Exception {
+        // Regression for HARMONY-1801
+        final Marker validateMarker = new Marker();
+        final Marker revalidateMarker = new Marker();
+        final JComponent frame = new JInternalFrame() {
+            @Override
+            public void validate() {
+                validateMarker.setOccurred();
+                super.validate();
+            }
+            
+            @Override
+            public void revalidate() {
+                revalidateMarker.setOccurred();
+                super.revalidate();
+            }
+        };
+        validateMarker.reset();
+        revalidateMarker.reset();
+
+        frame.setBounds(0, 0, 50, 500);
+        assertFalse(revalidateMarker.isOccurred());
+        assertTrue(validateMarker.isOccurred());
     }
 }

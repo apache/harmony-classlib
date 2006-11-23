@@ -638,6 +638,7 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
             tabPane.doLayout();
 
             scrollToShowTab(tabPane.getSelectedIndex());
+            tabPane.revalidate();
             tabPane.repaint();
         }
     }
