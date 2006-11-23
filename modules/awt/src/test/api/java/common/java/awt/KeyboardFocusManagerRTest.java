@@ -32,12 +32,7 @@ public class KeyboardFocusManagerRTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        robot = null;
-        try {
-            robot = new Robot();
-        } catch (AWTException e) {
-            fail();
-        }
+        robot = new Robot();
         f = new Frame();
         kfm = new DefaultKeyboardFocusManager();
     }
@@ -50,7 +45,6 @@ public class KeyboardFocusManagerRTest extends TestCase {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public final void testRedispatchEvent() {
         Component c1 = new Component(){};
         Component c2 = new Component(){};
@@ -63,7 +57,7 @@ public class KeyboardFocusManagerRTest extends TestCase {
         p.add(c2);
         f.add(p);
         f.setSize(100, 100);
-        f.show();
+        f.setVisible(true);
         waitFocus(c1);
         kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         assertSame(c1, kfm.getFocusOwner());
@@ -71,7 +65,10 @@ public class KeyboardFocusManagerRTest extends TestCase {
                                    KeyEvent.VK_TAB,
                                    KeyEvent.CHAR_UNDEFINED);
         kfm.redispatchEvent(c1, ke);
-        robot.delay(200);
+        int timeout = 10;
+        while (timeout-- > 0 && c2 != kfm.getFocusOwner()) {
+            robot.delay(200);
+        }
         assertSame(c2, kfm.getFocusOwner());
     }
 
