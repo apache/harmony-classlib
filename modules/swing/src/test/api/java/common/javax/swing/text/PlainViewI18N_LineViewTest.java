@@ -23,6 +23,7 @@ package javax.swing.text;
 
 import java.awt.Container;
 import java.awt.FontMetrics;
+import java.awt.Rectangle;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingTestCase;
@@ -44,6 +45,7 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
             textArea = new JTextArea(doc);
         }
 
+        @Override
         public Container getContainer() {
             return textArea;
         }
@@ -219,6 +221,20 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         checkChild(view.getView(2), offset, offset + RTLLength + 1); // +newLine
     }
 
+    public void testIsAfter() throws Exception {
+        // Regression for HARMONY-2212
+        if (!isHarmony()) {
+            return;
+        }
+
+        view = parent.new LineView(root.getElement(0));
+        view.loadChildren(null);
+        assertEquals(1, view.getViewCount());
+
+        assertFalse(view.isAfter(31, 10, new Rectangle(30, 5, 5, 10)));
+    }
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

@@ -50,6 +50,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             super(element, start, end);
         }
 
+        @Override
         public Shape modelToView(final int pos, final Shape shape,
                                  final Bias bias)
             throws BadLocationException {
@@ -74,6 +75,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                     1, paintParams.metrics.getHeight());
         }
 
+        @Override
         public int viewToModel(final float x, final float y,
                                final Shape shape, final Bias[] biasReturn) {
             biasReturn[0] = Position.Bias.Forward;
@@ -152,6 +154,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             super(element, start, end);
         }
 
+        @Override
         public Shape modelToView(final int pos, final Shape shape,
                                  final Bias bias) throws BadLocationException {
             final int start = getStartOffset();
@@ -172,6 +175,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                     1, paintParams.metrics.getHeight());
         }
 
+        @Override
         public int viewToModel(final float x, final float y,
                                final Shape shape, final Bias[] biasReturn) {
             biasReturn[0] = Position.Bias.Forward;
@@ -215,14 +219,17 @@ class PlainViewI18N extends BoxView implements TabExpander {
             } catch (BadLocationException e) { }
         }
 
+        @Override
         public int getEndOffset() {
             return end.getOffset();
         }
 
+        @Override
         public int getStartOffset() {
             return start.getOffset();
         }
 
+        @Override
         public float getAlignment(final int axis) {
             return ALIGN_LEFT;
         }
@@ -241,6 +248,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             return paintParams.buffer;
         }
 
+        @Override
         public float getPreferredSpan(final int axis) {
             if (axis == Y_AXIS) {
                 return paintParams.metrics.getHeight();
@@ -256,6 +264,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             return cachedWidth;
         }
 
+        @Override
         public void paint(final Graphics g, final Shape shape) {
             Rectangle bounds = shape.getBounds();
 
@@ -266,6 +275,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                      - paintParams.metrics.getDescent());
         }
 
+        @Override
         protected int drawSelectedText(final Graphics g,
                                        final int x, final int y,
                                        final int start, final int end)
@@ -275,6 +285,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                             x, y, start, end);
         }
 
+        @Override
         protected int drawUnselectedText(final Graphics g,
                                          final int x, final int y,
                                          final int start, final int end)
@@ -284,6 +295,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                             x, y, start, end);
         }
 
+        @Override
         public void preferenceChanged(final View child,
                                       final boolean width,
                                       final boolean height) {
@@ -293,12 +305,14 @@ class PlainViewI18N extends BoxView implements TabExpander {
             super.preferenceChanged(child, width, height);
         }
 
+        @Override
         public void insertUpdate(final DocumentEvent event,
                                  final Shape shape,
                                  final ViewFactory factory) {
             preferenceChanged(this, true, false);
         }
 
+        @Override
         public void removeUpdate(final DocumentEvent event,
                                  final Shape shape,
                                  final ViewFactory factory) {
@@ -314,10 +328,12 @@ class PlainViewI18N extends BoxView implements TabExpander {
             super(element, X_AXIS);
         }
 
+        @Override
         public float getAlignment(final int axis) {
             return ALIGN_LEFT;
         }
 
+        @Override
         public void paint(final Graphics g, final Shape shape) {
             TextKit textKit = getTextKit();
 
@@ -330,12 +346,14 @@ class PlainViewI18N extends BoxView implements TabExpander {
             super.paint(g, shape);
         }
 
+        @Override
         protected boolean updateChildren(final ElementChange change,
                                          final DocumentEvent event,
                                          final ViewFactory factory) {
             return false;
         }
 
+        @Override
         protected SizeRequirements
             calculateMinorAxisRequirements(final int axis,
                                            final SizeRequirements r) {
@@ -348,6 +366,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
 
         int accumulatedWidth;
 
+        @Override
         protected SizeRequirements
             calculateMajorAxisRequirements(final int axis,
                                            final SizeRequirements r) {
@@ -355,13 +374,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             return super.calculateMajorAxisRequirements(axis, r);
         }
 
-        protected boolean isAfter(final int x, final int y,
-                                  final Rectangle innerAlloc) {
-            final int lastIndex = getViewCount() - 1;
-            return x > getOffset(X_AXIS, lastIndex)
-                       + getSpan(X_AXIS, lastIndex);
-        }
-
+        @Override
         protected void loadChildren(final ViewFactory factory) {
             updateChildren();
         }
@@ -384,12 +397,14 @@ class PlainViewI18N extends BoxView implements TabExpander {
             }
         }
 
+        @Override
         public void insertUpdate(final DocumentEvent event,
                                  final Shape shape,
                                  final ViewFactory factory) {
             updateView(event, shape);
         }
 
+        @Override
         public void removeUpdate(final DocumentEvent event,
                                  final Shape shape,
                                  final ViewFactory factory) {
@@ -404,7 +419,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             Element bidiRoot = doc.getBidiRootElement();
             final int startIndex = bidiRoot.getElementIndex(startOffset);
             final int endIndex   = bidiRoot.getElementIndex(endOffset);
-            List views = new ArrayList();
+            List<View> views = new ArrayList<View>();
             for (int i = startIndex; i <= endIndex
                                      && startOffset < endOffset; i++) {
                 Element bidi = bidiRoot.getElement(i);
@@ -422,8 +437,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
                 startOffset = child.getEndOffset();
                 views.add(child);
             }
-            replace(0, getViewCount(),
-                    (View[])views.toArray(new View[views.size()]));
+            replace(0, getViewCount(), views.toArray(new View[views.size()]));
         }
     }
 
@@ -439,15 +453,18 @@ class PlainViewI18N extends BoxView implements TabExpander {
         super(element, Y_AXIS);
     }
 
+    @Override
     public ViewFactory getViewFactory() {
         return lineFactory;
     }
 
+    @Override
     public void paint(final Graphics g, final Shape shape) {
         paintParams.updateFields();
         super.paint(g, shape);
     }
 
+    @Override
     public void setSize(final float width, final float height) {
         paintParams.conditionalUpdateMetrics();
         super.setSize(width, height);
@@ -462,21 +479,25 @@ class PlainViewI18N extends BoxView implements TabExpander {
         return paintParams.nextTabStop(x);
     }
 
+    @Override
     public float getMaximumSpan(final int axis) {
         paintParams.conditionalUpdateMetrics();
         return super.getMaximumSpan(axis);
     }
 
+    @Override
     public float getMinimumSpan(final int axis) {
         paintParams.conditionalUpdateMetrics();
         return super.getMinimumSpan(axis);
     }
 
+    @Override
     public float getPreferredSpan(final int axis) {
         paintParams.conditionalUpdateMetrics();
         return super.getPreferredSpan(axis);
     }
 
+    @Override
     public void insertUpdate(final DocumentEvent event,
                              final Shape shape,
                              final ViewFactory factory) {
@@ -484,6 +505,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
     }
 
 
+    @Override
     public void removeUpdate(final DocumentEvent event,
                              final Shape shape,
                              final ViewFactory factory) {

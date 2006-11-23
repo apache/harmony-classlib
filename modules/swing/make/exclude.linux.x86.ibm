@@ -25,9 +25,7 @@ javax/swing/text/GapContent_InternalTest.java
 javax/swing/text/InternationalFormatterTest.java
 javax/swing/text/ParagraphViewTest.java
 javax/swing/text/PlainViewI18N_LayoutTest.java
-javax/swing/text/PlainViewI18N_LineViewTest.java
 javax/swing/text/PlainViewI18N_LineView_UpdateTest.java
-javax/swing/text/PlainViewI18N_VisualPositionTest.java
 javax/swing/text/StringContentTest.java
 javax/swing/text/StringContentTest_CommonTests.java
 javax/swing/text/StyleConstantsTest.java
