@@ -162,6 +162,7 @@
             </classpath>
             <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
+            <classpath location="${hy.regex.src.test.resources}" />
 
             <formatter type="xml" />
 
