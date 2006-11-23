@@ -24,13 +24,13 @@ import java.awt.*;
 
 public abstract class IIOParam {
     protected Rectangle sourceRegion;
-    protected int sourceXSubsampling;
-    protected int sourceYSubsampling;
+    protected int sourceXSubsampling = 1;
+    protected int sourceYSubsampling = 1;
     protected int subsamplingXOffset;
     protected int subsamplingYOffset;
     protected int[] sourceBands;
     protected ImageTypeSpecifier destinationType;
-    protected Point destinationOffset;
+    protected Point destinationOffset = new Point(0, 0);
     protected IIOParamController defaultController;
     protected IIOParamController controller;
 
@@ -66,6 +66,9 @@ public abstract class IIOParam {
     }
 
     public Rectangle getSourceRegion() {
+        if (sourceRegion == null) {
+            return null;
+        }
         //-- clone it to avoid unexpected modifications
         return (Rectangle) sourceRegion.clone();
     }
@@ -141,13 +144,15 @@ public abstract class IIOParam {
     }
 
     public void setDestinationOffset(Point destinationOffset) {
-        // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        if (destinationOffset == null) {
+            throw new IllegalArgumentException("destinationOffset == null!");
+        }
+        
+        this.destinationOffset = (Point) destinationOffset.clone();
     }
 
     public Point getDestinationOffset() {
-        // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        return (Point) destinationOffset.clone();        
     }
 
     public void setController(IIOParamController controller) {

@@ -27,8 +27,8 @@ package org.apache.harmony.x.imageio.plugins.jpeg;
 public class JPEGSpiConsts {
     private JPEGSpiConsts() {}
 
-    static final String vendorName = "Intel Corporation";
-    static final String version = "0.1 beta";
+    public static final String vendorName = "Intel Corporation";
+    public static final String version = "0.1 beta";
 
     static final String readerClassName = "org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageReader";
     static final String writerClassName = "org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageWriter";

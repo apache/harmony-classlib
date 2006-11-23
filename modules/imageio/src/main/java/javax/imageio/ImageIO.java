@@ -92,6 +92,7 @@ public final class ImageIO {
         while (it.hasNext()) {
             ImageOutputStreamSpi spi = it.next();
             if (spi.getOutputClass().isInstance(output)) {
+                // todo - use getUseCache and getCacheDir here
                 return spi.createOutputStreamInstance(output);
             }
         }
@@ -203,24 +204,58 @@ public final class ImageIO {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public static BufferedImage read(File input)
-            throws IOException {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static BufferedImage read(File input) throws IOException {
+        if (input == null) {
+            throw new IllegalArgumentException("input == null!");
+        }
+
+        ImageInputStream stream = createImageInputStream(input);
+        return read(stream);
     }
 
-    public static BufferedImage read(InputStream input)
-            throws IOException {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static BufferedImage read(InputStream input) throws IOException {
+        if (input == null) {
+            throw new IllegalArgumentException("input == null!");
+        }
+
+        ImageInputStream stream = createImageInputStream(input);
+        return read(stream);
     }
 
-    public static BufferedImage read(URL input)
-            throws IOException {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static BufferedImage read(URL input) throws IOException {
+        if (input == null) {
+            throw new IllegalArgumentException("input == null!");
+        }
+
+        InputStream stream = input.openStream();
+        BufferedImage res = read(stream);
+        stream.close();
+        
+        return res;
     }
 
-    public static BufferedImage read(ImageInputStream stream)
-            throws IOException {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static BufferedImage read(ImageInputStream stream) throws IOException {
+        if (stream == null) {
+            throw new IllegalArgumentException("stream == null!");
+        }
+
+        Iterator<ImageReader> imageReaders = getImageReaders(stream);
+        if (!imageReaders.hasNext()) {
+            return null;
+        }
+
+        ImageReader reader = imageReaders.next();
+        reader.setInput(stream, false, true);
+        BufferedImage res = reader.read(0);
+        reader.dispose();
+
+        try {
+            stream.close();
+        } catch (IOException e) {
+            // Stream could be already closed, proceed silently in this case
+        }
+        
+        return res;
     }
 
     public static boolean write(RenderedImage im,

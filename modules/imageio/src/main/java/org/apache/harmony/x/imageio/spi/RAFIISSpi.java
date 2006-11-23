@@ -22,7 +22,7 @@ package org.apache.harmony.x.imageio.spi;
 
 import javax.imageio.spi.ImageInputStreamSpi;
 import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.FileImageInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -41,7 +41,7 @@ public class RAFIISSpi extends ImageInputStreamSpi {
     public ImageInputStream createInputStreamInstance(Object input, boolean useCache,
             File cacheDir) throws IOException {
         if (RandomAccessFile.class.isInstance(input)) {
-            return new FileImageOutputStream((RandomAccessFile) input);
+            return new FileImageInputStream((RandomAccessFile) input);
         }
         throw new IllegalArgumentException(
                 "input is not an instance of java.io.RandomAccessFile");
