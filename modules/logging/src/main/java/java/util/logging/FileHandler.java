@@ -423,7 +423,7 @@ public class FileHandler extends StreamHandler {
         if("".equals(pattern)){ //$NON-NLS-1$
             throw new IllegalArgumentException();
         }
-        init(pattern, null, new Integer(DEFAULT_LIMIT), new Integer(
+        init(pattern, null, Integer.valueOf(DEFAULT_LIMIT), Integer.valueOf(
                 DEFAULT_COUNT));
     }
 
@@ -455,8 +455,8 @@ public class FileHandler extends StreamHandler {
             // logging.19=Pattern cannot be empty
             throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
         }        
-        init(pattern, Boolean.valueOf(append), new Integer(DEFAULT_LIMIT),
-                new Integer(DEFAULT_COUNT));
+        init(pattern, Boolean.valueOf(append), Integer.valueOf(DEFAULT_LIMIT),
+                Integer.valueOf(DEFAULT_COUNT));
     }
 
     /**
@@ -496,7 +496,7 @@ public class FileHandler extends StreamHandler {
             // logging.1B=The limit and count property must be larger than 0 and 1, respectively
             throw new IllegalArgumentException(Messages.getString("logging.1B")); //$NON-NLS-1$
         }
-        init(pattern, null, new Integer(limit), new Integer(count));
+        init(pattern, null, Integer.valueOf(limit), Integer.valueOf(count));
     }
 
     /**
@@ -541,7 +541,7 @@ public class FileHandler extends StreamHandler {
             // logging.1B=The limit and count property must be larger than 0 and 1, respectively
             throw new IllegalArgumentException(Messages.getString("logging.1B")); //$NON-NLS-1$
         }
-        init(pattern, Boolean.valueOf(append), new Integer(limit), new Integer(
+        init(pattern, Boolean.valueOf(append), Integer.valueOf(limit), Integer.valueOf(
                 count));
     }
 
@@ -599,7 +599,7 @@ public class FileHandler extends StreamHandler {
      * This output stream use decorator pattern to add measure feature to OutputStream
      * which can detect the total size(in bytes) of output, the initial size can be set
      */
-    class MeasureOutputStream extends OutputStream {
+    static class MeasureOutputStream extends OutputStream {
 
         OutputStream wrapped;
 
