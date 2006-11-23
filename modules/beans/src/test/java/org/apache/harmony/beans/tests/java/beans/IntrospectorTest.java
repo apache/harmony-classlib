@@ -793,7 +793,7 @@ public class IntrospectorTest extends TestCase {
      * super get -> Integer
      */
     public void testIntrospection_4() throws IntrospectionException {
-        // XXX will fail on RI, see HARMONY-xxxx
+        // XXX will fail on RI, see HARMONY-2289
         Class<FakeFox301> beanClass = FakeFox301.class;
         BeanInfo info = Introspector.getBeanInfo(beanClass);
 
