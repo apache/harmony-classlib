@@ -96,7 +96,7 @@ public class Area implements Shape, Cloneable {
         return s == null ? false : s.contains(r);
     }
 
-    public boolean equals(Area obj) {
+    public boolean equals(Area obj) throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
@@ -127,11 +127,11 @@ public class Area implements Shape, Cloneable {
         return s == null ? new NullIterator() : s.getPathIterator(t, flatness);
     }
 
-    public void add(Area area) {
+    public void add(Area area) throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public void exclusiveOr(Area area) {
+    public void exclusiveOr(Area area) throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
@@ -172,27 +172,27 @@ public class Area implements Shape, Cloneable {
         }
     }
 
-    public void subtract(Area area) {
+    public void subtract(Area area) throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty() throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public boolean isPolygonal() {
+    public boolean isPolygonal() throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public boolean isRectangular() {
+    public boolean isRectangular() throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public boolean isSingular() {
+    public boolean isSingular() throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 
-    public void reset() {
+    public void reset() throws org.apache.harmony.luni.util.NotImplementedException {
         throw new RuntimeException("Not implemented"); //$NON-NLS-1$
     }
 

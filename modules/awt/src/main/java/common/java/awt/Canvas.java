@@ -74,7 +74,7 @@ public class Canvas extends Component implements Accessible {
         }
     }
 
-    public void createBufferStrategy(int a0) {
+    public void createBufferStrategy(int a0) throws org.apache.harmony.luni.util.NotImplementedException {
         toolkit.lockAWT();
         try {
         } finally {
@@ -86,7 +86,7 @@ public class Canvas extends Component implements Accessible {
         return;
     }
 
-    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException {
+    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException, org.apache.harmony.luni.util.NotImplementedException {
         toolkit.lockAWT();
         try {
         } finally {
@@ -103,7 +103,7 @@ public class Canvas extends Component implements Accessible {
         return super.getAccessibleContext();
     }
 
-    public BufferStrategy getBufferStrategy() {
+    public BufferStrategy getBufferStrategy() throws org.apache.harmony.luni.util.NotImplementedException {
         toolkit.lockAWT();
         try {
         } finally {

@@ -565,7 +565,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
         protected boolean validatedContents;
 
-        protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) {
+        protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) throws org.apache.harmony.luni.util.NotImplementedException {
             if (true) {
                 throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
             }

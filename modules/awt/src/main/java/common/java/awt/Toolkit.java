@@ -687,7 +687,7 @@ public abstract class Toolkit {
         };
     }
 
-    protected LightweightPeer createComponent(Component a0) {
+    protected LightweightPeer createComponent(Component a0) throws org.apache.harmony.luni.util.NotImplementedException {
         lockAWT();
         try {
         } finally {
@@ -787,7 +787,7 @@ public abstract class Toolkit {
         }
     }
 
-    public boolean getLockingKeyState(int a0) throws UnsupportedOperationException {
+    public boolean getLockingKeyState(int a0) throws UnsupportedOperationException, org.apache.harmony.luni.util.NotImplementedException {
         lockAWT();
         try {
         } finally {
@@ -819,7 +819,7 @@ public abstract class Toolkit {
         }
     }
 
-    public PrintJob getPrintJob(Frame a0, String a1, JobAttributes a2, PageAttributes a3) {
+    public PrintJob getPrintJob(Frame a0, String a1, JobAttributes a2, PageAttributes a3) throws org.apache.harmony.luni.util.NotImplementedException {
         lockAWT();
         try {
         } finally {
@@ -951,7 +951,7 @@ public abstract class Toolkit {
         }
     }
 
-    public void setLockingKeyState(int a0, boolean a1) throws UnsupportedOperationException {
+    public void setLockingKeyState(int a0, boolean a1) throws UnsupportedOperationException, org.apache.harmony.luni.util.NotImplementedException {
         lockAWT();
         try {
         } finally {

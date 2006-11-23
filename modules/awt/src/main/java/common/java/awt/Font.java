@@ -308,8 +308,7 @@ public class Font implements Serializable {
         return this.createGlyphVector(frc, chars);
     }
 
-    public GlyphVector createGlyphVector(FontRenderContext frc,
-            int[] glyphCodes) {
+    public GlyphVector createGlyphVector(FontRenderContext frc, int[] glyphCodes) throws org.apache.harmony.luni.util.NotImplementedException {
         // TODO : to find out, how to operate with glyphcodes
         if (true) {
             throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$

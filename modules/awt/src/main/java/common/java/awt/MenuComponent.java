@@ -438,7 +438,7 @@ public abstract class MenuComponent implements Serializable {
      * @deprecated
      */
     @Deprecated
-    public MenuComponentPeer getPeer() {
+    public MenuComponentPeer getPeer() throws org.apache.harmony.luni.util.NotImplementedException {
         toolkit.lockAWT();
         try {
         } finally {
