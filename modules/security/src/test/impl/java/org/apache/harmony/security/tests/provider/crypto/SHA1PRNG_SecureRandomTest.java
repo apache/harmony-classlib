@@ -30,8 +30,8 @@ import junit.framework.TestSuite;
  */
 public class SHA1PRNG_SecureRandomTest extends TestCase {
 
-    private static final int LENGTH = 100;               // constant defining loop limit
-    private static final int INCR   = 10;                // constant defining loop increment
+    private static final int LENGTH = 20;               // constant defining loop limit
+    private static final int INCR   = 2;                // constant defining loop increment
 
     private static final String algorithm = "SHA1PRNG";  // algorithm's name
     private static final String provider  = "Crypto";   // provider's name
@@ -207,14 +207,23 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
 
             myBytes1 = new byte[i];
             myBytes2 = new byte[i];
+
             sr1.nextBytes(myBytes1);
             sr2.nextBytes(myBytes2);
-
             for ( int j = 0; j < i; j++ ) {
                 flag &= myBytes1[j] == myBytes2[j];
             }
+
+            // check again to avoid intermittent failures
+            sr1.nextBytes(myBytes1);
+            sr2.nextBytes(myBytes2);
+            for ( int j = 0; j < i; j++ ) {
+                flag &= myBytes1[j] == myBytes2[j];
+            }
+
             if ( flag ) {
-                fail("unexpected: myBytes1[] == myBytes2[]  :: i=" + i);
+                // probability of false failure is 1.5*10^-5 per run
+                fail("TESTING RANDOM NUMBER GENERATOR QUALITY: IGNORE THIS FAILURE IF INTERMITTENT :: i=" + i);
             }
         }
     }
