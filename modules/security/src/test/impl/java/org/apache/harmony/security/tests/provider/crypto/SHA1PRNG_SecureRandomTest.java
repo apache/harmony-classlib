@@ -194,7 +194,6 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
         SecureRandom sr1;    // these are needed to test new SecureRandom objects in loop
         SecureRandom sr2;    //
 
-        byte[] myBytes;
         byte[] myBytes1;
         byte[] myBytes2;
 
@@ -222,7 +221,7 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
             }
 
             if ( flag ) {
-                // probability of false failure is 1.5*10^-5 per run
+                // probability of false failure is 1.5*10^-5 per run for i=1 or less for i > 1
                 fail("TESTING RANDOM NUMBER GENERATOR QUALITY: IGNORE THIS FAILURE IF INTERMITTENT :: i=" + i);
             }
         }
@@ -265,14 +264,23 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
 
             myBytes1 = new byte[i];
             myBytes2 = new byte[i];
+
             sr1.nextBytes(myBytes1);
             sr2.nextBytes(myBytes2);
-
             for ( int j = 0; j < i; j++ ) {
                 flag &= myBytes1[j] == myBytes2[j];
             }
+
+            // check again to avoid intermittent failures
+            sr1.nextBytes(myBytes1);
+            sr2.nextBytes(myBytes2);
+            for ( int j = 0; j < i; j++ ) {
+                flag &= myBytes1[j] == myBytes2[j];
+            }
+
             if ( flag ) {
-                fail("unexpected: myBytes1[] == myBytes2[]  :: i=" + i);
+                // probability of false failure is 1.5*10^-5 per run for i=1 or less for i > 1
+                fail("TESTING RANDOM NUMBER GENERATOR QUALITY: IGNORE THIS FAILURE IF INTERMITTENT :: i=" + i);
             }
         }
 
