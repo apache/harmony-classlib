@@ -141,6 +141,14 @@ public class GeneralizedTimeTest extends TestCase {
         assertEquals(old_date, new_date);
     }
     
+    public void test_EncodeMilliseconds() throws IOException{
+        //cRegression for HARMONY-2302
+        long old_date = 1164358741071L;
+        long new_date = ((Date) gtime.decode(gtime.encode(new Date(old_date))))
+                .getTime();
+        assertEquals(old_date, new_date);
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(GeneralizedTimeTest.class);
     }

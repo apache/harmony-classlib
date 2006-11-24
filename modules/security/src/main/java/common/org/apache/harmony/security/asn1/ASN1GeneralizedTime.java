@@ -96,7 +96,7 @@ public class ASN1GeneralizedTime extends ASN1Time {
     // four digit year, seconds always presented
     // and fractional-secons elements without
     // trailing 0's (must be cut later from content)
-    private final static String GEN_PATTERN = "yyyyMMddHHmmss.S"; //$NON-NLS-1$
+    private final static String GEN_PATTERN = "yyyyMMddHHmmss.SSS"; //$NON-NLS-1$
 
     public void setEncodingContent(BerOutputStream out) {
 
