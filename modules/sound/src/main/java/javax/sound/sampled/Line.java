@@ -17,6 +17,8 @@
 
 package javax.sound.sampled;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public interface Line {
 
     class Info {
@@ -30,13 +32,13 @@ public interface Line {
             return lineClass;
         }
 
-        public boolean matches(Line.Info info) {
-            throw new Error("not yet implemented");
+        public boolean matches(Line.Info info) throws NotImplementedException {
+            throw new NotImplementedException("not yet implemented");
         }
         
         @Override
-        public String toString() {
-            throw new Error("not yet implemented");
+        public String toString() throws NotImplementedException {
+            throw new NotImplementedException("not yet implemented");
         }
     }
 

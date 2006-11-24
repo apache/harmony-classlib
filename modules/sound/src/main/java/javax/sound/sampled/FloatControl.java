@@ -17,6 +17,8 @@
 
 package javax.sound.sampled;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public abstract class FloatControl extends Control {
 
     public static class Type extends Control.Type {
@@ -132,12 +134,12 @@ public abstract class FloatControl extends Control {
         return this.updatePeriod;
     }
 
-    public void shift(float from, float to, int microseconds) {
-        throw new Error("Not yet implemented");
+    public void shift(float from, float to, int microseconds) throws NotImplementedException {
+        throw new NotImplementedException("not yet implemented");
     }
 
-    public String toString() {
-        throw new Error("Not yet implemented");
+    public String toString() throws NotImplementedException {
+        throw new NotImplementedException("not yet implemented");
     }
 
 }

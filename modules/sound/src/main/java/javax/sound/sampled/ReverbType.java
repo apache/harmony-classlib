@@ -17,6 +17,8 @@
 
 package javax.sound.sampled;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public class ReverbType {
 
     protected ReverbType(String name, int earlyReflectionDelay,
@@ -66,15 +68,15 @@ public class ReverbType {
         return this.decayTime;
     }
 
-    public final boolean equals(Object obj) {
-        throw new Error("Not yet implemented");
+    public final boolean equals(Object obj) throws NotImplementedException {
+        throw new NotImplementedException("not yet implemented");
     }
 
-    public final int hashCode() {
-        throw new Error("Not yet implemented");
+    public final int hashCode() throws NotImplementedException {
+        throw new NotImplementedException("not yet implemented");
     }
 
-    public final String toString() {
-        throw new Error("Not yet implemented");
+    public final String toString() throws NotImplementedException {
+        throw new NotImplementedException("not yet implemented");
     }
 }
