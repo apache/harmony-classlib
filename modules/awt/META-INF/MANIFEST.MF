@@ -34,6 +34,7 @@ Import-Package: java.beans,
  javax.swing.event,
  javax.swing.text,
  org.apache.harmony.kernel.vm,
+ org.apache.harmony.luni.util,
  org.apache.harmony.misc,
  org.apache.harmony.misc.accessors
 Export-Package: java.awt,
