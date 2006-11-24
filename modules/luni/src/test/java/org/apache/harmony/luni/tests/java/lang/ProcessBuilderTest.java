@@ -108,6 +108,12 @@ public class ProcessBuilderTest extends TestCase {
         } catch (NullPointerException e) {
             // expected;
         }
+        try {
+            env.get(new Object());
+            fail("should throw ClassCastException.");
+        } catch (ClassCastException e) {
+            // expected;
+        }
     }
 
     public void testRedirectErrorStream() {

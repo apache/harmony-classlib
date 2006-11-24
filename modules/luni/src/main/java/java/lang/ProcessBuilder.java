@@ -217,9 +217,7 @@ public final class ProcessBuilder {
         return process;
     }
     
-    private class ProcessHashMap<K, V> extends HashMap<K, V> {
-
-        private static final long serialVersionUID = 1L;
+    private static class ProcessHashMap<K, V> extends HashMap<K, V> {
 
         public ProcessHashMap(Map<K, V> env) {
             super(env);
@@ -235,6 +233,9 @@ public final class ProcessBuilder {
         public V get(Object key) {
             if(key == null){
                 throw new NullPointerException();
+            }
+            if(!(key instanceof String)){
+                throw new ClassCastException(key.getClass().getName());
             }
             return super.get(key);
         }
