@@ -47,7 +47,7 @@ static void *VMCALL thread_malloc PROTOTYPE ((void *unused, U_32 size));
 static void NORETURN internal_exit PROTOTYPE ((void));
 static IDATA monitor_wait
 PROTOTYPE ((hythread_monitor_t monitor, I_64 millis, IDATA nanos,
-	    IDATA interruptable));
+            IDATA interruptable));
 static IDATA monitor_enter
 PROTOTYPE ((hythread_t self, hythread_monitor_t monitor));
 static UDATA init_monitor
@@ -60,8 +60,8 @@ static hytime_t getCurrentCycles PROTOTYPE ((void));
 static hythread_monitor_pool_t allocate_monitor_pool PROTOTYPE ((void));
 static IDATA create_thread
 PROTOTYPE ((hythread_t * handle, UDATA stacksize, UDATA priority,
-	    UDATA suspend, hythread_entrypoint_t entrypoint, void *entryarg,
-	    int globalIsLocked));
+            UDATA suspend, hythread_entrypoint_t entrypoint, void *entryarg,
+            int globalIsLocked));
 static void interrupt_thread
 PROTOTYPE ((hythread_t thread, UDATA interruptFlag));
 
@@ -94,18 +94,17 @@ hythread_t global_lock_owner = UNOWNED;
 
 #define HYTHREAD_MAX_TLS_KEYS (sizeof( ((HyThreadLibrary*)NULL)->tls_finalizers ) / sizeof( ((HyThreadLibrary*)NULL)->tls_finalizers[0] ))
 
-
 #define CDEV_CURRENT_FUNCTION hythread_init
 /**
- * Initialize a threading library.
+ * Initialize a Hy threading library.
  * 
  * @note This must only be called once.
  * 
  * If any OS threads were created before calling this function, they must be attached using
- * hythread_attach before accessing any thread library functions. 
+ * hythread_attach before accessing any Hy thread library functions. 
  * 
- * @param[in] lib pointer to the thread library to be initialized (non-NULL)
- * @return The thead library's initStatus will be set to 0 on success or 
+ * @param[in] lib pointer to the Hy thread library to be initialized (non-NULL)
+ * @return The Hy thread library's initStatus will be set to 0 on success or 
  * a negative value on failure.
  * 
  * @see hythread_attach, hythread_shutdown
@@ -146,7 +145,7 @@ hythread_init (hythread_library_t lib)
 
   lib->global_pool =
     pool_new (sizeof (HyThreadGlobal), 0, 0, 0, thread_malloc, thread_free,
-	      NULL);
+              NULL);
   if (lib->global_pool == NULL)
     goto init_cleanup7;
 
@@ -182,12 +181,10 @@ init_cleanup1:lib->initStatus = -1;
 hythread_t VMCALL
 hythread_self (void)
 {
-	return MACRO_SELF();
-
+  return MACRO_SELF ();
 }
+
 #undef CDEV_CURRENT_FUNCTION
-
-
 
 #define CDEV_CURRENT_FUNCTION hythread_create
 /**
@@ -213,11 +210,11 @@ hythread_self (void)
  */
 IDATA VMCALL
 hythread_create (hythread_t * handle, UDATA stacksize, UDATA priority,
-		 UDATA suspend, hythread_entrypoint_t entrypoint,
-		 void *entryarg)
+                 UDATA suspend, hythread_entrypoint_t entrypoint,
+                 void *entryarg)
 {
   return create_thread (handle, stacksize, priority, suspend, entrypoint,
-			entryarg, GLOBAL_NOT_LOCKED);
+                        entryarg, GLOBAL_NOT_LOCKED);
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -228,8 +225,8 @@ hythread_create (hythread_t * handle, UDATA stacksize, UDATA priority,
  */
 static IDATA
 create_thread (hythread_t * handle, UDATA stacksize, UDATA priority,
-	       UDATA suspend, hythread_entrypoint_t entrypoint,
-	       void *entryarg, int globalIsLocked)
+               UDATA suspend, hythread_entrypoint_t entrypoint,
+               void *entryarg, int globalIsLocked)
 {
   hythread_t thread;
   hythread_library_t lib = GLOBAL_DATA (default_library);
@@ -310,8 +307,8 @@ cleanup0:if (handle)
  * 
  * Create a new hythread_t to represent the existing OS thread.
  * Attaching a thread is required when a thread was created 
- * outside of the threading library wants to use any of the 
- * threading library functionality.
+ * outside of the Hy threading library wants to use any of the 
+ * Hy threading library functionality.
  *
  * If the OS thread is already attached, handle is set to point 
  * to the existing hythread_t.
@@ -334,9 +331,9 @@ hythread_attach (hythread_t * handle)
   if ((thread = MACRO_SELF ()) != NULL)
     {
       if (handle)
-	{
-	  *handle = thread;
-	}
+        {
+          *handle = thread;
+        }
       THREAD_LOCK (thread, thread, CALLER_ATTACH);
       thread->attachcount++;
       THREAD_UNLOCK (thread, thread);
@@ -367,8 +364,8 @@ hythread_attach (hythread_t * handle)
 #if defined(WIN32)
   {
     DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
-		     GetCurrentProcess (), &thread->handle, 0, TRUE,
-		     DUPLICATE_SAME_ACCESS);
+                     GetCurrentProcess (), &thread->handle, 0, TRUE,
+                     DUPLICATE_SAME_ACCESS);
   }
 #else
   thread->handle = THREAD_SELF ();
@@ -499,7 +496,7 @@ hythread_monitor_init (hythread_monitor_t * handle, UDATA flags)
   /* Initialize monitor with default locking policy */
   rc =
     hythread_monitor_init_policy (handle, flags, HYTHREAD_LOCKING_DEFAULT,
-				  HYTHREAD_LOCKING_NO_DATA);
+                                  HYTHREAD_LOCKING_NO_DATA);
   return rc;
 }
 
@@ -518,7 +515,7 @@ hythread_monitor_init (hythread_monitor_t * handle, UDATA flags)
  */
 IDATA VMCALL
 hythread_monitor_init_policy (hythread_monitor_t * handle, UDATA flags,
-			      IDATA policy, IDATA policyData)
+                              IDATA policy, IDATA policyData)
 {
   hythread_monitor_t monitor;
 
@@ -626,11 +623,11 @@ hythread_monitor_enter (hythread_monitor_t monitor)
       monitor->count++;
 
       if (IS_JLM_ENABLED (self))
-	{
-	  ASSERT (monitor->tracing);
-	  monitor->tracing->recursive_count++;
-	  monitor->tracing->enter_count++;
-	}
+        {
+          ASSERT (monitor->tracing);
+          monitor->tracing->recursive_count++;
+          monitor->tracing->enter_count++;
+        }                       /* if (IS_JLM_ENABLED(self)) */
 
       return 0;
     }
@@ -702,8 +699,7 @@ hythread_monitor_wait (hythread_monitor_t monitor)
  * If no threads are waiting, no action is taken.
  *
  * @param[in] monitor a monitor to be signaled
- * @return  0 once the monitor has been signaled<br>
- * HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not own the monitor
+ * @return  0 once the monitor has been signaled<br>HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not own the monitor
  * 
  * @see hythread_monitor_notify_all, hythread_monitor_enter, hythread_monitor_wait
  */
@@ -726,8 +722,7 @@ hythread_monitor_notify (hythread_monitor_t monitor)
  *
  *
  * @param[in] monitor a monitor to be signaled
- * @return  0 once the monitor has been signaled<br>
- * HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not own the monitor
+ * @return  0 once the monitor has been signaled<br>HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not own the monitor
  * 
  * @see hythread_monitor_notify, hythread_monitor_enter, hythread_monitor_wait
  */
@@ -771,6 +766,7 @@ hythread_tls_alloc (hythread_tls_key_t * handle)
  * @return 0 on success or negative value on failure
  *
  * @see hythread_tls_alloc, hythread_tls_set
+ *
  */
 IDATA VMCALL
 hythread_tls_free (hythread_tls_key_t key)
@@ -914,6 +910,7 @@ hythread_clear_interrupted (void)
   THREAD_UNLOCK (self, self);
 
   return (oldFlags & HYTHREAD_FLAG_INTERRUPTED) != 0;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -944,14 +941,14 @@ remove_from_queue (hythread_t volatile *queue, hythread_t thread)
   else
     {
       while ((next = queued->next) != NULL && next != thread)
-	{
-	  queued = next;
-	}
+        {
+          queued = next;
+        }
       if (next != NULL)
-	{
-	  queued->next = thread->next;
-	  thread->next = NULL;
-	}
+        {
+          queued->next = thread->next;
+          thread->next = NULL;
+        }
     }
 
   ASSERT (NULL == thread->next);
@@ -1035,7 +1032,7 @@ thread_wrapper (WRAPPER_ARG arg)
     {
       COND_WAIT (thread->condition, thread->mutex);
       if ((thread->flags & HYTHREAD_FLAG_SUSPENDED) == 0)
-	break;
+        break;
       COND_WAIT_LOOP ();
     }
   thread->flags |= HYTHREAD_FLAG_STARTED;
@@ -1053,8 +1050,8 @@ thread_wrapper (WRAPPER_ARG arg)
     jmp_buf jumpBuffer;
     if (0 == setjmp (jumpBuffer))
       {
-	thread->jumpBuffer = &jumpBuffer;
-	thread->entrypoint (thread->entryarg);
+        thread->jumpBuffer = &jumpBuffer;
+        thread->entrypoint (thread->entryarg);
       }
     thread->jumpBuffer = NULL;
   }
@@ -1080,6 +1077,7 @@ thread_wrapper (WRAPPER_ARG arg)
  * @return 0 once the monitor has been signalled<br>
  * HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not 
  * own the monitor
+ * 
  */
 static IDATA
 monitor_notify_one_or_all (hythread_monitor_t monitor, int notifyall)
@@ -1108,21 +1106,22 @@ monitor_notify_one_or_all (hythread_monitor_t monitor, int notifyall)
       next = queue->next;
       THREAD_LOCK (self, queue, CALLER_NOTIFY_ONE_OR_ALL);
       if (queue->flags & HYTHREAD_FLAG_WAITING)
-	{
-	  notify_thread (queue, SET_NOTIFIED_FLAG);
-	  someoneNotified = 1;
-	}
+        {
+          notify_thread (queue, SET_NOTIFIED_FLAG);
+          someoneNotified = 1;
+        }
       THREAD_UNLOCK (self, queue);
 
       if ((someoneNotified) && (!notifyall))
-	{
-	  break;
-	}
+        {
+          break;
+        }
     }
 
   MONITOR_UNLOCK (self, monitor);
 
   return 0;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1210,19 +1209,19 @@ hythread_sleep_interruptable (I_64 millis, IDATA nanos)
   {
     if (self->flags & HYTHREAD_FLAG_INTERRUPTED)
       {
-	self->flags &=
-	  ~(HYTHREAD_FLAG_INTERRUPTED | HYTHREAD_FLAG_SLEEPING |
-	    HYTHREAD_FLAG_INTERRUPTABLE | HYTHREAD_FLAG_TIMER_SET);
-	THREAD_UNLOCK (self, self);
-	return HYTHREAD_INTERRUPTED;
+        self->flags &=
+          ~(HYTHREAD_FLAG_INTERRUPTED | HYTHREAD_FLAG_SLEEPING |
+            HYTHREAD_FLAG_INTERRUPTABLE | HYTHREAD_FLAG_TIMER_SET);
+        THREAD_UNLOCK (self, self);
+        return HYTHREAD_INTERRUPTED;
       }
     if (self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED)
       {
-	self->flags &=
-	  ~(HYTHREAD_FLAG_PRIORITY_INTERRUPTED | HYTHREAD_FLAG_SLEEPING |
-	    HYTHREAD_FLAG_INTERRUPTABLE | HYTHREAD_FLAG_TIMER_SET);
-	THREAD_UNLOCK (self, self);
-	return HYTHREAD_PRIORITY_INTERRUPTED;
+        self->flags &=
+          ~(HYTHREAD_FLAG_PRIORITY_INTERRUPTED | HYTHREAD_FLAG_SLEEPING |
+            HYTHREAD_FLAG_INTERRUPTABLE | HYTHREAD_FLAG_TIMER_SET);
+        THREAD_UNLOCK (self, self);
+        return HYTHREAD_PRIORITY_INTERRUPTED;
       }
   }
   COND_WAIT_TIMED_LOOP ();
@@ -1343,6 +1342,8 @@ hythread_monitor_unlock (hythread_t self, hythread_monitor_t monitor)
  * @return NULL on failure, non-NULL on success
  *
  * @see hythread_monitor_init_with_name, hythread_monitor_destroy
+ *
+ * 
  */
 static hythread_monitor_t VMCALL
 hythread_monitor_acquire (hythread_t self, IDATA policy, IDATA policyData)
@@ -1361,14 +1362,14 @@ hythread_monitor_acquire (hythread_t self, IDATA policy, IDATA policyData)
     {
       hythread_monitor_pool_t last_pool = pool;
       while (last_pool->next != NULL)
-	last_pool = last_pool->next;
+        last_pool = last_pool->next;
       last_pool->next = allocate_monitor_pool ();
       if (last_pool->next == NULL)
-	{
-	  /* failed to grow monitor pool */
-	  GLOBAL_UNLOCK (self);
-	  return NULL;
-	}
+        {
+          /* failed to grow monitor pool */
+          GLOBAL_UNLOCK (self);
+          return NULL;
+        }
       entry = last_pool->next->next_free;
     }
 
@@ -1377,17 +1378,19 @@ hythread_monitor_acquire (hythread_t self, IDATA policy, IDATA policyData)
    */
   if (entry->flags == HYTHREAD_MONITOR_MUTEX_UNINITIALIZED)
     {
+
       rc = MUTEX_INIT (entry->mutex);
 
       if (!rc)
-	{
-	  /* failed to initialize mutex */
-	  ASSERT_DEBUG (0);
-	  GLOBAL_UNLOCK (self);
-	  return NULL;
-	}
+        {
+          /* failed to initialize mutex */
+          ASSERT_DEBUG (0);
+          GLOBAL_UNLOCK (self);
+          return NULL;
+        }
 
       entry->flags = 0;
+
     }
 
   pool->next_free = (hythread_monitor_t) entry->owner;
@@ -1434,6 +1437,7 @@ hythread_cancel (hythread_t thread)
   thread->flags |= HYTHREAD_FLAG_CANCELED;
 
   THREAD_UNLOCK (self, thread);
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1476,19 +1480,19 @@ hythread_detach (hythread_t thread)
   else
     {
       if (--thread->attachcount == 0)
-	{
-	  if (thread->flags & HYTHREAD_FLAG_ATTACHED)
-	    {
-	      /* this is an attached thread, and it is now fully
-	         detached.  Mark it dead so that it can be destroyed */
-	      thread->flags |= HYTHREAD_FLAG_DEAD;
-	      attached = destroy = 1;
-	    }
-	  else
-	    {
-	      destroy = thread->flags & HYTHREAD_FLAG_DEAD;
-	    }
-	}
+        {
+          if (thread->flags & HYTHREAD_FLAG_ATTACHED)
+            {
+              /* this is an attached thread, and it is now fully
+                 detached.  Mark it dead so that it can be destroyed */
+              thread->flags |= HYTHREAD_FLAG_DEAD;
+              attached = destroy = 1;
+            }
+          else
+            {
+              destroy = thread->flags & HYTHREAD_FLAG_DEAD;
+            }
+        }
     }
   THREAD_UNLOCK (self, thread);
 
@@ -1500,9 +1504,9 @@ hythread_detach (hythread_t thread)
 
       destroy_thread (thread, GLOBAL_NOT_LOCKED);
       if (attached)
-	{
-	  TLS_SET (library->self_ptr, NULL);
-	}
+        {
+          TLS_SET (library->self_ptr, NULL);
+        }
     }
 }
 
@@ -1538,10 +1542,10 @@ hythread_exit (hythread_monitor_t monitor)
   while ((monitor = hythread_monitor_walk (monitor)) != NULL)
     {
       if (monitor->owner == self)
-	{
-	  monitor->count = 1;	/* exit n-1 times */
-	  hythread_monitor_exit (monitor);
-	}
+        {
+          monitor->count = 1;   /* exit n-1 times */
+          hythread_monitor_exit (monitor);
+        }
     }
 
 #if defined(LINUX)
@@ -1557,6 +1561,7 @@ hythread_exit (hythread_monitor_t monitor)
 #endif
 
   internal_exit ();
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1641,7 +1646,7 @@ hythread_monitor_try_enter (hythread_monitor_t monitor)
 
 #define CDEV_CURRENT_FUNCTION hythread_shutdown
 /**
- * Shut down the threading library associated with the current thread.
+ * Shut down the Hy threading library associated with the current thread.
  * 
  * @return none
  * 
@@ -1661,6 +1666,7 @@ hythread_shutdown (void)
   TLS_DESTROY (lib->self_ptr);
   pool_kill (lib->thread_pool);
 #endif /* LINUX */
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1672,6 +1678,7 @@ hythread_shutdown (void)
  * @note assumes the threading library's thread pool is already initialized
  * @param[in] globalIsLocked indicates whether the threading library global mutex is already locked.
  * @return a new hythread_t on success, NULL on failure.
+ * 
  */
 static hythread_t
 allocate_thread (int globalIsLocked)
@@ -1728,6 +1735,7 @@ free_thread (hythread_t thread, int globalAlreadyLocked)
     {
       GLOBAL_UNLOCK_SIMPLE (lib);
     }
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1772,7 +1780,7 @@ thread_free (void *unused, void *ptr)
 
 #define CDEV_CURRENT_FUNCTION free_monitor_pools
 /*
- * Free the threading library's monitor pool.
+ * Free the Hy threading library's monitor pool.
  * 
  * This requires destroying each and every one of the 
  * monitors in the pool.
@@ -1794,15 +1802,16 @@ free_monitor_pools (void)
       hythread_monitor_pool_t next = pool->next;
       hythread_monitor_t entry = &pool->entries[0];
       for (i = 0; i < MONITOR_POOL_SIZE - 1; i++, entry++)
-	{
-	  if (entry->flags != HYTHREAD_MONITOR_MUTEX_UNINITIALIZED)
-	    {
-	      MUTEX_DESTROY (entry->mutex);
-	    }
-	}
+        {
+          if (entry->flags != HYTHREAD_MONITOR_MUTEX_UNINITIALIZED)
+            {
+              MUTEX_DESTROY (entry->mutex);
+            }
+        }
       free (pool);
       pool = next;
     }
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1851,6 +1860,7 @@ init_global_monitor (hythread_library_t lib)
 static void NORETURN
 internal_exit (void)
 {
+
   hythread_t self = MACRO_SELF ();
   hythread_library_t lib = self->library;
   int detached;
@@ -1880,8 +1890,8 @@ internal_exit (void)
 
   THREAD_UNLOCK (self, self);
 
-  /* We create the thread in the detached state, so the */
-  /* call to pthread_detach is not required. */
+  /* On z/OS we create the thread in the detached state, so the */
+  /* call to pthread_detach is not required.                     @dfa1 */
   THREAD_DETACH (self->handle);
 
   if (detached)
@@ -1893,6 +1903,7 @@ internal_exit (void)
   THREAD_EXIT ();
   ASSERT (0);
   /* UNREACHABLE */
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -1905,6 +1916,7 @@ internal_exit (void)
  * @param[in] queue head of the monitor's wait queue
  * @param[in] thread thread to be added
  * @return none
+ * 
  */
 static void
 enqueue_thread (hythread_t * queue, hythread_t thread)
@@ -1918,9 +1930,9 @@ enqueue_thread (hythread_t * queue, hythread_t thread)
   if (qthread != NULL)
     {
       while (qthread->next)
-	{
-	  qthread = qthread->next;
-	}
+        {
+          qthread = qthread->next;
+        }
       qthread->next = thread;
     }
   else
@@ -1950,10 +1962,11 @@ enqueue_thread (hythread_t * queue, hythread_t thread)
  * HYTHREAD_TIMED_OUT the timeout expired
  * 
  * @see hythread_monitor_wait, hythread_monitor_wait_interruptable, hythread_monitor_enter
+ * 
  */
 IDATA VMCALL
 hythread_monitor_wait_timed (hythread_monitor_t monitor, I_64 millis,
-			     IDATA nanos)
+                             IDATA nanos)
 {
   return monitor_wait (monitor, millis, nanos, WAIT_UNINTERRUPTABLE);
 }
@@ -1961,12 +1974,15 @@ hythread_monitor_wait_timed (hythread_monitor_t monitor, I_64 millis,
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_monitor_dump_trace
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_monitor_dump_all
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_dump_trace
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_global
@@ -1994,10 +2010,10 @@ hythread_global (char *name)
   while (global)
     {
       if (strcmp (global->name, name) == 0)
-	{
-	  MUTEX_EXIT (lib->global_mutex);
-	  return &global->data;
-	}
+        {
+          MUTEX_EXIT (lib->global_mutex);
+          return &global->data;
+        }
       global = global->next;
     }
 
@@ -2051,6 +2067,7 @@ hysem_init (hysem_t * sp, I_32 initValue)
       rc = SEM_INIT (s, 0, initValue);
     }
   return rc;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2059,7 +2076,7 @@ hysem_init (hysem_t * sp, I_32 initValue)
 /*
  * Destroy a semaphore.
  *
- * Returns the resources associated with a semaphore back to the threading library.
+ * Returns the resources associated with a semaphore back to the Hy threading library.
  * 
  * @param[in] s semaphore to be destroyed
  * @return  0 on success or negative value on failure
@@ -2078,6 +2095,7 @@ hysem_destroy (hysem_t s)
       SEM_FREE (s);
     }
   return rval;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2101,6 +2119,7 @@ hysem_post (hysem_t s)
       return SEM_POST (s);
     }
   return -1;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2115,6 +2134,7 @@ hysem_post (hysem_t s)
  * @deprecated Semaphores are no longer supported.
  *
  * @see hysem_init, hysem_destroy, hysem_wait
+ *
  */
 IDATA VMCALL
 hysem_wait (hysem_t s)
@@ -2122,20 +2142,22 @@ hysem_wait (hysem_t s)
   if (s)
     {
       while (SEM_WAIT (s) != 0)
-	{
-	  /* loop until success */
-	}
+        {
+          /* loop until success */
+        }
       return 0;
     }
   else
     {
       return -1;
     }
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION error
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION monitor_enter
@@ -2151,11 +2173,11 @@ hysem_wait (hysem_t s)
  * @return 0 on success<br>
  * HYTHREAD_PRIORITY_INTERRUPTED if the thread was priority 
  * interrupted while blocked
- * @todo Get JLM code out of here
  */
 static IDATA
 monitor_enter (hythread_t self, hythread_monitor_t monitor)
 {
+
   ASSERT (self);
   ASSERT (0 == self->monitor);
   ASSERT (monitor);
@@ -2163,11 +2185,13 @@ monitor_enter (hythread_t self, hythread_monitor_t monitor)
   ASSERT (FREE_TAG != monitor->count);
 
   return monitor_enter_three_tier (self, monitor);
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION monitor_enter_three_tier
+
 /*
  * Enter a three-tier monitor.
  * 
@@ -2176,8 +2200,8 @@ monitor_enter (hythread_t self, hythread_monitor_t monitor)
  * @param[in] self current thread
  * @param[in] monitor monitor to enter
  * @return 0 on success
- * @todo Get JLM code out of here
  */
+
 static IDATA
 monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
 {
@@ -2185,28 +2209,29 @@ monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
 
   while (1)
     {
+
       if (hythread_spinlock_acquire (self, monitor) == 0)
-	{
-	  monitor->owner = self;
-	  monitor->count = 1;
-	  ASSERT (monitor->spinlockState !=
-		  HYTHREAD_MONITOR_SPINLOCK_UNOWNED);
-	  break;
-	}
+        {
+          monitor->owner = self;
+          monitor->count = 1;
+          ASSERT (monitor->spinlockState !=
+                  HYTHREAD_MONITOR_SPINLOCK_UNOWNED);
+          break;
+        }
 
       MONITOR_LOCK (self, monitor, CALLER_MONITOR_ENTER_THREE_TIER1);
 
       if (HYTHREAD_MONITOR_SPINLOCK_UNOWNED ==
-	  hythread_spinlock_swapState (monitor,
-				       HYTHREAD_MONITOR_SPINLOCK_EXCEEDED))
-	{
-	  MONITOR_UNLOCK (self, monitor);
-	  monitor->owner = self;
-	  monitor->count = 1;
-	  ASSERT (monitor->spinlockState !=
-		  HYTHREAD_MONITOR_SPINLOCK_UNOWNED);
-	  break;
-	}
+          hythread_spinlock_swapState (monitor,
+                                       HYTHREAD_MONITOR_SPINLOCK_EXCEEDED))
+        {
+          MONITOR_UNLOCK (self, monitor);
+          monitor->owner = self;
+          monitor->count = 1;
+          ASSERT (monitor->spinlockState !=
+                  HYTHREAD_MONITOR_SPINLOCK_UNOWNED);
+          break;
+        }
 
       THREAD_LOCK (self, self, CALLER_MONITOR_ENTER_THREE_TIER2);
       self->flags |= (HYTHREAD_FLAG_BLOCKED);
@@ -2218,12 +2243,13 @@ monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
        * If so, record the info for JLM.
        */
       if (IS_JLM_ENABLED (self))
-	{
-	  if (firstTimeBlocking)
-	    {
-	      firstTimeBlocking = 0;
-	    }
-	}
+        {
+          if (firstTimeBlocking)
+            {
+              firstTimeBlocking = 0;
+
+            }
+        }
 
       enqueue_thread (&monitor->blocking, self);
       COND_WAIT (self->condition, monitor->mutex);
@@ -2232,6 +2258,7 @@ monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
       remove_from_queue (&monitor->blocking, self);
 
       MONITOR_UNLOCK (self, monitor);
+
     }
 
   /* We now own the monitor */
@@ -2254,9 +2281,10 @@ monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
     {
       monitor->tracing->enter_count++;
       if (0 == firstTimeBlocking)
-	{
-	  monitor->tracing->slow_count++;
-	}
+        {
+          monitor->tracing->slow_count++;
+
+        }
     }
 
   ASSERT (!(self->flags & HYTHREAD_FLAG_BLOCKED));
@@ -2285,6 +2313,7 @@ monitor_enter_three_tier (hythread_t self, hythread_monitor_t monitor)
 static IDATA
 monitor_exit (hythread_t self, hythread_monitor_t monitor)
 {
+
   ASSERT (monitor);
   ASSERT (self);
   ASSERT (0 == self->monitor);
@@ -2303,13 +2332,14 @@ monitor_exit (hythread_t self, hythread_monitor_t monitor)
       monitor->owner = NULL;
 
       if (HYTHREAD_MONITOR_SPINLOCK_EXCEEDED ==
-	  hythread_spinlock_swapState (monitor,
-				       HYTHREAD_MONITOR_SPINLOCK_UNOWNED))
-	{
-	  MONITOR_LOCK (self, monitor, CALLER_MONITOR_EXIT1);
-	  unblock_spinlock_threads (self, monitor);
-	  MONITOR_UNLOCK (self, monitor);
-	}
+          hythread_spinlock_swapState (monitor,
+                                       HYTHREAD_MONITOR_SPINLOCK_UNOWNED))
+        {
+          MONITOR_LOCK (self, monitor, CALLER_MONITOR_EXIT1);
+          unblock_spinlock_threads (self, monitor);
+          MONITOR_UNLOCK (self, monitor);
+        }
+
     }
 
   return 0;
@@ -2318,11 +2348,13 @@ monitor_exit (hythread_t self, hythread_monitor_t monitor)
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION unblock_spinlock_threads
+
 /*
  * Notify all threads blocked on the monitor's mutex, waiting
  * to be told that it's ok to try again to get the spinlock.
  * 
  * Assumes that the caller already owns the monitor's mutex.
+ *
  */
 static void
 unblock_spinlock_threads (hythread_t self, hythread_monitor_t monitor)
@@ -2344,6 +2376,7 @@ unblock_spinlock_threads (hythread_t self, hythread_monitor_t monitor)
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_reset_tracing
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_monitor_wait_interruptable
@@ -2358,13 +2391,13 @@ unblock_spinlock_threads (hythread_t self, hythread_monitor_t monitor)
  * @param[in] monitor a monitor to be waited on
  * @param[in] millis >=0
  * @param[in] nanos >=0
+ * @param[in] interruptable non-zero if the wait is to be interruptable
  *
  * @return   0 the monitor has been waited on, notified, and reobtained<br>
  * HYTHREAD_INVALID_ARGUMENT if millis or nanos is out of range (millis or nanos < 0, or nanos >= 1E6)<br>
  * HYTHREAD_ILLEGAL_MONITOR_STATE if the current thread does not own the monitor<br>
  * HYTHREAD_INTERRUPTED if the thread was interrupted while waiting<br>
- * HYTHREAD_PRIORITY_INTERRUPTED if the thread was priority interrupted while
- * waiting, or while re-obtaining the monitor<br>
+ * HYTHREAD_PRIORITY_INTERRUPTED if the thread was priority interrupted while waiting, or while re-obtaining the monitor<br>
  * HYTHREAD_TIMED_OUT if the timeout expired<br>
  * 
  * @see hythread_monitor_wait, hythread_monitor_wait_timed, hythread_monitor_enter
@@ -2372,7 +2405,7 @@ unblock_spinlock_threads (hythread_t self, hythread_monitor_t monitor)
  */
 IDATA VMCALL
 hythread_monitor_wait_interruptable (hythread_monitor_t monitor, I_64 millis,
-				     IDATA nanos)
+                                     IDATA nanos)
 {
   return monitor_wait (monitor, millis, nanos, WAIT_INTERRUPTABLE);
 }
@@ -2409,12 +2442,14 @@ hythread_monitor_num_waiting (hythread_monitor_t monitor)
   MONITOR_UNLOCK (self, monitor);
 
   return numWaiting;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION monitor_wait
 /*
+ * 
  * Wait on a monitor.
  * 
  * Release the monitor, wait for a signal (notification), then re-acquire the monitor.
@@ -2433,13 +2468,11 @@ hythread_monitor_num_waiting (hythread_monitor_t monitor)
  * @param[in] nanos >=0
  * @param[in] interruptable non-zero if the wait is to be interruptable
  *
- * @return HYTHREAD_INVALID_ARGUMENT       - if millis or nanos is out of range (millis or
- *                                           nanos < 0, or nanos >= 1E6)
+ * @return HYTHREAD_INVALID_ARGUMENT      - if millis or nanos is out of range (millis or nanos < 0, or nanos >= 1E6)
  *          HYTHREAD_ILLEGAL_MONITOR_STATE - the current thread does not own the monitor
  *          0                              - the monitor has been waited on, notified, and reobtained
  *          HYTHREAD_INTERRUPTED           - the thread was interrupted while waiting
- *          HYTHREAD_PRIORITY_INTERRUPTED  - if the thread was priority interrupted while waiting, or
- *                                           while re-obtaining the monitor
+ *          HYTHREAD_PRIORITY_INTERRUPTED  - if the thread was priority interrupted while waiting, or while re-obtaining the monitor
  *          HYTHREAD_TIMED_OUT             - the timeout expired
  * 
  * @see hythread_monitor_wait, hythread_monitor_wait_interruptable, hythread_monitor_enter
@@ -2447,7 +2480,7 @@ hythread_monitor_num_waiting (hythread_monitor_t monitor)
  */
 static IDATA
 monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
-	      IDATA interruptable)
+              IDATA interruptable)
 {
   hythread_t self = MACRO_SELF ();
   IDATA count = -1;
@@ -2510,7 +2543,7 @@ monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
   MONITOR_LOCK (self, monitor, CALLER_MONITOR_WAIT);
   if (HYTHREAD_MONITOR_SPINLOCK_EXCEEDED ==
       hythread_spinlock_swapState (monitor,
-				   HYTHREAD_MONITOR_SPINLOCK_UNOWNED))
+                                   HYTHREAD_MONITOR_SPINLOCK_UNOWNED))
     {
       unblock_spinlock_threads (self, monitor);
     }
@@ -2522,37 +2555,37 @@ monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
       IDATA boundedMillis = BOUNDED_I64_TO_IDATA (millis);
 
       COND_WAIT_IF_TIMEDOUT (self->condition, monitor->mutex, boundedMillis,
-			     nanos)
+                             nanos)
       {
 
-	THREAD_LOCK (self, self, CALLER_MONITOR_WAIT2);
-	interrupted = interruptable
-	  && ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
-	priorityinterrupted = interruptable
-	  && ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
-	notified = self->flags & HYTHREAD_FLAG_NOTIFIED;
-	if (!(interrupted || priorityinterrupted || notified))
-	  {
-	    timedOut = 1;
-	  }
-	break;
+        THREAD_LOCK (self, self, CALLER_MONITOR_WAIT2);
+        interrupted = interruptable
+          && ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
+        priorityinterrupted = interruptable
+          && ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
+        notified = self->flags & HYTHREAD_FLAG_NOTIFIED;
+        if (!(interrupted || priorityinterrupted || notified))
+          {
+            timedOut = 1;
+          }
+        break;
       }
       else
       {
 
-	THREAD_LOCK (self, self, CALLER_MONITOR_WAIT2);
-	interrupted = interruptable
-	  && ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
-	priorityinterrupted = interruptable
-	  && ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
-	notified = self->flags & HYTHREAD_FLAG_NOTIFIED;
-	if (interrupted || priorityinterrupted || notified)
-	  {
-	    break;
-	  }
-	/* must have been spurious */
-	ASSERT_DEBUG (0);
-	THREAD_UNLOCK (self, self);
+        THREAD_LOCK (self, self, CALLER_MONITOR_WAIT2);
+        interrupted = interruptable
+          && ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
+        priorityinterrupted = interruptable
+          && ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
+        notified = self->flags & HYTHREAD_FLAG_NOTIFIED;
+        if (interrupted || priorityinterrupted || notified)
+          {
+            break;
+          }
+        /* must have been spurious */
+        ASSERT_DEBUG (0);
+        THREAD_UNLOCK (self, self);
       }
       COND_WAIT_TIMED_LOOP ();
     }
@@ -2561,18 +2594,19 @@ monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
       /*
        * WAIT UNTIL NOTIFIED
        */
+
       COND_WAIT (self->condition, monitor->mutex);
 
       THREAD_LOCK (self, self, CALLER_MONITOR_WAIT2);
       interrupted = interruptable
-	&& ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
+        && ((self->flags & HYTHREAD_FLAG_INTERRUPTED) != 0);
       priorityinterrupted = interruptable
-	&& ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
+        && ((self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED) != 0);
       notified = self->flags & HYTHREAD_FLAG_NOTIFIED;
       if (interrupted || priorityinterrupted || notified)
-	{
-	  break;
-	}
+        {
+          break;
+        }
       /* must have been spurious */
       ASSERT_DEBUG (0);
       THREAD_UNLOCK (self, self);
@@ -2588,7 +2622,7 @@ monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
 
   /* at this point, this thread should already be locked */
   ASSERT (notified || interrupted || priorityinterrupted || timedOut);
-  ASSERT (!interrupted || interruptable);	/* if we were interrupted, then we'd better have been interruptable */
+  ASSERT (!interrupted || interruptable);       /* if we were interrupted, then we'd better have been interruptable */
 
   self->flags &=
     ~(HYTHREAD_FLAG_WAITING | HYTHREAD_FLAG_NOTIFIED |
@@ -2639,6 +2673,7 @@ monitor_wait (hythread_monitor_t monitor, I_64 millis, IDATA nanos,
     return HYTHREAD_TIMED_OUT;
   ASSERT (0);
   return 0;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2681,16 +2716,16 @@ interrupt_thread (hythread_t thread, UDATA interruptFlag)
   if (currFlags & HYTHREAD_FLAG_INTERRUPTABLE)
     {
       if (currFlags & (HYTHREAD_FLAG_SLEEPING | HYTHREAD_FLAG_PARKED))
-	{
-	  COND_NOTIFY_ALL (thread->condition);
-	}
+        {
+          COND_NOTIFY_ALL (thread->condition);
+        }
       else if (currFlags & HYTHREAD_FLAG_WAITING)
-	{
-	  if (interrupt_waiting_thread (self, thread))
-	    {
-	      newFlags |= HYTHREAD_FLAG_BLOCKED;
-	    }
-	}
+        {
+          if (interrupt_waiting_thread (self, thread))
+            {
+              newFlags |= HYTHREAD_FLAG_BLOCKED;
+            }
+        }
     }
 
   thread->flags = newFlags;
@@ -2714,6 +2749,7 @@ interrupt_thread (hythread_t thread, UDATA interruptFlag)
 static IDATA
 interrupt_waiting_thread (hythread_t self, hythread_t threadToInterrupt)
 {
+
   IDATA retVal = 0;
   hythread_monitor_t monitor;
 
@@ -2739,6 +2775,7 @@ interrupt_waiting_thread (hythread_t self, hythread_t threadToInterrupt)
     }
   else
 #endif
+
     {
       /*
        * spawn a thread to do it for us, because it's possible that
@@ -2746,10 +2783,11 @@ interrupt_waiting_thread (hythread_t self, hythread_t threadToInterrupt)
        * cause deadlock
        */
       create_thread (&threadToInterrupt->interrupter, 0,
-		     HYTHREAD_PRIORITY_NORMAL, 0, interruptServer,
-		     (void *) threadToInterrupt, GLOBAL_IS_LOCKED);
+                     HYTHREAD_PRIORITY_NORMAL, 0, interruptServer,
+                     (void *) threadToInterrupt, GLOBAL_IS_LOCKED);
     }
   return retVal;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2784,7 +2822,7 @@ interruptServer (void *entryArg)
   if (self->flags & HYTHREAD_FLAG_CANCELED)
     {
       GLOBAL_UNLOCK (self);
-      hythread_exit (NULL);	/* this should not return */
+      hythread_exit (NULL);     /* this should not return */
     }
 
   THREAD_LOCK (self, threadToInterrupt, CALLER_INTERRUPT_SERVER);
@@ -2793,7 +2831,7 @@ interruptServer (void *entryArg)
     {
       THREAD_UNLOCK (self, threadToInterrupt);
       GLOBAL_UNLOCK (self);
-      hythread_exit (NULL);	/* this should not return */
+      hythread_exit (NULL);     /* this should not return */
     }
 
   monitor = threadToInterrupt->monitor;
@@ -2814,7 +2852,7 @@ interruptServer (void *entryArg)
   if (self->flags & HYTHREAD_FLAG_CANCELED)
     {
       GLOBAL_UNLOCK (self);
-      hythread_exit (monitor);	/* this should not return */
+      hythread_exit (monitor);  /* this should not return */
       ASSERT (0);
     }
 
@@ -2853,7 +2891,7 @@ interruptServer (void *entryArg)
  */
 IDATA VMCALL
 hythread_monitor_exit_using_threadId (hythread_monitor_t monitor,
-				      hythread_t threadId)
+                                      hythread_t threadId)
 {
   ASSERT (threadId == MACRO_SELF ());
   ASSERT (monitor);
@@ -2866,6 +2904,7 @@ hythread_monitor_exit_using_threadId (hythread_monitor_t monitor,
     }
 
   return monitor_exit (threadId, monitor);
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -2880,13 +2919,14 @@ hythread_monitor_exit_using_threadId (hythread_monitor_t monitor,
  * @param[in] monitor a monitor to be entered
  * @param[in] threadId hythread_t for the current thread
  * @return 0 on success<br>
- * HYTHREAD_PRIORITY_INTERRUPTED if the thread was priority interrupted while blocked
+ * 				 HYTHREAD_PRIORITY_INTERRUPTED if the thread was priority interrupted while blocked
  * 
  * @see hythread_monitor_enter, hythread_monitor_exit, hythread_monitor_exit_using_threadId
+ *
  */
 IDATA VMCALL
 hythread_monitor_enter_using_threadId (hythread_monitor_t monitor,
-				       hythread_t threadId)
+                                       hythread_t threadId)
 {
   ASSERT (threadId != 0);
   ASSERT (threadId == MACRO_SELF ());
@@ -2899,11 +2939,11 @@ hythread_monitor_enter_using_threadId (hythread_monitor_t monitor,
       monitor->count++;
 
       if (IS_JLM_ENABLED (threadId))
-	{
-	  ASSERT (monitor->tracing);
-	  monitor->tracing->recursive_count++;
-	  monitor->tracing->enter_count++;
-	}
+        {
+          ASSERT (monitor->tracing);
+          monitor->tracing->recursive_count++;
+          monitor->tracing->enter_count++;
+        }                       /* if (IS_JLM_ENABLED(threadId)) */
 
       return 0;
     }
@@ -2927,11 +2967,13 @@ hythread_monitor_enter_using_threadId (hythread_monitor_t monitor,
  * @return  0 on success or negative value on failure
  *
  * @see hythread_monitor_try_enter
+ *
  */
 IDATA VMCALL
 hythread_monitor_try_enter_using_threadId (hythread_monitor_t monitor,
-					   hythread_t threadId)
+                                           hythread_t threadId)
 {
+
   ASSERT (threadId != 0);
   ASSERT (threadId == MACRO_SELF ());
   ASSERT (FREE_TAG != monitor->count);
@@ -2943,15 +2985,16 @@ hythread_monitor_try_enter_using_threadId (hythread_monitor_t monitor,
       monitor->count++;
 
       if (IS_JLM_ENABLED (threadId))
-	{
-	  monitor->tracing->recursive_count++;
-	  monitor->tracing->enter_count++;
-	}
+        {
+          monitor->tracing->recursive_count++;
+          monitor->tracing->enter_count++;
+        }                       /* if (IS_JLM_ENABLED(threadId)) */
 
       return 0;
     }
 
   if (hythread_spinlock_acquire (threadId, monitor) == 0)
+
     {
       ASSERT (NULL == monitor->owner);
       ASSERT (0 == monitor->count);
@@ -2960,10 +3003,10 @@ hythread_monitor_try_enter_using_threadId (hythread_monitor_t monitor,
       monitor->count = 1;
 
       if (IS_JLM_ENABLED (threadId))
-	{
-	  monitor->tracing->enter_count++;
+        {
+          monitor->tracing->enter_count++;
 
-	}
+        }                       /* if (IS_JLM_ENABLED(threadId)) */
 
       return 0;
     }
@@ -2974,6 +3017,7 @@ hythread_monitor_try_enter_using_threadId (hythread_monitor_t monitor,
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_probe
+
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION destroy_thread
@@ -2989,6 +3033,7 @@ hythread_monitor_try_enter_using_threadId (hythread_monitor_t monitor,
 static IDATA
 destroy_thread (hythread_t thread, int globalAlreadyLocked)
 {
+
   hythread_t self = MACRO_SELF ();
   hythread_library_t lib = self->library;
 
@@ -3021,6 +3066,7 @@ destroy_thread (hythread_t thread, int globalAlreadyLocked)
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_jlm_thread_init
+
 /*
  * Initialize and clear a thread's JLM tracing information. 
  * 
@@ -3029,7 +3075,6 @@ destroy_thread (hythread_t thread, int globalAlreadyLocked)
  * 
  * @param[in] thread thread to be initialized
  * @return none
- * @todo move to JLM file
  *
  */
 void VMCALL
@@ -3039,11 +3084,13 @@ hythread_jlm_thread_init (hythread_t thread)
 
   ASSERT (thread);
   ASSERT (library);
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_jlm_thread_clear
+
 /*
  * Clear (reset) a thread's JLM tracing structure.
  * 
@@ -3051,12 +3098,13 @@ hythread_jlm_thread_init (hythread_t thread)
  *
  * @param[in] thread thread to be initialized (non-NULL)
  * @return none
- * @todo move to JLM file
+ *
  */
 void VMCALL
 hythread_jlm_thread_clear (hythread_t thread)
 {
   ASSERT (thread);
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -3071,7 +3119,7 @@ hythread_jlm_thread_clear (hythread_t thread)
  * 
  * @param[in] monitor monitor to be initialized
  * @return none
- * @todo move to JLM file
+ *
  */
 void VMCALL
 hythread_jlm_monitor_init (hythread_monitor_t monitor)
@@ -3086,8 +3134,8 @@ hythread_jlm_monitor_init (hythread_monitor_t monitor)
   if (library->monitor_tracing_pool == NULL)
     {
       library->monitor_tracing_pool =
-	pool_new (sizeof (HyThreadMonitorTracing), 0, 0, 0, thread_malloc,
-		  thread_free, NULL);
+        pool_new (sizeof (HyThreadMonitorTracing), 0, 0, 0, thread_malloc,
+                  thread_free, NULL);
     }
 
   if (monitor->tracing == NULL)
@@ -3102,6 +3150,7 @@ hythread_jlm_monitor_init (hythread_monitor_t monitor)
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_jlm_monitor_clear
+
 /*
  * Clear (reset) a monitor's JLM tracing structure.
  * 
@@ -3109,8 +3158,6 @@ hythread_jlm_monitor_init (hythread_monitor_t monitor)
  *
  * @param[in] monitor a monitor to be initialized
  * @return none
- *
- * @todo move to JLM file
  */
 void VMCALL
 hythread_jlm_monitor_clear (hythread_monitor_t monitor)
@@ -3151,7 +3198,7 @@ init_monitor (hythread_monitor_t monitor, UDATA flags)
   monitor->blocking = NULL;
   monitor->spinlockState = HYTHREAD_MONITOR_SPINLOCK_UNOWNED;
   monitor->lockingWord = 0;
-  /* these numbers probably need to be tuned more (dynamically?) */
+  /* these numbers are taken from the GC spinlock. They probably need to be tuned more (dynamically?) */
   /* note that every spinCount must be > 0! */
 
   monitor->spinCount1 = 256;
@@ -3179,6 +3226,7 @@ getCurrentCycles (void)
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_lib_get_flags
+
 /** 
  * Get threading library global flags.
  * 
@@ -3204,6 +3252,7 @@ hythread_lib_get_flags ()
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_lib_set_flags
+
 /**
  * Set threading library global flags.
  * 
@@ -3212,6 +3261,7 @@ hythread_lib_get_flags ()
  * @param[in] flags flags to be set (bit vector: 1 means set the flag, 0 means ignore)
  * @return old flags values
  * @see hythread_lib_clear_flags, hythread_lib_get_flags
+ *
  */
 UDATA VMCALL
 hythread_lib_set_flags (UDATA flags)
@@ -3229,11 +3279,13 @@ hythread_lib_set_flags (UDATA flags)
   GLOBAL_UNLOCK (self);
 
   return oldFlags;
+
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_lib_clear_flags
+
 /** 
  * Clear specified threading library global flags.
  *
@@ -3273,10 +3325,11 @@ hythread_lib_clear_flags (UDATA flags)
  * @return  0 on success or negative value on failure
  * 
  * @see hythread_monitor_destroy
+ * 
  */
 IDATA VMCALL
 hythread_monitor_init_with_name (hythread_monitor_t * handle, UDATA flags,
-				 char *name)
+                                 char *name)
 {
   ASSERT (handle);
 
@@ -3292,13 +3345,13 @@ hythread_monitor_init_with_name (hythread_monitor_t * handle, UDATA flags,
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_jlm_gc_lock_init
+
 /*
  * Initialize pools and tracing structures for JLM tracing.
  * 
  * Can be called multiple times.
  * 
  * @return none
- * @todo move to JLM file
  */
 void VMCALL
 hythread_jlm_gc_lock_init ()
@@ -3313,15 +3366,15 @@ hythread_jlm_gc_lock_init ()
   if (library->monitor_tracing_pool == NULL)
     {
       library->monitor_tracing_pool =
-	pool_new (sizeof (HyThreadMonitorTracing), 0, 0, 0, thread_malloc,
-		  thread_free, NULL);
+        pool_new (sizeof (HyThreadMonitorTracing), 0, 0, 0, thread_malloc,
+                  thread_free, NULL);
     }
 
   /* If no GC lock tracing pool yet, create it */
   if (library->gc_lock_tracing == NULL)
     {
       library->gc_lock_tracing =
-	pool_newElement (library->monitor_tracing_pool);
+        pool_newElement (library->monitor_tracing_pool);
     }
 
   /* Init the tracing structure */
@@ -3331,11 +3384,11 @@ hythread_jlm_gc_lock_init ()
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hythread_jlm_get_gc_lock_tracing
+
 /*
  * Return tracing info.
  *
  * @return pointer to GC lock tracing structure. 0 of not yet initialized
- * @todo move to JLM file
  */
 HyThreadMonitorTracing *VMCALL
 hythread_jlm_get_gc_lock_tracing ()
@@ -3430,55 +3483,55 @@ hythread_park (I_64 millis, IDATA nanos)
       self->flags |= HYTHREAD_FLAG_PARKED | HYTHREAD_FLAG_INTERRUPTABLE;
 
       if (millis || nanos)
-	{
-	  IDATA boundedMillis = BOUNDED_I64_TO_IDATA (millis);
+        {
+          IDATA boundedMillis = BOUNDED_I64_TO_IDATA (millis);
 
-	  self->flags |= HYTHREAD_FLAG_TIMER_SET;
+          self->flags |= HYTHREAD_FLAG_TIMER_SET;
 
-	  COND_WAIT_IF_TIMEDOUT (self->condition, self->mutex, boundedMillis,
-				 nanos)
-	  {
-	    rc = HYTHREAD_TIMED_OUT;
-	    break;
-	  }
-	  else
-	if (self->flags & HYTHREAD_FLAG_UNPARKED)
-	  {
-	    self->flags &= ~HYTHREAD_FLAG_UNPARKED;
-	    break;
-	  }
-	else if (self->flags & HYTHREAD_FLAG_INTERRUPTED)
-	  {
-	    rc = HYTHREAD_INTERRUPTED;
-	    break;
-	  }
-	else if (self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED)
-	  {
-	    rc = HYTHREAD_PRIORITY_INTERRUPTED;
-	    break;
-	  }
-	  COND_WAIT_TIMED_LOOP ();
-	}
+          COND_WAIT_IF_TIMEDOUT (self->condition, self->mutex, boundedMillis,
+                                 nanos)
+          {
+            rc = HYTHREAD_TIMED_OUT;
+            break;
+          }
+          else
+        if (self->flags & HYTHREAD_FLAG_UNPARKED)
+          {
+            self->flags &= ~HYTHREAD_FLAG_UNPARKED;
+            break;
+          }
+        else if (self->flags & HYTHREAD_FLAG_INTERRUPTED)
+          {
+            rc = HYTHREAD_INTERRUPTED;
+            break;
+          }
+        else if (self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED)
+          {
+            rc = HYTHREAD_PRIORITY_INTERRUPTED;
+            break;
+          }
+          COND_WAIT_TIMED_LOOP ();
+        }
       else
-	{
-	  COND_WAIT (self->condition, self->mutex);
-	  if (self->flags & HYTHREAD_FLAG_UNPARKED)
-	    {
-	      self->flags &= ~HYTHREAD_FLAG_UNPARKED;
-	      break;
-	    }
-	  else if (self->flags & HYTHREAD_FLAG_INTERRUPTED)
-	    {
-	      rc = HYTHREAD_INTERRUPTED;
-	      break;
-	    }
-	  else if (self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED)
-	    {
-	      rc = HYTHREAD_PRIORITY_INTERRUPTED;
-	      break;
-	    }
-	  COND_WAIT_LOOP ();
-	}
+        {
+          COND_WAIT (self->condition, self->mutex);
+          if (self->flags & HYTHREAD_FLAG_UNPARKED)
+            {
+              self->flags &= ~HYTHREAD_FLAG_UNPARKED;
+              break;
+            }
+          else if (self->flags & HYTHREAD_FLAG_INTERRUPTED)
+            {
+              rc = HYTHREAD_INTERRUPTED;
+              break;
+            }
+          else if (self->flags & HYTHREAD_FLAG_PRIORITY_INTERRUPTED)
+            {
+              rc = HYTHREAD_PRIORITY_INTERRUPTED;
+              break;
+            }
+          COND_WAIT_LOOP ();
+        }
     }
 
   self->flags &=
@@ -3497,8 +3550,7 @@ hythread_park (I_64 millis, IDATA nanos)
  * 'Unpark' the specified thread. 
  * 
  * If the thread is parked, it will return from park.
- * If the thread is not parked, its 'UNPARKED' flag will be set, and it will return
- * immediately the next time it is parked.
+ * If the thread is not parked, its 'UNPARKED' flag will be set, and it will return immediately the next time it is parked.
  *
  * Note that unparks are not counted. Unparking a thread once is the same as unparking it n times.
  * 
@@ -3540,15 +3592,14 @@ hythread_unpark (hythread_t thread)
  * allocated yet.
  * 
  * @param[out] handle pointer to a key to be initialized with a key value
- * @param[in] finalizer a finalizer function which will be invoked when a thread is
- * detached or terminates if the thread's TLS entry for this key is non-NULL
+ * @param[in] a finalizer function which will be invoked when a thread is detached or terminates if the thread's TLS entry for this key is non-NULL
  * @return 0 on success or negative value if a key could not be allocated (i.e. all TLS has been allocated)
  * 
  * @see hythread_tls_free, hythread_tls_set
  */
 IDATA VMCALL
 hythread_tls_alloc_with_finalizer (hythread_tls_key_t * handle,
-				   hythread_tls_finalizer_t finalizer)
+                                   hythread_tls_finalizer_t finalizer)
 {
   IDATA index;
   hythread_library_t lib = GLOBAL_DATA (default_library);
@@ -3561,11 +3612,11 @@ hythread_tls_alloc_with_finalizer (hythread_tls_key_t * handle,
   for (index = 0; index < HYTHREAD_MAX_TLS_KEYS; index++)
     {
       if (lib->tls_finalizers[index] == NULL)
-	{
-	  *handle = index + 1;
-	  lib->tls_finalizers[index] = finalizer;
-	  break;
-	}
+        {
+          *handle = index + 1;
+          lib->tls_finalizers[index] = finalizer;
+          break;
+        }
     }
 
   MUTEX_EXIT (lib->tls_mutex);
@@ -3591,21 +3642,21 @@ tls_finalize (hythread_t thread)
   for (index = 0; index < HYTHREAD_MAX_TLS_KEYS; index++)
     {
       if (thread->tls[index] != NULL)
-	{
-	  void *value;
-	  hythread_tls_finalizer_t finalizer;
+        {
+          void *value;
+          hythread_tls_finalizer_t finalizer;
 
-	  /* read the value and finalizer together under mutex to be sure that they belong together */
-	  MUTEX_ENTER (lib->tls_mutex);
-	  value = thread->tls[index];
-	  finalizer = lib->tls_finalizers[index];
-	  MUTEX_EXIT (lib->tls_mutex);
+          /* read the value and finalizer together under mutex to be sure that they belong together */
+          MUTEX_ENTER (lib->tls_mutex);
+          value = thread->tls[index];
+          finalizer = lib->tls_finalizers[index];
+          MUTEX_EXIT (lib->tls_mutex);
 
-	  if (value)
-	    {
-	      finalizer (value);
-	    }
-	}
+          if (value)
+            {
+              finalizer (value);
+            }
+        }
     }
 }
 
@@ -3629,6 +3680,7 @@ tls_null_finalizer (void *entry)
 UDATA VMCALL
 hythread_current_stack_free(void)
 {
+#if defined(WIN32)
   MEMORY_BASIC_INFORMATION memInfo;
   SYSTEM_INFO sysInfo;
   UDATA stackFree;
@@ -3642,5 +3694,7 @@ hythread_current_stack_free(void)
 
   guardPageSize = 3 * (UDATA) sysInfo.dwPageSize;
   return (stackFree < guardPageSize) ? 0 : stackFree - guardPageSize;
+#else
+  return 0;
+#endif
 }
-#undef CDEV_CURRENT_FUNCTION

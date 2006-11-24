@@ -24,7 +24,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 BUILDFILES = \
-  $(SHAREDSUB)thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
+  $(SHAREDSUB)thread_copyright.obj thrhelp.obj thrspinlock.obj $(SHAREDSUB)hythread.obj \
   $(SHAREDSUB)hythreadinspect.obj $(SHAREDSUB)rwmutex.obj thrdsup.obj \
   $(SHAREDSUB)thrprof.obj
 

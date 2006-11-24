@@ -22,9 +22,9 @@ include $(HY_HDK)/build/make/makefile.include
 CFLAGS += -fpic
 
 BUILDFILES = \
-	$(SHAREDSUB)thread_copyright.o $(HY_ARCH)/thrhelp.o $(HY_ARCH)/thrspinlock.o hythread.o \
-	$(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o rasthrsup.o \
-	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
+	$(SHAREDSUB)thread_copyright.o $(HY_ARCH)/thrhelp.o $(HY_ARCH)/thrspinlock.o \
+	$(SHAREDSUB)hythread.o $(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o \
+	rasthrsup.o $(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
 
 SYSLIBFILES = -lpthread
 MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
