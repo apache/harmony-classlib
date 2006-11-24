@@ -138,12 +138,25 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     @Override
     public boolean equals(Object obj) {
         boolean result = super.equals(obj);
+        
         if (result) {
             IndexedPropertyDescriptor pd = (IndexedPropertyDescriptor) obj;
-            result = (this.indexedGetter.equals(pd.getIndexedReadMethod()))
-                    && (this.indexedSetter.equals(pd.getIndexedWriteMethod()));
-            return result;
+    
+            if (indexedGetter != null) {
+                result = indexedGetter.equals(pd.getIndexedReadMethod());
+            } else if (result && indexedGetter == null) {
+                result = pd.getIndexedReadMethod() == null;
+            }
+                
+            if (result) {
+                if (indexedSetter != null) {
+                    result = indexedSetter.equals(pd.getIndexedWriteMethod());
+                } else if (indexedSetter == null) {
+                    result = pd.getIndexedWriteMethod() == null;
+                }
+            }
         }
+            
         return result;
     }
 
