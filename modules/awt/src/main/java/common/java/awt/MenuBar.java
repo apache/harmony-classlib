@@ -184,6 +184,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
     }
 
     public void remove(MenuComponent menu) {
+        if (menu == null) return;
         toolkit.lockAWT();
         try {
             menuList.remove(menu);
@@ -311,9 +312,6 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
     }
 
     public void setHelpMenu(Menu menu) {
-        if (menu == null) {
-            throw new NullPointerException();
-        }
         toolkit.lockAWT();
         try {
             if (helpMenu == menu) {

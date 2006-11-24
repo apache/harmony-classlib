@@ -113,4 +113,24 @@ public class MenuBarTest extends TestCase {
         MenuItem mi = mb.getShortcutMenuItem(ms);
         assertNull(mi);
     }
+    
+    public void testRemove1() {
+        MenuBar m = new MenuBar();
+        try {
+            m.remove(null);
+            assertTrue(true);
+        } catch (Throwable t) {
+            fail("Unexpected exception : " + t);
+        }
+    }
+    
+    public void testSetHelpMenu() {
+        MenuBar m = new MenuBar();
+        try {
+            m.setHelpMenu(null);
+            assertTrue(true);
+        } catch (Throwable t) {
+            fail("Unexpected exception : " + t);
+        }
+    }
 }
