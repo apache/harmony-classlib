@@ -1849,18 +1849,20 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 // one that implements Serializable so that slots that were not
                 // dumped can be initialized properly
                 while (constructorClass != null
-                        & ObjectStreamClass.isSerializable(constructorClass)) {
+                        && ObjectStreamClass.isSerializable(constructorClass)) {
                     constructorClass = constructorClass.getSuperclass();
                 }
             }
 
-            // Fetch the empty constructor
-            Constructor<?> constructor;
-            try {
-                constructor = constructorClass
-                        .getDeclaredConstructor(ObjectStreamClass.EMPTY_CONSTRUCTOR_PARAM_TYPES);
-            } catch (NoSuchMethodException nsmEx) {
-                constructor = null;
+            // Fetch the empty constructor, or null if none.
+            Constructor<?> constructor = null;
+            if (constructorClass != null) {
+                try {
+                    constructor = constructorClass
+                            .getDeclaredConstructor(ObjectStreamClass.EMPTY_CONSTRUCTOR_PARAM_TYPES);
+                } catch (NoSuchMethodException nsmEx) {
+                    // Ignored
+                }
             }
 
             // Has to have an empty constructor
