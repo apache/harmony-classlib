@@ -47,7 +47,8 @@ public abstract class SocketFactory {
     }
 
     public Socket createSocket() throws IOException {
-        throw new SocketException("Unbound socket: not implemented");
+        // follow RI's behavior 
+        throw new SocketException("Unconnected sockets not implemented");
     }
 
     public abstract Socket createSocket(String host, int port)

@@ -45,7 +45,8 @@ public abstract class ServerSocketFactory {
     }
 
     public ServerSocket createServerSocket() throws IOException {
-        throw new SocketException("Unbound server socket: not implemented");
+        // follow RI's behavior 
+        throw new SocketException("Unbound server sockets not implemented");
     }
 
     public abstract ServerSocket createServerSocket(int port)
