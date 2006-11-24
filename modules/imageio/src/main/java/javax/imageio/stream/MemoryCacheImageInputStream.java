@@ -27,7 +27,7 @@ public class MemoryCacheImageInputStream  extends ImageInputStreamImpl {
     private InputStream is;
     private RandomAccessMemoryCache ramc = new RandomAccessMemoryCache();
 
-    public MemoryCacheImageInputStream(InputStream stream) throws IOException {
+    public MemoryCacheImageInputStream(InputStream stream) {
         if (stream == null) {
             throw new IllegalArgumentException("stream == null!");
         }
