@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Component;
@@ -28,74 +25,92 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <p>
+ * <i>JMenu</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JMenu extends JMenuItem implements Accessible, MenuElement {
+    private static final long serialVersionUID = 6344812061970456262L;
 
     // TODO implement accessibility
     protected class AccessibleJMenu extends AccessibleJMenuItem implements AccessibleSelection {
-        public void addAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("not implemented");
+        private static final long serialVersionUID = -7871723353224195081L;
+
+        public void addAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void clearAccessibleSelection() {
-            throw new UnsupportedOperationException("not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("not implemented");
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU;
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
-            throw new UnsupportedOperationException("not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("not implemented");
+        public Accessible getAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public int getAccessibleSelectionCount() {
-            throw new UnsupportedOperationException("not implemented");
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(final int i) {
-            throw new UnsupportedOperationException("not implemented");
+        public boolean isAccessibleChildSelected(int i) {
+            throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("not implemented");
+        public void removeAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void selectAllAccessibleSelection() {
-            throw new UnsupportedOperationException("not implemented");
+            throw new NotImplementedException();
         }
     }
 
     protected class WinListener extends WindowAdapter implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private final JPopupMenu popup;
 
-        public WinListener(final JPopupMenu p) {
+        public WinListener(JPopupMenu p) {
             popup = p;
         }
 
-        public void windowClosing(final WindowEvent e) {
+        @Override
+        public void windowClosing(WindowEvent e) {
             setSelected(false);
         }
     }
@@ -104,78 +119,84 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     private static final String UI_CLASS_ID = "MenuUI";
 
-    private static final Object ALL_ACTION_PROPERTIES = new Object() {  //$NON-LOCK-1$
-        public boolean equals(final Object o) {
+    private static final Object ALL_ACTION_PROPERTIES = new Object() { //$NON-LOCK-1$
+        @Override
+        public boolean equals(Object o) {
             return !Action.ACCELERATOR_KEY.equals(o);
         }
     };
 
     private int delay = 200;
+
     private JPopupMenu popup;
+
     private transient MenuEvent menuEvent;
+
     private transient int[] uiMnemonicModifiers;
+
     private transient boolean crossMenuMnemonic;
 
     public JMenu() {
         super();
     }
 
-    public JMenu(final String text) {
+    public JMenu(String text) {
         super(text);
     }
 
-    public JMenu(final String text, final boolean b) {
+    public JMenu(String text, boolean b) {
         super(text);
     }
 
-    public JMenu(final Action action) {
+    public JMenu(Action action) {
         setDefaultModelAndFocus();
         setAction(action);
         init(getText(), getIcon());
     }
 
-    void configurePropertyFromAction(final Action action, final Object propertyName) {
+    @Override
+    void configurePropertyFromAction(Action action, Object propertyName) {
         if (propertyName == null || propertyName.equals(Action.ACCELERATOR_KEY)) {
             return;
         }
         super.configurePropertyFromAction(action, propertyName);
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return (accessibleContext == null) ? (accessibleContext = new AccessibleJMenu())
                 : accessibleContext;
     }
 
-    protected PropertyChangeListener createActionChangeListener(final JMenuItem item) {
+    protected PropertyChangeListener createActionChangeListener(JMenuItem item) {
         return item.createActionPropertyChangeListener(getAction());
     }
 
-    protected JMenuItem createActionComponent(final Action action) {
+    protected JMenuItem createActionComponent(Action action) {
         return JMenuItem.createJMenuItem(action);
     }
 
-    protected WinListener createWinListener(final JPopupMenu popup) {
+    protected WinListener createWinListener(JPopupMenu popup) {
         return new WinListener(popup);
     }
 
-    public void addMenuListener(final MenuListener listener) {
+    public void addMenuListener(MenuListener listener) {
         listenerList.add(MenuListener.class, listener);
     }
 
-    public void removeMenuListener(final MenuListener listener) {
+    public void removeMenuListener(MenuListener listener) {
         listenerList.remove(MenuListener.class, listener);
     }
 
     public MenuListener[] getMenuListeners() {
-        return (MenuListener[])getListeners(MenuListener.class);
+        return getListeners(MenuListener.class);
     }
 
     protected void fireMenuCanceled() {
         final MenuListener[] listeners = getMenuListeners();
-        if (listeners.length == 0){
+        if (listeners.length == 0) {
             return;
         }
-
         if (menuEvent == null) {
             menuEvent = new MenuEvent(this);
         }
@@ -186,10 +207,9 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     protected void fireMenuDeselected() {
         final MenuListener[] listeners = getMenuListeners();
-        if (listeners.length == 0){
+        if (listeners.length == 0) {
             return;
         }
-
         if (menuEvent == null) {
             menuEvent = new MenuEvent(this);
         }
@@ -200,10 +220,9 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     protected void fireMenuSelected() {
         final MenuListener[] listeners = getMenuListeners();
-        if (listeners.length == 0){
+        if (listeners.length == 0) {
             return;
         }
-
         if (menuEvent == null) {
             menuEvent = new MenuEvent(this);
         }
@@ -212,7 +231,8 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         }
     }
 
-    public void doClick(final int time) {
+    @Override
+    public void doClick(int time) {
         final MenuElement[] path = Utilities.getMenuElementPath(getPopupMenu());
         MenuSelectionManager.defaultManager().setSelectedPath(path);
     }
@@ -227,9 +247,8 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     protected Point getPopupMenuOrigin() {
         final boolean leftToRight = getComponentOrientation().isLeftToRight();
-        Point result = Utilities.getPopupLocation(getBounds(),
-                                                  getPopupMenu().getPreferredSize(),
-                                                  leftToRight, !isTopLevelMenu());
+        Point result = Utilities.getPopupLocation(getBounds(), getPopupMenu()
+                .getPreferredSize(), leftToRight, !isTopLevelMenu());
         String prefix = isTopLevelMenu() ? "Menu.menuPopupOffset" : "Menu.submenuPopupOffset";
         int xOffset = UIManager.getInt(prefix + "X");
         int yOffset = UIManager.getInt(prefix + "Y");
@@ -244,7 +263,7 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return popup != null ? popup.isVisible() : false;
     }
 
-    public void setPopupMenuVisible(final boolean visible) {
+    public void setPopupMenuVisible(boolean visible) {
         if (visible == isPopupMenuVisible()) {
             return;
         }
@@ -259,11 +278,13 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         }
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
-    public void setSelected(final boolean selected) {
+    @Override
+    public void setSelected(boolean selected) {
         if (selected != isSelected()) {
             super.setSelected(selected);
             if (selected) {
@@ -282,29 +303,33 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return (getParent() instanceof JMenuBar);
     }
 
-    public void menuSelectionChanged(final boolean b) {
+    @Override
+    public void menuSelectionChanged(boolean b) {
         setSelected(b);
     }
 
-    public void setAccelerator(final KeyStroke keyStroke) {
+    @Override
+    public void setAccelerator(KeyStroke keyStroke) {
         throw new Error("setAccelerator() in not used for JMenu. Use setMnemonic() instead.");
     }
 
-    public void setComponentOrientation(final ComponentOrientation orientation) {
+    @Override
+    public void setComponentOrientation(ComponentOrientation orientation) {
         super.setComponentOrientation(orientation);
         if (popup != null) {
             popup.setComponentOrientation(orientation);
         }
     }
 
-    public void applyComponentOrientation(final ComponentOrientation orientation) {
+    @Override
+    public void applyComponentOrientation(ComponentOrientation orientation) {
         super.applyComponentOrientation(orientation);
         if (popup != null) {
             popup.applyComponentOrientation(orientation);
         }
     }
 
-    public void setDelay(final int delay) {
+    public void setDelay(int delay) {
         if (delay < 0) {
             throw new IllegalArgumentException("Delay must be positive");
         }
@@ -315,29 +340,31 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return delay;
     }
 
-    public void setMenuLocation(final int x, final int y) {
+    public void setMenuLocation(int x, int y) {
         if (popup != null) {
             popup.setLocation(x, y);
         }
     }
 
-    public Component add(final Component c) {
+    @Override
+    public Component add(Component c) {
         return getPopupMenu().add(c);
     }
 
-    public JMenuItem add(final Action action) {
+    public JMenuItem add(Action action) {
         return getPopupMenu().add(action);
     }
 
-    public Component add(final Component c, final int index) {
+    @Override
+    public Component add(Component c, int index) {
         return getPopupMenu().add(c, index);
     }
 
-    public JMenuItem add(final String text) {
+    public JMenuItem add(String text) {
         return getPopupMenu().add(text);
     }
 
-    public JMenuItem add(final JMenuItem item) {
+    public JMenuItem add(JMenuItem item) {
         return getPopupMenu().add(item);
     }
 
@@ -345,39 +372,39 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         getPopupMenu().addSeparator();
     }
 
-    public void insert(final String text, final int index) {
+    public void insert(String text, int index) {
         JMenuItem item = new JMenuItem(text);
         getPopupMenu().insert(item, getValidIndex(index));
     }
 
-    public JMenuItem insert(final JMenuItem item, final int index) {
+    public JMenuItem insert(JMenuItem item, int index) {
         getPopupMenu().insert(item, index);
         return item;
     }
 
-    public JMenuItem insert(final Action action, final int index) {
+    public JMenuItem insert(Action action, int index) {
         JMenuItem item = createActionComponent(action);
         getPopupMenu().insert(item, getValidIndex(index));
         return item;
     }
 
-    public void insertSeparator(final int index) {
+    public void insertSeparator(int index) {
         getPopupMenu().insert(new JPopupMenu.Separator(), getValidIndex(index));
     }
 
-    public Component getMenuComponent(final int index) {
+    public Component getMenuComponent(int index) {
         if (popup == null || index < 0 || index >= getMenuComponentCount()) {
             return null;
         }
         return popup.getComponent(index);
     }
 
-    public JMenuItem getItem(final int index) {
+    public JMenuItem getItem(int index) {
         if (popup == null || index < 0 || index >= getItemCount()) {
             return null;
         }
         Component c = popup.getComponent(index);
-        return (c instanceof JMenuItem) ? (JMenuItem)c : null;
+        return (c instanceof JMenuItem) ? (JMenuItem) c : null;
     }
 
     public int getItemCount() {
@@ -392,11 +419,13 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return (popup != null) ? popup.getComponents() : new Component[0];
     }
 
+    @Override
     public MenuElement[] getSubElements() {
-        return new MenuElement[] {getPopupMenu()};
+        return new MenuElement[] { getPopupMenu() };
     }
 
-    public void remove(final Component c) {
+    @Override
+    public void remove(Component c) {
         if (popup == null) {
             return;
         }
@@ -409,23 +438,25 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         }
     }
 
-    public void remove(final int i) {
+    @Override
+    public void remove(int i) {
         if (popup != null) {
             popup.remove(i);
         }
     }
 
-    public void remove(final JMenuItem item) {
-        remove((Component)item);
+    public void remove(JMenuItem item) {
+        remove((Component) item);
     }
 
+    @Override
     public void removeAll() {
         if (popup != null) {
             popup.removeAll();
         }
     }
 
-    public boolean isMenuComponent(final Component c) {
+    public boolean isMenuComponent(Component c) {
         if (c == null) {
             return false;
         }
@@ -439,33 +470,35 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
             }
         }
         for (int i = 0; i < subComponents.length; i++) {
-            if (subComponents[i] instanceof JMenu &&
-                    ((JMenu)subComponents[i]).isMenuComponent(c)) {
-
+            if (subComponents[i] instanceof JMenu
+                    && ((JMenu) subComponents[i]).isMenuComponent(c)) {
                 return true;
             }
         }
-
         return false;
     }
 
+    @Override
     public void updateUI() {
         super.updateUI();
-        uiMnemonicModifiers = (int[])UIManager.get("Menu.shortcutKeys");
+        uiMnemonicModifiers = (int[]) UIManager.get("Menu.shortcutKeys");
         crossMenuMnemonic = UIManager.getBoolean("Menu.crossMenuMnemonic");
     }
 
+    @Override
     void setDefaultModelAndFocus() {
         setModel(createDefaultModel());
         setFocusPainted(false);
         setHorizontalAlignment(SwingConstants.LEADING);
     }
 
+    @Override
     Object getActionPropertiesFilter() {
         return ALL_ACTION_PROPERTIES;
     }
 
-    boolean isMnemonicKeyStroke(final KeyStroke keyStroke) {
+    @Override
+    boolean isMnemonicKeyStroke(KeyStroke keyStroke) {
         if (keyStroke.getKeyCode() != getMnemonic()) {
             return false;
         }
@@ -482,15 +515,13 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return isStandardModifiers(modifiers);
     }
 
-    private boolean isMnemonicModifiers(final int modifiers, final boolean forceStandardCheck) {
+    private boolean isMnemonicModifiers(int modifiers, boolean forceStandardCheck) {
         if (forceStandardCheck && isStandardModifiers(modifiers)) {
             return true;
         }
-
         if (Utilities.isEmptyArray(uiMnemonicModifiers)) {
             return false;
         }
-
         for (int i = 0; i < uiMnemonicModifiers.length; i++) {
             if ((modifiers & uiMnemonicModifiers[i]) != 0) {
                 return true;
@@ -499,12 +530,11 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         return false;
     }
 
-    private boolean isStandardModifiers(final int modifiers) {
+    private boolean isStandardModifiers(int modifiers) {
         return (modifiers == 0) || (modifiers & InputEvent.ALT_DOWN_MASK) != 0;
     }
 
-    private int getValidIndex(final int index) {
+    private int getValidIndex(int index) {
         return index < getItemCount() ? index : getItemCount();
     }
 }
-

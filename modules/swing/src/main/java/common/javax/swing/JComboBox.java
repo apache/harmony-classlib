@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.ItemSelectable;
@@ -31,7 +26,6 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
@@ -45,72 +39,107 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.ComboBoxUI;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
+/**
+ * <p>
+ * <i>JComboBox</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class JComboBox extends JComponent implements ItemSelectable, ListDataListener,
+        ActionListener, Accessible {
+    private static final long serialVersionUID = 4884562788864849284L;
 
-public class JComboBox extends JComponent implements ItemSelectable, ListDataListener, ActionListener, Accessible {
-    protected class AccessibleJComboBox extends AccessibleJComponent implements AccessibleAction, AccessibleSelection {
+    protected class AccessibleJComboBox extends AccessibleJComponent implements
+            AccessibleAction, AccessibleSelection {
+        private static final long serialVersionUID = 1L;
+
         public AccessibleJComboBox() {
+        }
 
-        }
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.COMBO_BOX;
         }
+
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleAction getAccessibleAction() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public String getAccessibleActionDescription(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAccessibleActionDescription(int i) {
+            throw new NotImplementedException();
         }
+
         public int getAccessibleActionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public boolean doAccessibleAction(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public boolean doAccessibleAction(int i) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleSelection getAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getAccessibleSelectionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public Accessible getAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public Accessible getAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
-        public boolean isAccessibleChildSelected(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public boolean isAccessibleChildSelected(int i) {
+            throw new NotImplementedException();
         }
-        public void addAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void addAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
-        public void removeAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void removeAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
+
         public void clearAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public void selectAllAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
     }
 
     public static interface KeySelectionManager {
-        int selectionForKey(final char key, final ComboBoxModel model);
+        int selectionForKey(char key, ComboBoxModel model);
     }
 
-
     private class DefaultKeySelectionManager implements KeySelectionManager {
-        public int selectionForKey(final char keyChar, final ComboBoxModel model) {
+        public int selectionForKey(char keyChar, ComboBoxModel model) {
             int selectedIndex = getIndex(model.getSelectedItem(), model);
             for (int i = selectedIndex + 1; i < model.getSize(); i++) {
                 String item = model.getElementAt(i).toString();
@@ -118,92 +147,104 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
                     return i;
                 }
             }
-
             for (int i = 0; i <= selectedIndex; i++) {
                 String item = model.getElementAt(i).toString();
                 if (itemStartsWith(item, keyChar)) {
                     return i;
                 }
             }
-
             return -1;
         }
 
-        private boolean itemStartsWith(final String item, final char keyChar) {
+        private boolean itemStartsWith(String item, char keyChar) {
             return Character.toUpperCase(keyChar) == Character.toUpperCase(item.charAt(0));
         }
     }
 
     private class ActionPropertyChangeListener implements PropertyChangeListener {
-        public void propertyChange(final PropertyChangeEvent event) {
-            Action action = (Action)event.getSource();
+        public void propertyChange(PropertyChangeEvent event) {
+            Action action = (Action) event.getSource();
             if (action != null) {
                 String propertyName = event.getPropertyName();
                 if (Action.SHORT_DESCRIPTION.equals(propertyName)) {
-                    setToolTipText((String)event.getNewValue());
+                    setToolTipText((String) event.getNewValue());
                 } else if (StringConstants.ENABLED_PROPERTY_CHANGED.equals(propertyName)) {
-                    setEnabled(((Boolean)event.getNewValue()).booleanValue());
+                    setEnabled(((Boolean) event.getNewValue()).booleanValue());
                 } else if (Action.ACTION_COMMAND_KEY.equals(propertyName)) {
-                    setActionCommand((String)action.getValue(Action.ACTION_COMMAND_KEY));
+                    setActionCommand((String) action.getValue(Action.ACTION_COMMAND_KEY));
                 }
             }
         }
     }
 
     private static final String UI_CLASS_ID = "ComboBoxUI";
+
     private static final String MAXIMUM_ROW_COUNT_PROPERTY_CHANGED = "maximumRowCount";
+
     private static final String PROTOTYPE_DISPLAY_VALUE_PROPERTY_CHANGED = "prototypeDisplayValue";
 
     protected String actionCommand = "comboBoxChanged";
+
     protected ComboBoxModel dataModel;
+
     protected ComboBoxEditor editor;
+
     protected boolean isEditable;
+
     protected KeySelectionManager keySelectionManager;
+
     protected boolean lightWeightPopupEnabled = true;
+
     protected int maximumRowCount = 8;
+
     protected ListCellRenderer renderer;
+
     protected Object selectedItemReminder;
 
     private Object prototypeDisplayValue;
+
     private Action action;
+
     private PropertyChangeListener actionPropertyChangeListener;
 
     public JComboBox() {
         this(new DefaultComboBoxModel());
     }
 
-    public JComboBox(final Object[] items) {
-        this(new DefaultComboBoxModel(items));
-    }
-    public JComboBox(final Vector<?> items) {
+    public JComboBox(Object[] items) {
         this(new DefaultComboBoxModel(items));
     }
 
-    public JComboBox(final ComboBoxModel model) {
+    public JComboBox(Vector<?> items) {
+        this(new DefaultComboBoxModel(items));
+    }
+
+    public JComboBox(ComboBoxModel model) {
         dataModel = model;
         dataModel.addListDataListener(this);
         installAncestorListener();
-
         updateUI();
     }
 
-    public void setUI(final ComboBoxUI ui) {
+    public void setUI(ComboBoxUI ui) {
         super.setUI(ui);
     }
 
+    @Override
     public void updateUI() {
-        setUI((ComboBoxUI)UIManager.getUI(this));
+        setUI((ComboBoxUI) UIManager.getUI(this));
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
     public ComboBoxUI getUI() {
-        return (ComboBoxUI)ui;
+        return (ComboBoxUI) ui;
     }
 
-    public void setModel(final ComboBoxModel model) {
+    public void setModel(ComboBoxModel model) {
         if (dataModel != model) {
             ComboBoxModel oldModel = dataModel;
             if (oldModel != null) {
@@ -211,7 +252,6 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
             }
             dataModel = model;
             dataModel.addListDataListener(this);
-
             firePropertyChange(StringConstants.MODEL_PROPERTY_CHANGED, oldModel, model);
         }
     }
@@ -220,10 +260,11 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return dataModel;
     }
 
-    public void setLightWeightPopupEnabled(final boolean isEnabled) {
+    public void setLightWeightPopupEnabled(boolean isEnabled) {
         if (lightWeightPopupEnabled != isEnabled) {
             lightWeightPopupEnabled = isEnabled;
-            firePropertyChange(StringConstants.LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED, !isEnabled, isEnabled);
+            firePropertyChange(StringConstants.LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED,
+                    !isEnabled, isEnabled);
         }
     }
 
@@ -231,10 +272,11 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return lightWeightPopupEnabled;
     }
 
-    public void setEditable(final boolean isEditable) {
+    public void setEditable(boolean isEditable) {
         if (this.isEditable != isEditable) {
             this.isEditable = isEditable;
-            firePropertyChange(StringConstants.EDITABLE_PROPERTY_CHANGED, !isEditable, isEditable);
+            firePropertyChange(StringConstants.EDITABLE_PROPERTY_CHANGED, !isEditable,
+                    isEditable);
         }
     }
 
@@ -242,7 +284,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return isEditable;
     }
 
-    public void setMaximumRowCount(final int count) {
+    public void setMaximumRowCount(int count) {
         LookAndFeel.markPropertyNotInstallable(this, "maximumRowCount");
         if (maximumRowCount != count) {
             int oldValue = maximumRowCount;
@@ -255,7 +297,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return maximumRowCount;
     }
 
-    public void setRenderer(final ListCellRenderer renderer) {
+    public void setRenderer(ListCellRenderer renderer) {
         if (this.renderer != renderer) {
             ListCellRenderer oldValue = this.renderer;
             this.renderer = renderer;
@@ -267,13 +309,12 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return renderer;
     }
 
-    public void setEditor(final ComboBoxEditor editor) {
+    public void setEditor(ComboBoxEditor editor) {
         if (this.editor != editor) {
             ComboBoxEditor oldValue = this.editor;
             if (oldValue != null) {
                 oldValue.removeActionListener(this);
             }
-
             this.editor = editor;
             if (this.editor != null) {
                 this.editor.addActionListener(this);
@@ -286,11 +327,11 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return editor;
     }
 
-    public void setSelectedItem(final Object element) {
+    public void setSelectedItem(Object element) {
         selectedItemReminder = dataModel.getSelectedItem();
-
         if (isEditable || getIndex(element) != -1 || element == null) {
-            if (element != getSelectedItem() || element != null && !element.equals(getSelectedItem())) {
+            if (element != getSelectedItem() || element != null
+                    && !element.equals(getSelectedItem())) {
                 dataModel.setSelectedItem(element);
             } else if (isEditable && element != null && !element.equals(getEditor().getItem())) {
                 getEditor().setItem(element);
@@ -299,19 +340,17 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
                 fireActionEvent();
             }
         }
-
-        
     }
 
     public Object getSelectedItem() {
         return dataModel.getSelectedItem();
     }
 
-    public void setSelectedIndex(final int index) {
+    public void setSelectedIndex(int index) {
         if (index < -1 || index >= dataModel.getSize()) {
-            throw new IllegalArgumentException("Selected index should in the range of available indices");
+            throw new IllegalArgumentException(
+                    "Selected index should in the range of available indices");
         }
-
         if (index == -1) {
             setSelectedItem(null);
         } else {
@@ -322,9 +361,8 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public Object[] getSelectedObjects() {
         if (getSelectedItem() != null) {
             return new Object[] { getSelectedItem() };
-        } else {
-            return new Object[0];
         }
+        return new Object[0];
     }
 
     public int getSelectedIndex() {
@@ -335,46 +373,46 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return prototypeDisplayValue;
     }
 
-    public void setPrototypeDisplayValue(final Object prototypeDisplayValue) {
+    public void setPrototypeDisplayValue(Object prototypeDisplayValue) {
         if (this.prototypeDisplayValue != prototypeDisplayValue) {
             Object oldValue = this.prototypeDisplayValue;
             this.prototypeDisplayValue = prototypeDisplayValue;
-
-            firePropertyChange(PROTOTYPE_DISPLAY_VALUE_PROPERTY_CHANGED, oldValue, prototypeDisplayValue);
+            firePropertyChange(PROTOTYPE_DISPLAY_VALUE_PROPERTY_CHANGED, oldValue,
+                    prototypeDisplayValue);
         }
     }
 
-    public void addItem(final Object element) {
+    public void addItem(Object element) {
         selectedItemReminder = getSelectedItem();
         if (dataModel instanceof MutableComboBoxModel) {
-            ((MutableComboBoxModel)dataModel).addElement(element);
+            ((MutableComboBoxModel) dataModel).addElement(element);
         } else {
             throw new RuntimeException("Cannot modify immutable data model");
         }
     }
 
-    public void insertItemAt(final Object element, final int index) {
+    public void insertItemAt(Object element, int index) {
         selectedItemReminder = getSelectedItem();
         if (dataModel instanceof MutableComboBoxModel) {
-            ((MutableComboBoxModel)dataModel).insertElementAt(element, index);
+            ((MutableComboBoxModel) dataModel).insertElementAt(element, index);
         } else {
             throw new RuntimeException("Cannot modify immutable data model");
         }
     }
 
-    public void removeItem(final Object element) {
+    public void removeItem(Object element) {
         selectedItemReminder = getSelectedItem();
         if (dataModel instanceof MutableComboBoxModel) {
-            ((MutableComboBoxModel)dataModel).removeElement(element);
+            ((MutableComboBoxModel) dataModel).removeElement(element);
         } else {
             throw new RuntimeException("Cannot modify immutable data model");
         }
     }
 
-    public void removeItemAt(final int index) {
+    public void removeItemAt(int index) {
         selectedItemReminder = getSelectedItem();
         if (dataModel instanceof MutableComboBoxModel) {
-            ((MutableComboBoxModel)dataModel).removeElementAt(index);
+            ((MutableComboBoxModel) dataModel).removeElementAt(index);
         } else {
             throw new RuntimeException("Cannot modify immutable data model");
         }
@@ -383,7 +421,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public void removeAllItems() {
         selectedItemReminder = getSelectedItem();
         if (dataModel instanceof MutableComboBoxModel) {
-            MutableComboBoxModel model = (MutableComboBoxModel)dataModel;
+            MutableComboBoxModel model = (MutableComboBoxModel) dataModel;
             while (model.getSize() > 0) {
                 model.removeElementAt(0);
             }
@@ -396,49 +434,47 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return dataModel.getSize();
     }
 
-    public Object getItemAt(final int index) {
+    public Object getItemAt(int index) {
         if (index < 0 || index >= dataModel.getSize()) {
             return null;
         }
-
         return dataModel.getElementAt(index);
     }
 
-
-    public void addItemListener(final ItemListener l) {
+    public void addItemListener(ItemListener l) {
         listenerList.add(ItemListener.class, l);
     }
 
-    public void removeItemListener(final ItemListener l) {
+    public void removeItemListener(ItemListener l) {
         listenerList.remove(ItemListener.class, l);
     }
 
     public ItemListener[] getItemListeners() {
-        return (ItemListener[])listenerList.getListeners(ItemListener.class);
+        return listenerList.getListeners(ItemListener.class);
     }
 
-    public void addActionListener(final ActionListener l) {
+    public void addActionListener(ActionListener l) {
         listenerList.add(ActionListener.class, l);
     }
 
-    public void removeActionListener(final ActionListener l) {
+    public void removeActionListener(ActionListener l) {
         listenerList.remove(ActionListener.class, l);
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[])listenerList.getListeners(ActionListener.class);
+        return listenerList.getListeners(ActionListener.class);
     }
 
-    public void addPopupMenuListener(final PopupMenuListener l) {
+    public void addPopupMenuListener(PopupMenuListener l) {
         listenerList.add(PopupMenuListener.class, l);
     }
 
-    public void removePopupMenuListener(final PopupMenuListener l) {
+    public void removePopupMenuListener(PopupMenuListener l) {
         listenerList.remove(PopupMenuListener.class, l);
     }
 
     public PopupMenuListener[] getPopupMenuListeners() {
-        return (PopupMenuListener[])listenerList.getListeners(PopupMenuListener.class);
+        return listenerList.getListeners(PopupMenuListener.class);
     }
 
     public void firePopupMenuWillBecomeVisible() {
@@ -465,14 +501,13 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         }
     }
 
-    public void setActionCommand(final String command) {
+    public void setActionCommand(String command) {
         actionCommand = command;
     }
 
     public String getActionCommand() {
         return actionCommand;
     }
-
 
     public void showPopup() {
         setPopupVisible(true);
@@ -482,7 +517,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         setPopupVisible(false);
     }
 
-    public void setPopupVisible(final boolean isVisible) {
+    public void setPopupVisible(boolean isVisible) {
         getUI().setPopupVisible(this, isVisible);
     }
 
@@ -490,11 +525,10 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return getUI().isPopupVisible(this);
     }
 
-    public void setAction(final Action action) {
+    public void setAction(Action action) {
         if (this.action == action) {
             return;
         }
-
         Action oldValue = this.action;
         if (oldValue != null) {
             if (hasListener(ActionListener.class, oldValue)) {
@@ -504,7 +538,6 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
                 oldValue.removePropertyChangeListener(actionPropertyChangeListener);
             }
         }
-
         this.action = action;
         if (action != null) {
             if (!hasListener(ActionListener.class, action)) {
@@ -513,7 +546,6 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
             actionPropertyChangeListener = createActionPropertyChangeListener(this.action);
             this.action.addPropertyChangeListener(actionPropertyChangeListener);
         }
-
         firePropertyChange(StringConstants.ACTION_PROPERTY_CHANGED, oldValue, action);
         configurePropertiesFromAction(action);
     }
@@ -522,11 +554,11 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return action;
     }
 
-    protected void configurePropertiesFromAction(final Action action) {
+    protected void configurePropertiesFromAction(Action action) {
         if (action != null) {
-            setToolTipText((String)action.getValue(Action.SHORT_DESCRIPTION));
+            setToolTipText((String) action.getValue(Action.SHORT_DESCRIPTION));
             setEnabled(action.isEnabled());
-            setActionCommand((String)action.getValue(Action.ACTION_COMMAND_KEY));
+            setActionCommand((String) action.getValue(Action.ACTION_COMMAND_KEY));
         } else {
             setActionCommand(null);
             setEnabled(true);
@@ -534,55 +566,55 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         }
     }
 
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         setSelectedItem(editor.getItem());
         getUI().setPopupVisible(this, false);
     }
 
-    public void contentsChanged(final ListDataEvent e) {
+    public void contentsChanged(ListDataEvent e) {
         selectedItemChanged();
         fireActionEvent();
     }
 
-    public void intervalAdded(final ListDataEvent e) {
+    public void intervalAdded(ListDataEvent e) {
     }
 
-    public void intervalRemoved(final ListDataEvent e) {
+    public void intervalRemoved(ListDataEvent e) {
     }
 
-    public void setEnabled(final boolean isEnabled) {
+    @Override
+    public void setEnabled(boolean isEnabled) {
         super.setEnabled(isEnabled);
         if (action != null) {
             action.setEnabled(isEnabled);
         }
     }
 
-    public void configureEditor(final ComboBoxEditor editor, final Object item) {
+    public void configureEditor(ComboBoxEditor editor, Object item) {
         editor.setItem(item);
     }
 
-    public void processKeyEvent(final KeyEvent e) {
+    @Override
+    public void processKeyEvent(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_TAB) {
             hidePopup();
         }
         super.processKeyEvent(e);
     }
 
-    public boolean selectWithKeyChar(final char keyChar) {
+    public boolean selectWithKeyChar(char keyChar) {
         if (keySelectionManager == null) {
             keySelectionManager = createDefaultKeySelectionManager();
         }
-
         int index = keySelectionManager.selectionForKey(keyChar, getModel());
         if (index != -1) {
             setSelectedIndex(index);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public void setKeySelectionManager(final KeySelectionManager manager) {
+    public void setKeySelectionManager(KeySelectionManager manager) {
         keySelectionManager = manager;
     }
 
@@ -590,34 +622,33 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return keySelectionManager;
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJComboBox();
         }
-
         return accessibleContext;
     }
 
-
     protected void installAncestorListener() {
         addAncestorListener(new AncestorListener() {
-            public void ancestorAdded(final AncestorEvent e) {
+            public void ancestorAdded(AncestorEvent e) {
             }
 
-            public void ancestorMoved(final AncestorEvent e) {
+            public void ancestorMoved(AncestorEvent e) {
             }
 
-            public void ancestorRemoved(final AncestorEvent e) {
+            public void ancestorRemoved(AncestorEvent e) {
                 hidePopup();
             }
         });
     }
 
-    protected PropertyChangeListener createActionPropertyChangeListener(final Action a) {
+    protected PropertyChangeListener createActionPropertyChangeListener(Action a) {
         return new ActionPropertyChangeListener();
     }
 
-    protected void fireItemStateChanged(final ItemEvent e) {
+    protected void fireItemStateChanged(ItemEvent e) {
         ItemListener[] listeners = getItemListeners();
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].itemStateChanged(e);
@@ -634,12 +665,14 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
 
     protected void selectedItemChanged() {
         if (selectedItemReminder != null) {
-            ItemEvent itemEvent = new ItemEvent(JComboBox.this, ItemEvent.ITEM_STATE_CHANGED, selectedItemReminder, ItemEvent.DESELECTED);
+            ItemEvent itemEvent = new ItemEvent(JComboBox.this, ItemEvent.ITEM_STATE_CHANGED,
+                    selectedItemReminder, ItemEvent.DESELECTED);
             fireItemStateChanged(itemEvent);
         }
         Object newSelection = dataModel.getSelectedItem();
         if (isEditable || getIndex(newSelection) != -1) {
-            ItemEvent itemEvent = new ItemEvent(JComboBox.this, ItemEvent.ITEM_STATE_CHANGED, newSelection, ItemEvent.SELECTED);
+            ItemEvent itemEvent = new ItemEvent(JComboBox.this, ItemEvent.ITEM_STATE_CHANGED,
+                    newSelection, ItemEvent.SELECTED);
             fireItemStateChanged(itemEvent);
         }
     }
@@ -648,21 +681,19 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         return new DefaultKeySelectionManager();
     }
 
-    private int getIndex(final Object element) {
+    private int getIndex(Object element) {
         return getIndex(element, dataModel);
     }
 
-    private int getIndex(final Object element, final ComboBoxModel model) {
+    private int getIndex(Object element, ComboBoxModel model) {
         if (element == null) {
             return -1;
         }
-
         for (int i = 0; i < model.getSize(); i++) {
             if (element.equals(model.getElementAt(i))) {
                 return i;
             }
         }
-
         return -1;
     }
 }

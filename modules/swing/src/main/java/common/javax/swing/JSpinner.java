@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
 
 package javax.swing;
 
@@ -35,7 +31,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
@@ -53,129 +48,186 @@ import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.NumberFormatter;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <p>
+ * <i>JSpinner</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JSpinner extends JComponent implements Accessible {
-    protected class AccessibleJSpinner extends JComponent.AccessibleJComponent implements AccessibleValue, AccessibleAction, AccessibleText, AccessibleEditableText, ChangeListener {
+    private static final long serialVersionUID = 5455034942343575490L;
+
+    protected class AccessibleJSpinner extends JComponent.AccessibleJComponent implements
+            AccessibleValue, AccessibleAction, AccessibleText, AccessibleEditableText,
+            ChangeListener {
+        private static final long serialVersionUID = -8871493856204319541L;
+
         protected AccessibleJSpinner() {
         }
-        public void stateChanged(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void stateChanged(ChangeEvent e) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleAction getAccessibleAction() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleText getAccessibleText() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleValue getAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public Number getCurrentAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public boolean setCurrentAccessibleValue(final Number n) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public boolean setCurrentAccessibleValue(Number n) {
+            throw new NotImplementedException();
         }
+
         public Number getMinimumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public Number getMaximumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getAccessibleActionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public String getAccessibleActionDescription(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAccessibleActionDescription(int i) {
+            throw new NotImplementedException();
         }
-        public boolean doAccessibleAction(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public boolean doAccessibleAction(int i) {
+            throw new NotImplementedException();
         }
-        public int getIndexAtPoint(final Point p) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public int getIndexAtPoint(Point p) {
+            throw new NotImplementedException();
         }
-        public Rectangle getCharacterBounds(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public Rectangle getCharacterBounds(int i) {
+            throw new NotImplementedException();
         }
+
         public int getCharCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getCaretPosition() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public String getAtIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAtIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public String getAfterIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAfterIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public String getBeforeIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getBeforeIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public AttributeSet getCharacterAttribute(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public AttributeSet getCharacterAttribute(int i) {
+            throw new NotImplementedException();
         }
+
         public int getSelectionStart() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getSelectionEnd() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public String getSelectedText() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public void setTextContents(final String s) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void setTextContents(String s) {
+            throw new NotImplementedException();
         }
-        public void insertTextAtIndex(final int index,final String s) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void insertTextAtIndex(int index, String s) {
+            throw new NotImplementedException();
         }
-        public String getTextRange(final int startIndex, final int endIndex) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getTextRange(int startIndex, int endIndex) {
+            throw new NotImplementedException();
         }
-        public void delete(final int startIndex, final int endIndex) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void delete(int startIndex, int endIndex) {
+            throw new NotImplementedException();
         }
-        public void cut(final int startIndex, final int endIndex) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void cut(int startIndex, int endIndex) {
+            throw new NotImplementedException();
         }
-        public void paste(final int startIndex) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void paste(int startIndex) {
+            throw new NotImplementedException();
         }
-        public void replaceText(final int startIndex, final int endIndex, final String s) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void replaceText(int startIndex, int endIndex, String s) {
+            throw new NotImplementedException();
         }
-        public void selectText(final int startIndex, final int endIndex) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void selectText(int startIndex, int endIndex) {
+            throw new NotImplementedException();
         }
-        public void setAttributes(final int startIndex, final int endIndex,final AttributeSet as) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void setAttributes(int startIndex, int endIndex, AttributeSet as) {
+            throw new NotImplementedException();
         }
     }
 
-    public static class DefaultEditor extends JPanel implements ChangeListener, PropertyChangeListener, LayoutManager {
+    public static class DefaultEditor extends JPanel implements ChangeListener,
+            PropertyChangeListener, LayoutManager {
+        private static final long serialVersionUID = 6977154593437159148L;
+
         private JFormattedTextField text;
+
         private JSpinner spinner;
 
-        public DefaultEditor(final JSpinner spinner) {
+        public DefaultEditor(JSpinner spinner) {
             this.spinner = spinner;
             setLayout(this);
-
             spinner.addChangeListener(this);
-
             text = new JFormattedTextField();
             text.setEditable(false);
             text.setValue(spinner.getModel().getValue());
@@ -193,19 +245,19 @@ public class JSpinner extends JComponent implements Accessible {
             return text;
         }
 
-        public void stateChanged(final ChangeEvent e) {
+        public void stateChanged(ChangeEvent e) {
             if (this != spinner.getEditor()) {
                 return;
             }
             text.setValue(spinner.getValue());
         }
 
-        public void propertyChange(final PropertyChangeEvent e) {
+        public void propertyChange(PropertyChangeEvent e) {
             if (e.getSource() != text || this != spinner.getEditor()) {
                 return;
             }
             if (StringConstants.VALUE_PROPERTY_NAME.equals(e.getPropertyName())) {
-              try {
+                try {
                     spinner.setValue(e.getNewValue());
                 } catch (IllegalArgumentException ex) {
                     text.setValue(e.getOldValue());
@@ -213,21 +265,21 @@ public class JSpinner extends JComponent implements Accessible {
             }
         }
 
-        public void addLayoutComponent(final String name, final Component child) {
+        public void addLayoutComponent(String name, Component child) {
         }
 
-        public void removeLayoutComponent(final Component child) {
+        public void removeLayoutComponent(Component child) {
         }
 
-        public Dimension preferredLayoutSize(final Container parent) {
+        public Dimension preferredLayoutSize(Container parent) {
             return Utilities.addInsets(text.getPreferredSize(), parent.getInsets());
         }
 
-        public Dimension minimumLayoutSize(final Container parent) {
+        public Dimension minimumLayoutSize(Container parent) {
             return Utilities.addInsets(text.getMinimumSize(), parent.getInsets());
         }
 
-        public void layoutContainer(final Container parent) {
+        public void layoutContainer(Container parent) {
             text.setBounds(0, 0, parent.getWidth(), parent.getHeight());
         }
 
@@ -235,12 +287,15 @@ public class JSpinner extends JComponent implements Accessible {
             text.commitEdit();
         }
 
-        public void dismiss(final JSpinner spinner) {
+        public void dismiss(JSpinner spinner) {
             spinner.removeChangeListener(this);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static class SpinnerDateFormatter extends DateFormatter {
+        private static final long serialVersionUID = 1L;
+
         private SpinnerDateModel model;
 
         public SpinnerDateFormatter(final SimpleDateFormat format, final SpinnerDateModel model) {
@@ -248,22 +303,26 @@ public class JSpinner extends JComponent implements Accessible {
             this.model = model;
         }
 
-        public void setMaximum(final Comparable max) {
+        @Override
+        public void setMaximum(Comparable max) {
             super.setMaximum(max);
             model.setEnd(max);
         }
 
-        public void setMinimum(final Comparable min) {
+        @Override
+        public void setMinimum(Comparable min) {
             super.setMinimum(min);
             model.setStart(min);
         }
 
+        @Override
         public Comparable getMaximum() {
             Comparable max = model.getEnd();
             super.setMaximum(max);
             return max;
         }
 
+        @Override
         public Comparable getMinimum() {
             Comparable min = model.getStart();
             super.setMinimum(min);
@@ -272,9 +331,11 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     public static class DateEditor extends DefaultEditor {
+        private static final long serialVersionUID = 1L;
+
         private SimpleDateFormat format;
 
-        public DateEditor(final JSpinner spinner) {
+        public DateEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerDateModel)) {
                 throw new IllegalArgumentException("model not a SpinnerDateModel");
@@ -283,7 +344,7 @@ public class JSpinner extends JComponent implements Accessible {
             initTextField();
         }
 
-        public DateEditor(final JSpinner spinner, final String dateFormatPattern) {
+        public DateEditor(JSpinner spinner, String dateFormatPattern) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerDateModel)) {
                 throw new IllegalArgumentException("model not a SpinnerDateModel");
@@ -297,7 +358,7 @@ public class JSpinner extends JComponent implements Accessible {
         }
 
         public SpinnerDateModel getModel() {
-            return (SpinnerDateModel)this.getSpinner().getModel();
+            return (SpinnerDateModel) this.getSpinner().getModel();
         }
 
         private void initTextField() {
@@ -309,25 +370,26 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     private static class SpinnerListFormatter extends AbstractFormatter {
+        private static final long serialVersionUID = 1L;
+
         private class ListFilter extends DocumentFilter {
             private JFormattedTextField textField;
 
-            public ListFilter(final JFormattedTextField textField) {
+            public ListFilter(JFormattedTextField textField) {
                 this.textField = textField;
             }
 
-            public void insertString(final FilterBypass fb, final int offset,
-                                     final String text, final AttributeSet attrs) throws BadLocationException {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String text,
+                    AttributeSet attrs) throws BadLocationException {
                 super.insertString(fb, offset, text, attrs);
             }
 
-
-            public void replace(final FilterBypass fb, final int offset, final int length,
-                                final String text, final AttributeSet attrs) throws BadLocationException {
-
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text,
+                    AttributeSet attrs) throws BadLocationException {
                 String str = textField.getText().substring(0, offset) + text;
                 String replace = findElementText(str);
-
                 if (!"".equals(replace)) {
                     fb.replace(0, textField.getText().length(), replace, attrs);
                     textField.setCaretPosition(offset + text.length());
@@ -337,7 +399,7 @@ public class JSpinner extends JComponent implements Accessible {
                 }
             }
 
-            private String findElementText(final String text) {
+            private String findElementText(String text) {
                 Object findElement = findElement(text);
                 if (findElement == null) {
                     return "";
@@ -348,28 +410,31 @@ public class JSpinner extends JComponent implements Accessible {
         }
 
         private SpinnerListModel model;
+
         private ListFilter filter;
 
-        public SpinnerListFormatter(final SpinnerListModel model, final JFormattedTextField textField) {
+        public SpinnerListFormatter(SpinnerListModel model, JFormattedTextField textField) {
             this.model = model;
             filter = new ListFilter(textField);
         }
 
-        public Object stringToValue(final String text) throws ParseException {
-//            Object result = findElement(text);
+        @Override
+        public Object stringToValue(String text) throws ParseException {
             return ("".equals(text)) ? null : findElement(text);
         }
 
-        public String valueToString(final Object value) throws ParseException {
+        @Override
+        public String valueToString(Object value) throws ParseException {
             return (value == null ? "" : value.toString());
         }
 
+        @Override
         protected DocumentFilter getDocumentFilter() {
             return filter;
         }
 
-        private Object findElement(final String text) {
-            List modelList = model.getList();
+        private Object findElement(String text) {
+            List<?> modelList = model.getList();
             for (int i = 0; i < modelList.size(); i++) {
                 Object obj = modelList.get(i);
                 if (obj != null && obj.toString().indexOf(text) == 0) {
@@ -381,48 +446,57 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     public static class ListEditor extends DefaultEditor {
+        private static final long serialVersionUID = 1L;
 
-        public ListEditor(final JSpinner spinner) {
+        public ListEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerListModel)) {
                 throw new IllegalArgumentException("model not a SpinnerListModel");
             }
-            SpinnerListFormatter formatter = new SpinnerListFormatter(this.getModel(), this.getTextField());
+            SpinnerListFormatter formatter = new SpinnerListFormatter(this.getModel(), this
+                    .getTextField());
             JFormattedTextField textField = this.getTextField();
             textField.setFormatterFactory(new DefaultFormatterFactory(formatter));
             textField.setEditable(true);
         }
 
         public SpinnerListModel getModel() {
-            return (SpinnerListModel)this.getSpinner().getModel();
+            return (SpinnerListModel) this.getSpinner().getModel();
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static class SpinnerNumberFormatter extends NumberFormatter {
+        private static final long serialVersionUID = 1L;
+
         private SpinnerNumberModel model;
 
-        public SpinnerNumberFormatter(final DecimalFormat format, final SpinnerNumberModel model) {
+        public SpinnerNumberFormatter(DecimalFormat format, SpinnerNumberModel model) {
             super(format);
             this.model = model;
             setValueClass(model.getValue().getClass());
         }
 
-        public void setMaximum(final Comparable max) {
+        @Override
+        public void setMaximum(Comparable max) {
             super.setMaximum(max);
             model.setMaximum(max);
         }
 
-        public void setMinimum(final Comparable min) {
+        @Override
+        public void setMinimum(Comparable min) {
             super.setMinimum(min);
             model.setMinimum(min);
         }
 
+        @Override
         public Comparable getMaximum() {
             Comparable max = model.getMaximum();
             super.setMaximum(max);
             return max;
         }
 
+        @Override
         public Comparable getMinimum() {
             Comparable min = model.getMinimum();
             super.setMinimum(min);
@@ -431,9 +505,11 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     public static class NumberEditor extends DefaultEditor {
+        private static final long serialVersionUID = 1L;
+
         private DecimalFormat format;
 
-        public NumberEditor(final JSpinner spinner) {
+        public NumberEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerNumberModel)) {
                 throw new IllegalArgumentException("model not a SpinnerNumberModel");
@@ -442,7 +518,7 @@ public class JSpinner extends JComponent implements Accessible {
             initTextField();
         }
 
-        public NumberEditor(final JSpinner spinner, final String decimalFormatPattern) {
+        public NumberEditor(JSpinner spinner, String decimalFormatPattern) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerNumberModel)) {
                 throw new IllegalArgumentException("model not a SpinnerNumberModel");
@@ -456,11 +532,12 @@ public class JSpinner extends JComponent implements Accessible {
         }
 
         public SpinnerNumberModel getModel() {
-            return (SpinnerNumberModel)this.getSpinner().getModel();
+            return (SpinnerNumberModel) this.getSpinner().getModel();
         }
 
         private void initTextField() {
-            final SpinnerNumberFormatter numberFormatter = new SpinnerNumberFormatter(format, this.getModel());
+            SpinnerNumberFormatter numberFormatter = new SpinnerNumberFormatter(format, this
+                    .getModel());
             JFormattedTextField textField = this.getTextField();
             textField.setFormatterFactory(new DefaultFormatterFactory(numberFormatter));
             textField.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -469,28 +546,38 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     private class ModelChangeListener implements ChangeListener, Serializable {
-        public void stateChanged(final ChangeEvent e) {
+        private static final long serialVersionUID = 1L;
+
+        public void stateChanged(ChangeEvent e) {
             fireStateChanged();
         }
     }
 
     private static Action disabledAction = new AbstractAction() {
-        public void actionPerformed(final ActionEvent e) {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
         }
 
+        @Override
         public boolean isEnabled() {
             return false;
         }
     };
 
     private static final String UI_CLASS_ID = "SpinnerUI";
+
     private SpinnerModel model;
+
     private boolean editorSet;
+
     private JComponent editor;
+
     private ChangeListener changeListener = new ModelChangeListener();
+
     private ChangeEvent changeEvent;
 
-    public JSpinner(final SpinnerModel model) {
+    public JSpinner(SpinnerModel model) {
         this.model = model;
         model.addChangeListener(changeListener);
         editor = createEditor(model);
@@ -502,22 +589,24 @@ public class JSpinner extends JComponent implements Accessible {
     }
 
     public SpinnerUI getUI() {
-        return (SpinnerUI)ui;
+        return (SpinnerUI) ui;
     }
 
-    public void setUI(final SpinnerUI ui) {
+    public void setUI(SpinnerUI ui) {
         super.setUI(ui);
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
+    @Override
     public void updateUI() {
-        setUI((SpinnerUI)UIManager.getUI(this));
+        setUI((SpinnerUI) UIManager.getUI(this));
     }
 
-    protected JComponent createEditor(final SpinnerModel model) {
+    protected JComponent createEditor(SpinnerModel model) {
         if (model instanceof SpinnerNumberModel) {
             return new NumberEditor(this);
         }
@@ -530,7 +619,7 @@ public class JSpinner extends JComponent implements Accessible {
         return new DefaultEditor(this);
     }
 
-    public void setModel(final SpinnerModel model) {
+    public void setModel(SpinnerModel model) {
         if (model == null) {
             throw new IllegalArgumentException("null model");
         }
@@ -553,7 +642,7 @@ public class JSpinner extends JComponent implements Accessible {
         return model.getValue();
     }
 
-    public void setValue(final Object value) {
+    public void setValue(Object value) {
         model.setValue(value);
     }
 
@@ -565,20 +654,20 @@ public class JSpinner extends JComponent implements Accessible {
         return model.getPreviousValue();
     }
 
-    public void addChangeListener(final ChangeListener listener) {
+    public void addChangeListener(ChangeListener listener) {
         listenerList.add(ChangeListener.class, listener);
     }
 
-    public void removeChangeListener(final ChangeListener listener) {
+    public void removeChangeListener(ChangeListener listener) {
         listenerList.remove(ChangeListener.class, listener);
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])getListeners(ChangeListener.class);
+        return getListeners(ChangeListener.class);
     }
 
     protected void fireStateChanged() {
-        if(changeEvent == null) {
+        if (changeEvent == null) {
             changeEvent = new ChangeEvent(this);
         }
         ChangeListener[] listeners = getChangeListeners();
@@ -587,18 +676,16 @@ public class JSpinner extends JComponent implements Accessible {
         }
     }
 
-    public void setEditor(final JComponent editor) {
+    public void setEditor(JComponent editor) {
         if (editor == null) {
             throw new IllegalArgumentException("null editor");
         }
-
         JComponent oldEditor = this.editor;
         if (oldEditor == editor) {
             return;
         }
-
         if (oldEditor instanceof DefaultEditor) {
-            DefaultEditor def = (DefaultEditor)oldEditor;
+            DefaultEditor def = (DefaultEditor) oldEditor;
             def.dismiss(this);
         }
         this.editor = editor;
@@ -612,10 +699,11 @@ public class JSpinner extends JComponent implements Accessible {
 
     public void commitEdit() throws ParseException {
         if (editor instanceof DefaultEditor) {
-            ((DefaultEditor)editor).commitEdit();
+            ((DefaultEditor) editor).commitEdit();
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJSpinner();

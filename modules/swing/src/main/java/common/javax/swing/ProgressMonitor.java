@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Component;
@@ -30,7 +27,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
@@ -41,90 +37,141 @@ import javax.accessibility.AccessibleValue;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.AttributeSet;
+import org.apache.harmony.luni.util.NotImplementedException;
 
+/**
+ * <p>
+ * <i>ProgressMonitor</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class ProgressMonitor implements Accessible {
-    protected class AccessibleProgressMonitor extends AccessibleContext implements AccessibleText, ChangeListener, PropertyChangeListener {
+    protected class AccessibleProgressMonitor extends AccessibleContext implements
+            AccessibleText, ChangeListener, PropertyChangeListener {
         protected AccessibleProgressMonitor() {
         }
-        public void stateChanged(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void stateChanged(ChangeEvent e) {
+            throw new NotImplementedException();
         }
-        public void propertyChange(final PropertyChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public void propertyChange(PropertyChangeEvent e) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public String getAccessibleName() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public String getAccessibleDescription() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public Accessible getAccessibleParent() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public int getAccessibleIndexInParent() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
+
+        @Override
         public Locale getLocale() throws IllegalComponentStateException {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleComponent getAccessibleComponent() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleValue getAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
+        @Override
         public AccessibleText getAccessibleText() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public int getIndexAtPoint(final Point p) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public int getIndexAtPoint(Point p) {
+            throw new NotImplementedException();
         }
-        public Rectangle getCharacterBounds(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public Rectangle getCharacterBounds(int i) {
+            throw new NotImplementedException();
         }
+
         public int getCharCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getCaretPosition() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
-        public String getAtIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAtIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public String getAfterIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getAfterIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public String getBeforeIndex(final int part, final int index) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public String getBeforeIndex(int part, int index) {
+            throw new NotImplementedException();
         }
-        public AttributeSet getCharacterAttribute(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+
+        public AttributeSet getCharacterAttribute(int i) {
+            throw new NotImplementedException();
         }
+
         public int getSelectionStart() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public int getSelectionEnd() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
+
         public String getSelectedText() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
     }
 
     private Action cancelAction = new AbstractAction() {
-        public void actionPerformed(final ActionEvent e) {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
             close();
             isCancelled = true;
         }
@@ -133,46 +180,52 @@ public class ProgressMonitor implements Accessible {
     protected AccessibleContext accessibleContext;
 
     private static final int DEFAULT_MILLIS_TO_DECIDE = 500;
+
     private static final int DEFAULT_MILLIS_TO_POPUP = 2000;
 
     private int millisToDecideToPopup = DEFAULT_MILLIS_TO_DECIDE;
+
     private int millisToPopup = DEFAULT_MILLIS_TO_POPUP;
+
     private Timer shouldShowTimer;
 
     private int max;
+
     private int min;
+
     private int progress;
 
     private JProgressBar progressBar;
+
     private JDialog progressDialog;
+
     private Component parentComponent;
 
     private JLabel noteLabel;
+
     private Object message;
 
     private boolean shouldShow;
+
     private boolean isCancelled;
 
-    public ProgressMonitor(final Component parentComponent, final Object message,
-                           final String note, final int min, final int max) {
+    public ProgressMonitor(Component parentComponent, Object message, String note, int min,
+            int max) {
         this.parentComponent = parentComponent;
         this.message = message;
         noteLabel = new JLabel(note);
         this.min = min;
         progress = min;
         this.max = max;
-
         startShouldShowTimer();
     }
 
-    public void setProgress(final int progress) {
+    public void setProgress(int progress) {
         int oldProgress = this.progress;
-
         if (progress >= max) {
             close();
         } else if (progress > this.progress) {
             this.progress = progress;
-
             if (shouldShow && !isCancelled && progressVisible(oldProgress, progress)) {
                 if (progressDialog == null) {
                     showDialog();
@@ -193,7 +246,7 @@ public class ProgressMonitor implements Accessible {
         return min;
     }
 
-    public void setMinimum(final int min) {
+    public void setMinimum(int min) {
         this.min = min;
         if (progressBar != null) {
             progressBar.setMinimum(min);
@@ -204,7 +257,7 @@ public class ProgressMonitor implements Accessible {
         return max;
     }
 
-    public void setMaximum(final int max) {
+    public void setMaximum(int max) {
         this.max = max;
         if (progressBar != null) {
             progressBar.setMaximum(max);
@@ -215,7 +268,7 @@ public class ProgressMonitor implements Accessible {
         return isCancelled;
     }
 
-    public void setMillisToDecideToPopup(final int millisToDecideToPopup) {
+    public void setMillisToDecideToPopup(int millisToDecideToPopup) {
         this.millisToDecideToPopup = millisToDecideToPopup;
         if (shouldShowTimer != null) {
             shouldShowTimer.setDelay(millisToDecideToPopup);
@@ -226,7 +279,7 @@ public class ProgressMonitor implements Accessible {
         return millisToDecideToPopup;
     }
 
-    public void setMillisToPopup(final int millisToPopup) {
+    public void setMillisToPopup(int millisToPopup) {
         this.millisToPopup = millisToPopup;
     }
 
@@ -234,7 +287,7 @@ public class ProgressMonitor implements Accessible {
         return millisToPopup;
     }
 
-    public void setNote(final String note) {
+    public void setNote(String note) {
         noteLabel.setText(note);
     }
 
@@ -249,13 +302,15 @@ public class ProgressMonitor implements Accessible {
         return accessibleContext;
     }
 
-
     private void startShouldShowTimer() {
         shouldShow = false;
         if (shouldShowTimer == null) {
             shouldShowTimer = new Timer(millisToDecideToPopup, new AbstractAction() {
-                public void actionPerformed(final ActionEvent e) {
-                    shouldShow = (max - min) * millisToDecideToPopup > millisToPopup * (progress - min);
+                private static final long serialVersionUID = 1L;
+
+                public void actionPerformed(ActionEvent e) {
+                    shouldShow = (max - min) * millisToDecideToPopup > millisToPopup
+                            * (progress - min);
                 }
             });
         }
@@ -265,29 +320,27 @@ public class ProgressMonitor implements Accessible {
 
     private void showDialog() {
         progressBar = new JProgressBar(min, max);
-
         JButton cancelButton = new JButton();
         cancelButton.setAction(cancelAction);
         cancelButton.setText(UIManager.getString("OptionPane.cancelButtonText"));
         cancelButton.setMnemonic(UIManager.getInt("OptionPane.cancelButtonMnemonic"));
-
-        Object[] topPanel = {message, noteLabel, progressBar};
-        Object[] bottomPanel = {cancelButton};
+        Object[] topPanel = { message, noteLabel, progressBar };
+        Object[] bottomPanel = { cancelButton };
         JOptionPane dialogCreator = new JOptionPane(topPanel, JOptionPane.INFORMATION_MESSAGE,
-                                                    JOptionPane.DEFAULT_OPTION, null, bottomPanel);
-
-        progressDialog = dialogCreator.createDialog(parentComponent, UIManager.getString("ProgressMonitor.progressText"));
+                JOptionPane.DEFAULT_OPTION, null, bottomPanel);
+        progressDialog = dialogCreator.createDialog(parentComponent, UIManager
+                .getString("ProgressMonitor.progressText"));
         progressDialog.setModal(false);
-
-        progressDialog.addWindowListener(new WindowAdapter(){
-            public void windowClosing(final WindowEvent e) {
+        progressDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
                 cancelAction.actionPerformed(null);
             }
         });
         progressDialog.setVisible(true);
     }
 
-    private boolean progressVisible(final int oldProgress, final int newProgress) {
+    private boolean progressVisible(int oldProgress, int newProgress) {
         return (newProgress - oldProgress) * 100 >= (max - min);
     }
 }

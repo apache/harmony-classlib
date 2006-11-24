@@ -15,113 +15,124 @@
  *  limitations under the License.
  */
 
-/**
- * @author Vadim Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-
 import java.io.Serializable;
 import java.util.Vector;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.UIResource;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
-public class JTabbedPane extends JComponent
-    implements Serializable, Accessible, SwingConstants {
+/**
+ * <p>
+ * <i>JTabbedPane</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class JTabbedPane extends JComponent implements Serializable, Accessible, SwingConstants {
+    private static final long serialVersionUID = 1671634173365704280L;
 
     // TODO: implement
-    protected class AccessibleJTabbedPane extends AccessibleJComponent
-            implements AccessibleSelection, ChangeListener {
+    protected class AccessibleJTabbedPane extends AccessibleJComponent implements
+            AccessibleSelection, ChangeListener {
+        private static final long serialVersionUID = 8645220594633986096L;
 
         public AccessibleJTabbedPane() {
         }
 
-        public void addAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void addAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void clearAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleAt(final Point p) {
-            throw new UnsupportedOperationException("Not implemented");
+        @Override
+        public Accessible getAccessibleAt(Point p) {
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        @Override
+        public Accessible getAccessibleChild(int i) {
+            throw new NotImplementedException();
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public int getAccessibleSelectionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleChildSelected(int i) {
+            throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void removeAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void selectAllAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public void stateChanged(final ChangeEvent e) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void stateChanged(ChangeEvent e) {
+            throw new NotImplementedException();
         }
     }
 
     protected class ModelListener implements ChangeListener, Serializable {
-        public void stateChanged(final ChangeEvent e) {
+        private static final long serialVersionUID = 1L;
+
+        public void stateChanged(ChangeEvent e) {
             fireStateChanged();
         }
     }
 
     private class JTabInfo extends AbstractButton {
+        private static final long serialVersionUID = 1L;
+
         private Component comp;
+
         private boolean enabled = true;
+
         private Icon disabledIcon;
 
-        public JTabInfo(final String title, final Icon icon,
-                 final Component comp, final String tip) {
+        public JTabInfo(String title, Icon icon, Component comp, String tip) {
             setModel(new DefaultButtonModel());
             setText(title);
             setIcon(icon);
@@ -132,7 +143,7 @@ public class JTabbedPane extends JComponent
             setMnemonic(-1);
         }
 
-        public void setComp(final Component comp) {
+        public void setComp(Component comp) {
             this.comp = comp;
         }
 
@@ -140,18 +151,22 @@ public class JTabbedPane extends JComponent
             return comp;
         }
 
+        @Override
         public boolean isEnabled() {
             return enabled;
         }
 
-        public void setEnabled(final boolean enabled) {
+        @Override
+        public void setEnabled(boolean enabled) {
             this.enabled = enabled;
         }
 
-        public void setDisabledIcon(final Icon icon) {
+        @Override
+        public void setDisabledIcon(Icon icon) {
             disabledIcon = icon;
         }
 
+        @Override
         public Icon getDisabledIcon() {
             return disabledIcon;
         }
@@ -170,22 +185,22 @@ public class JTabbedPane extends JComponent
     protected int tabPlacement = TOP;
 
     private int tabLayoutPolicy = WRAP_TAB_LAYOUT;
-    private Vector tabInfos = new Vector(2);
+
+    private Vector<JTabInfo> tabInfos = new Vector<JTabInfo>(2);
 
     public JTabbedPane() {
         this(TOP, WRAP_TAB_LAYOUT);
     }
 
-    public JTabbedPane(final int tabPlacement) {
+    public JTabbedPane(int tabPlacement) {
         this(tabPlacement, WRAP_TAB_LAYOUT);
     }
 
-    public JTabbedPane(final int tabPlacement, final int tabLayoutPolicy) {
+    public JTabbedPane(int tabPlacement, int tabLayoutPolicy) {
         setModel(new DefaultSingleSelectionModel());
         setTabPlacement(tabPlacement);
         setTabLayoutPolicy(tabLayoutPolicy);
         ToolTipManager.sharedInstance().registerComponent(this);
-
         updateUI();
     }
 
@@ -194,7 +209,8 @@ public class JTabbedPane extends JComponent
      * it is added to the tabbed pane without creating a new tab. It can be
      * used in UI's to add custom components.
      */
-    public Component add(final Component component) {
+    @Override
+    public Component add(Component component) {
         if (component instanceof UIResource) {
             addImpl(component, null, -1);
         } else {
@@ -203,60 +219,59 @@ public class JTabbedPane extends JComponent
         return component;
     }
 
-    public Component add(final Component component, final int index) {
+    @Override
+    public Component add(Component component, int index) {
         insertTab(component.getName(), null, component, null, index);
         return component;
     }
 
-    public void add(final Component component, final Object constraints) {
+    @Override
+    public void add(Component component, Object constraints) {
         add(component, constraints, getTabCount());
     }
 
-    public void add(final Component component,
-                    final Object constraints,
-                    final int index) {
+    @Override
+    public void add(Component component, Object constraints, int index) {
         Icon icon = null;
         String title = null;
         if (constraints instanceof Icon) {
-            icon = (Icon)constraints;
+            icon = (Icon) constraints;
         } else if (constraints instanceof String) {
-            title = (String)constraints;
+            title = (String) constraints;
         } else {
             title = component.getName();
         }
-
         insertTab(title, icon, component, null, index);
     }
 
-    public Component add(final String title, final Component component) {
+    @Override
+    public Component add(String title, Component component) {
         insertTab(title, null, component, null, getTabCount());
         return component;
     }
 
-    public void addTab(final String title, final Component component) {
+    public void addTab(String title, Component component) {
         insertTab(title, null, component, null, getTabCount());
     }
 
-    public void addTab(final String title, final Icon icon,
-                       final Component component) {
+    public void addTab(String title, Icon icon, Component component) {
         insertTab(title, icon, component, null, getTabCount());
     }
 
-    public void addTab(final String title, final Icon icon,
-                       final Component component, final String tip) {
+    public void addTab(String title, Icon icon, Component component, String tip) {
         insertTab(title, icon, component, tip, getTabCount());
     }
 
-    public void addChangeListener(final ChangeListener l) {
+    public void addChangeListener(ChangeListener l) {
         listenerList.add(ChangeListener.class, l);
     }
 
-    public void removeChangeListener(final ChangeListener l) {
+    public void removeChangeListener(ChangeListener l) {
         listenerList.remove(ChangeListener.class, l);
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList.getListeners(ChangeListener.class);
+        return listenerList.getListeners(ChangeListener.class);
     }
 
     protected ChangeListener createChangeListener() {
@@ -270,23 +285,22 @@ public class JTabbedPane extends JComponent
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
-        return accessibleContext == null
-            ? (accessibleContext = new AccessibleJTabbedPane())
-            : accessibleContext;
+        return accessibleContext == null ? (accessibleContext = new AccessibleJTabbedPane())
+                : accessibleContext;
     }
 
-    public Rectangle getBoundsAt(final int index) {
+    public Rectangle getBoundsAt(int index) {
         return getUI() != null ? getUI().getTabBounds(this, index) : null;
     }
 
-    public void setComponentAt(final int index, final Component comp) {
+    public void setComponentAt(int index, Component comp) {
         int oldIndex = indexOfComponent(comp);
         if (oldIndex == index) {
             return;
         }
         JTabInfo tabInfo = getTabAt(index);
-
         if (oldIndex != -1) {
             removeTabAt(oldIndex);
         }
@@ -297,7 +311,7 @@ public class JTabbedPane extends JComponent
         tabInfo.setComp(comp);
     }
 
-    public Component getComponentAt(final int index) {
+    public Component getComponentAt(int index) {
         return getTabAt(index).getComp();
     }
 
@@ -309,33 +323,34 @@ public class JTabbedPane extends JComponent
         return getUI() != null ? getUI().getTabRunCount(this) : 0;
     }
 
-    public void setTitleAt(final int index, final String title) {
+    public void setTitleAt(int index, String title) {
         getTabAt(index).setText(title);
         repaint();
     }
 
-    public String getTitleAt(final int index) {
+    public String getTitleAt(int index) {
         return getTabAt(index).getText();
     }
 
-    public String getToolTipText(final MouseEvent event) {
+    @Override
+    public String getToolTipText(MouseEvent event) {
         int index = indexAtLocation(event.getX(), event.getY());
         return index > -1 ? getToolTipTextAt(index) : super.getToolTipText(event);
     }
 
-    public void setToolTipTextAt(final int index, final String toolTipText) {
+    public void setToolTipTextAt(int index, String toolTipText) {
         getTabAt(index).setToolTipText(toolTipText);
     }
 
-    public String getToolTipTextAt(final int index) {
+    public String getToolTipTextAt(int index) {
         return getTabAt(index).getToolTipText();
     }
 
-    public int indexAtLocation(final int x, final int y) {
+    public int indexAtLocation(int x, int y) {
         return getUI() != null ? getUI().tabForCoordinate(this, x, y) : -1;
     }
 
-    public int indexOfComponent(final Component comp) {
+    public int indexOfComponent(Component comp) {
         for (int i = 0; i < tabInfos.size(); i++) {
             if (comp == getComponentAt(i)) {
                 return i;
@@ -344,7 +359,7 @@ public class JTabbedPane extends JComponent
         return -1;
     }
 
-    public int indexOfTab(final Icon icon) {
+    public int indexOfTab(Icon icon) {
         for (int i = 0; i < tabInfos.size(); i++) {
             if (icon == getIconAt(i)) {
                 return i;
@@ -353,7 +368,7 @@ public class JTabbedPane extends JComponent
         return -1;
     }
 
-    public int indexOfTab(final String title) {
+    public int indexOfTab(String title) {
         for (int i = 0; i < tabInfos.size(); i++) {
             if (title == getTitleAt(i)) {
                 return i;
@@ -362,9 +377,7 @@ public class JTabbedPane extends JComponent
         return -1;
     }
 
-    public void insertTab(final String title, final Icon icon,
-                          final Component comp, final String tip,
-                          final int index) {
+    public void insertTab(String title, Icon icon, Component comp, String tip, int index) {
         int oldIndex = comp != null ? indexOfComponent(comp) : -1;
         if (oldIndex != -1) {
             tabInfos.remove(oldIndex);
@@ -372,20 +385,19 @@ public class JTabbedPane extends JComponent
         String realTitle = title == null ? "" : title;
         JTabInfo tabInfo = new JTabInfo(realTitle, icon, comp, tip);
         tabInfos.add(index, tabInfo);
-
         if (oldIndex == -1) {
             addComponentToContainer(comp);
         }
-
         if (getTabCount() == 1) {
             setSelectedIndex(0);
-        } else if (index <= getSelectedIndex() && (oldIndex == -1 || oldIndex > getSelectedIndex())) {
+        } else if (index <= getSelectedIndex()
+                && (oldIndex == -1 || oldIndex > getSelectedIndex())) {
             setSelectedIndex(getSelectedIndex() + 1);
         }
-
         repaint();
     }
 
+    @Override
     protected String paramString() {
         return super.paramString();
     }
@@ -394,12 +406,12 @@ public class JTabbedPane extends JComponent
      * If <code>component</code> is <code>instanceof UIResource</code>,
      * it is removed without removing any tab.
      */
-    public void remove(final Component comp) {
+    @Override
+    public void remove(Component comp) {
         if (comp instanceof UIResource) {
             removeComponentFromContainer(comp);
             return;
         }
-
         int index = indexOfComponent(comp);
         if (index != -1) {
             removeTabAt(index);
@@ -410,126 +422,115 @@ public class JTabbedPane extends JComponent
      * If <code>component</code> is <code>instanceof UIResource</code>,
      * it is removed without removing any tab.
      */
-    public void remove(final int index) {
+    @Override
+    public void remove(int index) {
         if (getComponent(index) instanceof UIResource) {
             super.remove(index);
             return;
         }
-
         removeTabAt(index);
     }
 
-    public void removeTabAt(final int index) {
+    public void removeTabAt(int index) {
         Component comp = getComponentAt(index);
-
         if (getSelectedIndex() >= getTabCount() - 1) {
             setSelectedIndex(getTabCount() - 2);
         }
-
         tabInfos.remove(index);
-
         removeComponentFromContainer(comp);
-
         comp.setVisible(true);
-
         repaint();
     }
 
+    @Override
     public void removeAll() {
         super.removeAll();
         tabInfos.removeAllElements();
     }
 
-    public void setBackgroundAt(final int index, final Color background) {
+    public void setBackgroundAt(int index, Color background) {
         Color realBackground = background == null ? getBackground() : background;
         getTabAt(index).setBackground(realBackground);
-
         repaint();
     }
 
-    public Color getBackgroundAt(final int index) {
+    public Color getBackgroundAt(int index) {
         return getTabAt(index).getBackground();
     }
 
-    public void setForegroundAt(final int index, final Color foreground) {
+    public void setForegroundAt(int index, Color foreground) {
         Color realForeground = foreground == null ? getForeground() : foreground;
         getTabAt(index).setForeground(realForeground);
         repaint();
     }
 
-    public Color getForegroundAt(final int index) {
+    public Color getForegroundAt(int index) {
         return getTabAt(index).getForeground();
     }
 
-    public void setDisabledIconAt(final int index, final Icon disabledIcon) {
+    public void setDisabledIconAt(int index, Icon disabledIcon) {
         getTabAt(index).setDisabledIcon(disabledIcon);
     }
 
-    public Icon getDisabledIconAt(final int index) {
+    public Icon getDisabledIconAt(int index) {
         return getTabAt(index).getDisabledIcon();
     }
 
-    public void setDisplayedMnemonicIndexAt(final int tabIndex,
-                                            final int mnemonicIndex) {
+    public void setDisplayedMnemonicIndexAt(int tabIndex, int mnemonicIndex) {
         getTabAt(tabIndex).setDisplayedMnemonicIndex(mnemonicIndex);
     }
 
-    public int getDisplayedMnemonicIndexAt(final int index) {
+    public int getDisplayedMnemonicIndexAt(int index) {
         return getTabAt(index).getDisplayedMnemonicIndex();
     }
 
-    public void setEnabledAt(final int index, final boolean enabled) {
+    public void setEnabledAt(int index, boolean enabled) {
         getTabAt(index).setEnabled(enabled);
         repaint();
     }
 
-    public boolean isEnabledAt(final int index) {
+    public boolean isEnabledAt(int index) {
         return getTabAt(index).isEnabled();
     }
 
-    public void setIconAt(final int index, final Icon icon) {
+    public void setIconAt(int index, Icon icon) {
         getTabAt(index).setIcon(icon);
         repaint();
     }
 
-    public Icon getIconAt(final int index) {
+    public Icon getIconAt(int index) {
         return getTabAt(index).getIcon();
     }
 
-    public void setMnemonicAt(final int tabIndex, final int mnemonic) {
+    public void setMnemonicAt(int tabIndex, int mnemonic) {
         int oldValue = getMnemonicAt(tabIndex);
         if (oldValue == mnemonic) {
             return;
         }
-
         InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW, true);
         inputMap.remove(KeyStroke.getKeyStroke(oldValue, InputEvent.ALT_DOWN_MASK));
         inputMap.put(KeyStroke.getKeyStroke(mnemonic, InputEvent.ALT_DOWN_MASK),
-                     StringConstants.MNEMONIC_ACTION);
-
+                StringConstants.MNEMONIC_ACTION);
         getTabAt(tabIndex).setMnemonic(mnemonic);
         repaint();
     }
 
-    public int getMnemonicAt(final int index) {
+    public int getMnemonicAt(int index) {
         return getTabAt(index).getMnemonic();
     }
 
-    public void setModel(final SingleSelectionModel model) {
+    public void setModel(SingleSelectionModel model) {
         if (changeListener == null) {
             changeListener = createChangeListener();
         }
-
         SingleSelectionModel oldValue = this.model;
         if (oldValue != null) {
             oldValue.removeChangeListener(changeListener);
         }
-
         this.model = model;
         if (model != null) {
             model.addChangeListener(changeListener);
         }
-
         firePropertyChange("model", oldValue, model);
     }
 
@@ -537,13 +538,11 @@ public class JTabbedPane extends JComponent
         return model;
     }
 
-    public void setSelectedComponent(final Component comp) {
+    public void setSelectedComponent(Component comp) {
         int index = indexOfComponent(comp);
         if (index == -1) {
-            throw new IllegalArgumentException(
-                "Component not found in the tabbed pane");
+            throw new IllegalArgumentException("Component not found in the tabbed pane");
         }
-
         setSelectedIndex(index);
     }
 
@@ -551,11 +550,10 @@ public class JTabbedPane extends JComponent
         return getModel().isSelected() ? getComponentAt(getSelectedIndex()) : null;
     }
 
-    public void setSelectedIndex(final int index) {
+    public void setSelectedIndex(int index) {
         if (index < -1 || index >= getTabCount()) {
             throw new IndexOutOfBoundsException("index < -1 || index >= tab count");
         }
-
         getModel().setSelectedIndex(index);
     }
 
@@ -563,12 +561,10 @@ public class JTabbedPane extends JComponent
         return getModel().getSelectedIndex();
     }
 
-    public void setTabLayoutPolicy(final int tabLayoutPolicy) {
-        if (tabLayoutPolicy != WRAP_TAB_LAYOUT
-                && tabLayoutPolicy != SCROLL_TAB_LAYOUT) {
+    public void setTabLayoutPolicy(int tabLayoutPolicy) {
+        if (tabLayoutPolicy != WRAP_TAB_LAYOUT && tabLayoutPolicy != SCROLL_TAB_LAYOUT) {
             throw new IllegalArgumentException("invalid tabLayoutPolicy");
         }
-
         int oldValue = this.tabLayoutPolicy;
         this.tabLayoutPolicy = tabLayoutPolicy;
         firePropertyChange("tabLayoutPolicy", oldValue, tabLayoutPolicy);
@@ -578,14 +574,11 @@ public class JTabbedPane extends JComponent
         return tabLayoutPolicy;
     }
 
-    public void setTabPlacement(final int tabPlacement) {
-        if (tabPlacement != TOP
-                && tabPlacement != BOTTOM
-                && tabPlacement != LEFT
+    public void setTabPlacement(int tabPlacement) {
+        if (tabPlacement != TOP && tabPlacement != BOTTOM && tabPlacement != LEFT
                 && tabPlacement != RIGHT) {
             throw new IllegalArgumentException("invalid tabPlacement");
         }
-
         int oldValue = this.tabPlacement;
         this.tabPlacement = tabPlacement;
         firePropertyChange("tabPlacement", oldValue, tabPlacement);
@@ -595,27 +588,29 @@ public class JTabbedPane extends JComponent
         return tabPlacement;
     }
 
-    public void setUI(final TabbedPaneUI ui) {
+    public void setUI(TabbedPaneUI ui) {
         super.setUI(ui);
     }
 
     public TabbedPaneUI getUI() {
-        return (TabbedPaneUI)ui;
+        return (TabbedPaneUI) ui;
     }
 
+    @Override
     public String getUIClassID() {
         return "TabbedPaneUI";
     }
 
+    @Override
     public void updateUI() {
-        setUI((TabbedPaneUI)UIManager.getUI(this));
+        setUI((TabbedPaneUI) UIManager.getUI(this));
     }
 
-    private JTabInfo getTabAt(final int index) {
-        return (JTabInfo)tabInfos.get(index);
+    private JTabInfo getTabAt(int index) {
+        return tabInfos.get(index);
     }
 
-    private void addComponentToContainer(final Component comp) {
+    private void addComponentToContainer(Component comp) {
         if (comp != null) {
             comp.setVisible(false);
             if (getComponentZOrder(comp) == -1) {
@@ -624,7 +619,7 @@ public class JTabbedPane extends JComponent
         }
     }
 
-    private void removeComponentFromContainer(final Component comp) {
+    private void removeComponentFromContainer(Component comp) {
         int componentIndex = getComponentZOrder(comp);
         if (componentIndex != -1) {
             super.remove(componentIndex);

@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Component;
@@ -25,103 +22,119 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
 import javax.accessibility.AccessibleStateSet;
 import javax.swing.plaf.MenuBarUI;
-
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <p>
+ * <i>JMenuBar</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JMenuBar extends JComponent implements Accessible, MenuElement {
+    private static final long serialVersionUID = 6620404810314292434L;
 
     // TODO: implement
-    protected class AccessibleJMenuBar extends AccessibleJComponent implements AccessibleSelection {
-        public void addAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+    protected class AccessibleJMenuBar extends AccessibleJComponent implements
+            AccessibleSelection {
+        private static final long serialVersionUID = 1L;
+
+        public void addAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void clearAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public Accessible getAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public int getAccessibleSelectionCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU_BAR;
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public boolean isAccessibleChildSelected(int i) {
+            throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+        public void removeAccessibleSelection(int i) {
+            throw new NotImplementedException();
         }
 
         public void selectAllAccessibleSelection() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new NotImplementedException();
         }
     }
 
     private final static String UI_CLASS_ID = "MenuBarUI";
 
     private SingleSelectionModel selectionModel = new DefaultSingleSelectionModel();
+
     private boolean borderPainted = true;
+
     private Insets margin;
 
     public JMenuBar() {
         updateUI();
     }
 
-    public JMenu add(final JMenu menu) {
+    public JMenu add(JMenu menu) {
         super.add(menu);
         return menu;
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return (accessibleContext == null) ? (accessibleContext = new AccessibleJMenuBar())
                 : accessibleContext;
     }
 
-    public JMenu getMenu(final int index) {
+    public JMenu getMenu(int index) {
         if (index < 0 || index >= getMenuCount()) {
             return null;
         }
         Component c = getComponent(index);
-        return (c instanceof JMenu) ? (JMenu)c : null;
+        return (c instanceof JMenu) ? (JMenu) c : null;
     }
 
     public int getMenuCount() {
         return getComponentCount();
     }
 
-    /**
-     * @deprecated
-     */
-    public Component getComponentAtIndex(final int index) {
+    @Deprecated
+    public Component getComponentAtIndex(int index) {
         return getComponent(index);
     }
 
-    public int getComponentIndex(final Component c) {
+    public int getComponentIndex(Component c) {
         for (int i = 0; i < getComponentCount(); i++) {
             if (getComponent(i) == c) {
                 return i;
@@ -134,7 +147,7 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         return Utilities.getSubElements(this);
     }
 
-    public void setSelectionModel(final SingleSelectionModel model) {
+    public void setSelectionModel(SingleSelectionModel model) {
         SingleSelectionModel oldValue = selectionModel;
         selectionModel = model;
         firePropertyChange(StringConstants.SELECTION_MODEL_PROPERTY, oldValue, selectionModel);
@@ -144,7 +157,7 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         return selectionModel;
     }
 
-    public void setSelected(final Component selection) {
+    public void setSelected(Component selection) {
         if (selectionModel != null) {
             selectionModel.setSelectedIndex(getComponentIndex(selection));
         }
@@ -154,25 +167,27 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         return (selectionModel != null) ? selectionModel.isSelected() : false;
     }
 
-    public void setBorderPainted(final boolean painted) {
+    public void setBorderPainted(boolean painted) {
         boolean oldValue = borderPainted;
         borderPainted = painted;
-        firePropertyChange(AbstractButton.BORDER_PAINTED_CHANGED_PROPERTY,
-                           oldValue,
-                           borderPainted);
+        firePropertyChange(AbstractButton.BORDER_PAINTED_CHANGED_PROPERTY, oldValue,
+                borderPainted);
     }
 
     public boolean isBorderPainted() {
         return borderPainted;
     }
 
-    protected void paintBorder(final Graphics g) {
+    @Override
+    protected void paintBorder(Graphics g) {
         if (isBorderPainted()) {
             super.paintBorder(g);
         }
     }
 
-    protected boolean processKeyBinding(final KeyStroke ks, final KeyEvent event, final int condition, final boolean pressed) {
+    @Override
+    protected boolean processKeyBinding(KeyStroke ks, KeyEvent event, int condition,
+            boolean pressed) {
         MenuSelectionManager.defaultManager().processKeyEvent(event);
         if (event.isConsumed()) {
             return true;
@@ -183,20 +198,21 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         return SwingUtilities.processKeyEventOnChildren(this, event);
     }
 
-    public void processKeyEvent(final KeyEvent e, final MenuElement[] path, final MenuSelectionManager manager) {
+    public void processKeyEvent(KeyEvent e, MenuElement[] path, MenuSelectionManager manager) {
     }
 
-    public void processMouseEvent(final MouseEvent event, final MenuElement[] path, final MenuSelectionManager manager) {
+    public void processMouseEvent(MouseEvent event, MenuElement[] path,
+            MenuSelectionManager manager) {
     }
 
-    public void menuSelectionChanged(final boolean isIncluded) {
+    public void menuSelectionChanged(boolean isIncluded) {
     }
 
     public Component getComponent() {
         return this;
     }
 
-    public void setHelpMenu(final JMenu menu) {
+    public void setHelpMenu(JMenu menu) {
         throw new Error("setHelpMenu() hasn't been implemented yet");
     }
 
@@ -204,7 +220,7 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         throw new Error("getHelpMenu() hasn't been implemented yet");
     }
 
-    public void setMargin(final Insets margin) {
+    public void setMargin(Insets margin) {
         Insets oldValue = this.margin;
         this.margin = margin;
         firePropertyChange(AbstractButton.MARGIN_CHANGED_PROPERTY, oldValue, margin);
@@ -214,20 +230,21 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         return margin;
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
     public MenuBarUI getUI() {
-        return (MenuBarUI)ui;
+        return (MenuBarUI) ui;
     }
 
-    public void setUI(final MenuBarUI ui) {
+    public void setUI(MenuBarUI ui) {
         super.setUI(ui);
     }
 
+    @Override
     public void updateUI() {
-        setUI((MenuBarUI)UIManager.getUI(this));
+        setUI((MenuBarUI) UIManager.getUI(this));
     }
 }
-
