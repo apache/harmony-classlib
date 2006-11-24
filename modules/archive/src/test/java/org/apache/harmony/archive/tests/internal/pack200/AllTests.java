@@ -18,6 +18,9 @@ package org.apache.harmony.archive.tests.internal.pack200;
 // NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
 // NOTE: Do not extract strings as messages; this code is still a work-in-progress
 // NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+import org.apache.harmony.archive.tests.internal.pack200.bytecode.ClassFileEntryTest;
+import org.apache.harmony.archive.tests.internal.pack200.bytecode.ConstantPoolTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -35,8 +38,10 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(AttributeLayoutMapTest.class);
 		suite.addTestSuite(AttributeLayoutTest.class);
+		suite.addTestSuite(ClassFileEntryTest.class);
 		suite.addTestSuite(CodecEncodingTest.class);
 		suite.addTestSuite(CodecTest.class);
+		suite.addTestSuite(ConstantPoolTest.class);
 		suite.addTestSuite(PopulationCodecTest.class);
 		suite.addTestSuite(SegmentOptionsTest.class);
 		suite.addTestSuite(SegmentTest.class);
