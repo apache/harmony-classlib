@@ -18,10 +18,8 @@ package org.apache.harmony.archive.internal.pack200;
 //NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
 //NOTE: Do not extract strings as messages; this code is still a work-in-progress
 //NOTE: Also, don't get rid of 'else' statements for the hell of it ...
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.SortedMap;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Pack200.Packer;

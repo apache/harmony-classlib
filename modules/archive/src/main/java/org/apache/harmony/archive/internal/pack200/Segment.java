@@ -15,20 +15,32 @@
  *  limitations under the License.
  */
 package org.apache.harmony.archive.internal.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
+// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+// NOTE: Do not extract strings as messages; this code is still a
+// work-in-progress
+// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.harmony.archive.internal.pack200.ClassFileEntry.SourceFile;
+import org.apache.harmony.archive.internal.pack200.bytecode.Attribute;
+import org.apache.harmony.archive.internal.pack200.bytecode.CPClass;
+import org.apache.harmony.archive.internal.pack200.bytecode.CPField;
+import org.apache.harmony.archive.internal.pack200.bytecode.CPMethod;
+import org.apache.harmony.archive.internal.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.archive.internal.pack200.bytecode.ClassFile;
+import org.apache.harmony.archive.internal.pack200.bytecode.ClassFileEntry;
+import org.apache.harmony.archive.internal.pack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.archive.internal.pack200.bytecode.ExceptionsAttribute;
+import org.apache.harmony.archive.internal.pack200.bytecode.SourceFileAttribute;
 
 /**
  * A Pack200 archive consists of one (or more) segments. Each segment is
@@ -65,23 +77,46 @@ public class Segment {
 	public class SegmentConstantPool {
 		public static final int ALL = 0;
 
+		public static final int CP_DOUBLE = 7;
+
+		// define in archive order
+
+		public static final int CP_FLOAT = 4; // TODO Check this
+
+		public static final int CP_INT = 3;
+
+		public static final int CP_LONG = 6;
+
+		public static final int CP_STRING = 5;
+
 		public static final int SIGNATURE = 2; // TODO and more to come --
-												// define in archive order
 
 		public static final int UTF_8 = 1;
 
 		public Object getValue(int cp, long value) throws Pack200Exception {
-			int index = (int)value;
-			if (index == -1)
+			int index = (int) value;
+			if (index == -1) {
 				return null;
-			if (index < 0)
+			} else if (index < 0) {
 				throw new Pack200Exception("Cannot have a negative range");
-			if (cp == UTF_8)
+			} else if (cp == UTF_8) {
 				return cpUTF8[index];
-			if (cp == SIGNATURE)
+			} else if (cp == CP_STRING) {
+				return cpString[index];
+			} else if (cp == SIGNATURE) {
 				return cpSignature[index];
-			// etc
-			throw new Error("Get value incomplete");
+			} else if (cp == CP_INT) {
+				return new Integer(cpInt[index]);
+			} else if (cp == CP_FLOAT) {
+				return new Float(cpFloat[index]);
+			} else if (cp == CP_DOUBLE) {
+				return new Double(cpDouble[index]);
+			} else if (cp == CP_LONG) {
+				return new Long(cpLong[index]);
+			} else {
+				// etc
+				throw new Error("Get value incomplete");
+			}
 		}
 	}
 
@@ -143,6 +178,10 @@ public class Segment {
 			total += delta;
 		}
 	}
+
+	private int archiveMajor;
+
+	private int archiveMinor;
 
 	private long archiveModtime;
 
@@ -238,6 +277,8 @@ public class Segment {
 
 	private int fieldAttrCount;
 
+	private ArrayList[][] fieldAttributes;
+
 	private String[][] fieldDescr;
 
 	private long[][] fieldFlags;
@@ -262,15 +303,15 @@ public class Segment {
 
 	private int innerClassCount;
 
-	private int archiveMajor;
-
 	private int methodAttrCount;
+
+	private ArrayList[][] methodAttributes;
 
 	private String[][] methodDescr;
 
-	private long[][] methodFlags;
+	private ExceptionsAttribute[][] methodExceptions;
 
-	private int archiveMinor;
+	private long[][] methodFlags;
 
 	private int numberOfFiles;
 
@@ -279,6 +320,68 @@ public class Segment {
 	private final SegmentConstantPool pool = new SegmentConstantPool();
 
 	private int segmentsRemaining;
+
+	private ClassFile buildClassFile(int classNum) {
+		ClassFile classFile = new ClassFile();
+		classFile.major = defaultClassMajorVersion; // TODO If
+		// classVersionMajor[] use
+		// that instead
+		classFile.minor = defaultClassMinorVersion; // TODO if
+		// classVersionMinor[] use
+		// that instead
+		// build constant pool
+		ClassConstantPool cp = classFile.pool;
+		String fullName = classThis[classNum];
+		// SourceFile attribute
+		int i = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
+		// -1+1=0, so str.substring(0)
+		// == str
+		String fileName = fullName.substring(i) + ".java";
+		classFile.attributes = new Attribute[] { (Attribute) cp
+				.add(new SourceFileAttribute(fileName)) };
+		// this/superclass
+		ClassFileEntry cfThis = cp.add(new CPClass(fullName));
+		ClassFileEntry cfSuper = cp.add(new CPClass(classSuper[classNum]));
+		// add interfaces
+		ClassFileEntry cfInterfaces[] = new ClassFileEntry[classInterfaces[classNum].length];
+		for (i = 0; i < cfInterfaces.length; i++) {
+			cfInterfaces[i] = cp.add(new CPClass(classInterfaces[classNum][i]));
+		}
+		// add fields
+		ClassFileEntry cfFields[] = new ClassFileEntry[classFieldCount[classNum]];
+		// fieldDescr and fieldFlags used to create this
+		for (i = 0; i < cfFields.length; i++) {
+			cfFields[i] = cp.add(new CPField(fieldDescr[classNum][i],
+					fieldFlags[classNum][i], fieldAttributes[classNum][i]));
+		}
+		// add methods
+		ClassFileEntry cfMethods[] = new ClassFileEntry[classMethodCount[classNum]];
+		// fieldDescr and fieldFlags used to create this
+		for (i = 0; i < cfMethods.length; i++) {
+			cfMethods[i] = cp.add(new CPMethod(methodDescr[classNum][i],
+					methodFlags[classNum][i], methodAttributes[classNum][i]));
+		}
+		// sort CP according to cp_All
+		cp.resolve();
+		// print out entries
+		debug("Constant pool looks like:");
+		for (i = 1; i <= cp.size(); i++) {
+			debug(String.valueOf(i) + ":" + String.valueOf(cp.get(i)));
+		}
+		// NOTE the indexOf is only valid after the cp.resolve()
+		// build up remainder of file
+		classFile.accessFlags = (int) classFlags[classNum];
+		classFile.thisClass = cp.indexOf(cfThis);
+		classFile.superClass = cp.indexOf(cfSuper);
+		// TODO placate format of file for writing purposes
+		classFile.interfaces = new int[cfInterfaces.length];
+		for (i = 0; i < cfInterfaces.length; i++) {
+			classFile.interfaces[i] = cp.indexOf(cfInterfaces[i]);
+		}
+		classFile.fields = cfFields;
+		classFile.methods = cfMethods;
+		return classFile;
+	}
 
 	/**
 	 * This is a local debugging message to aid the developer in writing this
@@ -462,89 +565,6 @@ public class Segment {
 	public int getNumberOfFiles() {
 		return numberOfFiles;
 	}
-	/**
-	 * Writes the segment to an output stream. The output stream should be pre-buffered for
-	 * efficiency. Also takes the same input stream for reading, since the file bits may
-	 * not be loaded and thus just copied from one stream to another.
-	 * Doesn't close the output stream when finished, in case there are more entries (e.g.
-	 * further segments) to be written.
-	 * @param out the JarOutputStream to write data to
-	 * @param in the same InputStream that was used to parse the segment
-	 * @throws IOException if an error occurs whilst reading or writing to the streams
-	 * @throws Pack200Exception if an error occurs whilst unpacking data
-	 */
-	public void writeJar(JarOutputStream out, InputStream in ) throws IOException, Pack200Exception {
-		processFileBits(in);
-		DataOutputStream dos = new DataOutputStream(out);
-		// out.setLevel(JarEntry.DEFLATED)
-		// now write the files out
-		int classNum = 0;
-		for(int i=0;i<numberOfFiles;i++) {
-			String name = fileName[i];
-			long modtime = archiveModtime + fileModtime[i];
-			boolean deflate = (fileOptions[i] & 1) == 1 || options.shouldDeflate(); 
-			boolean isClass = (fileOptions[i] & 2) == 2  || name == null || name.equals("");
-			if (isClass) {
-				// pull from headers
-				if (name == null || name.equals(""))
-					name = cpClass[classNum] + ".class";				
-			};
-			JarEntry entry = new JarEntry(name);
-			if (deflate)
-				entry.setMethod(JarEntry.DEFLATED);
-			entry.setTime(modtime);
-			out.putNextEntry(entry);
-			
-			if(isClass){
-				// write to dos
-				ClassFile classFile = buildClassFile(classNum);
-				classFile.write(dos);
-				dos.flush();
-				classNum++;
-			} else {
-				long size = fileSize[i];
-				entry.setSize(size);
-				// TODO pull from in
-				byte[] data = fileBits[i];
-				out.write(data);
-			}
-		}
-		dos.flush();
-		out.finish();
-		out.flush();
-	}
-
-	private ClassFile buildClassFile(int classNum) {
-		ClassFile classFile = new ClassFile();
-		classFile.major = defaultClassMajorVersion; // TODO If classVersionMajor[] use that instead
-		classFile.minor = defaultClassMinorVersion; // TODO if classVersionMinor[] use that instead
-		// build constant pool
-		ClassFileEntry cfThis = new ConstantPoolEntry.Class(classThis[classNum]);
-		ClassFileEntry cfSuper = new ConstantPoolEntry.Class(classSuper[classNum]);
-		ClassFileEntry cfInterfaces[] = new ClassFileEntry[classInterfaces[classNum].length];
-		for(int i=0;i<cfInterfaces.length;i++) {
-			cfInterfaces[i] = new ConstantPoolEntry.Class(classInterfaces[classNum][i]);
-		}
-		ClassConstantPool cp = classFile.pool;
-		cp.add(cfThis);
-		cp.add(cfSuper);
-		// build up remainder of file
-		classFile.accessFlags = (int) classFlags[classNum];
-		classFile.thisClass = cp.indexOf(cfThis);
-		classFile.superClass = cp.indexOf(cfSuper);
-		// TODO placate format of file for writing purposes
-		classFile.interfaces = new int[0];
-		classFile.fields = new int[0];
-		classFile.methods = new int[0];
-		SourceFile sf;
-		classFile.attributes = new ClassFileEntry.Attribute[] { sf = new ClassFileEntry.SourceFile(classThis[classNum]  + ".java") };
-		cp.add(sf);
-
-		// sort CP according to cp_All
-		cp.resolve();
-
-		return classFile;
-	}
 
 	private SegmentOptions getOptions() {
 		return options;
@@ -605,6 +625,75 @@ public class Segment {
 		attributeDefinitionMap = new AttributeLayoutMap();
 	}
 
+	/**
+	 * @param in
+	 * @throws Pack200Exception
+	 * @throws IOException
+	 */
+	private void parseAttributeMethodExceptions(InputStream in)
+			throws Pack200Exception, IOException {
+		// TODO Should refactor this stuff into the layout somehow
+		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
+				"Exceptions", AttributeLayout.CONTEXT_METHOD);
+		Codec codec = layout.getCodec();
+		methodExceptions = new ExceptionsAttribute[classCount][];
+		int[][] numExceptions = new int[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			numExceptions[i] = new int[methodFlags[i].length];
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				long flag = methodFlags[i][j];
+				if (layout.matches(flag)) {
+					numExceptions[i][j] = (int) codec.decode(in);
+				}
+			}
+		}
+		for (int i = 0; i < classCount; i++) {
+			methodExceptions[i] = new ExceptionsAttribute[methodFlags[i].length];
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				long flag = methodFlags[i][j];
+				int n = numExceptions[i][j];
+				CPClass[] exceptions = new CPClass[n];
+				if (layout.matches(flag)) {
+					for (int k = 0; k < n; k++) {
+						long result = codec.decode(in);
+						exceptions[k] = new CPClass(cpClass[(int) result]);
+					}
+				}
+				methodExceptions[i][j] = new ExceptionsAttribute(exceptions);
+				methodAttributes[i][j].add(methodExceptions[i][j]);
+			}
+		}
+	}
+
+	/**
+	 * @param in
+	 * 
+	 */
+	private void parseAttributeMethodSignature(InputStream in)
+			throws Pack200Exception, IOException {
+		parseAttributeUnknown(AttributeLayout.ATTRIBUTE_SIGNATURE,
+				AttributeLayout.CONTEXT_METHOD, methodFlags);
+	}
+
+	/**
+	 * @param name
+	 * @param flags
+	 * @throws Pack200Exception
+	 */
+	private void parseAttributeUnknown(String name, int context, long[][] flags)
+			throws Pack200Exception {
+		debug("Parsing unknown attributes for " + name);
+		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
+				name, context);
+		for (int i = 0; i < flags.length; i++) {
+			for (int j = 0; j < flags[i].length; j++) {
+				if (layout.matches(flags[i][j]))
+					throw new Error("We've got data for " + name
+							+ " and we don't know what to do with it (yet)");
+			}
+		}
+	}
+
 	private void parseBcBands(InputStream in) {
 		debug("Unimplemented bc_bands");
 	}
@@ -625,17 +714,19 @@ public class Segment {
 		debug("unimplemented class_attr_indexes");
 		debug("unimplemented class_attr_calls");
 		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
-				"SourceFile", AttributeLayout.CONTEXT_CLASS);
+				AttributeLayout.ATTRIBUTE_SOURCE_FILE,
+				AttributeLayout.CONTEXT_CLASS);
 		for (int i = 0; i < classCount; i++) {
 			long flag = classFlags[i];
 			if (layout.matches(flag)) {
 				// we've got a value to read
+				// TODO File this as a sourcefile attribute and don't generate
+				// everything below
 				long result = layout.getCodec().decode(in);
 				Object value = layout.getValue(result, this);
-				debug("Processed value " + value + " for SourceFile"); 
+				debug("Processed value " + value + " for SourceFile");
 			}
 		}
-		debug("unimplemented class_SourceFile_RUN");
 		debug("unimplemented class_EnclosingMethod_RC");
 		debug("unimplemented class_EnclosingMethod_RDN");
 		debug("unimplemented class_Signature_RS");
@@ -658,10 +749,10 @@ public class Segment {
 		classInterfaces = new String[classCount][];
 		int[] classInterfaceLengths = decodeBandInt("class_interface_count",
 				in, Codec.DELTA5, classCount);
-		for (int i = 0; i < classCount; i++) {
-			classInterfaces[i] = parseReferences("class_interface", in,
-					Codec.DELTA5, classInterfaceLengths[i], cpClass);
-		}
+		// for (int i = 0; i < classCount; i++) {
+		classInterfaces = parseReferences("class_interface", in, Codec.DELTA5,
+				classCount, classInterfaceLengths, cpClass);
+		// }
 		classFieldCount = decodeBandInt("class_field_count", in, Codec.DELTA5,
 				classCount);
 		classMethodCount = decodeBandInt("class_method_count", in,
@@ -702,7 +793,22 @@ public class Segment {
 		}
 	}
 
-	private void parseCodeBands(InputStream in) {
+	private void parseCodeBands(InputStream in) throws Pack200Exception {
+		// look through each method
+		int codeBands = 0;
+		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
+				AttributeLayout.ATTRIBUTE_CODE,
+				AttributeLayout.CONTEXT_METHOD);
+
+		for (int i = 0; i < classCount; i++) {
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				long flag = methodFlags[i][j];
+				if (layout.matches(flag)) 
+					codeBands++;
+			}
+		}
+		if (codeBands > 0)
+			throw new Error("Can't handle non-abstract, non-native methods/initialisers at the moment (found " + codeBands + " code bands)");
 		debug("unimplemented code_headers");
 		debug("unimplemented code_max_stack");
 		debug("unimplemented code_max_na_locals");
@@ -855,8 +961,8 @@ public class Segment {
 
 	private void parseCpLong(InputStream in) throws IOException,
 			Pack200Exception {
-		cpLong = parseFlags("cp_Long", in, cpLongCount, Codec.UDELTA5,
-				Codec.DELTA5);
+		cpLong = parseFlags("cp_Long", in, cpLongCount, new int[] { 1 },
+				Codec.UDELTA5, Codec.DELTA5)[0];
 	}
 
 	/**
@@ -1015,16 +1121,10 @@ public class Segment {
 
 	private void parseFieldBands(InputStream in) throws IOException,
 			Pack200Exception {
-		fieldDescr = new String[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			fieldDescr[i] = parseReferences("field_descr", in, Codec.DELTA5,
-					classFieldCount[i], cpDescriptor);
-		}
-		fieldFlags = new long[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			fieldFlags[i] = parseFlags("field_flags", in, classFieldCount[i],
-					Codec.UNSIGNED5, options.hasFieldFlagsHi());
-		}
+		fieldDescr = parseReferences("field_descr", in, Codec.DELTA5,
+				classCount, classFieldCount, cpDescriptor);
+		fieldFlags = parseFlags("field_flags", in, classCount, classFieldCount,
+				Codec.UNSIGNED5, options.hasFieldFlagsHi());
 		for (int i = 0; i < classCount; i++) {
 			for (int j = 0; j < fieldFlags[i].length; j++) {
 				long flag = fieldFlags[i][j];
@@ -1037,7 +1137,33 @@ public class Segment {
 					"There are attribute flags, and I don't know what to do with them");
 		debug("unimplemented field_attr_indexes");
 		debug("unimplemented field_attr_calls");
-		debug("unimplemented field_ConstantValueKQ");
+		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
+				"ConstantValue", AttributeLayout.CONTEXT_FIELD);
+		Codec codec = layout.getCodec();
+		fieldAttributes = new ArrayList[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
+			for (int j = 0; j < fieldFlags[i].length; j++) {
+				fieldAttributes[i][j] = new ArrayList();
+				long flag = fieldFlags[i][j];
+				if (layout.matches(flag)) {
+					// we've got a value to read
+					long result = codec.decode(in);
+					String desc = fieldDescr[i][j];
+					int colon = desc.indexOf(':');
+					// String name = desc.substring(0, colon);
+					String type = desc.substring(colon + 1);
+					// TODO Got to get better at this ... in any case, it should
+					// be e.g. KIB or KIH
+					if (type.equals("B") || type.equals("H"))
+						type = "I";
+					Object value = layout.getValue(result, type, this);
+					fieldAttributes[i][j]
+							.add(new ConstantValueAttribute(value));
+					debug("Processed value " + value + " for ConstantValue");
+				}
+			}
+		}
 		debug("unimplemented field_Signature_RS");
 		parseMetadataBands("field");
 	}
@@ -1060,6 +1186,15 @@ public class Segment {
 	 */
 	private void parseFileBands(InputStream in) throws IOException,
 			Pack200Exception {
+		if (false && System.getProperty("debug.pack200") != null) {
+			// TODO HACK
+			fileSize = new long[numberOfFiles];
+			fileModtime = new long[numberOfFiles];
+			fileOptions = new long[numberOfFiles];
+			fileName = new String[numberOfFiles];
+			Arrays.fill(fileName, "");
+			return;
+		}
 		long last;
 		fileName = parseReferences("file_name", in, Codec.UNSIGNED5,
 				numberOfFiles, cpUTF8);
@@ -1091,28 +1226,43 @@ public class Segment {
 	}
 
 	private long[] parseFlags(String name, InputStream in, int count,
-			Codec codec) throws IOException, Pack200Exception {
-		return parseFlags(name, in, count, codec, true);
-	}
-
-	private long[] parseFlags(String name, InputStream in, int count,
 			Codec codec, boolean hasHi) throws IOException, Pack200Exception {
-		return parseFlags(name, in, count, (hasHi ? codec : null), codec);
+		return parseFlags(name, in, 1, new int[] { count }, (hasHi ? codec
+				: null), codec)[0];
 	}
 
-	private long[] parseFlags(String name, InputStream in, int count,
-			Codec hiCodec, Codec loCodec) throws IOException, Pack200Exception {
-		long[] result = new long[count];
-		// TODO Refactor into band parsing
+	private long[][] parseFlags(String name, InputStream in, int count,
+			int counts[], Codec codec, boolean hasHi) throws IOException,
+			Pack200Exception {
+		return parseFlags(name, in, count, counts, (hasHi ? codec : null),
+				codec);
+	}
+
+	private long[][] parseFlags(String name, InputStream in, int count,
+			int counts[], Codec hiCodec, Codec loCodec) throws IOException,
+			Pack200Exception {
+		// TODO Move away from decoding into a parseBand type structure
+		if (count == 0) {
+			return new long[][] { {} };
+		}
+		long[][] result = new long[count][];
+		// TODO What happens when the decode here indicates a different
+		// encoding?
+		// TODO Move this to a decodeBandInt
 		long last = 0;
-		for (int i = 0; i < count && hiCodec != null; i++) {
-			last = hiCodec.decode(in, last);
-			result[i] = last << 32;
+		for (int j = 0; j < count; j++) {
+			result[j] = new long[counts[j]];
+			for (int i = 0; i < counts[j] && hiCodec != null; i++) {
+				last = hiCodec.decode(in, last);
+				result[j][i] = last << 32;
+			}
 		}
-		for (int i = 0; i < count; i++) {
-			last = loCodec.decode(in, last);
-			result[i] = result[i] | last;
-		}
+		last = 0;
+		for (int j = 0; j < count; j++)
+			for (int i = 0; i < counts[j]; i++) {
+				last = loCodec.decode(in, last);
+				result[j][i] = result[j][i] | last;
+			}
 		// TODO Remove debugging code
 		debug("Parsed *" + name + " (" + result.length + ")");
 		return result;
@@ -1175,17 +1325,10 @@ public class Segment {
 
 	private void parseMethodBands(InputStream in) throws IOException,
 			Pack200Exception {
-		methodDescr = new String[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			methodDescr[i] = parseReferences("method_descr", in, Codec.MDELTA5,
-					classMethodCount[i], cpDescriptor);
-		}
-		methodFlags = new long[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			methodFlags[i] = parseFlags("method_flags", in,
-					classMethodCount[i], Codec.UNSIGNED5, options
-							.hasMethodFlagsHi());
-		}
+		methodDescr = parseReferences("method_descr", in, Codec.MDELTA5,
+				classCount, classMethodCount, cpDescriptor);
+		methodFlags = parseFlags("method_flags", in, classCount,
+				classMethodCount, Codec.UNSIGNED5, options.hasMethodFlagsHi());
 		for (int i = 0; i < classCount; i++) {
 			for (int j = 0; j < methodFlags[i].length; j++) {
 				long flag = methodFlags[i][j];
@@ -1199,10 +1342,77 @@ public class Segment {
 		debug("unimplemented method_attr_count");
 		debug("unimplemented method_attr_indexes");
 		debug("unimplemented method_attr_calls");
-		debug("unimplemented method_Exceptions_N");
-		debug("unimplemented method_Exceptions_RC");
-		debug("unimplemented method_Signature_RS");
+		// assign empty method attributes
+		methodAttributes = new ArrayList[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			methodAttributes[i] = new ArrayList[methodFlags[i].length];
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				methodAttributes[i][j] = new ArrayList();
+			}
+		}
+		parseAttributeMethodExceptions(in);
+		parseAttributeMethodSignature(in);
 		parseMetadataBands("method");
+	}
+
+	/**
+	 * Helper method to parse <i>count</i> references from <code>in</code>,
+	 * using <code>codec</code> to decode the values as indexes into
+	 * <code>reference</code> (which is populated prior to this call). An
+	 * exception is thrown if a decoded index falls outside the range
+	 * [0..reference.length-1]. Unlike the other parseReferences, this
+	 * post-processes the result into an array of results.
+	 * 
+	 * @param name
+	 *            TODO
+	 * @param in
+	 *            the input stream to read from
+	 * @param codec
+	 *            the codec to use for decoding
+	 * @param count
+	 *            the number of references to decode
+	 * @param reference
+	 *            the array of values to use for the indexes; often
+	 *            {@link #cpUTF8}
+	 * 
+	 * @throws IOException
+	 *             if a problem occurs during reading from the underlying stream
+	 * @throws Pack200Exception
+	 *             if a problem occurs with an unexpected value or unsupported
+	 *             codec
+	 */
+	private String[][] parseReferences(String name, InputStream in,
+			BHSDCodec codec, int count, int counts[], String[] reference)
+			throws IOException, Pack200Exception {
+		if (count == 0) {
+			return new String[][] { {} };
+		}
+		String[][] result = new String[count][];
+		int sum = 0;
+		for (int i = 0; i < count; i++) {
+			result[i] = new String[counts[i]];
+			sum += counts[i];
+		}
+		// TODO Merge the decode and parsing of a multiple structure into one
+		String[] result1 = new String[sum];
+		int[] decode = decodeBandInt(name, in, codec, sum);
+		for (int i1 = 0; i1 < sum; i1++) {
+			int index = decode[i1];
+			if (index < 0 || index >= reference.length)
+				throw new Pack200Exception(
+						"Something has gone wrong during parsing references");
+			result1[i1] = reference[index];
+		}
+		String[] refs = result1;
+		// TODO Merge the decode and parsing of a multiple structure into one
+		int pos = 0;
+		for (int i = 0; i < count; i++) {
+			int num = counts[i];
+			result[i] = new String[num];
+			System.arraycopy(refs, pos, result[i], 0, num);
+			pos += num;
+		}
+		return result;
 	}
 
 	/**
@@ -1233,16 +1443,8 @@ public class Segment {
 	private String[] parseReferences(String name, InputStream in,
 			BHSDCodec codec, int count, String[] reference) throws IOException,
 			Pack200Exception {
-		String[] result = new String[count];
-		int[] decode = decodeBandInt(name, in, codec, count);
-		for (int i = 0; i < count; i++) {
-			int index = decode[i];
-			if (index < 0 || index >= reference.length)
-				throw new Pack200Exception(
-						"Something has gone wrong during parsing references");
-			result[i] = reference[index];
-		}
-		return result;
+		return parseReferences(name, in, codec, 1, new int[] { count },
+				reference)[0];
 	}
 
 	/**
@@ -1282,7 +1484,6 @@ public class Segment {
 		parseIcBands(in);
 		parseClassBands(in);
 		parseBcBands(in);
-		// TODO Re-enable these after completing class/bytecode bands
 		parseFileBands(in);
 	}
 
@@ -1319,6 +1520,34 @@ public class Segment {
 				fileBits[i][j] = (byte) Codec.BYTE1.decode(in);
 			}
 		}
+	}
+
+	/**
+	 * Sets the major version of this archive.
+	 * 
+	 * @param version
+	 *            the minor version of the archive
+	 * @throws Pack200Exception
+	 *             if the major version is not 150
+	 */
+	private void setArchiveMajorVersion(int version) throws Pack200Exception {
+		if (version != 150)
+			throw new Pack200Exception("Invalid segment major version");
+		archiveMajor = version;
+	}
+
+	/**
+	 * Sets the minor version of this archive
+	 * 
+	 * @param version
+	 *            the minor version of the archive
+	 * @throws Pack200Exception
+	 *             if the minor version is not 7
+	 */
+	private void setArchiveMinorVersion(int version) throws Pack200Exception {
+		if (version != 7)
+			throw new Pack200Exception("Invalid segment minor version");
+		archiveMinor = version;
 	}
 
 	public void setArchiveModtime(long archiveModtime) {
@@ -1405,34 +1634,6 @@ public class Segment {
 		innerClassCount = (int) value;
 	}
 
-	/**
-	 * Sets the major version of this archive.
-	 * 
-	 * @param version
-	 *            the minor version of the archive
-	 * @throws Pack200Exception
-	 *             if the major version is not 150
-	 */
-	private void setArchiveMajorVersion(int version) throws Pack200Exception {
-		if (version != 150)
-			throw new Pack200Exception("Invalid segment major version");
-		archiveMajor = version;
-	}
-
-	/**
-	 * Sets the minor version of this archive
-	 * 
-	 * @param version
-	 *            the minor version of the archive
-	 * @throws Pack200Exception
-	 *             if the minor version is not 7
-	 */
-	private void setArchiveMinorVersion(int version) throws Pack200Exception {
-		if (version != 7)
-			throw new Pack200Exception("Invalid segment minor version");
-		archiveMinor = version;
-	}
-
 	public void setNumberOfFiles(long value) {
 		numberOfFiles = (int) value;
 	}
@@ -1443,5 +1644,79 @@ public class Segment {
 
 	public void setSegmentsRemaining(long value) {
 		segmentsRemaining = (int) value;
+	}
+
+	/**
+	 * This is only here to provide a mechanism to turn off the warnings (and to
+	 * prevent anyone from accidentally removing them from the file)
+	 * 
+	 * @deprecated this will be deleted in the future, once I've started to use
+	 *             them
+	 * 
+	 */
+	int shutUpAboutTheStupidNotReadVariablesYetIHaventImplementedIt() {
+		return archiveMajor + archiveMinor + cpLong.hashCode()
+				+ icName.hashCode() + icOuterClass.hashCode()
+				+ icThisClass.hashCode();
+	}
+
+	/**
+	 * Writes the segment to an output stream. The output stream should be
+	 * pre-buffered for efficiency. Also takes the same input stream for
+	 * reading, since the file bits may not be loaded and thus just copied from
+	 * one stream to another. Doesn't close the output stream when finished, in
+	 * case there are more entries (e.g. further segments) to be written.
+	 * 
+	 * @param out
+	 *            the JarOutputStream to write data to
+	 * @param in
+	 *            the same InputStream that was used to parse the segment
+	 * @throws IOException
+	 *             if an error occurs whilst reading or writing to the streams
+	 * @throws Pack200Exception
+	 *             if an error occurs whilst unpacking data
+	 */
+	public void writeJar(JarOutputStream out, InputStream in)
+			throws IOException, Pack200Exception {
+		processFileBits(in);
+		DataOutputStream dos = new DataOutputStream(out);
+		// out.setLevel(JarEntry.DEFLATED)
+		// now write the files out
+		int classNum = 0;
+		for (int i = 0; i < numberOfFiles; i++) {
+			String name = fileName[i];
+			long modtime = archiveModtime + fileModtime[i];
+			boolean deflate = (fileOptions[i] & 1) == 1
+					|| options.shouldDeflate();
+			boolean isClass = (fileOptions[i] & 2) == 2 || name == null
+					|| name.equals("");
+			if (isClass) {
+				// pull from headers
+				if (name == null || name.equals(""))
+					name = classThis[classNum] + ".class";
+			}
+			JarEntry entry = new JarEntry(name);
+			if (deflate)
+				entry.setMethod(JarEntry.DEFLATED);
+			entry.setTime(modtime);
+			out.putNextEntry(entry);
+
+			if (isClass) {
+				// write to dos
+				ClassFile classFile = buildClassFile(classNum);
+				classFile.write(dos);
+				dos.flush();
+				classNum++;
+			} else {
+				long size = fileSize[i];
+				entry.setSize(size);
+				// TODO pull from in
+				byte[] data = fileBits[i];
+				out.write(data);
+			}
+		}
+		dos.flush();
+		out.finish();
+		out.flush();
 	}
 }
