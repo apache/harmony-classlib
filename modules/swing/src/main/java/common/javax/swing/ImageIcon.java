@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Component;
@@ -31,78 +28,101 @@ import java.awt.image.ImageObserver;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Locale;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleIcon;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleStateSet;
+import org.apache.harmony.luni.util.NotImplementedException;
 
+/**
+ * <p>
+ * <i>ImageIcon</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class ImageIcon implements Icon, Serializable, Accessible {
+    private static final long serialVersionUID = -6101950798829449111L;
 
-    //TODO: implement
-    protected class AccessibleImageIcon extends AccessibleContext
-        implements AccessibleIcon, Serializable {
+    // TODO: implement
+    protected class AccessibleImageIcon extends AccessibleContext implements AccessibleIcon,
+            Serializable {
+        private static final long serialVersionUID = -860693743697825660L;
 
-        public Accessible getAccessibleChild(final int i) {
-            return null;
+        @Override
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleChildrenCount() {
-            return 0;
+        @Override
+        public int getAccessibleChildrenCount() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleIndexInParent() {
-            return 0;
+        @Override
+        public int getAccessibleIndexInParent() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.ICON;
         }
 
-        public AccessibleStateSet getAccessibleStateSet() {
-            return null;
+        @Override
+        public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public Locale getLocale() throws IllegalComponentStateException {
-            return null;
+        @Override
+        public Locale getLocale() throws IllegalComponentStateException,
+                NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public void setAccessibleIconDescription(final String description) {
+        public void setAccessibleIconDescription(String description)
+                throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public String getAccessibleIconDescription() {
-            return getDescription();
+        public String getAccessibleIconDescription() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleIconWidth() {
-            return 0;
+        public int getAccessibleIconWidth() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        public int getAccessibleIconHeight() {
-            return 0;
+        public int getAccessibleIconHeight() throws NotImplementedException {
+            throw new NotImplementedException();
         }
-
     }
 
     protected static final Component component;
+
     protected static final MediaTracker tracker;
 
     private ImageObserver observer;
+
     private AccessibleContext accessibleContext;
+
     private Image image;
+
     private String description;
 
     /**
-     * unique id is to enable image loading tracking via MediaTracker
+     * Unique id is to enable image loading tracking via MediaTracker
      */
     private final int id = getUniqueID();
 
     /**
-     * is used for generating unique ids for icons
+     * The last unique ID assigned.
      */
     private static int lastAssignedID;
-
     static {
         component = new Panel();
         tracker = new MediaTracker(component);
@@ -116,60 +136,60 @@ public class ImageIcon implements Icon, Serializable, Accessible {
         return lastAssignedID++;
     }
 
-    public ImageIcon(final URL url, final String description) {
+    public ImageIcon(URL url, String description) {
         this(url);
         this.description = description;
     }
 
-    public ImageIcon(final String fileName, final String description) {
+    public ImageIcon(String fileName, String description) {
         this(fileName);
         this.description = description;
     }
 
-    public ImageIcon(final Image image, final String description) {
+    public ImageIcon(Image image, String description) {
         this(image);
         this.description = description;
     }
 
-    public ImageIcon(final byte[] imageData, final String description) {
+    public ImageIcon(byte[] imageData, String description) {
         this(imageData);
         this.description = description;
     }
 
-    public ImageIcon(final URL url) {
+    public ImageIcon(URL url) {
         image = Toolkit.getDefaultToolkit().createImage(url);
         loadImage(image);
         description = url.toString();
     }
 
-    public ImageIcon(final String fileName) {
+    public ImageIcon(String fileName) {
         image = Toolkit.getDefaultToolkit().createImage(fileName);
         loadImage(image);
         description = fileName;
     }
 
-    public ImageIcon(final Image image) {
+    public ImageIcon(Image image) {
         this.image = image;
         loadImage(image);
         Object comment = image.getProperty("comment", observer);
         if (comment instanceof String) {
-            description = (String)comment;
+            description = (String) comment;
         }
     }
 
-    public ImageIcon(final byte[] imageData) {
+    public ImageIcon(byte[] imageData) {
         image = Toolkit.getDefaultToolkit().createImage(imageData);
         loadImage(image);
         Object comment = image.getProperty("comment", observer);
         if (comment instanceof String) {
-            description = (String)comment;
+            description = (String) comment;
         }
     }
 
     public ImageIcon() {
     }
 
-    public synchronized void paintIcon(final Component c, final Graphics g, final int x, final int y) {
+    public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
         g.drawImage(image, x, y, (observer != null) ? observer : c);
     }
 
@@ -178,10 +198,11 @@ public class ImageIcon implements Icon, Serializable, Accessible {
                 : accessibleContext;
     }
 
-    public void setDescription(final String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public String toString() {
         return description != null ? description : super.toString();
     }
@@ -190,7 +211,7 @@ public class ImageIcon implements Icon, Serializable, Accessible {
         return description;
     }
 
-    public void setImageObserver(final ImageObserver observer) {
+    public void setImageObserver(ImageObserver observer) {
         this.observer = observer;
     }
 
@@ -198,18 +219,19 @@ public class ImageIcon implements Icon, Serializable, Accessible {
         return observer;
     }
 
-    public void setImage(final Image newImage) {
+    public void setImage(Image newImage) {
         tracker.removeImage(image);
         image = newImage;
         tracker.addImage(image, id);
     }
 
-    protected void loadImage(final Image image) {
+    protected void loadImage(Image image) {
         tracker.addImage(image, id);
         try {
             tracker.waitForID(id);
         } catch (InterruptedException e) {
-            System.out.println(e);
+            // reset the interrupt state for the current thread
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -229,4 +251,3 @@ public class ImageIcon implements Icon, Serializable, Accessible {
         return (image != null) ? image.getHeight(observer) : -1;
     }
 }
-

@@ -14,21 +14,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+/**
+ * <p>
+ * <i>JCheckBox</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JCheckBox extends JToggleButton {
+    private static final long serialVersionUID = 2823978782065130270L;
+
     protected class AccessibleJCheckBox extends AccessibleJToggleButton {
+        private static final long serialVersionUID = -7895379006459422318L;
+
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.CHECK_BOX;
         }
-    };
+    }
 
     public static final String BORDER_PAINTED_FLAT_CHANGED_PROPERTY = "borderPaintedFlat";
 
@@ -40,51 +52,55 @@ public class JCheckBox extends JToggleButton {
         super(null, null, false);
     }
 
-    public JCheckBox(final Action action) {
+    public JCheckBox(Action action) {
         super(action);
     }
 
-    public JCheckBox(final Icon icon) {
+    public JCheckBox(Icon icon) {
         super(null, icon, false);
     }
 
-    public JCheckBox(final Icon icon, final boolean selected) {
+    public JCheckBox(Icon icon, boolean selected) {
         super(null, icon, selected);
     }
 
-    public JCheckBox(final String text) {
+    public JCheckBox(String text) {
         super(text, null, false);
     }
 
-    public JCheckBox(final String text, final boolean selected) {
+    public JCheckBox(String text, boolean selected) {
         super(text, null, selected);
     }
 
-    public JCheckBox(final String text, final Icon icon) {
+    public JCheckBox(String text, Icon icon) {
         super(text, icon, false);
     }
 
-    public JCheckBox(final String text, final Icon icon, final boolean selected) {
+    public JCheckBox(String text, Icon icon, boolean selected) {
         super(text, icon, selected);
     }
 
-    void configurePropertyFromAction(final Action action, final Object propertyName) {
+    @Override
+    void configurePropertyFromAction(Action action, Object propertyName) {
         if (propertyName == null || propertyName.equals(Action.SMALL_ICON)) {
             return;
         }
         super.configurePropertyFromAction(action, propertyName);
     }
 
-    protected void init(final String text, final Icon icon) {
+    @Override
+    protected void init(String text, Icon icon) {
         setHorizontalAlignment(LEADING);
         super.init(text, icon);
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return (accessibleContext == null) ? (accessibleContext = new AccessibleJCheckBox())
                 : accessibleContext;
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
@@ -93,14 +109,14 @@ public class JCheckBox extends JToggleButton {
         return borderPaintedFlat;
     }
 
-    public void setBorderPaintedFlat(final boolean paintedFlat) {
+    public void setBorderPaintedFlat(boolean paintedFlat) {
         boolean oldValue = borderPaintedFlat;
         borderPaintedFlat = paintedFlat;
         firePropertyChange(BORDER_PAINTED_FLAT_CHANGED_PROPERTY, oldValue, borderPaintedFlat);
     }
 
+    @Override
     Object getActionPropertiesFilter() {
         return JRadioButton.NO_ICON_ACTION_PROPERTIES;
     }
 }
-

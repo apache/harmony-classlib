@@ -14,18 +14,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+
 package javax.swing;
 
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+/**
+ * <p>
+ * <i>JCheckBoxMenuItem</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JCheckBoxMenuItem extends JMenuItem {
+    private static final long serialVersionUID = 7596676985032928624L;
 
     protected class AccessibleJCheckBoxMenuItem extends AccessibleJMenuItem {
+        private static final long serialVersionUID = -5343091705345502936L;
+
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.CHECK_BOX;
         }
@@ -37,38 +48,38 @@ public class JCheckBoxMenuItem extends JMenuItem {
         this(null, null, false);
     }
 
-    public JCheckBoxMenuItem(final Icon icon) {
+    public JCheckBoxMenuItem(Icon icon) {
         this(null, icon, false);
     }
 
-    public JCheckBoxMenuItem(final String text) {
+    public JCheckBoxMenuItem(String text) {
         this(text, null, false);
     }
 
-    public JCheckBoxMenuItem(final String text, final Icon icon) {
+    public JCheckBoxMenuItem(String text, Icon icon) {
         this(text, icon, false);
     }
 
-    public JCheckBoxMenuItem(final String text, final boolean selected) {
+    public JCheckBoxMenuItem(String text, boolean selected) {
         this(text, null, selected);
     }
 
-    public JCheckBoxMenuItem(final String text, final Icon icon,
-                             final boolean selected) {
+    public JCheckBoxMenuItem(String text, Icon icon, boolean selected) {
         setDefaultModelAndFocus();
         setSelected(selected);
         init(text, icon);
     }
 
-    public JCheckBoxMenuItem(final Action action) {
+    public JCheckBoxMenuItem(Action action) {
         super(action);
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
-    public void setState(final boolean b) {
+    public void setState(boolean b) {
         setSelected(b);
     }
 
@@ -76,13 +87,14 @@ public class JCheckBoxMenuItem extends JMenuItem {
         return isSelected();
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return (accessibleContext == null) ? (accessibleContext = new AccessibleJCheckBoxMenuItem())
                 : accessibleContext;
     }
 
+    @Override
     ButtonModel createDefaultModel() {
         return new JToggleButton.ToggleButtonModel();
     }
-
 }

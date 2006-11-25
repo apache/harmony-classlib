@@ -15,22 +15,29 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.io.Serializable;
 import java.util.EventListener;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
+/**
+ * <p>
+ * <i>DefaultSingleSelectionModel</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DefaultSingleSelectionModel implements Serializable, SingleSelectionModel {
+    private static final long serialVersionUID = -8733648221309386264L;
+
     protected ChangeEvent changeEvent;
+
     protected EventListenerList listenerList = new EventListenerList();
 
     private int selectedIndex = -1;
@@ -40,7 +47,7 @@ public class DefaultSingleSelectionModel implements Serializable, SingleSelectio
         fireStateChanged();
     }
 
-    public void setSelectedIndex(final int index) {
+    public void setSelectedIndex(int index) {
         selectedIndex = index;
         fireStateChanged();
     }
@@ -53,20 +60,20 @@ public class DefaultSingleSelectionModel implements Serializable, SingleSelectio
         return selectedIndex > -1;
     }
 
-    public void addChangeListener(final ChangeListener l) {
+    public void addChangeListener(ChangeListener l) {
         listenerList.add(ChangeListener.class, l);
     }
 
-    public void removeChangeListener(final ChangeListener l) {
+    public void removeChangeListener(ChangeListener l) {
         listenerList.remove(ChangeListener.class, l);
     }
 
-    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])getListeners(ChangeListener.class);
+        return getListeners(ChangeListener.class);
     }
 
     protected void fireStateChanged() {
@@ -83,7 +90,6 @@ public class DefaultSingleSelectionModel implements Serializable, SingleSelectio
         if (changeEvent == null) {
             changeEvent = new ChangeEvent(this);
         }
-
         return changeEvent;
     }
 }

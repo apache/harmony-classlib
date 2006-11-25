@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.io.Serializable;
@@ -25,18 +22,30 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * <p>
+ * <i>InputMap</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class InputMap implements Serializable {
+    private static final long serialVersionUID = -6824008057073482094L;
 
     private InputMap parent;
-    private HashMap table;
 
-    public void put(final KeyStroke keyStroke, final Object key) {
+    private HashMap<KeyStroke, Object> table;
+
+    public void put(KeyStroke keyStroke, Object key) {
         if (keyStroke == null) {
             return;
         }
         if (key != null) {
             if (table == null) {
-                table = new HashMap();
+                table = new HashMap<KeyStroke, Object>();
             }
             table.put(keyStroke, key);
         } else {
@@ -44,7 +53,7 @@ public class InputMap implements Serializable {
         }
     }
 
-    public Object get(final KeyStroke keyStroke) {
+    public Object get(KeyStroke keyStroke) {
         Object key = null;
         if (table != null) {
             key = table.get(keyStroke);
@@ -52,11 +61,10 @@ public class InputMap implements Serializable {
         if (key == null && getParent() != null) {
             key = getParent().get(keyStroke);
         }
-
         return key;
     }
 
-    public void remove(final KeyStroke keyStroke) {
+    public void remove(KeyStroke keyStroke) {
         if (table != null) {
             table.remove(keyStroke);
         }
@@ -66,7 +74,7 @@ public class InputMap implements Serializable {
         if (table == null) {
             return new KeyStroke[0];
         }
-        return (KeyStroke[])table.keySet().toArray(new KeyStroke[table.size()]);
+        return table.keySet().toArray(new KeyStroke[table.size()]);
     }
 
     public KeyStroke[] allKeys() {
@@ -81,12 +89,12 @@ public class InputMap implements Serializable {
         if (parentKeys.length == 0) {
             return keys;
         }
-        HashSet keySet = new HashSet(Arrays.asList(keys));
+        HashSet<KeyStroke> keySet = new HashSet<KeyStroke>(Arrays.asList(keys));
         keySet.addAll(Arrays.asList(parentKeys));
-        return (KeyStroke[])keySet.toArray(new KeyStroke[keySet.size()]);
+        return keySet.toArray(new KeyStroke[keySet.size()]);
     }
 
-    public void setParent(final InputMap parent) {
+    public void setParent(InputMap parent) {
         this.parent = parent;
     }
 
@@ -103,5 +111,4 @@ public class InputMap implements Serializable {
     public int size() {
         return (table != null) ? table.size() : 0;
     }
-
 }

@@ -29,17 +29,17 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 
 public class GrayFilter extends RGBImageFilter {
-    private final ColorTransformationStrategy strategy;
-    private final float interval;
-
     private static final float INTERVAL_BOUND = 1f / 3;
-
-    public static Image createDisabledImage(final Image i) {
+    
+    public static Image createDisabledImage(Image i) {
         FilteredImageSource fis = new FilteredImageSource(i.getSource(), new GrayFilter(true, 50));
         return Toolkit.getDefaultToolkit().createImage(fis);
     }
+    
+    private final ColorTransformationStrategy strategy;
+    private final float interval;
 
-    public GrayFilter(final boolean bright, final int grayPercentage) {
+    public GrayFilter(boolean bright, int grayPercentage) {
         if (grayPercentage < 0 || grayPercentage > 100) {
             throw new IllegalArgumentException("Incorrect range for grayscale factor");
         }
@@ -55,7 +55,8 @@ public class GrayFilter extends RGBImageFilter {
         this.interval = INTERVAL_BOUND * (100 - grayPercentage) / 100f;
     }
 
-    public int filterRGB(final int x, final int y, final int rgb) {
+    @Override
+    public int filterRGB(int x, int y, int rgb) {
         int alpha = (rgb >> 24) & 0xFF;
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
@@ -78,11 +79,11 @@ public class GrayFilter extends RGBImageFilter {
     private class BrightingColorTransformationStrategy implements ColorTransformationStrategy {
         private final float lowBound;
 
-        public BrightingColorTransformationStrategy(final float lowBound) {
+        public BrightingColorTransformationStrategy(float lowBound) {
             this.lowBound = lowBound;
         }
 
-        public int getRGB(final float brightness) {
+        public int getRGB(float brightness) {
             float normalizedBrightness = lowBound + brightness * interval;
             return Color.HSBtoRGB(0, 0, normalizedBrightness);
         }
@@ -94,4 +95,3 @@ public class GrayFilter extends RGBImageFilter {
         }
     }
 }
-

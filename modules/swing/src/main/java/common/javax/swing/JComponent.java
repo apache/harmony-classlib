@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev, Anton Avtamonov
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.applet.Applet;
@@ -68,7 +65,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleExtendedComponent;
@@ -84,56 +80,50 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.plaf.ComponentUI;
-
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
-
 public abstract class JComponent extends Container implements Serializable {
-
-    private class AncestorComponentNotifier extends  HierarchyBoundsAdapter implements HierarchyListener, ComponentListener {
-        public void componentMoved(final ComponentEvent e) {
-            final Container ancestor = (Container)e.getComponent();
+    private class AncestorComponentNotifier extends HierarchyBoundsAdapter implements
+            HierarchyListener, ComponentListener {
+        public void componentMoved(ComponentEvent e) {
+            final Container ancestor = (Container) e.getComponent();
             fireAncestorEvent(AncestorEvent.ANCESTOR_MOVED, ancestor, ancestor.getParent());
         }
 
-        public void ancestorMoved(final HierarchyEvent e) {
+        @Override
+        public void ancestorMoved(HierarchyEvent e) {
             if (!isVisible()) {
                 return;
             }
-            final Container ancestor = (Container)e.getChanged();
-            fireAncestorEvent(AncestorEvent.ANCESTOR_MOVED,
-                              ancestor,
-                              ancestor.getParent());
+            final Container ancestor = (Container) e.getChanged();
+            fireAncestorEvent(AncestorEvent.ANCESTOR_MOVED, ancestor, ancestor.getParent());
         }
 
-        public void hierarchyChanged(final HierarchyEvent e) {
+        public void hierarchyChanged(HierarchyEvent e) {
             if (((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0)
-                || ((e.getChangeFlags() & HierarchyEvent.HIERARCHY_CHANGED) != 0)) {
-
+                    || ((e.getChangeFlags() & HierarchyEvent.HIERARCHY_CHANGED) != 0)) {
                 fireAncestorEvent(isShowing() ? AncestorEvent.ANCESTOR_ADDED
-                        : AncestorEvent.ANCESTOR_REMOVED,
-                        (Container)e.getChanged(),
-                        e.getChangedParent());
+                        : AncestorEvent.ANCESTOR_REMOVED, (Container) e.getChanged(), e
+                        .getChangedParent());
             }
         }
 
-        public void componentResized(final ComponentEvent e) {
+        public void componentResized(ComponentEvent e) {
         }
 
-        public void componentShown(final ComponentEvent e) {
+        public void componentShown(ComponentEvent e) {
         }
 
-        public void componentHidden(final ComponentEvent e) {
+        public void componentHidden(ComponentEvent e) {
         }
 
-        private void fireAncestorEvent(final int eventID,
-                                       final Container ancestor,
-                                       final Container ancestorParent) {
+        private void fireAncestorEvent(int eventID, Container ancestor, Container ancestorParent) {
             final AncestorListener[] listeners = getAncestorListeners();
-            AncestorEvent ancestorEvent = new AncestorEvent(JComponent.this, eventID, ancestor, ancestorParent);
+            AncestorEvent ancestorEvent = new AncestorEvent(JComponent.this, eventID, ancestor,
+                    ancestorParent);
             for (int i = 0; i < listeners.length; i++) {
                 if (eventID == AncestorEvent.ANCESTOR_ADDED) {
                     listeners[i].ancestorAdded(ancestorEvent);
@@ -147,24 +137,25 @@ public abstract class JComponent extends Container implements Serializable {
     };
 
     public abstract class AccessibleJComponent extends Container.AccessibleAWTContainer
-                                               implements AccessibleExtendedComponent {
-
+            implements AccessibleExtendedComponent {
         protected class AccessibleContainerHandler implements ContainerListener {
-            public void componentAdded(final ContainerEvent event) {
-                firePropertyChange(ACCESSIBLE_CHILD_PROPERTY, null, event.getChild().getAccessibleContext());
+            public void componentAdded(ContainerEvent event) {
+                firePropertyChange(ACCESSIBLE_CHILD_PROPERTY, null, event.getChild()
+                        .getAccessibleContext());
             }
 
-            public void componentRemoved(final ContainerEvent event) {
-                firePropertyChange(ACCESSIBLE_CHILD_PROPERTY, event.getChild().getAccessibleContext(), null);
+            public void componentRemoved(ContainerEvent event) {
+                firePropertyChange(ACCESSIBLE_CHILD_PROPERTY, event.getChild()
+                        .getAccessibleContext(), null);
             }
         }
 
         protected class AccessibleFocusHandler implements FocusListener {
-            public void focusGained(final FocusEvent event) {
+            public void focusGained(FocusEvent event) {
                 firePropertyChange(ACCESSIBLE_STATE_PROPERTY, null, AccessibleState.FOCUSED);
             }
 
-            public void focusLost(final FocusEvent event) {
+            public void focusLost(FocusEvent event) {
                 firePropertyChange(ACCESSIBLE_STATE_PROPERTY, AccessibleState.FOCUSED, null);
             }
         }
@@ -176,26 +167,28 @@ public abstract class JComponent extends Container implements Serializable {
         protected AccessibleJComponent() {
         }
 
-        protected String getBorderTitle(final Border border) {
+        protected String getBorderTitle(Border border) {
             if (border instanceof TitledBorder) {
-                return ((TitledBorder)border).getTitle();
-            } else if (border instanceof CompoundBorder){
-                CompoundBorder compoundBorder = (CompoundBorder)border;
+                return ((TitledBorder) border).getTitle();
+            } else if (border instanceof CompoundBorder) {
+                CompoundBorder compoundBorder = (CompoundBorder) border;
                 String title = getBorderTitle(compoundBorder.getInsideBorder());
-                return (title != null) ? title : getBorderTitle(compoundBorder.getOutsideBorder());
+                return (title != null) ? title : getBorderTitle(compoundBorder
+                        .getOutsideBorder());
             }
             return null;
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet stateSet = super.getAccessibleStateSet();
             if (isShowing()) {
                 stateSet.add(AccessibleState.SHOWING);
             }
-
             return stateSet;
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.SWING_COMPONENT;
         }
@@ -204,7 +197,8 @@ public abstract class JComponent extends Container implements Serializable {
             return null;
         }
 
-        public Accessible getAccessibleChild(final int childIndex) {
+        @Override
+        public Accessible getAccessibleChild(int childIndex) {
             return super.getAccessibleChild(childIndex);
         }
 
@@ -214,19 +208,22 @@ public abstract class JComponent extends Container implements Serializable {
 
         public String getTitledBorderText() {
             Border border = getBorder();
-            return (border instanceof TitledBorder) ? ((TitledBorder)border).getTitle() : null;
+            return (border instanceof TitledBorder) ? ((TitledBorder) border).getTitle() : null;
         }
 
+        @Override
         public String getAccessibleName() {
             return super.getAccessibleName();
         }
 
+        @Override
         public String getAccessibleDescription() {
             String description = super.getAccessibleDescription();
             return (description == null) ? getToolTipText() : description;
         }
 
-        public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        @Override
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
             super.removePropertyChangeListener(listener);
         }
 
@@ -234,7 +231,8 @@ public abstract class JComponent extends Container implements Serializable {
             return this;
         }
 
-        public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        @Override
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
             super.addPropertyChangeListener(listener);
             if (accessibleContainerHandler == null) {
                 accessibleContainerHandler = new AccessibleContainerHandler();
@@ -246,28 +244,39 @@ public abstract class JComponent extends Container implements Serializable {
             }
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
             return super.getAccessibleChildrenCount();
         }
     }
 
     private static final int FIRST_INPUT_MAP_INDEX = 0;
+
     public static final int WHEN_FOCUSED = 0;
+
     public static final int WHEN_ANCESTOR_OF_FOCUSED_COMPONENT = 1;
+
     public static final int WHEN_IN_FOCUSED_WINDOW = 2;
+
     private static final int LAST_INPUT_MAP_INDEX = 2;
+
     public static final int UNDEFINED_CONDITION = -1;
 
     public static final String TOOL_TIP_TEXT_KEY = "ToolTipText";
 
     static final String INHERITS_POPUP_MENU_PROPERTY_NAME = "inheritsPopupMenu";
-    static final String COMPONENT_POPUP_MENU_PROPERTY_NAME = "componentPopupMenu";
-    static final String UI_PROPERTY_NAME = "UI";
-    static final String AUTOSCROLLS_PROPERTY_NAME = "autoscrolls";
-    static final String VERIFY_INPUT_PROPERTY_NAME = "verifyInputWhenFocusTarget";
-    static final String NEXT_FOCUSABLE_PROPERTY_NAME = "nextFocus";
-    private static final String INPUT_VERIFIER_PROPERTY_NAME = "inputVerifier";
 
+    static final String COMPONENT_POPUP_MENU_PROPERTY_NAME = "componentPopupMenu";
+
+    static final String UI_PROPERTY_NAME = "UI";
+
+    static final String AUTOSCROLLS_PROPERTY_NAME = "autoscrolls";
+
+    static final String VERIFY_INPUT_PROPERTY_NAME = "verifyInputWhenFocusTarget";
+
+    static final String NEXT_FOCUSABLE_PROPERTY_NAME = "nextFocus";
+
+    private static final String INPUT_VERIFIER_PROPERTY_NAME = "inputVerifier";
 
     protected AccessibleContext accessibleContext;
 
@@ -278,65 +287,82 @@ public abstract class JComponent extends Container implements Serializable {
     protected transient ComponentUI ui;
 
     private Float alignmentX;
+
     private Float alignmentY;
+
     private Border border;
+
     private int debugGraphicsOptions;
-    private final HashMap clientProperties = new HashMap();
+
+    private final HashMap<Object, Object> clientProperties = new HashMap<Object, Object>();
+
     private TransferHandler transferHandler;
 
     private ActionMap actionMap;
+
     private boolean actionMapCreated;
+
     private final InputMap[] inputMaps = new InputMap[3];
+
     private final boolean[] inputMapsCreated = new boolean[3];
+
     private transient AncestorComponentNotifier ancestorComponentNotifier;
 
     private final VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);;
+
     protected EventListenerList listenerList = new EventListenerList();
 
     private boolean autoscrolls;
+
     private Component nextFocusableComponent;
+
     private boolean verifyInputWhenFocusTarget = true;
+
     private InputVerifier inputVerifier;
+
     private boolean requestFocusEnabled = true;
+
     private boolean inheritsPopupMenu;
+
     private JPopupMenu componentPopupMenu;
 
-    private static final String ILLEGAL_CONDITION_MESSAGE = "condition must be one of " +
-                          "JComponent.WHEN_IN_FOCUSED_WINDOW, JComponent.WHEN_FOCUSED " +
-                                      "or JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT";
+    private static final String ILLEGAL_CONDITION_MESSAGE = "condition must be one of "
+            + "JComponent.WHEN_IN_FOCUSED_WINDOW, JComponent.WHEN_FOCUSED "
+            + "or JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT";
 
     private boolean opaque;
+
     private boolean doubleBuffered;
 
     private boolean doubleBufferingRoot;
+
     private static final Rectangle auxRectangle = new Rectangle();
-    final Set installablePropertiesExcluded = new HashSet();
+
+    final Set<String> installablePropertiesExcluded = new HashSet<String>();
 
     private static JToolTip toolTip;
-
     static {
         setDefaultLocale(Locale.getDefault());
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(new KeyEventPostProcessor() {
-            public boolean postProcessKeyEvent(final KeyEvent event) {
-                if (event.isConsumed()) {
-                    return false;
-                }
-                final Component source = event.getComponent();
-
-                Container parent = SwingUtilities.getRootPane(source);
-                while (parent != null) {
-                    if (SwingUtilities.processKeyEventOnComponent(parent, event)) {
-                        return true;
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(
+                new KeyEventPostProcessor() {
+                    public boolean postProcessKeyEvent(KeyEvent event) {
+                        if (event.isConsumed()) {
+                            return false;
+                        }
+                        final Component source = event.getComponent();
+                        Container parent = SwingUtilities.getRootPane(source);
+                        while (parent != null) {
+                            if (SwingUtilities.processKeyEventOnComponent(parent, event)) {
+                                return true;
+                            }
+                            if (SwingUtilities.processKeyEventOnChildren(parent, event)) {
+                                return true;
+                            }
+                            parent = SwingUtilities.getAncestorOfClass(JRootPane.class, parent);
+                        }
+                        return false;
                     }
-
-                    if (SwingUtilities.processKeyEventOnChildren(parent, event)) {
-                        return true;
-                    }
-                    parent = SwingUtilities.getAncestorOfClass(JRootPane.class, parent);
-                }
-                return false;
-            }
-        });
+                });
     }
 
     public JComponent() {
@@ -344,59 +370,59 @@ public abstract class JComponent extends Container implements Serializable {
         enableEvents(AWTEvent.KEY_EVENT_MASK);
     }
 
-    public Rectangle getBounds(final Rectangle bounds) {
+    @Override
+    public Rectangle getBounds(Rectangle bounds) {
         if (bounds == null) {
             return getBounds();
         }
-
         bounds.setBounds(getX(), getY(), getWidth(), getHeight());
         return bounds;
     }
 
-    public Point getLocation(final Point extLocation) {
+    @Override
+    public Point getLocation(Point extLocation) {
         if (extLocation == null) {
             return getLocation();
         }
-
         extLocation.x = getX();
         extLocation.y = getY();
         return extLocation;
     }
 
+    @Override
     public Insets getInsets() {
         return getInsets(null);
     }
 
-    public Insets getInsets(final Insets insets) {
+    public Insets getInsets(Insets insets) {
         Border border = getBorder();
         if (border instanceof AbstractBorder && insets != null) {
-            return ((AbstractBorder)border).getBorderInsets(this, insets);
+            return ((AbstractBorder) border).getBorderInsets(this, insets);
         }
-
         Insets originalInsets;
         if (border == null) {
             originalInsets = super.getInsets();
         } else {
             originalInsets = border.getBorderInsets(this);
         }
-
         if (insets != null) {
-            insets.set(originalInsets.top, originalInsets.left, originalInsets.bottom, originalInsets.right);
+            insets.set(originalInsets.top, originalInsets.left, originalInsets.bottom,
+                    originalInsets.right);
             return insets;
-        } else {
-            return originalInsets;
         }
+        return originalInsets;
     }
 
-    public Dimension getSize(final Dimension extSize) {
+    @Override
+    public Dimension getSize(Dimension extSize) {
         if (extSize == null) {
             return getSize();
         }
-
         extSize.setSize(getWidth(), getHeight());
         return extSize;
     }
 
+    @Override
     public Dimension getMinimumSize() {
         if (isMinimumSizeSet()) {
             return super.getMinimumSize();
@@ -411,10 +437,10 @@ public abstract class JComponent extends Container implements Serializable {
         if (layout != null) {
             return layout.minimumLayoutSize(this);
         }
-
         return new Dimension();
     }
 
+    @Override
     public Dimension getMaximumSize() {
         if (isMaximumSizeSet()) {
             return super.getMaximumSize();
@@ -427,11 +453,12 @@ public abstract class JComponent extends Container implements Serializable {
         }
         LayoutManager layout = getLayout();
         if (layout != null && layout instanceof LayoutManager2) {
-            return ((LayoutManager2)layout).maximumLayoutSize(this);
+            return ((LayoutManager2) layout).maximumLayoutSize(this);
         }
         return new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
     }
 
+    @Override
     public Dimension getPreferredSize() {
         if (isPreferredSizeSet()) {
             return super.getPreferredSize();
@@ -448,78 +475,74 @@ public abstract class JComponent extends Container implements Serializable {
         return new Dimension();
     }
 
-    public boolean contains(final int x, final int y) {
+    @Override
+    public boolean contains(int x, int y) {
         return (ui != null) ? ui.contains(this, x, y) : super.contains(x, y);
     }
 
-
-    public final void putClientProperty(final Object key, final Object value) {
-        Object oldValue = (value != null) ? clientProperties.put(key, value)
-                                          : clientProperties.remove(key);
+    public final void putClientProperty(Object key, Object value) {
+        Object oldValue = (value != null) ? clientProperties.put(key, value) : clientProperties
+                .remove(key);
         if (oldValue != value) {
             firePropertyChange((key != null) ? key.toString() : null, oldValue, value);
         }
     }
 
-    public final Object getClientProperty(final Object key) {
+    public final Object getClientProperty(Object key) {
         return clientProperties.get(key);
     }
 
-    public void firePropertyChange(final String propertyName,
-                                   final boolean oldValue,
-                                   final boolean newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
         super.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    public void firePropertyChange(final String propertyName,
-                                   final int oldValue,
-                                   final int newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, int oldValue, int newValue) {
         super.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    protected void fireVetoableChange(final String property, final Object oldValue, final Object newValue)
-    throws PropertyVetoException {
+    protected void fireVetoableChange(String property, Object oldValue, Object newValue)
+            throws PropertyVetoException {
         vetoableChangeSupport.fireVetoableChange(property, oldValue, newValue);
     }
 
-    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenersClass) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends EventListener> T[] getListeners(Class<T> listenersClass) {
         T[] result = super.getListeners(listenersClass);
         if (!Utilities.isEmptyArray(result)) {
             return result;
         }
-
         result = listenerList.getListeners(listenersClass);
         if (!Utilities.isEmptyArray(result)) {
             return result;
         }
-
         if (VetoableChangeListener.class.isAssignableFrom(listenersClass)) {
             result = (T[]) getVetoableChangeListeners();
         }
         return result;
     }
 
-    public void removeAncestorListener(final AncestorListener ancestorListener) {
+    public void removeAncestorListener(AncestorListener ancestorListener) {
         listenerList.remove(AncestorListener.class, ancestorListener);
         removeAncestorComponentNotifier();
     }
 
-    public void addAncestorListener(final AncestorListener ancestorListener) {
+    public void addAncestorListener(AncestorListener ancestorListener) {
         addAncestorComponentNotifier();
         listenerList.add(AncestorListener.class, ancestorListener);
     }
 
     public AncestorListener[] getAncestorListeners() {
-        return (AncestorListener[])getListeners(AncestorListener.class);
+        return getListeners(AncestorListener.class);
     }
 
-
-    public synchronized void removeVetoableChangeListener(
-            final VetoableChangeListener listener) {
+    public synchronized void removeVetoableChangeListener(VetoableChangeListener listener) {
         vetoableChangeSupport.removeVetoableChangeListener(listener);
     }
 
-    public synchronized void addVetoableChangeListener(final VetoableChangeListener listener) {
+    public synchronized void addVetoableChangeListener(VetoableChangeListener listener) {
         vetoableChangeSupport.addVetoableChangeListener(listener);
     }
 
@@ -527,22 +550,21 @@ public abstract class JComponent extends Container implements Serializable {
         return vetoableChangeSupport.getVetoableChangeListeners();
     }
 
-    public void registerKeyboardAction(final ActionListener action, final String command,
-            final KeyStroke keyStroke, final int condition) {
-        String commandKey = (command != null)
-                ? command
-                : ((action != null) ? action.toString() : "");
+    public void registerKeyboardAction(ActionListener action, String command,
+            KeyStroke keyStroke, int condition) {
+        String commandKey = (command != null) ? command : ((action != null) ? action.toString()
+                : "");
         getInputMap(condition, true).put(keyStroke, commandKey);
-        Action actionProxy = action instanceof Action ? (Action) action
-                : new ActionProxy(command, action);
+        Action actionProxy = action instanceof Action ? (Action) action : new ActionProxy(
+                command, action);
         getActionMap(true).put(commandKey, actionProxy);
     }
 
-    public void registerKeyboardAction(final ActionListener action, final KeyStroke keyStroke, final int condition) {
+    public void registerKeyboardAction(ActionListener action, KeyStroke keyStroke, int condition) {
         registerKeyboardAction(action, null, keyStroke, condition);
     }
 
-    public void unregisterKeyboardAction(final KeyStroke keyStroke) {
+    public void unregisterKeyboardAction(KeyStroke keyStroke) {
         for (int i = FIRST_INPUT_MAP_INDEX; i <= LAST_INPUT_MAP_INDEX; i++) {
             if (inputMaps[i] != null) {
                 Object command = inputMaps[i].get(keyStroke);
@@ -550,34 +572,34 @@ public abstract class JComponent extends Container implements Serializable {
                 if (actionMap != null) {
                     actionMap.remove(command);
                 }
-
             }
         }
     }
 
-    public int getConditionForKeyStroke(final KeyStroke keyStroke) {
+    public int getConditionForKeyStroke(KeyStroke keyStroke) {
         for (int i = FIRST_INPUT_MAP_INDEX; i <= LAST_INPUT_MAP_INDEX; i++) {
             if (inputMaps[i] != null && inputMaps[i].get(keyStroke) != null) {
                 return i;
             }
         }
-
         return UNDEFINED_CONDITION;
     }
 
-    public ActionListener getActionForKeyStroke(final KeyStroke keyStroke) {
+    public ActionListener getActionForKeyStroke(KeyStroke keyStroke) {
         Object command = null;
         for (int i = FIRST_INPUT_MAP_INDEX; i <= LAST_INPUT_MAP_INDEX && (command == null); i++) {
             if (inputMaps[i] != null) {
                 command = inputMaps[i].get(keyStroke);
             }
         }
-        ActionListener action = (command != null && actionMap != null) ? actionMap.get(command) : null;
-        return (action instanceof ActionProxy) ? (ActionListener)((ActionProxy)action).getValue(Action.NAME) : action;
+        ActionListener action = (command != null && actionMap != null) ? actionMap.get(command)
+                : null;
+        return (action instanceof ActionProxy) ? (ActionListener) ((ActionProxy) action)
+                .getValue(Action.NAME) : action;
     }
 
-    protected boolean processKeyBinding(final KeyStroke keyStroke, final KeyEvent keyEvent, final int condition,
-            final boolean pressed) {
+    protected boolean processKeyBinding(KeyStroke keyStroke, KeyEvent keyEvent, int condition,
+            boolean pressed) {
         InputMap inputMap = getInputMap(condition, false);
         if (inputMap == null || actionMap == null || !isEnabled()) {
             return false;
@@ -587,11 +609,12 @@ public abstract class JComponent extends Container implements Serializable {
             return false;
         }
         Action action = actionMap.get(command);
-        return SwingUtilities.notifyAction(action, keyStroke, keyEvent, this, keyEvent.getModifiersEx());
+        return SwingUtilities.notifyAction(action, keyStroke, keyEvent, this, keyEvent
+                .getModifiersEx());
     }
 
     public KeyStroke[] getRegisteredKeyStrokes() {
-        ArrayList allKeys = new ArrayList();
+        ArrayList<KeyStroke> allKeys = new ArrayList<KeyStroke>();
         for (int i = FIRST_INPUT_MAP_INDEX; i <= LAST_INPUT_MAP_INDEX; i++) {
             if (inputMaps[i] != null) {
                 KeyStroke[] keys = inputMaps[i].allKeys();
@@ -600,8 +623,7 @@ public abstract class JComponent extends Container implements Serializable {
                 }
             }
         }
-
-        return (KeyStroke[])(allKeys.toArray(new KeyStroke[allKeys.size()]));
+        return allKeys.toArray(new KeyStroke[allKeys.size()]);
     }
 
     public void resetKeyboardActions() {
@@ -615,14 +637,14 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    public void setTransferHandler(final TransferHandler newHandler) {
+    public void setTransferHandler(TransferHandler newHandler) {
         TransferHandler oldHandler = transferHandler;
         transferHandler = newHandler;
-
         if (!Boolean.valueOf(System.getProperty("suppressSwingDropSupport")).booleanValue()) {
             new DropTarget(this, null);
         }
-        firePropertyChange(StringConstants.TRANSFER_HANDLER_PROPERTY_NAME, oldHandler, newHandler);
+        firePropertyChange(StringConstants.TRANSFER_HANDLER_PROPERTY_NAME, oldHandler,
+                newHandler);
     }
 
     public TransferHandler getTransferHandler() {
@@ -630,8 +652,8 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public Container getTopLevelAncestor() {
-        for(Container parent = getParent(); parent != null; parent = parent.getParent()) {
-            if(parent instanceof Window || parent instanceof Applet) {
+        for (Container parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof Window || parent instanceof Applet) {
                 return parent;
             }
         }
@@ -639,10 +661,10 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public JRootPane getRootPane() {
-        return (JRootPane)SwingUtilities.getAncestorOfClass(JRootPane.class, this);
+        return (JRootPane) SwingUtilities.getAncestorOfClass(JRootPane.class, this);
     }
 
-    public void setInputVerifier(final InputVerifier verifier) {
+    public void setInputVerifier(InputVerifier verifier) {
         InputVerifier oldValue = inputVerifier;
         inputVerifier = verifier;
         firePropertyChange(INPUT_VERIFIER_PROPERTY_NAME, oldValue, inputVerifier);
@@ -652,20 +674,20 @@ public abstract class JComponent extends Container implements Serializable {
         return inputVerifier;
     }
 
-    public final void setInputMap(final int condition, final InputMap map) {
-        if (condition == WHEN_IN_FOCUSED_WINDOW && !(map instanceof ComponentInputMap) && map != null) {
-            throw new IllegalArgumentException("For WHEN_IN_FOCUSED_WINDOW condition " +
-                                               "ComponentInputMap has to be provided");
+    public final void setInputMap(int condition, InputMap map) {
+        if (condition == WHEN_IN_FOCUSED_WINDOW && !(map instanceof ComponentInputMap)
+                && map != null) {
+            throw new IllegalArgumentException("For WHEN_IN_FOCUSED_WINDOW condition "
+                    + "ComponentInputMap has to be provided");
         }
         if (condition < FIRST_INPUT_MAP_INDEX || condition > LAST_INPUT_MAP_INDEX) {
             throw new IllegalArgumentException(ILLEGAL_CONDITION_MESSAGE);
         }
-
         inputMaps[condition] = map;
         inputMapsCreated[condition] = true;
     }
 
-    public final InputMap getInputMap(final int condition) {
+    public final InputMap getInputMap(int condition) {
         return getInputMap(condition, true);
     }
 
@@ -673,25 +695,21 @@ public abstract class JComponent extends Container implements Serializable {
         return getInputMap(WHEN_FOCUSED, true);
     }
 
-    final InputMap getInputMap(final int condition, final boolean forceCreate) {
+    final InputMap getInputMap(int condition, boolean forceCreate) {
         if (condition < FIRST_INPUT_MAP_INDEX || condition > LAST_INPUT_MAP_INDEX) {
             throw new IllegalArgumentException(ILLEGAL_CONDITION_MESSAGE);
         }
-
         if (!forceCreate || inputMapsCreated[condition]) {
             return inputMaps[condition];
         }
-
         InputMap result = (condition != WHEN_IN_FOCUSED_WINDOW) ? new InputMap()
-                                                  : new ComponentInputMap(this);
-
+                : new ComponentInputMap(this);
         inputMaps[condition] = result;
         inputMapsCreated[condition] = true;
-
         return result;
     }
 
-    public final void setActionMap(final ActionMap newActionMap) {
+    public final void setActionMap(ActionMap newActionMap) {
         actionMapCreated = true;
         actionMap = newActionMap;
     }
@@ -700,7 +718,7 @@ public abstract class JComponent extends Container implements Serializable {
         return getActionMap(true);
     }
 
-    final ActionMap getActionMap(final boolean forceCreate) {
+    final ActionMap getActionMap(boolean forceCreate) {
         if (forceCreate && !actionMapCreated) {
             actionMapCreated = true;
             actionMap = new ActionMap();
@@ -712,21 +730,20 @@ public abstract class JComponent extends Container implements Serializable {
         return border;
     }
 
-    public void setBorder(final Border newBorder) {
+    public void setBorder(Border newBorder) {
         if (newBorder != border) {
             Border oldBorder = border;
             border = newBorder;
             firePropertyChange(StringConstants.BORDER_PROPERTY_CHANGED, oldBorder, newBorder);
-            if (oldBorder == null || newBorder == null ||
-                !oldBorder.getBorderInsets(this).equals(newBorder.getBorderInsets(this))) {
-
+            if (oldBorder == null || newBorder == null
+                    || !oldBorder.getBorderInsets(this).equals(newBorder.getBorderInsets(this))) {
                 revalidate();
             }
             repaint();
         }
     }
 
-    public void setToolTipText(final String text) {
+    public void setToolTipText(String text) {
         putClientProperty(TOOL_TIP_TEXT_KEY, text);
         if (text != null) {
             ToolTipManager.sharedInstance().registerComponent(this);
@@ -736,10 +753,10 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public String getToolTipText() {
-        return (String)getClientProperty(TOOL_TIP_TEXT_KEY);
+        return (String) getClientProperty(TOOL_TIP_TEXT_KEY);
     }
 
-    public String getToolTipText(final MouseEvent event) {
+    public String getToolTipText(MouseEvent event) {
         return getToolTipText();
     }
 
@@ -751,7 +768,7 @@ public abstract class JComponent extends Container implements Serializable {
         return toolTip;
     }
 
-    public Point getToolTipLocation(final MouseEvent event) {
+    public Point getToolTipLocation(MouseEvent event) {
         return null;
     }
 
@@ -759,7 +776,8 @@ public abstract class JComponent extends Container implements Serializable {
         return UI_CLASS_ID;
     }
 
-    protected void processKeyEvent(final KeyEvent event) {
+    @Override
+    protected void processKeyEvent(KeyEvent event) {
         super.processKeyEvent(event);
         if (!event.isConsumed()) {
             processComponentKeyEvent(event);
@@ -769,26 +787,25 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    static boolean processKeyBindings(final KeyEvent event,
-                                      final Component source) {
+    static boolean processKeyBindings(KeyEvent event, Component source) {
         boolean pressed = (event.getID() == KeyEvent.KEY_PRESSED);
         final KeyStroke ks = KeyStroke.getKeyStrokeForEvent(event);
         Component component = source;
         if (component instanceof JComponent) {
-            if (((JComponent)component).processKeyBinding(ks, event, JComponent.WHEN_FOCUSED, pressed)) {
+            if (((JComponent) component).processKeyBinding(ks, event, JComponent.WHEN_FOCUSED,
+                    pressed)) {
                 return true;
             }
         }
-
         while (component != null) {
             if (component instanceof JComponent) {
-                if (((JComponent)component).processKeyBinding(ks, event, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, pressed)) {
+                if (((JComponent) component).processKeyBinding(ks, event,
+                        JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, pressed)) {
                     return true;
                 }
             }
             component = component.getParent();
         }
-
         component = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         if (component == null) {
             component = source;
@@ -800,36 +817,37 @@ public abstract class JComponent extends Container implements Serializable {
                 return true;
             }
         }
-
         return false;
     }
 
-    final void componentInputMapChanged(final ComponentInputMap map){
+    final void componentInputMapChanged(ComponentInputMap map) {
     }
 
-    protected void processComponentKeyEvent(final KeyEvent event) {
+    protected void processComponentKeyEvent(KeyEvent event) {
     }
 
+    @Override
     public void addNotify() {
         super.addNotify();
         firePropertyChange(StringConstants.ANCESTOR_PROPERTY_NAME, null, getParent());
     }
 
+    @Override
     public void removeNotify() {
         firePropertyChange(StringConstants.ANCESTOR_PROPERTY_NAME, getParent(), null);
         super.removeNotify();
     }
 
-    public void scrollRectToVisible(final Rectangle rect) {
+    public void scrollRectToVisible(Rectangle rect) {
         Container parent = SwingUtilities.getAncestorOfClass(JComponent.class, this);
         if (parent == null) {
             return;
         }
         Rectangle translatedRect = SwingUtilities.convertRectangle(this, rect, parent);
-        ((JComponent)parent).scrollRectToVisible(translatedRect);
+        ((JComponent) parent).scrollRectToVisible(translatedRect);
     }
 
-    public void computeVisibleRect(final Rectangle rect) {
+    public void computeVisibleRect(Rectangle rect) {
         rect.setBounds(0, 0, getWidth(), getHeight());
         getComponentVisibleRect(this, rect);
     }
@@ -838,27 +856,30 @@ public abstract class JComponent extends Container implements Serializable {
         return getComponentVisibleRect(this, new Rectangle(getWidth(), getHeight()));
     }
 
-    public void update(final Graphics graphics) {
+    @Override
+    public void update(Graphics graphics) {
         paint(graphics);
     }
 
-    protected void printComponent(final Graphics g) {
+    protected void printComponent(Graphics g) {
         paintComponent(g);
     }
 
-    protected void printChildren(final Graphics g) {
+    protected void printChildren(Graphics g) {
         paintChildren(g);
     }
 
-    protected void printBorder(final Graphics g) {
+    protected void printBorder(Graphics g) {
         paintBorder(g);
     }
 
-    public void printAll(final Graphics g) {
+    @Override
+    public void printAll(Graphics g) {
         print(g);
     }
 
-    public void print(final Graphics g) {
+    @Override
+    public void print(Graphics g) {
         setDoubleBuffered(false);
         printComponent(g);
         printBorder(g);
@@ -866,7 +887,7 @@ public abstract class JComponent extends Container implements Serializable {
         setDoubleBuffered(true);
     }
 
-    protected void paintComponent(final Graphics graphics) {
+    protected void paintComponent(Graphics graphics) {
         if (ui != null) {
             Graphics uiGraphics = graphics.create();
             ui.update(uiGraphics, this);
@@ -874,19 +895,17 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    protected void paintChildren(final Graphics graphics) {
+    protected void paintChildren(Graphics graphics) {
         Rectangle clipBounds = graphics.getClipBounds();
         if (clipBounds != null && clipBounds.isEmpty()) {
             return;
         }
-
         int cc = getComponentCount();
         if (!isOptimizedDrawingEnabled()) {
             MultiRectArea childrenCoverage = null;
             Component compList[] = new Component[cc];
             Shape clipList[] = new Shape[cc];
             int rc = -1;
-
             for (int i = 0; i < cc; i++) {
                 Component comp = getComponent(i);
                 if (comp.isVisible()) {
@@ -905,8 +924,7 @@ public abstract class JComponent extends Container implements Serializable {
                             continue;
                         }
                         if (comp.isOpaque()) {
-                            childrenCoverage = MultiRectArea.union(
-                                    childrenCoverage, clip);
+                            childrenCoverage = MultiRectArea.union(childrenCoverage, clip);
                         }
                     }
                     rc++;
@@ -918,7 +936,6 @@ public abstract class JComponent extends Container implements Serializable {
                     clipList[rc] = clip;
                 }
             }
-
             while (rc >= 0) {
                 Component comp = compList[rc];
                 Graphics gComp = getChildJComponentGraphics(graphics, comp);
@@ -943,7 +960,7 @@ public abstract class JComponent extends Container implements Serializable {
                         Rectangle bounds = comp.getBounds();
                         int x = bounds.x;
                         int y = bounds.y;
-                        if(clipBounds != null){
+                        if (clipBounds != null) {
                             bounds = bounds.intersection(clipBounds);
                         }
                         bounds.translate(-x, -y);
@@ -958,16 +975,16 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    protected void paintBorder(final Graphics graphics) {
+    protected void paintBorder(Graphics graphics) {
         if (border != null) {
             border.paintBorder(this, graphics, 0, 0, getWidth(), getHeight());
         }
     }
 
-    public void paint(final Graphics graphics) {
+    @Override
+    public void paint(Graphics graphics) {
         if (RepaintManager.currentManager(this).isDoubleBufferingEnabled()
-            && isDoubleBuffered() && isOpaque() && !insideDoubleBuffering()) {
-
+                && isDoubleBuffered() && isOpaque() && !insideDoubleBuffering()) {
             paintDoubleBuffered(graphics);
         } else {
             paintComponent(graphics);
@@ -976,78 +993,69 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    public void repaint(final Rectangle rect) {
-        RepaintManager.currentManager(this).addDirtyRegion(this, rect.x , rect.y, rect.width, rect.height);
+    public void repaint(Rectangle rect) {
+        RepaintManager.currentManager(this).addDirtyRegion(this, rect.x, rect.y, rect.width,
+                rect.height);
     }
 
-    public void repaint(final long tm, final int x, final int y, final int width, final int height) {
+    @Override
+    public void repaint(long tm, int x, int y, int width, int height) {
         RepaintManager.currentManager(this).addDirtyRegion(this, x, y, width, height);
     }
 
-    public void paintImmediately(final Rectangle rect) {
+    public void paintImmediately(Rectangle rect) {
         if (!isShowing()) {
             return;
         }
-
         Component effectiveRoot = Utilities.getDrawingRoot(this, rect);
-
-        while (effectiveRoot != null
-               && !(effectiveRoot instanceof Window)
-               && !effectiveRoot.isOpaque()) {
-
+        while (effectiveRoot != null && !(effectiveRoot instanceof Window)
+                && !effectiveRoot.isOpaque()) {
             effectiveRoot = effectiveRoot.getParent();
         }
-
         if (effectiveRoot == null) {
             return;
         }
-
         Graphics g = effectiveRoot.getGraphics();
         if (g == null) {
             return;
         }
-
-        Rectangle visibleRect = getComponentVisibleRect(effectiveRoot, new Rectangle(effectiveRoot.getWidth(), effectiveRoot.getHeight()));
+        Rectangle visibleRect = getComponentVisibleRect(effectiveRoot, new Rectangle(
+                effectiveRoot.getWidth(), effectiveRoot.getHeight()));
         if (rect instanceof ClipRegion) {
-            ClipRegion repaintRegion = (ClipRegion)rect;
+            ClipRegion repaintRegion = (ClipRegion) rect;
             repaintRegion.convertRegion(this, effectiveRoot);
             repaintRegion.intersect(visibleRect);
-
             if (repaintRegion.isEmpty()) {
                 return;
             }
-
             if (g instanceof Graphics2D) {
-                ((Graphics2D)g).clip(repaintRegion.getClip());
+                ((Graphics2D) g).clip(repaintRegion.getClip());
             } else {
                 g.setClip(repaintRegion.getClip());
             }
         } else {
             Rectangle repaintRect = SwingUtilities.convertRectangle(this, rect, effectiveRoot);
             repaintRect = SwingUtilities.computeIntersection(repaintRect.x, repaintRect.y,
-                    repaintRect.width, repaintRect.height,
-                    visibleRect);
-
+                    repaintRect.width, repaintRect.height, visibleRect);
             if (repaintRect.isEmpty()) {
                 return;
             }
             g.clipRect(rect.x, rect.y, rect.width, rect.height);
         }
-
         if (RepaintManager.currentManager(this).isDoubleBufferingEnabled()
-            && effectiveRoot instanceof JComponent
-            && isDoubleBufferingEnabled(effectiveRoot)) {
-
-            ((JComponent)effectiveRoot).paintDoubleBuffered(g);
+                && effectiveRoot instanceof JComponent
+                && isDoubleBufferingEnabled(effectiveRoot)) {
+            ((JComponent) effectiveRoot).paintDoubleBuffered(g);
         } else {
             effectiveRoot.paint(g);
         }
     }
 
-    public void paintImmediately(final int x, final int y, final int width, final int height) {
+    public void paintImmediately(int x, int y, int width, int height) {
         paintImmediately(new Rectangle(x, y, width, height));
     }
 
+    @Override
     public Graphics getGraphics() {
         Graphics result = super.getGraphics();
         if (result != null) {
@@ -1056,34 +1064,29 @@ public abstract class JComponent extends Container implements Serializable {
         return result;
     }
 
-    protected Graphics getComponentGraphics(final Graphics g) {
+    protected Graphics getComponentGraphics(Graphics g) {
         Graphics result = null;
         if (debugGraphicsOptions == 0) {
             result = g;
         } else {
             result = new DebugGraphics(g);
-            ((DebugGraphics)result).setDebugOptions(debugGraphicsOptions);
+            ((DebugGraphics) result).setDebugOptions(debugGraphicsOptions);
         }
         result.setFont(getFont());
         result.setColor(getForeground());
-
         return result;
     }
 
-    public void setNextFocusableComponent(final Component component) {
+    public void setNextFocusableComponent(Component component) {
         Component oldComponent = nextFocusableComponent;
         nextFocusableComponent = component;
         firePropertyChange(NEXT_FOCUSABLE_PROPERTY_NAME, oldComponent, nextFocusableComponent);
-
         Container focusCycleRoot = getFocusCycleRootAncestor();
         if (focusCycleRoot == null) {
             return;
         }
-
-        FocusTraversalPolicy newFocusTraversalPolicy =
-            new BequestedFocusTraversalPolicy(focusCycleRoot.getFocusTraversalPolicy(),
-                                              this,
-                                              nextFocusableComponent);
+        FocusTraversalPolicy newFocusTraversalPolicy = new BequestedFocusTraversalPolicy(
+                focusCycleRoot.getFocusTraversalPolicy(), this, nextFocusableComponent);
         focusCycleRoot.setFocusTraversalPolicy(newFocusTraversalPolicy);
     }
 
@@ -1091,7 +1094,7 @@ public abstract class JComponent extends Container implements Serializable {
         return nextFocusableComponent;
     }
 
-    public void setVerifyInputWhenFocusTarget(final boolean verifyInput) {
+    public void setVerifyInputWhenFocusTarget(boolean verifyInput) {
         boolean oldValue = verifyInputWhenFocusTarget;
         verifyInputWhenFocusTarget = verifyInput;
         firePropertyChange(VERIFY_INPUT_PROPERTY_NAME, oldValue, verifyInputWhenFocusTarget);
@@ -1101,7 +1104,7 @@ public abstract class JComponent extends Container implements Serializable {
         return verifyInputWhenFocusTarget;
     }
 
-    public void setRequestFocusEnabled(final boolean enabled) {
+    public void setRequestFocusEnabled(boolean enabled) {
         requestFocusEnabled = enabled;
     }
 
@@ -1113,49 +1116,50 @@ public abstract class JComponent extends Container implements Serializable {
         if (!getVerifyInputWhenFocusTarget()) {
             return true;
         }
-        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getFocusOwner();
         if (focusOwner == this) {
             return true;
         }
         if (!(focusOwner instanceof JComponent)) {
             return true;
         }
-        JComponent jFocusOwner = ((JComponent)focusOwner);
+        JComponent jFocusOwner = ((JComponent) focusOwner);
         InputVerifier verifier = jFocusOwner.getInputVerifier();
         if (verifier != null) {
             return verifier.verify(jFocusOwner);
         }
-
         return true;
     }
 
+    @Override
     public void requestFocus() {
         if (checkRequestedFocus()) {
             super.requestFocus();
         }
     }
 
-    public boolean requestFocus(final boolean temporary) {
+    @Override
+    public boolean requestFocus(boolean temporary) {
         if (!checkRequestedFocus()) {
             return false;
         }
-
         return super.requestFocus(temporary);
     }
 
+    @Override
     public boolean requestFocusInWindow() {
         if (!checkRequestedFocus()) {
             return false;
         }
-
         return super.requestFocusInWindow();
     }
 
-    protected boolean requestFocusInWindow(final boolean temporary) {
+    @Override
+    protected boolean requestFocusInWindow(boolean temporary) {
         if (!checkRequestedFocus()) {
             return false;
         }
-
         return super.requestFocusInWindow(temporary);
     }
 
@@ -1180,7 +1184,7 @@ public abstract class JComponent extends Container implements Serializable {
         requestFocus();
     }
 
-    public void setOpaque(final boolean opaque) {
+    public void setOpaque(boolean opaque) {
         LookAndFeel.markPropertyNotInstallable(this, StringConstants.OPAQUE_PROPERTY);
         if (this.opaque != opaque) {
             boolean oldOpaque = this.opaque;
@@ -1190,7 +1194,8 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    public void setEnabled(final boolean enabled) {
+    @Override
+    public void setEnabled(boolean enabled) {
         boolean oldEnabledValue = isEnabled();
         super.setEnabled(enabled);
         firePropertyChange(StringConstants.ENABLED_PROPERTY_CHANGED, oldEnabledValue, enabled);
@@ -1199,28 +1204,30 @@ public abstract class JComponent extends Container implements Serializable {
         }
     }
 
-    public void setDoubleBuffered(final boolean flag) {
+    public void setDoubleBuffered(boolean flag) {
         doubleBuffered = flag;
     }
 
-    public void setDebugGraphicsOptions(final int newDebugGraphicsOptions) {
-        debugGraphicsOptions = (newDebugGraphicsOptions != DebugGraphics.NONE_OPTION)
-                                    ? newDebugGraphicsOptions : 0;
+    public void setDebugGraphicsOptions(int newDebugGraphicsOptions) {
+        debugGraphicsOptions = (newDebugGraphicsOptions != DebugGraphics.NONE_OPTION) ? newDebugGraphicsOptions
+                : 0;
     }
 
+    @Override
     public float getAlignmentY() {
         return (alignmentY != null) ? alignmentY.floatValue() : 0.5f;
     }
 
+    @Override
     public float getAlignmentX() {
         return (alignmentX != null) ? alignmentX.floatValue() : 0.5f;
     }
 
-    public void setAlignmentY(final float alignment) {
+    public void setAlignmentY(float alignment) {
         alignmentY = new Float((alignment < 0) ? 0 : ((alignment > 1.0f) ? 1.0f : alignment));
     }
 
-    public void setAlignmentX(final float alignment) {
+    public void setAlignmentX(float alignment) {
         alignmentX = new Float((alignment < 0) ? 0 : ((alignment > 1.0f) ? 1.0f : alignment));
     }
 
@@ -1241,15 +1248,17 @@ public abstract class JComponent extends Container implements Serializable {
         return true;
     }
 
+    @Override
     public boolean isOpaque() {
         return opaque;
     }
 
+    @Override
     public boolean isDoubleBuffered() {
         return doubleBuffered;
     }
 
-    public void setAutoscrolls(final boolean scrolls) {
+    public void setAutoscrolls(boolean scrolls) {
         LookAndFeel.markPropertyNotInstallable(this, AUTOSCROLLS_PROPERTY_NAME);
         autoscrolls = scrolls;
     }
@@ -1258,7 +1267,7 @@ public abstract class JComponent extends Container implements Serializable {
         return autoscrolls;
     }
 
-    protected void setUI(final ComponentUI newUI) {
+    protected void setUI(ComponentUI newUI) {
         ComponentUI oldUI = ui;
         if (ui != null) {
             ui.uninstallUI(this);
@@ -1282,7 +1291,7 @@ public abstract class JComponent extends Container implements Serializable {
         return debugGraphicsOptions;
     }
 
-    public static void setDefaultLocale(final Locale locale) {
+    public static void setDefaultLocale(Locale locale) {
         defaultLocale = locale;
     }
 
@@ -1290,33 +1299,33 @@ public abstract class JComponent extends Container implements Serializable {
         return defaultLocale;
     }
 
-    public static boolean isLightweightComponent(final Component component) {
+    public static boolean isLightweightComponent(Component component) {
         return component.isLightweight();
     }
 
-    private boolean isOfPrintableType(final Object obj) {
-        return (obj instanceof Boolean ||
-                obj instanceof Point || obj instanceof Insets ||
-                obj instanceof Rectangle ||obj instanceof Dimension ||
-                obj instanceof Number || obj instanceof String);
+    private boolean isOfPrintableType(Object obj) {
+        return (obj instanceof Boolean || obj instanceof Point || obj instanceof Insets
+                || obj instanceof Rectangle || obj instanceof Dimension
+                || obj instanceof Number || obj instanceof String);
     }
 
-    private boolean isDefaultValue(final Object obj, final Class clazz) {
+    private boolean isDefaultValue(Object obj, Class<?> clazz) {
         if (obj == null) {
             return true;
         }
         if (obj.getClass() == clazz) {
             return false;
         }
-        if (obj instanceof Boolean && !((Boolean)obj).booleanValue()) {
+        if (obj instanceof Boolean && !((Boolean) obj).booleanValue()) {
             return true;
         }
-        if (obj instanceof Number && ((Number)obj).doubleValue() == 0) {
+        if (obj instanceof Number && ((Number) obj).doubleValue() == 0) {
             return true;
         }
         return false;
     }
 
+    @Override
     protected String paramString() {
         String result = "";
         boolean addComma = false;
@@ -1326,12 +1335,11 @@ public abstract class JComponent extends Container implements Serializable {
                 PropertyDescriptor descriptor = beanInfo.getPropertyDescriptors()[i];
                 if (descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
                     String fieldName = descriptor.getName();
-                    Class type = descriptor.getPropertyType();
-                    Object fieldValue = descriptor.getReadMethod().invoke(this, new Object[]{});
+                    Class<?> type = descriptor.getPropertyType();
+                    Object fieldValue = descriptor.getReadMethod().invoke(this);
                     if (isDefaultValue(fieldValue, type)) {
                         continue;
                     }
-
                     if (addComma) {
                         result += ",";
                     }
@@ -1350,11 +1358,10 @@ public abstract class JComponent extends Container implements Serializable {
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {
         }
-
         return result;
     }
 
-    public void setInheritsPopupMenu(final boolean value) {
+    public void setInheritsPopupMenu(boolean value) {
         boolean oldValue = inheritsPopupMenu;
         inheritsPopupMenu = value;
         firePropertyChange(INHERITS_POPUP_MENU_PROPERTY_NAME, oldValue, value);
@@ -1364,7 +1371,7 @@ public abstract class JComponent extends Container implements Serializable {
         return inheritsPopupMenu;
     }
 
-    public void setComponentPopupMenu(final JPopupMenu popup) {
+    public void setComponentPopupMenu(JPopupMenu popup) {
         JPopupMenu oldValue = componentPopupMenu;
         componentPopupMenu = popup;
         firePropertyChange(COMPONENT_POPUP_MENU_PROPERTY_NAME, oldValue, popup);
@@ -1372,42 +1379,39 @@ public abstract class JComponent extends Container implements Serializable {
 
     public JPopupMenu getComponentPopupMenu() {
         JPopupMenu result = componentPopupMenu;
-        if (result == null && getInheritsPopupMenu() &&
-                (getParent() instanceof JComponent)) {
-
-            result = ((JComponent)getParent()).getComponentPopupMenu();
+        if (result == null && getInheritsPopupMenu() && (getParent() instanceof JComponent)) {
+            result = ((JComponent) getParent()).getComponentPopupMenu();
         }
         return result;
     }
 
-    public Point getPopupLocation(final MouseEvent event) {
+    public Point getPopupLocation(MouseEvent event) {
         return null;
     }
 
-    boolean hasListener(final Class listenerType, final EventListener l) {
+    <T extends EventListener> boolean hasListener(Class<T> listenerType, EventListener l) {
         EventListener[] listeners = listenerList.getListeners(listenerType);
         for (int i = 0; i < listeners.length; i++) {
             if (listeners[i] == l) {
                 return true;
             }
         }
-
         return false;
     }
 
-    void paintDoubleBuffered(final Graphics g) {
+    void paintDoubleBuffered(Graphics g) {
         Rectangle clipRect = g.getClipBounds();
         if (clipRect == null) {
             clipRect = SwingUtilities.getLocalBounds(this);
         }
-        Image image = RepaintManager.currentManager(this).getVolatileOffscreenBuffer(this, clipRect.width + 1, clipRect.height + 1);
+        Image image = RepaintManager.currentManager(this).getVolatileOffscreenBuffer(this,
+                clipRect.width + 1, clipRect.height + 1);
         if (image == null) {
             return;
         }
         Graphics offscreenGraphics = image.getGraphics();
         offscreenGraphics.translate(-clipRect.x, -clipRect.y);
         offscreenGraphics.setClip(clipRect);
-
         doubleBufferingRoot = true;
         try {
             paint(getComponentGraphics(offscreenGraphics));
@@ -1421,16 +1425,14 @@ public abstract class JComponent extends Container implements Serializable {
         if (doubleBufferingRoot) {
             return true;
         }
-
         Component currentComponent = getParent();
         while (currentComponent != null) {
             if (currentComponent instanceof JComponent
-                && ((JComponent)currentComponent).doubleBufferingRoot) {
+                    && ((JComponent) currentComponent).doubleBufferingRoot) {
                 return true;
             }
             currentComponent = currentComponent.getParent();
         }
-
         return false;
     }
 
@@ -1445,7 +1447,8 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     private void removeAncestorComponentNotifier() {
-        if (ancestorComponentNotifier == null || !Utilities.isEmptyArray(getAncestorListeners())) {
+        if (ancestorComponentNotifier == null
+                || !Utilities.isEmptyArray(getAncestorListeners())) {
             return;
         }
         removeComponentListener(ancestorComponentNotifier);
@@ -1454,38 +1457,35 @@ public abstract class JComponent extends Container implements Serializable {
         ancestorComponentNotifier = null;
     }
 
-    private Graphics getChildJComponentGraphics(final Graphics g, final Component c) {
+    private Graphics getChildJComponentGraphics(Graphics g, Component c) {
         Graphics result = g.create(c.getX(), c.getY(), c.getWidth(), c.getHeight());
-        return (c instanceof JComponent) ? ((JComponent)c).getComponentGraphics(result) : result;
+        return (c instanceof JComponent) ? ((JComponent) c).getComponentGraphics(result)
+                : result;
     }
 
-    private static boolean isDoubleBufferingEnabled(final Component c) {
+    private static boolean isDoubleBufferingEnabled(Component c) {
         return c != null && (c.isDoubleBuffered() || isDoubleBufferingEnabled(c.getParent()));
     }
 
     /**
      * @param rect is supposed to be initialized  with (0, 0, getWidth(), getHeight())
      */
-    private static Rectangle getComponentVisibleRect(final Component c, final Rectangle rect) {
+    private static Rectangle getComponentVisibleRect(Component c, Rectangle rect) {
         Rectangle result = rect;
         auxRectangle.setBounds(0, 0, 0, 0);
-
         Container ancestor = Utilities.getNotWindowParent(c);
         while (ancestor != null && ancestor.isVisible()) {
             auxRectangle.setSize(ancestor.getSize());
-            Rectangle translatedRect = SwingUtilities.convertRectangle(ancestor, auxRectangle, c);
-            result = SwingUtilities.computeIntersection(result.x, result.y,
-                    result.width, result.height, translatedRect);
+            Rectangle translatedRect = SwingUtilities.convertRectangle(ancestor, auxRectangle,
+                    c);
+            result = SwingUtilities.computeIntersection(result.x, result.y, result.width,
+                    result.height, translatedRect);
             ancestor = Utilities.getNotWindowParent(ancestor);
         }
-
         return result;
     }
-
-
-//    public void setFocusTraversalKeys(int id,
-//            Set<T extends AWTKeyStroke> keystrokes) {
-//
-//    }
-
+    //    public void setFocusTraversalKeys(int id,
+    //            Set<T extends AWTKeyStroke> keystrokes) {
+    //
+    //    }
 }

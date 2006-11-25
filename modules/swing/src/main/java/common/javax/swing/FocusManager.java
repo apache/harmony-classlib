@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.DefaultFocusTraversalPolicy;
@@ -40,9 +35,8 @@ public abstract class FocusManager extends DefaultKeyboardFocusManager {
         KeyboardFocusManager currentManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         if (currentManager instanceof FocusManager) {
             return (FocusManager)currentManager;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public static void setCurrentManager(final FocusManager focusManager) throws SecurityException {

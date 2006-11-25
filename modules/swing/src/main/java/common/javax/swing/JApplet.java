@@ -18,7 +18,6 @@
 package javax.swing;
 
 import java.applet.Applet;
-
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,58 +27,63 @@ import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 
+/**
+ * <p>
+ * <i>JApplet</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JApplet extends Applet implements Accessible, RootPaneContainer {
+    private static final long serialVersionUID = -8372957450536936161L;
+
     protected JRootPane rootPane;
+
     protected boolean rootPaneCheckingEnabled;
+
     protected AccessibleContext accessibleContext;
 
     public JApplet() throws HeadlessException {
         setLayout(new BorderLayout());
-
         setRootPaneCheckingEnabled(true);
-
         setRootPane(createRootPane());
-
         setLocale(JComponent.getDefaultLocale());
-
         setBackground(Color.white);
-
         // enable events
         enableEvents(AWTEvent.KEY_EVENT_MASK);
-
         setFocusTraversalPolicyProvider(true);
-
-        setFocusTraversalPolicy(KeyboardFocusManager.
-                getCurrentKeyboardFocusManager().
-                getDefaultFocusTraversalPolicy());
+        setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy());
     }
 
     protected class AccessibleJApplet extends AccessibleApplet {
+        private static final long serialVersionUID = -7345678942864978889L;
+
         protected AccessibleJApplet() {
+            super();
         }
     }
 
-    protected void addImpl(final Component comp, final Object constraints,
-                           final int index) {
+    @Override
+    protected void addImpl(Component comp, Object constraints, int index) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().add(comp, constraints, index);
             return;
         }
-
         super.addImpl(comp, constraints, index);
     }
 
-    protected void setRootPane(final JRootPane root) {
+    protected void setRootPane(JRootPane root) {
         if (rootPane != null) {
             remove(rootPane);
         }
-
         rootPane = root;
-
         if (root != null) {
             super.addImpl(root, null, 0);
         }
@@ -93,7 +97,7 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
         return new JRootPane();
     }
 
-    public void setJMenuBar(final JMenuBar menuBar) {
+    public void setJMenuBar(JMenuBar menuBar) {
         getRootPane().setJMenuBar(menuBar);
     }
 
@@ -101,7 +105,7 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
         return getRootPane().getJMenuBar();
     }
 
-    public void setLayeredPane(final JLayeredPane layeredPane) {
+    public void setLayeredPane(JLayeredPane layeredPane) {
         getRootPane().setLayeredPane(layeredPane);
     }
 
@@ -109,15 +113,16 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
         return getRootPane().getLayeredPane();
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJApplet();
         }
-
         return accessibleContext;
     }
 
-    public void setLayout(final LayoutManager layout) {
+    @Override
+    public void setLayout(LayoutManager layout) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().setLayout(layout);
         } else {
@@ -131,11 +136,12 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
      *
      * @param g - the graphics context to paint
      */
-    public void update(final Graphics g) {
+    @Override
+    public void update(Graphics g) {
         paint(g);
     }
 
-    public void setContentPane(final Container contentPane) {
+    public void setContentPane(Container contentPane) {
         getRootPane().setContentPane(contentPane);
     }
 
@@ -143,11 +149,12 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
         return getRootPane().getContentPane();
     }
 
-    public void setGlassPane(final Component glassPane) {
+    public void setGlassPane(Component glassPane) {
         getRootPane().setGlassPane(glassPane);
     }
 
-    public void remove(final Component comp) {
+    @Override
+    public void remove(Component comp) {
         if (comp == getRootPane()) {
             // remove directly from JApplet
             super.remove(comp);
@@ -160,7 +167,7 @@ public class JApplet extends Applet implements Accessible, RootPaneContainer {
         return getRootPane().getGlassPane();
     }
 
-    protected void setRootPaneCheckingEnabled(final boolean enabled) {
+    protected void setRootPaneCheckingEnabled(boolean enabled) {
         rootPaneCheckingEnabled = enabled;
     }
 
