@@ -64,12 +64,12 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         }
 
         @Override
-        public int getAccessibleChildrenCount() {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
@@ -79,57 +79,57 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         }
 
         @Override
-        public AccessibleStateSet getAccessibleStateSet() {
+        public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleAction getAccessibleAction() {
+        public AccessibleAction getAccessibleAction() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAccessibleActionDescription(int i) {
+        public String getAccessibleActionDescription(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleActionCount() {
+        public int getAccessibleActionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean doAccessibleAction(int i) {
+        public boolean doAccessibleAction(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleSelection getAccessibleSelection() {
+        public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleSelectionCount() {
+        public int getAccessibleSelectionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(int i) {
+        public Accessible getAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(int i) {
+        public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void addAccessibleSelection(int i) {
+        public void addAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(int i) {
+        public void removeAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void clearAccessibleSelection() {
+        public void clearAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectAllAccessibleSelection() {
+        public void selectAllAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

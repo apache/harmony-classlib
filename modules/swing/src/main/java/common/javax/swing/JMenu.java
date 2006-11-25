@@ -51,21 +51,21 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
     protected class AccessibleJMenu extends AccessibleJMenuItem implements AccessibleSelection {
         private static final long serialVersionUID = -7871723353224195081L;
 
-        public void addAccessibleSelection(int i) {
+        public void addAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void clearAccessibleSelection() {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public int getAccessibleChildrenCount() {
+        public void clearAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
@@ -75,27 +75,27 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
         }
 
         @Override
-        public AccessibleSelection getAccessibleSelection() {
+        public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(int i) {
+        public Accessible getAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleSelectionCount() {
+        public int getAccessibleSelectionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(int i) {
+        public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(int i) {
+        public void removeAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectAllAccessibleSelection() {
+        public void selectAllAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

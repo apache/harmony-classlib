@@ -93,253 +93,256 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
         protected class AccessibleJTreeNode extends AccessibleContext implements Accessible,
                 AccessibleComponent, AccessibleSelection, AccessibleAction {
-            public AccessibleJTreeNode(JTree t, TreePath p, Accessible ap) {
+            public AccessibleJTreeNode(JTree t, TreePath p, Accessible ap)
+                    throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public AccessibleContext getAccessibleContext() {
-                throw new NotImplementedException();
-            }
-
-            @Override
-            public String getAccessibleName() {
+            public AccessibleContext getAccessibleContext() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public void setAccessibleName(String s) {
+            public String getAccessibleName() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public String getAccessibleDescription() {
+            public void setAccessibleName(String s) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public void setAccessibleDescription(String s) {
+            public String getAccessibleDescription() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleRole getAccessibleRole() {
+            public void setAccessibleDescription(String s) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleStateSet getAccessibleStateSet() {
+            public AccessibleRole getAccessibleRole() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public Accessible getAccessibleParent() {
+            public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public int getAccessibleIndexInParent() {
+            public Accessible getAccessibleParent() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public int getAccessibleChildrenCount() {
+            public int getAccessibleIndexInParent() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public Accessible getAccessibleChild(int i) {
+            public int getAccessibleChildrenCount() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public Locale getLocale() {
+            public Accessible getAccessibleChild(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public void addPropertyChangeListener(PropertyChangeListener l) {
+            public Locale getLocale() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public void removePropertyChangeListener(PropertyChangeListener l) {
+            public void addPropertyChangeListener(PropertyChangeListener l)
+                    throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleAction getAccessibleAction() {
+            public void removePropertyChangeListener(PropertyChangeListener l)
+                    throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleComponent getAccessibleComponent() {
+            public AccessibleAction getAccessibleAction() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleSelection getAccessibleSelection() {
+            public AccessibleComponent getAccessibleComponent() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleText getAccessibleText() {
+            public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
             @Override
-            public AccessibleValue getAccessibleValue() {
+            public AccessibleText getAccessibleText() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Color getBackground() {
+            @Override
+            public AccessibleValue getAccessibleValue() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setBackground(Color c) {
+            public Color getBackground() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Color getForeground() {
+            public void setBackground(Color c) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setForeground(Color c) {
+            public Color getForeground() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Cursor getCursor() {
+            public void setForeground(Color c) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setCursor(Cursor c) {
+            public Cursor getCursor() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Font getFont() {
+            public void setCursor(Cursor c) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setFont(Font f) {
+            public Font getFont() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public FontMetrics getFontMetrics(Font f) {
+            public void setFont(Font f) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean isEnabled() {
+            public FontMetrics getFontMetrics(Font f) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setEnabled(boolean b) {
+            public boolean isEnabled() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean isVisible() {
+            public void setEnabled(boolean b) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setVisible(boolean b) {
+            public boolean isVisible() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean isShowing() {
+            public void setVisible(boolean b) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean contains(Point p) {
+            public boolean isShowing() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Point getLocationOnScreen() {
+            public boolean contains(Point p) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            protected Point getLocationInJTree() {
+            public Point getLocationOnScreen() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Point getLocation() {
+            protected Point getLocationInJTree() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setLocation(Point p) {
+            public Point getLocation() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Rectangle getBounds() {
+            public void setLocation(Point p) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setBounds(Rectangle r) {
+            public Rectangle getBounds() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Dimension getSize() {
+            public void setBounds(Rectangle r) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void setSize(Dimension d) {
+            public Dimension getSize() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Accessible getAccessibleAt(Point p) {
+            public void setSize(Dimension d) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean isFocusTraversable() {
+            public Accessible getAccessibleAt(Point p) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void requestFocus() {
+            public boolean isFocusTraversable() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void addFocusListener(FocusListener l) {
+            public void requestFocus() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void removeFocusListener(FocusListener l) {
+            public void addFocusListener(FocusListener l) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public int getAccessibleSelectionCount() {
+            public void removeFocusListener(FocusListener l) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public Accessible getAccessibleSelection(int i) {
+            public int getAccessibleSelectionCount() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean isAccessibleChildSelected(int i) {
+            public Accessible getAccessibleSelection(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void addAccessibleSelection(int i) {
+            public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void removeAccessibleSelection(int i) {
+            public void addAccessibleSelection(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void clearAccessibleSelection() {
+            public void removeAccessibleSelection(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public void selectAllAccessibleSelection() {
+            public void clearAccessibleSelection() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public int getAccessibleActionCount() {
+            public void selectAllAccessibleSelection() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public String getAccessibleActionDescription(int i) {
+            public int getAccessibleActionCount() throws NotImplementedException {
                 throw new NotImplementedException();
             }
 
-            public boolean doAccessibleAction(int i) {
+            public String getAccessibleActionDescription(int i) throws NotImplementedException {
+                throw new NotImplementedException();
+            }
+
+            public boolean doAccessibleAction(int i) throws NotImplementedException {
                 throw new NotImplementedException();
             }
         }
@@ -348,93 +351,93 @@ public class JTree extends JComponent implements Scrollable, Accessible {
             super();
         }
 
-        public void valueChanged(TreeSelectionEvent e) {
+        public void valueChanged(TreeSelectionEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void fireVisibleDataPropertyChange() {
+        public void fireVisibleDataPropertyChange() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeNodesChanged(TreeModelEvent e) {
+        public void treeNodesChanged(TreeModelEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeNodesInserted(TreeModelEvent e) {
+        public void treeNodesInserted(TreeModelEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeNodesRemoved(TreeModelEvent e) {
+        public void treeNodesRemoved(TreeModelEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeStructureChanged(TreeModelEvent e) {
+        public void treeStructureChanged(TreeModelEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeCollapsed(TreeExpansionEvent e) {
+        public void treeCollapsed(TreeExpansionEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void treeExpanded(TreeExpansionEvent e) {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public AccessibleRole getAccessibleRole() {
+        public void treeExpanded(TreeExpansionEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleAt(Point p) {
+        public AccessibleRole getAccessibleRole() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleChildrenCount() {
+        public Accessible getAccessibleAt(Point p) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleIndexInParent() {
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleSelection getAccessibleSelection() {
+        public int getAccessibleIndexInParent() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleSelectionCount() {
+        @Override
+        public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(int i) {
+        public int getAccessibleSelectionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(int i) {
+        public Accessible getAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void addAccessibleSelection(int i) {
+        public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(int i) {
+        public void addAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void clearAccessibleSelection() {
+        public void removeAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectAllAccessibleSelection() {
+        public void clearAccessibleSelection() throws NotImplementedException {
+            throw new NotImplementedException();
+        }
+
+        public void selectAllAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

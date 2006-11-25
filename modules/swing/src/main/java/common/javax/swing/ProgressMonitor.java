@@ -55,115 +55,116 @@ public class ProgressMonitor implements Accessible {
         protected AccessibleProgressMonitor() {
         }
 
-        public void stateChanged(ChangeEvent e) {
+        public void stateChanged(ChangeEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void propertyChange(PropertyChangeEvent e) {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public String getAccessibleName() {
+        public void propertyChange(PropertyChangeEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public String getAccessibleDescription() {
+        public String getAccessibleName() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleRole getAccessibleRole() {
+        public String getAccessibleDescription() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleStateSet getAccessibleStateSet() {
+        public AccessibleRole getAccessibleRole() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleParent() {
+        public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleIndexInParent() {
+        public Accessible getAccessibleParent() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleChildrenCount() {
+        public int getAccessibleIndexInParent() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Locale getLocale() throws IllegalComponentStateException {
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleComponent getAccessibleComponent() {
+        public Locale getLocale() throws IllegalComponentStateException,
+                NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleValue getAccessibleValue() {
+        public AccessibleComponent getAccessibleComponent() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleText getAccessibleText() {
+        public AccessibleValue getAccessibleValue() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getIndexAtPoint(Point p) {
+        @Override
+        public AccessibleText getAccessibleText() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Rectangle getCharacterBounds(int i) {
+        public int getIndexAtPoint(Point p) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getCharCount() {
+        public Rectangle getCharacterBounds(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getCaretPosition() {
+        public int getCharCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAtIndex(int part, int index) {
+        public int getCaretPosition() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAfterIndex(int part, int index) {
+        public String getAtIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getBeforeIndex(int part, int index) {
+        public String getAfterIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public AttributeSet getCharacterAttribute(int i) {
+        public String getBeforeIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getSelectionStart() {
+        public AttributeSet getCharacterAttribute(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getSelectionEnd() {
+        public int getSelectionStart() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getSelectedText() {
+        public int getSelectionEnd() throws NotImplementedException {
+            throw new NotImplementedException();
+        }
+
+        public String getSelectedText() throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

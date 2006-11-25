@@ -57,60 +57,60 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
         public AccessibleJTabbedPane() {
         }
 
-        public void addAccessibleSelection(int i) {
+        public void addAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void clearAccessibleSelection() {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public Accessible getAccessibleAt(Point p) {
+        public void clearAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public Accessible getAccessibleAt(Point p) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleChildrenCount() {
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleRole getAccessibleRole() {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleSelection getAccessibleSelection() {
+        public AccessibleRole getAccessibleRole() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(int i) {
+        @Override
+        public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleSelectionCount() {
+        public Accessible getAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(int i) {
+        public int getAccessibleSelectionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(int i) {
+        public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectAllAccessibleSelection() {
+        public void removeAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void stateChanged(ChangeEvent e) {
+        public void selectAllAccessibleSelection() throws NotImplementedException {
+            throw new NotImplementedException();
+        }
+
+        public void stateChanged(ChangeEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

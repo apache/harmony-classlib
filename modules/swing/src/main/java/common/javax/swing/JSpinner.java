@@ -73,145 +73,147 @@ public class JSpinner extends JComponent implements Accessible {
         protected AccessibleJSpinner() {
         }
 
-        public void stateChanged(ChangeEvent e) {
+        public void stateChanged(ChangeEvent e) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleRole getAccessibleRole() {
+        public AccessibleRole getAccessibleRole() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public int getAccessibleChildrenCount() {
+        public int getAccessibleChildrenCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public Accessible getAccessibleChild(int i) {
+        public Accessible getAccessibleChild(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleAction getAccessibleAction() {
+        public AccessibleAction getAccessibleAction() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleText getAccessibleText() {
+        public AccessibleText getAccessibleText() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleValue getAccessibleValue() {
+        public AccessibleValue getAccessibleValue() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Number getCurrentAccessibleValue() {
+        public Number getCurrentAccessibleValue() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean setCurrentAccessibleValue(Number n) {
+        public boolean setCurrentAccessibleValue(Number n) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Number getMinimumAccessibleValue() {
+        public Number getMinimumAccessibleValue() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Number getMaximumAccessibleValue() {
+        public Number getMaximumAccessibleValue() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleActionCount() {
+        public int getAccessibleActionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAccessibleActionDescription(int i) {
+        public String getAccessibleActionDescription(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean doAccessibleAction(int i) {
+        public boolean doAccessibleAction(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getIndexAtPoint(Point p) {
+        public int getIndexAtPoint(Point p) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Rectangle getCharacterBounds(int i) {
+        public Rectangle getCharacterBounds(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getCharCount() {
+        public int getCharCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getCaretPosition() {
+        public int getCaretPosition() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAtIndex(int part, int index) {
+        public String getAtIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getAfterIndex(int part, int index) {
+        public String getAfterIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getBeforeIndex(int part, int index) {
+        public String getBeforeIndex(int part, int index) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public AttributeSet getCharacterAttribute(int i) {
+        public AttributeSet getCharacterAttribute(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getSelectionStart() {
+        public int getSelectionStart() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getSelectionEnd() {
+        public int getSelectionEnd() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getSelectedText() {
+        public String getSelectedText() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void setTextContents(String s) {
+        public void setTextContents(String s) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void insertTextAtIndex(int index, String s) {
+        public void insertTextAtIndex(int index, String s) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public String getTextRange(int startIndex, int endIndex) {
+        public String getTextRange(int startIndex, int endIndex) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void delete(int startIndex, int endIndex) {
+        public void delete(int startIndex, int endIndex) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void cut(int startIndex, int endIndex) {
+        public void cut(int startIndex, int endIndex) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void paste(int startIndex) {
+        public void paste(int startIndex) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void replaceText(int startIndex, int endIndex, String s) {
+        public void replaceText(int startIndex, int endIndex, String s)
+                throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectText(int startIndex, int endIndex) {
+        public void selectText(int startIndex, int endIndex) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void setAttributes(int startIndex, int endIndex, AttributeSet as) {
+        public void setAttributes(int startIndex, int endIndex, AttributeSet as)
+                throws NotImplementedException {
             throw new NotImplementedException();
         }
     }

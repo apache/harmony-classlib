@@ -50,19 +50,19 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
             AccessibleSelection {
         private static final long serialVersionUID = 1L;
 
-        public void addAccessibleSelection(int i) {
+        public void addAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void clearAccessibleSelection() {
+        public void clearAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public Accessible getAccessibleSelection(int i) {
+        public Accessible getAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public int getAccessibleSelectionCount() {
+        public int getAccessibleSelectionCount() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
@@ -72,24 +72,24 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
         }
 
         @Override
-        public AccessibleSelection getAccessibleSelection() {
+        public AccessibleSelection getAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
         @Override
-        public AccessibleStateSet getAccessibleStateSet() {
+        public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public boolean isAccessibleChildSelected(int i) {
+        public boolean isAccessibleChildSelected(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void removeAccessibleSelection(int i) {
+        public void removeAccessibleSelection(int i) throws NotImplementedException {
             throw new NotImplementedException();
         }
 
-        public void selectAllAccessibleSelection() {
+        public void selectAllAccessibleSelection() throws NotImplementedException {
             throw new NotImplementedException();
         }
     }
