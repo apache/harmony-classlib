@@ -14,31 +14,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
+
 package javax.swing;
 
+/**
+ * <p>
+ * <i>ComponentInputMap</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class ComponentInputMap extends InputMap {
+    private static final long serialVersionUID = 1760753505284728053L;
 
-    private JComponent component = null;
+    private JComponent component;
 
-    public ComponentInputMap(final JComponent component) {
+    public ComponentInputMap(JComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException("ComponentInputMaps must be associated with a non-null JComponent");
+            throw new IllegalArgumentException(
+                    "ComponentInputMaps must be associated with a non-null JComponent");
         }
         this.component = component;
     }
 
-    public void put(final KeyStroke keyStroke, final Object key) {
+    @Override
+    public void put(KeyStroke keyStroke, Object key) {
         super.put(keyStroke, key);
         if (component != null) {
             component.componentInputMapChanged(this);
         }
     }
 
-    public void remove(final KeyStroke keyStroke) {
+    @Override
+    public void remove(KeyStroke keyStroke) {
         super.remove(keyStroke);
         component.componentInputMapChanged(this);
     }
@@ -47,10 +58,13 @@ public class ComponentInputMap extends InputMap {
         return component;
     }
 
-    public void setParent(final InputMap parent) {
-        if (parent != null && (!(parent instanceof ComponentInputMap) ||
-                (((ComponentInputMap)parent).getComponent() != component))) {
-            throw new IllegalArgumentException("ComponentInputMap must have a ComponentInputMap parent associated with the same component");
+    @Override
+    public void setParent(InputMap parent) {
+        if (parent != null
+                && (!(parent instanceof ComponentInputMap) || (((ComponentInputMap) parent)
+                        .getComponent() != component))) {
+            throw new IllegalArgumentException(
+                    "ComponentInputMap must have a ComponentInputMap parent associated with the same component");
         }
         super.setParent(parent);
         if (component != null) {
@@ -58,9 +72,9 @@ public class ComponentInputMap extends InputMap {
         }
     }
 
+    @Override
     public void clear() {
         super.clear();
         component.componentInputMapChanged(this);
     }
-
 }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Color;
@@ -38,17 +33,27 @@ import java.awt.image.ImageObserver;
 import java.io.PrintStream;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
-
+import java.util.Map;
 import org.apache.harmony.x.swing.Utilities;
 
+/**
+ * <p>
+ * <i>DebugGraphics</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DebugGraphics extends Graphics {
     private abstract static class FlashAction extends AbstractAction {
         private Graphics g;
-        public FlashAction(final Graphics g) {
+        public FlashAction(Graphics g) {
             this.g = g;
         }
         
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             for (int i = 0; i < flashCount; i++) {
                 Color oldColor = g.getColor();
                 paint(g);
@@ -60,22 +65,22 @@ public class DebugGraphics extends Graphics {
             }
         }        
         
-        private void sleep(final int millis) {
+        private void sleep(int millis) {
             try {
                 Thread.sleep(millis);
             } catch (InterruptedException e) {
                 
             }
         }
-        public abstract void paint(final Graphics g);
+        public abstract void paint(Graphics g);
     }
     
     private abstract class BufferedDrawAction extends AbstractAction {        
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             if (externalFrames == null) {
-                externalFrames = new HashMap();
+                externalFrames = new HashMap<JComponent, Frame>();
             }
-            Frame externalFrame = (Frame)externalFrames.get(component);
+            Frame externalFrame = externalFrames.get(component);
             if (externalFrame == null || !externalFrame.isDisplayable()) {
                 externalFrame = new Frame();
                 externalFrames.put(component, externalFrame);                            
@@ -97,6 +102,9 @@ public class DebugGraphics extends Graphics {
             
             if (isFlashing()) {
                 new FlashAction(g) {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
                     public void paint(Graphics g) {
                         BufferedDrawAction.this.paint(g);
                     }                    
@@ -105,7 +113,7 @@ public class DebugGraphics extends Graphics {
             g.drawRect(0, 0, 40, 40);
             paint(g);
         }                
-        public abstract void paint(final Graphics g);
+        public abstract void paint(Graphics g);
     }
     
     public static final int NONE_OPTION = -1;
@@ -114,7 +122,7 @@ public class DebugGraphics extends Graphics {
     public static final int BUFFERED_OPTION = 4;
 
     private static int debugGraphicsCount; 
-    private static HashMap externalFrames;
+    private static Map<JComponent, Frame> externalFrames;
     
     private Graphics originalGraphics;
     private JComponent component;
@@ -127,7 +135,7 @@ public class DebugGraphics extends Graphics {
     private static int flashTime = 100;
     private static PrintStream logStream = System.out;
 
-    public static void setFlashColor(final Color flashColor) {
+    public static void setFlashColor(Color flashColor) {
         DebugGraphics.flashColor = flashColor;
     }
 
@@ -135,7 +143,7 @@ public class DebugGraphics extends Graphics {
         return flashColor;
     }
 
-    public static void setFlashCount(final int flashCount) {
+    public static void setFlashCount(int flashCount) {
         DebugGraphics.flashCount = flashCount;
     }
 
@@ -143,7 +151,7 @@ public class DebugGraphics extends Graphics {
         return flashCount;
     }
 
-    public static void setFlashTime(final int flashTime) {
+    public static void setFlashTime(int flashTime) {
         DebugGraphics.flashTime = flashTime;
     }
 
@@ -151,7 +159,7 @@ public class DebugGraphics extends Graphics {
         return flashTime;
     }
 
-    public static void setLogStream(final PrintStream stream) {
+    public static void setLogStream(PrintStream stream) {
         logStream = stream;
     }
 
@@ -159,13 +167,13 @@ public class DebugGraphics extends Graphics {
         return logStream;
     }
 
-    public DebugGraphics(final Graphics g, final JComponent c) {
+    public DebugGraphics(Graphics g, JComponent c) {
         originalGraphics = g.create();
         component = c;
         thisNumber = debugGraphicsCount++;
     }
 
-    public DebugGraphics(final Graphics g) {
+    public DebugGraphics(Graphics g) {
         this(g, null);
     }
 
@@ -177,7 +185,7 @@ public class DebugGraphics extends Graphics {
         return debugOptions;
     }
 
-    public void setDebugOptions(final int options) {
+    public void setDebugOptions(int options) {
         boolean wasLogging = isLogging();
         if (options == NONE_OPTION) {
             debugOptions = 0;
@@ -196,12 +204,16 @@ public class DebugGraphics extends Graphics {
         return drawingBuffer;
     }
 
+    @Override
     public void clearRect(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Clearing rect: " + new Rectangle(x, y, width, height));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, width, height);    
                 }                
@@ -209,6 +221,9 @@ public class DebugGraphics extends Graphics {
         }
         if (isBuffered()) {
             new BufferedDrawAction() {
+                private static final long serialVersionUID = 1L;
+                
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, width, height);
                 }                
@@ -217,6 +232,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.clearRect(x, y, width, height);
     }
 
+    @Override
     public void clipRect(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Setting clipRect: " + new Rectangle(x, y, width, height));
@@ -228,6 +244,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.clipRect(x, y, width, height);
     }
 
+    @Override
     public void copyArea(final int x, final int y, final int width, final int height, final int destX, final int destY) {
         if (isLogging()) {
             log("Copying area from: " + new Rectangle(x, y, width, height) + " to : " + new Point(destX, destY));
@@ -235,6 +252,8 @@ public class DebugGraphics extends Graphics {
         if (isFlashing()) {
             fillRect(x, y, width, height);
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, width, height);    
                 }                
@@ -245,28 +264,34 @@ public class DebugGraphics extends Graphics {
         originalGraphics.copyArea(x, y, width, height, destX, destY);
     }
 
+    @Override
     public Graphics create() {
         DebugGraphics result = new DebugGraphics(originalGraphics, component);
         result.setDebugOptions(debugOptions);
         return result;
     }
 
+    @Override
     public Graphics create(final int x, final int y, final int width, final int height) {
         DebugGraphics result = new DebugGraphics(originalGraphics.create(x, y, width, height), component);
         result.setDebugOptions(debugOptions);
         return result;
     }
 
+    @Override
     public void dispose() {
         originalGraphics.dispose();
     }
 
+    @Override
     public void draw3DRect(final int x, final int y, final int width, final int height, final boolean raised) {
         if (isLogging()) {
             log("Drawing 3D rect: " + new Rectangle(x, y, width, height) + ", raised bezel: " + raised);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.draw3DRect(x, y, width, height, raised);    
                 }                
@@ -277,12 +302,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.draw3DRect(x, y, width, height, raised);
     }
 
+    @Override
     public void drawArc(final int x, final int y, final int width, final int height, final int startAngle, final int arcAngle) {
         if (isLogging()) {
             log("Drawing arc: " + new Rectangle(x, y, width, height) + ", startAngle: " + startAngle + ", arcAngle: " + arcAngle);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawArc(x, y, width, height, startAngle, arcAngle);    
                 }                
@@ -293,12 +321,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawArc(x, y, width, height, startAngle, arcAngle);
     }
 
+    @Override
     public void drawBytes(final byte[] data, final int offset, final int length, final int x, final int y) {
         if (isLogging()) {
             log("Drawing bytes at: " + new Point(x, y));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawBytes(data, offset, length, x, y);    
                 }                
@@ -309,12 +340,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawBytes(data, offset, length, x, y);
     }
 
+    @Override
     public void drawChars(final char[] data, final int offset, final int length, final int x, final int y) {
         if (isLogging()) {
             log("Drawing chars at: " + new Point(x, y));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawChars(data, offset, length, x, y);    
                 }                
@@ -325,12 +359,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawChars(data, offset, length, x, y);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int x, final int y, final Color bgcolor, final ImageObserver observer) {
         if (isLogging()) {
             log("Drawing image: " + img + " at " + new Point(x, y) + ", bgcolor: " + bgcolor);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, img.getHeight(observer), img.getHeight(observer));    
                 }                
@@ -341,12 +378,15 @@ public class DebugGraphics extends Graphics {
         return originalGraphics.drawImage(img, x, y, bgcolor, observer);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int x, final int y, final ImageObserver observer) {
         if (isLogging()) {
             log("Drawing image: " + img + " at " + new Point(x, y));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, img.getHeight(observer), img.getHeight(observer));    
                 }                
@@ -357,6 +397,7 @@ public class DebugGraphics extends Graphics {
         return originalGraphics.drawImage(img, x, y, observer);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int x, final int y, final int width, final int height,
                              final Color bgcolor, final ImageObserver observer) {
 
@@ -365,6 +406,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, img.getHeight(observer), img.getHeight(observer));    
                 }                
@@ -376,6 +419,7 @@ public class DebugGraphics extends Graphics {
                                           observer);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int x, final int y, final int width, final int height,
                              final ImageObserver observer) {
         if (isLogging()) {
@@ -383,6 +427,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, img.getHeight(observer), img.getHeight(observer));    
                 }                
@@ -393,6 +439,7 @@ public class DebugGraphics extends Graphics {
         return originalGraphics.drawImage(img, x, y, width, height, observer);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int dx1, final int dy1, final int dx2, final int dy2, 
                              final int sx1, final int sy1, final int sx2, final int sy2,
                              final Color bgcolor, final ImageObserver observer) {
@@ -402,6 +449,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);    
                 }                
@@ -412,6 +461,7 @@ public class DebugGraphics extends Graphics {
         return originalGraphics.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
     }
 
+    @Override
     public boolean drawImage(final Image img, final int dx1, final int dy1, final int dx2, final int dy2,
                              final int sx1, final int sy1, final int sx2, final int sy2,
                              final ImageObserver observer) {
@@ -422,6 +472,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);    
                 }                
@@ -432,12 +484,15 @@ public class DebugGraphics extends Graphics {
         return originalGraphics.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer);
     }
 
+    @Override
     public void drawLine(final int x1, final int y1, final int x2, final int y2) {
         if (isLogging()) {
             log("Drawing line: from (" + x1 + ", " + y1 + ") to (" + x2 + ", " + y2 + ")");
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawLine(x1, y1, x2, y2);
                 }                
@@ -445,6 +500,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isBuffered()) {            
             new BufferedDrawAction() {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawLine(x1, y1, x2, y2);                    
                 }                
@@ -453,12 +510,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawLine(x1, y1, x2, y2);
     }
 
+    @Override
     public void drawOval(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Drawing oval: " + new Rectangle(x, y, width, height));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawOval(x, y, width, height);
                 }                
@@ -469,12 +529,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawOval(x, y, width, height);
     }
 
+    @Override
     public void drawPolygon(final int[] xPoints, final int[] yPoints, final int nPoints) {
         if (isLogging()) {
             log("Drawing polygon: " + new Polygon(xPoints, yPoints, nPoints));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawPolygon(xPoints, yPoints, nPoints);
                 }                
@@ -485,12 +548,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawPolygon(xPoints, yPoints, nPoints);
     }
 
+    @Override
     public void drawPolyline(final int[] xPoints, final int[] yPoints, final int nPoints) {
         if (isLogging()) {
             log("Drawing polyline: " + new Polygon(xPoints, yPoints, nPoints));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawPolyline(xPoints, yPoints, nPoints);
                 }                
@@ -501,12 +567,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawPolyline(xPoints, yPoints, nPoints);
     }
 
+    @Override
     public void drawRect(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Drawing rectangle: " + new Rectangle(x, y, width, height));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawRect(x, y, width, height);
                 }                
@@ -517,12 +586,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawRect(x, y, width, height);
     }
 
+    @Override
     public void drawRoundRect(final int x, final int y, final int width, final int height, final int arcWidth, final int arcHeight) {
         if (isLogging()) {
             log("Drawing round rectangle: " + new Rectangle(x, y, width, height) + ", arcWidth " + arcWidth + ", arcHeight " + arcHeight);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
                 }                
@@ -533,12 +605,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
     }
 
+    @Override
     public void drawString(final AttributedCharacterIterator iterator, final int x, final int y) {
         if (isLogging()) {
             log("Drawing string: " + iterator + " at " + new Point(x, y));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawString(iterator, x, y);
                 }                
@@ -549,12 +624,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawString(iterator, x, y);
     }
 
+    @Override
     public void drawString(final String str, final int x, final int y) {
         if (isLogging()) {
             log("Drawing string: " + str + " at " + new Point(x, y));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.drawString(str, x, y);
                 }                
@@ -565,12 +643,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.drawString(str, x, y);
     }
 
+    @Override
     public void fill3DRect(final int x, final int y, final int width, final int height, final boolean raised) {
         if (isLogging()) {
             log("Filling 3D rect: " + new Rectangle(x, y, width, height) + ", raised bezel: " + raised);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fill3DRect(x, y, width, height, raised);
                 }                
@@ -581,12 +662,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fill3DRect(x, y, width, height, raised);
     }
 
+    @Override
     public void fillArc(final int x, final int y, final int width, final int height, final int startAngle, final int arcAngle) {
         if (isLogging()) {
             log("Filling arc: " + new Rectangle(x, y, width, height) + ", startAngle: " + startAngle + ", arcAngle: " + arcAngle);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillArc(x, y, width, height, startAngle, arcAngle);    
                 }                
@@ -597,12 +681,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fillArc(x, y, width, height, startAngle, arcAngle);
     }
 
+    @Override
     public void fillOval(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Filling oval: " + new Rectangle(x, y, width, height));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillOval(x, y, width, height);    
                 }                
@@ -613,12 +700,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fillOval(x, y, width, height);
     }
 
+    @Override
     public void fillPolygon(final int[] xPoints, final int[] yPoints, final int nPoints) {
         if (isLogging()) {
             log("Filling polygon: " + new Polygon(xPoints, yPoints, nPoints));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillPolygon(xPoints, yPoints, nPoints);   
                 }                
@@ -629,12 +719,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fillPolygon(xPoints, yPoints, nPoints);
     }
 
+    @Override
     public void fillRect(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Filling rectangle: " + new Rectangle(x, y, width, height));
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, width, height);    
                 }                
@@ -642,6 +735,8 @@ public class DebugGraphics extends Graphics {
         }
         if (isBuffered()) {
             new BufferedDrawAction() {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRect(x, y, width, height);
                 }                
@@ -650,12 +745,15 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fillRect(x, y, width, height);
     }    
 
+    @Override
     public void fillRoundRect(final int x, final int y, final int width, final int height, final int arcWidth,final int arcHeight) {
         if (isLogging()) {
             log("Filling round rectangle: " + new Rectangle(x, y, width, height) + ", arcWidth " + arcWidth + ", arcHeight " + arcHeight);
         }
         if (isFlashing()) {
             new FlashAction(originalGraphics) {
+                private static final long serialVersionUID = 1L;
+                @Override
                 public void paint(Graphics g) {
                     g.fillRoundRect(x, y, width, height, arcWidth, arcHeight);    
                 }                
@@ -666,30 +764,37 @@ public class DebugGraphics extends Graphics {
         originalGraphics.fillRoundRect(x, y, width, height, arcWidth, arcHeight);
     }
 
+    @Override
     public Shape getClip() {
         return originalGraphics.getClip();
     }
 
+    @Override
     public Rectangle getClipBounds() {
         return originalGraphics.getClipBounds();
     }
 
+    @Override
     public Color getColor() {
         return originalGraphics.getColor();
     }
 
+    @Override
     public Font getFont() {
         return originalGraphics.getFont();
     }
 
+    @Override
     public FontMetrics getFontMetrics() {
         return originalGraphics.getFontMetrics();
     }
 
+    @Override
     public FontMetrics getFontMetrics(final Font f) {
         return originalGraphics.getFontMetrics(f);
     }
 
+    @Override
     public void setClip(final int x, final int y, final int width, final int height) {
         if (isLogging()) {
             log("Setting new clipRect: " + new Rectangle(x, y, width, height));
@@ -701,6 +806,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setClip(x, y, width, height);
     }
 
+    @Override
     public void setClip(final Shape shape) {
         if (isLogging()) {
             log("Setting clip: " + shape);
@@ -712,6 +818,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setClip(shape);
     }
 
+    @Override
     public void setColor(final Color c) {
         if (isLogging()) {
             log("Setting color: " + c);
@@ -723,6 +830,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setColor(c);
     }
 
+    @Override
     public void setFont(final Font font) {
         if (isLogging()) {
             log("Setting font: " + font);
@@ -734,6 +842,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setFont(font);
     }
 
+    @Override
     public void setPaintMode() {
         if (isLogging()) {
             log("Setting paint mode");
@@ -745,6 +854,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setPaintMode();
     }
 
+    @Override
     public void setXORMode(final Color c) {
         if (isLogging()) {
             log("Setting XOR mode, color : " + c);
@@ -756,6 +866,7 @@ public class DebugGraphics extends Graphics {
         originalGraphics.setXORMode(c);
     }
 
+    @Override
     public void translate(final int x, final int y) {
         if (isLogging()) {
             log("Translating by: " + new Point(x, y));

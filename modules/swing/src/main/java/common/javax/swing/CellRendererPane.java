@@ -15,68 +15,78 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+/**
+ * <p>
+ * <i>CellRendererPane</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class CellRendererPane extends Container implements Accessible {
+    private static final long serialVersionUID = -7642183829532984273L;
+
     protected AccessibleContext accessibleContext;
 
     protected class AccessibleCellRendererPane extends AccessibleAWTContainer {
+        private static final long serialVersionUID = 1L;
+
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.PANEL;
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleCellRendererPane();
         }
-
         return accessibleContext;
     }
 
+    @Override
     public void invalidate() {
     }
 
-    public void paint(final Graphics g) {
+    @Override
+    public void paint(Graphics g) {
     }
 
-    public void update(final Graphics g) {
+    @Override
+    public void update(Graphics g) {
     }
 
-    public void paintComponent(final Graphics g, final Component c, final Container p, final int x, final int y, final int w, final int h) {
+    public void paintComponent(Graphics g, Component c, Container p, int x, int y, int w, int h) {
         paintComponent(g, c, p, x, y, w, h, false);
     }
 
-    public void paintComponent(final Graphics g, final Component c, final Container p, final Rectangle r) {
+    public void paintComponent(Graphics g, Component c, Container p, Rectangle r) {
         paintComponent(g, c, p, r.x, r.y, r.width, r.height);
     }
 
-    public void paintComponent(final Graphics g, final Component c, final Container p, final int x, final int y, final int w, final int h, final boolean shouldValidate) {
+    public void paintComponent(Graphics g, Component c, Container p, int x, int y, int w,
+            int h, boolean shouldValidate) {
         add(c);
         c.setBounds(x, y, w, h);
-
         if (shouldValidate) {
             c.validate();
         }
-
         Graphics newGraphics = g.create(x, y, w, h);
         if (c instanceof JComponent) {
-            JComponent jc = (JComponent)c;
-
+            JComponent jc = (JComponent) c;
             boolean isDoubleBuffered = jc.isDoubleBuffered();
             jc.setDoubleBuffered(false);
             jc.paint(jc.getComponentGraphics(newGraphics));
@@ -85,20 +95,17 @@ public class CellRendererPane extends Container implements Accessible {
             c.paint(newGraphics);
         }
         newGraphics.dispose();
-
         c.setBounds(-w, -h, 0, 0);
     }
 
-
-
-    protected void addImpl(final Component c, final Object constraints, final int index) {
+    @Override
+    protected void addImpl(Component c, Object constraints, int index) {
         Component[] components = getComponents();
         for (int i = 0; i < components.length; i++) {
             if (c == components[i]) {
                 return;
             }
         }
-
         super.addImpl(c, constraints, index);
     }
 }

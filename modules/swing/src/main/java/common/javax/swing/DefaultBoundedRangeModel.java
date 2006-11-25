@@ -14,45 +14,48 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.io.Serializable;
-import java.util.EventListener;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-public class DefaultBoundedRangeModel extends Object implements
-        BoundedRangeModel, Serializable {
+/**
+ * <p>
+ * <i>DefaultBoundedRangeModel</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class DefaultBoundedRangeModel implements BoundedRangeModel, Serializable {
+    private static final long serialVersionUID = -3186121964369712936L;
 
-    protected ChangeEvent       changeEvent;
+    private static final int DEFAULT_MAX = 100;
+
+    protected ChangeEvent changeEvent;
 
     protected EventListenerList listenerList;
 
-    int max;
+    private int max;
 
-    int min;
+    private int min;
 
-    int extent;
+    private int extent;
 
-    int  value;
+    private int value;
 
-    boolean valueIsAdjusting;
-
-    private static final int DEFAULT_MAX = 100;
+    private boolean valueIsAdjusting;
 
     public DefaultBoundedRangeModel() {
         this(0, 0, 0, DEFAULT_MAX);
     }
 
-    public DefaultBoundedRangeModel(final int value, final int extent,
-                                    final int min, final int max) {
-
+    public DefaultBoundedRangeModel(int value, int extent, int min, int max) {
         if (extent < 0 || min > value || value + extent > max) {
             throw new IllegalArgumentException("invalid range properties");
         }
@@ -65,7 +68,7 @@ public class DefaultBoundedRangeModel extends Object implements
         listenerList = new EventListenerList();
     }
 
-    public void addChangeListener(final ChangeListener listener) {
+    public void addChangeListener(ChangeListener listener) {
         listenerList.add(ChangeListener.class, listener);
     }
 
@@ -74,19 +77,17 @@ public class DefaultBoundedRangeModel extends Object implements
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].stateChanged(changeEvent);
         }
-
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList
-                .getListeners(ChangeListener.class);
+        return listenerList.getListeners(ChangeListener.class);
     }
 
     public int getExtent() {
         return extent;
     }
 
-    public <T extends java.util.EventListener> T[] getListeners(final Class<T> c) {
+    public <T extends java.util.EventListener> T[] getListeners(Class<T> c) {
         return listenerList.getListeners(c);
     }
 
@@ -106,20 +107,19 @@ public class DefaultBoundedRangeModel extends Object implements
         return valueIsAdjusting;
     }
 
-    public void removeChangeListener(final ChangeListener listener) {
+    public void removeChangeListener(ChangeListener listener) {
         listenerList.remove(ChangeListener.class, listener);
     }
 
-    public void setExtent(final int n) {
+    public void setExtent(int n) {
         int newExtent = Math.min(Math.max(n, 0), max - value);
         if (newExtent != extent) {
             extent = newExtent;
             fireStateChanged();
         }
-
     }
 
-    public void setMaximum(final int n) {
+    public void setMaximum(int n) {
         if (max == n) {
             return;
         }
@@ -127,11 +127,10 @@ public class DefaultBoundedRangeModel extends Object implements
         min = Math.min(n, min);
         extent = Math.min(max - min, extent);
         value = Math.min(value, max - extent);
-
         fireStateChanged();
     }
 
-    public void setMinimum(final int n) {
+    public void setMinimum(int n) {
         if (n == min) {
             return;
         }
@@ -139,15 +138,13 @@ public class DefaultBoundedRangeModel extends Object implements
         max = Math.max(n, max);
         extent = Math.min(max - min, extent);
         value = Math.max(value, min);
-
         fireStateChanged();
     }
 
-    public void setRangeProperties(final int newValue, final int newExtent,
-                                   final int newMin, final int newMax,
-                                   final boolean adjusting) {
-        if (newValue == value && newExtent == extent && newMin == min
-            && newMax == max && adjusting == valueIsAdjusting) {
+    public void setRangeProperties(int newValue, int newExtent, int newMin, int newMax,
+            boolean adjusting) {
+        if (newValue == value && newExtent == extent && newMin == min && newMax == max
+                && adjusting == valueIsAdjusting) {
             return;
         }
         value = newValue;
@@ -158,16 +155,15 @@ public class DefaultBoundedRangeModel extends Object implements
         fireStateChanged();
     }
 
-    public void setValue(final int n) {
+    public void setValue(int n) {
         int newValue = Math.min(Math.max(n, min), max - extent);
         if (newValue != value) {
             value = newValue;
             fireStateChanged();
         }
-
     }
 
-    public void setValueIsAdjusting(final boolean b) {
+    public void setValueIsAdjusting(boolean b) {
         if (b != valueIsAdjusting) {
             valueIsAdjusting = b;
             fireStateChanged();
@@ -181,10 +177,9 @@ public class DefaultBoundedRangeModel extends Object implements
      *     Object obj = new DefaultBoundedRangeModel();
      *     System.out.println(obj.toString());
      */
+    @Override
     public String toString() {
-
-        return getClass().getName() + "[" + "value=" + value + ", " + "extent="
-               + extent + ", " + "min=" + min + ", " + "max=" + max + ", "
-               + "adj=" + valueIsAdjusting + "]";
+        return getClass().getName() + "[" + "value=" + value + ", " + "extent=" + extent + ", "
+                + "min=" + min + ", " + "max=" + max + ", " + "adj=" + valueIsAdjusting + "]";
     }
 }
