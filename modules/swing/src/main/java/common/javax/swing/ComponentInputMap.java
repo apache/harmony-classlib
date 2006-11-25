@@ -24,7 +24,7 @@ package javax.swing;
  * <h3>Implementation Notes:</h3>
  * <ul>
  * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
- * optimization, not as guarantee of serialization compatibility.</li>
+ * optimization, not as a guarantee of serialization compatibility.</li>
  * </ul>
  */
 public class ComponentInputMap extends InputMap {

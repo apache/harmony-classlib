@@ -39,7 +39,7 @@ import org.apache.harmony.x.swing.Utilities;
  * <h3>Implementation Notes:</h3>
  * <ul>
  * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
- * optimization, not as guarantee of serialization compatibility.</li>
+ * optimization, not as a guarantee of serialization compatibility.</li>
  * </ul>
  */
 public class JMenuBar extends JComponent implements Accessible, MenuElement {

@@ -15,26 +15,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.util.Arrays;
 import java.util.Vector;
 
+@SuppressWarnings("unchecked")
 public class DefaultComboBoxModel extends AbstractListModel implements MutableComboBoxModel {
     private static final long serialVersionUID = 3906372640380892983L;
+
     private Vector listData;
+
     private Object selection;
 
     public DefaultComboBoxModel() {
+        super();
         listData = new Vector();
     }
 
-    public DefaultComboBoxModel(final Object[] items) {
+    public DefaultComboBoxModel(Object[] items) {
+        super();
         listData = new Vector();
         listData.addAll(Arrays.asList(items));
         if (items.length > 0) {
@@ -42,14 +42,14 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
         }
     }
 
-    public DefaultComboBoxModel(final Vector<?> items) {
+    public DefaultComboBoxModel(Vector items) {
         listData = items;
         if (items.size() > 0) {
             selection = items.get(0);
         }
     }
 
-    public void addElement(final Object element) {
+    public void addElement(Object element) {
         listData.add(element);
         fireIntervalAdded(this, listData.size() - 1, listData.size() - 1);
         if (getSelectedItem() == null) {
@@ -57,11 +57,11 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
         }
     }
 
-    public Object getElementAt(final int index) {
+    public Object getElementAt(int index) {
         return index < getSize() ? listData.get(index) : null;
     }
 
-    public int getIndexOf(final Object element) {
+    public int getIndexOf(Object element) {
         return listData.indexOf(element);
     }
 
@@ -69,7 +69,7 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
         return listData.size();
     }
 
-    public void insertElementAt(final Object element, final int index) {
+    public void insertElementAt(Object element, int index) {
         listData.insertElementAt(element, index);
         fireIntervalAdded(this, index, index);
     }
@@ -83,20 +83,18 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
         selection = null;
     }
 
-    public void removeElement(final Object element) {
+    public void removeElement(Object element) {
         int index = getIndexOf(element);
         if (index != -1) {
             removeElementAt(index);
         }
     }
 
-    public void removeElementAt(final int index) {
+    public void removeElementAt(int index) {
         Object removingElement = getElementAt(index);
         listData.remove(index);
-
-        if (selection == removingElement
-            || selection != null && selection.equals(removingElement)) {
-
+        if (selection == removingElement || selection != null
+                && selection.equals(removingElement)) {
             if (index == 0 && getSize() > 0) {
                 setSelectedItem(getElementAt(0));
             } else if (index > 0) {
@@ -105,19 +103,16 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
                 setSelectedItem(null);
             }
         }
-
         fireIntervalRemoved(this, index, index);
     }
 
-
     public Object getSelectedItem() {
-         return selection;
+        return selection;
     }
 
-    public void setSelectedItem(final Object element) {
-        if (element != null && !element.equals(selection)
-            || element == null && selection != null) {
-
+    public void setSelectedItem(Object element) {
+        if (element != null && !element.equals(selection) || element == null
+                && selection != null) {
             selection = element;
             fireContentsChanged(this, -1, -1);
         }

@@ -15,25 +15,32 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.util.Enumeration;
 import java.util.Vector;
 
+/**
+ * <p>
+ * <i>DefaultListModel</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DefaultListModel extends AbstractListModel {
-    private Vector internalStorage = new Vector();
+    private static final long serialVersionUID = 7987079759213724557L;
 
-    public void add(final int index, final Object element) {
+    private Vector<Object> internalStorage = new Vector<Object>();
+
+    public void add(int index, Object element) {
         internalStorage.add(index, element);
         fireIntervalAdded(this, index, index);
     }
 
-    public void addElement(final Object element) {
+    public void addElement(Object element) {
         internalStorage.addElement(element);
         fireIntervalAdded(this, internalStorage.size() - 1, internalStorage.size() - 1);
     }
@@ -50,15 +57,15 @@ public class DefaultListModel extends AbstractListModel {
         }
     }
 
-    public boolean contains(final Object element) {
+    public boolean contains(Object element) {
         return internalStorage.contains(element);
     }
 
-    public void copyInto(final Object[] array) {
+    public void copyInto(Object[] array) {
         internalStorage.copyInto(array);
     }
 
-    public Object elementAt(final int index) {
+    public Object elementAt(int index) {
         return internalStorage.elementAt(index);
     }
 
@@ -66,7 +73,7 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.elements();
     }
 
-    public void ensureCapacity(final int minCapacity) {
+    public void ensureCapacity(int minCapacity) {
         internalStorage.ensureCapacity(minCapacity);
     }
 
@@ -74,11 +81,11 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.firstElement();
     }
 
-    public Object get(final int index) {
+    public Object get(int index) {
         return internalStorage.get(index);
     }
 
-    public Object getElementAt(final int index) {
+    public Object getElementAt(int index) {
         return get(index);
     }
 
@@ -86,15 +93,15 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.size();
     }
 
-    public int indexOf(final Object element) {
+    public int indexOf(Object element) {
         return internalStorage.indexOf(element);
     }
 
-    public int indexOf(final Object element, final int index) {
+    public int indexOf(Object element, int index) {
         return internalStorage.indexOf(element, index);
     }
 
-    public void insertElementAt(final Object element, final int index) {
+    public void insertElementAt(Object element, int index) {
         internalStorage.insertElementAt(element, index);
         fireIntervalAdded(this, index, index);
     }
@@ -107,15 +114,15 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.lastElement();
     }
 
-    public int lastIndexOf(final Object element) {
+    public int lastIndexOf(Object element) {
         return internalStorage.lastIndexOf(element);
     }
 
-    public int lastIndexOf(final Object element, final int index) {
+    public int lastIndexOf(Object element, int index) {
         return internalStorage.lastIndexOf(element, index);
     }
 
-    public Object remove(final int index) {
+    public Object remove(int index) {
         Object result = internalStorage.remove(index);
         fireIntervalRemoved(this, index, index);
         return result;
@@ -125,40 +132,37 @@ public class DefaultListModel extends AbstractListModel {
         clear();
     }
 
-    public boolean removeElement(final Object element) {
+    public boolean removeElement(Object element) {
         int index = internalStorage.indexOf(element);
         boolean result = internalStorage.removeElement(element);
-
         if (index != -1) {
             fireIntervalRemoved(this, index, index);
         }
-
         return result;
     }
 
-    public void removeElementAt(final int index) {
+    public void removeElementAt(int index) {
         remove(index);
     }
 
-    public void removeRange(final int fromIndex, final int toIndex) {
+    public void removeRange(int fromIndex, int toIndex) {
         for (int i = 0; i < toIndex - fromIndex + 1; i++) {
             internalStorage.remove(fromIndex);
         }
         fireIntervalRemoved(this, fromIndex, toIndex);
     }
 
-    public Object set(final int index, final Object element) {
+    public Object set(int index, Object element) {
         Object result = internalStorage.set(index, element);
         fireContentsChanged(this, index, index);
-
         return result;
     }
 
-    public void setElementAt(final Object element, final int index) {
+    public void setElementAt(Object element, int index) {
         set(index, element);
     }
 
-    public void setSize(final int size) {
+    public void setSize(int size) {
         internalStorage.setSize(size);
     }
 
@@ -170,6 +174,7 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.toArray();
     }
 
+    @Override
     public String toString() {
         return internalStorage.toString();
     }

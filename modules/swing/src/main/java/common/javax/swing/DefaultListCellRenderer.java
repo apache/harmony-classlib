@@ -15,31 +15,39 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Component;
 import java.io.Serializable;
-
 import javax.swing.border.Border;
 
+/**
+ * <p>
+ * <i>DefaultListCellRenderer</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DefaultListCellRenderer extends JLabel implements ListCellRenderer, Serializable {
+    private static final long serialVersionUID = -4095659446023979489L;
 
-    public static class UIResource extends DefaultListCellRenderer implements javax.swing.plaf.UIResource {
+    public static class UIResource extends DefaultListCellRenderer implements
+            javax.swing.plaf.UIResource {
+        private static final long serialVersionUID = 5748603813962368116L;
     }
 
     protected static Border noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
 
     public DefaultListCellRenderer() {
         setBorder(noFocusBorder);
-        setHorizontalAlignment(JLabel.LEADING);
+        setHorizontalAlignment(SwingConstants.LEADING);
     }
 
-    public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList list, Object value, int index,
+            boolean isSelected, boolean cellHasFocus) {
         setText(value != null ? value.toString() : null);
         if (isSelected) {
             setForeground(list.getSelectionForeground());
@@ -48,40 +56,48 @@ public class DefaultListCellRenderer extends JLabel implements ListCellRenderer,
             setForeground(list.getForeground());
             setBackground(list.getBackground());
         }
-
         setOpaque(true);
         setFont(list.getFont());
         setEnabled(list.isEnabled());
-        setBorder(cellHasFocus ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+        setBorder(cellHasFocus ? UIManager.getBorder("List.focusCellHighlightBorder")
+                : noFocusBorder);
         setComponentOrientation(list.getComponentOrientation());
-
         return this;
     }
 
-    public void firePropertyChange(final String propertyName, final boolean oldValue, final boolean newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final byte oldValue, final byte newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final char oldValue, final char newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, char oldValue, char newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final double oldValue, final double newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, double oldValue, double newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final float oldValue, final float newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, float oldValue, float newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final int oldValue, final int newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, int oldValue, int newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final long oldValue, final long newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, long oldValue, long newValue) {
     }
 
-    public void firePropertyChange(final String propertyName, final short oldValue, final short newValue) {
+    @Override
+    public void firePropertyChange(String propertyName, short oldValue, short newValue) {
     }
 
-    protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
+    @Override
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
     }
 }

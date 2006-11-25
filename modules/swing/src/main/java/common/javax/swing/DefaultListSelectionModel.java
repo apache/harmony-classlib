@@ -14,32 +14,39 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
+
 package javax.swing;
 
 import java.awt.Rectangle;
 import java.io.Serializable;
-import java.util.EventListener;
-
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import org.apache.harmony.awt.gl.MultiRectArea;
 
-
+/**
+ * <p>
+ * <i>DefaultListSelectionModel</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DefaultListSelectionModel implements ListSelectionModel, Cloneable, Serializable {
+    private static final long serialVersionUID = -3207109908101807625L;
+
     private static final int NOT_SET = -1;
 
     private static class Segment extends Rectangle {
-        public Segment(final int begin, final int end) {
+        private static final long serialVersionUID = 1L;
+
+        public Segment(int begin, int end) {
             super(Math.min(begin, end), 0, Math.abs(end - begin) + 1, 1);
         }
 
-        public void add(final Segment s) {
+        public void add(Segment s) {
             if (s == null || s.isEmpty()) {
                 return;
             } else if (isEmpty()) {
@@ -66,9 +73,10 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         private static final Rectangle EMPTY_RECTANGLE = new Rectangle();
 
         public Selection() {
+            super();
         }
 
-        private Selection(final Selection s) {
+        private Selection(Selection s) {
             super(s);
         }
 
@@ -76,15 +84,15 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
             intersect(EMPTY_RECTANGLE);
         }
 
-        public boolean contains(final int index) {
+        public boolean contains(int index) {
             return contains(index, 0);
         }
 
-        public void insertIndices(final int index, final int length, final boolean multiSelectionAllowed) {
+        public void insertIndices(int index, int length, boolean multiSelectionAllowed) {
             MultiRectArea modified = new MultiRectArea();
             Rectangle[] rects = getRectangles();
             for (int i = 0; i < rects.length; i++) {
-                Rectangle rect = (Rectangle)rects[i].clone();
+                Rectangle rect = (Rectangle) rects[i].clone();
                 if (index < rect.x) {
                     rect.x += length;
                 } else if (rect.x <= index && index < rect.x + rect.width) {
@@ -100,7 +108,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
             add(modified);
         }
 
-        public void removeIndices(final int index, final int length) {
+        public void removeIndices(int index, int length) {
             MultiRectArea modified = new MultiRectArea();
             Rectangle[] rects = getRectangles();
             for (int i = 0; i < rects.length; i++) {
@@ -117,14 +125,14 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
                     }
                     modified.add(new Segment(rect.x, rectEnd));
                 } else {
-                    modified.add((Rectangle)rect.clone());
+                    modified.add((Rectangle) rect.clone());
                 }
             }
             clear();
             add(modified);
         }
 
-        public Segment getDifferenceBounds(final Selection anotherSelection) {
+        public Segment getDifferenceBounds(Selection anotherSelection) {
             MultiRectArea thisFromAnother = MultiRectArea.subtract(this, anotherSelection);
             MultiRectArea anotherFromThis = MultiRectArea.subtract(anotherSelection, this);
             MultiRectArea diff = MultiRectArea.union(thisFromAnother, anotherFromThis);
@@ -144,73 +152,70 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
             return bounds.x + bounds.width - 1;
         }
 
-
+        @Override
         public Object clone() {
             return new Selection(this);
         }
     }
 
     protected boolean leadAnchorNotificationEnabled = true;
+
     protected EventListenerList listenerList = new EventListenerList();
 
     private Selection selection = new Selection();
+
     private int anchorSelectionIndex = NOT_SET;
+
     private int leadSelectionIndex = NOT_SET;
+
     private Segment adjustingInterval;
+
     private int selectionMode = MULTIPLE_INTERVAL_SELECTION;
+
     private boolean valueIsAdjusting;
 
-    public void setSelectionInterval(final int intervalEnd1, final int intervalEnd2) {
+    public void setSelectionInterval(int intervalEnd1, int intervalEnd2) {
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-
-        Selection oldSelection = (Selection)selection.clone();
+        Selection oldSelection = (Selection) selection.clone();
         selection.clear();
-
         setSelectionAndUpdateLeadAnchor(intervalEnd1, intervalEnd2, oldSelection);
     }
 
-    public void addSelectionInterval(final int intervalEnd1, final int intervalEnd2) {
+    public void addSelectionInterval(int intervalEnd1, int intervalEnd2) {
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-
-        Selection oldSelection = (Selection)selection.clone();
+        Selection oldSelection = (Selection) selection.clone();
         if (selectionMode == SINGLE_SELECTION || selectionMode == SINGLE_INTERVAL_SELECTION) {
             selection.clear();
         }
-
         setSelectionAndUpdateLeadAnchor(intervalEnd1, intervalEnd2, oldSelection);
     }
 
-    public void removeSelectionInterval(final int intervalEnd1, final int intervalEnd2) {
+    public void removeSelectionInterval(int intervalEnd1, int intervalEnd2) {
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-
         Segment interval = new Segment(intervalEnd1, intervalEnd2);
-        Selection oldSelection = (Selection)selection.clone();
-
+        Selection oldSelection = (Selection) selection.clone();
         selection.substract(interval);
-
         int oldAnchor = anchorSelectionIndex;
         int oldLead = leadSelectionIndex;
-
         anchorSelectionIndex = intervalEnd1;
         leadSelectionIndex = intervalEnd2;
-
         doNotification(selection.getDifferenceBounds(oldSelection), oldAnchor, oldLead);
     }
 
     public void clearSelection() {
-        Selection oldSelection = (Selection)selection.clone();
+        Selection oldSelection = (Selection) selection.clone();
         selection.clear();
-
-        doNotification(selection.getDifferenceBounds(oldSelection), anchorSelectionIndex, leadSelectionIndex);
+        doNotification(selection.getDifferenceBounds(oldSelection), anchorSelectionIndex,
+                leadSelectionIndex);
     }
 
-    public boolean isSelectedIndex(final int index) {
+    public boolean isSelectedIndex(int index) {
         return selection.contains(index);
     }
 
@@ -226,53 +231,43 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         return isSelectionEmpty() ? NOT_SET : selection.getBeginIndex();
     }
 
-
-    public void insertIndexInterval(final int index, final int length, final boolean before) {
+    public void insertIndexInterval(int index, int length, boolean before) {
         if (!isValidInterval(index, length)) {
             return;
         }
-
-        Selection oldSelection = (Selection)selection.clone();
+        Selection oldSelection = (Selection) selection.clone();
         int insertionIndex = before ? index : index + 1;
         selection.insertIndices(index, length, selectionMode != SINGLE_SELECTION);
-
         int oldAnchor = anchorSelectionIndex;
         int oldLead = leadSelectionIndex;
-
         if (anchorSelectionIndex >= insertionIndex) {
             anchorSelectionIndex += length;
         }
         if (leadSelectionIndex >= insertionIndex) {
             leadSelectionIndex += length;
         }
-
         doNotification(selection.getDifferenceBounds(oldSelection), oldAnchor, oldLead);
     }
 
-    public void removeIndexInterval(final int intervalEnd1, final int intervalEnd2) {
+    public void removeIndexInterval(int intervalEnd1, int intervalEnd2) {
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-
-        Selection oldSelection = (Selection)selection.clone();
-
+        Selection oldSelection = (Selection) selection.clone();
         Segment removalInterval = new Segment(intervalEnd1, intervalEnd2);
         selection.removeIndices(removalInterval.getBeginIndex(), removalInterval.getLength());
-
         int oldAnchor = anchorSelectionIndex;
         int oldLead = leadSelectionIndex;
-
-        anchorSelectionIndex = adjustLeadAnchorIndexForIndicesRemoval(anchorSelectionIndex, removalInterval);
-        leadSelectionIndex = adjustLeadAnchorIndexForIndicesRemoval(leadSelectionIndex, removalInterval);
-
+        anchorSelectionIndex = adjustLeadAnchorIndexForIndicesRemoval(anchorSelectionIndex,
+                removalInterval);
+        leadSelectionIndex = adjustLeadAnchorIndexForIndicesRemoval(leadSelectionIndex,
+                removalInterval);
         doNotification(selection.getDifferenceBounds(oldSelection), oldAnchor, oldLead);
     }
 
-    public void setAnchorSelectionIndex(final int anchorIndex) {
+    public void setAnchorSelectionIndex(int anchorIndex) {
         int oldAnchor = anchorSelectionIndex;
-
         anchorSelectionIndex = anchorIndex;
-
         doNotification(null, oldAnchor, leadSelectionIndex);
     }
 
@@ -280,18 +275,16 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         return anchorSelectionIndex;
     }
 
-    public void setLeadSelectionIndex(final int leadIndex) {
+    public void setLeadSelectionIndex(int leadIndex) {
         if (leadIndex < 0 && anchorSelectionIndex < 0) {
             leadSelectionIndex = leadIndex;
         }
         if (leadIndex < 0 || anchorSelectionIndex < 0) {
             return;
         }
-
-        Selection oldSelection = (Selection)selection.clone();
+        Selection oldSelection = (Selection) selection.clone();
         int oldLead = leadSelectionIndex;
         leadSelectionIndex = leadIndex;
-
         Segment oldSegment = new Segment(anchorSelectionIndex, oldLead);
         Segment newSegment = new Segment(anchorSelectionIndex, leadSelectionIndex);
         if (selection.contains(anchorSelectionIndex)) {
@@ -301,15 +294,14 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
             selection.add(oldSegment);
             selection.substract(newSegment);
         }
-
-        doNotification(selection.getDifferenceBounds(oldSelection), anchorSelectionIndex, oldLead);
+        doNotification(selection.getDifferenceBounds(oldSelection), anchorSelectionIndex,
+                oldLead);
     }
 
-    public void moveLeadSelectionIndex(final int leadIndex) {
+    public void moveLeadSelectionIndex(int leadIndex) {
         if (leadIndex < 0 || leadSelectionIndex == leadIndex) {
             return;
         }
-
         int oldIndex = leadSelectionIndex;
         leadSelectionIndex = leadIndex;
         doNotification(null, anchorSelectionIndex, oldIndex);
@@ -319,7 +311,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         return leadSelectionIndex;
     }
 
-    public void setLeadAnchorNotificationEnabled(final boolean enabled) {
+    public void setLeadAnchorNotificationEnabled(boolean enabled) {
         leadAnchorNotificationEnabled = enabled;
     }
 
@@ -331,18 +323,15 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         return selectionMode;
     }
 
-    public void setSelectionMode(final int selectionMode) {
-        if (selectionMode != SINGLE_SELECTION
-            && selectionMode != SINGLE_INTERVAL_SELECTION
-            && selectionMode != MULTIPLE_INTERVAL_SELECTION) {
-
+    public void setSelectionMode(int selectionMode) {
+        if (selectionMode != SINGLE_SELECTION && selectionMode != SINGLE_INTERVAL_SELECTION
+                && selectionMode != MULTIPLE_INTERVAL_SELECTION) {
             throw new IllegalArgumentException("Incorrect selection mode is specified");
         }
-
         this.selectionMode = selectionMode;
     }
 
-    public void setValueIsAdjusting(final boolean isAdjusting) {
+    public void setValueIsAdjusting(boolean isAdjusting) {
         valueIsAdjusting = isAdjusting;
         if (!isAdjusting) {
             fireValueChanged(isAdjusting);
@@ -353,118 +342,109 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         return valueIsAdjusting;
     }
 
-    public void addListSelectionListener(final ListSelectionListener l) {
+    public void addListSelectionListener(ListSelectionListener l) {
         listenerList.add(ListSelectionListener.class, l);
     }
 
-    public void removeListSelectionListener(final ListSelectionListener l) {
+    public void removeListSelectionListener(ListSelectionListener l) {
         listenerList.remove(ListSelectionListener.class, l);
     }
 
     public ListSelectionListener[] getListSelectionListeners() {
-        return (ListSelectionListener[])getListeners(ListSelectionListener.class);
+        return getListeners(ListSelectionListener.class);
     }
 
-    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {
+    public <T extends java.util.EventListener> T[] getListeners(Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         DefaultListSelectionModel result = new DefaultListSelectionModel();
-
         result.anchorSelectionIndex = anchorSelectionIndex;
         result.leadSelectionIndex = leadSelectionIndex;
         result.leadAnchorNotificationEnabled = leadAnchorNotificationEnabled;
         result.valueIsAdjusting = valueIsAdjusting;
         result.selectionMode = selectionMode;
-
-        result.selection = (Selection)selection.clone();
-
+        result.selection = (Selection) selection.clone();
         return result;
     }
 
+    @Override
     public String toString() {
-        return getClass().toString() + ": leadIndex=" + leadSelectionIndex
-                                     + ", anchorIndex=" + anchorSelectionIndex
-                                     + ", isEmpty=" + isSelectionEmpty();
+        return getClass().toString() + ": leadIndex=" + leadSelectionIndex + ", anchorIndex="
+                + anchorSelectionIndex + ", isEmpty=" + isSelectionEmpty();
     }
 
-    protected void fireValueChanged(final boolean isAdjusting) {
+    protected void fireValueChanged(boolean isAdjusting) {
         if (adjustingInterval != null) {
-            fireValueChanged(adjustingInterval.getBeginIndex(), adjustingInterval.getEndIndex(), isAdjusting);
+            fireValueChanged(adjustingInterval.getBeginIndex(),
+                    adjustingInterval.getEndIndex(), isAdjusting);
             adjustingInterval = null;
         }
     }
 
-    protected void fireValueChanged(final int firstIndex, final int lastIndex) {
+    protected void fireValueChanged(int firstIndex, int lastIndex) {
         fireValueChanged(firstIndex, lastIndex, getValueIsAdjusting());
     }
 
-    protected void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
+    protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
         fireListSelectionEvent(new ListSelectionEvent(this, firstIndex, lastIndex, isAdjusting));
     }
 
-
-    private void fireListSelectionEvent(final ListSelectionEvent event) {
+    private void fireListSelectionEvent(ListSelectionEvent event) {
         ListSelectionListener[] listeners = getListSelectionListeners();
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].valueChanged(event);
         }
     }
 
-    private void doNotification(final Segment changedInterval, final int oldAnchorIndex, final int oldLeadIndex) {
+    private void doNotification(Segment changedInterval, int oldAnchorIndex, int oldLeadIndex) {
         Segment fireInterval = changedInterval;
-
         if (leadAnchorNotificationEnabled) {
             Segment anchorLeadInterval = getLeadAnchorInterval(oldAnchorIndex, oldLeadIndex);
             fireInterval = mergeIntervals(fireInterval, anchorLeadInterval);
         }
-
         if (fireInterval == null) {
             return;
         }
-
         if (valueIsAdjusting) {
             adjustingInterval = mergeIntervals(adjustingInterval, fireInterval);
         }
         fireValueChanged(fireInterval.getBeginIndex(), fireInterval.getEndIndex());
     }
 
-    private Segment mergeIntervals(final Segment interval1, final Segment interval2) {
+    private Segment mergeIntervals(Segment interval1, Segment interval2) {
         Segment result = interval1;
-
         if (result != null) {
             result.add(interval2);
         } else {
             result = interval2;
         }
-
         return result;
     }
 
-    private Segment getLeadAnchorInterval(final int oldAnchorIndex, final int oldLeadIndex) {
+    private Segment getLeadAnchorInterval(int oldAnchorIndex, int oldLeadIndex) {
         Segment anchorInterval = createInterval(oldAnchorIndex, anchorSelectionIndex);
         Segment leadInterval = createInterval(oldLeadIndex, leadSelectionIndex);
-
         return mergeIntervals(anchorInterval, leadInterval);
     }
 
-    private Segment createInterval(final int oldLeadAnchorIndex, final int newLeadAnchorIndex) {
+    private Segment createInterval(int oldLeadAnchorIndex, int newLeadAnchorIndex) {
         if (oldLeadAnchorIndex == newLeadAnchorIndex) {
             return null;
         }
         if (oldLeadAnchorIndex == NOT_SET) {
             return new Segment(newLeadAnchorIndex, newLeadAnchorIndex);
-        } else {
-            if (newLeadAnchorIndex == NOT_SET) {
-                return new Segment(oldLeadAnchorIndex, oldLeadAnchorIndex);
-            } else {
-                return new Segment(oldLeadAnchorIndex, newLeadAnchorIndex);
-            }
         }
+        if (newLeadAnchorIndex == NOT_SET) {
+            return new Segment(oldLeadAnchorIndex, oldLeadAnchorIndex);
+        }
+        return new Segment(oldLeadAnchorIndex, newLeadAnchorIndex);
     }
 
-    private int adjustLeadAnchorIndexForIndicesRemoval(final int leadAnchorIndex, final Segment removalInterval) {
+    private int adjustLeadAnchorIndexForIndicesRemoval(int leadAnchorIndex,
+            Segment removalInterval) {
         int result = leadAnchorIndex;
         if (result >= removalInterval.getBeginIndex()) {
             if (result < removalInterval.getEndIndex()) {
@@ -473,15 +453,13 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
                 result -= removalInterval.getLength();
             }
         }
-
         return result;
     }
 
-    private void setSelectionAndUpdateLeadAnchor(final int intervalEnd1, final int intervalEnd2,
-                                                 final Selection oldSelection) {
+    private void setSelectionAndUpdateLeadAnchor(int intervalEnd1, int intervalEnd2,
+            Selection oldSelection) {
         int oldAnchor = anchorSelectionIndex;
         int oldLead = leadSelectionIndex;
-
         if (selectionMode == SINGLE_SELECTION) {
             anchorSelectionIndex = intervalEnd2;
         } else {
@@ -489,19 +467,17 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         }
         leadSelectionIndex = intervalEnd2;
         selection.add(new Segment(anchorSelectionIndex, leadSelectionIndex));
-
         doNotification(selection.getDifferenceBounds(oldSelection), oldAnchor, oldLead);
     }
 
-    private boolean isValidInterval(final int n1, final int n2) {
+    private boolean isValidInterval(int n1, int n2) {
         if (n1 == -1 || n2 == -1) {
             return false;
         }
-
         if (n1 < -1 || n2 < -1) {
-            throw new IndexOutOfBoundsException(); // According to the API specification
+            // According to the API specification
+            throw new IndexOutOfBoundsException();
         }
-
         return true;
     }
 }
