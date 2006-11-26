@@ -29,12 +29,11 @@ public class PopupFactoryTest extends BasicSwingTestCase {
 
     public void testGetSetSharedInstance() throws Exception {
         assertNotNull(PopupFactory.getSharedInstance());
-
         PopupFactory factory = new PopupFactory();
         PopupFactory.setSharedInstance(factory);
         assertSame(factory, PopupFactory.getSharedInstance());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 PopupFactory.setSharedInstance(null);
             }
@@ -45,19 +44,15 @@ public class PopupFactoryTest extends BasicSwingTestCase {
         JButton content1 = new JButton();
         Popup p1 = PopupFactory.getSharedInstance().getPopup(null, content1, 10, 10);
         p1.show();
-
         Window w1 = SwingUtilities.getWindowAncestor(content1);
         assertNotNull(w1);
         assertTrue(w1.isVisible());
-
         p1.hide();
         assertFalse(w1.isVisible());
-
         Popup p11 = PopupFactory.getSharedInstance().getPopup(null, content1, 10, 10);
         if (isHarmony()) {
             assertSame(p1, p11);
         }
-
         JFrame frame = new JFrame();
         JButton content2 = new JButton();
         frame.getContentPane().add(content1);
@@ -66,10 +61,8 @@ public class PopupFactoryTest extends BasicSwingTestCase {
         p2.show();
         Window w2 = SwingUtilities.getWindowAncestor(content2);
         assertTrue(w2.isVisible());
-
         frame.setVisible(false);
         assertFalse(w2.isVisible());
-
         if (isHarmony()) {
             frame.dispose();
             Popup p21 = PopupFactory.getSharedInstance().getPopup(frame, content2, 10, 10);

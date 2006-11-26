@@ -18,7 +18,6 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.ArrayList;
@@ -27,14 +26,17 @@ import java.util.List;
 
 public class SpinnerListModelTest extends BasicSwingTestCase {
     private SpinnerListModel model;
+
     private ChangeController chl;
 
+    @Override
     public void setUp() {
         model = new SpinnerListModel();
         chl = new ChangeController();
         model.addChangeListener(chl);
     }
 
+    @Override
     public void tearDown() {
         model = null;
         chl = null;
@@ -44,7 +46,6 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         List list = model.getList();
         assertNotNull(list);
         assertEquals(1, list.size());
-
         list = new ArrayList();
         list.add("listline1");
         list.add("listline2");
@@ -52,16 +53,17 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         model = new SpinnerListModel(list);
         assertSame(list, model.getList());
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
-                model = new SpinnerListModel((Object[])null);
+                model = new SpinnerListModel((Object[]) null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerListModel(new ArrayList());
             }
         });
-
         list.clear();
         list.add(null);
         list.add(null);
@@ -71,11 +73,11 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         assertNull(model.getValue());
         assertNull(model.getPreviousValue());
         assertNull(model.getNextValue());
-
-        Object[] values = {"arrline1", "arrline2", new Integer(3)};
+        Object[] values = { "arrline1", "arrline2", new Integer(3) };
         model = new SpinnerListModel(values);
         assertEquals(model.getList(), Arrays.asList(values));
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerListModel(new Object[0]);
             }
@@ -86,7 +88,6 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         List list = model.getList();
         assertNotNull(list);
         assertEquals(1, list.size());
-
         list = new ArrayList();
         list.add(null);
         list.add(null);
@@ -107,19 +108,19 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         assertSame(list, model.getList());
         assertTrue(chl.isChanged());
         chl.reset();
-
         list.clear();
         list.add(new Integer(1));
         assertEquals(new Integer(1), model.getValue());
         assertFalse(chl.isChanged());
         chl.reset();
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setList(null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setList(new ArrayList());
             }
@@ -127,7 +128,6 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         assertSame(list, model.getList());
         assertFalse(chl.isChanged());
     }
-
 
     public void testSetGetValue() {
         List list = new ArrayList();
@@ -137,13 +137,12 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         model.setList(list);
         assertEquals(new Integer(1), model.getValue());
         chl.reset();
-
         Object obj = new Integer(3);
         model.setValue(obj);
         assertEquals(obj, model.getValue());
         assertTrue(chl.isChanged());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 Object obj = new Integer(13);
                 model.setValue(obj);
@@ -158,17 +157,13 @@ public class SpinnerListModelTest extends BasicSwingTestCase {
         list.add(new Integer(3));
         model.setList(list);
         assertEquals(new Integer(1), model.getValue());
-
         assertNull(model.getPreviousValue());
         assertEquals(new Integer(2), model.getNextValue());
         assertEquals(new Integer(1), model.getValue());
-
         model.setValue(model.getNextValue());
         assertEquals(new Integer(3), model.getNextValue());
-
         model.setValue(model.getNextValue());
         assertEquals(new Integer(3), model.getValue());
         assertNull(model.getNextValue());
     }
 }
-

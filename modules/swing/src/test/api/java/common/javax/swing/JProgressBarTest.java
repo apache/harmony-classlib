@@ -18,25 +18,25 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.Arrays;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleValue;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ProgressBarUI;
-
 import org.apache.harmony.x.swing.StringConstants;
 
 public class JProgressBarTest extends BasicSwingTestCase {
     private JProgressBar progressBar;
+
     private DefaultBoundedRangeModel model;
+
     private ChangeController controller;
 
+    @Override
     public void setUp() {
         propertyChangeController = new PropertyChangeController();
         model = new DefaultBoundedRangeModel(0, 0, 0, 256);
@@ -46,6 +46,7 @@ public class JProgressBarTest extends BasicSwingTestCase {
         progressBar.addPropertyChangeListener(propertyChangeController);
     }
 
+    @Override
     public void tearDown() {
         propertyChangeController = null;
         progressBar = null;
@@ -55,24 +56,23 @@ public class JProgressBarTest extends BasicSwingTestCase {
 
     public void testJProgressBar() {
         progressBar = new JProgressBar();
-        assertEquals(JProgressBar.HORIZONTAL, progressBar.orientation);
+        assertEquals(SwingConstants.HORIZONTAL, progressBar.orientation);
         assertNull(progressBar.progressString);
         assertFalse(progressBar.paintString);
         assertTrue(progressBar.paintBorder);
         assertFalse(progressBar.isIndeterminate());
         assertNotNull(progressBar.getUI());
         assertNotNull(progressBar.changeListener);
-
         progressBar = new JProgressBar(model);
         assertSame(model, progressBar.model);
         assertNotNull(progressBar.getUI());
-
-        testExceptionalCase( new IllegalArgumentCase () {
+        testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() {
-                progressBar = new JProgressBar(JProgressBar.HORIZONTAL + JProgressBar.VERTICAL + 1);
+                progressBar = new JProgressBar(SwingConstants.HORIZONTAL
+                        + SwingConstants.VERTICAL + 1);
             }
         });
-
         progressBar = new JProgressBar(1, 23);
         assertNotNull(progressBar.getUI());
         assertEquals(1, progressBar.getMinimum());
@@ -81,11 +81,13 @@ public class JProgressBarTest extends BasicSwingTestCase {
     }
 
     public void testSetGetOrientation() {
-        progressBar.setOrientation(JProgressBar.VERTICAL);
-        assertEquals(JProgressBar.VERTICAL, progressBar.getOrientation());
-        testExceptionalCase( new IllegalArgumentCase () {
+        progressBar.setOrientation(SwingConstants.VERTICAL);
+        assertEquals(SwingConstants.VERTICAL, progressBar.getOrientation());
+        testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() {
-                progressBar.setOrientation(JProgressBar.HORIZONTAL + JProgressBar.VERTICAL + 1);
+                progressBar.setOrientation(SwingConstants.HORIZONTAL + SwingConstants.VERTICAL
+                        + 1);
             }
         });
         assertTrue(propertyChangeController.isChanged(StringConstants.ORIENTATION));
@@ -95,20 +97,18 @@ public class JProgressBarTest extends BasicSwingTestCase {
         DefaultBoundedRangeModel newModel = new DefaultBoundedRangeModel(1, 0, 1, 12);
         progressBar.setModel(newModel);
         assertSame(newModel, progressBar.getModel());
-        assertTrue(Arrays.asList(newModel.getChangeListeners()).contains(progressBar.changeListener));
-
+        assertTrue(Arrays.asList(newModel.getChangeListeners()).contains(
+                progressBar.changeListener));
         progressBar.setModel(null);
         assertNull(progressBar.getModel());
     }
 
     public void testProgressString() {
         assertFalse(progressBar.isStringPainted());
-
         String string = "someDisplayString";
         progressBar.setString(string);
         assertSame(string, progressBar.getString());
         assertTrue(propertyChangeController.isChanged("string"));
-
         progressBar.setStringPainted(true);
         assertTrue(progressBar.isStringPainted());
         assertTrue(propertyChangeController.isChanged("stringPainted"));
@@ -128,17 +128,15 @@ public class JProgressBarTest extends BasicSwingTestCase {
         assertNull(accessibleContext.getAccessibleDescription());
         assertNull(accessibleContext.getAccessibleAction());
         assertSame(accessibleContext.getAccessibleValue(), accessibleContext);
-
-        assertTrue(accessibleContext.getAccessibleStateSet().contains(AccessibleState.HORIZONTAL));
-
-        AccessibleValue value = (AccessibleValue)accessibleContext;
-        int currentValue = (progressBar.getMinimum() + progressBar.getMaximum())/2;
+        assertTrue(accessibleContext.getAccessibleStateSet().contains(
+                AccessibleState.HORIZONTAL));
+        AccessibleValue value = (AccessibleValue) accessibleContext;
+        int currentValue = (progressBar.getMinimum() + progressBar.getMaximum()) / 2;
         progressBar.setValue(currentValue);
         assertTrue(controller.isChanged());
         assertEquals(new Integer(currentValue), value.getCurrentAccessibleValue());
         assertEquals(new Integer(progressBar.getMaximum()), value.getMaximumAccessibleValue());
         assertEquals(new Integer(progressBar.getMinimum()), value.getMinimumAccessibleValue());
-
         value.setCurrentAccessibleValue(new Integer(currentValue + 1));
         assertTrue(controller.isChanged());
         assertEquals(currentValue + 1, progressBar.getValue());
@@ -148,24 +146,21 @@ public class JProgressBarTest extends BasicSwingTestCase {
 
     public void testSetGetUpdateUI() {
         assertEquals("ProgressBarUI", progressBar.getUIClassID());
-
         ProgressBarUI defaultUI = progressBar.getUI();
         assertNotNull(defaultUI);
-
-        ProgressBarUI ui = new ProgressBarUI() {};
+        ProgressBarUI ui = new ProgressBarUI() {
+        };
         progressBar.setUI(ui);
         assertEquals(ui, progressBar.getUI());
-
         progressBar.updateUI();
         assertNotSame(ui, progressBar.getUI());
     }
 
     public void testSetGetValue() {
-        int currentValue = (progressBar.getMinimum() + progressBar.getMaximum())/2;
+        int currentValue = (progressBar.getMinimum() + progressBar.getMaximum()) / 2;
         progressBar.setValue(currentValue);
         assertEquals(currentValue, progressBar.getValue());
         assertTrue(controller.isChanged());
-
         progressBar.setValue(progressBar.getMaximum() + 10);
         assertEquals(progressBar.getMaximum(), progressBar.getValue());
     }
@@ -196,7 +191,8 @@ public class JProgressBarTest extends BasicSwingTestCase {
         int min = progressBar.getMinimum();
         for (int i = progressBar.getMinimum(); i < progressBar.getMaximum() + 1; i++) {
             progressBar.setValue(i);
-            assertEquals(1. * (i - min) / (range), progressBar.getPercentComplete(), 0.0000000001);
+            assertEquals(1. * (i - min) / (range), progressBar.getPercentComplete(),
+                    0.0000000001);
         }
         progressBar.setMinimum(progressBar.getMaximum());
         assertTrue(Double.isNaN(progressBar.getPercentComplete()));
@@ -210,13 +206,12 @@ public class JProgressBarTest extends BasicSwingTestCase {
     public void testAddRemoveGetChangeListener() {
         assertEquals(2, progressBar.getChangeListeners().length);
         assertTrue(Arrays.asList(progressBar.getChangeListeners()).contains(controller));
-
         ChangeListener listener = new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {}
+            public void stateChanged(ChangeEvent e) {
+            }
         };
         progressBar.addChangeListener(listener);
         assertTrue(Arrays.asList(progressBar.getChangeListeners()).contains(listener));
-
         progressBar.removeChangeListener(controller);
         progressBar.removeChangeListener(listener);
         assertEquals(1, progressBar.getChangeListeners().length);
@@ -228,4 +223,3 @@ public class JProgressBarTest extends BasicSwingTestCase {
         assertTrue(controller.isChanged());
     }
 }
-

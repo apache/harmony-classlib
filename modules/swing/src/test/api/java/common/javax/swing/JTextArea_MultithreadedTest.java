@@ -20,7 +20,6 @@
  */
 package javax.swing;
 
-
 import java.awt.Container;
 import java.awt.GridLayout;
 import junit.framework.TestCase;
@@ -44,13 +43,11 @@ public class JTextArea_MultithreadedTest extends TestCase {
             + " Edison cap, \tEdison effect\n"
             + "Edison screw, Edison screw cap, Edison screw \n"
             + "holder, Edison screw lampholder, Edison screw " + "plug\n"
-            + "Edison screw terminal, Edison storage battery"
-            + "Edison storage \t\tcell";
+            + "Edison screw terminal, Edison storage battery" + "Edison storage \t\tcell";
 
-    String bidiContent = sLTR + sRTL + sRTL + " \t" + sLTR + sRTL + sLTR + "\n"
-            + sRTL + "." + sLTR + sRTL + "\t" + sRTL + "\n" + sLTR + sLTR
-            + sRTL + sRTL + sRTL + sLTR + sLTR + sLTR + sRTL + sLTR + sRTL
-            + sLTR;
+    String bidiContent = sLTR + sRTL + sRTL + " \t" + sLTR + sRTL + sLTR + "\n" + sRTL + "."
+            + sLTR + sRTL + "\t" + sRTL + "\n" + sLTR + sLTR + sRTL + sRTL + sRTL + sLTR + sLTR
+            + sLTR + sRTL + sLTR + sRTL + sLTR;
 
     String str1 = "jazz band";
 
@@ -60,6 +57,7 @@ public class JTextArea_MultithreadedTest extends TestCase {
 
     String message;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         bWasException = false;
@@ -77,12 +75,11 @@ public class JTextArea_MultithreadedTest extends TestCase {
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
     }
-
-
 
     String replaceRange(final String s1, final String s2, final int start, final int end) {
         String tmp = s2 == null ? "" : s2;
@@ -99,19 +96,16 @@ public class JTextArea_MultithreadedTest extends TestCase {
         jta.replaceRange("", 5, 10);
         tmp = replaceRange(tmp, "", 5, 10);
         assertEquals(tmp, jta.getText());
-
         try {
             jta.replaceRange(str2, -1, 5);
         } catch (IllegalArgumentException e) {
             bWasException = true;
             message = e.getMessage();
         }
-
         assertTrue(bWasException);
         assertEquals("Invalid remove", message);
         bWasException = false;
         message = null;
-
         try {
             jta.replaceRange(str2, 1, tmp.length() + 1);
         } catch (IllegalArgumentException e) {
@@ -122,7 +116,6 @@ public class JTextArea_MultithreadedTest extends TestCase {
         assertEquals("Invalid remove", message);
         bWasException = false;
         message = null;
-
         try {
             jta.replaceRange(str2, 10, 5);
         } catch (IllegalArgumentException e) {
@@ -173,7 +166,6 @@ public class JTextArea_MultithreadedTest extends TestCase {
         }
         assertFalse(bWasException);
         assertNull(message);
-
     }
 
     public void testAppend() throws Exception {
@@ -185,6 +177,4 @@ public class JTextArea_MultithreadedTest extends TestCase {
         jta.append("");
         assertEquals(tmp, jta.getText());
     }
-
-
 }

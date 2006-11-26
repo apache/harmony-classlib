@@ -24,7 +24,6 @@ package javax.swing;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.border.Border;
@@ -33,36 +32,43 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 public class AccessibleJComponentTest extends SwingTestCase {
-
     protected class ConcreteFocusListener implements FocusListener {
         public boolean state = false;
+
         public void focusGained(final FocusEvent arg0) {
             state = true;
         }
+
         public void focusLost(final FocusEvent arg0) {
             state = true;
         }
     };
 
     protected JComponent panel;
+
     protected JComponent.AccessibleJComponent aContext;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         panel = new JComponent() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public AccessibleContext getAccessibleContext() {
-                return new AccessibleJComponent() {};
+                return new AccessibleJComponent() {
+                    private static final long serialVersionUID = 1L;
+                };
             }
         };
-        aContext = (JComponent.AccessibleJComponent)panel.getAccessibleContext();
+        aContext = (JComponent.AccessibleJComponent) panel.getAccessibleContext();
     }
 
     public void testGetAccessibleChildrenCount() {
         assertEquals(aContext.getAccessibleChildrenCount(), 0);
-
         panel.add(new JPanel());
         panel.add(new JPanel());
         panel.add(new JPanel());
@@ -87,9 +93,7 @@ public class AccessibleJComponentTest extends SwingTestCase {
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
-
         assertNull(aContext.getAccessibleChild(0));
-
         panel.add(panel1);
         panel.add(panel2);
         panel.add(panel3);
@@ -101,9 +105,8 @@ public class AccessibleJComponentTest extends SwingTestCase {
     public void testGetToolTipText() {
         panel.setToolTipText("text");
         assertNull(aContext.getToolTipText());
-
         panel = new JButton();
-        aContext = (JComponent.AccessibleJComponent)panel.getAccessibleContext();
+        aContext = (JComponent.AccessibleJComponent) panel.getAccessibleContext();
         String text = "text";
         panel.setToolTipText(text);
         assertTrue(aContext.getToolTipText().equals(text));
@@ -114,8 +117,7 @@ public class AccessibleJComponentTest extends SwingTestCase {
         String title2 = "title2";
         assertNull(aContext.getTitledBorderText());
         panel.setBorder(new TitledBorder(title1));
-        assertEquals(aContext.getTitledBorderText(),title1);
-
+        assertEquals(aContext.getTitledBorderText(), title1);
         panel.setBorder(new CompoundBorder(new TitledBorder(title1), new TitledBorder(title2)));
         assertNull(aContext.getTitledBorderText());
     }
@@ -126,47 +128,42 @@ public class AccessibleJComponentTest extends SwingTestCase {
         String title3 = "title3";
         String title4 = "title3";
         Border border = null;
-
         assertNull(aContext.getBorderTitle(border));
-
         border = new TitledBorder(title1);
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title1);
-
         border = new CompoundBorder(new TitledBorder(title1), new EmptyBorder(1, 1, 1, 1));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title1);
-
         border = new CompoundBorder(new EmptyBorder(1, 1, 1, 1), new TitledBorder(title2));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title2);
-
         border = new CompoundBorder(new TitledBorder(title1), new TitledBorder(title2));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title2);
-
-        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1), new TitledBorder(title2)),
-                                    new CompoundBorder(new TitledBorder(title3), new TitledBorder(title4)));
+        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1),
+                new TitledBorder(title2)), new CompoundBorder(new TitledBorder(title3),
+                new TitledBorder(title4)));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title4);
-
-        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1), new TitledBorder(title2)),
-                                    new CompoundBorder(new TitledBorder(title3), new EmptyBorder(1, 1, 1, 1)));
+        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1),
+                new TitledBorder(title2)), new CompoundBorder(new TitledBorder(title3),
+                new EmptyBorder(1, 1, 1, 1)));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title3);
-
-        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1), new TitledBorder(title2)),
-                                    new CompoundBorder(new EmptyBorder(1, 1, 1, 1), new EmptyBorder(1, 1, 1, 1)));
+        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1),
+                new TitledBorder(title2)), new CompoundBorder(new EmptyBorder(1, 1, 1, 1),
+                new EmptyBorder(1, 1, 1, 1)));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title2);
-
-        border = new CompoundBorder(new CompoundBorder(new EmptyBorder(1, 1, 1, 1), new TitledBorder(title2)),
-                new CompoundBorder(new EmptyBorder(1, 1, 1, 1), new EmptyBorder(1, 1, 1, 1)));
+        border = new CompoundBorder(new CompoundBorder(new EmptyBorder(1, 1, 1, 1),
+                new TitledBorder(title2)), new CompoundBorder(new EmptyBorder(1, 1, 1, 1),
+                new EmptyBorder(1, 1, 1, 1)));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title2);
-
-        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1), new EmptyBorder(1, 1, 1, 1)),
-                                    new CompoundBorder(new EmptyBorder(1, 1, 1, 1), new EmptyBorder(1, 1, 1, 1)));
+        border = new CompoundBorder(new CompoundBorder(new TitledBorder(title1),
+                new EmptyBorder(1, 1, 1, 1)), new CompoundBorder(new EmptyBorder(1, 1, 1, 1),
+                new EmptyBorder(1, 1, 1, 1)));
         assertNotNull(aContext.getBorderTitle(border));
         assertEquals(aContext.getBorderTitle(border), title1);
     }
@@ -178,10 +175,8 @@ public class AccessibleJComponentTest extends SwingTestCase {
         String text1 = "text1";
         String text2 = "text2";
         assertNull(aContext.getAccessibleName());
-
         panel.setName(text2);
         assertNull(aContext.getAccessibleName());
-
         aContext.setAccessibleName(text1);
         assertEquals(aContext.getAccessibleName(), text1);
     }
@@ -192,17 +187,13 @@ public class AccessibleJComponentTest extends SwingTestCase {
     public void testGetAccessibleDescription() {
         String text1 = "text1";
         String text2 = "text2";
-
         panel = new JPanel();
-        aContext = (JComponent.AccessibleJComponent)panel.getAccessibleContext();
+        aContext = (JComponent.AccessibleJComponent) panel.getAccessibleContext();
         assertNull(aContext.getAccessibleDescription());
-
         aContext.setAccessibleDescription(text2);
         assertTrue(aContext.getAccessibleDescription().equals(text2));
-
         panel.setToolTipText(text1);
         assertTrue(aContext.getAccessibleDescription() != null);
         assertTrue(aContext.getAccessibleDescription().equals(text2));
     }
-
 }

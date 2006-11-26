@@ -15,24 +15,24 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.event.ActionEvent;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.JToggleButton.ToggleButtonModel;
 
 public class JCheckBoxMenuItemTest extends JMenuItemTest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuItem = new JCheckBoxMenuItem();
         button = menuItem;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -46,7 +46,6 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertNull("icon ", button.getIcon());
         assertEquals("text ", "", button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -63,7 +62,6 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", "", menuItem.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -80,7 +78,6 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertTrue("default buttonModel ", button.getModel() instanceof ToggleButtonModel);
         assertNull("icon ", menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -99,7 +96,6 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -113,7 +109,7 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         final String command = "dnammoc";
         final KeyStroke accelerator = KeyStroke.getKeyStroke('a');
         class MyAction extends AbstractAction {
-            public boolean performed = false;
+            private static final long serialVersionUID = 1L;
 
             public MyAction(final String text, final Icon icon) {
                 super(text, icon);
@@ -122,15 +118,14 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
             }
 
             public void actionPerformed(final ActionEvent e) {
-                performed = true;
             }
-        };
+        }
+        ;
         Icon icon = createNewIcon();
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         menuItem = new JCheckBoxMenuItem(action);
         assertFalse(menuItem.isSelected());
-
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
@@ -138,10 +133,8 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertFalse("selected ", menuItem.isSelected());
         assertTrue("enabled ", menuItem.isEnabled());
         assertEquals("accelerator ", accelerator, menuItem.getAccelerator());
-
         action.setEnabled(false);
         menuItem = new JCheckBoxMenuItem(action);
-
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
@@ -149,18 +142,14 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertFalse("selected ", menuItem.isSelected());
         assertFalse("enabled ", menuItem.isEnabled());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
-
-        menuItem = new JCheckBoxMenuItem((Action)null);
-
+        menuItem = new JCheckBoxMenuItem((Action) null);
         assertNull("icon ", menuItem.getIcon());
         assertNull("text ", menuItem.getText());
         assertNull("action", menuItem.getAction());
         assertNull("command ", menuItem.getActionCommand());
         assertFalse("selected ", menuItem.isSelected());
         assertTrue("enabled ", menuItem.isEnabled());
-
         assertTrue("default buttonModel ", button.getModel() instanceof ToggleButtonModel);
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -179,12 +168,10 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
         assertTrue(menuItem.isSelected());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
         assertEquals(SwingConstants.CENTER, button.getVerticalTextPosition());
-
         menuItem = new JCheckBoxMenuItem(text, icon, false);
         assertFalse(menuItem.isSelected());
     }
@@ -192,18 +179,20 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JCheckBoxMenuItem.getAccessibleContext()'
      */
+    @Override
     public void testGetAccessibleContext() {
-        boolean assertedValue = (menuItem.getAccessibleContext() != null &&
-                menuItem.getAccessibleContext().getClass().getName().
-                equals("javax.swing.JCheckBoxMenuItem$AccessibleJCheckBoxMenuItem"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.CHECK_BOX, menuItem.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (menuItem.getAccessibleContext() != null && menuItem
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JCheckBoxMenuItem$AccessibleJCheckBoxMenuItem"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.CHECK_BOX, menuItem
+                .getAccessibleContext().getAccessibleRole());
     }
 
     /*
      * Test method for 'javax.swing.JCheckBoxMenuItem.getUIClassID()'
      */
+    @Override
     public void testGetUIClassID() {
         assertEquals("CheckBoxMenuItemUI", menuItem.getUIClassID());
     }
@@ -211,30 +200,27 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JCheckBoxMenuItem.getSelectedObjects()'
      */
+    @Override
     public void testGetSelectedObjects() {
         String text = "texttext";
         menuItem = new JCheckBoxMenuItem(text);
-        assertNull(((JCheckBoxMenuItem)menuItem).getSelectedObjects());
-
+        assertNull(((JCheckBoxMenuItem) menuItem).getSelectedObjects());
         menuItem.setSelected(true);
-        assertEquals(1, ((JCheckBoxMenuItem)menuItem).getSelectedObjects().length);
-        assertEquals(menuItem.getText(), ((JCheckBoxMenuItem)menuItem).getSelectedObjects()[0]);
+        assertEquals(1, ((JCheckBoxMenuItem) menuItem).getSelectedObjects().length);
+        assertEquals(menuItem.getText(), ((JCheckBoxMenuItem) menuItem).getSelectedObjects()[0]);
     }
 
     /*
      * Test method for 'javax.swing.JCheckBoxMenuItem.getState()'
      */
     public void testGetSetState() {
-        assertEquals("default Selected", ((JCheckBoxMenuItem)menuItem).getState(),
-                     menuItem.isSelected());
-
+        assertEquals("default Selected", ((JCheckBoxMenuItem) menuItem).getState(), menuItem
+                .isSelected());
         menuItem.setSelected(true);
-        assertEquals("Selected", ((JCheckBoxMenuItem)menuItem).getState(),
-                     menuItem.isSelected());
-
-        ((JCheckBoxMenuItem)menuItem).setState(false);
-        assertEquals("Selected", ((JCheckBoxMenuItem)menuItem).getState(),
-                     menuItem.isSelected());
+        assertEquals("Selected", ((JCheckBoxMenuItem) menuItem).getState(), menuItem
+                .isSelected());
+        ((JCheckBoxMenuItem) menuItem).setState(false);
+        assertEquals("Selected", ((JCheckBoxMenuItem) menuItem).getState(), menuItem
+                .isSelected());
     }
-
 }

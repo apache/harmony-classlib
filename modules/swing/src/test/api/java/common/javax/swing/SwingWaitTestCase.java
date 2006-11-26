@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -36,7 +35,6 @@ import java.lang.reflect.InvocationTargetException;
  *
  */
 public abstract class SwingWaitTestCase extends BasicSwingTestCase {
-
     private static final int MAX_WAIT_TIME = 5000;
 
     /**
@@ -60,12 +58,14 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
      * the test to run correctly.
      */
     protected Component component;
+
     /**
      * Exception thrown during test execution if any.
      */
-    protected Throwable  exception;
+    protected Throwable exception;
 
     private static boolean bWasIllegalComponentStateException;
+
     private static Point next;
 
     /**
@@ -86,7 +86,6 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
                 }
             }
         });
-
         // Wait for component to be realized (displayed) if any
         if (component != null) {
             isRealized(component);
@@ -105,7 +104,6 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
                 }
             }
         });
-
         EventQueue.invokeAndWait(new Runnable() {
             public void run() {
                 try {
@@ -117,15 +115,16 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
                 }
             }
         });
-
     }
 
+    @Override
     public void runBare() throws Throwable {
         internalRunBare();
         if (exception != null) {
             rethrow(exception);
         }
     }
+
     /**
      * Method delays current thread while Component isn't realized.
      *
@@ -140,7 +139,6 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
             bWasIllegalComponentStateException = false;
             prev = next;
             next = null;
-
             try {
                 // Get state from the component
                 SwingUtilities.invokeAndWait(new Runnable() {
@@ -152,16 +150,13 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
                         }
                     }
                 });
-
                 Thread.sleep(100);
             } catch (IllegalArgumentException e) {
             } catch (InterruptedException e) {
             } catch (InvocationTargetException e) {
             }
-
-        } while (!c.isDisplayable() || !c.isVisible()
-                || bWasIllegalComponentStateException || (next == null)
-                || !next.equals(prev) || (counter-- <= 0));
+        } while (!c.isDisplayable() || !c.isVisible() || bWasIllegalComponentStateException
+                || (next == null) || !next.equals(prev) || (counter-- <= 0));
         if (bWasIllegalComponentStateException) {
             System.err.println("bWasIllegalComponentStateException");
         }
@@ -172,37 +167,32 @@ public abstract class SwingWaitTestCase extends BasicSwingTestCase {
      * Requests focus for the component and waits until it really
      * becomes focused.
      */
-    public static void requestFocusInWindowForComponent(final Component c) throws InterruptedException, InvocationTargetException {
+    public static void requestFocusInWindowForComponent(final Component c)
+            throws InterruptedException, InvocationTargetException {
         final Component comp = c;
-
         final Window w = SwingUtilities.getWindowAncestor(comp);
         if (w == null) {
             fail("no window is provided");
             return;
         }
-
         long startTime = System.currentTimeMillis();
         while (!comp.isShowing() && (System.currentTimeMillis() - startTime) < MAX_WAIT_TIME) {
             Thread.sleep(10);
         }
-
         if (!comp.isShowing()) {
             fail("component is not showing");
             return;
         }
-
         startTime = System.currentTimeMillis();
         while (!w.isFocused() && (System.currentTimeMillis() - startTime) < MAX_WAIT_TIME) {
             Thread.sleep(10);
         }
-
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 final boolean result = comp.requestFocusInWindow();
                 assertTrue("focus can be gained", result || comp.isFocusOwner());
             }
         });
-
         startTime = System.currentTimeMillis();
         while (!comp.isFocusOwner() && (System.currentTimeMillis() - startTime) < MAX_WAIT_TIME) {
             Thread.sleep(10);

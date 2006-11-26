@@ -14,13 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
-
 package javax.swing;
 
 import java.awt.Color;
@@ -31,21 +28,17 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
-
 import javax.swing.plaf.basic.BasicIconFactory;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-
 public class JTabbedPaneTest extends SwingTestCase {
-
     private class MyChangeListener implements ChangeListener {
         public boolean eventFired;
+
         public ChangeEvent event;
 
         public void stateChanged(final ChangeEvent e) {
@@ -65,13 +58,21 @@ public class JTabbedPaneTest extends SwingTestCase {
     private static Icon someIcon = BasicIconFactory.createEmptyFrameIcon();
 
     private String tabTitle1 = "tab1";
+
     private Icon tabIcon = null;
+
     private JComponent tabComponent1 = new JPanel();
+
     private String tabTip1 = "tip1";
+
     private int tabIndex1 = 0;
+
     private String tabTitle2 = "tab2";
+
     private JComponent tabComponent2 = new JPanel();
+
     private String tabTip2 = "tip2";
+
     private JComponent tabComponent3 = new JPanel();
 
     private JTabbedPane tabbed;
@@ -83,12 +84,11 @@ public class JTabbedPaneTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         tabbed = new JTabbedPane();
         tabbed.setSize(100, 50);
-
         tabbed.insertTab(tabTitle1, tabIcon, tabComponent1, tabTip1, tabIndex1);
         tabbed.insertTab(tabTitle2, tabIcon, tabComponent2, tabTip2, tabIndex1);
         tabbed.insertTab(tabTitle1, tabIcon, tabComponent3, tabTip1, 0);
@@ -97,6 +97,7 @@ public class JTabbedPaneTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -110,7 +111,6 @@ public class JTabbedPaneTest extends SwingTestCase {
 
     public void testUpdateUI() {
         tabbed.updateUI();
-
         ComponentUI ui1 = tabbed.getUI();
         ComponentUI ui2 = UIManager.getUI(tabbed);
         // at least names of classes must be the same
@@ -122,9 +122,7 @@ public class JTabbedPaneTest extends SwingTestCase {
     }
 
     public void testGetTabRunCount() {
-        assertEquals(tabbed.getUI().getTabRunCount(tabbed),
-                     tabbed.getTabRunCount());
-
+        assertEquals(tabbed.getUI().getTabRunCount(tabbed), tabbed.getTabRunCount());
         tabbed.setUI(null);
         assertEquals(0, tabbed.getTabRunCount());
     }
@@ -132,7 +130,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testFireStateChanged() {
         MyChangeListener l = new MyChangeListener();
         tabbed.addChangeListener(l);
-
         tabbed.fireStateChanged();
         assertTrue(l.eventFired);
         assertSame("source", tabbed, l.event.getSource());
@@ -140,26 +137,22 @@ public class JTabbedPaneTest extends SwingTestCase {
 
     public void testJTabbedPane() {
         tabbed = new JTabbedPane();
-
-        assertEquals("placement", JTabbedPane.TOP, tabbed.getTabPlacement());
-        assertEquals("tabLayout", JTabbedPane.WRAP_TAB_LAYOUT,
-                     tabbed.getTabLayoutPolicy());
+        assertEquals("placement", SwingConstants.TOP, tabbed.getTabPlacement());
+        assertEquals("tabLayout", JTabbedPane.WRAP_TAB_LAYOUT, tabbed.getTabLayoutPolicy());
         assertTrue("ui != null", tabbed.getUI() != null);
         assertEquals("empty", 0, tabbed.getTabCount());
     }
 
     public void testJTabbedPaneint() {
-        tabbed = new JTabbedPane(JTabbedPane.BOTTOM);
-        assertEquals("placement", JTabbedPane.BOTTOM, tabbed.getTabPlacement());
-        assertEquals("tabLayout", JTabbedPane.WRAP_TAB_LAYOUT,
-                     tabbed.getTabLayoutPolicy());
+        tabbed = new JTabbedPane(SwingConstants.BOTTOM);
+        assertEquals("placement", SwingConstants.BOTTOM, tabbed.getTabPlacement());
+        assertEquals("tabLayout", JTabbedPane.WRAP_TAB_LAYOUT, tabbed.getTabLayoutPolicy());
     }
 
     public void testJTabbedPaneintint() {
-        tabbed = new JTabbedPane(JTabbedPane.RIGHT, JTabbedPane.SCROLL_TAB_LAYOUT);
-        assertEquals("placement", JTabbedPane.RIGHT, tabbed.getTabPlacement());
-        assertEquals("tabLayout", JTabbedPane.SCROLL_TAB_LAYOUT,
-                     tabbed.getTabLayoutPolicy());
+        tabbed = new JTabbedPane(SwingConstants.RIGHT, JTabbedPane.SCROLL_TAB_LAYOUT);
+        assertEquals("placement", SwingConstants.RIGHT, tabbed.getTabPlacement());
+        assertEquals("tabLayout", JTabbedPane.SCROLL_TAB_LAYOUT, tabbed.getTabLayoutPolicy());
     }
 
     public void testRemoveTabAt() {
@@ -175,13 +168,10 @@ public class JTabbedPaneTest extends SwingTestCase {
      */
     public void testRemoveComponent() {
         int oldTabCount = tabbed.getTabCount();
-
         tabbed.remove(new JLabel());
         assertEquals("count didn't change", oldTabCount, tabbed.getTabCount());
-
-        tabbed.remove((Component)null);
+        tabbed.remove((Component) null);
         assertEquals("count didn't change", oldTabCount, tabbed.getTabCount());
-
         tabbed.remove(tabComponent3);
         assertFalse("removed", tabbed.isAncestorOf(tabComponent3));
         assertTrue("visible", tabComponent3.isVisible());
@@ -202,7 +192,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testSetGetSelectedIndex() {
         assertEquals("0 by default", 2, tabbed.getSelectedIndex());
         assertFalse("invisible", tabbed.getComponentAt(1).isVisible());
-
         tabbed.setSelectedIndex(1);
         assertFalse("invisible", tabbed.getComponentAt(0).isVisible());
         assertEquals("set to 1", 1, tabbed.getSelectedIndex());
@@ -210,7 +199,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         if (isHarmony()) {
             assertTrue("visible", tabbed.getSelectedComponent().isVisible());
         }
-
         boolean caught = false;
         try {
             tabbed.setSelectedIndex(100);
@@ -218,22 +206,17 @@ public class JTabbedPaneTest extends SwingTestCase {
             caught = true;
         }
         assertTrue("caught", caught);
-
         tabbed = new JTabbedPane();
         assertEquals("no selection", -1, tabbed.getSelectedIndex());
     }
 
     public void testSetGetTabLayoutPolicy() {
-        assertEquals("default", JTabbedPane.WRAP_TAB_LAYOUT,
-                     tabbed.getTabLayoutPolicy());
-
+        assertEquals("default", JTabbedPane.WRAP_TAB_LAYOUT, tabbed.getTabLayoutPolicy());
         MyPropertyChangeListener l = new MyPropertyChangeListener();
         tabbed.addPropertyChangeListener("tabLayoutPolicy", l);
         tabbed.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        assertEquals("set", JTabbedPane.SCROLL_TAB_LAYOUT,
-                     tabbed.getTabLayoutPolicy());
+        assertEquals("set", JTabbedPane.SCROLL_TAB_LAYOUT, tabbed.getTabLayoutPolicy());
         assertTrue(l.eventFired);
-
         boolean caught = false;
         try {
             tabbed.setTabLayoutPolicy(-4);
@@ -245,13 +228,11 @@ public class JTabbedPaneTest extends SwingTestCase {
 
     public void testSetGetTabPlacement() {
         assertEquals("default", SwingConstants.TOP, tabbed.getTabPlacement());
-
         MyPropertyChangeListener l = new MyPropertyChangeListener();
         tabbed.addPropertyChangeListener("tabPlacement", l);
         tabbed.setTabPlacement(SwingConstants.LEFT);
         assertEquals("set", SwingConstants.LEFT, tabbed.getTabPlacement());
         assertTrue(l.eventFired);
-
         boolean caught = false;
         try {
             tabbed.setTabPlacement(-4);
@@ -264,24 +245,20 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testIndexAtLocation() {
         int x = 2;
         int y = 2;
-        assertEquals(tabbed.getUI().tabForCoordinate(tabbed, x, y),
-                     tabbed.indexAtLocation(x, y)
-                     );
-
+        assertEquals(tabbed.getUI().tabForCoordinate(tabbed, x, y), tabbed
+                .indexAtLocation(x, y));
         tabbed.setUI(null);
         assertEquals(-1, tabbed.indexAtLocation(x, y));
     }
 
     public void testSetGetDisplayedMnemonicIndexAt() {
         assertEquals(-1, tabbed.getDisplayedMnemonicIndexAt(0));
-
         tabbed.setDisplayedMnemonicIndexAt(0, 1);
         assertEquals(1, tabbed.getDisplayedMnemonicIndexAt(0));
     }
 
     public void testSetGetMnemonicAt() {
         assertEquals(-1, tabbed.getMnemonicAt(1));
-
         tabbed.setMnemonicAt(1, KeyEvent.VK_X);
         assertEquals(KeyEvent.VK_X, tabbed.getMnemonicAt(1));
     }
@@ -301,13 +278,13 @@ public class JTabbedPaneTest extends SwingTestCase {
         JComponent comp = new JLabel("label");
         comp.setName("label");
         Component result = tabbed.add(comp);
-
         assertEquals("result", comp, result);
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertNull("tip", tabbed.getToolTipTextAt(3));
-
         class UIResourceButton extends JButton implements UIResource {
+
+            private static final long serialVersionUID = 1L;
         }
         int tabCount = tabbed.getTabCount();
         comp = new UIResourceButton();
@@ -323,7 +300,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         JComponent comp = new JLabel("label");
         comp.setName("label");
         Component result = tabbed.add(comp, 2);
-
         assertEquals("result", comp, result);
         assertEquals("index", 2, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(2));
@@ -338,12 +314,10 @@ public class JTabbedPaneTest extends SwingTestCase {
         JComponent comp = new JLabel("label");
         comp.setName("labelName");
         Object constraints = "label";
-
         tabbed.add(comp, constraints);
         assertEquals("index", index, tabbed.indexOfComponent(comp));
         assertEquals("title", constraints, tabbed.getTitleAt(index));
         tabbed.remove(comp);
-
         comp = new JLabel("label");
         comp.setName("labelName");
         constraints = someIcon;
@@ -351,13 +325,11 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("title", "", tabbed.getTitleAt(index));
         assertEquals("icon", constraints, tabbed.getIconAt(index));
         tabbed.remove(comp);
-
         comp = new JLabel("label");
         comp.setName("labelName");
         constraints = new Integer(3); // just some Object
         tabbed.add(comp, constraints);
-        assertEquals("title", "labelName",
-                     tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
+        assertEquals("title", "labelName", tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
         assertNull("icon", tabbed.getIconAt(tabbed.indexOfComponent(comp)));
         tabbed.remove(comp);
     }
@@ -370,12 +342,10 @@ public class JTabbedPaneTest extends SwingTestCase {
         JComponent comp = new JLabel("label");
         comp.setName("labelName");
         Object constraints = "label";
-
         tabbed.add(comp, constraints, index);
         assertEquals("index", index, tabbed.indexOfComponent(comp));
         assertEquals("title", constraints, tabbed.getTitleAt(index));
         tabbed.remove(comp);
-
         comp = new JLabel("label");
         comp.setName("labelName");
         constraints = BasicIconFactory.createEmptyFrameIcon(); // just some icon
@@ -383,14 +353,12 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("title", "", tabbed.getTitleAt(index));
         assertEquals("icon", constraints, tabbed.getIconAt(index));
         tabbed.remove(comp);
-
         comp = new JLabel("label");
         comp.setName("labelName");
         constraints = new Integer(3); // just some Object
         tabbed.add(comp, constraints, 1);
-        if (SwingTestCase.isHarmony()) {
-            assertEquals("title", "labelName",
-                         tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
+        if (BasicSwingTestCase.isHarmony()) {
+            assertEquals("title", "labelName", tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
         }
         assertNull("icon", tabbed.getIconAt(tabbed.indexOfComponent(comp)));
         tabbed.remove(comp);
@@ -402,7 +370,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testAddStringComponent() {
         JComponent comp = new JLabel("label");
         Component result = tabbed.add("label", comp);
-
         assertEquals("result", comp, result);
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
@@ -415,18 +382,14 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testAddRemoveChangeListener() {
         ChangeListener l = new MyChangeListener();
         int len = tabbed.getChangeListeners().length;
-
         tabbed.addChangeListener(l);
         assertEquals("added", len + 1, tabbed.getChangeListeners().length);
         tabbed.removeChangeListener(l);
         assertEquals("removed", len, tabbed.getChangeListeners().length);
-
         tabbed.addChangeListener(null);
-        assertEquals("adding null: no action",
-                     len, tabbed.getChangeListeners().length);
+        assertEquals("adding null: no action", len, tabbed.getChangeListeners().length);
         tabbed.removeChangeListener(null);
-        assertEquals("removing null: no action",
-                     len, tabbed.getChangeListeners().length);
+        assertEquals("removing null: no action", len, tabbed.getChangeListeners().length);
     }
 
     /*
@@ -435,7 +398,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testAddTabStringComponent() {
         JComponent comp = new JLabel("label");
         tabbed.addTab("label", comp);
-
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertNull("tip", tabbed.getToolTipTextAt(3));
@@ -447,7 +409,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testAddTabStringIconComponent() {
         JComponent comp = new JLabel("label");
         tabbed.addTab("label", someIcon, comp);
-
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertEquals("icon", someIcon, tabbed.getIconAt(3));
@@ -460,7 +421,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testAddTabStringIconComponentString() {
         JComponent comp = new JLabel("label");
         tabbed.addTab("label", someIcon, comp, "tip");
-
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertEquals("icon", someIcon, tabbed.getIconAt(3));
@@ -480,8 +440,7 @@ public class JTabbedPaneTest extends SwingTestCase {
      * Class under test for AccessibleContext getAccessibleContext()
      */
     public void testGetAccessibleContext() {
-        assertTrue(tabbed.getAccessibleContext()
-                   instanceof JTabbedPane.AccessibleJTabbedPane);
+        assertTrue(tabbed.getAccessibleContext() instanceof JTabbedPane.AccessibleJTabbedPane);
     }
 
     /*
@@ -489,7 +448,6 @@ public class JTabbedPaneTest extends SwingTestCase {
      */
     public void testGetBoundsAt() {
         assertEquals(tabbed.getBoundsAt(1), tabbed.getUI().getTabBounds(tabbed, 1));
-
         tabbed.setUI(null);
         assertNull(tabbed.getBoundsAt(1));
     }
@@ -500,7 +458,6 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testGetChangeListeners() {
         tabbed.setUI(null);
         assertEquals("empty array", 0, tabbed.getChangeListeners().length);
-
         tabbed.addChangeListener(new MyChangeListener());
         assertEquals("1 element", 1, tabbed.getChangeListeners().length);
     }
@@ -512,7 +469,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         String newTitle = "newTitle";
         tabbed.setTitleAt(1, newTitle);
         assertEquals("newTitle is set", newTitle, tabbed.getTitleAt(1));
-
         boolean catched = false;
         try {
             tabbed.setTitleAt(-1, newTitle);
@@ -520,7 +476,6 @@ public class JTabbedPaneTest extends SwingTestCase {
             catched = true;
         }
         assertTrue("IndexOutOfBoundsException: index < 0", catched);
-
         catched = false;
         try {
             tabbed.setTitleAt(tabbed.getTabCount(), newTitle);
@@ -537,7 +492,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("title1", tabTitle1, tabbed.getTitleAt(0));
         assertEquals("title2", tabTitle2, tabbed.getTitleAt(1));
         assertEquals("title1_2", tabTitle1, tabbed.getTitleAt(2));
-
         boolean catched = false;
         try {
             tabbed.getTitleAt(-1);
@@ -545,7 +499,6 @@ public class JTabbedPaneTest extends SwingTestCase {
             catched = true;
         }
         assertTrue("IndexOutOfBoundsException: index < 0", catched);
-
         catched = false;
         try {
             tabbed.getTitleAt(tabbed.getTabCount());
@@ -560,14 +513,12 @@ public class JTabbedPaneTest extends SwingTestCase {
      */
     public void testGetToolTipTextMouseEvent() {
         Rectangle bounds = tabbed.getBoundsAt(1);
-
         tabbed.setToolTipTextAt(1, "tooltip");
-        MouseEvent e = new MouseEvent(tabbed, MouseEvent.MOUSE_MOVED, 0L, 0,
-                                      bounds.x + 1, bounds.y + 1, 1, false);
+        MouseEvent e = new MouseEvent(tabbed, MouseEvent.MOUSE_MOVED, 0L, 0, bounds.x + 1,
+                bounds.y + 1, 1, false);
         assertEquals("tooltip", tabbed.getToolTipText(e));
-
-        e = new MouseEvent(tabbed, MouseEvent.MOUSE_MOVED, 0L, 0,
-                           Short.MAX_VALUE, Short.MAX_VALUE, 1, false);
+        e = new MouseEvent(tabbed, MouseEvent.MOUSE_MOVED, 0L, 0, Short.MAX_VALUE,
+                Short.MAX_VALUE, 1, false);
         assertNull(tabbed.getToolTipText(e));
     }
 
@@ -583,7 +534,6 @@ public class JTabbedPaneTest extends SwingTestCase {
      */
     public void testIndexOfComponent() {
         assertEquals("index of null", -1, tabbed.indexOfComponent(null));
-
         tabbed.setComponentAt(2, tabComponent1);
         assertEquals("comp1", 2, tabbed.indexOfComponent(tabComponent1));
     }
@@ -593,12 +543,9 @@ public class JTabbedPaneTest extends SwingTestCase {
      */
     public void testIndexOfTabIcon() {
         Icon otherIcon = BasicIconFactory.getCheckBoxIcon();
-
-        assertEquals("index of null", 0, tabbed.indexOfTab((Icon)null));
-
+        assertEquals("index of null", 0, tabbed.indexOfTab((Icon) null));
         tabbed.setIconAt(1, someIcon);
         assertEquals(1, tabbed.indexOfTab(someIcon));
-
         assertEquals("no icon", -1, tabbed.indexOfTab(otherIcon));
     }
 
@@ -606,11 +553,9 @@ public class JTabbedPaneTest extends SwingTestCase {
      * Class under test for int indexOfTab(String)
      */
     public void testIndexOfTabString() {
-        assertEquals("index of null", -1, tabbed.indexOfTab((String)null));
-
+        assertEquals("index of null", -1, tabbed.indexOfTab((String) null));
         tabbed.setTitleAt(1, "someTitle");
         assertEquals(1, tabbed.indexOfTab("someTitle"));
-
         assertEquals("no icon", -1, tabbed.indexOfTab("otherTitle"));
     }
 
@@ -618,7 +563,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         tabbed.removeAll();
         tabbed = new JTabbedPane();
         assertEquals(-1, tabbed.getSelectedIndex());
-
         tabbed.insertTab(tabTitle1, tabIcon, tabComponent1, tabTip1, 0);
         assertEquals(0, tabbed.getSelectedIndex());
         tabbed.insertTab(tabTitle2, tabIcon, tabComponent2, tabTip2, 0);
@@ -630,7 +574,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertSame(tabComponent1, tabbed.getComponentAt(1));
         assertEquals(1, tabbed.indexOfComponent(tabComponent1));
         assertEquals(0, tabbed.indexOfComponent(tabComponent2));
-
         assertEquals("title1", tabbed.getTitleAt(1), tabTitle1);
         assertEquals("component1", tabbed.getComponentAt(1), tabComponent1);
         assertEquals("tip1", tabbed.getToolTipTextAt(1), tabTip1);
@@ -641,12 +584,10 @@ public class JTabbedPaneTest extends SwingTestCase {
         }
         assertNotNull("background", tabbed.getBackgroundAt(1));
         assertNotNull("foreground", tabbed.getForegroundAt(1));
-
         assertEquals("title2", tabbed.getTitleAt(0), tabTitle2);
         assertEquals("component2", tabbed.getComponentAt(0), tabComponent2);
         assertEquals("tip2", tabbed.getToolTipTextAt(0), tabTip2);
         assertFalse("component2.isVisible()", tabComponent2.isVisible());
-
         tabbed.insertTab(tabTitle1, tabIcon, tabComponent3, tabTip1, 2);
         assertSame(tabComponent1, tabbed.getComponent(0));
         assertSame(tabComponent2, tabbed.getComponent(1));
@@ -660,7 +601,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(1, tabbed.getSelectedIndex());
         assertEquals(3, tabbed.getTabCount());
         assertFalse(tabComponent3.isVisible());
-
         tabbed.insertTab(tabTitle1, tabIcon, tabComponent3, tabTip1, 0);
         assertSame(tabComponent1, tabbed.getComponent(0));
         assertSame(tabComponent2, tabbed.getComponent(1));
@@ -673,7 +613,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(0, tabbed.indexOfComponent(tabComponent3));
         assertEquals(2, tabbed.getSelectedIndex());
         assertEquals(3, tabbed.getTabCount());
-
         tabbed.insertTab(null, tabIcon, tabComponent3, tabTip1, 0);
         assertSame(tabComponent1, tabbed.getComponent(0));
         assertSame(tabComponent2, tabbed.getComponent(1));
@@ -687,7 +626,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(2, tabbed.getSelectedIndex());
         assertEquals("tabCount == 2", 3, tabbed.getTabCount());
         assertEquals("title is empty, not null", "", tabbed.getTitleAt(0));
-
         JButton tabComponent4 = new JButton();
         tabbed.insertTab(null, tabIcon, tabComponent4, tabTip1, 1);
         assertSame(tabComponent1, tabbed.getComponent(0));
@@ -720,18 +658,15 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testSetBackgroundAt() {
         tabbed.setBackgroundAt(1, Color.RED);
         assertEquals(Color.RED, tabbed.getBackgroundAt(1));
-
         tabbed.setBackgroundAt(1, null);
-        assertEquals("not null", tabbed.getBackground(),
-                     tabbed.getBackgroundAt(1));
+        assertEquals("not null", tabbed.getBackground(), tabbed.getBackgroundAt(1));
     }
 
     /*
      * Class under test for Color getBackgroundAt(int)
      */
     public void testGetBackgroundAt() {
-        assertTrue("instanceof UIResource",
-                   tabbed.getBackgroundAt(1) instanceof UIResource);
+        assertTrue("instanceof UIResource", tabbed.getBackgroundAt(1) instanceof UIResource);
     }
 
     /*
@@ -740,18 +675,15 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testSetForegroundAt() {
         tabbed.setForegroundAt(1, Color.RED);
         assertEquals(Color.RED, tabbed.getForegroundAt(1));
-
         tabbed.setForegroundAt(1, null);
-        assertEquals("not null", tabbed.getForeground(),
-                     tabbed.getForegroundAt(1));
+        assertEquals("not null", tabbed.getForeground(), tabbed.getForegroundAt(1));
     }
 
     /*
      * Class under test for Color getForegroundAt(int)
      */
     public void testGetForegroundAt() {
-        assertTrue("instanceof UIResource",
-                   tabbed.getForegroundAt(1) instanceof UIResource);
+        assertTrue("instanceof UIResource", tabbed.getForegroundAt(1) instanceof UIResource);
     }
 
     public void testSetGetComponentAt() {
@@ -767,7 +699,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(2, tabbed.indexOfComponent(tabComponent1));
         assertEquals(1, tabbed.indexOfComponent(tabComponent2));
         assertEquals(0, tabbed.indexOfComponent(tabComponent3));
-
         tabbed.setComponentAt(index, newComp);
         assertSame(tabComponent1, tabbed.getComponent(0));
         assertSame(tabComponent3, tabbed.getComponent(1));
@@ -782,7 +713,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("tabCount", tabCount, tabbed.getTabCount());
         assertSame("component", newComp, tabbed.getComponentAt(index));
         assertFalse("newComp is not visible", newComp.isVisible());
-
         tabbed.setComponentAt(index, tabComponent3);
         assertSame(tabComponent1, tabbed.getComponent(0));
         assertSame(tabComponent3, tabbed.getComponent(1));
@@ -791,14 +721,11 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(0, tabbed.indexOfComponent(tabComponent3));
         assertEquals(1, tabbed.indexOfComponent(tabComponent1));
         assertEquals("tabCount - 1", tabCount - 1, tabbed.getTabCount());
-        assertEquals("visibility",
-                     !SwingTestCase.isHarmony(),
-                     tabComponent3.isVisible());
+        assertEquals("visibility", !BasicSwingTestCase.isHarmony(), tabComponent3.isVisible());
     }
 
     public void testSetGetDisabledIconAt() {
         assertNull(tabbed.getDisabledIconAt(0));
-
         tabbed.setDisabledIconAt(0, someIcon);
         assertSame(someIcon, tabbed.getDisabledIconAt(0));
     }
@@ -810,17 +737,15 @@ public class JTabbedPaneTest extends SwingTestCase {
 
     public void testSetGetModel() {
         assertNotNull("default", tabbed.getModel());
-
         PropertyChangeController cont = new PropertyChangeController();
         tabbed.addPropertyChangeListener(cont);
-
         DefaultSingleSelectionModel model = new DefaultSingleSelectionModel();
         tabbed.setModel(model);
         assertEquals("set", model, tabbed.getModel());
         assertTrue("fired property change event", cont.isChanged("model"));
-        assertTrue("listener", Arrays.asList(((DefaultSingleSelectionModel)tabbed
-                .getModel()).getChangeListeners()).contains(tabbed.changeListener));
-
+        assertTrue("listener", Arrays.asList(
+                ((DefaultSingleSelectionModel) tabbed.getModel()).getChangeListeners())
+                .contains(tabbed.changeListener));
         // set model with another selected index, no state change event is fired
         tabbed.setModel(null);
         MyChangeListener changeListener = new MyChangeListener();
@@ -833,9 +758,7 @@ public class JTabbedPaneTest extends SwingTestCase {
     public void testSetGetSelectedComponentComponent() {
         tabbed.setSelectedComponent(tabComponent2);
         assertSame(tabComponent2, tabbed.getSelectedComponent());
-        assertEquals(tabbed.indexOfComponent(tabComponent2),
-                     tabbed.getSelectedIndex());
-
+        assertEquals(tabbed.indexOfComponent(tabComponent2), tabbed.getSelectedIndex());
         boolean caught = false;
         try {
             tabbed.setSelectedComponent(new JLabel());
@@ -849,12 +772,9 @@ public class JTabbedPaneTest extends SwingTestCase {
         JComponent comp = new JLabel();
         tabbed.add(comp);
         int index = tabbed.indexOfComponent(comp);
-
         assertNull("by default", tabbed.getToolTipTextAt(index));
-
         tabbed.setToolTipTextAt(index, "newTip");
         assertEquals("newTip", tabbed.getToolTipTextAt(index));
-
         tabbed.setToolTipTextAt(index, null);
         assertNull(tabbed.getToolTipTextAt(index));
     }

@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -32,11 +31,11 @@ import junit.framework.TestCase;
  *
  */
 public abstract class SerializableTestCase extends TestCase {
-
     /**
      * Object under test which will be serialized.
      */
     protected Object toSave;
+
     /**
      * This is where deserialized object will be stored.
      */
@@ -45,9 +44,9 @@ public abstract class SerializableTestCase extends TestCase {
     /**
      * Initialize toSave object here.
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         toLoad = BasicSwingTestCase.serializeObject(toSave);
     }
 

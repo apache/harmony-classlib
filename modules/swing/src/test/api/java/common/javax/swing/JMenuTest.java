@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.Component;
@@ -27,16 +27,17 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.EventListener;
-
 import javax.swing.JPopupMenuTest.MyAction;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+@SuppressWarnings("serial")
 public class JMenuTest extends JMenuItemTest {
-
     class ConcreteMenuListener implements MenuListener {
         public Object event;
+
         public Object src;
+
         private final boolean debugOut;
 
         ConcreteMenuListener() {
@@ -73,34 +74,38 @@ public class JMenuTest extends JMenuItemTest {
     };
 
     protected JMenu menu;
+
     private int menuOffsetX;
+
     private int menuOffsetY;
+
     private int submenuOffsetX;
+
     private int submenuOffsetY;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         menu = new JMenu();
         menuItem = menu;
         button = menuItem;
-
         menuOffsetX = UIManager.getInt("Menu.menuPopupOffsetX");
         menuOffsetY = UIManager.getInt("Menu.menuPopupOffsetY");
         submenuOffsetX = UIManager.getInt("Menu.submenuPopupOffsetX");
         submenuOffsetY = UIManager.getInt("Menu.submenuPopupOffsetY");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         UIManager.put("Menu.menuPopupOffsetX", new Integer(menuOffsetX));
         UIManager.put("Menu.menuPopupOffsetY", new Integer(menuOffsetY));
         UIManager.put("Menu.submenuPopupOffsetX", new Integer(submenuOffsetX));
         UIManager.put("Menu.submenuPopupOffsetY", new Integer(submenuOffsetY));
-
         menu = null;
         super.tearDown();
     }
 
+    @Override
     public void testJMenuItem() {
     }
 
@@ -122,7 +127,6 @@ public class JMenuTest extends JMenuItemTest {
         assertFalse(menu.isTopLevelMenu());
         assertFalse(menu.isSelected());
         assertEquals(200, menu.getDelay());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -149,13 +153,11 @@ public class JMenuTest extends JMenuItemTest {
         assertFalse(menu.isSelected());
         assertTrue(menuItem.isFocusable());
         assertEquals(200, menu.getDelay());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
         assertEquals(SwingConstants.CENTER, button.getVerticalTextPosition());
-
-        button = menuItem = menu = new JMenu((String)null);
+        button = menuItem = menu = new JMenu((String) null);
         assertEquals("text ", "", button.getText());
     }
 
@@ -179,13 +181,11 @@ public class JMenuTest extends JMenuItemTest {
         assertFalse(menu.isSelected());
         assertTrue(menuItem.isFocusable());
         assertEquals(200, menu.getDelay());
-
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
         assertEquals(SwingConstants.CENTER, button.getVerticalTextPosition());
-
-        button = menuItem = menu = new JMenu((String)null, false);
+        button = menuItem = menu = new JMenu((String) null, false);
         assertEquals("text ", "", button.getText());
     }
 
@@ -195,22 +195,19 @@ public class JMenuTest extends JMenuItemTest {
     public void testJMenuAction() {
         final String command = "dnammoc";
         class MyAction extends AbstractAction {
-            public boolean performed = false;
-
             public MyAction(final String text, final Icon icon) {
                 super(text, icon);
                 putValue(Action.ACTION_COMMAND_KEY, command);
             }
 
             public void actionPerformed(final ActionEvent e) {
-                performed = true;
             }
-        };
+        }
+        ;
         Icon icon = createNewIcon();
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         button = menuItem = menu = new JMenu(action);
-
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
@@ -220,10 +217,8 @@ public class JMenuTest extends JMenuItemTest {
         assertNull("accelerator ", menuItem.getAccelerator());
         assertTrue(menuItem.isFocusable());
         assertEquals(200, menu.getDelay());
-
         action.setEnabled(false);
         button = menuItem = menu = new JMenu(action);
-
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
@@ -231,16 +226,13 @@ public class JMenuTest extends JMenuItemTest {
         assertFalse("selected ", menuItem.isSelected());
         assertFalse("enabled ", menuItem.isEnabled());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
-
-        button = menuItem = menu = new JMenu((Action)null);
-
+        button = menuItem = menu = new JMenu((Action) null);
         assertNull("icon ", menuItem.getIcon());
         assertNull("text ", menuItem.getText());
         assertNull("action", menuItem.getAction());
         assertNull("command ", menuItem.getActionCommand());
         assertFalse("selected ", menuItem.isSelected());
         assertTrue("enabled ", menuItem.isEnabled());
-
         assertEquals(menu, menuItem.getComponent());
         assertEquals(0, menu.getItemCount());
         assertEquals(0, menu.getMenuComponentCount());
@@ -249,9 +241,8 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals(menu.getPopupMenu(), menu.getSubElements()[0]);
         assertFalse(menu.isTopLevelMenu());
         assertFalse(menu.isSelected());
-
-        assertTrue("menuItem model is of the proper type", menuItem.getModel() instanceof DefaultButtonModel);
-
+        assertTrue("menuItem model is of the proper type",
+                menuItem.getModel() instanceof DefaultButtonModel);
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, button.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, button.getVerticalAlignment());
@@ -261,11 +252,12 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.getAccessibleContext()'
      */
+    @Override
     public void testGetAccessibleContext() {
-        boolean assertedValue = (menuItem.getAccessibleContext() != null &&
-                menuItem.getAccessibleContext().getClass().getName().equals("javax.swing.JMenu$AccessibleJMenu"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
+        boolean assertedValue = (menuItem.getAccessibleContext() != null && menuItem
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JMenu$AccessibleJMenu"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
     }
 
     /*
@@ -277,7 +269,6 @@ public class JMenuTest extends JMenuItemTest {
         assertTrue(menu.getPopupMenu().getComponentOrientation().isLeftToRight());
         menu.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         assertFalse(menu.getPopupMenu().getComponentOrientation().isLeftToRight());
-
         menu.add(item);
         menu.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         assertFalse(item.getComponentOrientation().isLeftToRight());
@@ -292,7 +283,6 @@ public class JMenuTest extends JMenuItemTest {
         assertTrue(menu.getPopupMenu().getComponentOrientation().isLeftToRight());
         menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         assertFalse(menu.getPopupMenu().getComponentOrientation().isLeftToRight());
-
         menu.add(item);
         menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         assertTrue(item.getComponentOrientation().isLeftToRight());
@@ -304,23 +294,21 @@ public class JMenuTest extends JMenuItemTest {
     public void testRemoveInt() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         menu.add(item1);
         menu.add(item2);
         assertEquals(2, menu.getMenuComponentCount());
         assertSame(item1, menu.getMenuComponent(0));
         assertSame(item2, menu.getMenuComponent(1));
-
         try {
             menu.remove(5);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         try {
             menu.remove(-5);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         menu.remove(0);
         assertEquals(1, menu.getMenuComponentCount());
         assertSame(item2, menu.getMenuComponent(0));
@@ -332,17 +320,14 @@ public class JMenuTest extends JMenuItemTest {
     public void testRemoveComponent() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         menu.add(item1);
         menu.add(item2);
         assertEquals(2, menu.getMenuComponentCount());
         assertSame(item1, menu.getMenuComponent(0));
         assertSame(item2, menu.getMenuComponent(1));
-
         menu.remove(new JButton());
         assertEquals(2, menu.getMenuComponentCount());
-
-        menu.remove((Component)item1);
+        menu.remove((Component) item1);
         assertEquals(1, menu.getMenuComponentCount());
         assertSame(item2, menu.getMenuComponent(0));
     }
@@ -353,17 +338,14 @@ public class JMenuTest extends JMenuItemTest {
     public void testRemoveJMenuItem() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         menu.add(item1);
         menu.add(item2);
         assertEquals(2, menu.getMenuComponentCount());
         assertSame(item1, menu.getMenuComponent(0));
         assertSame(item2, menu.getMenuComponent(1));
-
         menu.remove(item1);
         assertEquals(1, menu.getMenuComponentCount());
         assertSame(item2, menu.getMenuComponent(0));
-
         menu.remove(item1);
         assertEquals(1, menu.getMenuComponentCount());
         assertSame(item2, menu.getMenuComponent(0));
@@ -375,11 +357,9 @@ public class JMenuTest extends JMenuItemTest {
     public void testRemoveAll() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         assertEquals(0, menu.getMenuComponentCount());
         menu.removeAll();
         assertEquals(0, menu.getMenuComponentCount());
-
         menu.add(item1);
         menu.add(item2);
         assertEquals(2, menu.getMenuComponentCount());
@@ -390,6 +370,7 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.getUIClassID()'
      */
+    @Override
     public void testGetUIClassID() {
         assertEquals("MenuUI", menu.getUIClassID());
     }
@@ -397,6 +378,7 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.doClick(int)'
      */
+    @Override
     public void testDoClick() {
     }
 
@@ -412,13 +394,11 @@ public class JMenuTest extends JMenuItemTest {
         menuBar.add(menu2);
         menu2.add(menu1);
         menu1.add(menu);
-
         assertFalse(menu.isSelected());
         menu.doClick(0);
         assertTrue(menu.isSelected());
         assertTrue(menu1.isSelected());
         assertTrue(menu2.isSelected());
-
         frame.dispose();
     }
 
@@ -428,13 +408,11 @@ public class JMenuTest extends JMenuItemTest {
     public void testSetIsSelected() {
         ConcreteMenuListener listener = new ConcreteMenuListener();
         menu.addMenuListener(listener);
-
         menu.setSelected(true);
         assertTrue(menu.getModel().isSelected());
         assertTrue(menu.isSelected());
         assertEquals("selected", listener.event);
         listener.event = null;
-
         menu.setSelected(false);
         assertFalse(menu.getModel().isSelected());
         assertFalse(menu.isSelected());
@@ -445,16 +423,19 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.setAccelerator(KeyStroke)'
      */
+    @Override
     public void testSetAccelerator() {
         try {
             menu.setAccelerator(null);
             fail("no exception has been thrown");
-        } catch (Error e) {}
+        } catch (Error e) {
+        }
     }
 
     /*
      * Test method for 'javax.swing.JMenu.getComponent()'
      */
+    @Override
     public void testGetComponent() {
         assertSame(menu, menu.getComponent());
     }
@@ -462,36 +443,31 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.getSubElements()'
      */
+    @Override
     public void testGetSubElements() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
         JMenuItem item4 = new JMenuItem();
-
         if (!isHarmony()) {
             assertEquals(0, menu.getSubElements().length);
         } else {
             assertEquals(1, menu.getSubElements().length);
             assertTrue(menu.getSubElements()[0] instanceof JPopupMenu);
         }
-
         menu.add(item1);
         assertEquals(1, menu.getSubElements().length);
         assertTrue(menu.getSubElements()[0] instanceof JPopupMenu);
-
         menu.add(item2);
         assertEquals(1, menu.getSubElements().length);
         assertTrue(menu.getSubElements()[0] instanceof JPopupMenu);
-
         menu.addSeparator();
         assertEquals(1, menu.getSubElements().length);
         assertTrue(menu.getSubElements()[0] instanceof JPopupMenu);
-
         JButton button = new JButton();
         menu.add(button, 0);
         assertEquals(1, menu.getSubElements().length);
         assertTrue(menu.getSubElements()[0] instanceof JPopupMenu);
-
         JMenu subMenu = new JMenu();
         subMenu.add(item3);
         subMenu.add(item4);
@@ -503,16 +479,15 @@ public class JMenuTest extends JMenuItemTest {
     /*
      * Test method for 'javax.swing.JMenu.menuSelectionChanged(boolean)'
      */
+    @Override
     public void testMenuSelectionChanged() {
         ConcreteMenuListener listener = new ConcreteMenuListener();
         menu.addMenuListener(listener);
-
         menu.menuSelectionChanged(true);
         assertEquals("selected", listener.event);
         assertTrue(menu.getModel().isSelected());
         assertTrue(menu.isSelected());
         listener.event = null;
-
         menu.menuSelectionChanged(false);
         assertEquals("deselected", listener.event);
         assertFalse(menu.getModel().isSelected());
@@ -526,7 +501,6 @@ public class JMenuTest extends JMenuItemTest {
     public void testAddAction() {
         Icon icon = createNewIcon();
         String text = "texttext";
-
         Action action = new JPopupMenuTest.MyAction(text, icon);
         JMenuItem menuItem = menu.add(action);
         assertEquals(1, menu.getItemCount());
@@ -547,7 +521,6 @@ public class JMenuTest extends JMenuItemTest {
         assertNull(item1.getIcon());
         assertEquals(1, menu.getItemCount());
         assertSame(item1, menu.getItem(0));
-
         JMenuItem item2 = menu.add(text2);
         assertEquals(text2, item2.getText());
         assertNull(item2.getIcon());
@@ -564,14 +537,12 @@ public class JMenuTest extends JMenuItemTest {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         JPopupMenu popup = menu.getPopupMenu();
-
         JMenuItem item = menu.add(item1);
         assertEquals(0, menu.getComponentCount());
         assertEquals(1, menu.getItemCount());
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
         assertSame(item, item1);
-
         item = menu.add(item2);
         assertEquals(0, menu.getComponentCount());
         assertEquals(2, menu.getItemCount());
@@ -589,14 +560,12 @@ public class JMenuTest extends JMenuItemTest {
         Component item2 = new JMenuItem();
         Component item3 = new JButton();
         JPopupMenu popup = menu.getPopupMenu();
-
         Component item = menu.add(item1);
         assertEquals(0, menu.getComponentCount());
         assertEquals(1, menu.getItemCount());
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
         assertSame(item, item1);
-
         item = menu.add(item2);
         assertEquals(0, menu.getComponentCount());
         assertEquals(2, menu.getItemCount());
@@ -604,7 +573,6 @@ public class JMenuTest extends JMenuItemTest {
         assertSame(item1, popup.getComponent(0));
         assertSame(item2, popup.getComponent(1));
         assertSame(item, item2);
-
         item = menu.add(item3);
         assertEquals(0, menu.getComponentCount());
         assertEquals(3, menu.getItemCount());
@@ -623,14 +591,12 @@ public class JMenuTest extends JMenuItemTest {
         Component item2 = new JMenuItem();
         Component item3 = new JButton();
         JPopupMenu popup = menu.getPopupMenu();
-
         Component item = menu.add(item1, 0);
         assertEquals(0, menu.getComponentCount());
         assertEquals(1, menu.getItemCount());
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
         assertSame(item, item1);
-
         item = menu.add(item2, 1);
         assertEquals(0, menu.getComponentCount());
         assertEquals(2, menu.getItemCount());
@@ -638,7 +604,6 @@ public class JMenuTest extends JMenuItemTest {
         assertSame(item1, popup.getComponent(0));
         assertSame(item2, popup.getComponent(1));
         assertSame(item, item2);
-
         item = menu.add(item3, -1);
         assertEquals(0, menu.getComponentCount());
         assertEquals(3, menu.getItemCount());
@@ -656,21 +621,17 @@ public class JMenuTest extends JMenuItemTest {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         JPopupMenu popup = menu.getPopupMenu();
-
         menu.add(item1);
         assertEquals(1, menu.getItemCount());
         assertSame(item1, menu.getItem(0));
-
         menu.addSeparator();
         assertEquals(2, menu.getItemCount());
         assertTrue(popup.getComponent(1) instanceof JPopupMenu.Separator);
-
         menu.add(item2);
         assertEquals(3, menu.getItemCount());
         assertSame(item1, menu.getItem(0));
         assertNull(menu.getItem(1));
         assertSame(item2, menu.getItem(2));
-
         menu.addSeparator();
         assertEquals(4, menu.getItemCount());
         assertNull(menu.getItem(3));
@@ -685,30 +646,23 @@ public class JMenuTest extends JMenuItemTest {
         MenuListener listener1 = new ConcreteMenuListener();
         MenuListener listener2 = new ConcreteMenuListener();
         MenuListener listener3 = new ConcreteMenuListener();
-
         EventListener[] listenersArray = null;
-
         listenersArray = menu.getMenuListeners();
         int initialValue = listenersArray.length;
-
         menu.addMenuListener(listener1);
         menu.addMenuListener(listener2);
         menu.addMenuListener(listener2);
-
         listenersArray = menu.getMenuListeners();
         assertEquals(initialValue + 3, listenersArray.length);
-
         menu.removeMenuListener(listener1);
         menu.addMenuListener(listener3);
         menu.addMenuListener(listener3);
         listenersArray = menu.getMenuListeners();
         assertEquals(initialValue + 4, listenersArray.length);
-
         menu.removeMenuListener(listener3);
         menu.removeMenuListener(listener3);
         listenersArray = menu.getMenuListeners();
         assertEquals(initialValue + 2, listenersArray.length);
-
         menu.removeMenuListener(listener2);
         menu.removeMenuListener(listener2);
         listenersArray = menu.getMenuListeners();
@@ -738,7 +692,6 @@ public class JMenuTest extends JMenuItemTest {
         assertNotNull(l1);
         assertNotNull(l2);
         assertNotSame(l1, l2);
-
         action1.putValue(Action.NAME, text1);
         assertEquals(text1, menu.getText());
         assertEquals(text2, item1.getText());
@@ -755,22 +708,19 @@ public class JMenuTest extends JMenuItemTest {
     public void testCreateActionComponent() {
         final String command = "dnammoc";
         class MyAction extends AbstractAction {
-            public boolean performed = false;
-
             public MyAction(final String text, final Icon icon) {
                 super(text, icon);
                 putValue(Action.ACTION_COMMAND_KEY, command);
             }
 
             public void actionPerformed(final ActionEvent e) {
-                performed = true;
             }
-        };
+        }
+        ;
         Icon icon = createNewIcon();
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         JMenuItem menuItem1 = menu.createActionComponent(action);
-
         assertEquals("icon ", icon, menuItem1.getIcon());
         assertEquals("text ", text, menuItem1.getText());
         assertNull("action", menuItem1.getAction());
@@ -778,7 +728,6 @@ public class JMenuTest extends JMenuItemTest {
         assertFalse("selected ", menuItem1.isSelected());
         assertTrue("enabled ", menuItem1.isEnabled());
         assertNull("accelerator ", menuItem1.getAccelerator());
-
         JMenuItem menuItem2 = menu.createActionComponent(action);
         assertNotSame(menuItem1, menuItem2);
         assertEquals("icon ", icon, menuItem2.getIcon());
@@ -810,7 +759,6 @@ public class JMenuTest extends JMenuItemTest {
         ConcreteMenuListener listener2 = new ConcreteMenuListener();
         menu.addMenuListener(listener1);
         menu.addMenuListener(listener2);
-
         menu.fireMenuCanceled();
         assertEquals("event fired properly ", "canceled", listener1.event);
         assertEquals("event fired properly ", "canceled", listener2.event);
@@ -826,7 +774,6 @@ public class JMenuTest extends JMenuItemTest {
         ConcreteMenuListener listener2 = new ConcreteMenuListener();
         menu.addMenuListener(listener1);
         menu.addMenuListener(listener2);
-
         menu.fireMenuDeselected();
         assertEquals("event fired properly ", "deselected", listener1.event);
         assertEquals("event fired properly ", "deselected", listener2.event);
@@ -842,7 +789,6 @@ public class JMenuTest extends JMenuItemTest {
         ConcreteMenuListener listener2 = new ConcreteMenuListener();
         menu.addMenuListener(listener1);
         menu.addMenuListener(listener2);
-
         menu.fireMenuSelected();
         assertEquals("event fired properly ", "selected", listener1.event);
         assertEquals("event fired properly ", "selected", listener2.event);
@@ -900,7 +846,6 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals(item1, menu.getMenuComponent(0));
         assertEquals(item2, menu.getMenuComponent(1));
         assertTrue(menu.getMenuComponent(2) instanceof JSeparator);
-
         menu.add(new JButton(), 3);
         assertEquals(item1, menu.getMenuComponent(0));
         assertEquals(item2, menu.getMenuComponent(1));
@@ -924,7 +869,6 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals(item1, menu.getItem(0));
         assertEquals(item2, menu.getItem(1));
         assertNull(menu.getItem(2));
-
         menu.add(new JButton(), 3);
         assertEquals(item1, menu.getMenuComponent(0));
         assertEquals(item2, menu.getMenuComponent(1));
@@ -940,24 +884,19 @@ public class JMenuTest extends JMenuItemTest {
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
         JMenuItem item4 = new JMenuItem();
-
         assertEquals(0, menu.getMenuComponents().length);
-
         menu.add(item1);
         assertEquals(1, menu.getMenuComponents().length);
         assertSame(item1, menu.getMenuComponents()[0]);
-
         menu.add(item2);
         assertEquals(2, menu.getMenuComponents().length);
         assertSame(item1, menu.getMenuComponents()[0]);
         assertSame(item2, menu.getMenuComponents()[1]);
-
         menu.addSeparator();
         assertEquals(3, menu.getMenuComponents().length);
         assertSame(item1, menu.getMenuComponents()[0]);
         assertSame(item2, menu.getMenuComponents()[1]);
         assertTrue(menu.getMenuComponents()[2] instanceof JSeparator);
-
         JButton button = new JButton();
         menu.add(button, 0);
         assertEquals(4, menu.getMenuComponents().length);
@@ -965,7 +904,6 @@ public class JMenuTest extends JMenuItemTest {
         assertSame(item1, menu.getMenuComponents()[1]);
         assertSame(item2, menu.getMenuComponents()[2]);
         assertTrue(menu.getMenuComponents()[3] instanceof JSeparator);
-
         JMenu subMenu = new JMenu();
         subMenu.add(item3);
         subMenu.add(item4);
@@ -1008,14 +946,13 @@ public class JMenuTest extends JMenuItemTest {
         UIManager.put("Menu.menuPopupOffsetY", new Integer(offsetY1));
         UIManager.put("Menu.submenuPopupOffsetX", new Integer(offsetX2));
         UIManager.put("Menu.submenuPopupOffsetY", new Integer(offsetY2));
-
         frame.setVisible(true);
-        assertEquals(new Point(offsetX1, menu.getHeight() + offsetY1), menu.getPopupMenuOrigin());
+        assertEquals(new Point(offsetX1, menu.getHeight() + offsetY1), menu
+                .getPopupMenuOrigin());
         frame.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        assertEquals(new Point(menu.getWidth() - menu.getPopupMenu().getPreferredSize().width - offsetX1,
-                               menu.getHeight() + offsetY1), menu.getPopupMenuOrigin());
+        assertEquals(new Point(menu.getWidth() - menu.getPopupMenu().getPreferredSize().width
+                - offsetX1, menu.getHeight() + offsetY1), menu.getPopupMenuOrigin());
         menuBar.remove(menu);
-
         menuBar.add(menu2);
         menu2.add(menu);
         frame.pack();
@@ -1023,7 +960,8 @@ public class JMenuTest extends JMenuItemTest {
         menu2.setPopupMenuVisible(true);
         assertEquals(new Point(menu.getWidth() + offsetX2, offsetY2), menu.getPopupMenuOrigin());
         frame.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        assertEquals(new Point(-offsetX2 - menu.getPopupMenu().getPreferredSize().width , offsetY2), menu.getPopupMenuOrigin());
+        assertEquals(new Point(-offsetX2 - menu.getPopupMenu().getPreferredSize().width,
+                offsetY2), menu.getPopupMenuOrigin());
         frame.dispose();
     }
 
@@ -1039,7 +977,6 @@ public class JMenuTest extends JMenuItemTest {
         assertNull(item1.getIcon());
         assertEquals(1, menu.getItemCount());
         assertEquals(item1, menu.getItem(0));
-
         menu.insert(text2, 0);
         JMenuItem item2 = menu.getItem(0);
         assertEquals(text2, item2.getText());
@@ -1048,12 +985,11 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals(item2, menu.getItem(0));
         assertEquals(item1, menu.getItem(1));
         assertNotSame(item1, item2);
-
         try {
             menu.insert(text1, -6);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         menu.insert(text1, 5);
         assertEquals(3, menu.getItemCount());
         item1 = menu.getItem(2);
@@ -1070,18 +1006,16 @@ public class JMenuTest extends JMenuItemTest {
         assertSame(item1, menu.insert(item1, 0));
         assertEquals(1, menu.getItemCount());
         assertEquals(item1, menu.getItem(0));
-
         assertSame(item2, menu.insert(item2, 0));
         assertEquals(2, menu.getItemCount());
         assertEquals(item2, menu.getItem(0));
         assertEquals(item1, menu.getItem(1));
         assertNotSame(item1, item2);
-
         try {
             menu.insert(item1, -6);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         menu.insert(item1, 5);
         assertEquals(2, menu.getItemCount());
     }
@@ -1092,36 +1026,30 @@ public class JMenuTest extends JMenuItemTest {
     public void testInsertActionInt() {
         Icon icon = createNewIcon();
         String text = "texttext";
-
         MyAction action1 = new MyAction(text, icon);
         MyAction action2 = new MyAction(text, icon);
-
         JMenuItem item = menu.insert(action1, 0);
         assertEquals(1, menu.getItemCount());
         JMenuItem menuItem = menu.getItem(0);
         assertSame(item, menuItem);
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         item = menu.insert(action2, 1);
         assertEquals(2, menu.getItemCount());
-
         menuItem = menu.getItem(1);
         assertSame(item, menuItem);
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         menu.insert(action1, 16);
         assertEquals(3, menu.getItemCount());
-
         menuItem = menu.getItem(2);
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         try {
             menu.insert(action1, -3);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
@@ -1132,19 +1060,17 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals(1, menu.getItemCount());
         assertNull(menu.getItem(0));
         assertTrue(menu.getPopupMenu().getComponent(0) instanceof JSeparator);
-
         menu.insertSeparator(0);
         assertEquals(2, menu.getItemCount());
         assertNull(menu.getItem(0));
         assertNull(menu.getItem(1));
         assertTrue(menu.getPopupMenu().getComponent(0) instanceof JSeparator);
         assertTrue(menu.getPopupMenu().getComponent(1) instanceof JSeparator);
-
         try {
             menu.insertSeparator(-6);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         menu.insertSeparator(5);
         assertEquals(3, menu.getItemCount());
     }
@@ -1157,32 +1083,26 @@ public class JMenuTest extends JMenuItemTest {
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
         JMenuItem item4 = new JMenuItem();
-
         assertFalse(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
-
         menu.add(item1);
         assertTrue(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
         assertFalse(menu.isMenuComponent(item2));
-
         menu.add(item2);
         assertTrue(menu.isMenuComponent(item2));
         assertTrue(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
-
         menu.addSeparator();
         assertTrue(menu.isMenuComponent(item2));
         assertTrue(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
-
         JButton button = new JButton();
         menu.add(button, 0);
         assertTrue(menu.isMenuComponent(button));
         assertTrue(menu.isMenuComponent(item2));
         assertTrue(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
-
         JMenu subMenu = new JMenu();
         subMenu.add(item3);
         subMenu.add(item4);
@@ -1194,7 +1114,6 @@ public class JMenuTest extends JMenuItemTest {
         assertTrue(menu.isMenuComponent(item2));
         assertTrue(menu.isMenuComponent(item1));
         assertTrue(menu.isMenuComponent(menu));
-
         assertFalse(menu.isMenuComponent(null));
     }
 
@@ -1205,7 +1124,8 @@ public class JMenuTest extends JMenuItemTest {
         try {
             menu.isTearOff();
             fail("no exception has been thrown");
-        } catch (Error e) {}
+        } catch (Error e) {
+        }
     }
 
     /*
@@ -1228,15 +1148,14 @@ public class JMenuTest extends JMenuItemTest {
     public void testGetSetDelay() {
         int delay1 = 1000;
         int delay2 = -1000;
-
         menu.setDelay(0);
         menu.setDelay(delay1);
         assertEquals("delay", delay1, menu.getDelay());
-
         try {
             menu.setDelay(delay2);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
@@ -1257,7 +1176,6 @@ public class JMenuTest extends JMenuItemTest {
     public void testSetIsPopupMenuVisible() throws InterruptedException {
         menu.setPopupMenuVisible(true);
         assertFalse(menu.isPopupMenuVisible());
-
         JWindow frame = new JWindow();
         frame.setLocation(300, 300);
         menu.setPreferredSize(new Dimension(200, 200));
@@ -1273,15 +1191,15 @@ public class JMenuTest extends JMenuItemTest {
         Point menuLocation = menu.getLocationOnScreen();
         menuLocation.translate(0, menu.getHeight());
         assertEquals(menuLocation, menu.getPopupMenu().getLocationOnScreen());
-
         menu.setPopupMenuVisible(false);
         assertFalse(menu.isPopupMenuVisible());
         frame.dispose();
     }
 
+    @Override
     public void testNumberOfModelListeners() {
         button.setUI(null);
-        DefaultButtonModel model = (DefaultButtonModel)button.getModel();
+        DefaultButtonModel model = (DefaultButtonModel) button.getModel();
         assertEquals("model's action listeners ", 1, model.getActionListeners().length);
         assertEquals("model's item listeners ", 1, model.getItemListeners().length);
         if (isHarmony()) {
@@ -1291,6 +1209,7 @@ public class JMenuTest extends JMenuItemTest {
         }
     }
 
+    @Override
     public void testConfigurePropertiesFromAction() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
@@ -1312,7 +1231,6 @@ public class JMenuTest extends JMenuItemTest {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertEquals("action ", action1, button.getAction());
         assertTrue("enabled ", button.isEnabled());
         assertTrue("enabled ", action1.isEnabled());
@@ -1320,14 +1238,12 @@ public class JMenuTest extends JMenuItemTest {
         button.isEnabled();
         assertFalse("enabled ", button.isEnabled());
         assertFalse("enabled ", action1.isEnabled());
-
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertEquals("icon ", icon2, button.getIcon());
         button.setIcon(icon2);
         action1.putValue(Action.SMALL_ICON, null);
         assertNull("icon ", button.getIcon());
-
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
             action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
@@ -1335,17 +1251,14 @@ public class JMenuTest extends JMenuItemTest {
             action1.putValue(Action.ACCELERATOR_KEY, ks1);
             assertNull("accelerator ", menuItem.getAccelerator());
         }
-
         assertEquals("text ", text1, button.getText());
         action1.putValue(Action.NAME, text2);
         assertEquals("text ", text2, button.getText());
-
         if (isHarmony()) {
             assertEquals("ToolTipText ", text3, button.getToolTipText());
             action1.putValue(Action.SHORT_DESCRIPTION, text4);
             assertEquals("ToolTipText ", text4, button.getToolTipText());
         }
-
         action2.putValue(Action.ACCELERATOR_KEY, ks2);
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
@@ -1355,7 +1268,5 @@ public class JMenuTest extends JMenuItemTest {
             assertEquals("ToolTipText ", text4, button.getToolTipText());
             assertNull("accelerator ", menuItem.getAccelerator());
         }
-
     }
-
 }

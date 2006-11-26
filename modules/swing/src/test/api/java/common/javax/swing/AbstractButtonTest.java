@@ -35,26 +35,30 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.beans.PropertyChangeListener;
 import java.util.EventListener;
-
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+@SuppressWarnings("serial")
 public class AbstractButtonTest extends SwingTestCase {
-
     class TestButtonModel extends DefaultButtonModel {
+        private static final long serialVersionUID = 1L;
+
         boolean wasPressed;
+
         boolean wasArmed;
 
+        @Override
         public void setPressed(boolean b) {
             wasPressed = true;
             super.setPressed(b);
         }
+
+        @Override
         public void setArmed(boolean b) {
             wasArmed = true;
             super.setArmed(b);
         }
-
     }
 
     class ConcreteActionListener implements ActionListener {
@@ -133,46 +137,55 @@ public class AbstractButtonTest extends SwingTestCase {
     };
 
     class ConcreteAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
         ActionEvent eventHappened;
+
         public void actionPerformed(ActionEvent e) {
             eventHappened = e;
         }
     }
 
-
     protected AbstractButton button = null;
 
     protected final Icon icon1 = createNewIcon();
+
     protected final Icon icon2 = createNewIcon();
+
     protected final String text1 = "texttext1";
+
     protected final String text2 = "texttext2";
+
     protected final String text3 = "texttext3";
+
     protected final String text4 = "texttext4";
+
     protected AbstractAction action1;
+
     protected AbstractAction action2;
 
     public AbstractButtonTest() {
         super("");
     }
 
-    /*
-     * @see JComponentTest#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         button = new AbstractButton() {
+            private static final long serialVersionUID = 1L;
         };
-
         if (button.getModel() == null) {
             button.setModel(new DefaultButtonModel());
         }
-
         action1 = new AbstractAction(text1, icon1) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         action2 = new AbstractAction(text2, icon2) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
@@ -181,6 +194,7 @@ public class AbstractButtonTest extends SwingTestCase {
     /*
      * @see JComponentTest#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         button = null;
         super.tearDown();
@@ -191,10 +205,9 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetEnabled() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-        ConcreteChangeListener listener3 =  new ConcreteChangeListener();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
+        ConcreteChangeListener listener3 = new ConcreteChangeListener();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.addChangeListener(listener3);
@@ -203,23 +216,23 @@ public class AbstractButtonTest extends SwingTestCase {
         listener1.checkPropertyFired(button, "enabled", Boolean.TRUE, Boolean.FALSE);
         listener2.checkPropertyFired(button, "enabled", Boolean.TRUE, Boolean.FALSE);
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.reset();
         listener2.reset();
         listener3.eventHappened = null;
-
         button.setEnabled(true);
         assertTrue(button.isEnabled());
         listener1.checkPropertyFired(button, "enabled", Boolean.FALSE, Boolean.TRUE);
         listener2.checkPropertyFired(button, "enabled", Boolean.FALSE, Boolean.TRUE);
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.reset();
         listener2.reset();
         listener3.eventHappened = null;
-
         button.setEnabled(true);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -231,28 +244,26 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testPaintBorder() {
         class ThisBorder implements Border {
             public boolean haveBeenPainted = false;
+
             public boolean isBorderOpaque() {
                 return true;
             }
 
             public void paintBorder(final Component arg0, final Graphics arg1, final int arg2,
-                final     int arg3, final int arg4, final int arg5) {
-
+                    final int arg3, final int arg4, final int arg5) {
                 haveBeenPainted = true;
             }
 
             public Insets getBorderInsets(final Component c) {
                 return new Insets(1, 2, 3, 4);
             }
-        };
-
+        }
+        ;
         ThisBorder border = new ThisBorder();
         button.setBorder(border);
-
         button.setBorderPainted(false);
         button.paintBorder(button.getGraphics());
         assertFalse("painted", border.haveBeenPainted);
-
         button.setBorderPainted(true);
         button.paintBorder(button.getGraphics());
         assertTrue("painted", border.haveBeenPainted);
@@ -264,22 +275,22 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = new Icon() {
             public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
             }
+
             public int getIconWidth() {
                 return 0;
             }
+
             public int getIconHeight() {
                 return 0;
             }
         };
         Icon icon2 = new ImageIcon(image1);
         Icon icon3 = new ImageIcon(image2);
-
         assertFalse(button.imageUpdate(image1, ImageObserver.SOMEBITS, 1, 1, 1, 1));
         button.setIcon(icon1);
         assertFalse(button.imageUpdate(image1, ImageObserver.SOMEBITS, 1, 1, 1, 1));
         button.setIcon(icon2);
         assertTrue(button.imageUpdate(image1, ImageObserver.SOMEBITS, 1, 1, 1, 1));
-
         button.setSelectedIcon(icon3);
         button.setSelected(true);
         assertFalse(button.imageUpdate(image1, ImageObserver.SOMEBITS, 1, 1, 1, 1));
@@ -290,8 +301,8 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     /**
-    * since this method has empty implementation, there's no need to test it
-    */
+     * since this method has empty implementation, there's no need to test it
+     */
     public void testUpdateUI() {
     }
 
@@ -306,6 +317,7 @@ public class AbstractButtonTest extends SwingTestCase {
         assertNull("ui is returned ", button.getUI());
     }
 
+    @SuppressWarnings("serial")
     public void testAbstractButton() {
         button = new AbstractButton() {
         };
@@ -319,11 +331,10 @@ public class AbstractButtonTest extends SwingTestCase {
         String text = "Om mani padme hum";
         button.setText(text);
         button.setSelected(false);
-
         assertNull("no selected objects", button.getSelectedObjects());
-
         button.setSelected(true);
-        assertTrue("there are selected objects", button.getSelectedObjects() != null && button.getSelectedObjects().length > 0);
+        assertTrue("there are selected objects", button.getSelectedObjects() != null
+                && button.getSelectedObjects().length > 0);
         assertEquals("selected object ", text, button.getSelectedObjects()[0]);
     }
 
@@ -332,24 +343,19 @@ public class AbstractButtonTest extends SwingTestCase {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertEquals("action ", action1, button.getAction());
         assertTrue("enabled ", button.isEnabled());
         assertTrue("enabled ", action1.isEnabled());
-
         action1.setEnabled(false);
         assertFalse(button.isEnabled());
         assertFalse("enabled ", button.isEnabled());
         assertFalse("enabled ", action1.isEnabled());
-
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertEquals("icon ", icon2, button.getIcon());
-
         assertEquals("mnemonic ", 1, button.getMnemonic());
         action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
         assertEquals("mnemonic ", 27, button.getMnemonic());
-
         assertEquals("text ", text1, button.getText());
         action1.putValue(Action.NAME, text2);
         assertEquals("text ", text2, button.getText());
@@ -358,11 +364,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testConfigurePropertiesFromAction_ShortDescription() {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         button.setAction(action1);
-
         assertEquals("ToolTipText ", text3, button.getToolTipText());
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
-
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertNull("ToolTipText ", button.getToolTipText());
@@ -371,37 +375,33 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testInit() {
-        PropertyChangeController listener =  new PropertyChangeController();
+        PropertyChangeController listener = new PropertyChangeController();
         button.addPropertyChangeListener(listener);
         button.init(text1, icon1);
         assertEquals(text1, button.getText());
         assertEquals(icon1, button.getIcon());
         listener.checkPropertyFired(button, "text", "", text1);
         listener.checkPropertyFired(button, "icon", null, icon1);
-
         button.init(null, null);
         assertEquals(text1, button.getText());
         assertEquals(icon1, button.getIcon());
-
         button.setText("");
         button.init(text1, null);
         assertEquals(text1, button.getText());
         assertEquals(icon1, button.getIcon());
-
-        button = new AbstractButton() {};
+        button = new AbstractButton() {
+        };
         button.init(null, null);
         assertEquals(button.getText(), "");
         assertNull(button.getIcon());
-
         button.init(null, icon1);
         assertEquals(button.getText(), "");
         assertEquals(icon1, button.getIcon());
     }
 
     public void testSetText1() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setText(text1);
@@ -409,19 +409,16 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "text", "", text1);
         listener1.reset();
         listener2.reset();
-
         button.setText(text2);
         listener1.checkPropertyFired(button, "text", text1, text2);
         listener2.checkPropertyFired(button, "text", text1, text2);
         listener1.reset();
         listener2.reset();
-
         button.setText(text2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
         listener1.reset();
         listener2.reset();
-
         button.setText(null);
         assertNull("text ", button.getText());
     }
@@ -431,11 +428,9 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setMnemonic(KeyEvent.VK_X);
         assertEquals(2, button.getDisplayedMnemonicIndex());
         assertEquals(KeyEvent.VK_X, button.getMnemonic());
-
         button.setText(text2);
         assertEquals(2, button.getDisplayedMnemonicIndex());
         assertEquals(KeyEvent.VK_X, button.getMnemonic());
-
         button.setText(null);
         assertEquals(-1, button.getDisplayedMnemonicIndex());
         assertEquals(KeyEvent.VK_X, button.getMnemonic());
@@ -447,11 +442,9 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setDisplayedMnemonicIndex(3);
         assertEquals(3, button.getDisplayedMnemonicIndex());
         assertEquals(KeyEvent.VK_X, button.getMnemonic());
-
         button.setText(text2);
         assertEquals(2, button.getDisplayedMnemonicIndex());
         assertEquals(KeyEvent.VK_X, button.getMnemonic());
-
         button.setDisplayedMnemonicIndex(3);
         button.setMnemonic(KeyEvent.VK_D);
         button.setText(text1);
@@ -462,22 +455,19 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetText() {
         String text1 = "text1";
         String text2 = "text2";
-
         assertEquals("default text ", "", button.getText());
-
         button.setText(text1);
         assertEquals("text ", text1, button.getText());
-
         button.setText(text2);
         assertEquals("text ", text2, button.getText());
     }
 
+    @SuppressWarnings("deprecation")
     public void testSetLabel() {
         String text1 = "text1";
         String text2 = "text2";
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setLabel(text1);
@@ -485,13 +475,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "text", "", text1);
         listener1.reset();
         listener2.reset();
-
         button.setLabel(text2);
         listener1.checkPropertyFired(button, "text", text1, text2);
         listener2.checkPropertyFired(button, "text", text1, text2);
         listener1.reset();
         listener2.reset();
-
         button.setLabel(text2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -499,63 +487,54 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.reset();
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetLabel() {
         String text1 = "text1";
         String text2 = "text2";
-
         assertEquals("default label ", "", button.getLabel());
-
         button.setLabel(text1);
         assertEquals("text ", text1, button.getText());
         assertEquals("label ", text1, button.getLabel());
-
         button.setLabel(text2);
         assertEquals("text ", text2, button.getText());
         assertEquals("label ", text2, button.getLabel());
     }
 
     public void testSetAction1() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        ConcreteChangeListener listener2 =  new ConcreteChangeListener();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        ConcreteChangeListener listener2 = new ConcreteChangeListener();
         button.setEnabled(false);
         button.addPropertyChangeListener(listener1);
         button.addChangeListener(listener2);
-
         action1.setEnabled(true);
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertTrue("event's been fired ", listener1.isChanged());
-
         listener1.checkPropertyFired(button, "mnemonic", new Integer(0), new Integer(1));
         listener1.checkPropertyFired(button, "ToolTipText", null, text3);
         listener1.checkPropertyFired(button, "icon", null, icon1);
         listener1.checkPropertyFired(button, "enabled", Boolean.FALSE, Boolean.TRUE);
         listener1.checkPropertyFired(button, "text", "", text1);
         listener1.checkPropertyFired(button, "action", null, action1);
-
         assertTrue("state event's been fired ", listener2.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener2.eventHappened.getSource());
         listener1.reset();
         listener2.eventHappened = null;
-
         button.setAction(action2);
-
         listener1.checkPropertyFired(button, "mnemonic", new Integer(1), new Integer(0));
         listener1.checkPropertyFired(button, "ToolTipText", text3, null);
         listener1.checkPropertyFired(button, "icon", icon1, icon2);
         listener1.checkPropertyFired(button, "text", text1, text2);
         listener1.checkPropertyFired(button, "action", action1, action2);
-
         assertTrue("state event's been fired ", listener2.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener2.eventHappened.getSource());
         listener1.reset();
         listener2.eventHappened = null;
-
         button.setAction(action2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertNull("event's not been fired ", listener2.eventHappened);
@@ -568,22 +547,18 @@ public class AbstractButtonTest extends SwingTestCase {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertTrue("enabled ", button.isEnabled());
         assertTrue("enabled ", action1.isEnabled());
         action1.setEnabled(false);
         button.isEnabled();
         assertFalse("enabled ", button.isEnabled());
         assertFalse("enabled ", action1.isEnabled());
-
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertEquals("icon ", icon2, button.getIcon());
-
         assertEquals("mnemonic ", 1, button.getMnemonic());
         action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
         assertEquals("mnemonic ", 27, button.getMnemonic());
-
         assertEquals("text ", text1, button.getText());
         action1.putValue(Action.NAME, text2);
         assertEquals("text ", text2, button.getText());
@@ -600,25 +575,21 @@ public class AbstractButtonTest extends SwingTestCase {
                 putValue("performed", e);
             }
         };
-
         ActionEvent event1 = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, "1");
         ActionEvent event2 = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, "2");
-
         button.setAction(action1);
         button.fireActionPerformed(event1);
-        assertEquals("1", ((ActionEvent)action1.getValue("performed")).getActionCommand());
-
+        assertEquals("1", ((ActionEvent) action1.getValue("performed")).getActionCommand());
         button.setAction(action2);
         button.fireActionPerformed(event2);
-        assertEquals("1", ((ActionEvent)action1.getValue("performed")).getActionCommand());
-        assertEquals("2", ((ActionEvent)action2.getValue("performed")).getActionCommand());
+        assertEquals("1", ((ActionEvent) action1.getValue("performed")).getActionCommand());
+        assertEquals("2", ((ActionEvent) action2.getValue("performed")).getActionCommand());
     }
 
     public void testSetAction4() {
         button.setAction(null);
         button.setText("text");
         button.setIcon(icon1);
-
         button.setAction(null);
         assertNull(button.getText());
         assertNull(button.getIcon());
@@ -628,7 +599,6 @@ public class AbstractButtonTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         button.addActionListener(action1);
         button.addActionListener(action1);
         button.setAction(action1);
@@ -638,7 +608,6 @@ public class AbstractButtonTest extends SwingTestCase {
         button.removeActionListener(action1);
         button.removeActionListener(action1);
         assertEquals(0, button.getActionListeners().length);
-
         button.setAction(action1);
         button.addActionListener(action1);
         button.addActionListener(action1);
@@ -654,7 +623,6 @@ public class AbstractButtonTest extends SwingTestCase {
         assertEquals("ToolTipText ", text3, button.getToolTipText());
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
-
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertNull("ToolTipText ", button.getToolTipText());
@@ -671,12 +639,9 @@ public class AbstractButtonTest extends SwingTestCase {
             public void actionPerformed(final ActionEvent event) {
             }
         };
-
         assertNull("default action ", button.getAction());
-
         button.setAction(action1);
         assertEquals("action ", action1, button.getAction());
-
         button.setAction(action2);
         assertEquals("action ", action2, button.getAction());
     }
@@ -684,9 +649,8 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetSelectedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setSelectedIcon(icon1);
@@ -694,13 +658,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "selectedIcon", null, icon1);
         listener1.reset();
         listener2.reset();
-
         button.setSelectedIcon(icon2);
         listener1.checkPropertyFired(button, "selectedIcon", icon1, icon2);
         listener2.checkPropertyFired(button, "selectedIcon", icon1, icon2);
         listener1.reset();
         listener2.reset();
-
         button.setSelectedIcon(icon2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -709,29 +671,24 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetRolloverSelectedIcon() {
-        PropertyChangeController listener =  new PropertyChangeController();
+        PropertyChangeController listener = new PropertyChangeController();
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
         button.setRolloverEnabled(true);
         button.addPropertyChangeListener(listener);
-
         button.setRolloverSelectedIcon(icon1);
         listener.checkLastPropertyFired(button, "rolloverSelectedIcon", null, icon1);
         button.setRolloverEnabled(false);
         listener.reset();
-
         button.setRolloverSelectedIcon(icon2);
         listener.checkPropertyFired(button, "rolloverSelectedIcon", icon1, icon2);
         listener.checkPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
         listener.reset();
-
         button.setRolloverSelectedIcon(icon2);
         assertFalse("event's not been fired ", listener.isChanged());
-
         button.setRolloverSelectedIcon(null);
         button.setRolloverEnabled(false);
         listener.reset();
-
         if (isHarmony()) {
             button.setRolloverSelectedIcon(null);
             assertFalse("event fired", listener.isChanged());
@@ -739,29 +696,24 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetRolloverIcon() {
-        PropertyChangeController listener =  new PropertyChangeController();
+        PropertyChangeController listener = new PropertyChangeController();
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
         button.setRolloverEnabled(true);
         button.addPropertyChangeListener(listener);
-
         button.setRolloverIcon(icon1);
         listener.checkLastPropertyFired(button, "rolloverIcon", null, icon1);
         button.setRolloverEnabled(false);
         listener.reset();
-
         button.setRolloverIcon(icon2);
         listener.checkPropertyFired(button, "rolloverIcon", icon1, icon2);
         listener.checkPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
         listener.reset();
-
         button.setRolloverIcon(icon2);
         assertFalse("event's not been fired ", listener.isChanged());
-
         button.setRolloverIcon(null);
         button.setRolloverEnabled(false);
         listener.reset();
-
         if (isHarmony()) {
             button.setRolloverIcon(null);
             assertFalse("event's not been fired ", listener.isChanged());
@@ -771,9 +723,8 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetPressedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setPressedIcon(icon1);
@@ -781,13 +732,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "pressedIcon", null, icon1);
         listener1.reset();
         listener2.reset();
-
         button.setPressedIcon(icon2);
         listener1.checkPropertyFired(button, "pressedIcon", icon1, icon2);
         listener2.checkPropertyFired(button, "pressedIcon", icon1, icon2);
         listener1.reset();
         listener2.reset();
-
         button.setPressedIcon(icon2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -798,9 +747,8 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setIcon(icon1);
@@ -808,13 +756,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "icon", null, icon1);
         listener1.reset();
         listener2.reset();
-
         button.setIcon(icon2);
         listener1.checkPropertyFired(button, "icon", icon1, icon2);
         listener2.checkPropertyFired(button, "icon", icon1, icon2);
         listener1.reset();
         listener2.reset();
-
         button.setIcon(icon2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -825,9 +771,8 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetDisabledSelectedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setDisabledSelectedIcon(icon1);
@@ -835,13 +780,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "disabledSelectedIcon", null, icon1);
         listener1.reset();
         listener2.reset();
-
         button.setDisabledSelectedIcon(icon2);
         listener1.checkPropertyFired(button, "disabledSelectedIcon", icon1, icon2);
         listener2.checkPropertyFired(button, "disabledSelectedIcon", icon1, icon2);
         listener1.reset();
         listener2.reset();
-
         button.setDisabledSelectedIcon(icon2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -852,9 +795,8 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetDisabledIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setDisabledIcon(icon1);
@@ -862,13 +804,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "disabledIcon", null, icon1);
         listener1.reset();
         listener2.reset();
-
         button.setDisabledIcon(icon2);
         listener1.checkPropertyFired(button, "disabledIcon", icon1, icon2);
         listener2.checkPropertyFired(button, "disabledIcon", icon1, icon2);
         listener1.reset();
         listener2.reset();
-
         button.setDisabledIcon(icon2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -879,12 +819,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetSelectedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Selected Icon ", button.getSelectedIcon());
-
         button.setSelectedIcon(icon1);
         assertEquals("Selected Icon ", icon1, button.getSelectedIcon());
-
         button.setSelectedIcon(icon2);
         assertEquals("Selected Icon ", icon2, button.getSelectedIcon());
     }
@@ -892,12 +829,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetRolloverSelectedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Rollover Selected Icon ", button.getRolloverSelectedIcon());
-
         button.setRolloverSelectedIcon(icon1);
         assertEquals("Rollover Selected Icon ", icon1, button.getRolloverSelectedIcon());
-
         button.setRolloverSelectedIcon(icon2);
         assertEquals("Rollover Selected Icon ", icon2, button.getRolloverSelectedIcon());
     }
@@ -905,12 +839,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetRolloverIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Rollover Icon ", button.getRolloverIcon());
-
         button.setRolloverIcon(icon1);
         assertEquals("Rollover Icon ", icon1, button.getRolloverIcon());
-
         button.setRolloverIcon(icon2);
         assertEquals("Rollover Icon ", icon2, button.getRolloverIcon());
     }
@@ -918,12 +849,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetPressedIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Pressed Icon ", button.getPressedIcon());
-
         button.setPressedIcon(icon1);
         assertEquals("Pressed Icon ", icon1, button.getPressedIcon());
-
         button.setPressedIcon(icon2);
         assertEquals("Pressed Icon ", icon2, button.getPressedIcon());
     }
@@ -931,12 +859,9 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Icon ", button.getIcon());
-
         button.setIcon(icon1);
         assertEquals("Icon ", icon1, button.getIcon());
-
         button.setIcon(icon2);
         assertEquals("Icon ", icon2, button.getIcon());
     }
@@ -945,39 +870,31 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
         Icon icon3 = createNewIcon();
-
         assertNull("default Icon ", button.getDisabledSelectedIcon());
-
         button.setDisabledSelectedIcon(icon1);
         assertEquals("DisabledSelected Icon ", icon1, button.getDisabledSelectedIcon());
-
         button.setDisabledSelectedIcon(icon2);
         assertEquals("DisabledSelected Icon ", icon2, button.getDisabledSelectedIcon());
-
         button.setIcon(icon1);
         button.setDisabledSelectedIcon(null);
         button.setDisabledIcon(null);
         assertNotNull(button.getDisabledSelectedIcon());
         assertEquals(icon1.getIconHeight(), button.getDisabledSelectedIcon().getIconHeight());
         assertEquals(icon1.getIconWidth(), button.getDisabledSelectedIcon().getIconWidth());
-
         button.setIcon(null);
         button.setSelectedIcon(icon2);
         assertNotNull(button.getDisabledSelectedIcon());
         assertEquals(icon2.getIconHeight(), button.getDisabledSelectedIcon().getIconHeight());
         assertEquals(icon2.getIconWidth(), button.getDisabledSelectedIcon().getIconWidth());
-
         button.setSelectedIcon(null);
         button.setDisabledIcon(icon1);
         assertNotNull(button.getDisabledSelectedIcon());
         assertEquals(icon1.getIconHeight(), button.getDisabledSelectedIcon().getIconHeight());
         assertEquals(icon1.getIconWidth(), button.getDisabledSelectedIcon().getIconWidth());
-
         button.setSelectedIcon(icon2);
         assertNotNull(button.getDisabledSelectedIcon());
         assertEquals(icon2.getIconHeight(), button.getDisabledSelectedIcon().getIconHeight());
         assertEquals(icon2.getIconWidth(), button.getDisabledSelectedIcon().getIconWidth());
-
         button.setIcon(icon3);
         assertNotNull(button.getDisabledSelectedIcon());
         assertEquals(icon2.getIconHeight(), button.getDisabledSelectedIcon().getIconHeight());
@@ -987,22 +904,17 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetDisabledIcon() {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
-
         assertNull("default Icon ", button.getDisabledIcon());
-
         button.setDisabledIcon(icon1);
         assertEquals("Disabled Icon ", icon1, button.getDisabledIcon());
-
         button.setDisabledIcon(icon2);
         assertEquals("Disabled Icon ", icon2, button.getDisabledIcon());
-
         button.setIcon(icon1);
         button.setDisabledIcon(null);
         assertNotNull(button.getDisabledIcon());
         assertEquals(icon1.getIconHeight(), button.getDisabledIcon().getIconHeight());
         assertEquals(icon1.getIconWidth(), button.getDisabledIcon().getIconWidth());
-
-        button.setIcon(new Icon(){
+        button.setIcon(new Icon() {
             public void paintIcon(Component c, Graphics g, int x, int y) {
             }
 
@@ -1020,12 +932,10 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetModel() {
         DefaultButtonModel model1 = new DefaultButtonModel();
         DefaultButtonModel model2 = new DefaultButtonModel();
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
-
         ButtonModel oldModel = button.getModel();
         button.setModel(model1);
         assertSame(model1, button.getModel());
@@ -1033,7 +943,6 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "model", oldModel, model1);
         listener1.reset();
         listener2.reset();
-
         button.setModel(model2);
         assertSame(model2, button.getModel());
         listener1.checkPropertyFired(button, "model", model1, model2);
@@ -1042,7 +951,6 @@ public class AbstractButtonTest extends SwingTestCase {
         assertEquals("model's change listeners ", 0, model1.getChangeListeners().length);
         listener1.reset();
         listener2.reset();
-
         button.setModel(model2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1052,7 +960,7 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testNumberOfModelListeners() {
         button.setUI(null);
-        DefaultButtonModel model = (DefaultButtonModel)button.getModel();
+        DefaultButtonModel model = (DefaultButtonModel) button.getModel();
         assertEquals("model's action listeners ", 1, model.getActionListeners().length);
         assertEquals("model's item listeners ", 1, model.getItemListeners().length);
         assertEquals("model's change listeners ", 1, model.getChangeListeners().length);
@@ -1061,26 +969,21 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testGetModel() {
         ButtonModel model1 = new DefaultButtonModel();
         ButtonModel model2 = new DefaultButtonModel();
-
         assertNotNull("default buttonModel ", button.getModel());
-
         button.setModel(model1);
         assertEquals("buttonModel ", model1, button.getModel());
-
         button.setModel(model2);
         assertEquals("buttonModel ", model2, button.getModel());
-
-        button = new AbstractButton(){};
+        button = new AbstractButton() {
+        };
         assertNull("default buttonModel", button.getModel());
     }
 
     public void testSetActionCommand() {
         String command1 = "When one door is closed";
         String command2 = "Don't you know other is opened?";
-
         button.setActionCommand(command1);
         assertEquals("comman action ", command1, button.getActionCommand());
-
         button.setActionCommand(command2);
         assertEquals("comman action ", command2, button.getActionCommand());
     }
@@ -1093,7 +996,6 @@ public class AbstractButtonTest extends SwingTestCase {
         String exceptionText = "exceptionText";
         int res = button.checkVerticalKey(SwingConstants.TOP, exceptionText);
         assertEquals("returned value ", 1, res);
-
         Throwable exception = null;
         try {
             res = button.checkVerticalKey(SwingConstants.WEST, exceptionText);
@@ -1107,10 +1009,8 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testCheckHorizontalKey() {
         String exceptionText = "exceptionText";
-
         int res = button.checkHorizontalKey(SwingConstants.TRAILING, exceptionText);
         assertEquals("returned value ", SwingConstants.TRAILING, res);
-
         Throwable exception = null;
         try {
             res = button.checkHorizontalKey(SwingConstants.TOP, exceptionText);
@@ -1126,16 +1026,13 @@ public class AbstractButtonTest extends SwingTestCase {
         Object res1 = null;
         Object res2 = null;
         AbstractAction action1 = new AbstractAction() {
-            public void actionPerformed(final ActionEvent event) {
-            }
-        };
-        AbstractAction action2 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         res1 = button.createActionPropertyChangeListener(action1);
         assertNotNull(res1);
-
         res2 = button.createActionPropertyChangeListener(null);
         assertNotNull(res2);
     }
@@ -1143,7 +1040,6 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testCreateActionListener() throws Exception {
         Object res1 = button.createActionListener();
         Object res2 = button.createActionListener();
-
         assertNotNull(res1);
         assertNotNull(res2);
         if (isHarmony()) {
@@ -1155,7 +1051,6 @@ public class AbstractButtonTest extends SwingTestCase {
         button.itemListener = null;
         Object res1 = button.createItemListener();
         Object res2 = button.createItemListener();
-
         assertNotNull(res1);
         assertNotNull(res2);
         assertNull(button.itemListener);
@@ -1165,7 +1060,6 @@ public class AbstractButtonTest extends SwingTestCase {
         button.changeListener = null;
         Object res1 = button.createChangeListener();
         Object res2 = button.createChangeListener();
-
         assertNotNull(res1);
         assertNotNull(res2);
         assertNull(button.changeListener);
@@ -1175,39 +1069,32 @@ public class AbstractButtonTest extends SwingTestCase {
         ChangeListener listener1 = new ConcreteChangeListener();
         ChangeListener listener2 = new ConcreteChangeListener();
         ChangeListener listener3 = new ConcreteChangeListener();
-
         button.addChangeListener(listener1);
         button.addChangeListener(listener2);
         button.addChangeListener(listener2);
         button.addChangeListener(listener3);
-
         EventListener[] listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
-
         button.removeChangeListener(listener1);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 2);
-
         button.removeChangeListener(listener2);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 1);
-
         button.removeChangeListener(listener2);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeChangeListener(listener2);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeChangeListener(listener3);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
@@ -1217,24 +1104,20 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testAddChangeListener() {
         ChangeListener listener1 = new ConcreteChangeListener();
         ChangeListener listener2 = new ConcreteChangeListener();
-
         EventListener[] listeners = button.getChangeListeners();
         int numListeners = listeners.length;
         button.addChangeListener(null);
         listeners = button.getChangeListeners();
         assertEquals("listener's array is valid ", numListeners, listeners.length);
-
         button.addChangeListener(listener1);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's added successfully ", find(listeners, listener1) == 1);
-
         button.addChangeListener(listener2);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
         assertTrue("listener's added successfully ", find(listeners, listener1) == 1);
         assertTrue("listener's added successfully ", find(listeners, listener2) == 1);
-
         button.addChangeListener(listener2);
         listeners = button.getListeners(ChangeListener.class);
         assertTrue("listener's array is valid ", listeners != null);
@@ -1259,16 +1142,16 @@ public class AbstractButtonTest extends SwingTestCase {
         button.addChangeListener(listener1);
         button.addChangeListener(listener2);
         button.fireStateChanged();
-
         event1 = listener1.eventHappened;
         assertTrue("event fired ", listener1.eventHappened != null);
         assertTrue("event fired ", listener2.eventHappened != null);
         assertTrue("one event fired ", listener1.eventHappened == listener2.eventHappened);
-        assertEquals("event fired properly ", ChangeEvent.class, listener1.eventHappened.getClass());
-        assertEquals("event fired properly ", ChangeEvent.class, listener2.eventHappened.getClass());
+        assertEquals("event fired properly ", ChangeEvent.class, listener1.eventHappened
+                .getClass());
+        assertEquals("event fired properly ", ChangeEvent.class, listener2.eventHappened
+                .getClass());
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-
         button.fireStateChanged();
         event2 = listener1.eventHappened;
         assertTrue("event fired ", listener1.eventHappened != null);
@@ -1278,7 +1161,6 @@ public class AbstractButtonTest extends SwingTestCase {
         assertEquals("event's class ", ChangeEvent.class, listener2.eventHappened.getClass());
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-
         assertTrue("the same event is fired always ", event1 == event2);
     }
 
@@ -1286,63 +1168,62 @@ public class AbstractButtonTest extends SwingTestCase {
         ItemListener listener1 = new ConcreteItemListener();
         ItemListener listener2 = new ConcreteItemListener();
         ItemListener listener3 = new ConcreteItemListener();
-
         button.addItemListener(listener1);
         button.addItemListener(listener2);
         button.addItemListener(listener2);
         button.addItemListener(listener3);
-
         EventListener[] listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 4);
-
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 4);
         button.removeItemListener(listener1);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 3);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 3);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 2);
-
         button.removeItemListener(listener2);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 2);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 2);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 1);
-
         button.removeItemListener(listener2);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 1);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeItemListener(listener2);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 1);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeItemListener(listener3);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 0);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 0);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 0);
     }
 
     public void testAddItemListener() {
         ItemListener listener1 = new ConcreteItemListener();
         ItemListener listener2 = new ConcreteItemListener();
-
         button.addItemListener(listener1);
         EventListener[] listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 1);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 1);
         assertEquals("listener's added successfully ", listeners[0], listener1);
-
         button.addItemListener(listener2);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 2);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 2);
         assertTrue("listener's added successfully ", find(listeners, listener1) == 1);
         assertTrue("listener's added successfully ", find(listeners, listener2) == 1);
-
         button.addItemListener(listener2);
         listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 3);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 3);
         assertTrue("listener's added successfully ", find(listeners, listener1) == 1);
         assertTrue("listener's added successfully ", find(listeners, listener2) == 2);
     }
@@ -1353,7 +1234,8 @@ public class AbstractButtonTest extends SwingTestCase {
      */
     public void testGetItemListeners() {
         EventListener[] listeners = button.getListeners(ItemListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 0);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 0);
     }
 
     public void testFireItemStateChanged() {
@@ -1363,28 +1245,34 @@ public class AbstractButtonTest extends SwingTestCase {
         ItemEvent event2 = new ItemEvent(button, 111, item2, 1);
         ConcreteItemListener listener1 = new ConcreteItemListener();
         ConcreteItemListener listener2 = new ConcreteItemListener();
-
         button.addItemListener(listener1);
         button.addItemListener(listener2);
         button.fireItemStateChanged(event1);
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener1.eventHappened.getItem());
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
-        assertEquals("event's StateChange ", ItemEvent.DESELECTED, listener1.eventHappened.getStateChange());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened.getID());
+        assertEquals("event's StateChange ", ItemEvent.DESELECTED, listener1.eventHappened
+                .getStateChange());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener2.eventHappened.getItem());
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-        assertEquals("event's StateChange ", ItemEvent.DESELECTED, listener2.eventHappened.getStateChange());
-
+        assertEquals("event's StateChange ", ItemEvent.DESELECTED, listener2.eventHappened
+                .getStateChange());
         button.fireItemStateChanged(event2);
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener1.eventHappened.getItem());
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
-        assertEquals("event's StateChange ", ItemEvent.SELECTED, listener1.eventHappened.getStateChange());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened.getID());
+        assertEquals("event's StateChange ", ItemEvent.SELECTED, listener1.eventHappened
+                .getStateChange());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener2.eventHappened.getItem());
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-        assertEquals("event's StateChange ", ItemEvent.SELECTED, listener2.eventHappened.getStateChange());
+        assertEquals("event's StateChange ", ItemEvent.SELECTED, listener2.eventHappened
+                .getStateChange());
     }
 
     public void testRemoveActionListener() {
@@ -1392,62 +1280,55 @@ public class AbstractButtonTest extends SwingTestCase {
         ActionListener listener1 = new ConcreteActionListener();
         ActionListener listener2 = new ConcreteActionListener();
         ActionListener listener3 = new ConcreteActionListener();
-
         button.addActionListener(listener1);
         button.addActionListener(listener2);
         button.addActionListener(listener2);
         button.addActionListener(listener3);
-
         EventListener[] listeners = button.getListeners(ActionListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 4 + startLength);
-
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 4 + startLength);
         button.removeActionListener(listener1);
         listeners = button.getListeners(ActionListener.class);
         assertEquals(listeners.length, 3 + startLength);
         assertEquals(find(listeners, listener3), 1);
         assertEquals(find(listeners, listener2), 2);
-
         button.removeActionListener(listener2);
         listeners = button.getListeners(ActionListener.class);
         assertEquals(listeners.length, 2 + startLength);
         assertEquals(find(listeners, listener3), 1);
         assertEquals(find(listeners, listener2), 1);
-
         button.removeActionListener(listener2);
         listeners = button.getListeners(ActionListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 1 + startLength);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 1 + startLength);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeActionListener(listener2);
         listeners = button.getListeners(ActionListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 1 + startLength);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 1 + startLength);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 1);
         assertTrue("listener's removed successfully ", find(listeners, listener2) == 0);
-
         button.removeActionListener(listener3);
         listeners = button.getListeners(ActionListener.class);
-        assertTrue("listener's array has the proper size ", listeners != null && listeners.length == 0 + startLength);
+        assertTrue("listener's array has the proper size ", listeners != null
+                && listeners.length == 0 + startLength);
         assertTrue("listener's removed successfully ", find(listeners, listener3) == 0);
     }
 
     public void testAddActionListener() {
         final int startLength = button.getListeners(ActionListener.class).length;
-
         ActionListener listener1 = new ConcreteActionListener();
         ActionListener listener2 = new ConcreteActionListener();
-
         button.addActionListener(listener1);
         EventListener[] listeners = button.getListeners(ActionListener.class);
         assertEquals(listeners.length, 1 + startLength);
         assertEquals(listeners[0], listener1);
-
         button.addActionListener(listener2);
         listeners = button.getListeners(ActionListener.class);
         assertEquals(listeners.length, 2 + startLength);
         assertEquals(find(listeners, listener1), 1);
         assertEquals(find(listeners, listener2), 1);
-
         button.addActionListener(listener2);
         listeners = button.getListeners(ActionListener.class);
         assertEquals(listeners.length, 3 + startLength);
@@ -1474,58 +1355,69 @@ public class AbstractButtonTest extends SwingTestCase {
         ActionEvent event3 = new ActionEvent(button, 1111, null, 1);
         ConcreteActionListener listener1 = new ConcreteActionListener();
         ConcreteActionListener listener2 = new ConcreteActionListener();
-
         button.setText(command3);
         button.addActionListener(listener1);
         button.addActionListener(listener2);
-
         button.fireActionPerformed(event1);
         assertEquals("event's source ", event1.getSource(), listener1.eventHappened.getSource());
-        assertEquals("event's command ", event1.getActionCommand(), listener1.eventHappened.getActionCommand());
-        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened.getID());
-        assertEquals("event's modifiers ", event1.getModifiers(), listener1.eventHappened.getModifiers());
+        assertEquals("event's command ", event1.getActionCommand(), listener1.eventHappened
+                .getActionCommand());
+        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened
+                .getID());
+        assertEquals("event's modifiers ", event1.getModifiers(), listener1.eventHappened
+                .getModifiers());
         assertEquals("event's source ", event1.getSource(), listener2.eventHappened.getSource());
-        assertEquals("event's command ", event1.getActionCommand(), listener2.eventHappened.getActionCommand());
-        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener2.eventHappened.getID());
-        assertEquals("event's modifiers ", event1.getModifiers(), listener2.eventHappened.getModifiers());
-
+        assertEquals("event's command ", event1.getActionCommand(), listener2.eventHappened
+                .getActionCommand());
+        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener2.eventHappened
+                .getID());
+        assertEquals("event's modifiers ", event1.getModifiers(), listener2.eventHappened
+                .getModifiers());
         button.fireActionPerformed(event2);
         assertEquals("event's source ", event2.getSource(), listener1.eventHappened.getSource());
-        assertEquals("event's command ", event2.getActionCommand(), listener1.eventHappened.getActionCommand());
-        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened.getID());
-        assertEquals("event's modifiers ", event2.getModifiers(), listener1.eventHappened.getModifiers());
+        assertEquals("event's command ", event2.getActionCommand(), listener1.eventHappened
+                .getActionCommand());
+        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened
+                .getID());
+        assertEquals("event's modifiers ", event2.getModifiers(), listener1.eventHappened
+                .getModifiers());
         assertEquals("event's source ", event2.getSource(), listener2.eventHappened.getSource());
-        assertEquals("event's command ", event2.getActionCommand(), listener2.eventHappened.getActionCommand());
-        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener2.eventHappened.getID());
-        assertEquals("event's modifiers ", event2.getModifiers(), listener2.eventHappened.getModifiers());
-
+        assertEquals("event's command ", event2.getActionCommand(), listener2.eventHappened
+                .getActionCommand());
+        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener2.eventHappened
+                .getID());
+        assertEquals("event's modifiers ", event2.getModifiers(), listener2.eventHappened
+                .getModifiers());
         button.fireActionPerformed(event3);
         assertEquals("event's source ", event2.getSource(), listener1.eventHappened.getSource());
         assertEquals("event's command ", command3, listener1.eventHappened.getActionCommand());
-        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened.getID());
-        assertEquals("event's modifiers ", event2.getModifiers(), listener1.eventHappened.getModifiers());
+        assertEquals("event's ID ", ActionEvent.ACTION_PERFORMED, listener1.eventHappened
+                .getID());
+        assertEquals("event's modifiers ", event2.getModifiers(), listener1.eventHappened
+                .getModifiers());
     }
 
     public void testSetIconTextGap() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         int value1 = 20;
         int value2 = 13;
-
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setIconTextGap(value1);
-        listener1.checkPropertyFired(button, "iconTextGap", new Integer(4), new Integer(value1));
-        listener2.checkPropertyFired(button, "iconTextGap", new Integer(4), new Integer(value1));
+        listener1
+                .checkPropertyFired(button, "iconTextGap", new Integer(4), new Integer(value1));
+        listener2
+                .checkPropertyFired(button, "iconTextGap", new Integer(4), new Integer(value1));
         listener1.reset();
         listener2.reset();
-
         button.setIconTextGap(value2);
-        listener1.checkPropertyFired(button, "iconTextGap", new Integer(value1), new Integer(value2));
-        listener2.checkPropertyFired(button, "iconTextGap", new Integer(value1), new Integer(value2));
+        listener1.checkPropertyFired(button, "iconTextGap", new Integer(value1), new Integer(
+                value2));
+        listener2.checkPropertyFired(button, "iconTextGap", new Integer(value1), new Integer(
+                value2));
         listener1.reset();
         listener2.reset();
-
         button.setIconTextGap(value2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1537,37 +1429,34 @@ public class AbstractButtonTest extends SwingTestCase {
         int value1 = -100;
         int value2 = 1;
         int value3 = 100;
-
         assertEquals("default IconTextGap", 4, button.getIconTextGap());
-
         button.setIconTextGap(value1);
         assertEquals("IconTextGap", value1, button.getIconTextGap());
-
         button.setIconTextGap(value2);
         assertEquals("IconTextGap", value2, button.getIconTextGap());
-
         button.setIconTextGap(value3);
         assertEquals("IconTextGap", value3, button.getIconTextGap());
     }
 
     public void testSetVerticalTextPosition() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setVerticalTextPosition(SwingConstants.TOP);
-        listener1.checkPropertyFired(button, "verticalTextPosition", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.TOP));
-        listener2.checkPropertyFired(button, "verticalTextPosition", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.TOP));
+        listener1.checkPropertyFired(button, "verticalTextPosition", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.TOP));
+        listener2.checkPropertyFired(button, "verticalTextPosition", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.TOP));
         listener1.reset();
         listener2.reset();
-
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
-        listener1.checkPropertyFired(button, "verticalTextPosition", new Integer(SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
-        listener2.checkPropertyFired(button, "verticalTextPosition", new Integer(SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
+        listener1.checkPropertyFired(button, "verticalTextPosition", new Integer(
+                SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
+        listener2.checkPropertyFired(button, "verticalTextPosition", new Integer(
+                SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
         listener1.reset();
         listener2.reset();
-
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1576,23 +1465,24 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetVerticalAlignment() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setVerticalAlignment(SwingConstants.TOP);
-        listener1.checkPropertyFired(button, "verticalAlignment", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.TOP));
-        listener2.checkPropertyFired(button, "verticalAlignment", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.TOP));
+        listener1.checkPropertyFired(button, "verticalAlignment", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.TOP));
+        listener2.checkPropertyFired(button, "verticalAlignment", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.TOP));
         listener1.reset();
         listener2.reset();
-
         button.setVerticalAlignment(SwingConstants.BOTTOM);
-        listener1.checkPropertyFired(button, "verticalAlignment", new Integer(SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
-        listener2.checkPropertyFired(button, "verticalAlignment", new Integer(SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
+        listener1.checkPropertyFired(button, "verticalAlignment", new Integer(
+                SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
+        listener2.checkPropertyFired(button, "verticalAlignment", new Integer(
+                SwingConstants.TOP), new Integer(SwingConstants.BOTTOM));
         listener1.reset();
         listener2.reset();
-
         button.setVerticalAlignment(SwingConstants.BOTTOM);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1604,9 +1494,8 @@ public class AbstractButtonTest extends SwingTestCase {
         int value1 = SwingConstants.LEFT;
         int value2 = SwingConstants.TOP;
         int value3 = SwingConstants.BOTTOM;
-
-        assertEquals("default VerticalTextPosition", SwingConstants.CENTER, button.getVerticalTextPosition());
-
+        assertEquals("default VerticalTextPosition", SwingConstants.CENTER, button
+                .getVerticalTextPosition());
         boolean thrown = false;
         try {
             button.setVerticalTextPosition(value1);
@@ -1614,10 +1503,8 @@ public class AbstractButtonTest extends SwingTestCase {
             thrown = true;
         }
         assertTrue("exception is thrown", thrown);
-
         button.setVerticalTextPosition(value2);
         assertEquals("VerticalTextPosition", value2, button.getVerticalTextPosition());
-
         button.setVerticalTextPosition(value3);
         assertEquals("VerticalTextPosition", value3, button.getVerticalTextPosition());
     }
@@ -1626,9 +1513,8 @@ public class AbstractButtonTest extends SwingTestCase {
         int value1 = SwingConstants.RIGHT;
         int value2 = SwingConstants.TOP;
         int value3 = SwingConstants.BOTTOM;
-
-        assertEquals("default VerticalAlignment", SwingConstants.CENTER, button.getVerticalAlignment());
-
+        assertEquals("default VerticalAlignment", SwingConstants.CENTER, button
+                .getVerticalAlignment());
         boolean thrown = false;
         try {
             button.setVerticalAlignment(value1);
@@ -1636,34 +1522,32 @@ public class AbstractButtonTest extends SwingTestCase {
             thrown = true;
         }
         assertTrue("exception is thrown", thrown);
-
         button.setVerticalAlignment(value2);
         assertEquals("VerticalAlignment", value2, button.getVerticalAlignment());
-
         button.setVerticalAlignment(value3);
         assertEquals("VerticalAlignment", value3, button.getVerticalAlignment());
     }
 
     public void testSetHorizontalAlignment() {
         button.setHorizontalAlignment(SwingConstants.CENTER);
-
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setHorizontalAlignment(SwingConstants.LEFT);
-        listener1.checkLastPropertyFired(button, "horizontalAlignment", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.LEFT));
-        listener2.checkLastPropertyFired(button, "horizontalAlignment", new Integer(SwingConstants.CENTER), new Integer(SwingConstants.LEFT));
+        listener1.checkLastPropertyFired(button, "horizontalAlignment", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.LEFT));
+        listener2.checkLastPropertyFired(button, "horizontalAlignment", new Integer(
+                SwingConstants.CENTER), new Integer(SwingConstants.LEFT));
         listener1.reset();
         listener2.reset();
-
         button.setHorizontalAlignment(SwingConstants.RIGHT);
-        listener1.checkLastPropertyFired(button, "horizontalAlignment", new Integer(SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
-        listener2.checkLastPropertyFired(button, "horizontalAlignment", new Integer(SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
+        listener1.checkLastPropertyFired(button, "horizontalAlignment", new Integer(
+                SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
+        listener2.checkLastPropertyFired(button, "horizontalAlignment", new Integer(
+                SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
         listener1.reset();
         listener2.reset();
-
         button.setHorizontalAlignment(SwingConstants.RIGHT);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1672,23 +1556,24 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetHorizontalTextPosition() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setHorizontalTextPosition(SwingConstants.LEFT);
-        listener1.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(SwingConstants.TRAILING), new Integer(SwingConstants.LEFT));
-        listener2.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(SwingConstants.TRAILING), new Integer(SwingConstants.LEFT));
+        listener1.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(
+                SwingConstants.TRAILING), new Integer(SwingConstants.LEFT));
+        listener2.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(
+                SwingConstants.TRAILING), new Integer(SwingConstants.LEFT));
         listener1.reset();
         listener2.reset();
-
         button.setHorizontalTextPosition(SwingConstants.RIGHT);
-        listener1.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
-        listener2.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
+        listener1.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(
+                SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
+        listener2.checkLastPropertyFired(button, "horizontalTextPosition", new Integer(
+                SwingConstants.LEFT), new Integer(SwingConstants.RIGHT));
         listener1.reset();
         listener2.reset();
-
         button.setHorizontalTextPosition(SwingConstants.RIGHT);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1700,9 +1585,8 @@ public class AbstractButtonTest extends SwingTestCase {
         int value1 = SwingConstants.WEST;
         int value2 = SwingConstants.LEFT;
         int value3 = SwingConstants.TRAILING;
-
-        assertEquals("default HorizontalTextPosition", SwingConstants.TRAILING, button.getHorizontalTextPosition());
-
+        assertEquals("default HorizontalTextPosition", SwingConstants.TRAILING, button
+                .getHorizontalTextPosition());
         boolean thrown = false;
         try {
             button.setHorizontalTextPosition(value1);
@@ -1710,10 +1594,8 @@ public class AbstractButtonTest extends SwingTestCase {
             thrown = true;
         }
         assertTrue("exception is thrown", thrown);
-
         button.setHorizontalTextPosition(value2);
         assertEquals("HorizontalTextPosition", value2, button.getHorizontalTextPosition());
-
         button.setHorizontalTextPosition(value3);
         assertEquals("HorizontalTextPosition", value3, button.getHorizontalTextPosition());
     }
@@ -1722,9 +1604,8 @@ public class AbstractButtonTest extends SwingTestCase {
         int value1 = SwingConstants.WEST;
         int value2 = SwingConstants.RIGHT;
         int value3 = SwingConstants.LEFT;
-
-        assertEquals("default HorizontalAlignment", SwingConstants.CENTER, button.getHorizontalAlignment());
-
+        assertEquals("default HorizontalAlignment", SwingConstants.CENTER, button
+                .getHorizontalAlignment());
         boolean thrown = false;
         try {
             button.setHorizontalAlignment(value1);
@@ -1732,10 +1613,8 @@ public class AbstractButtonTest extends SwingTestCase {
             thrown = true;
         }
         assertTrue("exception is thrown", thrown);
-
         button.setHorizontalAlignment(value2);
         assertEquals("HorizontalAlignment", value2, button.getHorizontalAlignment());
-
         button.setHorizontalAlignment(value3);
         assertEquals("HorizontalAlignment", value3, button.getHorizontalAlignment());
     }
@@ -1756,9 +1635,8 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setMargin(defaultMargin);
         Insets margin1 = new Insets(1, 1, 1, 1);
         Insets margin2 = new Insets(2, 2, 2, 2);
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setMargin(margin1);
@@ -1766,13 +1644,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkPropertyFired(button, "margin", defaultMargin, margin1);
         listener1.reset();
         listener2.reset();
-
         button.setMargin(margin2);
         listener1.checkPropertyFired(button, "margin", margin1, margin2);
         listener2.checkPropertyFired(button, "margin", margin1, margin2);
         listener1.reset();
         listener2.reset();
-
         button.setMargin(margin2);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1784,116 +1660,116 @@ public class AbstractButtonTest extends SwingTestCase {
         Insets margin1 = new Insets(1, 1, 1, 1);
         Insets margin2 = new Insets(2, 2, 2, 2);
         Insets margin3 = new Insets(3, 3, 3, 3);
-
         button.setMargin(margin1);
         assertEquals("Margin", margin1, button.getMargin());
-
         button.setMargin(margin2);
         assertEquals("Margin", margin2, button.getMargin());
-
         button.setMargin(margin3);
         assertEquals("Margin", margin3, button.getMargin());
     }
 
     public void testSetSelected() {
-        ConcreteItemListener listener1 =  new ConcreteItemListener();
-        ConcreteItemListener listener2 =  new ConcreteItemListener();
-        ConcreteChangeListener listener3 =  new ConcreteChangeListener();
-
+        ConcreteItemListener listener1 = new ConcreteItemListener();
+        ConcreteItemListener listener2 = new ConcreteItemListener();
+        ConcreteChangeListener listener3 = new ConcreteChangeListener();
         button.addItemListener(listener1);
         button.addItemListener(listener2);
         button.addChangeListener(listener3);
         button.setSelected(true);
         assertTrue("event's been fired ", listener1.eventHappened != null);
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener1.eventHappened.getItem());
         assertEquals("event's StateChange ", 1, listener1.eventHappened.getStateChange());
         assertTrue("event's been fired ", listener2.eventHappened != null);
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener2.eventHappened.getItem());
         assertEquals("event's StateChange ", 1, listener2.eventHappened.getStateChange());
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.eventHappened = null;
         listener2.eventHappened = null;
         listener3.eventHappened = null;
-
         button.setSelected(false);
         assertTrue("event's been fired ", listener1.eventHappened != null);
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener1.eventHappened.getItem());
         assertEquals("event's StateChange ", 2, listener1.eventHappened.getStateChange());
         assertTrue("event's been fired ", listener2.eventHappened != null);
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener2.eventHappened.getItem());
         assertEquals("event's StateChange ", 2, listener2.eventHappened.getStateChange());
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.eventHappened = null;
         listener2.eventHappened = null;
         listener3.eventHappened = null;
-
         button.setSelected(false);
         assertNull("event's not been fired ", listener1.eventHappened);
         assertNull("event's not been fired ", listener2.eventHappened);
         assertNull("event's not been fired ", listener3.eventHappened);
         listener1.eventHappened = null;
         listener2.eventHappened = null;
-
         button.getModel().setSelected(true);
         assertTrue("selected ", button.isSelected());
         assertTrue("event's been fired ", listener1.eventHappened != null);
         assertEquals("event's source ", button, listener1.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener1.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener1.eventHappened.getItem());
         assertEquals("event's StateChange ", 1, listener1.eventHappened.getStateChange());
         assertTrue("event's been fired ", listener2.eventHappened != null);
         assertEquals("event's source ", button, listener2.eventHappened.getSource());
-        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened.getID());
+        assertEquals("event's ID ", ItemEvent.ITEM_STATE_CHANGED, listener2.eventHappened
+                .getID());
         assertEquals("event's item ", button, listener2.eventHappened.getItem());
         assertEquals("event's StateChange ", 1, listener2.eventHappened.getStateChange());
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
     }
 
     public void testIsSelected() {
         assertFalse("default Selected", button.isSelected());
-
         button.setSelected(true);
         assertTrue("Selected", button.isSelected());
-
         button.setSelected(false);
         assertFalse("Selected", button.isSelected());
-
         button.setSelected(true);
         assertTrue("Selected", button.isSelected());
     }
 
     public void testSetRolloverEnabled() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setRolloverEnabled(true);
-        listener1.checkLastPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
-        listener2.checkLastPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
+        listener1
+                .checkLastPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
+        listener2
+                .checkLastPropertyFired(button, "rolloverEnabled", Boolean.FALSE, Boolean.TRUE);
         listener1.reset();
         listener2.reset();
-
         button.setRolloverEnabled(false);
-        listener1.checkLastPropertyFired(button, "rolloverEnabled", Boolean.TRUE, Boolean.FALSE);
-        listener2.checkLastPropertyFired(button, "rolloverEnabled", Boolean.TRUE, Boolean.FALSE);
+        listener1
+                .checkLastPropertyFired(button, "rolloverEnabled", Boolean.TRUE, Boolean.FALSE);
+        listener2
+                .checkLastPropertyFired(button, "rolloverEnabled", Boolean.TRUE, Boolean.FALSE);
         listener1.reset();
         listener2.reset();
-
         button.setRolloverEnabled(false);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1903,23 +1779,18 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testIsRolloverEnabled() {
         assertFalse("default RolloverEnabled", button.isRolloverEnabled());
-
         button.setRolloverEnabled(true);
         assertTrue("RolloverEnabled", button.isRolloverEnabled());
-
         button.setRolloverEnabled(false);
         assertFalse("RolloverEnabled", button.isRolloverEnabled());
-
         button.setRolloverEnabled(true);
         assertTrue("RolloverEnabled", button.isRolloverEnabled());
     }
 
     public void testSetFocusPainted() {
         button.setFocusPainted(true);
-
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setFocusPainted(false);
@@ -1927,13 +1798,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.checkLastPropertyFired(button, "focusPainted", Boolean.TRUE, Boolean.FALSE);
         listener1.reset();
         listener2.reset();
-
         button.setFocusPainted(true);
         listener1.checkLastPropertyFired(button, "focusPainted", Boolean.FALSE, Boolean.TRUE);
         listener2.checkLastPropertyFired(button, "focusPainted", Boolean.FALSE, Boolean.TRUE);
         listener1.reset();
         listener2.reset();
-
         button.setFocusPainted(true);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1943,35 +1812,33 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testIsFocusPainted() {
         assertTrue("default FocusPainted", button.isFocusPainted());
-
         button.setFocusPainted(false);
         assertFalse("FocusPainted", button.isFocusPainted());
-
         button.setFocusPainted(true);
         assertTrue("FocusPainted", button.isFocusPainted());
-
         button.setFocusPainted(false);
         assertFalse("FocusPainted", button.isFocusPainted());
     }
 
     public void testSetContentAreaFilled() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setContentAreaFilled(false);
-        listener1.checkLastPropertyFired(button, "contentAreaFilled", Boolean.TRUE, Boolean.FALSE);
-        listener2.checkLastPropertyFired(button, "contentAreaFilled", Boolean.TRUE, Boolean.FALSE);
+        listener1.checkLastPropertyFired(button, "contentAreaFilled", Boolean.TRUE,
+                Boolean.FALSE);
+        listener2.checkLastPropertyFired(button, "contentAreaFilled", Boolean.TRUE,
+                Boolean.FALSE);
         listener1.reset();
         listener2.reset();
-
         button.setContentAreaFilled(true);
-        listener1.checkLastPropertyFired(button, "contentAreaFilled", Boolean.FALSE, Boolean.TRUE);
-        listener2.checkLastPropertyFired(button, "contentAreaFilled", Boolean.FALSE, Boolean.TRUE);
+        listener1.checkLastPropertyFired(button, "contentAreaFilled", Boolean.FALSE,
+                Boolean.TRUE);
+        listener2.checkLastPropertyFired(button, "contentAreaFilled", Boolean.FALSE,
+                Boolean.TRUE);
         listener1.reset();
         listener2.reset();
-
         button.setContentAreaFilled(true);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -1981,21 +1848,17 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testIsContentAreaFilled() {
         assertTrue("default ContentAreaFilled", button.isContentAreaFilled());
-
         button.setContentAreaFilled(false);
         assertFalse("ContentAreaFilled", button.isContentAreaFilled());
-
         button.setContentAreaFilled(true);
         assertTrue("ContentAreaFilled", button.isContentAreaFilled());
-
         button.setContentAreaFilled(false);
         assertFalse("ContentAreaFilled", button.isContentAreaFilled());
     }
 
     public void testSetBorderPainted() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.setBorderPainted(false);
@@ -2003,13 +1866,11 @@ public class AbstractButtonTest extends SwingTestCase {
         listener1.checkLastPropertyFired(button, "borderPainted", Boolean.TRUE, Boolean.FALSE);
         listener1.reset();
         listener2.reset();
-
         button.setBorderPainted(true);
         listener1.checkLastPropertyFired(button, "borderPainted", Boolean.FALSE, Boolean.TRUE);
         listener1.checkLastPropertyFired(button, "borderPainted", Boolean.FALSE, Boolean.TRUE);
         listener1.reset();
         listener2.reset();
-
         button.setBorderPainted(true);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -2019,13 +1880,10 @@ public class AbstractButtonTest extends SwingTestCase {
 
     public void testIsBorderPainted() {
         assertTrue("default BorderPainted", button.isBorderPainted());
-
         button.setBorderPainted(false);
         assertFalse("BorderPainted", button.isBorderPainted());
-
         button.setBorderPainted(true);
         assertTrue("BorderPainted", button.isBorderPainted());
-
         button.setBorderPainted(false);
         assertFalse("BorderPainted", button.isBorderPainted());
     }
@@ -2040,30 +1898,29 @@ public class AbstractButtonTest extends SwingTestCase {
         long value1 = 100l;
         long value2 = 200l;
         assertEquals("default MultiClickThreshhold", 0, button.getMultiClickThreshhold());
-
         button.setMultiClickThreshhold(value1);
         assertEquals("MultiClickThreshhold", value1, button.getMultiClickThreshhold());
-
         button.setMultiClickThreshhold(value2);
         assertEquals("MultiClickThreshhold", value2, button.getMultiClickThreshhold());
-
         button.setMultiClickThreshhold(value2);
         assertEquals("MultiClickThreshhold", value2, button.getMultiClickThreshhold());
     }
 
     public void testSetMnemonicint2() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-        ConcreteChangeListener listener3 =  new ConcreteChangeListener();
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
+        ConcreteChangeListener listener3 = new ConcreteChangeListener();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.addChangeListener(listener3);
-
         button.getModel().setMnemonic(KeyEvent.VK_C);
-        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(KeyEvent.VK_C));
-        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(KeyEvent.VK_C));
+        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(
+                KeyEvent.VK_C));
+        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(
+                KeyEvent.VK_C));
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.reset();
         listener2.reset();
@@ -2071,33 +1928,36 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testSetMnemonicint1() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        PropertyChangeController listener2 =  new PropertyChangeController();
-        ConcreteChangeListener listener3 =  new ConcreteChangeListener();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        PropertyChangeController listener2 = new PropertyChangeController();
+        ConcreteChangeListener listener3 = new ConcreteChangeListener();
         button.addPropertyChangeListener(listener1);
         button.addPropertyChangeListener(listener2);
         button.addChangeListener(listener3);
         button.setMnemonic(KeyEvent.VK_C);
-        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(KeyEvent.VK_C));
-        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(KeyEvent.VK_C));
+        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(
+                KeyEvent.VK_C));
+        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(0), new Integer(
+                KeyEvent.VK_C));
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.reset();
         listener2.reset();
         listener3.eventHappened = null;
-
         button.setMnemonic(KeyEvent.VK_D);
-        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(KeyEvent.VK_C), new Integer(KeyEvent.VK_D));
-        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(KeyEvent.VK_C), new Integer(KeyEvent.VK_D));
+        listener1.checkLastPropertyFired(button, "mnemonic", new Integer(KeyEvent.VK_C),
+                new Integer(KeyEvent.VK_D));
+        listener2.checkLastPropertyFired(button, "mnemonic", new Integer(KeyEvent.VK_C),
+                new Integer(KeyEvent.VK_D));
         assertTrue("state event's been fired ", listener3.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener3.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener3.eventHappened.getSource());
         listener1.reset();
         listener2.reset();
         listener3.eventHappened = null;
-
         button.setMnemonic(KeyEvent.VK_D);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
@@ -2106,63 +1966,55 @@ public class AbstractButtonTest extends SwingTestCase {
     public void testSetMnemonicchar() {
         button.setMnemonic('c');
         assertEquals("mnemonic", KeyEvent.VK_C, button.getMnemonic());
-
         button.setMnemonic('f');
         assertEquals("mnemonic", KeyEvent.VK_F, button.getMnemonic());
-
         button.setMnemonic('-');
         assertEquals("mnemonic", KeyEvent.VK_MINUS, button.getMnemonic());
-
         button.setMnemonic('\u00FF');
         assertEquals("mnemonic", 255, button.getMnemonic());
-
         button.setMnemonic('\u01FF');
         assertEquals("mnemonic", 511, button.getMnemonic());
     }
 
     public void testGetMnemonic() {
         assertEquals("default mnemonic", 0, button.getMnemonic());
-
         button.setMnemonic(KeyEvent.VK_C);
         assertEquals("mnemonic", KeyEvent.VK_C, button.getMnemonic());
-
         button.setMnemonic(KeyEvent.VK_F);
         assertEquals("mnemonic", KeyEvent.VK_F, button.getMnemonic());
     }
 
     public void testSetDisplayedMnemonicIndex() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
-        ConcreteChangeListener listener2 =  new ConcreteChangeListener();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
+        ConcreteChangeListener listener2 = new ConcreteChangeListener();
         assertEquals("MnemonicIndex", -1, button.getDisplayedMnemonicIndex());
         button.setText("vroooom");
         assertEquals("MnemonicIndex", -1, button.getDisplayedMnemonicIndex());
-
         button.addPropertyChangeListener(listener1);
         button.addChangeListener(listener2);
-
         button.setMnemonic(KeyEvent.VK_O);
-        listener1.checkPropertyFired(button, "mnemonic", new Integer(0), new Integer(KeyEvent.VK_O));
-        listener1.checkPropertyFired(button, "displayedMnemonicIndex", new Integer(-1), new Integer(2));
+        listener1.checkPropertyFired(button, "mnemonic", new Integer(0), new Integer(
+                KeyEvent.VK_O));
+        listener1.checkPropertyFired(button, "displayedMnemonicIndex", new Integer(-1),
+                new Integer(2));
         assertTrue("state event's been fired ", listener2.eventHappened != null);
-        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened.getClass());
+        assertEquals("state event fired properly ", ChangeEvent.class, listener2.eventHappened
+                .getClass());
         assertEquals("state event fired properly ", button, listener2.eventHappened.getSource());
         listener1.reset();
         listener2.eventHappened = null;
-
         button.setDisplayedMnemonicIndex(5);
-        listener1.checkPropertyFired(button, "displayedMnemonicIndex", new Integer(2), new Integer(5));
+        listener1.checkPropertyFired(button, "displayedMnemonicIndex", new Integer(2),
+                new Integer(5));
         assertNull("state event's not been fired ", listener2.eventHappened);
         listener1.reset();
-
         button.setDisplayedMnemonicIndex(5);
         assertFalse("state event's not been fired ", listener1.isChanged());
         assertNull("state event's not been fired ", listener2.eventHappened);
-
         boolean thrown = false;
         try {
             button.setDisplayedMnemonicIndex(7);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             thrown = true;
         }
         assertTrue("exception's bees thrown", thrown);
@@ -2202,7 +2054,6 @@ public class AbstractButtonTest extends SwingTestCase {
         assertNotNull(listener.eventHappened);
         assertNotNull(action.eventHappened);
         assertEquals(name, listener.eventHappened.getActionCommand());
-
         if (!isHarmony()) {
             model.wasArmed = false;
             model.wasPressed = false;
@@ -2220,13 +2071,12 @@ public class AbstractButtonTest extends SwingTestCase {
     protected int find(final Object[] array, final Object value) {
         int found = 0;
         if (array != null) {
-            for (int i = 0; i < array.length; i++ ){
+            for (int i = 0; i < array.length; i++) {
                 if (array[i].equals(value)) {
                     found++;
                 }
             }
         }
-
         return found;
     }
 

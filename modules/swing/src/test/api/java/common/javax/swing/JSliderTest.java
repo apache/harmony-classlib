@@ -14,27 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.swing.plaf.SliderUI;
-
 public class JSliderTest extends SwingTestCase {
     private JSlider slider;
 
+    @Override
     protected void setUp() throws Exception {
         slider = new JSlider();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         slider = null;
     }
@@ -53,7 +51,7 @@ public class JSliderTest extends SwingTestCase {
 
     public void testSetGetLabelTable() throws Exception {
         assertNull(slider.getLabelTable());
-        Dictionary labelTable = new Hashtable();
+        Dictionary<String, String> labelTable = new Hashtable<String, String>();
         labelTable.put("a", "b");
         propertyChangeController = new PropertyChangeController();
         slider.addPropertyChangeListener(propertyChangeController);
@@ -145,19 +143,16 @@ public class JSliderTest extends SwingTestCase {
             fail("IllegalArgumentException shall be thrown");
         } catch (IllegalArgumentException e) {
         }
-
-        assertEquals(JSlider.HORIZONTAL, slider.getOrientation());
-
+        assertEquals(SwingConstants.HORIZONTAL, slider.getOrientation());
         propertyChangeController = new PropertyChangeController();
         slider.addPropertyChangeListener(propertyChangeController);
-        slider.setOrientation(JSlider.VERTICAL);
+        slider.setOrientation(SwingConstants.VERTICAL);
         assertTrue(propertyChangeController.isChanged("orientation"));
-        assertEquals(JSlider.VERTICAL, slider.getOrientation());
+        assertEquals(SwingConstants.VERTICAL, slider.getOrientation());
     }
 
     public void testSetGetModel() throws Exception {
         assertNotNull(slider.getModel());
-
         propertyChangeController = new PropertyChangeController();
         slider.addPropertyChangeListener(propertyChangeController);
         slider.setModel(new DefaultBoundedRangeModel());
@@ -175,7 +170,7 @@ public class JSliderTest extends SwingTestCase {
         propertyChangeController.reset();
         slider.setPaintLabels(true);
         assertFalse(propertyChangeController.isChanged("paintLabels"));
-}
+    }
 
     public void testCreateStandardLabels() throws Exception {
         try {
@@ -193,20 +188,18 @@ public class JSliderTest extends SwingTestCase {
             fail("IllegalArgumentException shall be thrown");
         } catch (IllegalArgumentException e) {
         }
-
-        Hashtable t = slider.createStandardLabels(2, 0);
+        Hashtable<?, ?> t = slider.createStandardLabels(2, 0);
         assertNotNull(t);
-        Enumeration enumeration = t.keys();
+        Enumeration<?> enumeration = t.keys();
         while (enumeration.hasMoreElements()) {
-            Integer key = (Integer)enumeration.nextElement();
-            String text = ((JLabel)t.get(key)).getText();
+            Integer key = (Integer) enumeration.nextElement();
+            String text = ((JLabel) t.get(key)).getText();
             assertEquals(key.toString(), text);
         }
     }
 
     public void testGetUI() throws Exception {
         assertNotNull(slider.getUI());
-        assertTrue(slider.getUI() instanceof SliderUI);
         assertTrue(slider.getUI() == slider.getUI());
     }
 }

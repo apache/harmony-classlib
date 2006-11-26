@@ -20,13 +20,14 @@
  */
 package javax.swing;
 
-
 public class InputMapRTest extends SwingTestCase {
-
     public void testGet() {
         InputMap map = new InputMap();
         final String key = "result";
-        map.setParent(new InputMap () {
+        map.setParent(new InputMap() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public Object get(KeyStroke ks) {
                 return key;
             }

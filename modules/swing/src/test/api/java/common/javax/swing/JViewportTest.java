@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.Color;
@@ -31,26 +29,29 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.JViewport.ViewListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.ViewportUI;
 import javax.swing.plaf.basic.BasicViewportUI;
 
 public class JViewportTest extends SwingTestCase {
     private JViewport port;
+
     private JList list;
+
     private TestListener listener;
+
     private JFrame frame;
 
+    @Override
     public void setUp() {
         port = new JViewport();
         listener = new TestListener();
     }
 
+    @Override
     public void tearDown() {
         port = null;
         listener = null;
@@ -61,7 +62,7 @@ public class JViewportTest extends SwingTestCase {
     }
 
     public void testAddRemoveChangeListener() {
-        final List test = new Vector();
+        final List<String> test = new Vector<String>();
         assertEquals(0, port.getChangeListeners().length);
         ChangeListener listener = new ChangeListener() {
             public void stateChanged(final ChangeEvent e) {
@@ -71,17 +72,15 @@ public class JViewportTest extends SwingTestCase {
         port.addChangeListener(listener);
         assertEquals(1, port.getChangeListeners().length);
         assertEquals(listener, port.getChangeListeners()[0]);
-
         assertEquals(0, test.size());
         port.fireStateChanged();
         assertEquals(1, test.size());
-
         port.removeChangeListener(listener);
         assertEquals(0, port.getChangeListeners().length);
     }
 
     public void testAddRemovePropertyChangeListener() {
-        final List test = new Vector();
+        final List<String> test = new Vector<String>();
         assertEquals(0, port.getPropertyChangeListeners().length);
         PropertyChangeListener listener = new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent e) {
@@ -91,11 +90,9 @@ public class JViewportTest extends SwingTestCase {
         port.addPropertyChangeListener(listener);
         assertEquals(1, port.getPropertyChangeListeners().length);
         assertEquals(listener, port.getPropertyChangeListeners()[0]);
-
         assertEquals(0, test.size());
         port.setBackground(Color.CYAN);
         assertEquals(1, test.size());
-
         port.removePropertyChangeListener(listener);
         assertEquals(0, port.getPropertyChangeListeners().length);
     }
@@ -130,7 +127,6 @@ public class JViewportTest extends SwingTestCase {
 
     public void testGetUI() {
         assertNotNull(port.getUI());
-        assertTrue(port.getUI() instanceof ViewportUI);
         assertEquals("ViewportUI", port.getUIClassID());
     }
 
@@ -155,7 +151,6 @@ public class JViewportTest extends SwingTestCase {
         assertNotNull(listener.getEvent());
         assertEquals(port, listener.getEvent().getSource());
         assertEquals(point, port.getViewPosition());
-
         listener.reset();
         port.setViewPosition(new Point(2, 6));
         assertNull(listener.getEvent());
@@ -171,16 +166,13 @@ public class JViewportTest extends SwingTestCase {
     public void testGetSetViewSize() {
         JLabel l = new JLabel();
         port.add(l);
-
         Dimension dimension = new Dimension(20, 50);
         l.setPreferredSize(dimension);
         assertEquals(dimension, port.getViewSize());
-
         dimension = new Dimension(20, 20);
         port.setViewSize(dimension);
         assertEquals(dimension, port.getViewSize());
         assertEquals(dimension, port.getView().getSize());
-
         dimension = new Dimension(100, 50);
         l.setSize(dimension);
         assertEquals(dimension, port.getViewSize());
@@ -207,77 +199,61 @@ public class JViewportTest extends SwingTestCase {
         assertTrue(port.paramString().indexOf(",scrollUnderway=") > 0);
     }
 
+    @SuppressWarnings("deprecation")
     public void testScrollRectToVisible() throws Exception {
         JLabel label = new JLabel();
         label.setPreferredSize(new Dimension(300, 300));
         label.setBackground(Color.RED);
         label.setOpaque(true);
         final JScrollPane pane = new JScrollPane(label);
-//        pane.setPreferredSize(new Dimension(118, 118));
+        //        pane.setPreferredSize(new Dimension(118, 118));
         pane.setPreferredSize(new Dimension(120, 119));
-
         frame = new JFrame();
         frame.getContentPane().add(pane);
-
         frame.pack();
         frame.show();
-
         port = pane.getViewport();
-
         assertEquals(new Dimension(100, 100), port.getExtentSize());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(50, 50, 100, 100));
         assertEquals(new Point(50, 50), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(50, 50, 50, 50));
         assertEquals(new Point(0, 0), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(50, 50, 60, 60));
         assertEquals(new Point(10, 10), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(0, 0, 60, 60));
         assertEquals(new Point(0, 0), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(0, 0, 60, 60));
         assertEquals(new Point(100, 100), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(50, 50, 60, 60));
         assertEquals(new Point(110, 110), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(-50, -50, 60, 60));
         assertEquals(new Point(50, 50), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(-50, -50, 130, 130));
         assertEquals(new Point(80, 80), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(-10, -10, 130, 130));
         assertEquals(new Point(100, 100), port.getViewPosition());
-
         port.setViewPosition(new Point(100, 100));
         port.scrollRectToVisible(new Rectangle(-50, -50, 200, 200));
         assertEquals(new Point(100, 100), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(1000, 1000, 100, 100));
         assertEquals(new Point(200, 200), port.getViewPosition());
         port.scrollRectToVisible(new Rectangle(1000, 1000, 100, 100));
         assertEquals(new Point(200, 200), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(-1000, 1000, 100, 100));
         assertEquals(new Point(0, 200), port.getViewPosition());
         port.scrollRectToVisible(new Rectangle(-1000, 1000, 100, 100));
         assertEquals(new Point(0, 200), port.getViewPosition());
-
         port.setViewPosition(new Point(0, 0));
         port.scrollRectToVisible(new Rectangle(-1000, -1000, 100, 100));
         assertEquals(new Point(0, 0), port.getViewPosition());
@@ -295,7 +271,6 @@ public class JViewportTest extends SwingTestCase {
         Dimension dimension = new Dimension(20, 50);
         l.setPreferredSize(dimension);
         port.add(l);
-
         Dimension dim = new Dimension(1000, 200);
         assertEquals(dim, port.toViewCoordinates(dim));
         Point point = new Point(1000, 200);
@@ -307,7 +282,6 @@ public class JViewportTest extends SwingTestCase {
         Dimension dimension = new Dimension(20, 50);
         l.setPreferredSize(dimension);
         port.add(l);
-
         assertTrue(port.createLayoutManager() instanceof ViewportLayout);
         assertTrue((port.getComponent(0) == l));
         assertTrue((port.getView() == l));
@@ -331,14 +305,14 @@ public class JViewportTest extends SwingTestCase {
         assertEquals(1, port.getComponentCount());
         assertEquals(comp, port.getView());
         assertEquals(comp, port.getComponent(0));
-
         port.setView(new JButton());
         assertEquals(1, port.getComponentCount());
     }
 
     public void testEnsureIndexIsVisible() throws Exception {
-        list = new JList(new Object[] {"a", "b", "c"});
+        list = new JList(new Object[] { "a", "b", "c" });
         JScrollPane scroller = insertListToFrame();
+        assertNotNull(scroller);
         Rectangle bounds = list.getCellBounds(1, 1);
         assertFalse(list.getVisibleRect().contains(bounds));
         list.ensureIndexIsVisible(1);
@@ -357,11 +331,13 @@ public class JViewportTest extends SwingTestCase {
         frame = new JFrame();
         frame.setLocation(100, 100);
         JScrollPane result = new JScrollPane(list) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public Dimension getPreferredSize() {
                 return new Dimension(100, preferredHeight);
             }
         };
-
         frame.getContentPane().add(result);
         frame.pack();
         return result;
@@ -369,9 +345,9 @@ public class JViewportTest extends SwingTestCase {
 
     private JComponent newJComponent() {
         return new JComponent() {
+            private static final long serialVersionUID = 1L;
         };
     }
-
 
     private class TestListener implements ChangeListener {
         private ChangeEvent event;

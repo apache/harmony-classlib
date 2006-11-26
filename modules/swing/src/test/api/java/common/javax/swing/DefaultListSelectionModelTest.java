@@ -23,23 +23,25 @@ package javax.swing;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class DefaultListSelectionModelTest extends SwingTestCase {
     private DefaultListSelectionModel model;
+
     private TestListener listener;
 
     public DefaultListSelectionModelTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         model = new DefaultListSelectionModel();
         listener = new TestListener();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         model = null;
         listener = null;
@@ -47,12 +49,10 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
 
     public void testAddRemoveListSelectionListener() throws Exception {
         assertEquals(0, model.getListSelectionListeners().length);
-
         model.addListSelectionListener(new TestListener());
         model.addListSelectionListener(listener);
         model.addListSelectionListener(new TestListener());
         assertEquals(3, model.getListSelectionListeners().length);
-
         model.removeListSelectionListener(listener);
         assertEquals(2, model.getListSelectionListeners().length);
     }
@@ -66,33 +66,27 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertTrue(model.isSelectionEmpty());
         assertEquals(0, listener.getEvents().size());
         listener.reset();
-        
         model.setLeadAnchorNotificationEnabled(false);
         assertTrue(model.isSelectionEmpty());
-
         model.addSelectionInterval(3, 5);
         checkSingleEvent(3, 5, false);
         assertFalse(model.isSelectedIndex(2));
         checkIntervalState(3, 5, true);
-
         listener.reset();
         model.addSelectionInterval(10, 7);
         checkSingleEvent(7, 10, false);
         checkIntervalState(3, 5, true);
         checkIntervalState(7, 10, true);
-
         listener.reset();
         model.addSelectionInterval(4, 11);
         checkSingleEvent(6, 11, false);
         checkIntervalState(3, 11, true);
-
         model.clearSelection();
         model.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         model.addSelectionInterval(4, 11);
         checkIntervalState(4, 11, true);
         model.addSelectionInterval(6, 8);
         checkIntervalState(6, 8, true);
-
         model.clearSelection();
         model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         model.addSelectionInterval(11, 4);
@@ -105,7 +99,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         model.addSelectionInterval(0, 5);
         model.addSelectionInterval(7, 9);
         assertFalse(model.isSelectionEmpty());
-
         model.addListSelectionListener(listener);
         model.clearSelection();
         checkSingleEvent(0, 9, false);
@@ -119,8 +112,7 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         model.addSelectionInterval(7, 9);
         model.setLeadAnchorNotificationEnabled(false);
         model.setValueIsAdjusting(true);
-
-        model = (DefaultListSelectionModel)model.clone();
+        model = (DefaultListSelectionModel) model.clone();
         assertEquals(0, model.getListSelectionListeners().length);
         checkIntervalState(0, 1, false);
         checkIntervalState(2, 4, true);
@@ -136,10 +128,8 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         TestListener listener2 = new TestListener();
         model.addListSelectionListener(listener);
         model.addListSelectionListener(listener2);
-
         model.fireValueChanged(true);
         assertEquals(0, listener.getEvents().size());
-
         listener.reset();
         model.setValueIsAdjusting(true);
         model.setAnchorSelectionIndex(5);
@@ -147,25 +137,20 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         listener.reset();
         model.fireValueChanged(true);
         checkSingleEvent(listener, 5, 5, true);
-
         model.setSelectionInterval(3, 6);
         model.setSelectionInterval(9, 11);
         listener.reset();
         model.fireValueChanged(true);
         checkSingleEvent(listener, 3, 11, true);
-
         listener.reset();
         model.fireValueChanged(false);
         assertEquals(0, listener.getEvents().size());
-
-
         model.setValueIsAdjusting(false);
         listener.reset();
         listener2.reset();
         model.fireValueChanged(3, 7);
         checkSingleEvent(listener, 3, 7, false);
         checkSingleEvent(listener2, 3, 7, false);
-
         listener.reset();
         listener2.reset();
         model.fireValueChanged(0, 5, false);
@@ -176,15 +161,12 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testGetAnchorAndLeadSelectionIndex() throws Exception {
         assertEquals(-1, model.getAnchorSelectionIndex());
         assertEquals(-1, model.getLeadSelectionIndex());
-
         model.addSelectionInterval(2, 6);
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(6, model.getLeadSelectionIndex());
-
         model.setSelectionInterval(1, 4);
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(4, model.getLeadSelectionIndex());
-
         model.removeSelectionInterval(2, 7);
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -193,7 +175,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testGetListeners() throws Exception {
         assertEquals(0, model.getListeners(ListSelectionListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
-
         model.addListSelectionListener(listener);
         assertEquals(1, model.getListeners(ListSelectionListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
@@ -208,12 +189,10 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testGetMinAndMaxSelectionIndex() throws Exception {
         assertEquals(-1, model.getMinSelectionIndex());
         assertEquals(-1, model.getMaxSelectionIndex());
-
         model.addSelectionInterval(2, 6);
         model.addSelectionInterval(12, 9);
         assertEquals(2, model.getMinSelectionIndex());
         assertEquals(12, model.getMaxSelectionIndex());
-
         model.addSelectionInterval(0, 14);
         assertEquals(0, model.getMinSelectionIndex());
         assertEquals(14, model.getMaxSelectionIndex());
@@ -221,13 +200,10 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
 
     public void testGetSetSelectionMode() throws Exception {
         assertEquals(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION, model.getSelectionMode());
-
         model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         assertEquals(ListSelectionModel.SINGLE_SELECTION, model.getSelectionMode());
-
         model.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         assertEquals(ListSelectionModel.SINGLE_INTERVAL_SELECTION, model.getSelectionMode());
-
         try {
             model.setSelectionMode(100);
             fail("Incorrect selection model should be detected");
@@ -238,22 +214,17 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testGetSetValueIsAdjusting() throws Exception {
         model.addListSelectionListener(listener);
         assertFalse(model.getValueIsAdjusting());
-
         model.setValueIsAdjusting(true);
         assertEquals(0, listener.getEvents().size());
         assertTrue(model.getValueIsAdjusting());
-
         model.setSelectionInterval(2, 3);
         checkSingleEvent(2, 3, true);
-
         listener.reset();
         model.setSelectionInterval(5, 7);
         checkSingleEvent(2, 7, true);
-
         listener.reset();
         model.setSelectionInterval(5, 8);
         checkSingleEvent(7, 8, true);
-
         listener.reset();
         model.setValueIsAdjusting(false);
         assertEquals(1, listener.getEvents().size());
@@ -264,7 +235,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testInsertIndexInterval() throws Exception {
         model.addListSelectionListener(listener);
         model.setSelectionInterval(3, 5);
-
         if (isHarmony()) {
             listener.reset();
             model.insertIndexInterval(-1, 0, true);
@@ -275,7 +245,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
             model.insertIndexInterval(0, -1, false);
             assertEquals(0, listener.getEvents().size());
         }
-
         listener.reset();
         model.insertIndexInterval(4, 10, true);
         checkIntervalState(0, 2, false);
@@ -283,13 +252,11 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         if (isHarmony()) {
             checkSingleEvent(5, 15, false);
         }
-
         listener.reset();
         model.insertIndexInterval(0, 3, true);
         checkIntervalState(0, 5, false);
         checkIntervalState(6, 18, true);
         checkSingleEvent(3, 18, false);
-
         model.clearSelection();
         model.setSelectionInterval(3, 5);
         listener.reset();
@@ -300,7 +267,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(0, listener.getEvents().size());
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
-
         model.clearSelection();
         model.setSelectionInterval(3, 5);
         listener.reset();
@@ -311,7 +277,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(0, listener.getEvents().size());
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
-
         model.clearSelection();
         model.setSelectionInterval(3, 5);
         listener.reset();
@@ -322,7 +287,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkSingleEvent(6, 8, false);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
-
         model.clearSelection();
         model.setSelectionInterval(3, 5);
         listener.reset();
@@ -333,7 +297,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkSingleEvent(5, 8, false);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
-
         model.clearSelection();
         model.setSelectionInterval(3, 5);
         listener.reset();
@@ -344,7 +307,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkSingleEvent(3, 8, false);
         assertEquals(6, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
-
         model.clearSelection();
         model.setSelectionInterval(1, 2);
         listener.reset();
@@ -354,7 +316,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(6, 20, false);
         assertEquals(4, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
-
         listener.reset();
         model.removeSelectionInterval(-1, 0);
         model.removeSelectionInterval(0, -1);
@@ -364,7 +325,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
 
     public void testRemoveIndexInterval() throws Exception {
         model.setSelectionInterval(3, 8);
-
         model.addListSelectionListener(listener);
         model.removeSelectionInterval(-1, 10);
         model.removeSelectionInterval(-1, 0);
@@ -373,7 +333,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(0, listener.getEvents().size());
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
-
         listener.reset();
         model.removeIndexInterval(2, 6);
         checkIntervalState(0, 1, false);
@@ -381,7 +340,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(3, model.getLeadSelectionIndex());
         checkSingleEvent(1, 8, false);
-
         listener.reset();
         model.removeIndexInterval(0, 2);
         checkIntervalState(0, 0, true);
@@ -393,7 +351,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         } else {
             checkSingleEvent(-1, 3, false);
         }
-
         listener.reset();
         model.removeIndexInterval(0, 2);
         checkIntervalState(0, 10, false);
@@ -402,7 +359,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
             assertEquals(-1, model.getLeadSelectionIndex());
         }
         checkSingleEvent(0, 0, false);
-
         model.setSelectionInterval(3, 8);
         listener.reset();
         model.removeIndexInterval(8, 8);
@@ -411,7 +367,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
         checkSingleEvent(7, 8, false);
-
         listener.reset();
         model.removeIndexInterval(3, 3);
         checkIntervalState(3, 6, true);
@@ -419,7 +374,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(6, model.getLeadSelectionIndex());
         checkSingleEvent(2, 7, false);
-
         listener.reset();
         model.removeIndexInterval(3, 6);
         checkIntervalState(0, 10, false);
@@ -430,42 +384,32 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
 
     public void testIsLeadAnchorNotificationEnabled() throws Exception {
         model.addListSelectionListener(listener);
-
         assertTrue(model.isLeadAnchorNotificationEnabled());
         model.addSelectionInterval(3, 5);
         checkSingleEvent(3, 5, false);
-
         listener.reset();
         model.addSelectionInterval(7, 8);
         checkSingleEvent(3, 8, false);
-
         listener.reset();
         model.setSelectionInterval(2, 6);
         checkSingleEvent(2, 8, false);
-
         listener.reset();
         model.removeSelectionInterval(4, 11);
         checkSingleEvent(2, 11, false);
-
         listener.reset();
         model.removeSelectionInterval(4, 11);
         assertEquals(0, listener.getEvents().size());
-
         listener.reset();
         model.removeSelectionInterval(5, 8);
         checkSingleEvent(4, 11, false);
-
         model.setLeadAnchorNotificationEnabled(false);
         assertFalse(model.isLeadAnchorNotificationEnabled());
-
         listener.reset();
         model.addSelectionInterval(10, 12);
         checkSingleEvent(10, 12, false);
-
         listener.reset();
         model.removeSelectionInterval(0, 2);
         checkSingleEvent(2, 2, false);
-
         listener.reset();
         model.removeSelectionInterval(1, 2);
         assertEquals(0, listener.getEvents().size());
@@ -480,22 +424,18 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
 
     public void testGetSetAnchorSelectionIndex() throws Exception {
         model.addListSelectionListener(listener);
-
         model.setAnchorSelectionIndex(3);
         assertEquals(3, model.getAnchorSelectionIndex());
         checkSingleEvent(3, 3, false);
-
         listener.reset();
         model.setAnchorSelectionIndex(5);
         assertEquals(5, model.getAnchorSelectionIndex());
         checkSingleEvent(3, 5, false);
-
         listener.reset();
         model.setLeadAnchorNotificationEnabled(false);
         model.setAnchorSelectionIndex(7);
         assertEquals(7, model.getAnchorSelectionIndex());
         assertEquals(0, listener.getEvents().size());
-
         listener.reset();
         model.setAnchorSelectionIndex(-1);
         assertEquals(-1, model.getAnchorSelectionIndex());
@@ -505,19 +445,16 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     public void testGetSetLeadSelectionIndex() throws Exception {
         model.addListSelectionListener(listener);
         model.setSelectionInterval(3, 6);
-
         listener.reset();
         model.setLeadSelectionIndex(-1);
         assertEquals(6, model.getLeadSelectionIndex());
         assertEquals(0, listener.getEvents().size());
-
         listener.reset();
         model.setLeadSelectionIndex(4);
         assertEquals(4, model.getLeadSelectionIndex());
         checkIntervalState(3, 4, true);
         checkIntervalState(5, 6, false);
         checkSingleEvent(4, 6, false);
-
         model.setSelectionInterval(3, 6);
         model.setAnchorSelectionIndex(2);
         listener.reset();
@@ -527,58 +464,48 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkSingleEvent(3, 8, false);
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
-
         model.clearSelection();
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
         assertTrue(model.isSelectionEmpty());
-
         model.setAnchorSelectionIndex(5);
         assertEquals(5, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
         assertTrue(model.isSelectionEmpty());
-
         model.setLeadSelectionIndex(8);
         assertEquals(5, model.getAnchorSelectionIndex());
         assertEquals(8, model.getLeadSelectionIndex());
         assertTrue(model.isSelectionEmpty());
-
         model.setLeadSelectionIndex(20);
         assertEquals(5, model.getAnchorSelectionIndex());
         assertEquals(20, model.getLeadSelectionIndex());
         assertTrue(model.isSelectionEmpty());
-
         model.setAnchorSelectionIndex(1);
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(20, model.getLeadSelectionIndex());
         assertTrue(model.isSelectionEmpty());
-
         model.setLeadSelectionIndex(19);
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(19, model.getLeadSelectionIndex());
         checkIntervalState(0, 19, false);
         checkIntervalState(20, 20, true);
         checkIntervalState(21, 100, false);
-
         model.setSelectionInterval(2, 5);
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
         checkIntervalState(0, 1, false);
         checkIntervalState(2, 5, true);
         checkIntervalState(6, 10, false);
-
         model.setAnchorSelectionIndex(1);
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(5, model.getLeadSelectionIndex());
         checkIntervalState(0, 1, false);
         checkIntervalState(2, 5, true);
         checkIntervalState(6, 10, false);
-
         model.setLeadSelectionIndex(7);
         assertEquals(1, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
         checkIntervalState(0, 10, false);
-
         model.setSelectionInterval(2, 7);
         assertEquals(2, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -587,7 +514,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(0, 1, false);
         checkIntervalState(2, 6, true);
         checkIntervalState(7, 10, false);
-
         model.setSelectionInterval(3, 7);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -595,7 +521,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(0, 2, false);
         checkIntervalState(3, 3, true);
         checkIntervalState(4, 10, false);
-
         model.setSelectionInterval(3, 7);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -603,7 +528,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(0, 2, false);
         checkIntervalState(3, 3, true);
         checkIntervalState(4, 10, false);
-
         model.setSelectionInterval(3, 7);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -611,7 +535,6 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(0, 0, false);
         checkIntervalState(1, 3, true);
         checkIntervalState(4, 10, false);
-
         model.setSelectionInterval(3, 7);
         assertEquals(3, model.getAnchorSelectionIndex());
         assertEquals(7, model.getLeadSelectionIndex());
@@ -626,19 +549,22 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         assertNotNull(model.toString());
     }
 
-    private void checkIntervalState(final int beginIndex, final int endIndex, final boolean selected) {
+    private void checkIntervalState(final int beginIndex, final int endIndex,
+            final boolean selected) {
         for (int i = beginIndex; i <= endIndex; i++) {
             assertEquals(selected, model.isSelectedIndex(i));
         }
     }
 
-    private void checkSingleEvent(final int beginIndex, final int endIndex, final boolean isAdjusting) {
+    private void checkSingleEvent(final int beginIndex, final int endIndex,
+            final boolean isAdjusting) {
         checkSingleEvent(listener, beginIndex, endIndex, isAdjusting);
     }
 
-    private void checkSingleEvent(final TestListener listener, final int beginIndex, final int endIndex, final boolean isAdjusting) {
+    private void checkSingleEvent(final TestListener listener, final int beginIndex,
+            final int endIndex, final boolean isAdjusting) {
         assertEquals(1, listener.getEvents().size());
-        ListSelectionEvent event = (ListSelectionEvent)listener.getEvents().get(0);
+        ListSelectionEvent event = listener.getEvents().get(0);
         assertEquals(model, event.getSource());
         assertEquals(beginIndex, event.getFirstIndex());
         assertEquals(endIndex, event.getLastIndex());
@@ -646,13 +572,13 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
     }
 
     private class TestListener implements ListSelectionListener {
-        private List events = new ArrayList();
+        private List<ListSelectionEvent> events = new ArrayList<ListSelectionEvent>();
 
         public void valueChanged(final ListSelectionEvent event) {
             events.add(event);
         }
 
-        public List getEvents() {
+        public List<ListSelectionEvent> getEvents() {
             return events;
         }
 

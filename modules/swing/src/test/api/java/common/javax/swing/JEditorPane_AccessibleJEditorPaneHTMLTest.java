@@ -20,11 +20,14 @@
  */
 package javax.swing;
 
-public class JEditorPane_AccessibleJEditorPaneHTMLTest extends SwingTestCase{
-    JEditorPane      jep;
-    JFrame           jf;
+public class JEditorPane_AccessibleJEditorPaneHTMLTest extends SwingTestCase {
+    JEditorPane jep;
+
+    JFrame jf;
+
     JEditorPane.AccessibleJEditorPaneHTML accessible;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         setIgnoreNotImplemented(true);
@@ -37,26 +40,22 @@ public class JEditorPane_AccessibleJEditorPaneHTMLTest extends SwingTestCase{
         accessible = jep.new AccessibleJEditorPaneHTML();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
     }
 
-    public void testGetAccessibleText(){
-        assertTrue(accessible.getAccessibleText()instanceof
-                JEditorPane.JEditorPaneAccessibleHypertextSupport);
+    public void testGetAccessibleText() {
+        assertTrue(accessible.getAccessibleText() instanceof JEditorPane.JEditorPaneAccessibleHypertextSupport);
     }
 
-    public void  testGetAccessibleAt(){
-
+    public void testGetAccessibleAt() {
     }
 
-    public void  testGetAccessibleChild(final int i){
-
+    public void testGetAccessibleChild(final int i) {
     }
 
-    public void  testGetAccessibleChildrenCount(){
-
+    public void testGetAccessibleChildrenCount() {
     }
 }

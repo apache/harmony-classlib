@@ -27,12 +27,13 @@ public class JTabbedPaneRTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         pane = new JTabbedPane();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -43,7 +44,6 @@ public class JTabbedPaneRTest extends SwingTestCase {
         pane.add("tab1", comp1);
         pane.add("tab2", null);
         pane.add("tab3", comp3);
-
         assertEquals(2, pane.getComponentCount());
         assertSame(comp1, pane.getComponentAt(0));
         assertNull(pane.getComponentAt(1));

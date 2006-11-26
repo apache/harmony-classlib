@@ -21,7 +21,6 @@
 package javax.swing;
 
 import java.awt.event.KeyListener;
-
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -32,8 +31,11 @@ public class AbstractListModelTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         model = new AbstractListModel() {
+            private static final long serialVersionUID = 1L;
+
             public Object getElementAt(final int index) {
                 return null;
             }
@@ -44,25 +46,22 @@ public class AbstractListModelTest extends SwingTestCase {
         };
     }
 
+    @Override
     protected void tearDown() throws Exception {
         model = null;
     }
 
     public void testAddRemoveGetDataListener() throws Exception {
         assertEquals(0, model.getListDataListeners().length);
-
         TestListener l1 = new TestListener();
         TestListener l2 = new TestListener();
         TestListener l3 = new TestListener();
-
         model.addListDataListener(l1);
         model.addListDataListener(l3);
         model.addListDataListener(l2);
         assertEquals(3, model.getListDataListeners().length);
-
         model.removeListDataListener(l2);
         assertEquals(2, model.getListDataListeners().length);
-
         model.removeListDataListener(new TestListener());
         assertEquals(2, model.getListDataListeners().length);
     }
@@ -70,7 +69,6 @@ public class AbstractListModelTest extends SwingTestCase {
     public void testGetListeners() throws Exception {
         assertEquals(0, model.getListeners(ListDataListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
-
         model.addListDataListener(new TestListener());
         assertEquals(1, model.getListeners(ListDataListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
@@ -79,14 +77,11 @@ public class AbstractListModelTest extends SwingTestCase {
     public void testFireContentChanged() throws Exception {
         TestListener l1 = new TestListener();
         TestListener l2 = new TestListener();
-
         model.addListDataListener(l1);
         model.addListDataListener(l2);
-
         model.fireContentsChanged(new Object(), 0, 2);
         checkListDataEvent(l1.getEvent(), ListDataEvent.CONTENTS_CHANGED, 0, 2);
         assertEquals(ListDataEvent.CONTENTS_CHANGED, l1.getType());
-
         checkListDataEvent(l2.getEvent(), ListDataEvent.CONTENTS_CHANGED, 0, 2);
         assertEquals(ListDataEvent.CONTENTS_CHANGED, l2.getType());
     }
@@ -94,17 +89,13 @@ public class AbstractListModelTest extends SwingTestCase {
     public void testFireIntervalAdded() throws Exception {
         TestListener l1 = new TestListener();
         TestListener l2 = new TestListener();
-
         model.addListDataListener(l1);
         model.addListDataListener(l2);
-
         model.fireIntervalAdded(new Object(), 5, 2);
         checkListDataEvent(l1.getEvent(), ListDataEvent.INTERVAL_ADDED, 2, 5);
         assertEquals(ListDataEvent.INTERVAL_ADDED, l1.getType());
-
         checkListDataEvent(l2.getEvent(), ListDataEvent.INTERVAL_ADDED, 2, 5);
         assertEquals(ListDataEvent.INTERVAL_ADDED, l2.getType());
-
         model.fireIntervalAdded(new Object(), 2, 5);
         checkListDataEvent(l1.getEvent(), ListDataEvent.INTERVAL_ADDED, 2, 5);
     }
@@ -112,29 +103,26 @@ public class AbstractListModelTest extends SwingTestCase {
     public void testFireIntervalRemoved() throws Exception {
         TestListener l1 = new TestListener();
         TestListener l2 = new TestListener();
-
         model.addListDataListener(l1);
         model.addListDataListener(l2);
-
         model.fireIntervalRemoved(new Object(), 1, 4);
         checkListDataEvent(l1.getEvent(), ListDataEvent.INTERVAL_REMOVED, 1, 4);
         assertEquals(ListDataEvent.INTERVAL_REMOVED, l1.getType());
-
         checkListDataEvent(l2.getEvent(), ListDataEvent.INTERVAL_REMOVED, 1, 4);
         assertEquals(ListDataEvent.INTERVAL_REMOVED, l2.getType());
     }
 
-
-    private void checkListDataEvent(final ListDataEvent event, final int expectedType, final int expectedIndex0, final int expectedIndex1) {
+    private void checkListDataEvent(final ListDataEvent event, final int expectedType,
+            final int expectedIndex0, final int expectedIndex1) {
         assertNotNull(event);
         assertEquals(expectedType, event.getType());
         assertEquals(expectedIndex0, event.getIndex0());
         assertEquals(expectedIndex1, event.getIndex1());
     }
 
-
     private class TestListener implements ListDataListener {
         private ListDataEvent event;
+
         private int eventType = -1;
 
         public void contentsChanged(final ListDataEvent e) {

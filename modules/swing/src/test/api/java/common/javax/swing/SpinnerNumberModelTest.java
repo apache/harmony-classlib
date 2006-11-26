@@ -18,20 +18,21 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing;
-
 
 public class SpinnerNumberModelTest extends BasicSwingTestCase {
     private SpinnerNumberModel model;
+
     private ChangeController chl;
 
+    @Override
     public void setUp() {
         model = new SpinnerNumberModel();
         chl = new ChangeController();
         model.addChangeListener(chl);
     }
 
+    @Override
     public void tearDown() {
         model = null;
         chl = null;
@@ -42,25 +43,26 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
         assertNull(model.getMinimum());
         assertEquals(new Integer(0), model.getValue());
         assertEquals(new Integer(1), model.getStepSize());
-
         final Integer val = new Integer(10);
         model = new SpinnerNumberModel(10, 10, 10, 10);
         assertEquals(val, model.getValue());
         assertEquals(val, model.getStepSize());
         assertEquals(val, model.getValue());
         assertEquals(val, model.getStepSize());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerNumberModel(null, val, val, val);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerNumberModel(val, val, val, null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerNumberModel(val, val, new Integer(-1), val);
             }
@@ -72,9 +74,7 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
         model.setMinimum(min);
         assertTrue(chl.isChanged());
         assertSame(min, model.getMinimum());
-
         model.setMinimum(new Integer(10));
-
         model.setMinimum(min);
         chl.reset();
         model.setMinimum(min);
@@ -86,9 +86,7 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
         model.setMaximum(max);
         assertTrue(chl.isChanged());
         assertSame(max, model.getMaximum());
-
         model.setMaximum(new Integer(-10));
-
         model.setMaximum(max);
         chl.reset();
         model.setMaximum(max);
@@ -101,11 +99,11 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
         assertTrue(chl.isChanged());
         assertSame(step, model.getStepSize());
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setStepSize(null);
             }
         });
-
         model.setStepSize(step);
         chl.reset();
         model.setStepSize(step);
@@ -117,19 +115,18 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
         model.setValue(value);
         assertTrue(chl.isChanged());
         assertSame(value, model.getValue());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setValue(null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setValue("test");
             }
         });
-
-
         model.setValue(value);
         chl.reset();
         model.setValue(value);
@@ -144,16 +141,13 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
 
     public void testGetPreviousValue() {
         model.getPreviousValue();
-
         Integer value = new Integer(10);
         model.setValue(value);
         Integer min = new Integer(8);
         model.setMinimum(min);
         Integer step = new Integer(2);
         model.setStepSize(step);
-
         assertEquals(min, model.getPreviousValue());
-
         step = new Integer(3);
         model.setStepSize(step);
         assertNull(model.getPreviousValue());
@@ -161,17 +155,13 @@ public class SpinnerNumberModelTest extends BasicSwingTestCase {
 
     public void testNextValue() {
         model.getNextValue();
-
         Double value = new Double(10);
         Double max = new Double(12);
         Integer step = new Integer(2);
         model = new SpinnerNumberModel(value, null, max, step);
-
         assertEquals(max, model.getNextValue());
-
         step = new Integer(3);
         model.setStepSize(step);
         assertNull(model.getNextValue());
     }
 }
-

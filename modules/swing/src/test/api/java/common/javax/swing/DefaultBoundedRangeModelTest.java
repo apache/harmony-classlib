@@ -14,28 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.EventListener;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class DefaultBoundedRangeModelTest extends SwingTestCase {
-
     private DefaultBoundedRangeModel model;
-    private List testList;
 
+    private List<String> testList;
+
+    @Override
     public void setUp() throws Exception {
-        testList = new Vector();
+        testList = new Vector<String>();
         model = new DefaultBoundedRangeModel();
         model.addChangeListener(new ChangeListener() {
             public void stateChanged(final ChangeEvent e) {
@@ -44,6 +42,7 @@ public class DefaultBoundedRangeModelTest extends SwingTestCase {
         });
     }
 
+    @Override
     public void tearDown() throws Exception {
         model = null;
         testList = null;
@@ -144,11 +143,11 @@ public class DefaultBoundedRangeModelTest extends SwingTestCase {
         model.removeChangeListener(l);
         assertEquals(1, model.getChangeListeners().length);
         assertEquals(1, model.getListeners(ChangeListener.class).length);
-
         assertEquals(0, model.getListeners(EventListener.class).length);
     }
 
-    private void checkValues(final int value, final int extent, final int min, final int max, final int eventNumber) {
+    private void checkValues(final int value, final int extent, final int min, final int max,
+            final int eventNumber) {
         assertEquals(value, model.getValue());
         assertEquals(extent, model.getExtent());
         assertEquals(min, model.getMinimum());

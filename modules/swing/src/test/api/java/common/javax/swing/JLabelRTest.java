@@ -26,6 +26,7 @@ public class JLabelRTest extends BasicSwingTestCase {
         label.setFont(null);
         label.paint(createTestGraphics());
     }
+
     public static void main(String[] args) {
         junit.textui.TestRunner.run(JLabelRTest.class);
     }

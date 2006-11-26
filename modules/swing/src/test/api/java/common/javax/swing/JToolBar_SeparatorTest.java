@@ -22,16 +22,16 @@ package javax.swing;
 
 import java.awt.Dimension;
 
-
 public class JToolBar_SeparatorTest extends SwingTestCase {
     private JToolBar.Separator separator;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         separator = new JToolBar.Separator(new Dimension(5, 10));
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -42,21 +42,18 @@ public class JToolBar_SeparatorTest extends SwingTestCase {
 
     public void testGetMaximumSize() {
         assertEquals(separator.getSeparatorSize(), separator.getMaximumSize());
-
         separator.setOrientation(SwingConstants.VERTICAL);
         assertEquals(separator.getSeparatorSize(), separator.getMaximumSize());
     }
 
     public void testGetMinimumSize() {
         assertEquals(separator.getSeparatorSize(), separator.getMinimumSize());
-
         separator.setOrientation(SwingConstants.VERTICAL);
         assertEquals(separator.getSeparatorSize(), separator.getMinimumSize());
     }
 
     public void testGetPreferredSize() {
         assertEquals(separator.getSeparatorSize(), separator.getPreferredSize());
-
         separator.setOrientation(SwingConstants.VERTICAL);
         assertEquals(separator.getSeparatorSize(), separator.getPreferredSize());
     }
@@ -68,8 +65,7 @@ public class JToolBar_SeparatorTest extends SwingTestCase {
     public void testSeparator() {
         separator = new JToolBar.Separator();
         assertNotNull(separator.getUI());
-        assertEquals(UIManager.get("ToolBar.separatorSize"),
-                     separator.getSeparatorSize());
+        assertEquals(UIManager.get("ToolBar.separatorSize"), separator.getSeparatorSize());
         assertEquals(SwingConstants.HORIZONTAL, separator.getOrientation());
     }
 
@@ -77,14 +73,11 @@ public class JToolBar_SeparatorTest extends SwingTestCase {
         Dimension dimension = new Dimension(1, 2);
         separator = new JToolBar.Separator(dimension);
         assertNotNull(separator.getUI());
-        assertEquals(dimension,
-                     separator.getSeparatorSize());
+        assertEquals(dimension, separator.getSeparatorSize());
         assertEquals(SwingConstants.HORIZONTAL, separator.getOrientation());
-
         separator = new JToolBar.Separator(null);
         assertNotNull(separator.getUI());
-        assertEquals(UIManager.get("ToolBar.separatorSize"),
-                     separator.getSeparatorSize());
+        assertEquals(UIManager.get("ToolBar.separatorSize"), separator.getSeparatorSize());
     }
 
     public void testSetGetSeparatorSize() {
@@ -94,7 +87,6 @@ public class JToolBar_SeparatorTest extends SwingTestCase {
         separator.setSeparatorSize(dimension);
         assertFalse(controller.isChanged());
         assertSame(dimension, separator.getSeparatorSize());
-
         separator.setSeparatorSize(null);
         assertSame(dimension, separator.getSeparatorSize());
     }

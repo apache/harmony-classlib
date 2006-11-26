@@ -18,31 +18,34 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.Arrays;
 import java.util.EventListener;
 
 public class AbstractSpinnerModelTest extends BasicSwingTestCase {
-
     private AbstractSpinnerModel model;
+
     private ChangeController chl;
 
-    private static class TestListener implements EventListener {};
+    private static class TestListener implements EventListener {
+    };
 
+    @Override
     public void setUp() {
         model = new AbstractSpinnerModel() {
-
             public Object getNextValue() {
                 return null;
             }
+
             public Object getPreviousValue() {
                 return null;
             }
+
             public Object getValue() {
                 return "test";
             }
+
             public void setValue(Object value) {
                 fireStateChanged();
             }
@@ -50,6 +53,7 @@ public class AbstractSpinnerModelTest extends BasicSwingTestCase {
         chl = new ChangeController();
     }
 
+    @Override
     public void tearDown() {
         model = null;
         chl = null;
@@ -58,7 +62,6 @@ public class AbstractSpinnerModelTest extends BasicSwingTestCase {
     public void testAddRemoveChangeListener() {
         model.addChangeListener(chl);
         assertEquals(1, model.listenerList.getListenerCount());
-
         model.removeChangeListener(chl);
         assertEquals(0, model.listenerList.getListenerCount());
     }
@@ -80,4 +83,3 @@ public class AbstractSpinnerModelTest extends BasicSwingTestCase {
         assertTrue(Arrays.asList(model.getListeners(TestListener.class)).contains(testListener));
     }
 }
-

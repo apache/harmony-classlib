@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.Color;
@@ -28,7 +26,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
-
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
@@ -38,6 +35,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 public class UIManagerTest extends SwingTestCase {
     Locale locale = Locale.US;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         removePropertyChangeListeners();
@@ -45,7 +43,6 @@ public class UIManagerTest extends SwingTestCase {
 
     public void testPut() {
         UIManager.put("1", "1v");
-
         assertEquals("1v", UIManager.get("1"));
         assertEquals("1v", UIManager.getDefaults().get("1"));
         assertNull(UIManager.getLookAndFeelDefaults().get("1"));
@@ -110,7 +107,7 @@ public class UIManagerTest extends SwingTestCase {
         boolean b = UIManager.getBoolean("MenuItem.borderPainted");
         assertTrue(b);
         assertTrue(UIManager.getBoolean("MenuItem.borderPainted", locale));
-   }
+    }
 
     public void testGetString() {
         Object result = UIManager.get("TabbedPaneUI");
@@ -128,7 +125,7 @@ public class UIManagerTest extends SwingTestCase {
         result = UIManager.getDimension("Spinner.arrowButtonSize");
         assertNotNull(result);
         assertNotNull(UIManager.getDimension("Spinner.arrowButtonSize", locale));
-}
+    }
 
     public void testGetIcon() {
         Object result = UIManager.get("Menu.arrowIcon");
@@ -142,6 +139,9 @@ public class UIManagerTest extends SwingTestCase {
     public void testGetUI() throws Exception {
         UIManager.setLookAndFeel(new MetalLookAndFeel());
         JComponent c = new JComponent() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public String getUIClassID() {
                 return "ButtonUI";
             }
@@ -151,12 +151,15 @@ public class UIManagerTest extends SwingTestCase {
     }
 
     public void testGetCrossPlatformLookAndFeelClassName() {
-        assertEquals("javax.swing.plaf.metal.MetalLookAndFeel", UIManager.getCrossPlatformLookAndFeelClassName());
+        assertEquals("javax.swing.plaf.metal.MetalLookAndFeel", UIManager
+                .getCrossPlatformLookAndFeelClassName());
     }
 
     public void testGetSystemLookAndFeelClassName() {
-        if (System.getProperty("os.name").indexOf("Linux") > 0)
-            assertEquals("javax.swing.plaf.metal.MetalLookAndFeel", UIManager.getSystemLookAndFeelClassName());
+        if (System.getProperty("os.name").indexOf("Linux") > 0) {
+            assertEquals("javax.swing.plaf.metal.MetalLookAndFeel", UIManager
+                    .getSystemLookAndFeelClassName());
+        }
     }
 
     public void testGetDefaults() {
@@ -174,7 +177,6 @@ public class UIManagerTest extends SwingTestCase {
         } catch (UnsupportedLookAndFeelException e) {
             assertTrue(e.getMessage().indexOf("not supported on this platform") > 0);
         }
-
         UIManager.setLookAndFeel(laf);
     }
 
@@ -190,10 +192,13 @@ public class UIManagerTest extends SwingTestCase {
     }
 
     public void testLookAndFeelInfo() {
-        LookAndFeelInfo lfInfo = new LookAndFeelInfo("Metal", "javax.swing.plaf.metal.MetalLookAndFeel");
+        LookAndFeelInfo lfInfo = new LookAndFeelInfo("Metal",
+                "javax.swing.plaf.metal.MetalLookAndFeel");
         assertEquals("Metal", lfInfo.getName());
         assertEquals("javax.swing.plaf.metal.MetalLookAndFeel", lfInfo.getClassName());
-        assertEquals("javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel]", lfInfo.toString());
+        assertEquals(
+                "javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel]",
+                lfInfo.toString());
     }
 
     public void testPropertyChangeListeners() throws Exception {
@@ -209,14 +214,12 @@ public class UIManagerTest extends SwingTestCase {
         assertFalse(propertyChangeController.isChanged());
         UIManager.put("1", "1v");
         assertFalse(propertyChangeController.isChanged());
-
         MetalLookAndFeel metalLookAndFeel = new MetalLookAndFeel();
         UIManager.setLookAndFeel(metalLookAndFeel);
         assertTrue(propertyChangeController.isChanged("lookAndFeel"));
         propertyChangeController.reset();
         UIManager.setLookAndFeel(metalLookAndFeel);
         assertFalse(propertyChangeController.isChanged());
-
         UIManager.removePropertyChangeListener(propertyChangeController);
         assertEquals(0, UIManager.getPropertyChangeListeners().length);
         UIManager.setLookAndFeel(laf);
@@ -225,25 +228,21 @@ public class UIManagerTest extends SwingTestCase {
     public void testSetInstalledLFs() {
         LookAndFeelInfo[] previousValues = UIManager.getInstalledLookAndFeels();
         UIManager.setInstalledLookAndFeels(new LookAndFeelInfo[] {});
-
         UIManager.installLookAndFeel("new", "newClass");
         assertEquals(1, UIManager.getInstalledLookAndFeels().length);
         assertEquals("new", UIManager.getInstalledLookAndFeels()[0].getName());
         assertEquals("newClass", UIManager.getInstalledLookAndFeels()[0].getClassName());
-
         UIManager.setInstalledLookAndFeels(new LookAndFeelInfo[] {});
-
-        LookAndFeelInfo lfInfo0 = new LookAndFeelInfo("Metal", "javax.swing.plaf.metal.MetalLookAndFeel");
+        LookAndFeelInfo lfInfo0 = new LookAndFeelInfo("Metal",
+                "javax.swing.plaf.metal.MetalLookAndFeel");
         LookAndFeelInfo lfInfo1 = new LookAndFeelInfo("-", "1");
-
         UIManager.installLookAndFeel(lfInfo0);
         assertEquals(1, UIManager.getInstalledLookAndFeels().length);
         assertEquals(lfInfo0.getName(), UIManager.getInstalledLookAndFeels()[0].getName());
-        assertEquals(lfInfo0.getClassName(), UIManager.getInstalledLookAndFeels()[0].getClassName());
-
-        UIManager.setInstalledLookAndFeels(new LookAndFeelInfo[] {lfInfo0, lfInfo1});
+        assertEquals(lfInfo0.getClassName(), UIManager.getInstalledLookAndFeels()[0]
+                .getClassName());
+        UIManager.setInstalledLookAndFeels(new LookAndFeelInfo[] { lfInfo0, lfInfo1 });
         assertEquals(2, UIManager.getInstalledLookAndFeels().length);
-
         UIManager.setInstalledLookAndFeels(previousValues);
     }
 
@@ -254,7 +253,6 @@ public class UIManagerTest extends SwingTestCase {
         } else {
             assertEquals(3, installedLookAndFeels.length);
         }
-
         boolean foundMetalLF = false;
         for (int i = 0; i < installedLookAndFeels.length; i++) {
             if ("Metal".equals(installedLookAndFeels[i].getName())) {
@@ -266,18 +264,27 @@ public class UIManagerTest extends SwingTestCase {
 
     private LookAndFeel createUnsupportedLF() {
         return new LookAndFeel() {
+            @Override
             public String getDescription() {
                 return null;
             }
+
+            @Override
             public String getID() {
                 return null;
             }
+
+            @Override
             public String getName() {
                 return null;
             }
+
+            @Override
             public boolean isNativeLookAndFeel() {
                 return false;
             }
+
+            @Override
             public boolean isSupportedLookAndFeel() {
                 return false;
             }

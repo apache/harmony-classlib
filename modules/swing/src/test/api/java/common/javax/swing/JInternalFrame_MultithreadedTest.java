@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.BorderLayout;
@@ -39,7 +37,6 @@ import java.util.Comparator;
  *
  */
 public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
-
     private JInternalFrame frame;
 
     // is used in tests where frame.isShowing() must be true
@@ -48,6 +45,7 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JInternalFrame();
@@ -56,6 +54,7 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         if (rootFrame != null) {
             rootFrame.dispose();
@@ -75,18 +74,17 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
     /*
      * Class under test for void restoreSubcomponentFocus()
      */
-    public void testRestoreSubcomponentFocus() throws InterruptedException, InvocationTargetException {
+    public void testRestoreSubcomponentFocus() throws InterruptedException,
+            InvocationTargetException {
         final Component comp1 = new JPanel();
         final Component comp2 = new JPanel();
         final Component comp3 = new JPanel();
         frame.getContentPane().add(comp1, BorderLayout.NORTH);
         frame.getContentPane().add(comp2, BorderLayout.SOUTH);
         frame.getContentPane().add(comp3, BorderLayout.CENTER);
-
         createAndShowRootFrame();
         setSelectedFrame(frame, true);
         SwingWaitTestCase.requestFocusInWindowForComponent(comp2);
-
         setSelectedFrame(frame, false);
         setSelectedFrame(frame, true);
         assertTrue("focus is restored", frame.getFocusOwner() == comp2);
@@ -101,9 +99,7 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
         rootFrame = new JFrame();
         JDesktopPane desktop = new JDesktopPane();
         rootFrame.setContentPane(desktop);
-
         rootFrame.getContentPane().add(frame);
-
         rootFrame.setSize(100, 200);
         frame.setVisible(true);
         rootFrame.setVisible(true);
@@ -132,29 +128,34 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
     /*
      * Class under test for Component getMostRecentFocusOwner()
      */
-    public void testGetMostRecentFocusOwner() throws PropertyVetoException, InterruptedException, InvocationTargetException {
+    public void testGetMostRecentFocusOwner() throws PropertyVetoException,
+            InterruptedException, InvocationTargetException {
         final Component initial = new JPanel(); // initial focus component
         final Component def = new JPanel(); // default focus component
         final Component some = new JPanel(); // some another component
         frame.getContentPane().add(initial, BorderLayout.NORTH);
         frame.getContentPane().add(def, BorderLayout.SOUTH);
         frame.getContentPane().add(some, BorderLayout.CENTER);
-
         assertNull("null by default", frame.getMostRecentFocusOwner());
-
         class MyFocusTraversalPolicy extends SortingFocusTraversalPolicy {
             Component initial;
+
             Component def;
+
             public MyFocusTraversalPolicy() {
-                setComparator(new Comparator() {
+                setComparator(new Comparator<Object>() {
                     public int compare(final Object arg0, final Object arg1) {
                         return System.identityHashCode(arg0) - System.identityHashCode(arg1);
                     }
                 });
             }
+
+            @Override
             public Component getInitialComponent(final javax.swing.JInternalFrame frame) {
                 return initial;
             }
+
+            @Override
             public Component getDefaultComponent(final Container focusCycleRoot) {
                 return def;
             }
@@ -162,29 +163,24 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
         MyFocusTraversalPolicy traversal = new MyFocusTraversalPolicy();
         traversal.def = def;
         frame.setFocusTraversalPolicy(traversal);
-
-        if (SwingTestCase.isHarmony()) {
-            assertSame("== def (JRockit fails)", def,
-                       frame.getMostRecentFocusOwner());
+        if (BasicSwingTestCase.isHarmony()) {
+            assertSame("== def (JRockit fails)", def, frame.getMostRecentFocusOwner());
         }
-
         // no one component had ever the focus, initial is returned
         traversal.initial = initial;
         createAndShowRootFrame();
         assertTrue("== initial", frame.getMostRecentFocusOwner() == initial);
-
         // request focus for 'some' component, this component must be returned by
         // getMostRecentFocusOwner()
         setSelectedFrame(frame, true);
         SwingWaitTestCase.requestFocusInWindowForComponent(some);
         setSelectedFrame(frame, false);
         assertTrue("== some", frame.getMostRecentFocusOwner() == some);
-
         // frame is selected, returns the same component as getFocusOwner()
         setSelectedFrame(frame, true);
         SwingWaitTestCase.requestFocusInWindowForComponent(def);
-        assertTrue("== getFocusOwner()", frame.getMostRecentFocusOwner() ==
-                   frame.getFocusOwner());
+        assertTrue("== getFocusOwner()", frame.getMostRecentFocusOwner() == frame
+                .getFocusOwner());
     }
 
     /*
@@ -197,16 +193,12 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
         frame.getContentPane().add(comp1, BorderLayout.NORTH);
         frame.getContentPane().add(comp2, BorderLayout.SOUTH);
         frame.getContentPane().add(comp3, BorderLayout.CENTER);
-
         assertNull("== null", frame.getFocusOwner());
-
         createAndShowRootFrame();
-
         // frame is selected, comp2 has focus
         setSelectedFrame(frame, true);
         SwingWaitTestCase.requestFocusInWindowForComponent(comp2);
         assertSame("== comp2", comp2, frame.getFocusOwner());
-
         // frame is not selected
         setSelectedFrame(frame, false);
         assertNull("== null", frame.getFocusOwner());

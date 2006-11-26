@@ -30,18 +30,20 @@ import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
 import javax.accessibility.AccessibleContext;
 
 public class ImageIconTest extends SwingTestCase {
-
     private static final String FILE_NAME_1 = "images/Error.gif";
+
     private static final int FILE_SIZE_1 = 923;
+
     private static final int ICON_SIZE_1 = 32;
 
     private static final String FILE_NAME_2 = "ImageIconTest.class";
 
     class MyImageIcon extends ImageIcon {
+        private static final long serialVersionUID = 1L;
+
         public Component getComponent() {
             return component;
         }
@@ -50,10 +52,10 @@ public class ImageIconTest extends SwingTestCase {
             return tracker;
         }
 
+        @Override
         public void loadImage(final Image image) {
             super.loadImage(image);
         }
-
     };
 
     protected ImageIcon icon = null;
@@ -61,6 +63,7 @@ public class ImageIconTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -68,6 +71,7 @@ public class ImageIconTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         icon = null;
         super.tearDown();
@@ -79,20 +83,16 @@ public class ImageIconTest extends SwingTestCase {
     public void testImageIconString() {
         URL url1 = getClass().getResource(FILE_NAME_1);
         URL url2 = getClass().getResource(FILE_NAME_2);
-
         assertNotNull("file is found", url1);
         String filePath1 = url1.getPath();
-
         // preventing jar failures
         if (filePath1.indexOf(".jar!") != -1) {
             return;
         }
-
         icon = new ImageIcon(filePath1);
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("description", filePath1, icon.getDescription());
         assertEquals("width", ICON_SIZE_1, icon.getIconWidth());
-
         assertNotNull("file is found", url2);
         String filePath2 = url2.getPath();
         icon = new ImageIcon(filePath2);
@@ -109,20 +109,16 @@ public class ImageIconTest extends SwingTestCase {
         final String description2 = null;
         URL url1 = getClass().getResource(FILE_NAME_1);
         URL url2 = getClass().getResource(FILE_NAME_2);
-
         assertNotNull("file is found", url1);
         String filePath1 = url1.getPath();
-
         // preventing jar failures
         if (filePath1.indexOf(".jar!") != -1) {
             return;
         }
-
         icon = new ImageIcon(filePath1, description1);
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("description", description1, icon.getDescription());
         assertEquals("width", ICON_SIZE_1, icon.getIconWidth());
-
         assertNotNull("file is found", url2);
         String filePath2 = url2.getPath();
         icon = new ImageIcon(filePath2, description2);
@@ -137,13 +133,11 @@ public class ImageIconTest extends SwingTestCase {
     public void testImageIconURL() {
         URL url1 = getClass().getResource(FILE_NAME_1);
         URL url2 = getClass().getResource(FILE_NAME_2);
-
         assertNotNull("file is found", url1);
         icon = new ImageIcon(url1);
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("description", url1.toString(), icon.getDescription());
         assertEquals("width", ICON_SIZE_1, icon.getIconWidth());
-
         assertNotNull("file is found", url2);
         icon = new ImageIcon(url2);
         assertEquals("loaded", MediaTracker.ERRORED, icon.getImageLoadStatus());
@@ -159,13 +153,11 @@ public class ImageIconTest extends SwingTestCase {
         final String description2 = null;
         URL url1 = getClass().getResource(FILE_NAME_1);
         URL url2 = getClass().getResource(FILE_NAME_2);
-
         assertNotNull("file is found", url1);
         icon = new ImageIcon(url1, description1);
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("description", description1, icon.getDescription());
         assertEquals("width", ICON_SIZE_1, icon.getIconWidth());
-
         assertNotNull("file is found", url2);
         icon = new ImageIcon(url2, description2);
         assertEquals("loaded", MediaTracker.ERRORED, icon.getImageLoadStatus());
@@ -179,19 +171,16 @@ public class ImageIconTest extends SwingTestCase {
     public void testImageIconImageString() {
         final String description1 = "bullet in your head";
         final String description2 = "born without a face";
-
         Image image1 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB) {
+            @Override
             public Object getProperty(final String name, final ImageObserver observer) {
                 return description1;
             }
         };
-
         icon = new ImageIcon(image1, description2);
         assertEquals("description", description2, icon.getDescription());
-
         icon = new ImageIcon(image1, null);
         assertNull("description", icon.getDescription());
-
         assertEquals("image", image1, icon.getImage());
     }
 
@@ -202,12 +191,10 @@ public class ImageIconTest extends SwingTestCase {
         InputStream stream1 = getClass().getResourceAsStream(FILE_NAME_1);
         assertTrue("file is found", stream1 != null);
         byte[] array1 = new byte[10000];
-
         icon = new ImageIcon(array1);
         assertEquals("loaded", MediaTracker.ERRORED, icon.getImageLoadStatus());
         assertNull("description", icon.getDescription());
         assertEquals("width", -1, icon.getIconWidth());
-
         int bytesRead = stream1.read(array1);
         assertEquals("array size", FILE_SIZE_1, bytesRead);
         icon = new ImageIcon(array1);
@@ -227,12 +214,10 @@ public class ImageIconTest extends SwingTestCase {
         InputStream stream1 = getClass().getResourceAsStream(FILE_NAME_1);
         assertTrue("file is found", stream1 != null);
         byte[] array1 = new byte[10000];
-
         icon = new ImageIcon(array1, description1);
         assertEquals("loaded", MediaTracker.ERRORED, icon.getImageLoadStatus());
         assertEquals("description", description1, icon.getDescription());
         assertEquals("width", -1, icon.getIconWidth());
-
         int bytesRead = stream1.read(array1);
         assertEquals("array size", FILE_SIZE_1, bytesRead);
         icon = new ImageIcon(array1, description2);
@@ -246,19 +231,17 @@ public class ImageIconTest extends SwingTestCase {
      */
     public void testImageIconImage() {
         final String description1 = "bullet in your head";
-
         Image image1 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB) {
+            @Override
             public Object getProperty(final String name, final ImageObserver observer) {
                 return description1;
             }
         };
         Image image2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-
         icon = new ImageIcon(image1);
         assertEquals("description", description1, icon.getDescription());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("image", image1, icon.getImage());
-
         icon = new ImageIcon(image2);
         assertNull("description", icon.getDescription());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
@@ -270,7 +253,6 @@ public class ImageIconTest extends SwingTestCase {
      */
     public void testImageIcon() {
         icon = new ImageIcon();
-
         assertNull("image", icon.getImage());
         assertEquals("height", -1, icon.getIconHeight());
         assertEquals("width", -1, icon.getIconWidth());
@@ -281,9 +263,10 @@ public class ImageIconTest extends SwingTestCase {
     public void testGetAccessibleContext() {
         int width = 11;
         int height = 32;
-        ImageIcon icon1 = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
-        ImageIcon icon2 = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
-
+        ImageIcon icon1 = new ImageIcon(new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_RGB));
+        ImageIcon icon2 = new ImageIcon(new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_RGB));
         AccessibleContext accessible1 = icon1.getAccessibleContext();
         AccessibleContext accessible2 = icon1.getAccessibleContext();
         AccessibleContext accessible3 = icon2.getAccessibleContext();
@@ -303,50 +286,42 @@ public class ImageIconTest extends SwingTestCase {
      */
     public void testToString() {
         final String description = "bullet in your head";
-
         Image image1 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-
         icon = new ImageIcon(image1, description);
         assertEquals("string is not empty", description, icon.toString());
-
         icon = new ImageIcon(image1);
-        assertTrue("string is not empty", icon.toString() != null && !icon.toString().equals(""));
+        assertTrue("string is not empty", icon.toString() != null
+                && !icon.toString().equals(""));
     }
 
     public void testGetDescription() {
         final String description1 = "bullet in your head";
         final String description2 = "born without a face";
         final String description3 = "snakecharmer";
-
         Image image1 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB) {
+            @Override
             public Object getProperty(final String name, final ImageObserver observer) {
                 return description1;
             }
         };
         Image image2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB) {
+            @Override
             public Object getProperty(final String name, final ImageObserver observer) {
                 return description3;
             }
         };
-
         icon = new ImageIcon(image1);
         assertEquals("description", description1, icon.getDescription());
-
         icon.setDescription(description2);
         assertEquals("description", description2, icon.getDescription());
-
         icon.setDescription(null);
         assertNull("description", icon.getDescription());
-
         icon.setDescription(description2);
         assertEquals("description", description2, icon.getDescription());
-
         icon.setImage(image2);
         assertEquals("description", description2, icon.getDescription());
-
         icon = new ImageIcon(image2, description1);
         assertEquals("description", description1, icon.getDescription());
-
         icon = new ImageIcon(image2, null);
         assertNull("description", icon.getDescription());
     }
@@ -354,15 +329,12 @@ public class ImageIconTest extends SwingTestCase {
     public void testGetImageObserver() {
         ImageObserver observer1 = new JPanel();
         ImageObserver observer2 = new JPanel();
-
         int width = 111;
         int height = 235;
         icon = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
         assertNull(icon.getImageObserver());
-
         icon.setImageObserver(observer1);
         assertEquals("observer", observer1, icon.getImageObserver());
-
         icon.setImageObserver(observer2);
         assertEquals("observer", observer2, icon.getImageObserver());
     }
@@ -372,15 +344,12 @@ public class ImageIconTest extends SwingTestCase {
         int height = 235;
         Image image1 = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Image image2 = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
         icon = new ImageIcon(image1);
         assertEquals("image", image1, icon.getImage());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
-
         icon.setImage(image2);
         assertEquals("image", image2, icon.getImage());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
-
         icon.setImage(image1);
         assertEquals("image", image1, icon.getImage());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
@@ -393,7 +362,6 @@ public class ImageIconTest extends SwingTestCase {
         MyImageIcon icon = new MyImageIcon();
         assertEquals("load status", 0, icon.getImageLoadStatus());
         assertNull("image", icon.getImage());
-
         icon.loadImage(image1);
         assertEquals("load status", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertNull("image", icon.getImage());
@@ -415,23 +383,18 @@ public class ImageIconTest extends SwingTestCase {
         int width = 111;
         int height = 235;
         icon = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
-
         assertEquals("width", width, icon.getIconWidth());
-
-        icon.setImage(new BufferedImage(7*width, 4*height, BufferedImage.TYPE_INT_RGB));
-        assertEquals("width", 7*width, icon.getIconWidth());
+        icon.setImage(new BufferedImage(7 * width, 4 * height, BufferedImage.TYPE_INT_RGB));
+        assertEquals("width", 7 * width, icon.getIconWidth());
     }
 
     public void testGetIconHeight() {
         int width = 111;
         int height = 235;
         icon = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
-
         assertEquals("height", height, icon.getIconHeight());
-
-        icon.setImage(new BufferedImage(7*width, 4*height, BufferedImage.TYPE_INT_RGB));
-        assertEquals("height", 4*height, icon.getIconHeight());
-
+        icon.setImage(new BufferedImage(7 * width, 4 * height, BufferedImage.TYPE_INT_RGB));
+        assertEquals("height", 4 * height, icon.getIconHeight());
         icon = new ImageIcon("");
         assertEquals("height", -1, icon.getIconHeight());
     }

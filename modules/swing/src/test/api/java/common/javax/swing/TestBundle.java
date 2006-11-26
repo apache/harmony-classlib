@@ -15,17 +15,17 @@
  *  limitations under the License.
  */
 /**
-* @author Sergey Burlak
-* @version $Revision$
-*/
+ * @author Sergey Burlak
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.util.ListResourceBundle;
 
 public class TestBundle extends ListResourceBundle {
+    @Override
     protected Object[][] getContents() {
-        Object[][] objects = new Object[][] {
-                { "OptionPane.okButtonText", "OK" },
+        Object[][] objects = new Object[][] { { "OptionPane.okButtonText", "OK" },
                 { "OptionPane.titleText", "Select an Option" } };
         return objects;
     }

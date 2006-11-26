@@ -20,14 +20,6 @@
  */
 package javax.swing;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.text.BadLocationException;
@@ -36,54 +28,36 @@ import javax.swing.text.PlainDocument;
 
 public class JPasswordFieldTest extends SwingTestCase {
     JPasswordField pf;
+
     boolean bWasException;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         pf = new JPasswordField();
         bWasException = false;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
-    private void setContentInSystemClipboard(final String content) {
-        StringSelection selection = new StringSelection(content);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, null);
-    }
-
-    private Object getSystemClipboardContent() {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        Transferable transferable = clipboard.getContents(null);
-        DataFlavor flavor = transferable.getTransferDataFlavors()[0];
-        Object data = null;
-        try {
-           data = transferable.getTransferData(flavor);
-        } catch (UnsupportedFlavorException e) {
-            assertTrue("Unexpected exception: ", false);
-        } catch (IOException e) {
-            assertTrue("Unexpected exception: ", false);
-        }
-        return data;
-    }
-
     public void testCopy() {
         // TODO: uncomment when System clipboard is properly supported
-//        pf.setText("abcdef");
-//        setContentInSystemClipboard("1234");
-//        pf.copy();
-//        assertEquals("1234", getSystemClipboardContent());
+        //        pf.setText("abcdef");
+        //        setContentInSystemClipboard("1234");
+        //        pf.copy();
+        //        assertEquals("1234", getSystemClipboardContent());
     }
 
     public void testCut() {
         // TODO: uncomment when System clipboard is properly supported
-//        pf.setText("abcdef");
-//        setContentInSystemClipboard("1234");
-//        pf.cut();
-//        assertEquals("1234", getSystemClipboardContent());
-//        assertEquals("abcdef", pf.getText());
+        //        pf.setText("abcdef");
+        //        setContentInSystemClipboard("1234");
+        //        pf.cut();
+        //        assertEquals("1234", getSystemClipboardContent());
+        //        assertEquals("abcdef", pf.getText());
     }
 
     public void testJPasswordField() {
@@ -97,7 +71,6 @@ public class JPasswordFieldTest extends SwingTestCase {
         assertTrue(pf.getDocument() instanceof PlainDocument);
         assertEquals(0, pf.getColumns());
         assertEquals("", pf.getText());
-
         pf = new JPasswordField("abc");
         assertTrue(pf.getDocument() instanceof PlainDocument);
         assertEquals(0, pf.getColumns());
@@ -171,25 +144,23 @@ public class JPasswordFieldTest extends SwingTestCase {
     public void testGetTextintint() {
         pf.setText("abcd");
         try {
-           assertEquals("", pf.getText(1, 0));
-           assertEquals("c", pf.getText(2, 1));
+            assertEquals("", pf.getText(1, 0));
+            assertEquals("c", pf.getText(2, 1));
         } catch (BadLocationException e) {
             assertTrue("Unexpected exception: ", false);
         }
-
         try {
-           pf.getText(100, 3);
+            pf.getText(100, 3);
         } catch (BadLocationException e) {
             bWasException = true;
         }
         checkException();
-
         try {
             pf.getText(1, -63);
-         } catch (BadLocationException e) {
-             bWasException = true;
-         }
-         checkException();
+        } catch (BadLocationException e) {
+            bWasException = true;
+        }
+        checkException();
     }
 
     public void testGetUIClassID() {

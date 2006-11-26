@@ -26,28 +26,28 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.net.URL;
-
 import junit.framework.TestCase;
 
 public class ImageIcon_MultithreadedTest extends TestCase {
-
     class MyImageObserver implements ImageObserver {
         public boolean updated = false;
+
         public boolean installed = false;
+
         public Object lock = new Object();
 
-        public void reset () {
+        public void reset() {
             updated = false;
         }
 
-        public boolean imageUpdate(final Image img, final int infoflags, final int x, final int y, final int width, final int height) {
+        public boolean imageUpdate(final Image img, final int infoflags, final int x,
+                final int y, final int width, final int height) {
             updated = true;
             synchronized (lock) {
                 lock.notifyAll();
             }
             return true;
         }
-
     };
 
     protected ImageIcon icon = null;
@@ -61,6 +61,7 @@ public class ImageIcon_MultithreadedTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -68,6 +69,7 @@ public class ImageIcon_MultithreadedTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         if (frame != null) {
             frame.dispose();
@@ -77,36 +79,35 @@ public class ImageIcon_MultithreadedTest extends TestCase {
     }
 
     public void testPaintIcon() {
-//      JFrame frame = new JFrame();
-//      String fileName1 = "images/animated.gif";
-//      URL url1 = getClass().getResource(fileName1);
-//      icon = new ImageIcon(url1);
-//      JButton button = new JButton(icon);
-//      frame.getContentPane().add(button);
-//      frame.pack();
-//      frame.show();
-//      InternalTests.isRealized(frame);
-//      MyImageObserver observer1 = new MyImageObserver();
-//      icon.setImageObserver(observer1);
-//      int timeToWait = 15000;
-//      while(timeToWait > 0) {
-//          try {
-//                Thread.sleep(10);
-//                timeToWait -= 10;
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//      }
+        //      JFrame frame = new JFrame();
+        //      String fileName1 = "images/animated.gif";
+        //      URL url1 = getClass().getResource(fileName1);
+        //      icon = new ImageIcon(url1);
+        //      JButton button = new JButton(icon);
+        //      frame.getContentPane().add(button);
+        //      frame.pack();
+        //      frame.show();
+        //      InternalTests.isRealized(frame);
+        //      MyImageObserver observer1 = new MyImageObserver();
+        //      icon.setImageObserver(observer1);
+        //      int timeToWait = 15000;
+        //      while(timeToWait > 0) {
+        //          try {
+        //                Thread.sleep(10);
+        //                timeToWait -= 10;
+        //            } catch (InterruptedException e) {
+        //                e.printStackTrace();
+        //            }
+        //      }
     }
 
+    @SuppressWarnings("deprecation")
     public void testSetImageObserver() {
         final MyImageObserver observer1 = new MyImageObserver();
         String fileName1 = "images/animated.gif";
         final URL url = getClass().getResource(fileName1);
         assertTrue("file is found", url != null);
-
         assertFalse("observer is not notified", observer1.updated);
-
         frame = new JFrame();
         ImageIcon icon1 = new ImageIcon(url);
         JButton button = new JButton(icon1);
@@ -120,16 +121,12 @@ public class ImageIcon_MultithreadedTest extends TestCase {
         frame.pack();
         frame.show();
         SwingWaitTestCase.isRealized(frame);
-
-
         waitTillObserverNotified(observer1, 3000);
         assertTrue("observer is notified", observer1.updated);
         observer1.reset();
-
         waitTillObserverNotified(observer1, 3000);
         assertTrue("observer is notified", observer1.updated);
         observer1.reset();
-
         waitTillObserverNotified(observer1, 3000);
         assertTrue("observer is notified", observer1.updated);
         observer1.reset();
@@ -152,7 +149,6 @@ public class ImageIcon_MultithreadedTest extends TestCase {
             }
         }
         assertTrue("observer did manage to be installed", observer.installed);
-
         timeRemains = maxWaitTime;
         while (timeRemains > 0 && !observer.updated) {
             try {
@@ -165,5 +161,4 @@ public class ImageIcon_MultithreadedTest extends TestCase {
             }
         }
     }
-
 }

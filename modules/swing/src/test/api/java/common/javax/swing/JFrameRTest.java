@@ -29,15 +29,16 @@ public class JFrameRTest extends SwingTestCase {
 
     public void testInitDecorations() throws Exception {
         UIManager.setLookAndFeel(new MetalLookAndFeel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public boolean getSupportsWindowDecorations() {
                 return false;
             }
         });
-
         JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame f = new JFrame();
         assertFalse(f.isUndecorated());
-
         JDialog.setDefaultLookAndFeelDecorated(true);
         JDialog d = new JDialog();
         assertFalse(d.isUndecorated());

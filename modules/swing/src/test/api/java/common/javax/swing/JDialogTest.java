@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.BorderLayout;
@@ -31,12 +29,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
 import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
-
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
@@ -46,15 +41,21 @@ public class JDialogTest extends SwingTestCase {
      * This class is used to test that some methods were called.
      */
     private static class TestDialog extends JDialog {
+        private static final long serialVersionUID = 1L;
+
         public static boolean createRootPaneCalled = false;
+
         public static boolean setRootPaneCalled = false;
+
         public boolean disposeCalled = false;
 
+        @Override
         public JRootPane createRootPane() {
             createRootPaneCalled = true;
             return super.createRootPane();
         }
 
+        @Override
         public void setRootPane(final JRootPane root) {
             setRootPaneCalled = true;
             super.setRootPane(root);
@@ -65,6 +66,7 @@ public class JDialogTest extends SwingTestCase {
             setRootPaneCalled = false;
         }
 
+        @Override
         public void dispose() {
             disposeCalled = true;
             super.dispose();
@@ -98,6 +100,7 @@ public class JDialogTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         dialog = new JDialog();
@@ -107,6 +110,7 @@ public class JDialogTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (dialog.isDisplayable()) {
@@ -117,11 +121,11 @@ public class JDialogTest extends SwingTestCase {
     /*
      * Auxiliary method to check JDialog correctness after constructor's call.
      */
-    protected void checkDialogCorrectness(final JDialog dialog, final String title, final boolean modal) {
+    protected void checkDialogCorrectness(final JDialog dialog, final String title,
+            final boolean modal) {
         assertFalse("JDialog is invisible by default", dialog.isVisible());
         assertTrue("locale is set", dialog.getLocale() == JComponent.getDefaultLocale());
         assertTrue("owner is not null", dialog.getOwner() != null);
-
         assertTrue("isModal is set", dialog.isModal() == modal);
         assertTrue("title is set", dialog.getTitle() == title);
     }
@@ -131,7 +135,6 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialog() {
         dialog = new JDialog();
-
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
     }
@@ -141,39 +144,30 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testDialogInit() {
         TestDialog dialog = new TestDialog();
-
         assertTrue("onwer is not null", dialog.getOwner() != null);
-
         assertTrue("rootPaneCheckingEnabled is true", dialog.isRootPaneCheckingEnabled());
-
         assertTrue("layout is not null", dialog.getLayout() != null);
-
         assertTrue("rootPane is not null", dialog.getRootPane() != null);
-
         assertTrue("locale is set", dialog.getLocale() == JComponent.getDefaultLocale());
-
-        assertFalse("defaultLookAndFeelDecorated is false", JDialog.isDefaultLookAndFeelDecorated());
+        assertFalse("defaultLookAndFeelDecorated is false", JDialog
+                .isDefaultLookAndFeelDecorated());
         assertFalse("isUndecorated is false", dialog.isUndecorated());
-        assertTrue("rootPane.windowDecorationStyle is NONE",
-                dialog.getRootPane().getWindowDecorationStyle() == JRootPane.NONE);
-
+        assertTrue("rootPane.windowDecorationStyle is NONE", dialog.getRootPane()
+                .getWindowDecorationStyle() == JRootPane.NONE);
         // test that defaultFocusTraversalPolicy is set
         //dialog.setFocusTraversalPolicy(null);
         //dialog.dialogInit();
         assertTrue("focusTraversalPolicy is set correctly",
-                dialog.getFocusTraversalPolicy() == KeyboardFocusManager.
-                    getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy());
-        assertTrue("focusTraversalPolicy is set",
-                   dialog.isFocusTraversalPolicySet());
+                dialog.getFocusTraversalPolicy() == KeyboardFocusManager
+                        .getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy());
+        assertTrue("focusTraversalPolicy is set", dialog.isFocusTraversalPolicySet());
         assertTrue(dialog.isFocusCycleRoot());
         assertFalse(dialog.isFocusTraversalPolicyProvider());
-
         JDialog.setDefaultLookAndFeelDecorated(true);
         dialog.dialogInit();
         assertTrue("isUndecorated is true", dialog.isUndecorated());
-        assertTrue("rootPane.windowDecorationStyle is PLAIN_DIALOG",
-                dialog.getRootPane().getWindowDecorationStyle() == JRootPane.PLAIN_DIALOG);
-
+        assertTrue("rootPane.windowDecorationStyle is PLAIN_DIALOG", dialog.getRootPane()
+                .getWindowDecorationStyle() == JRootPane.PLAIN_DIALOG);
         // restore default value
         JDialog.setDefaultLookAndFeelDecorated(false);
     }
@@ -185,16 +179,14 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testSetGetDefaultCloseOperation() {
         // default value is JDialog.HIDE_ON_CLOSE
-        assertEquals(JDialog.HIDE_ON_CLOSE, dialog.getDefaultCloseOperation());
-
+        assertEquals(WindowConstants.HIDE_ON_CLOSE, dialog.getDefaultCloseOperation());
         // test setting valid value
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         dialog.addPropertyChangeListener("defaultCloseOperation", listener);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        assertEquals(JDialog.DISPOSE_ON_CLOSE, dialog.getDefaultCloseOperation());
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        assertEquals(WindowConstants.DISPOSE_ON_CLOSE, dialog.getDefaultCloseOperation());
         // it is not a bound property
         assertFalse("defaultCloseOperation is a bound property", listener.ok);
-
         // test setting invalid value
         boolean ok = false;
         try {
@@ -214,13 +206,11 @@ public class JDialogTest extends SwingTestCase {
      *     static void setDefaultLookAndFeelDecorated(boolean defaultLookAndFeelDecorated)
      *     static boolean isDefaultLookAndFeelDecorated()
      */
-     public void testSetIsDefaultLookAndFeelDecorated() {
+    public void testSetIsDefaultLookAndFeelDecorated() {
         // test for default value
         assertFalse(JDialog.isDefaultLookAndFeelDecorated());
-
         JDialog.setDefaultLookAndFeelDecorated(true);
         assertTrue(JDialog.isDefaultLookAndFeelDecorated());
-
         // restore default value
         JDialog.setDefaultLookAndFeelDecorated(false);
     }
@@ -232,11 +222,11 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testSetIsRootPaneCheckingEnabled() {
         TestDialog dialog = new TestDialog();
-
-        assertTrue("rootPaneCheckingEnabled is true by default", dialog.isRootPaneCheckingEnabled());
-
+        assertTrue("rootPaneCheckingEnabled is true by default", dialog
+                .isRootPaneCheckingEnabled());
         dialog.setRootPaneCheckingEnabled(false);
-        assertFalse("rootPaneCheckingEnabled is set to false", dialog.isRootPaneCheckingEnabled());
+        assertFalse("rootPaneCheckingEnabled is set to false", dialog
+                .isRootPaneCheckingEnabled());
     }
 
     /*
@@ -244,32 +234,28 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogFrameStringbooleanGraphicsConfiguration() {
         Frame owner = new Frame();
-        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().
-                getDefaultScreenDevice().getDefaultConfiguration();
-
+        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice().getDefaultConfiguration();
         // test with corrent owner, correct title, modal == false, correct gc
         dialog = new JDialog(owner, "Test JDialog", false, gc);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
         assertTrue("gc is set", dialog.getGraphicsConfiguration() == gc);
-
         // test with corrent owner, correct title, modal == false, incorrect gc
         dialog = new JDialog(owner, "Test JDialog", false, null);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-        assertTrue("gc is set from the owner",
-                dialog.getGraphicsConfiguration() == dialog.getOwner().getGraphicsConfiguration());
-
+        assertTrue("gc is set from the owner", dialog.getGraphicsConfiguration() == dialog
+                .getOwner().getGraphicsConfiguration());
         // test with null owner, correct title, modal == false, incorrect gc
-        dialog = new JDialog((Frame)null, "Test JDialog", false, null);
+        dialog = new JDialog((Frame) null, "Test JDialog", false, null);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() != null);
         // this case is not described in docs, but gc definitely can't be null
-        assertTrue("gc is set",
-                dialog.getGraphicsConfiguration() != null);
+        assertTrue("gc is set", dialog.getGraphicsConfiguration() != null);
     }
 
     /*
@@ -277,23 +263,21 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogDialogStringbooleanGraphicsConfiguration() {
         Dialog owner = new Dialog(new Frame());
-        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().
-                getDefaultScreenDevice().getDefaultConfiguration();
-
+        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice().getDefaultConfiguration();
         // test with corrent owner, correct title, modal == true, correct gc
         dialog = new JDialog(owner, "Test JDialog", true, gc);
         // title is set, isModal() == true
         checkDialogCorrectness(dialog, "Test JDialog", true);
         assertTrue("owner is set", dialog.getOwner() == owner);
         assertTrue("gc is set", dialog.getGraphicsConfiguration() == gc);
-
         // test with corrent owner, correct title, modal == false, incorrect gc
         dialog = new JDialog(owner, "Test JDialog", false, null);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-        assertTrue("gc is set from the owner",
-                dialog.getGraphicsConfiguration() == dialog.getOwner().getGraphicsConfiguration());
+        assertTrue("gc is set from the owner", dialog.getGraphicsConfiguration() == dialog
+                .getOwner().getGraphicsConfiguration());
     }
 
     /*
@@ -301,27 +285,23 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogFrameStringboolean() {
         Frame owner = new Frame();
-
         // test with corrent owner, correct title, modal == false
         dialog = new JDialog(owner, "Test JDialog", false);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, correct title, modal == true
         dialog = new JDialog(owner, "Test JDialog", true);
         // title is set, isModal() == true
         checkDialogCorrectness(dialog, "Test JDialog", true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, incorrect title, modal == true
         dialog = new JDialog(owner, null, true);
         // title is not set, isModal() == true
         checkDialogCorrectness(dialog, null, true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with incorrent owner, correct title, modal == true
-        dialog = new JDialog((Frame)null, "Test JDialog", true);
+        dialog = new JDialog((Frame) null, "Test JDialog", true);
         checkDialogCorrectness(dialog, "Test JDialog", true);
     }
 
@@ -330,21 +310,18 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogFrameString() {
         Frame owner = new Frame();
-
         // test with corrent owner, correct title
         dialog = new JDialog(owner, "Test JDialog");
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, incorrect title
         dialog = new JDialog(owner, null);
         // title is not set, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with incorrent owner, correct title
-        dialog = new JDialog((Frame)null, "Test JDialog");
+        dialog = new JDialog((Frame) null, "Test JDialog");
         checkDialogCorrectness(dialog, "Test JDialog", false);
     }
 
@@ -353,25 +330,21 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogDialogStringboolean() {
         Dialog owner = new Dialog(new Frame());
-
         // test with corrent owner, correct title, modal == false
         dialog = new JDialog(owner, "Test JDialog", false);
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, correct title, modal == true
         dialog = new JDialog(owner, "Test JDialog", true);
         // title not set, isModal() == true
         checkDialogCorrectness(dialog, "Test JDialog", true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, incorrect title, modal == true
         dialog = new JDialog(owner, null, true);
         // title is not set, isModal() == true
         checkDialogCorrectness(dialog, null, true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // owner cannot be null in this case
     }
 
@@ -380,19 +353,16 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogDialogString() {
         Dialog owner = new Dialog(new Frame());
-
         // test with corrent owner, correct title
         dialog = new JDialog(owner, "Test JDialog");
         // title is set, isModal() == false
         checkDialogCorrectness(dialog, "Test JDialog", false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, incorrect title
         dialog = new JDialog(owner, null);
         // title is not set, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // owner cannot be null in this case
     }
 
@@ -401,21 +371,18 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogFrameboolean() {
         Frame owner = new Frame();
-
         // test with corrent owner, modal == false
         dialog = new JDialog(owner, false);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, modal == true
         dialog = new JDialog(owner, true);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with incorrect owner
-        dialog = new JDialog((Frame)null, true);
+        dialog = new JDialog((Frame) null, true);
         // title == null, isModal() == true
         checkDialogCorrectness(dialog, null, true);
     }
@@ -425,15 +392,13 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogFrame() {
         Frame owner = new Frame();
-
         // test with corrent owner
         dialog = new JDialog(owner);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with incorrect owner
-        dialog = new JDialog((Frame)null);
+        dialog = new JDialog((Frame) null);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
     }
@@ -443,19 +408,16 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogDialogboolean() {
         Dialog owner = new Dialog(new Frame());
-
         // test with corrent owner, modal == false
         dialog = new JDialog(owner, false);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // test with corrent owner, modal == true
         dialog = new JDialog(owner, true);
         // title == null, isModal() == true
         checkDialogCorrectness(dialog, null, true);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // owner cannot be null in this case
     }
 
@@ -464,13 +426,11 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testJDialogDialog() {
         Dialog owner = new Dialog(new Frame());
-
         // test with corrent owner
         dialog = new JDialog(owner);
         // title == null, isModal() == false
         checkDialogCorrectness(dialog, null, false);
         assertTrue("owner is set", dialog.getOwner() == owner);
-
         // owner cannot be null in this case
     }
 
@@ -480,7 +440,6 @@ public class JDialogTest extends SwingTestCase {
     public void testAddImpl() {
         TestDialog dialog = new TestDialog();
         JComponent comp = new JPanel();
-
         // rootPaneCheckingEnabled is true, no exception since 1.5
         dialog.setRootPaneCheckingEnabled(true);
         boolean ok = false;
@@ -490,10 +449,9 @@ public class JDialogTest extends SwingTestCase {
             ok = true;
         } finally {
             assertFalse("no exception", ok);
-            assertTrue("The component is added to contentPane",
-                       comp.getParent() == dialog.getContentPane());
+            assertTrue("The component is added to contentPane", comp.getParent() == dialog
+                    .getContentPane());
         }
-
         // rootPaneCheckingEnabled is false, no exception
         dialog.setRootPaneCheckingEnabled(false);
         ok = false;
@@ -503,10 +461,8 @@ public class JDialogTest extends SwingTestCase {
             ok = true;
         } finally {
             assertFalse("no exception", ok);
-            assertTrue("the component is added to JWindow",
-                       comp.getParent() == dialog);
-            assertTrue("index of the component is 0",
-                       dialog.getComponent(0) == comp);
+            assertTrue("the component is added to JWindow", comp.getParent() == dialog);
+            assertTrue("index of the component is 0", dialog.getComponent(0) == comp);
         }
     }
 
@@ -517,16 +473,13 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testSetGetRootPane() {
         TestDialog dialog = new TestDialog();
-        assertTrue("setRootPane() is called from the constructor",
-                TestDialog.setRootPaneCalled);
-
+        assertTrue("setRootPane() is called from the constructor", TestDialog.setRootPaneCalled);
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         dialog.addPropertyChangeListener("rootPane", listener);
         JRootPane root = new JRootPane();
         dialog.setRootPane(root);
         assertTrue(dialog.getRootPane() == root);
         assertFalse("rootPane is not a bound property", listener.ok);
-
         // test setting rootPane to null
         dialog.setRootPane(null);
         assertNull(dialog.getRootPane());
@@ -540,7 +493,6 @@ public class JDialogTest extends SwingTestCase {
         TestDialog dialog = new TestDialog();
         assertTrue("createRootPane() is called from the constructor",
                 TestDialog.createRootPaneCalled);
-
         JRootPane root = dialog.createRootPane();
         assertTrue("createRootPane() cannot return null", root != null);
     }
@@ -552,11 +504,9 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testSetGetJMenuBarJMenuBar() {
         assertNull(dialog.getJMenuBar());
-
         JMenuBar menuBar = new JMenuBar();
         dialog.setJMenuBar(menuBar);
         assertTrue(dialog.getJMenuBar() == menuBar);
-
         dialog.setJMenuBar(null);
         assertNull(dialog.getJMenuBar());
     }
@@ -569,12 +519,10 @@ public class JDialogTest extends SwingTestCase {
     public void testSetGetLayeredPane() {
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         dialog.addPropertyChangeListener("layeredPane", listener);
-
         JLayeredPane pane = new JLayeredPane();
         dialog.setLayeredPane(pane);
         assertTrue(dialog.getLayeredPane() == pane);
         assertFalse("layeredPane is not a bound property", listener.ok);
-
         // test throwing exception if the parameter is null
         boolean ok = false;
         try {
@@ -586,7 +534,6 @@ public class JDialogTest extends SwingTestCase {
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(dialog.getLayeredPane() != null);
-
         // setLayeredPane() method is not called by the constructor
         // (seems that there is an error in docs)
     }
@@ -596,24 +543,17 @@ public class JDialogTest extends SwingTestCase {
      */
     public void testGetAccessibleContext() {
         AccessibleContext c = dialog.getAccessibleContext();
-
         assertTrue("class is ok", c instanceof JDialog.AccessibleJDialog);
-        assertTrue("AccessibleRole is ok",
-                c.getAccessibleRole() == AccessibleRole.DIALOG);
-        assertNull("AccessibleDescription is ok",
-                c.getAccessibleDescription());
-        assertTrue("AccessibleChildrenCount == 1",
-                   c.getAccessibleChildrenCount() == 1);
-
+        assertTrue("AccessibleRole is ok", c.getAccessibleRole() == AccessibleRole.DIALOG);
+        assertNull("AccessibleDescription is ok", c.getAccessibleDescription());
+        assertTrue("AccessibleChildrenCount == 1", c.getAccessibleChildrenCount() == 1);
         // test getAccessibleName()
         assertNull("AccessibleName is ok", c.getAccessibleName());
         dialog.setTitle("aa");
         assertTrue("AccessibleName is ok", c.getAccessibleName() == "aa");
-
         // test getAccessibleStateSet()
         AccessibleState[] states = c.getAccessibleStateSet().toArray();
         assertTrue("more than 2 states", states.length > 2);
-
         dialog.setVisible(true);
         states = c.getAccessibleStateSet().toArray();
         assertTrue("more than 4 states", states.length > 4);
@@ -634,23 +574,20 @@ public class JDialogTest extends SwingTestCase {
         TestDialog dialog = new TestDialog();
         dialog.setVisible(true);
         WindowEvent e = new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING);
-
         // test DO_NOTHING_ON_CLOSE
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.disposeCalled = false;
         dialog.processWindowEvent(e);
         assertFalse("didn't call dispose()", dialog.disposeCalled);
         assertTrue("is visible", dialog.isVisible());
-
         // test HIDE_ON_CLOSE
-        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         dialog.disposeCalled = false;
         dialog.processWindowEvent(e);
         assertFalse("didn't call dispose()", dialog.disposeCalled);
         assertFalse("is not visible", dialog.isVisible());
-
         // test DISPOSE_ON_CLOSE
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.disposeCalled = false;
         dialog.setVisible(true);
         dialog.processWindowEvent(e);
@@ -665,7 +602,6 @@ public class JDialogTest extends SwingTestCase {
         TestDialog dialog = new TestDialog();
         LayoutManager contentLayout = dialog.getContentPane().getLayout();
         LayoutManager dialogLayout = dialog.getLayout();
-
         // rootPaneCheckingEnabled is true, no exception since 1.5
         dialog.setRootPaneCheckingEnabled(true);
         boolean ok = false;
@@ -676,12 +612,10 @@ public class JDialogTest extends SwingTestCase {
         } finally {
             assertFalse("no exception since 1.5", ok);
             assertTrue("contentPane layout is changed",
-                       dialog.getContentPane().getLayout() != contentLayout);
-            assertTrue("Dialog layout shouldn't be changed",
-                       dialog.getLayout() == dialogLayout);
+                    dialog.getContentPane().getLayout() != contentLayout);
+            assertTrue("Dialog layout shouldn't be changed", dialog.getLayout() == dialogLayout);
             dialog.getContentPane().setLayout(contentLayout);
         }
-
         // rootPaneCheckingEnabled is false
         dialog.setRootPaneCheckingEnabled(false);
         ok = false;
@@ -691,10 +625,9 @@ public class JDialogTest extends SwingTestCase {
             ok = true;
         } finally {
             assertFalse("no exception", ok);
-            assertTrue("contentPane layout shouldn't be changed",
-                       dialog.getContentPane().getLayout() == contentLayout);
-            assertTrue("Dialog layout is changed",
-                       dialog.getLayout() != dialogLayout);
+            assertTrue("contentPane layout shouldn't be changed", dialog.getContentPane()
+                    .getLayout() == contentLayout);
+            assertTrue("Dialog layout is changed", dialog.getLayout() != dialogLayout);
         }
     }
 
@@ -713,12 +646,10 @@ public class JDialogTest extends SwingTestCase {
     public void testSetGetContentPane() {
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         dialog.addPropertyChangeListener("contentPane", listener);
-
         JPanel pane = new JPanel();
         dialog.setContentPane(pane);
         assertTrue(dialog.getContentPane() == pane);
         assertFalse("contentPane is not a bound property", listener.ok);
-
         // test throwing exception if the parameter is null
         boolean ok = false;
         try {
@@ -730,11 +661,9 @@ public class JDialogTest extends SwingTestCase {
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(dialog.getContentPane() != null);
-
         // setContentPane() method is not called by the constructor
         // (seems that there is an error in docs)
     }
-
 
     /*
      * Class under test for
@@ -744,12 +673,10 @@ public class JDialogTest extends SwingTestCase {
     public void testSetGetGlassPane() {
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         dialog.addPropertyChangeListener("glassPane", listener);
-
         JPanel pane = new JPanel();
         dialog.setGlassPane(pane);
         assertTrue(dialog.getGlassPane() == pane);
         assertFalse("glassPane is not a bound property", listener.ok);
-
         // test throwing exception if the parameter is null
         boolean ok = false;
         try {
@@ -761,7 +688,6 @@ public class JDialogTest extends SwingTestCase {
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(dialog.getGlassPane() != null);
-
         // setGlassPane() method is not called by the constructor
         // (seems that there is an error in docs)
     }
@@ -775,28 +701,24 @@ public class JDialogTest extends SwingTestCase {
         assertTrue("added to contentPane", dialog.isAncestorOf(comp));
         dialog.remove(comp);
         assertFalse("removed from contentPane", dialog.isAncestorOf(comp));
-
-        ((JPanel)dialog.getGlassPane()).add(comp);
+        ((JPanel) dialog.getGlassPane()).add(comp);
         dialog.remove(comp);
         assertTrue("not removed from glassPane", dialog.isAncestorOf(comp));
-
         // test removing directly from the container
         dialog.setRootPaneCheckingEnabled(false);
         dialog.add(comp, BorderLayout.EAST);
         assertTrue("added", comp.getParent() == dialog);
         dialog.remove(comp);
         assertTrue("not removed", comp.getParent() == dialog);
-
         // test removing null
-//        boolean ok = false;
-//        try {
-//            dialog.remove((Component)null);
-//        } catch (NullPointerException e) {
-//            ok = true;
-//        } finally {
-//            assertTrue("exception", ok);
-//        }
-
+        //        boolean ok = false;
+        //        try {
+        //            dialog.remove((Component)null);
+        //        } catch (NullPointerException e) {
+        //            ok = true;
+        //        } finally {
+        //            assertTrue("exception", ok);
+        //        }
         // test removing rootPane
         assertTrue(dialog.isAncestorOf(dialog.getRootPane()));
         dialog.remove(dialog.getRootPane());

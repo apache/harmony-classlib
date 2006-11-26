@@ -24,11 +24,9 @@ package javax.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;
-
 import javax.accessibility.AccessibleContext;
 
 public class Box_FillerTest extends SwingTestCase {
-
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(Box_FillerTest.class);
     }
@@ -36,6 +34,7 @@ public class Box_FillerTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -45,20 +44,17 @@ public class Box_FillerTest extends SwingTestCase {
         Dimension preferredSize = new Dimension(200, 200);
         Dimension maximumSize = new Dimension(300, 300);
         Box.Filler filler = new Box.Filler(minimumSize, preferredSize, maximumSize);
-
-        assertEquals("Minimum size initialized correctly ", minimumSize, filler.getMinimumSize());
-        assertEquals("Preferred size initialized correctly ", preferredSize, filler.getPreferredSize());
-        assertEquals("Maximum size initialized correctly ", maximumSize, filler.getMaximumSize());
-
+        assertEquals("Minimum size initialized correctly ", minimumSize, filler
+                .getMinimumSize());
+        assertEquals("Preferred size initialized correctly ", preferredSize, filler
+                .getPreferredSize());
+        assertEquals("Maximum size initialized correctly ", maximumSize, filler
+                .getMaximumSize());
         assertFalse("Opaqueness initialized correctly", filler.isOpaque());
-
-
         filler = new Box.Filler(null, null, null);
-
         assertNull("Minimum size initialized correctly ", filler.getMinimumSize());
         assertNull("Preferred size initialized correctly ", filler.getPreferredSize());
         assertNull("Maximum size initialized correctly ", filler.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", filler.isOpaque());
     }
 
@@ -70,14 +66,11 @@ public class Box_FillerTest extends SwingTestCase {
         Dimension initPreferredSize = new Dimension(200, 200);
         Dimension initMaximumSize = new Dimension(300, 300);
         Box.Filler filler = new Box.Filler(initMinimumSize, initPreferredSize, initMaximumSize);
-
-        assertEquals("Minimum size initialized correctly ", initMinimumSize, filler.getMinimumSize());
-
+        assertEquals("Minimum size initialized correctly ", initMinimumSize, filler
+                .getMinimumSize());
         Dimension minimumSize = new Dimension(1000, 1000);
         filler.setMinimumSize(minimumSize);
-
         assertEquals("Minimum size is unchangeable", initMinimumSize, filler.getMinimumSize());
-
         filler.setMinimumSize(null);
         assertEquals("Minimum size is unchangeable ", initMinimumSize, filler.getMinimumSize());
     }
@@ -90,14 +83,11 @@ public class Box_FillerTest extends SwingTestCase {
         Dimension initPreferredSize = new Dimension(200, 200);
         Dimension initMaximumSize = new Dimension(300, 300);
         Box.Filler filler = new Box.Filler(initMinimumSize, initPreferredSize, initMaximumSize);
-
-        assertEquals("Maximum size initialized correctly ", initMaximumSize, filler.getMaximumSize());
-
+        assertEquals("Maximum size initialized correctly ", initMaximumSize, filler
+                .getMaximumSize());
         Dimension maximumSize = new Dimension(1000, 1000);
         filler.setMaximumSize(maximumSize);
-
         assertEquals("Minimum size is unchangeable", initMaximumSize, filler.getMaximumSize());
-
         filler.setMaximumSize(null);
         assertEquals("Minimum size is unchangeable ", initMaximumSize, filler.getMaximumSize());
     }
@@ -110,16 +100,15 @@ public class Box_FillerTest extends SwingTestCase {
         Dimension initPreferredSize = new Dimension(200, 200);
         Dimension initMaximumSize = new Dimension(300, 300);
         Box.Filler filler = new Box.Filler(initMinimumSize, initPreferredSize, initMaximumSize);
-
-        assertEquals("Preferred size initialized correctly ", initPreferredSize, filler.getPreferredSize());
-
+        assertEquals("Preferred size initialized correctly ", initPreferredSize, filler
+                .getPreferredSize());
         Dimension preferredSize = new Dimension(1000, 1000);
         filler.setPreferredSize(preferredSize);
-
-        assertEquals("Minimum size is unchangeable", initPreferredSize, filler.getPreferredSize());
-
+        assertEquals("Minimum size is unchangeable", initPreferredSize, filler
+                .getPreferredSize());
         filler.setPreferredSize(null);
-        assertEquals("Minimum size is unchangeable ", initPreferredSize, filler.getPreferredSize());
+        assertEquals("Minimum size is unchangeable ", initPreferredSize, filler
+                .getPreferredSize());
     }
 
     /*
@@ -128,7 +117,8 @@ public class Box_FillerTest extends SwingTestCase {
     public void testGetAccessibleContext() {
         Component filler = Box.createVerticalGlue();
         AccessibleContext accessible = filler.getAccessibleContext();
-        assertEquals("Accessible context is correct ", Box.Filler.AccessibleBoxFiller.class, accessible.getClass());
+        assertEquals("Accessible context is correct ", Box.Filler.AccessibleBoxFiller.class,
+                accessible.getClass());
     }
 
     public void testChangeShape() {
@@ -136,19 +126,19 @@ public class Box_FillerTest extends SwingTestCase {
         Dimension preferredSize = new Dimension(200, 200);
         Dimension maximumSize = new Dimension(300, 300);
         Box.Filler filler = new Box.Filler(minimumSize, preferredSize, maximumSize);
-
-        assertEquals("Minimum size initialized correctly ", minimumSize, filler.getMinimumSize());
-        assertEquals("Preferred size initialized correctly ", preferredSize, filler.getPreferredSize());
-        assertEquals("Maximum size initialized correctly ", maximumSize, filler.getMaximumSize());
-
+        assertEquals("Minimum size initialized correctly ", minimumSize, filler
+                .getMinimumSize());
+        assertEquals("Preferred size initialized correctly ", preferredSize, filler
+                .getPreferredSize());
+        assertEquals("Maximum size initialized correctly ", maximumSize, filler
+                .getMaximumSize());
         minimumSize = new Dimension(110, 110);
         preferredSize = new Dimension(220, 220);
         maximumSize = new Dimension(330, 330);
         filler.changeShape(minimumSize, preferredSize, maximumSize);
-
         assertEquals("Minimum size's changed correctly ", minimumSize, filler.getMinimumSize());
-        assertEquals("Preferred size's changed correctly ", preferredSize, filler.getPreferredSize());
+        assertEquals("Preferred size's changed correctly ", preferredSize, filler
+                .getPreferredSize());
         assertEquals("Maximum size's changed correctly ", maximumSize, filler.getMaximumSize());
     }
-
 }

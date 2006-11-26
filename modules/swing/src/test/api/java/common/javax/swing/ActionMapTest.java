@@ -33,8 +33,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class ActionMapTest extends SwingTestCase {
+    private static class ActionProxy implements Action, Serializable {
+        private static final long serialVersionUID = 1L;
 
-    private static class ActionProxy implements Action, Serializable  {
         public String name = "";
 
         public ActionProxy() {
@@ -72,10 +73,9 @@ public class ActionMapTest extends SwingTestCase {
         }
 
         private void readObject(final ObjectInputStream inStream) throws IOException,
-                                                                   ClassNotFoundException  {
+                ClassNotFoundException {
             inStream.defaultReadObject();
         }
-
     }
 
     protected ActionMap map;
@@ -83,7 +83,7 @@ public class ActionMapTest extends SwingTestCase {
     protected boolean find(final Object[] array, final Object value) {
         boolean found = false;
         if (array != null) {
-            for (int i = 0; i < array.length; i++ ){
+            for (int i = 0; i < array.length; i++) {
                 if (array[i].equals(value)) {
                     found = true;
                     break;
@@ -96,6 +96,7 @@ public class ActionMapTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         map = new ActionMap();
@@ -104,17 +105,14 @@ public class ActionMapTest extends SwingTestCase {
     public void testPut() {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
-
         map.put("1", action1);
         map.put("2", action2);
         assertTrue(map.get("1") == action1);
         assertTrue(map.get("2") == action2);
-
         map.put("2", action1);
         map.put("1", action2);
         assertTrue(map.get("1") == action2);
         assertTrue(map.get("2") == action1);
-
         map.put("1", null);
         map.put("2", null);
         assertTrue(map.size() == 0);
@@ -124,33 +122,25 @@ public class ActionMapTest extends SwingTestCase {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
         Action action3 = new ActionProxy();
-
         assertNull(map.get("1"));
         assertNull(map.get("2"));
-
         map.put("1", action1);
         map.put("2", action1);
         assertTrue(map.get("1") == action1);
         assertTrue(map.get("2") == action1);
-
         map.put("1", action2);
         assertTrue(map.get("1") == action2);
-
         map.put("1", null);
         assertNull(map.get("1"));
-
         map.clear();
         ActionMap childMap = new ActionMap();
         childMap.setParent(map);
-
         map.put("1", action1);
         childMap.put("2", action2);
         assertTrue(childMap.get("1") == action1);
         assertTrue(childMap.get("2") == action2);
-
         map.put("2", action3);
         assertTrue(childMap.get("2") == action2);
-
         childMap.put("1", action3);
         assertTrue(childMap.get("1") == action3);
     }
@@ -159,15 +149,11 @@ public class ActionMapTest extends SwingTestCase {
         ActionMap parent1 = new ActionMap();
         ActionMap parent2 = new ActionMap();
         ActionMap parent3 = null;
-
         assertNull(map.getParent());
-
         map.setParent(parent1);
         assertTrue(map.getParent() == parent1);
-
         map.setParent(parent3);
         assertTrue(map.getParent() == parent3);
-
         map.setParent(parent2);
         assertTrue(map.getParent() == parent2);
     }
@@ -175,16 +161,13 @@ public class ActionMapTest extends SwingTestCase {
     public void testRemove() {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
-
         map.put("1", action1);
         map.put("2", action2);
         assertTrue(map.get("1") == action1);
         assertTrue(map.get("2") == action2);
-
         map.remove("2");
         assertNull(map.get("2"));
         assertTrue(map.get("1") == action1);
-
         map.remove("1");
         assertNull(map.get("1"));
         assertTrue(map.size() == 0);
@@ -194,13 +177,11 @@ public class ActionMapTest extends SwingTestCase {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
         Object[] keys = map.keys();
-
         assertTrue(map.size() == 0);
         if (isHarmony()) {
             assertTrue(keys != null);
             assertTrue(keys.length == 0);
         }
-
         map.put("1", action1);
         map.put("2", action2);
         map.put("3", action1);
@@ -218,24 +199,20 @@ public class ActionMapTest extends SwingTestCase {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
         Object[] keys = map.allKeys();
-
         map.setParent(parent);
         assertTrue(map.size() == 0);
         if (isHarmony()) {
             assertTrue(keys != null);
             assertTrue(keys.length == 0);
         }
-
         parent.put("1", action1);
         parent.put("2", action2);
         parent.put("3", action1);
         parent.put("4", action2);
-
         map.put("3", action1);
         map.put("4", action2);
         map.put("5", action1);
         map.put("6", action2);
-
         keys = map.allKeys();
         assertTrue(keys != null && keys.length == 6);
         assertTrue(find(keys, "1"));
@@ -249,20 +226,16 @@ public class ActionMapTest extends SwingTestCase {
     public void testClear() {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
-
         assertTrue(map.size() == 0);
-
         map.put("1", action1);
         map.put("2", action2);
         assertTrue(map.size() == 2);
-
         map.clear();
         assertTrue(map.size() == 0);
         if (isHarmony()) {
             assertTrue("keys", map.keys() != null);
             assertTrue("keys", map.keys().length == 0);
         }
-
         map.put("1", action1);
         assertTrue(map.size() == 1);
     }
@@ -270,17 +243,13 @@ public class ActionMapTest extends SwingTestCase {
     public void testSize() {
         Action action1 = new ActionProxy();
         Action action2 = new ActionProxy();
-
         assertTrue(map.size() == 0);
-
         map.put("1", action1);
         map.put("2", action2);
         assertTrue(map.size() == 2);
-
         map.put("3", action1);
         map.put("4", action2);
         assertTrue(map.size() == 4);
-
         map.put("3", null);
         map.put("4", null);
         assertTrue(map.size() == 2);
@@ -297,7 +266,6 @@ public class ActionMapTest extends SwingTestCase {
         map.setParent(parent);
         map.put(object1, action1);
         map.put(object2, action2);
-
         ByteArrayOutputStream fo = new ByteArrayOutputStream();
         ObjectOutputStream so = new ObjectOutputStream(fo);
         so.writeObject(map);
@@ -325,10 +293,8 @@ public class ActionMapTest extends SwingTestCase {
         ActionMap ressurectedMap = (ActionMap) si.readObject();
         assertTrue(ressurectedMap.getParent() != null);
         assertTrue(ressurectedMap.get(object1) instanceof ActionProxy);
-        assertTrue(((ActionProxy) ressurectedMap.get(object1)).name
-                .equals(name1));
+        assertTrue(((ActionProxy) ressurectedMap.get(object1)).name.equals(name1));
         assertTrue(ressurectedMap.get(object2) instanceof ActionProxy);
-        assertTrue(((ActionProxy) ressurectedMap.get(object2)).name
-                .equals(name2));
+        assertTrue(((ActionProxy) ressurectedMap.get(object2)).name.equals(name2));
     }
 }

@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.Component;
@@ -30,7 +30,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.util.EventListener;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.PopupMenuEvent;
@@ -39,9 +38,11 @@ import javax.swing.plaf.PopupMenuUI;
 import javax.swing.plaf.basic.BasicPopupMenuUI;
 
 public class JPopupMenuTest extends SwingTestCase {
-
     public static class MyAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
         final String command = "dnammoc";
+
         final KeyStroke accelerator = KeyStroke.getKeyStroke('a');
 
         public boolean performed = false;
@@ -59,6 +60,7 @@ public class JPopupMenuTest extends SwingTestCase {
 
     class ConcretePopupMenuListener implements PopupMenuListener {
         public Object event;
+
         public Object src;
 
         public void menuSelected(MenuEvent e) {
@@ -89,11 +91,13 @@ public class JPopupMenuTest extends SwingTestCase {
 
     protected JPopupMenu popup;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         popup = new JPopupMenu();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         popup = null;
         super.tearDown();
@@ -103,11 +107,12 @@ public class JPopupMenuTest extends SwingTestCase {
      * Test method for 'javax.swing.JPopupMenu.getAccessibleContext()'
      */
     public void testGetAccessibleContext() {
-        boolean assertedValue = (popup.getAccessibleContext() != null &&
-                popup.getAccessibleContext().getClass().getName().equals("javax.swing.JPopupMenu$AccessibleJPopupMenu"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.POPUP_MENU, popup.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (popup.getAccessibleContext() != null && popup
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JPopupMenu$AccessibleJPopupMenu"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.POPUP_MENU, popup.getAccessibleContext()
+                .getAccessibleRole());
     }
 
     /*
@@ -118,11 +123,8 @@ public class JPopupMenuTest extends SwingTestCase {
         popup.addPropertyChangeListener(listener1);
         ConcretePopupMenuListener listener2 = new ConcretePopupMenuListener();
         popup.addPopupMenuListener(listener2);
-
-
         assertNull(popup.getParent());
         assertFalse(popup.isVisible());
-
         assertNull(SwingUtilities.getWindowAncestor(popup));
         popup.setVisible(true);
         assertNotNull(SwingUtilities.getWindowAncestor(popup));
@@ -130,23 +132,18 @@ public class JPopupMenuTest extends SwingTestCase {
         assertEquals("event fired properly ", "visible", listener2.event);
         assertEquals("source ", popup, listener2.src);
         listener2.reset();
-        listener1.checkPropertyFired(popup, "visible",
-                             Boolean.FALSE, Boolean.TRUE);
-        listener1.checkPropertyFired(popup, "ancestor",
-                                    null, ancestor);
+        listener1.checkPropertyFired(popup, "visible", Boolean.FALSE, Boolean.TRUE);
+        listener1.checkPropertyFired(popup, "ancestor", null, ancestor);
         assertNotNull(ancestor);
         assertTrue(popup.isVisible());
         listener1.reset();
-
         popup.setVisible(false);
         assertNull(SwingUtilities.getWindowAncestor(popup));
         assertEquals("event fired properly ", "invisible", listener2.event);
         assertEquals("source ", popup, listener2.src);
         listener2.reset();
-        listener1.checkPropertyFired(popup, "visible",
-                             Boolean.TRUE, Boolean.FALSE);
-        listener1.checkPropertyFired(popup, "ancestor",
-                                    ancestor, null);
+        listener1.checkPropertyFired(popup, "visible", Boolean.TRUE, Boolean.FALSE);
+        listener1.checkPropertyFired(popup, "ancestor", ancestor, null);
         assertNull(popup.getParent());
         assertFalse(popup.isVisible());
         listener1.reset();
@@ -155,6 +152,7 @@ public class JPopupMenuTest extends SwingTestCase {
     /*
      * Test method for 'javax.swing.JPopupMenu.setLocation(int, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testSetLocationIntInt() {
         JFrame frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
@@ -168,35 +166,30 @@ public class JPopupMenuTest extends SwingTestCase {
         assertEquals(new Point(0, 0), popup.getLocation());
         popup.setVisible(true);
         assertEquals(new Point(100, 200), popup.getLocationOnScreen());
-
         popup.setLocation(10, 20);
         assertEquals(new Point(0, 0), popup.getLocation());
         assertEquals(new Point(10, 20), popup.getLocationOnScreen());
-
         popup.setInvoker(menu2);
         popup.setLocation(100, 200);
         assertEquals(new Point(0, 0), popup.getLocation());
         assertEquals(new Point(100, 200), popup.getLocationOnScreen());
-
         frame.pack();
         frame.show();
-
         popup.setVisible(true);
         popup.setLocation(10, 20);
         assertEquals(new Point(0, 0), popup.getLocation());
         assertEquals(new Point(10, 20), popup.getLocationOnScreen());
-
         popup.setInvoker(menu2);
         popup.setLocation(100, 200);
         assertEquals(new Point(0, 0), popup.getLocation());
         assertEquals(new Point(100, 200), popup.getLocationOnScreen());
-
         frame.dispose();
     }
 
     /*
      * Test method for 'javax.swing.JPopupMenu.show(Component, int, int)'
      */
+    @SuppressWarnings("deprecation")
     public void testShowComponentIntInt() {
         JFrame frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
@@ -206,7 +199,6 @@ public class JPopupMenuTest extends SwingTestCase {
         menuBar.add(menu1);
         menuBar.add(menu2);
         popup = menu1.getPopupMenu();
-
         popup.setInvoker(new JButton());
         assertNotNull(popup.getInvoker());
         popup.show(null, 111, 222);
@@ -214,16 +206,13 @@ public class JPopupMenuTest extends SwingTestCase {
         assertEquals(new Point(111, 222), popup.getLocationOnScreen());
         assertTrue(popup.isVisible());
         assertTrue(popup.isShowing());
-
         frame.pack();
         frame.show();
-
         popup.show(menu2, 333, 111);
         assertSame(menu2, popup.getInvoker());
         assertFalse(popup.getLocationOnScreen().equals(new Point(333, 111)));
         assertTrue(popup.isVisible());
         assertTrue(popup.isShowing());
-
         frame.dispose();
     }
 
@@ -234,7 +223,6 @@ public class JPopupMenuTest extends SwingTestCase {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
-
         popup.add(item1);
         popup.add(item2);
         assertEquals(0, popup.getComponentIndex(item1));
@@ -248,23 +236,21 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testRemoveInt() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         popup.add(item1);
         popup.add(item2);
         assertEquals(2, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
         assertSame(item2, popup.getComponent(1));
-
         try {
             popup.remove(5);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         try {
             popup.remove(-5);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
-
+        } catch (IllegalArgumentException e) {
+        }
         popup.remove(0);
         assertEquals(1, popup.getComponentCount());
         assertSame(item2, popup.getComponent(0));
@@ -303,7 +289,6 @@ public class JPopupMenuTest extends SwingTestCase {
         assertEquals(popup, popup.getComponent());
         assertNull(popup.getInvoker());
         assertEquals(0, popup.getSubElements().length);
-
         popup = new JPopupMenu(null);
         assertNull("text ", popup.getLabel());
         assertTrue(popup.getSelectionModel() instanceof DefaultSingleSelectionModel);
@@ -328,12 +313,11 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testAddAction() {
         Icon icon = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         String text = "texttext";
-
         MyAction action = new MyAction(text, icon);
         JMenuItem menuItem = popup.add(action);
         assertEquals(1, popup.getComponentCount());
         assertTrue(popup.getComponent(0) instanceof JMenuItem);
-        menuItem = ((JMenuItem)popup.getComponent(0));
+        menuItem = ((JMenuItem) popup.getComponent(0));
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertSame(action, menuItem.getAction());
@@ -345,21 +329,18 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testAddString() {
         String label1 = "label1";
         String label2 = "label1";
-
-        popup.add((String)null);
+        popup.add((String) null);
         assertEquals(1, popup.getComponentCount());
         assertTrue(popup.getComponent(0) instanceof JMenuItem);
-        assertEquals("", ((JMenuItem)popup.getComponent(0)).getText());
-
+        assertEquals("", ((JMenuItem) popup.getComponent(0)).getText());
         popup.add(label1);
         assertEquals(2, popup.getComponentCount());
         assertTrue(popup.getComponent(1) instanceof JMenuItem);
-        assertEquals(label1, ((JMenuItem)popup.getComponent(1)).getText());
-
+        assertEquals(label1, ((JMenuItem) popup.getComponent(1)).getText());
         popup.add(label2);
         assertEquals(3, popup.getComponentCount());
         assertTrue(popup.getComponent(2) instanceof JMenuItem);
-        assertEquals(label2, ((JMenuItem)popup.getComponent(2)).getText());
+        assertEquals(label2, ((JMenuItem) popup.getComponent(2)).getText());
     }
 
     /*
@@ -368,11 +349,9 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testAddJMenuItem() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         popup.add(item1);
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
-
         popup.add(item2);
         assertEquals(2, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
@@ -386,30 +365,23 @@ public class JPopupMenuTest extends SwingTestCase {
         PopupMenuListener listener1 = new ConcretePopupMenuListener();
         PopupMenuListener listener2 = new ConcretePopupMenuListener();
         PopupMenuListener listener3 = new ConcretePopupMenuListener();
-
         EventListener[] listenersArray = null;
-
         listenersArray = popup.getPopupMenuListeners();
         int initialValue = listenersArray.length;
-
         popup.addPopupMenuListener(listener1);
         popup.addPopupMenuListener(listener2);
         popup.addPopupMenuListener(listener2);
-
         listenersArray = popup.getPopupMenuListeners();
         assertEquals(initialValue + 3, listenersArray.length);
-
         popup.removePopupMenuListener(listener1);
         popup.addPopupMenuListener(listener3);
         popup.addPopupMenuListener(listener3);
         listenersArray = popup.getPopupMenuListeners();
         assertEquals(initialValue + 4, listenersArray.length);
-
         popup.removePopupMenuListener(listener3);
         popup.removePopupMenuListener(listener3);
         listenersArray = popup.getPopupMenuListeners();
         assertEquals(initialValue + 2, listenersArray.length);
-
         popup.removePopupMenuListener(listener2);
         popup.removePopupMenuListener(listener2);
         listenersArray = popup.getPopupMenuListeners();
@@ -422,20 +394,16 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testAddSeparator() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         popup.add(item1);
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
-
         popup.addSeparator();
         assertEquals(2, popup.getComponentCount());
         assertTrue(popup.getComponent(1) instanceof JPopupMenu.Separator);
-
         popup.add(item2);
         assertEquals(3, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
         assertSame(item2, popup.getComponent(2));
-
         popup.addSeparator();
         assertEquals(4, popup.getComponentCount());
         assertTrue(popup.getComponent(3) instanceof JPopupMenu.Separator);
@@ -447,6 +415,8 @@ public class JPopupMenuTest extends SwingTestCase {
      */
     public void testCreateActionChangeListener() {
         AbstractAction action1 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
             }
         };
@@ -470,7 +440,6 @@ public class JPopupMenuTest extends SwingTestCase {
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         JMenuItem menuItem = popup.createActionComponent(action);
-
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertNull("action", menuItem.getAction());
@@ -487,7 +456,6 @@ public class JPopupMenuTest extends SwingTestCase {
         ConcretePopupMenuListener listener2 = new ConcretePopupMenuListener();
         popup.addPopupMenuListener(listener1);
         popup.addPopupMenuListener(listener2);
-
         popup.firePopupMenuCanceled();
         assertEquals("event fired properly ", "canceled", listener1.event);
         assertEquals("event fired properly ", "canceled", listener2.event);
@@ -503,7 +471,6 @@ public class JPopupMenuTest extends SwingTestCase {
         ConcretePopupMenuListener listener2 = new ConcretePopupMenuListener();
         popup.addPopupMenuListener(listener1);
         popup.addPopupMenuListener(listener2);
-
         popup.firePopupMenuWillBecomeInvisible();
         assertEquals("event fired properly ", "invisible", listener1.event);
         assertEquals("event fired properly ", "invisible", listener2.event);
@@ -519,7 +486,6 @@ public class JPopupMenuTest extends SwingTestCase {
         ConcretePopupMenuListener listener2 = new ConcretePopupMenuListener();
         popup.addPopupMenuListener(listener1);
         popup.addPopupMenuListener(listener2);
-
         popup.firePopupMenuWillBecomeVisible();
         assertEquals("event fired properly ", "visible", listener1.event);
         assertEquals("event fired properly ", "visible", listener2.event);
@@ -537,14 +503,13 @@ public class JPopupMenuTest extends SwingTestCase {
     /*
      * Test method for 'javax.swing.JPopupMenu.getComponent(int)'
      */
+    @SuppressWarnings("deprecation")
     public void testGetComponentAtIndex() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         popup.add(item1);
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponentAtIndex(0));
-
         popup.add(item2);
         assertEquals(2, popup.getComponentCount());
         assertSame(item1, popup.getComponentAtIndex(0));
@@ -566,29 +531,24 @@ public class JPopupMenuTest extends SwingTestCase {
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
         assertEquals(0, popup.getSubElements().length);
-
         popup.add(item1);
         assertEquals(1, popup.getSubElements().length);
         assertSame(item1, popup.getSubElements()[0]);
-
         popup.add(item2);
         popup.addSeparator();
         assertEquals(2, popup.getSubElements().length);
         assertSame(item1, popup.getSubElements()[0]);
         assertSame(item2, popup.getSubElements()[1]);
-
         popup.add(item3);
         assertEquals(3, popup.getSubElements().length);
         assertSame(item1, popup.getSubElements()[0]);
         assertSame(item2, popup.getSubElements()[1]);
         assertSame(item3, popup.getSubElements()[2]);
-
         popup.addSeparator();
         assertEquals(3, popup.getSubElements().length);
         assertSame(item1, popup.getSubElements()[0]);
         assertSame(item2, popup.getSubElements()[1]);
         assertSame(item3, popup.getSubElements()[2]);
-
         item1.setEnabled(false);
         assertEquals(3, popup.getSubElements().length);
     }
@@ -610,29 +570,25 @@ public class JPopupMenuTest extends SwingTestCase {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         Component item3 = new JPanel();
-
         popup.insert(item1, 0);
         assertEquals(1, popup.getComponentCount());
         assertSame(item1, popup.getComponent(0));
-
         popup.insert(item2, 0);
         assertEquals(2, popup.getComponentCount());
         assertSame(item2, popup.getComponent(0));
         assertSame(item1, popup.getComponent(1));
-
         popup.insert(item3, 1);
         assertEquals(3, popup.getComponentCount());
         assertSame(item2, popup.getComponent(0));
         assertSame(item3, popup.getComponent(1));
         assertSame(item1, popup.getComponent(2));
-
         popup.insert(item3, 16);
         assertEquals(3, popup.getComponentCount());
-
         try {
             popup.insert(item3, -6);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
@@ -641,36 +597,31 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testInsertActionInt() {
         Icon icon = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         String text = "texttext";
-
         MyAction action1 = new MyAction(text, icon);
         MyAction action2 = new MyAction(text, icon);
-
         popup.insert(action1, 0);
         assertEquals(1, popup.getComponentCount());
         assertTrue(popup.getComponent(0) instanceof JMenuItem);
-        JMenuItem menuItem = ((JMenuItem)popup.getComponent(0));
+        JMenuItem menuItem = ((JMenuItem) popup.getComponent(0));
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         popup.insert(action2, 1);
         assertEquals(2, popup.getComponentCount());
         assertTrue(popup.getComponent(0) instanceof JMenuItem);
-
-        menuItem = ((JMenuItem)popup.getComponent(1));
+        menuItem = ((JMenuItem) popup.getComponent(1));
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         popup.insert(action1, 16);
         assertEquals(3, popup.getComponentCount());
         assertTrue(popup.getComponent(2) instanceof JMenuItem);
-        menuItem = ((JMenuItem)popup.getComponent(2));
+        menuItem = ((JMenuItem) popup.getComponent(2));
         assertEquals("icon ", icon, menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
-
         try {
             popup.insert(action1, -3);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
@@ -678,10 +629,8 @@ public class JPopupMenuTest extends SwingTestCase {
      */
     public void testSetIsBorderPainted() {
         assertTrue(popup.isBorderPainted());
-
         popup.setBorderPainted(false);
         assertFalse(popup.isBorderPainted());
-
         popup.setBorderPainted(true);
         assertTrue(popup.isBorderPainted());
     }
@@ -692,17 +641,18 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testIsPopupTrigger() {
         class MyPopupMenuUI extends PopupMenuUI {
             public boolean value = false;
+
+            @Override
             public boolean isPopupTrigger(final MouseEvent event) {
                 return value;
             }
-        };
+        }
+        ;
         MyPopupMenuUI fakeUI = new MyPopupMenuUI();
         popup.setUI(fakeUI);
         assertSame(fakeUI, popup.getUI());
-
         fakeUI.value = true;
         assertEquals(fakeUI.value, popup.isPopupTrigger(null));
-
         fakeUI.value = false;
         assertEquals(fakeUI.value, popup.isPopupTrigger(null));
     }
@@ -710,6 +660,7 @@ public class JPopupMenuTest extends SwingTestCase {
     /*
      * Test method for 'javax.swing.JPopupMenu.menuSelectionChanged(boolean)'
      */
+    @SuppressWarnings("deprecation")
     public void testMenuSelectionChanged() {
         JFrame frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
@@ -720,14 +671,11 @@ public class JPopupMenuTest extends SwingTestCase {
         popup.menuSelectionChanged(true);
         assertFalse(popup.isShowing());
         assertFalse(popup.isVisible());
-
         frame.pack();
         frame.show();
-
         popup.menuSelectionChanged(true);
         assertTrue(popup.isShowing());
         assertTrue(popup.isVisible());
-
         popup.menuSelectionChanged(false);
         assertFalse(popup.isShowing());
         assertFalse(popup.isVisible());
@@ -743,7 +691,6 @@ public class JPopupMenuTest extends SwingTestCase {
         popup.add(button1);
         popup.add(button2);
         popup.pack();
-
         Dimension size = popup.getMinimumSize();
         assertEquals(size, popup.getMinimumSize());
         assertEquals(size, popup.getPreferredSize());
@@ -762,10 +709,8 @@ public class JPopupMenuTest extends SwingTestCase {
      */
     public void testSetGetDefaultLightWeightPopupEnabled() {
         assertTrue(JPopupMenu.getDefaultLightWeightPopupEnabled());
-
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         assertFalse(JPopupMenu.getDefaultLightWeightPopupEnabled());
-
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);
         assertTrue(JPopupMenu.getDefaultLightWeightPopupEnabled());
     }
@@ -785,13 +730,10 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testSetInvoker() {
         Component invoker1 = new JButton();
         Component invoker2 = new JLabel();
-
         popup.setInvoker(invoker1);
         assertEquals("invoker", invoker1, popup.getInvoker());
-
         popup.setInvoker(invoker2);
         assertEquals("invoker", invoker2, popup.getInvoker());
-
         popup.setInvoker(invoker2);
         assertEquals("invoker", invoker2, popup.getInvoker());
     }
@@ -807,25 +749,19 @@ public class JPopupMenuTest extends SwingTestCase {
      * Test method for 'javax.swing.JPopupMenu.setLabel(String)'
      */
     public void testSetLabel() {
-        PropertyChangeController listener =  new PropertyChangeController();
+        PropertyChangeController listener = new PropertyChangeController();
         String label1 = "dog is dog";
         String label2 = "0xdeadbeef";
-
         popup.setLabel(null);
         popup.addPropertyChangeListener(listener);
-
         popup.setLabel(label1);
-        listener.checkPropertyFired(popup, "label",
-                                    null, label1);
+        listener.checkPropertyFired(popup, "label", null, label1);
         assertEquals("label", label1, popup.getLabel());
         listener.reset();
-
         popup.setLabel(label2);
-        listener.checkPropertyFired(popup, "label",
-                                    label1, label2);
+        listener.checkPropertyFired(popup, "label", label1, label2);
         assertEquals("label", label2, popup.getLabel());
         listener.reset();
-
         popup.setLabel(label2);
         assertFalse("event's not been fired ", listener.isChanged());
     }
@@ -835,20 +771,15 @@ public class JPopupMenuTest extends SwingTestCase {
      */
     public void testSetIsLightWeightPopupEnabled() {
         assertTrue(JPopupMenu.getDefaultLightWeightPopupEnabled());
-
         JPopupMenu menu = new JPopupMenu();
         assertTrue(menu.isLightWeightPopupEnabled());
-
         menu.setLightWeightPopupEnabled(false);
         assertFalse(menu.isLightWeightPopupEnabled());
-
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         menu = new JPopupMenu();
         assertFalse(menu.isLightWeightPopupEnabled());
-
         menu.setLightWeightPopupEnabled(true);
         assertTrue(menu.isLightWeightPopupEnabled());
-
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);
     }
 
@@ -871,7 +802,6 @@ public class JPopupMenuTest extends SwingTestCase {
         Dimension oldPrefs = popup.getPreferredSize();
         popup.setPopupSize(new Dimension(height, width));
         assertEquals(new Dimension(height, width), popup.getPreferredSize());
-
         popup.setPopupSize(null);
         assertEquals(oldPrefs, popup.getPreferredSize());
     }
@@ -881,21 +811,16 @@ public class JPopupMenuTest extends SwingTestCase {
      */
     public void testSetSelected() {
         SingleSelectionModel selectionModel1 = new DefaultSingleSelectionModel();
-        SingleSelectionModel selectionModel2 = new DefaultSingleSelectionModel();
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-
         popup.setSelectionModel(null);
         popup.add(item1);
         popup.add(item2);
-
         popup.setSelectionModel(selectionModel1);
         popup.setSelected(item1);
         assertEquals("selection", 0, selectionModel1.getSelectedIndex());
-
         popup.setSelected(item2);
         assertEquals("selection", 1, selectionModel1.getSelectedIndex());
-
         popup.setSelected(new JButton());
         assertEquals("selection", -1, selectionModel1.getSelectedIndex());
     }
@@ -906,14 +831,10 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testSetGetSelectionModel() {
         SingleSelectionModel selectionModel1 = new DefaultSingleSelectionModel();
         SingleSelectionModel selectionModel2 = new DefaultSingleSelectionModel();
-
         popup.setSelectionModel(null);
-
         popup.setSelectionModel(selectionModel1);
         assertEquals("selectionModel", selectionModel1, popup.getSelectionModel());
-
         popup.setSelectionModel(selectionModel2);
         assertEquals("selectionModel", selectionModel2, popup.getSelectionModel());
     }
-
 }

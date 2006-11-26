@@ -19,16 +19,20 @@
  * @version $Revision$
  */
 package javax.swing;
-import java.awt.Rectangle;
 
+import java.awt.Rectangle;
 import javax.swing.text.Document;
 
 public class ExtJTextArea extends JTextArea {
+    private static final long serialVersionUID = 1L;
+
     public int flag = 0;
+
     public boolean wasCallInvalidate = false;
+
     public boolean wasCallRevalidate = false;
 
-    public ExtJTextArea(){
+    public ExtJTextArea() {
         super();
     }
 
@@ -36,36 +40,37 @@ public class ExtJTextArea extends JTextArea {
         super(doc);
     }
 
-    public ExtJTextArea(final Document doc, final String text, final int rows, final int columns){
+    public ExtJTextArea(final Document doc, final String text, final int rows, final int columns) {
         super(doc, text, rows, columns);
     }
 
     public ExtJTextArea(final int rows, final int columns) {
-        super(rows,columns);
+        super(rows, columns);
     }
 
-    public ExtJTextArea(final String s){
+    public ExtJTextArea(final String s) {
         super(s);
     }
 
-    public ExtJTextArea(final String text, final int rows, final int columns){
+    public ExtJTextArea(final String text, final int rows, final int columns) {
         super(text, rows, columns);
     }
 
+    @Override
     public void invalidate() {
         wasCallInvalidate = true;
         super.invalidate();
     }
 
+    @Override
     public void revalidate() {
         wasCallRevalidate = true;
         super.revalidate();
     }
 
+    @Override
     public void scrollRectToVisible(final Rectangle aRect) {
         flag = 1;
         super.scrollRectToVisible(aRect);
     }
-
 }
-

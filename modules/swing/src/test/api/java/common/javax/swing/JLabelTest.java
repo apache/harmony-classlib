@@ -24,34 +24,36 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.LabelUI;
 
 public class JLabelTest extends BasicSwingTestCase {
     private JLabel label;
+
     private TestPropertyChangeListener listener;
 
     public JLabelTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         label = new JLabel();
         listener = new TestPropertyChangeListener();
         label.addPropertyChangeListener(listener);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         label = null;
     }
-
 
     public void testJLabel() throws Exception {
         label = new JLabel();
@@ -60,53 +62,49 @@ public class JLabelTest extends BasicSwingTestCase {
         assertEquals("", label.getText());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         final Icon icon = createTestIcon();
-
         label = new JLabel(icon);
         assertEquals(SwingConstants.CENTER, label.getVerticalAlignment());
         assertEquals(SwingConstants.CENTER, label.getHorizontalAlignment());
         assertNull(label.getText());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         label = new JLabel(icon, SwingConstants.RIGHT);
         assertEquals(SwingConstants.CENTER, label.getVerticalAlignment());
         assertEquals(SwingConstants.RIGHT, label.getHorizontalAlignment());
         assertNull(label.getText());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         label = new JLabel("any");
         assertEquals(SwingConstants.CENTER, label.getVerticalAlignment());
         assertEquals(SwingConstants.LEADING, label.getHorizontalAlignment());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         label = new JLabel("any", SwingConstants.TRAILING);
         assertEquals(SwingConstants.CENTER, label.getVerticalAlignment());
         assertEquals(SwingConstants.TRAILING, label.getHorizontalAlignment());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         label = new JLabel("any", icon, SwingConstants.RIGHT);
         assertEquals(SwingConstants.CENTER, label.getVerticalAlignment());
         assertEquals(SwingConstants.RIGHT, label.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, label.getHorizontalTextPosition());
         assertTrue(label.getAlignmentX() == 0);
         assertTrue(label.getAlignmentY() == 0.5);
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new JLabel(icon, SwingConstants.BOTTOM);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new JLabel("any", SwingConstants.TOP);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new JLabel("any", icon, SwingConstants.TOP);
             }
@@ -120,7 +118,6 @@ public class JLabelTest extends BasicSwingTestCase {
         label.checkHorizontalKey(SwingConstants.RIGHT, null);
         label.checkHorizontalKey(SwingConstants.LEADING, null);
         label.checkHorizontalKey(SwingConstants.TRAILING, null);
-
         checkHorizontalKey(label, SwingConstants.BOTTOM);
         checkHorizontalKey(label, SwingConstants.TOP);
     }
@@ -130,13 +127,11 @@ public class JLabelTest extends BasicSwingTestCase {
         label.checkVerticalKey(SwingConstants.TOP, null);
         label.checkVerticalKey(SwingConstants.CENTER, null);
         label.checkVerticalKey(SwingConstants.BOTTOM, null);
-
         checkVerticalKey(label, SwingConstants.LEADING);
         checkVerticalKey(label, SwingConstants.TRAILING);
         checkVerticalKey(label, SwingConstants.LEFT);
         checkVerticalKey(label, SwingConstants.RIGHT);
     }
-
 
     public void testGetAccessibleContext() throws Exception {
         assertNotNull(label.getAccessibleContext());
@@ -146,17 +141,15 @@ public class JLabelTest extends BasicSwingTestCase {
     public void testGetSetIcons() throws Exception {
         assertNull(label.getIcon());
         assertNull(label.getDisabledIcon());
-
         Icon icon = createTestIcon();
         label.setIcon(icon);
         assertEquals(icon, label.getIcon());
         assertNotNull(label.getDisabledIcon());
         assertNotSame(icon, label.getDisabledIcon());
-        assertEquals("new instances should not be produced", label.getDisabledIcon(), label.getDisabledIcon());
-
+        assertEquals("new instances should not be produced", label.getDisabledIcon(), label
+                .getDisabledIcon());
         label.setDisabledIcon(null);
         assertNotNull(label.getDisabledIcon());
-
         label.setIcon(new Icon() {
             public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
             }
@@ -170,7 +163,6 @@ public class JLabelTest extends BasicSwingTestCase {
             }
         });
         assertNull(label.getDisabledIcon());
-
         TestPropertyChangeListener listener = new TestPropertyChangeListener();
         label.addPropertyChangeListener(listener);
         label.setDisabledIcon(icon);
@@ -182,49 +174,44 @@ public class JLabelTest extends BasicSwingTestCase {
         listener.reset();
         label.setDisplayedMnemonic('a');
         assertEquals(KeyEvent.VK_A, label.getDisplayedMnemonic());
-
         label.setDisplayedMnemonic(KeyEvent.VK_B);
         assertEquals(KeyEvent.VK_B, label.getDisplayedMnemonic());
-
         assertTrue(listener.isPropertyChanged("displayedMnemonic"));
-
         label.setLabelFor(new JButton());
-        assertNull(label.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).get(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.ALT_DOWN_MASK)));
-        assertNotNull(label.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).get(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_DOWN_MASK)));
+        assertNull(label.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).get(
+                KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_DOWN_MASK)));
+        assertNotNull(label.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).get(
+                KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_DOWN_MASK)));
     }
 
     public void testGetSetDisplayedMnemonicIndex() throws Exception {
         listener.reset();
         label = new JLabel("abcd");
         label.addPropertyChangeListener(listener);
-
         assertEquals(-1, label.getDisplayedMnemonicIndex());
         label.setDisplayedMnemonic('a');
         assertEquals(0, label.getDisplayedMnemonicIndex());
         assertTrue(listener.isPropertyChanged("displayedMnemonicIndex"));
-
         label.setDisplayedMnemonic('e');
         assertEquals(-1, label.getDisplayedMnemonicIndex());
         assertTrue(listener.isPropertyChanged("displayedMnemonicIndex"));
-
         listener.reset();
         label.setDisplayedMnemonicIndex(3);
         assertEquals(3, label.getDisplayedMnemonicIndex());
         assertTrue(listener.isPropertyChanged("displayedMnemonicIndex"));
-
         label.setDisplayedMnemonicIndex(-1);
         assertEquals(-1, label.getDisplayedMnemonicIndex());
-
         label.setText(null);
         label.setDisplayedMnemonicIndex(-1);
         assertEquals(-1, label.getDisplayedMnemonicIndex());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setDisplayedMnemonicIndex(5);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setDisplayedMnemonicIndex(-10);
             }
@@ -236,11 +223,10 @@ public class JLabelTest extends BasicSwingTestCase {
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         assertEquals(SwingConstants.RIGHT, label.getHorizontalAlignment());
         assertTrue(listener.isPropertyChanged("horizontalAlignment"));
-
         label = new JLabel(createTestIcon());
         assertEquals(SwingConstants.CENTER, label.getHorizontalAlignment());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setHorizontalAlignment(SwingConstants.BOTTOM);
             }
@@ -249,12 +235,11 @@ public class JLabelTest extends BasicSwingTestCase {
 
     public void testGetSetHorizontalTextPosition() throws Exception {
         assertEquals(SwingConstants.TRAILING, label.getHorizontalTextPosition());
-
         label.setHorizontalTextPosition(SwingConstants.RIGHT);
         assertEquals(SwingConstants.RIGHT, label.getHorizontalTextPosition());
         assertTrue(listener.isPropertyChanged("horizontalTextPosition"));
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setHorizontalTextPosition(SwingConstants.BOTTOM);
             }
@@ -263,7 +248,6 @@ public class JLabelTest extends BasicSwingTestCase {
 
     public void testGetSetIconTextGap() throws Exception {
         assertEquals(4, label.getIconTextGap());
-
         label.setIconTextGap(7);
         assertEquals(7, label.getIconTextGap());
         assertTrue(listener.isPropertyChanged("iconTextGap"));
@@ -271,7 +255,6 @@ public class JLabelTest extends BasicSwingTestCase {
 
     public void testGetSetLabelFor() throws Exception {
         assertNull(label.getLabelFor());
-
         JComponent c = new JPanel();
         label.setLabelFor(c);
         assertEquals(c, label.getLabelFor());
@@ -280,23 +263,18 @@ public class JLabelTest extends BasicSwingTestCase {
 
     public void testGetSetText() throws Exception {
         assertEquals("", label.getText());
-
         String text = "any";
         label.setText(text);
         assertEquals(text, label.getText());
         assertTrue(listener.isPropertyChanged("text"));
-
         label = new JLabel(text);
         assertEquals(text, label.getText());
-
         label.setDisplayedMnemonic('y');
         assertEquals('Y', label.getDisplayedMnemonic());
         assertEquals(2, label.getDisplayedMnemonicIndex());
-
         label.setText("handy");
         assertEquals('Y', label.getDisplayedMnemonic());
         assertEquals(4, label.getDisplayedMnemonicIndex());
-
         label.setText("ok");
         assertEquals('Y', label.getDisplayedMnemonic());
         assertEquals(-1, label.getDisplayedMnemonicIndex());
@@ -305,11 +283,10 @@ public class JLabelTest extends BasicSwingTestCase {
     public void testGetSetUpdateUI() throws Exception {
         LabelUI defaultUI = label.getUI();
         assertNotNull(defaultUI);
-
-        LabelUI ui = new LabelUI() {};
+        LabelUI ui = new LabelUI() {
+        };
         label.setUI(ui);
         assertEquals(ui, label.getUI());
-
         label.updateUI();
         assertEquals(defaultUI, label.getUI());
     }
@@ -323,8 +300,8 @@ public class JLabelTest extends BasicSwingTestCase {
         label.setVerticalAlignment(SwingConstants.TOP);
         assertEquals(SwingConstants.TOP, label.getVerticalAlignment());
         assertTrue(listener.isPropertyChanged("verticalAlignment"));
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setVerticalAlignment(SwingConstants.RIGHT);
             }
@@ -336,8 +313,8 @@ public class JLabelTest extends BasicSwingTestCase {
         label.setVerticalTextPosition(SwingConstants.TOP);
         assertEquals(SwingConstants.TOP, label.getVerticalTextPosition());
         assertTrue(listener.isPropertyChanged("verticalTextPosition"));
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.setVerticalAlignment(SwingConstants.RIGHT);
             }
@@ -347,57 +324,58 @@ public class JLabelTest extends BasicSwingTestCase {
     public void testImageUpdate() throws Exception {
         Icon icon = createTestIcon();
         label.setIcon(icon);
-
-        assertFalse(label.imageUpdate(((ImageIcon)createTestIcon()).getImage(), 0, 0, 0, 0, 0));
+        assertFalse(label.imageUpdate(((ImageIcon) createTestIcon()).getImage(), 0, 0, 0, 0, 0));
     }
 
     public void testMnemonicProcessing() throws Exception {
         final JFrame frame = new JFrame();
         final JLabel label = new JLabel("label");
         final JButton button = new JButton("button");
-
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 frame.setSize(100, 100);
                 frame.setLocation(100, 100);
-
                 frame.getContentPane().add(label);
                 frame.getContentPane().add(button);
-
                 label.setLabelFor(button);
                 label.setDisplayedMnemonic(KeyEvent.VK_A);
-
                 label.setFocusable(true);
                 frame.setVisible(true);
-
                 label.requestFocus();
             }
         });
-
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-                assertEquals(label, KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
-
-                label.dispatchEvent(new KeyEvent(label, KeyEvent.KEY_PRESSED, EventQueue.getMostRecentEventTime(), KeyEvent.ALT_DOWN_MASK, KeyEvent.VK_A, 'a'));
-                label.dispatchEvent(new KeyEvent(label, KeyEvent.KEY_RELEASED, EventQueue.getMostRecentEventTime(), KeyEvent.ALT_DOWN_MASK, KeyEvent.VK_A, 'a'));
+                assertEquals(label, KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                        .getFocusOwner());
+                label
+                        .dispatchEvent(new KeyEvent(label, KeyEvent.KEY_PRESSED, EventQueue
+                                .getMostRecentEventTime(), InputEvent.ALT_DOWN_MASK,
+                                KeyEvent.VK_A, 'a'));
+                label
+                        .dispatchEvent(new KeyEvent(label, KeyEvent.KEY_RELEASED, EventQueue
+                                .getMostRecentEventTime(), InputEvent.ALT_DOWN_MASK,
+                                KeyEvent.VK_A, 'a'));
             }
         });
-
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-                assertEquals(button, KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+                assertEquals(button, KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                        .getFocusOwner());
             }
         });
         frame.dispose();
     }
 
-
     private void checkHorizontalKey(final JLabel label, final int key) {
         final String message = "any";
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.checkHorizontalKey(key, message);
             }
+
+            @Override
             public String expectedExceptionMessage() {
                 return message;
             }
@@ -407,9 +385,12 @@ public class JLabelTest extends BasicSwingTestCase {
     private void checkVerticalKey(final JLabel label, final int key) {
         final String message = "any";
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 label.checkVerticalKey(key, message);
             }
+
+            @Override
             public String expectedExceptionMessage() {
                 return message;
             }
@@ -421,7 +402,7 @@ public class JLabelTest extends BasicSwingTestCase {
     }
 
     private class TestPropertyChangeListener implements PropertyChangeListener {
-        private Set changedPropertyNames = new HashSet();
+        private Set<String> changedPropertyNames = new HashSet<String>();
 
         public void propertyChange(final PropertyChangeEvent event) {
             changedPropertyNames.add(event.getPropertyName());

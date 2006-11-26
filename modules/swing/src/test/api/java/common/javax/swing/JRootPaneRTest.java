@@ -29,9 +29,9 @@ public class JRootPaneRTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-
         if (frame != null) {
             frame.dispose();
             frame = null;
@@ -48,13 +48,10 @@ public class JRootPaneRTest extends SwingTestCase {
         frame = new JFrame();
         frame.setContentPane(desktop);
         frame.setVisible(true);
-
         iframe.setIcon(true);
         assertNull(iframe.getRootPane().getDefaultButton());
-
         iframe.setIcon(false);
         assertSame(button, iframe.getRootPane().getDefaultButton());
-
         iframe.setIcon(true);
         iframe.getContentPane().remove(button);
         iframe.setIcon(false);

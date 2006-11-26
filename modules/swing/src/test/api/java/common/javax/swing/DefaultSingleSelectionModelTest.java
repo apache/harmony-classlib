@@ -21,36 +21,35 @@
 package javax.swing;
 
 import java.awt.event.KeyListener;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class DefaultSingleSelectionModelTest extends SwingTestCase {
     private DefaultSingleSelectionModel model;
+
     private TestChangeListener listener;
 
     public DefaultSingleSelectionModelTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         model = new DefaultSingleSelectionModel();
         listener = new TestChangeListener();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         model = null;
     }
 
     public void testAddRemoveGetChangeListener() throws Exception {
         assertEquals(0, model.getChangeListeners().length);
-
         model.addChangeListener(new TestChangeListener());
         model.addChangeListener(listener);
         model.addChangeListener(new TestChangeListener());
-
         assertEquals(3, model.getChangeListeners().length);
-
         model.removeChangeListener(listener);
         assertEquals(2, model.getChangeListeners().length);
     }
@@ -58,16 +57,12 @@ public class DefaultSingleSelectionModelTest extends SwingTestCase {
     public void testGetSetIsClearSelection() throws Exception {
         assertEquals(-1, model.getSelectedIndex());
         assertFalse(model.isSelected());
-
         TestChangeListener listener = new TestChangeListener();
         model.addChangeListener(listener);
-
         model.setSelectedIndex(4);
         assertEquals(4, model.getSelectedIndex());
         assertTrue(model.isSelected());
         assertNotNull(listener.getChangeEvent());
-
-
         listener.reset();
         model.clearSelection();
         assertEquals(-1, model.getSelectedIndex());
@@ -78,9 +73,7 @@ public class DefaultSingleSelectionModelTest extends SwingTestCase {
     public void testGetListeners() throws Exception {
         assertEquals(0, model.getListeners(ChangeListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
-
         model.addChangeListener(listener);
-
         assertEquals(1, model.getListeners(ChangeListener.class).length);
         assertEquals(0, model.getListeners(KeyListener.class).length);
     }
@@ -89,16 +82,13 @@ public class DefaultSingleSelectionModelTest extends SwingTestCase {
         TestChangeListener listener2 = new TestChangeListener();
         model.addChangeListener(listener);
         model.addChangeListener(listener2);
-
         assertNull(model.changeEvent);
         model.fireStateChanged();
         assertNotNull(model.changeEvent);
         assertEquals(model, model.changeEvent.getSource());
-
         assertEquals(model.changeEvent, listener.getChangeEvent());
         assertEquals(model.changeEvent, listener2.getChangeEvent());
     }
-
 
     private class TestChangeListener implements ChangeListener {
         private ChangeEvent changeEvent;
@@ -116,5 +106,3 @@ public class DefaultSingleSelectionModelTest extends SwingTestCase {
         }
     }
 }
-
-

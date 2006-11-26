@@ -24,11 +24,9 @@ import java.awt.AWTException;
 import java.awt.EventQueue;
 import java.awt.Robot;
 import java.lang.reflect.Method;
-
 import junit.framework.TestCase;
 
 public abstract class RobotTestCase extends TestCase {
-
     /**
      * Framework for running JUnit tests that consist of sequence of assertions &
      * actions. The only visible method in it is static run(Object o, String[]
@@ -58,10 +56,11 @@ public abstract class RobotTestCase extends TestCase {
      * "assertion0002", "action0002"});
      */
     public static class RobotRunner {
-
         private static class RunnableMethod implements Runnable {
             private final Object target;
+
             private final Method method;
+
             private Object result;
 
             public Object getResult() {
@@ -75,7 +74,7 @@ public abstract class RobotTestCase extends TestCase {
 
             public void run() {
                 try {
-                    result = (Boolean) method.invoke(target, null);
+                    result = method.invoke(target, null);
                 } catch (Throwable e) {
                     e.printStackTrace();
                     result = null;
@@ -107,14 +106,12 @@ public abstract class RobotTestCase extends TestCase {
                 for (int i = 0; i < sequence.length; i++) {
                     Method m = testCase.getClass().getMethod(sequence[i], new Class[] {});
                     if ((m.getReturnType() != boolean.class)
-                         && (m.getReturnType() != void.class)) { // assertion
-                        System.err.println("unknown return type: "
-                                + m.getReturnType() + " for method '" + sequence[i]
-                                + "' in test sequence");
+                            && (m.getReturnType() != void.class)) { // assertion
+                        System.err.println("unknown return type: " + m.getReturnType()
+                                + " for method '" + sequence[i] + "' in test sequence");
                         return false;
                     }
                 }
-
                 //ok then - all methods are correct, we can start
                 for (int i = 0; i < sequence.length; i++) {
                     Method m = testCase.getClass().getMethod(sequence[i], new Class[] {});
@@ -163,9 +160,9 @@ public abstract class RobotTestCase extends TestCase {
         }
     }
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
-
         RobotRunner.setTestCase(this);
     }
 
@@ -180,5 +177,4 @@ public abstract class RobotTestCase extends TestCase {
     public static void setNumberOfAssertionRetries(final int numRetries) {
         RobotRunner.numAssertionRetries = numRetries;
     }
-
 }

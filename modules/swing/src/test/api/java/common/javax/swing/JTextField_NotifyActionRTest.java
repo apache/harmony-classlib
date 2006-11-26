@@ -28,17 +28,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class JTextField_NotifyActionRTest extends BasicSwingTestCase {
-
     private JFrame frame;
+
     private JPanel c;
+
     private JTextField textField;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JFrame();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         if (frame != null) {
             frame.dispose();
@@ -56,7 +58,6 @@ public class JTextField_NotifyActionRTest extends BasicSwingTestCase {
         parent.add(textField);
         frame.pack();
         frame.setVisible(true);
-
         final Rectangle flag = new Rectangle();
         final ActionListener parentListener = new ActionListener() {
             public void actionPerformed(final ActionEvent event) {
@@ -68,25 +69,17 @@ public class JTextField_NotifyActionRTest extends BasicSwingTestCase {
                 flag.y = 100;
             }
         };
-        c.registerKeyboardAction(parentListener,
-                                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-                                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
+        c.registerKeyboardAction(parentListener, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         SwingWaitTestCase.requestFocusInWindowForComponent(textField);
-
-        textField.dispatchEvent(new KeyEvent(textField,
-                                             KeyEvent.KEY_PRESSED,
-                                             0, 0,
-                                             KeyEvent.VK_ENTER, (char)13));
+        textField.dispatchEvent(new KeyEvent(textField, KeyEvent.KEY_PRESSED, 0, 0,
+                KeyEvent.VK_ENTER, (char) 13));
         assertEquals("parent's action has been fired", 100, flag.x);
         assertEquals("textFields action hasn't been fired", 0, flag.y);
-
         flag.x = 0;
         textField.addActionListener(textFieldListener);
-        textField.dispatchEvent(new KeyEvent(textField,
-                                             KeyEvent.KEY_PRESSED,
-                                             0, 0,
-                                             KeyEvent.VK_ENTER, (char)13));
+        textField.dispatchEvent(new KeyEvent(textField, KeyEvent.KEY_PRESSED, 0, 0,
+                KeyEvent.VK_ENTER, (char) 13));
         assertEquals("parent's action hasn't been fired", 0, flag.x);
         assertEquals("textFields action has been fired", 100, flag.y);
     }

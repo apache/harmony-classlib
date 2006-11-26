@@ -24,14 +24,11 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.io.IOException;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.PanelUI;
 import javax.swing.plaf.basic.BasicPanelUI;
 
-
 public class JPanelTest extends SwingTestCase {
-
     /**
      * @param arg0
      */
@@ -48,6 +45,7 @@ public class JPanelTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         panel = new JPanel();
@@ -56,6 +54,7 @@ public class JPanelTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -78,7 +77,6 @@ public class JPanelTest extends SwingTestCase {
         assertTrue(panel.isOpaque());
         assertSame(layout1, panel.getLayout());
         assertTrue(panel.isDoubleBuffered());
-
         final LayoutManager layout2 = new FlowLayout();
         panel = new JPanel(layout2, false);
         assertTrue(panel.isOpaque());
@@ -95,7 +93,6 @@ public class JPanelTest extends SwingTestCase {
         assertTrue(panel.isOpaque());
         assertSame(layout1, panel.getLayout());
         assertTrue(panel.isDoubleBuffered());
-
         final LayoutManager layout2 = new FlowLayout();
         panel = new JPanel(layout2);
         assertTrue(panel.isOpaque());
@@ -111,7 +108,6 @@ public class JPanelTest extends SwingTestCase {
         assertTrue(panel.isOpaque());
         assertTrue(panel.getLayout().getClass() == FlowLayout.class);
         assertTrue(panel.isDoubleBuffered());
-
         panel = new JPanel(false);
         assertTrue(panel.isOpaque());
         assertTrue(panel.getLayout().getClass() == FlowLayout.class);
@@ -147,11 +143,12 @@ public class JPanelTest extends SwingTestCase {
      * Class under test for AccessibleContext getAccessibleContext()
      */
     public void testGetAccessibleContext() {
-        boolean assertedValue = (panel.getAccessibleContext() != null &&
-                panel.getAccessibleContext().getClass().getName().equals("javax.swing.JPanel$AccessibleJPanel"));
-
+        boolean assertedValue = (panel.getAccessibleContext() != null && panel
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JPanel$AccessibleJPanel"));
         assertTrue(assertedValue);
-        assertTrue(panel.getAccessibleContext().getAccessibleRole().equals(AccessibleRole.PANEL));
+        assertTrue(panel.getAccessibleContext().getAccessibleRole()
+                .equals(AccessibleRole.PANEL));
     }
 
     /*
@@ -159,10 +156,13 @@ public class JPanelTest extends SwingTestCase {
      */
     public void testParamString() {
         class TestingPanel extends JPanel {
-            public String getParamString(){ return paramString(); }
+            private static final long serialVersionUID = 1L;
+
+            public String getParamString() {
+                return paramString();
+            }
         }
         TestingPanel testingPanel = new TestingPanel();
-
         assertTrue(testingPanel.getParamString() != null);
         assertTrue(testingPanel.getParamString() != "");
     }
@@ -176,37 +176,37 @@ public class JPanelTest extends SwingTestCase {
 
     public void testWriteObject() throws IOException {
         /*
-        JPanel button1 = new JPanel();
-        JPanel button2 = new JPanel();
-        FileOutputStream fo = new FileOutputStream("tmp");
-        ObjectOutputStream so = new ObjectOutputStream(fo);
-        so.writeObject(button1);
-        so.flush();
-        fo = new FileOutputStream("tmp");
-        so = new ObjectOutputStream(fo);
-        so.writeObject(button1);
-        so.flush();
-        */
+         JPanel button1 = new JPanel();
+         JPanel button2 = new JPanel();
+         FileOutputStream fo = new FileOutputStream("tmp");
+         ObjectOutputStream so = new ObjectOutputStream(fo);
+         so.writeObject(button1);
+         so.flush();
+         fo = new FileOutputStream("tmp");
+         so = new ObjectOutputStream(fo);
+         so.writeObject(button1);
+         so.flush();
+         */
     }
 
     public void testReadObject() throws IOException, ClassNotFoundException {
         /*
-        JPanel button1 = new JPanel();
-        JPanel button2 = new JPanel();
-        FileOutputStream fo = new FileOutputStream("tmp");
-        ObjectOutputStream so = new ObjectOutputStream(fo);
-        so.writeObject(button1);
-        so.flush();
-        FileInputStream fi = new FileInputStream("tmp");
-        ObjectInputStream si = new ObjectInputStream(fi);
-        JPanel ressurectedButton = (JPanel)si.readObject();
-        fo = new FileOutputStream("tmp");
-        so = new ObjectOutputStream(fo);
-        so.writeObject(button2);
-        so.flush();
-        fi = new FileInputStream("tmp");
-        si = new ObjectInputStream(fi);
-        ressurectedButton = (JPanel)si.readObject();
-        */
+         JPanel button1 = new JPanel();
+         JPanel button2 = new JPanel();
+         FileOutputStream fo = new FileOutputStream("tmp");
+         ObjectOutputStream so = new ObjectOutputStream(fo);
+         so.writeObject(button1);
+         so.flush();
+         FileInputStream fi = new FileInputStream("tmp");
+         ObjectInputStream si = new ObjectInputStream(fi);
+         JPanel ressurectedButton = (JPanel)si.readObject();
+         fo = new FileOutputStream("tmp");
+         so = new ObjectOutputStream(fo);
+         so.writeObject(button2);
+         so.flush();
+         fi = new FileInputStream("tmp");
+         si = new ObjectInputStream(fi);
+         ressurectedButton = (JPanel)si.readObject();
+         */
     }
 }

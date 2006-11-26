@@ -24,28 +24,26 @@ package javax.swing;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-
 import javax.accessibility.AccessibleRelationSet;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleText;
 
 public class AccessibleJButtonTest extends BasicSwingTestCase {
+    protected AbstractButton button;
 
-    protected AbstractButton button = null;
+    private JButton.AccessibleJButton aContext;
 
-    JButton.AccessibleJButton aContext = null;
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         button = new JButton();
-        aContext = (JButton.AccessibleJButton)button.getAccessibleContext();
+        aContext = (JButton.AccessibleJButton) button.getAccessibleContext();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         button = null;
         aContext = null;
-
         super.tearDown();
     }
 
@@ -81,65 +79,62 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
         ImageIcon icon1 = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_BYTE_GRAY));
         ImageIcon icon2 = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_BYTE_GRAY));
         assertNull("AccessibleIcon", aContext.getAccessibleIcon());
-
         button.setIcon(icon1);
         assertEquals("number of AccessibleIcons", 1, aContext.getAccessibleIcon().length);
-        assertEquals("AccessibleIcon", icon1.getAccessibleContext(), aContext.getAccessibleIcon()[0]);
-
+        assertEquals("AccessibleIcon", icon1.getAccessibleContext(), aContext
+                .getAccessibleIcon()[0]);
         button.setDisabledIcon(icon2);
         assertEquals("number of AccessibleIcons", 1, aContext.getAccessibleIcon().length);
-        assertEquals("AccessibleIcon", icon1.getAccessibleContext(), aContext.getAccessibleIcon()[0]);
+        assertEquals("AccessibleIcon", icon1.getAccessibleContext(), aContext
+                .getAccessibleIcon()[0]);
     }
 
     public void testGetAccessibleStateSet() {
         assertNotNull("AccessibleStateSet is not null", aContext.getAccessibleStateSet());
-        assertTrue("AccessibleStateSet contains ENABLED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.ENABLED));
-        assertTrue("AccessibleStateSet contains FOCUSABLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.FOCUSABLE));
-        assertTrue("AccessibleStateSet contains VISIBLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.VISIBLE));
-        assertTrue("AccessibleStateSet contains OPAQUE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.OPAQUE));
-
+        assertTrue("AccessibleStateSet contains ENABLED", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.ENABLED));
+        assertTrue("AccessibleStateSet contains FOCUSABLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.FOCUSABLE));
+        assertTrue("AccessibleStateSet contains VISIBLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.VISIBLE));
+        assertTrue("AccessibleStateSet contains OPAQUE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.OPAQUE));
         button.setSelected(true);
         assertNotNull("AccessibleStateSet is not null", aContext.getAccessibleStateSet());
-        assertTrue("AccessibleStateSet contains ENABLED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.ENABLED));
-        assertTrue("AccessibleStateSet contains FOCUSABLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.FOCUSABLE));
-        assertTrue("AccessibleStateSet contains VISIBLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.VISIBLE));
-        assertTrue("AccessibleStateSet contains OPAQUE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.OPAQUE));
-        assertTrue("AccessibleStateSet contains CHECKED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.CHECKED));
-
+        assertTrue("AccessibleStateSet contains ENABLED", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.ENABLED));
+        assertTrue("AccessibleStateSet contains FOCUSABLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.FOCUSABLE));
+        assertTrue("AccessibleStateSet contains VISIBLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.VISIBLE));
+        assertTrue("AccessibleStateSet contains OPAQUE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.OPAQUE));
+        assertTrue("AccessibleStateSet contains CHECKED", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.CHECKED));
         button.setEnabled(false);
         assertNotNull("AccessibleStateSet is not null", aContext.getAccessibleStateSet());
-        assertFalse("AccessibleStateSet doesn't contain ENABLED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.ENABLED));
-        assertTrue("AccessibleStateSet contains FOCUSABLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.FOCUSABLE));
-        assertTrue("AccessibleStateSet contains VISIBLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.VISIBLE));
-        assertTrue("AccessibleStateSet contains OPAQUE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.OPAQUE));
-        assertTrue("AccessibleStateSet contains CHECKED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.CHECKED));
-
+        assertFalse("AccessibleStateSet doesn't contain ENABLED", aContext
+                .getAccessibleStateSet().contains(AccessibleState.ENABLED));
+        assertTrue("AccessibleStateSet contains FOCUSABLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.FOCUSABLE));
+        assertTrue("AccessibleStateSet contains VISIBLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.VISIBLE));
+        assertTrue("AccessibleStateSet contains OPAQUE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.OPAQUE));
+        assertTrue("AccessibleStateSet contains CHECKED", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.CHECKED));
         button.setVisible(false);
         assertNotNull("AccessibleStateSet is not null", aContext.getAccessibleStateSet());
-        assertFalse("AccessibleStateSet doesn't contain ENABLED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.ENABLED));
-        assertTrue("AccessibleStateSet contains FOCUSABLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.FOCUSABLE));
-        assertFalse("AccessibleStateSet doesn't contain VISIBLE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.VISIBLE));
-        assertTrue("AccessibleStateSet contains OPAQUE",
-                aContext.getAccessibleStateSet().contains(AccessibleState.OPAQUE));
-        assertTrue("AccessibleStateSet contains CHECKED",
-                aContext.getAccessibleStateSet().contains(AccessibleState.CHECKED));
+        assertFalse("AccessibleStateSet doesn't contain ENABLED", aContext
+                .getAccessibleStateSet().contains(AccessibleState.ENABLED));
+        assertTrue("AccessibleStateSet contains FOCUSABLE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.FOCUSABLE));
+        assertFalse("AccessibleStateSet doesn't contain VISIBLE", aContext
+                .getAccessibleStateSet().contains(AccessibleState.VISIBLE));
+        assertTrue("AccessibleStateSet contains OPAQUE", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.OPAQUE));
+        assertTrue("AccessibleStateSet contains CHECKED", aContext.getAccessibleStateSet()
+                .contains(AccessibleState.CHECKED));
     }
 
     public void testDoAccessibleAction() {
@@ -166,23 +161,28 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     }
 
     public void testGetAccessibleActionDescription() {
-        assertEquals("AccessibleActionDescription", "click", aContext.getAccessibleActionDescription(0));
+        assertEquals("AccessibleActionDescription", "click", aContext
+                .getAccessibleActionDescription(0));
         assertNull("AccessibleActionDescription", aContext.getAccessibleActionDescription(1));
     }
 
     public void testGetCurrentAccessibleValue() {
         button.setSelected(false);
-        assertEquals("CurrentAccessibleValue", new Integer(0), aContext.getCurrentAccessibleValue());
+        assertEquals("CurrentAccessibleValue", new Integer(0), aContext
+                .getCurrentAccessibleValue());
         button.setSelected(true);
-        assertEquals("CurrentAccessibleValue", new Integer(1), aContext.getCurrentAccessibleValue());
+        assertEquals("CurrentAccessibleValue", new Integer(1), aContext
+                .getCurrentAccessibleValue());
     }
 
     public void testGetMaximumAccessibleValue() {
-        assertEquals("MaximumAccessibleValue", new Integer(1), aContext.getMaximumAccessibleValue());
+        assertEquals("MaximumAccessibleValue", new Integer(1), aContext
+                .getMaximumAccessibleValue());
     }
 
     public void testGetMinimumAccessibleValue() {
-        assertEquals("MinimumAccessibleValue", new Integer(0), aContext.getMinimumAccessibleValue());
+        assertEquals("MinimumAccessibleValue", new Integer(0), aContext
+                .getMinimumAccessibleValue());
     }
 
     /**
@@ -194,23 +194,24 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     public void testSetCurrentAccessibleValue() {
         PropertyChangeController listener = new PropertyChangeController();
         aContext.addPropertyChangeListener(listener);
-
         assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(100)));
-        assertEquals("CurrentAccessibleValue", new Integer(1), aContext.getCurrentAccessibleValue());
+        assertEquals("CurrentAccessibleValue", new Integer(1), aContext
+                .getCurrentAccessibleValue());
         assertTrue("button selected state", button.isSelected());
-
-        listener.checkPropertyFired(aContext, "AccessibleState", null, AccessibleState.SELECTED);
-        listener.checkPropertyFired(aContext, "AccessibleValue", new Integer(0), new Integer(1));
+        listener
+                .checkPropertyFired(aContext, "AccessibleState", null, AccessibleState.SELECTED);
+        listener
+                .checkPropertyFired(aContext, "AccessibleValue", new Integer(0), new Integer(1));
         listener.reset();
-
         assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(0)));
-        assertEquals("CurrentAccessibleValue", new Integer(0), aContext.getCurrentAccessibleValue());
+        assertEquals("CurrentAccessibleValue", new Integer(0), aContext
+                .getCurrentAccessibleValue());
         assertFalse("button selected state", button.isSelected());
-
-        listener.checkPropertyFired(aContext, "AccessibleState", AccessibleState.SELECTED, null);
-        listener.checkPropertyFired(aContext, "AccessibleValue", new Integer(1), new Integer(0));
+        listener
+                .checkPropertyFired(aContext, "AccessibleState", AccessibleState.SELECTED, null);
+        listener
+                .checkPropertyFired(aContext, "AccessibleValue", new Integer(1), new Integer(0));
         listener.reset();
-
         assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(0)));
         assertFalse("no event's fired ", listener.isChanged());
     }
@@ -292,5 +293,4 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
         button.setText("text");
         assertNull("CharacterAttribute", aContext.getCharacterAttribute(1));
     }
-
 }

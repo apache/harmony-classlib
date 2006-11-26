@@ -18,25 +18,24 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.ComponentUI;
-
 import javax.swing.plaf.basic.BasicDesktopPaneUI;
-
 
 public class JDesktopPaneTest extends SwingTestCase {
     /*
      * This class is used to test protected methods.
      */
     private class TestJDesktopPane extends JDesktopPane {
+        private static final long serialVersionUID = 1L;
+
+        @Override
         public String paramString() {
             return super.paramString();
         }
@@ -66,6 +65,7 @@ public class JDesktopPaneTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         desktop = new JDesktopPane();
@@ -74,6 +74,7 @@ public class JDesktopPaneTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -83,7 +84,6 @@ public class JDesktopPaneTest extends SwingTestCase {
      */
     public void testIsOpaque() {
         assertTrue("always returns true", desktop.isOpaque());
-
         desktop.setOpaque(false);
         assertTrue("always returns true", desktop.isOpaque());
     }
@@ -93,7 +93,6 @@ public class JDesktopPaneTest extends SwingTestCase {
      */
     public void testUpdateUI() {
         desktop.updateUI();
-
         ComponentUI ui1 = desktop.getUI();
         ComponentUI ui2 = UIManager.getUI(desktop);
         // at least names of classes must be the same
@@ -105,11 +104,9 @@ public class JDesktopPaneTest extends SwingTestCase {
      */
     public void testGetAccessibleContext() {
         AccessibleContext c = desktop.getAccessibleContext();
-
         assertTrue("instanceof AccessibleJDesktopPane",
-                   c instanceof JDesktopPane.AccessibleJDesktopPane);
-        assertTrue("AccessibleRole is ok",
-                c.getAccessibleRole() == AccessibleRole.DESKTOP_PANE);
+                c instanceof JDesktopPane.AccessibleJDesktopPane);
+        assertTrue("AccessibleRole is ok", c.getAccessibleRole() == AccessibleRole.DESKTOP_PANE);
     }
 
     /*
@@ -124,7 +121,6 @@ public class JDesktopPaneTest extends SwingTestCase {
         desktop = new JDesktopPane();
         assertTrue(desktop.isFocusCycleRoot());
         assertFalse(desktop.isFocusTraversalPolicyProvider());
-
         assertTrue("ui != null", desktop.getUI() != null);
     }
 
@@ -146,12 +142,9 @@ public class JDesktopPaneTest extends SwingTestCase {
      */
     public void testSetGetSelectedFrame() {
         JInternalFrame f = new JInternalFrame();
-
         assertNull("null by default", desktop.getSelectedFrame());
-
         desktop.setSelectedFrame(f);
         assertTrue("is set", desktop.getSelectedFrame() == f);
-
         desktop.setSelectedFrame(null);
         assertNull("is set to null", desktop.getSelectedFrame());
     }
@@ -164,7 +157,6 @@ public class JDesktopPaneTest extends SwingTestCase {
         JInternalFrame frame1 = new JInternalFrame("frame1");
         frame1.setVisible(true);
         desktop.add(frame1);
-
         // add iconified frame, layer 1
         JInternalFrame frame2 = new JInternalFrame("frame2");
         frame2.setVisible(true);
@@ -175,7 +167,6 @@ public class JDesktopPaneTest extends SwingTestCase {
         } catch (PropertyVetoException e) {
             assertFalse("exception", true);
         }
-
         // add some non JInternalFrame component
         JComponent comp = new JPanel();
         desktop.add(comp);
@@ -187,9 +178,7 @@ public class JDesktopPaneTest extends SwingTestCase {
     public void testGetAllFrames() {
         JInternalFrame[] frames = desktop.getAllFrames();
         assertTrue("empty array", frames.length == 0);
-
         addComponents();
-
         frames = desktop.getAllFrames();
         assertTrue("2 frames", frames.length == 2);
     }
@@ -200,23 +189,18 @@ public class JDesktopPaneTest extends SwingTestCase {
     public void testGetAllFramesInLayer() {
         JInternalFrame[] frames; // = desktop.getAllFramesInLayer(1);
         //assertTrue("empty array", frames.length == 0);
-
         addComponents();
-
         frames = desktop.getAllFramesInLayer(0);
         assertTrue("1 frame", frames.length == 1);
         assertTrue("frame1", frames[0].getTitle() == "frame1");
-
         // invisible frames are counted
         frames[0].setVisible(false);
         frames = desktop.getAllFramesInLayer(0);
         assertTrue("1 frame", frames.length == 1);
-
         // iconified frames are counted
         frames = desktop.getAllFramesInLayer(1);
         assertTrue("1 frame", frames.length == 1);
         assertTrue("frame2", frames[0].getTitle() == "frame2");
-
         // no frames in this layer
         frames = desktop.getAllFramesInLayer(2);
         assertTrue("empty array", frames.length == 0);
@@ -230,14 +214,11 @@ public class JDesktopPaneTest extends SwingTestCase {
     public void testSetGetDesktopManager() {
         MyPropertyChangeListener l = new MyPropertyChangeListener();
         DesktopManager m = new DefaultDesktopManager();
-
         assertTrue("not null by default", desktop.getDesktopManager() != null);
-
         desktop.addPropertyChangeListener("desktopManager", l);
         desktop.setDesktopManager(m);
         assertTrue("is set", desktop.getDesktopManager() == m);
         assertTrue("bound property", l.ok);
-
         desktop.setDesktopManager(null);
         assertTrue("is not set to null", desktop.getDesktopManager() != null);
     }
@@ -255,12 +236,9 @@ public class JDesktopPaneTest extends SwingTestCase {
      *     int getDragMode()
      */
     public void testSetGetDragMode() {
-        assertTrue("initial ok",
-                   desktop.getDragMode() == JDesktopPane.LIVE_DRAG_MODE);
-
+        assertTrue("initial ok", desktop.getDragMode() == JDesktopPane.LIVE_DRAG_MODE);
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
         assertTrue("set", desktop.getDragMode() == JDesktopPane.OUTLINE_DRAG_MODE);
-
         desktop.setDragMode(JDesktopPane.LIVE_DRAG_MODE);
         assertTrue("set", desktop.getDragMode() == JDesktopPane.LIVE_DRAG_MODE);
     }

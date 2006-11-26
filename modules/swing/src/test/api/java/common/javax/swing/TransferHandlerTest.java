@@ -21,56 +21,68 @@
 package javax.swing;
 
 import java.awt.Color;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
-
 public class TransferHandlerTest extends SwingTestCase {
     TransferHandler transferHandler;
+
     JButton button;
+
     SimpleTransferHandler trH;
+
     TransferHandler insetsTransferHandler;
 
     class SimpleTransferHandler extends TransferHandler {
+        private static final long serialVersionUID = 1L;
+
         public SimpleTransferHandler(final String s) {
             super(s);
         }
+
         boolean wasCallExportToClipBoard;
+
         int parameter = -3;
+
         boolean wasCallImportData;
+
         Clipboard clipboard;
+
         JComponent component;
+
         Transferable transferable;
 
-        public void exportToClipboard(final JComponent comp,
-                                      final Clipboard clip,
-                                      final int action) {
-            component  = comp;
+        @Override
+        public void exportToClipboard(final JComponent comp, final Clipboard clip,
+                final int action) {
+            component = comp;
             clipboard = clip;
             parameter = action;
-            wasCallExportToClipBoard =  true;
+            wasCallExportToClipBoard = true;
         }
-        public boolean importData(final JComponent comp,
-                                  final Transferable t) {
+
+        @Override
+        public boolean importData(final JComponent comp, final Transferable t) {
             component = comp;
             transferable = t;
             wasCallImportData = true;
             return super.importData(comp, t);
         }
 
+        @Override
         protected Transferable createTransferable(final JComponent c) {
             Transferable t = super.createTransferable(c);
             return t;
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         transferHandler = new TransferHandler("text");
@@ -80,6 +92,7 @@ public class TransferHandlerTest extends SwingTestCase {
         insetsTransferHandler = new TransferHandler("insets");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -104,11 +117,9 @@ public class TransferHandlerTest extends SwingTestCase {
     }
 
     public void testExportAsDrag() {
-        MouseEvent e = new MouseEvent(button, MouseEvent.MOUSE_PRESSED,
-                                      0, MouseEvent.BUTTON1_DOWN_MASK,
-                                      50, 50, 0, true);
+        MouseEvent e = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.BUTTON1_DOWN_MASK, 50, 50, 0, true);
         trH.exportAsDrag(button, e, TransferHandler.COPY_OR_MOVE);
-
     }
 
     public void testImportData() {
@@ -117,14 +128,13 @@ public class TransferHandlerTest extends SwingTestCase {
         textArea.setBackground(Color.RED);
         Transferable transferable = handler.createTransferable(textArea);
         try {
-            assertEquals(Color.RED, transferable.getTransferData(
-                                     transferable.getTransferDataFlavors()[0]));
+            assertEquals(Color.RED, transferable.getTransferData(transferable
+                    .getTransferDataFlavors()[0]));
         } catch (UnsupportedFlavorException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         } catch (IOException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         JTextArea distArea = new JTextArea();
         distArea.setBackground(Color.GREEN);
         handler.importData(distArea, transferable);
@@ -132,13 +142,11 @@ public class TransferHandlerTest extends SwingTestCase {
     }
 
     public void testCreateTransferable() {
-        Transferable transferable = insetsTransferHandler
-           .createTransferable(button);
+        Transferable transferable = insetsTransferHandler.createTransferable(button);
         transferable.getTransferDataFlavors();
         DataFlavor[] flavors = transferable.getTransferDataFlavors();
         try {
-            assertEquals(button.getInsets(),
-                         transferable.getTransferData(flavors[0]));
+            assertEquals(button.getInsets(), transferable.getTransferData(flavors[0]));
         } catch (IOException e) {
             assertFalse("Unexpected exception :" + e.getMessage(), true);
         } catch (UnsupportedFlavorException e) {
@@ -146,25 +154,20 @@ public class TransferHandlerTest extends SwingTestCase {
         }
         assertEquals(1, flavors.length);
         DataFlavor flavor = flavors[0];
-        assertEquals(DataFlavor.javaJVMLocalObjectMimeType,
-                           flavor.getHumanPresentableName());
+        assertEquals(DataFlavor.javaJVMLocalObjectMimeType, flavor.getHumanPresentableName());
     }
 
     public void testCanImport() {
         //no text property
         assertFalse(transferHandler.canImport(new JPanel(), null));
-        DataFlavor[] flavors = new DataFlavor[] {
-        DataFlavor.imageFlavor,
-        DataFlavor.javaFileListFlavor,
-        DataFlavor.stringFlavor};
+        DataFlavor[] flavors = new DataFlavor[] { DataFlavor.imageFlavor,
+                DataFlavor.javaFileListFlavor, DataFlavor.stringFlavor };
         assertFalse(transferHandler.canImport(button, flavors));
         DataFlavor flavor;
         try {
             flavor = new DataFlavor("application/x-java-jvm-local-objectref;"
-                         + "class=java.lang.String");
-            assertTrue(transferHandler.canImport(button,
-                                 new DataFlavor[] {flavor}));
-
+                    + "class=java.lang.String");
+            assertTrue(transferHandler.canImport(button, new DataFlavor[] { flavor }));
         } catch (ClassNotFoundException e) {
             assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
@@ -173,26 +176,20 @@ public class TransferHandlerTest extends SwingTestCase {
     public void testExportToClipboard_text() {
         JTextArea textArea = new JTextArea("ABCD");
         Clipboard clip = new Clipboard("non system");
-        transferHandler.exportToClipboard(textArea,
-                                          clip,
-                                          TransferHandler.COPY);
+        transferHandler.exportToClipboard(textArea, clip, TransferHandler.COPY);
         DataFlavor flavor = null;
         try {
             flavor = new DataFlavor("application/x-java-jvm-local-objectref;"
-                         + "class=java.lang.String");
-
+                    + "class=java.lang.String");
         } catch (ClassNotFoundException e) {
             assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
-
         try {
             Transferable trans = clip.getContents(null);
             Object obj = trans.getTransferData(flavor);
             assertEquals("ABCD", obj);
         } catch (IOException e) {
-
         } catch (UnsupportedFlavorException e) {
-
         }
     }
 
@@ -201,81 +198,71 @@ public class TransferHandlerTest extends SwingTestCase {
         JTextArea textArea = new JTextArea("ABCD");
         textArea.setBackground(Color.RED);
         Clipboard clip = new Clipboard("non system");
-        handler.exportToClipboard(textArea,
-                                          clip,
-                                          TransferHandler.COPY);
+        handler.exportToClipboard(textArea, clip, TransferHandler.COPY);
         DataFlavor flavor = null;
         try {
             flavor = new DataFlavor("application/x-java-jvm-local-objectref;"
-                         + "class=java.awt.Color");
-
+                    + "class=java.awt.Color");
         } catch (ClassNotFoundException e) {
             assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
-
         try {
             Transferable trans = clip.getContents(null);
             Object obj = trans.getTransferData(flavor);
             assertEquals(Color.RED, obj);
         } catch (IOException e) {
-
         } catch (UnsupportedFlavorException e) {
-
         }
     }
 
     public void testGetSourceActions() {
-        assertEquals(TransferHandler.COPY,
-                     transferHandler.getSourceActions(new JButton()));
-        assertEquals(TransferHandler.NONE,
-                     transferHandler.getSourceActions(new JPanel()));
-        assertEquals(TransferHandler.COPY,
-                     transferHandler.getSourceActions(new JLabel()));
-        assertEquals(TransferHandler.NONE,
-                     transferHandler.getSourceActions(new JLayeredPane()));
+        assertEquals(TransferHandler.COPY, transferHandler.getSourceActions(new JButton()));
+        assertEquals(TransferHandler.NONE, transferHandler.getSourceActions(new JPanel()));
+        assertEquals(TransferHandler.COPY, transferHandler.getSourceActions(new JLabel()));
+        assertEquals(TransferHandler.NONE, transferHandler.getSourceActions(new JLayeredPane()));
     }
 
     public void testGetPasteAction() {
         // TODO: uncomment when System clipboard is properly supported
-//        StringSelection data = new StringSelection("TEST");
-//        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, null);
-//        Action action = TransferHandler.getPasteAction();
-//        ActionEvent event = new ActionEvent(button,
-//                                            ActionEvent.ACTION_PERFORMED, "");
-//        action.actionPerformed(event);
-//        assertTrue(trH.wasCallImportData);
-//        assertEquals(button, trH.component);
-//        assertEquals("paste", action.getValue(Action.NAME));
-//        assertTrue(action == TransferHandler.getPasteAction());
+        //        StringSelection data = new StringSelection("TEST");
+        //        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(data, null);
+        //        Action action = TransferHandler.getPasteAction();
+        //        ActionEvent event = new ActionEvent(button,
+        //                                            ActionEvent.ACTION_PERFORMED, "");
+        //        action.actionPerformed(event);
+        //        assertTrue(trH.wasCallImportData);
+        //        assertEquals(button, trH.component);
+        //        assertEquals("paste", action.getValue(Action.NAME));
+        //        assertTrue(action == TransferHandler.getPasteAction());
     }
 
     public void testGetCutAction() {
         // TODO: uncomment when System clipboard is properly supported
-//        Action action = TransferHandler.getCutAction();
-//        ActionEvent event = new ActionEvent(button,
-//                                            ActionEvent.ACTION_PERFORMED, "");
-//        action.actionPerformed(event);
-//        assertTrue(trH.wasCallExportToClipBoard);
-//        assertEquals(TransferHandler.MOVE, trH.parameter);
-//        assertEquals(Toolkit.getDefaultToolkit().getSystemClipboard(),
-//                     trH.clipboard);
-//        assertEquals(button, trH.component);
-//        assertEquals("cut", action.getValue(Action.NAME));
-//        assertTrue(action == TransferHandler.getCutAction());
+        //        Action action = TransferHandler.getCutAction();
+        //        ActionEvent event = new ActionEvent(button,
+        //                                            ActionEvent.ACTION_PERFORMED, "");
+        //        action.actionPerformed(event);
+        //        assertTrue(trH.wasCallExportToClipBoard);
+        //        assertEquals(TransferHandler.MOVE, trH.parameter);
+        //        assertEquals(Toolkit.getDefaultToolkit().getSystemClipboard(),
+        //                     trH.clipboard);
+        //        assertEquals(button, trH.component);
+        //        assertEquals("cut", action.getValue(Action.NAME));
+        //        assertTrue(action == TransferHandler.getCutAction());
     }
 
     public void testGetCopyAction() {
         // TODO: uncomment when System clipboard is properly supported
-//        Action action = TransferHandler.getCopyAction();
-//        ActionEvent event = new ActionEvent(button,
-//                                            ActionEvent.ACTION_PERFORMED, "");
-//        action.actionPerformed(event);
-//        assertTrue(trH.wasCallExportToClipBoard);
-//        assertEquals(TransferHandler.COPY, trH.parameter);
-//        assertEquals(Toolkit.getDefaultToolkit().getSystemClipboard(),
-//                     trH.clipboard);
-//        assertEquals(button, trH.component);
-//        assertEquals("copy", action.getValue(Action.NAME));
-//        assertTrue(action == TransferHandler.getCopyAction());
+        //        Action action = TransferHandler.getCopyAction();
+        //        ActionEvent event = new ActionEvent(button,
+        //                                            ActionEvent.ACTION_PERFORMED, "");
+        //        action.actionPerformed(event);
+        //        assertTrue(trH.wasCallExportToClipBoard);
+        //        assertEquals(TransferHandler.COPY, trH.parameter);
+        //        assertEquals(Toolkit.getDefaultToolkit().getSystemClipboard(),
+        //                     trH.clipboard);
+        //        assertEquals(button, trH.component);
+        //        assertEquals("copy", action.getValue(Action.NAME));
+        //        assertTrue(action == TransferHandler.getCopyAction());
     }
 }

@@ -24,36 +24,37 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
-
 import javax.swing.plaf.UIResource;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.NavigationFilter;
 import javax.swing.text.TextAction;
 
-
-
 public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
-    static class AbstractFormatter
-        extends JFormattedTextField.AbstractFormatter implements Cloneable {
+    static class AbstractFormatter extends JFormattedTextField.AbstractFormatter implements
+            Cloneable {
+        private static final long serialVersionUID = 1L;
+
         Action[] actions;
+
         NavigationFilter navigationFilter;
+
         DocumentFilter documentFilter;
 
+        @Override
         protected Action[] getActions() {
             return actions == null ? super.getActions() : actions;
         }
 
+        @Override
         protected DocumentFilter getDocumentFilter() {
-            return documentFilter == null ? super.getDocumentFilter()
-                    : documentFilter;
+            return documentFilter == null ? super.getDocumentFilter() : documentFilter;
         }
 
+        @Override
         protected NavigationFilter getNavigationFilter() {
-            return navigationFilter == null ? super.getNavigationFilter()
-                    : navigationFilter;
+            return navigationFilter == null ? super.getNavigationFilter() : navigationFilter;
         }
-
 
         final void setActions(final Action[] newActions) {
             actions = newActions;
@@ -67,16 +68,20 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
             navigationFilter = filter;
         }
 
+        @Override
         public Object stringToValue(final String string) throws ParseException {
             return null;
         }
 
+        @Override
         public String valueToString(final Object value) throws ParseException {
             return null;
         }
     }
 
     class TextActionImpl extends TextAction {
+        private static final long serialVersionUID = 1L;
+
         TextActionImpl(final String name) {
             super(name);
         }
@@ -86,8 +91,10 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
     }
 
     AbstractFormatter formatter;
+
     JFormattedTextField tf;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new AbstractFormatter();
@@ -96,8 +103,11 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
 
     class PropertyChangeListenerImpl implements PropertyChangeListener {
         String name;
+
         Object oldValue;
+
         Object newValue;
+
         String interestingPropertyName;
 
         public void propertyChange(final PropertyChangeEvent e) {
@@ -114,7 +124,7 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
         }
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -128,8 +138,7 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
             assertTrue("UnexpectedException: " + e.getMessage(), false);
         }
         assertTrue(clone instanceof JFormattedTextField.AbstractFormatter);
-        assertNull(((JFormattedTextField.AbstractFormatter)clone)
-                   .getFormattedTextField());
+        assertNull(((JFormattedTextField.AbstractFormatter) clone).getFormattedTextField());
     }
 
     public void testGetActions() {
@@ -137,13 +146,13 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
     }
 
     final void printActionMap(final ActionMap actionMap) {
-       if (actionMap == null) {
-           return;
-       }
-       for (int i = 0; i < actionMap.size(); i++) {
-           Object key = actionMap.keys()[i];
-           System.out.println(i + " " + key + " " + actionMap.get(key));
-       }
+        if (actionMap == null) {
+            return;
+        }
+        for (int i = 0; i < actionMap.size(); i++) {
+            Object key = actionMap.keys()[i];
+            System.out.println(i + " " + key + " " + actionMap.get(key));
+        }
     }
 
     private void checkActionMap(final ActionMap map, final Action[] actions) {
@@ -154,13 +163,12 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
         assertEquals(actions.length, map.size());
         Object[] keys = map.keys();
         for (int i = 0; i < keys.length; i++) {
-            String name = (String)keys[i];
+            String name = (String) keys[i];
             Action action = map.get(name);
             boolean contains = false;
             for (int j = 0; j < actions.length; j++) {
                 Action a = actions[j];
-                if (a.getValue(Action.NAME).equals(name)
-                        && action == a) {
+                if (a.getValue(Action.NAME).equals(name) && action == a) {
                     contains = true;
                     break;
                 }
@@ -168,102 +176,77 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
             assertTrue(contains);
         }
     }
+
     public void testInstallUninstall_Filters() {
         NavigationFilter navFilter = new NavigationFilter();
         formatter.setNavigationFilter(navFilter);
-
         DocumentFilter docFilter = new DocumentFilter();
         formatter.setDocumentFilter(docFilter);
-
         AbstractDocument doc = (AbstractDocument) tf.getDocument();
-
         assertNull(tf.getNavigationFilter());
         assertNull(doc.getDocumentFilter());
-
         formatter.install(tf);
-
         assertEquals(navFilter, tf.getNavigationFilter());
         assertEquals(docFilter, doc.getDocumentFilter());
-
         formatter.uninstall();
-
         assertNull(tf.getNavigationFilter());
         assertNull(doc.getDocumentFilter());
-
         formatter.install(tf);
-
         assertEquals(navFilter, tf.getNavigationFilter());
         assertEquals(docFilter, doc.getDocumentFilter());
-
         formatter.install(null);
         assertNull(tf.getNavigationFilter());
         assertNull(doc.getDocumentFilter());
     }
 
-
     public void testInstallUninstall_Actions() {
-        Action[] actions = new Action[] {new TextActionImpl("1"),
-                                         new TextActionImpl("2")};
+        Action[] actions = new Action[] { new TextActionImpl("1"), new TextActionImpl("2") };
         formatter.setActions(actions);
-
         AbstractDocument doc = (AbstractDocument) tf.getDocument();
         ActionMap map1 = tf.getActionMap();
         ActionMap map2 = map1.getParent(); //keymap
         ActionMap map3 = map2.getParent(); //uiActionMap
         assertTrue(map3 instanceof UIResource);
-
         assertNull(tf.getNavigationFilter());
         assertNull(doc.getDocumentFilter());
-
         formatter.install(tf);
-
         ActionMap _map1 = tf.getActionMap();
         ActionMap _map2 = _map1.getParent(); //keymap
         ActionMap _map3 = _map2.getParent(); //formatter
         ActionMap _map4 = _map3.getParent();
-
         assertEquals(map1, _map1);
         assertEquals(map2, _map2);
         assertEquals(map3, _map4);
         checkActionMap(_map3, actions);
-
         //TODO: Decide if uninstall() & install(null) should reset remove actions
         //installed by formatter.
         formatter.install(null);
-
         _map1 = tf.getActionMap();
         _map2 = _map1.getParent();
         _map3 = _map2.getParent();
         _map4 = _map3.getParent();
-
         assertEquals(map1, _map1);
         assertEquals(map2, _map2);
         if (isHarmony()) {
-           assertEquals(map3, _map3);
+            assertEquals(map3, _map3);
         } else {
-           assertEquals(map3, _map4);
-           checkActionMap(_map3, null);
+            assertEquals(map3, _map4);
+            checkActionMap(_map3, null);
         }
-
         formatter.install(tf);
-
         _map1 = tf.getActionMap();
         _map2 = _map1.getParent();
         _map3 = _map2.getParent();
         _map4 = _map3.getParent();
-
         assertEquals(map1, _map1);
         assertEquals(map2, _map2);
         assertEquals(map3, _map4);
         checkActionMap(_map3, actions);
-
         formatter.uninstall();
-
         _map1 = tf.getActionMap();
         _map2 = _map1.getParent();
         _map3 = _map2.getParent();
         _map4 = _map3.getParent();
-
         assertEquals(map1, _map1);
         assertEquals(map2, _map2);
         if (isHarmony()) {

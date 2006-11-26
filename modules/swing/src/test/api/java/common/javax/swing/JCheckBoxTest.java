@@ -24,29 +24,28 @@ package javax.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.ButtonUI;
 
 public class JCheckBoxTest extends SwingTestCase {
-
     protected AbstractButton button = null;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         button = new JCheckBox();
     }
 
     public void testGetAccessibleContext() {
-        boolean assertedValue = (button.getAccessibleContext() != null &&
-                button.getAccessibleContext().getClass().getName().equals("javax.swing.JCheckBox$AccessibleJCheckBox"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.CHECK_BOX, button.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (button.getAccessibleContext() != null && button
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JCheckBox$AccessibleJCheckBox"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.CHECK_BOX, button.getAccessibleContext()
+                .getAccessibleRole());
     }
 
     public void testParamString() {
@@ -60,10 +59,8 @@ public class JCheckBoxTest extends SwingTestCase {
     public void testUpdateUI() {
         ButtonUI ui = new ButtonUI() {
         };
-
         button.setUI(ui);
         assertEquals(ui, button.getUI());
-
         button.updateUI();
         assertNotSame(ui, button.getUI());
     }
@@ -72,23 +69,26 @@ public class JCheckBoxTest extends SwingTestCase {
         Object res1 = null;
         Object res2 = null;
         AbstractAction action1 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         AbstractAction action2 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         res1 = button.createActionPropertyChangeListener(action1);
         assertNotNull("returned value is not null", res1);
-
         res2 = button.createActionPropertyChangeListener(action2);
         assertNotNull("returned value is not null", res2);
-
         res2 = button.createActionPropertyChangeListener(null);
         assertNotNull("returned value is not null", res2);
     }
 
+    @SuppressWarnings("serial")
     public void testConfigurePropertiesFromAction() {
         Icon icon1 = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         Icon icon2 = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
@@ -108,7 +108,6 @@ public class JCheckBoxTest extends SwingTestCase {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertEquals("action ", action1, button.getAction());
         assertTrue("enabled ", button.isEnabled());
         assertTrue("enabled ", action1.isEnabled());
@@ -116,28 +115,23 @@ public class JCheckBoxTest extends SwingTestCase {
         button.isEnabled();
         assertFalse("enabled ", button.isEnabled());
         assertFalse("enabled ", action1.isEnabled());
-
         assertNull("icon ", button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertNull("icon ", button.getIcon());
         button.setIcon(icon2);
         action1.putValue(Action.SMALL_ICON, null);
         assertEquals("icon ", icon2, button.getIcon());
-
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
             action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
             assertEquals("mnemonic ", 27, button.getMnemonic());
         }
-
         assertEquals("text ", text1, button.getText());
         action1.putValue(Action.NAME, text2);
         assertEquals("text ", text2, button.getText());
-
         assertEquals("ToolTipText ", text3, button.getToolTipText());
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
-
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertNull("ToolTipText ", button.getToolTipText());
@@ -159,35 +153,31 @@ public class JCheckBoxTest extends SwingTestCase {
     /*
      * Class under test for void JCheckBox(Action)
      */
+    @SuppressWarnings("serial")
     public void testJCheckBoxAction() {
         final String command = "dnammoc";
         class MyAction extends AbstractAction {
-            public boolean performed = false;
-
             public MyAction(final String text, final Icon icon) {
                 super(text, icon);
                 putValue(Action.ACTION_COMMAND_KEY, command);
             }
 
             public void actionPerformed(final ActionEvent e) {
-                performed = true;
             }
-        };
+        }
+        ;
         Icon icon = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         action.setEnabled(false);
         button = new JCheckBox(action);
-
         assertNull("icon ", button.getIcon());
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
         assertFalse("selected ", button.isSelected());
         assertFalse("enabled ", button.isEnabled());
-
-        button = new JCheckBox((Action)null);
-
+        button = new JCheckBox((Action) null);
         assertNull("icon ", button.getIcon());
         assertNull("text ", button.getText());
         assertNull("action", button.getAction());
@@ -206,12 +196,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JCheckBox(icon1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(icon2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -228,12 +216,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JCheckBox(icon1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(icon2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -250,12 +236,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JCheckBox(text1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(text2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -272,12 +256,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JCheckBox(text1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(text2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -294,12 +276,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JCheckBox(text1, icon1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(text2, icon2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -316,12 +296,10 @@ public class JCheckBoxTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JCheckBox(text1, icon1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JCheckBox(text2, icon2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -329,21 +307,18 @@ public class JCheckBoxTest extends SwingTestCase {
     }
 
     public void testIsBorderPaintedFlat() {
-        assertFalse("paintedFlat", ((JCheckBox)button).isBorderPaintedFlat());
+        assertFalse("paintedFlat", ((JCheckBox) button).isBorderPaintedFlat());
     }
 
     public void testSetBorderPaintedFlat() {
-        PropertyChangeController listener1 =  new PropertyChangeController();
+        PropertyChangeController listener1 = new PropertyChangeController();
         button.addPropertyChangeListener(listener1);
-
-        ((JCheckBox)button).setBorderPaintedFlat(true);
+        ((JCheckBox) button).setBorderPaintedFlat(true);
         listener1.checkPropertyFired(button, "borderPaintedFlat", Boolean.FALSE, Boolean.TRUE);
-        assertTrue("borderPaintedFlat", ((JCheckBox)button).isBorderPaintedFlat());
+        assertTrue("borderPaintedFlat", ((JCheckBox) button).isBorderPaintedFlat());
         listener1.reset();
-
-        ((JCheckBox)button).setBorderPaintedFlat(false);
+        ((JCheckBox) button).setBorderPaintedFlat(false);
         listener1.checkPropertyFired(button, "borderPaintedFlat", Boolean.TRUE, Boolean.FALSE);
-        assertFalse("borderPaintedFlat", ((JCheckBox)button).isBorderPaintedFlat());
+        assertFalse("borderPaintedFlat", ((JCheckBox) button).isBorderPaintedFlat());
     }
-
 }

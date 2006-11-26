@@ -22,9 +22,8 @@
  */
 package javax.swing;
 
-
 public class JToggleButtonModelTest extends DefaultButtonModelTest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         buttonModel = new JToggleButton.ToggleButtonModel();
@@ -33,26 +32,24 @@ public class JToggleButtonModelTest extends DefaultButtonModelTest {
     /*
      * @see DefaultButtonModelTest#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         buttonModel = null;
         super.tearDown();
     }
 
+    @Override
     public void testSetPressed() {
         super.testSetPressed();
-
         AbstractButton button = new JToggleButton();
         ButtonModel model = button.getModel();
         model.setPressed(true);
         model.setArmed(true);
         model.setPressed(false);
-
         assertTrue("selected", button.isSelected());
-
         model.setPressed(true);
         model.setArmed(true);
         model.setPressed(false);
-
         assertFalse("selected", button.isSelected());
         model.setSelected(true);
         assertTrue("selected", button.isSelected());
@@ -66,5 +63,4 @@ public class JToggleButtonModelTest extends DefaultButtonModelTest {
         assertTrue("enabled ", model.isEnabled());
         assertFalse("rollover ", model.isRollover());
     }
-
 }

@@ -18,7 +18,6 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.util.Calendar;
@@ -27,17 +26,20 @@ import java.util.GregorianCalendar;
 
 public class SpinnerDateModelTest extends BasicSwingTestCase {
     private SpinnerDateModel model;
+
     private ChangeController chl;
 
     private Date now;
+
     private Date past;
+
     private Date future;
 
+    @Override
     public void setUp() {
         model = new SpinnerDateModel();
         chl = new ChangeController(false);
         model.addChangeListener(chl);
-
         Calendar calendar = new GregorianCalendar();
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         now = calendar.getTime();
@@ -47,6 +49,7 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         future = calendar.getTime();
     }
 
+    @Override
     public void tearDown() {
         model = null;
         chl = null;
@@ -60,23 +63,26 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         assertEquals(Calendar.DAY_OF_MONTH, model.getCalendarField());
         assertNull(model.getStart());
         assertNull(model.getEnd());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerDateModel(null, null, null, Calendar.DAY_OF_MONTH);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerDateModel(now, future, null, Calendar.DAY_OF_MONTH);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerDateModel(now, null, past, Calendar.DAY_OF_MONTH);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model = new SpinnerDateModel(now, null, null, 666);
             }
@@ -87,10 +93,8 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         model.setStart(past);
         assertTrue(chl.isChanged());
         assertSame(past, model.getStart());
-
         model.setValue(now);
         model.setStart(future);
-
         model.setStart(now);
         chl.reset();
         model.setStart(now);
@@ -101,10 +105,8 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         model.setEnd(future);
         assertTrue(chl.isChanged());
         assertSame(future, model.getEnd());
-
         model.setValue(now);
         model.setEnd(past);
-
         model.setEnd(now);
         chl.reset();
         model.setEnd(now);
@@ -117,21 +119,20 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         assertNotSame(now, model.getValue());
         assertEquals(now, model.getValue());
         assertNotSame(model.getValue(), model.getValue());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setValue(null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setValue("test");
             }
         });
-
         model.setEnd(past);
         model.setValue(now);
-
         model.setValue(now);
         chl.reset();
         model.setValue(now);
@@ -148,13 +149,12 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         model.setCalendarField(Calendar.ERA);
         assertTrue(chl.isChanged());
         assertEquals(Calendar.ERA, model.getCalendarField());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.setCalendarField(666);
             }
         });
-
         model.setCalendarField(Calendar.DAY_OF_WEEK);
         chl.reset();
         model.setCalendarField(Calendar.DAY_OF_WEEK);
@@ -166,12 +166,10 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         model.setEnd(future);
         now.setDate(now.getDate() + 1);
         assertEquals(now, model.getNextValue());
-
         now.setDate(now.getDate() - 1);
         model.setCalendarField(Calendar.MINUTE);
         now.setMinutes(now.getMinutes() + 1);
         assertEquals(now, model.getNextValue());
-
         model.setCalendarField(Calendar.YEAR);
         assertNull(model.getNextValue());
     }
@@ -181,14 +179,11 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         model.setStart(past);
         now.setDate(now.getDate() - 1);
         assertEquals(now, model.getPreviousValue());
-
         now.setDate(now.getDate() + 1);
         model.setCalendarField(Calendar.MINUTE);
         now.setMinutes(now.getMinutes() - 1);
         assertEquals(now, model.getPreviousValue());
-
         model.setCalendarField(Calendar.YEAR);
         assertNull(model.getPreviousValue());
     }
 }
-

@@ -15,25 +15,26 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.SeparatorUI;
 import javax.swing.plaf.basic.BasicSeparatorUI;
-
 import junit.framework.TestCase;
 
 public class JSeparatorTest extends TestCase {
-
     protected JSeparator separator;
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         separator = new JSeparator();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         separator = null;
         super.tearDown();
@@ -50,27 +51,27 @@ public class JSeparatorTest extends TestCase {
      * Test method for 'javax.swing.JSeparator.JSeparator(int)'
      */
     public void testJSeparatorInt() {
-        separator =  new JSeparator(SwingConstants.HORIZONTAL);
+        separator = new JSeparator(SwingConstants.HORIZONTAL);
         assertEquals(SwingConstants.HORIZONTAL, separator.getOrientation());
-
-        separator =  new JSeparator(SwingConstants.VERTICAL);
+        separator = new JSeparator(SwingConstants.VERTICAL);
         assertEquals(SwingConstants.VERTICAL, separator.getOrientation());
-
         try {
-            separator =  new JSeparator(1000);
+            separator = new JSeparator(1000);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
      * Test method for 'javax.swing.JSeparator.getAccessibleContext()'
      */
     public void testGetAccessibleContext() {
-        boolean assertedValue = (separator.getAccessibleContext() != null &&
-                separator.getAccessibleContext().getClass().getName().equals("javax.swing.JSeparator$AccessibleJSeparator"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.SEPARATOR, separator.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (separator.getAccessibleContext() != null && separator
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JSeparator$AccessibleJSeparator"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.SEPARATOR, separator
+                .getAccessibleContext().getAccessibleRole());
     }
 
     /*
@@ -93,11 +94,9 @@ public class JSeparatorTest extends TestCase {
     public void testSetUISeparatorUI() {
         SeparatorUI ui1 = new BasicSeparatorUI();
         SeparatorUI ui2 = new BasicSeparatorUI();
-
         separator.setUI(ui1);
         assertEquals(ui1, separator.ui);
         assertEquals(ui1, separator.getUI());
-
         separator.setUI(ui2);
         assertEquals(ui2, separator.ui);
         assertEquals(ui2, separator.getUI());
@@ -109,14 +108,12 @@ public class JSeparatorTest extends TestCase {
     public void testGetSetOrientation() {
         separator.setOrientation(SwingConstants.HORIZONTAL);
         assertEquals(SwingConstants.HORIZONTAL, separator.getOrientation());
-
         separator.setOrientation(SwingConstants.VERTICAL);
         assertEquals(SwingConstants.VERTICAL, separator.getOrientation());
-
         try {
             separator.setOrientation(1000);
             fail("no exception has been thrown");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
-
 }

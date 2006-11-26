@@ -21,8 +21,6 @@
 package javax.swing;
 
 import java.io.File;
-
-import javax.swing.BasicSwingTestCase.PropertyChangeController;
 import javax.swing.filechooser.FileFilter;
 
 public class JFileChooserRTest extends BasicSwingTestCase {
@@ -32,36 +30,35 @@ public class JFileChooserRTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         chooser = new JFileChooser();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         chooser = null;
     }
 
     public void testAddChoosableFileFilter() throws Exception {
         FileFilter ff = new FileFilter() {
+            @Override
             public boolean accept(File file) {
                 return false;
             }
 
+            @Override
             public String getDescription() {
                 return "any";
             }
         };
-
         assertEquals(1, chooser.getChoosableFileFilters().length);
-
         chooser.addChoosableFileFilter(ff);
         assertEquals(2, chooser.getChoosableFileFilters().length);
-
         chooser.addChoosableFileFilter(ff);
         assertEquals(2, chooser.getChoosableFileFilters().length);
-
         chooser.addChoosableFileFilter(chooser.getAcceptAllFileFilter());
         assertEquals(2, chooser.getChoosableFileFilters().length);
-
         assertSame(chooser.getAcceptAllFileFilter(), chooser.getChoosableFileFilters()[0]);
         assertSame(ff, chooser.getChoosableFileFilters()[1]);
     }
@@ -69,17 +66,15 @@ public class JFileChooserRTest extends BasicSwingTestCase {
     public void testGetSetSelectedFile() throws Exception {
         propertyChangeController = new PropertyChangeController();
         chooser.addPropertyChangeListener(propertyChangeController);
-
         assertNull(chooser.getSelectedFile());
-        File selectedFile = new File(new File(".").getCanonicalPath() + File.separator + "testFile");
+        File selectedFile = new File(new File(".").getCanonicalPath() + File.separator
+                + "testFile");
         selectedFile.deleteOnExit();
         chooser.setSelectedFile(selectedFile);
-
         assertEquals(selectedFile, chooser.getSelectedFile());
         assertEquals(0, chooser.getSelectedFiles().length);
-        assertEquals(selectedFile.getAbsoluteFile().getParentFile().getCanonicalFile(),
-                     chooser.getCurrentDirectory().getCanonicalFile());
-
+        assertEquals(selectedFile.getAbsoluteFile().getParentFile().getCanonicalFile(), chooser
+                .getCurrentDirectory().getCanonicalFile());
         selectedFile.mkdir();
         chooser.setSelectedFile(selectedFile);
         assertEquals(selectedFile, chooser.getSelectedFile());

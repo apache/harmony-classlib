@@ -14,24 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleValue;
-
 import javax.swing.plaf.ComponentUI;
-
 import javax.swing.plaf.basic.BasicDesktopIconUI;
 
 public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
@@ -51,17 +46,19 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
     }
 
     private JInternalFrame.JDesktopIcon icon;
+
     private JInternalFrame frame;
 
     public JInternalFrame$JDesktopIconTest(final String name) {
         super(name);
     }
+
     //public static void main(String[] args) {
     //}
-
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JInternalFrame();
@@ -71,6 +68,7 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -81,14 +79,12 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
     public void testUpdateUI() {
         icon.setBounds(0, 0, 0, 0);
         icon.updateUI();
-
         ComponentUI ui1 = frame.getUI();
         ComponentUI ui2 = UIManager.getUI(frame);
         // at least names of classes must be the same
         assertEquals(ui2.getClass().getName(), ui1.getClass().getName());
-        assertTrue("size is set to preferred",
-                   icon.getSize().equals(icon.getPreferredSize()));
-   }
+        assertTrue("size is set to preferred", icon.getSize().equals(icon.getPreferredSize()));
+    }
 
     /*
      * Class under test for void JDesktopIcon(JInternalFrame)
@@ -98,8 +94,7 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
         icon = new JInternalFrame.JDesktopIcon(frame);
         assertTrue("frame is set", icon.getInternalFrame() == frame);
         assertTrue("ui != null", icon.getUI() != null);
-        assertTrue("size is set to preferred",
-                   icon.getSize().equals(icon.getPreferredSize()));
+        assertTrue("size is set to preferred", icon.getSize().equals(icon.getPreferredSize()));
         assertFalse("isVisible", icon.isVisible());
     }
 
@@ -123,12 +118,10 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
         MyPropertyChangeListener l = new MyPropertyChangeListener();
         icon.addPropertyChangeListener(l);
         // test valid set
-
         frame = new JInternalFrame();
         icon.setInternalFrame(frame);
         assertTrue(icon.getInternalFrame() == frame);
         assertFalse("internalFrame is not a bound property", l.ok);
-
         // test set to null
         icon.setInternalFrame(null);
         assertNull(icon.getInternalFrame());
@@ -139,12 +132,10 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
      */
     public void testGetDesktopPane() {
         assertNull("null by default", icon.getDesktopPane());
-
         // test when not iconified
         JDesktopPane desktop = new JDesktopPane();
         desktop.add(frame);
         assertTrue("desktop is set", icon.getDesktopPane() == desktop);
-
         // test when iconified
         try {
             frame.setIcon(true);
@@ -159,48 +150,36 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
      */
     public void testGetAccessibleContext() {
         AccessibleContext c = icon.getAccessibleContext();
-
         assertTrue("instanceof AccessibleJDesktopIcon",
-                   c instanceof JInternalFrame.JDesktopIcon.AccessibleJDesktopIcon);
-
+                c instanceof JInternalFrame.JDesktopIcon.AccessibleJDesktopIcon);
         // test getAccessibleRole()
-        assertTrue("AccessibleRole ok",
-                   c.getAccessibleRole() == AccessibleRole.DESKTOP_ICON);
-
+        assertTrue("AccessibleRole ok", c.getAccessibleRole() == AccessibleRole.DESKTOP_ICON);
         // test getAccessibleValue()
         assertTrue("AccessibleValue ok", c.getAccessibleValue() == c);
-
         // test setCurrentAccessibleValue(), getCurrentAccessibleValue()
         AccessibleValue value = c.getAccessibleValue();
         assertTrue("currentAccessibleValue == 0",
                 value.getCurrentAccessibleValue().intValue() == 0);
-         Integer currentAccessibleValue = new Integer(4);
-         boolean set = value.setCurrentAccessibleValue(currentAccessibleValue);
-         assertTrue("setCurrentAccessibleValue returns true", set);
-         set = value.setCurrentAccessibleValue(new Float(5));
-         assertTrue("setCurrentAccessibleValue returns true", set);
-
-         assertTrue("currentAccessibleValue == 5",
-                 value.getCurrentAccessibleValue().intValue() == 5);
-         assertTrue("the object is not the same",
-                    value.getCurrentAccessibleValue() != currentAccessibleValue);
-
-         set = value.setCurrentAccessibleValue(null);
-         assertFalse("setCurrentAccessibleValue returns false", set);
-
+        Integer currentAccessibleValue = new Integer(4);
+        boolean set = value.setCurrentAccessibleValue(currentAccessibleValue);
+        assertTrue("setCurrentAccessibleValue returns true", set);
+        set = value.setCurrentAccessibleValue(new Float(5));
+        assertTrue("setCurrentAccessibleValue returns true", set);
+        assertTrue("currentAccessibleValue == 5",
+                value.getCurrentAccessibleValue().intValue() == 5);
+        assertTrue("the object is not the same",
+                value.getCurrentAccessibleValue() != currentAccessibleValue);
+        set = value.setCurrentAccessibleValue(null);
+        assertFalse("setCurrentAccessibleValue returns false", set);
         // test getMinimumAccessibleValue()
         assertTrue("minimumAccessibleValue ok",
-                   value.getMinimumAccessibleValue().intValue() == Integer.MIN_VALUE);
-
+                value.getMinimumAccessibleValue().intValue() == Integer.MIN_VALUE);
         // test getMaximumAccessibleValue()
         assertTrue("maximumAccessibleValue ok",
-                   value.getMaximumAccessibleValue().intValue() == Integer.MAX_VALUE);
-
+                value.getMaximumAccessibleValue().intValue() == Integer.MAX_VALUE);
         // test other methods
-        assertNull("AccessibleDescription is ok",
-                c.getAccessibleDescription());
-        assertTrue("AccessibleChildrenCount == 2",
-                   c.getAccessibleChildrenCount() == 2);
+        assertNull("AccessibleDescription is ok", c.getAccessibleDescription());
+        assertTrue("AccessibleChildrenCount == 2", c.getAccessibleChildrenCount() == 2);
     }
 
     /*

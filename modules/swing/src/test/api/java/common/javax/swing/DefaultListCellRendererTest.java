@@ -25,7 +25,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.border.Border;
 
 public class DefaultListCellRendererTest extends SwingTestCase {
@@ -35,11 +34,13 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         renderer = new DefaultListCellRenderer();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         renderer = null;
         super.tearDown();
@@ -51,38 +52,34 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         list.setBackground(Color.blue);
         list.setSelectionForeground(Color.pink);
         list.setSelectionBackground(Color.yellow);
-
         Component result = renderer.getListCellRendererComponent(list, "one", 0, false, false);
         assertTrue(result == renderer);
-        JLabel label = (JLabel)result;
+        JLabel label = (JLabel) result;
         assertEquals("one", label.getText());
         assertEquals(Color.red, label.getForeground());
         assertEquals(Color.blue, label.getBackground());
         assertEquals(DefaultListCellRenderer.noFocusBorder, label.getBorder());
-
         result = renderer.getListCellRendererComponent(list, "two", 0, true, false);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("two", label.getText());
         assertEquals(Color.pink, label.getForeground());
         assertEquals(Color.yellow, label.getBackground());
         assertEquals(DefaultListCellRenderer.noFocusBorder, label.getBorder());
-
         Border border = BorderFactory.createEtchedBorder();
         DefaultListCellRenderer.noFocusBorder = border;
         result = renderer.getListCellRendererComponent(list, "one", 0, false, false);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("one", label.getText());
         assertEquals(Color.red, label.getForeground());
         assertEquals(Color.blue, label.getBackground());
         assertEquals(border, label.getBorder());
-
         border = BorderFactory.createRaisedBevelBorder();
         UIManager.put("List.focusCellHighlightBorder", border);
         result = renderer.getListCellRendererComponent(list, "three", 0, true, true);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("three", label.getText());
         assertEquals(Color.pink, label.getForeground());
         assertEquals(Color.yellow, label.getBackground());
@@ -95,23 +92,20 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         list.setBackground(Color.blue);
         list.setSelectionForeground(Color.pink);
         list.setSelectionBackground(Color.yellow);
-
         Component result = renderer.getListCellRendererComponent(list, "one", 0, false, false);
         assertTrue(result == renderer);
-        JLabel label = (JLabel)result;
+        JLabel label = (JLabel) result;
         assertEquals("one", label.getText());
         assertEquals(Color.red, label.getForeground());
         assertEquals(Color.blue, label.getBackground());
         assertEquals(list.getFont(), label.getFont());
         assertTrue(label.isEnabled());
-
         result = renderer.getListCellRendererComponent(list, "two", 0, true, false);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("two", label.getText());
         assertEquals(Color.pink, label.getForeground());
         assertEquals(Color.yellow, label.getBackground());
-
         list.setForeground(Color.black);
         list.setBackground(Color.green);
         list.setSelectionForeground(Color.gray);
@@ -119,19 +113,17 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         Font font = list.getFont().deriveFont(100);
         list.setFont(font);
         list.setEnabled(false);
-
         result = renderer.getListCellRendererComponent(list, "one", 0, false, false);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("one", label.getText());
         assertEquals(Color.black, label.getForeground());
         assertEquals(Color.green, label.getBackground());
         assertEquals(font, label.getFont());
         assertFalse(label.isEnabled());
-
         result = renderer.getListCellRendererComponent(list, "two", 0, true, false);
         assertTrue(result == renderer);
-        label = (JLabel)result;
+        label = (JLabel) result;
         assertEquals("two", label.getText());
         assertEquals(Color.gray, label.getForeground());
         assertEquals(Color.yellow, label.getBackground());
@@ -140,20 +132,17 @@ public class DefaultListCellRendererTest extends SwingTestCase {
     public void testFirePropertyChange() throws Exception {
         TestListener listener = new TestListener();
         renderer.addPropertyChangeListener(listener);
-
         renderer.firePropertyChange("qqq", true, false);
-        renderer.firePropertyChange("qqq", (byte)5, (byte)7);
+        renderer.firePropertyChange("qqq", (byte) 5, (byte) 7);
         renderer.firePropertyChange("qqq", 'a', 'b');
         renderer.firePropertyChange("qqq", 5d, 7d);
         renderer.firePropertyChange("qqq", 5f, 7f);
         renderer.firePropertyChange("qqq", 5, 7);
-        renderer.firePropertyChange("qqq", (long)5, (long)7);
-        renderer.firePropertyChange("qqq", (short)5, (short)7);
+        renderer.firePropertyChange("qqq", (long) 5, (long) 7);
+        renderer.firePropertyChange("qqq", (short) 5, (short) 7);
         renderer.firePropertyChange("qqq", "a", "b");
-
         assertNull(listener.getEvent());
     }
-
 
     private class TestListener implements PropertyChangeListener {
         private PropertyChangeEvent event;

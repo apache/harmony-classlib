@@ -20,10 +20,10 @@
  */
 package javax.swing;
 
-
 public class ToolTipManagerRTest extends BasicSwingTestCase {
     public void testUnregisterComponent() throws Exception {
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 ToolTipManager.sharedInstance().unregisterComponent(null);
             }

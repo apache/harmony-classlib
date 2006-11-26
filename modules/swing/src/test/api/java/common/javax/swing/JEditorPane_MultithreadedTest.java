@@ -20,26 +20,20 @@
  */
 package javax.swing;
 
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Element;
-import javax.swing.text.SimpleAttributeSet;
-
 import junit.framework.TestCase;
 
 public class JEditorPane_MultithreadedTest extends TestCase {
-    JEditorPane         jep;
+    JEditorPane jep;
 
-    JFrame              jf;
+    JFrame jf;
 
-    SetTextMaster       masterSetText       = new SetTextMaster();
+    SetTextMaster masterSetText = new SetTextMaster();
 
     MakeSelectionMaster masterMakeSelection = new MakeSelectionMaster();
 
     UnsupportedOperationException ex;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ex = null;
@@ -50,20 +44,10 @@ public class JEditorPane_MultithreadedTest extends TestCase {
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
-    }
-
-    private AttributeSet getAttributeSetByIndex(final AbstractDocument d,
-                                                final int offset) {
-        AttributeSet as = null;
-        Element elem = d.getDefaultRootElement();
-        while (elem.getElementCount() > 0) {
-            elem = elem.getElement(elem.getElementIndex(offset));
-            as = elem.getAttributes();
-        }
-        return as;
     }
 
     final class MakeSelectionMaster implements Runnable {
@@ -103,21 +87,17 @@ public class JEditorPane_MultithreadedTest extends TestCase {
         masterMakeSelection.setDotAndMark(7, 4);
         SwingUtilities.invokeAndWait(masterSetText);
         SwingUtilities.invokeAndWait(masterMakeSelection);
-
         jep.replaceSelection("XXX");
         assertEquals("testXXXlaceSelection", jep.getText());
-
         masterMakeSelection.setDotAndMark(4, 2);
         SwingUtilities.invokeAndWait(masterMakeSelection);
         jep.replaceSelection(null);
         assertEquals("teXXXlaceSelection", jep.getText());
-
         masterMakeSelection.setDotAndMark(2, 0);
         SwingUtilities.invokeAndWait(masterMakeSelection);
         jep.replaceSelection(null);
         assertEquals("XXXlaceSelection", jep.getText());
-
-        masterMakeSelection.setDotAndMark(3,3);
+        masterMakeSelection.setDotAndMark(3, 3);
         SwingUtilities.invokeAndWait(masterMakeSelection);
         jep.replaceSelection("YYY");
         assertEquals("XXXYYYlaceSelection", jep.getText());
@@ -132,106 +112,98 @@ public class JEditorPane_MultithreadedTest extends TestCase {
                 jep.setSelectionEnd(5);
             }
         });
-
         jep.replaceSelection("AAAA");
-
         assertEquals("la", jep.getSelectedText());
         assertEquals("replaceSelectionNotEditable", jep.getText());
     }
+
     //temporary commented: DefaultStyledDocument not implemented
     /*public void testReplaceSelectionWithAttributes() throws Exception {
-        final AbstractDocument doc = new DefaultStyledDocument();
-        SimpleAttributeSet as1 = new SimpleAttributeSet();
-        as1.addAttribute("key1", "value1");
-        SimpleAttributeSet as2 = new SimpleAttributeSet();
-        as2.addAttribute("key2", "value2");
+     final AbstractDocument doc = new DefaultStyledDocument();
+     SimpleAttributeSet as1 = new SimpleAttributeSet();
+     as1.addAttribute("key1", "value1");
+     SimpleAttributeSet as2 = new SimpleAttributeSet();
+     as2.addAttribute("key2", "value2");
 
-        try {
-            doc.insertString(0, "testReplaceSelection", as1);
-            doc.insertString(4, "INSERT", as2);
-        } catch (final BadLocationException e) {
-            assertFalse("unexpected exception :" + e.getMessage(), true);
-        }
-        SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-                try {
-                    jep.setEditorKit(new RTFEditorKit());
-                    jep.setDocument(doc);
-                } catch(UnsupportedOperationException e){
-                    ex = e;
-                }
-            }
-        });
-        if (ex != null)
-            return;
-        masterMakeSelection.setDotAndMark(7, 6);
-        SwingUtilities.invokeAndWait(masterMakeSelection);
+     try {
+     doc.insertString(0, "testReplaceSelection", as1);
+     doc.insertString(4, "INSERT", as2);
+     } catch (final BadLocationException e) {
+     assertFalse("unexpected exception :" + e.getMessage(), true);
+     }
+     SwingUtilities.invokeAndWait(new Runnable() {
+     public void run() {
+     try {
+     jep.setEditorKit(new RTFEditorKit());
+     jep.setDocument(doc);
+     } catch(UnsupportedOperationException e){
+     ex = e;
+     }
+     }
+     });
+     if (ex != null)
+     return;
+     masterMakeSelection.setDotAndMark(7, 6);
+     SwingUtilities.invokeAndWait(masterMakeSelection);
 
-        jep.replaceSelection("YYY");
+     jep.replaceSelection("YYY");
 
-        for (int i = 0; i < doc.getLength(); i++) {
-            AttributeSet as = getAttributeSetByIndex(doc, i);
-            if (i > 3 && i < 12)
-                assertEquals(as2, as);
-            else
-                assertEquals(as1, as);
-        }
-    }*/
-
+     for (int i = 0; i < doc.getLength(); i++) {
+     AttributeSet as = getAttributeSetByIndex(doc, i);
+     if (i > 3 && i < 12)
+     assertEquals(as2, as);
+     else
+     assertEquals(as1, as);
+     }
+     }*/
     public void testSetGetTextPlain() throws Exception {
         jep.setText(JEditorPaneTest.plainString);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-
-                assertEquals("plain", JEditorPaneTest.plainString, jep
-                        .getText());
+                assertEquals("plain", JEditorPaneTest.plainString, jep.getText());
             }
         });
-
     };
 
     public void testSetGetTextRtf() throws Exception {
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 try {
-                   jep.setContentType("text/rtf");
-                } catch(UnsupportedOperationException e){
+                    jep.setContentType("text/rtf");
+                } catch (UnsupportedOperationException e) {
                     ex = e;
                 }
             }
         });
-        if (ex != null)
+        if (ex != null) {
             return;
+        }
         jep.setText(JEditorPaneTest.rtfString);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-                assertEquals("blablabla\n", JEditorPaneTest.getDocContent(jep
-                        .getDocument()));
+                assertEquals("blablabla\n", JEditorPaneTest.getDocContent(jep.getDocument()));
             }
         });
     };
 
     public void testSetGetTextHTML() throws Exception {
-
         SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    try {
-                       jep.setContentType("text/html");
-                    } catch(UnsupportedOperationException e){
-                        ex = e;
-                    }
+            public void run() {
+                try {
+                    jep.setContentType("text/html");
+                } catch (UnsupportedOperationException e) {
+                    ex = e;
                 }
+            }
         });
-        if (ex != null)
+        if (ex != null) {
             return;
-
+        }
         jep.setText(JEditorPaneTest.htmlString);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-                assertEquals(JEditorPaneTest
-                        .removeMeta(JEditorPaneTest.htmlString),
-                             JEditorPaneTest.removeMeta(jep.getText()
-                                     .replaceAll("\n", "")));
+                assertEquals(JEditorPaneTest.removeMeta(JEditorPaneTest.htmlString),
+                        JEditorPaneTest.removeMeta(jep.getText().replaceAll("\n", "")));
             }
         });
     };

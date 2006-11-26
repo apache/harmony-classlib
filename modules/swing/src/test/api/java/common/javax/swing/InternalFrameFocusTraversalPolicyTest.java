@@ -18,39 +18,41 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.Container;
 import java.awt.Component;
 
 public class InternalFrameFocusTraversalPolicyTest extends SwingTestCase {
-
     /*
      * InternalFrameFocusTraversalPolicy is an abstract class.
      * This class implements its abstract methods.
      */
-    private class TestInternalFrameFocusTraversalPolicy
-            extends InternalFrameFocusTraversalPolicy {
-
+    private class TestInternalFrameFocusTraversalPolicy extends
+            InternalFrameFocusTraversalPolicy {
+        @Override
         public Component getComponentAfter(final Container aContainer,
                 final Component aComponent) {
             return null;
         }
 
+        @Override
         public Component getComponentBefore(final Container aContainer,
                 final Component aComponent) {
             return null;
         }
 
+        @Override
         public Component getFirstComponent(final Container aContainer) {
             return null;
         }
 
+        @Override
         public Component getLastComponent(final Container aContainer) {
             return null;
         }
 
+        @Override
         public Component getDefaultComponent(final Container aContainer) {
             if (aContainer == null) {
                 throw new IllegalArgumentException();
@@ -68,9 +70,9 @@ public class InternalFrameFocusTraversalPolicyTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         policy = new TestInternalFrameFocusTraversalPolicy();
         frame = new JInternalFrame();
     }
@@ -78,6 +80,7 @@ public class InternalFrameFocusTraversalPolicyTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -102,21 +105,19 @@ public class InternalFrameFocusTraversalPolicyTest extends SwingTestCase {
     public void testGetInitialComponent() {
         // no components in the frame, shold return null
         assertNull("null", policy.getInitialComponent(frame));
-
         // test with 'null' parameter
         boolean ok = false;
         try {
-            policy.getInitialComponent((JInternalFrame)null);
+            policy.getInitialComponent((JInternalFrame) null);
         } catch (IllegalArgumentException e) {
             ok = true;
         } finally {
             assertTrue("exception", ok);
         }
-
         // there are components
         mostRecentFocusOwner = new JPanel();
         frame.getContentPane().add(mostRecentFocusOwner);
-        assertTrue("mostRecentFocusOwner", policy.getInitialComponent(frame) ==
-                mostRecentFocusOwner);
+        assertTrue("mostRecentFocusOwner",
+                policy.getInitialComponent(frame) == mostRecentFocusOwner);
     }
 }

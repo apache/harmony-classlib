@@ -26,47 +26,57 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 public class SwingUtilitiesRTest extends SwingTestCase {
-
     public void testLayoutCompoundLabel() {
         JComponent c = new JButton();
         FontMetrics fm = c.getFontMetrics(c.getFont());
         Rectangle viewRectangle = new Rectangle(1000, 1000);
         Rectangle iconRectangle = new Rectangle();
         Rectangle textRectangle = new Rectangle();
-
-        SwingUtilities.layoutCompoundLabel(c, fm, "text", null,
-                                        SwingConstants.CENTER, SwingConstants.LEADING,
-                                        SwingConstants.CENTER, SwingConstants.TRAILING,
-                                        viewRectangle, iconRectangle, textRectangle, 0);
+        SwingUtilities.layoutCompoundLabel(c, fm, "text", null, SwingConstants.CENTER,
+                SwingConstants.LEADING, SwingConstants.CENTER, SwingConstants.TRAILING,
+                viewRectangle, iconRectangle, textRectangle, 0);
         int textHeight = fm.getHeight();
-        assertEquals(new Rectangle(0, (viewRectangle.height - textHeight)/2 + textHeight/2, 0, 0), iconRectangle);
+        assertEquals(new Rectangle(0, (viewRectangle.height - textHeight) / 2 + textHeight / 2,
+                0, 0), iconRectangle);
     }
 
     public void testIsLeftMiddleRightMouseButton() {
         JComponent panel = new JPanel();
         panel.setPreferredSize(new Dimension(100, 100));
-
-        MouseEvent button1DownEvent = new MouseEvent(panel, 100, 0, MouseEvent.BUTTON1_DOWN_MASK, 50, 50, 1, false);
-        MouseEvent button1PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON1);
-        MouseEvent button1Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON1);
-        MouseEvent button1Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON1);
-        MouseEvent button1DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON1);
-
-        MouseEvent button2DownEvent = new MouseEvent(panel, 100, 0, MouseEvent.BUTTON2_DOWN_MASK, 50, 50, 1, false);
-        MouseEvent button2PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON2);
-        MouseEvent button2Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON2);
-        MouseEvent button2Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON2);
-        MouseEvent button2DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON2);
-
-        MouseEvent button3DownEvent = new MouseEvent(panel, 100, 0, MouseEvent.BUTTON3_DOWN_MASK, 50, 50, 1, false);
-        MouseEvent button3PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON3);
-        MouseEvent button3Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON3);
-        MouseEvent button3Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON3);
-        MouseEvent button3DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0, 50, 50, 1, false, MouseEvent.BUTTON3);
-
+        MouseEvent button1DownEvent = new MouseEvent(panel, 100, 0,
+                InputEvent.BUTTON1_DOWN_MASK, 50, 50, 1, false);
+        MouseEvent button1PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON1);
+        MouseEvent button1Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON1);
+        MouseEvent button1Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON1);
+        MouseEvent button1DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON1);
+        MouseEvent button2DownEvent = new MouseEvent(panel, 100, 0,
+                InputEvent.BUTTON2_DOWN_MASK, 50, 50, 1, false);
+        MouseEvent button2PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON2);
+        MouseEvent button2Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON2);
+        MouseEvent button2Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON2);
+        MouseEvent button2DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON2);
+        MouseEvent button3DownEvent = new MouseEvent(panel, 100, 0,
+                InputEvent.BUTTON3_DOWN_MASK, 50, 50, 1, false);
+        MouseEvent button3PressedEvent = new MouseEvent(panel, MouseEvent.MOUSE_PRESSED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON3);
+        MouseEvent button3Released = new MouseEvent(panel, MouseEvent.MOUSE_RELEASED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON3);
+        MouseEvent button3Clicked = new MouseEvent(panel, MouseEvent.MOUSE_CLICKED, 0, 0, 50,
+                50, 1, false, MouseEvent.BUTTON3);
+        MouseEvent button3DraggedEvent = new MouseEvent(panel, MouseEvent.MOUSE_DRAGGED, 0, 0,
+                50, 50, 1, false, MouseEvent.BUTTON3);
         assertTrue(SwingUtilities.isLeftMouseButton(button1DownEvent));
         assertFalse(SwingUtilities.isLeftMouseButton(button2DownEvent));
         assertFalse(SwingUtilities.isLeftMouseButton(button3DownEvent));
@@ -74,7 +84,6 @@ public class SwingUtilitiesRTest extends SwingTestCase {
         assertTrue(SwingUtilities.isLeftMouseButton(button1Released));
         assertTrue(SwingUtilities.isLeftMouseButton(button1Clicked));
         assertFalse(SwingUtilities.isLeftMouseButton(button1DraggedEvent));
-
         assertFalse(SwingUtilities.isMiddleMouseButton(button1DownEvent));
         assertTrue(SwingUtilities.isMiddleMouseButton(button2DownEvent));
         assertFalse(SwingUtilities.isMiddleMouseButton(button3DownEvent));
@@ -82,7 +91,6 @@ public class SwingUtilitiesRTest extends SwingTestCase {
         assertTrue(SwingUtilities.isMiddleMouseButton(button2Released));
         assertTrue(SwingUtilities.isMiddleMouseButton(button2Clicked));
         assertFalse(SwingUtilities.isMiddleMouseButton(button2DraggedEvent));
-
         assertFalse(SwingUtilities.isRightMouseButton(button1DownEvent));
         assertFalse(SwingUtilities.isRightMouseButton(button2DownEvent));
         assertTrue(SwingUtilities.isRightMouseButton(button3DownEvent));
@@ -97,5 +105,4 @@ public class SwingUtilitiesRTest extends SwingTestCase {
         final JDialog dialog = new JDialog(f);
         assertSame(f, SwingUtilities.getAncestorOfClass(Frame.class, dialog));
     }
-
 }

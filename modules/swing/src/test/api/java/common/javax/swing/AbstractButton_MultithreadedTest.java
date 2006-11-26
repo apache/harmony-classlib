@@ -24,13 +24,10 @@ package javax.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-
 import javax.swing.Timer_MultithreadedTest.ConcreteActionListener;
-
 import junit.framework.TestCase;
 
 public class AbstractButton_MultithreadedTest extends TestCase {
-
     protected AbstractButton button = null;
 
     public AbstractButton_MultithreadedTest(final String str) {
@@ -40,21 +37,25 @@ public class AbstractButton_MultithreadedTest extends TestCase {
     /*
      * @see JComponentTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         button = new JButton();
     }
 
     /*
      * @see JComponentTest#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
     class MyAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
         public Object performed = null;
+
         public int eventsCounter = 0;
 
         public MyAction(final String text, final Icon icon) {
@@ -116,5 +117,4 @@ public class AbstractButton_MultithreadedTest extends TestCase {
         assertTrue("action performed", listener.performed != null);
         assertTrue("action performed", action.performed != null);
     }
-
 }

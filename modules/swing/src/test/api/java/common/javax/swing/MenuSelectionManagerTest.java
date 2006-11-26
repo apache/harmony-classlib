@@ -15,54 +15,52 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.EventListener;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 public class MenuSelectionManagerTest extends SwingTestCase {
-
-//    class ConcreteMenuDragMouseListener implements MenuDragMouseListener {
-//        public Object event;
-//        public void menuDragMouseDragged(MenuDragMouseEvent e) {
-//            event = "dragged";
-//        }
-//        public void menuDragMouseEntered(MenuDragMouseEvent e) {
-//            event = "entered";
-//        }
-//        public void menuDragMouseExited(MenuDragMouseEvent e) {
-//            event = "exited";
-//        }
-//        public void menuDragMouseReleased(MenuDragMouseEvent e) {
-//            event = "released";
-//        }
-//    };
-
-
-//    JMenuItem itemitem = new JMenuItem() {
-//        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
-//            System.out.println("itemitem: processKeyEvent");
-//            super.processKeyEvent(event, path, manager);
-//        }
-//
-//        public int getMnemonic() {
-//            System.out.println("itemitem: getMnemonic");
-//            return super.getMnemonic();
-//        }
-//    };
-
+    //    class ConcreteMenuDragMouseListener implements MenuDragMouseListener {
+    //        public Object event;
+    //        public void menuDragMouseDragged(MenuDragMouseEvent e) {
+    //            event = "dragged";
+    //        }
+    //        public void menuDragMouseEntered(MenuDragMouseEvent e) {
+    //            event = "entered";
+    //        }
+    //        public void menuDragMouseExited(MenuDragMouseEvent e) {
+    //            event = "exited";
+    //        }
+    //        public void menuDragMouseReleased(MenuDragMouseEvent e) {
+    //            event = "released";
+    //        }
+    //    };
+    //    JMenuItem itemitem = new JMenuItem() {
+    //        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
+    //            System.out.println("itemitem: processKeyEvent");
+    //            super.processKeyEvent(event, path, manager);
+    //        }
+    //
+    //        public int getMnemonic() {
+    //            System.out.println("itemitem: getMnemonic");
+    //            return super.getMnemonic();
+    //        }
+    //    };
     class ConcreteMenuElement extends JComponent implements MenuElement {
+        private static final long serialVersionUID = 1L;
+
         private Component component;
+
         private String name;
+
         public boolean selected = false;
 
         public ConcreteMenuElement(String name, Component component) {
@@ -75,32 +73,36 @@ public class MenuSelectionManagerTest extends SwingTestCase {
             this.name = name;
         }
 
-        public void processMouseEvent(MouseEvent event, MenuElement[] path, MenuSelectionManager manager) {
-//            System.out.println("processMouseEvent (" + name + ")");
+        public void processMouseEvent(MouseEvent event, MenuElement[] path,
+                MenuSelectionManager manager) {
+            //            System.out.println("processMouseEvent (" + name + ")");
         }
 
-        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
-//            System.out.println("processKeyEvent (" + name + ")");
+        public void processKeyEvent(KeyEvent event, MenuElement[] path,
+                MenuSelectionManager manager) {
+            //            System.out.println("processKeyEvent (" + name + ")");
         }
 
         public void menuSelectionChanged(boolean isIncluded) {
-//            System.out.println("menuSelectionChanged (" + name + ")" + ": " + isIncluded);
+            //            System.out.println("menuSelectionChanged (" + name + ")" + ": " + isIncluded);
             selected = isIncluded;
         }
 
         public MenuElement[] getSubElements() {
-//            System.out.println("getSubElements (" + name + ")");
-            return new MenuElement[] {new ConcreteMenuElement(name + "1", component), new ConcreteMenuElement(name + "2", component)};
+            //            System.out.println("getSubElements (" + name + ")");
+            return new MenuElement[] { new ConcreteMenuElement(name + "1", component),
+                    new ConcreteMenuElement(name + "2", component) };
         }
 
         public Component getComponent() {
-//            System.out.println("getComponent (" + name + ")");
+            //            System.out.println("getComponent (" + name + ")");
             return component;
         }
     }
 
     class ConcreteChangeListener implements ChangeListener {
         public ChangeEvent eventHappened;
+
         private final boolean debugOut;
 
         public ConcreteChangeListener() {
@@ -124,21 +126,13 @@ public class MenuSelectionManagerTest extends SwingTestCase {
 
     protected MenuSelectionManager manager;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         manager = new MenuSelectionManager();
-
-        final String key = "asd";
-//        itemitem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), key);
-//        itemitem.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), key);
-//        itemitem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), key);
-//        itemitem.getActionMap().put(key, new AbstractAction() {
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println(key);
-//            }
-//        });
     }
 
+    @Override
     protected void tearDown() throws Exception {
         manager = null;
         super.tearDown();
@@ -161,30 +155,23 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         ChangeListener listener1 = new ConcreteChangeListener();
         ChangeListener listener2 = new ConcreteChangeListener();
         ChangeListener listener3 = new ConcreteChangeListener();
-
         EventListener[] listenersArray = null;
-
         listenersArray = manager.getChangeListeners();
         int initialValue = listenersArray.length;
-
         manager.addChangeListener(listener1);
         manager.addChangeListener(listener2);
         manager.addChangeListener(listener2);
-
         listenersArray = manager.getChangeListeners();
         assertEquals(initialValue + 3, listenersArray.length);
-
         manager.removeChangeListener(listener1);
         manager.addChangeListener(listener3);
         manager.addChangeListener(listener3);
         listenersArray = manager.getChangeListeners();
         assertEquals(initialValue + 4, listenersArray.length);
-
         manager.removeChangeListener(listener3);
         manager.removeChangeListener(listener3);
         listenersArray = manager.getChangeListeners();
         assertEquals(initialValue + 2, listenersArray.length);
-
         manager.removeChangeListener(listener2);
         manager.removeChangeListener(listener2);
         listenersArray = manager.getChangeListeners();
@@ -196,39 +183,39 @@ public class MenuSelectionManagerTest extends SwingTestCase {
      */
     public void testComponentForPoint() {
         // TODO implement
-//        final JMenuBar menuBar = new JMenuBar();
-//        final JMenu menu1 = new JMenu();
-//        final JMenu menu2 = new JMenu();
-//        final JMenu menu3 = new JMenu();
-//        JFrame frame = new JFrame();
-//        frame.getContentPane().add(menuBar);
-//        menuBar.add(menu1);
-//        menu1.add(menu2);
-//        menu2.add(menu3);
-//        menu1.setPreferredSize(new Dimension(20, 20));
-//        menu2.setPreferredSize(new Dimension(100, 100));
-//        menu3.setPreferredSize(new Dimension(100, 100));
-//        MenuElement[] path1 = new MenuElement[] {menuBar, menu1, menu2};
-//        MenuElement[] path2 = new MenuElement[] {menu3, menu1, menu2};
-//        MenuElement[] path4 = new MenuElement[] {menu1};
-//        MenuElement[] path5 = new MenuElement[] {menu2};
-//        MenuElement[] path6 = new MenuElement[] {menu3};
-//        frame.pack();
-//        frame.show();
-//        manager.setSelectedPath(path1);
-//        for (int i = 0; i < 100; i++) {
-//            if (manager.componentForPoint(frame, new Point(i, i)) != null) {
-//                System.out.println(manager.componentForPoint(frame, new Point(i, i)));
-//            }
-//        }
-//        menu1.setPopupMenuVisible(true);
-//        manager.setSelectedPath(path1);
-//        for (int i = 0; i < 100; i++) {
-//            if (manager.componentForPoint(frame, new Point(i, i)) != null) {
-//                System.out.println(manager.componentForPoint(frame, new Point(i, i)));
-//            }
-//        }
-//        frame.dispose();
+        //        final JMenuBar menuBar = new JMenuBar();
+        //        final JMenu menu1 = new JMenu();
+        //        final JMenu menu2 = new JMenu();
+        //        final JMenu menu3 = new JMenu();
+        //        JFrame frame = new JFrame();
+        //        frame.getContentPane().add(menuBar);
+        //        menuBar.add(menu1);
+        //        menu1.add(menu2);
+        //        menu2.add(menu3);
+        //        menu1.setPreferredSize(new Dimension(20, 20));
+        //        menu2.setPreferredSize(new Dimension(100, 100));
+        //        menu3.setPreferredSize(new Dimension(100, 100));
+        //        MenuElement[] path1 = new MenuElement[] {menuBar, menu1, menu2};
+        //        MenuElement[] path2 = new MenuElement[] {menu3, menu1, menu2};
+        //        MenuElement[] path4 = new MenuElement[] {menu1};
+        //        MenuElement[] path5 = new MenuElement[] {menu2};
+        //        MenuElement[] path6 = new MenuElement[] {menu3};
+        //        frame.pack();
+        //        frame.show();
+        //        manager.setSelectedPath(path1);
+        //        for (int i = 0; i < 100; i++) {
+        //            if (manager.componentForPoint(frame, new Point(i, i)) != null) {
+        //                System.out.println(manager.componentForPoint(frame, new Point(i, i)));
+        //            }
+        //        }
+        //        menu1.setPopupMenuVisible(true);
+        //        manager.setSelectedPath(path1);
+        //        for (int i = 0; i < 100; i++) {
+        //            if (manager.componentForPoint(frame, new Point(i, i)) != null) {
+        //                System.out.println(manager.componentForPoint(frame, new Point(i, i)));
+        //            }
+        //        }
+        //        frame.dispose();
     }
 
     /*
@@ -236,8 +223,7 @@ public class MenuSelectionManagerTest extends SwingTestCase {
      */
     public void testDefaultManager() {
         assertNotNull(MenuSelectionManager.defaultManager());
-        assertSame(MenuSelectionManager.defaultManager(),
-                   MenuSelectionManager.defaultManager());
+        assertSame(MenuSelectionManager.defaultManager(), MenuSelectionManager.defaultManager());
     }
 
     /*
@@ -248,7 +234,6 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         ConcreteChangeListener listener2 = new ConcreteChangeListener();
         manager.addChangeListener(listener1);
         manager.addChangeListener(listener2);
-
         manager.fireStateChanged();
         assertNotNull("event fired properly ", listener1.eventHappened);
         assertNotNull("event fired properly ", listener2.eventHappened);
@@ -256,7 +241,6 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         ChangeEvent event1 = listener1.eventHappened;
         listener1.eventHappened = null;
         listener2.eventHappened = null;
-
         manager.fireStateChanged();
         assertNotNull("event fired properly ", listener1.eventHappened);
         assertNotNull("event fired properly ", listener2.eventHappened);
@@ -280,45 +264,38 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         menu6.add(menu7);
         menu1.add(menu2);
         menu3.add(menu1);
-        MenuElement[] path1 = new MenuElement[] {menu1, menu2, new JMenuItem()};
-        MenuElement[] path2 = new MenuElement[] {menu3, menu1, new JCheckBoxMenuItem()};
-        MenuElement[] path3 = new MenuElement[] {menu4, menu1, new JCheckBoxMenuItem()};
-        MenuElement[] path4 = new MenuElement[] {menu3};
-        MenuElement[] path5 = new MenuElement[] {menu5};
-        MenuElement[] path6 = new MenuElement[] {menu6};
-
+        MenuElement[] path1 = new MenuElement[] { menu1, menu2, new JMenuItem() };
+        MenuElement[] path2 = new MenuElement[] { menu3, menu1, new JCheckBoxMenuItem() };
+        MenuElement[] path3 = new MenuElement[] { menu4, menu1, new JCheckBoxMenuItem() };
+        MenuElement[] path4 = new MenuElement[] { menu3 };
+        MenuElement[] path5 = new MenuElement[] { menu5 };
+        MenuElement[] path6 = new MenuElement[] { menu6 };
         assertFalse(manager.isComponentPartOfCurrentMenu(menu1));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu2));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu3));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu4));
-
         manager.setSelectedPath(path1);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu1));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu2));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu3));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu4));
-
         manager.setSelectedPath(path2);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu1));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu2));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu3));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu4));
-
         manager.setSelectedPath(path3);
         assertFalse(manager.isComponentPartOfCurrentMenu(menu1));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu2));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu3));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu4));
-
         manager.setSelectedPath(path4);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu1));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu2));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu3));
         assertFalse(manager.isComponentPartOfCurrentMenu(menu4));
-
         manager.setSelectedPath(path5);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu5));
-
         manager.setSelectedPath(path6);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu6));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu4));
@@ -331,62 +308,62 @@ public class MenuSelectionManagerTest extends SwingTestCase {
      */
     public void testProcessKeyEvent() {
         // TODO implement
-//        ConcreteChangeListener listener1 = new ConcreteChangeListener();
-//        Component c = new ConcreteMenuElement("container", new JMenu());
-//        ConcreteMenuElement element1 = new ConcreteMenuElement("elem1", c);
-//        ConcreteMenuElement element2 = new ConcreteMenuElement("elem2", c);
-//        MenuElement[] path1 = new MenuElement[] {element1};
-//        MenuElement[] path2 = new MenuElement[] {element1, element2};
-//        manager.addChangeListener(listener1);
-//
-//        itemitem.setMnemonic(KeyEvent.VK_A);
-//        itemitem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println("Item");
-//            }
-//        });
-//        KeyEvent event = new KeyEvent(itemitem, KeyEvent.KEY_PRESSED, EventQueue.getMostRecentEventTime(), 0, KeyEvent.VK_A);
-//        manager.processKeyEvent(event);
-//        manager.setSelectedPath(new MenuElement[] {element1, element2});
-//        manager.processKeyEvent(event);
+        //        ConcreteChangeListener listener1 = new ConcreteChangeListener();
+        //        Component c = new ConcreteMenuElement("container", new JMenu());
+        //        ConcreteMenuElement element1 = new ConcreteMenuElement("elem1", c);
+        //        ConcreteMenuElement element2 = new ConcreteMenuElement("elem2", c);
+        //        MenuElement[] path1 = new MenuElement[] {element1};
+        //        MenuElement[] path2 = new MenuElement[] {element1, element2};
+        //        manager.addChangeListener(listener1);
+        //
+        //        itemitem.setMnemonic(KeyEvent.VK_A);
+        //        itemitem.addActionListener(new ActionListener() {
+        //            public void actionPerformed(ActionEvent e) {
+        //                System.out.println("Item");
+        //            }
+        //        });
+        //        KeyEvent event = new KeyEvent(itemitem, KeyEvent.KEY_PRESSED, EventQueue.getMostRecentEventTime(), 0, KeyEvent.VK_A);
+        //        manager.processKeyEvent(event);
+        //        manager.setSelectedPath(new MenuElement[] {element1, element2});
+        //        manager.processKeyEvent(event);
     }
 
     /*
      * Test method for 'javax.swing.MenuSelectionManager.processMouseEvent(MouseEvent)'
      */
     public void testProcessMouseEvent() {
-//        JMenuItem menuItem = new JMenuItem();
-//        MouseEvent event1 = new MouseEvent(menuItem, MouseEvent.MOUSE_DRAGGED,
-//                                           0, 0, 10, 10, 1, true);
-//        MouseEvent event2 = new MouseEvent(menuItem, MouseEvent.MOUSE_EXITED,
-//                                           0, 0, 10, 10, 1, true);
-//        MouseEvent event3 = new MouseEvent(new JButton(), MouseEvent.MOUSE_ENTERED,
-//                                           0, 0, 10, 10, 1, true);
-//        MouseEvent event4 = new MouseEvent(menuItem, MouseEvent.MOUSE_RELEASED,
-//                                           0, MouseEvent.BUTTON1, 10, 10, 1, false);
-//        ConcreteMenuDragMouseListener listener1 = new ConcreteMenuDragMouseListener();
-//        menuItem.addMenuDragMouseListener(listener1);
-//
-//        manager.setSelectedPath(new MenuElement[] {menuItem});
-//        manager.processMouseEvent(event1);
-//        assertEquals("exited", listener1.event);
-//
-//        manager.processMouseEvent(event1);
-//        assertEquals("dragged", listener1.event);
-//
-//        manager.processMouseEvent(event3);
-//        assertEquals("entered", listener1.event);
-//        listener1.event = null;
-//
-//        manager.processMouseEvent(event4);
-//        assertNull(listener1.event);
-//
-//        manager.processMouseEvent(event1);
-//        assertEquals("dragged", listener1.event);
-//        listener1.event = null;
-//
-//        manager.processMouseEvent(event4);
-//        assertEquals("released", listener1.event);
+        //        JMenuItem menuItem = new JMenuItem();
+        //        MouseEvent event1 = new MouseEvent(menuItem, MouseEvent.MOUSE_DRAGGED,
+        //                                           0, 0, 10, 10, 1, true);
+        //        MouseEvent event2 = new MouseEvent(menuItem, MouseEvent.MOUSE_EXITED,
+        //                                           0, 0, 10, 10, 1, true);
+        //        MouseEvent event3 = new MouseEvent(new JButton(), MouseEvent.MOUSE_ENTERED,
+        //                                           0, 0, 10, 10, 1, true);
+        //        MouseEvent event4 = new MouseEvent(menuItem, MouseEvent.MOUSE_RELEASED,
+        //                                           0, MouseEvent.BUTTON1, 10, 10, 1, false);
+        //        ConcreteMenuDragMouseListener listener1 = new ConcreteMenuDragMouseListener();
+        //        menuItem.addMenuDragMouseListener(listener1);
+        //
+        //        manager.setSelectedPath(new MenuElement[] {menuItem});
+        //        manager.processMouseEvent(event1);
+        //        assertEquals("exited", listener1.event);
+        //
+        //        manager.processMouseEvent(event1);
+        //        assertEquals("dragged", listener1.event);
+        //
+        //        manager.processMouseEvent(event3);
+        //        assertEquals("entered", listener1.event);
+        //        listener1.event = null;
+        //
+        //        manager.processMouseEvent(event4);
+        //        assertNull(listener1.event);
+        //
+        //        manager.processMouseEvent(event1);
+        //        assertEquals("dragged", listener1.event);
+        //        listener1.event = null;
+        //
+        //        manager.processMouseEvent(event4);
+        //        assertEquals("released", listener1.event);
     }
 
     /*
@@ -394,10 +371,10 @@ public class MenuSelectionManagerTest extends SwingTestCase {
      */
     public void testSetGetClearSelectedPath() {
         ConcreteChangeListener listener1 = new ConcreteChangeListener();
-        MenuElement[] path1 = new MenuElement[] {new JMenu(), new JMenu(), new JMenuItem()};
-        MenuElement[] path2 = new MenuElement[] {new JMenu(), new JMenu(), new JCheckBoxMenuItem()};
+        MenuElement[] path1 = new MenuElement[] { new JMenu(), new JMenu(), new JMenuItem() };
+        MenuElement[] path2 = new MenuElement[] { new JMenu(), new JMenu(),
+                new JCheckBoxMenuItem() };
         manager.addChangeListener(listener1);
-
         manager.setSelectedPath(path1);
         assertNotSame(path1, manager.getSelectedPath());
         assertEquals(path1.length, manager.getSelectedPath().length);
@@ -408,12 +385,10 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         assertSame(manager, listener1.eventHappened.getSource());
         listener1.eventHappened = null;
         assertNotSame(manager.getSelectedPath(), manager.getSelectedPath());
-
         manager.clearSelectedPath();
         assertEquals(0, manager.getSelectedPath().length);
         assertNotNull(listener1.eventHappened);
         assertSame(manager, listener1.eventHappened.getSource());
-
         manager.setSelectedPath(path2);
         assertNotSame(path2, manager.getSelectedPath());
         assertEquals(path2.length, manager.getSelectedPath().length);
@@ -423,7 +398,6 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         assertNotNull(listener1.eventHappened);
         assertSame(manager, listener1.eventHappened.getSource());
         listener1.eventHappened = null;
-
         manager.setSelectedPath(path2);
         assertEquals(path2.length, manager.getSelectedPath().length);
         if (!isHarmony()) {
@@ -432,7 +406,6 @@ public class MenuSelectionManagerTest extends SwingTestCase {
             assertNull(listener1.eventHappened);
         }
         listener1.eventHappened = null;
-
         manager.setSelectedPath(null);
         assertEquals(0, manager.getSelectedPath().length);
         assertNotNull(listener1.eventHappened);
@@ -443,30 +416,24 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         ConcreteChangeListener listener1 = new ConcreteChangeListener();
         ConcreteMenuElement element1 = new ConcreteMenuElement("elem1", null);
         ConcreteMenuElement element2 = new ConcreteMenuElement("elem2", null);
-        MenuElement[] path1 = new MenuElement[] {element1};
-        MenuElement[] path2 = new MenuElement[] {element1, element2};
+        MenuElement[] path1 = new MenuElement[] { element1 };
+        MenuElement[] path2 = new MenuElement[] { element1, element2 };
         manager.addChangeListener(listener1);
-
         manager.setSelectedPath(path1);
         assertTrue(element1.selected);
         assertFalse(element2.selected);
-
         manager.setSelectedPath(path2);
         assertTrue(element1.selected);
         assertTrue(element2.selected);
-
         manager.setSelectedPath(path1);
         assertTrue(element1.selected);
         assertFalse(element2.selected);
-
         manager.clearSelectedPath();
         assertFalse(element1.selected);
         assertFalse(element2.selected);
-
         manager.setSelectedPath(path2);
         assertTrue(element1.selected);
         assertTrue(element2.selected);
-
         manager.clearSelectedPath();
         assertFalse(element1.selected);
         assertFalse(element2.selected);

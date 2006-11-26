@@ -22,7 +22,6 @@ package javax.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import junit.framework.TestCase;
 
 public class JComboBoxRTest extends TestCase {
@@ -33,41 +32,38 @@ public class JComboBoxRTest extends TestCase {
     }
 
     public void testRemoveAllItems() throws Exception {
-        JComboBox cb = new JComboBox(new String[] {"1", "2", "4"});
+        JComboBox cb = new JComboBox(new String[] { "1", "2", "4" });
         assertEquals(3, cb.getItemCount());
-
         cb.removeAllItems();
         assertEquals(0, cb.getItemCount());
-
         cb.addItem("new");
         assertEquals(1, cb.getItemCount());
     }
 
     public void testKeyboardActionsEnabled() throws Exception {
-        JComboBox cb = new JComboBox(new String[] {"1", "2", "4"});
+        JComboBox cb = new JComboBox(new String[] { "1", "2", "4" });
         checkActionState(cb, "hidePopup", false);
         checkActionState(cb, "enterPressed", true);
         checkActionState(cb, "selectPrevious", true);
-
         checkActionState(cb, "togglePopup", true);
         checkActionState(cb, "spacePopup", true);
     }
 
-
-    private void checkActionState(final JComboBox cb, final String actionName, final boolean expectedState) {
+    private void checkActionState(final JComboBox cb, final String actionName,
+            final boolean expectedState) {
         Action action = cb.getActionMap().get(actionName);
         assertNotNull(action);
         assertEquals(expectedState, action.isEnabled());
     }
-    
+
     public void testSetSelectedItem() {
         // regression test HARMONY-1533
         String item = "item";
-        JComboBox jcb = new JComboBox(new String[]{item});
-        jcb.addActionListener(new ActionListener(){
+        JComboBox jcb = new JComboBox(new String[] { item });
+        jcb.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                eventFired = true;               
-            }            
+                eventFired = true;
+            }
         });
         jcb.setSelectedItem(item);
         assertTrue("action performed", eventFired);

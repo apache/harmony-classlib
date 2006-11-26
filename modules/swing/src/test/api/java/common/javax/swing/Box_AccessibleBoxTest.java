@@ -26,7 +26,6 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
 public class Box_AccessibleBoxTest extends SwingTestCase {
-
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(Box_AccessibleBoxTest.class);
     }
@@ -34,6 +33,7 @@ public class Box_AccessibleBoxTest extends SwingTestCase {
     public void testGetAccessibleRole() {
         Box box = new Box(BoxLayout.X_AXIS);
         AccessibleContext accessible = box.getAccessibleContext();
-        assertEquals("Accessible role is correct ", AccessibleRole.FILLER, accessible.getAccessibleRole());
+        assertEquals("Accessible role is correct ", AccessibleRole.FILLER, accessible
+                .getAccessibleRole());
     }
 }

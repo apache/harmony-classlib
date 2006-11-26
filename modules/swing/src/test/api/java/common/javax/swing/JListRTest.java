@@ -23,7 +23,6 @@ package javax.swing;
 import junit.framework.TestCase;
 
 public class JListRTest extends TestCase {
-
     public void testAddSelectionInterval() throws Exception {
         try {
             JList jl = new JList();
@@ -34,8 +33,8 @@ public class JListRTest extends TestCase {
     }
 
     public void testSetSelectedIndicies() throws Exception {
-        JList l = new JList(new String[] {"", "", "", "", ""});
-        l.setSelectedIndices(new int [] {-1, 2, 3, 4, 200, 250});
+        JList l = new JList(new String[] { "", "", "", "", "" });
+        l.setSelectedIndices(new int[] { -1, 2, 3, 4, 200, 250 });
         assertEquals(2, l.getSelectionModel().getMinSelectionIndex());
         assertEquals(4, l.getSelectionModel().getMaxSelectionIndex());
     }

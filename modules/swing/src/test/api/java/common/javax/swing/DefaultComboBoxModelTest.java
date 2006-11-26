@@ -23,24 +23,26 @@ package javax.swing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 public class DefaultComboBoxModelTest extends SwingTestCase {
     private DefaultComboBoxModel model;
+
     private TestListener listener;
 
     public DefaultComboBoxModelTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         model = new DefaultComboBoxModel();
         listener = new TestListener();
         model.addListDataListener(listener);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         model = null;
         listener = null;
@@ -50,16 +52,14 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         assertEquals(0, model.getSize());
         assertNull(model.getSelectedItem());
         assertEquals(0, listener.getEvents().size());
-
-        Object[] arrayData = new Object[] {"1", "2", "3"};
+        Object[] arrayData = new Object[] { "1", "2", "3" };
         model = new DefaultComboBoxModel(arrayData);
         assertEquals("1", model.getSelectedItem());
         assertEquals(arrayData.length, model.getSize());
         assertEquals("2", model.getElementAt(1));
         arrayData[1] = "21";
         assertEquals("2", model.getElementAt(1));
-
-        Vector vectorData = new Vector();
+        Vector<String> vectorData = new Vector<String>();
         vectorData.add("a");
         vectorData.add("b");
         model = new DefaultComboBoxModel(vectorData);
@@ -78,19 +78,16 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         checkListDataEvent(0, ListDataEvent.INTERVAL_ADDED, 0, 0);
         checkListDataEvent(1, ListDataEvent.CONTENTS_CHANGED, -1, -1);
         assertEquals("1", model.getSelectedItem());
-
         listener.reset();
         model.addElement("2");
         assertEquals(2, model.getSize());
         checkListDataEvent(0, ListDataEvent.INTERVAL_ADDED, 1, 1);
-
         assertEquals("1", model.getElementAt(0));
         assertEquals("2", model.getElementAt(1));
     }
 
     public void testGetElementAt() throws Exception {
         assertNull(model.getElementAt(0));
-
         model.addElement("a");
         model.addElement("b");
         assertEquals("a", model.getElementAt(0));
@@ -100,7 +97,6 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
 
     public void testGetIndexOf() throws Exception {
         assertEquals(-1, model.getIndexOf("a"));
-
         model.addElement("a");
         model.addElement("b");
         model.addElement("a");
@@ -119,16 +115,15 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
 
     public void testInsertElementAt() throws Exception {
         testExceptionalCase(new ExceptionalCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.insertElementAt("a", 1);
             }
         });
-
         model.insertElementAt("a", 0);
         checkListDataEvent(0, ListDataEvent.INTERVAL_ADDED, 0, 0);
         model.addElement("b");
         model.addElement("c");
-
         listener.reset();
         model.insertElementAt("after_a", 1);
         assertEquals("after_a", model.getElementAt(1));
@@ -139,7 +134,6 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         model.addElement("a");
         model.addElement("b");
         model.addElement("c");
-
         listener.reset();
         model.removeAllElements();
         assertEquals(0, model.getSize());
@@ -151,11 +145,9 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         model.removeElement("a");
         assertEquals(0, model.getSize());
         assertEquals(0, listener.getEvents().size());
-
         model.addElement("a");
         model.addElement("b");
         model.addElement("c");
-
         listener.reset();
         model.removeElement("b");
         assertEquals(2, model.getSize());
@@ -165,29 +157,26 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
 
     public void testRemoveElementAt() throws Exception {
         testExceptionalCase(new ExceptionalCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.removeElementAt(0);
             }
         });
-
         model.addElement("a");
         model.addElement("b");
         model.addElement("c");
-
         testExceptionalCase(new ExceptionalCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.removeElementAt(3);
             }
         });
-
         model.removeElementAt(0);
         assertEquals(2, model.getSize());
         assertEquals("b", model.getElementAt(0));
-
         model.removeElementAt(1);
         assertEquals(1, model.getSize());
         assertEquals("b", model.getElementAt(0));
-
         model.removeElementAt(0);
         assertEquals(0, model.getSize());
     }
@@ -197,27 +186,21 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         model.setSelectedItem("3");
         assertEquals("3", model.getSelectedItem());
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-
         listener.reset();
         model.setSelectedItem(null);
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-
         listener.reset();
         model.setSelectedItem(null);
         assertEquals(0, listener.getEvents().size());
-
         model.setSelectedItem("3");
         model.addElement("0");
         model.addElement("1");
         model.addElement("2");
         assertEquals("3", model.getSelectedItem());
-
         model.removeElement("0");
         assertEquals("3", model.getSelectedItem());
-
         model.addElement("3");
         assertEquals("3", model.getSelectedItem());
-
         model.addElement("4");
         listener.reset();
         model.removeElement("3");
@@ -225,16 +208,13 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
         checkListDataEvent(1, ListDataEvent.INTERVAL_REMOVED, 2, 2);
         assertEquals(2, listener.getEvents().size());
-
         model.removeElementAt(1);
         assertEquals("1", model.getSelectedItem());
-
         model.addElement("5");
         model.addElement("6");
         assertEquals("1", model.getSelectedItem());
         model.removeElementAt(1);
         assertEquals("1", model.getSelectedItem());
-
         model.addElement("7");
         model.addElement("1");
         listener.reset();
@@ -242,22 +222,18 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         assertEquals("5", model.getSelectedItem());
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
         checkListDataEvent(1, ListDataEvent.INTERVAL_REMOVED, 0, 0);
-
         listener.reset();
         model.removeAllElements();
         assertNull(model.getSelectedItem());
         checkListDataEvent(0, ListDataEvent.INTERVAL_REMOVED, 0, 3);
         assertEquals(1, listener.getEvents().size());
-
         listener.reset();
         model.setSelectedItem("0");
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-
         listener.reset();
         model.removeAllElements();
         assertNull(model.getSelectedItem());
         assertEquals(0, listener.getEvents().size());
-
         model.addElement("a");
         model.addElement("b");
         model.addElement("c");
@@ -265,21 +241,19 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
         assertEquals("a", model.getSelectedItem());
         model.setSelectedItem("b");
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
-
         listener.reset();
         model.setSelectedItem("b");
         assertEquals(0, listener.getEvents().size());
-
         listener.reset();
         model.setSelectedItem("c");
         checkListDataEvent(0, ListDataEvent.CONTENTS_CHANGED, -1, -1);
         assertEquals(1, listener.getEvents().size());
     }
 
-
-    private void checkListDataEvent(final int eventIndex, final int eventType, final int index0, final int index1) {
+    private void checkListDataEvent(final int eventIndex, final int eventType,
+            final int index0, final int index1) {
         assertTrue(listener.getEvents().size() > eventIndex);
-        ListDataEvent event = (ListDataEvent)listener.getEvents().get(eventIndex);
+        ListDataEvent event = listener.getEvents().get(eventIndex);
         assertEquals(model, event.getSource());
         assertEquals(eventType, event.getType());
         assertEquals(index0, event.getIndex0());
@@ -287,7 +261,7 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
     }
 
     private class TestListener implements ListDataListener {
-        private List events = new ArrayList();
+        private List<ListDataEvent> events = new ArrayList<ListDataEvent>();
 
         public void contentsChanged(final ListDataEvent e) {
             events.add(e);
@@ -301,7 +275,7 @@ public class DefaultComboBoxModelTest extends SwingTestCase {
             events.add(e);
         }
 
-        public List getEvents() {
+        public List<ListDataEvent> getEvents() {
             return events;
         }
 

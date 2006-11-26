@@ -20,15 +20,16 @@
  */
 package javax.swing;
 
-import javax.swing.plaf.ToolTipUI;
 
 public class JToolTipTest extends SwingTestCase {
     private JToolTip tooltip;
 
+    @Override
     protected void setUp() throws Exception {
         tooltip = new JToolTip();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         tooltip = null;
     }
@@ -39,7 +40,6 @@ public class JToolTipTest extends SwingTestCase {
 
     public void testGetUI() throws Exception {
         assertNotNull(tooltip.getUI());
-        assertTrue(tooltip.getUI() instanceof ToolTipUI);
         assertTrue(tooltip.getUI() == tooltip.getUI());
     }
 

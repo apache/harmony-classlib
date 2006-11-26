@@ -20,9 +20,7 @@
  */
 package javax.swing;
 
-import javax.swing.SwingTestCase;
 import javax.swing.plaf.metal.MetalIconFactory;
-import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.EditorKit;
 import javax.swing.text.MutableAttributeSet;
@@ -30,52 +28,57 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
+
 public class JEditorPaneRTest extends SwingTestCase {
     public void testPlainViewFactory() {
         JEditorPane jp = new JEditorPane();
-        String name = jp.getUI().getRootView(jp).getView(0).getClass()
-            .getName();
+        String name = jp.getUI().getRootView(jp).getView(0).getClass().getName();
         assertEquals("javax.swing.text.WrappedPlainView", name);
     }
 
     public void testCreateDefaultEditorKit() {
-        JEditorPane  pane  = new JEditorPane() {
-          protected EditorKit createDefaultEditorKit() {
-              return new StyledEditorKit();
-          }
-        };
+        JEditorPane pane = new JEditorPane() {
+            private static final long serialVersionUID = 1L;
 
+            @Override
+            protected EditorKit createDefaultEditorKit() {
+                return new StyledEditorKit();
+            }
+        };
         assertTrue(pane.getEditorKit() instanceof StyledEditorKit);
     }
 
     public boolean wasInstallCall;
 
     public void testCreateDefaultEditorKit_installCall() {
-        JEditorPane  pane  = new JEditorPane() {
+        JEditorPane pane = new JEditorPane() {
+            private static final long serialVersionUID = 1L;
         };
         pane.setEditorKit(new StyledEditorKit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void install(JEditorPane component) {
                 wasInstallCall = true;
                 super.install(component);
             }
-          });
-
+        });
         assertTrue(wasInstallCall);
     }
 
     public void testInputAttributes() {
-        JEditorPane pane  = new JEditorPane() {
+        JEditorPane pane = new JEditorPane() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             protected EditorKit createDefaultEditorKit() {
-                    return new StyledEditorKit();
+                return new StyledEditorKit();
             }
         };
         pane.setEditorKit(new StyledEditorKit());
-
         StyledDocument doc = (StyledDocument) pane.getDocument();
         StyledEditorKit kit = (StyledEditorKit) pane.getEditorKit();
-
         try {
-
             MutableAttributeSet attrs = new SimpleAttributeSet();
             StyleConstants.setUnderline(attrs, true);
             doc.insertString(0, "Hello word!", attrs);
@@ -83,13 +86,11 @@ public class JEditorPaneRTest extends SwingTestCase {
             attrs = new SimpleAttributeSet();
             StyleConstants.setIcon(attrs, MetalIconFactory.getTreeFolderIcon());
             doc.insertString(4, " ", attrs);
-
             pane.setCaretPosition(4);
             doc.insertString(4, "\n", kit.getInputAttributes());
             assertFalse(StyleConstants.isUnderline(kit.getInputAttributes()));
             pane.setCaretPosition(5);
             assertFalse(StyleConstants.isUnderline(kit.getInputAttributes()));
-
         } catch (BadLocationException e) {
         }
     }

@@ -25,16 +25,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 /*
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-*/
-
+ import java.io.FileInputStream;
+ import java.io.FileOutputStream;
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+ */
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
@@ -61,13 +59,11 @@ public class JTextAreaTest extends SwingTestCase {
             + " Edison cap, \tEdison effect\n"
             + "Edison screw, Edison screw cap, Edison screw \n"
             + "holder, Edison screw lampholder, Edison screw " + "plug\n"
-            + "Edison screw terminal, Edison storage battery"
-            + "Edison storage \t\tcell";
+            + "Edison screw terminal, Edison storage battery" + "Edison storage \t\tcell";
 
-    String bidiContent = sLTR + sRTL + sRTL + " \t" + sLTR + sRTL + sLTR + "\n"
-            + sRTL + "." + sLTR + sRTL + "\t" + sRTL + "\n" + sLTR + sLTR
-            + sRTL + sRTL + sRTL + sLTR + sLTR + sLTR + sRTL + sLTR + sRTL
-            + sLTR;
+    String bidiContent = sLTR + sRTL + sRTL + " \t" + sLTR + sRTL + sLTR + "\n" + sRTL + "."
+            + sLTR + sRTL + "\t" + sRTL + "\n" + sLTR + sLTR + sRTL + sRTL + sRTL + sLTR + sLTR
+            + sLTR + sRTL + sLTR + sRTL + sLTR;
 
     String str1 = "jazz band";
 
@@ -114,9 +110,9 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(cond);
         assertEquals(count, k);
-
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         listener = new SimplePropertyChangeListener();
@@ -136,6 +132,7 @@ public class JTextAreaTest extends SwingTestCase {
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -143,18 +140,14 @@ public class JTextAreaTest extends SwingTestCase {
 
     public void testGetScrollableTracksViewportWidth() throws Exception {
         assertFalse(jta.getScrollableTracksViewportWidth());
-
         jta.setLineWrap(true);
         assertTrue(jta.getScrollableTracksViewportWidth());
-
     }
 
     public void testJTextAreaDocumentStringintint() {
-
         Document doc = new PlainDocument();
         try {
             doc.insertString(0, str2, null);
-
             ExtJTextArea ta = new ExtJTextArea(doc, str1, 3, 8);
             assertEquals(str1, ta.getText());
             assertEquals(doc, ta.getDocument());
@@ -162,16 +155,11 @@ public class JTextAreaTest extends SwingTestCase {
             assertEquals(8, ta.getColumns());
             assertFalse(ta.getLineWrap());
             assertFalse(ta.getWrapStyleWord());
-
             doc = new PlainDocument();
-
             doc.insertString(0, str2, null);
-
             ta = new ExtJTextArea(doc, null, 5, 6);
             assertEquals(str2, ta.getText());
-
             ta = new ExtJTextArea(doc, "", 5, 6);
-
             assertEquals("", ta.getText());
             try {
                 ta = new ExtJTextArea(doc, str1, -1, 4);
@@ -240,7 +228,6 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(bWasException);
         assertEquals("columns: -3", message);
-
     }
 
     public void testJTextAreaString() {
@@ -255,7 +242,6 @@ public class JTextAreaTest extends SwingTestCase {
 
     public void testJTextAreaintint() {
         ExtJTextArea ta = new ExtJTextArea(5, 6);
-
         assertEquals("", ta.getText());
         assertTrue(ta.getDocument() instanceof PlainDocument);
         assertEquals(5, ta.getRows());
@@ -326,19 +312,16 @@ public class JTextAreaTest extends SwingTestCase {
         jta.replaceRange("", 5, 10);
         tmp = replaceRange(tmp, "", 5, 10);
         assertEquals(tmp, jta.getText());
-
         try {
             jta.replaceRange(str2, -1, 5);
         } catch (IllegalArgumentException e) {
             bWasException = true;
             message = e.getMessage();
         }
-
         assertTrue(bWasException);
         assertEquals("Invalid remove", message);
         bWasException = false;
         message = null;
-
         try {
             jta.replaceRange(str2, 1, tmp.length() + 1);
         } catch (IllegalArgumentException e) {
@@ -349,7 +332,6 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals("Invalid remove", message);
         bWasException = false;
         message = null;
-
         try {
             jta.replaceRange(str2, 10, 5);
         } catch (IllegalArgumentException e) {
@@ -358,7 +340,6 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(bWasException);
         assertEquals("end before start", message);
-
         jta.replaceRange(str2, 7, 14);
         tmp = replaceRange(tmp, str2, 7, 14);
         assertEquals(tmp, jta.getText());
@@ -368,7 +349,6 @@ public class JTextAreaTest extends SwingTestCase {
         jta.replaceRange("", 5, 12);
         tmp = replaceRange(tmp, "", 5, 12);
         assertEquals(tmp, jta.getText());
-
     }
 
     String insertString(final String s1, final String s2, final int index) {
@@ -412,7 +392,6 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertFalse(bWasException);
         assertNull(message);
-
         jta.insert(str2, 7);
         tmp = insertString(tmp, str2, 7);
         assertEquals(tmp, jta.getText());
@@ -420,7 +399,6 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals(tmp, jta.getText());
         jta.insert("", 7);
         assertEquals(tmp, jta.getText());
-
     }
 
     public void testAppend() throws Exception {
@@ -439,37 +417,35 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals(tmp, jta.getText());
         jta.append("");
         assertEquals(tmp, jta.getText());
-
     }
+
     // Implementation dependent
     /*
-    public void testParamString() {
-        String str = "," + jta.getX() + "," + jta.getY() + ","
-                + jta.getSize().width + "x" + jta.getSize().height + ","
-                + "layout=" + jta.getLayout() + ",";
-        str = str.replaceFirst("@[^,}]*", "");
-        str +=
-        "alignmentX=" + "null"+ "," + //1.4.2
-        "alignmentY=" + "null"+ "," + //1.4.2
-        //"alignmentX=" + "0.0" + "," + //1.5.0
-        //        "alignmentY=" + "0.0" + "," + //1.5.0
-                "border=" + jta.getBorder() + "," + "flags=296" + ","
-                + "maximumSize=,minimumSize=,preferredSize=," + "caretColor="
-                + jta.getCaretColor() + "," + "disabledTextColor="
-                + jta.getDisabledTextColor() + "," + "editable="
-                + jta.isEditable() + "," + "margin=" + jta.getMargin() + ","
-                + "selectedTextColor=" + jta.getSelectedTextColor() + ","
-                + "selectionColor=" + jta.getSelectionColor() + ","
-                + "columns=" + jta.getColumns() + "," + "columnWidth="
-                + jta.getColumnWidth() + "," + "rows=" + jta.getRows() + ","
-                + "rowHeight=" + jta.getRowHeight() + "," + "word="
-                + jta.getWrapStyleWord() + "," + "wrap=" + jta.getLineWrap();
-        assertEquals(changeString(str), changeString(jta.paramString()));
-    } */
-
+     public void testParamString() {
+     String str = "," + jta.getX() + "," + jta.getY() + ","
+     + jta.getSize().width + "x" + jta.getSize().height + ","
+     + "layout=" + jta.getLayout() + ",";
+     str = str.replaceFirst("@[^,}]*", "");
+     str +=
+     "alignmentX=" + "null"+ "," + //1.4.2
+     "alignmentY=" + "null"+ "," + //1.4.2
+     //"alignmentX=" + "0.0" + "," + //1.5.0
+     //        "alignmentY=" + "0.0" + "," + //1.5.0
+     "border=" + jta.getBorder() + "," + "flags=296" + ","
+     + "maximumSize=,minimumSize=,preferredSize=," + "caretColor="
+     + jta.getCaretColor() + "," + "disabledTextColor="
+     + jta.getDisabledTextColor() + "," + "editable="
+     + jta.isEditable() + "," + "margin=" + jta.getMargin() + ","
+     + "selectedTextColor=" + jta.getSelectedTextColor() + ","
+     + "selectionColor=" + jta.getSelectionColor() + ","
+     + "columns=" + jta.getColumns() + "," + "columnWidth="
+     + jta.getColumnWidth() + "," + "rows=" + jta.getRows() + ","
+     + "rowHeight=" + jta.getRowHeight() + "," + "word="
+     + jta.getWrapStyleWord() + "," + "wrap=" + jta.getLineWrap();
+     assertEquals(changeString(str), changeString(jta.paramString()));
+     } */
     String changeString(final String s) {
-        return s.replaceFirst("layout[^,]*,", "")
-                .replaceFirst("flag[^,]*,", "");
+        return s.replaceFirst("layout[^,]*,", "").replaceFirst("flag[^,]*,", "");
     }
 
     public void testGetUIClassID() {
@@ -478,7 +454,6 @@ public class JTextAreaTest extends SwingTestCase {
     }
 
     public void testGetScrollableUnitIncrement() throws Exception {
-
         assertEquals(jta.getColumnWidth(), jta.getScrollableUnitIncrement(null,
                 SwingConstants.HORIZONTAL, -1));
         assertEquals(jta.getColumnWidth(), jta.getScrollableUnitIncrement(null,
@@ -491,7 +466,6 @@ public class JTextAreaTest extends SwingTestCase {
                 SwingConstants.VERTICAL, 0));
         assertEquals(jta.getRowHeight(), jta.getScrollableUnitIncrement(null,
                 SwingConstants.VERTICAL, 1));
-
         try {
             jta.getScrollableUnitIncrement(null, 3, 1);
         } catch (IllegalArgumentException e) {
@@ -500,7 +474,6 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(bWasException);
         assertEquals("Invalid orientation: 3", message);
-
         Font newFont = new java.awt.Font("SimSun", 0, 12);
         jta.setFont(newFont);
         assertEquals(jta.getColumnWidth(), jta.getScrollableUnitIncrement(null,
@@ -515,27 +488,21 @@ public class JTextAreaTest extends SwingTestCase {
                 SwingConstants.VERTICAL, 0));
         assertEquals(jta.getRowHeight(), jta.getScrollableUnitIncrement(null,
                 SwingConstants.VERTICAL, 1));
-
     }
 
     public void testSetFont() throws Exception {
-
         Font oldFont = jta.getFont();
         FontMetrics fm = jta.getFontMetrics(oldFont);
         assertEquals(fm.getHeight(), jta.getRowHeight());
         assertEquals(fm.charWidth('m'), jta.getColumnWidth());
-
         jta.wasCallRevalidate = false;
         Font newFont = new java.awt.Font("SimSun", 0, 12);
         jta.setFont(newFont);
         assertTrue(jta.wasCallRevalidate);
-        assertEqualsPropertyChangeEvent("font", oldFont, newFont,
-                listener.event);
-
+        assertEqualsPropertyChangeEvent("font", oldFont, newFont, listener.event);
         fm = jta.getFontMetrics(newFont);
         assertEquals(fm.getHeight(), jta.getRowHeight());
         assertEquals(fm.charWidth('m'), jta.getColumnWidth());
-
     }
 
     Dimension getPrefferedSize(final JTextArea jta) {
@@ -545,61 +512,43 @@ public class JTextAreaTest extends SwingTestCase {
         Dimension dim2 = jta.getUI().getPreferredSize(jta);
         int width2 = dim2.width;
         int height2 = dim2.height;
-        return new Dimension(Math.max(width1, width2), Math.max(height1,
-                height2));
-
+        return new Dimension(Math.max(width1, width2), Math.max(height1, height2));
     }
 
     public void testGetPreferredSize() throws Exception {
-
-        assertEquals(jta.getPreferredSize(), jta
-                .getPreferredScrollableViewportSize());
-
+        assertEquals(jta.getPreferredSize(), jta.getPreferredScrollableViewportSize());
         jta.setColumns(5);
         jta.setRows(2);
         assertEquals(getPrefferedSize(jta), jta.getPreferredSize());
-
         jta.setColumns(500);
         jta.setRows(1);
         assertEquals(getPrefferedSize(jta), jta.getPreferredSize());
-
         jta.setColumns(1);
         jta.setRows(500);
         assertEquals(getPrefferedSize(jta), jta.getPreferredSize());
-
         jta.setColumns(500);
         jta.setRows(200);
         assertEquals(getPrefferedSize(jta), jta.getPreferredSize());
-
     }
 
     public void testGetPreferredScrollableViewportSize() throws Exception {
-
-        assertEquals(jta.getPreferredSize(), jta
-                .getPreferredScrollableViewportSize());
-
+        assertEquals(jta.getPreferredSize(), jta.getPreferredScrollableViewportSize());
         jta.setColumns(5);
         jta.setRows(2);
-        Dimension dim = new Dimension(5 * jta.getColumnWidth(), 2 * jta
-                .getRowHeight());
+        Dimension dim = new Dimension(5 * jta.getColumnWidth(), 2 * jta.getRowHeight());
         assertEquals(dim, jta.getPreferredScrollableViewportSize());
         jta.setColumns(500);
         jta.setRows(200);
-        dim = new Dimension(500 * jta.getColumnWidth(), 200 * jta
-                .getRowHeight());
+        dim = new Dimension(500 * jta.getColumnWidth(), 200 * jta.getRowHeight());
         assertEquals(dim, jta.getPreferredScrollableViewportSize());
-
         jta.setColumns(0);
         jta.setRows(200);
-        assertEquals(new Dimension(jta.getPreferredSize().width, 200 * jta
-                .getRowHeight()), jta.getPreferredScrollableViewportSize());
-
+        assertEquals(new Dimension(jta.getPreferredSize().width, 200 * jta.getRowHeight()), jta
+                .getPreferredScrollableViewportSize());
         jta.setColumns(1);
         jta.setRows(0);
-        assertEquals(new Dimension(1 * jta.getColumnWidth(), jta
-                .getPreferredSize().height), jta
-                .getPreferredScrollableViewportSize());
-
+        assertEquals(new Dimension(1 * jta.getColumnWidth(), jta.getPreferredSize().height),
+                jta.getPreferredScrollableViewportSize());
     }
 
     public void testGetLineStartEndOffset() {
@@ -610,17 +559,16 @@ public class JTextAreaTest extends SwingTestCase {
         for (int j = 0; j < count; j++) {
             Element currentElement = root.getElement(j);
             try {
-                assertEquals(currentElement.getStartOffset(), jta
-                        .getLineStartOffset(j));
+                assertEquals(currentElement.getStartOffset(), jta.getLineStartOffset(j));
                 int end = currentElement.getEndOffset();
-                if (j == count - 1)
+                if (j == count - 1) {
                     end--;
+                }
                 assertEquals(end, jta.getLineEndOffset(j));
             } catch (BadLocationException e) {
             }
         }
         doc.readUnlock();
-
         try {
             jta.getLineStartOffset(count);
         } catch (BadLocationException e) {
@@ -651,7 +599,6 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals("Negative line", message);
         bWasException = false;
         message = null;
-
         try {
             jta.getLineEndOffset(count);
         } catch (BadLocationException e) {
@@ -680,7 +627,6 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(bWasException);
         assertEquals("Negative line", message);
-
     }
 
     public void testGetLineOfOffset() {
@@ -695,7 +641,6 @@ public class JTextAreaTest extends SwingTestCase {
             }
         }
         doc.readUnlock();
-
         try {
             jta.getLineOfOffset(length + 1);
         } catch (BadLocationException e) {
@@ -706,7 +651,6 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals("Can't translate offset to line", message);
         bWasException = false;
         message = null;
-
         try {
             jta.getLineOfOffset(5000);
         } catch (BadLocationException e) {
@@ -717,7 +661,6 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals("Can't translate offset to line", message);
         bWasException = false;
         message = null;
-
         try {
             jta.getLineOfOffset(-1);
         } catch (BadLocationException e) {
@@ -728,84 +671,71 @@ public class JTextAreaTest extends SwingTestCase {
         assertEquals("Can't translate offset to line", message);
         bWasException = false;
         message = null;
-
     }
 
     public void testSerialization() throws Exception {
         /*
-        jt.setRows(6);
-        jt.setColumns(8);
-        jt.setLineWrap(true);
-        jt.setWrapStyleWord(true);
-        jt.setFont(new java.awt.Font("SimSun", 0, 12));
+         jt.setRows(6);
+         jt.setColumns(8);
+         jt.setLineWrap(true);
+         jt.setWrapStyleWord(true);
+         jt.setFont(new java.awt.Font("SimSun", 0, 12));
 
-        JTextArea jta1 = new JTextArea();
-        FileOutputStream fo = new FileOutputStream("tmp");
-        ObjectOutputStream so = new ObjectOutputStream(fo);
-        so.writeObject(jt);
-        so.flush();
-        so.close();
-        FileInputStream fi = new FileInputStream("tmp");
-        ObjectInputStream si = new ObjectInputStream(fi);
-        jta1 = (JTextArea) si.readObject();
-        si.close();
+         JTextArea jta1 = new JTextArea();
+         FileOutputStream fo = new FileOutputStream("tmp");
+         ObjectOutputStream so = new ObjectOutputStream(fo);
+         so.writeObject(jt);
+         so.flush();
+         so.close();
+         FileInputStream fi = new FileInputStream("tmp");
+         ObjectInputStream si = new ObjectInputStream(fi);
+         jta1 = (JTextArea) si.readObject();
+         si.close();
 
-        assertTrue(jta1.getLineWrap());
-        assertTrue(jta1.getWrapStyleWord());
-        assertEquals(bidiContent, jta1.getText());
-        assertEquals(6, jta1.getRows());
-        assertEquals(8, jta1.getColumns());
-        assertEquals(new java.awt.Font("SimSun", 0, 12), jta1.getFont());
-        */
+         assertTrue(jta1.getLineWrap());
+         assertTrue(jta1.getWrapStyleWord());
+         assertEquals(bidiContent, jta1.getText());
+         assertEquals(6, jta1.getRows());
+         assertEquals(8, jta1.getColumns());
+         assertEquals(new java.awt.Font("SimSun", 0, 12), jta1.getFont());
+         */
     }
-
 
     public void testSetGetWrapStyleWord() throws Exception {
         assertFalse(jta.getWrapStyleWord());
-
         jta.setWrapStyleWord(true);
         assertTrue(jta.getWrapStyleWord());
-        assertEqualsPropertyChangeEvent("wrapStyleWord", Boolean.FALSE,
-                Boolean.TRUE, listener.event);
-
+        assertEqualsPropertyChangeEvent("wrapStyleWord", Boolean.FALSE, Boolean.TRUE,
+                listener.event);
     }
 
     public void testSetGetLineWrap() throws Exception {
         assertFalse(jta.getLineWrap());
-
         jta.setLineWrap(true);
         assertTrue(jta.getLineWrap());
-        assertEqualsPropertyChangeEvent("lineWrap", Boolean.FALSE,
-                Boolean.TRUE, listener.event);
-
+        assertEqualsPropertyChangeEvent("lineWrap", Boolean.FALSE, Boolean.TRUE, listener.event);
     }
 
     public void testSetGetTabSize() throws Exception {
         assertEquals(8, jta.getTabSize());
         assertEquals(new Integer(8), jta.getDocument().getProperty("tabSize"));
-
         jta.setTabSize(5);
         assertEquals(5, jta.getTabSize());
         assertEquals(new Integer(5), jta.getDocument().getProperty("tabSize"));
-        assertEquals(new Integer(5), (Integer) jta.getDocument().getProperty(
-                "tabSize"));
-        assertEqualsPropertyChangeEvent("tabSize", new Integer(8), new Integer(
-                5), listener.event);
+        assertEquals(new Integer(5), jta.getDocument().getProperty("tabSize"));
+        assertEqualsPropertyChangeEvent("tabSize", new Integer(8), new Integer(5),
+                listener.event);
         jta.setTabSize(-2);
         assertEquals(new Integer(-2), jta.getDocument().getProperty("tabSize"));
-
         assertEquals(-2, jta.getTabSize());
-
     }
 
     public void testSetGetRows() throws Exception {
         assertEquals(0, jta.getRows());
-
         jta.wasCallInvalidate = false;
         jta.setRows(6);
         assertEquals(6, jta.getRows());
         assertTrue(jta.wasCallInvalidate);
-
         try {
             jta.setRows(-1);
         } catch (IllegalArgumentException e) {
@@ -819,25 +749,20 @@ public class JTextAreaTest extends SwingTestCase {
     public void testGetLineCount() {
         AbstractDocument doc_jta = (AbstractDocument) jta.getDocument();
         doc_jta.readLock();
-        assertEquals(jta.getLineCount(), doc_jta.getDefaultRootElement()
-                .getElementCount());
+        assertEquals(jta.getLineCount(), doc_jta.getDefaultRootElement().getElementCount());
         doc_jta.readUnlock();
-
         doc_jta = (AbstractDocument) bidiJta.getDocument();
         doc_jta.readLock();
-        assertEquals(bidiJta.getLineCount(), doc_jta.getDefaultRootElement()
-                .getElementCount());
+        assertEquals(bidiJta.getLineCount(), doc_jta.getDefaultRootElement().getElementCount());
         doc_jta.readUnlock();
     }
 
     public void testSetGetColumns() throws Exception {
         assertEquals(0, jta.getColumns());
-
         jta.wasCallInvalidate = false;
         jta.setColumns(6);
         assertEquals(6, jta.getColumns());
         assertTrue(jta.wasCallInvalidate);
-
         try {
             jta.setColumns(-1);
         } catch (IllegalArgumentException e) {
@@ -846,6 +771,5 @@ public class JTextAreaTest extends SwingTestCase {
         }
         assertTrue(bWasException);
         assertEquals("columns less than zero.", message);
-
     }
 }

@@ -30,14 +30,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class InputMapTest extends SwingTestCase {
-
     protected InputMap map;
+
     protected InputMap parent;
 
     protected boolean find(final Object[] array, final Object value) {
         boolean found = false;
         if (array != null) {
-            for (int i = 0; i < array.length; i++ ){
+            for (int i = 0; i < array.length; i++) {
                 if (array[i].equals(value)) {
                     found = true;
                     break;
@@ -50,6 +50,7 @@ public class InputMapTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         map = new InputMap();
@@ -59,17 +60,14 @@ public class InputMapTest extends SwingTestCase {
     public void testPut() {
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0);
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "2");
         assertTrue(map.get(keyStroke1).equals("1"));
         assertTrue(map.get(keyStroke2).equals("2"));
-
         map.put(keyStroke2, "1");
         map.put(keyStroke1, "2");
         assertTrue(map.get(keyStroke1).equals("2"));
         assertTrue(map.get(keyStroke2).equals("1"));
-
         map.put(keyStroke1, null);
         map.put(keyStroke2, null);
         assertTrue(map.size() == 0);
@@ -78,34 +76,25 @@ public class InputMapTest extends SwingTestCase {
     public void testGet() {
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0);
-
         assertNull(map.get(keyStroke1));
         assertNull(map.get(keyStroke2));
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "1");
         assertTrue(map.get(keyStroke1).equals("1"));
         assertTrue(map.get(keyStroke2).equals("1"));
-
         map.put(keyStroke2, "2");
         assertTrue(map.get(keyStroke2).equals("2"));
-
         map.put(keyStroke2, null);
         assertNull(map.get(keyStroke2));
-
-
         InputMap childMap = new InputMap();
         childMap.setParent(map);
-
         map.put(keyStroke1, "1");
         KeyStroke keyStroke11 = KeyStroke.getKeyStroke(KeyEvent.VK_1, 0);
         childMap.put(keyStroke11, "1");
         assertTrue(childMap.get(keyStroke11).equals("1"));
         assertTrue(childMap.get(keyStroke1).equals("1"));
-
         map.put(keyStroke2, "2");
         assertTrue(childMap.get(keyStroke2).equals("2"));
-
         childMap.put(keyStroke2, "1");
         assertTrue(childMap.get(keyStroke2).equals("1"));
     }
@@ -113,16 +102,13 @@ public class InputMapTest extends SwingTestCase {
     public void testRemove() {
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0);
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "2");
         assertTrue(map.get(keyStroke1).equals("1"));
         assertTrue(map.get(keyStroke2).equals("2"));
-
         map.remove(keyStroke1);
         assertNull(map.get(keyStroke1));
         assertTrue(map.get(keyStroke2).equals("2"));
-
         map.remove(keyStroke2);
         assertNull(map.get(keyStroke2));
         assertTrue(map.size() == 0);
@@ -134,7 +120,6 @@ public class InputMapTest extends SwingTestCase {
         KeyStroke keyStroke3 = KeyStroke.getKeyStroke(KeyEvent.VK_1, 0);
         KeyStroke keyStroke4 = KeyStroke.getKeyStroke(KeyEvent.VK_0, 0);
         Object[] keys = map.keys();
-
         assertEquals(0, map.size());
         if (isHarmony()) {
             assertNotNull(keys);
@@ -142,19 +127,16 @@ public class InputMapTest extends SwingTestCase {
         } else {
             assertNull(keys);
         }
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "2");
         map.put(keyStroke3, "1");
         map.put(keyStroke4, "2");
         keys = map.keys();
-
         assertTrue("array size's correct ", keys != null && keys.length == 4);
         assertTrue(find(keys, keyStroke1));
         assertTrue(find(keys, keyStroke2));
         assertTrue(find(keys, keyStroke3));
         assertTrue(find(keys, keyStroke4));
-
         map.put(keyStroke1, null);
         map.put(keyStroke2, null);
         map.put(keyStroke3, null);
@@ -171,7 +153,6 @@ public class InputMapTest extends SwingTestCase {
         KeyStroke keyStroke5 = KeyStroke.getKeyStroke(KeyEvent.VK_5, 0);
         KeyStroke keyStroke6 = KeyStroke.getKeyStroke(KeyEvent.VK_6, 0);
         Object[] keys = map.allKeys();
-
         map.setParent(parent);
         assertEquals(0, map.size());
         if (isHarmony()) {
@@ -180,17 +161,14 @@ public class InputMapTest extends SwingTestCase {
         } else {
             assertNull(keys);
         }
-
         parent.put(keyStroke1, "1");
         parent.put(keyStroke2, "2");
         parent.put(keyStroke3, "1");
         parent.put(keyStroke4, "2");
-
         map.put(keyStroke3, "1");
         map.put(keyStroke4, "2");
         map.put(keyStroke5, "1");
         map.put(keyStroke6, "2");
-
         keys = map.allKeys();
         assertTrue(find(keys, keyStroke1));
         assertTrue(find(keys, keyStroke2));
@@ -204,15 +182,11 @@ public class InputMapTest extends SwingTestCase {
         InputMap parent1 = new InputMap();
         InputMap parent2 = new InputMap();
         InputMap parent3 = null;
-
         assertNull(map.getParent());
-
         map.setParent(parent1);
         assertTrue(map.getParent() == parent1);
-
         map.setParent(parent3);
         assertTrue(map.getParent() == parent3);
-
         map.setParent(parent2);
         assertTrue(map.getParent() == parent2);
     }
@@ -220,18 +194,14 @@ public class InputMapTest extends SwingTestCase {
     public void testClear() {
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0);
-
         assertTrue(map.size() == 0);
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "2");
         assertTrue(map.size() == 2);
-
         map.clear();
         assertTrue(map.size() == 0);
         assertTrue("keys", map.keys() != null);
         assertTrue("keys", map.keys().length == 0);
-
         map.put(keyStroke1, "1");
         assertTrue(map.size() == 1);
     }
@@ -241,17 +211,13 @@ public class InputMapTest extends SwingTestCase {
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_2, 0);
         KeyStroke keyStroke3 = KeyStroke.getKeyStroke(KeyEvent.VK_3, 0);
         KeyStroke keyStroke4 = KeyStroke.getKeyStroke(KeyEvent.VK_4, 0);
-
         assertTrue(map.size() == 0);
-
         map.put(keyStroke1, "1");
         map.put(keyStroke2, "2");
         assertTrue(map.size() == 2);
-
         map.put(keyStroke3, "1");
         map.put(keyStroke4, "2");
         assertTrue(map.size() == 4);
-
         map.put(keyStroke1, null);
         map.put(keyStroke2, null);
         assertTrue(map.size() == 2);
@@ -277,11 +243,11 @@ public class InputMapTest extends SwingTestCase {
         ObjectOutputStream so = new ObjectOutputStream(output);
         so.writeObject(map);
         so.flush();
-        ObjectInputStream si = new ObjectInputStream(new ByteArrayInputStream(output.toByteArray()));
-        InputMap ressurectedMap = (InputMap)si.readObject();
+        ObjectInputStream si = new ObjectInputStream(new ByteArrayInputStream(output
+                .toByteArray()));
+        InputMap ressurectedMap = (InputMap) si.readObject();
         assertTrue(ressurectedMap.getParent() != null);
         assertTrue(ressurectedMap.get(keyStroke1).equals(object1));
         assertTrue(ressurectedMap.get(keyStroke2).equals(object2));
     }
-
 }

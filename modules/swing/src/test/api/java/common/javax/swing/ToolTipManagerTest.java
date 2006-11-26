@@ -92,13 +92,14 @@ public class ToolTipManagerTest extends SwingTestCase {
         JPanel panel = new JPanel();
         m.registerComponent(panel);
         m.unregisterComponent(panel);
-
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 m.registerComponent(null);
             }
         });
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 m.unregisterComponent(null);
             }

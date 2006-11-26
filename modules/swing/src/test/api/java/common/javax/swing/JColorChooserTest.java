@@ -15,15 +15,14 @@
  *  limitations under the License.
  */
 /**
-* @author Sergey Burlak
-* @version $Revision$
-*/
+ * @author Sergey Burlak
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.colorchooser.ColorChooserComponentFactory;
 import javax.swing.colorchooser.ColorSelectionModel;
@@ -32,34 +31,32 @@ import javax.swing.colorchooser.DefaultColorSelectionModel;
 public class JColorChooserTest extends BasicSwingTestCase {
     private JColorChooser ch;
 
+    @Override
     public void setUp() {
         ch = new JColorChooser();
-
         propertyChangeController = new PropertyChangeController();
         propertyChangeController.setVerbose(false);
         ch.addPropertyChangeListener(propertyChangeController);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ch = null;
     }
-    
+
     public void testJColorChooser() throws Exception {
         assertSame(DefaultColorSelectionModel.class, ch.getSelectionModel().getClass());
         assertNull(ch.accessibleContext);
         assertEquals(Color.WHITE, ch.getColor());
-        
         ch = new JColorChooser(Color.BLACK);
         assertEquals(Color.BLACK, ch.getColor());
-        
         ColorSelectionModel model = new DefaultColorSelectionModel();
         ch = new JColorChooser(model);
         assertFalse(propertyChangeController.isChanged());
         assertSame(model, ch.getSelectionModel());
-        
         assertSame(BorderLayout.class, ch.getLayout().getClass());
     }
-    
+
     public void testGetAccessibleContext() throws Exception {
         assertNull(ch.accessibleContext);
         assertNotNull(ch.getAccessibleContext());
@@ -68,54 +65,52 @@ public class JColorChooserTest extends BasicSwingTestCase {
         assertSame(ch.accessibleContext, ch.getAccessibleContext());
         assertSame(JColorChooser.AccessibleJColorChooser.class, ch.accessibleContext.getClass());
     }
-    
+
     public void testSetGetSelectionModel() throws Exception {
         assertNotNull(ch.getSelectionModel());
-        ColorSelectionModel oldModel = ch.getSelectionModel(); 
+        ColorSelectionModel oldModel = ch.getSelectionModel();
         ColorSelectionModel model = new DefaultColorSelectionModel();
         ch.setSelectionModel(model);
         assertTrue(propertyChangeController.isChanged(JColorChooser.SELECTION_MODEL_PROPERTY));
-        assertSame(model, ((PropertyChangeEvent)propertyChangeController.getLastEvent()).getNewValue());
-        assertSame(oldModel, ((PropertyChangeEvent)propertyChangeController.getLastEvent()).getOldValue());
-        
+        assertSame(model, ((PropertyChangeEvent) propertyChangeController.getLastEvent())
+                .getNewValue());
+        assertSame(oldModel, ((PropertyChangeEvent) propertyChangeController.getLastEvent())
+                .getOldValue());
         ch.setSelectionModel(null);
         assertNull(ch.getSelectionModel());
     }
-    
+
     public void testSetGetColor() throws Exception {
         ChangeController changeController = new ChangeController();
         ch.getSelectionModel().addChangeListener(changeController);
-        
         assertEquals(Color.WHITE, ch.getColor());
         ch.setColor(Color.RED);
         assertFalse(propertyChangeController.isChanged());
         assertEquals(Color.RED, ch.getColor());
         assertTrue(changeController.isChanged());
-        
         changeController.reset();
         ch.setColor(0, 255, 0);
         assertFalse(propertyChangeController.isChanged());
         assertEquals(Color.GREEN, ch.getColor());
         assertTrue(changeController.isChanged());
-
         changeController.reset();
         ch.setColor(255);
         assertFalse(propertyChangeController.isChanged());
         assertEquals(Color.BLUE, ch.getColor());
         assertTrue(changeController.isChanged());
     }
-    
+
     public void testGetUIClassID() throws Exception {
         assertEquals("ColorChooserUI", ch.getUIClassID());
     }
-    
+
     public void testSetGetDragEnabled() throws Exception {
         assertFalse(ch.getDragEnabled());
         ch.setDragEnabled(true);
         assertFalse(propertyChangeController.isChanged());
         assertTrue(ch.getDragEnabled());
     }
-    
+
     public void testSetGetPreviewPanel() throws Exception {
         ch.addPropertyChangeListener(propertyChangeController);
         assertNotNull(ch.getPreviewPanel());
@@ -123,27 +118,30 @@ public class JColorChooserTest extends BasicSwingTestCase {
         ch.setPreviewPanel(button);
         assertTrue(propertyChangeController.isChanged(JColorChooser.PREVIEW_PANEL_PROPERTY));
         assertSame(button, ch.getPreviewPanel());
-        assertSame(button, ((PropertyChangeEvent)propertyChangeController.getLastEvent()).getNewValue());
-        
+        assertSame(button, ((PropertyChangeEvent) propertyChangeController.getLastEvent())
+                .getNewValue());
         propertyChangeController.reset();
         ch.setPreviewPanel(null);
         assertTrue(propertyChangeController.isChanged(JColorChooser.PREVIEW_PANEL_PROPERTY));
         assertNotNull(ch.getPreviewPanel());
-        assertSame(ColorChooserComponentFactory.getPreviewPanel().getClass(), ch.getPreviewPanel().getClass());
+        assertSame(ColorChooserComponentFactory.getPreviewPanel().getClass(), ch
+                .getPreviewPanel().getClass());
     }
-    
+
     public void testSetGetChooserPanels() throws Exception {
         AbstractColorChooserPanel[] oldChooserPanels = ch.getChooserPanels();
         assertEquals(3, oldChooserPanels.length);
         AbstractColorChooserPanel[] newPanels = new AbstractColorChooserPanel[] {};
         ch.setChooserPanels(newPanels);
         assertTrue(propertyChangeController.isChanged(JColorChooser.CHOOSER_PANELS_PROPERTY));
-        assertSame(newPanels, ((PropertyChangeEvent)propertyChangeController.getLastEvent()).getNewValue());
-        assertSame(oldChooserPanels, ((PropertyChangeEvent)propertyChangeController.getLastEvent()).getOldValue());
+        assertSame(newPanels, ((PropertyChangeEvent) propertyChangeController.getLastEvent())
+                .getNewValue());
+        assertSame(oldChooserPanels, ((PropertyChangeEvent) propertyChangeController
+                .getLastEvent()).getOldValue());
         assertSame(newPanels, ch.getChooserPanels());
         assertEquals(0, ch.getChooserPanels().length);
     }
-    
+
     public void testAddRemoveChooserPanel() throws Exception {
         AbstractColorChooserPanel[] oldChooserPanels = ch.getChooserPanels();
         assertEquals(3, oldChooserPanels.length);
@@ -151,7 +149,6 @@ public class JColorChooserTest extends BasicSwingTestCase {
         assertSame(panel, ch.removeChooserPanel(panel));
         assertTrue(propertyChangeController.isChanged(JColorChooser.CHOOSER_PANELS_PROPERTY));
         assertEquals(2, ch.getChooserPanels().length);
-        
         propertyChangeController.reset();
         try {
             ch.removeChooserPanel(panel);
@@ -160,20 +157,17 @@ public class JColorChooserTest extends BasicSwingTestCase {
         }
         assertFalse(propertyChangeController.isChanged(JColorChooser.CHOOSER_PANELS_PROPERTY));
         assertEquals(2, ch.getChooserPanels().length);
-
         propertyChangeController.reset();
         ch.addChooserPanel(panel);
         assertTrue(propertyChangeController.isChanged(JColorChooser.CHOOSER_PANELS_PROPERTY));
         assertEquals(3, ch.getChooserPanels().length);
         assertSame(panel, ch.getChooserPanels()[2]);
-
         propertyChangeController.reset();
         try {
             ch.addChooserPanel(null);
             fail("NPE shall be thrown");
         } catch (NullPointerException npe) {
         }
-
         propertyChangeController.reset();
         try {
             ch.removeChooserPanel(null);

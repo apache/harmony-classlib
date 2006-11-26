@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexander T. Simbirtsev
  * @version $Revision$
@@ -27,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import junit.framework.TestCase;
 
 public class Timer_MultithreadedTest extends TestCase {
@@ -60,12 +58,17 @@ public class Timer_MultithreadedTest extends TestCase {
             }
         }
 
-        private final Delay  delay = new Delay();
+        private final Delay delay = new Delay();
+
         private final String name;
-        private ActionEvent  action;
-        private boolean      performed;
-        private int          counter;
-        private boolean      debug;
+
+        private ActionEvent action;
+
+        private boolean performed;
+
+        private int counter;
+
+        private boolean debug;
 
         ConcreteActionListener() {
             name = "NoName";
@@ -100,8 +103,7 @@ public class Timer_MultithreadedTest extends TestCase {
             return counter;
         }
 
-        public boolean waitNumActions(final int maxWaitTime,
-                                      final int numActions) {
+        public boolean waitNumActions(final int maxWaitTime, final int numActions) {
             int startNumActions = counter;
             while (counter - startNumActions < numActions) {
                 delay.waitForDelay(maxWaitTime);
@@ -126,12 +128,12 @@ public class Timer_MultithreadedTest extends TestCase {
         runHare();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         if (timer != null) {
             timer.stop();
             timer = null;
         }
-
         super.tearDown();
     }
 
@@ -145,38 +147,30 @@ public class Timer_MultithreadedTest extends TestCase {
         timer.addActionListener(listener3);
         timer.addActionListener(listener4);
         timer.start();
-
         listener1.waitAction(500);
         timer.stop();
-        assertNotNull("[1] ActionListener's ActionPerformed invoked ",
-                      listener1.action);
-        assertSame("[2] ActionListener's ActionPerformed invoked ",
-                listener1.action, listener2.action);
-        assertSame("[3] ActionListener's ActionPerformed invoked ",
-                listener1.action, listener3.action);
-        assertSame("[4] ActionListener's ActionPerformed invoked ",
-                listener1.action, listener4.action);
+        assertNotNull("[1] ActionListener's ActionPerformed invoked ", listener1.action);
+        assertSame("[2] ActionListener's ActionPerformed invoked ", listener1.action,
+                listener2.action);
+        assertSame("[3] ActionListener's ActionPerformed invoked ", listener1.action,
+                listener3.action);
+        assertSame("[4] ActionListener's ActionPerformed invoked ", listener1.action,
+                listener4.action);
     }
 
     public void testSetRepeats() {
         ConcreteActionListener listener1 = new ConcreteActionListener("1");
         timer = new Timer(10, listener1);
-
         timer.setRepeats(true);
         assertTrue("repeats ", timer.isRepeats());
-
         timer.setRepeats(false);
         assertFalse("doesn't repeat ", timer.isRepeats());
-
         timer.setRepeats(true);
         assertTrue("repeats ", timer.isRepeats());
-
         timer.start();
         listener1.waitNumActions(500, 5);
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener1.action != null);
+        assertTrue("ActionListener's ActionPerformed invoked ", listener1.action != null);
         timer.stop();
-
         // checking does setRepeats actually affects the work of timer
         ConcreteActionListener listener2 = new ConcreteActionListener("2");
         timer = new Timer(10, listener2);
@@ -192,7 +186,6 @@ public class Timer_MultithreadedTest extends TestCase {
         listener2.reset();
         listener2.waitAction(100);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener2.action);
-
         timer.stop();
         ConcreteActionListener listener3 = new ConcreteActionListener("3");
         timer = new Timer(100, listener3);
@@ -204,7 +197,6 @@ public class Timer_MultithreadedTest extends TestCase {
         listener3.reset();
         listener3.waitAction(1500);
         assertNotNull("ActionListener's ActionPerformed did invoke ", listener3.action);
-
         timer.stop();
         ConcreteActionListener listener4 = new ConcreteActionListener("4");
         timer = new Timer(100, listener4);
@@ -223,92 +215,68 @@ public class Timer_MultithreadedTest extends TestCase {
     public void testSetInitialDelay() {
         ConcreteActionListener listener1 = new ConcreteActionListener("1");
         timer = new Timer(10, listener1);
-
         timer.setInitialDelay(100);
         assertEquals("Initial delay is ", 100, timer.getInitialDelay());
-
         timer.setInitialDelay(300);
         assertEquals("Initial delay is ", 300, timer.getInitialDelay());
-
         // checking does SetInitialDelay actually affects the work of timer
         ConcreteActionListener listener2 = new ConcreteActionListener("2");
         timer = new Timer(10, listener2);
         timer.setInitialDelay(700);
-
         timer.start();
         listener2.waitAction(500);
-
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener2.action);
-
         listener2.reset();
         listener2.waitAction(1000);
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener2.action != null);
-
+        assertTrue("ActionListener's ActionPerformed invoked ", listener2.action != null);
         timer.stop();
         timer = new Timer(10, listener2);
         timer.setInitialDelay(200);
         timer.start();
         timer.setInitialDelay(500);
         listener2.waitAction(500);
-
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener2.action != null);
+        assertTrue("ActionListener's ActionPerformed invoked ", listener2.action != null);
     }
 
     public void testSetDelay() {
         ConcreteActionListener listener = new ConcreteActionListener();
         timer = new Timer(10, listener);
-        ActionEvent event = null;
-
         timer.setDelay(100);
         assertEquals("delay is ", 100, timer.getDelay());
-
         timer.setDelay(300);
         assertEquals("delay is ", 300, timer.getDelay());
-
         // checking does SetDelay affects working timer
         listener = new ConcreteActionListener();
         timer = new Timer(4000, listener);
-
         timer.start();
         listener.waitAction(500);
         timer.setDelay(100);
         listener.waitAction(200);
-
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
         timer.stop();
-
         listener = new ConcreteActionListener();
         timer = new Timer(150, listener);
-
         timer.start();
         listener.waitAction(5);
         timer.setDelay(5000);
         listener.waitAction(500);
-
         assertNotNull("ActionListener's ActionPerformed invoked ", listener.action);
     }
 
     public void testIsRunning() {
         ConcreteActionListener listener = new ConcreteActionListener();
         timer = new Timer(10, listener);
-
         listener.waitAction(200);
         assertFalse("timer is not running ", timer.isRunning());
-
         timer.start();
         assertTrue("timer is running ", timer.isRunning());
         listener.waitAction(1500);
         assertTrue("timer is running ", timer.isRunning());
-
         timer.stop();
         assertFalse("timer is not running ", timer.isRunning());
-
         listener.reset();
         listener.waitAction(100);
         assertFalse("timer is not running ", timer.isRunning());
-
         timer.setRepeats(false);
         timer.setDelay(100);
         timer.start();
@@ -320,41 +288,31 @@ public class Timer_MultithreadedTest extends TestCase {
     public void testStop() {
         ConcreteActionListener listener = new ConcreteActionListener();
         timer = new Timer(10, listener);
-
         listener.waitAction(200);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
-
         timer.start();
         listener.waitAction(1500);
-
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener.action != null);
+        assertTrue("ActionListener's ActionPerformed invoked ", listener.action != null);
         timer.stop();
         listener.reset();
         listener.waitAction(100);
-
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
     }
 
     public void testStart() {
         ConcreteActionListener listener = new ConcreteActionListener("listener");
         timer = new Timer(10, listener);
-
         listener.waitAction(200);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
-
         timer.start();
         listener.waitAction(500);
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener.action != null);
-
+        assertTrue("ActionListener's ActionPerformed invoked ", listener.action != null);
         timer.stop();
         listener.action = null;
         timer.setInitialDelay(1000);
         timer.start();
         listener.waitAction(500);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
-
         // testing the right order of timers being triggered
         ConcreteActionListener listener1 = new ConcreteActionListener("1");
         ConcreteActionListener listener2 = new ConcreteActionListener("2");
@@ -370,7 +328,6 @@ public class Timer_MultithreadedTest extends TestCase {
         timer5.start();
         timer6.start();
         timer7.start();
-
         try {
             timer1.setRepeats(false);
             timer2.setRepeats(false);
@@ -398,34 +355,30 @@ public class Timer_MultithreadedTest extends TestCase {
     public void testRestart() {
         ConcreteActionListener listener = new ConcreteActionListener();
         timer = new Timer(10, listener);
-
         listener.waitAction(200);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
-
         timer.start();
         listener.waitAction(1500);
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener.action != null);
-
+        assertTrue("ActionListener's ActionPerformed invoked ", listener.action != null);
         timer.setInitialDelay(500);
         timer.restart();
         listener.reset();
         listener.waitAction(250);
         assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
         listener.waitAction(500);
-        assertTrue("ActionListener's ActionPerformed invoked ",
-                   listener.action != null);
+        assertTrue("ActionListener's ActionPerformed invoked ", listener.action != null);
     }
 
     public void testSetLogTimers() {
         class LogOutputStream extends OutputStream {
             public boolean written = false;
 
+            @Override
             public void write(int b) throws IOException {
                 written = true;
             }
-        };
-
+        }
+        ;
         PrintStream oldOut = System.out;
         LogOutputStream logOut = new LogOutputStream();
         PrintStream newOut = new PrintStream(logOut);
@@ -439,7 +392,6 @@ public class Timer_MultithreadedTest extends TestCase {
             listener.waitAction(250);
             assertTrue("[1] action performed ", listener.performed);
             assertFalse("[1] log's not written", logOut.written);
-
             timer.stop();
             listener.reset();
             Timer.setLogTimers(true);
@@ -448,7 +400,6 @@ public class Timer_MultithreadedTest extends TestCase {
             assertTrue("[2] logs timers ", Timer.getLogTimers());
             assertTrue("[2] action performed", listener.performed);
             assertTrue("[2] log's written", logOut.written);
-
             timer.stop();
             listener.waitAction(200);
             listener.reset();

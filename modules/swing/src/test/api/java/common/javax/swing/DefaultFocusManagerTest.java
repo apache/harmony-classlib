@@ -25,45 +25,50 @@ import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
 import java.util.ArrayList;
 import java.util.List;
-
 import junit.framework.TestCase;
 
 public class DefaultFocusManagerTest extends TestCase {
     private DefaultFocusManager focusManager;
-    private List components;
+
+    private List<JButton> components;
 
     public DefaultFocusManagerTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
-        components = new ArrayList();
+        components = new ArrayList<JButton>();
         components.add(new JButton("1"));
         components.add(new JButton("2"));
         components.add(new JButton("3"));
         components.add(new JButton("4"));
-
         focusManager = new DefaultFocusManager();
         focusManager.setDefaultFocusTraversalPolicy(new TestFocusTraversalPolicy(components));
     }
 
+    @Override
     protected void tearDown() throws Exception {
         components = null;
         focusManager = null;
     }
 
     public void testGetComponentBefore() throws Exception {
-        assertEquals(components.get(0), focusManager.getComponentBefore(null, (Component)components.get(1)));
-        assertEquals(components.get(1), focusManager.getComponentBefore(null, (Component)components.get(2)));
-        assertEquals(components.get(2), focusManager.getComponentBefore(null, (Component)components.get(3)));
-        assertEquals(components.get(3), focusManager.getComponentBefore(null, (Component)components.get(0)));
+        assertEquals(components.get(0), focusManager
+                .getComponentBefore(null, components.get(1)));
+        assertEquals(components.get(1), focusManager
+                .getComponentBefore(null, components.get(2)));
+        assertEquals(components.get(2), focusManager
+                .getComponentBefore(null, components.get(3)));
+        assertEquals(components.get(3), focusManager
+                .getComponentBefore(null, components.get(0)));
     }
 
     public void testGetComponentAfter() throws Exception {
-        assertEquals(components.get(0), focusManager.getComponentAfter(null, (Component)components.get(3)));
-        assertEquals(components.get(1), focusManager.getComponentAfter(null, (Component)components.get(0)));
-        assertEquals(components.get(2), focusManager.getComponentAfter(null, (Component)components.get(1)));
-        assertEquals(components.get(3), focusManager.getComponentAfter(null, (Component)components.get(2)));
+        assertEquals(components.get(0), focusManager.getComponentAfter(null, components.get(3)));
+        assertEquals(components.get(1), focusManager.getComponentAfter(null, components.get(0)));
+        assertEquals(components.get(2), focusManager.getComponentAfter(null, components.get(1)));
+        assertEquals(components.get(3), focusManager.getComponentAfter(null, components.get(2)));
     }
 
     public void testGetLastComponent() throws Exception {
@@ -76,54 +81,55 @@ public class DefaultFocusManagerTest extends TestCase {
 
     //TODO: Is not clear how this method should work
     public void testCompareTabOrder() throws Exception {
-        assertFalse(focusManager.compareTabOrder((Component)components.get(1), (Component)components.get(2)));
+        assertFalse(focusManager.compareTabOrder(components.get(1), components.get(2)));
     }
 
-
-
     private class TestFocusTraversalPolicy extends FocusTraversalPolicy {
-        private List components;
+        private List<JButton> components;
 
-        public TestFocusTraversalPolicy(final List components) {
+        public TestFocusTraversalPolicy(final List<JButton> components) {
             this.components = components;
         }
 
-        public Component getComponentAfter(final Container focusCycleRoot, final Component component) {
+        @Override
+        public Component getComponentAfter(final Container focusCycleRoot,
+                final Component component) {
             int index = components.indexOf(component);
             if (index == -1) {
                 return null;
             }
-
             if (index == components.size() - 1) {
-                return (Component)components.get(0);
-            } else {
-                return (Component)components.get(index + 1);
+                return components.get(0);
             }
+            return components.get(index + 1);
         }
 
-        public Component getComponentBefore(final Container focusCycleRoot, final Component component) {
+        @Override
+        public Component getComponentBefore(final Container focusCycleRoot,
+                final Component component) {
             int index = components.indexOf(component);
             if (index == -1) {
                 return null;
             }
-
             if (index == 0) {
-                return (Component)components.get(components.size() - 1);
-            } else {
-                return (Component)components.get(index - 1);
+                return components.get(components.size() - 1);
             }
+            return components.get(index - 1);
         }
 
+        @Override
         public Component getDefaultComponent(final Container focusCycleRoot) {
             return getFirstComponent(focusCycleRoot);
         }
 
+        @Override
         public Component getFirstComponent(final Container focusCycleRoot) {
-            return (Component)components.get(0);
+            return components.get(0);
         }
 
+        @Override
         public Component getLastComponent(final Container focusCycleRoot) {
-            return (Component)components.get(components.size() - 1);
+            return components.get(components.size() - 1);
         }
     }
 }

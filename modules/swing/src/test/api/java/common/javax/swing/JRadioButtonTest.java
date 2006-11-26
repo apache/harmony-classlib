@@ -24,36 +24,36 @@ package javax.swing;
 
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.ButtonUI;
 
 public class JRadioButtonTest extends SwingTestCase {
-
     protected AbstractButton button = null;
 
     /*
      * @see JToggleButtonTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         button = new JRadioButton();
     }
 
     /*
      * @see JToggleButtonTest#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
     public void testGetAccessibleContext() {
-        boolean assertedValue = (button.getAccessibleContext() != null &&
-                button.getAccessibleContext().getClass().getName().equals("javax.swing.JRadioButton$AccessibleJRadioButton"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.RADIO_BUTTON, button.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (button.getAccessibleContext() != null && button
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JRadioButton$AccessibleJRadioButton"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.RADIO_BUTTON, button
+                .getAccessibleContext().getAccessibleRole());
     }
 
     public void testParamString() {
@@ -67,10 +67,8 @@ public class JRadioButtonTest extends SwingTestCase {
     public void testUpdateUI() {
         ButtonUI ui = new ButtonUI() {
         };
-
         button.setUI(ui);
         assertEquals(ui, button.getUI());
-
         button.updateUI();
         assertNotSame(ui, button.getUI());
     }
@@ -79,19 +77,21 @@ public class JRadioButtonTest extends SwingTestCase {
         Object res1 = null;
         Object res2 = null;
         AbstractAction action1 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         AbstractAction action2 = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         res1 = button.createActionPropertyChangeListener(action1);
         assertNotNull("returned value is not null", res1);
-
         res2 = button.createActionPropertyChangeListener(action2);
         assertNotNull("returned value is not null", res2);
-
         res2 = button.createActionPropertyChangeListener(null);
         assertNotNull("returned value is not null", res2);
     }
@@ -104,10 +104,14 @@ public class JRadioButtonTest extends SwingTestCase {
         String text3 = "texttext3";
         String text4 = "texttext4";
         AbstractAction action1 = new AbstractAction(text1, icon1) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
         AbstractAction action2 = new AbstractAction(text2, icon2) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
         };
@@ -115,7 +119,6 @@ public class JRadioButtonTest extends SwingTestCase {
         action1.putValue(Action.SHORT_DESCRIPTION, text3);
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
-
         assertEquals("action ", action1, button.getAction());
         assertTrue("enabled ", button.isEnabled());
         assertTrue("enabled ", action1.isEnabled());
@@ -123,25 +126,20 @@ public class JRadioButtonTest extends SwingTestCase {
         button.isEnabled();
         assertFalse("enabled ", button.isEnabled());
         assertFalse("enabled ", action1.isEnabled());
-
         assertNull("icon ", button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertNull("icon ", button.getIcon());
-
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
             action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
             assertEquals("mnemonic ", 27, button.getMnemonic());
         }
-
         assertEquals("text ", text1, button.getText());
         action1.putValue(Action.NAME, text2);
         assertEquals("text ", text2, button.getText());
-
         assertEquals("ToolTipText ", text3, button.getToolTipText());
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
-
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
         assertNull("ToolTipText ", button.getToolTipText());
@@ -163,7 +161,7 @@ public class JRadioButtonTest extends SwingTestCase {
     public void testJRadioButtonAction() {
         final String command = "dnammoc";
         class MyAction extends AbstractAction {
-            public boolean performed = false;
+            private static final long serialVersionUID = 1L;
 
             public MyAction(final String text, final Icon icon) {
                 super(text, icon);
@@ -171,24 +169,21 @@ public class JRadioButtonTest extends SwingTestCase {
             }
 
             public void actionPerformed(final ActionEvent e) {
-                performed = true;
             }
-        };
+        }
+        ;
         Icon icon = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         String text = "texttext";
         MyAction action = new MyAction(text, icon);
         action.setEnabled(false);
         button = new JRadioButton(action);
-
         assertNull("icon ", button.getIcon());
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
         assertFalse("selected ", button.isSelected());
         assertFalse("enabled ", button.isEnabled());
-
-        button = new JRadioButton((Action)null);
-
+        button = new JRadioButton((Action) null);
         assertNull("icon ", button.getIcon());
         assertNull("text ", button.getText());
         assertNull("action", button.getAction());
@@ -207,12 +202,10 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JRadioButton(icon1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(icon2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -229,12 +222,10 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JRadioButton(icon1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(icon2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -251,12 +242,10 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JRadioButton(text1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(text2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -273,12 +262,10 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JRadioButton(text1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(text2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -295,12 +282,10 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = false;
         boolean state2 = false;
-
         button = new JRadioButton(text1, icon1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(text2, icon2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
@@ -317,16 +302,13 @@ public class JRadioButtonTest extends SwingTestCase {
         String text2 = "texttext2";
         boolean state1 = true;
         boolean state2 = false;
-
         button = new JRadioButton(text1, icon1, state1);
         assertEquals("icon ", icon1, button.getIcon());
         assertEquals("text ", text1, button.getText());
         assertEquals("selected ", state1, button.isSelected());
-
         button = new JRadioButton(text2, icon2, state2);
         assertEquals("icon ", icon2, button.getIcon());
         assertEquals("text ", text2, button.getText());
         assertEquals("selected ", state2, button.isSelected());
     }
-
 }

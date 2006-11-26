@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
  */
-
 package javax.swing;
 
 import javax.swing.table.AbstractTableModel;
@@ -27,12 +25,14 @@ import javax.swing.table.AbstractTableModel;
 public class JTableRTest extends BasicSwingTestCase {
     private JTable table;
 
+    @Override
     protected void setUp() throws Exception {
         table = new JTable();
         propertyChangeController = new PropertyChangeController();
         table.addPropertyChangeListener(propertyChangeController);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         table = null;
     }
@@ -41,20 +41,16 @@ public class JTableRTest extends BasicSwingTestCase {
         table = new JTable(3, 4);
         assertEquals(0, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(0, getSelectedIndices(table.getColumnModel().getSelectionModel()).length);
-
         table.selectAll();
         assertEquals(3, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(4, getSelectedIndices(table.getColumnModel().getSelectionModel()).length);
-
         table.clearSelection();
         assertEquals(0, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(0, getSelectedIndices(table.getColumnModel().getSelectionModel()).length);
-
         table.setCellSelectionEnabled(false);
         table.selectAll();
         assertEquals(3, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(4, getSelectedIndices(table.getColumnModel().getSelectionModel()).length);
-
         table.clearSelection();
         table.setCellSelectionEnabled(true);
         table.setRowSelectionInterval(1, 2);
@@ -64,35 +60,30 @@ public class JTableRTest extends BasicSwingTestCase {
         assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
-        ((AbstractTableModel)table.getModel()).fireTableRowsInserted(0, 3);
+        ((AbstractTableModel) table.getModel()).fireTableRowsInserted(0, 3);
         assertEquals(2, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(5, table.getSelectionModel().getAnchorSelectionIndex());
         assertEquals(6, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
-        ((AbstractTableModel)table.getModel()).fireTableRowsDeleted(0, 2);
+        ((AbstractTableModel) table.getModel()).fireTableRowsDeleted(0, 2);
         assertEquals(2, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(2, table.getSelectionModel().getAnchorSelectionIndex());
         assertEquals(3, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
-        ((AbstractTableModel)table.getModel()).fireTableCellUpdated(0, 2);
+        ((AbstractTableModel) table.getModel()).fireTableCellUpdated(0, 2);
         assertEquals(2, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(2, table.getSelectionModel().getAnchorSelectionIndex());
         assertEquals(3, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
-        ((AbstractTableModel)table.getModel()).fireTableDataChanged();
+        ((AbstractTableModel) table.getModel()).fireTableDataChanged();
         assertEquals(0, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(2, table.getSelectionModel().getAnchorSelectionIndex());
         assertEquals(3, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
         table.clearSelection();
         table.setRowSelectionInterval(1, 2);
         assertEquals(2, getSelectedIndices(table.getSelectionModel()).length);
@@ -100,15 +91,16 @@ public class JTableRTest extends BasicSwingTestCase {
         assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
         assertEquals(1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
-
-        ((AbstractTableModel)table.getModel()).fireTableStructureChanged();
+        ((AbstractTableModel) table.getModel()).fireTableStructureChanged();
         assertEquals(0, getSelectedIndices(table.getSelectionModel()).length);
         assertEquals(1, table.getSelectionModel().getAnchorSelectionIndex());
         assertEquals(2, table.getSelectionModel().getLeadSelectionIndex());
         if (isHarmony()) {
-            assertEquals(-1, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
+            assertEquals(-1, table.getColumnModel().getSelectionModel()
+                    .getAnchorSelectionIndex());
         } else {
-            assertEquals(0, table.getColumnModel().getSelectionModel().getAnchorSelectionIndex());
+            assertEquals(0, table.getColumnModel().getSelectionModel()
+                    .getAnchorSelectionIndex());
         }
         assertEquals(0, table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
     }
@@ -120,7 +112,6 @@ public class JTableRTest extends BasicSwingTestCase {
                 count++;
             }
         }
-
         int[] result = new int[count];
         count = 0;
         for (int i = selModel.getMinSelectionIndex(); i <= selModel.getMaxSelectionIndex(); i++) {
@@ -128,9 +119,6 @@ public class JTableRTest extends BasicSwingTestCase {
                 result[count++] = i;
             }
         }
-
         return result;
     }
 }
-
-

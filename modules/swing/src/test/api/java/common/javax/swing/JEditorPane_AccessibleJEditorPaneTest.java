@@ -22,11 +22,14 @@ package javax.swing;
 
 import javax.accessibility.AccessibleState;
 
-public class JEditorPane_AccessibleJEditorPaneTest extends SwingTestCase{
-    JEditorPane      jep;
-    JFrame           jf;
+public class JEditorPane_AccessibleJEditorPaneTest extends SwingTestCase {
+    JEditorPane jep;
+
+    JFrame jf;
+
     JEditorPane.AccessibleJEditorPane accessible;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         setIgnoreNotImplemented(true);
@@ -38,24 +41,25 @@ public class JEditorPane_AccessibleJEditorPaneTest extends SwingTestCase{
         accessible = jep.new AccessibleJEditorPane();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
     }
 
-    public void testGetAccessibleStateSet(){
+    public void testGetAccessibleStateSet() {
         assertTrue(accessible.getAccessibleStateSet().contains(AccessibleState.MULTI_LINE));
     }
-    public void testGetAccessibleDescription(){
+
+    public void testGetAccessibleDescription() {
         assertEquals("text/plain", accessible.getAccessibleDescription());
         // TODO: uncomment when HTML support is implemented
-//        jep.setContentType("text/html");
-//        assertEquals("text/html", accessible.getAccessibleDescription());
+        //        jep.setContentType("text/html");
+        //        assertEquals("text/html", accessible.getAccessibleDescription());
         jep.setContentType("test");
         assertEquals("text/plain", accessible.getAccessibleDescription());
         // TODO: uncomment when RTF support is implemented
-//        jep.setContentType("text/rtf");
-//        assertEquals("text/rtf", accessible.getAccessibleDescription());
+        //        jep.setContentType("text/rtf");
+        //        assertEquals("text/rtf", accessible.getAccessibleDescription());
     }
 }

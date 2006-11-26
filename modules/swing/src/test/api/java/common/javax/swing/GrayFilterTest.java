@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-
 public class GrayFilterTest extends SwingTestCase {
     private GrayFilter filter;
 
@@ -32,6 +31,7 @@ public class GrayFilterTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         filter = null;
     }
@@ -60,16 +60,13 @@ public class GrayFilterTest extends SwingTestCase {
     public void testCreateDisabledImage() throws Exception {
         Image original = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
         Image grayed = GrayFilter.createDisabledImage(original);
-
         assertNotNull(grayed);
-
         assertEquals(original.getHeight(null), grayed.getHeight(null));
         assertEquals(original.getWidth(null), grayed.getWidth(null));
         assertEquals(20, grayed.getWidth(null));
         assertEquals(20, grayed.getHeight(null));
         assertNotSame(original, grayed);
     }
-
 
     private void checkIncorrectGrayPercentage(final int percentage) {
         try {
@@ -84,19 +81,19 @@ public class GrayFilterTest extends SwingTestCase {
     private void checkRange(final int percentage, final int expectedInterval) {
         filter = new GrayFilter(false, percentage);
         checkIsClosedTo(0, filter.filterRGB(0, 0, new Color(0, 0, 0).getRGB()));
-        checkIsClosedTo(expectedInterval, filter.filterRGB(0, 0, new Color(255, 255, 255).getRGB()));
-
+        checkIsClosedTo(expectedInterval, filter.filterRGB(0, 0, new Color(255, 255, 255)
+                .getRGB()));
         int lowBound = 255 * percentage / 100;
         filter = new GrayFilter(true, percentage);
         checkIsClosedTo(lowBound, filter.filterRGB(0, 0, new Color(0, 0, 0).getRGB()));
-        checkIsClosedTo(lowBound + expectedInterval, filter.filterRGB(0, 0, new Color(255, 255, 255).getRGB()));
+        checkIsClosedTo(lowBound + expectedInterval, filter.filterRGB(0, 0, new Color(255, 255,
+                255).getRGB()));
     }
 
     private void checkIsClosedTo(final int expected, final int actualRGB) {
         Color c = new Color(actualRGB);
         assertEquals(c.getRed(), c.getGreen());
         assertEquals(c.getRed(), c.getBlue());
-
         assertTrue(Math.abs(c.getRed() - expected) <= 1);
     }
 }

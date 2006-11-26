@@ -26,32 +26,17 @@ import java.awt.AWTError;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-
 import javax.accessibility.AccessibleContext;
 
 public class BoxTest extends SwingTestCase {
-
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(BoxTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
     /*
      * Class under test for AccessibleContext getAccessibleContext()
      */
     public void testGetAccessibleContext() {
         Component box = new Box(BoxLayout.LINE_AXIS);
         AccessibleContext accessible = box.getAccessibleContext();
-        assertEquals("Accessible context is correct ", Box.AccessibleBox.class, accessible.getClass());
-    }
-
-    public void testBox() {
+        assertEquals("Accessible context is correct ", Box.AccessibleBox.class, accessible
+                .getClass());
     }
 
     /*
@@ -59,7 +44,7 @@ public class BoxTest extends SwingTestCase {
      */
     public void testSetLayoutLayoutManager() {
         Box box = new Box(BoxLayout.X_AXIS);
-        boolean thrown =  false;
+        boolean thrown = false;
         try {
             box.setLayout(new GridLayout(3, 3));
         } catch (AWTError err) {
@@ -71,64 +56,54 @@ public class BoxTest extends SwingTestCase {
     public void testCreateRigidArea() {
         Dimension size = new Dimension(100, 100);
         Component box = Box.createRigidArea(size);
-
         assertEquals("Minimum size initialized ", size, box.getMinimumSize());
         assertEquals("Preferred size initialized ", size, box.getPreferredSize());
         assertEquals("Maximum size initialized ", size, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized ", box.isOpaque());
     }
 
     public void testCreateVerticalBox() {
-        Dimension nullSize = new Dimension(0, 0);
-        Box box = (Box)Box.createVerticalBox();
-
+        Box box = Box.createVerticalBox();
         assertFalse("Opaqueness initialized ", box.isOpaque());
-
-        JPanel panel1 =  new JPanel();
-        JPanel panel2 =  new JPanel();
-        panel1.setMinimumSize(new Dimension(10 ,10));
-        panel2.setMinimumSize(new Dimension(10 ,10));
+        JPanel panel1 = new JPanel();
+        JPanel panel2 = new JPanel();
+        panel1.setMinimumSize(new Dimension(10, 10));
+        panel2.setMinimumSize(new Dimension(10, 10));
         panel1.setPreferredSize(new Dimension(100, 200));
         panel2.setPreferredSize(new Dimension(1000, 2000));
         box.add(panel1);
         box.add(panel2);
-
         assertEquals("Minimum size ", new Dimension(10, 20), box.getMinimumSize());
         assertEquals("Preferred size ", new Dimension(1000, 2200), box.getPreferredSize());
-        assertEquals("Maximum size ", new Dimension(Short.MAX_VALUE, 2*Short.MAX_VALUE), box.getMaximumSize());
-
+        assertEquals("Maximum size ", new Dimension(Short.MAX_VALUE, 2 * Short.MAX_VALUE), box
+                .getMaximumSize());
     }
 
     public void testCreateHorizontalBox() {
-        Dimension nullSize = new Dimension(0, 0);
-        Box box = (Box)Box.createHorizontalBox();
+        Box box = Box.createHorizontalBox();
         assertFalse("Opaqueness initialized ", box.isOpaque());
-
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
-        panel1.setMinimumSize(new Dimension(10 ,10));
-        panel2.setMinimumSize(new Dimension(10 ,10));
+        panel1.setMinimumSize(new Dimension(10, 10));
+        panel2.setMinimumSize(new Dimension(10, 10));
         panel1.setPreferredSize(new Dimension(100, 200));
         panel2.setPreferredSize(new Dimension(1000, 2000));
         box.add(panel1);
         box.add(panel2);
-
         assertEquals("Minimum size ", new Dimension(20, 10), box.getMinimumSize());
         assertEquals("Preferred size ", new Dimension(1100, 2000), box.getPreferredSize());
-        assertEquals("Maximum size ", new Dimension(2*Short.MAX_VALUE, Short.MAX_VALUE), box.getMaximumSize());
-}
+        assertEquals("Maximum size ", new Dimension(2 * Short.MAX_VALUE, Short.MAX_VALUE), box
+                .getMaximumSize());
+    }
 
     public void testCreateVerticalStrut() {
         int height = 100;
         Dimension size = new Dimension(0, height);
         Dimension maxSize = new Dimension(Short.MAX_VALUE, height);
         Component box = Box.createVerticalStrut(height);
-
         assertEquals("Minimum size initialized correctly ", size, box.getMinimumSize());
         assertEquals("Preferred size initialized correctly ", size, box.getPreferredSize());
         assertEquals("Maximum size initialized correctly ", maxSize, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", box.isOpaque());
     }
 
@@ -137,11 +112,9 @@ public class BoxTest extends SwingTestCase {
         Dimension size = new Dimension(width, 0);
         Dimension maxSize = new Dimension(width, Short.MAX_VALUE);
         Component box = Box.createHorizontalStrut(width);
-
         assertEquals("Minimum size initialized correctly ", size, box.getMinimumSize());
         assertEquals("Preferred size initialized correctly ", size, box.getPreferredSize());
         assertEquals("Maximum size initialized correctly ", maxSize, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", box.isOpaque());
     }
 
@@ -149,11 +122,9 @@ public class BoxTest extends SwingTestCase {
         Dimension nullSize = new Dimension(0, 0);
         Dimension maximumSize = new Dimension(0, Short.MAX_VALUE);
         Component box = Box.createVerticalGlue();
-
         assertEquals("Minimum size initialized correctly ", nullSize, box.getMinimumSize());
         assertEquals("Preferred size initialized correctly ", nullSize, box.getPreferredSize());
         assertEquals("Maximum size initialized correctly ", maximumSize, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", box.isOpaque());
     }
 
@@ -161,11 +132,9 @@ public class BoxTest extends SwingTestCase {
         Dimension nullSize = new Dimension(0, 0);
         Dimension maximumSize = new Dimension(Short.MAX_VALUE, 0);
         Component box = Box.createHorizontalGlue();
-
         assertEquals("Minimum size initialized correctly ", nullSize, box.getMinimumSize());
         assertEquals("Preferred size initialized correctly ", nullSize, box.getPreferredSize());
         assertEquals("Maximum size initialized correctly ", maximumSize, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", box.isOpaque());
     }
 
@@ -173,12 +142,9 @@ public class BoxTest extends SwingTestCase {
         Dimension nullSize = new Dimension(0, 0);
         Dimension maximumSize = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
         Component box = Box.createGlue();
-
         assertEquals("Minimum size initialized correctly ", nullSize, box.getMinimumSize());
         assertEquals("Preferred size initialized correctly ", nullSize, box.getPreferredSize());
         assertEquals("Maximum size initialized correctly ", maximumSize, box.getMaximumSize());
-
         assertFalse("Opaqueness initialized correctly", box.isOpaque());
     }
-
 }

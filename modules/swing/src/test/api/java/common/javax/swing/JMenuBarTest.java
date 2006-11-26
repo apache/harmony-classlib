@@ -15,27 +15,27 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 import java.awt.Insets;
-
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.MenuBarUI;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 import javax.swing.plaf.metal.MetalMenuBarUI;
 
 public class JMenuBarTest extends SwingTestCase {
-
     protected JMenuBar menuBar;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuBar = new JMenuBar();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         menuBar = null;
         super.tearDown();
@@ -58,11 +58,12 @@ public class JMenuBarTest extends SwingTestCase {
      * Test method for 'javax.swing.JMenuBar.getAccessibleContext()'
      */
     public void testGetAccessibleContext() {
-        boolean assertedValue = (menuBar.getAccessibleContext() != null &&
-                menuBar.getAccessibleContext().getClass().getName().equals("javax.swing.JMenuBar$AccessibleJMenuBar"));
-
-        assertTrue("AccessibleContext created properly ",  assertedValue);
-        assertEquals("AccessibleRole", AccessibleRole.MENU_BAR, menuBar.getAccessibleContext().getAccessibleRole());
+        boolean assertedValue = (menuBar.getAccessibleContext() != null && menuBar
+                .getAccessibleContext().getClass().getName().equals(
+                        "javax.swing.JMenuBar$AccessibleJMenuBar"));
+        assertTrue("AccessibleContext created properly ", assertedValue);
+        assertEquals("AccessibleRole", AccessibleRole.MENU_BAR, menuBar.getAccessibleContext()
+                .getAccessibleRole());
     }
 
     /*
@@ -72,7 +73,6 @@ public class JMenuBarTest extends SwingTestCase {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
         JMenuItem item3 = new JMenuItem();
-
         menuBar.add(item1);
         menuBar.add(item2);
         assertEquals(0, menuBar.getComponentIndex(item1));
@@ -85,7 +85,6 @@ public class JMenuBarTest extends SwingTestCase {
      */
     public void testProcessKeyBinding() {
         // TODO implement
-
     }
 
     /*
@@ -101,11 +100,9 @@ public class JMenuBarTest extends SwingTestCase {
     public void testAddJMenu() {
         JMenu item1 = new JMenu();
         JMenu item2 = new JMenu();
-
         menuBar.add(item1);
         assertEquals(1, menuBar.getComponentCount());
         assertSame(item1, menuBar.getComponent(0));
-
         menuBar.add(item2);
         assertEquals(2, menuBar.getComponentCount());
         assertSame(item1, menuBar.getComponent(0));
@@ -125,14 +122,11 @@ public class JMenuBarTest extends SwingTestCase {
     public void testGetMenu() {
         JMenu menu1 = new JMenu();
         JMenu menu2 = new JMenu();
-
         menuBar.add(menu1);
         assertEquals(menu1, menuBar.getMenu(0));
-
         menuBar.add(menu2);
         assertEquals(menu1, menuBar.getMenu(0));
         assertEquals(menu2, menuBar.getMenu(1));
-
         menuBar.add(new JButton());
         assertEquals(menu1, menuBar.getMenu(0));
         assertEquals(menu2, menuBar.getMenu(1));
@@ -165,29 +159,24 @@ public class JMenuBarTest extends SwingTestCase {
         JMenu item3 = new JMenu();
         JMenu item4 = new JMenu();
         assertEquals(0, menuBar.getSubElements().length);
-
         menuBar.add(item1);
         assertEquals(1, menuBar.getSubElements().length);
         assertSame(item1, menuBar.getSubElements()[0]);
-
         menuBar.add(item2);
         menuBar.add(new JButton());
         assertEquals(2, menuBar.getSubElements().length);
         assertSame(item1, menuBar.getSubElements()[0]);
         assertSame(item2, menuBar.getSubElements()[1]);
-
         menuBar.add(item3);
         assertEquals(3, menuBar.getSubElements().length);
         assertSame(item1, menuBar.getSubElements()[0]);
         assertSame(item2, menuBar.getSubElements()[1]);
         assertSame(item3, menuBar.getSubElements()[2]);
-
         menuBar.add(new JButton());
         assertEquals(3, menuBar.getSubElements().length);
         assertSame(item1, menuBar.getSubElements()[0]);
         assertSame(item2, menuBar.getSubElements()[1]);
         assertSame(item3, menuBar.getSubElements()[2]);
-
         item3.add(item4);
         assertEquals(3, menuBar.getSubElements().length);
     }
@@ -199,24 +188,18 @@ public class JMenuBarTest extends SwingTestCase {
         SingleSelectionModel selectionModel1 = new DefaultSingleSelectionModel();
         JMenu item1 = new JMenu();
         JMenuItem item2 = new JMenuItem();
-
         if (isHarmony()) {
             menuBar.setSelectionModel(null);
             assertFalse(menuBar.isSelected());
         }
-
         menuBar.setSelectionModel(selectionModel1);
         menuBar.add(item1);
         menuBar.add(item2);
-
         assertFalse(menuBar.isSelected());
-
         menuBar.setSelected(item1);
         assertTrue(menuBar.isSelected());
-
         menuBar.setSelected(item2);
         assertTrue(menuBar.isSelected());
-
         menuBar.setSelected(new JButton());
         assertFalse(menuBar.isSelected());
     }
@@ -228,17 +211,14 @@ public class JMenuBarTest extends SwingTestCase {
         PropertyChangeController listener = new PropertyChangeController();
         menuBar.addPropertyChangeListener(listener);
         assertTrue(menuBar.isBorderPainted());
-
         menuBar.setBorderPainted(false);
         assertFalse(menuBar.isBorderPainted());
         listener.checkLastPropertyFired(menuBar, "borderPainted", Boolean.TRUE, Boolean.FALSE);
         listener.reset();
-
         menuBar.setBorderPainted(true);
         listener.checkLastPropertyFired(menuBar, "borderPainted", Boolean.FALSE, Boolean.TRUE);
         assertTrue(menuBar.isBorderPainted());
         listener.reset();
-
         menuBar.setBorderPainted(true);
         assertFalse(listener.isChanged("borderPainted"));
     }
@@ -250,11 +230,13 @@ public class JMenuBarTest extends SwingTestCase {
         try {
             menuBar.setHelpMenu(new JMenu());
             fail("no exception has been thrown");
-        } catch (Error e) {}
+        } catch (Error e) {
+        }
         try {
             menuBar.getHelpMenu();
             fail("no exception has been thrown");
-        } catch (Error e) {}
+        } catch (Error e) {
+        }
     }
 
     /*
@@ -265,20 +247,16 @@ public class JMenuBarTest extends SwingTestCase {
         menuBar.setMargin(defaultMargin);
         Insets margin1 = new Insets(1, 1, 1, 1);
         Insets margin2 = new Insets(2, 2, 2, 2);
-        PropertyChangeController listener1 =  new PropertyChangeController();
-
+        PropertyChangeController listener1 = new PropertyChangeController();
         menuBar.addPropertyChangeListener(listener1);
-
         menuBar.setMargin(margin1);
         assertSame(margin1, menuBar.getMargin());
         listener1.checkLastPropertyFired(menuBar, "margin", defaultMargin, margin1);
         listener1.reset();
-
         menuBar.setMargin(margin2);
         assertSame(margin2, menuBar.getMargin());
         listener1.checkLastPropertyFired(menuBar, "margin", margin1, margin2);
         listener1.reset();
-
         menuBar.setMargin(margin2);
         assertFalse(listener1.isChanged("margin"));
         listener1.reset();
@@ -289,21 +267,16 @@ public class JMenuBarTest extends SwingTestCase {
      */
     public void testSetSelected() {
         SingleSelectionModel selectionModel1 = new DefaultSingleSelectionModel();
-        SingleSelectionModel selectionModel2 = new DefaultSingleSelectionModel();
         JMenu item1 = new JMenu();
         JMenuItem item2 = new JMenuItem();
-
         menuBar.setSelectionModel(null);
         menuBar.add(item1);
         menuBar.add(item2);
-
         menuBar.setSelectionModel(selectionModel1);
         menuBar.setSelected(item1);
         assertEquals("selection", 0, selectionModel1.getSelectedIndex());
-
         menuBar.setSelected(item2);
         assertEquals("selection", 1, selectionModel1.getSelectedIndex());
-
         menuBar.setSelected(new JButton());
         assertEquals("selection", -1, selectionModel1.getSelectedIndex());
     }
@@ -314,19 +287,17 @@ public class JMenuBarTest extends SwingTestCase {
     public void testSetGetSelectionModel() {
         SingleSelectionModel selectionModel1 = new DefaultSingleSelectionModel();
         SingleSelectionModel selectionModel2 = new DefaultSingleSelectionModel();
-
         PropertyChangeController listener = new PropertyChangeController();
         menuBar.setSelectionModel(null);
         menuBar.addPropertyChangeListener(listener);
-
         menuBar.setSelectionModel(selectionModel1);
         assertEquals("selectionModel", selectionModel1, menuBar.getSelectionModel());
         listener.checkLastPropertyFired(menuBar, "selectionModel", null, selectionModel1);
         listener.reset();
-
         menuBar.setSelectionModel(selectionModel2);
         assertEquals("selectionModel", selectionModel2, menuBar.getSelectionModel());
-        listener.checkLastPropertyFired(menuBar, "selectionModel", selectionModel1, selectionModel2);
+        listener.checkLastPropertyFired(menuBar, "selectionModel", selectionModel1,
+                selectionModel2);
         listener.reset();
     }
 
@@ -344,10 +315,8 @@ public class JMenuBarTest extends SwingTestCase {
         MenuBarUI ui1 = new BasicMenuBarUI();
         MenuBarUI ui2 = new MetalMenuBarUI();
         JMenuBar menuBar = new JMenuBar();
-
         menuBar.setUI(ui1);
         assertSame(ui1, menuBar.getUI());
-
         menuBar.setUI(ui2);
         assertSame(ui2, menuBar.getUI());
     }

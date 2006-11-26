@@ -24,20 +24,21 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicToolBarUI;
 
 public class JToolBarTest extends SwingTestCase {
     private static final int INVALID_ORIENTATION = 4;
+
     private JToolBar toolBar;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         toolBar = new JToolBar();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -47,8 +48,7 @@ public class JToolBarTest extends SwingTestCase {
     }
 
     public void testGetAccessibleContext() {
-        assertTrue(toolBar.getAccessibleContext()
-                   instanceof JToolBar.AccessibleJToolBar);
+        assertTrue(toolBar.getAccessibleContext() instanceof JToolBar.AccessibleJToolBar);
     }
 
     public void testAddImpl() {
@@ -61,11 +61,9 @@ public class JToolBarTest extends SwingTestCase {
 
     public void testSetLayout() {
         assertNotNull(toolBar.getLayout());
-
         FlowLayout layout = new FlowLayout();
         toolBar.setLayout(layout);
         assertSame(layout, toolBar.getLayout());
-
         toolBar.setLayout(null);
         assertNull(toolBar.getLayout());
     }
@@ -80,7 +78,6 @@ public class JToolBarTest extends SwingTestCase {
 
     public void testUpdateUI() {
         toolBar.updateUI();
-
         ComponentUI ui1 = toolBar.getUI();
         ComponentUI ui2 = UIManager.getUI(toolBar);
         // at least names of classes must be the same
@@ -90,23 +87,22 @@ public class JToolBarTest extends SwingTestCase {
     public void testJToolBar() {
         toolBar = new JToolBar();
         toolBar.setName(null);
-        assertEquals(JToolBar.HORIZONTAL, toolBar.getOrientation());
+        assertEquals(SwingConstants.HORIZONTAL, toolBar.getOrientation());
         assertNull(toolBar.getName());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
     }
 
     public void testJToolBarint() {
-        toolBar = new JToolBar(JToolBar.VERTICAL);
-        assertEquals(JToolBar.VERTICAL, toolBar.getOrientation());
+        toolBar = new JToolBar(SwingConstants.VERTICAL);
+        assertEquals(SwingConstants.VERTICAL, toolBar.getOrientation());
         assertNull(toolBar.getName());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
-
-        toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        assertEquals(JToolBar.HORIZONTAL, toolBar.getOrientation());
-
+        toolBar = new JToolBar(SwingConstants.HORIZONTAL);
+        assertEquals(SwingConstants.HORIZONTAL, toolBar.getOrientation());
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 toolBar = new JToolBar(INVALID_ORIENTATION);
             }
@@ -116,18 +112,18 @@ public class JToolBarTest extends SwingTestCase {
     public void testJToolBarString() {
         toolBar = new JToolBar("tb1");
         assertEquals("tb1", toolBar.getName());
-        assertEquals(JToolBar.HORIZONTAL, toolBar.getOrientation());
+        assertEquals(SwingConstants.HORIZONTAL, toolBar.getOrientation());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
     }
 
     public void testJToolBarStringint() {
-        toolBar = new JToolBar("tb1", JToolBar.HORIZONTAL);
+        toolBar = new JToolBar("tb1", SwingConstants.HORIZONTAL);
         assertEquals("tb1", toolBar.getName());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 toolBar = new JToolBar("tb2", INVALID_ORIENTATION);
             }
@@ -146,7 +142,6 @@ public class JToolBarTest extends SwingTestCase {
         JComponent c2 = new JLabel("2");
         toolBar.add(c2);
         toolBar.addSeparator();
-
         assertEquals(0, toolBar.getComponentIndex(c1));
         assertEquals(1, toolBar.getComponentIndex(c2));
         assertEquals(2, toolBar.getComponentIndex(toolBar.getComponentAtIndex(2)));
@@ -159,7 +154,6 @@ public class JToolBarTest extends SwingTestCase {
         JComponent c2 = new JLabel("2");
         toolBar.add(c2);
         toolBar.addSeparator();
-
         assertSame(c1, toolBar.getComponentAtIndex(0));
         assertSame(c2, toolBar.getComponentAtIndex(1));
         assertTrue(toolBar.getComponentAtIndex(2) instanceof JToolBar.Separator);
@@ -169,7 +163,6 @@ public class JToolBarTest extends SwingTestCase {
     public void testSetGetMargin() {
         final Insets defaultMagin = new Insets(0, 0, 0, 0);
         assertEquals(defaultMagin, toolBar.getMargin());
-
         Insets insets = new Insets(1, 2, 3, 4);
         PropertyChangeController controller = new PropertyChangeController();
         toolBar.addPropertyChangeListener("margin", controller);
@@ -177,14 +170,12 @@ public class JToolBarTest extends SwingTestCase {
         assertTrue(controller.isChanged());
         assertEquals(insets, toolBar.getMargin());
         assertSame(insets, toolBar.getMargin());
-
         toolBar.setMargin(null);
         assertEquals(defaultMagin, toolBar.getMargin());
     }
 
     public void testSetIsBorderPainted() {
         assertTrue(toolBar.isBorderPainted());
-
         PropertyChangeController controller = new PropertyChangeController();
         toolBar.addPropertyChangeListener("borderPainted", controller);
         toolBar.setBorderPainted(false);
@@ -194,7 +185,6 @@ public class JToolBarTest extends SwingTestCase {
 
     public void testSetIsFloatable() {
         assertTrue(toolBar.isFloatable());
-
         PropertyChangeController controller = new PropertyChangeController();
         toolBar.addPropertyChangeListener("floatable", controller);
         toolBar.setFloatable(false);
@@ -206,15 +196,12 @@ public class JToolBarTest extends SwingTestCase {
         toolBar.addSeparator();
         PropertyChangeController controller = new PropertyChangeController();
         toolBar.addPropertyChangeListener("orientation", controller);
-        assertEquals(SwingConstants.VERTICAL,
-                     getToolBarSeparatorAtIndex(0).getOrientation());
-
-        toolBar.setOrientation(JToolBar.VERTICAL);
+        assertEquals(SwingConstants.VERTICAL, getToolBarSeparatorAtIndex(0).getOrientation());
+        toolBar.setOrientation(SwingConstants.VERTICAL);
         assertTrue(controller.isChanged());
-        assertEquals(SwingConstants.HORIZONTAL,
-                     getToolBarSeparatorAtIndex(0).getOrientation());
-
+        assertEquals(SwingConstants.HORIZONTAL, getToolBarSeparatorAtIndex(0).getOrientation());
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 toolBar.setOrientation(INVALID_ORIENTATION);
             }
@@ -223,7 +210,6 @@ public class JToolBarTest extends SwingTestCase {
 
     public void testSetIsRollover() {
         assertFalse(toolBar.isRollover());
-
         PropertyChangeController controller = new PropertyChangeController();
         toolBar.addPropertyChangeListener("JToolBar.isRollover", controller);
         toolBar.setRollover(true);
@@ -234,16 +220,13 @@ public class JToolBarTest extends SwingTestCase {
     public void testAddSeparator() {
         toolBar.addSeparator();
         assertEquals(1, toolBar.getComponentCount());
-        assertEquals(UIManager.get("ToolBar.separatorSize"),
-                     getToolBarSeparatorAtIndex(0).getSeparatorSize());
-        assertEquals(SwingConstants.VERTICAL,
-                     getToolBarSeparatorAtIndex(0).getOrientation());
-
-        toolBar.setOrientation(JToolBar.VERTICAL);
+        assertEquals(UIManager.get("ToolBar.separatorSize"), getToolBarSeparatorAtIndex(0)
+                .getSeparatorSize());
+        assertEquals(SwingConstants.VERTICAL, getToolBarSeparatorAtIndex(0).getOrientation());
+        toolBar.setOrientation(SwingConstants.VERTICAL);
         toolBar.addSeparator();
         assertEquals(2, toolBar.getComponentCount());
-        assertEquals(SwingConstants.HORIZONTAL,
-                     getToolBarSeparatorAtIndex(1).getOrientation());
+        assertEquals(SwingConstants.HORIZONTAL, getToolBarSeparatorAtIndex(1).getOrientation());
     }
 
     public void testAddSeparatorDimension() {
@@ -251,16 +234,18 @@ public class JToolBarTest extends SwingTestCase {
         toolBar.addSeparator(size);
         assertEquals(1, toolBar.getComponentCount());
         assertEquals(size, getToolBarSeparatorAtIndex(0).getSeparatorSize());
-
         toolBar.addSeparator(null);
-        assertEquals(UIManager.get("ToolBar.separatorSize"),
-                     getToolBarSeparatorAtIndex(1).getSeparatorSize());
+        assertEquals(UIManager.get("ToolBar.separatorSize"), getToolBarSeparatorAtIndex(1)
+                .getSeparatorSize());
     }
 
     public void testAddAction() {
-        AbstractAction action = new AbstractAction() { {
+        AbstractAction action = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+            {
                 putValue(Action.NAME, "action");
             }
+
             public void actionPerformed(final ActionEvent e) {
             }
         };
@@ -268,22 +253,23 @@ public class JToolBarTest extends SwingTestCase {
         assertTrue(toolBar.isAncestorOf(b));
         assertEquals(action.getValue(Action.NAME), b.getText());
         assertSame(action, b.getAction());
-
         action.setEnabled(false);
         assertFalse(b.isEnabled());
     }
 
     public void testCreateActionComponent() {
-        AbstractAction action = new AbstractAction() { {
+        AbstractAction action = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+            {
                 putValue(Action.NAME, "action");
             }
+
             public void actionPerformed(final ActionEvent e) {
             }
         };
         JButton b = toolBar.createActionComponent(action);
         assertEquals(action.getValue(Action.NAME), b.getText());
         assertNull(b.getAction());
-
         b = toolBar.createActionComponent(null);
         assertEquals("", b.getText());
     }
@@ -294,6 +280,6 @@ public class JToolBarTest extends SwingTestCase {
     }
 
     private JToolBar.Separator getToolBarSeparatorAtIndex(final int i) {
-        return (JToolBar.Separator)toolBar.getComponentAtIndex(i);
+        return (JToolBar.Separator) toolBar.getComponentAtIndex(i);
     }
 }

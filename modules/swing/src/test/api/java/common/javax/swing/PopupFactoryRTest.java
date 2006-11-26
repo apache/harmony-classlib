@@ -30,7 +30,6 @@ public class PopupFactoryRTest extends BasicSwingTestCase {
         p1.show();
         p1.hide();
         p1.hide();
-
         Popup p11 = PopupFactory.getSharedInstance().getPopup(null, new JPanel(), 20, 20);
         Popup p12 = PopupFactory.getSharedInstance().getPopup(null, new JPanel(), 20, 20);
         if (isHarmony()) {

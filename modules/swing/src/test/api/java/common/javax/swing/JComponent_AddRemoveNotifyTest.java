@@ -22,26 +22,30 @@ package javax.swing;
 
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-
 import org.apache.harmony.x.swing.StringConstants;
 
 public class JComponent_AddRemoveNotifyTest extends BasicSwingTestCase {
     private JPanel ancestorParent;
+
     private JPanel ancestor;
+
     private JButton component;
+
     private PropertyChangeController listener;
+
     private JFrame frame;
 
+    @Override
     protected void setUp() throws Exception {
         ancestorParent = new JPanel();
         ancestor = new JPanel();
         component = new JButton();
         ancestor.add(component);
         listener = new PropertyChangeController();
-
         component.addPropertyChangeListener(StringConstants.ANCESTOR_PROPERTY_NAME, listener);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         listener.setVerbose(false);
         ancestor = null;
@@ -53,63 +57,62 @@ public class JComponent_AddRemoveNotifyTest extends BasicSwingTestCase {
         }
     }
 
-
     public void testAddNotifyWhenComponentAdded() throws Exception {
         frame = createVisibleFrameWithAncestor();
         ancestor.remove(component);
         waitEventQueueEmptiness();
         listener.reset();
-
         ancestor.add(component);
         waitEventQueueEmptiness();
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, null, ancestor);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                null, ancestor);
     }
 
     public void testAddNotifyWhenAncestorAdded() throws Exception {
         frame = createVisibleFrameWithAncestor();
         waitEventQueueEmptiness();
-
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, null, ancestor);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                null, ancestor);
     }
 
     public void testAddNotifyWhenAncestorParentAdded() throws Exception {
         frame = createVisibleFrameWithAncestorParent();
         waitEventQueueEmptiness();
-
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, null, ancestor);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                null, ancestor);
     }
 
     public void testRemoveNotifyWhenComponentRemoved() throws Exception {
         frame = createVisibleFrameWithAncestor();
         listener.reset();
-
         ancestor.remove(component);
         waitEventQueueEmptiness();
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, ancestor, null);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                ancestor, null);
     }
 
     public void testRemoveNotifyWhenAncestorRemoved() throws Exception {
         frame = createVisibleFrameWithAncestor();
         listener.reset();
-
         frame.getContentPane().remove(ancestor);
         waitEventQueueEmptiness();
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, ancestor, null);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                ancestor, null);
     }
 
     public void testRemoveNotifyWhenAncestorParentRemoved() throws Exception {
         frame = createVisibleFrameWithAncestorParent();
         listener.reset();
-
         frame.getContentPane().remove(ancestorParent);
         waitEventQueueEmptiness();
         assertEquals(1, listener.getNumEvents());
-        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME, ancestor, null);
+        listener.checkLastPropertyFired(component, StringConstants.ANCESTOR_PROPERTY_NAME,
+                ancestor, null);
     }
 
     private JFrame createVisibleFrameWithAncestor() {
@@ -117,7 +120,6 @@ public class JComponent_AddRemoveNotifyTest extends BasicSwingTestCase {
         result.getContentPane().add(ancestor);
         result.setSize(200, 200);
         result.setVisible(true);
-
         return result;
     }
 
@@ -127,15 +129,16 @@ public class JComponent_AddRemoveNotifyTest extends BasicSwingTestCase {
         result.getContentPane().add(ancestorParent);
         result.setSize(200, 200);
         result.setVisible(true);
-
         return result;
     }
 
     private void waitEventQueueEmptiness() {
         try {
-            while (Toolkit.getDefaultToolkit().getSystemEventQueue().peekEvent() != null || EventQueue.getCurrentEvent() != null) {
+            while (Toolkit.getDefaultToolkit().getSystemEventQueue().peekEvent() != null
+                    || EventQueue.getCurrentEvent() != null) {
                 Thread.sleep(10);
             }
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
     }
 }

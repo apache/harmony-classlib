@@ -32,14 +32,15 @@ public class CellRendererPaneTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         pane = new CellRendererPane();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         pane = null;
     }
-
 
     public void testCellRendererPane() throws Exception {
         assertNull(pane.accessibleContext);
@@ -49,24 +50,19 @@ public class CellRendererPaneTest extends SwingTestCase {
         JComponent c1 = new JPanel();
         JComponent c2 = new JPanel();
         JComponent c3 = new JPanel();
-
         assertEquals(0, pane.getComponentCount());
-
         pane.add(c1);
         assertEquals(1, pane.getComponentCount());
         assertSame(c1, pane.getComponent(0));
-
         pane.add(c2);
         assertEquals(2, pane.getComponentCount());
         assertSame(c1, pane.getComponent(0));
         assertSame(c2, pane.getComponent(1));
-
         pane.add(c3);
         assertEquals(3, pane.getComponentCount());
         assertSame(c1, pane.getComponent(0));
         assertSame(c2, pane.getComponent(1));
         assertSame(c3, pane.getComponent(2));
-
         pane.add(c1);
         assertEquals(3, pane.getComponentCount());
         assertSame(c1, pane.getComponent(0));
@@ -83,47 +79,54 @@ public class CellRendererPaneTest extends SwingTestCase {
     public void testInvalidate() throws Exception {
         final Marker parentInvalidation = new Marker();
         JPanel parent = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void invalidate() {
                 super.invalidate();
                 parentInvalidation.setOccurred();
             }
         };
-
         final Marker childInvalidation = new Marker();
         JPanel child = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void invalidate() {
                 super.invalidate();
                 childInvalidation.setOccurred();
             }
         };
-
         parent.add(pane);
         pane.add(child);
-
         parent.validate();
         parentInvalidation.setOccurred(false);
         childInvalidation.setOccurred(false);
-
         child.invalidate();
         assertTrue(childInvalidation.isOccurred());
         assertFalse(parentInvalidation.isOccurred());
     }
 
     public void testPaintComponent() throws Exception {
-        final List boundsChanges = new ArrayList();
+        final List<Rectangle> boundsChanges = new ArrayList<Rectangle>();
         final Marker dbMarker = new Marker();
         final Marker validationMarker = new Marker();
         JPanel component = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void setBounds(final int x, final int y, final int w, final int h) {
                 boundsChanges.add(new Rectangle(x, y, w, h));
                 super.setBounds(x, y, w, h);
             }
 
+            @Override
             public void validate() {
                 validationMarker.setOccurred();
                 super.validate();
             }
 
+            @Override
             public void paint(final Graphics g) {
                 super.paint(g);
                 dbMarker.setOccurred(isDoubleBuffered());
@@ -131,20 +134,17 @@ public class CellRendererPaneTest extends SwingTestCase {
         };
         component.setDoubleBuffered(true);
         component.invalidate();
-
         Graphics g = createTestGraphics();
         g.setClip(0, 0, 100, 100);
         pane.paintComponent(g, component, new JPanel(), 20, 30, 40, 50);
         assertEquals(pane, component.getParent());
         assertFalse(dbMarker.isOccurred());
         assertTrue(component.isDoubleBuffered());
-
         assertEquals(2, boundsChanges.size());
         assertEquals(new Rectangle(20, 30, 40, 50), boundsChanges.get(0));
         assertEquals(new Rectangle(-40, -50, 0, 0), boundsChanges.get(1));
         assertEquals(new Rectangle(-40, -50, 0, 0), component.getBounds());
         assertFalse(validationMarker.isOccurred());
-
         pane.paintComponent(g, component, new JPanel(), 20, 30, 40, 50, true);
         assertTrue(validationMarker.isOccurred());
     }

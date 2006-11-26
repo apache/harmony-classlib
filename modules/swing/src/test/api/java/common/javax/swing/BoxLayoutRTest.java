@@ -21,17 +21,16 @@
 package javax.swing;
 
 import java.awt.Dimension;
-
 import javax.swing.border.EmptyBorder;
 
 public class BoxLayoutRTest extends SwingTestCase {
-
     public void testLayoutContainer() {
-        final JPanel panel1 =  new JPanel();
+        final JPanel panel1 = new JPanel();
         panel1.setBorder(new EmptyBorder(5, 5, 5, 5));
         panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
         panel1.add(new JPanel());
         panel1.add(new JTextField("AAAAAAAAA"));
-        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), panel1.getMaximumSize());
+        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), panel1
+                .getMaximumSize());
     }
 }

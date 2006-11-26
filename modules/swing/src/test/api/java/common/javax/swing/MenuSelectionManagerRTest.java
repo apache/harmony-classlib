@@ -15,20 +15,21 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing;
 
 public class MenuSelectionManagerRTest extends SwingTestCase {
-
     protected MenuSelectionManager manager;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         manager = new MenuSelectionManager();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         manager = null;
         super.tearDown();
@@ -45,27 +46,23 @@ public class MenuSelectionManagerRTest extends SwingTestCase {
         menu8.add(menu9);
         menu8.add(menu10);
         menu9.add(menu11);
-        MenuElement[] path7 = new MenuElement[] {menu8};
-        MenuElement[] path8 = new MenuElement[] {menu8, menu9};
-        MenuElement[] path9 = new MenuElement[] {menu8, menu10};
-
+        MenuElement[] path7 = new MenuElement[] { menu8 };
+        MenuElement[] path8 = new MenuElement[] { menu8, menu9 };
+        MenuElement[] path9 = new MenuElement[] { menu8, menu10 };
         manager.setSelectedPath(path7);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu8));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu9));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu10));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu11));
-
         manager.setSelectedPath(path8);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu8));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu9));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu10));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu11));
-
         manager.setSelectedPath(path9);
         assertTrue(manager.isComponentPartOfCurrentMenu(menu8));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu9));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu10));
         assertTrue(manager.isComponentPartOfCurrentMenu(menu11));
     }
-
 }

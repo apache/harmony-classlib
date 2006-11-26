@@ -20,27 +20,24 @@
  */
 package javax.swing;
 
-import java.awt.event.ActionListener;
-
 public class JComponentRTest extends SwingTestCase {
-    public void testComponentInstantiation() throws Exception {
-        Object result = (ActionListener)new JComboBox();
-        result = JPanel.class;
-    }
-
     public void testPaintDoubleBufferedForInvisibleComponent() throws Exception {
         JButton b = new JButton();
         b.paintDoubleBuffered(createTestGraphics());
     }
 
     public void testResetKeyboardActions() throws Exception {
-        JComponent c = new JComponent() {};
+        JComponent c = new JComponent() {
+            private static final long serialVersionUID = 1L;
+        };
         c.resetKeyboardActions();
     }
 
     public void testSetBounds() throws Throwable {
         final Marker marker = new Marker();
         final JComponent button = new JButton("JButton") {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void revalidate() {
                 marker.setOccurred();
@@ -48,7 +45,6 @@ public class JComponentRTest extends SwingTestCase {
             }
         };
         marker.reset();
-
         button.setSize(50, 500);
         assertFalse(marker.isOccurred());
     }

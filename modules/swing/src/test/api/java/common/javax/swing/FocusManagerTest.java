@@ -25,7 +25,6 @@ import java.awt.Container;
 import java.awt.DefaultFocusTraversalPolicy;
 import java.awt.FocusTraversalPolicy;
 import java.awt.KeyboardFocusManager;
-
 import junit.framework.TestCase;
 
 public class FocusManagerTest extends TestCase {
@@ -33,43 +32,51 @@ public class FocusManagerTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalPolicy(new TestPolicy());
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalPolicy(
+                new TestPolicy());
     }
 
     public void testGetSetCurrentManager() throws Exception {
-        FocusManager m = new FocusManager() {};
+        FocusManager m = new FocusManager() {
+        };
         FocusManager.setCurrentManager(m);
         assertEquals(m, KeyboardFocusManager.getCurrentKeyboardFocusManager());
     }
 
     public void testIsFocusManagerEnabled() throws Exception {
         assertTrue(FocusManager.isFocusManagerEnabled());
-        assertFalse(KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy() instanceof DefaultFocusTraversalPolicy);
-
+        assertFalse(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy() instanceof DefaultFocusTraversalPolicy);
         FocusManager.disableSwingFocusManager();
         assertFalse(FocusManager.isFocusManagerEnabled());
-        assertTrue(KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy() instanceof DefaultFocusTraversalPolicy);
+        assertTrue(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy() instanceof DefaultFocusTraversalPolicy);
     }
 
-
     private class TestPolicy extends FocusTraversalPolicy {
+        @Override
         public Component getComponentAfter(final Container a0, final Component a1) {
             return null;
         }
 
+        @Override
         public Component getComponentBefore(final Container a0, final Component a1) {
             return null;
         }
 
+        @Override
         public Component getDefaultComponent(final Container a0) {
             return null;
         }
 
+        @Override
         public Component getFirstComponent(final Container a0) {
             return null;
         }
 
+        @Override
         public Component getLastComponent(final Container a0) {
             return null;
         }

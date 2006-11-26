@@ -22,21 +22,23 @@ package javax.swing;
 
 import java.awt.event.ActionEvent;
 
-
 public class ActionMapRTest extends SwingTestCase {
-
     public void testGet() {
         ActionMap map = new ActionMap();
         final AbstractAction action = new AbstractAction("result") {
-            public void actionPerformed(ActionEvent e) {
+            private static final long serialVersionUID = 1L;
 
+            public void actionPerformed(ActionEvent e) {
             }
         };
-        map.setParent(new ActionMap () {
+        map.setParent(new ActionMap() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public Action get(Object key) {
                 return action;
             }
         });
-        assertSame(action, (Action)map.get("key"));
+        assertSame(action, map.get("key"));
     }
 }

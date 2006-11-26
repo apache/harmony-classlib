@@ -24,12 +24,14 @@ import java.awt.image.BufferedImage;
 
 public class DebugGraphicsTest extends BasicSwingTestCase {
     private DebugGraphics debugGraphics;
-    
+
+    @Override
     public void setUp() throws Exception {
         super.setUp();
-        debugGraphics = new DebugGraphics(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB).getGraphics());        
+        debugGraphics = new DebugGraphics(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB)
+                .getGraphics());
     }
-    
+
     public void testGetSetDebugOptions() {
         assertEquals(0, debugGraphics.getDebugOptions());
         debugGraphics.setDebugOptions(DebugGraphics.BUFFERED_OPTION);
@@ -40,9 +42,9 @@ public class DebugGraphicsTest extends BasicSwingTestCase {
         debugGraphics.setDebugOptions(DebugGraphics.NONE_OPTION);
         assertEquals(0, debugGraphics.getDebugOptions());
     }
-    
+
     public void testCreate() {
-        DebugGraphics result = (DebugGraphics)debugGraphics.create();
+        DebugGraphics result = (DebugGraphics) debugGraphics.create();
         assertEquals(debugGraphics.getDebugOptions(), result.getDebugOptions());
     }
 }

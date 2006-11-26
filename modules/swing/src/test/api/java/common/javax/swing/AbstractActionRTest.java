@@ -28,23 +28,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class AbstractActionRTest extends SwingTestCase {
-
     protected AbstractAction action;
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         action = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent event) {
             }
 
             private void writeObject(final ObjectOutputStream outStream) throws IOException {
             }
+
             private void readObject(final ObjectInputStream inStream) throws IOException,
-                                                                       ClassNotFoundException  {
+                    ClassNotFoundException {
             }
+
+            @Override
             public Object clone() throws CloneNotSupportedException {
                 return super.clone();
             }
@@ -53,18 +55,24 @@ public class AbstractActionRTest extends SwingTestCase {
 
     public void testClone() throws CloneNotSupportedException {
         class MyAbstractAction extends AbstractAction {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent e) {
             }
+
+            @Override
             public Object clone() throws CloneNotSupportedException {
                 return super.clone();
             }
-        };
+        }
+        ;
         MyAbstractAction instance = new MyAbstractAction();
         Object value1 = new Object();
         instance.putValue("Value1", value1);
-        MyAbstractAction anotherInstance = (MyAbstractAction)instance.clone();
+        MyAbstractAction anotherInstance = (MyAbstractAction) instance.clone();
         Object value2 = new Object();
         instance.putValue("Value1", value2);
-        assertEquals("cloned object's values list isn't shared", value1, anotherInstance.getValue("Value1"));
+        assertEquals("cloned object's values list isn't shared", value1, anotherInstance
+                .getValue("Value1"));
     }
 }

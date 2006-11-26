@@ -14,22 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing;
 
 import java.awt.Dimension;
 
 public class ViewportLayoutTest extends SwingTestCase {
-
     private ViewportLayout layout;
+
     private JViewport viewport;
+
     private JLabel label;
 
+    @Override
     public void setUp() {
         label = new JLabel();
         StringBuffer b = new StringBuffer();
@@ -37,12 +37,12 @@ public class ViewportLayoutTest extends SwingTestCase {
             b.append("w" + i);
         }
         label.setText(b.toString());
-
         viewport = new JViewport();
         viewport.add(label);
-        layout = (ViewportLayout)viewport.getLayout();
+        layout = (ViewportLayout) viewport.getLayout();
     }
 
+    @Override
     public void tearDown() {
         layout = null;
         viewport = null;

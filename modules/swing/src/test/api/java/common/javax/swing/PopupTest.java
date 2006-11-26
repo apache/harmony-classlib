@@ -30,6 +30,7 @@ public class PopupTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         popup = null;
     }
@@ -37,19 +38,16 @@ public class PopupTest extends BasicSwingTestCase {
     public void testPopup() throws Exception {
         Component content = new JButton("content");
         assertNull(content.getParent());
-
         popup = new Popup(null, content, 10, 10);
         assertNotNull(content.getParent());
         assertFalse(content.isShowing());
         popup.show();
         assertTrue(content.isShowing());
         assertEquals(new Point(10, 10), content.getLocationOnScreen());
-
         popup.show();
         assertTrue(content.isShowing());
         popup.hide();
         assertFalse(content.isShowing());
-
         JPanel owner = new JPanel();
         popup = new Popup(owner, content, 10, 10);
         assertNotNull(content.getParent());
@@ -57,18 +55,16 @@ public class PopupTest extends BasicSwingTestCase {
         popup.show();
         assertTrue(content.isShowing());
         assertEquals(new Point(10, 10), content.getLocationOnScreen());
-
         JFrame ownedFrame = new JFrame();
         ownedFrame.setLocation(100, 100);
         ownedFrame.getContentPane().add(owner);
         ownedFrame.setVisible(true);
         SwingWaitTestCase.isRealized(ownedFrame);
-        
         popup = new Popup(owner, content, 10, 10);
         popup.show();
         assertEquals(new Point(10, 10), content.getLocationOnScreen());
-
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new Popup(null, null, 10, 10);
             }
@@ -83,10 +79,8 @@ public class PopupTest extends BasicSwingTestCase {
         popup.show();
         assertTrue(content.isShowing());
         assertEquals(new Point(100, 200), content.getLocationOnScreen());
-
         popup.hide();
         assertNull(SwingUtilities.getWindowAncestor(content));
         assertFalse(content.isShowing());
     }
-
 }
