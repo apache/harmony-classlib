@@ -15,43 +15,40 @@
  *  limitations under the License.
  */
 
-package javax.swing.text.html.parser;
+package org.apache.harmony.swing.tests.javax.swing.text.html.parser;
 
 import javax.swing.text.html.parser.DTD;
 import javax.swing.text.html.parser.Element;
-
 import junit.framework.TestCase;
 
 public class DTDTest extends TestCase {
+    private DTD dtd;
 
-    DTD dtd = null;
-    
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         dtd = DTD.getDTD("testDTD");
     }
 
-    public void testGetElementLowerOutOfBounds(){
-        try{
+    public void testGetElementLowerOutOfBounds() {
+        try {
             Element e = dtd.getElement(-1);
-            
-            fail("IndexOutOfBoundsException wasn't raised as RI, but method returned: "+ e);
-        }catch (IndexOutOfBoundsException e) {
-        }catch (Exception e) {
-            fail(e.getClass().getName() + " raised but IndexOutOfBoundsException had to be raised");
+            fail("IndexOutOfBoundsException wasn't raised as RI, but method returned: " + e);
+        } catch (IndexOutOfBoundsException e) {
+        } catch (Exception e) {
+            fail(e.getClass().getName()
+                    + " raised but IndexOutOfBoundsException had to be raised");
         }
     }
-    
-    public void testGetElementUpperOutOfBounds(){
-        try{
+
+    public void testGetElementUpperOutOfBounds() {
+        try {
             Element e = dtd.getElement(dtd.elements.size());
-            
-            fail("IndexOutOfBoundsException didn't raised as RI, but method returned: "+ e);
-        }catch (IndexOutOfBoundsException e) {
-        }catch (Exception e) {
-            fail(e.getClass().getName() + " raised but IndexOutOfBoundsException had to be raised");
-        }       
+            fail("IndexOutOfBoundsException didn't raised as RI, but method returned: " + e);
+        } catch (IndexOutOfBoundsException e) {
+        } catch (Exception e) {
+            fail(e.getClass().getName()
+                    + " raised but IndexOutOfBoundsException had to be raised");
+        }
     }
-    
 }
