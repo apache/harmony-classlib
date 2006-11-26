@@ -58,6 +58,7 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         future = null;
     }
 
+    @SuppressWarnings("deprecation")
     public void testSpinnerDateModel() {
         assertEquals(model.getDate().getDay(), now.getDay() + 1);
         assertEquals(Calendar.DAY_OF_MONTH, model.getCalendarField());
@@ -161,6 +162,7 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         assertFalse(chl.isChanged());
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetNextValue() {
         model.setValue(now.clone());
         model.setEnd(future);
@@ -174,6 +176,7 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
         assertNull(model.getNextValue());
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetPreviousValue() {
         model.setValue(now.clone());
         model.setStart(past);

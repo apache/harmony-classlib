@@ -15,25 +15,26 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.tree;
 
 import java.beans.PropertyChangeListener;
 import java.util.EventListener;
 import java.util.Vector;
-
 import javax.swing.SwingTestCase;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.SwingPropertyChangeSupportTest.FindableListener;
 
 public class DefaultTreeSelectionModelTest extends SwingTestCase {
-
-    class ConcreteTreeSelectionListener extends FindableListener implements TreeSelectionListener {
+    class ConcreteTreeSelectionListener extends FindableListener implements
+            TreeSelectionListener {
         public TreeSelectionEvent event = null;
+
         public boolean fired = false;
+
         private final boolean debugOutput;
 
         ConcreteTreeSelectionListener() {
@@ -54,6 +55,7 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
             }
         }
 
+        @Override
         public void reset() {
             event = null;
             fired = false;
@@ -62,15 +64,15 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
 
     protected DefaultTreeSelectionModel model;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         model = new DefaultTreeSelectionModel();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         model = null;
-
         super.tearDown();
     }
 
@@ -96,26 +98,21 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         PropertyChangeController changeListener1 = new PropertyChangeController();
         PropertyChangeController changeListener2 = new PropertyChangeController();
         PropertyChangeListener[] listenersArray = null;
-
         model.addPropertyChangeListener(null);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(0, listenersArray.length);
-
         model.addPropertyChangeListener(changeListener1);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(1, changeListener1.findMe(listenersArray));
         assertEquals(0, model.listenerList.getListeners(PropertyChangeListener.class).length);
-
         model.addPropertyChangeListener(changeListener2);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(1, changeListener1.findMe(listenersArray));
         assertEquals(1, changeListener2.findMe(listenersArray));
-
         model.addPropertyChangeListener(changeListener2);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(1, changeListener1.findMe(listenersArray));
         assertEquals(2, changeListener2.findMe(listenersArray));
-
     }
 
     /*
@@ -125,25 +122,20 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         PropertyChangeController changeListener1 = new PropertyChangeController();
         PropertyChangeController changeListener2 = new PropertyChangeController();
         PropertyChangeListener[] listenersArray = null;
-
         model.addPropertyChangeListener(changeListener1);
         model.addPropertyChangeListener(changeListener1);
         model.addPropertyChangeListener(changeListener2);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(3, listenersArray.length);
-
         model.removePropertyChangeListener(changeListener1);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(2, listenersArray.length);
-
         model.removePropertyChangeListener(changeListener1);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(1, listenersArray.length);
-
         model.removePropertyChangeListener(changeListener2);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(0, listenersArray.length);
-
         model.removePropertyChangeListener(null);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(0, listenersArray.length);
@@ -156,15 +148,12 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         PropertyChangeController changeListener1 = new PropertyChangeController();
         PropertyChangeController changeListener2 = new PropertyChangeController();
         PropertyChangeListener[] listenersArray = null;
-
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(0, listenersArray.length);
-
         model.addPropertyChangeListener(changeListener1);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(1, listenersArray.length);
         assertEquals(1, changeListener1.findMe(listenersArray));
-
         model.addPropertyChangeListener(changeListener2);
         listenersArray = model.getPropertyChangeListeners();
         assertEquals(2, listenersArray.length);
@@ -179,20 +168,17 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         ConcreteTreeSelectionListener listener1 = new ConcreteTreeSelectionListener();
         ConcreteTreeSelectionListener listener2 = new ConcreteTreeSelectionListener();
         TreeSelectionListener[] listenersArray = null;
-
         model.addTreeSelectionListener(listener1);
         listenersArray = model.getTreeSelectionListeners();
         assertTrue(listenersArray.length == 1);
         assertEquals(1, model.listenerList.getListeners(TreeSelectionListener.class).length);
         assertEquals(1, model.getListeners(TreeSelectionListener.class).length);
         assertTrue(listener1.findMe(listenersArray) > 0);
-
         model.addTreeSelectionListener(listener2);
         listenersArray = model.getTreeSelectionListeners();
         assertEquals(2, listenersArray.length);
         assertTrue(listener1.findMe(listenersArray) > 0);
         assertTrue(listener2.findMe(listenersArray) > 0);
-
         model.addTreeSelectionListener(listener2);
         listenersArray = model.getTreeSelectionListeners();
         assertEquals(3, listenersArray.length);
@@ -206,7 +192,6 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         ConcreteTreeSelectionListener changeListener2 = new ConcreteTreeSelectionListener();
         ConcreteTreeSelectionListener changeListener3 = new ConcreteTreeSelectionListener();
         TreeSelectionListener[] listenersArray = null;
-
         model.addTreeSelectionListener(changeListener1);
         model.addTreeSelectionListener(changeListener2);
         model.addTreeSelectionListener(changeListener3);
@@ -215,19 +200,16 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertEquals(1, changeListener1.findMe(listenersArray));
         assertEquals(1, changeListener2.findMe(listenersArray));
         assertEquals(1, changeListener3.findMe(listenersArray));
-
         model.removeTreeSelectionListener(changeListener2);
         listenersArray = model.getTreeSelectionListeners();
         assertEquals(2, listenersArray.length);
         assertEquals(1, changeListener1.findMe(listenersArray));
         assertEquals(0, changeListener2.findMe(listenersArray));
         assertEquals(1, changeListener3.findMe(listenersArray));
-
         model.removeTreeSelectionListener(changeListener1);
         listenersArray = model.getTreeSelectionListeners();
         assertEquals(1, listenersArray.length);
         assertEquals(1, changeListener3.findMe(listenersArray));
-
         model.removeTreeSelectionListener(changeListener3);
         listenersArray = model.getTreeSelectionListeners();
         assertEquals(0, listenersArray.length);
@@ -241,10 +223,8 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         ConcreteTreeSelectionListener changeListener2 = new ConcreteTreeSelectionListener();
         ConcreteTreeSelectionListener changeListener3 = new ConcreteTreeSelectionListener();
         TreeSelectionListener[] listenersArray = null;
-
         listenersArray = model.getTreeSelectionListeners();
         assertTrue(listenersArray != null && listenersArray.length == 0);
-
         model.addTreeSelectionListener(changeListener1);
         model.addTreeSelectionListener(changeListener2);
         model.addTreeSelectionListener(changeListener3);
@@ -256,30 +236,26 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertTrue(changeListener3.findMe(listenersArray) == 1);
     }
 
-    public void testFireValueChange()  {
+    public void testFireValueChange() {
         ConcreteTreeSelectionListener listener = new ConcreteTreeSelectionListener();
         TreeSelectionListener[] listenersArray = null;
-
         listenersArray = model.getTreeSelectionListeners();
         assertTrue(listenersArray != null && listenersArray.length == 0);
-
         model.addTreeSelectionListener(listener);
-
         TreePath path = new TreePath("asd");
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
         boolean isNew = true;
-        TreeSelectionEvent event = new TreeSelectionEvent(source, path, isNew, oldSelection, newSelection);
+        TreeSelectionEvent event = new TreeSelectionEvent(source, path, isNew, oldSelection,
+                newSelection);
         model.fireValueChanged(event);
         assertSame(event, listener.event);
         listener.reset();
-
         model.fireValueChanged(null);
         assertTrue(listener.fired);
         assertNull(listener.event);
     }
-
 
     /*
      * Class under test for EventListener[] getListeners(Class)
@@ -289,24 +265,18 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         PropertyChangeController changeListener2 = new PropertyChangeController();
         TreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener();
         EventListener[] listenersArray = null;
-
         listenersArray = model.getListeners(TreeSelectionListener.class);
         assertEquals(0, listenersArray.length);
         listenersArray = model.getListeners(PropertyChangeListener.class);
         assertEquals(0, listenersArray.length);
-
         model.addPropertyChangeListener(changeListener1);
         model.addTreeSelectionListener(treeSelectionListener);
         model.addPropertyChangeListener(changeListener2);
         model.addPropertyChangeListener(changeListener2);
-
-
         listenersArray = model.getListeners(PropertyChangeListener.class);
         assertEquals(0, listenersArray.length);
-
         listenersArray = model.getListeners(TreeSelectionListener.class);
         assertEquals(1, listenersArray.length);
-
         model.removeTreeSelectionListener(treeSelectionListener);
         listenersArray = model.getListeners(TreeSelectionListener.class);
         assertEquals(0, listenersArray.length);
@@ -318,17 +288,15 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
     public void testAddSelectionPath() {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         model.addTreeSelectionListener(treeSelectionListener);
-
         model.addSelectionPath(path1);
         assertEquals(path1, treeSelectionListener.event.getPaths()[0]);
         assertTrue(treeSelectionListener.event.isAddedPath(path1));
-
         treeSelectionListener.reset();
         model.addSelectionPath(path1);
         assertNull(treeSelectionListener.event);
-
         model.addSelectionPath(path2);
         assertEquals(1, treeSelectionListener.event.getPaths().length);
         assertEquals(path2, treeSelectionListener.event.getPaths()[0]);
@@ -336,7 +304,6 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertNotNull(treeSelectionListener.event.getOldLeadSelectionPath());
         assertNotNull(treeSelectionListener.event.getNewLeadSelectionPath());
         treeSelectionListener.reset();
-
         model.addSelectionPath(null);
         assertNull(treeSelectionListener.event);
     }
@@ -347,12 +314,9 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
     public void testGetSelectionPath() {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
-
         assertNull(model.getSelectionPath());
-
         model.addSelectionPath(path1);
         assertEquals(path1, model.getSelectionPath());
-
         model.addSelectionPath(path2);
         assertEquals(path1, model.getSelectionPath());
     }
@@ -365,30 +329,25 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertFalse(model.isPathSelected(path1));
         assertFalse(model.isPathSelected(path2));
         assertFalse(model.isPathSelected(path3));
         assertFalse(model.isPathSelected(path4));
-
         model.addSelectionPath(path1);
         assertTrue(model.isPathSelected(path1));
         assertFalse(model.isPathSelected(path2));
         assertFalse(model.isPathSelected(path3));
         assertFalse(model.isPathSelected(path4));
-
         model.addSelectionPath(path2);
         assertTrue(model.isPathSelected(path1));
         assertTrue(model.isPathSelected(path2));
         assertFalse(model.isPathSelected(path3));
         assertFalse(model.isPathSelected(path4));
-
-        model.addSelectionPaths(new TreePath[] {path3 ,path4});
+        model.addSelectionPaths(new TreePath[] { path3, path4 });
         assertTrue(model.isPathSelected(path1));
         assertTrue(model.isPathSelected(path2));
         assertTrue(model.isPathSelected(path3));
         assertTrue(model.isPathSelected(path4));
-
         assertFalse(model.isPathSelected(null));
     }
 
@@ -399,18 +358,16 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         model.addTreeSelectionListener(treeSelectionListener);
-
-        model.addSelectionPaths(new TreePath[] {path1});
+        model.addSelectionPaths(new TreePath[] { path1 });
         assertEquals(path1, treeSelectionListener.event.getPaths()[0]);
         assertTrue(treeSelectionListener.event.isAddedPath(path1));
-
         treeSelectionListener.reset();
-        model.addSelectionPaths(new TreePath[] {path1});
+        model.addSelectionPaths(new TreePath[] { path1 });
         assertNull(treeSelectionListener.event);
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(2, treeSelectionListener.event.getPaths().length);
         assertEquals(path2, treeSelectionListener.event.getPaths()[0]);
         assertEquals(path3, treeSelectionListener.event.getPaths()[1]);
@@ -427,34 +384,28 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("6");
-
         model.clearSelection();
         model.setRowMapper(new MyRowMapper());
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(1, model.getSelectionCount());
-
         model.clearSelection();
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
         model.clearSelection();
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-        model.addSelectionPaths(new TreePath[] {path1, path2, path4});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path4 });
         assertEquals(2, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPaths()[0]);
         assertEquals(path2, model.getSelectionPaths()[1]);
-
-        model.addSelectionPaths(new TreePath[] {path3});
+        model.addSelectionPaths(new TreePath[] { path3 });
         assertEquals(3, model.getSelectionCount());
-
-        model.addSelectionPaths(new TreePath[] {path5, path6});
+        model.addSelectionPaths(new TreePath[] { path5, path6 });
         assertEquals(2, model.getSelectionCount());
         assertEquals(path5, model.getSelectionPaths()[0]);
         assertEquals(path6, model.getSelectionPaths()[1]);
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3, path4});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
         assertEquals(6, model.getSelectionCount());
     }
 
@@ -466,19 +417,15 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertNull(model.getSelectionPaths());
-
-        model.addSelectionPaths(new TreePath[] {path1});
+        model.addSelectionPaths(new TreePath[] { path1 });
         assertEquals(1, model.getSelectionPaths().length);
         assertEquals(path1, model.getSelectionPaths()[0]);
-
         model.addSelectionPath(path4);
         assertEquals(2, model.getSelectionPaths().length);
         assertEquals(path1, model.getSelectionPaths()[0]);
         assertEquals(path4, model.getSelectionPaths()[1]);
-
-        model.addSelectionPaths(new TreePath[] {path4, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path4, path2, path3 });
         assertEquals(4, model.getSelectionPaths().length);
         TreePath[] paths = model.getSelectionPaths();
         assertTrue(find(paths, path1));
@@ -506,16 +453,12 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-
         assertEquals(0, model.getSelectionCount());
-
-        model.addSelectionPaths(new TreePath[] {path1});
+        model.addSelectionPaths(new TreePath[] { path1 });
         assertEquals(1, model.getSelectionCount());
-
-        model.addSelectionPaths(new TreePath[] {path1});
+        model.addSelectionPaths(new TreePath[] { path1 });
         assertEquals(1, model.getSelectionCount());
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
     }
 
@@ -526,18 +469,15 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         model.addTreeSelectionListener(treeSelectionListener);
-
         assertEquals(0, model.getSelectionCount());
         model.clearSelection();
         assertNull(treeSelectionListener.event);
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
         treeSelectionListener.reset();
-
         model.clearSelection();
         assertEquals(0, model.getSelectionCount());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
@@ -552,7 +492,6 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
      */
     public void testGetLeadSelectionPath() {
         TreePath path1 = new TreePath("1");
-
         assertNull(model.getLeadSelectionPath());
         model.leadPath = path1;
         assertEquals(path1, model.getLeadSelectionPath());
@@ -565,7 +504,6 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
      */
     public void testGetLeadSelectionRow() {
         TreePath path1 = new TreePath("1");
-
         assertNull(model.getLeadSelectionPath());
         model.leadPath = path1;
         assertEquals(-1, model.getLeadSelectionRow());
@@ -575,15 +513,12 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertEquals(-1, model.getLeadSelectionRow());
         model.leadPath = path1;
         assertEquals(-1, model.getLeadSelectionRow());
-
-        model.selection = new TreePath[] {path1};
+        model.selection = new TreePath[] { path1 };
         model.resetRowSelection();
         assertEquals(1, model.getLeadSelectionRow());
-
         model.leadPath = null;
         model.resetRowSelection();
         assertEquals(-1, model.getLeadSelectionRow());
-
         model.leadPath = path1;
         model.leadRow = 100;
         assertEquals(100, model.getLeadSelectionRow());
@@ -602,33 +537,24 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("a");
-
-        TreePath[] paths1 = new TreePath[] {path1, path2, path3, path4, path5};
-        TreePath[] paths3 = new TreePath[] {path2, path4, path1};
-        TreePath[] paths4 = new TreePath[] {path2, path1, path3, path5};
-        TreePath[] paths5 = new TreePath[] {path6, path4, path2};
-        TreePath[] paths6 = new TreePath[] {path6};
-
+        TreePath[] paths1 = new TreePath[] { path1, path2, path3, path4, path5 };
+        TreePath[] paths3 = new TreePath[] { path2, path4, path1 };
+        TreePath[] paths4 = new TreePath[] { path2, path1, path3, path5 };
+        TreePath[] paths5 = new TreePath[] { path6, path4, path2 };
+        TreePath[] paths6 = new TreePath[] { path6 };
         assertEquals(-1, model.getMaxSelectionRow());
-
         model.setSelectionPaths(paths1);
         assertEquals(-1, model.getMaxSelectionRow());
-
         model.setRowMapper(new MyRowMapper());
         assertEquals(5, model.getMaxSelectionRow());
-
         model.setSelectionPaths(paths3);
         assertEquals(4, model.getMaxSelectionRow());
-
         model.setSelectionPaths(paths4);
         assertEquals(5, model.getMaxSelectionRow());
-
         model.setSelectionPaths(paths5);
         assertEquals(4, model.getMaxSelectionRow());
-
         model.setSelectionPaths(paths6);
         assertEquals(-1, model.getMaxSelectionRow());
-
         model.setSelectionPaths(new TreePath[0]);
         assertEquals(-1, model.getMaxSelectionRow());
     }
@@ -643,33 +569,24 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("a");
-
-        TreePath[] paths1 = new TreePath[] {path1, path2, path3, path4, path5};
-        TreePath[] paths3 = new TreePath[] {path2, path4, path5};
-        TreePath[] paths4 = new TreePath[] {path2, path1, path3, path5};
-        TreePath[] paths5 = new TreePath[] {path6, path5, path2};
-        TreePath[] paths6 = new TreePath[] {path6};
-
+        TreePath[] paths1 = new TreePath[] { path1, path2, path3, path4, path5 };
+        TreePath[] paths3 = new TreePath[] { path2, path4, path5 };
+        TreePath[] paths4 = new TreePath[] { path2, path1, path3, path5 };
+        TreePath[] paths5 = new TreePath[] { path6, path5, path2 };
+        TreePath[] paths6 = new TreePath[] { path6 };
         assertEquals(-1, model.getMinSelectionRow());
-
         model.setSelectionPaths(paths1);
         assertEquals(-1, model.getMinSelectionRow());
-
         model.setRowMapper(new MyRowMapper());
         assertEquals(1, model.getMinSelectionRow());
-
         model.setSelectionPaths(paths3);
         assertEquals(2, model.getMinSelectionRow());
-
         model.setSelectionPaths(paths4);
         assertEquals(1, model.getMinSelectionRow());
-
         model.setSelectionPaths(paths5);
         assertEquals(2, model.getMinSelectionRow());
-
         model.setSelectionPaths(paths6);
         assertEquals(-1, model.getMinSelectionRow());
-
         model.setSelectionPaths(new TreePath[0]);
         assertEquals(-1, model.getMinSelectionRow());
     }
@@ -689,50 +606,37 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         int mode2 = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION;
         int mode3 = TreeSelectionModel.CONTIGUOUS_TREE_SELECTION;
         int mode4 = 100;
-
         PropertyChangeController listener = new PropertyChangeController();
         model.addPropertyChangeListener(listener);
-
         model.setSelectionMode(mode1);
-        listener.checkLastPropertyFired(model, "selectionMode",
-                                        new Integer(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION),
-                                        new Integer(mode1));
-
+        listener.checkLastPropertyFired(model, "selectionMode", new Integer(
+                TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION), new Integer(mode1));
         model.setSelectionMode(mode2);
-        listener.checkLastPropertyFired(model, "selectionMode",
-                                        new Integer(mode1),
-                                        new Integer(mode2));
-
+        listener.checkLastPropertyFired(model, "selectionMode", new Integer(mode1),
+                new Integer(mode2));
         model.setSelectionMode(mode3);
-        listener.checkLastPropertyFired(model, "selectionMode",
-                                        new Integer(mode2),
-                                        new Integer(mode3));
-
+        listener.checkLastPropertyFired(model, "selectionMode", new Integer(mode2),
+                new Integer(mode3));
         model.setSelectionMode(mode4);
-        listener.checkLastPropertyFired(model, "selectionMode",
-                                        new Integer(mode3),
-                                        new Integer(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION));
-
+        listener.checkLastPropertyFired(model, "selectionMode", new Integer(mode3),
+                new Integer(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION));
         TreePath path1 = new TreePath("1");
-        TreePath path2 = new TreePath("2");
+//        TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.addSelectionPaths(new TreePath[] {path1, path3, path4});
+        model.addSelectionPaths(new TreePath[] { path1, path3, path4 });
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         if (!isHarmony()) {
             model.insureRowContinuity();
         }
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPath());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.addSelectionPaths(new TreePath[] {path1, path3, path5});
+        model.addSelectionPaths(new TreePath[] { path1, path3, path5 });
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
         assertEquals(3, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         model.setRowMapper(new MyRowMapper());
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
@@ -740,9 +644,8 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
             model.insureRowContinuity();
         }
         assertEquals(1, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path3, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path3, path4 });
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
         if (!isHarmony()) {
             model.insureRowContinuity();
@@ -760,49 +663,40 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("a");
-
-        TreePath[] paths1 = new TreePath[] {path1, path2, path3, path4, path5};
-        TreePath[] paths3 = new TreePath[] {path2, path4, path1};
-        TreePath[] paths4 = new TreePath[] {path2, path1, path3, path5};
-        TreePath[] paths5 = new TreePath[] {path6, path4, path2};
-        TreePath[] paths6 = new TreePath[] {path6};
-
+        TreePath[] paths1 = new TreePath[] { path1, path2, path3, path4, path5 };
+        TreePath[] paths3 = new TreePath[] { path2, path4, path1 };
+        TreePath[] paths4 = new TreePath[] { path2, path1, path3, path5 };
+        TreePath[] paths5 = new TreePath[] { path6, path4, path2 };
+        TreePath[] paths6 = new TreePath[] { path6 };
         if (!isHarmony()) {
             assertNull(model.getSelectionRows());
-        }else {
+        } else {
             assertEquals(0, model.getSelectionRows().length);
         }
-
         model.setSelectionPaths(paths1);
         if (!isHarmony()) {
             assertNull(model.getSelectionRows());
-        }else {
+        } else {
             assertEquals(0, model.getSelectionRows().length);
         }
-
         model.setRowMapper(new MyRowMapper());
         assertEquals(5, model.getSelectionRows().length);
-
         model.setSelectionPaths(paths3);
         assertEquals(3, model.getSelectionRows().length);
-
         model.setSelectionPaths(paths4);
         assertEquals(4, model.getSelectionRows().length);
-
         model.setSelectionPaths(paths5);
         assertEquals(2, model.getSelectionRows().length);
-
         model.setSelectionPaths(paths6);
         if (!isHarmony()) {
             assertNull(model.getSelectionRows());
-        }else {
+        } else {
             assertEquals(0, model.getSelectionRows().length);
         }
-
         model.setSelectionPaths(new TreePath[0]);
         if (!isHarmony()) {
             assertNull(model.getSelectionRows());
-        }else {
+        } else {
             assertEquals(0, model.getSelectionRows().length);
         }
     }
@@ -817,28 +711,22 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("a");
-
-        TreePath[] paths1 = new TreePath[] {path1, path2, path3, path4, path5};
-        TreePath[] paths3 = new TreePath[] {path2, path4, path5};
-        TreePath[] paths6 = new TreePath[] {path6};
-
+        TreePath[] paths1 = new TreePath[] { path1, path2, path3, path4, path5 };
+        TreePath[] paths3 = new TreePath[] { path2, path4, path5 };
+        TreePath[] paths6 = new TreePath[] { path6 };
         assertFalse(model.isRowSelected(-1));
-
         model.setSelectionPaths(paths1);
         assertFalse(model.isRowSelected(0));
         assertFalse(model.isRowSelected(1));
-
         model.setRowMapper(new MyRowMapper());
         assertFalse(model.isRowSelected(0));
         assertTrue(model.isRowSelected(1));
-
         model.setSelectionPaths(paths3);
         assertFalse(model.isRowSelected(1));
         assertTrue(model.isRowSelected(2));
         assertFalse(model.isRowSelected(3));
         assertTrue(model.isRowSelected(4));
         assertTrue(model.isRowSelected(5));
-
         model.setSelectionPaths(paths6);
         assertFalse(model.isRowSelected(-1));
         assertFalse(model.isRowSelected(0));
@@ -850,10 +738,8 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
     public void testIsSelectionEmpty() {
         TreePath path1 = new TreePath("1");
         assertTrue(model.isSelectionEmpty());
-
         model.addSelectionPath(path1);
         assertFalse(model.isSelectionEmpty());
-
         model.removeSelectionPath(path1);
         assertTrue(model.isSelectionEmpty());
     }
@@ -866,30 +752,25 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertEquals(0, model.getSelectionCount());
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
-
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         model.addTreeSelectionListener(treeSelectionListener);
-
         model.removeSelectionPath(path4);
         assertNull(treeSelectionListener.event);
-
         model.removeSelectionPath(path2);
         assertEquals(2, model.getSelectionCount());
         assertNotNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(1, treeSelectionListener.event.getPaths().length);
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         treeSelectionListener.reset();
-
         model.removeSelectionPath(path1);
         assertEquals(1, model.getSelectionCount());
         assertNotNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(1, treeSelectionListener.event.getPaths().length);
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         treeSelectionListener.reset();
-
         model.removeSelectionPath(path3);
         assertEquals(0, model.getSelectionCount());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
@@ -907,30 +788,25 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
-
         assertEquals(0, model.getSelectionCount());
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3, path4});
-
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         model.addTreeSelectionListener(treeSelectionListener);
-
-        model.removeSelectionPaths(new TreePath[] {path5, path5});
+        model.removeSelectionPaths(new TreePath[] { path5, path5 });
         assertEquals(4, model.getSelectionCount());
         assertNull(treeSelectionListener.event);
-
-        model.removeSelectionPaths(new TreePath[] {path1, path3, path5});
+        model.removeSelectionPaths(new TreePath[] { path1, path3, path5 });
         assertEquals(2, model.getSelectionCount());
         assertNotNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(2, treeSelectionListener.event.getPaths().length);
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         assertFalse(treeSelectionListener.event.isAddedPath(1));
         treeSelectionListener.reset();
-
         model.removeSelectionPaths(null);
         assertEquals(2, model.getSelectionCount());
         assertNull(treeSelectionListener.event);
-
-        model.removeSelectionPaths(new TreePath[] {path2, path4, path1, path5});
+        model.removeSelectionPaths(new TreePath[] { path2, path4, path1, path5 });
         assertEquals(0, model.getSelectionCount());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(2, treeSelectionListener.event.getPaths().length);
@@ -944,52 +820,42 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertEquals(0, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-        model.removeSelectionPaths(new TreePath[] {path2});
+        model.removeSelectionPaths(new TreePath[] { path2 });
         assertEquals(2, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path4 });
         assertEquals(3, model.getSelectionCount());
-        model.removeSelectionPaths(new TreePath[] {path2});
+        model.removeSelectionPaths(new TreePath[] { path2 });
         assertEquals(2, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPath());
-        model.removeSelectionPaths(new TreePath[] {path1});
+        model.removeSelectionPaths(new TreePath[] { path1 });
         assertEquals(0, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-        model.removeSelectionPaths(new TreePath[] {path2});
+        model.removeSelectionPaths(new TreePath[] { path2 });
         assertEquals(2, model.getSelectionCount());
-
         model.setRowMapper(new MyRowMapper());
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        model.removeSelectionPaths(new TreePath[] {path1});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        model.removeSelectionPaths(new TreePath[] { path1 });
         assertEquals(2, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        model.removeSelectionPaths(new TreePath[] {path2});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        model.removeSelectionPaths(new TreePath[] { path2 });
         assertEquals(0, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        model.removeSelectionPaths(new TreePath[] {path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        model.removeSelectionPaths(new TreePath[] { path3 });
         assertEquals(2, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3, path4});
-        model.removeSelectionPaths(new TreePath[] {path1});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
+        model.removeSelectionPaths(new TreePath[] { path1 });
         assertEquals(3, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3, path4});
-        model.removeSelectionPaths(new TreePath[] {path2});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
+        model.removeSelectionPaths(new TreePath[] { path2 });
         assertEquals(0, model.getSelectionCount());
     }
 
@@ -1000,11 +866,9 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-
         model.setRowMapper(new MyRowMapper());
         model.leadPath = path1;
-
-        model.selection = new TreePath[] {path1, path2, path3};
+        model.selection = new TreePath[] { path1, path2, path3 };
         assertEquals(-1, model.getLeadSelectionRow());
         assertEquals(-1, model.getMaxSelectionRow());
         assertEquals(-1, model.getMinSelectionRow());
@@ -1012,13 +876,11 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertEquals(1, model.getLeadSelectionRow());
         assertEquals(3, model.getMaxSelectionRow());
         assertEquals(1, model.getMinSelectionRow());
-
         model.leadPath = null;
         model.resetRowSelection();
         assertEquals(-1, model.getLeadSelectionRow());
         assertEquals(3, model.getMaxSelectionRow());
         assertEquals(1, model.getMinSelectionRow());
-
         model.leadPath = path1;
         model.leadRow = 100;
         assertEquals(100, model.getLeadSelectionRow());
@@ -1054,16 +916,13 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
-
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         assertEquals(0, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
         model.addTreeSelectionListener(treeSelectionListener);
-
-        model.setSelectionPaths(new TreePath[] {path3, path4});
+        model.setSelectionPaths(new TreePath[] { path3, path4 });
         assertEquals(2, model.getSelectionCount());
         assertNotNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(3, treeSelectionListener.event.getPaths().length);
@@ -1071,10 +930,8 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertFalse(treeSelectionListener.event.isAddedPath(1));
         assertFalse(treeSelectionListener.event.isAddedPath(2));
         treeSelectionListener.reset();
-
-        model.setSelectionPaths(new TreePath[] {path3, path4});
+        model.setSelectionPaths(new TreePath[] { path3, path4 });
         assertNull(treeSelectionListener.event);
-
         model.setSelectionPaths(null);
         assertEquals(0, model.getSelectionCount());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
@@ -1082,8 +939,7 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         assertFalse(treeSelectionListener.event.isAddedPath(1));
         treeSelectionListener.reset();
-
-        model.setSelectionPaths(new TreePath[] {path4, path4});
+        model.setSelectionPaths(new TreePath[] { path4, path4 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path4, treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(1, treeSelectionListener.event.getPaths().length);
@@ -1096,44 +952,33 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertEquals(0, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path4 });
         assertEquals(3, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path3, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path3, path4 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPath());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path4 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPath());
-
         model.setSelectionPaths(new TreePath[] {});
         assertNull(model.getSelectionPath());
-
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
         model.setRowMapper(new MyRowMapper());
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
-        model.setSelectionPaths(new TreePath[] {path1, path3, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path3, path4 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPath());
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path4});
+        model.setSelectionPaths(new TreePath[] { path1, path2, path4 });
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, model.getSelectionPaths()[0]);
-
         model.setSelectionPaths(new TreePath[] {});
         assertEquals(0, model.getSelectionCount());
     }
@@ -1145,15 +990,12 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
-
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         assertEquals(0, model.getSelectionCount());
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertEquals(3, model.getSelectionCount());
-
         model.addTreeSelectionListener(treeSelectionListener);
-
         model.setSelectionPath(path1);
         assertEquals(1, model.getSelectionCount());
         assertEquals(path1, treeSelectionListener.event.getNewLeadSelectionPath());
@@ -1161,10 +1003,8 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         assertFalse(treeSelectionListener.event.isAddedPath(1));
         treeSelectionListener.reset();
-
         model.setSelectionPath(path1);
         assertNull(treeSelectionListener.event);
-
         model.setSelectionPath(null);
         assertEquals(0, model.getSelectionCount());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
@@ -1178,46 +1018,39 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertTrue(model.canPathsBeAdded(null));
-
         model.clearSelection();
         model.setRowMapper(new MyRowMapper());
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path3}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
-
         model.addSelectionPath(path4);
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertFalse(model.canPathsBeAdded(new TreePath[] {path1, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path4}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertFalse(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
-
         model.clearSelection();
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path4}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
-
         model.addSelectionPath(path4);
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path4}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
-
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
         model.clearSelection();
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path4}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
-
         model.addSelectionPath(path4);
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path1, path2, path3}));
-        assertFalse(model.canPathsBeAdded(new TreePath[] {path1, path3}));
-        assertTrue(model.canPathsBeAdded(new TreePath[] {path4}));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path1, path2, path3 }));
+        assertFalse(model.canPathsBeAdded(new TreePath[] { path1, path3 }));
+        assertTrue(model.canPathsBeAdded(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeAdded(new TreePath[] {}));
     }
 
@@ -1226,39 +1059,33 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
-
         assertEquals(0, model.getSelectionCount());
-
         model.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path2}));
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path4}));
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path2 }));
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path4 }));
         assertTrue(model.canPathsBeRemoved(new TreePath[] {}));
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path4});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path2}));
-
+        model.setSelectionPaths(new TreePath[] { path1, path2, path4 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path2 }));
         model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path1}));
-
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path1 }));
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path2}));
-
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path2 }));
         model.setRowMapper(new MyRowMapper());
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path1}));
-        assertFalse(model.canPathsBeRemoved(new TreePath[] {path2}));
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path3}));
-
-        model.setSelectionPaths(new TreePath[] {path1, path2, path3, path4});
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path1}));
-        assertFalse(model.canPathsBeRemoved(new TreePath[] {path2}));
-        assertFalse(model.canPathsBeRemoved(new TreePath[] {path3}));
-        assertTrue(model.canPathsBeRemoved(new TreePath[] {path4}));
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path1 }));
+        assertFalse(model.canPathsBeRemoved(new TreePath[] { path2 }));
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path3 }));
+        model.setSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path1 }));
+        assertFalse(model.canPathsBeRemoved(new TreePath[] { path2 }));
+        assertFalse(model.canPathsBeRemoved(new TreePath[] { path3 }));
+        assertTrue(model.canPathsBeRemoved(new TreePath[] { path4 }));
     }
 
+    @SuppressWarnings("unchecked")
     public void testNotifyPathChange() {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
@@ -1268,15 +1095,12 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         holders.add(new PathPlaceHolder(path1, true));
         holders.add(new PathPlaceHolder(path2, true));
         holders.add(new PathPlaceHolder(path3, false));
-
-        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(false);
-
+        ConcreteTreeSelectionListener treeSelectionListener = new ConcreteTreeSelectionListener(
+                false);
         assertEquals(0, model.getSelectionCount());
         model.addTreeSelectionListener(treeSelectionListener);
-
         model.notifyPathChange(holders, path4);
         assertEquals(0, model.getSelectionCount());
-
         assertNotNull(treeSelectionListener.event);
         assertEquals(path4, treeSelectionListener.event.getOldLeadSelectionPath());
         assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
@@ -1293,21 +1117,17 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path3 = new TreePath("3");
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
-
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3, path4});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3, path4 });
         assertEquals(3, model.leadIndex);
         model.leadIndex = 1000;
         model.updateLeadIndex();
         assertEquals(3, model.leadIndex);
-
         model.leadPath = null;
         model.updateLeadIndex();
         assertEquals(-1, model.leadIndex);
-
         model.leadPath = path1;
         model.updateLeadIndex();
         assertEquals(0, model.leadIndex);
-
         model.leadPath = path5;
         model.updateLeadIndex();
         assertEquals(-1, model.leadIndex);
@@ -1318,10 +1138,9 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
             if (path == null) {
                 return new int[0];
             }
-
             int[] result = new int[path.length];
             for (int i = 0; i < result.length; i++) {
-                String str = (String)path[i].getLastPathComponent();
+                String str = (String) path[i].getLastPathComponent();
                 if (!str.equals("a")) {
                     result[i] = Integer.valueOf(str).intValue();
                 } else {
@@ -1339,14 +1158,13 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path4 = new TreePath("4");
         TreePath path5 = new TreePath("5");
         TreePath path6 = new TreePath("a");
-
-        TreePath[] paths1 = new TreePath[] {path1, path2, path3, path4, path5};
-        TreePath[] paths2 = new TreePath[] {path2, path4, path1, path5, path3};
-        TreePath[] paths3 = new TreePath[] {path1, path4, path5};
-        TreePath[] paths4 = new TreePath[] {path2, path1, path3, path5};
-        TreePath[] paths5 = new TreePath[] {path6, path1, path2};
-        TreePath[] paths6 = new TreePath[] {path6};
-        TreePath[] paths7 = new TreePath[] {path1, path2, path3, path4, path4, path5};
+        TreePath[] paths1 = new TreePath[] { path1, path2, path3, path4, path5 };
+        TreePath[] paths2 = new TreePath[] { path2, path4, path1, path5, path3 };
+        TreePath[] paths3 = new TreePath[] { path1, path4, path5 };
+        TreePath[] paths4 = new TreePath[] { path2, path1, path3, path5 };
+        TreePath[] paths5 = new TreePath[] { path6, path1, path2 };
+        TreePath[] paths6 = new TreePath[] { path6 };
+        TreePath[] paths7 = new TreePath[] { path1, path2, path3, path4, path4, path5 };
         assertTrue(model.arePathsContiguous(paths1));
         model.setRowMapper(new MyRowMapper());
         assertTrue(model.arePathsContiguous(paths1));
@@ -1364,7 +1182,7 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
         assertNotNull(model.toString());
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         assertNotNull(model.toString());
     }
 
@@ -1372,15 +1190,14 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath path1 = new TreePath("1");
         TreePath path2 = new TreePath("2");
         TreePath path3 = new TreePath("3");
-        model.addSelectionPaths(new TreePath[] {path1, path2, path3});
+        model.addSelectionPaths(new TreePath[] { path1, path2, path3 });
         model.addTreeSelectionListener(new ConcreteTreeSelectionListener());
         RowMapper mapper = new MyRowMapper();
         model.setRowMapper(mapper);
         model.setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-
         Object cloned = model.clone();
         assertTrue(cloned instanceof DefaultTreeSelectionModel);
-        DefaultTreeSelectionModel clonedModel = (DefaultTreeSelectionModel)cloned;
+        DefaultTreeSelectionModel clonedModel = (DefaultTreeSelectionModel) cloned;
         assertEquals(model.getSelectionCount(), clonedModel.getSelectionCount());
         assertEquals(model.getLeadSelectionPath(), clonedModel.getLeadSelectionPath());
         assertEquals(model.getSelectionPaths()[0], clonedModel.getSelectionPaths()[0]);

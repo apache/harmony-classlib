@@ -21,7 +21,6 @@
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.JScrollPane;
 import javax.swing.SwingTestCase;
 
@@ -32,10 +31,12 @@ public class BasicScrollPaneUITest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         ui = new BasicScrollPaneUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
     }
@@ -43,7 +44,6 @@ public class BasicScrollPaneUITest extends SwingTestCase {
     public void testCreateUI() throws Exception {
         assertTrue(BasicScrollPaneUI.createUI(null) instanceof BasicScrollPaneUI);
         assertNotSame(BasicScrollPaneUI.createUI(null), BasicScrollPaneUI.createUI(null));
-
     }
 
     public void testCreateViewportChangeListener() throws Exception {
@@ -90,28 +90,25 @@ public class BasicScrollPaneUITest extends SwingTestCase {
         ui.scrollpane = new JScrollPane();
         int viewportListenersCount = ui.scrollpane.getViewport().getChangeListeners().length;
         assertNull(ui.viewportChangeListener);
-
         int scrollPaneListenersCount = ui.scrollpane.getPropertyChangeListeners().length;
         assertNull(ui.spPropertyChangeListener);
-
         assertNull(ui.hsbChangeListener);
         assertNull(ui.vsbChangeListener);
-
         ui.installListeners(null);
-        assertEquals(viewportListenersCount + 1, ui.scrollpane.getViewport().getChangeListeners().length);
+        assertEquals(viewportListenersCount + 1, ui.scrollpane.getViewport()
+                .getChangeListeners().length);
         assertNotNull(ui.viewportChangeListener);
-
-        assertEquals(scrollPaneListenersCount + 1, ui.scrollpane.getPropertyChangeListeners().length);
+        assertEquals(scrollPaneListenersCount + 1,
+                ui.scrollpane.getPropertyChangeListeners().length);
         assertNotNull(ui.spPropertyChangeListener);
-
         assertNotNull(ui.hsbChangeListener);
         assertNotNull(ui.vsbChangeListener);
-
-
         ui.uninstallListeners(null);
-        assertEquals(viewportListenersCount, ui.scrollpane.getViewport().getChangeListeners().length);
+        assertEquals(viewportListenersCount,
+                ui.scrollpane.getViewport().getChangeListeners().length);
         assertNull(ui.viewportChangeListener);
-        assertEquals(scrollPaneListenersCount, ui.scrollpane.getPropertyChangeListeners().length);
+        assertEquals(scrollPaneListenersCount,
+                ui.scrollpane.getPropertyChangeListeners().length);
         assertNull(ui.spPropertyChangeListener);
         assertNull(ui.hsbChangeListener);
         assertNull(ui.vsbChangeListener);

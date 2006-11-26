@@ -25,6 +25,8 @@ import javax.swing.SwingTestCase;
 
 public class DefaultFormatterFactoryTest extends SwingTestCase {
     class FTF extends JFormattedTextField {
+        private static final long serialVersionUID = 1L;
+
         boolean hasFocus;
 
         public FTF(final Object value, final boolean hasFocus) {
@@ -32,6 +34,7 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
             setHasFocus(hasFocus);
         }
 
+        @Override
         public boolean hasFocus() {
             return hasFocus;
         }
@@ -42,29 +45,33 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
     }
 
     DefaultFormatterFactory factory;
+
     DefaultFormatter formatter;
+
     FTF ftf;
+
     DefaultFormatter defaultDormatter;
+
     DefaultFormatter editFormatter;
+
     DefaultFormatter displayFormatter;
+
     DefaultFormatter nullFormatter;
 
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         factory = new DefaultFormatterFactory();
         formatter = new DefaultFormatter();
     }
 
-    private void checkFormatter(final JFormattedTextField.AbstractFormatter
-                                formatter) {
+    private void checkFormatter(final JFormattedTextField.AbstractFormatter formatter) {
         assertEquals(formatter, factory.getFormatter(ftf));
     }
 
-    private void init(final Object value,
-                      final boolean hasFocus) {
-       ftf = new FTF(value, hasFocus);
-       initFormatters();
+    private void init(final Object value, final boolean hasFocus) {
+        ftf = new FTF(value, hasFocus);
+        initFormatters();
     }
 
     private void initFormatters() {
@@ -75,35 +82,27 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
     }
 
     public void testGetFormatterNull() {
-       init(null, false);
-       assertNull(factory.getFormatter(ftf));
-
-       factory.setDefaultFormatter(defaultDormatter);
-       checkFormatter(defaultDormatter);
-
-       factory.setEditFormatter(editFormatter);
-       checkFormatter(defaultDormatter);
-
-       factory.setDisplayFormatter(displayFormatter);
-       checkFormatter(displayFormatter);
-
-       factory.setNullFormatter(nullFormatter);
-       checkFormatter(nullFormatter);
+        init(null, false);
+        assertNull(factory.getFormatter(ftf));
+        factory.setDefaultFormatter(defaultDormatter);
+        checkFormatter(defaultDormatter);
+        factory.setEditFormatter(editFormatter);
+        checkFormatter(defaultDormatter);
+        factory.setDisplayFormatter(displayFormatter);
+        checkFormatter(displayFormatter);
+        factory.setNullFormatter(nullFormatter);
+        checkFormatter(nullFormatter);
     }
 
     public void testGetFormatterNullHasFocus() {
         init(null, true);
         assertNull(factory.getFormatter(ftf));
-
         factory.setDefaultFormatter(defaultDormatter);
         checkFormatter(defaultDormatter);
-
         factory.setDisplayFormatter(displayFormatter);
         checkFormatter(defaultDormatter);
-
         factory.setEditFormatter(editFormatter);
         checkFormatter(editFormatter);
-
         factory.setNullFormatter(nullFormatter);
         checkFormatter(nullFormatter);
     }
@@ -111,16 +110,12 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
     public void testGetFormatterNotNull_Number() {
         init(new Integer(333), false);
         assertNull(factory.getFormatter(ftf));
-
         factory.setNullFormatter(nullFormatter);
         assertNull(factory.getFormatter(ftf));
-
         factory.setEditFormatter(editFormatter);
         assertNull(factory.getFormatter(ftf));
-
         factory.setDefaultFormatter(defaultDormatter);
         checkFormatter(defaultDormatter);
-
         factory.setDisplayFormatter(displayFormatter);
         checkFormatter(displayFormatter);
     }
@@ -128,16 +123,12 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
     public void testGetFormatterNotNullHasFocus() {
         init(new Integer(333), true);
         assertNull(factory.getFormatter(ftf));
-
         factory.setNullFormatter(nullFormatter);
         assertNull(factory.getFormatter(ftf));
-
         factory.setDisplayFormatter(displayFormatter);
         assertNull(factory.getFormatter(ftf));
-
         factory.setDefaultFormatter(defaultDormatter);
         checkFormatter(defaultDormatter);
-
         factory.setEditFormatter(editFormatter);
         checkFormatter(editFormatter);
     }
@@ -169,8 +160,7 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
     public void testDefaultFormatterFactoryDefaultDisplayEdit() {
         DefaultFormatter formatter1 = new DefaultFormatter();
         DefaultFormatter formatter2 = new DefaultFormatter();
-        factory = new DefaultFormatterFactory(formatter, formatter1,
-                                              formatter2);
+        factory = new DefaultFormatterFactory(formatter, formatter1, formatter2);
         assertNull(factory.getNullFormatter());
         assertEquals(formatter2, factory.getEditFormatter());
         assertEquals(formatter1, factory.getDisplayFormatter());
@@ -181,8 +171,7 @@ public class DefaultFormatterFactoryTest extends SwingTestCase {
         DefaultFormatter formatter1 = new DefaultFormatter();
         DefaultFormatter formatter2 = new DefaultFormatter();
         DefaultFormatter formatter3 = new DefaultFormatter();
-        factory = new DefaultFormatterFactory(formatter, formatter1,
-                                              formatter2, formatter3);
+        factory = new DefaultFormatterFactory(formatter, formatter1, formatter2, formatter3);
         assertEquals(formatter3, factory.getNullFormatter());
         assertEquals(formatter2, factory.getEditFormatter());
         assertEquals(formatter1, factory.getDisplayFormatter());

@@ -23,14 +23,12 @@
 package javax.swing.border;
 
 import java.awt.Insets;
-
 import javax.swing.JPanel;
 import javax.swing.SwingTestCase;
 
 public class EmptyBorderTest extends SwingTestCase {
-
     public void testIsBorderOpaque() {
-        EmptyBorder border =  new EmptyBorder(0, 1, 2, 3);
+        EmptyBorder border = new EmptyBorder(0, 1, 2, 3);
         assertFalse("EmptyBorder is not opaque ", border.isBorderOpaque());
     }
 
@@ -43,7 +41,6 @@ public class EmptyBorderTest extends SwingTestCase {
         int right = 300;
         int bottom = 400;
         EmptyBorder border = new EmptyBorder(new Insets(top, left, bottom, right));
-
         assertEquals(border.getBorderInsets(), new Insets(top, left, bottom, right));
     }
 
@@ -56,7 +53,6 @@ public class EmptyBorderTest extends SwingTestCase {
         int right = 300;
         int bottom = 400;
         EmptyBorder border = new EmptyBorder(top, left, bottom, right);
-
         assertEquals(border.getBorderInsets(), new Insets(top, left, bottom, right));
     }
 
@@ -72,9 +68,9 @@ public class EmptyBorderTest extends SwingTestCase {
         int left = 345;
         int right = 345;
         EmptyBorder border = new EmptyBorder(top, left);
-
         assertEquals(border.getBorderInsets(), new Insets(top, left, bottom, right));
     }
+
     /*
      * Class under test for Insets getBorderInsets(Component, Insets)
      */
@@ -86,19 +82,15 @@ public class EmptyBorderTest extends SwingTestCase {
         EmptyBorder border = new EmptyBorder(top, left, bottom, right);
         Insets insets = new Insets(1, 1, 1, 1);
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(1, 1, 1, 1));
         border.getBorderInsets(panel, insets);
-
         assertEquals("insets values coinside", top, insets.top);
         assertEquals("insets values coinside", left, insets.left);
         assertEquals("insets values coinside", right, insets.right);
         assertEquals("insets values coinside", bottom, insets.bottom);
-
         insets = new Insets(1, 1, 1, 1);
         panel.setBorder(null);
         Insets newInsets = border.getBorderInsets(panel, insets);
-
         assertEquals("insets values coinside", top, newInsets.top);
         assertEquals("insets values coinside", left, newInsets.left);
         assertEquals("insets values coinside", right, newInsets.right);
@@ -120,18 +112,14 @@ public class EmptyBorderTest extends SwingTestCase {
         EmptyBorder border = new EmptyBorder(top, left, bottom, right);
         Insets insets = null;
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(1, 1, 1, 1));
         insets = border.getBorderInsets(panel);
-
         assertEquals("insets values coinside", top, insets.top);
         assertEquals("insets values coinside", left, insets.left);
         assertEquals("insets values coinside", right, insets.right);
         assertEquals("insets values coinside", bottom, insets.bottom);
-
         panel.setBorder(null);
         insets = border.getBorderInsets(panel);
-
         assertEquals("insets values coinside", top, insets.top);
         assertEquals("insets values coinside", left, insets.left);
         assertEquals("insets values coinside", right, insets.right);
@@ -157,7 +145,6 @@ public class EmptyBorderTest extends SwingTestCase {
         int bottom = 400;
         EmptyBorder border = new EmptyBorder(top, left, bottom, right);
         Insets insets = border.getBorderInsets();
-
         assertEquals("insets values coinside", top, insets.top);
         assertEquals("insets values coinside", left, insets.left);
         assertEquals("insets values coinside", right, insets.right);
@@ -167,15 +154,13 @@ public class EmptyBorderTest extends SwingTestCase {
     public void testReadWriteObject() throws Exception {
         EmptyBorder border1 = new EmptyBorder(10, 20, 30, 40);
         EmptyBorder border2 = new EmptyBorder(40, 50, 60, 70);
-
-        EmptyBorder resurrectedBorder = (EmptyBorder)serializeObject(border1);
+        EmptyBorder resurrectedBorder = (EmptyBorder) serializeObject(border1);
         assertNotNull(resurrectedBorder);
-        assertEquals("Deserialized values coinsides", resurrectedBorder
-                .getBorderInsets(), border1.getBorderInsets());
-
-        resurrectedBorder = (EmptyBorder)serializeObject(border2);
+        assertEquals("Deserialized values coinsides", resurrectedBorder.getBorderInsets(),
+                border1.getBorderInsets());
+        resurrectedBorder = (EmptyBorder) serializeObject(border2);
         assertNotNull(resurrectedBorder);
-        assertEquals("Deserialized values coinsides", resurrectedBorder
-                .getBorderInsets(), border2.getBorderInsets());
+        assertEquals("Deserialized values coinsides", resurrectedBorder.getBorderInsets(),
+                border2.getBorderInsets());
     }
 }

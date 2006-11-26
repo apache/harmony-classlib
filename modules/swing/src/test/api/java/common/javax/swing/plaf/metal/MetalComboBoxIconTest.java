@@ -30,10 +30,12 @@ public class MetalComboBoxIconTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         icon = new MetalComboBoxIcon();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         icon = null;
     }

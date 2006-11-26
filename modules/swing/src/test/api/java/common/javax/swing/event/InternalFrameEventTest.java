@@ -18,7 +18,6 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.event;
 
 import javax.swing.JInternalFrame;
@@ -38,44 +37,28 @@ public class InternalFrameEventTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JInternalFrame();
     }
 
     /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    /*
-     * Class under test for InternalFrameEvent(JInternalFrame, id)
-     */
-    public void testInternalFrameEvent() {
-        InternalFrameEvent event = new InternalFrameEvent(
-                frame, InternalFrameEvent.INTERNAL_FRAME_CLOSED);
-    }
-
-    /*
      * Class under test for JInternalFrame getInternalFrame()
      */
     public void testGetInternalFrame() {
-        InternalFrameEvent event = new InternalFrameEvent(
-                frame, InternalFrameEvent.INTERNAL_FRAME_CLOSED);
-
+        InternalFrameEvent event = new InternalFrameEvent(frame,
+                InternalFrameEvent.INTERNAL_FRAME_CLOSED);
         assertTrue("== frame", event.getInternalFrame() == frame);
-        assertTrue("== getSource()",
-                event.getInternalFrame() == event.getSource());
+        assertTrue("== getSource()", event.getInternalFrame() == event.getSource());
     }
 
     /*
      * Class under test for String paramString()
      */
     public void testParamString() {
-        InternalFrameEvent event = new InternalFrameEvent(
-                frame, InternalFrameEvent.INTERNAL_FRAME_ACTIVATED);
+        InternalFrameEvent event = new InternalFrameEvent(frame,
+                InternalFrameEvent.INTERNAL_FRAME_ACTIVATED);
         assertTrue("paramString() cannot return null", event.paramString() != null);
     }
 }

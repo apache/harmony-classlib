@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.metal;
 
 import javax.swing.JMenuBar;
@@ -25,7 +25,7 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicMenuBarUITest;
 
 public class MetalMenuBarUITest extends BasicMenuBarUITest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuBarUI = new MetalMenuBarUI();
@@ -34,6 +34,7 @@ public class MetalMenuBarUITest extends BasicMenuBarUITest {
     /*
      * Test method for 'javax.swing.plaf.metal.MetalMenuBarUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
         JMenuBar bar = new JMenuBar();
         ComponentUI ui1 = MetalMenuBarUI.createUI(bar);

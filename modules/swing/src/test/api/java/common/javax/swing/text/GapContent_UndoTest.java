@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,68 +21,56 @@
 package javax.swing.text;
 
 import java.lang.reflect.Field;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoableEdit;
-
 import junit.framework.TestCase;
 
 public class GapContent_UndoTest extends TestCase {
     protected AbstractDocument.Content content;
+
     protected UndoableEdit insertEdit;
 
+    @Override
     protected void setUp() throws Exception {
         content = new GapContent();
         insertEdit = content.insertString(0, "01234");
     }
 
-    public void testUndoInsertEnd() throws BadLocationException  {
+    public void testUndoInsertEnd() throws BadLocationException {
         UndoableEdit ue = content.insertString(5, "567");
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
     public void testUndoInsertStart() throws BadLocationException {
         UndoableEdit ue = content.insertString(0, "321");
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
     public void testUndoInsertMiddle() throws BadLocationException {
         UndoableEdit ue = content.insertString(3, "999");
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
-    public void testUndoRemoveEnd() throws BadLocationException  {
+    public void testUndoRemoveEnd() throws BadLocationException {
         UndoableEdit ue = content.remove(3, 2);
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
     public void testUndoRemoveStart() throws BadLocationException {
         UndoableEdit ue = content.remove(0, 2);
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
     public void testUndoRemoveMiddle() throws BadLocationException {
         UndoableEdit ue = content.remove(3, 2);
-
         ue.undo();
-
         assertEquals("01234\n", content.getString(0, content.length()));
     }
 
@@ -105,7 +92,7 @@ public class GapContent_UndoTest extends TestCase {
         try {
             Field f = ue.getClass().getSuperclass().getDeclaredField("text");
             f.setAccessible(true);
-            return (String)(f.get(ue));
+            return (String) (f.get(ue));
         } catch (IllegalAccessException e) {
             fail(e.getMessage());
         } catch (NoSuchFieldException e) {
@@ -173,17 +160,16 @@ public class GapContent_UndoTest extends TestCase {
         insertEdit.undo();
         try {
             insertEdit.undo();
-
             fail("CannotUndoException should be thrown");
-        } catch (CannotUndoException e) { }
+        } catch (CannotUndoException e) {
+        }
     }
 
     public void testCantRedo() {
         try {
             insertEdit.redo();
-
             fail("CannotRedoException should be thrown");
-        } catch (CannotRedoException e) { }
+        } catch (CannotRedoException e) {
+        }
     }
-
 }

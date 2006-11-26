@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -23,25 +22,25 @@ package javax.swing.text;
 
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-
 import javax.swing.BasicSwingTestCase;
-
 import junit.framework.TestCase;
 
 public class EmptyAttributeSetTest extends TestCase {
     /**
      * Shared instance of EmptyAttributeSet class.
      */
-    private static final AttributeSet empty  = SimpleAttributeSet.EMPTY;
+    private static final AttributeSet empty = SimpleAttributeSet.EMPTY;
+
     /**
      * Shared instance of SimpleAttributeSet class.
      */
     private static final SimpleAttributeSet simple = new SimpleAttributeSet();
+
     /**
      * Shared instance of StyleContext.SmallAttributeSet class.
      */
-    private static final StyleContext.SmallAttributeSet small =
-        new StyleContext().new SmallAttributeSet(empty);
+    private static final StyleContext.SmallAttributeSet small = new StyleContext().new SmallAttributeSet(
+            empty);
 
     public EmptyAttributeSetTest(final String name) {
         super(name);
@@ -82,14 +81,14 @@ public class EmptyAttributeSetTest extends TestCase {
     }
 
     public void testGetAttributeNames() {
-        Enumeration names = empty.getAttributeNames();
+        Enumeration<?> names = empty.getAttributeNames();
         assertNotNull(names);
         assertFalse(names.hasMoreElements());
         try {
             names.nextElement();
-
             fail("NoSuchElementException should be thrown");
-        } catch (NoSuchElementException e) { }
+        } catch (NoSuchElementException e) {
+        }
     }
 
     public void testGetResolveParent() {
@@ -113,9 +112,8 @@ public class EmptyAttributeSetTest extends TestCase {
 
     public void testToString() {
         final String expected;
-        expected = BasicSwingTestCase.isHarmony()
-                   ? "javax.swing.text.EmptyAttributeSet@0"
-                   : "javax.swing.text.SimpleAttributeSet$EmptyAttributeSet@0";
+        expected = BasicSwingTestCase.isHarmony() ? "javax.swing.text.EmptyAttributeSet@0"
+                : "javax.swing.text.SimpleAttributeSet$EmptyAttributeSet@0";
         assertEquals(expected, empty.toString());
     }
 }

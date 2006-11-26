@@ -20,7 +20,6 @@
  */
 package javax.swing.text;
 
-
 import java.text.AttributedCharacterIterator;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -30,20 +29,25 @@ import javax.swing.SwingTestCase;
 
 public class InternationalFormatterTest extends SwingTestCase {
     InternationalFormatter formatter;
+
     JFormattedTextField ftf;
+
     boolean bWasException;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new InternationalFormatter() {
-//            boolean getSupportsIncrement() {
-//                return super.getStrue;
-//            }
+            private static final long serialVersionUID = 1L;
+            //            boolean getSupportsIncrement() {
+            //                return super.getStrue;
+            //            }
         };
         ftf = new JFormattedTextField();
         bWasException = false;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -84,19 +88,17 @@ public class InternationalFormatterTest extends SwingTestCase {
         formatter.setOverwriteMode(true);
         Format format = NumberFormat.getCurrencyInstance();
         formatter.setFormat(format);
-        Comparable max = new Integer(23);
-        Comparable min = new Integer(24);
+        Comparable<?> max = new Integer(23);
+        Comparable<?> min = new Integer(24);
         formatter.setMaximum(max);
         formatter.setMinimum(min);
-
         try {
             clone = formatter.clone();
         } catch (CloneNotSupportedException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         assertTrue(clone instanceof InternationalFormatter);
-        InternationalFormatter form = (InternationalFormatter)clone;
+        InternationalFormatter form = (InternationalFormatter) clone;
         assertFalse(form.getAllowsInvalid());
         assertTrue(form.getCommitsOnValidEdit());
         assertTrue(form.getOverwriteMode());
@@ -108,16 +110,13 @@ public class InternationalFormatterTest extends SwingTestCase {
     public void testGetActions() {
     }
 
-
     public void testStringToValue() {
-
         assertNull(formatter.getFormat());
         assertNull(formatter.getValueClass());
         try {
             assertNull(formatter.stringToValue(null));
             assertEquals("234", formatter.stringToValue("234"));
             formatter.setFormat(NumberFormat.getNumberInstance());
-
             assertEquals(new Long(723), formatter.stringToValue("723"));
             formatter.setMaximum(new Long(23)); //if Integer
             formatter.setMinimum(new Long(20));
@@ -125,28 +124,24 @@ public class InternationalFormatterTest extends SwingTestCase {
         } catch (ParseException e) {
             assertTrue("Unexpected exception: ", false);
         }
-
         try {
             formatter.stringToValue("-27");
         } catch (ParseException e) {
             bWasException = true;
         }
         checkException();
-
         try {
             formatter.stringToValue("abc12");
         } catch (ParseException e) {
             bWasException = true;
         }
         checkException();
-
         try {
             formatter.stringToValue("true");
         } catch (ParseException e) {
             bWasException = true;
         }
         checkException();
-
         try {
             formatter.setFormat(null);
             formatter.setValueClass(Boolean.class);
@@ -164,15 +159,12 @@ public class InternationalFormatterTest extends SwingTestCase {
             Object value;
             assertNull(formatter.getFormat());
             assertEquals("234", formatter.valueToString(new Integer(234)));
-
             value = new DefaultCaret();
             assertEquals(value.toString(), formatter.valueToString(value));
-
             Format format = NumberFormat.getPercentInstance();
             formatter.setFormat(format);
             value = new Integer(456);
             assertEquals(format.format(value), formatter.valueToString(value));
-
             format = NumberFormat.getCurrencyInstance();
             formatter.setFormat(format);
             value = new Integer(345);
@@ -184,14 +176,12 @@ public class InternationalFormatterTest extends SwingTestCase {
 
     public void testGetFields() {
         ftf.setValue(new Integer(345));
-        formatter = (InternationalFormatter)ftf.getFormatter();
+        formatter = (InternationalFormatter) ftf.getFormatter();
         Format format = formatter.getFormat();
         Format.Field[] fields = formatter.getFields(0);
         assertEquals(1, fields.length);
-        AttributedCharacterIterator iter = format.formatToCharacterIterator
-            (new Integer(345));
+        AttributedCharacterIterator iter = format.formatToCharacterIterator(new Integer(345));
         assertTrue(iter.getAttributes().containsKey(fields[0]));
-
         assertEquals(0, formatter.getFields(-7).length);
         //TODO
         //formatter.setFormat(null);

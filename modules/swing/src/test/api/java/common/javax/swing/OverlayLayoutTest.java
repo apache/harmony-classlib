@@ -327,6 +327,7 @@ public class OverlayLayoutTest extends SwingTestCase {
         assertEquals("Component4 location ", new Point(20, 20), component4.getLocation());
     }
 
+    @SuppressWarnings("deprecation")
     public void testLayoutContainer2() {
         JWindow window = new JWindow();
         JComponent panel = new JPanel();
@@ -584,5 +585,6 @@ public class OverlayLayoutTest extends SwingTestCase {
         InputStream fi = new ByteArrayInputStream(fo.toByteArray());
         ObjectInputStream si = new ObjectInputStream(fi);
         OverlayLayout resurrectedLayout = (OverlayLayout) si.readObject();
+        assertNotNull(resurrectedLayout);
     }
 }

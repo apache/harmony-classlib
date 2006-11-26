@@ -283,7 +283,6 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertNull("tip", tabbed.getToolTipTextAt(3));
         class UIResourceButton extends JButton implements UIResource {
-
             private static final long serialVersionUID = 1L;
         }
         int tabCount = tabbed.getTabCount();

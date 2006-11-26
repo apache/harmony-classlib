@@ -21,21 +21,23 @@
 package javax.swing.tree;
 
 import javax.swing.event.TreeExpansionEvent;
-
 import junit.framework.TestCase;
 
 public class ExpandVetoExceptionTest extends TestCase {
     private ExpandVetoException eve;
+
     private TreeExpansionEvent event;
 
     public ExpandVetoExceptionTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         event = new TreeExpansionEvent(this, new TreePath("path"));
     }
 
+    @Override
     protected void tearDown() throws Exception {
         eve = null;
         event = null;
@@ -45,7 +47,6 @@ public class ExpandVetoExceptionTest extends TestCase {
         eve = new ExpandVetoException(event);
         assertSame(event, eve.event);
         assertNull(eve.getMessage());
-
         eve = new ExpandVetoException(event, "message");
         assertSame(event, eve.event);
         assertEquals("message", eve.getMessage());

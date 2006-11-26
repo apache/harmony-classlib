@@ -23,14 +23,13 @@ package javax.swing.text;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class StyleTest extends MutableAttributeSetTest
-    implements ChangeListener {
-
+public class StyleTest extends MutableAttributeSetTest implements ChangeListener {
     protected Style style;
 
     /*
      * @see MutableAttributeSetTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         style = new StyleContext().new NamedStyle();
         for (int i = 0; i < keys.length; i++) {
@@ -38,7 +37,6 @@ public class StyleTest extends MutableAttributeSetTest
         }
         mas = style;
         as = style;
-
         Style styleWithResolver = new StyleContext().new NamedStyle();
         for (int i = 0; i < keys.length; i++) {
             styleWithResolver.addAttribute(keys[i], values[i]);
@@ -56,7 +54,6 @@ public class StyleTest extends MutableAttributeSetTest
         bStateChanged = false;
         style.addAttribute("key", "value");
         assertTrue(bStateChanged);
-
         style.removeChangeListener(this);
         bStateChanged = false;
         style.removeAttribute("key");
@@ -69,7 +66,6 @@ public class StyleTest extends MutableAttributeSetTest
         bStateChanged = false;
         AttributeSet copy = style.copyAttributes();
         style.addAttribute(keys[0], values[0]);
-
         // Actually no change happened
         assertTrue(style.isEqual(copy));
         // The listener is to be called
@@ -100,7 +96,6 @@ public class StyleTest extends MutableAttributeSetTest
         bStateChanged = false;
         AttributeSet copy = style.copyAttributes();
         style.removeAttribute("key");
-
         // Actually no change happened
         assertTrue(style.isEqual(copy));
         // The listener is to be called

@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import javax.swing.SwingTestCase;
@@ -29,10 +27,12 @@ import javax.swing.plaf.FontUIResource;
 public class MetalLookAndFeelTest extends SwingTestCase {
     private DefaultMetalTheme defaultMetalTheme;
 
+    @Override
     public void setUp() {
         defaultMetalTheme = new DefaultMetalTheme();
     }
 
+    @Override
     public void tearDown() {
         defaultMetalTheme = null;
     }
@@ -44,11 +44,13 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetAcceleratorForeground() {
-        checkColor(MetalLookAndFeel.getAcceleratorForeground(), defaultMetalTheme.getAcceleratorForeground());
+        checkColor(MetalLookAndFeel.getAcceleratorForeground(), defaultMetalTheme
+                .getAcceleratorForeground());
     }
 
     public void testGetAcceleratorSelectedForeground() {
-        checkColor(MetalLookAndFeel.getAcceleratorSelectedForeground(), defaultMetalTheme.getAcceleratorSelectedForeground());
+        checkColor(MetalLookAndFeel.getAcceleratorSelectedForeground(), defaultMetalTheme
+                .getAcceleratorSelectedForeground());
     }
 
     public void testGetBlack() {
@@ -60,15 +62,18 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetControlDarkShadow() {
-        checkColor(MetalLookAndFeel.getControlDarkShadow(), defaultMetalTheme.getControlDarkShadow());
+        checkColor(MetalLookAndFeel.getControlDarkShadow(), defaultMetalTheme
+                .getControlDarkShadow());
     }
 
     public void testGetControlDisabled() {
-        checkColor(MetalLookAndFeel.getControlDisabled(), defaultMetalTheme.getControlDisabled());
+        checkColor(MetalLookAndFeel.getControlDisabled(), defaultMetalTheme
+                .getControlDisabled());
     }
 
     public void testGetControlHighlight() {
-        checkColor(MetalLookAndFeel.getControlHighlight(), defaultMetalTheme.getControlHighlight());
+        checkColor(MetalLookAndFeel.getControlHighlight(), defaultMetalTheme
+                .getControlHighlight());
     }
 
     public void testGetControlInfo() {
@@ -80,7 +85,8 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetControlTextColor() {
-        checkColor(MetalLookAndFeel.getControlTextColor(), defaultMetalTheme.getControlTextColor());
+        checkColor(MetalLookAndFeel.getControlTextColor(), defaultMetalTheme
+                .getControlTextColor());
     }
 
     public void testGetControlTextFont() {
@@ -98,15 +104,18 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetHighlightedTextColor() {
-        checkColor(MetalLookAndFeel.getHighlightedTextColor(), defaultMetalTheme.getHighlightedTextColor());
+        checkColor(MetalLookAndFeel.getHighlightedTextColor(), defaultMetalTheme
+                .getHighlightedTextColor());
     }
 
     public void testGetInactiveControlTextColor() {
-        checkColor(MetalLookAndFeel.getInactiveControlTextColor(), defaultMetalTheme.getInactiveControlTextColor());
+        checkColor(MetalLookAndFeel.getInactiveControlTextColor(), defaultMetalTheme
+                .getInactiveControlTextColor());
     }
 
     public void testGetInactiveSystemTextColor() {
-        checkColor(MetalLookAndFeel.getInactiveSystemTextColor(), defaultMetalTheme.getInactiveSystemTextColor());
+        checkColor(MetalLookAndFeel.getInactiveSystemTextColor(), defaultMetalTheme
+                .getInactiveSystemTextColor());
     }
 
     public void testGetMenuBackground() {
@@ -114,7 +123,8 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetMenuDisabledBackground() {
-        checkColor(MetalLookAndFeel.getMenuDisabledForeground(), defaultMetalTheme.getMenuDisabledForeground());
+        checkColor(MetalLookAndFeel.getMenuDisabledForeground(), defaultMetalTheme
+                .getMenuDisabledForeground());
     }
 
     public void testGetMenuForeground() {
@@ -122,11 +132,13 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetMenuSelectedBackground() {
-        checkColor(MetalLookAndFeel.getMenuSelectedBackground(), defaultMetalTheme.getMenuSelectedBackground());
+        checkColor(MetalLookAndFeel.getMenuSelectedBackground(), defaultMetalTheme
+                .getMenuSelectedBackground());
     }
 
     public void testGetMenuSelectedForeground() {
-        checkColor(MetalLookAndFeel.getMenuSelectedForeground(), defaultMetalTheme.getMenuSelectedForeground());
+        checkColor(MetalLookAndFeel.getMenuSelectedForeground(), defaultMetalTheme
+                .getMenuSelectedForeground());
     }
 
     public void testGetMenuTextFont() {
@@ -148,27 +160,33 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetPrimaryControlDarkShadow() {
-        checkColor(MetalLookAndFeel.getPrimaryControlDarkShadow(), defaultMetalTheme.getPrimaryControlDarkShadow());
+        checkColor(MetalLookAndFeel.getPrimaryControlDarkShadow(), defaultMetalTheme
+                .getPrimaryControlDarkShadow());
     }
 
     public void testGetPrimaryControlHighlight() {
-        checkColor(MetalLookAndFeel.getPrimaryControlHighlight(), defaultMetalTheme.getPrimaryControlHighlight());
+        checkColor(MetalLookAndFeel.getPrimaryControlHighlight(), defaultMetalTheme
+                .getPrimaryControlHighlight());
     }
 
     public void testGetPrimaryControlInfo() {
-        checkColor(MetalLookAndFeel.getPrimaryControlInfo(), defaultMetalTheme.getPrimaryControlInfo());
+        checkColor(MetalLookAndFeel.getPrimaryControlInfo(), defaultMetalTheme
+                .getPrimaryControlInfo());
     }
 
     public void testGetPrimaryControlShadow() {
-        checkColor(MetalLookAndFeel.getPrimaryControlShadow(), defaultMetalTheme.getPrimaryControlShadow());
+        checkColor(MetalLookAndFeel.getPrimaryControlShadow(), defaultMetalTheme
+                .getPrimaryControlShadow());
     }
 
     public void testGetSeparatorBackground() {
-        checkColor(MetalLookAndFeel.getSeparatorBackground(), defaultMetalTheme.getSeparatorBackground());
+        checkColor(MetalLookAndFeel.getSeparatorBackground(), defaultMetalTheme
+                .getSeparatorBackground());
     }
 
     public void testGetSeparatorForeground() {
-        checkColor(MetalLookAndFeel.getSeparatorForeground(), defaultMetalTheme.getSeparatorForeground());
+        checkColor(MetalLookAndFeel.getSeparatorForeground(), defaultMetalTheme
+                .getSeparatorForeground());
     }
 
     public void testSubTextFont() {
@@ -182,7 +200,8 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetSystemTestColor() {
-        checkColor(MetalLookAndFeel.getSystemTextColor(), defaultMetalTheme.getSystemTextColor());
+        checkColor(MetalLookAndFeel.getSystemTextColor(), defaultMetalTheme
+                .getSystemTextColor());
     }
 
     public void testSystemTextFont() {
@@ -192,7 +211,8 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetTextHighlightColor() {
-        checkColor(MetalLookAndFeel.getTextHighlightColor(), defaultMetalTheme.getTextHighlightColor());
+        checkColor(MetalLookAndFeel.getTextHighlightColor(), defaultMetalTheme
+                .getTextHighlightColor());
     }
 
     public void testUserTextFont() {
@@ -210,11 +230,13 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetWindowBackground() {
-        checkColor(MetalLookAndFeel.getWindowBackground(), defaultMetalTheme.getWindowBackground());
+        checkColor(MetalLookAndFeel.getWindowBackground(), defaultMetalTheme
+                .getWindowBackground());
     }
 
     public void testGetWindowTitleBackground() {
-        checkColor(MetalLookAndFeel.getWindowTitleBackground(), defaultMetalTheme.getWindowTitleBackground());
+        checkColor(MetalLookAndFeel.getWindowTitleBackground(), defaultMetalTheme
+                .getWindowTitleBackground());
     }
 
     public void testGetWindowTitleFont() {
@@ -224,15 +246,18 @@ public class MetalLookAndFeelTest extends SwingTestCase {
     }
 
     public void testGetWindowTitleForeground() {
-        checkColor(MetalLookAndFeel.getWindowTitleForeground(), defaultMetalTheme.getWindowTitleForeground());
+        checkColor(MetalLookAndFeel.getWindowTitleForeground(), defaultMetalTheme
+                .getWindowTitleForeground());
     }
 
     public void testGetWindowTitleInactiveBackground() {
-        checkColor(MetalLookAndFeel.getWindowTitleInactiveBackground(), defaultMetalTheme.getWindowTitleInactiveBackground());
+        checkColor(MetalLookAndFeel.getWindowTitleInactiveBackground(), defaultMetalTheme
+                .getWindowTitleInactiveBackground());
     }
 
     public void testGetWindowTitleInactiveForeground() {
-        checkColor(MetalLookAndFeel.getWindowTitleInactiveForeground(), defaultMetalTheme.getWindowTitleInactiveForeground());
+        checkColor(MetalLookAndFeel.getWindowTitleInactiveForeground(), defaultMetalTheme
+                .getWindowTitleInactiveForeground());
     }
 
     public void testIsNativeLookAndFeel() {
@@ -247,5 +272,4 @@ public class MetalLookAndFeelTest extends SwingTestCase {
         assertNotNull(color);
         assertSame(color, themeColor);
     }
-
 }

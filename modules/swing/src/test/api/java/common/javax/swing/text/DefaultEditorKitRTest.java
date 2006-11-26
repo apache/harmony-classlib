@@ -29,27 +29,27 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.Action;
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-
 public class DefaultEditorKitRTest extends BasicSwingTestCase {
-
     protected DefaultEditorKit kit = null;
 
     protected JFrame frame;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         kit = new DefaultEditorKit();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         kit = null;
         if (frame != null) {
@@ -66,14 +66,13 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
                 return actions[i];
             }
         }
-
         return null;
     }
 
-    protected void performAction(final Object source, final Action action,
-                                 final String command) throws InterruptedException, InvocationTargetException {
-
-        final ActionEvent actionEvent = new ActionEvent(source, ActionEvent.ACTION_PERFORMED, command);
+    protected void performAction(final Object source, final Action action, final String command)
+            throws InterruptedException, InvocationTargetException {
+        final ActionEvent actionEvent = new ActionEvent(source, ActionEvent.ACTION_PERFORMED,
+                command);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 action.actionPerformed(actionEvent);
@@ -81,15 +80,14 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
         });
     }
 
-    protected JTextArea getInitedComponent(final int startPos,
-                                           final int endPos, final String text) throws InterruptedException, InvocationTargetException {
+    protected JTextArea getInitedComponent(final int startPos, final int endPos,
+            final String text) throws InterruptedException, InvocationTargetException {
         JTextArea c = new JTextArea();
         return initComponent(c, startPos, endPos, text);
     }
 
-    private JTextArea initComponent(final JTextArea c, final int startPos,
-                                    final int endPos, final String text) throws InterruptedException, InvocationTargetException {
-
+    private JTextArea initComponent(final JTextArea c, final int startPos, final int endPos,
+            final String text) throws InterruptedException, InvocationTargetException {
         if (frame != null) {
             frame.dispose();
         }
@@ -98,8 +96,8 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
         JScrollPane scroll = new JScrollPane(c);
         ((JViewport) c.getParent()).setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         int strHeight = c.getFontMetrics(c.getFont()).getHeight();
-        scroll.setPreferredSize(new Dimension(300, strHeight*5));
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setPreferredSize(new Dimension(300, strHeight * 5));
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         frame.getContentPane().add(scroll);
         frame.pack();
         java.awt.EventQueue.invokeAndWait(new Runnable() {
@@ -118,12 +116,10 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
         JTextArea c = getInitedComponent(2, 7, "0123456789");
         performAction(new JTextArea(), action, "command\ncontent");
         assertEquals("resulted string", "0123456789", c.getText());
-
         c = getInitedComponent(2, 7, "0123456789");
         c.setEditable(false);
         performAction(c, action, "command\ncontent");
         assertEquals("resulted string", "0123456789", c.getText());
-
         c = getInitedComponent(2, 7, "0123456789");
         performAction(c, action, null);
         assertEquals("resulted string", "0123456789", c.getText());
@@ -132,18 +128,26 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
     public void testReadInputStreamDocumentint() throws Exception {
         final Marker readerMarker = new Marker();
         DefaultEditorKit kit = new DefaultEditorKit() {
-            public void read(Reader in, Document doc, int pos) throws IOException, BadLocationException {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void read(Reader in, Document doc, int pos) throws IOException,
+                    BadLocationException {
                 readerMarker.setOccurred();
             }
         };
         kit.read(new ByteArrayInputStream(new byte[10]), new DefaultStyledDocument(), 0);
         assertTrue(readerMarker.isOccurred());
     }
-    
+
     public void testWriteOutputStreamDocumentintint() throws Exception {
         final Marker writeMarker = new Marker();
         DefaultEditorKit kit = new DefaultEditorKit() {
-            public void write(Writer out, Document doc, int pos, int len) throws IOException, BadLocationException {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void write(Writer out, Document doc, int pos, int len) throws IOException,
+                    BadLocationException {
                 writeMarker.setOccurred();
             }
         };
@@ -152,8 +156,9 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
     }
 
     public void testInsertContentActionPerformed_NullEvent() throws Exception {
-        final TextAction action = (TextAction)getAction(DefaultEditorKit.insertContentAction);
+        final TextAction action = (TextAction) getAction(DefaultEditorKit.insertContentAction);
         final JTextArea c = getInitedComponent(2, 7, "0123456789");
+        assertNotNull(c);
         frame.setVisible(true);
         final Marker thrown = new Marker();
         SwingUtilities.invokeAndWait(new Runnable() {
@@ -172,7 +177,6 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
         String str1 = "Windows line-end\r\nUnix-style\nMacOS\rUnknown\n\r";
         String str2 = "Windows line-end\nUnix-style\nMacOS\nUnknown\n\n";
         InputStream reader = new ByteArrayInputStream(str1.getBytes());
-
         Document doc = new PlainDocument();
         kit.read(reader, doc, 0);
         assertEquals(str2, doc.getText(0, doc.getLength()));

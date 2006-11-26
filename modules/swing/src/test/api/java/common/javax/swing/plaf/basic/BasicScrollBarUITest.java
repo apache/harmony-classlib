@@ -14,19 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JButton;
@@ -40,8 +37,10 @@ import javax.swing.SwingWaitTestCase;
 
 public class BasicScrollBarUITest extends BasicSwingTestCase {
     private BasicScrollBarUI barUI;
+
     private JScrollBar bar;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         bar = new JScrollBar();
@@ -49,6 +48,7 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         bar.setUI(barUI);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         barUI = null;
         bar = null;
@@ -57,7 +57,6 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
 
     public void testSetThumbBounds() throws Exception {
         Rectangle bounds = barUI.getThumbBounds();
-
         barUI.setThumbBounds(2, 3, 4, 5);
         assertEquals(new Rectangle(2, 3, 4, 5), barUI.getThumbBounds());
         assertTrue(barUI.getThumbBounds() == bounds);
@@ -70,7 +69,6 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         f.setSize(200, 200);
         f.setVisible(true);
         SwingWaitTestCase.isRealized(f);
-
         bar.setBounds(0, 0, 10, 132);
         bar.setValues(0, 50, 0, 100);
         waitForIdle();
@@ -78,21 +76,18 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         checkIsCloseTo(16, barUI.getThumbBounds().y);
         checkIsCloseTo(10, barUI.getThumbBounds().width);
         checkIsCloseTo(50, barUI.getThumbBounds().height);
-
         bar.setValues(30, 50, 0, 100);
         waitForIdle();
         checkIsCloseTo(0, barUI.getThumbBounds().x);
         checkIsCloseTo(46, barUI.getThumbBounds().y);
         checkIsCloseTo(10, barUI.getThumbBounds().width);
         checkIsCloseTo(50, barUI.getThumbBounds().height);
-
         bar.setValues(50, 50, 0, 100);
         waitForIdle();
         checkIsCloseTo(0, barUI.getThumbBounds().x);
         checkIsCloseTo(66, barUI.getThumbBounds().y);
         checkIsCloseTo(10, barUI.getThumbBounds().width);
         checkIsCloseTo(50, barUI.getThumbBounds().height);
-
         f.dispose();
     }
 
@@ -102,7 +97,6 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
 
     public void testPreferredLayoutSize() throws Exception {
         assertEquals(barUI.preferredLayoutSize(bar), barUI.getPreferredSize(bar));
-
         JLabel label = new JLabel();
         label.setPreferredSize(new Dimension(500, 600));
         label.setBackground(Color.RED);
@@ -110,11 +104,10 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         final JScrollPane pane = new JScrollPane(label);
         pane.setPreferredSize(new Dimension(120, 120));
         final JFrame f = createFrame(pane);
-
         JScrollBar verticalScrollBar = pane.getVerticalScrollBar();
-        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI)verticalScrollBar.getUI());
-        assertEquals(basicScrollBarUI.getPreferredSize(verticalScrollBar), basicScrollBarUI.preferredLayoutSize(verticalScrollBar));
-
+        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI) verticalScrollBar.getUI());
+        assertEquals(basicScrollBarUI.getPreferredSize(verticalScrollBar), basicScrollBarUI
+                .preferredLayoutSize(verticalScrollBar));
         f.dispose();
     }
 
@@ -126,16 +119,14 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         final JScrollPane pane = new JScrollPane(label);
         pane.setPreferredSize(new Dimension(120, 120));
         final JFrame f = createFrame(pane);
-
         JScrollBar verticalScrollBar = pane.getVerticalScrollBar();
-        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI)verticalScrollBar.getUI());
+        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI) verticalScrollBar.getUI());
         if (isHarmony()) {
             checkIsCloseTo(17, basicScrollBarUI.getMinimumSize(bar).width);
             checkIsCloseTo(45, basicScrollBarUI.getMinimumSize(bar).height);
         } else {
             assertEquals(new Dimension(15, 55), basicScrollBarUI.getMinimumSize(bar));
         }
-
         f.dispose();
     }
 
@@ -147,11 +138,10 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         final JScrollPane pane = new JScrollPane(label);
         pane.setPreferredSize(new Dimension(120, 120));
         final JFrame f = createFrame(pane);
-
         JScrollBar verticalScrollBar = pane.getVerticalScrollBar();
-        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI)verticalScrollBar.getUI());
-        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), basicScrollBarUI.getMaximumSize(bar));
-
+        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI) verticalScrollBar.getUI());
+        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), basicScrollBarUI
+                .getMaximumSize(bar));
         f.dispose();
     }
 
@@ -175,11 +165,9 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         final JScrollPane pane = new JScrollPane(label);
         pane.setPreferredSize(new Dimension(120, 120));
         final JFrame f = createFrame(pane);
-
         JScrollBar verticalScrollBar = pane.getVerticalScrollBar();
-        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI)verticalScrollBar.getUI());
+        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI) verticalScrollBar.getUI());
         assertEquals(new Dimension(4096, 4096), basicScrollBarUI.getMaximumThumbSize());
-
         f.dispose();
     }
 
@@ -191,7 +179,8 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
     public void testCreatePropertyChangeListener() throws Exception {
         assertNotNull(barUI.createPropertyChangeListener());
         if (isHarmony()) {
-            assertFalse(barUI.createPropertyChangeListener() == barUI.createPropertyChangeListener());
+            assertFalse(barUI.createPropertyChangeListener() == barUI
+                    .createPropertyChangeListener());
         }
     }
 
@@ -209,12 +198,11 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         assertEquals(2, barUI.incrButton.getMouseListeners().length);
         assertEquals(1, bar.getMouseListeners().length);
         assertEquals(1, bar.getPropertyChangeListeners().length);
-        assertEquals(2, ((DefaultBoundedRangeModel)bar.getModel()).getChangeListeners().length);
-
+        assertEquals(2, ((DefaultBoundedRangeModel) bar.getModel()).getChangeListeners().length);
         barUI.uninstallListeners();
         assertEquals(0, bar.getMouseListeners().length);
         assertEquals(0, bar.getPropertyChangeListeners().length);
-        assertEquals(1, ((DefaultBoundedRangeModel)bar.getModel()).getChangeListeners().length);
+        assertEquals(1, ((DefaultBoundedRangeModel) bar.getModel()).getChangeListeners().length);
         assertEquals(1, barUI.incrButton.getMouseListeners().length);
     }
 
@@ -227,12 +215,9 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         pane.setPreferredSize(new Dimension(120, 120));
         final JFrame f = new JFrame();
         f.getContentPane().add(pane);
-
         JScrollBar verticalScrollBar = pane.getVerticalScrollBar();
-        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI)verticalScrollBar.getUI());
-
+        BasicScrollBarUI basicScrollBarUI = ((BasicScrollBarUI) verticalScrollBar.getUI());
         assertEquals(new Rectangle(0, 0, 0, 0), basicScrollBarUI.incrButton.getBounds());
-
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 f.pack();
@@ -240,12 +225,10 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
             }
         });
         SwingWaitTestCase.isRealized(f);
-
         checkIsCloseTo(0, basicScrollBarUI.incrButton.getBounds().x);
         checkIsCloseTo(85, basicScrollBarUI.incrButton.getBounds().y);
         checkIsCloseTo(16, basicScrollBarUI.incrButton.getBounds().width);
         checkIsCloseTo(16, basicScrollBarUI.incrButton.getBounds().height);
-
         f.dispose();
     }
 
@@ -263,6 +246,7 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
     }
 
     private void checkIsCloseTo(final int expected, final int actual) {
-        assertTrue("expected: " + expected + ", actual: " + actual, Math.abs(expected - actual) <= 2);
+        assertTrue("expected: " + expected + ", actual: " + actual,
+                Math.abs(expected - actual) <= 2);
     }
 }

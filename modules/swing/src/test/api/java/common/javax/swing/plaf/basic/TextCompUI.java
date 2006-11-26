@@ -22,19 +22,16 @@
  */
 package javax.swing.plaf.basic;
 
-
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 
-
 public class TextCompUI extends BasicTextUI {
-
-    protected String getPropertyPrefix(){
+    @Override
+    protected String getPropertyPrefix() {
         return "TextArea";
     }
 
-    public static ComponentUI createUI(final JComponent ta){
+    public static ComponentUI createUI(final JComponent ta) {
         return new TextCompUI();
     }
 }
-

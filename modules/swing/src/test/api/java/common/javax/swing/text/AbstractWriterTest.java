@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
@@ -24,7 +23,6 @@ package javax.swing.text;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.swing.SwingTestCase;
 
 public class AbstractWriterTest extends SwingTestCase {
@@ -33,8 +31,8 @@ public class AbstractWriterTest extends SwingTestCase {
             super(w, doc);
         }
 
-        protected TestAbstractWriter(final Writer w, final Document doc,
-                                     final int pos, final int len) {
+        protected TestAbstractWriter(final Writer w, final Document doc, final int pos,
+                final int len) {
             super(w, doc, pos, len);
         }
 
@@ -42,31 +40,35 @@ public class AbstractWriterTest extends SwingTestCase {
             super(w, root);
         }
 
-        protected TestAbstractWriter(final Writer w, final Element root,
-                                     final int pos, final int len) {
+        protected TestAbstractWriter(final Writer w, final Element root, final int pos,
+                final int len) {
             super(w, root, pos, len);
         }
 
+        @Override
         protected void write() throws IOException, BadLocationException {
         }
     }
 
     private StringWriter out;
+
     private Document doc;
+
     private AbstractWriter writer;
 
     public AbstractWriterTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         out = new StringWriter();
         doc = createDocument();
         writer = new TestAbstractWriter(out, doc);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -87,7 +89,6 @@ public class AbstractWriterTest extends SwingTestCase {
         assertEquals(3 + 4, writer.getEndOffset());
         assertSame(writer.getElementIterator().current(), doc.getDefaultRootElement());
         assertSame(out, writer.getWriter());
-
         writer = new TestAbstractWriter(out, doc, 300, 400);
         assertSame(doc, writer.getDocument());
         assertEquals(300, writer.getStartOffset());
@@ -115,7 +116,6 @@ public class AbstractWriterTest extends SwingTestCase {
         assertEquals(3 + 4, writer.getEndOffset());
         assertSame(writer.getElementIterator().current(), root);
         assertSame(out, writer.getWriter());
-
         writer = new TestAbstractWriter(out, root, 300, 400);
         assertSame(doc, writer.getDocument());
         assertEquals(300, writer.getStartOffset());
@@ -133,10 +133,9 @@ public class AbstractWriterTest extends SwingTestCase {
     }
 
     public void testSetLineSeparator() {
-        doc.putProperty(StyledEditorKit.EndOfLineStringProperty, "~");
+        doc.putProperty(DefaultEditorKit.EndOfLineStringProperty, "~");
         writer = new TestAbstractWriter(out, doc);
         assertEquals("~", writer.getLineSeparator());
-
         String separator = ">>";
         writer.setLineSeparator(separator);
         assertSame(separator, writer.getLineSeparator());
@@ -144,17 +143,12 @@ public class AbstractWriterTest extends SwingTestCase {
 
     public void testGetLineSeparator() {
         final String lineSeparator = System.getProperty("line.separator");
-
-        assertEquals(System.getProperty("line.separator"),
-                     writer.getLineSeparator());
-
+        assertEquals(System.getProperty("line.separator"), writer.getLineSeparator());
         try {
             System.setProperty("line.separator", "<SYS>");
-            assertFalse(System.getProperty("line.separator")
-                        .equals(writer.getLineSeparator()));
+            assertFalse(System.getProperty("line.separator").equals(writer.getLineSeparator()));
             writer = new TestAbstractWriter(out, doc);
             assertEquals("<SYS>", writer.getLineSeparator());
-
             doc.putProperty(DefaultEditorKit.EndOfLineStringProperty, "<DOC>");
             writer = new TestAbstractWriter(out, doc);
             assertEquals("<DOC>", writer.getLineSeparator());
@@ -179,16 +173,15 @@ public class AbstractWriterTest extends SwingTestCase {
 
     public void testGetText() throws BadLocationException {
         Element elem = doc.getDefaultRootElement().getElement(1);
-        assertEquals(doc.getText(elem.getStartOffset(),
-                                 elem.getEndOffset() - elem.getStartOffset()),
-                     writer.getText(elem));
+        assertEquals(doc.getText(elem.getStartOffset(), elem.getEndOffset()
+                - elem.getStartOffset()), writer.getText(elem));
     }
 
     public void testInRange() {
         Element root = doc.getDefaultRootElement();
         Element elem = root.getElement(1);
-        writer = new TestAbstractWriter(out, doc, elem.getStartOffset(),
-                                        elem.getEndOffset() - elem.getStartOffset());
+        writer = new TestAbstractWriter(out, doc, elem.getStartOffset(), elem.getEndOffset()
+                - elem.getStartOffset());
         assertTrue(writer.inRange(root));
         assertTrue(writer.inRange(elem));
         assertFalse(writer.inRange(root.getElement(0)));
@@ -205,20 +198,17 @@ public class AbstractWriterTest extends SwingTestCase {
             writer.writeLineSeparator();
         }
         assertTrue(writer.isLineEmpty());
-
         writer.indent();
         assertTrue(writer.isLineEmpty());
-
-        final char content[] = {'a'};
+        final char content[] = { 'a' };
         writer.output(content, 0, content.length);
         assertFalse(writer.isLineEmpty());
-
         writer.writeLineSeparator();
         assertTrue(writer.isLineEmpty());
     }
 
     public void testSetGetCurrentLineLength() throws IOException {
-        char content[] = {'a', 'b'};
+        char content[] = { 'a', 'b' };
         writer.output(content, 0, content.length);
         assertEquals(2, writer.getCurrentLineLength());
         writer.setCurrentLineLength(0);
@@ -240,8 +230,7 @@ public class AbstractWriterTest extends SwingTestCase {
         assertEquals(1, writer.getIndentLevel());
         writer.incrIndent();
         assertEquals(2, writer.getIndentLevel());
-
-        writer.setLineLength(writer.getIndentLevel()*writer.getIndentSpace() + 1);
+        writer.setLineLength(writer.getIndentLevel() * writer.getIndentSpace() + 1);
         writer.incrIndent();
         assertEquals(2, writer.getIndentLevel());
     }
@@ -278,13 +267,12 @@ public class AbstractWriterTest extends SwingTestCase {
 
     public void testSetGetIndentSpace() {
         assertEquals(2, writer.getIndentSpace());
-
         writer.setIndentSpace(5);
         assertEquals(5, writer.getIndentSpace());
     }
 
     public void testOutput() throws IOException {
-        final char content[] = {'h', 'e', 'l', 'l', 'o'};
+        final char content[] = { 'h', 'e', 'l', 'l', 'o' };
         writer.output(content, 1, 3);
         assertEquals("ell", out.toString());
         assertEquals(3, writer.getCurrentLineLength());
@@ -293,22 +281,17 @@ public class AbstractWriterTest extends SwingTestCase {
 
     public void testText() throws BadLocationException, IOException {
         Element root = doc.getDefaultRootElement();
-        writer = new TestAbstractWriter(out, doc, 3,
-                                        root.getElement(0).getEndOffset());
+        writer = new TestAbstractWriter(out, doc, 3, root.getElement(0).getEndOffset());
         writer.setLineSeparator(">>");
         writer.text(root.getElement(0));
         assertEquals("st line>>", out.toString());
-
         out = new StringWriter();
-        writer = new TestAbstractWriter(out, doc, 3,
-                                        root.getElement(0).getEndOffset());
+        writer = new TestAbstractWriter(out, doc, 3, root.getElement(0).getEndOffset());
         writer.setLineSeparator(">>");
         writer.text(root.getElement(1));
         assertEquals("sec", out.toString());
-
         out = new StringWriter();
-        writer = new TestAbstractWriter(out, doc, 3,
-                                        root.getElement(0).getEndOffset());
+        writer = new TestAbstractWriter(out, doc, 3, root.getElement(0).getEndOffset());
         writer.text(root.getElement(2));
         assertEquals("", out.toString());
     }
@@ -323,14 +306,12 @@ public class AbstractWriterTest extends SwingTestCase {
 
     public void testWriteCharArrayIntInt() throws IOException {
         final char content[] = " first line\nsecond line\n".toCharArray();
-
         // no wrap tests
         writer.incrIndent();
         writer.setLineSeparator(">>");
         writer.setCanWrapLines(false);
         writer.write(content, 1, content.length - 2);
         assertEquals("first line>>second line", out.toString());
-
         out = new StringWriter();
         writer = new TestAbstractWriter(out, doc);
         writer.incrIndent();
@@ -340,7 +321,6 @@ public class AbstractWriterTest extends SwingTestCase {
         writer.write(content, 0, content.length);
         assertEquals(" first line>>second line>>", out.toString());
         assertTrue(writer.isLineEmpty());
-
         // tests with wrap
         out = new StringWriter();
         writer = new TestAbstractWriter(out, doc);
@@ -348,7 +328,6 @@ public class AbstractWriterTest extends SwingTestCase {
         writer.setLineSeparator(">>");
         writer.write(content, 1, content.length - 1);
         assertEquals("first line>>  second line>>", out.toString());
-
         out = new StringWriter();
         writer = new TestAbstractWriter(out, doc);
         writer.incrIndent();
@@ -377,10 +356,9 @@ public class AbstractWriterTest extends SwingTestCase {
     }
 
     public void testWriteLineSeparator() throws IOException {
-        final char chars[] = {'a'};
+        final char chars[] = { 'a' };
         writer.output(chars, 0, 1);
         assertFalse(writer.isLineEmpty());
-
         writer.setLineSeparator("b");
         writer.writeLineSeparator();
         assertTrue(writer.isLineEmpty());

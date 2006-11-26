@@ -23,7 +23,6 @@ package javax.swing.plaf.basic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -36,10 +35,12 @@ public class BasicComboBoxRendererTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         renderer = new BasicComboBoxRenderer();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         renderer = null;
     }
@@ -47,41 +48,35 @@ public class BasicComboBoxRendererTest extends SwingTestCase {
     public void testBasicComboBoxRenderer() throws Exception {
         assertNotNull(BasicComboBoxRenderer.noFocusBorder);
         assertEquals(BasicComboBoxRenderer.noFocusBorder, renderer.getBorder());
-
         BasicComboBoxRenderer.noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
         assertNotSame(BasicComboBoxRenderer.noFocusBorder, renderer.getBorder());
-        assertEquals(BasicComboBoxRenderer.noFocusBorder, new BasicComboBoxRenderer().getBorder());
-
+        assertEquals(BasicComboBoxRenderer.noFocusBorder, new BasicComboBoxRenderer()
+                .getBorder());
         assertEquals("", renderer.getText());
     }
 
     public void testGetListCellRendererComponent() throws Exception {
         JList list = new JList();
-        assertEquals(renderer, renderer.getListCellRendererComponent(list, "aaa", 0, false, false));
+        assertEquals(renderer, renderer.getListCellRendererComponent(list, "aaa", 0, false,
+                false));
         assertTrue(renderer.isOpaque());
-
         Font newFont = list.getFont().deriveFont(20f);
         list.setFont(newFont);
         assertNotSame(newFont, renderer.getFont());
-
         renderer.getListCellRendererComponent(list, "aaa", 0, false, false);
         assertEquals(newFont, renderer.getFont());
-
         list.setForeground(Color.red);
         list.setBackground(Color.blue);
         list.setSelectionForeground(Color.yellow);
         list.setSelectionBackground(Color.pink);
         assertNotSame(Color.red, renderer.getForeground());
         assertNotSame(Color.blue, renderer.getBackground());
-
         renderer.getListCellRendererComponent(list, "aaa", 0, false, false);
         assertEquals(Color.red, renderer.getForeground());
         assertEquals(Color.blue, renderer.getBackground());
-
         renderer.getListCellRendererComponent(list, "aaa", 0, true, false);
         assertEquals(Color.yellow, renderer.getForeground());
         assertEquals(Color.pink, renderer.getBackground());
-
         list.setEnabled(false);
         renderer.getListCellRendererComponent(list, "aaa", 0, false, false);
         assertTrue(renderer.isEnabled());
@@ -93,19 +88,15 @@ public class BasicComboBoxRendererTest extends SwingTestCase {
         JLabel l = new JLabel(" ");
         l.setBorder(BasicComboBoxRenderer.noFocusBorder);
         assertEquals(l.getPreferredSize(), renderer.getPreferredSize());
-
         renderer.getListCellRendererComponent(new JList(), "aaa", 0, false, false);
         l.setText("aaa");
         assertEquals(l.getPreferredSize(), renderer.getPreferredSize());
         assertEquals(l.getPreferredSize(), renderer.getPreferredSize());
-
         renderer.setText(null);
         l.setText(" ");
         assertEquals(l.getPreferredSize(), renderer.getPreferredSize());
-
         renderer.setText("");
         assertEquals(l.getPreferredSize(), renderer.getPreferredSize());
-
         renderer.setPreferredSize(new Dimension(100, 100));
         assertEquals(new Dimension(100, 100), renderer.getPreferredSize());
     }

@@ -18,13 +18,11 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.awt.Rectangle;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -34,26 +32,28 @@ import javax.swing.JRootPane;
 import javax.swing.SwingTestCase;
 
 public class MetalRootPaneUI$MetalRootLayoutTest extends SwingTestCase {
-
     private JRootPane rootPane;
+
     private MetalRootPaneUI ui;
+
     private JFrame frame;
+
     private LayoutManager2 layout;
+
     private JComponent titlePane;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
-
         JFrame.setDefaultLookAndFeelDecorated(true);
         frame = new JFrame();
         rootPane = frame.getRootPane();
-        ((JComponent)rootPane).setBorder(BorderFactory.createEmptyBorder(5, 10, 15, 20));
+        ((JComponent) rootPane).setBorder(BorderFactory.createEmptyBorder(5, 10, 15, 20));
         ui = new MetalRootPaneUI();
         rootPane.setUI(ui);
-        layout = (LayoutManager2)rootPane.getLayout();
-        titlePane = (JComponent)rootPane.getLayeredPane().getComponent(1);
+        layout = (LayoutManager2) rootPane.getLayout();
+        titlePane = (JComponent) rootPane.getLayeredPane().getComponent(1);
     }
 
     public MetalRootPaneUI$MetalRootLayoutTest(final String name) {
@@ -61,27 +61,25 @@ public class MetalRootPaneUI$MetalRootLayoutTest extends SwingTestCase {
     }
 
     public void testPreferredLayoutSize() {
-        ((JComponent)frame.getContentPane()).setPreferredSize(new Dimension(200, 300));
+        ((JComponent) frame.getContentPane()).setPreferredSize(new Dimension(200, 300));
         titlePane.setPreferredSize(new Dimension(20, 20));
-
         assertEquals(new Dimension(230, 340), layout.preferredLayoutSize(rootPane));
     }
 
     public void testMinimumLayoutSize() {
-        ((JComponent)frame.getContentPane()).setMinimumSize(new Dimension(200, 300));
+        ((JComponent) frame.getContentPane()).setMinimumSize(new Dimension(200, 300));
         titlePane.setMinimumSize(new Dimension(20, 20));
-
         assertEquals(new Dimension(230, 340), layout.minimumLayoutSize(rootPane));
     }
 
     public void testMaximumLayoutSize() {
-        ((JComponent)frame.getContentPane()).setMaximumSize(new Dimension(200, 300));
+        ((JComponent) frame.getContentPane()).setMaximumSize(new Dimension(200, 300));
         titlePane.setMaximumSize(new Dimension(30, 400));
-
         if (isHarmony()) {
             assertEquals(new Dimension(230, 720), layout.maximumLayoutSize(rootPane));
         } else {
-            assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), layout.maximumLayoutSize(rootPane));
+            assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), layout
+                    .maximumLayoutSize(rootPane));
         }
     }
 
@@ -89,25 +87,21 @@ public class MetalRootPaneUI$MetalRootLayoutTest extends SwingTestCase {
         final Dimension rootPaneDimension = new Dimension(640, 480);
         final Rectangle glassPaneBounds = new Rectangle(10, 5, 610, 460);
         final Rectangle titlePaneBounds = new Rectangle(0, 0, 610, 20);
-
         frame.setSize(rootPaneDimension);
         rootPane.setSize(rootPaneDimension);
         titlePane.setPreferredSize(new Dimension(100, 20));
         layout.layoutContainer(rootPane);
-
         // test without menu
         assertEquals(glassPaneBounds, rootPane.getGlassPane().getBounds());
         assertEquals(glassPaneBounds, rootPane.getLayeredPane().getBounds());
         assertEquals(titlePaneBounds, titlePane.getBounds());
         assertEquals(new Rectangle(0, 20, 610, 440), rootPane.getContentPane().getBounds());
-
         // test with menu
         JMenuBar menuBar = new JMenuBar();
         menuBar.setPreferredSize(new Dimension(150, 30));
         menuBar.add(new JMenu("Menu"));
         rootPane.setJMenuBar(menuBar);
         layout.layoutContainer(rootPane);
-
         assertEquals(glassPaneBounds, rootPane.getGlassPane().getBounds());
         assertEquals(glassPaneBounds, rootPane.getLayeredPane().getBounds());
         assertEquals(titlePaneBounds, titlePane.getBounds());

@@ -15,22 +15,23 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.metal;
 
 import junit.framework.TestCase;
 
 public class MetalCheckBoxIconTest extends TestCase {
-
     protected MetalCheckBoxIcon icon;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         icon = new MetalCheckBoxIcon();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         icon = null;
         super.tearDown();
@@ -56,5 +57,4 @@ public class MetalCheckBoxIconTest extends TestCase {
     public void testGetIconHeight() {
         assertEquals(icon.getControlSize(), icon.getIconHeight());
     }
-
 }

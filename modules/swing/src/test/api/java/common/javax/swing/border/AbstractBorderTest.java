@@ -24,48 +24,28 @@ package javax.swing.border;
 
 import java.awt.Insets;
 import java.awt.Rectangle;
-
 import javax.swing.JPanel;
-
 import javax.swing.SwingTestCase;
 
 public class AbstractBorderTest extends SwingTestCase {
-
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(AbstractBorderTest.class);
-    }
-
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
     /*
      * Class under test for Insets getBorderInsets(Component, Insets)
      */
     public void testGetBorderInsetsComponentInsets() {
-        int top = 100;
-        int left = 200;
-        int right = 300;
-        int bottom = 400;
-        AbstractBorder border = new AbstractBorder(){};
+        AbstractBorder border = new AbstractBorder() {
+            private static final long serialVersionUID = 1L;
+        };
         Insets insets = new Insets(1, 1, 1, 1);
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(1, 1, 1, 1));
         border.getBorderInsets(panel, insets);
-
         assertEquals("insets values coinside", 0, insets.top);
         assertEquals("insets values coinside", 0, insets.left);
         assertEquals("insets values coinside", 0, insets.right);
         assertEquals("insets values coinside", 0, insets.bottom);
-
         insets = new Insets(1, 1, 1, 1);
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
         Insets newInsets = border.getBorderInsets(panel, insets);
-
         assertEquals("insets values coinside", 0, newInsets.top);
         assertEquals("insets values coinside", 0, newInsets.left);
         assertEquals("insets values coinside", 0, newInsets.right);
@@ -80,21 +60,19 @@ public class AbstractBorderTest extends SwingTestCase {
      * Class under test for Insets getBorderInsets(Component)
      */
     public void testGetBorderInsetsComponent() {
-        AbstractBorder border = new AbstractBorder(){};
+        AbstractBorder border = new AbstractBorder() {
+            private static final long serialVersionUID = 1L;
+        };
         Insets insets = null;
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(1, 1, 1, 1));
         insets = border.getBorderInsets(panel);
-
         assertEquals("insets values coinside", 0, insets.top);
         assertEquals("insets values coinside", 0, insets.left);
         assertEquals("insets values coinside", 0, insets.right);
         assertEquals("insets values coinside", 0, insets.bottom);
-
         panel.setBorder(null);
         insets = border.getBorderInsets(panel);
-
         assertEquals("insets values coinside", 0, insets.top);
         assertEquals("insets values coinside", 0, insets.left);
         assertEquals("insets values coinside", 0, insets.right);
@@ -111,7 +89,9 @@ public class AbstractBorderTest extends SwingTestCase {
     }
 
     public void testIsBorderOpaque() {
-        AbstractBorder border =  new AbstractBorder(){};
+        AbstractBorder border = new AbstractBorder() {
+            private static final long serialVersionUID = 1L;
+        };
         assertFalse("AbstractBorder is not opaque ", border.isBorderOpaque());
     }
 
@@ -127,10 +107,10 @@ public class AbstractBorderTest extends SwingTestCase {
         int y = 200;
         int width = 300;
         int height = 400;
-        AbstractBorder border = new AbstractBorder(){};
-        Insets insets = null;
+        AbstractBorder border = new AbstractBorder() {
+            private static final long serialVersionUID = 1L;
+        };
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(top, left, bottom, right));
         Rectangle rect = border.getInteriorRectangle(panel, x, y, width, height);
         assertEquals(new Rectangle(x, y, width, height), rect);
@@ -138,7 +118,8 @@ public class AbstractBorderTest extends SwingTestCase {
         assertEquals(new Rectangle(x, y, width, height), rect);
         border = new EmptyBorder(top, left, bottom, right);
         rect = border.getInteriorRectangle(null, x, y, width, height);
-        assertEquals(new Rectangle(x+left, y+top, width-left-right, height-top-bottom), rect);
+        assertEquals(new Rectangle(x + left, y + top, width - left - right, height - top
+                - bottom), rect);
     }
 
     /*
@@ -153,20 +134,23 @@ public class AbstractBorderTest extends SwingTestCase {
         int y = 200;
         int width = 300;
         int height = 400;
-        AbstractBorder border = new AbstractBorder(){};
-        Insets insets = null;
+
         JPanel panel = new JPanel();
-
         panel.setBorder(new EmptyBorder(top, left, bottom, right));
-        Rectangle rect = AbstractBorder.getInteriorRectangle(panel, new EmptyBorder(0, 0, 0, 0), x, y, width, height);
+        Rectangle rect = AbstractBorder.getInteriorRectangle(panel,
+                new EmptyBorder(0, 0, 0, 0), x, y, width, height);
         assertEquals(new Rectangle(x, y, width, height), rect);
-        rect = AbstractBorder.getInteriorRectangle(null, new EmptyBorder(0, 0, 0, 0), x, y, width, height);
+        rect = AbstractBorder.getInteriorRectangle(null, new EmptyBorder(0, 0, 0, 0), x, y,
+                width, height);
         assertEquals(new Rectangle(x, y, width, height), rect);
-        rect = AbstractBorder.getInteriorRectangle(panel, new EmptyBorder(top, left, bottom, right), x, y, width, height);
-        assertEquals(new Rectangle(x+left, y+top, width-left-right, height-top-bottom), rect);
-        rect = AbstractBorder.getInteriorRectangle(null, new EmptyBorder(top, left, bottom, right), x, y, width, height);
-        assertEquals(new Rectangle(x+left, y+top, width-left-right, height-top-bottom), rect);
-
+        rect = AbstractBorder.getInteriorRectangle(panel, new EmptyBorder(top, left, bottom,
+                right), x, y, width, height);
+        assertEquals(new Rectangle(x + left, y + top, width - left - right, height - top
+                - bottom), rect);
+        rect = AbstractBorder.getInteriorRectangle(null, new EmptyBorder(top, left, bottom,
+                right), x, y, width, height);
+        assertEquals(new Rectangle(x + left, y + top, width - left - right, height - top
+                - bottom), rect);
         rect = AbstractBorder.getInteriorRectangle(panel, null, x, y, width, height);
         assertEquals(new Rectangle(x, y, width, height), rect);
         rect = AbstractBorder.getInteriorRectangle(null, null, x, y, width, height);

@@ -29,14 +29,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import javax.swing.SwingTestCase;
 
 public class SwingPropertyChangeSupportTest extends SwingTestCase {
-
     public static class FindableListener {
         public String valueChangedKey = "";
+
         public Object valueChangedOld = null;
+
         public Object valueChangedNew = null;
 
         public void reset() {
@@ -52,21 +52,23 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
                     found++;
                 }
             }
-
             return found;
         }
-
     }
 
-    public static class ConcreteVetoableChangeListener extends FindableListener implements VetoableChangeListener {
-        public void vetoableChange(final PropertyChangeEvent evt){
+    public static class ConcreteVetoableChangeListener extends FindableListener implements
+            VetoableChangeListener {
+        public void vetoableChange(final PropertyChangeEvent evt) {
             valueChangedKey = evt.getPropertyName();
             valueChangedOld = evt.getOldValue();
             valueChangedNew = evt.getNewValue();
         }
     };
 
-    public class ConcretePropertyChangeListener extends PropertyChangeController implements Serializable {
+    public class ConcretePropertyChangeListener extends PropertyChangeController implements
+            Serializable {
+        private static final long serialVersionUID = 1L;
+
         public ConcretePropertyChangeListener() {
             super();
         }
@@ -76,14 +78,12 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
             for (int i = 0; i < listenersArray.length; i++) {
                 Object curListener = listenersArray[i];
                 if (curListener instanceof PropertyChangeListenerProxy) {
-                    PropertyChangeListenerProxy proxy = (PropertyChangeListenerProxy)curListener;
-                    if(proxy.getListener() == this &&
-                       proxy.getPropertyName().equals(property) ) {
+                    PropertyChangeListenerProxy proxy = (PropertyChangeListenerProxy) curListener;
+                    if (proxy.getListener() == this && proxy.getPropertyName().equals(property)) {
                         found++;
                     }
                 }
             }
-
             return found;
         }
 
@@ -92,12 +92,14 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         }
 
         private void readObject(final ObjectInputStream inStream) throws IOException,
-                                                                   ClassNotFoundException  {
+                ClassNotFoundException {
             inStream.defaultReadObject();
         }
     };
 
     public static class SerializableListener implements PropertyChangeListener, Serializable {
+        private static final long serialVersionUID = 1L;
+
         private String name;
 
         public SerializableListener() {
@@ -116,9 +118,9 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         }
 
         private void readObject(final ObjectInputStream inStream) throws IOException,
-                                                                   ClassNotFoundException  {
+                ClassNotFoundException {
             inStream.defaultReadObject();
-            name = (String)inStream.readObject();
+            name = (String) inStream.readObject();
         }
 
         public void propertyChange(PropertyChangeEvent e) {
@@ -126,11 +128,13 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
     };
 
     protected Object panel;
+
     protected PropertyChangeSupport propertyChangeSupport;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         panel = new SerializableListener("Panel");
@@ -140,6 +144,7 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         panel = null;
         propertyChangeSupport = null;
@@ -156,24 +161,20 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         propertyChangeSupport.addPropertyChangeListener("second", changeListener2);
         String oldValue = "old";
         String newValue = "new";
-
         propertyChangeSupport.firePropertyChange("first", oldValue, newValue);
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         assertFalse(changeListener2.isChanged());
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.firePropertyChange("second", oldValue, newValue);
         assertFalse(changeListener1.isChanged());
         changeListener2.checkLastPropertyFired(panel, "second", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.addPropertyChangeListener("first", changeListener2);
         propertyChangeSupport.firePropertyChange("first", oldValue, newValue);
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         changeListener2.checkLastPropertyFired(panel, "first", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.removePropertyChangeListener("first", changeListener2);
@@ -181,19 +182,16 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         propertyChangeSupport.firePropertyChange("first", oldValue, newValue);
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         changeListener2.checkLastPropertyFired(panel, "first", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.firePropertyChange("second", oldValue, newValue);
         assertFalse(changeListener1.isChanged());
         changeListener2.checkLastPropertyFired(panel, "second", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.firePropertyChange("second", newValue, newValue);
         assertFalse(changeListener1.isChanged());
         assertFalse(changeListener2.isChanged());
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.firePropertyChange("second", null, null);
@@ -210,7 +208,6 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener3 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener4 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
@@ -221,28 +218,23 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         propertyChangeSupport.addPropertyChangeListener(changeListener4);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 6);
-
         propertyChangeSupport.removePropertyChangeListener("third", changeListener3);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 6);
         assertTrue(changeListener3.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener2);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 5);
         assertTrue(changeListener2.findMyProxy(propertyListeners, "second") == 1);
         assertTrue(changeListener1.findMyProxy(propertyListeners, "first") == 2);
-
         propertyChangeSupport.removePropertyChangeListener(changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 5);
         assertTrue(changeListener1.findMyProxy(propertyListeners, "first") == 2);
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 4);
         assertTrue(changeListener1.findMyProxy(propertyListeners, "first") == 1);
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 3);
@@ -256,21 +248,17 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener1 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener2 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
-
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 1);
         assertTrue(changeListener1.findMyProxy(propertyListeners, "first") == 1);
-
         propertyChangeSupport.addPropertyChangeListener("second", changeListener2);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 2);
         assertTrue(changeListener1.findMyProxy(propertyListeners, "first") == 1);
         assertTrue(changeListener2.findMyProxy(propertyListeners, "second") == 1);
-
         propertyChangeSupport.addPropertyChangeListener("third", changeListener2);
         propertyChangeSupport.addPropertyChangeListener(changeListener1);
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
@@ -290,30 +278,25 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener3 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener4 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners("first");
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
-
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
         propertyChangeSupport.addPropertyChangeListener("second", changeListener1);
         propertyChangeSupport.addPropertyChangeListener(changeListener2);
         propertyChangeSupport.addPropertyChangeListener(changeListener3);
         propertyChangeSupport.addPropertyChangeListener("second", changeListener4);
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners("first");
         assertTrue(propertyListeners != null && propertyListeners.length == 1);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
         assertTrue(changeListener2.findMe(propertyListeners) == 0);
         assertTrue(changeListener3.findMe(propertyListeners) == 0);
         assertTrue(changeListener4.findMe(propertyListeners) == 0);
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners("second");
         assertTrue(propertyListeners != null && propertyListeners.length == 2);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
         assertTrue(changeListener2.findMe(propertyListeners) == 0);
         assertTrue(changeListener3.findMe(propertyListeners) == 0);
         assertTrue(changeListener4.findMe(propertyListeners) == 1);
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners("null");
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
     }
@@ -324,37 +307,31 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
     public void testHasListenersString() {
         ConcretePropertyChangeListener changeListener1 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener2 = new ConcretePropertyChangeListener();
-
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertFalse(propertyChangeSupport.hasListeners("second"));
         assertFalse(propertyChangeSupport.hasListeners("third"));
         assertFalse(propertyChangeSupport.hasListeners("forth"));
-
         propertyChangeSupport.addPropertyChangeListener("second", changeListener2);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertTrue(propertyChangeSupport.hasListeners("second"));
         assertFalse(propertyChangeSupport.hasListeners("third"));
         assertFalse(propertyChangeSupport.hasListeners("forth"));
-
         propertyChangeSupport.addPropertyChangeListener("third", changeListener1);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertTrue(propertyChangeSupport.hasListeners("second"));
         assertTrue(propertyChangeSupport.hasListeners("third"));
         assertFalse(propertyChangeSupport.hasListeners("forth"));
-
         propertyChangeSupport.addPropertyChangeListener(changeListener2);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertTrue(propertyChangeSupport.hasListeners("second"));
         assertTrue(propertyChangeSupport.hasListeners("third"));
         assertTrue(propertyChangeSupport.hasListeners("forth"));
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener1);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertTrue(propertyChangeSupport.hasListeners("second"));
         assertTrue(propertyChangeSupport.hasListeners("third"));
         assertTrue(propertyChangeSupport.hasListeners("forth"));
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener2);
         assertTrue(propertyChangeSupport.hasListeners("first"));
         assertTrue(propertyChangeSupport.hasListeners("second"));
@@ -371,7 +348,6 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener3 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener4 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
         propertyChangeSupport.addPropertyChangeListener(changeListener1);
@@ -382,28 +358,23 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         propertyChangeSupport.addPropertyChangeListener(changeListener4);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 6);
-
         propertyChangeSupport.removePropertyChangeListener(changeListener3);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 5);
         assertTrue(changeListener1.findMe(propertyListeners) == 2);
         assertTrue(changeListener3.findMe(propertyListeners) == 0);
-
         propertyChangeSupport.removePropertyChangeListener(changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 4);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.removePropertyChangeListener("first", changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 4);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.removePropertyChangeListener(changeListener2);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 3);
         assertTrue(changeListener2.findMe(propertyListeners) == 0);
-
         propertyChangeSupport.removePropertyChangeListener(changeListener2);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 3);
@@ -419,28 +390,23 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener3 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener4 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
-
         propertyChangeSupport.addPropertyChangeListener(changeListener1);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 1);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.addPropertyChangeListener(changeListener2);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 2);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
         assertTrue(changeListener2.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.addPropertyChangeListener(changeListener3);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 3);
         assertTrue(changeListener1.findMe(propertyListeners) == 1);
         assertTrue(changeListener2.findMe(propertyListeners) == 1);
         assertTrue(changeListener3.findMe(propertyListeners) == 1);
-
         propertyChangeSupport.addPropertyChangeListener(changeListener1);
         propertyChangeSupport.addPropertyChangeListener(changeListener4);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
@@ -460,10 +426,8 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         ConcretePropertyChangeListener changeListener3 = new ConcretePropertyChangeListener();
         ConcretePropertyChangeListener changeListener4 = new ConcretePropertyChangeListener();
         PropertyChangeListener[] propertyListeners = null;
-
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
         assertTrue(propertyListeners != null && propertyListeners.length == 0);
-
         propertyChangeSupport.addPropertyChangeListener("first", changeListener1);
         propertyChangeSupport.addPropertyChangeListener("second", changeListener1);
         propertyChangeSupport.addPropertyChangeListener(changeListener2);
@@ -473,7 +437,6 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         assertTrue(changeListener2.findMe(propertyListeners) == 1);
         assertTrue(changeListener3.findMe(propertyListeners) == 0);
         assertTrue(changeListener4.findMe(propertyListeners) == 0);
-
         propertyChangeSupport.addPropertyChangeListener(changeListener3);
         propertyChangeSupport.addPropertyChangeListener("second", changeListener4);
         propertyListeners = propertyChangeSupport.getPropertyChangeListeners();
@@ -494,35 +457,35 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         propertyChangeSupport.addPropertyChangeListener("second", changeListener2);
         String oldValue = "old";
         String newValue = "new";
-
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first", oldValue, newValue));
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first",
+                oldValue, newValue));
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         assertFalse(changeListener2.isChanged());
-
         changeListener1.reset();
         changeListener2.reset();
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "second", oldValue, newValue));
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "second",
+                oldValue, newValue));
         assertFalse(changeListener1.isChanged());
         changeListener2.checkLastPropertyFired(panel, "second", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.addPropertyChangeListener("first", changeListener2);
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first", oldValue, newValue));
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first",
+                oldValue, newValue));
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         changeListener2.checkLastPropertyFired(panel, "first", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
         propertyChangeSupport.removePropertyChangeListener("first", changeListener2);
         propertyChangeSupport.addPropertyChangeListener(changeListener2);
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first", oldValue, newValue));
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "first",
+                oldValue, newValue));
         changeListener1.checkLastPropertyFired(panel, "first", oldValue, newValue);
         changeListener2.checkLastPropertyFired(panel, "first", oldValue, newValue);
-
         changeListener1.reset();
         changeListener2.reset();
-        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "second", oldValue, newValue));
+        propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(panel, "second",
+                oldValue, newValue));
         assertFalse(changeListener1.isChanged());
         changeListener2.checkLastPropertyFired(panel, "second", oldValue, newValue);
     }
@@ -534,11 +497,12 @@ public class SwingPropertyChangeSupportTest extends SwingTestCase {
         PropertyChangeListener changeListener2 = new SerializableListener(name2);
         propertyChangeSupport.addPropertyChangeListener(name1, changeListener1);
         propertyChangeSupport.addPropertyChangeListener(name2, changeListener2);
-        PropertyChangeSupport resurrectedList = (PropertyChangeSupport)serializeObject(propertyChangeSupport);
+        PropertyChangeSupport resurrectedList = (PropertyChangeSupport) serializeObject(propertyChangeSupport);
         assertEquals(1, resurrectedList.getPropertyChangeListeners(name1).length);
-        assertEquals(name1, ((SerializableListener)resurrectedList.getPropertyChangeListeners(name1)[0]).name);
+        assertEquals(name1, ((SerializableListener) resurrectedList
+                .getPropertyChangeListeners(name1)[0]).name);
         assertEquals(1, resurrectedList.getPropertyChangeListeners(name2).length);
-        assertEquals(name2, ((SerializableListener)resurrectedList.getPropertyChangeListeners(name2)[0]).name);
+        assertEquals(name2, ((SerializableListener) resurrectedList
+                .getPropertyChangeListeners(name2)[0]).name);
     }
-
 }

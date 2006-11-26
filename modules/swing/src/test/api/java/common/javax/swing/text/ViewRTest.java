@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
@@ -38,10 +37,9 @@ public class ViewRTest extends BasicSwingTestCase implements DocumentListener {
             final String name = element.getName();
             if (AbstractDocument.SectionElementName.equals(name)) {
                 return new BoxView(element, View.Y_AXIS) {
-                    protected void forwardUpdateToView(View view,
-                                                       DocumentEvent event,
-                                                       Shape shape,
-                                                       ViewFactory factory) {
+                    @Override
+                    protected void forwardUpdateToView(View view, DocumentEvent event,
+                            Shape shape, ViewFactory factory) {
                         viewsForwardedTo.add(view);
                         super.forwardUpdateToView(view, event, shape, factory);
                     }
@@ -58,14 +56,20 @@ public class ViewRTest extends BasicSwingTestCase implements DocumentListener {
     }
 
     private Document doc;
+
     private Element root;
+
     private View view;
+
     private DocumentEvent event;
 
     private static final ViewFactory factory = new Factory();
-    private static final Shape shape = new Rectangle(5, 7, 452, 217);
-    private static final List viewsForwardedTo = new ArrayList();
 
+    private static final Shape shape = new Rectangle(5, 7, 452, 217);
+
+    private static final List<View> viewsForwardedTo = new ArrayList<View>();
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
@@ -99,30 +103,24 @@ public class ViewRTest extends BasicSwingTestCase implements DocumentListener {
     public void testInsertUpdate01() throws BadLocationException {
         MutableAttributeSet italic = new SimpleAttributeSet();
         StyleConstants.setItalic(italic, true);
-
         // Init the document structure
         doc.insertString(doc.getLength(), "plain", null);
         doc.insertString(doc.getLength(), "italic\n", italic);
-
         // Init the view hierarchy
-        view = (BoxView)factory.create(root);
-        ((CompositeView)view).loadChildren(factory);
+        view = factory.create(root);
+        ((CompositeView) view).loadChildren(factory);
         doc.addDocumentListener(this);
-
         // Perform the change tested against
         doc.insertString(doc.getLength(), "second", null);
-
         // Both paragraph elements will be modified,
         // but the section will not
         assertNotNull(event.getChange(root.getElement(0)));
         assertNotNull(event.getChange(root.getElement(1)));
         assertNull(event.getChange(root));
         viewsForwardedTo.clear();
-
         assertEquals(2, view.getViewCount());
         view.insertUpdate(event, shape, factory);
         assertEquals(2, view.getViewCount());
-
         assertEquals(2, viewsForwardedTo.size());
         assertSame(view.getView(0), viewsForwardedTo.get(0));
         assertSame(view.getView(1), viewsForwardedTo.get(1));
@@ -166,32 +164,26 @@ public class ViewRTest extends BasicSwingTestCase implements DocumentListener {
     public void testInsertUpdate02() throws BadLocationException {
         MutableAttributeSet italic = new SimpleAttributeSet();
         StyleConstants.setItalic(italic, true);
-
         // Init the document structure
         doc.insertString(doc.getLength(), "plain", null);
         doc.insertString(doc.getLength(), "italic\n", italic);
         doc.insertString(doc.getLength(), "second ", null);
         doc.insertString(doc.getLength(), "italic again", italic);
-
         // Init the view hierarchy
-        view = (BoxView)factory.create(root);
-        ((CompositeView)view).loadChildren(factory);
+        view = factory.create(root);
+        ((CompositeView) view).loadChildren(factory);
         doc.addDocumentListener(this);
-
         // Perform the change tested against
         doc.insertString(doc.getLength(), " & plain again\n", null);
-
         // Both paragraph elements will be modified,
         // but the section will not
         assertNotNull(event.getChange(root.getElement(1)));
         assertNull(event.getChange(root.getElement(2)));
         assertNotNull(event.getChange(root));
         viewsForwardedTo.clear();
-
         assertEquals(2, view.getViewCount());
         view.insertUpdate(event, shape, factory);
         assertEquals(3, view.getViewCount());
-
         assertEquals(1, viewsForwardedTo.size());
         assertSame(view.getView(1), viewsForwardedTo.get(0));
         viewsForwardedTo.clear();
@@ -203,27 +195,27 @@ public class ViewRTest extends BasicSwingTestCase implements DocumentListener {
         doc.insertString(0, "1\n\n\n\n", null);
         doc.addDocumentListener(this);
         doc.insertString(3, "\n2", null);
-
         final Marker marker = new Marker();
         final JTextArea area = new JTextArea(doc) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void repaint() {
                 marker.setOccurred();
             }
         };
         view = new DisAbstractedView(root) {
+            @Override
             public Container getContainer() {
                 return area;
             }
         };
-
         assertEquals(0, view.getViewCount());
         assertNull(view.getParent());
-
         marker.reset();
         assertNotNull(event.getChange(root));
         view.updateLayout(event.getChange(root), event, shape);
         assertTrue(marker.isOccurred());
-
         marker.reset();
         view.updateLayout(null, event, shape);
         assertFalse(marker.isOccurred());

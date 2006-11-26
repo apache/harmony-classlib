@@ -25,16 +25,16 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent.ElementChange;
 
-public class PlainDocumentRTest extends BasicSwingTestCase
-    implements DocumentListener {
-
+public class PlainDocumentRTest extends BasicSwingTestCase implements DocumentListener {
     private static final String filterNewLinesProperty = "filterNewlines";
 
     private PlainDocument doc;
-    private Element root;
-    private DocumentEvent insertEvent;
-    private ElementChange change;
 
+    private Element root;
+
+    private DocumentEvent insertEvent;
+
+    private ElementChange change;
 
     /**
      * Tests handling of <code>filterNewLine</code> property
@@ -45,13 +45,11 @@ public class PlainDocumentRTest extends BasicSwingTestCase
         doc.replace(0, 0, content, null);
         assertNull(getNewLineProperty());
         assertEquals(content, getText());
-
         setNewLineProperty(true);
         doc.replace(0, doc.getLength(), content, null);
         assertSame(Boolean.TRUE, getNewLineProperty());
         assertEquals(content.replace('\n', ' '), getText());
         doc.remove(0, doc.getLength());
-
         setNewLineProperty(false);
         doc.replace(0, doc.getLength(), content, null);
         assertSame(Boolean.FALSE, getNewLineProperty());
@@ -65,44 +63,32 @@ public class PlainDocumentRTest extends BasicSwingTestCase
      */
     public void testReplaceDF() throws BadLocationException {
         DocumentFilter filter = new DocumentFilter() {
-            public void insertString(final FilterBypass fb,
-                                     final int offset, final String text,
-                                     final AttributeSet attrs)
-                throws BadLocationException {
-
+            @Override
+            public void insertString(final FilterBypass fb, final int offset,
+                    final String text, final AttributeSet attrs) throws BadLocationException {
                 super.insertString(fb, offset, "###\n^^^", attrs);
             }
 
-            public void remove(final FilterBypass fb,
-                               final int offset, final int length)
-                throws BadLocationException {
-
+            @Override
+            public void remove(final FilterBypass fb, final int offset, final int length)
+                    throws BadLocationException {
                 super.remove(fb, offset, length);
             }
 
-            public void replace(final FilterBypass fb,
-                                final int offset, final int length,
-                                final String text, final AttributeSet attrs)
-                throws BadLocationException {
-
+            @Override
+            public void replace(final FilterBypass fb, final int offset, final int length,
+                    final String text, final AttributeSet attrs) throws BadLocationException {
                 super.replace(fb, offset, length, "!" + text + "!", attrs);
             }
-
         };
         doc.insertString(0, "plain text", null);
-
         doc.setDocumentFilter(filter);
         setNewLineProperty(true);
         doc.replace(2, 6, "++\n--", null);
-        assertEquals(isHarmony()
-                     ? "pl!++ --!xt"
-                     : "pl!++\n--!xt", getText());
-
+        assertEquals(isHarmony() ? "pl!++ --!xt" : "pl!++\n--!xt", getText());
         doc.remove(0, doc.getLength());
         doc.insertString(0, "^^^\n###", null);
-        assertEquals(isHarmony()
-                     ? "### ^^^"
-                     : "###\n^^^", getText());
+        assertEquals(isHarmony() ? "### ^^^" : "###\n^^^", getText());
     }
 
     public void testInsertUpdate09() throws BadLocationException {
@@ -110,11 +96,9 @@ public class PlainDocumentRTest extends BasicSwingTestCase
         //                   012345 6 7 8
         doc.addDocumentListener(this);
         doc.insertString(7, "\n", null);
-
         change = insertEvent.getChange(root);
         assertEquals(1, change.getChildrenRemoved().length);
         assertEquals(2, change.getChildrenAdded().length);
-
         checkOffsets(change.getChildrenRemoved()[0], 6, 8);
         checkOffsets(change.getChildrenAdded()[0], 6, 7);
         checkOffsets(change.getChildrenAdded()[1], 7, 8);
@@ -125,11 +109,9 @@ public class PlainDocumentRTest extends BasicSwingTestCase
         //                   012345 6 78 9
         doc.addDocumentListener(this);
         doc.insertString(7, "\n", null);
-
         change = insertEvent.getChange(root);
         assertEquals(1, change.getChildrenRemoved().length);
         assertEquals(2, change.getChildrenAdded().length);
-
         checkOffsets(change.getChildrenRemoved()[0], 6, 8);
         checkOffsets(change.getChildrenAdded()[0], 6, 7);
         checkOffsets(change.getChildrenAdded()[1], 7, 8);
@@ -140,11 +122,9 @@ public class PlainDocumentRTest extends BasicSwingTestCase
         //                   012345 6 78 9
         doc.addDocumentListener(this);
         doc.insertString(8, "\n", null);
-
         change = insertEvent.getChange(root);
         assertEquals(1, change.getChildrenRemoved().length);
         assertEquals(2, change.getChildrenAdded().length);
-
         checkOffsets(change.getChildrenRemoved()[0], 7, 10);
         checkOffsets(change.getChildrenAdded()[0], 7, 9);
         checkOffsets(change.getChildrenAdded()[1], 9, 10);
@@ -160,16 +140,16 @@ public class PlainDocumentRTest extends BasicSwingTestCase
     public void changedUpdate(DocumentEvent e) {
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new PlainDocument();
         root = doc.getDefaultRootElement();
     }
 
-    private static void checkOffsets(final Element line,
-                                     final int start, final int end) {
+    private static void checkOffsets(final Element line, final int start, final int end) {
         assertEquals(start, line.getStartOffset());
-        assertEquals(end,   line.getEndOffset());
+        assertEquals(end, line.getEndOffset());
     }
 
     private void setNewLineProperty(final boolean state) {

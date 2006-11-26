@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import javax.swing.Icon;
@@ -27,7 +25,6 @@ import javax.swing.SwingTestCase;
 import javax.swing.plaf.UIResource;
 
 public class MetalIconFactoryTest extends SwingTestCase {
-
     public void testGetCheckBoxIcon() {
         Icon icon = MetalIconFactory.getCheckBoxIcon();
         checkIcon(icon, 13, 13);
@@ -38,49 +35,56 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getCheckBoxMenuItemIcon();
         checkIcon(icon, 10, 10);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getCheckBoxMenuItemIcon() == MetalIconFactory.getCheckBoxMenuItemIcon());
+        assertTrue(MetalIconFactory.getCheckBoxMenuItemIcon() == MetalIconFactory
+                .getCheckBoxMenuItemIcon());
     }
 
     public void testGetFileChooserDetailViewIcon() {
         Icon icon = MetalIconFactory.getFileChooserDetailViewIcon();
         checkIcon(icon, 18, 18);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getFileChooserDetailViewIcon() == MetalIconFactory.getFileChooserDetailViewIcon());
+        assertTrue(MetalIconFactory.getFileChooserDetailViewIcon() == MetalIconFactory
+                .getFileChooserDetailViewIcon());
     }
 
     public void testGetFileChooserHomeFolderIcon() {
         Icon icon = MetalIconFactory.getFileChooserHomeFolderIcon();
         checkIcon(icon, 18, 18);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getFileChooserHomeFolderIcon() == MetalIconFactory.getFileChooserHomeFolderIcon());
+        assertTrue(MetalIconFactory.getFileChooserHomeFolderIcon() == MetalIconFactory
+                .getFileChooserHomeFolderIcon());
     }
 
     public void testGetFileChooserListViewIcon() {
         Icon icon = MetalIconFactory.getFileChooserListViewIcon();
         checkIcon(icon, 18, 18);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getFileChooserListViewIcon() == MetalIconFactory.getFileChooserListViewIcon());
+        assertTrue(MetalIconFactory.getFileChooserListViewIcon() == MetalIconFactory
+                .getFileChooserListViewIcon());
     }
 
     public void testGetFileChooserNewFolderIcon() {
         Icon icon = MetalIconFactory.getFileChooserNewFolderIcon();
         checkIcon(icon, 18, 18);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getFileChooserNewFolderIcon() == MetalIconFactory.getFileChooserNewFolderIcon());
+        assertTrue(MetalIconFactory.getFileChooserNewFolderIcon() == MetalIconFactory
+                .getFileChooserNewFolderIcon());
     }
 
     public void testGetFileChooserUpFolserIcon() {
         Icon icon = MetalIconFactory.getFileChooserUpFolderIcon();
         checkIcon(icon, 18, 18);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getFileChooserUpFolderIcon() == MetalIconFactory.getFileChooserUpFolderIcon());
+        assertTrue(MetalIconFactory.getFileChooserUpFolderIcon() == MetalIconFactory
+                .getFileChooserUpFolderIcon());
     }
 
     public void testGetHorizontalSliderThumbIcon() {
         Icon icon = MetalIconFactory.getHorizontalSliderThumbIcon();
         checkIcon(icon, 16, 15);
         assertTrue(icon instanceof UIResource);
-        assertSame(MetalIconFactory.getHorizontalSliderThumbIcon(), MetalIconFactory.getHorizontalSliderThumbIcon());
+        assertSame(MetalIconFactory.getHorizontalSliderThumbIcon(), MetalIconFactory
+                .getHorizontalSliderThumbIcon());
     }
 
     public void testGetInternalFrameAltMaximizeIcon() {
@@ -88,7 +92,8 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getInternalFrameAltMaximizeIcon(size);
         checkIcon(icon, size, size);
         assertTrue(icon instanceof UIResource);
-        assertFalse(MetalIconFactory.getInternalFrameAltMaximizeIcon(size) == MetalIconFactory.getInternalFrameAltMaximizeIcon(size));
+        assertFalse(MetalIconFactory.getInternalFrameAltMaximizeIcon(size) == MetalIconFactory
+                .getInternalFrameAltMaximizeIcon(size));
     }
 
     public void testGetInternalFrameCloseIcon() {
@@ -96,14 +101,16 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getInternalFrameCloseIcon(size);
         checkIcon(icon, size, size);
         assertTrue(icon instanceof UIResource);
-        assertFalse(MetalIconFactory.getInternalFrameCloseIcon(size) == MetalIconFactory.getInternalFrameCloseIcon(size));
+        assertFalse(MetalIconFactory.getInternalFrameCloseIcon(size) == MetalIconFactory
+                .getInternalFrameCloseIcon(size));
     }
 
     public void testGetInternalFrameDefaultMenuIcon() {
         Icon icon = MetalIconFactory.getInternalFrameDefaultMenuIcon();
         checkIcon(icon, 16, 16);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getInternalFrameDefaultMenuIcon() == MetalIconFactory.getInternalFrameDefaultMenuIcon());
+        assertTrue(MetalIconFactory.getInternalFrameDefaultMenuIcon() == MetalIconFactory
+                .getInternalFrameDefaultMenuIcon());
     }
 
     public void testGetInternalFrameMaximizeIcon() {
@@ -111,7 +118,8 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getInternalFrameMaximizeIcon(size);
         checkIcon(icon, size, size);
         assertTrue(icon instanceof UIResource);
-        assertFalse(MetalIconFactory.getInternalFrameMaximizeIcon(size) == MetalIconFactory.getInternalFrameMaximizeIcon(size));
+        assertFalse(MetalIconFactory.getInternalFrameMaximizeIcon(size) == MetalIconFactory
+                .getInternalFrameMaximizeIcon(size));
     }
 
     public void testGetInternalFrameMinimizeIcon() {
@@ -119,7 +127,8 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getInternalFrameMinimizeIcon(size);
         checkIcon(icon, size, size);
         assertTrue(icon instanceof UIResource);
-        assertFalse(MetalIconFactory.getInternalFrameMinimizeIcon(size) == MetalIconFactory.getInternalFrameMinimizeIcon(size));
+        assertFalse(MetalIconFactory.getInternalFrameMinimizeIcon(size) == MetalIconFactory
+                .getInternalFrameMinimizeIcon(size));
     }
 
     public void testGetMenuArrowIcon() {
@@ -133,7 +142,8 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getMenuItemArrowIcon();
         checkIcon(icon, 8, 4);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getMenuItemArrowIcon() == MetalIconFactory.getMenuItemArrowIcon());
+        assertTrue(MetalIconFactory.getMenuItemArrowIcon() == MetalIconFactory
+                .getMenuItemArrowIcon());
     }
 
     public void testGetMenuItemCheckIcon() {
@@ -144,56 +154,66 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getRadioButtonIcon();
         checkIcon(icon, 13, 13);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getRadioButtonIcon() == MetalIconFactory.getRadioButtonIcon());
+        assertTrue(MetalIconFactory.getRadioButtonIcon() == MetalIconFactory
+                .getRadioButtonIcon());
     }
 
     public void testGetRadioButtonMenuItemIcon() {
         Icon icon = MetalIconFactory.getRadioButtonMenuItemIcon();
         checkIcon(icon, 10, 10);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getRadioButtonMenuItemIcon() == MetalIconFactory.getRadioButtonMenuItemIcon());
+        assertTrue(MetalIconFactory.getRadioButtonMenuItemIcon() == MetalIconFactory
+                .getRadioButtonMenuItemIcon());
     }
 
     public void testGetTreeComputerIcon() {
         Icon icon = MetalIconFactory.getTreeComputerIcon();
         checkIcon(icon, 16, 16);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getTreeComputerIcon() == MetalIconFactory.getTreeComputerIcon());
+        assertTrue(MetalIconFactory.getTreeComputerIcon() == MetalIconFactory
+                .getTreeComputerIcon());
     }
 
     public void testGetTreeControlIcon() {
-        MetalIconFactory.TreeControlIcon icon = (MetalIconFactory.TreeControlIcon)MetalIconFactory.getTreeControlIcon(true);
+        MetalIconFactory.TreeControlIcon icon = (MetalIconFactory.TreeControlIcon) MetalIconFactory
+                .getTreeControlIcon(true);
         checkIcon(icon, 18, 18);
         assertFalse(icon instanceof UIResource);
         assertTrue(icon.isLight);
-        assertFalse(MetalIconFactory.getTreeControlIcon(true) == MetalIconFactory.getTreeControlIcon(true));
+        assertFalse(MetalIconFactory.getTreeControlIcon(true) == MetalIconFactory
+                .getTreeControlIcon(true));
     }
 
     public void testGetTreeFloppyDriveIcon() {
         Icon icon = MetalIconFactory.getTreeFloppyDriveIcon();
         checkIcon(icon, 16, 16);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getTreeFloppyDriveIcon() == MetalIconFactory.getTreeFloppyDriveIcon());
+        assertTrue(MetalIconFactory.getTreeFloppyDriveIcon() == MetalIconFactory
+                .getTreeFloppyDriveIcon());
     }
 
     public void testGetTreeFolderIcon() {
-        MetalIconFactory.TreeFolderIcon icon = (MetalIconFactory.TreeFolderIcon)MetalIconFactory.getTreeFolderIcon();
+        MetalIconFactory.TreeFolderIcon icon = (MetalIconFactory.TreeFolderIcon) MetalIconFactory
+                .getTreeFolderIcon();
         checkIcon(icon, 18, 16);
         assertFalse(icon instanceof UIResource);
         assertEquals(-1, icon.getShift());
         assertEquals(2, icon.getAdditionalHeight());
-        assertFalse(MetalIconFactory.getTreeFolderIcon() == MetalIconFactory.getTreeFolderIcon());
+        assertFalse(MetalIconFactory.getTreeFolderIcon() == MetalIconFactory
+                .getTreeFolderIcon());
     }
 
     public void testGetTreeHardDriveIcon() {
         Icon icon = MetalIconFactory.getTreeHardDriveIcon();
         checkIcon(icon, 16, 16);
         assertTrue(icon instanceof UIResource);
-        assertTrue(MetalIconFactory.getTreeHardDriveIcon() == MetalIconFactory.getTreeHardDriveIcon());
+        assertTrue(MetalIconFactory.getTreeHardDriveIcon() == MetalIconFactory
+                .getTreeHardDriveIcon());
     }
 
     public void testGetTreeLeafIcon() {
-        MetalIconFactory.TreeLeafIcon icon = (MetalIconFactory.TreeLeafIcon)MetalIconFactory.getTreeLeafIcon();
+        MetalIconFactory.TreeLeafIcon icon = (MetalIconFactory.TreeLeafIcon) MetalIconFactory
+                .getTreeLeafIcon();
         checkIcon(icon, 20, 16);
         assertEquals(2, icon.getShift());
         assertEquals(4, icon.getAdditionalHeight());
@@ -205,7 +225,8 @@ public class MetalIconFactoryTest extends SwingTestCase {
         Icon icon = MetalIconFactory.getVerticalSliderThumbIcon();
         checkIcon(icon, 15, 16);
         assertTrue(icon instanceof UIResource);
-        assertSame(MetalIconFactory.getVerticalSliderThumbIcon(), MetalIconFactory.getVerticalSliderThumbIcon());
+        assertSame(MetalIconFactory.getVerticalSliderThumbIcon(), MetalIconFactory
+                .getVerticalSliderThumbIcon());
     }
 
     public void testPaletteCloseIcon() {

@@ -29,6 +29,7 @@ public class PopupMenuEventTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }

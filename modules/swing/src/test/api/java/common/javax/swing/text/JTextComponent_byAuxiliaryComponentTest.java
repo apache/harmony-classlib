@@ -35,7 +35,6 @@ import javax.swing.plaf.basic.BasicTextAreaUI;
 import javax.swing.plaf.basic.BasicTextUI;
 import javax.swing.plaf.basic.TextCompUI;
 
-
 public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
     JFrame jf;
 
@@ -59,8 +58,11 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
     }
 
     class JTextComp extends JTextComponent {
+        private static final long serialVersionUID = 1L;
+
         String UIClassId = "TextCompUIFirst";
 
+        @Override
         public String getUIClassID() {
             return (UIClassId != null) ? UIClassId : "TextCompUIFirst";
         }
@@ -73,7 +75,6 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
             if (e.getPropertyName() != "ancestor") {
                 event = e;
             }
-
         }
 
         PropertyChangeEvent getEvent() {
@@ -83,15 +84,14 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         }
     }
 
-
     public JTextComponent_byAuxiliaryComponentTest() {
         setIgnoreNotImplemented(true);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        UIManager.put("TextCompUISecond",
-                "javax.swing.plaf.basic.BasicTextAreaUI");
+        UIManager.put("TextCompUISecond", "javax.swing.plaf.basic.BasicTextAreaUI");
         UIManager.put("TextCompUIFirst", "javax.swing.plaf.basic.TextCompUI");
         jf = new JFrame();
         jtComp = new JTextComp();
@@ -101,6 +101,7 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -113,7 +114,6 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         assertEquals(ac, jtComp.getAccessibleContext());
     }
 
-
     public void testGetActions() {
         Action actions[] = new DefaultEditorKit().getActions();
         Action actions1[] = jtComp.getActions();
@@ -123,44 +123,29 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         for (int i = 0; i < actions.length; i++) {
             assertEquals(actions1[i], actions2[i]);
         }
-
     }
 
     public void testUpdateUI() throws Exception {
-
         assertTrue(jtComp.getUI() instanceof TextCompUI);
-
         TextUI textUI1 = jtComp.getUI();
         SimplePropertyChangeListener listener = new SimplePropertyChangeListener();
-
         jtComp.addPropertyChangeListener(listener);
         jtComp.UIClassId = "TextCompUISecond";
-
         TextUI textUI2 = (TextUI) UIManager.getUI(jtComp);
-
+        assertNotNull(textUI2);
         jtComp.updateUI();
-
-        assertEqualsPropertyChangeEvent("UI", textUI1, jtComp.getUI(),
-                listener.event);
+        assertEqualsPropertyChangeEvent("UI", textUI1, jtComp.getUI(), listener.event);
         assertTrue(jtComp.getUI() instanceof BasicTextAreaUI);
-
     }
 
     public void testJTextComponent() {
-
-        String str;
-
         jtComp = new JTextComp();
         assertNotNull(jtComp);
         assertTrue(jtComp.getUI() instanceof TextCompUI);
-
         assertTrue(jtComp.getCaret() instanceof BasicTextUI.BasicCaret);
-        assertEquals("Dot=(0, Forward) Mark=(0, Forward)", jtComp.getCaret()
-                .toString());
-
+        assertEquals("Dot=(0, Forward) Mark=(0, Forward)", jtComp.getCaret().toString());
         assertTrue(jtComp.getHighlighter() instanceof BasicTextUI.BasicHighlighter);
-        assertEquals(ComponentOrientation.UNKNOWN, jtComp
-                .getComponentOrientation());
+        assertEquals(ComponentOrientation.UNKNOWN, jtComp.getComponentOrientation());
         assertTrue(jtComp.isEditable());
         assertFalse(jtComp.getDragEnabled());
         assertEquals('\0', jtComp.getFocusAccelerator());
@@ -170,10 +155,8 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         assertEquals(new InsetsUIResource(0, 0, 0, 0), jtComp.getMargin());
     }
 
-   public void testSetGetUITextUI() throws Exception {
-
+    public void testSetGetUITextUI() throws Exception {
         assertTrue(jtComp.getUI() instanceof TextCompUI);
-
         TextUI textUI1 = jtComp.getUI();
         SimplePropertyChangeListener listener = new SimplePropertyChangeListener();
         jtComp.addPropertyChangeListener(listener);
@@ -182,7 +165,5 @@ public class JTextComponent_byAuxiliaryComponentTest extends SwingTestCase {
         jtComp.setUI(textUI2);
         assertEqualsPropertyChangeEvent("UI", textUI1, textUI2, listener.event);
         assertEquals(textUI2, jtComp.getUI());
-
     }
-
 }

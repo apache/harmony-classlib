@@ -25,7 +25,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocumentTest.DisAbstractedDocument;
-
 import junit.framework.TestCase;
 
 /**
@@ -33,52 +32,57 @@ import junit.framework.TestCase;
  * AbstractDocument blocks if an exception is thrown from a listener code.
  *
  */
-public class AbstractDocument_ListenerLockTest extends TestCase
-    implements DocumentListener, UndoableEditListener {
-
+public class AbstractDocument_ListenerLockTest extends TestCase implements DocumentListener,
+        UndoableEditListener {
     private AbstractDocument doc;
 
     private static class LockTestError extends Error {
+        private static final long serialVersionUID = 1L;
+
         public LockTestError(String string) {
             super(string);
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DisAbstractedDocument(new GapContent());
         doc.insertString(0, "test", null);
         doc.addDocumentListener(this);
         doc.addUndoableEditListener(this);
-
         doc.writeLock();
     }
 
     public void testFireInsertUpdate() throws Exception {
         try {
             doc.fireInsertUpdate(null);
-        } catch (LockTestError e) { }
+        } catch (LockTestError e) {
+        }
         unlockAndLock();
     }
 
     public void testFireRemoveUpdate() throws Exception {
         try {
             doc.fireRemoveUpdate(null);
-        } catch (LockTestError e) { }
+        } catch (LockTestError e) {
+        }
         unlockAndLock();
     }
 
     public void testFireChangedUpdate() throws Exception {
         try {
             doc.fireChangedUpdate(null);
-        } catch (LockTestError e) { }
+        } catch (LockTestError e) {
+        }
         unlockAndLock();
     }
 
     public void testFireUndoableEditUpdate() throws Exception {
         try {
             doc.fireUndoableEditUpdate(null);
-        } catch (LockTestError e) { }
+        } catch (LockTestError e) {
+        }
         unlockAndLock();
     }
 
@@ -104,11 +108,9 @@ public class AbstractDocument_ListenerLockTest extends TestCase
 
     private void unlockAndLock() throws BadLocationException {
         doc.writeUnlock();
-
         doc.readLock();
         doc.getText(0, doc.getLength());
         doc.readUnlock();
-
         doc.writeLock();
     }
 }

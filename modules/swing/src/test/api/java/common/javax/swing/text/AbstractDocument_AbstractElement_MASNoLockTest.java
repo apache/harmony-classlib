@@ -14,13 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
  */
 package javax.swing.text;
-
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -32,9 +30,8 @@ import junit.framework.TestSuite;
  * those test-methods which modify the attribute set.
  *
  */
-public class AbstractDocument_AbstractElement_MASNoLockTest
-    extends AbstractDocument_AbstractElement_MASTest {
-
+public class AbstractDocument_AbstractElement_MASNoLockTest extends
+        AbstractDocument_AbstractElement_MASTest {
     public AbstractDocument_AbstractElement_MASNoLockTest(final String name) {
         super(name);
     }
@@ -43,86 +40,94 @@ public class AbstractDocument_AbstractElement_MASNoLockTest
         TestSuite suite = new TestSuite();
         suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testAddAttribute"));
         suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testAddAttributes"));
-        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testRemoveAttribute"));
-        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testRemoveAttributesAttributeSetDiff"));
-        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testRemoveAttributesAttributeSetSame"));
-        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testRemoveAttributesEnumeration"));
-        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest("testAddAttributeAnotherThread"));
+        suite
+                .addTest(new AbstractDocument_AbstractElement_MASNoLockTest(
+                        "testRemoveAttribute"));
+        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest(
+                "testRemoveAttributesAttributeSetDiff"));
+        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest(
+                "testRemoveAttributesAttributeSetSame"));
+        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest(
+                "testRemoveAttributesEnumeration"));
+        suite.addTest(new AbstractDocument_AbstractElement_MASNoLockTest(
+                "testAddAttributeAnotherThread"));
         return suite;
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         aDocument.writeUnlock();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         // Lock the document 'cause super tearDown unlocks it
         aDocument.writeLock();
         super.tearDown();
     }
 
+    @Override
     public void testAddAttribute() {
         try {
             super.testAddAttribute();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testAddAttributes() {
         try {
             super.testAddAttributes();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testRemoveAttribute() {
         try {
             super.testRemoveAttribute();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testRemoveAttributesAttributeSetDiff() {
         try {
             super.testRemoveAttributesAttributeSetDiff();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testRemoveAttributesAttributeSetSame() {
         try {
             super.testRemoveAttributesAttributeSetSame();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testRemoveAttributesEnumeration() {
         try {
             super.testRemoveAttributesEnumeration();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
+    @Override
     public void testSetResolveParent() {
         try {
             super.testSetResolveParent();
-
-            fail("Error should be thrown, the reason "
-                 + "being no write lock acquired");
-        } catch (Error e) { }
+            fail("Error should be thrown, the reason " + "being no write lock acquired");
+        } catch (Error e) {
+        }
     }
 
     /**
@@ -139,7 +144,6 @@ public class AbstractDocument_AbstractElement_MASNoLockTest
      */
     public void testAddAttributeAnotherThread() throws InterruptedException {
         aDocument.writeLock();
-
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -149,9 +153,7 @@ public class AbstractDocument_AbstractElement_MASNoLockTest
                 }
             }
         }).start();
-
         Thread.sleep(500);
-
         assertTrue(exceptionThrown);
     }
 }

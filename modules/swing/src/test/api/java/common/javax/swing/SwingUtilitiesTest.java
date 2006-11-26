@@ -358,6 +358,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         assertNull(action.eventHappened.getActionCommand());
     }
 
+    @SuppressWarnings("deprecation")
     public void testConvertMouseEvent() {
         MouseEvent eventBefore, eventToPass, eventAfter;
         JWindow window1 = new JWindow();
@@ -379,11 +380,13 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         window2.pack();
         window2.show();
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.convertMouseEvent(null, null, null);
             }
         });
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.convertMouseEvent(panel1, null, panel2);
             }
@@ -402,6 +405,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
                 isPopupTrigger, button);
         final MouseEvent illegalEvent = eventBefore;
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.convertMouseEvent(null, illegalEvent, null);
             }
@@ -448,6 +452,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         assertEquals(panel2, eventAfter.getSource());
     }
 
+    @SuppressWarnings("deprecation")
     public void testConvertRectangle() {
         int width = 100;
         int height = 200;
@@ -475,11 +480,13 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         window2.pack();
         window2.show();
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.convertRectangle(null, null, null);
             }
         });
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.convertRectangle(panel1, null, panel2);
             }
@@ -525,6 +532,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
     /*
      * Class under test for Point convertPoint(Component, Point, Component)
      */
+    @SuppressWarnings("deprecation")
     public void testConvertPointComponentPointComponent() {
         Point pointBefore, pointToPass, pointAfter;
         JWindow window1 = new JWindow();
@@ -817,6 +825,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         assertNull(SwingUtilities.getAncestorOfClass(Window.class, component3));
         assertTrue(SwingUtilities.getAncestorOfClass(JPanel.class, component3) == panel3);
         class CustomPanel extends JPanel {
+            private static final long serialVersionUID = 1L;
         }
         JPanel customPanel = new CustomPanel();
         JPanel childPanel = new JPanel();
@@ -1031,11 +1040,13 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         //        String string3 = "";
         //        String string4 = "    ";
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.computeStringWidth(metrics, null);
             }
         });
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.computeStringWidth(null, "string");
             }
@@ -1219,6 +1230,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         window.add(component2);
         assertTrue(SwingUtilities.isDescendingFrom(null, null));
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.isDescendingFrom(null, window);
             }
@@ -1233,6 +1245,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         assertFalse(SwingUtilities.isDescendingFrom(panel3, window));
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetDeepestComponentAt() {
         if (isHarmony()) {
             return;
@@ -1313,11 +1326,11 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
     public void testIsRightMouseButton() {
         JComponent panel = new JPanel();
         panel.setPreferredSize(new Dimension(100, 100));
-        MouseEvent event1 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON1_DOWN_MASK, 50,
+        MouseEvent event1 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON1_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event2 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON2_DOWN_MASK, 50,
+        MouseEvent event2 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON2_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event3 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON3_DOWN_MASK, 50,
+        MouseEvent event3 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON3_DOWN_MASK, 50,
                 50, 1, false);
         assertFalse(SwingUtilities.isRightMouseButton(event1));
         assertFalse(SwingUtilities.isRightMouseButton(event2));
@@ -1327,11 +1340,11 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
     public void testIsMiddleMouseButton() {
         JComponent panel = new JPanel();
         panel.setPreferredSize(new Dimension(100, 100));
-        MouseEvent event1 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON1_DOWN_MASK, 50,
+        MouseEvent event1 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON1_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event2 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON2_DOWN_MASK, 50,
+        MouseEvent event2 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON2_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event3 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON3_DOWN_MASK, 50,
+        MouseEvent event3 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON3_DOWN_MASK, 50,
                 50, 1, false);
         assertFalse(SwingUtilities.isMiddleMouseButton(event1));
         assertTrue(SwingUtilities.isMiddleMouseButton(event2));
@@ -1341,11 +1354,11 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
     public void testIsLeftMouseButton() {
         JComponent panel = new JPanel();
         panel.setPreferredSize(new Dimension(100, 100));
-        MouseEvent event1 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON1_DOWN_MASK, 50,
+        MouseEvent event1 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON1_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event2 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON2_DOWN_MASK, 50,
+        MouseEvent event2 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON2_DOWN_MASK, 50,
                 50, 1, false);
-        MouseEvent event3 = new MouseEvent(panel, 100, 100, MouseEvent.BUTTON3_DOWN_MASK, 50,
+        MouseEvent event3 = new MouseEvent(panel, 100, 100, InputEvent.BUTTON3_DOWN_MASK, 50,
                 50, 1, false);
         assertTrue(SwingUtilities.isLeftMouseButton(event1));
         assertFalse(SwingUtilities.isLeftMouseButton(event2));
@@ -1506,6 +1519,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
         final Component container = new Container();
         panel.add(container);
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.getAccessibleIndexInParent(container);
             }
@@ -1517,6 +1531,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants 
 
     public void testGetAccessibleChildrenCount() {
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 SwingUtilities.getAccessibleChildrenCount(null);
             }

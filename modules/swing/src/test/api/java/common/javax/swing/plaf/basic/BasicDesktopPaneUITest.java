@@ -18,11 +18,9 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -31,7 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 
 public class BasicDesktopPaneUITest extends SwingTestCase {
-
     private JDesktopPane desktop;
 
     private BasicDesktopPaneUI ui;
@@ -39,9 +36,9 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         desktop = new JDesktopPane();
         ui = new BasicDesktopPaneUI();
         desktop.setUI(ui);
@@ -50,6 +47,7 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -68,7 +66,6 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
     public void testCreateUI() {
         ComponentUI ui1 = BasicDesktopPaneUI.createUI(desktop);
         ComponentUI ui2 = BasicDesktopPaneUI.createUI(desktop);
-
         assertTrue("not null", ui1 != null);
         assertTrue("stateful", ui1 != ui2);
     }
@@ -84,8 +81,8 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
      * Class under test for Dimension getMaximumSize(JComponent)
      */
     public void testGetMaximumSize() {
-        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE),
-                     ui.getMaximumSize(desktop));
+        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), ui
+                .getMaximumSize(desktop));
     }
 
     /*
@@ -119,20 +116,17 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
         desktop.setDesktopManager(null);
         ui.installDesktopManager();
         assertNotNull(desktop.getDesktopManager());
-        assertEquals("installed", ui.desktopManager,
-                     desktop.getDesktopManager());
+        assertEquals("installed", ui.desktopManager, desktop.getDesktopManager());
     }
 
     public void testUninstallDesktopManager() {
         ui.installDesktopManager();
         ui.uninstallDesktopManager();
         assertNotNull(desktop.getDesktopManager());
-
         DefaultDesktopManager m = new DefaultDesktopManager();
         desktop.setDesktopManager(m);
         ui.uninstallDesktopManager();
         assertSame(m, desktop.getDesktopManager());
-
         desktop.setDesktopManager(null);
         ui.uninstallDesktopManager();
         assertNotNull(desktop.getDesktopManager());
@@ -140,15 +134,15 @@ public class BasicDesktopPaneUITest extends SwingTestCase {
 
     public void testInstallKeyboardActions() {
         assertNotNull("action map", SwingUtilities.getUIActionMap(desktop));
-        assertNotNull("input map", SwingUtilities.getUIInputMap(
-            desktop, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+        assertNotNull("input map", SwingUtilities.getUIInputMap(desktop,
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
     }
 
     public void testUninstallKeyboardActions() {
         ui.uninstallKeyboardActions();
         assertNull("action map", SwingUtilities.getUIActionMap(desktop));
-        assertNull("input map", SwingUtilities.getUIInputMap(
-            desktop, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+        assertNull("input map", SwingUtilities.getUIInputMap(desktop,
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
     }
 
     public void testInstallListeners() {

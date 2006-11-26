@@ -27,7 +27,6 @@ public class DocumentEventTest extends BasicSwingTestCase {
         super(name);
     }
 
-
     public void testEventType() throws Exception {
         assertEquals("INSERT", DocumentEvent.EventType.INSERT.toString());
         assertEquals("REMOVE", DocumentEvent.EventType.REMOVE.toString());

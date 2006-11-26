@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -24,7 +23,6 @@ package javax.swing.text;
 import java.awt.Container;
 import java.awt.FontMetrics;
 import java.awt.Rectangle;
-
 import javax.swing.JTextArea;
 import javax.swing.SwingTestCase;
 
@@ -52,28 +50,34 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
     }
 
     public static final String LTR = "\u0061\u0062";
+
     public static final String RTL = "\u05DC\u05DD";
+
     public static final String newLine = "\n";
 
-    public static final String defText = LTR + newLine
-                                         + RTL + newLine
-                                         + LTR + RTL + newLine
-                                         + RTL + LTR + RTL;
+    public static final String defText = LTR + newLine + RTL + newLine + LTR + RTL + newLine
+            + RTL + LTR + RTL;
 
     public static final int LTRLength = LTR.length();
+
     public static final int RTLLength = RTL.length();
 
     private static final int HEIGHT = 200;
+
     private static final int WIDTH = 100;
 
     private static final int X_AXIS = View.X_AXIS;
+
     private static final int Y_AXIS = View.Y_AXIS;
 
     private Segment buffer;
+
     private PlainDocument doc;
+
     private PlainViewI18N parent;
 
     private Element root;
+
     private PlainViewI18N.LineView view;
 
     /**
@@ -83,26 +87,20 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         Element line = root.getElement(0);
         view = parent.new LineView(line);
         view.setParent(parent);
         parent.setSize(WIDTH, HEIGHT); // this will initialize metrics
-
         final FontMetrics metrics = getMetrics();
-        assertEquals(metrics.stringWidth(getViewText()),
-                     (int)view.getPreferredSpan(X_AXIS));
-        assertEquals(metrics.getHeight(), (int)view.getPreferredSpan(Y_AXIS));
-
+        assertEquals(metrics.stringWidth(getViewText()), (int) view.getPreferredSpan(X_AXIS));
+        assertEquals(metrics.getHeight(), (int) view.getPreferredSpan(Y_AXIS));
         // Insert tab character and recreate view
         doc.insertString(line.getStartOffset() + 1, "\t", null);
         view = parent.new LineView(line);
         view.setParent(parent);
-
-        assertEquals(Utilities.getTabbedTextWidth(getViewTextSegment(),
-                                                  metrics, 0, parent, 0),
-                     (int)view.getPreferredSpan(X_AXIS));
-        assertEquals(metrics.getHeight(), (int)view.getPreferredSpan(Y_AXIS));
+        assertEquals(Utilities.getTabbedTextWidth(getViewTextSegment(), metrics, 0, parent, 0),
+                (int) view.getPreferredSpan(X_AXIS));
+        assertEquals(metrics.getHeight(), (int) view.getPreferredSpan(Y_AXIS));
     }
 
     /**
@@ -112,39 +110,30 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         Element line = root.getElement(1);
         view = parent.new LineView(line);
         view.setParent(parent);
         parent.setSize(WIDTH, HEIGHT); // this will initialize metrics
-
         final FontMetrics metrics = getMetrics();
-        assertEquals(metrics.stringWidth(getViewText()),
-                     (int)view.getPreferredSpan(X_AXIS));
-        assertEquals(metrics.getHeight(), (int)view.getPreferredSpan(Y_AXIS));
-
+        assertEquals(metrics.stringWidth(getViewText()), (int) view.getPreferredSpan(X_AXIS));
+        assertEquals(metrics.getHeight(), (int) view.getPreferredSpan(Y_AXIS));
         // Insert tab character and recreate view
         doc.insertString(line.getStartOffset() + 1, "\t", null);
         view = parent.new LineView(line);
         view.setParent(parent);
         assertEquals(4, view.getViewCount());
-
-        assertEquals(Utilities.getTabbedTextWidth(getViewTextSegment(),
-                                                  metrics, 0, parent, 0),
-                     (int)view.getPreferredSpan(X_AXIS));
-        assertEquals(metrics.getHeight(), (int)view.getPreferredSpan(Y_AXIS));
+        assertEquals(Utilities.getTabbedTextWidth(getViewTextSegment(), metrics, 0, parent, 0),
+                (int) view.getPreferredSpan(X_AXIS));
+        assertEquals(metrics.getHeight(), (int) view.getPreferredSpan(Y_AXIS));
     }
 
     public void testGetResizeWeight() {
         if (!isHarmony()) {
             return;
         }
-
         parent.getPreferredSpan(X_AXIS); // Update metrics
-
         view = parent.new LineView(root.getElement(3));
         view.loadChildren(null);
-
         assertEquals(0, view.getResizeWeight(X_AXIS));
         assertEquals(0, view.getResizeWeight(Y_AXIS));
     }
@@ -158,11 +147,9 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         view = parent.new LineView(root.getElement(0));
         view.loadChildren(null);
         assertEquals(1, view.getViewCount());
-
         checkChild(view.getView(0), view.getStartOffset(), view.getEndOffset());
     }
 
@@ -173,11 +160,9 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         view = parent.new LineView(root.getElement(1));
         view.loadChildren(null);
         assertEquals(1, view.getViewCount());
-
         checkChild(view.getView(0), view.getStartOffset(), view.getEndOffset());
     }
 
@@ -188,11 +173,9 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         view = parent.new LineView(root.getElement(2));
         view.loadChildren(null);
         assertEquals(3, view.getViewCount());
-
         int offset = view.getStartOffset();
         checkChild(view.getView(0), offset, offset + LTRLength);
         offset += LTRLength;
@@ -208,11 +191,9 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         view = parent.new LineView(root.getElement(3));
         view.loadChildren(null);
         assertEquals(3, view.getViewCount());
-
         int offset = view.getStartOffset();
         checkChild(view.getView(0), offset, offset + RTLLength);
         offset += RTLLength;
@@ -226,22 +207,18 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         view = parent.new LineView(root.getElement(0));
         view.loadChildren(null);
         assertEquals(1, view.getViewCount());
-
         assertFalse(view.isAfter(31, 10, new Rectangle(30, 5, 5, 10)));
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         if (!isHarmony()) {
             return;
         }
-
         doc = new PlainDocument();
         doc.insertString(0, defText, null);
         root = doc.getDefaultRootElement();
@@ -250,12 +227,10 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
     }
 
     private void checkChild(View child, int start, int end) {
-        assertSame("Element of a child must equal to one of parent",
-                   view.getElement(), child.getElement());
-        assertEquals("Start offsets are different",
-                     start, child.getStartOffset());
-        assertEquals("End offsets are different",
-                     end, child.getEndOffset());
+        assertSame("Element of a child must equal to one of parent", view.getElement(), child
+                .getElement());
+        assertEquals("Start offsets are different", start, child.getStartOffset());
+        assertEquals("End offsets are different", end, child.getEndOffset());
     }
 
     private FontMetrics getMetrics() {
@@ -269,9 +244,8 @@ public class PlainViewI18N_LineViewTest extends SwingTestCase {
 
     private Segment getViewTextSegment() throws BadLocationException {
         final int start = view.getStartOffset();
-        final int end   = view.getEndOffset();
+        final int end = view.getEndOffset();
         doc.getText(start, end - start - 1, buffer);
         return buffer;
     }
-
 }

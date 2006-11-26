@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,7 +21,6 @@
 package javax.swing.text;
 
 import java.awt.Rectangle;
-
 import javax.swing.SwingTestCase;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -34,33 +32,36 @@ import javax.swing.text.PlainViewI18N_LineViewTest.PlainViewI18NWithTextArea;
  * Tests PlainViewI18N.LineView class, in particular how it reacts to changes
  * in a document.
  */
-public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
-    implements DocumentListener {
-
+public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase implements
+        DocumentListener {
     private PlainDocument doc;
+
     private Element root;
+
     private Element bidi;
 
     private PlainViewI18N parent;
+
     private PlainViewI18N.LineView view;
 
     private PreferenceChange preferenceParams;
 
     private DocumentEvent insertEvent;
+
     private DocumentEvent removeEvent;
 
     private Element line;
+
     private int startOffset;
 
     private final Rectangle shape = new Rectangle(27, 74, 91, 41);
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         if (!isHarmony()) {
             return;
         }
-
         doc = new PlainDocument();
         doc.insertString(0, PlainViewI18N_LineViewTest.defText, null);
         root = doc.getDefaultRootElement();
@@ -68,14 +69,13 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
         parent = new PlainViewI18NWithTextArea(root, doc);
         line = root.getElement(3);
         startOffset = line.getStartOffset();
-
         view = parent.new LineView(line) {
+            @Override
             public void preferenceChanged(View child, boolean w, boolean h) {
                 preferenceParams = new PreferenceChange(child, w, h);
             }
         };
         view.setParent(parent);
-
         doc.addDocumentListener(this);
     }
 
@@ -83,10 +83,8 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
         if (!isHarmony()) {
             return;
         }
-
         doc.insertString(startOffset + PlainViewI18N_LineViewTest.RTLLength + 1,
-                         PlainViewI18N_LineViewTest.LTR, null);
-
+                PlainViewI18N_LineViewTest.LTR, null);
         view.insertUpdate(insertEvent, shape, null);
         assertNull(insertEvent.getChange(bidi));
         preferenceParams.check(view.getView(1), true, false);
@@ -96,9 +94,7 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
         if (!isHarmony()) {
             return;
         }
-
         doc.insertString(startOffset + 1, PlainViewI18N_LineViewTest.RTL, null);
-
         view.insertUpdate(insertEvent, shape, null);
         assertNull(insertEvent.getChange(bidi));
         preferenceParams.check(view.getView(0), true, false);
@@ -108,17 +104,12 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
         if (!isHarmony()) {
             return;
         }
-
-        doc.insertString(startOffset + 1,
-                         PlainViewI18N_LineViewTest.LTR, null);
-
+        doc.insertString(startOffset + 1, PlainViewI18N_LineViewTest.LTR, null);
         view.insertUpdate(insertEvent, shape, null);
-
         ElementChange change = insertEvent.getChange(bidi);
         assertNotNull(change);
         assertEquals(3, change.getChildrenRemoved().length);
         assertEquals(6, change.getChildrenAdded().length);
-
         assertEquals(6, view.getViewCount());
     }
 
@@ -126,17 +117,13 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
         if (!isHarmony()) {
             return;
         }
-
         doc.insertString(startOffset + PlainViewI18N_LineViewTest.RTLLength + 1,
-                         PlainViewI18N_LineViewTest.RTL, null);
-
+                PlainViewI18N_LineViewTest.RTL, null);
         view.insertUpdate(insertEvent, shape, null);
-
         ElementChange change = insertEvent.getChange(bidi);
         assertNotNull(change);
         assertEquals(3, change.getChildrenRemoved().length);
         assertEquals(6, change.getChildrenAdded().length);
-
         assertEquals(6, view.getViewCount());
     }
 
@@ -144,37 +131,32 @@ public class PlainViewI18N_LineView_UpdateTest extends SwingTestCase
     // tho' it needn't have been modified. If document is optimized to
     // handle this situation, these tests may become actual.
     /*
-    public void testRemoveUpdateLTRNoChange() throws Exception {
-        doc.remove(startOffset + PlainViewI18N_LineViewTest.RTLLength + 1, 1);
+     public void testRemoveUpdateLTRNoChange() throws Exception {
+     doc.remove(startOffset + PlainViewI18N_LineViewTest.RTLLength + 1, 1);
 
-        view.removeUpdate(removeEvent, shape, null);
-        assertNull(removeEvent.getChange(bidi));
-        preferenceParams.check(view.getView(1), true, false);
-    }
+     view.removeUpdate(removeEvent, shape, null);
+     assertNull(removeEvent.getChange(bidi));
+     preferenceParams.check(view.getView(1), true, false);
+     }
 
-    public void testRemoveUpdateRTLNoChange() throws Exception {
-        doc.remove(startOffset + 1, 1);
+     public void testRemoveUpdateRTLNoChange() throws Exception {
+     doc.remove(startOffset + 1, 1);
 
-        view.removeUpdate(removeEvent, shape, null);
-        assertNull(removeEvent.getChange(bidi));
-        preferenceParams.check(view.getView(0), true, false);
-    }
-    */
-
+     view.removeUpdate(removeEvent, shape, null);
+     assertNull(removeEvent.getChange(bidi));
+     preferenceParams.check(view.getView(0), true, false);
+     }
+     */
     public void testRemoveUpdateWithChange() throws Exception {
         if (!isHarmony()) {
             return;
         }
-
         doc.remove(startOffset + 1, 2);
-
         view.removeUpdate(removeEvent, shape, null);
-
         ElementChange change = removeEvent.getChange(bidi);
         assertNotNull(change);
         assertEquals(3, change.getChildrenRemoved().length);
         assertEquals(4, change.getChildrenAdded().length);
-
         assertEquals(4, view.getViewCount());
     }
 

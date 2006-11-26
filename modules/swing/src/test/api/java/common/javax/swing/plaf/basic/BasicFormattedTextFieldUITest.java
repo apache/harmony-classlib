@@ -26,26 +26,23 @@ import javax.swing.SwingTestCase;
 public class BasicFormattedTextFieldUITest extends SwingTestCase {
     BasicFormattedTextFieldUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new BasicFormattedTextFieldUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
     public void testCreateUIJComponent() {
-        assertTrue(BasicFormattedTextFieldUI.createUI(null)
-                   instanceof BasicFormattedTextFieldUI);
-        assertTrue(BasicFormattedTextFieldUI.createUI(
-                                             new JFormattedTextField())
-                   instanceof BasicFormattedTextFieldUI);
+        assertTrue(BasicFormattedTextFieldUI.createUI(null) instanceof BasicFormattedTextFieldUI);
+        assertTrue(BasicFormattedTextFieldUI.createUI(new JFormattedTextField()) instanceof BasicFormattedTextFieldUI);
     }
 
     public void testGetPropertyPrefix() {
-        assertEquals("FormattedTextField",
-                           ui.getPropertyPrefix());
+        assertEquals("FormattedTextField", ui.getPropertyPrefix());
     }
-
 }

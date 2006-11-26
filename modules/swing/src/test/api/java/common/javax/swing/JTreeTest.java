@@ -2221,7 +2221,8 @@ public class JTreeTest extends BasicSwingTestCase {
         assertTrue(vp.getViewRect().contains(tree.getPathBounds(path00invisible)));
     }
 
-    private void checkInEnumeration(final Enumeration<? extends Object> e, final Object[] expected) {
+    private void checkInEnumeration(final Enumeration<? extends Object> e,
+            final Object[] expected) {
         assertNotNull(e);
         List<Object> actual = new LinkedList<Object>();
         while (e.hasMoreElements()) {
@@ -2260,7 +2261,7 @@ public class JTreeTest extends BasicSwingTestCase {
             private int index;
 
             public TreePath nextElement() {
-                return (TreePath)base[index++];
+                return (TreePath) base[index++];
             }
 
             public boolean hasMoreElements() {

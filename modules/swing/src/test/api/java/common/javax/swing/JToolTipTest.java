@@ -20,7 +20,6 @@
  */
 package javax.swing;
 
-
 public class JToolTipTest extends SwingTestCase {
     private JToolTip tooltip;
 

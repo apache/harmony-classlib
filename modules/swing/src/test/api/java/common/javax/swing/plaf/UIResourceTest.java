@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf;
 
 import java.awt.Color;
@@ -27,7 +25,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
-
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingTestCase;
@@ -37,26 +34,29 @@ public class UIResourceTest extends SwingTestCase {
         Icon imageIcon = new Icon() {
             public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
             }
+
             public int getIconWidth() {
                 return 0;
             }
+
             public int getIconHeight() {
                 return 0;
             }
         };
         IconUIResource icon = new IconUIResource(imageIcon);
-
         assertEquals(imageIcon.getIconHeight(), icon.getIconHeight());
         assertEquals(imageIcon.getIconWidth(), icon.getIconWidth());
     }
 
     public void testNullDelegate() {
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new BorderUIResource(null);
             }
         });
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 new IconUIResource(null);
             }
@@ -66,10 +66,11 @@ public class UIResourceTest extends SwingTestCase {
     public void testBorderUIResourceBlackLine() {
         assertNotNull(BorderUIResource.getBlackLineBorderUIResource());
         assertTrue(BorderUIResource.getBlackLineBorderUIResource() instanceof BorderUIResource.LineBorderUIResource);
-        assertTrue(BorderUIResource.getBlackLineBorderUIResource() == BorderUIResource.getBlackLineBorderUIResource());
-
+        assertTrue(BorderUIResource.getBlackLineBorderUIResource() == BorderUIResource
+                .getBlackLineBorderUIResource());
         assertNotNull(BorderUIResource.getBlackLineBorderUIResource());
-        BorderUIResource.LineBorderUIResource border = (BorderUIResource.LineBorderUIResource)BorderUIResource.getBlackLineBorderUIResource();
+        BorderUIResource.LineBorderUIResource border = (BorderUIResource.LineBorderUIResource) BorderUIResource
+                .getBlackLineBorderUIResource();
         assertFalse(border.getRoundedCorners());
         assertTrue(border.isBorderOpaque());
         assertEquals(new Insets(1, 1, 1, 1), border.getBorderInsets(newJComponent()));
@@ -80,10 +81,11 @@ public class UIResourceTest extends SwingTestCase {
     public void testBorderUIResourceEtched() {
         assertNotNull(BorderUIResource.getEtchedBorderUIResource());
         assertTrue(BorderUIResource.getEtchedBorderUIResource() instanceof BorderUIResource.EtchedBorderUIResource);
-        assertTrue(BorderUIResource.getEtchedBorderUIResource() == BorderUIResource.getEtchedBorderUIResource());
-
+        assertTrue(BorderUIResource.getEtchedBorderUIResource() == BorderUIResource
+                .getEtchedBorderUIResource());
         assertNotNull(BorderUIResource.getEtchedBorderUIResource());
-        BorderUIResource.EtchedBorderUIResource border = (BorderUIResource.EtchedBorderUIResource)BorderUIResource.getEtchedBorderUIResource();
+        BorderUIResource.EtchedBorderUIResource border = (BorderUIResource.EtchedBorderUIResource) BorderUIResource
+                .getEtchedBorderUIResource();
         assertTrue(border.isBorderOpaque());
         assertEquals(new Insets(2, 2, 2, 2), border.getBorderInsets(newJComponent()));
         assertEquals(1, border.getEtchType());
@@ -94,23 +96,24 @@ public class UIResourceTest extends SwingTestCase {
     public void testBorderUIResourceLoweredBevel() {
         assertNotNull(BorderUIResource.getLoweredBevelBorderUIResource());
         assertTrue(BorderUIResource.getLoweredBevelBorderUIResource() instanceof BorderUIResource.BevelBorderUIResource);
-        assertTrue(BorderUIResource.getLoweredBevelBorderUIResource() == BorderUIResource.getLoweredBevelBorderUIResource());
-
-        checkBevelBorderAttrs((BorderUIResource.BevelBorderUIResource)BorderUIResource.getLoweredBevelBorderUIResource(), 1);
+        assertTrue(BorderUIResource.getLoweredBevelBorderUIResource() == BorderUIResource
+                .getLoweredBevelBorderUIResource());
+        checkBevelBorderAttrs((BorderUIResource.BevelBorderUIResource) BorderUIResource
+                .getLoweredBevelBorderUIResource(), 1);
     }
 
     public void testBorderUIResourceRaisedBevel() {
         assertNotNull(BorderUIResource.getRaisedBevelBorderUIResource());
         assertTrue(BorderUIResource.getRaisedBevelBorderUIResource() instanceof BorderUIResource.BevelBorderUIResource);
-        assertTrue(BorderUIResource.getRaisedBevelBorderUIResource() == BorderUIResource.getRaisedBevelBorderUIResource());
-
-        checkBevelBorderAttrs((BorderUIResource.BevelBorderUIResource)BorderUIResource.getRaisedBevelBorderUIResource(), 0);
+        assertTrue(BorderUIResource.getRaisedBevelBorderUIResource() == BorderUIResource
+                .getRaisedBevelBorderUIResource());
+        checkBevelBorderAttrs((BorderUIResource.BevelBorderUIResource) BorderUIResource
+                .getRaisedBevelBorderUIResource(), 0);
     }
 
     public void testColorUIResource() {
         Color testColor = new Color(1, 2, 3);
         ColorUIResource c = new ColorUIResource(testColor);
-
         assertEquals(testColor.getRGB(), c.getRGB());
         assertEquals(testColor.getRed(), c.getRed());
         assertEquals(testColor.getGreen(), c.getGreen());
@@ -120,7 +123,6 @@ public class UIResourceTest extends SwingTestCase {
 
     public void testDimensionUIResource() {
         DimensionUIResource d = new DimensionUIResource(1, 2);
-
         assertTrue(1 == d.getWidth());
         assertTrue(2 == d.getHeight());
     }
@@ -128,7 +130,6 @@ public class UIResourceTest extends SwingTestCase {
     public void testFontUIResource() {
         Font font = new Font("Dialog", Font.BOLD, 1);
         FontUIResource f = new FontUIResource(font);
-
         assertEquals("Dialog", f.getName());
         assertEquals(1, f.getSize());
         assertEquals(Font.BOLD, f.getStyle());
@@ -136,14 +137,14 @@ public class UIResourceTest extends SwingTestCase {
 
     public void testInsetsUIResource() {
         InsetsUIResource ins = new InsetsUIResource(1, 2, 3, 4);
-
         assertEquals(1, ins.top);
         assertEquals(2, ins.left);
         assertEquals(3, ins.bottom);
         assertEquals(4, ins.right);
     }
 
-    private void checkBevelBorderAttrs(final BorderUIResource.BevelBorderUIResource border, final int type) {
+    private void checkBevelBorderAttrs(final BorderUIResource.BevelBorderUIResource border,
+            final int type) {
         assertNotNull(border);
         assertTrue(border.isBorderOpaque());
         assertEquals(type, border.getBevelType());
@@ -156,6 +157,7 @@ public class UIResourceTest extends SwingTestCase {
 
     private JComponent newJComponent() {
         return new JComponent() {
+            private static final long serialVersionUID = 1L;
         };
     }
 }

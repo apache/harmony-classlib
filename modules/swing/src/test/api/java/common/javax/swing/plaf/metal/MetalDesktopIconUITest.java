@@ -18,11 +18,9 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.Dimension;
-
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingTestCase;
@@ -31,7 +29,9 @@ import javax.swing.plaf.ComponentUI;
 
 public class MetalDesktopIconUITest extends SwingTestCase {
     private TestMetalDesktopIconUI ui;
+
     private JInternalFrame.JDesktopIcon icon;
+
     private JInternalFrame frame;
 
     private class TestMetalDesktopIconUI extends MetalDesktopIconUI {
@@ -43,9 +43,9 @@ public class MetalDesktopIconUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JInternalFrame();
         icon = frame.getDesktopIcon();
         ui = new TestMetalDesktopIconUI();
@@ -55,6 +55,7 @@ public class MetalDesktopIconUITest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -73,7 +74,6 @@ public class MetalDesktopIconUITest extends SwingTestCase {
     public void testCreateUI() {
         ComponentUI ui1 = MetalDesktopIconUI.createUI(frame);
         ComponentUI ui2 = MetalDesktopIconUI.createUI(frame);
-
         assertTrue("not null", ui1 != null);
         assertTrue("statefull", ui1 != ui2);
     }
@@ -82,16 +82,16 @@ public class MetalDesktopIconUITest extends SwingTestCase {
      * Class under test for Dimension getMaximumSize(JComponent)
      */
     public void testGetMaximumSize() {
-        assertEquals("== minimumSize (JRockit fails)", ui.getMinimumSize(icon),
-                     ui.getMaximumSize(icon));
+        assertEquals("== minimumSize (JRockit fails)", ui.getMinimumSize(icon), ui
+                .getMaximumSize(icon));
     }
 
     /*
      * Class under test for Dimension getMinimumSize(JComponent)
      */
     public void testGetMinimumSize() {
-        assertEquals("== preferredSize (JRockit fails)",
-                     ui.getPreferredSize(icon), ui.getMinimumSize(icon));
+        assertEquals("== preferredSize (JRockit fails)", ui.getPreferredSize(icon), ui
+                .getMinimumSize(icon));
     }
 
     /*
@@ -101,13 +101,11 @@ public class MetalDesktopIconUITest extends SwingTestCase {
         Dimension size = ui.getPreferredSize(icon);
         int desktopIconWidth = UIManager.getInt("DesktopIcon.width");
         assertEquals("width ok", desktopIconWidth, size.width);
-
         icon.setSize(ui.getPreferredSize(icon));
         icon.doLayout();
         if (isHarmony()) {
-            assertEquals("height ok",
-                         ui.getIconPane().getPreferredSize().height,
-                         ui.getIconPane().getSize().height);
+            assertEquals("height ok", ui.getIconPane().getPreferredSize().height, ui
+                    .getIconPane().getSize().height);
         }
     }
 
@@ -115,7 +113,6 @@ public class MetalDesktopIconUITest extends SwingTestCase {
         int count = icon.getComponentCount();
         ui.uninstallComponents();
         assertEquals("uninstalled", count - 2, icon.getComponentCount());
-
         ui.installComponents();
         assertEquals("added 2 component", count, icon.getComponentCount());
         if (isHarmony()) {
@@ -128,7 +125,6 @@ public class MetalDesktopIconUITest extends SwingTestCase {
         if (isHarmony()) {
             assertTrue("added iconPane", icon.isAncestorOf(ui.getIconPane()));
         }
-
         ui.uninstallComponents();
         assertEquals("uninstalled", count - 2, icon.getComponentCount());
         if (isHarmony()) {
@@ -140,7 +136,6 @@ public class MetalDesktopIconUITest extends SwingTestCase {
         icon.setBackground(null);
         icon.setForeground(null);
         icon.setFont(null);
-
         ui.installDefaults();
         assertTrue("opaque", icon.isOpaque());
         assertNotNull(icon.getBackground());

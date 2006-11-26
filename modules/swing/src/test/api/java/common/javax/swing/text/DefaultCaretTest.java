@@ -30,7 +30,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.EventListener;
-
 import javax.swing.ExtJTextArea;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -54,7 +53,6 @@ public class DefaultCaretTest extends SwingTestCase {
     int tCompListenersCount;
 
     //int tmp;
-
     Point p;
 
     Highlighter.HighlightPainter pnt;
@@ -115,24 +113,24 @@ public class DefaultCaretTest extends SwingTestCase {
 
         int flagMoveDot = 0;
 
+        @Override
         public void setDot(final FilterBypass f, final int i, final Bias b) {
             flagSetDot = 1;
             super.setDot(f, i, b);
         }
 
+        @Override
         public void moveDot(final FilterBypass arg0, final int i, final Bias b) {
             flagMoveDot = 1;
             super.moveDot(arg0, i, b);
         }
-
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        jta = new ExtJTextArea(
-                "JTextArea for DefaultCaret Testing\n***\n*%%%**");
+        jta = new ExtJTextArea("JTextArea for DefaultCaret Testing\n***\n*%%%**");
         dc = new DefaultCaret();
-
         jf = new JFrame();
         p = new Point(5, 16);
         bWasException = false;
@@ -145,18 +143,13 @@ public class DefaultCaretTest extends SwingTestCase {
         r5 = null;
         r6 = null;
         ad = (AbstractDocument) jta.getDocument();
-
         jf.getContentPane().add(jta);
-
         jta.getCaret().deinstall(jta);
-
         tCompListenersCount = jta.getListeners(MouseListener.class).length
                 + jta.getListeners(MouseMotionListener.class).length
                 + jta.getListeners(FocusListener.class).length
                 + jta.getPropertyChangeListeners().length;
-
         jta.setCaret(dc);
-
         jf.setLocation(100, 100);
         jf.setSize(350, 200);
         jf.pack();
@@ -183,6 +176,7 @@ public class DefaultCaretTest extends SwingTestCase {
         assertFalse("Unexpected exception " + s, bWasException);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -193,11 +187,14 @@ public class DefaultCaretTest extends SwingTestCase {
      *
      */
     boolean findListener(final EventListener[] list, final EventListener elem) {
-        if (list == null)
+        if (list == null) {
             return false;
-        for (int i = 0; i < list.length; i++)
-            if (list[i] == elem)
+        }
+        for (int i = 0; i < list.length; i++) {
+            if (list[i] == elem) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -212,7 +209,6 @@ public class DefaultCaretTest extends SwingTestCase {
 
     public void testDefaultCaret() {
         assertNotNull(dc);
-
     }
 
     public void testGetComponent() {
@@ -229,9 +225,7 @@ public class DefaultCaretTest extends SwingTestCase {
                 + jta.getListeners(MouseMotionListener.class).length
                 + jta.getListeners(FocusListener.class).length
                 + jta.getPropertyChangeListeners().length;
-
         assertEquals(tCompListenersCount, tCompListenersCountCurrent - 4);
-
     }
 
     /*
@@ -243,15 +237,12 @@ public class DefaultCaretTest extends SwingTestCase {
         int j = jta.getListeners(MouseMotionListener.class).length;
         int k = jta.getListeners(FocusListener.class).length;
         int l = jta.getPropertyChangeListeners().length;
-
         dc.deinstall(jta);
-
         assertNull(dc.getComponent());
         assertEquals(i, jta.getListeners(MouseListener.class).length + 1);
         assertEquals(j, jta.getListeners(MouseMotionListener.class).length + 1);
         assertEquals(k, jta.getListeners(FocusListener.class).length + 1);
         assertEquals(l, jta.getPropertyChangeListeners().length + 1);
-
         assertFalse(findListener(jta.getListeners(MouseListener.class), dc));
         assertFalse(findListener(jta.getListeners(MouseListener.class), dc));
         assertFalse(findListener(jta.getListeners(FocusListener.class), dc));
@@ -260,29 +251,24 @@ public class DefaultCaretTest extends SwingTestCase {
     /*
      * Tests methods IsVisible and SetVisible
      */
-
     public void testIsVisible() throws Exception {
         dc.setVisible(true);
-        assertTrue("dc.isVisible()= false after" + " dc.setVisible(true)", dc
-                .isVisible());
+        assertTrue("dc.isVisible()= false after" + " dc.setVisible(true)", dc.isVisible());
         dc.setVisible(false);
-        assertFalse("dc.isVisible()= true after" + " dc.setVisible(false)", dc
-                .isVisible());
-
+        assertFalse("dc.isVisible()= true after" + " dc.setVisible(false)", dc.isVisible());
     }
 
     /*
      * Tests methods isSelectionVisible and setSelectionVisible
      */
     public void testIsSelectionVisible() throws Exception {
-
         assertNotNull(dc);
         dc.setSelectionVisible(true);
-        assertTrue("dc.isSelectionVisible()= false after"
-                + " dc.setSelectionVisible(true)", dc.isSelectionVisible());
+        assertTrue("dc.isSelectionVisible()= false after" + " dc.setSelectionVisible(true)", dc
+                .isSelectionVisible());
         dc.setSelectionVisible(false);
-        assertFalse("dc.isSelectionVisible()= true after"
-                + " dc.setSelectionVisible(false)", dc.isSelectionVisible());
+        assertFalse("dc.isSelectionVisible()= true after" + " dc.setSelectionVisible(false)",
+                dc.isSelectionVisible());
     }
 
     public void testEquals() {
@@ -299,54 +285,36 @@ public class DefaultCaretTest extends SwingTestCase {
             SimpleChangeListener t1 = new SimpleChangeListener();
             SimpleChangeListener t2 = new SimpleChangeListener();
             SimpleChangeListener t3 = new SimpleChangeListener();
-
             dc.addChangeListener(t1);
             assertTrue(findListener(dc.getChangeListeners(), t1));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
-
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             dc.addChangeListener(t2);
             assertTrue(findListener(dc.getChangeListeners(), t1));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             assertTrue(findListener(dc.getChangeListeners(), t2));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t2));
-
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t2));
             dc.addChangeListener(t3);
             assertTrue(findListener(dc.getChangeListeners(), t1));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             assertTrue(findListener(dc.getChangeListeners(), t2));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t2));
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t2));
             assertTrue(findListener(dc.getChangeListeners(), t3));
-            assertTrue(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t3));
-
+            assertTrue(findListener(dc.listenerList.getListeners(ChangeListener.class), t3));
             dc.removeChangeListener(t1);
             assertFalse(findListener(dc.getChangeListeners(), t1));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
-
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             dc.removeChangeListener(t2);
             assertFalse(findListener(dc.getChangeListeners(), t1));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             assertFalse(findListener(dc.getChangeListeners(), t2));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t2));
-
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t2));
             dc.removeChangeListener(t3);
             assertFalse(findListener(dc.getChangeListeners(), t1));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t1));
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t1));
             assertFalse(findListener(dc.getChangeListeners(), t2));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t2));
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t2));
             assertFalse(findListener(dc.getChangeListeners(), t3));
-            assertFalse(findListener(dc.listenerList
-                    .getListeners(ChangeListener.class), t3));
+            assertFalse(findListener(dc.listenerList.getListeners(ChangeListener.class), t3));
         } catch (NullPointerException e) {
             bWasException = true;
             s = e.getMessage();
@@ -398,45 +366,38 @@ public class DefaultCaretTest extends SwingTestCase {
         jta.setText(sLTR + sRTL + sLTR + sRTL + sLTR + sRTL + sLTR + sRTL);
         //dc.setDot(8);
         //dc.moveDot(10);
-        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0,
-                jta.getX() + r1.x, jta.getY() + r1.y, 0, false));
+        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r1.x,
+                jta.getY() + r1.y, 0, false));
         tmp = jta.getUI().viewToModel(jta, new Point(r1.x, r1.y), bias);
         checkValues(tmp, bias[0]);
         //checkValues(6,6,Position.Bias.Backward);
-
-        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0,
-                jta.getX() + r5.x, jta.getY() + r5.y, 0, false));
+        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r5.x,
+                jta.getY() + r5.y, 0, false));
         tmp = jta.getUI().viewToModel(jta, new Point(r5.x, r5.y), bias);
         checkValues(tmp, bias[0]);
         //checkValues(4,4,Position.Bias.Forward);
-
-        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0,
-                jta.getX() + r6.x, jta.getY() + r6.y, 0, false));
+        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r6.x,
+                jta.getY() + r6.y, 0, false));
         tmp = jta.getUI().viewToModel(jta, new Point(r6.x, r6.y), bias);
         checkValues(tmp, bias[0]);
         //checkValues(6,6,Position.Bias.Forward);
-
     }
 
     /*
      * Tryes to move caret position by Mouse Events (dot = mark)
      */
     public void testMoveCaret() throws Exception {
-
-        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0,
-                jta.getX() + r1.x, jta.getY() + r1.y, 0, false));
-        dc.moveCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta
-                .getX()
-                + r2.x, jta.getY() + r2.y, 0, false));
-
+        dc.positionCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r1.x,
+                jta.getY() + r1.y, 0, false));
+        dc.moveCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r2.x, jta
+                .getY()
+                + r2.y, 0, false));
         assertEquals(10, dc.getDot());
         assertEquals(6, dc.getMark());
         assertEquals(10, jta.getCaretPosition());
-
-        dc.moveCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta
-                .getX()
-                + r3.x, jta.getY() + r3.y, 0, false));
-
+        dc.moveCaret(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0, 0, jta.getX() + r3.x, jta
+                .getY()
+                + r3.y, 0, false));
         assertEquals(15, dc.getDot());
         assertEquals(6, dc.getMark());
         assertEquals(15, jta.getCaretPosition());
@@ -463,10 +424,11 @@ public class DefaultCaretTest extends SwingTestCase {
         assertTrue(findListener(EvLList, ChL1));
         assertTrue(findListener(EvLList, ChL2));
         //assertEquals(EvLList.length,2);
-        if ((EvLList != null) & (dc.getChangeListeners() != null))
+        if ((EvLList != null) & (dc.getChangeListeners() != null)) {
             assertEquals(EvLList.length, dc.getChangeListeners().length);
-        //dc.addChangeListener(ChL1);
-        //dc.addChangeListener(ChL2);
+            //dc.addChangeListener(ChL1);
+            //dc.addChangeListener(ChL2);
+        }
     }
 
     /*
@@ -522,8 +484,9 @@ public class DefaultCaretTest extends SwingTestCase {
             }
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-        if (pnt == null)
+        if (pnt == null) {
             return;
+        }
         h = jta.getHighlighter().getHighlights();
         assertEquals(1, h.length);
         assertEquals(h[0].getPainter(), dc.getSelectionPainter());
@@ -539,7 +502,6 @@ public class DefaultCaretTest extends SwingTestCase {
         jta.setEditable(false);
         dc.focusGained(new FocusEvent(jta, FocusEvent.FOCUS_GAINED));
         assertFalse(dc.isVisible());
-
         jta.setEditable(true);
         jta.setEnabled(false);
         dc.focusGained(new FocusEvent(jta, FocusEvent.FOCUS_GAINED));
@@ -553,27 +515,21 @@ public class DefaultCaretTest extends SwingTestCase {
 
     public void testMouseDragged() throws Exception {
         dc.mousePressed(new MouseEvent(jta, MouseEvent.MOUSE_PRESSED, 0,
-                InputEvent.BUTTON1_MASK, jta.getX() + r1.x, jta.getY() + r1.y,
-                0, false, MouseEvent.BUTTON1));
-
+                InputEvent.BUTTON1_MASK, jta.getX() + r1.x, jta.getY() + r1.y, 0, false,
+                MouseEvent.BUTTON1));
         dc.mouseDragged(new MouseEvent(jta, MouseEvent.MOUSE_DRAGGED, 0,
-                InputEvent.BUTTON1_MASK, jta.getX() + r3.x, jta.getY() + r3.y,
-                0, false, MouseEvent.BUTTON1));
-
+                InputEvent.BUTTON1_MASK, jta.getX() + r3.x, jta.getY() + r3.y, 0, false,
+                MouseEvent.BUTTON1));
         assertEquals("rea for D", jta.getSelectedText());
-
         /*
          * dc.mousePressed(new MouseEvent(jta, MouseEvent.MOUSE_PRESSED, 0,
          * InputEvent.BUTTON1_MASK, jta.getX() + r4.x, jta .getY() + r4.y, 0,
          * false, MouseEvent.BUTTON1));
          */
-
         dc.mouseDragged(new MouseEvent(jta, MouseEvent.MOUSE_DRAGGED, 0,
-                InputEvent.BUTTON1_MASK, jta.getX() + r4.x, jta.getY() + r4.y,
-                0, false, MouseEvent.BUTTON1));
-
+                InputEvent.BUTTON1_MASK, jta.getX() + r4.x, jta.getY() + r4.y, 0, false,
+                MouseEvent.BUTTON1));
         assertEquals("extA", jta.getSelectedText());
-
         /*
          * dc.mouseDragged(new MouseEvent(jta, MouseEvent.MOUSE_DRAGGED, 0,
          * InputEvent.BUTTON3_MASK, jta.getX() + r2.x, jta .getY() + r2.y, 0,
@@ -585,119 +541,81 @@ public class DefaultCaretTest extends SwingTestCase {
          * false)); try { assertEquals("JTextArea for D",
          * jta.getSelectedText()); } catch (AssertionFailedError e) { e4 = e; }
          */
-
     }
 
     public void testMouseClicked() throws Exception {
         dc.mouseClicked(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0,
-                MouseEvent.BUTTON1_DOWN_MASK, jta.getX() + r1.x, jta.getY() + r1.y,
-                2, false,MouseEvent.BUTTON1));
-
+                InputEvent.BUTTON1_DOWN_MASK, jta.getX() + r1.x, jta.getY() + r1.y, 2, false,
+                MouseEvent.BUTTON1));
         assertEquals("JTextArea", jta.getSelectedText());
         dc.setDot(5);
         dc.mouseClicked(new MouseEvent(jta, MouseEvent.MOUSE_CLICKED, 0,
-                InputEvent.BUTTON1_DOWN_MASK, jta.getX() + r1.x, jta.getY() + r1.y,
-                3, false,MouseEvent.BUTTON1));
-
-        assertEquals("JTextArea for DefaultCaret Testing", jta
-                .getSelectedText());
-
+                InputEvent.BUTTON1_DOWN_MASK, jta.getX() + r1.x, jta.getY() + r1.y, 3, false,
+                MouseEvent.BUTTON1));
+        assertEquals("JTextArea for DefaultCaret Testing", jta.getSelectedText());
     }
 
     public void testMousePressed() throws Exception {
-
         dc.mousePressed(new MouseEvent(jta, MouseEvent.MOUSE_PRESSED, 0,
-                MouseEvent.SHIFT_DOWN_MASK, jta.getX() + r3.x, jta.getY()
-                        + r3.y, 0, false, MouseEvent.BUTTON1));
-
+                InputEvent.SHIFT_DOWN_MASK, jta.getX() + r3.x, jta.getY() + r3.y, 0, false,
+                MouseEvent.BUTTON1));
         assertEquals("JTextArea for D", jta.getSelectedText());
-
     }
 
     public void testDocInsChange_DotEqMark() throws Exception {
         try {
             dc.setDot(5);
-
             jta.getDocument().insertString(3, "insert", null);
-
             assertFalse("Unexpected exception: " + s, bWasException);
             assertEquals(11, dc.getDot());
-
             dc.setDot(5);
-
             jta.getDocument().insertString(2, "ins", null);
-
             assertFalse("Unexpected exception: " + s, bWasException);
             assertEquals(8, dc.getDot());
-
             dc.setDot(5);
-
             jta.getDocument().insertString(5, "inse", null);
-
             assertFalse("Unexpected exception: " + s, bWasException);
             assertEquals(9, dc.getDot());
-
             dc.setDot(5);
-
             jta.getDocument().insertString(7, "insert", null);
-
             assertEquals(5, dc.getDot());
         } catch (BadLocationException e) {
             bWasException = true;
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
     }
 
     public void testDocInsChange_DotNotEqMark() throws Exception {
         try {
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().insertString(2, "in", null);
-
             assertEquals(8, dc.getDot());
-
             assertEquals(13, dc.getMark());
-
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().insertString(6, "ins", null);
-
             assertEquals(9, dc.getDot());
-
             assertEquals(14, dc.getMark());
-
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().insertString(7, "inser", null);
-
             assertEquals(6, dc.getDot());
-
             assertEquals(16, dc.getMark());
-
             dc.setDot(6);
             dc.moveDot(11);
-
             jta.getDocument().insertString(11, "insert", null);
             assertEquals(17, dc.getDot());
-
             assertEquals(6, dc.getMark());
-
         } catch (BadLocationException e) {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertFalse("Unexpected exception: " + s, bWasException);
-
     }
 
     public void testDocRemoveChange_DotEqMark() throws Exception {
-
         dc.setDot(5);
         try {
             jta.getDocument().remove(3, 1);
@@ -705,9 +623,7 @@ public class DefaultCaretTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertEquals(4, dc.getDot());
-
         dc.setDot(5);
         try {
             jta.getDocument().remove(2, 3);
@@ -715,9 +631,7 @@ public class DefaultCaretTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertEquals(2, dc.getDot());
-
         dc.setDot(5);
         try {
             jta.getDocument().remove(3, 7);
@@ -725,9 +639,7 @@ public class DefaultCaretTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertEquals(3, dc.getDot());
-
         dc.setDot(5);
         try {
             jta.getDocument().remove(5, 8);
@@ -735,9 +647,7 @@ public class DefaultCaretTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertEquals(5, dc.getDot());
-
         dc.setDot(5);
         try {
             jta.getDocument().remove(7, 2);
@@ -745,57 +655,37 @@ public class DefaultCaretTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertEquals(5, dc.getDot());
-
         assertFalse("Unexpected exception: " + s, bWasException);
-
     }
 
     public void testDocRemoveChange_DotNotEqMark() throws Exception {
-
         dc.setDot(11);
         dc.moveDot(6);
         try {
             jta.getDocument().remove(3, 2);
-
             assertEquals(4, dc.getDot());
-
             assertEquals(9, dc.getMark());
-
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().remove(3, 4);
-
             assertEquals(3, dc.getDot());
-
             assertEquals(7, dc.getMark());
-
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().remove(6, 2);
-
             assertEquals(6, dc.getDot());
-
             assertEquals(9, dc.getMark());
-
             dc.setDot(6);
             dc.moveDot(11);
-
             jta.getDocument().remove(10, 7);
             assertEquals(10, dc.getDot());
-
             assertEquals(6, dc.getMark());
-
         } catch (BadLocationException e) {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertFalse("Unexpected exception: " + s, bWasException);
-
     }
 
     /*
@@ -803,44 +693,29 @@ public class DefaultCaretTest extends SwingTestCase {
      *
      */
     public void testDocNeverUpdate() throws Exception {
-
         dc.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-
         dc.setDot(6);
         try {
             jta.getDocument().remove(3, 10);
-
             assertEquals(6, dc.getDot());
-
             dc.setDot(11);
             dc.moveDot(6);
-
             jta.getDocument().remove(3, 10);
-
             assertEquals(6, dc.getDot());
-
             assertEquals(11, dc.getMark());
-
             dc.setDot(6);
-
             jta.getDocument().remove(2, 20);
-
             assertEquals(5, dc.getDot());
-
             dc.setDot(3);
             dc.moveDot(1);
-
             jta.getDocument().remove(2, 3);
-
             assertEquals(1, dc.getDot());
-
             assertEquals(2, dc.getMark());
         } catch (BadLocationException e) {
             bWasException = true;
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
     }
 
     /*
@@ -879,13 +754,10 @@ public class DefaultCaretTest extends SwingTestCase {
 
     public void testCaretColor() throws Exception {
         //TODO Runnable
-
         jta.setSelectionColor(c1);
         jta.setCaretColor(c2);
-
         assertEquals(c1, jta.getSelectionColor());
         assertEquals(c2, jta.getCaretColor());
-
     }
 
     void checkFlag(final int i1) {
@@ -894,94 +766,78 @@ public class DefaultCaretTest extends SwingTestCase {
     }
 
     public void testInvokeFireStateChanged() throws Exception {
-
         CHL = new SimpleChangeListener();
         dc.addChangeListener(CHL);
         dc.setDot(5);
         checkFlag(1);
-
         dc.moveDot(8);
         checkFlag(1);
-
         dc.setVisible(true);
         checkFlag(0);
-
         dc.setVisible(false);
         checkFlag(0);
-
         dc.setSelectionVisible(true);
         checkFlag(0);
-
         dc.setSelectionVisible(false);
         checkFlag(0);
-
         jta.setCaretColor(new Color(235));
         checkFlag(0);
-
         jta.setCaretColor(new Color(235));
         checkFlag(0);
-
         jta.setSelectionColor(new Color(235));
         checkFlag(0);
-
         dc.setBlinkRate(100);
         checkFlag(0);
-
         jta.setDocument(new PlainDocument());
         checkFlag(1);
-
         jta.getCaret().deinstall(jta);
         checkFlag(0);
-
         dc.install(new JTextArea("JTextArea"));
         checkFlag(0);
-
     }
 
     public void testToString() throws Exception {
-
         dc.setDot(4);
         dc.moveDot(9);
-
         assertEquals("Dot=(9, Forward) Mark=(4, Forward)", dc.toString());
     }
+
     //Serialization is not supported now by Swing
     /*public void testSerialization() throws Exception {
 
-        dc.setDot(4, Position.Bias.Backward);
-        dc.setBlinkRate(100);
-        dc.setVisible(true);
-        dc.setSelectionVisible(true);
-        dc.setMagicCaretPosition(new Point(200, 300));
+     dc.setDot(4, Position.Bias.Backward);
+     dc.setBlinkRate(100);
+     dc.setVisible(true);
+     dc.setSelectionVisible(true);
+     dc.setMagicCaretPosition(new Point(200, 300));
 
-        DefaultCaret dc1 = new DefaultCaret();
+     DefaultCaret dc1 = new DefaultCaret();
 
-        try {
-            FileOutputStream fo = new FileOutputStream("tmp");
-            ObjectOutputStream so = new ObjectOutputStream(fo);
-            so.writeObject(dc);
-            so.flush();
-            so.close();
-            FileInputStream fi = new FileInputStream("tmp");
-            ObjectInputStream si = new ObjectInputStream(fi);
-            dc1 = (DefaultCaret) si.readObject();
-            si.close();
-        } catch (Exception e) {
-            assertTrue("seralization failed" + e.getMessage(),false);
-        }
+     try {
+     FileOutputStream fo = new FileOutputStream("tmp");
+     ObjectOutputStream so = new ObjectOutputStream(fo);
+     so.writeObject(dc);
+     so.flush();
+     so.close();
+     FileInputStream fi = new FileInputStream("tmp");
+     ObjectInputStream si = new ObjectInputStream(fi);
+     dc1 = (DefaultCaret) si.readObject();
+     si.close();
+     } catch (Exception e) {
+     assertTrue("seralization failed" + e.getMessage(),false);
+     }
 
-        assertEquals("Dot=(4, Backward) Mark=(4, Backward)", dc1.toString());
-        assertTrue(jta.equals(dc.getComponent()));
-        assertTrue(dc1.isSelectionVisible());
-        assertEquals(100, dc1.getBlinkRate());
-        assertTrue(dc1.getMagicCaretPosition().equals(new Point(200, 300)));
-        assertTrue(dc1.getSelectionPainter() instanceof DefaultHighlighter.DefaultHighlightPainter);
-        assertTrue(dc1.listenerList.toString().equals(
-                dc.listenerList.toString()));
-        assertNull(dc1.changeEvent);
+     assertEquals("Dot=(4, Backward) Mark=(4, Backward)", dc1.toString());
+     assertTrue(jta.equals(dc.getComponent()));
+     assertTrue(dc1.isSelectionVisible());
+     assertEquals(100, dc1.getBlinkRate());
+     assertTrue(dc1.getMagicCaretPosition().equals(new Point(200, 300)));
+     assertTrue(dc1.getSelectionPainter() instanceof DefaultHighlighter.DefaultHighlightPainter);
+     assertTrue(dc1.listenerList.toString().equals(
+     dc.listenerList.toString()));
+     assertNull(dc1.changeEvent);
 
-    } */
-
+     } */
     /*
      * for 1.4.2
      */
@@ -991,30 +847,24 @@ public class DefaultCaretTest extends SwingTestCase {
      * dc.setAsynchronousMovement(true);
      * assertTrue(dc.getAsynchronousMovement()); }
      */
-
     public void testNavigationFilter() throws Exception {
         assertNull(jta.getNavigationFilter());
-
         filter = new SimpleNavigationFilter();
         jta.setNavigationFilter(filter);
         dc.setDot(3);
         dc.moveDot(4);
-
         assertEquals(1, filter.flagMoveDot);
         assertEquals(1, filter.flagSetDot);
     }
 
     //TODO
     public void testIsActive() throws Exception {
-
         dc.setVisible(true);
-
         assertTrue(dc.isActive());
-
         dc.setVisible(false);
-
         assertFalse(dc.isActive());
     }
+
     public void test3820() {
         DefaultCaret dc = new DefaultCaret();
         assertEquals(0, dc.getChangeListeners().length);
@@ -1029,7 +879,4 @@ public class DefaultCaretTest extends SwingTestCase {
         dc.setSelectionVisible(true);
         assertEquals(1, jta.getHighlighter().getHighlights().length);
     }
-
-
 }
-

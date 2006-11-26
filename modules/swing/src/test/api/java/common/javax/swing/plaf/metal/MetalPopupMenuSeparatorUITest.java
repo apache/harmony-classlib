@@ -15,19 +15,18 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.metal;
 
 import java.awt.Dimension;
-
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 public class MetalPopupMenuSeparatorUITest extends MetalSeparatorUITest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new MetalPopupMenuSeparatorUI();
@@ -36,6 +35,7 @@ public class MetalPopupMenuSeparatorUITest extends MetalSeparatorUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicSeparatorUI.getPreferredSize(JComponent)'
      */
+    @Override
     public void testGetSizes() {
         JSeparator separator1 = new JSeparator(SwingConstants.HORIZONTAL);
         JSeparator separator2 = new JSeparator(SwingConstants.VERTICAL);
@@ -50,10 +50,13 @@ public class MetalPopupMenuSeparatorUITest extends MetalSeparatorUITest {
     /*
      * Test method for 'javax.swing.plaf.metal.MetalPopupMenuSeparatorUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
-        assertNotNull("created UI is not null", MetalPopupMenuSeparatorUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", MetalPopupMenuSeparatorUI.createUI(null) instanceof MetalPopupMenuSeparatorUI);
-        assertNotSame("created UI is of unique", MetalPopupMenuSeparatorUI.createUI(null), MetalPopupMenuSeparatorUI.createUI(null));
+        assertNotNull("created UI is not null", MetalPopupMenuSeparatorUI
+                .createUI(new JButton()));
+        assertTrue("created UI is of the proper class", MetalPopupMenuSeparatorUI
+                .createUI(null) instanceof MetalPopupMenuSeparatorUI);
+        assertNotSame("created UI is of unique", MetalPopupMenuSeparatorUI.createUI(null),
+                MetalPopupMenuSeparatorUI.createUI(null));
     }
-
 }

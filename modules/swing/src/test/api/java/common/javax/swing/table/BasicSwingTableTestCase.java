@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -51,6 +50,8 @@ public class BasicSwingTableTestCase extends BasicSwingTestCase {
     }
 
     protected abstract class ArrayIndexOutOfBoundsExceptionalCase extends ExceptionalCase {
+        @SuppressWarnings("unchecked")
+        @Override
         public Class expectedExceptionClass() {
             return ArrayIndexOutOfBoundsException.class;
         }

@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -24,7 +23,6 @@ package javax.swing.text;
 import junit.framework.TestCase;
 
 public class DocumentTest extends TestCase {
-
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(DocumentTest.class);
     }
@@ -36,5 +34,4 @@ public class DocumentTest extends TestCase {
     public void testTitleProperty() {
         assertEquals("title", Document.TitleProperty);
     }
-
 }

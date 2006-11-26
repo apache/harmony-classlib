@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -23,12 +22,9 @@ package javax.swing.table;
 
 import java.awt.Component;
 import java.awt.Dimension;
-
 import javax.swing.BasicSwingTestCase;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
-import javax.swing.UIManager;
 
 public class TableColumnTest extends BasicSwingTestCase {
     private TableColumn column;
@@ -37,17 +33,20 @@ public class TableColumnTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         column = new TableColumn();
         propertyChangeController = new PropertyChangeController();
         column.addPropertyChangeListener(propertyChangeController);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         column = null;
         propertyChangeController = null;
     }
 
+    @SuppressWarnings("deprecation")
     public void testTableColumn() throws Exception {
         assertEquals(0, column.modelIndex);
         assertEquals(75, column.width);
@@ -60,15 +59,12 @@ public class TableColumnTest extends BasicSwingTestCase {
         assertNull(column.headerValue);
         assertNull(column.headerRenderer);
         assertNull(column.identifier);
-
         column = new TableColumn(10);
         assertEquals(10, column.modelIndex);
-
         column = new TableColumn(10, 20);
         assertEquals(10, column.modelIndex);
         assertEquals(20, column.width);
         assertEquals(20, column.getPreferredWidth());
-
         TableCellRenderer renderer = new DefaultTableCellRenderer();
         TableCellEditor editor = new DefaultCellEditor(new JCheckBox());
         column = new TableColumn(10, 20, renderer, editor);
@@ -91,7 +87,6 @@ public class TableColumnTest extends BasicSwingTestCase {
         column.setHeaderValue("Header");
         assertEquals("Header", column.getIdentifier());
         assertNull(column.identifier);
-
         propertyChangeController.reset();
         column.setIdentifier("Any");
         assertEquals("Any", column.getIdentifier());
@@ -134,14 +129,11 @@ public class TableColumnTest extends BasicSwingTestCase {
         column.setWidth(20);
         assertEquals(20, column.getWidth());
         assertTrue(propertyChangeController.isChanged("width"));
-
         column.setMaxWidth(100);
         column.setWidth(10);
         assertEquals(15, column.getWidth());
-
         column.setWidth(150);
         assertEquals(100, column.getWidth());
-
         assertEquals(75, column.getPreferredWidth());
     }
 
@@ -150,14 +142,11 @@ public class TableColumnTest extends BasicSwingTestCase {
         column.setPreferredWidth(50);
         assertEquals(50, column.getPreferredWidth());
         assertTrue(propertyChangeController.isChanged("preferredWidth"));
-
         column.setMaxWidth(100);
         column.setPreferredWidth(10);
         assertEquals(15, column.getPreferredWidth());
-
         column.setPreferredWidth(150);
         assertEquals(100, column.getPreferredWidth());
-
         assertEquals(75, column.getWidth());
     }
 
@@ -166,11 +155,9 @@ public class TableColumnTest extends BasicSwingTestCase {
         column.setMinWidth(50);
         assertEquals(50, column.getMinWidth());
         assertTrue(propertyChangeController.isChanged("minWidth"));
-
         column.setMinWidth(100);
         assertEquals(100, column.getWidth());
         assertEquals(100, column.getPreferredWidth());
-
         column.setMinWidth(10);
         assertEquals(100, column.getWidth());
         assertEquals(100, column.getPreferredWidth());
@@ -181,11 +168,9 @@ public class TableColumnTest extends BasicSwingTestCase {
         column.setMaxWidth(100);
         assertEquals(100, column.getMaxWidth());
         assertTrue(propertyChangeController.isChanged("maxWidth"));
-
         column.setMaxWidth(50);
         assertEquals(50, column.getWidth());
         assertEquals(50, column.getPreferredWidth());
-
         column.setMinWidth(100);
         assertEquals(100, column.getMinWidth());
         assertEquals(50, column.getWidth());
@@ -205,19 +190,17 @@ public class TableColumnTest extends BasicSwingTestCase {
         assertEquals(75, column.getWidth());
         assertEquals(75, column.getPreferredWidth());
         assertEquals(Integer.MAX_VALUE, column.getMaxWidth());
-
-        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)column.createDefaultHeaderRenderer();
+        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) column
+                .createDefaultHeaderRenderer();
         renderer.setMaximumSize(new Dimension(600, 200));
         renderer.setPreferredSize(new Dimension(400, 100));
         renderer.setMinimumSize(new Dimension(200, 50));
         column.setHeaderRenderer(renderer);
-
         column.sizeWidthToFit();
         assertEquals(200, column.getMinWidth());
         assertEquals(400, column.getWidth());
         assertEquals(400, column.getPreferredWidth());
         assertEquals(600, column.getMaxWidth());
-
         column.setHeaderRenderer(column.createDefaultHeaderRenderer());
         column.sizeWidthToFit();
         // specifics of our JLabel's size calculation processing: we calculate component size including
@@ -235,46 +218,43 @@ public class TableColumnTest extends BasicSwingTestCase {
             assertEquals(0, column.getPreferredWidth());
             assertEquals(0, column.getMaxWidth());
         }
-
         column.setHeaderValue("Any");
         column.sizeWidthToFit();
-        Component defaultRenderingComponent = column.createDefaultHeaderRenderer().getTableCellRendererComponent(null, "Any", false, false, 0, 0);
+        Component defaultRenderingComponent = column.createDefaultHeaderRenderer()
+                .getTableCellRendererComponent(null, "Any", false, false, 0, 0);
         assertEquals(defaultRenderingComponent.getMinimumSize().width, column.getMinWidth());
         assertEquals(defaultRenderingComponent.getPreferredSize().width, column.getWidth());
-        assertEquals(defaultRenderingComponent.getPreferredSize().width, column.getPreferredWidth());
+        assertEquals(defaultRenderingComponent.getPreferredSize().width, column
+                .getPreferredWidth());
         assertEquals(defaultRenderingComponent.getMaximumSize().width, column.getMaxWidth());
-
         column.setHeaderRenderer(column.createDefaultHeaderRenderer());
         column.setHeaderValue(null);
-        defaultRenderingComponent = column.createDefaultHeaderRenderer().getTableCellRendererComponent(null, "Any", false, false, 0, 0);
+        defaultRenderingComponent = column.createDefaultHeaderRenderer()
+                .getTableCellRendererComponent(null, "Any", false, false, 0, 0);
         assertEquals(defaultRenderingComponent.getMinimumSize().width, column.getMinWidth());
         assertEquals(defaultRenderingComponent.getPreferredSize().width, column.getWidth());
-        assertEquals(defaultRenderingComponent.getPreferredSize().width, column.getPreferredWidth());
+        assertEquals(defaultRenderingComponent.getPreferredSize().width, column
+                .getPreferredWidth());
         assertEquals(defaultRenderingComponent.getMaximumSize().width, column.getMaxWidth());
     }
 
+    @SuppressWarnings("deprecation")
     public void testEnableDisableResizedPosting() throws Exception {
         assertEquals(0, column.resizedPostingDisableCount);
         column.disableResizedPosting();
         assertEquals(1, column.resizedPostingDisableCount);
         assertFalse(propertyChangeController.isChanged());
-
         column.disableResizedPosting();
         assertEquals(2, column.resizedPostingDisableCount);
-
         column.disableResizedPosting();
         assertEquals(3, column.resizedPostingDisableCount);
-
         column.enableResizedPosting();
         assertEquals(2, column.resizedPostingDisableCount);
         assertFalse(propertyChangeController.isChanged());
-
         column.enableResizedPosting();
         assertEquals(1, column.resizedPostingDisableCount);
-
         column.enableResizedPosting();
         assertEquals(0, column.resizedPostingDisableCount);
-
         column.enableResizedPosting();
         assertEquals(-1, column.resizedPostingDisableCount);
     }
@@ -282,13 +262,13 @@ public class TableColumnTest extends BasicSwingTestCase {
     public void testAddRemoveGetPropertyChangeListener() throws Exception {
         assertEquals(1, column.getPropertyChangeListeners().length);
         assertEquals(propertyChangeController, column.getPropertyChangeListeners()[0]);
-
         column.removePropertyChangeListener(propertyChangeController);
         assertEquals(0, column.getPropertyChangeListeners().length);
     }
 
     public void testCreateDefaultHeaderRenderer() throws Exception {
         assertTrue(column.createDefaultHeaderRenderer() instanceof DefaultTableCellRenderer);
-        assertNotSame(column.createDefaultHeaderRenderer(), column.createDefaultHeaderRenderer());
+        assertNotSame(column.createDefaultHeaderRenderer(), column
+                .createDefaultHeaderRenderer());
     }
 }

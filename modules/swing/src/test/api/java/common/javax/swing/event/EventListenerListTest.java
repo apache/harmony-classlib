@@ -30,11 +30,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.EventListener;
-
 import javax.swing.SwingTestCase;
 
 public class EventListenerListTest extends SwingTestCase {
-
     static class ConcreteListener implements EventListener {
         protected String name = null;
 
@@ -45,18 +43,18 @@ public class EventListenerListTest extends SwingTestCase {
             this.name = name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
 
-        public int findMe(final Object[] listenersArray, final Class myClass) {
+        public int findMe(final Object[] listenersArray, final Class<?> myClass) {
             int found = 0;
             for (int i = 0; i < listenersArray.length; i += 2) {
-                if (listenersArray[i] == myClass && listenersArray[i+1] == this) {
+                if (listenersArray[i] == myClass && listenersArray[i + 1] == this) {
                     found++;
                 }
             }
-
             return found;
         }
 
@@ -67,12 +65,12 @@ public class EventListenerListTest extends SwingTestCase {
                     found++;
                 }
             }
-
             return found;
         }
     }
 
     static class ConcreteSerializableListener extends ConcreteListener implements Serializable {
+        private static final long serialVersionUID = 1L;
 
         public ConcreteSerializableListener() {
         }
@@ -87,11 +85,10 @@ public class EventListenerListTest extends SwingTestCase {
         }
 
         private void readObject(final ObjectInputStream inStream) throws IOException,
-                                                                   ClassNotFoundException  {
+                ClassNotFoundException {
             inStream.defaultReadObject();
-            name = (String)inStream.readObject();
+            name = (String) inStream.readObject();
         }
-
     }
 
     protected EventListenerList list = null;
@@ -103,15 +100,16 @@ public class EventListenerListTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         list = new EventListenerList();
     }
 
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -120,37 +118,27 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener1 = new ConcreteListener("1");
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
-
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteListener.class, listener2);
         list.add(ConcreteListener.class, listener3);
         assertTrue(list.getListenerCount() == 3);
-
         list.remove(ConcreteListener.class, listener2);
         assertTrue(list.getListenerCount() == 2);
-
         list.remove(ConcreteListener.class, listener1);
         assertTrue(list.getListenerCount() == 1);
-
         list.add(ConcreteListener.class, listener2);
         list.add(EventListener.class, listener1);
         list.add(EventListener.class, listener3);
         assertTrue(list.getListenerCount() == 4);
-
         list.remove(ConcreteListener.class, listener1);
         assertTrue(list.getListenerCount() == 4);
-
         list.remove(ConcreteListener.class, listener2);
         assertTrue(list.getListenerCount() == 3);
-
         list.remove(ConcreteListener.class, listener3);
         assertTrue(list.getListenerCount() == 2);
-
         list.remove(EventListener.class, listener3);
         assertTrue(list.getListenerCount() == 1);
-
         list.remove(EventListener.class, null);
-
         list.remove(EventListener.class, listener1);
         assertTrue(list.getListenerCount() == 0);
     }
@@ -160,33 +148,27 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
         Object[] listenersList = null;
-
         list.add(ConcreteListener.class, listener1);
         assertTrue(list.getListenerCount() == 1);
         listenersList = list.getListenerList();
         assertTrue(listener1.findMe(listenersList, ConcreteListener.class) == 1);
-
         list.add(ConcreteListener.class, listener2);
         assertTrue(list.getListenerCount() == 2);
         listenersList = list.getListenerList();
         assertTrue(listener1.findMe(listenersList, ConcreteListener.class) == 1);
         assertTrue(listener2.findMe(listenersList, ConcreteListener.class) == 1);
-
         list.add(ConcreteListener.class, listener3);
         assertTrue(list.getListenerCount() == 3);
         listenersList = list.getListenerList();
         assertTrue(listener1.findMe(listenersList, ConcreteListener.class) == 1);
         assertTrue(listener2.findMe(listenersList, ConcreteListener.class) == 1);
         assertTrue(listener3.findMe(listenersList, ConcreteListener.class) == 1);
-
         list.add(ConcreteListener.class, listener1);
         assertTrue(list.getListenerCount() == 4);
         listenersList = list.getListenerList();
         assertTrue(listener1.findMe(listenersList, ConcreteListener.class) == 2);
         assertTrue(listener2.findMe(listenersList, ConcreteListener.class) == 1);
         assertTrue(listener3.findMe(listenersList, ConcreteListener.class) == 1);
-
-
         list.add(EventListener.class, listener1);
         list.add(EventListener.class, listener2);
         assertTrue(list.getListenerCount() == 6);
@@ -203,25 +185,20 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
         EventListener[] listenersList = null;
-
         listenersList = list.getListeners(ConcreteListener.class);
         assertTrue(listener1.findMe(listenersList) == 0);
-
         list.add(ConcreteListener.class, listener1);
         listenersList = list.getListeners(ConcreteListener.class);
         assertTrue(listener1.findMe(listenersList) == 1);
-
         list.add(ConcreteListener.class, listener2);
         listenersList = list.getListeners(ConcreteListener.class);
         assertTrue(listener1.findMe(listenersList) == 1);
         assertTrue(listener2.findMe(listenersList) == 1);
-
         list.add(ConcreteListener.class, listener3);
         listenersList = list.getListeners(ConcreteListener.class);
         assertTrue(listener1.findMe(listenersList) == 1);
         assertTrue(listener2.findMe(listenersList) == 1);
         assertTrue(listener3.findMe(listenersList) == 1);
-
         list.add(ConcreteListener.class, listener3);
         list.add(EventListener.class, listener1);
         list.add(EventListener.class, listener2);
@@ -245,11 +222,9 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener1 = new ConcreteListener("1");
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
-
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteListener.class, listener2);
         list.add(ConcreteListener.class, listener3);
-
         assertFalse(list.toString() == null && list.toString().equals(""));
     }
 
@@ -266,14 +241,11 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener1 = new ConcreteListener("1");
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
-
         assertTrue(list.getListenerCount(ConcreteListener.class) == 0);
-
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteListener.class, listener2);
         list.add(ConcreteListener.class, listener3);
         assertTrue(list.getListenerCount(ConcreteListener.class) == 3);
-
         list.add(EventListener.class, listener1);
         list.add(EventListener.class, listener2);
         list.add(ConcreteListener.class, listener1);
@@ -288,22 +260,17 @@ public class EventListenerListTest extends SwingTestCase {
         ConcreteListener listener1 = new ConcreteListener("1");
         ConcreteListener listener2 = new ConcreteListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
-
         assertTrue(list.getListenerCount() == 0);
-
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteListener.class, listener2);
         list.add(ConcreteListener.class, listener3);
         assertTrue(list.getListenerCount() == 3);
-
         list.add(ConcreteListener.class, listener1);
         assertTrue(list.getListenerCount() == 4);
-
         list.add(EventListener.class, listener1);
         list.add(EventListener.class, listener2);
         assertTrue(list.getListenerCount() == 6);
     }
-
 
     public void testWriteObject() throws IOException {
         ConcreteListener listener1 = new ConcreteSerializableListener("1");
@@ -331,11 +298,11 @@ public class EventListenerListTest extends SwingTestCase {
         so.flush();
         InputStream fi = new ByteArrayInputStream(fo.toByteArray());
         ObjectInputStream si = new ObjectInputStream(fi);
-        EventListenerList resurrectedList = (EventListenerList)si.readObject();
+        EventListenerList resurrectedList = (EventListenerList) si.readObject();
         assertTrue(resurrectedList.getListeners(ConcreteListener.class).length == 1);
-        assertTrue(((ConcreteListener)resurrectedList.getListeners(ConcreteListener.class)[0]).name.equals("1"));
+        assertTrue((resurrectedList.getListeners(ConcreteListener.class)[0]).name.equals("1"));
         assertTrue(resurrectedList.getListeners(EventListener.class).length == 1);
-        assertTrue(((ConcreteListener)resurrectedList.getListeners(EventListener.class)[0]).name.equals("2"));
+        assertTrue(((ConcreteListener) resurrectedList.getListeners(EventListener.class)[0]).name
+                .equals("2"));
     }
-
 }

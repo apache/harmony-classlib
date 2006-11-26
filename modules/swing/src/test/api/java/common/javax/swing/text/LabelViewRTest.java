@@ -23,42 +23,36 @@ package javax.swing.text;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Shape;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.event.DocumentEvent;
 
-
 public class LabelViewRTest extends BasicSwingTestCase {
-
     private DefaultStyledDocument styledDoc;
+
     private LabelView labelView;
 
     public LabelViewRTest() {
         super();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         styledDoc = new DefaultStyledDocument();
         styledDoc.insertString(0, "Hello world", null);
-        labelView = new LabelView(
-                styledDoc.getDefaultRootElement().getElement(0).getElement(0));
+        labelView = new LabelView(styledDoc.getDefaultRootElement().getElement(0).getElement(0));
     }
 
     public void testSetPropertiesFromAttributes() {
         final Marker backgroundColorSetterMarker = new Marker();
-
-        labelView = new LabelView(styledDoc.getDefaultRootElement().getElement(
-                0).getElement(0)) {
-
+        labelView = new LabelView(styledDoc.getDefaultRootElement().getElement(0).getElement(0)) {
+            @Override
             protected void setBackground(Color bg) {
                 super.setBackground(bg);
                 backgroundColorSetterMarker.setOccurred();
             }
         };
-
         labelView.setPropertiesFromAttributes();
-
         if (isHarmony()) {
             assertTrue(backgroundColorSetterMarker.isOccurred());
         } else {
@@ -68,26 +62,19 @@ public class LabelViewRTest extends BasicSwingTestCase {
 
     public void testChangedUpdate() {
         final Marker preferenceChangeMarker = new Marker();
-
-        labelView = new LabelView(styledDoc.getDefaultRootElement().getElement(
-                0).getElement(0)) {
-
-            public void preferenceChanged(View child, boolean width,
-                    boolean height) {
-
+        labelView = new LabelView(styledDoc.getDefaultRootElement().getElement(0).getElement(0)) {
+            @Override
+            public void preferenceChanged(View child, boolean width, boolean height) {
                 preferenceChangeMarker.setOccurred();
                 super.preferenceChanged(child, width, height);
             }
 
-            public void changedUpdate(DocumentEvent event, Shape allocation,
-                    ViewFactory factory) {
-
+            @Override
+            public void changedUpdate(DocumentEvent event, Shape allocation, ViewFactory factory) {
                 // Do nothing.
             }
         };
-
         DocumentEvent event = new DocumentEvent() {
-
             public int getOffset() {
                 return labelView.getStartOffset();
             }
@@ -107,11 +94,8 @@ public class LabelViewRTest extends BasicSwingTestCase {
             public ElementChange getChange(Element elem) {
                 return null;
             }
-
         };
-
         Rectangle rectangle = new Rectangle();
-
         labelView.changedUpdate(event, rectangle, null);
         assertFalse(preferenceChangeMarker.isOccurred());
     }

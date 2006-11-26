@@ -14,16 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.beans.PropertyChangeListener;
-
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -33,12 +30,11 @@ import javax.swing.JRootPane;
 import javax.swing.SwingTestCase;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
-
 import java.util.EventListener;
-
 
 public class BasicRootPaneUITest extends SwingTestCase {
     private JRootPane rootPane;
+
     private BasicRootPaneUI ui;
 
     public BasicRootPaneUITest(final String name) {
@@ -48,15 +44,17 @@ public class BasicRootPaneUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         rootPane = new JRootPane();
-        ui = (BasicRootPaneUI)BasicRootPaneUI.createUI(rootPane);
+        ui = (BasicRootPaneUI) BasicRootPaneUI.createUI(rootPane);
     }
 
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -73,17 +71,15 @@ public class BasicRootPaneUITest extends SwingTestCase {
      *
      */
     protected boolean isListenerInstalled(final JComponent c,
-                                          final PropertyChangeListener listener) {
+            final PropertyChangeListener listener) {
         EventListener[] listeners = rootPane.getPropertyChangeListeners();
         boolean result = false;
-
         for (int i = 0; i < listeners.length; i++) {
             if (listeners[i] == listener) {
                 result = true;
                 break;
             }
         }
-
         return result;
     }
 
@@ -94,37 +90,26 @@ public class BasicRootPaneUITest extends SwingTestCase {
      */
     public void testInstallUninstallUI() {
         ui.installUI(rootPane);
-
         // check install listeners
         assertTrue(isListenerInstalled(rootPane, ui));
-
         // check install keyboard actions
-        int inputMapType = isHarmony()
-            ? JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-            : JComponent.WHEN_IN_FOCUSED_WINDOW;
+        int inputMapType = isHarmony() ? JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                : JComponent.WHEN_IN_FOCUSED_WINDOW;
         assertTrue("inputMap installed",
-                   SwingUtilities.getUIInputMap(rootPane,
-                                                inputMapType) != null);
-        int inputMapLength = SwingUtilities.getUIInputMap(rootPane,
-                                                          inputMapType).size();
+                SwingUtilities.getUIInputMap(rootPane, inputMapType) != null);
+        int inputMapLength = SwingUtilities.getUIInputMap(rootPane, inputMapType).size();
         assertTrue(SwingUtilities.getUIActionMap(rootPane) != null);
         int actionMapLength = SwingUtilities.getUIActionMap(rootPane).size();
-
         ui.uninstallUI(rootPane);
-
         // check uninstall keyboard actions
-        InputMap inputMap = SwingUtilities.getUIInputMap(rootPane,
-                                                         inputMapType);
+        InputMap inputMap = SwingUtilities.getUIInputMap(rootPane, inputMapType);
         if (inputMap != null) {
-            assertTrue("keys were uninstalled",
-                       inputMap.size() < inputMapLength);
+            assertTrue("keys were uninstalled", inputMap.size() < inputMapLength);
         }
         ActionMap actionMap = SwingUtilities.getUIActionMap(rootPane);
         if (actionMap != null) {
-            assertTrue("actions were uninstalled",
-                       actionMap.size() < actionMapLength);
+            assertTrue("actions were uninstalled", actionMap.size() < actionMapLength);
         }
-
         // check uninstall listeners
         assertFalse(isListenerInstalled(rootPane, ui));
     }
@@ -135,35 +120,24 @@ public class BasicRootPaneUITest extends SwingTestCase {
     public void testPropertyChange() {
         JFrame frame = new JFrame();
         rootPane = frame.getRootPane();
-
         rootPane.setUI(ui);
-
-        int inputMapType = isHarmony()
-            ? JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-            : JComponent.WHEN_IN_FOCUSED_WINDOW;
-        InputMap inputMap = SwingUtilities.getUIInputMap(rootPane,
-                                                         inputMapType);
-
+        int inputMapType = isHarmony() ? JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+                : JComponent.WHEN_IN_FOCUSED_WINDOW;
+        InputMap inputMap = SwingUtilities.getUIInputMap(rootPane, inputMapType);
         assertTrue("inputMap != null", inputMap != null);
-
-        Object[] keys = SwingUtilities.getUIInputMap(rootPane,
-                                                     inputMapType).keys();
+        Object[] keys = SwingUtilities.getUIInputMap(rootPane, inputMapType).keys();
         int keysLength = (keys == null) ? 0 : keys.length;
         // defaultButton is null, keysLength may be != 0 in 1.5
         //assertTrue("", keys == null || keys.length == 0);
-
         rootPane.setDefaultButton(new JButton());
-        keys = SwingUtilities.getUIInputMap(rootPane,
-                                            inputMapType).keys();
+        keys = SwingUtilities.getUIInputMap(rootPane, inputMapType).keys();
         // defaultButton != null
         assertTrue("keys were added", keys.length > keysLength);
-
         rootPane.setDefaultButton(null);
-        keys = SwingUtilities.getUIInputMap(rootPane,
-                                            inputMapType).keys();
+        keys = SwingUtilities.getUIInputMap(rootPane, inputMapType).keys();
         // defaultButton is null
-        assertTrue("keys were removed",
-                keysLength == 0 && keys == null || keys.length == keysLength);
+        assertTrue("keys were removed", keysLength == 0 && keys == null
+                || keys.length == keysLength);
     }
 
     /*
@@ -173,7 +147,6 @@ public class BasicRootPaneUITest extends SwingTestCase {
         ComponentUI ui = BasicRootPaneUI.createUI(rootPane);
         assertTrue(ui != null);
         assertTrue(ui instanceof BasicRootPaneUI);
-
         ComponentUI ui2 = BasicRootPaneUI.createUI(rootPane);
         assertTrue("stateless", ui == ui2);
     }

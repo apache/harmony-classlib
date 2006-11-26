@@ -30,7 +30,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Vector;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
@@ -43,8 +42,7 @@ import javax.swing.SwingTestCase;
 import javax.swing.text.JTextComponentTest.JTextComp;
 import javax.swing.text.JTextComponentTest.SimplePropertyChangeListener;
 
-public class JTextComponent_AccessibleJTextComponentTest extends
-        SwingTestCase {
+public class JTextComponent_AccessibleJTextComponentTest extends SwingTestCase {
     JFrame jf;
 
     JTextComponent jtc;
@@ -80,7 +78,7 @@ public class JTextComponent_AccessibleJTextComponentTest extends
     String text;
 
     class AccessiblePropertyChangeListener implements PropertyChangeListener {
-        Vector PropertyNames = new Vector();
+        Vector<String> PropertyNames = new Vector<String>();
 
         Object oldValues[] = new Object[5];
 
@@ -97,13 +95,12 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
         public void propertyChange(final PropertyChangeEvent e) {
             for (int i = 0; i < PropertyNames.size(); i++) {
-                if (e.getPropertyName() == (String) PropertyNames.get(i)) {
+                if (e.getPropertyName() == PropertyNames.get(i)) {
                     oldValues[i] = e.getOldValue();
                     newValues[i] = e.getNewValue();
                     wasPropertyChange[i] = true;
                 }
             }
-
         }
 
         public void reset() {
@@ -129,11 +126,11 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         }
         assertTrue(cond);
         assertEquals(count, k);
-
     }
 
     void assertEqualsPropertyChange(final AccessiblePropertyChangeListener listener,
-            final String s[], final Object oldValues[], final Object newValues[], final boolean b[]) {
+            final String s[], final Object oldValues[], final Object newValues[],
+            final boolean b[]) {
         for (int i = 0; i < listener.PropertyNames.size(); i++) {
             for (int j = 0; j < s.length; j++) {
                 if (s[j] == listener.PropertyNames.get(i)) {
@@ -154,22 +151,20 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         assertEquals(newValue, e.getNewValue());
     }
 
-
     public JTextComponent_AccessibleJTextComponentTest() {
         setIgnoreNotImplemented(true);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         jf = new JFrame();
         bWasException = false;
         str = null;
         listener = new AccessiblePropertyChangeListener();
-        text = ("JTextComponent\n" + "\u05dc"
-                + "JTextComponent.AccessibleJTextComponent");
+        text = ("JTextComponent\n" + "\u05dc" + "JTextComponent.AccessibleJTextComponent");
         jtc = new JTextArea(text);
-        accessible = (JTextComponent.AccessibleJTextComponent) jtc
-                .getAccessibleContext();
+        accessible = (JTextComponent.AccessibleJTextComponent) jtc.getAccessibleContext();
         accessible.addPropertyChangeListener(listener);
         jf.getContentPane().add(jtc);
         jf.setLocation(200, 300);
@@ -177,6 +172,7 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -207,12 +203,10 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         sas.addAttribute(name1, value1);
         sas.addAttribute(name2, value2);
         doc = (AbstractDocument) jtc.getDocument();
-
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++) {
             samples[i] = getAttributeSetByIndex(doc, i);
-
+        }
         accessible.setAttributes(4, 6, sas);
-
         for (int i = 4; i < 7; i++) {
             as = getAttributeSetByIndex(doc, i);
             assertFalse(as.containsAttribute(name1, value1));
@@ -223,53 +217,44 @@ public class JTextComponent_AccessibleJTextComponentTest extends
             assertEquals(as, accessible.getCharacterAttribute(i));
             assertEquals(as, getAttributeSetByIndex(doc, i));
         }
-
         jtc.setDocument(new DefaultStyledDocument());
-
         listener.reset();
         listener.InterestProperty(AccessibleContext.ACCESSIBLE_CARET_PROPERTY);
         jtc.setText("JTEXT_COMPONENT\n JTEXTCOMPONENT");
         obj_old[0] = new Integer(0);
         obj_new[0] = new Integer(31);
-
         assertEqualsPropertyChange(listener,
-                new String[] { AccessibleContext.ACCESSIBLE_CARET_PROPERTY },
-                obj_old, obj_new, was);
-
+                new String[] { AccessibleContext.ACCESSIBLE_CARET_PROPERTY }, obj_old, obj_new,
+                was);
         accessible.setAttributes(5, 8, sas);
         doc = (AbstractDocument) jtc.getDocument();
-
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++) {
             samples[i] = getAttributeSetByIndex(doc, i);
-
+        }
         for (int i = 5; i < 8; i++) {
             as = getAttributeSetByIndex(doc, i);
             assertEquals(sas, as);
             assertEquals(as, accessible.getCharacterAttribute(i));
         }
-
         for (int i = 0; i < 20; i++) {
-            if (i >= 5 && i < 7)
+            if (i >= 5 && i < 7) {
                 continue;
+            }
             as = samples[i];
             assertEquals(as, accessible.getCharacterAttribute(i));
             assertEquals(as, getAttributeSetByIndex(doc, i));
         }
-
     }
 
     public void testRemoveUpdate() throws Exception {
         listener.InterestProperty(AccessibleContext.ACCESSIBLE_TEXT_PROPERTY);
-
         try {
             jtc.getDocument().remove(0, 4);
         } catch (BadLocationException e) {
         }
         obj_new[0] = new Integer(0);
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
-
         listener.reset();
-
         try {
             jtc.getDocument().remove(5, 3);
         } catch (BadLocationException e) {
@@ -280,34 +265,27 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
     public void testInsertUpdate() throws Exception {
         listener.InterestProperty(AccessibleContext.ACCESSIBLE_TEXT_PROPERTY);
-
         try {
             jtc.getDocument().insertString(0, "TEST", null);
         } catch (BadLocationException e) {
         }
-
         obj_new[0] = new Integer(0);
         assertEqualsPropertyChange(listener,
-                new String[] { AccessibleContext.ACCESSIBLE_TEXT_PROPERTY },
-                obj_old, obj_new, was);
-
+                new String[] { AccessibleContext.ACCESSIBLE_TEXT_PROPERTY }, obj_old, obj_new,
+                was);
         listener.reset();
-
         try {
             jtc.getDocument().insertString(3, "TEST", null);
         } catch (BadLocationException e) {
         }
-
         obj_new[0] = new Integer(3);
         assertEqualsPropertyChange(listener,
-                new String[] { AccessibleContext.ACCESSIBLE_TEXT_PROPERTY },
-                obj_old, obj_new, was);
-
+                new String[] { AccessibleContext.ACCESSIBLE_TEXT_PROPERTY }, obj_old, obj_new,
+                was);
     }
 
     public void testChangedUpdate() throws Exception {
         listener.InterestProperty(AccessibleContext.ACCESSIBLE_TEXT_PROPERTY);
-
         try {
             ((AbstractDocument) jtc.getDocument()).replace(0, 3, "TEST", null);
         } catch (BadLocationException e) {
@@ -315,23 +293,18 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         obj_new[0] = new Integer(0);
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
         listener.reset();
-
         try {
             ((AbstractDocument) jtc.getDocument()).replace(4, 5, "TEST", null);
         } catch (BadLocationException e) {
         }
-
         obj_new[0] = new Integer(4);
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
     }
 
     public void testCaretUpdate() throws Exception {
         listener.InterestProperty(AccessibleContext.ACCESSIBLE_CARET_PROPERTY);
-        listener
-                .InterestProperty(AccessibleContext.ACCESSIBLE_SELECTION_PROPERTY);
-
-        String s[] = new String[] {
-                AccessibleContext.ACCESSIBLE_CARET_PROPERTY,
+        listener.InterestProperty(AccessibleContext.ACCESSIBLE_SELECTION_PROPERTY);
+        String s[] = new String[] { AccessibleContext.ACCESSIBLE_CARET_PROPERTY,
                 AccessibleContext.ACCESSIBLE_SELECTION_PROPERTY };
         obj_old = new Object[] { null, null };
         obj_new = new Object[2];
@@ -340,7 +313,6 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         obj_new[0] = new Integer(4);
         obj_old[0] = new Integer(0);
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
-
         listener.reset();
         jtc.moveCaretPosition(7);
         obj_old[0] = new Integer(4);
@@ -348,14 +320,12 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         was[1] = true;
         obj_new[1] = "tCo";
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
-
         listener.reset();
         jtc.moveCaretPosition(6);
         obj_old[0] = new Integer(7);
         obj_new[0] = new Integer(6);
         obj_new[1] = "tC";
         assertEqualsPropertyChange(listener, s, obj_old, obj_new, was);
-
         listener.reset();
         jtc.moveCaretPosition(4);
         obj_old[0] = new Integer(6);
@@ -374,18 +344,24 @@ public class JTextComponent_AccessibleJTextComponentTest extends
     }
 
     private void checkStateSet(final AccessibleStateSet ass) {
-        if (jtc.isEnabled())
-           checkState(ass, AccessibleState.ENABLED);
-        if (jtc.isFocusable())
+        if (jtc.isEnabled()) {
+            checkState(ass, AccessibleState.ENABLED);
+        }
+        if (jtc.isFocusable()) {
             checkState(ass, AccessibleState.FOCUSABLE);
-        if (jtc.isVisible())
+        }
+        if (jtc.isVisible()) {
             checkState(ass, AccessibleState.VISIBLE);
-        if (jtc.isShowing())
+        }
+        if (jtc.isShowing()) {
             checkState(ass, AccessibleState.SHOWING);
-        if (jtc.isFocusOwner())
+        }
+        if (jtc.isFocusOwner()) {
             checkState(ass, AccessibleState.FOCUSED);
-        if (jtc.isOpaque())
+        }
+        if (jtc.isOpaque()) {
             checkState(ass, AccessibleState.OPAQUE);
+        }
         assertEquals(0, ass.toArray().length);
     }
 
@@ -396,9 +372,7 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         ass.remove(AccessibleState.MULTI_LINE);
         ass.remove(AccessibleState.EDITABLE);
         checkStateSet(ass);
-
         jtc.setEditable(false);
-
         ass = accessible.getAccessibleStateSet();
         assertTrue(ass.contains(AccessibleState.MULTI_LINE));
         ass.remove(AccessibleState.MULTI_LINE);
@@ -427,16 +401,16 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         jtc.setDocument(new DefaultStyledDocument());
         jtc.setText(text);
         accessible.insertTextAtIndex(2, "SSS");
-        assertEquals(text.substring(0, 2) + "SSS"
-                + text.substring(2, text.length()), jtc.getText());
+        assertEquals(text.substring(0, 2) + "SSS" + text.substring(2, text.length()), jtc
+                .getText());
     }
 
     public void testReplaceText() throws Exception {
         accessible.replaceText(5, 8, "XXX");
         assertEquals(text.replaceFirst("Com", "XXX"), jtc.getText());
         try {
-           accessible.replaceText(8, 5, "ZZZ");
-           assertEquals(text.replaceFirst("Com", "XXXZZZ"), jtc.getText());
+            accessible.replaceText(8, 5, "ZZZ");
+            assertEquals(text.replaceFirst("Com", "XXXZZZ"), jtc.getText());
         } catch (IllegalArgumentException e) {
             bWasException = true;
         }
@@ -447,14 +421,14 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
     public void testGetTextRange() {
         assertEquals("JTextCo", accessible.getTextRange(0, 7));
-        assertEquals("omponent\n" + "\u05dc" + "JTe", accessible.getTextRange(
-                6, 19));
+        assertEquals("omponent\n" + "\u05dc" + "JTe", accessible.getTextRange(6, 19));
     }
 
     public void testGetAccessibleActionDescription() {
-        for (int i = 0; i < jtc.getActions().length; i++)
+        for (int i = 0; i < jtc.getActions().length; i++) {
             assertEquals(jtc.getActions()[i].getValue(Action.NAME), accessible
                     .getAccessibleActionDescription(i));
+        }
     }
 
     public void testGetSelectedText() throws Exception {
@@ -462,13 +436,11 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         assertNull(accessible.getSelectedText());
         jtc.moveCaretPosition(8);
         assertEquals("Com", accessible.getSelectedText());
-
     }
 
     public void testSelectText() throws Exception {
         accessible.selectText(5, 8);
         assertEquals("Com", accessible.getSelectedText());
-
     }
 
     public void testDelete() throws Exception {
@@ -485,7 +457,6 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         if (isHarmony()) {
             assertTrue(bWasException);
         }
-
         bWasException = false;
         try {
             accessible.delete(-6, -4);
@@ -493,7 +464,6 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         } catch (IllegalArgumentException e) {
             bWasException = true;
         }
-
         if (isHarmony()) {
             assertTrue(bWasException);
         }
@@ -505,8 +475,7 @@ public class JTextComponent_AccessibleJTextComponentTest extends
         Clipboard clipboard = toolkit.getSystemClipboard();
         DataFlavor dataFlavor = DataFlavor.stringFlavor;
         try {
-            content = (String) clipboard.getContents(null).getTransferData(
-                    dataFlavor);
+            content = (String) clipboard.getContents(null).getTransferData(dataFlavor);
         } catch (UnsupportedFlavorException e) {
         } catch (IOException e) {
         }
@@ -522,22 +491,22 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
     public void testCut() throws Exception {
         // TODO: uncomment when System clipboard is properly supported
-//        if (jtc.getToolkit().getSystemClipboard() == null)
-//            return;
-//        setClipboardString(jtc, "XXX");
-//        accessible.cut(2, 2);
-//        assertEquals("XXX", getClipboardString(jtc));
-//        assertEquals(2, jtc.getCaretPosition());
-//        assertEquals(text, jtc.getText());
-//
-//        accessible.cut(5, 8);
-//        assertEquals(5, jtc.getCaretPosition());
-//        assertEquals("Com", getClipboardString(jtc));
-//        assertEquals(text.replaceFirst("Com", ""), jtc.getText());
-//
-//        accessible.cut(9, 4);
-//        assertEquals(9, jtc.getCaretPosition());
-//        assertEquals(text.replaceFirst("Com", ""), jtc.getText());
+        //        if (jtc.getToolkit().getSystemClipboard() == null)
+        //            return;
+        //        setClipboardString(jtc, "XXX");
+        //        accessible.cut(2, 2);
+        //        assertEquals("XXX", getClipboardString(jtc));
+        //        assertEquals(2, jtc.getCaretPosition());
+        //        assertEquals(text, jtc.getText());
+        //
+        //        accessible.cut(5, 8);
+        //        assertEquals(5, jtc.getCaretPosition());
+        //        assertEquals("Com", getClipboardString(jtc));
+        //        assertEquals(text.replaceFirst("Com", ""), jtc.getText());
+        //
+        //        accessible.cut(9, 4);
+        //        assertEquals(9, jtc.getCaretPosition());
+        //        assertEquals(text.replaceFirst("Com", ""), jtc.getText());
     }
 
     public void testDoAccessibleAction() {
@@ -548,16 +517,16 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
     public void testPaste() throws Exception {
         // TODO: uncomment when System clipboard is properly supported
-//        if (jtc.getToolkit().getSystemClipboard() == null)
-//            return;
-//        setClipboardString(jtc, "XXX");
-//        accessible.paste(5);
-//        assertEquals(text.substring(0, 5) + "XXX"
-//                + text.substring(5, text.length()), jtc.getText());
-//        assertEquals(8, jtc.getCaretPosition());
-//        setClipboardString(jtc, "");
-//        accessible.paste(10);
-//        assertEquals(10, jtc.getCaretPosition());
+        //        if (jtc.getToolkit().getSystemClipboard() == null)
+        //            return;
+        //        setClipboardString(jtc, "XXX");
+        //        accessible.paste(5);
+        //        assertEquals(text.substring(0, 5) + "XXX"
+        //                + text.substring(5, text.length()), jtc.getText());
+        //        assertEquals(8, jtc.getCaretPosition());
+        //        setClipboardString(jtc, "");
+        //        accessible.paste(10);
+        //        assertEquals(10, jtc.getCaretPosition());
     }
 
     public void testGetSelectionStartEnd() throws Exception {

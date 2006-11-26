@@ -21,28 +21,29 @@
 package javax.swing.filechooser;
 
 import java.io.File;
-
 import javax.swing.SwingTestCase;
-
 import org.apache.harmony.misc.SystemUtils;
 
 public class FileSystemViewTest extends SwingTestCase {
     private FileSystemView view;
+
     private File file;
 
     public FileSystemViewTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         timeoutDelay = 5 * DEFAULT_TIMEOUT_DELAY;
-
         view = FileSystemView.getFileSystemView();
-        file = new File(new File(System.getProperty("user.home")), new Integer((int)(Math.random() * 1000)).toString());
+        file = new File(new File(System.getProperty("user.home")), new Integer((int) (Math
+                .random() * 1000)).toString());
         file.deleteOnExit();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         view = null;
         file.delete();
@@ -89,16 +90,15 @@ public class FileSystemViewTest extends SwingTestCase {
     public void testGetSystemTypeDescription() throws Exception {
         file.createNewFile();
         assertNotEmpty(view.getSystemTypeDescription(file));
-
         file.delete();
         file.mkdir();
         assertNotEmpty(view.getSystemTypeDescription(file));
     }
 
     public void testGetRoot() throws Exception {
-         assertNotNull(File.listRoots());
-         assertTrue(File.listRoots().length > 0);
-         assertNotSame(File.listRoots(), File.listRoots());
+        assertNotNull(File.listRoots());
+        assertTrue(File.listRoots().length > 0);
+        assertNotSame(File.listRoots(), File.listRoots());
     }
 
     public void testGetSystemIcon() throws Exception {
@@ -106,12 +106,13 @@ public class FileSystemViewTest extends SwingTestCase {
 
     public void testCreateFileObject() throws Exception {
         File dir = new File(System.getProperty("user.home"));
-
         assertEquals(new File(dir, "!!!!!!!"), view.createFileObject(dir, "!!!!!!!"));
         assertEquals(new File(dir, "***"), view.createFileObject(dir, "***"));
         assertEquals(new File(dir, "/normal"), view.createFileObject(dir, "/normal"));
-        assertEquals(new File(new File("any"), "/normal"), view.createFileObject(new File("any"), "/normal"));
-        assertEquals(new File(new File("/"), "/normal"), view.createFileObject(new File("/"), "/normal"));
+        assertEquals(new File(new File("any"), "/normal"), view.createFileObject(
+                new File("any"), "/normal"));
+        assertEquals(new File(new File("/"), "/normal"), view.createFileObject(new File("/"),
+                "/normal"));
     }
 
     public void testGetChild() throws Exception {

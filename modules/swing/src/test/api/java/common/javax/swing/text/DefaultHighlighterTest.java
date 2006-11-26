@@ -47,6 +47,7 @@ public class DefaultHighlighterTest extends SwingTestCase {
 
     Object obj5;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         jta = new JTextArea("JTextArea for DefaultHighlight Tesing");
@@ -67,6 +68,7 @@ public class DefaultHighlighterTest extends SwingTestCase {
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -77,19 +79,15 @@ public class DefaultHighlighterTest extends SwingTestCase {
         assertNotNull(dh1);
     }
 
-    void assertEqualsHighlight(final Highlighter.Highlight h,
-                               final int start, final int end,
-        final     Highlighter.HighlightPainter pnt) {
+    void assertEqualsHighlight(final Highlighter.Highlight h, final int start, final int end,
+            final Highlighter.HighlightPainter pnt) {
         assertEquals(start, h.getStartOffset());
         assertEquals(end, h.getEndOffset());
         assertEquals(pnt, h.getPainter());
     }
 
-
-
     public void testAddHighlightBadLocationException() {
         bWasException = false;
-
         try {
             dh.addHighlight(-8, -1, lpnt);
         } catch (BadLocationException e) {
@@ -98,7 +96,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
         if (isHarmony()) {
             assertTrue(bWasException);
         }
-
         bWasException = false;
         try {
             dh.addHighlight(8, 1, lpnt);
@@ -111,19 +108,16 @@ public class DefaultHighlighterTest extends SwingTestCase {
     }
 
     public void testAddHighlight() throws Exception {
-
         try {
             obj1 = dh.addHighlight(1, 5, lpnt);
         } catch (BadLocationException e) {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertNotNull(obj1);
         dh.getHighlights();
         assertEquals(1, dh.getHighlights().length);
         assertEqualsHighlight(dh.getHighlights()[0], 1, 5, lpnt);
-
         try {
             obj2 = dh.addHighlight(3, 7, lpnt);
         } catch (BadLocationException e) {
@@ -138,7 +132,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
     }
 
     public void testInstall() throws Exception {
-
         try {
             obj1 = dh.addHighlight(1, 5, lpnt);
         } catch (BadLocationException e) {
@@ -146,7 +139,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         try {
             obj2 = dh.addHighlight(3, 7, lpnt);
         } catch (BadLocationException e) {
@@ -154,18 +146,14 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         dh.setDrawsLayeredHighlights(false);
         dh.deinstall(jta);
         dh.install(jta);
-
         assertEquals(0, dh.getHighlights().length);
         assertFalse(dh.getDrawsLayeredHighlights());
-
     }
 
     public void testDeinstall() throws Exception {
-
         try {
             obj1 = dh.addHighlight(1, 5, lpnt);
         } catch (BadLocationException e) {
@@ -173,7 +161,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         try {
             obj2 = dh.addHighlight(3, 7, lpnt);
         } catch (BadLocationException e) {
@@ -183,13 +170,11 @@ public class DefaultHighlighterTest extends SwingTestCase {
         assertFalse("Unexpected exception: " + s, bWasException);
         dh.setDrawsLayeredHighlights(false);
         dh.deinstall(new JTextArea());
-
         assertEquals(2, dh.getHighlights().length);
         assertFalse(dh.getDrawsLayeredHighlights());
     }
 
     public void testChangeHighlight() throws Exception {
-
         try {
             obj1 = dh.addHighlight(1, 5, lpnt);
         } catch (BadLocationException e) {
@@ -221,7 +206,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
         assertEquals(2, dh.getHighlights().length);
         assertEqualsHighlight(dh.getHighlights()[0], 1, 8, lpnt);
         assertEqualsHighlight(dh.getHighlights()[1], 2, 6, lpnt);
-
     }
 
     public void testChangeHighlightBadLocationException() {
@@ -233,22 +217,20 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         bWasException = false;
         try {
             dh.changeHighlight(obj1, -1, -8);
         } catch (BadLocationException e) {
-          bWasException = true;
+            bWasException = true;
         }
         if (isHarmony()) {
             assertTrue(bWasException);
         }
-
         bWasException = false;
         try {
             dh.changeHighlight(obj1, 8, 1);
         } catch (BadLocationException e) {
-          bWasException = true;
+            bWasException = true;
         }
         if (isHarmony()) {
             assertTrue(bWasException);
@@ -256,7 +238,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
     }
 
     public void testRemoveHighlight() throws Exception {
-
         try {
             obj1 = dh.addHighlight(1, 5, lpnt);
         } catch (BadLocationException e) {
@@ -264,7 +245,6 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         try {
             obj2 = dh.addHighlight(3, 7, lpnt);
         } catch (BadLocationException e) {
@@ -272,25 +252,20 @@ public class DefaultHighlighterTest extends SwingTestCase {
             s = e.getMessage();
         }
         assertFalse("Unexpected exception: " + s, bWasException);
-
         dh.removeHighlight(obj2);
         assertEquals(1, dh.getHighlights().length);
         assertEqualsHighlight(dh.getHighlights()[0], 1, 5, lpnt);
         dh.removeHighlight(obj1);
         assertEquals(0, dh.getHighlights().length);
-
     }
 
     public void testSetGetDrawsLayeredHighlights() throws Exception {
         assertTrue(dh.getDrawsLayeredHighlights());
-
         dh.setDrawsLayeredHighlights(false);
-
         assertFalse(dh.getDrawsLayeredHighlights());
     }
 
     public void testRemoveAllHighlights() throws Exception {
-
         try {
             dh.addHighlight(0, 1, lpnt);
             dh.addHighlight(0, 4, lpnt);
@@ -299,21 +274,16 @@ public class DefaultHighlighterTest extends SwingTestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertFalse("Unexpected exception: " + s, bWasException);
-
         assertEquals(3, dh.getHighlights().length);
         dh.removeAllHighlights();
         assertEquals(0, dh.getHighlights().length);
-
     }
 
     public void testGetHighlights() throws Exception {
         final int N = 50;
         final int M = 25;
-
         Object[] obj = new Object[N];
-
         for (int i = 0; i < N; i++) {
             try {
                 obj[i] = dh.addHighlight(i, i + 1, lpnt);
@@ -323,11 +293,9 @@ public class DefaultHighlighterTest extends SwingTestCase {
             }
             assertFalse("Unexpected exception: " + s, bWasException);
         }
-
         for (int i = 0; i < N; i = i + 2) {
             dh.removeHighlight(obj[i]);
         }
-
         for (int i = M; i < N; i++) {
             try {
                 dh.addHighlight(i + 12000, i + 12100, lpnt);
@@ -339,15 +307,10 @@ public class DefaultHighlighterTest extends SwingTestCase {
         }
         Highlighter.Highlight highlights[] = dh.getHighlights();
         for (int i = 0; i < M; i++) {
-            assertEqualsHighlight(highlights[i], 2 * i + 1,
-                    2 * (i + 1), lpnt);
+            assertEqualsHighlight(highlights[i], 2 * i + 1, 2 * (i + 1), lpnt);
         }
-
         for (int i = M; i < N; i++) {
-            assertEqualsHighlight(highlights[i], i + 12000, i + 12100,
-                    lpnt);
-
+            assertEqualsHighlight(highlights[i], i + 12000, i + 12100, lpnt);
         }
     }
-
 }

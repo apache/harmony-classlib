@@ -27,22 +27,27 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWaitTestCase;
 
 public class DefaultCaret_MultithreadedTest extends BasicSwingTestCase {
-
     AbstractDocument ad;
+
     boolean bWasException = false;
+
     DefaultCaret dc = null;
+
     JFrame jf = null;
+
     JTextArea jta = null;
+
     String s = null;
+
     int newDot;
-    
+
     public DefaultCaret_MultithreadedTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         jta = new JTextArea("JTextArea for DefaultCaret Testing\n***\n*%%%**");
         dc = new DefaultCaret();
         jf = new JFrame();
@@ -57,6 +62,7 @@ public class DefaultCaret_MultithreadedTest extends BasicSwingTestCase {
         jf.setVisible(true);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -82,7 +88,6 @@ public class DefaultCaret_MultithreadedTest extends BasicSwingTestCase {
         waitForIdle();
         assertFalse("Unexpected exception: " + s, bWasException);
         assertEquals(0, dc.getDot());
-        
         newDot = 4;
         SwingUtilities.invokeAndWait(setDot);
         waitForIdle();
@@ -96,14 +101,12 @@ public class DefaultCaret_MultithreadedTest extends BasicSwingTestCase {
         ad.writeUnlock();
         waitForIdle();
         assertEquals(4, dc.getDot());
-        
         //dc.setAsynchronousMovement(true); //1.4.2
         if (isHarmony()) {
             dc.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         } else {
             dc.setAsynchronousMovement(true);
         }
-        
         newDot = 0;
         SwingUtilities.invokeAndWait(setDot);
         waitForIdle();
@@ -119,7 +122,6 @@ public class DefaultCaret_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.isRealized(jf);
         assertFalse("Unexpected exception: " + s, bWasException);
         assertEquals(6, dc.getDot());
-        
         newDot = 4;
         SwingUtilities.invokeAndWait(setDot);
         waitForIdle();

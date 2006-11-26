@@ -27,7 +27,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Arrays;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
@@ -42,23 +41,28 @@ import javax.swing.plaf.FontUIResource;
 
 public class BasicListUITest extends SwingTestCase {
     private JList list;
+
     private BasicListUI ui;
 
     private Object defaultBackground;
+
     private Object defaultForeground;
+
     private Object defaultFont;
+
     private Object defaultRenderer;
+
     private Object defaultBorder;
 
     public BasicListUITest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new BasicListUI();
         list = new JList();
-
         defaultBackground = UIManager.get("List.background");
         defaultForeground = UIManager.get("List.foreground");
         defaultFont = UIManager.get("List.font");
@@ -66,10 +70,10 @@ public class BasicListUITest extends SwingTestCase {
         defaultBorder = UIManager.get("List.border");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         list = null;
-
         UIManager.put("List.background", defaultBackground);
         UIManager.put("List.foreground", defaultForeground);
         UIManager.put("List.font", defaultFont);
@@ -90,14 +94,12 @@ public class BasicListUITest extends SwingTestCase {
     public void testBasicListUI_FocusListener() throws Exception {
         assertNull(ui.focusListener);
         int listenersCount = list.getFocusListeners().length;
-
         ui.installUI(list);
         if (isHarmony()) {
             assertTrue(ui.focusListener instanceof BasicListUI.FocusHandler);
         }
         assertTrue(Arrays.asList(list.getFocusListeners()).contains(ui.focusListener));
         assertEquals(listenersCount + 1, list.getFocusListeners().length);
-
         ui.uninstallUI(list);
         assertNull(ui.focusListener);
         assertEquals(listenersCount, list.getFocusListeners().length);
@@ -106,17 +108,14 @@ public class BasicListUITest extends SwingTestCase {
     public void testBasicListUI_ListDataHandler() throws Exception {
     }
 
-
     public void testConvertRowToY() throws Exception {
         ui.installUI(list);
         assertEquals(-1, ui.convertRowToY(0));
         assertEquals(-1, ui.convertRowToY(-1));
-
-        list.setListData(new Object[] {"a", "b"});
+        list.setListData(new Object[] { "a", "b" });
         ui.installUI(list);
         list.setFixedCellHeight(20);
         ui.maybeUpdateLayoutState();
-
         assertEquals(-1, ui.convertRowToY(-1));
         assertEquals(0, ui.convertRowToY(0));
         assertEquals(20, ui.convertRowToY(1));
@@ -125,8 +124,7 @@ public class BasicListUITest extends SwingTestCase {
     public void testConvertYToRow() throws Exception {
         ui.installUI(list);
         assertEquals(-1, ui.convertYToRow(0));
-
-        list.setListData(new Object[] {"a", "b"});
+        list.setListData(new Object[] { "a", "b" });
         list.setFixedCellHeight(10);
         ui.maybeUpdateLayoutState();
         assertEquals(0, ui.convertYToRow(0));
@@ -166,33 +164,28 @@ public class BasicListUITest extends SwingTestCase {
     }
 
     public void testCreateUI() throws Exception {
-        BasicListUI newUI1 = (BasicListUI)BasicListUI.createUI(list);
-        BasicListUI newUI2 = (BasicListUI)BasicListUI.createUI(list);
+        BasicListUI newUI1 = (BasicListUI) BasicListUI.createUI(list);
+        BasicListUI newUI2 = (BasicListUI) BasicListUI.createUI(list);
         assertNotSame(newUI1, newUI2);
     }
 
     public void testGetCellBounds() throws Exception {
         ui.installUI(list);
-
         assertNull(ui.getCellBounds(list, 0, 0));
         assertNull(ui.getCellBounds(list, -1, -1));
-
-        list.setListData(new Object[] {"a", "b"});
+        list.setListData(new Object[] { "a", "b" });
         list.setFixedCellHeight(10);
         list.setFixedCellWidth(20);
         list.setSize(100, 100);
         assertEquals(new Rectangle(0, 0, 100, 10), ui.getCellBounds(list, 0, 0));
         assertEquals(new Rectangle(0, 10, 100, 10), ui.getCellBounds(list, 1, 1));
         assertEquals(new Rectangle(0, 0, 100, 20), ui.getCellBounds(list, 0, 1));
-
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         assertEquals(new Rectangle(0, 0, 20, 10), ui.getCellBounds(list, 0, 0));
         assertEquals(new Rectangle(0, 10, 20, 10), ui.getCellBounds(list, 1, 1));
         assertEquals(new Rectangle(0, 0, 20, 20), ui.getCellBounds(list, 1, 0));
-
         list.setBorder(BorderFactory.createEmptyBorder(10, 5, 20, 7));
         assertEquals(new Rectangle(5, 10, 20, 10), ui.getCellBounds(list, 0, 0));
-
         list.setLayoutOrientation(JList.VERTICAL);
         assertEquals(new Rectangle(5, 10, 100 - 5 - 7, 20), ui.getCellBounds(list, 0, 1));
     }
@@ -211,35 +204,31 @@ public class BasicListUITest extends SwingTestCase {
         ui.installUI(list);
         list.setSize(100, 100);
         assertEquals(new Dimension(0, 0), ui.getPreferredSize(list));
-
-        list.setListData(new Object[] {"a", "bbb"});
-        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list, "bbb", 1, false, false);
-        assertEquals(new Dimension(renderer.getPreferredSize().width, 2 * renderer.getPreferredSize().height), ui.getPreferredSize(list));
-
+        list.setListData(new Object[] { "a", "bbb" });
+        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list,
+                "bbb", 1, false, false);
+        assertEquals(new Dimension(renderer.getPreferredSize().width, 2 * renderer
+                .getPreferredSize().height), ui.getPreferredSize(list));
         list.setFixedCellHeight(20);
         list.setFixedCellWidth(30);
         assertEquals(new Dimension(30, 40), ui.getPreferredSize(list));
-
         list.setVisibleRowCount(1);
         assertEquals(new Dimension(30, 40), ui.getPreferredSize(list));
-
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         assertEquals(new Dimension(60, 20), ui.getPreferredSize(list));
     }
 
     public void testGetRowHeight() throws Exception {
         assertEquals(-1, ui.getRowHeight(-1));
-
         ui.installUI(list);
         assertEquals(-1, ui.getRowHeight(0));
-
-        list.setListData(new Object[] {"a", "bbb"});
+        list.setListData(new Object[] { "a", "bbb" });
         ui.maybeUpdateLayoutState();
-        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list, "bbb", 1, false, false);
+        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list,
+                "bbb", 1, false, false);
         assertEquals(renderer.getPreferredSize().height, ui.getRowHeight(0));
         assertEquals(renderer.getPreferredSize().height, ui.getRowHeight(1));
         assertEquals(-1, ui.getRowHeight(2));
-
         list.setFixedCellHeight(30);
         ui.maybeUpdateLayoutState();
         assertEquals(30, ui.getRowHeight(0));
@@ -249,17 +238,17 @@ public class BasicListUITest extends SwingTestCase {
         ui.installUI(list);
         assertNull(ui.indexToLocation(list, -1));
         assertNull(ui.indexToLocation(list, 0));
-
-        list.setListData(new Object[] {"a", "bbb"});
-        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list, "bbb", 1, false, false);
+        list.setListData(new Object[] { "a", "bbb" });
+        Component renderer = new DefaultListCellRenderer().getListCellRendererComponent(list,
+                "bbb", 1, false, false);
         assertEquals(new Point(0, 0), ui.indexToLocation(list, 0));
-        assertEquals(new Point(0, renderer.getPreferredSize().height), ui.indexToLocation(list, 1));
-
+        assertEquals(new Point(0, renderer.getPreferredSize().height), ui.indexToLocation(list,
+                1));
         list.setVisibleRowCount(1);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         assertEquals(new Point(0, 0), ui.indexToLocation(list, 0));
-        assertEquals(new Point(renderer.getPreferredSize().width, 0), ui.indexToLocation(list, 1));
-
+        assertEquals(new Point(renderer.getPreferredSize().width, 0), ui.indexToLocation(list,
+                1));
         assertNull(ui.indexToLocation(list, 2));
     }
 
@@ -272,7 +261,6 @@ public class BasicListUITest extends SwingTestCase {
         UIManager.getDefaults().put("List.cellRenderer", renderer);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.getDefaults().put("List.border", border);
-
         list.setUI(ui);
         ui.installDefaults();
         assertEquals(Color.red, list.getBackground());
@@ -291,17 +279,14 @@ public class BasicListUITest extends SwingTestCase {
         UIManager.getDefaults().put("List.cellRenderer", renderer);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.getDefaults().put("List.border", border);
-
         list.setUI(ui);
         ui.installDefaults();
-
         ui.uninstallDefaults();
         assertNull(list.getBackground());
         assertNull(list.getForeground());
         assertNull(list.getFont());
         assertNull(list.getCellRenderer());
         assertNull(list.getBorder());
-
         UIManager.getDefaults().put("List.background", Color.red);
         list.setUI(ui);
         ui.uninstallDefaults();
@@ -327,16 +312,12 @@ public class BasicListUITest extends SwingTestCase {
 
     public void testInstallListeners() throws Exception {
         list.setUI(ui);
-
         assertNotNull(ui.focusListener);
         assertTrue(list.getFocusListeners().length > 0);
-
         assertNotNull(ui.listDataListener);
-
         assertNotNull(ui.mouseInputListener);
         assertTrue(list.getMouseListeners().length > 0);
         assertTrue(list.getMouseMotionListeners().length > 0);
-
         assertNotNull(ui.propertyChangeListener);
         assertTrue(list.getPropertyChangeListeners().length > 0);
     }
@@ -347,22 +328,16 @@ public class BasicListUITest extends SwingTestCase {
         int mouseListenersCount = list.getMouseListeners().length;
         int mouseMotionListenersCount = list.getMouseMotionListeners().length;
         int propertyChangeListenersCount = list.getPropertyChangeListeners().length;
-
         ui.uninstallListeners();
-
         assertNull(ui.focusListener);
         assertTrue(focusListenersCount > list.getFocusListeners().length);
-
         assertNull(ui.listDataListener);
-
         assertNull(ui.mouseInputListener);
         assertTrue(mouseListenersCount > list.getMouseListeners().length);
         assertTrue(mouseMotionListenersCount > list.getMouseMotionListeners().length);
-
         assertNull(ui.propertyChangeListener);
         assertTrue(propertyChangeListenersCount > list.getPropertyChangeListeners().length);
     }
-
 
     public void testInstallUI() throws Exception {
         ui.installUI(list);
@@ -386,13 +361,11 @@ public class BasicListUITest extends SwingTestCase {
     public void testLocationToIndex() throws Exception {
         ui.installUI(list);
         assertEquals(-1, ui.locationToIndex(list, new Point(3, 3)));
-
-        list.setListData(new Object[] {"aa", "bb"});
+        list.setListData(new Object[] { "aa", "bb" });
         assertEquals(0, ui.locationToIndex(list, new Point(3, 3)));
         assertEquals(1, ui.locationToIndex(list, new Point(3, 25)));
         assertEquals(0, ui.locationToIndex(list, new Point(70, 3)));
         assertEquals(1, ui.locationToIndex(list, new Point(70, 25)));
-
         list.setVisibleRowCount(1);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         assertEquals(0, ui.locationToIndex(list, new Point(3, 3)));
@@ -418,26 +391,22 @@ public class BasicListUITest extends SwingTestCase {
 
     public void testUpdateLayoutState() throws Exception {
         ui.installUI(list);
-
         assertEquals(-1, ui.cellHeight);
         assertEquals(-1, ui.cellWidth);
         assertNull(ui.cellHeights);
-
         list.setSize(100, 100);
         ui.maybeUpdateLayoutState();
         assertEquals(-1, ui.cellHeight);
         assertEquals(-1, ui.cellWidth);
         assertNotNull(ui.cellHeights);
         assertEquals(0, ui.cellHeights.length);
-
-        list.setListData(new Object[] {"aa"});
+        list.setListData(new Object[] { "aa" });
         ui.maybeUpdateLayoutState();
         assertEquals(-1, ui.cellHeight);
         assertTrue(ui.cellWidth > 0);
         assertNotNull(ui.cellHeights);
         assertEquals(1, ui.cellHeights.length);
         assertTrue(ui.cellHeights[0] > 0);
-
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         ui.maybeUpdateLayoutState();
         assertTrue(ui.cellHeight > 0);
@@ -447,76 +416,62 @@ public class BasicListUITest extends SwingTestCase {
 
     public void testSelectNextPreviousIndex() throws Exception {
         ui.installUI(list);
-        list.setListData(new Object[] {"1", "2", "3"});
+        list.setListData(new Object[] { "1", "2", "3" });
         assertTrue(list.isSelectionEmpty());
-
         list.setSelectedIndex(0);
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertFalse(list.isSelectedIndex(1));
         assertTrue(list.isSelectedIndex(2));
-
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertFalse(list.isSelectedIndex(1));
         assertTrue(list.isSelectedIndex(2));
-
         ui.selectPreviousIndex();
         assertFalse(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         ui.selectPreviousIndex();
         assertTrue(list.isSelectedIndex(0));
         assertFalse(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         ui.selectPreviousIndex();
         assertTrue(list.isSelectedIndex(0));
         assertFalse(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.clearSelection();
         ui.selectNextIndex();
         assertTrue(list.isSelectedIndex(0));
         assertFalse(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.clearSelection();
         ui.selectPreviousIndex();
         assertTrue(list.isSelectionEmpty());
-
-
         list.setSelectionInterval(0, 1);
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.setSelectionInterval(1, 0);
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.setSelectedIndex(1);
         list.setSelectionInterval(0, 0);
         ui.selectNextIndex();
         assertFalse(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.setSelectionInterval(0, 1);
         ui.selectPreviousIndex();
         assertTrue(list.isSelectedIndex(0));
         assertTrue(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
-
         list.setSelectionInterval(2, 1);
         ui.selectPreviousIndex();
         assertTrue(list.isSelectedIndex(0));

@@ -25,12 +25,13 @@ import javax.swing.SwingTestCase;
 public class BasicComboBoxUIRTest extends SwingTestCase {
     protected BasicComboBoxUI comboBoxUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         comboBoxUI = new BasicComboBoxUI();
     }
 
-    public void  testInitialValues() {
+    public void testInitialValues() {
         assertNotNull(comboBoxUI.cachedMinimumSize);
         assertTrue(comboBoxUI.isMinimumSizeDirty);
     }

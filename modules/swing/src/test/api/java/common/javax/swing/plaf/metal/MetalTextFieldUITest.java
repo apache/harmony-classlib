@@ -18,7 +18,6 @@
  * @author Evgeniya G. Maenkova
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import javax.swing.JTextField;
@@ -27,15 +26,17 @@ import javax.swing.plaf.ComponentUI;
 
 public class MetalTextFieldUITest extends SwingTestCase {
     JTextField tf;
+
     MetalTextFieldUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         tf = new JTextField();
         ui = new MetalTextFieldUI();
         super.setUp();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -46,8 +47,5 @@ public class MetalTextFieldUITest extends SwingTestCase {
         ComponentUI ui2 = MetalTextFieldUI.createUI(tf);
         assertTrue(ui2 instanceof MetalTextFieldUI);
         assertNotSame(ui1, ui2);
-    }
-    public void testMetalTextFieldUI(){
-        assertTrue(ui instanceof MetalTextFieldUI);
     }
 }

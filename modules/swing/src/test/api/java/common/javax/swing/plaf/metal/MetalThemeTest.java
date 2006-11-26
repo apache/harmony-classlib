@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import javax.swing.SwingTestCase;
@@ -30,10 +28,12 @@ import javax.swing.plaf.FontUIResource;
 public class MetalThemeTest extends SwingTestCase {
     private TestMetalTheme metalTheme;
 
+    @Override
     public void setUp() {
         metalTheme = new TestMetalTheme();
     }
 
+    @Override
     public void tearDown() {
         metalTheme = null;
     }
@@ -190,51 +190,77 @@ public class MetalThemeTest extends SwingTestCase {
     }
 }
 
-class TestMetalTheme extends MetalTheme  {
+class TestMetalTheme extends MetalTheme {
     public ColorUIResource getWhitePublic() {
         return getWhite();
     }
+
     public ColorUIResource getBlackPublic() {
         return getBlack();
     }
+
+    @Override
     public String getName() {
         return "name";
     }
+
+    @Override
     protected ColorUIResource getPrimary1() {
         return new ColorUIResource(1, 1, 1);
     }
+
+    @Override
     protected ColorUIResource getPrimary2() {
         return new ColorUIResource(1, 1, 2);
     }
+
+    @Override
     protected ColorUIResource getPrimary3() {
         return new ColorUIResource(1, 1, 3);
     }
+
+    @Override
     protected ColorUIResource getSecondary1() {
         return new ColorUIResource(1, 1, 4);
     }
+
+    @Override
     protected ColorUIResource getSecondary2() {
         return new ColorUIResource(1, 1, 5);
     }
+
+    @Override
     protected ColorUIResource getSecondary3() {
         return new ColorUIResource(1, 1, 6);
     }
+
+    @Override
     public FontUIResource getControlTextFont() {
         return null;
     }
+
+    @Override
     public FontUIResource getMenuTextFont() {
         return null;
     }
+
+    @Override
     public FontUIResource getSubTextFont() {
         return null;
     }
+
+    @Override
     public FontUIResource getSystemTextFont() {
         return null;
     }
+
+    @Override
     public FontUIResource getUserTextFont() {
         return null;
     }
+
+    @Override
     public FontUIResource getWindowTitleFont() {
         return null;
     }
 }
-

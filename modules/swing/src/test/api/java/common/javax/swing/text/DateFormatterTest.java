@@ -21,17 +21,16 @@
 package javax.swing.text;
 
 import java.text.DateFormat;
-
 import javax.swing.SwingTestCase;
 
 public class DateFormatterTest extends SwingTestCase {
     DateFormatter formatter;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new DateFormatter();
     }
-
 
     public void testDateFormatterDateFormat() {
         DateFormat dateFormat = DateFormat.getInstance();
@@ -57,7 +56,6 @@ public class DateFormatterTest extends SwingTestCase {
         DateFormat dateFormat = DateFormat.getInstance();
         formatter.setFormat(dateFormat);
         checkBaseProperties(dateFormat);
-
         formatter.setFormat(null);
         checkBaseProperties(null);
     }

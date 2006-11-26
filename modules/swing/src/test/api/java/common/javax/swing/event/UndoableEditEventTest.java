@@ -23,22 +23,24 @@ package javax.swing.event;
 import javax.swing.JTextField;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoableEdit;
-
 import junit.framework.TestCase;
 
 public class UndoableEditEventTest extends TestCase {
     private TestUndoableEditListener listener;
+
     private Object source;
 
     public UndoableEditEventTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         listener = new TestUndoableEditListener();
         source = new Object();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         listener = null;
         source = null;
@@ -46,20 +48,18 @@ public class UndoableEditEventTest extends TestCase {
 
     public void testUndoableEditEvent() throws Exception {
         UndoableEditEvent event = new UndoableEditEvent(source, null);
-
         assertEquals(source, event.getSource());
     }
 
     public void testGetEdit() throws Exception {
         UndoableEdit edit = new AbstractUndoableEdit();
         UndoableEditEvent event = new UndoableEditEvent(source, edit);
-
         assertEquals(edit, event.getEdit());
     }
 
     public void testEventProperlyInitialized() throws Exception {
-        UndoableEditEvent event = new UndoableEditEvent(new Object(), new AbstractUndoableEdit());
-
+        UndoableEditEvent event = new UndoableEditEvent(new Object(),
+                new AbstractUndoableEdit());
         assertNotNull(event.getSource());
         assertNotNull(event.getEdit());
     }
@@ -67,15 +67,11 @@ public class UndoableEditEventTest extends TestCase {
     public void testEventOccured() throws Exception {
         JTextField field = new JTextField();
         field.getDocument().addUndoableEditListener(listener);
-
         field.setText("new text");
-
         assertNotNull(listener.getEvent());
         assertNotNull(listener.getEvent().getSource());
         assertNotNull(listener.getEvent().getEdit());
     }
-
-
 
     private class TestUndoableEditListener implements UndoableEditListener {
         private UndoableEditEvent event;

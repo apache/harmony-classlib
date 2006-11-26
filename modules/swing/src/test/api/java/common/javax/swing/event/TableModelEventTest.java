@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -32,41 +31,37 @@ public class TableModelEventTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }
 
     public void testTableModelEvent() throws Exception {
         TableModel model = new DefaultTableModel();
-
         event = new TableModelEvent(model);
         assertEquals(model, event.getSource());
         assertEquals(0, event.getFirstRow());
         assertEquals(Integer.MAX_VALUE, event.getLastRow());
         assertEquals(TableModelEvent.ALL_COLUMNS, event.getColumn());
         assertEquals(TableModelEvent.UPDATE, event.getType());
-
         event = new TableModelEvent(model, 3);
         assertEquals(model, event.getSource());
         assertEquals(3, event.getFirstRow());
         assertEquals(3, event.getLastRow());
         assertEquals(TableModelEvent.ALL_COLUMNS, event.getColumn());
         assertEquals(TableModelEvent.UPDATE, event.getType());
-
         event = new TableModelEvent(model, 6, 2);
         assertEquals(model, event.getSource());
         assertEquals(6, event.getFirstRow());
         assertEquals(2, event.getLastRow());
         assertEquals(TableModelEvent.ALL_COLUMNS, event.getColumn());
         assertEquals(TableModelEvent.UPDATE, event.getType());
-
         event = new TableModelEvent(model, 6, 2, 5);
         assertEquals(model, event.getSource());
         assertEquals(6, event.getFirstRow());
         assertEquals(2, event.getLastRow());
         assertEquals(5, event.getColumn());
         assertEquals(TableModelEvent.UPDATE, event.getType());
-
         event = new TableModelEvent(model, 6, 2, 5, TableModelEvent.INSERT);
         assertEquals(model, event.getSource());
         assertEquals(6, event.getFirstRow());

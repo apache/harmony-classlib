@@ -22,31 +22,36 @@ package javax.swing.plaf.basic;
 
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
 public class BasicToolBarUIRTest extends SwingTestCase {
-
     public BasicToolBarUIRTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
     public void testNavigateFocusedComponent() {
         class MyButton extends JButton {
+            private static final long serialVersionUID = 1L;
+
             public boolean requestedFocus;
+
+            @Override
             public void requestFocus() {
                 requestedFocus = true;
                 super.requestFocus();
             }
         }
-
         JToolBar toolbar = new JToolBar();
         BasicToolBarUI ui = new BasicToolBarUI();
         toolbar.setUI(ui);
@@ -56,8 +61,7 @@ public class BasicToolBarUIRTest extends SwingTestCase {
         toolbar.add(b1);
         toolbar.add(b2);
         ui.focusedCompIndex = 0;
-
-        ui.navigateFocusedComp(BasicToolBarUI.EAST);
+        ui.navigateFocusedComp(SwingConstants.EAST);
         assertFalse(b2.requestedFocus);
     }
 }

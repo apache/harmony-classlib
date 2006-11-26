@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,37 +21,34 @@
 package javax.swing.text;
 
 import java.lang.ref.WeakReference;
-
 import javax.swing.SerializableTestCase;
 
 public class GapContent_SerializeTest extends SerializableTestCase {
     private GapContent content;
 
+    @Override
     protected void setUp() throws Exception {
         toSave = content = new GapContent();
-
         content.insertString(0, "01234");
         content.insertString(5, "abcde");
         content.insertString(5, "!");
         super.setUp();
     }
 
+    @Override
     public void testSerializable() throws Exception {
-        GapContent restored = (GapContent)toLoad;
-
+        GapContent restored = (GapContent) toLoad;
         assertEquals(content.length(), restored.length());
         assertEquals(content.getArrayLength(), restored.getArrayLength());
         assertEquals(content.getGapStart(), restored.getGapStart());
         assertEquals(content.getGapEnd(), restored.getGapEnd());
-        assertEquals(content.getString(0, content.length()),
-                     restored.getString(0, restored.length()));
-
+        assertEquals(content.getString(0, content.length()), restored.getString(0, restored
+                .length()));
         // Test that position handling works the way it is supposed
         Position pos = restored.createPosition(5);
-        WeakReference  wr = new WeakReference(pos);
+        WeakReference<Position> wr = new WeakReference<Position>(pos);
         assertEquals(5, pos.getOffset());
         restored.insertString(0, "aStr");
-        assertEquals(9, pos.getOffset());        
+        assertEquals(9, pos.getOffset());
     }
-
 }

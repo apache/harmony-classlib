@@ -22,15 +22,13 @@ package javax.swing.text;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-
+import javax.swing.BasicSwingTestCase;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingTestCase;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWaitTestCase;
-
 import junit.framework.TestCase;
 
 public class JTextComponent_MultithreadedTest extends TestCase {
@@ -50,6 +48,7 @@ public class JTextComponent_MultithreadedTest extends TestCase {
 
     Rectangle rect;
 
+    @Override
     protected void setUp() throws Exception {
         jf = new JFrame();
         bWasException = false;
@@ -60,9 +59,9 @@ public class JTextComponent_MultithreadedTest extends TestCase {
         jf.setSize(300, 200);
         jf.pack();
         super.setUp();
-
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -79,16 +78,13 @@ public class JTextComponent_MultithreadedTest extends TestCase {
         jtc.replaceSelection(null);
         assertEquals("JTextponent", jtc.getText());
         assertEquals("pon", jtc.getSelectedText());
-
         jtc.replaceSelection("XXX");
         assertEquals("XXX", jtc.getSelectedText());
         assertEquals("JTextXXXent", jtc.getText());
-
         setCaretsAlwaysUpdatePolicy();
         jtc.replaceSelection("XXX");
         assertEquals("JTextXXXent", jtc.getText());
         assertEquals(8, jtc.getCaretPosition());
-
         Runnable test1 = new Runnable() {
             public void run() {
                 jtc.setText("JTextComponent");
@@ -96,15 +92,14 @@ public class JTextComponent_MultithreadedTest extends TestCase {
             }
         };
         SwingUtilities.invokeAndWait(test1);
-
         jtc.replaceSelection("XXX");
         assertNull(jtc.getSelectedText());
         assertEquals("JTXXXextComponent", jtc.getText());
     }
 
     private void setCaretsAlwaysUpdatePolicy() {
-        DefaultCaret caret = (DefaultCaret)jtc.getCaret();
-        if (SwingTestCase.isHarmony()) {
+        DefaultCaret caret = (DefaultCaret) jtc.getCaret();
+        if (BasicSwingTestCase.isHarmony()) {
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         } else {
             caret.setAsynchronousMovement(true);
@@ -118,25 +113,19 @@ public class JTextComponent_MultithreadedTest extends TestCase {
             }
         };
         SwingUtilities.invokeAndWait(test);
-
         Rectangle sample = null;
         rect = null;
-
         try {
             rect = jtc.modelToView(2);
             sample = jtc.getUI().modelToView(jtc, 2);
-
             assertNotNull(sample);
             assertNotNull(rect);
             assertEquals(sample, rect);
-
             rect = jtc.modelToView(3);
-
             sample = jtc.getUI().modelToView(jtc, 3);
         } catch (BadLocationException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         assertNotNull(sample);
         assertNotNull(rect);
         assertEquals(sample, rect);
@@ -153,12 +142,11 @@ public class JTextComponent_MultithreadedTest extends TestCase {
         try {
             r = jtc.modelToView(2);
             assertNotNull(r);
-            assertEquals(2,jtc.viewToModel(new Point(r.x, r.y)));
+            assertEquals(2, jtc.viewToModel(new Point(r.x, r.y)));
             r = jtc.modelToView(4);
             assertNotNull(r);
-            assertEquals(4,jtc.viewToModel(new Point(r.x, r.y)));
-        }
-        catch (BadLocationException e){
+            assertEquals(4, jtc.viewToModel(new Point(r.x, r.y)));
+        } catch (BadLocationException e) {
         }
     }
 
@@ -175,7 +163,6 @@ public class JTextComponent_MultithreadedTest extends TestCase {
                 SwingConstants.VERTICAL, 0));
         assertEquals(rect.height / 10, jtc.getScrollableUnitIncrement(rect,
                 SwingConstants.VERTICAL, 1));
-
         assertEquals(rect.width, jtc.getScrollableBlockIncrement(rect,
                 SwingConstants.HORIZONTAL, -1));
         assertEquals(rect.width, jtc.getScrollableBlockIncrement(rect,
@@ -205,70 +192,54 @@ public class JTextComponent_MultithreadedTest extends TestCase {
         jf.getContentPane().add(jep);
         jf.setLocation(200, 300);
         jf.setSize(500, 500);
-
         Runnable test = new Runnable() {
             public void run() {
-                jep.setText(bigString((bigString("a", 10)
-                        + bigString("\u05DC", 10) + "\n"), 10));
+                jep
+                        .setText(bigString(
+                                (bigString("a", 10) + bigString("\u05DC", 10) + "\n"), 10));
             }
         };
         SwingUtilities.invokeAndWait(test);
-        if (!SwingTestCase.isHarmony()) {
+        if (!BasicSwingTestCase.isHarmony()) {
             jf.setVisible(true);
             SwingWaitTestCase.isRealized(jf);
         } else {
             jf.pack();
         }
-
         assertFalse(jep.getScrollableTracksViewportHeight());
         assertFalse(jep.getScrollableTracksViewportWidth());
-        assertEquals(jep.getPreferredSize(), jep
-                .getPreferredScrollableViewportSize());
-
+        assertEquals(jep.getPreferredSize(), jep.getPreferredScrollableViewportSize());
         Rectangle rect = null;
         try {
             rect = jep.modelToView(20);
-
             assertNotNull(rect);
             scrollableIncrementTest(jep, rect);
-
             rect = jep.modelToView(101);
         } catch (BadLocationException e) {
             assertFalse("Unexpected exception :" + e.getMessage(), true);
         }
-
         scrollableIncrementTest(jep, rect);
-
         rect.x = rect.x + 2;
         scrollableIncrementTest(jep, rect);
-
         rect.y = rect.y + 14;
         rect.x = rect.x - 2;
         scrollableIncrementTest(jep, rect);
-
         rect.height = rect.height + 6;
         scrollableIncrementTest(jep, rect);
-
         rect.height = rect.height - 10;
         scrollableIncrementTest(jep, rect);
-
         rect.width = rect.width + 3;
         scrollableIncrementTest(jep, rect);
-
         rect.width = rect.width - 7;
         scrollableIncrementTest(jep, rect);
-
         rect.x = rect.x + 1000;
         rect.y = rect.y + 4000;
         rect.height = rect.height + 1013;
         scrollableIncrementTest(jep, rect);
-
         rect.height = rect.height - 3013;
         scrollableIncrementTest(jep, rect);
-
         rect.width = rect.width + 5011;
         scrollableIncrementTest(jep, rect);
-
         rect.width = rect.width - 8011;
         scrollableIncrementTest(jep, rect);
         try {
@@ -277,10 +248,8 @@ public class JTextComponent_MultithreadedTest extends TestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertTrue(bWasException);
         assertEquals("Invalid orientation: 4", s);
-
         bWasException = false;
         s = null;
         try {
@@ -289,7 +258,6 @@ public class JTextComponent_MultithreadedTest extends TestCase {
             bWasException = true;
             s = e.getMessage();
         }
-
         assertTrue(bWasException);
         assertEquals("Invalid orientation: 4", s);
     }

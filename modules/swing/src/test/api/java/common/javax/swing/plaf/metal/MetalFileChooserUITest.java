@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -24,7 +23,6 @@ package javax.swing.plaf.metal;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.ActionMap;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -35,17 +33,20 @@ import javax.swing.SwingTestCase;
 
 public class MetalFileChooserUITest extends SwingTestCase {
     private MetalFileChooserUI ui;
+
     private JFileChooser fc;
 
     public MetalFileChooserUITest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         fc = new JFileChooser();
         ui = new MetalFileChooserUI(fc);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         fc = null;
@@ -78,51 +79,47 @@ public class MetalFileChooserUITest extends SwingTestCase {
     public void testCreateActionMap() throws Exception {
         ui.installUI(fc);
         ActionMap map = ui.createActionMap();
-        List allKeys = Arrays.asList(map.allKeys());
+        List<Object> allKeys = Arrays.asList(map.allKeys());
         assertEquals(3, allKeys.size());
         assertTrue(allKeys.contains("approveSelection"));
         assertEquals(ui.getApproveSelectionAction(), map.get("approveSelection"));
-
         assertTrue(allKeys.contains("cancelSelection"));
         assertEquals(ui.getCancelSelectionAction(), map.get("cancelSelection"));
-
         assertTrue(allKeys.contains("Go Up"));
         assertEquals(ui.getChangeToParentDirectoryAction(), map.get("Go Up"));
     }
 
     public void testCreateList() throws Exception {
         ui.installUI(fc);
-
         JPanel listPanel = ui.createList(fc);
         assertNotNull(listPanel);
         if (isHarmony()) {
             assertEquals(2, listPanel.getComponentCount());
         }
         assertTrue(listPanel.getComponent(0) instanceof JScrollPane);
-        assertTrue(((JScrollPane)listPanel.getComponent(0)).getViewport().getView() instanceof JList);
-        JList list = (JList)((JScrollPane)listPanel.getComponent(0)).getViewport().getView();
+        assertTrue(((JScrollPane) listPanel.getComponent(0)).getViewport().getView() instanceof JList);
+        JList list = (JList) ((JScrollPane) listPanel.getComponent(0)).getViewport().getView();
         assertEquals(ui.getModel(), list.getModel());
-
         assertNotSame(ui.createList(fc), ui.createList(fc));
     }
 
     // TODO: detail view is not implemented yet
     public void testCreateDetailsView() throws Exception {
         ui.installUI(fc);
-//        JPanel detailsView = ui.createDetailsView(fc);
-//        assertNotNull(detailsView);
-//        assertEquals(1, detailsView.getComponentCount());
-//        assertTrue(detailsView.getComponent(0) instanceof JScrollPane);
-//        assertTrue(((JScrollPane)detailsView.getComponent(0)).getViewport().getView() instanceof JTable);
-//        JTable table = (JList)((JScrollPane)listPanel.getComponent(0)).getViewport().getView();
-//        assertEquals(ui.getModel(), list.getModel());
-
-//        assertNotSame(ui.createList(fc), ui.createList(fc));
+        //        JPanel detailsView = ui.createDetailsView(fc);
+        //        assertNotNull(detailsView);
+        //        assertEquals(1, detailsView.getComponentCount());
+        //        assertTrue(detailsView.getComponent(0) instanceof JScrollPane);
+        //        assertTrue(((JScrollPane)detailsView.getComponent(0)).getViewport().getView() instanceof JTable);
+        //        JTable table = (JList)((JScrollPane)listPanel.getComponent(0)).getViewport().getView();
+        //        assertEquals(ui.getModel(), list.getModel());
+        //        assertNotSame(ui.createList(fc), ui.createList(fc));
     }
 
     public void testCreateListSelectionListener() throws Exception {
         assertNotNull(ui.createListSelectionListener(null));
-        assertNotSame(ui.createListSelectionListener(null), ui.createListSelectionListener(null));
+        assertNotSame(ui.createListSelectionListener(null), ui
+                .createListSelectionListener(null));
     }
 
     public void testGetPreferredSize() throws Exception {
@@ -135,7 +132,8 @@ public class MetalFileChooserUITest extends SwingTestCase {
 
     public void testGetMaxiumumSize() throws Exception {
         assertNotNull(ui.getMaximumSize(null));
-        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), ui.getMaximumSize(null));
+        assertEquals(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE), ui
+                .getMaximumSize(null));
     }
 
     public void testCreatePropertyChangeListener() throws Exception {
@@ -154,17 +152,16 @@ public class MetalFileChooserUITest extends SwingTestCase {
         assertNotNull(ui.getApproveButton(fc));
         assertEquals(ui.getApproveButton(fc), ui.getApproveButton(fc));
     }
-
-//    private void traverse(final Container cont) {
-//        for (int i = 0; i < cont.getComponentCount(); i++) {
-//            Component child = cont.getComponent(i);
-//            if (child instanceof JButton) {
-//                System.err.println("Button " + ((JButton)child).getText());
-//            }
-//
-//            if (child instanceof Container) {
-//                traverse((Container)child);
-//            }
-//        }
-//    }
+    //    private void traverse(final Container cont) {
+    //        for (int i = 0; i < cont.getComponentCount(); i++) {
+    //            Component child = cont.getComponent(i);
+    //            if (child instanceof JButton) {
+    //                System.err.println("Button " + ((JButton)child).getText());
+    //            }
+    //
+    //            if (child instanceof Container) {
+    //                traverse((Container)child);
+    //            }
+    //        }
+    //    }
 }

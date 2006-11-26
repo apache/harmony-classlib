@@ -15,28 +15,28 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.AWTError;
 import java.awt.Container;
 import java.awt.Dimension;
-
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingTestCase;
 
 public class DefaultMenuLayoutTest extends SwingTestCase {
-
     protected BoxLayout layout = null;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -49,10 +49,8 @@ public class DefaultMenuLayoutTest extends SwingTestCase {
         JComponent component11 = new JPanel();
         JComponent component21 = new JPanel();
         JComponent component31 = new JPanel();
-
-        BoxLayout layout1 =  new DefaultMenuLayout(container1, BoxLayout.X_AXIS);
-        BoxLayout layout2 =  new DefaultMenuLayout(container1, BoxLayout.Y_AXIS);
-
+        BoxLayout layout1 = new DefaultMenuLayout(container1, BoxLayout.X_AXIS);
+        BoxLayout layout2 = new DefaultMenuLayout(container1, BoxLayout.Y_AXIS);
         component11.setMinimumSize(new Dimension(5, 5));
         component21.setMinimumSize(new Dimension(6, 6));
         component31.setMinimumSize(new Dimension(7, 7));
@@ -65,7 +63,6 @@ public class DefaultMenuLayoutTest extends SwingTestCase {
         assertEquals(new Dimension(60, 110), layout2.preferredLayoutSize(container1));
         layout1.invalidateLayout(container1);
         layout2.invalidateLayout(container1);
-
         container1.add(component31);
         assertEquals(new Dimension(180, 70), layout1.preferredLayoutSize(container1));
         assertEquals(new Dimension(70, 180), layout2.preferredLayoutSize(container1));
@@ -79,31 +76,28 @@ public class DefaultMenuLayoutTest extends SwingTestCase {
         boolean thrown = false;
         String text = null;
         try {
-            layout =  new DefaultMenuLayout(container, BoxLayout.LINE_AXIS);
+            layout = new DefaultMenuLayout(container, BoxLayout.LINE_AXIS);
         } catch (AWTError e) {
             thrown = true;
         }
         assertFalse("No exception thrown", thrown);
-
         thrown = false;
         text = null;
         try {
-            layout =  new DefaultMenuLayout(container, 300);
+            layout = new DefaultMenuLayout(container, 300);
         } catch (AWTError e) {
             thrown = true;
             text = e.getMessage();
         }
         assertTrue("AWTError exception thrown", thrown);
         assertEquals(text, "Invalid axis");
-
         thrown = false;
         text = null;
         try {
-            layout =  new BoxLayout(null, BoxLayout.Y_AXIS);
+            layout = new BoxLayout(null, BoxLayout.Y_AXIS);
         } catch (AWTError e) {
             thrown = true;
         }
         assertFalse("No exception thrown", thrown);
     }
-
 }

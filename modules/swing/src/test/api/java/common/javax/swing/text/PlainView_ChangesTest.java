@@ -25,7 +25,6 @@ import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
@@ -45,60 +44,70 @@ import javax.swing.text.AbstractDocument.ElementEdit;
 public class PlainView_ChangesTest extends BasicSwingTestCase {
     static final class LineRange {
         public Component host;
-        public int       line0;
-        public int       line1;
-        public Shape     shape;
 
-        public LineRange(final int line0, final int line1,
-                         final Shape shape, final Component host) {
+        public int line0;
+
+        public int line1;
+
+        public Shape shape;
+
+        public LineRange(final int line0, final int line1, final Shape shape,
+                final Component host) {
             this.line0 = line0;
             this.line1 = line1;
             this.shape = shape;
-            this.host  = host;
+            this.host = host;
         }
 
         /**
          * Checks that fields have expected values.
          */
-        public void check(final int s, final int e,
-                          final Shape a, final Container container) {
+        public void check(final int s, final int e, final Shape a, final Container container) {
             assertEquals("Unexpected start line", s, line0);
-            assertEquals("Unexpected end line",   e, line1);
+            assertEquals("Unexpected end line", e, line1);
             assertSame("Unexpected shape", a, shape);
             assertSame("Unexpected container/host", container, host);
         }
     }
 
     static final class PreferenceChange {
-        public boolean   height;
-        public boolean   width;
+        public boolean height;
+
+        public boolean width;
 
         public PreferenceChange(final boolean width, final boolean height) {
-            this.width  = width;
+            this.width = width;
             this.height = height;
         }
 
         public void check(final boolean width, final boolean height) {
-            assertEquals("Width has unexpected value",
-                         width,  this.width);
-            assertEquals("Height has unexpected value",
-                         height, this.height);
+            assertEquals("Width has unexpected value", width, this.width);
+            assertEquals("Height has unexpected value", height, this.height);
         }
     }
 
     private boolean callSuperDamageRange;
+
     private boolean callSuperUpdateDamage;
+
     private Container container;
 
     private Document doc;
+
     private DocumentEvent event;
 
     private ViewFactory factory;
+
     private LineRange lineRange;
+
     private Rectangle paintRect;
+
     private PreferenceChange preferenceChange;
+
     private Element root;
+
     private Shape shape;
+
     private boolean updateDamageCalled;
 
     private PlainView view;
@@ -111,31 +120,23 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
     public void testDamageLineRange() {
         view.updateMetrics();
         final int height = view.metrics.getHeight();
-        final int y      = 300;
-
+        final int y = 300;
         callSuperDamageRange = true;
         shape = new Rectangle(200, y, 300, 500);
-
         view.damageLineRange(0, 0, shape, view.getContainer());
         assertTrue(paintRect.equals(new Rectangle(200, y, 300, height)));
         assertTrue(paintRect.equals(view.lineToRect(shape, 0)));
         paintRect = null;
-
         view.damageLineRange(1, 1, shape, view.getContainer());
-        assertTrue(paintRect.equals(new Rectangle(200, y + height,
-                                                  300, height)));
+        assertTrue(paintRect.equals(new Rectangle(200, y + height, 300, height)));
         assertTrue(paintRect.equals(view.lineToRect(shape, 1)));
         paintRect = null;
-
         view.damageLineRange(2, 2, shape, view.getContainer());
-        assertTrue(paintRect.equals(new Rectangle(200, y + height * 2,
-                                                  300, height)));
+        assertTrue(paintRect.equals(new Rectangle(200, y + height * 2, 300, height)));
         assertTrue(paintRect.equals(view.lineToRect(shape, 2)));
         paintRect = null;
-
         view.damageLineRange(0, 2, shape, view.getContainer());
-        assertEquals(new Rectangle(200, 300, 300, 3 * height),
-                     paintRect);
+        assertEquals(new Rectangle(200, 300, 300, 3 * height), paintRect);
         Rectangle r0 = view.lineToRect(shape, 0);
         Rectangle r1 = view.lineToRect(shape, 1);
         Rectangle r2 = view.lineToRect(shape, 2);
@@ -156,14 +157,10 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
     public void testLineToRect() {
         view.updateMetrics();
         final int height = view.metrics.getHeight();
-        assertEquals(new Rectangle(0, 0, 500, height),
-                     view.lineToRect(shape, 0));
-        assertEquals(new Rectangle(0, height, 500, height),
-                     view.lineToRect(shape, 1));
-
-        assertEquals(new Rectangle(30, 50 + height, 70, height),
-                view.lineToRect(shape =
-                    new Rectangle2D.Float(30f, 50f, 70f, 10f), 1));
+        assertEquals(new Rectangle(0, 0, 500, height), view.lineToRect(shape, 0));
+        assertEquals(new Rectangle(0, height, 500, height), view.lineToRect(shape, 1));
+        assertEquals(new Rectangle(30, 50 + height, 70, height), view.lineToRect(
+                shape = new Rectangle2D.Float(30f, 50f, 70f, 10f), 1));
     }
 
     /**
@@ -173,10 +170,8 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         // Set tab size to 4
         doc.putProperty(PlainDocument.tabSizeAttribute, new Integer(4));
         assertEquals(4, view.getTabSize());
-
         // Update metrics 'cause view state isn't fully initialized yet
         view.updateMetrics();
-
         float tabPos = view.getTabSize() * view.metrics.charWidth('m');
         // Test tab stop positions
         assertEquals(tabPos, view.nextTabStop(0.0f, 0), 0.00001f);
@@ -191,10 +186,8 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         // Set tab size to -4
         doc.putProperty(PlainDocument.tabSizeAttribute, new Integer(-4));
         assertEquals(-4, view.getTabSize());
-
         // Update metrics 'cause view state isn't fully initialized yet
         view.updateMetrics();
-
         float tabPos = view.getTabSize() * view.metrics.charWidth('m');
         // Test tab stop positions
         assertEquals(tabPos, view.nextTabStop(0.0f, 0), 0.00001f);
@@ -211,16 +204,13 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         // Set tab size to 0
         doc.putProperty(PlainDocument.tabSizeAttribute, new Integer(0));
         assertEquals(0, view.getTabSize());
-
         // Update metrics 'cause view state isn't fully initialized yet
         view.updateMetrics();
-
         float tabPos = view.getTabSize() * view.metrics.charWidth('m');
         assertEquals(0.0f, tabPos, 0.00001f);
         // Test tab stop positions
         assertEquals(tabPos, view.nextTabStop(0.0f, 0), 0.00001f);
-        assertEquals(tabPos + 0.2f,
-                     view.nextTabStop(tabPos + 0.2f, 0), 0.00001f);
+        assertEquals(tabPos + 0.2f, view.nextTabStop(tabPos + 0.2f, 0), 0.00001f);
         assertEquals(4.75f, view.nextTabStop(4.75f, 0), 0.00001f);
     }
 
@@ -238,41 +228,44 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         //                   0123456 789 012345678
         view.updateDamage(event, shape, factory);
         assertNull(lineRange);
-        preferenceChange.check(true, true);   preferenceChange = null;
-
+        preferenceChange.check(true, true);
+        preferenceChange = null;
         doc.insertString(14, "0123210", null);
         view.updateDamage(event, shape, factory);
-        lineRange.check(2, 2, shape, container);      lineRange = null;
-        preferenceChange.check(true, false);   preferenceChange = null;
-
+        lineRange.check(2, 2, shape, container);
+        lineRange = null;
+        preferenceChange.check(true, false);
+        preferenceChange = null;
         doc.insertString(14, "\n", null);
         view.updateDamage(event, shape, factory);
         if (!isHarmony()) {
             assertNull(lineRange);
         } else {
-            lineRange.check(2, 3, shape, container); lineRange = null;
+            lineRange.check(2, 3, shape, container);
+            lineRange = null;
         }
-        preferenceChange.check(true, true);   preferenceChange = null;
-
+        preferenceChange.check(true, true);
+        preferenceChange = null;
         doc.insertString(15, "\n", null);
         view.updateDamage(event, shape, factory);
         if (!isHarmony()) {
             assertNull(lineRange);
         } else {
-            lineRange.check(2, 4, shape, container); lineRange = null;
+            lineRange.check(2, 4, shape, container);
+            lineRange = null;
         }
         preferenceChange.check(isHarmony() ? false : true, true);
-                                              preferenceChange = null;
-
+        preferenceChange = null;
         doc.insertString(15, "line1\nline2 change\nline3", null);
         view.updateDamage(event, shape, factory);
         if (!isHarmony()) {
             assertNull(lineRange);
         } else {
-            lineRange.check(2, 6, shape, container); lineRange = null;
+            lineRange.check(2, 6, shape, container);
+            lineRange = null;
         }
         preferenceChange.check(isHarmony() ? false : true, true);
-                                              preferenceChange = null;
+        preferenceChange = null;
     }
 
     /**
@@ -282,26 +275,24 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         createEvent();
         doc.insertString(0, "1:0123\n2:\n3:abcdefg", null);
         //                   0123456 789 012345678
-
         // Update view
         assertNull(preferenceChange);
         view.updateDamage(event, shape, factory);
         assertNull(lineRange);
-        preferenceChange.check(true, true);   preferenceChange = null;
-
+        preferenceChange.check(true, true);
+        preferenceChange = null;
         // The widest line doesn't change, and line number neither
-        doc.remove(2, 2);    // "01" => "1:23\n2:\n3:..."
+        doc.remove(2, 2); // "01" => "1:23\n2:\n3:..."
         view.updateDamage(event, shape, factory);
-        lineRange.check(0, 0, shape, container); lineRange = null;
+        lineRange.check(0, 0, shape, container);
+        lineRange = null;
         assertNull(preferenceChange);
-
         // The widest line doesn't change, but line number changes
-        doc.remove(4, 1);   // "\n" => "1:232:\n3:..."
+        doc.remove(4, 1); // "\n" => "1:232:\n3:..."
         view.updateDamage(event, shape, factory);
         assertNull(lineRange);
         preferenceChange.check(isHarmony() ? false : true, true);
-                                              preferenceChange = null;
-
+        preferenceChange = null;
         // Again the widest line doesn't change, and line number stays the same
         doc.remove(4, 2);
         view.updateDamage(event, shape, factory);
@@ -316,33 +307,29 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         createEvent();
         doc.insertString(0, "1:0123\n2:\n3:abcdefg", null);
         //                   0123456 789 012345678
-
         // Update view
         assertNull(preferenceChange);
         view.updateDamage(event, shape, factory);
         assertNull(lineRange);
-        preferenceChange.check(true, true);   preferenceChange = null;
-
-        event = ((AbstractDocument)doc).new DefaultDocumentEvent(3, 14,
+        preferenceChange.check(true, true);
+        preferenceChange = null;
+        event = ((AbstractDocument) doc).new DefaultDocumentEvent(3, 14,
                 DocumentEvent.EventType.CHANGE);
         view.updateDamage(event, shape, factory);
-        lineRange.check(0, 0, shape, container);   lineRange = null;
+        lineRange.check(0, 0, shape, container);
+        lineRange = null;
         assertNull(preferenceChange);
-
-
-        event = ((AbstractDocument)doc).new DefaultDocumentEvent(7, 12,
+        event = ((AbstractDocument) doc).new DefaultDocumentEvent(7, 12,
                 DocumentEvent.EventType.CHANGE);
         view.updateDamage(event, shape, factory);
-        lineRange.check(1, 1, shape, container);   lineRange = null;
+        lineRange.check(1, 1, shape, container);
+        lineRange = null;
         assertNull(preferenceChange);
-
-
         // We remove the first and second lines, but the widest one isn't
         // changed, therefore the preferred width is not changed
-        ElementEdit ee = new ElementEdit(root, 0, null,
-                                         new Element[] {root.getElement(0),
-                                                        root.getElement(1)});
-        ((DefaultDocumentEvent)event).addEdit(ee);
+        ElementEdit ee = new ElementEdit(root, 0, null, new Element[] { root.getElement(0),
+                root.getElement(1) });
+        ((DefaultDocumentEvent) event).addEdit(ee);
         view.updateDamage(event, shape, factory);
         assertNull(lineRange);
         preferenceChange.check(isHarmony() ? false : true, true);
@@ -355,17 +342,20 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
         assertNull(preferenceChange);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
-        doc  = new PlainDocument();
+        doc = new PlainDocument();
         root = doc.getDefaultRootElement();
         view = new PlainView(root) {
+            @Override
             public Container getContainer() {
                 if (container == null) {
                     container = new JTextArea() {
-                        public void repaint(final int x, final int y,
-                                            final int w, final int h) {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void repaint(final int x, final int y, final int w, final int h) {
                             if (paintRect == null) {
                                 paintRect = new Rectangle(x, y, w, h);
                             } else {
@@ -374,21 +364,20 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
                         }
                     };
                 }
-
                 return container;
             }
 
-            public void preferenceChanged(final View child,
-                                          final boolean width,
-                                          final boolean height) {
+            @Override
+            public void preferenceChanged(final View child, final boolean width,
+                    final boolean height) {
                 preferenceChange = new PreferenceChange(width, height);
                 assertNull(child);
                 super.preferenceChanged(child, width, height);
             }
 
-            protected void damageLineRange(final int line0, final int line1,
-                                           final Shape shape,
-                                           final Component host) {
+            @Override
+            protected void damageLineRange(final int line0, final int line1, final Shape shape,
+                    final Component host) {
                 if (callSuperDamageRange) {
                     super.damageLineRange(line0, line1, shape, host);
                 } else {
@@ -396,9 +385,9 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
                 }
             }
 
-            protected void updateDamage(final DocumentEvent changes,
-                                        final Shape a,
-                                        final ViewFactory f) {
+            @Override
+            protected void updateDamage(final DocumentEvent changes, final Shape a,
+                    final ViewFactory f) {
                 if (callSuperUpdateDamage) {
                     super.updateDamage(changes, a, f);
                 } else {
@@ -410,8 +399,7 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
             }
         };
         shape = new Rectangle(500, 500);
-
-        event = ((AbstractDocument)doc).new DefaultDocumentEvent(0, 0,
+        event = ((AbstractDocument) doc).new DefaultDocumentEvent(0, 0,
                 DocumentEvent.EventType.CHANGE);
         factory = new ViewFactory() {
             public View create(final Element element) {
@@ -423,7 +411,6 @@ public class PlainView_ChangesTest extends BasicSwingTestCase {
 
     private void createEvent() {
         doc.addDocumentListener(new DocumentListener() {
-
             public void changedUpdate(final DocumentEvent changes) {
                 fail("changedUpdate isn't supposed to be called");
             }

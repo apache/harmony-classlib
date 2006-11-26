@@ -46,11 +46,13 @@ import javax.swing.plaf.basic.BasicLookAndFeel;
 public class UIDefaultsTest extends SwingTestCase {
     UIDefaults uiDefaults;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         uiDefaults = new UIDefaults();
     }
 
+    @Override
     public void tearDown() throws Exception {
         uiDefaults = null;
         super.tearDown();
@@ -199,7 +201,7 @@ public class UIDefaultsTest extends SwingTestCase {
         final String uiClassName = "javax.swing.plaf.basic.BasicButtonUI";
         uiDefaults.put("ButtonUI", uiClassName);
         assertEquals(Class.forName(uiClassName), uiDefaults.getUIClass("ButtonUI", null));
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 try {
                     assertEquals(Class.forName(uiClassName), uiDefaults.getUIClass("ButtonUI",
@@ -249,7 +251,7 @@ public class UIDefaultsTest extends SwingTestCase {
         final PrintStream orig = System.err;
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         final PrintStream errStream = new PrintStream(byteStream);
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 System.setErr(errStream);
                 return null;
@@ -260,7 +262,7 @@ public class UIDefaultsTest extends SwingTestCase {
         uiDefaults.getUI(button);
         String error = byteStream.toString();
         assertTrue(error.indexOf("failed") > 0);
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 System.setErr(orig);
                 return null;
@@ -289,7 +291,7 @@ public class UIDefaultsTest extends SwingTestCase {
     }
 
     public void testPropertyListeners() {
-        final List count = new Vector();
+        final List<Object> count = new Vector<Object>();
         PropertyChangeListener listener = new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent pce) {
                 count.add(new Object());
@@ -351,22 +353,29 @@ public class UIDefaultsTest extends SwingTestCase {
     private void setBasicLF() {
         try {
             UIManager.setLookAndFeel(new BasicLookAndFeel() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
                 public boolean isNativeLookAndFeel() {
                     return true;
                 }
 
+                @Override
                 public boolean isSupportedLookAndFeel() {
                     return true;
                 }
 
+                @Override
                 public String getDescription() {
                     return null;
                 }
 
+                @Override
                 public String getID() {
                     return null;
                 }
 
+                @Override
                 public String getName() {
                     return null;
                 }

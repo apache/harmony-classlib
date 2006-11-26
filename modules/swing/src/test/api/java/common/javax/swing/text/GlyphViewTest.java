@@ -26,8 +26,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
-
 import javax.swing.BasicSwingTestCase;
+import javax.swing.SwingConstants;
 import javax.swing.text.GlyphView.GlyphPainter;
 import javax.swing.text.Position.Bias;
 
@@ -37,37 +37,47 @@ import javax.swing.text.Position.Bias;
  */
 public class GlyphViewTest extends BasicSwingTestCase {
     protected static class EmptyPainter extends GlyphPainter {
-        public float getSpan(GlyphView v,
-                             int p0, int p1, TabExpander e, float x) {
+        @Override
+        public float getSpan(GlyphView v, int p0, int p1, TabExpander e, float x) {
             return 0;
         }
+
+        @Override
         public float getHeight(GlyphView v) {
             return 0;
         }
+
+        @Override
         public float getAscent(GlyphView v) {
             return 0;
         }
+
+        @Override
         public float getDescent(GlyphView v) {
             return 0;
         }
-        public void paint(GlyphView v, Graphics g, Shape a,
-                          int p0, int p1) {
-        }
-        public Shape modelToView(GlyphView v, int pos,
-                                 Bias bias, Shape a)
-            throws BadLocationException {
 
+        @Override
+        public void paint(GlyphView v, Graphics g, Shape a, int p0, int p1) {
+        }
+
+        @Override
+        public Shape modelToView(GlyphView v, int pos, Bias bias, Shape a)
+                throws BadLocationException {
             return null;
         }
-        public int viewToModel(GlyphView v,
-                               float x, float y,
-                               Shape a, Bias[] biasRet) {
+
+        @Override
+        public int viewToModel(GlyphView v, float x, float y, Shape a, Bias[] biasRet) {
             return 0;
         }
-        public int getBoundedPosition(GlyphView v, int p0,
-                                      float x, float len) {
+
+        @Override
+        public int getBoundedPosition(GlyphView v, int p0, float x, float len) {
             return 0;
         }
+
+        @Override
         public String toString() {
             return "GlyphViewTest.EmptyPainter";
         }
@@ -76,19 +86,22 @@ public class GlyphViewTest extends BasicSwingTestCase {
     private static final float ACCURACY = 0.00001f;
 
     private GlyphView view;
+
     private StyledDocument doc;
+
     private Element root;
+
     private Element leaf;
 
     private static final String TEXT = "012345";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
         root = doc.getDefaultRootElement();
         doc.insertString(0, TEXT, null);
-        doc.setCharacterAttributes(0, TEXT.length() - 1,
-                                   SimpleAttributeSet.EMPTY, false);
+        doc.setCharacterAttributes(0, TEXT.length() - 1, SimpleAttributeSet.EMPTY, false);
         leaf = root.getElement(0).getElement(0);
         view = new GlyphView(leaf);
     }
@@ -99,32 +112,31 @@ public class GlyphViewTest extends BasicSwingTestCase {
         assertNull(view.getGlyphPainter());
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetPreferredSpan() {
         assertNull(view.getGlyphPainter());
         Font font = view.getFont();
         FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
-        assertEquals(metrics.stringWidth(TEXT.substring(view.getStartOffset(),
-                                                        view.getEndOffset())),
-                     view.getPreferredSpan(View.X_AXIS), ACCURACY);
-        assertEquals(metrics.getHeight(),
-                     view.getPreferredSpan(View.Y_AXIS), ACCURACY);
+        assertEquals(metrics.stringWidth(TEXT.substring(view.getStartOffset(), view
+                .getEndOffset())), view.getPreferredSpan(View.X_AXIS), ACCURACY);
+        assertEquals(metrics.getHeight(), view.getPreferredSpan(View.Y_AXIS), ACCURACY);
         assertNotNull(view.getGlyphPainter());
     }
 
     public void testGetPreferredSpanCustomPainter() {
         view.setGlyphPainter(new EmptyPainter() {
-            public float getSpan(GlyphView v,
-                                 int p0, int p1, TabExpander e, float x) {
+            @Override
+            public float getSpan(GlyphView v, int p0, int p1, TabExpander e, float x) {
                 return (p1 - p0) * 0.4261f;
             }
 
+            @Override
             public float getHeight(GlyphView v) {
                 return 0.524f;
             }
         });
-
-        assertEquals((view.getEndOffset() - view.getStartOffset()) * 0.4261f,
-                     view.getPreferredSpan(View.X_AXIS), ACCURACY);
+        assertEquals((view.getEndOffset() - view.getStartOffset()) * 0.4261f, view
+                .getPreferredSpan(View.X_AXIS), ACCURACY);
         assertEquals(0.524f, view.getPreferredSpan(View.Y_AXIS), ACCURACY);
     }
 
@@ -151,28 +163,23 @@ public class GlyphViewTest extends BasicSwingTestCase {
         assertEquals(TEXT.substring(2, TEXT.length() - 1), text.toString());
         try {
             view.getText(3, 2).toString();
-
             fail("an Error is expected");
         } catch (Error e) {
-//            System.out.println(e.getMessage());
+            //            System.out.println(e.getMessage());
         }
     }
 
     public void testGetTabExpander() throws BadLocationException {
         assertNull(view.getTabExpander());
-
         View plainView = new ParagraphView(root.getElement(0));
-
         assertTrue(plainView instanceof TabExpander);
-        plainView.replace(0, 0, new View[] {view});
-
+        plainView.replace(0, 0, new View[] { view });
         assertTrue(view.getParent() instanceof TabExpander);
         if (isHarmony()) {
             assertSame(plainView, view.getTabExpander());
         } else {
             assertNull(view.getTabExpander());
         }
-
         doc.insertString(1, "\t", null);
         if (isHarmony()) {
             assertSame(plainView, view.getTabExpander());
@@ -181,49 +188,41 @@ public class GlyphViewTest extends BasicSwingTestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetTabbedSpan() throws BadLocationException {
         final Font font = view.getFont();
-        final FontMetrics metrics =
-            Toolkit.getDefaultToolkit().getFontMetrics(font);
-
+        final FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
         TabExpander expander = new TabExpander() {
             public float nextTabStop(float x, int tabOffset) {
                 return (x / 10 + 1) * 10;
             }
         };
-        final String leafText = view.getText(view.getStartOffset(),
-                                             view.getEndOffset()).toString();
-        assertEquals(metrics.stringWidth(leafText),
-                     (int)view.getTabbedSpan(0, expander));
-
+        final String leafText = view.getText(view.getStartOffset(), view.getEndOffset())
+                .toString();
+        assertEquals(metrics.stringWidth(leafText), (int) view.getTabbedSpan(0, expander));
         doc.insertString(2, "\t", null); // leafText doesn't contain tab
         final int beforeTab = metrics.stringWidth(leafText.substring(0, 2));
         assertEquals(metrics.stringWidth(leafText.substring(2))
-                     + (int)expander.nextTabStop(beforeTab, 2),
-                     (int)view.getTabbedSpan(0, expander));
+                + (int) expander.nextTabStop(beforeTab, 2), (int) view.getTabbedSpan(0,
+                expander));
     }
 
+    @SuppressWarnings("deprecation")
     public void testGetPartialSpan() {
         final Font font = view.getFont();
-        final FontMetrics metrics =
-            Toolkit.getDefaultToolkit().getFontMetrics(font);
-
-        final String leafText = view.getText(view.getStartOffset(),
-                                             view.getEndOffset()).toString();
-        assertEquals(metrics.stringWidth(leafText),
-                     (int)view.getPartialSpan(view.getStartOffset(),
-                                              view.getEndOffset()));
-
+        final FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+        final String leafText = view.getText(view.getStartOffset(), view.getEndOffset())
+                .toString();
+        assertEquals(metrics.stringWidth(leafText), (int) view.getPartialSpan(view
+                .getStartOffset(), view.getEndOffset()));
         final String subText = leafText.substring(2, 4);
-        assertEquals(metrics.stringWidth(subText),
-                     (int)view.getPartialSpan(2, 4));
+        assertEquals(metrics.stringWidth(subText), (int) view.getPartialSpan(2, 4));
     }
 
     public void testCheckPainter() {
         assertNull(view.getGlyphPainter());
         view.checkPainter();
         assertNotNull(view.getGlyphPainter());
-
         GlyphView other = new GlyphView(root);
         other.checkPainter();
         assertSame(view.getGlyphPainter(), other.getGlyphPainter());
@@ -256,15 +255,14 @@ public class GlyphViewTest extends BasicSwingTestCase {
         assertNull(view.getGlyphPainter());
         try {
             view.getNextVisualPositionFrom(0, Bias.Forward, new Rectangle(),
-                                           View.EAST, new Bias[1]);
+                    SwingConstants.EAST, new Bias[1]);
             fail("No default painter is installed when this method is called");
-        } catch (NullPointerException e) { }
-
+        } catch (NullPointerException e) {
+        }
         view.setGlyphPainter(new EmptyPainter());
         assertNotNull(view.getGlyphPainter());
         // Causes no exception
-        view.getNextVisualPositionFrom(0, Bias.Forward, new Rectangle(),
-                                       View.EAST, new Bias[1]);
+        view.getNextVisualPositionFrom(0, Bias.Forward, new Rectangle(), SwingConstants.EAST,
+                new Bias[1]);
     }
-
 }

@@ -29,6 +29,7 @@ import javax.swing.text.PlainDocument;
 public class BasicPasswordFieldUITest extends SwingTestCase {
     BasicPasswordFieldUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new BasicPasswordFieldUI();
@@ -40,11 +41,8 @@ public class BasicPasswordFieldUITest extends SwingTestCase {
     }
 
     public void testCreateUIJComponent() {
-        assertTrue(BasicPasswordFieldUI.createUI(null)
-                   instanceof BasicPasswordFieldUI);
-        assertTrue(BasicPasswordFieldUI.createUI(new JPasswordField())
-                   instanceof BasicPasswordFieldUI);
-
+        assertTrue(BasicPasswordFieldUI.createUI(null) instanceof BasicPasswordFieldUI);
+        assertTrue(BasicPasswordFieldUI.createUI(new JPasswordField()) instanceof BasicPasswordFieldUI);
     }
 
     public void testGetPropertyPrefix() {

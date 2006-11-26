@@ -30,6 +30,7 @@ public class TreeExpansionEventTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }
@@ -37,11 +38,9 @@ public class TreeExpansionEventTest extends BasicSwingTestCase {
     public void testTreeExpansionEvent() throws Exception {
         Object source = new Object();
         TreePath path = new TreePath("path");
-
         event = new TreeExpansionEvent(source, path);
         assertSame(source, event.getSource());
         assertSame(path, event.getPath());
-
         event = new TreeExpansionEvent(source, null);
         assertNull(event.getPath());
     }

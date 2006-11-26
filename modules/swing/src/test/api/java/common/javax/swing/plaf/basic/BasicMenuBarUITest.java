@@ -15,16 +15,15 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ContainerListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -39,14 +38,15 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.FontUIResource;
 
 public class BasicMenuBarUITest extends SwingTestCase {
-
     protected BasicMenuBarUI menuBarUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuBarUI = new BasicMenuBarUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         menuBarUI = null;
         super.tearDown();
@@ -60,11 +60,9 @@ public class BasicMenuBarUITest extends SwingTestCase {
         menu.setUI(menuBarUI);
         LayoutManager oldManager = menu.getLayout();
         menuBarUI.uninstallUI(menu);
-
         menuBarUI.installUI(menu);
         assertNotNull(menu.getLayout());
         assertNotSame(oldManager, menu.getLayout());
-
         menuBarUI.uninstallUI(menu);
         oldManager = new OverlayLayout(menu);
         menu.setLayout(oldManager);
@@ -77,7 +75,6 @@ public class BasicMenuBarUITest extends SwingTestCase {
         menu.setUI(menuBarUI);
         menuBarUI.installUI(menu);
         assertSame(menu, menuBarUI.menuBar);
-
         menuBarUI.uninstallUI(menu);
         assertNull(menuBarUI.menuBar);
     }
@@ -124,14 +121,12 @@ public class BasicMenuBarUITest extends SwingTestCase {
         UIManager.getDefaults().put("MenuBar.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.getDefaults().put("MenuBar.border", border);
-
         menuBar.setUI(menuBarUI);
         menuBarUI.installDefaults();
         assertEquals(Color.red, menuBar.getBackground());
         assertEquals(Color.yellow, menuBar.getForeground());
         assertEquals(font, menuBar.getFont());
         assertEquals(border, menuBar.getBorder());
-
         menuBarUI.uninstallDefaults();
         assertEquals(Color.red, menuBar.getBackground());
         assertEquals(Color.yellow, menuBar.getForeground());
@@ -145,14 +140,13 @@ public class BasicMenuBarUITest extends SwingTestCase {
     public void testInstallUninstallKeyboardActions() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.setUI(menuBarUI);
-
         menuBarUI.installKeyboardActions();
         assertEquals(1, menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).allKeys().length);
         assertEquals(1, menuBar.getActionMap().allKeys().length);
-
         menuBarUI.uninstallKeyboardActions();
         if (isHarmony()) {
-            assertEquals(0, menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).allKeys().length);
+            assertEquals(0,
+                    menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).allKeys().length);
             assertEquals(0, menuBar.getActionMap().allKeys().length);
         } else {
             assertNull(menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).allKeys());
@@ -167,17 +161,15 @@ public class BasicMenuBarUITest extends SwingTestCase {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu();
         menuBar.add(menu);
-        menuBarUI = (BasicMenuBarUI)menuBar.getUI();
+        menuBarUI = (BasicMenuBarUI) menuBar.getUI();
         menuBarUI.uninstallListeners();
         assertEquals(0, menuBar.getContainerListeners().length);
         assertNull(menuBarUI.changeListener);
         assertNull(menuBarUI.containerListener);
-
         menuBarUI.menuBar = menuBar;
         menuBarUI.installListeners();
         assertEquals(1, menuBar.getContainerListeners().length);
         assertNotNull(menuBarUI.changeListener);
         assertNotNull(menuBarUI.containerListener);
     }
-
 }

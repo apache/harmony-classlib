@@ -22,7 +22,6 @@ package javax.swing.text;
 
 import java.util.Enumeration;
 import java.util.EventListener;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeListener;
@@ -30,12 +29,13 @@ import javax.swing.text.StyleContext.NamedStyle;
 
 public class StyleContext_NamedStyleTest extends StyleTest {
     protected NamedStyle ns;
+
     protected NamedStyle withName;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ns = (NamedStyle)style;
-
+        ns = (NamedStyle) style;
         StyleContext defContext = StyleContext.getDefaultStyleContext();
         withName = defContext.new NamedStyle("styleName", null);
     }
@@ -56,9 +56,7 @@ public class StyleContext_NamedStyleTest extends StyleTest {
      * NamedStyle(String, Style)
      */
     public void testNamedStyleStringNullStyle() {
-        Style parent =
-            StyleContext.getDefaultStyleContext().new NamedStyle("parentName",
-                null);
+        Style parent = StyleContext.getDefaultStyleContext().new NamedStyle("parentName", null);
         parent.addAttribute("key", "value");
         ns = StyleContext.getDefaultStyleContext().new NamedStyle(null, parent);
         assertEquals(parent, ns.getResolveParent());
@@ -74,8 +72,7 @@ public class StyleContext_NamedStyleTest extends StyleTest {
      * NamedStyle(String, Style)
      */
     public void testNamedStyleStringStyleNull() {
-        ns = StyleContext.getDefaultStyleContext().new NamedStyle("styleName",
-                                                                  null);
+        ns = StyleContext.getDefaultStyleContext().new NamedStyle("styleName", null);
         assertNull(ns.getResolveParent());
         assertEquals("styleName", ns.getName());
     }
@@ -112,8 +109,7 @@ public class StyleContext_NamedStyleTest extends StyleTest {
     }
 
     public void testSetNameNull() {
-        ns = StyleContext.getDefaultStyleContext().new NamedStyle("styleName",
-                null);
+        ns = StyleContext.getDefaultStyleContext().new NamedStyle("styleName", null);
         ns.setName(null);
         assertEquals("styleName", ns.getName());
     }
@@ -134,55 +130,42 @@ public class StyleContext_NamedStyleTest extends StyleTest {
 
     public void testGetNameSetAttribute() {
         assertEquals("styleName", withName.getName());
-        assertEquals("styleName",
-                     withName.getAttribute(AttributeSet.NameAttribute));
-
+        assertEquals("styleName", withName.getAttribute(AttributeSet.NameAttribute));
         // Add name attribute
-        withName.addAttribute(AttributeSet.NameAttribute,
-                              new String("Changed Name"));
+        withName.addAttribute(AttributeSet.NameAttribute, new String("Changed Name"));
         assertEquals("Changed Name", withName.getName());
-        assertEquals("Changed Name",
-                     withName.getAttribute(AttributeSet.NameAttribute));
+        assertEquals("Changed Name", withName.getAttribute(AttributeSet.NameAttribute));
     }
 
     public void testContainsNameAttribute() {
         SimpleAttributeSet as = new SimpleAttributeSet();
         as.addAttribute(AttributeSet.NameAttribute, "styleName");
-
-        assertTrue(withName.containsAttribute(AttributeSet.NameAttribute,
-                                              "styleName"));
+        assertTrue(withName.containsAttribute(AttributeSet.NameAttribute, "styleName"));
         assertTrue(withName.containsAttributes(as));
     }
 
     public void testNameNotString() {
         ns = StyleContext.getDefaultStyleContext().new NamedStyle();
-
         ns.addAttribute(AttributeSet.NameAttribute, new Integer(15));
-
-        assertEquals(new Integer(15),
-                ns.getAttribute(AttributeSet.NameAttribute));
+        assertEquals(new Integer(15), ns.getAttribute(AttributeSet.NameAttribute));
         assertEquals((new Integer(15)).toString(), ns.getName());
     }
 
     public void testRemoveNameAttribute() {
         withName.removeAttribute(AttributeSet.NameAttribute);
-
         assertNull(withName.getName());
     }
 
     public void testGetAttrNames() {
         withName.addAttribute("key", "value");
-
-        boolean wasKey  = false;
+        boolean wasKey = false;
         boolean wasName = false;
-        Enumeration keys = withName.getAttributeNames();
+        Enumeration<?> keys = withName.getAttributeNames();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
-
-            wasKey  = wasKey  || key.equals("key");
+            wasKey = wasKey || key.equals("key");
             wasName = wasName || key.equals(AttributeSet.NameAttribute);
         }
-
         assertTrue(wasKey);
         assertTrue(wasName);
     }
@@ -196,10 +179,8 @@ public class StyleContext_NamedStyleTest extends StyleTest {
         EventListener[] listeners = ns.getListeners(ChangeListener.class);
         assertEquals(1, listeners.length);
         assertSame(this, listeners[0]);
-
         listeners = ns.getListeners(CaretListener.class);
         assertEquals(0, listeners.length);
-
         ns.removeChangeListener(this);
         listeners = ns.getListeners(ChangeListener.class);
         assertEquals(0, listeners.length);
@@ -208,12 +189,10 @@ public class StyleContext_NamedStyleTest extends StyleTest {
     public void testGetChangeListeners() {
         ChangeListener[] listeners = ns.getChangeListeners();
         assertEquals(0, listeners.length);
-
         ns.addChangeListener(this);
         listeners = ns.getChangeListeners();
         assertEquals(1, listeners.length);
         assertSame(this, listeners[0]);
-
         ns.removeChangeListener(this);
         listeners = ns.getChangeListeners();
         assertEquals(0, listeners.length);
@@ -224,15 +203,14 @@ public class StyleContext_NamedStyleTest extends StyleTest {
         assertNotNull(ns.toString());
         assertTrue(str.startsWith("NamedStyle:null {"));
         String[] attrs = str.substring(17, str.length() - 1).split(",");
-        String[] expected = {"key1=value1", "key2=value2", "key3=value3"};
-        boolean[] found = {false, false, false};
+        String[] expected = { "key1=value1", "key2=value2", "key3=value3" };
+        boolean[] found = { false, false, false };
         assertEquals(expected.length, attrs.length);
         for (int i = 0; i < expected.length; i++) {
             for (int j = 0; j < attrs.length && !found[i]; j++) {
                 found[i] = found[i] || expected[i].equals(attrs[j]);
             }
         }
-
         for (int i = 0; i < found.length; i++) {
             if (!found[i]) {
                 fail(expected[i] + " was not found");
@@ -245,7 +223,6 @@ public class StyleContext_NamedStyleTest extends StyleTest {
         bStateChanged = false;
         ns.fireStateChanged();
         assertTrue(bStateChanged);
-
         ns.removeChangeListener(this);
         bStateChanged = false;
         ns.fireStateChanged();
@@ -254,21 +231,17 @@ public class StyleContext_NamedStyleTest extends StyleTest {
 
     public void testChangeEvent() {
         assertNull(ns.changeEvent);
-
         ns.fireStateChanged();
         assertNull(ns.changeEvent);
-
         ns.addChangeListener(this);
         assertNull(ns.changeEvent);
-
         ns.fireStateChanged();
         assertEquals(ns, ns.changeEvent.getSource());
     }
 
     public void testSerializable() throws Exception {
         ns.setName("styleName");
-
-        NamedStyle read = (NamedStyle)BasicSwingTestCase.serializeObject(ns);
+        NamedStyle read = (NamedStyle) BasicSwingTestCase.serializeObject(ns);
         assertTrue(ns.isEqual(read));
     }
 
@@ -301,16 +274,14 @@ public class StyleContext_NamedStyleTest extends StyleTest {
     public void testCopyAttributesWithName() {
         StyleContext def = new StyleContext();
         Style parent = def.addStyle("parentStyle", null);
-        Style style  = def.addStyle("aStyle", parent);
-
+        Style style = def.addStyle("aStyle", parent);
         // Copy parent
-        Style copyParent = (Style)parent.copyAttributes();
+        Style copyParent = (Style) parent.copyAttributes();
         assertTrue(copyParent instanceof StyleContext.NamedStyle);
         assertEquals("parentStyle", copyParent.getName());
         assertNull(copyParent.getResolveParent());
-
         // Copy style
-        Style copyStyle = (Style)style.copyAttributes();
+        Style copyStyle = (Style) style.copyAttributes();
         assertTrue(copyStyle instanceof StyleContext.NamedStyle);
         assertEquals("aStyle", copyStyle.getName());
         assertSame(parent, copyStyle.getResolveParent());

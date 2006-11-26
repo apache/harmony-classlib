@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -23,7 +22,6 @@ package javax.swing.text;
 
 import javax.swing.BasicSwingTestCase;
 import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import junit.framework.TestCase;
 
 /**
@@ -36,9 +34,7 @@ public class StyleContext_AddAttrsTest extends TestCase {
     public void testAddAttributesNine() {
         AttributeSet as1 = StyleContextTest.addAttribute(5);
         AttributeSet as2 = StyleContextTest.addAttribute(null, 5, 4);
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(9, test.getAttributeCount());
         assertTrue(test instanceof SmallAttributeSet);
     }
@@ -46,9 +42,7 @@ public class StyleContext_AddAttrsTest extends TestCase {
     public void testAddAttributesNineAndNine() {
         AttributeSet as1 = StyleContextTest.addAttribute(9);
         AttributeSet as2 = StyleContextTest.addAttribute(9);
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(9, test.getAttributeCount());
         if (!BasicSwingTestCase.isHarmony()) {
             assertTrue(test instanceof SimpleAttributeSet);
@@ -60,9 +54,7 @@ public class StyleContext_AddAttrsTest extends TestCase {
     public void testAddAttributesNineFull() {
         AttributeSet as1 = StyleContextTest.addAttribute(8);
         AttributeSet as2 = StyleContextTest.addAttribute(9);
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(9, test.getAttributeCount());
         if (!BasicSwingTestCase.isHarmony()) {
             assertTrue(test instanceof SimpleAttributeSet);
@@ -73,14 +65,10 @@ public class StyleContext_AddAttrsTest extends TestCase {
 
     public void testAddAttributesSameValues() {
         AttributeSet as1 = StyleContextTest.addAttribute(2);
-        AttributeSet as2 =
-            new SimpleAttributeSet(StyleContextTest.addAttribute(2));
-
+        AttributeSet as2 = new SimpleAttributeSet(StyleContextTest.addAttribute(2));
         assertNotSame(as1, as2);
         assertEquals(2, as2.getAttributeCount());
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertSame(as1, test);
         assertEquals(2, test.getAttributeCount());
     }
@@ -88,9 +76,7 @@ public class StyleContext_AddAttrsTest extends TestCase {
     public void testAddAttributesTen() {
         AttributeSet as1 = StyleContextTest.addAttribute(5);
         AttributeSet as2 = StyleContextTest.addAttribute(null, 5, 5);
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(10, test.getAttributeCount());
         assertTrue(test instanceof SimpleAttributeSet);
     }
@@ -99,25 +85,20 @@ public class StyleContext_AddAttrsTest extends TestCase {
         AttributeSet as1 = StyleContextTest.addAttribute(9);
         AttributeSet as2 = StyleContextTest.addAttribute(9);
         as2 = sc.addAttribute(as2, StyleConstants.LineSpacing, new Float(0.5));
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(10, test.getAttributeCount());
         assertTrue(test instanceof SimpleAttributeSet);
     }
 
     public void testAddAttributesThreeSame() {
-        AttributeSet as = sc.addAttributes(StyleContextTest.addAttribute(3),
-                                           StyleContextTest.addAttribute(1));
-
+        AttributeSet as = sc.addAttributes(StyleContextTest.addAttribute(3), StyleContextTest
+                .addAttribute(1));
         assertEquals(3, as.getAttributeCount());
     }
 
     public void testAddAttributesThreeSameKey() {
-        AttributeSet as = sc.addAttributes(StyleContextTest.addAttribute(3),
-                sc.addAttribute(sc.getEmptySet(), StyleContextTest.attr[0],
-                                Boolean.FALSE));
-
+        AttributeSet as = sc.addAttributes(StyleContextTest.addAttribute(3), sc.addAttribute(sc
+                .getEmptySet(), StyleContextTest.attr[0], Boolean.FALSE));
         assertEquals(3, as.getAttributeCount());
         assertEquals(Boolean.FALSE, as.getAttribute(StyleContextTest.attr[0]));
     }
@@ -126,13 +107,12 @@ public class StyleContext_AddAttrsTest extends TestCase {
         AttributeSet as1 = StyleContextTest.addAttribute(5);
         AttributeSet as2 = StyleContextTest.addAttribute(null, 5, 3);
         as2 = sc.addAttribute(as2, StyleConstants.LineSpacing, new Float(0.5));
-
         AttributeSet test = sc.addAttributes(as1, as2);
-
         assertEquals(9, test.getAttributeCount());
         assertTrue(test instanceof SmallAttributeSet);
     }
 
+    @Override
     protected void setUp() throws Exception {
         sc = StyleContextTest.sc = new StyleContext();
     }

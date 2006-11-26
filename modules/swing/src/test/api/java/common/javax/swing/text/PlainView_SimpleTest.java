@@ -22,9 +22,7 @@ package javax.swing.text;
 
 import java.awt.Container;
 import java.awt.Graphics;
-
 import javax.swing.JTextArea;
-
 import junit.framework.TestCase;
 
 /**
@@ -37,9 +35,13 @@ import junit.framework.TestCase;
  */
 public class PlainView_SimpleTest extends TestCase {
     private JTextArea area;
-    private Document  doc;
-    private Element   root;
-    private boolean   updateMetricsCalled;
+
+    private Document doc;
+
+    private Element root;
+
+    private boolean updateMetricsCalled;
+
     private PlainView view;
 
     public void testGetLineBuffer() {
@@ -60,16 +62,16 @@ public class PlainView_SimpleTest extends TestCase {
     public void testPlainView() {
         view = new PlainView(null);
         assertNull(view.getElement());
-
         view = new PlainView(root);
         assertSame(root, view.getElement());
         assertNull(view.metrics); // metrics are lazily initialized
-
         view = new PlainView(root) {
+            @Override
             public Container getContainer() {
                 return area;
             }
 
+            @Override
             public Graphics getGraphics() {
                 return area.getGraphics();
             }
@@ -80,28 +82,30 @@ public class PlainView_SimpleTest extends TestCase {
 
     public void testSetSize() {
         view = new PlainView(root) {
+            @Override
             public Container getContainer() {
                 return new JTextArea();
             }
+
+            @Override
             protected void updateMetrics() {
                 updateMetricsCalled = true;
             }
         };
-
         assertFalse(updateMetricsCalled);
         view.setSize(500, 500);
-        assertTrue("setSize is expected to call updateMetrics",
-                   updateMetricsCalled);
+        assertTrue("setSize is expected to call updateMetrics", updateMetricsCalled);
     }
 
     /**
      * Creates PlainDocument, PlainView on <code>doc</code>'s
      * default root, and rectangular shape.
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        doc   = new PlainDocument();
-        root  = doc.getDefaultRootElement();
-        view  = new PlainView(root);
+        doc = new PlainDocument();
+        root = doc.getDefaultRootElement();
+        view = new PlainView(root);
     }
 }

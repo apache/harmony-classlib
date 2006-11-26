@@ -33,17 +33,18 @@ public class FieldViewTest extends SwingTestCase {
 
     FieldView fv;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         jf = new JFrame();
         jtf = new JTextField("JTextField for FieldView testing");
         jf.getContentPane().add(jtf);
-        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf)
-                .getView(0);
+        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf).getView(0);
         jf.setSize(200, 100);
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -52,14 +53,11 @@ public class FieldViewTest extends SwingTestCase {
     public void testGetPreferredSpan() {
         FontMetrics fm = fv.getFontMetrics();
         assertEquals(fm.getHeight(), (int) fv.getPreferredSpan(View.Y_AXIS));
-        assertEquals(fm.stringWidth(jtf.getText()), (int) fv
-                .getPreferredSpan(View.X_AXIS));
+        assertEquals(fm.stringWidth(jtf.getText()), (int) fv.getPreferredSpan(View.X_AXIS));
         jtf.setFont(new java.awt.Font("SimSun", 0, 12));
-        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf)
-                .getView(0);
+        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf).getView(0);
         fm = jtf.getFontMetrics(jtf.getFont());
-        assertEquals(fm.stringWidth(jtf.getText()), (int) fv
-                .getPreferredSpan(View.X_AXIS));
+        assertEquals(fm.stringWidth(jtf.getText()), (int) fv.getPreferredSpan(View.X_AXIS));
     }
 
     public void testGetResizeWeight() {
@@ -71,8 +69,7 @@ public class FieldViewTest extends SwingTestCase {
     public void testGetFontMetrics() {
         assertEquals(jtf.getFontMetrics(jtf.getFont()), fv.getFontMetrics());
         jtf.setFont(new java.awt.Font("SimSun", 0, 12));
-        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf)
-                .getView(0);
+        fv = (FieldView) ((BasicTextUI) jtf.getUI()).getRootView(jtf).getView(0);
         assertEquals(jtf.getFontMetrics(jtf.getFont()), fv.getFontMetrics());
     }
 }

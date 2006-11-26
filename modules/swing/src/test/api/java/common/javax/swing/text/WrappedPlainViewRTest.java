@@ -22,44 +22,47 @@ package javax.swing.text;
 
 import java.awt.FontMetrics;
 import java.awt.Rectangle;
-
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.SwingTestCase;
 import javax.swing.text.Position.Bias;
 
 public class WrappedPlainViewRTest extends SwingTestCase {
-    private Document         doc;
-    private Element          root;
-    private WrappedPlainView view;
-    private JTextArea        textArea;
-    private JFrame           frame;
-    private Rectangle        shape;
+    private Document doc;
 
-    private int width  = 145;
+    private Element root;
+
+    private WrappedPlainView view;
+
+    private JTextArea textArea;
+
+    private JFrame frame;
+
+    private Rectangle shape;
+
+    private int width = 145;
+
     private int height = 500;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JFrame("WrappedPlainView Test");
         doc = new PlainDocument();
-        doc.insertString(0,
-                         "one, two, three, four, five\n" +
-                         "eins, zwei, drei, vier, funf\n" +
-                         "uno, dos, tres, cuatro, \tcinco", null);
+        doc.insertString(0, "one, two, three, four, five\n" + "eins, zwei, drei, vier, funf\n"
+                + "uno, dos, tres, cuatro, \tcinco", null);
         root = doc.getDefaultRootElement();
-
         textArea = new JTextArea(doc);
         textArea.setLineWrap(true);
         frame.getContentPane().add(textArea);
         textArea.setSize(width, height);
-
         View rootView = textArea.getUI().getRootView(textArea);
-        view = (WrappedPlainView)rootView.getView(0);
+        view = (WrappedPlainView) rootView.getView(0);
         shape = new Rectangle(width, height);
         view.setSize(shape.width, shape.height);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         frame.dispose();
@@ -72,9 +75,8 @@ public class WrappedPlainViewRTest extends SwingTestCase {
         final Bias[] bias = new Bias[1];
         width = getTextWidth(root.getElementCount() - 1) * 3 / 4;
         view.setSize(width, height);
-        assertEquals(view.getEndOffset() - 1,
-                     view.viewToModel(width / 2, height - 10,
-                                      new Rectangle(width, height), bias));
+        assertEquals(view.getEndOffset() - 1, view.viewToModel(width / 2, height - 10,
+                new Rectangle(width, height), bias));
     }
 
     /**
@@ -86,16 +88,12 @@ public class WrappedPlainViewRTest extends SwingTestCase {
         textArea.setSize(500, height);
         shape = new Rectangle(500, height);
         view.setSize(shape.width, shape.height);
-
-        assertTrue("The first line must be not wrapped",
-                   500 > getTextWidth(0));
+        assertTrue("The first line must be not wrapped", 500 > getTextWidth(0));
         FontMetrics metrics = getFontMetrics();
         Element line = root.getElement(0);
         String text = doc.getText(line.getStartOffset(), 2);
-        assertEquals(2,
-                     view.viewToModel(metrics.stringWidth(text),
-                                      metrics.getHeight() / 2,
-                                      shape, bias));
+        assertEquals(2, view.viewToModel(metrics.stringWidth(text), metrics.getHeight() / 2,
+                shape, bias));
     }
 
     /**
@@ -105,7 +103,6 @@ public class WrappedPlainViewRTest extends SwingTestCase {
         textArea.setText("line1\n\n\n\n");
         assertEquals(5, view.getViewCount());
         assertSame(doc, textArea.getDocument());
-
         doc.insertString(7, "\n", null);
     }
 
@@ -116,15 +113,13 @@ public class WrappedPlainViewRTest extends SwingTestCase {
         textArea.setText("line1\n\n\n\n");
         assertEquals(5, view.getViewCount());
         assertSame(doc, textArea.getDocument());
-
         doc.remove(6, 1);
     }
 
     private int getTextWidth(final int lineNo) throws BadLocationException {
         Element line = root.getElement(lineNo);
-        String text = doc.getText(line.getStartOffset(),
-                                  line.getEndOffset() - 1
-                                  - line.getStartOffset());
+        String text = doc.getText(line.getStartOffset(), line.getEndOffset() - 1
+                - line.getStartOffset());
         FontMetrics metrics = getFontMetrics();
         return metrics.stringWidth(text);
     }

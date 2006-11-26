@@ -15,27 +15,28 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf;
 
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JPanel;
 import javax.swing.SwingTestCase;
 
 public class PopupMenuUITest extends SwingTestCase {
-
     protected PopupMenuUI popupUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        popupUI = new PopupMenuUI() {};
+        popupUI = new PopupMenuUI() {
+        };
     }
 
+    @Override
     protected void tearDown() throws Exception {
         popupUI = null;
         super.tearDown();
@@ -53,10 +54,11 @@ public class PopupMenuUITest extends SwingTestCase {
      */
     public void testIsPopupTrigger() {
         Component source = new JPanel();
-        MouseEvent event1 = new MouseEvent(source, MouseEvent.MOUSE_ENTERED, EventQueue.getMostRecentEventTime(), 0, 5, 5, 0, false);
-        MouseEvent event2 = new MouseEvent(source, MouseEvent.MOUSE_WHEEL, EventQueue.getMostRecentEventTime(), 0, 5, 5, 0, true);
+        MouseEvent event1 = new MouseEvent(source, MouseEvent.MOUSE_ENTERED, EventQueue
+                .getMostRecentEventTime(), 0, 5, 5, 0, false);
+        MouseEvent event2 = new MouseEvent(source, MouseEvent.MOUSE_WHEEL, EventQueue
+                .getMostRecentEventTime(), 0, 5, 5, 0, true);
         assertFalse(popupUI.isPopupTrigger(event1));
         assertTrue(popupUI.isPopupTrigger(event2));
     }
-
 }

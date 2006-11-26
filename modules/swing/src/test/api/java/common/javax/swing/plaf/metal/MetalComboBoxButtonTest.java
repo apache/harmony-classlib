@@ -21,7 +21,6 @@
 package javax.swing.plaf.metal;
 
 import java.awt.ComponentOrientation;
-
 import javax.swing.CellRendererPane;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -36,10 +35,12 @@ public class MetalComboBoxButtonTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         button = new MetalComboBoxButton(new JComboBox(), null, null, null);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         button = null;
     }
@@ -50,30 +51,25 @@ public class MetalComboBoxButtonTest extends SwingTestCase {
         assertNull(button.listBox);
         assertNull(button.rendererPane);
         assertFalse(button.isIconOnly());
-
         JComboBox comboBox = new JComboBox();
         Icon comboIcon = new ImageIcon();
         CellRendererPane rendererPane = new CellRendererPane();
         JList list = new JList();
-
         button = new MetalComboBoxButton(comboBox, comboIcon, rendererPane, list);
         assertEquals(comboBox, button.comboBox);
         assertEquals(comboIcon, button.comboIcon);
         assertEquals(rendererPane, button.rendererPane);
         assertEquals(list, button.listBox);
         assertFalse(button.isIconOnly());
-
         button = new MetalComboBoxButton(comboBox, comboIcon, true, rendererPane, list);
         assertEquals(comboBox, button.comboBox);
         assertEquals(comboIcon, button.comboIcon);
         assertEquals(rendererPane, button.rendererPane);
         assertEquals(list, button.listBox);
         assertTrue(button.isIconOnly());
-
         comboBox.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         button = new MetalComboBoxButton(comboBox, null, null, null);
         assertTrue(button.getComponentOrientation().isLeftToRight());
-
         comboBox.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         assertTrue(button.getComponentOrientation().isLeftToRight());
     }
@@ -110,7 +106,6 @@ public class MetalComboBoxButtonTest extends SwingTestCase {
         assertTrue(button.isEnabled());
         button.setEnabled(false);
         assertFalse(button.isEnabled());
-
         JComboBox comboBox = new JComboBox();
         comboBox.setEnabled(false);
         button = new MetalComboBoxButton(comboBox, null, null, null);
@@ -121,4 +116,3 @@ public class MetalComboBoxButtonTest extends SwingTestCase {
         button.paintComponent(createTestGraphics());
     }
 }
-

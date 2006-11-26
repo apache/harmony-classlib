@@ -21,7 +21,6 @@
 package javax.swing.event;
 
 import javax.swing.SwingTestCase;
-import javax.swing.event.ListSelectionEvent;
 
 public class ListSelectionEventTest extends SwingTestCase {
     private ListSelectionEvent event;
@@ -30,6 +29,7 @@ public class ListSelectionEventTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }
@@ -37,7 +37,6 @@ public class ListSelectionEventTest extends SwingTestCase {
     public void testListSelectionEvent() throws Exception {
         Object source = new Object();
         event = new ListSelectionEvent(source, 50, 10, false);
-
         assertEquals(source, event.getSource());
     }
 
@@ -54,7 +53,6 @@ public class ListSelectionEventTest extends SwingTestCase {
     public void testGetValueIsAdjusting() throws Exception {
         event = new ListSelectionEvent(new Object(), 5, 10, false);
         assertFalse(event.getValueIsAdjusting());
-
         event = new ListSelectionEvent(new Object(), 5, 10, true);
         assertTrue(event.getValueIsAdjusting());
     }
@@ -63,6 +61,7 @@ public class ListSelectionEventTest extends SwingTestCase {
         event = new ListSelectionEvent(new Object(), 5, 10, true);
         String stringRepresentation = event.toString();
         assertNotNull(stringRepresentation);
-        assertTrue(stringRepresentation.indexOf("firstIndex= 5 lastIndex= 10 isAdjusting= true") > 0);
+        assertTrue(stringRepresentation
+                .indexOf("firstIndex= 5 lastIndex= 10 isAdjusting= true") > 0);
     }
 }

@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.CellRendererPane;
 import javax.swing.JButton;
@@ -41,17 +40,20 @@ import javax.swing.plaf.basic.ComboPopup;
 
 public class MetalComboBoxUITest extends SwingTestCase {
     private TestUI ui;
+
     private JComboBox comboBox;
 
     public MetalComboBoxUITest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         ui = new TestUI();
         comboBox = new JComboBox();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         comboBox = null;
@@ -65,7 +67,6 @@ public class MetalComboBoxUITest extends SwingTestCase {
     public void testCreateUI() throws Exception {
         ComponentUI ui1 = MetalComboBoxUI.createUI(comboBox);
         assertTrue(ui1.getClass() == MetalComboBoxUI.class);
-
         ComponentUI ui2 = MetalComboBoxUI.createUI(comboBox);
         assertNotSame(ui1, ui2);
     }
@@ -88,7 +89,8 @@ public class MetalComboBoxUITest extends SwingTestCase {
     //TODO
     public void testLayoutComboBox() throws Exception {
         ui.setComboBox(comboBox);
-        ui.layoutComboBox(null, (MetalComboBoxUI.MetalComboBoxLayoutManager)ui.createLayoutManager());
+        ui.layoutComboBox(null, (MetalComboBoxUI.MetalComboBoxLayoutManager) ui
+                .createLayoutManager());
     }
 
     public void testGetMinimumSize() throws Exception {
@@ -98,17 +100,17 @@ public class MetalComboBoxUITest extends SwingTestCase {
         ui.setListBox(popup.getList());
         ui.installListeners();
         comboBox.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-
-        Dimension listPart = new BasicComboBoxRenderer().getListCellRendererComponent(popup.getList(), "", -1, false, false).getPreferredSize();
-        Dimension expectedSize = new Dimension(listPart.width + listPart.height + 8, listPart.height + 8);
+        Dimension listPart = new BasicComboBoxRenderer().getListCellRendererComponent(
+                popup.getList(), "", -1, false, false).getPreferredSize();
+        Dimension expectedSize = new Dimension(listPart.width + listPart.height + 8,
+                listPart.height + 8);
         assertEquals(expectedSize, ui.getMinimumSize(null));
         assertEquals(expectedSize, ui.getCachedMinimumSize());
-
         ui.setCachedMinimumSize(new Dimension(100, 100));
         assertEquals(ui.getCachedMinimumSize(), ui.getMinimumSize(null));
-
         comboBox.addItem("aaa");
-        listPart = new BasicComboBoxRenderer().getListCellRendererComponent(popup.getList(), "aaa", -1, false, false).getPreferredSize();
+        listPart = new BasicComboBoxRenderer().getListCellRendererComponent(popup.getList(),
+                "aaa", -1, false, false).getPreferredSize();
         expectedSize = new Dimension(listPart.width + listPart.height + 8, listPart.height + 8);
         assertEquals(expectedSize, ui.getMinimumSize(null));
     }
@@ -120,9 +122,8 @@ public class MetalComboBoxUITest extends SwingTestCase {
     public void testCreateArrowButton() throws Exception {
         ui.setComboBox(comboBox);
         assertTrue(ui.createArrowButton().getClass() == MetalComboBoxButton.class);
-        MetalComboBoxButton arrowButton = (MetalComboBoxButton)ui.createArrowButton();
+        MetalComboBoxButton arrowButton = (MetalComboBoxButton) ui.createArrowButton();
         assertEquals("", arrowButton.getText());
-
         assertEquals(comboBox, arrowButton.getComboBox());
         assertTrue(arrowButton.getComboIcon().getClass() == MetalComboBoxIcon.class);
         if (isHarmony()) {
@@ -130,11 +131,10 @@ public class MetalComboBoxUITest extends SwingTestCase {
         } else {
             assertTrue(arrowButton.isIconOnly());
         }
-
         assertEquals(SwingConstants.TRAILING, arrowButton.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, arrowButton.getHorizontalAlignment());
-
-        assertEquals(new Insets(3, 4, 4, 6), arrowButton.getBorder().getBorderInsets(arrowButton));
+        assertEquals(new Insets(3, 4, 4, 6), arrowButton.getBorder().getBorderInsets(
+                arrowButton));
     }
 
     public void testCreateLayoutManager() throws Exception {
@@ -146,11 +146,9 @@ public class MetalComboBoxUITest extends SwingTestCase {
         assertTrue(ui.createPopup() instanceof BasicComboPopup);
     }
 
-
     private Graphics createGraphics() {
         return new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR).createGraphics();
     }
-
 
     private class TestUI extends MetalComboBoxUI {
         public void setComboBox(final JComboBox comboBox) {
@@ -173,6 +171,7 @@ public class MetalComboBoxUITest extends SwingTestCase {
             return editor;
         }
 
+        @Override
         public void installListeners() {
             super.installListeners();
         }

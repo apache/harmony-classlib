@@ -21,8 +21,8 @@
 package javax.swing.plaf.basic;
 
 import java.beans.PropertyVetoException;
-
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -31,18 +31,22 @@ import javax.swing.SwingTestCase;
 
 public class BasicDesktopPaneUIActionsTest extends SwingTestCase {
     private JFrame frame;
+
     private JDesktopPane desktop;
+
     private JInternalFrame iframe1;
+
     private JInternalFrame iframe2;
+
     private BasicDesktopPaneUI ui;
 
     public BasicDesktopPaneUIActionsTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JFrame();
         desktop = new JDesktopPane();
         ui = new BasicDesktopPaneUI();
@@ -55,9 +59,9 @@ public class BasicDesktopPaneUIActionsTest extends SwingTestCase {
         desktop.setSelectedFrame(iframe1);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-
         frame.dispose();
     }
 
@@ -65,11 +69,13 @@ public class BasicDesktopPaneUIActionsTest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         frame.setVisible(true);
-
         class MyButton extends JButton {
+            private static final long serialVersionUID = 1L;
+
             public boolean requestedFocus;
+
+            @Override
             public void requestFocus() {
                 requestedFocus = true;
                 super.requestFocus();
@@ -79,14 +85,12 @@ public class BasicDesktopPaneUIActionsTest extends SwingTestCase {
         MyButton b2 = new MyButton();
         frame.getContentPane().add(b1, 0);
         frame.getContentPane().add(b2, 2);
-
         AbstractAction action = ui.new NavigateAction();
-        action.putValue(AbstractAction.NAME, "navigateNext");
+        action.putValue(Action.NAME, "navigateNext");
         b1.requestedFocus = false;
         action.actionPerformed(null);
         assertTrue(b1.requestedFocus);
-
-        action.putValue(AbstractAction.NAME, "navigatePrevious");
+        action.putValue(Action.NAME, "navigatePrevious");
         b2.requestedFocus = false;
         action.actionPerformed(null);
         assertTrue(b2.requestedFocus);
@@ -112,11 +116,9 @@ public class BasicDesktopPaneUIActionsTest extends SwingTestCase {
 
     public void testOpenAction() throws PropertyVetoException {
         AbstractAction action = ui.new OpenAction();
-
         desktop.getSelectedFrame().setMaximum(true);
         action.actionPerformed(null);
         assertFalse(desktop.getSelectedFrame().isMaximum());
-
         desktop.getSelectedFrame().setIcon(true);
         action.actionPerformed(null);
         assertFalse(desktop.getSelectedFrame().isIcon());

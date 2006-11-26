@@ -27,7 +27,6 @@ import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,6 +43,7 @@ public class MetalToolBarUITest extends SwingTestCase {
             TestMetalDockingListener(final JToolBar toolBar) {
                 super(toolBar);
             }
+
             boolean isDragging() {
                 return isDragging;
             }
@@ -54,12 +54,15 @@ public class MetalToolBarUITest extends SwingTestCase {
         }
 
         public Border nonRolloverBorder;
+
         private boolean dragToCalled;
 
+        @Override
         protected PropertyChangeListener createRolloverListener() {
             return new MetalRolloverListener();
         }
 
+        @Override
         protected ContainerListener createContainerListener() {
             return new MetalContainerListener();
         }
@@ -68,11 +71,13 @@ public class MetalToolBarUITest extends SwingTestCase {
             return dragWindow.getOffset();
         }
 
+        @Override
         protected Border createNonRolloverBorder() {
             nonRolloverBorder = super.createNonRolloverBorder();
             return nonRolloverBorder;
         }
 
+        @Override
         protected void dragTo(final Point position, final Point origin) {
             dragToCalled = true;
             super.dragTo(position, origin);
@@ -80,25 +85,28 @@ public class MetalToolBarUITest extends SwingTestCase {
     }
 
     private JFrame frame;
+
     private JToolBar toolBar;
+
     private MetalToolBarUI ui;
+
     private JButton b;
+
     private JLabel label;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         b = new JButton();
         label = new JLabel();
-
         toolBar = new JToolBar();
         ui = new MetalToolBarUI();
         toolBar.setUI(ui);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-
         if (frame != null) {
             frame.dispose();
             frame = null;
@@ -124,14 +132,12 @@ public class MetalToolBarUITest extends SwingTestCase {
     public void testCreateUI() {
         ComponentUI ui1 = MetalToolBarUI.createUI(toolBar);
         assertTrue(ui1 instanceof MetalToolBarUI);
-
         ComponentUI ui2 = MetalToolBarUI.createUI(toolBar);
         assertNotSame(ui1, ui2);
     }
 
     public void testCreateDockingListener() {
-        assertTrue(ui.createDockingListener()
-                   instanceof MetalToolBarUI.MetalDockingListener);
+        assertTrue(ui.createDockingListener() instanceof MetalToolBarUI.MetalDockingListener);
     }
 
     public void testCreateRolloverBorder() {
@@ -151,24 +157,20 @@ public class MetalToolBarUITest extends SwingTestCase {
     public void testInstallListeners() {
         TestMetalToolBarUI ui = new TestMetalToolBarUI();
         toolBar.setUI(ui);
-
-        assertTrue(Arrays.asList(toolBar.getContainerListeners())
-                   .contains(ui.contListener));
-        assertTrue(Arrays.asList(toolBar.getPropertyChangeListeners())
-                   .contains(ui.rolloverListener));
+        assertTrue(Arrays.asList(toolBar.getContainerListeners()).contains(ui.contListener));
+        assertTrue(Arrays.asList(toolBar.getPropertyChangeListeners()).contains(
+                ui.rolloverListener));
         assertFalse(Arrays.asList(toolBar.getPropertyChangeListeners("JToolBar.isRollover"))
-                   .contains(ui.rolloverListener));
+                .contains(ui.rolloverListener));
     }
 
     public void testUninstallListeners() {
         TestMetalToolBarUI ui = new TestMetalToolBarUI();
         toolBar.setUI(ui);
-
         ui.uninstallListeners();
-        assertFalse(Arrays.asList(toolBar.getContainerListeners())
-                   .contains(ui.contListener));
-        assertFalse(Arrays.asList(toolBar.getPropertyChangeListeners())
-                   .contains(ui.rolloverListener));
+        assertFalse(Arrays.asList(toolBar.getContainerListeners()).contains(ui.contListener));
+        assertFalse(Arrays.asList(toolBar.getPropertyChangeListeners()).contains(
+                ui.rolloverListener));
     }
 
     public void testSetBorderToNonRollover() {
@@ -177,15 +179,12 @@ public class MetalToolBarUITest extends SwingTestCase {
         ui.setBorderToNonRollover(b);
         assertSame(ui.nonRolloverBorder, b.getBorder());
         assertFalse(b.isRolloverEnabled());
-
         Border border = new EmptyBorder(new Insets(0, 0, 0, 0));
         b.setBorder(border);
         ui.setBorderToNonRollover(b);
         assertSame(border, b.getBorder());
-
         ui.setBorderToNonRollover(label);
         assertNull(label.getBorder());
-
         ui.setBorderToNonRollover(null);
     }
 
@@ -215,25 +214,19 @@ public class MetalToolBarUITest extends SwingTestCase {
         toolBar.add(b);
         createAndShowFrame();
         TestMetalToolBarUI.TestMetalDockingListener l = ui.new TestMetalDockingListener(toolBar);
-
-        MouseEvent e = new MouseEvent(toolBar, MouseEvent.MOUSE_PRESSED,
-                                      0, 0, toolBar.getWidth(),
-                                      toolBar.getHeight(), 0, false);
+        MouseEvent e = new MouseEvent(toolBar, MouseEvent.MOUSE_PRESSED, 0, 0, toolBar
+                .getWidth(), toolBar.getHeight(), 0, false);
         l.mousePressed(e);
-        e = new MouseEvent(toolBar, MouseEvent.MOUSE_DRAGGED,
-                           0, 0, toolBar.getWidth(),
-                           toolBar.getHeight(), 0, false);
+        e = new MouseEvent(toolBar, MouseEvent.MOUSE_DRAGGED, 0, 0, toolBar.getWidth(), toolBar
+                .getHeight(), 0, false);
         l.mouseDragged(e);
         // false because drag should occur only on bumps
         assertFalse(l.isDragging());
         assertFalse(ui.dragToCalled);
-
         Point p = new Point(4, 8);
-        e = new MouseEvent(toolBar, MouseEvent.MOUSE_PRESSED,
-                           0, 0, p.x, p.y, 0, false);
+        e = new MouseEvent(toolBar, MouseEvent.MOUSE_PRESSED, 0, 0, p.x, p.y, 0, false);
         l.mousePressed(e);
-        e = new MouseEvent(toolBar, MouseEvent.MOUSE_DRAGGED,
-                           0, 0, p.x, p.y, 0, false);
+        e = new MouseEvent(toolBar, MouseEvent.MOUSE_DRAGGED, 0, 0, p.x, p.y, 0, false);
         l.mouseDragged(e);
         assertTrue(l.isDragging());
         assertTrue(ui.dragToCalled);

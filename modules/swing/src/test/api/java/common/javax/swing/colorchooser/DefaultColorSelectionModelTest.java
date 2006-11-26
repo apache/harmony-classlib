@@ -22,19 +22,21 @@ package javax.swing.colorchooser;
 
 import java.awt.Color;
 import java.util.Arrays;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.event.ChangeListener;
 
 public class DefaultColorSelectionModelTest extends BasicSwingTestCase {
     ChangeController changeController;
+
     DefaultColorSelectionModel model;
 
+    @Override
     public void setUp() throws Exception {
         changeController = new ChangeController();
         model = new DefaultColorSelectionModel();
     }
 
+    @Override
     public void tearDown() throws Exception {
         model = null;
         changeController = null;
@@ -51,7 +53,6 @@ public class DefaultColorSelectionModelTest extends BasicSwingTestCase {
         model.setSelectedColor(Color.GREEN);
         assertTrue(changeController.isChanged());
         assertSame(Color.GREEN, model.getSelectedColor());
-
         changeController.reset();
         model.setSelectedColor(Color.GREEN);
         assertFalse(changeController.isChanged());
@@ -61,24 +62,30 @@ public class DefaultColorSelectionModelTest extends BasicSwingTestCase {
 
     public void testAddGetRemoveChangeListeners() {
         model.addChangeListener(changeController);
-        assertTrue(Arrays.asList(model.listenerList.getListenerList()).contains(changeController));
-        assertEquals(model.listenerList.getListeners(ChangeListener.class), model.getChangeListeners());
+        assertTrue(Arrays.asList(model.listenerList.getListenerList()).contains(
+                changeController));
+        assertEquals(model.listenerList.getListeners(ChangeListener.class), model
+                .getChangeListeners());
         model.removeChangeListener(changeController);
-        assertFalse(Arrays.asList(model.listenerList.getListenerList()).contains(changeController));
-        assertEquals(model.listenerList.getListeners(ChangeListener.class), model.getChangeListeners());
-
+        assertFalse(Arrays.asList(model.listenerList.getListenerList()).contains(
+                changeController));
+        assertEquals(model.listenerList.getListeners(ChangeListener.class), model
+                .getChangeListeners());
         model.listenerList = null;
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.addChangeListener(changeController);
             }
         });
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 model.getChangeListeners();
             }
         });
     }
+
     public void testFireStateChanged() {
         model.addChangeListener(changeController);
         model.fireStateChanged();

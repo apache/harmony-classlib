@@ -18,20 +18,20 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
 import java.util.Arrays;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 
 public class BasicProgressBarUITest extends BasicSwingTestCase {
     private BasicProgressBarUI ui;
+
     private JProgressBar progressBar;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ui = new BasicProgressBarUI();
@@ -41,6 +41,7 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         progressBar.getUI().uninstallUI(progressBar);
     }
 
+    @Override
     public void tearDown() throws Exception {
         progressBar = null;
         ui = null;
@@ -49,7 +50,7 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
     }
 
     public void testCreateUI() {
-        BasicProgressBarUI ui = (BasicProgressBarUI)BasicProgressBarUI.createUI(progressBar);
+        BasicProgressBarUI ui = (BasicProgressBarUI) BasicProgressBarUI.createUI(progressBar);
         assertNotNull(ui);
         assertNull(ui.changeListener);
         assertNull(ui.progressBar);
@@ -57,7 +58,6 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
 
     public void testInstallUninstallUI() {
         assertNull(progressBar.getBorder());
-
         ui.installUI(progressBar);
         assertSame(ui.progressBar, progressBar);
         assertNotNull(ui.changeListener);
@@ -66,8 +66,6 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         assertNotNull(progressBar.getBorder());
         assertEquals(UIManager.getInt("ProgressBar.cellLength"), ui.getCellLength());
         assertEquals(UIManager.getInt("ProgressBar.cellSpacing"), ui.getCellSpacing());
-
-
         propertyChangeController.reset();
         ui.uninstallUI(progressBar);
         assertEquals(0, progressBar.getChangeListeners().length);
@@ -81,28 +79,26 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         ui.installListeners();
         assertTrue(Arrays.asList(progressBar.getChangeListeners()).contains(ui.changeListener));
         assertEquals(2, progressBar.getPropertyChangeListeners().length);
-
         ui.uninstallListeners();
         assertEquals(1, progressBar.getPropertyChangeListeners().length);
     }
 
-
     public void testGetSelectionBackForeGround() {
         ui.installUI(progressBar);
-        assertEquals(UIManager.getColor("ProgressBar.selectionBackground"), ui.getSelectionBackground());
-        assertEquals(UIManager.getColor("ProgressBar.selectionForeground"), ui.getSelectionForeground());
+        assertEquals(UIManager.getColor("ProgressBar.selectionBackground"), ui
+                .getSelectionBackground());
+        assertEquals(UIManager.getColor("ProgressBar.selectionForeground"), ui
+                .getSelectionForeground());
     }
 
     public void testSetGetCellLengthSpacing() {
         ui.installUI(progressBar);
         assertEquals(UIManager.getInt("ProgressBar.cellLength"), ui.getCellLength());
         assertEquals(UIManager.getInt("ProgressBar.cellSpacing"), ui.getCellSpacing());
-
         ui.setCellLength(11);
         assertEquals(11, ui.getCellLength());
         ui.setCellLength(-1);
         assertEquals(-1, ui.getCellLength());
-
         progressBar.setStringPainted(true);
         int length = ui.getCellLength();
         if (isHarmony()) {
@@ -110,7 +106,6 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         }
         ui.setCellLength(11);
         assertEquals(length, ui.getCellLength());
-
         ui.setCellSpacing(11111);
         if (isHarmony()) {
             assertEquals(2, ui.getCellSpacing());
@@ -121,27 +116,21 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
 
     public void testGetPreferredSizes() {
         ui.installUI(progressBar);
-
         Dimension inner = ui.getPreferredInnerHorizontal();
         assertSame(inner, ui.getPreferredInnerHorizontal());
         assertEquals(ui.getPreferredSize(progressBar).width, inner.width + 2);
         assertEquals(ui.getPreferredSize(progressBar).height, inner.height + 2);
-
-        UIManager.put("ProgressBar.verticalSize", new Dimension(inner.width + 2, inner.height + 2));
+        UIManager.put("ProgressBar.verticalSize", new Dimension(inner.width + 2,
+                inner.height + 2));
         assertEquals(ui.getPreferredSize(progressBar).width, inner.width + 2);
         assertEquals(ui.getPreferredSize(progressBar).height, inner.height + 2);
         assertEquals(ui.getPreferredInnerHorizontal().width, inner.width);
         assertEquals(ui.getPreferredInnerHorizontal().height, inner.height);
-
-
-
     }
 
     public void testAnimation() {
         ui.installUI(progressBar);
-
         progressBar.setIndeterminate(true);
         assertEquals(0, ui.getAnimationIndex());
     }
 }
-

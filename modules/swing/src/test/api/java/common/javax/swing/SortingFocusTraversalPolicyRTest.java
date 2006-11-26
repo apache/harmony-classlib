@@ -36,6 +36,7 @@ public class SortingFocusTraversalPolicyRTest extends BasicSwingTestCase {
 
     private JFrame frame;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -115,6 +116,7 @@ public class SortingFocusTraversalPolicyRTest extends BasicSwingTestCase {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private class TestComparator implements Comparator {
         public int compare(final Object o1, final Object o2) {
             Component c1 = (Component) o1;

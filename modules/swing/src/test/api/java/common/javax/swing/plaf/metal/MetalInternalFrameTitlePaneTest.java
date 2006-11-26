@@ -18,20 +18,17 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-
 import javax.swing.SwingTestCase;
 
 public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
@@ -39,6 +36,8 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
      * This class is used to access protected members
      */
     private class TestMetalInternalFrameTitlePane extends MetalInternalFrameTitlePane {
+        private static final long serialVersionUID = 1L;
+
         public TestMetalInternalFrameTitlePane(final JInternalFrame frame) {
             super(frame);
         }
@@ -82,9 +81,9 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JInternalFrame();
         pane = new MetalInternalFrameTitlePane(frame);
     }
@@ -92,6 +91,7 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -110,7 +110,6 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         frame = new JInternalFrame("", true, true, true, true);
         pane = new MetalInternalFrameTitlePane(frame);
         assertEquals(3, pane.getComponentCount());
-
         frame = new JInternalFrame("", true, true, true, false);
         pane = new MetalInternalFrameTitlePane(frame);
         if (isHarmony()) {
@@ -125,11 +124,9 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         pane.uninstallDefaults();
         pane.paletteTitleHeight = 0;
         pane.paletteCloseIcon = null;
-
         pane.installDefaults();
         assertTrue("paletteTitleHeight != 0", pane.paletteTitleHeight != 0);
-        assertTrue("installed paletteCloseIcon",
-                   pane.paletteCloseIcon != null);
+        assertTrue("installed paletteCloseIcon", pane.paletteCloseIcon != null);
     }
 
     /*
@@ -137,10 +134,8 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
      */
     public void testUninstallDefaults() {
         pane.uninstallDefaults();
-
         assertTrue("paletteTitleHeight != 0", pane.paletteTitleHeight != 0);
-        assertTrue("didn't uninstall paletteCloseIcon",
-                   pane.paletteCloseIcon != null);
+        assertTrue("didn't uninstall paletteCloseIcon", pane.paletteCloseIcon != null);
     }
 
     /*
@@ -148,24 +143,23 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
      */
     public void testCreateButtons() {
         TestMetalInternalFrameTitlePane pane = new TestMetalInternalFrameTitlePane(frame);
-
-        assertEquals("maxButton accessible name", "Maximize",
-                pane.getMaxButton().getAccessibleContext().getAccessibleName());
+        assertEquals("maxButton accessible name", "Maximize", pane.getMaxButton()
+                .getAccessibleContext().getAccessibleName());
         if (isHarmony()) {
-            assertFalse("maxButton's border is not painted",
-                        pane.getMaxButton().isBorderPainted());
+            assertFalse("maxButton's border is not painted", pane.getMaxButton()
+                    .isBorderPainted());
         }
-        assertEquals("iconButton accessible name", "Iconify",
-                pane.getIconButton().getAccessibleContext().getAccessibleName());
+        assertEquals("iconButton accessible name", "Iconify", pane.getIconButton()
+                .getAccessibleContext().getAccessibleName());
         if (isHarmony()) {
-            assertFalse("iconButton's border is not painted",
-                        pane.getIconButton().isBorderPainted());
+            assertFalse("iconButton's border is not painted", pane.getIconButton()
+                    .isBorderPainted());
         }
-        assertEquals("closeButton accessible name", "Close",
-                pane.getCloseButton().getAccessibleContext().getAccessibleName());
+        assertEquals("closeButton accessible name", "Close", pane.getCloseButton()
+                .getAccessibleContext().getAccessibleName());
         if (isHarmony()) {
-            assertFalse("closeButton's border is not painted",
-                        pane.getCloseButton().isBorderPainted());
+            assertFalse("closeButton's border is not painted", pane.getCloseButton()
+                    .isBorderPainted());
         }
     }
 
@@ -175,7 +169,6 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
     public void testAssembleSystemMenu() {
         TestMetalInternalFrameTitlePane pane = new TestMetalInternalFrameTitlePane(frame);
         pane.assembleSystemMenu();
-
         assertNull("windowMenu == null", pane.getWindowMenu());
         assertNull("menuBar == null", pane.getMenuBar());
     }
@@ -192,7 +185,6 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
      */
     public void testMetalInternalFrameTitlePane() {
         pane = new MetalInternalFrameTitlePane(frame);
-
         assertFalse("isPalette == false", pane.isPalette);
     }
 
@@ -202,7 +194,6 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
     public void testAddSystemMenuItems() {
         // the tested function does nothing
         JMenu menu = new JMenu();
-
         pane.addSystemMenuItems(menu);
         assertEquals(0, menu.getItemCount());
     }
@@ -214,7 +205,7 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         PropertyChangeListener listener = pane.createPropertyChangeListener();
         assertTrue("!= null", listener != null);
         assertTrue("instanceof TitlePaneLayout",
-                   listener instanceof BasicInternalFrameTitlePane.PropertyChangeHandler);
+                listener instanceof BasicInternalFrameTitlePane.PropertyChangeHandler);
     }
 
     /*
@@ -224,7 +215,7 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         LayoutManager layout = pane.createLayout();
         assertTrue("!= null", layout != null);
         assertTrue("instanceof TitlePaneLayout",
-                   layout instanceof BasicInternalFrameTitlePane.TitlePaneLayout);
+                layout instanceof BasicInternalFrameTitlePane.TitlePaneLayout);
     }
 
     /*
@@ -235,20 +226,17 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         frame.setClosable(true);
         frame.setIconifiable(true);
         frame.setMaximizable(true);
-
         // test set to true
         pane.setPalette(true);
         assertTrue("isPalette is true", pane.isPalette);
         assertTrue("changed close icon",
-                   pane.getCloseButton().getIcon() == pane.paletteCloseIcon);
+                pane.getCloseButton().getIcon() == pane.paletteCloseIcon);
         assertTrue("1 child", pane.getComponentCount() == 1);
         // is layoutContainer called?
-
         // test set to false
         pane.setPalette(false);
         assertFalse("isPalette is false", pane.isPalette);
-        assertTrue("changed close icon",
-                   pane.getCloseButton().getIcon() == pane.getCloseIcon());
+        assertTrue("changed close icon", pane.getCloseButton().getIcon() == pane.getCloseIcon());
         assertTrue("3 children", pane.getComponentCount() == 3);
     }
 
@@ -270,44 +258,36 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         TestMetalInternalFrameTitlePane pane = new TestMetalInternalFrameTitlePane(frame);
         pane.setSize(200, 31);
         LayoutManager layout = pane.getLayout();
-        final Rectangle zeroBounds = new Rectangle(0, 0, 0, 0);
         final Rectangle iconButtonBounds = new Rectangle(134, 7, 16, 16);
         final Rectangle maximizeButtonBounds = new Rectangle(156, 7, 16, 16);
         final Rectangle closeButtonBounds = new Rectangle(178, 7, 16, 16);
-
         // test layoutContainer(): non-iconifiable, non-maximizable, non-closable
         layout.layoutContainer(null);
-//        assertEquals("iconButton", zeroBounds,
-//                     pane.getComponent(0).getBounds());
-//        assertTrue("maximizeButton", pane.getComponent(1).getBounds().
-//                equals(zeroBounds));
-//        assertTrue("closeButton", pane.getComponent(2).getBounds().
-//                equals(zeroBounds));
-
+        //        assertEquals("iconButton", zeroBounds,
+        //                     pane.getComponent(0).getBounds());
+        //        assertTrue("maximizeButton", pane.getComponent(1).getBounds().
+        //                equals(zeroBounds));
+        //        assertTrue("closeButton", pane.getComponent(2).getBounds().
+        //                equals(zeroBounds));
         // test layoutContainer(): iconifiable, maximizable, closable
         frame.setIconifiable(true);
         frame.setMaximizable(true);
         frame.setClosable(true);
-
         layout.layoutContainer(pane);
         if (isHarmony()) {
-            assertEquals("iconButton", iconButtonBounds,
-                         pane.getComponent(0).getBounds());
-            assertEquals("maximizeButton", maximizeButtonBounds,
-                         pane.getComponent(1).getBounds());
-            assertEquals("closeButton", closeButtonBounds,
-                         pane.getComponent(2).getBounds());
+            assertEquals("iconButton", iconButtonBounds, pane.getComponent(0).getBounds());
+            assertEquals("maximizeButton", maximizeButtonBounds, pane.getComponent(1)
+                    .getBounds());
+            assertEquals("closeButton", closeButtonBounds, pane.getComponent(2).getBounds());
         }
-
         // test layoutContainer(): isPalette == true
         pane.setPalette(true);
         layout.layoutContainer(null);
         // these bounds can be changed in the future
         if (isHarmony()) {
-            assertEquals("palette: closeButton", new Rectangle(189, 11, 8, 8),
-                         pane.getComponent(0).getBounds());
+            assertEquals("palette: closeButton", new Rectangle(189, 11, 8, 8), pane
+                    .getComponent(0).getBounds());
         }
-
         // minimumLayoutSize(), preferredLayoutSize() implementations
         assertTrue("", layout.minimumLayoutSize(pane) != null);
         assertTrue("", layout.preferredLayoutSize(pane) != null);

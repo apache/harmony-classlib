@@ -14,31 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.Font;
 import java.util.Properties;
-
 import javax.swing.SwingTestCase;
 import javax.swing.plaf.FontUIResource;
 
 public class DefaultMetalThemeTest extends SwingTestCase {
-
     private DefaultMetalTheme theme;
+
     private Properties props;
 
+    @Override
     public void setUp() {
         theme = new DefaultMetalTheme();
         props = new Properties();
         props.putAll(System.getProperties());
     }
 
+    @Override
     public void tearDown() {
         theme = null;
         System.getProperties().clear();
@@ -70,27 +69,27 @@ public class DefaultMetalThemeTest extends SwingTestCase {
     }
 
     public void testGetWindowTitleFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.BOLD, 12), theme.getWindowTitleFont());
+        assertEquals(new FontUIResource("Dialog", Font.BOLD, 12), theme.getWindowTitleFont());
     }
 
     public void testGetUserTextFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.PLAIN, 12), theme.getUserTextFont());
+        assertEquals(new FontUIResource("Dialog", Font.PLAIN, 12), theme.getUserTextFont());
     }
 
     public void testGetSystemTextFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.PLAIN, 12), theme.getSystemTextFont());
+        assertEquals(new FontUIResource("Dialog", Font.PLAIN, 12), theme.getSystemTextFont());
     }
 
     public void testGetSubTextFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.PLAIN, 10), theme.getSubTextFont());
+        assertEquals(new FontUIResource("Dialog", Font.PLAIN, 10), theme.getSubTextFont());
     }
 
     public void testGetMenuTextFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.BOLD, 12), theme.getMenuTextFont());
+        assertEquals(new FontUIResource("Dialog", Font.BOLD, 12), theme.getMenuTextFont());
     }
 
     public void testGetControlTextFont() {
-        assertEquals(new FontUIResource("Dialog", FontUIResource.BOLD, 12), theme.getControlTextFont());
+        assertEquals(new FontUIResource("Dialog", Font.BOLD, 12), theme.getControlTextFont());
     }
 
     public void testGetSecondary3() {

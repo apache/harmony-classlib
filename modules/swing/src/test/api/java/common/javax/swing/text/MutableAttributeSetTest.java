@@ -24,7 +24,6 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 public class MutableAttributeSetTest extends AttributeSetTest {
-
     public MutableAttributeSetTest() {
         super();
     }
@@ -32,6 +31,7 @@ public class MutableAttributeSetTest extends AttributeSetTest {
     public MutableAttributeSetTest(final String name) {
         super(name);
     }
+
     /**
      * The interface MutableAttributeSet for test cases.
      */
@@ -41,9 +41,10 @@ public class MutableAttributeSetTest extends AttributeSetTest {
         junit.textui.TestRunner.run(MutableAttributeSetTest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mas = (MutableAttributeSet)as;
+        mas = (MutableAttributeSet) as;
     }
 
     public void testRemoveAttribute() {
@@ -102,13 +103,12 @@ public class MutableAttributeSetTest extends AttributeSetTest {
         assertEquals(count, mas.getAttributeCount());
     }
 
+    @SuppressWarnings("unchecked")
     public void testRemoveAttributesEnumeration() {
         int count = mas.getAttributeCount();
-
         assertTrue(mas.isDefined(keys[0]));
         assertTrue(mas.isDefined(keys[1]));
         assertFalse(mas.isDefined(keyInResolver));
-
         mas.removeAttributes(new Enumeration() {
             private int count = 0;
 
@@ -127,7 +127,6 @@ public class MutableAttributeSetTest extends AttributeSetTest {
                 }
             }
         });
-
         assertEquals(count - 2, mas.getAttributeCount());
         assertFalse(mas.isDefined(keys[0]));
         assertFalse(mas.isDefined(keys[1]));

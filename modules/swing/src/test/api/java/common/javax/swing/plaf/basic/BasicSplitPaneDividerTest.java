@@ -22,9 +22,7 @@ package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Field;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
@@ -33,17 +31,20 @@ import javax.swing.border.Border;
 
 public class BasicSplitPaneDividerTest extends SwingTestCase {
     private BasicSplitPaneDivider divider;
+
     private JSplitPane pane;
 
     public BasicSplitPaneDividerTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         pane = new JSplitPane();
-        divider = new BasicSplitPaneDivider((BasicSplitPaneUI)pane.getUI());
+        divider = new BasicSplitPaneDivider((BasicSplitPaneUI) pane.getUI());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         divider = null;
         pane = null;
@@ -53,7 +54,6 @@ public class BasicSplitPaneDividerTest extends SwingTestCase {
         assertEquals(pane.getUI(), divider.splitPaneUI);
         assertEquals(pane, divider.splitPane);
         assertNotNull(divider.mouseHandler);
-
         assertNull(divider.leftButton);
         assertNull(divider.rightButton);
         assertNull(divider.dragger);
@@ -65,8 +65,7 @@ public class BasicSplitPaneDividerTest extends SwingTestCase {
 
     public void testGetSetBasicSplitPaneUI() throws Exception {
         JSplitPane newPane = new JSplitPane();
-        divider.setBasicSplitPaneUI((BasicSplitPaneUI)newPane.getUI());
-
+        divider.setBasicSplitPaneUI((BasicSplitPaneUI) newPane.getUI());
         assertEquals(newPane.getUI(), divider.splitPaneUI);
         assertEquals(newPane.getUI(), divider.getBasicSplitPaneUI());
         assertEquals(newPane, divider.splitPane);
@@ -107,7 +106,6 @@ public class BasicSplitPaneDividerTest extends SwingTestCase {
         assertEquals(new Dimension(20, 1), divider.getPreferredSize());
         assertEquals(new Dimension(20, 1), divider.getMinimumSize());
         assertEquals(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE), divider.getMaximumSize());
-
         divider.orientation = JSplitPane.VERTICAL_SPLIT;
         assertEquals(new Dimension(1, 20), divider.getPreferredSize());
         assertEquals(new Dimension(1, 20), divider.getMinimumSize());
@@ -122,7 +120,6 @@ public class BasicSplitPaneDividerTest extends SwingTestCase {
         assertFalse(pane.isOneTouchExpandable());
         assertNull(divider.leftButton);
         assertNull(divider.rightButton);
-
         setProperty("oneTouchExpandable", Boolean.TRUE);
         divider.oneTouchExpandableChanged();
         assertNotNull(divider.leftButton);
@@ -132,19 +129,14 @@ public class BasicSplitPaneDividerTest extends SwingTestCase {
     public void testCreateLeftOneTouchButton() throws Exception {
         JButton left = divider.createLeftOneTouchButton();
         assertNotNull(left);
-
         assertNotSame(left, divider.createLeftOneTouchButton());
     }
 
     public void testCreateRightOneTouchButton() throws Exception {
         JButton right = divider.createRightOneTouchButton();
         assertNotNull(right);
-
         assertNotSame(right, divider.createRightOneTouchButton());
     }
-
-
-
 
     private void setProperty(final String propertyName, final Object value) throws Exception {
         Field property = JSplitPane.class.getDeclaredField(propertyName);

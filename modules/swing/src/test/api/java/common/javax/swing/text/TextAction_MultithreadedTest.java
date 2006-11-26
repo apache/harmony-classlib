@@ -23,26 +23,27 @@
 package javax.swing.text;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWaitTestCase;
-
 import junit.framework.TestCase;
 
 public class TextAction_MultithreadedTest extends TestCase {
-
     JDialog window1;
+
     JDialog window2;
+
     JDialog window3;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         if (window1 != null) {
             window1.dispose();
@@ -56,41 +57,37 @@ public class TextAction_MultithreadedTest extends TestCase {
             window3.dispose();
             window3 = null;
         }
-
         super.tearDown();
     }
 
     public void testGetFocusedComponent() throws Exception {
         TextAction action = new TextAction("") {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent e) {
             }
         };
-
         window1 = new JDialog();
         window2 = new JDialog();
         window3 = new JDialog();
         JButton component1 = new JButton();
         JComponent component2 = new JTextField();
         JComponent component3 = new JTextArea();
-        ((JTextComponent)component2).setText("3");
+        ((JTextComponent) component2).setText("3");
         window1.getContentPane().add(component1);
         window2.getContentPane().add(component2);
         window3.getContentPane().add(component3);
         window1.pack();
         window2.pack();
         window3.pack();
-
         window2.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(component2);
-        
         Object res = action.getFocusedComponent();
         assertEquals("focused component", component2, res);
-
         window3.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(component3);
         res = action.getFocusedComponent();
         assertEquals("focused component", component3, res);
-
         window1.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(component1);
         res = action.getFocusedComponent();
@@ -99,10 +96,11 @@ public class TextAction_MultithreadedTest extends TestCase {
 
     public void testGetTextComponent() throws Exception {
         TextAction action = new TextAction("") {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent e) {
             }
         };
-
         window1 = new JDialog();
         window2 = new JDialog();
         JButton componentNoText1 = new JButton();
@@ -111,36 +109,27 @@ public class TextAction_MultithreadedTest extends TestCase {
         JTextComponent componentText2 = new JTextField();
         componentText1.setText("1");
         componentText1.setText("2");
-        ActionEvent eventNoTextComponentInside = new ActionEvent(
-                componentNoText2, 0, "event1");
-        ActionEvent eventTextComponentInside = new ActionEvent(componentText2,
-                0, "event2");
-
+        ActionEvent eventNoTextComponentInside = new ActionEvent(componentNoText2, 0, "event1");
+        ActionEvent eventTextComponentInside = new ActionEvent(componentText2, 0, "event2");
         window1.getContentPane().add(componentNoText1);
         window2.getContentPane().add(componentText1);
         window1.pack();
         window2.pack();
-
         Object previouslyFocused = action.getFocusedComponent();
         window1.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(componentNoText1);
         Object res = action.getTextComponent(eventNoTextComponentInside);
-        
         assertEquals("focused component", previouslyFocused, res);
-
         window1.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(componentNoText1);
         res = action.getTextComponent(eventTextComponentInside);
         assertEquals("focused component", componentText2, res);
-
         window2.setVisible(true);
         SwingWaitTestCase.requestFocusInWindowForComponent(componentText1);
         res = action.getTextComponent(eventNoTextComponentInside);
         assertEquals("focused component", componentText1, res);
-
         SwingWaitTestCase.requestFocusInWindowForComponent(componentText1);
         res = action.getTextComponent(eventTextComponentInside);
         assertEquals("focused component", componentText2, res);
     }
-
 }

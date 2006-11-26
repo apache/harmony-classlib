@@ -23,6 +23,7 @@ package javax.swing;
 import java.awt.Component;
 import java.util.Comparator;
 
+@SuppressWarnings("unchecked")
 public class SortingFocusTraversalPolicyTest extends BasicSwingTestCase {
     private SortingFocusTraversalPolicy policy;
 

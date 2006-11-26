@@ -21,7 +21,6 @@
 package javax.swing.plaf.basic;
 
 import java.io.File;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -31,13 +30,16 @@ import javax.swing.UIManager;
 
 public class BasicFileChooserUITest extends SwingTestCase {
     private BasicFileChooserUI ui;
+
     private JFileChooser fc;
 
+    @Override
     protected void setUp() throws Exception {
         fc = new JFileChooser();
         ui = new BasicFileChooserUI(fc);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         fc = null;
         ui = null;
@@ -45,24 +47,27 @@ public class BasicFileChooserUITest extends SwingTestCase {
 
     public void testGetAcceptAllFileFilter() throws Exception {
         ui.installUI(fc);
-
         assertNotNull(ui.getAcceptAllFileFilter(fc));
-        assertEquals(UIManager.getString("FileChooser.acceptAllFileFilterText"), ui.getAcceptAllFileFilter(fc).getDescription());
+        assertEquals(UIManager.getString("FileChooser.acceptAllFileFilterText"), ui
+                .getAcceptAllFileFilter(fc).getDescription());
         assertTrue(ui.getAcceptAllFileFilter(fc).accept(new File("")));
     }
 
     public void testGetApproveButtonText() throws Exception {
         ui.installUI(fc);
-
         assertEquals(UIManager.get("FileChooser.openDialogTitleText"), ui.getDialogTitle(fc));
         assertEquals(UIManager.get("FileChooser.openButtonText"), ui.getApproveButtonText(fc));
-        assertEquals(UIManager.get("FileChooser.openButtonToolTipText"), ui.getApproveButtonToolTipText(fc));
-        assertEquals(UIManager.getInt("FileChooser.openButtonMnemonic"), ui.getApproveButtonMnemonic(fc));
+        assertEquals(UIManager.get("FileChooser.openButtonToolTipText"), ui
+                .getApproveButtonToolTipText(fc));
+        assertEquals(UIManager.getInt("FileChooser.openButtonMnemonic"), ui
+                .getApproveButtonMnemonic(fc));
         fc.setDialogType(JFileChooser.SAVE_DIALOG);
         assertEquals(UIManager.get("FileChooser.saveDialogTitleText"), ui.getDialogTitle(fc));
         assertEquals(UIManager.get("FileChooser.saveButtonText"), ui.getApproveButtonText(fc));
-        assertEquals(UIManager.get("FileChooser.saveButtonToolTipText"), ui.getApproveButtonToolTipText(fc));
-        assertEquals(UIManager.getInt("FileChooser.saveButtonMnemonic"), ui.getApproveButtonMnemonic(fc));
+        assertEquals(UIManager.get("FileChooser.saveButtonToolTipText"), ui
+                .getApproveButtonToolTipText(fc));
+        assertEquals(UIManager.getInt("FileChooser.saveButtonMnemonic"), ui
+                .getApproveButtonMnemonic(fc));
         fc.setDialogType(JFileChooser.CUSTOM_DIALOG);
         assertNull(ui.getApproveButtonText(fc));
         assertNull(ui.getApproveButtonToolTipText(fc));
@@ -77,7 +82,6 @@ public class BasicFileChooserUITest extends SwingTestCase {
 
     public void testBasicFileView() throws Exception {
         BasicFileChooserUI.BasicFileView fileView = new BasicFileChooserUI(fc).new BasicFileView();
-
         assertNotNull(fileView);
         assertEquals(0, fileView.iconCache.size());
         File f = new File("f");
@@ -90,9 +94,8 @@ public class BasicFileChooserUITest extends SwingTestCase {
         fileView.cacheIcon(null, null);
         assertEquals(1, fileView.iconCache.size());
         assertEquals(f.getName(), fileView.getDescription(f));
-
         ui.installUI(fc);
-        fileView = (BasicFileChooserUI.BasicFileView)ui.getFileView(fc);
+        fileView = (BasicFileChooserUI.BasicFileView) ui.getFileView(fc);
         fileView.clearIconCache();
         assertEquals(0, fileView.iconCache.size());
         f.delete();

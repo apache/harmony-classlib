@@ -20,15 +20,15 @@
  */
 package javax.swing.text;
 
-
 public class StringContent_UndoTest extends GapContent_UndoTest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         content = new StringContent();
         insertEdit = content.insertString(0, "01234");
     }
 
+    @Override
     public void testDieText() {
         // N/A
     }

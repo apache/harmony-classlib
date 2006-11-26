@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -29,9 +28,9 @@ import javax.swing.text.AbstractDocumentTest.DisAbstractedDocument;
  * TreeNode interface.
  *
  */
-public class AbstractDocument_LeafElement_TreeNodeTest
-    extends AbstractDocument_AbstractElement_TreeNodeTest {
-
+public class AbstractDocument_LeafElement_TreeNodeTest extends
+        AbstractDocument_AbstractElement_TreeNodeTest {
+    @Override
     protected void setUp() throws Exception {
         doc = new DisAbstractedDocument(new GapContent());
         doc.writeLock();

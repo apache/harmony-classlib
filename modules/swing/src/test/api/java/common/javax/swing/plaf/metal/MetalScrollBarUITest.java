@@ -14,29 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.Dimension;
-
 import javax.swing.JScrollBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
 public class MetalScrollBarUITest extends SwingTestCase {
     private MetalScrollBarUI barUI;
+
     private JScrollBar bar;
 
+    @Override
     protected void setUp() throws Exception {
         bar = new JScrollBar();
         barUI = new MetalScrollBarUI();
         bar.setUI(barUI);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         barUI = null;
         bar = null;
@@ -52,9 +53,10 @@ public class MetalScrollBarUITest extends SwingTestCase {
     public void testCreateButtons() throws Exception {
         assertNotNull(barUI.increaseButton);
         assertNotNull(barUI.decreaseButton);
-
-        assertFalse(barUI.increaseButton == barUI.createIncreaseButton(MetalScrollBarUI.HORIZONTAL));
-        assertFalse(barUI.decreaseButton == barUI.createDecreaseButton(MetalScrollBarUI.HORIZONTAL));
+        assertFalse(barUI.increaseButton == barUI
+                .createIncreaseButton(SwingConstants.HORIZONTAL));
+        assertFalse(barUI.decreaseButton == barUI
+                .createDecreaseButton(SwingConstants.HORIZONTAL));
     }
 
     public void testCreateUI() throws Exception {
@@ -63,6 +65,7 @@ public class MetalScrollBarUITest extends SwingTestCase {
 
     public void testCreatePropertyChangeListener() throws Exception {
         assertNotNull(barUI.createPropertyChangeListener());
-        assertFalse(barUI.createPropertyChangeListener() == barUI.createPropertyChangeListener());
+        assertFalse(barUI.createPropertyChangeListener() == barUI
+                .createPropertyChangeListener());
     }
 }

@@ -15,25 +15,25 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import javax.swing.plaf.ComponentUI;
 
 public class BasicRadioButtonMenuItemUITest extends BasicMenuItemUITest {
-
     protected BasicRadioButtonMenuItemUI radioUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         radioUI = new BasicRadioButtonMenuItemUI();
         menuItemUI = radioUI;
         prefix = "RadioButtonMenuItem.";
     }
 
+    @Override
     protected void tearDown() throws Exception {
         radioUI = null;
         menuItemUI = null;
@@ -43,6 +43,7 @@ public class BasicRadioButtonMenuItemUITest extends BasicMenuItemUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicRadioButtonMenuItemUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
         ComponentUI ui1 = BasicRadioButtonMenuItemUI.createUI(null);
         ComponentUI ui2 = BasicRadioButtonMenuItemUI.createUI(null);
@@ -53,6 +54,7 @@ public class BasicRadioButtonMenuItemUITest extends BasicMenuItemUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicRadioButtonMenuItemUI.getPropertyPrefix()'
      */
+    @Override
     public void testGetPropertyPrefix() {
         assertEquals("RadioButtonMenuItem", menuItemUI.getPropertyPrefix());
     }
@@ -63,5 +65,4 @@ public class BasicRadioButtonMenuItemUITest extends BasicMenuItemUITest {
      */
     public void testProcessMouseEvent() {
     }
-
 }

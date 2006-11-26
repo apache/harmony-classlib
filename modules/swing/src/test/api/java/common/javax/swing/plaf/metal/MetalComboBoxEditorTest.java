@@ -21,7 +21,6 @@
 package javax.swing.plaf.metal;
 
 import java.awt.Insets;
-
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 import javax.swing.SwingTestCase;
@@ -33,26 +32,24 @@ public class MetalComboBoxEditorTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         editor = new MetalComboBoxEditor();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         editor = null;
     }
 
     public void testMetalComboBoxEditor() throws Exception {
         assertNotNull(MetalComboBoxEditor.editorBorderInsets);
-
-        JTextField textEditor = (JTextField)editor.getEditorComponent();
+        JTextField textEditor = (JTextField) editor.getEditorComponent();
         assertEquals(MetalComboBoxEditor.editorBorderInsets, textEditor.getInsets());
-
         MetalComboBoxEditor.editorBorderInsets = new Insets(2, 2, 2, 2);
         assertEquals(MetalComboBoxEditor.editorBorderInsets, textEditor.getInsets());
-
         textEditor.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
         assertNotSame(MetalComboBoxEditor.editorBorderInsets, textEditor.getInsets());
-
         MetalComboBoxEditor.editorBorderInsets = new Insets(2, 2, 2, 2);
         assertNotSame(MetalComboBoxEditor.editorBorderInsets, textEditor.getInsets());
     }

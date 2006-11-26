@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -29,7 +28,6 @@ import junit.framework.TestCase;
  *
  */
 public class PositionTest extends TestCase {
-
     public PositionTest() {
         super();
     }
@@ -39,11 +37,10 @@ public class PositionTest extends TestCase {
     }
 
     /*
-    public void testGetOffset() {
-        // Too simple to break
-    }
-    */
-
+     public void testGetOffset() {
+     // Too simple to break
+     }
+     */
     public void testBiasForward() {
         assertEquals("Forward", Position.Bias.Forward.toString());
     }
@@ -51,5 +48,4 @@ public class PositionTest extends TestCase {
     public void testBiasBackward() {
         assertEquals("Backward", Position.Bias.Backward.toString());
     }
-
 }

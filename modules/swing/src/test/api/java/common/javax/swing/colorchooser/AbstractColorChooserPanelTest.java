@@ -27,22 +27,37 @@ import javax.swing.JColorChooser;
 public class AbstractColorChooserPanelTest extends BasicSwingTestCase {
     AbstractColorChooserPanel panel;
 
+    @Override
     public void setUp() throws Exception {
         panel = new AbstractColorChooserPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public String getDisplayName() {
                 return "";
             }
+
+            @Override
             public Icon getSmallDisplayIcon() {
                 return null;
             }
+
+            @Override
             public Icon getLargeDisplayIcon() {
                 return null;
             }
-            public void updateChooser() {}
-            protected void buildChooser() {}
+
+            @Override
+            public void updateChooser() {
+            }
+
+            @Override
+            protected void buildChooser() {
+            }
         };
     }
 
+    @Override
     public void tearDown() throws Exception {
         panel = null;
     }
@@ -54,17 +69,20 @@ public class AbstractColorChooserPanelTest extends BasicSwingTestCase {
 
     public void testInstallUninstallChooserPanel() {
         testExceptionalCase(new NullPointerCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 panel.getColorSelectionModel();
             }
         });
         JColorChooser chooser = new JColorChooser();
-        int oldListenersCount = ((DefaultColorSelectionModel)chooser.getSelectionModel()).getChangeListeners().length;
+        int oldListenersCount = ((DefaultColorSelectionModel) chooser.getSelectionModel())
+                .getChangeListeners().length;
         panel.installChooserPanel(chooser);
         assertSame(chooser.getColor(), panel.getColorFromModel());
-        assertEquals(oldListenersCount + 1, ((DefaultColorSelectionModel)chooser.getSelectionModel()).getChangeListeners().length);
-
+        assertEquals(oldListenersCount + 1, ((DefaultColorSelectionModel) chooser
+                .getSelectionModel()).getChangeListeners().length);
         panel.uninstallChooserPanel(chooser);
-        assertEquals(oldListenersCount, ((DefaultColorSelectionModel)chooser.getSelectionModel()).getChangeListeners().length);
+        assertEquals(oldListenersCount, ((DefaultColorSelectionModel) chooser
+                .getSelectionModel()).getChangeListeners().length);
     }
 }

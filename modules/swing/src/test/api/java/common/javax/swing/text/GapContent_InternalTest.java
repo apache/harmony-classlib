@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,7 +21,6 @@
 package javax.swing.text;
 
 import java.util.List;
-
 import javax.swing.BasicSwingTestCase;
 
 /**
@@ -30,9 +28,9 @@ import javax.swing.BasicSwingTestCase;
  *
  */
 public class GapContent_InternalTest extends BasicSwingTestCase {
-
     protected GapContent content;
 
+    @Override
     protected void setUp() throws Exception {
         content = new GapContent(30);
         content.insertString(0, "This is a test string.");
@@ -42,13 +40,11 @@ public class GapContent_InternalTest extends BasicSwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         content = new GapContent();
         int size = content.getArrayLength();
         char c = '0';
         while (size == content.getArrayLength()) {
-            content.insertString(content.getGapStart(),
-                                 new String(new char[] {c}));
+            content.insertString(content.getGapStart(), new String(new char[] { c }));
             c++;
         }
         assertEquals("012345678\n", content.getString(0, content.length()));
@@ -58,7 +54,6 @@ public class GapContent_InternalTest extends BasicSwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         content.shiftGap(5);
         content.createPosition(10);
         content.createPosition(4);
@@ -66,17 +61,13 @@ public class GapContent_InternalTest extends BasicSwingTestCase {
         content.createPosition(15);
         content.createPosition(2);
         content.createPosition(23);
-        int[] positions = {2, 4, 12, 17, 22, 30};
-        int[] offsets   = {2, 4,  5, 10, 15, 23};
-
-        List posList = getPositionList(content);
-
+        int[] positions = { 2, 4, 12, 17, 22, 30 };
+        int[] offsets = { 2, 4, 5, 10, 15, 23 };
+        List<?> posList = getPositionList(content);
         for (int i = 0; i < posList.size(); i++) {
-            Position      p = (Position)posList.get(i);
-            assertEquals("Indexes are different @ " + i,
-                         positions[i], getIndex(p));
-            assertEquals("Offsets are different @ " + i,
-                         offsets[i], p.getOffset());
+            Position p = (Position) posList.get(i);
+            assertEquals("Indexes are different @ " + i, positions[i], getIndex(p));
+            assertEquals("Offsets are different @ " + i, offsets[i], p.getOffset());
         }
     }
 
@@ -88,22 +79,19 @@ public class GapContent_InternalTest extends BasicSwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         GapContent g = new GapContent();
         g.insertString(0, "123\n");
-        int[] pos = {0, 0, 0, 5, 5, 4};
+        int[] pos = { 0, 0, 0, 5, 5, 4 };
         for (int i = 0; i < pos.length; i++) {
             g.createPosition(pos[i]);
         }
-
-        List posList = getPositionList(g);
-
+        List<?> posList = getPositionList(g);
         // Check all the positions are sorted
         Position dmL;
         Position dmR;
         for (int i = 0; i < posList.size() - 1; i++) {
-            dmL = (Position)posList.get(i);
-            dmR = (Position)posList.get(i + 1);
+            dmL = (Position) posList.get(i);
+            dmR = (Position) posList.get(i + 1);
             assertFalse(getIndex(dmL) > getIndex(dmR));
         }
     }
@@ -112,36 +100,30 @@ public class GapContent_InternalTest extends BasicSwingTestCase {
         if (!isHarmony()) {
             return;
         }
-
         final Position[] pos = new Position[5];
-
         for (int i = 0; i < 10; i++) {
             Position p = content.createPosition(i * 2);
             if (i < 5) {
                 pos[i] = p;
             }
         }
-
         assertEquals(10, getPositionList(content).size());
-
         for (int i = 0; i < 3; i++) {
             System.gc();
         }
-
         // if this code is omitted the saved objects are
         // considered to be unreachable, so the garbage
         // collector deletes refences to them
         for (int i = 0; i < pos.length; i++) {
             pos[i].getOffset();
         }
-
         // Create another position object. This will implicitly
         // remove all unreachable positions
         content.createPosition(20);
         assertEquals(6, getPositionList(content).size());
     }
 
-    private static List getPositionList(final GapContent content) {
+    private static List<?> getPositionList(final GapContent content) {
         return GapContentTest.getPositionList(content);
     }
 

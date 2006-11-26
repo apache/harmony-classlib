@@ -20,6 +20,7 @@
  */
 package javax.swing;
 
+@SuppressWarnings("unchecked")
 public class SizeSequenceTest extends BasicSwingTestCase {
     private SizeSequence sizeSequence;
 

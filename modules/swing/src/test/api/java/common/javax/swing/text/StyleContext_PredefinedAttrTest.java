@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -23,7 +22,6 @@ package javax.swing.text;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import junit.framework.TestCase;
 
 /**
@@ -39,18 +37,13 @@ public class StyleContext_PredefinedAttrTest extends TestCase {
     public void testGetBackground() {
         Color color = sc.getBackground(sc.getEmptySet());
         assertSame(Color.black, color);
-
         Color colorAttrValue = new Color(0xFAF0E6);
-        AttributeSet as = sc.addAttribute(sc.getEmptySet(),
-                                          StyleConstants.Background,
-                                          colorAttrValue);
+        AttributeSet as = sc.addAttribute(sc.getEmptySet(), StyleConstants.Background,
+                colorAttrValue);
         color = sc.getBackground(as);
         assertSame(colorAttrValue, color);
-
         Color newAttrValue = new Color(0xFAF0E6);
-        as = sc.addAttribute(as, StyleConstants.Background,
-                             newAttrValue);
-
+        as = sc.addAttribute(as, StyleConstants.Background, newAttrValue);
         color = sc.getBackground(as);
         assertSame(colorAttrValue, color);
         assertNotSame(colorAttrValue, newAttrValue);
@@ -63,22 +56,17 @@ public class StyleContext_PredefinedAttrTest extends TestCase {
         Font fontEmpty = sc.getFont(sc.getEmptySet());
         Font fontEmpty2 = sc.getFont(sc.getEmptySet());
         assertSame(fontEmpty, fontEmpty2);
-
-        AttributeSet as = sc.addAttribute(sc.getEmptySet(),
-                                          StyleConstants.FontFamily,
-                                          FONT_FAMILY);
+        AttributeSet as = sc.addAttribute(sc.getEmptySet(), StyleConstants.FontFamily,
+                FONT_FAMILY);
         Font fontArial = sc.getFont(as);
         assertEquals(FONT_FAMILY, fontArial.getName());
         assertFalse(fontArial.getName().equals(fontEmpty.getName()));
         assertNotSame(fontEmpty, fontArial);
-
         as = sc.addAttribute(as, StyleConstants.FontSize, new Integer(12));
         Font fontSize = sc.getFont(as);
         assertSame(fontArial, fontSize); // As default font size is 12
-
         as = sc.addAttribute(as, StyleConstants.Bold, Boolean.FALSE);
         assertSame(fontSize, sc.getFont(as));
-
         as = sc.addAttribute(as, StyleConstants.Bold, Boolean.TRUE);
         Font fontBold = sc.getFont(as);
         assertNotSame(fontSize, fontBold);
@@ -99,7 +87,6 @@ public class StyleContext_PredefinedAttrTest extends TestCase {
         assertSame(one, two);
         assertTrue(one.isPlain());
         assertEquals(12, one.getSize());
-
         one = sc.getFont(FONT_FAMILY, Font.BOLD | Font.ITALIC, 12);
         two = sc.getFont(FONT_FAMILY, Font.BOLD | Font.ITALIC, 12);
         assertSame(one, two);
@@ -110,23 +97,19 @@ public class StyleContext_PredefinedAttrTest extends TestCase {
     public void testGetForeground() {
         Color color = sc.getForeground(sc.getEmptySet());
         assertSame(Color.black, color);
-
         Color colorAttrValue = new Color(0xFFE4E1);
-        AttributeSet as = sc.addAttribute(sc.getEmptySet(),
-                                          StyleConstants.Foreground,
-                                          colorAttrValue);
+        AttributeSet as = sc.addAttribute(sc.getEmptySet(), StyleConstants.Foreground,
+                colorAttrValue);
         color = sc.getForeground(as);
         assertSame(colorAttrValue, color);
-
         Color newAttrValue = new Color(0xFFE4E1);
-        as = sc.addAttribute(as, StyleConstants.Foreground,
-                             newAttrValue);
-
+        as = sc.addAttribute(as, StyleConstants.Foreground, newAttrValue);
         color = sc.getForeground(as);
         assertSame(colorAttrValue, color);
         assertNotSame(colorAttrValue, newAttrValue);
     }
 
+    @Override
     protected void setUp() throws Exception {
         sc = StyleContextTest.sc = new StyleContext();
     }

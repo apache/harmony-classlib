@@ -25,20 +25,23 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import javax.swing.BasicSwingTestCase;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingTestCase;
 
 public class InternationalFormatterRTest extends SwingTestCase {
     InternationalFormatter formatter;
+
     boolean bWasException;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new InternationalFormatter(new DecimalFormat());
         bWasException = false;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -49,16 +52,16 @@ public class InternationalFormatterRTest extends SwingTestCase {
             formatter.stringToValue("55");
         } catch (ParseException e) {
             bWasException = true;
-         }
-         assertFalse(bWasException);
+        }
+        assertFalse(bWasException);
     }
 
     public void testStringToValue_Value() {
         formatter.setValueClass(Integer.class);
         try {
-           assertTrue(formatter.stringToValue("55") instanceof Integer);
+            assertTrue(formatter.stringToValue("55") instanceof Integer);
         } catch (ParseException e) {
-           bWasException = true;
+            bWasException = true;
         }
         assertFalse(bWasException);
     }
@@ -76,27 +79,24 @@ public class InternationalFormatterRTest extends SwingTestCase {
     }
 
     public void testIncrementDecrement() {
-        if (!SwingTestCase.isHarmony()) {
+        if (!BasicSwingTestCase.isHarmony()) {
             return;
         }
         JFormattedTextField ftf = new JFormattedTextField();
-        ftf.setFormatterFactory(new DefaultFormatterFactory(new
-            DateFormatter(new SimpleDateFormat("dd.MM.yyyy"))));
+        ftf.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(
+                new SimpleDateFormat("dd.MM.yyyy"))));
         ftf.setValue(new Date());
         ftf.setText("31.01.2006");
         ftf.setCaretPosition(0);
-        TextAction action = new InternationalFormatter.IncrementAction("inc",
-                                                                       1);
+        TextAction action = new InternationalFormatter.IncrementAction("inc", 1);
         action.actionPerformed(new ActionEvent(ftf, 0, null));
         assertEquals("01.02.2006", ftf.getText());
         assertEquals(2, ftf.getCaretPosition());
         assertEquals("01", ftf.getSelectedText());
-        action = new InternationalFormatter.IncrementAction("inc",
-                                                            -1);
+        action = new InternationalFormatter.IncrementAction("inc", -1);
         action.actionPerformed(new ActionEvent(ftf, 0, null));
         assertEquals("31.01.2006", ftf.getText());
         assertEquals(2, ftf.getCaretPosition());
         assertEquals("31", ftf.getSelectedText());
     }
-
 }

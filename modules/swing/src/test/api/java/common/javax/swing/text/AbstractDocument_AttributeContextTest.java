@@ -23,12 +23,12 @@ package javax.swing.text;
 import junit.framework.TestCase;
 
 public class AbstractDocument_AttributeContextTest extends TestCase {
-
     private AbstractDocument.AttributeContext context;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         context = StyleContext.getDefaultStyleContext();
@@ -37,11 +37,9 @@ public class AbstractDocument_AttributeContextTest extends TestCase {
     public void testGetEmptySet() {
         AttributeSet as = context.getEmptySet();
         assertFalse(as.containsAttribute("key", "value"));
-
         MutableAttributeSet sas = new SimpleAttributeSet();
         sas.addAttribute("key", "value");
         assertFalse(as.containsAttributes(sas));
-
         assertEquals(as, SimpleAttributeSet.EMPTY);
         assertNull(as.getAttribute("key"));
         assertFalse(as.isDefined("key"));
@@ -72,10 +70,7 @@ public class AbstractDocument_AttributeContextTest extends TestCase {
      */
     public void testRemoveAttributesAttributeSetEnumeration() {
         AttributeSet as = getFilledAttributeSet();
-
-        AttributeSet result = context.removeAttributes(as,
-                                                       as.getAttributeNames());
-
+        AttributeSet result = context.removeAttributes(as, as.getAttributeNames());
         assertEquals(context.getEmptySet(), result);
     }
 

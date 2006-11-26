@@ -26,7 +26,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -42,20 +41,23 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 
 public class BasicCheckBoxUITest extends SwingTestCase {
-
     public class MyBasicCheckBoxUI extends BasicCheckBoxUI {
+        @Override
         public String getPropertyPrefix() {
             return super.getPropertyPrefix();
         }
 
+        @Override
         public void installDefaults(final AbstractButton b) {
             super.installDefaults(b);
         }
 
+        @Override
         public void uninstallDefaults(final AbstractButton b) {
             super.uninstallDefaults(b);
         }
 
+        @Override
         public int getTextShiftOffset() {
             return super.getTextShiftOffset();
         }
@@ -78,9 +80,9 @@ public class BasicCheckBoxUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         ui = new MyBasicCheckBoxUI();
     }
 
@@ -89,12 +91,10 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         UIManager.put("CheckBox.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(11, 11, 11, 11));
         UIManager.put("CheckBox.border", border);
-
         JCheckBox button1 = new JCheckBox();
         JCheckBox button2 = new JCheckBox("text");
         JCheckBox button3 = new JCheckBox("text");
         JCheckBox button6 = new JCheckBox("text");
-
         button3.setBorder(new EmptyBorder(10, 10, 10, 10));
         button6.setBorder(null);
         int iconH = 20;
@@ -103,35 +103,33 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         // following parameters are not being used by UI
         ui.setTextIconGap(100);
         ui.setTextShiftOffset(33);
-
         int horInsets = button1.getInsets().left + button1.getInsets().right;
         int vertInsets = button1.getInsets().top + button1.getInsets().bottom;
         int textWidth = button1.getFontMetrics(button1.getFont()).stringWidth("text");
         int textHeight = button1.getFontMetrics(button1.getFont()).getHeight();
-
-        assertEquals("PreferredSize", new Dimension(horInsets + iconW, vertInsets + iconH),
-                     ui.getPreferredSize(button1));
-        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth + button1.getIconTextGap(),
-                                                    vertInsets + Math.max(iconH, textHeight)),
-                                      ui.getPreferredSize(button2));
-
+        assertEquals("PreferredSize", new Dimension(horInsets + iconW, vertInsets + iconH), ui
+                .getPreferredSize(button1));
+        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth
+                + button1.getIconTextGap(), vertInsets + Math.max(iconH, textHeight)), ui
+                .getPreferredSize(button2));
         horInsets = button3.getInsets().left + button3.getInsets().right;
         vertInsets = button3.getInsets().top + button3.getInsets().bottom;
-        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth + button1.getIconTextGap(),
-                                                    vertInsets + Math.max(iconH, textHeight)),
-                                      ui.getPreferredSize(button3));
-
+        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth
+                + button1.getIconTextGap(), vertInsets + Math.max(iconH, textHeight)), ui
+                .getPreferredSize(button3));
         horInsets = button6.getInsets().left + button6.getInsets().right;
         vertInsets = button6.getInsets().top + button6.getInsets().bottom;
-        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth + button1.getIconTextGap(),
-                                                    vertInsets + Math.max(iconH, textHeight)),
-                                      ui.getPreferredSize(button6));
+        assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth
+                + button1.getIconTextGap(), vertInsets + Math.max(iconH, textHeight)), ui
+                .getPreferredSize(button6));
     }
 
     public void testCreateUI() {
         assertTrue("created UI is not null", null != BasicCheckBoxUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", BasicCheckBoxUI.createUI(null) instanceof BasicCheckBoxUI);
-        assertTrue("created UI is not unique", BasicCheckBoxUI.createUI(null) == BasicCheckBoxUI.createUI(null));
+        assertTrue("created UI is of the proper class",
+                BasicCheckBoxUI.createUI(null) instanceof BasicCheckBoxUI);
+        assertTrue("created UI is not unique",
+                BasicCheckBoxUI.createUI(null) == BasicCheckBoxUI.createUI(null));
     }
 
     public void testUninstallDefaults() {
@@ -143,7 +141,6 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         UIManager.put("CheckBox.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("CheckBox.border", border);
-
         button.setUI(ui);
         ui.installDefaults(button);
         ui.uninstallDefaults(button);
@@ -162,7 +159,6 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         UIManager.put("CheckBox.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("CheckBox.border", border);
-
         button.setUI(ui);
         ui.installDefaults(button);
         assertEquals("background", Color.blue, button.getBackground());
@@ -181,5 +177,4 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         ui.setIcon(icon);
         assertEquals("icon", icon, ui.getDefaultIcon());
     }
-
 }

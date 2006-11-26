@@ -32,7 +32,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWaitTestCase;
@@ -62,32 +61,51 @@ import javax.swing.tree.AbstractLayoutCache.NodeDimensions;
 
 public class BasicTreeUITest extends BasicSwingTestCase {
     private BasicTreeUI ui;
+
     private JTree tree;
 
     private DefaultMutableTreeNode root;
+
     private DefaultMutableTreeNode node1;
+
     private DefaultMutableTreeNode node2;
+
     private DefaultMutableTreeNode node3;
+
     private DefaultMutableTreeNode node11;
+
     private DefaultMutableTreeNode node21;
+
     private DefaultMutableTreeNode node22;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         try {
             UIManager.setLookAndFeel(new BasicLookAndFeel() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
                 public boolean isNativeLookAndFeel() {
                     return true;
                 }
+
+                @Override
                 public boolean isSupportedLookAndFeel() {
                     return true;
                 }
+
+                @Override
                 public String getDescription() {
                     return null;
                 }
+
+                @Override
                 public String getID() {
                     return null;
                 }
+
+                @Override
                 public String getName() {
                     return null;
                 }
@@ -95,7 +113,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-
         root = new DefaultMutableTreeNode("root");
         node1 = new DefaultMutableTreeNode("node1");
         node2 = new DefaultMutableTreeNode("node2");
@@ -103,27 +120,22 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         node11 = new DefaultMutableTreeNode("node11");
         node21 = new DefaultMutableTreeNode("node21");
         node22 = new DefaultMutableTreeNode("node22");
-
         root.add(node1);
-
         node1.add(node11);
         root.add(node1);
-
         node2.add(node21);
         node2.add(node22);
         root.add(node2);
-
         root.add(node3);
-
         tree = new JTree(root);
         ui = new BasicTreeUI();
         tree.setUI(ui);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         tree = null;
-
         root = null;
         node1 = null;
         node2 = null;
@@ -143,49 +155,38 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testGetPreferredSize() {
         assertFalse(ui.validCachedPreferredSize);
         assertEquals(new Dimension(0, 0), ui.preferredSize);
-
         assertNotSame(new Dimension(0, 0), ui.getPreferredSize(tree));
         assertTrue(ui.validCachedPreferredSize);
-
         assertEquals(ui.preferredSize, ui.getPreferredSize(tree));
         assertNotSame(ui.preferredSize, ui.getPreferredSize(tree));
         assertNotSame(ui.getPreferredSize(tree), ui.getPreferredSize(tree));
-
         ui.preferredSize = new Dimension(100, 100);
         assertNotNull(ui.getPreferredSize(tree));
         assertEquals(ui.preferredSize, ui.getPreferredSize(tree));
         assertEquals(ui.preferredSize, new Dimension(100, 100));
-
         assertEquals(new Dimension(100, 100), ui.getPreferredSize(tree, false));
         assertEquals(new Dimension(100, 100), ui.getPreferredSize(tree, true));
         assertTrue(ui.validCachedPreferredSize);
-
         ui.validCachedPreferredSize = false;
         assertNotSame(new Dimension(100, 100), ui.getPreferredSize(tree, true));
     }
 
     public void testGetMinimumSize() {
         assertEquals(new Dimension(0, 0), ui.getMinimumSize(tree));
-
         ui.preferredMinSize = new Dimension(100, 100);
         assertEquals(ui.preferredMinSize, ui.getMinimumSize(tree));
-
         ui.preferredMinSize = new Dimension(-100, -100);
         assertEquals(ui.preferredMinSize, ui.getMinimumSize(tree));
-
         ui.preferredMinSize = null;
         assertEquals(new Dimension(0, 0), ui.getMinimumSize(tree));
     }
 
     public void testGetMaximumSize() {
         assertEquals(ui.getPreferredSize(null), ui.getMaximumSize(null));
-
         ui.preferredSize = new Dimension(-100, -100);
         assertEquals(new Dimension(-100, -100), ui.getMaximumSize(tree));
-
-
-
         ui = new BasicTreeUI() {
+            @Override
             public Dimension getPreferredSize(final JComponent c) {
                 return null;
             }
@@ -199,7 +200,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
 
     public void testInstallUI() {
         ui.uninstallUI(tree);
-
         ui.installUI(tree);
         assertNotNull(ui.treeModel);
         assertNotNull(ui.treeSelectionModel);
@@ -210,15 +210,14 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     }
 
     public void testGetClosestPathForLocation() {
-        assertEquals(ui.getClosestPathForLocation(tree, 5, 5), ui.treeState.getPathClosestTo(5, 5));
+        assertEquals(ui.getClosestPathForLocation(tree, 5, 5), ui.treeState.getPathClosestTo(5,
+                5));
     }
 
     public void testGetPathBounds() {
         tree.setBorder(BorderFactory.createEmptyBorder(5, 12, 15, 20));
-
-        TreePath p1 = new TreePath(new Object[] {root, node2});
-        TreePath p2 = new TreePath(new Object[] {root, node3});
-
+        TreePath p1 = new TreePath(new Object[] { root, node2 });
+        TreePath p2 = new TreePath(new Object[] { root, node3 });
         Rectangle bounds = ui.treeState.getBounds(p1, new Rectangle());
         bounds.x += 12;
         bounds.y += 5;
@@ -230,24 +229,22 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     }
 
     public void testGetPathForRow() {
-        TreePath p = new TreePath(new Object[] {root, node2});
-
+        TreePath p = new TreePath(new Object[] { root, node2 });
         assertTrue(tree.isRootVisible());
         assertNull(ui.getPathForRow(tree, 7));
         assertEquals(p, ui.treeState.getPathForRow(2));
         assertEquals(p, ui.getPathForRow(new JTree(), 2));
-
         tree.expandPath(p);
-        assertEquals(new TreePath(new Object[] {root, node2, node22}), ui.getPathForRow(tree, 4));
-        assertEquals(new TreePath(new Object[] {root, node3}), ui.getPathForRow(tree, 5));
-
+        assertEquals(new TreePath(new Object[] { root, node2, node22 }), ui.getPathForRow(tree,
+                4));
+        assertEquals(new TreePath(new Object[] { root, node3 }), ui.getPathForRow(tree, 5));
         ui.treeState = new VariableHeightLayoutCache() {
+            @Override
             public TreePath getPathForRow(final int row) {
-                return new TreePath(new Object[] {node3});
+                return new TreePath(new Object[] { node3 });
             }
         };
-
-        assertEquals(new TreePath(new Object[] {node3}), ui.getPathForRow(tree, -400));
+        assertEquals(new TreePath(new Object[] { node3 }), ui.getPathForRow(tree, -400));
         assertEquals(ui.treeState.getPathForRow(2), ui.getPathForRow(tree, 5));
     }
 
@@ -255,42 +252,37 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertTrue(tree.isRootVisible());
         assertEquals(4, ui.treeState.getRowCount());
         assertEquals(4, ui.getRowCount(new JTree()));
-
-        TreePath p = new TreePath(new Object[] {root, node2});
+        TreePath p = new TreePath(new Object[] { root, node2 });
         tree.expandPath(p);
         assertEquals(6, ui.getRowCount(tree));
-
         ui.treeState = new VariableHeightLayoutCache() {
+            @Override
             public int getRowCount() {
                 return -200;
             }
         };
-
         assertEquals(ui.getRowCount(new JTree()), ui.treeState.getRowCount());
         assertEquals(-200, ui.getRowCount(tree));
     }
 
     public void testGetRowForPath() {
         assertTrue(tree.isRootVisible());
-        TreePath p = new TreePath(new Object[] {root, node2});
+        TreePath p = new TreePath(new Object[] { root, node2 });
         assertEquals(2, ui.getRowForPath(tree, p));
         assertEquals(2, ui.getRowForPath(new JTree(), p));
-
-        tree.expandPath(new TreePath(new Object[] {root, node1}));
-
+        tree.expandPath(new TreePath(new Object[] { root, node1 }));
         ui.treeState = new VariableHeightLayoutCache() {
+            @Override
             public int getRowForPath(final TreePath p) {
                 return -200;
             }
         };
-
         assertEquals(ui.getRowForPath(tree, p), ui.treeState.getRowForPath(p));
         assertEquals(-200, ui.getRowForPath(tree, p));
     }
 
     public void testIsEditing() {
         assertFalse(ui.isEditing(tree));
-
         ui.editingComponent = new JLabel();
         assertTrue(ui.isEditing(tree));
     }
@@ -306,7 +298,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         ui.startEditingAtPath(tree, new TreePath(root));
         assertFalse(ui.isEditing(tree));
         assertNull(ui.getCellEditor());
-
         tree.setEditable(true);
         assertNotNull(ui.getCellEditor());
         assertNull(ui.editingComponent);
@@ -319,10 +310,8 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertEquals(1, ui.editingRow);
         assertNotNull(ui.editingComponent);
         assertEquals(node1.getUserObject(), ui.getCellEditor().getCellEditorValue());
-
         ui.cancelEditing(tree);
         assertFalse(ui.isEditing(tree));
-
         ui.startEditingAtPath(tree, null);
         assertFalse(ui.isEditing(tree));
     }
@@ -331,17 +320,15 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertFalse(ui.isEditing(tree));
         ui.startEditing(new TreePath(root), null);
         assertFalse(ui.isEditing(tree));
-
         tree.setEditable(true);
         assertFalse(ui.isEditing(tree));
-
         ui.startEditing(new TreePath(root), null);
         assertTrue(ui.isEditing(tree));
-
         ui.cancelEditing(tree);
         assertFalse(ui.isEditing(tree));
-
-        tree.setCellEditor(new DefaultTreeCellEditor(tree, (DefaultTreeCellRenderer)tree.getCellRenderer()) {
+        tree.setCellEditor(new DefaultTreeCellEditor(tree, (DefaultTreeCellRenderer) tree
+                .getCellRenderer()) {
+            @Override
             public boolean shouldSelectCell(final EventObject event) {
                 return false;
             }
@@ -354,35 +341,30 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         String initialValue = node1.getUserObject().toString();
         tree.setEditable(true);
         ui.startEditing(new TreePath(root).pathByAddingChild(node1), null);
-
-        JTextComponent editor = (JTextComponent)((Container)ui.editingComponent).getComponent(0);
+        JTextComponent editor = (JTextComponent) ((Container) ui.editingComponent)
+                .getComponent(0);
         assertEquals(initialValue, editor.getText());
-
         editor.setText("any value");
         ui.cancelEditing(tree);
-
         assertEquals(initialValue, node1.getUserObject());
         assertNull(ui.editingComponent);
         assertNull(ui.editingPath);
         assertEquals(1, ui.editingRow);
     }
 
-
     public void testStopEditing() {
         String initialValue = node1.getUserObject().toString();
         tree.setEditable(true);
         ui.startEditing(new TreePath(root).pathByAddingChild(node1), null);
-
-        JTextComponent editor = (JTextComponent)((Container)ui.editingComponent).getComponent(0);
+        JTextComponent editor = (JTextComponent) ((Container) ui.editingComponent)
+                .getComponent(0);
         assertEquals(initialValue, editor.getText());
-
         editor.setText("new value");
         assertTrue(ui.stopEditing(tree));
         assertEquals("new value", node1.getUserObject());
         assertNull(ui.editingComponent);
         assertNull(ui.editingPath);
         assertEquals(1, ui.editingRow);
-
         assertFalse(ui.stopEditing(tree));
     }
 
@@ -442,11 +424,9 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         tree.setCellRenderer(r);
         assertEquals(r, ui.getCellRenderer());
         assertEquals(r, ui.currentCellRenderer);
-
         ui.setCellRenderer(new DefaultTreeCellRenderer());
         assertEquals(r, ui.currentCellRenderer);
         assertEquals(r, ui.getCellRenderer());
-
         ui.createdRenderer = false;
         assertFalse(ui.createdRenderer);
         ui.currentCellRenderer = null;
@@ -454,7 +434,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertFalse(ui.createdRenderer);
         assertEquals(r, ui.currentCellRenderer);
         assertEquals(r, ui.getCellRenderer());
-
         tree.setCellRenderer(new DefaultTreeCellRenderer());
         assertNotNull(tree.getCellRenderer());
         assertNotNull(ui.getCellRenderer());
@@ -490,7 +469,8 @@ public class BasicTreeUITest extends BasicSwingTestCase {
 
     public void testSetGetCellEditor() {
         assertNull(ui.getCellEditor());
-        DefaultTreeCellEditor editor = new DefaultTreeCellEditor(tree, new DefaultTreeCellRenderer());
+        DefaultTreeCellEditor editor = new DefaultTreeCellEditor(tree,
+                new DefaultTreeCellRenderer());
         tree.setCellEditor(editor);
         assertEquals(editor, ui.getCellEditor());
         ui.setCellEditor(new DefaultTreeCellEditor(tree, new DefaultTreeCellRenderer()));
@@ -523,17 +503,14 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         ui = new BasicTreeUI();
         ui.tree = tree;
         ui.prepareForUIInstall();
-
         assertEquals(new Dimension(), ui.preferredSize);
         assertEquals(0, ui.drawingCache.size());
-
         ui.prepareForUIUninstall();
     }
 
     public void testCompleteUIInstallUninstall() {
         assertEquals(0, ui.drawingCache.size());
         assertEquals(tree.getModel(), ui.treeModel);
-
         ui.completeUIUninstall();
         assertNull(ui.drawingCache);
         assertNull(ui.treeModel);
@@ -555,21 +532,18 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertNotNull(ui.treeSelectionModel);
         assertNull(ui.editingComponent);
         assertNull(ui.editingPath);
-
         assertEquals(UIManager.getInt("Tree.leftChildIndent"), ui.leftChildIndent);
         assertEquals(UIManager.getInt("Tree.rightChildIndent"), ui.rightChildIndent);
         assertEquals(ui.leftChildIndent + ui.rightChildIndent, ui.totalChildIndent);
         assertEquals(-1, ui.lastSelectedRow);
         assertEquals(0, ui.depthOffset);
         assertEquals(0, ui.editingRow);
-
         assertTrue(ui.createdRenderer);
         assertFalse(ui.createdCellEditor);
         assertTrue(ui.stopEditingInCompleteEditing);
         assertFalse(ui.validCachedPreferredSize);
         assertFalse(ui.editorHasDifferentSize);
         assertFalse(ui.largeModel);
-
         ui.uninstallDefaults();
     }
 
@@ -581,45 +555,56 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertTrue(hasListener(tree.getKeyListeners(), BasicTreeUI.KeyHandler.class));
         assertTrue(hasListener(tree.getMouseListeners(), BasicTreeUI.MouseHandler.class));
         assertTrue(hasListener(tree.getMouseMotionListeners(), BasicTreeUI.MouseHandler.class));
-        assertTrue(hasListener(tree.getPropertyChangeListeners(), BasicTreeUI.PropertyChangeHandler.class));
-        assertTrue(hasListener(tree.getTreeExpansionListeners(), BasicTreeUI.TreeExpansionHandler.class));
-        assertTrue(hasListener(((DefaultTreeModel)tree.getModel()).getTreeModelListeners(), BasicTreeUI.TreeModelHandler.class));
-        assertTrue(hasListener(((DefaultTreeSelectionModel)tree.getSelectionModel()).getTreeSelectionListeners(), BasicTreeUI.TreeSelectionHandler.class));
-        assertTrue(hasListener(((DefaultTreeSelectionModel)tree.getSelectionModel()).getPropertyChangeListeners(), BasicTreeUI.SelectionModelPropertyChangeHandler.class));
-
+        assertTrue(hasListener(tree.getPropertyChangeListeners(),
+                BasicTreeUI.PropertyChangeHandler.class));
+        assertTrue(hasListener(tree.getTreeExpansionListeners(),
+                BasicTreeUI.TreeExpansionHandler.class));
+        assertTrue(hasListener(((DefaultTreeModel) tree.getModel()).getTreeModelListeners(),
+                BasicTreeUI.TreeModelHandler.class));
+        assertTrue(hasListener(((DefaultTreeSelectionModel) tree.getSelectionModel())
+                .getTreeSelectionListeners(), BasicTreeUI.TreeSelectionHandler.class));
+        assertTrue(hasListener(((DefaultTreeSelectionModel) tree.getSelectionModel())
+                .getPropertyChangeListeners(),
+                BasicTreeUI.SelectionModelPropertyChangeHandler.class));
         ui.uninstallListeners();
         assertFalse(hasListener(tree.getFocusListeners(), BasicTreeUI.FocusHandler.class));
         assertFalse(hasListener(tree.getKeyListeners(), BasicTreeUI.KeyHandler.class));
         assertFalse(hasListener(tree.getMouseListeners(), BasicTreeUI.MouseHandler.class));
         assertFalse(hasListener(tree.getMouseMotionListeners(), BasicTreeUI.MouseHandler.class));
-        assertFalse(hasListener(tree.getPropertyChangeListeners(), BasicTreeUI.PropertyChangeHandler.class));
-        assertFalse(hasListener(tree.getTreeExpansionListeners(), BasicTreeUI.TreeExpansionHandler.class));
-        assertFalse(hasListener(tree.getTreeSelectionListeners(), BasicTreeUI.TreeSelectionHandler.class));
-        assertFalse(hasListener(((DefaultTreeModel)tree.getModel()).getTreeModelListeners(), BasicTreeUI.TreeModelHandler.class));
-        assertFalse(hasListener(((DefaultTreeSelectionModel)tree.getSelectionModel()).getTreeSelectionListeners(), BasicTreeUI.TreeSelectionHandler.class));
-        assertFalse(hasListener(((DefaultTreeSelectionModel)tree.getSelectionModel()).getPropertyChangeListeners(), BasicTreeUI.SelectionModelPropertyChangeHandler.class));
+        assertFalse(hasListener(tree.getPropertyChangeListeners(),
+                BasicTreeUI.PropertyChangeHandler.class));
+        assertFalse(hasListener(tree.getTreeExpansionListeners(),
+                BasicTreeUI.TreeExpansionHandler.class));
+        assertFalse(hasListener(tree.getTreeSelectionListeners(),
+                BasicTreeUI.TreeSelectionHandler.class));
+        assertFalse(hasListener(((DefaultTreeModel) tree.getModel()).getTreeModelListeners(),
+                BasicTreeUI.TreeModelHandler.class));
+        assertFalse(hasListener(((DefaultTreeSelectionModel) tree.getSelectionModel())
+                .getTreeSelectionListeners(), BasicTreeUI.TreeSelectionHandler.class));
+        assertFalse(hasListener(((DefaultTreeSelectionModel) tree.getSelectionModel())
+                .getPropertyChangeListeners(),
+                BasicTreeUI.SelectionModelPropertyChangeHandler.class));
     }
 
     public void testInstallUninstallKeyboardActions() {
         ui.installKeyboardActions();
         assertNotNull(SwingUtilities.getUIInputMap(tree, JComponent.WHEN_FOCUSED));
-        assertNotNull(SwingUtilities.getUIInputMap(tree, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
-
+        assertNotNull(SwingUtilities.getUIInputMap(tree,
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
         ui.uninstallKeyboardActions();
         assertNull(SwingUtilities.getUIInputMap(tree, JComponent.WHEN_FOCUSED));
-        assertNull(SwingUtilities.getUIInputMap(tree, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+        assertNull(SwingUtilities.getUIInputMap(tree,
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
     }
 
     public void testInstallUninstallComponents() {
         ui.uninstallComponents();
         assertEquals(0, tree.getComponentCount());
-
         ui.installComponents();
         assertEquals(1, tree.getComponentCount());
         assertSame(ui.rendererPane, tree.getComponent(0));
         assertEquals(new Rectangle(), ui.rendererPane.getBounds());
         assertFalse(ui.rendererPane.isVisible());
-
         ui.uninstallComponents();
         assertEquals(0, tree.getComponentCount());
         assertNotNull(ui.rendererPane);
@@ -627,50 +612,60 @@ public class BasicTreeUITest extends BasicSwingTestCase {
 
     public void testCreateNodeDimensions() throws Exception {
         tree.setRowHeight(40);
-
         ui.setLeftChildIndent(10);
         ui.setRightChildIndent(20);
-
         ui.depthOffset = 3;
-
         assertNotNull(ui.createNodeDimensions());
         assertTrue(ui.createNodeDimensions() instanceof BasicTreeUI.NodeDimensionsHandler);
         assertNotSame(ui.createNodeDimensions(), ui.createNodeDimensions());
-
         tree.setFont(tree.getFont().deriveFont(40f));
-
         NodeDimensions n = ui.createNodeDimensions();
-
-        Component c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(), false, false, false, 0, false);
-        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                     n.getNodeDimensions(root, 0, 0, true, new Rectangle()));
-
-        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, node1.toString(), false, false, false, 0, false);
-        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                     n.getNodeDimensions(node1, 0, 0, true, new Rectangle()));
-
+        Component c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(),
+                false, false, false, 0, false);
+        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset, 0, c
+                .getPreferredSize().width, c.getPreferredSize().height), n.getNodeDimensions(
+                root, 0, 0, true, new Rectangle()));
+        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, node1.toString(), false,
+                false, false, 0, false);
+        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset, 0, c
+                .getPreferredSize().width, c.getPreferredSize().height), n.getNodeDimensions(
+                node1, 0, 0, true, new Rectangle()));
         Rectangle rectangle = new Rectangle(10, 10, 20, 20);
-        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(), false, false, false, 0, false);
-        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 3, rectangle.y, c.getPreferredSize().width, c.getPreferredSize().height),
-                     n.getNodeDimensions(root, 2, 3, true, rectangle));
+        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(), false,
+                false, false, 0, false);
+        assertEquals(new Rectangle(ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent
+                * 3, rectangle.y, c.getPreferredSize().width, c.getPreferredSize().height), n
+                .getNodeDimensions(root, 2, 3, true, rectangle));
     }
 
     public void testCreateNodeDimensionsRTL() throws Exception {
         tree.setRowHeight(40);
         tree.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
         NodeDimensions n = ui.createNodeDimensions();
-        Component c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(), false, false, false, 0, false);
-        assertEquals(new Rectangle(tree.getWidth() - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 0) - c.getPreferredSize().width, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                n.getNodeDimensions(root, 0, 0, true, new Rectangle()));
-        assertEquals(new Rectangle(tree.getWidth() - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 2) - c.getPreferredSize().width, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                n.getNodeDimensions(root, 0, 2, true, new Rectangle()));
-
-        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, node1.toString(), false, false, false, 0, false);
-        assertEquals(new Rectangle(tree.getWidth() - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 0) - c.getPreferredSize().width, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                n.getNodeDimensions(node1, 0, 0, true, new Rectangle()));
-        assertEquals(new Rectangle(tree.getWidth() - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 2) - c.getPreferredSize().width, 0, c.getPreferredSize().width, c.getPreferredSize().height),
-                n.getNodeDimensions(node1, 0, 2, true, new Rectangle()));
+        Component c = ui.getCellRenderer().getTreeCellRendererComponent(tree, root.toString(),
+                false, false, false, 0, false);
+        assertEquals(new Rectangle(tree.getWidth()
+                - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 0)
+                - c.getPreferredSize().width, 0, c.getPreferredSize().width, c
+                .getPreferredSize().height), n.getNodeDimensions(root, 0, 0, true,
+                new Rectangle()));
+        assertEquals(new Rectangle(tree.getWidth()
+                - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 2)
+                - c.getPreferredSize().width, 0, c.getPreferredSize().width, c
+                .getPreferredSize().height), n.getNodeDimensions(root, 0, 2, true,
+                new Rectangle()));
+        c = ui.getCellRenderer().getTreeCellRendererComponent(tree, node1.toString(), false,
+                false, false, 0, false);
+        assertEquals(new Rectangle(tree.getWidth()
+                - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 0)
+                - c.getPreferredSize().width, 0, c.getPreferredSize().width, c
+                .getPreferredSize().height), n.getNodeDimensions(node1, 0, 0, true,
+                new Rectangle()));
+        assertEquals(new Rectangle(tree.getWidth()
+                - (ui.totalChildIndent * ui.depthOffset + ui.totalChildIndent * 2)
+                - c.getPreferredSize().width, 0, c.getPreferredSize().width, c
+                .getPreferredSize().height), n.getNodeDimensions(node1, 0, 2, true,
+                new Rectangle()));
     }
 
     public void testCreatePropertyChangeListener() {
@@ -709,7 +704,8 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertNotNull(ui.createSelectionModelPropertyChangeListener());
         if (isHarmony()) {
             assertTrue(ui.createSelectionModelPropertyChangeListener() instanceof BasicTreeUI.SelectionModelPropertyChangeHandler);
-            assertNotSame(ui.createSelectionModelPropertyChangeListener(), ui.createSelectionModelPropertyChangeListener());
+            assertNotSame(ui.createSelectionModelPropertyChangeListener(), ui
+                    .createSelectionModelPropertyChangeListener());
         }
     }
 
@@ -749,16 +745,13 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertNotSame(ui.createLayoutCache(), ui.createLayoutCache());
         assertTrue(ui.createLayoutCache() instanceof VariableHeightLayoutCache);
         assertTrue(ui.treeState instanceof VariableHeightLayoutCache);
-
         tree.setRowHeight(10);
         assertTrue(ui.createLayoutCache() instanceof VariableHeightLayoutCache);
         assertTrue(ui.treeState instanceof VariableHeightLayoutCache);
-
         tree.setRowHeight(0);
         tree.setLargeModel(true);
         assertTrue(ui.createLayoutCache() instanceof VariableHeightLayoutCache);
         assertTrue(ui.treeState instanceof VariableHeightLayoutCache);
-
         tree.setRowHeight(10);
         assertTrue(ui.createLayoutCache() instanceof FixedHeightLayoutCache);
         assertTrue(ui.treeState instanceof FixedHeightLayoutCache);
@@ -792,31 +785,25 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertFalse(ui.shouldPaintExpandControl(rootPath, -10, false, false, false));
         assertFalse(ui.shouldPaintExpandControl(rootPath, 10, false, false, false));
         assertFalse(ui.shouldPaintExpandControl(rootPath, 100, true, true, false));
-
         TreePath path1 = rootPath.pathByAddingChild(node1);
         assertFalse(ui.shouldPaintExpandControl(path1, -10, false, false, true));
         assertTrue(ui.shouldPaintExpandControl(path1, 10, false, false, false));
         assertTrue(ui.shouldPaintExpandControl(path1, 100, false, true, false));
         assertTrue(ui.shouldPaintExpandControl(path1, -100, true, false, false));
-
         tree.setRootVisible(false);
         assertFalse(ui.shouldPaintExpandControl(rootPath, -1, false, false, false));
         assertFalse(ui.shouldPaintExpandControl(path1, 0, true, true, false));
-
         tree.setShowsRootHandles(true);
         assertTrue(ui.shouldPaintExpandControl(rootPath, -1, false, false, false));
         assertTrue(ui.shouldPaintExpandControl(path1, 0, true, true, false));
-
         tree.setShowsRootHandles(false);
         TreePath path11 = path1.pathByAddingChild(node11);
         assertFalse(ui.shouldPaintExpandControl(path11, -1, false, false, true));
         assertTrue(ui.shouldPaintExpandControl(path11, -1, false, false, false));
-
         tree.setRootVisible(true);
         TreePath unexisted = new TreePath(node1).pathByAddingChild(node11);
         assertTrue(ui.shouldPaintExpandControl(unexisted, -1, false, false, false));
     }
-
 
     public void testGetVerticalLegBuffer() {
         assertEquals(0, ui.getVerticalLegBuffer());
@@ -829,21 +816,18 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testGetRowX() {
         assertEquals(0, ui.getRowX(-10, 0));
         assertEquals(ui.totalChildIndent, ui.getRowX(-10, 1));
-
         ui.totalChildIndent = 15;
         assertEquals(ui.totalChildIndent, ui.getRowX(-10, 1));
         assertEquals(3 * ui.totalChildIndent, ui.getRowX(-10, 3));
-
         ui.depthOffset = 10;
         assertEquals(ui.depthOffset * ui.totalChildIndent, ui.getRowX(-100, 0));
-        assertEquals(ui.depthOffset * ui.totalChildIndent + 2 * ui.totalChildIndent, ui.getRowX(-100, 2));
-
+        assertEquals(ui.depthOffset * ui.totalChildIndent + 2 * ui.totalChildIndent, ui
+                .getRowX(-100, 2));
         ui.depthOffset = 0;
         tree.setRootVisible(false);
         assertEquals(-ui.totalChildIndent, ui.getRowX(-10, 0));
         assertEquals(0, ui.getRowX(-10, 1));
         assertEquals(2 * ui.totalChildIndent, ui.getRowX(-10, 3));
-
         tree.setBorder(BorderFactory.createEmptyBorder(5, 10, 15, 20));
         assertEquals(-ui.totalChildIndent, ui.getRowX(-10, 0));
         assertEquals(0, ui.getRowX(-10, 1));
@@ -856,24 +840,22 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     }
 
     public void testUpdateExpandedDescendants() {
-        TreePath pathToExpand = new TreePath(tree.getModel().getRoot()).pathByAddingChild(node1);
+        TreePath pathToExpand = new TreePath(tree.getModel().getRoot())
+                .pathByAddingChild(node1);
         tree.expandPath(pathToExpand);
         assertTrue(ui.treeState.isExpanded(pathToExpand));
-
         ui.treeState = new VariableHeightLayoutCache();
         ui.treeState.setModel(tree.getModel());
         assertFalse(ui.treeState.isExpanded(pathToExpand));
-
         ui.updateExpandedDescendants(new TreePath(tree.getModel().getRoot()));
         assertTrue(ui.treeState.isExpanded(pathToExpand));
     }
 
     public void testGetLastChildPath() {
         TreePath rootPath = new TreePath(root);
-        TreePath lastChildPath = rootPath.pathByAddingChild(tree.getModel().getChild(root, tree.getModel().getChildCount(root) - 1));
-
+        TreePath lastChildPath = rootPath.pathByAddingChild(tree.getModel().getChild(root,
+                tree.getModel().getChildCount(root) - 1));
         assertEquals(lastChildPath, ui.getLastChildPath(rootPath));
-
         TreePath leafPath = rootPath.pathByAddingChild(node1).pathByAddingChild(node11);
         assertNull(ui.getLastChildPath(leafPath));
     }
@@ -882,38 +864,34 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         ui.depthOffset = -100;
         ui.updateDepthOffset();
         assertEquals(0, ui.depthOffset);
-
         tree.setRootVisible(false);
         ui.depthOffset = -100;
         ui.updateDepthOffset();
         assertEquals(-1, ui.depthOffset);
-
         tree.setRootVisible(true);
         assertEquals(0, ui.depthOffset);
-
         tree.setShowsRootHandles(true);
         assertEquals(1, ui.depthOffset);
     }
 
     public void testUpdateCellEditor() {
-        DefaultTreeCellEditor e1 = new DefaultTreeCellEditor(tree, new DefaultTreeCellRenderer());
+        DefaultTreeCellEditor e1 = new DefaultTreeCellEditor(tree,
+                new DefaultTreeCellRenderer());
         tree.setCellEditor(e1);
         assertSame(e1, tree.getCellEditor());
         assertNull(ui.cellEditor);
         assertSame(e1, ui.getCellEditor());
-
         tree.setEditable(true);
         assertSame(e1, ui.cellEditor);
         assertSame(e1, ui.getCellEditor());
-
-        DefaultTreeCellEditor e2 = new DefaultTreeCellEditor(tree, new DefaultTreeCellRenderer());
+        DefaultTreeCellEditor e2 = new DefaultTreeCellEditor(tree,
+                new DefaultTreeCellRenderer());
         ui.cellEditor = e2;
         assertSame(e1, ui.getCellEditor());
         assertSame(e2, ui.cellEditor);
         ui.updateCellEditor();
         assertSame(e1, ui.cellEditor);
         assertSame(e1, tree.getCellEditor());
-
         ui.cellEditor = null;
         assertFalse(ui.createdCellEditor);
         ui.createdCellEditor = true;
@@ -922,12 +900,10 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertFalse(ui.createdCellEditor);
         assertSame(e1, ui.cellEditor);
         assertSame(e1, tree.getCellEditor());
-
         tree.setCellRenderer(new DefaultTreeCellRenderer());
         assertFalse(ui.createdCellEditor);
         assertSame(e1, ui.cellEditor);
         assertSame(e1, tree.getCellEditor());
-
         ui.createdCellEditor = true;
         tree.setCellRenderer(new DefaultTreeCellRenderer());
         assertTrue(ui.createdCellEditor);
@@ -941,14 +917,12 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertSame(r1, tree.getCellRenderer());
         assertSame(r1, ui.currentCellRenderer);
         assertSame(r1, ui.getCellRenderer());
-
         DefaultTreeCellRenderer r2 = new DefaultTreeCellRenderer();
         ui.currentCellRenderer = r2;
         assertSame(r2, ui.getCellRenderer());
         ui.updateRenderer();
         assertSame(r1, ui.currentCellRenderer);
         assertSame(r1, tree.getCellRenderer());
-
         ui.currentCellRenderer = null;
         assertFalse(ui.createdRenderer);
         ui.createdRenderer = true;
@@ -960,9 +934,9 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     }
 
     public void testConfigureLayoutCache() {
-        TreePath expandedPath = new TreePath(tree.getModel().getRoot()).pathByAddingChild(node1);
+        TreePath expandedPath = new TreePath(tree.getModel().getRoot())
+                .pathByAddingChild(node1);
         tree.expandPath(expandedPath);
-
         ui.treeState = new VariableHeightLayoutCache();
         ui.configureLayoutCache();
         assertSame(tree.getModel(), ui.treeState.getModel());
@@ -991,13 +965,13 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         ui.updateCachedPreferredSize();
         assertTrue(ui.validCachedPreferredSize);
         assertEquals(ui.preferredSize, originalSize);
-        assertEquals(new Dimension(ui.treeState.getPreferredWidth(null), ui.treeState.getPreferredHeight()), ui.preferredSize);
+        assertEquals(new Dimension(ui.treeState.getPreferredWidth(null), ui.treeState
+                .getPreferredHeight()), ui.preferredSize);
     }
 
     public void testPathWasExpanded() {
         TreePath rootPath = new TreePath(root);
         TreePath path1 = rootPath.pathByAddingChild(node1);
-
         assertFalse(ui.treeState.isExpanded(path1));
         ui.pathWasExpanded(path1);
         assertTrue(ui.treeState.isExpanded(path1));
@@ -1007,7 +981,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testPathWasCollapsed() {
         TreePath rootPath = new TreePath(root);
         TreePath path1 = rootPath.pathByAddingChild(node1);
-
         tree.expandPath(path1);
         assertTrue(ui.treeState.isExpanded(path1));
         ui.pathWasCollapsed(path1);
@@ -1017,7 +990,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testGetSetPreferredMinSize() {
         assertNull(ui.preferredMinSize);
         assertNull(ui.getPreferredMinSize());
-
         Dimension prefMinSize = new Dimension(10, 10);
         ui.setPreferredMinSize(prefMinSize);
         assertEquals(ui.preferredMinSize, ui.getPreferredMinSize());
@@ -1029,7 +1001,9 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         final Marker cancelMarker = new Marker();
         final Marker valueMarker = new Marker();
         ui = new BasicTreeUI() {
-            protected void completeEditing(final boolean messageStop, final boolean messageCancel, final boolean messageTree) {
+            @Override
+            protected void completeEditing(final boolean messageStop,
+                    final boolean messageCancel, final boolean messageTree) {
                 super.completeEditing(messageStop, messageCancel, messageTree);
                 stopMarker.setOccurred(messageStop);
                 cancelMarker.setOccurred(messageCancel);
@@ -1037,16 +1011,15 @@ public class BasicTreeUITest extends BasicSwingTestCase {
             }
         };
         ui.installUI(tree);
-
         final Marker editorMarker = new Marker();
         TreeCellEditor editor = new DefaultTreeCellEditor(tree, new DefaultTreeCellRenderer()) {
+            @Override
             public boolean stopCellEditing() {
                 editorMarker.setOccurred();
                 return super.stopCellEditing();
             }
         };
         tree.setCellEditor(editor);
-
         editorMarker.reset();
         stopMarker.reset();
         cancelMarker.reset();
@@ -1056,7 +1029,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertFalse(stopMarker.isOccurred());
         assertTrue(cancelMarker.isOccurred());
         assertFalse(valueMarker.isOccurred());
-
         editorMarker.reset();
         stopMarker.reset();
         cancelMarker.reset();
@@ -1072,7 +1044,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
             assertTrue(cancelMarker.isOccurred());
         }
         assertFalse(valueMarker.isOccurred());
-
         tree.setEditable(true);
         ui.startEditingAtPath(tree, new TreePath(root));
         assertTrue(ui.isEditing(tree));
@@ -1083,7 +1054,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testCheckForClickInExpandControl() {
         TreePath path1 = new TreePath(root).pathByAddingChild(node1);
         assertFalse(tree.isExpanded(path1));
-
         assertTrue(ui.isLocationInExpandControl(path1, 8, 20));
         ui.checkForClickInExpandControl(path1, 8, 20);
         assertTrue(tree.isExpanded(path1));
@@ -1094,14 +1064,11 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testIsLocationInExpandControl() {
         TreePath rootPath = new TreePath(root);
         TreePath path1 = rootPath.pathByAddingChild(node1);
-
         assertFalse(ui.isLocationInExpandControl(rootPath, 0, 5));
-
         assertFalse(ui.isLocationInExpandControl(path1, 2, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 3, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 11, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 12, 20));
-
         ui.setLeftChildIndent(10);
         ui.setRightChildIndent(20);
         assertEquals(30, ui.totalChildIndent);
@@ -1109,49 +1076,41 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         assertTrue(ui.isLocationInExpandControl(path1, 6, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 14, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 15, 20));
-
         ui.setLeftChildIndent(11);
         assertEquals(31, ui.totalChildIndent);
         assertFalse(ui.isLocationInExpandControl(path1, 6, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 7, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 15, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 16, 20));
-
         ui.setRightChildIndent(21);
         assertEquals(32, ui.totalChildIndent);
         assertFalse(ui.isLocationInExpandControl(path1, 6, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 7, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 15, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 16, 20));
-
         ui.setLeftChildIndent(1);
         assertEquals(22, ui.totalChildIndent);
         assertTrue(ui.isLocationInExpandControl(path1, 0, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 5, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 6, 20));
-
         ui.setLeftChildIndent(2);
         assertEquals(23, ui.totalChildIndent);
         assertTrue(ui.isLocationInExpandControl(path1, 0, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 6, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 7, 20));
-
         ui.setLeftChildIndent(3);
         assertTrue(ui.isLocationInExpandControl(path1, 0, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 7, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 8, 20));
-
         ui.setLeftChildIndent(4);
         assertTrue(ui.isLocationInExpandControl(path1, 0, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 8, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 9, 20));
-
         ui.setLeftChildIndent(5);
         assertFalse(ui.isLocationInExpandControl(path1, 0, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 1, 20));
         assertTrue(ui.isLocationInExpandControl(path1, 9, 20));
         assertFalse(ui.isLocationInExpandControl(path1, 10, 20));
-
         ui.expandedIcon = new Icon() {
             public void paintIcon(Component c, Graphics g, int x, int y) {
             }
@@ -1175,7 +1134,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testHandleExpandControlClick() {
         TreePath path1 = new TreePath(root).pathByAddingChild(node1);
         assertFalse(tree.isExpanded(path1));
-
         ui.handleExpandControlClick(path1, -10, -10);
         assertTrue(tree.isExpanded(path1));
         ui.handleExpandControlClick(path1, -10, -10);
@@ -1185,7 +1143,6 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     public void testToggleExpandState() {
         TreePath path1 = new TreePath(root).pathByAddingChild(node1);
         assertFalse(tree.isExpanded(path1));
-
         ui.toggleExpandState(path1);
         assertTrue(tree.isExpanded(path1));
         ui.toggleExpandState(path1);
@@ -1193,82 +1150,94 @@ public class BasicTreeUITest extends BasicSwingTestCase {
     }
 
     public void testIsToggleSelectionEvent() {
-        assertTrue(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
-        assertTrue(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 2, false, MouseEvent.BUTTON1)));
-        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON2)));
-        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON3)));
-        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 2, false, MouseEvent.BUTTON1)));
+        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON2)));
+        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON3)));
+        assertFalse(ui.isToggleSelectionEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
     }
 
     public void testIsMultiSelectEvent() {
-        assertTrue(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
-        assertTrue(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 2, false, MouseEvent.BUTTON1)));
-        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON2)));
-        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON3)));
-        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 2, false, MouseEvent.BUTTON1)));
+        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON2)));
+        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON3)));
+        assertFalse(ui.isMultiSelectEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1)));
     }
 
     public void testIsToggleEvent() {
-        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 2, false, MouseEvent.BUTTON1)));
-        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 3, false, MouseEvent.BUTTON1)));
-        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 1, false, MouseEvent.BUTTON1)));
-        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 2, false, MouseEvent.BUTTON2)));
-        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 2, false, MouseEvent.BUTTON3)));
-        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, InputEvent.CTRL_DOWN_MASK, 0, 0, 0, 2, false, MouseEvent.BUTTON1)));
-        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, InputEvent.SHIFT_DOWN_MASK, 0, 0, 0, 2, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                2, false, MouseEvent.BUTTON1)));
+        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                3, false, MouseEvent.BUTTON1)));
+        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                1, false, MouseEvent.BUTTON1)));
+        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                2, false, MouseEvent.BUTTON2)));
+        assertFalse(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                2, false, MouseEvent.BUTTON3)));
+        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 0, 2, false, MouseEvent.BUTTON1)));
+        assertTrue(ui.isToggleEvent(new MouseEvent(tree, MouseEvent.MOUSE_PRESSED,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 0, 2, false, MouseEvent.BUTTON1)));
     }
 
     public void testSelectPathForEvent() {
         TreePath rootPath = new TreePath(root);
         TreePath path1 = rootPath.pathByAddingChild(node1);
         TreePath path11 = path1.pathByAddingChild(node11);
-
         assertTrue(tree.isSelectionEmpty());
-
-        MouseEvent toggleSelectionEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1);
+        MouseEvent toggleSelectionEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.CTRL_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1);
         ui.selectPathForEvent(rootPath, toggleSelectionEvent);
-        assertEquals(new TreePath[] {rootPath}, tree.getSelectionPaths());
-
+        assertEquals(new TreePath[] { rootPath }, tree.getSelectionPaths());
         ui.selectPathForEvent(rootPath, toggleSelectionEvent);
         assertTrue(tree.isSelectionEmpty());
-
         ui.selectPathForEvent(rootPath, toggleSelectionEvent);
         ui.selectPathForEvent(path1, toggleSelectionEvent);
-        assertEquals(new TreePath[] {rootPath, path1}, tree.getSelectionPaths());
-
-        MouseEvent toggleEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 2, false, MouseEvent.BUTTON1);
+        assertEquals(new TreePath[] { rootPath, path1 }, tree.getSelectionPaths());
+        MouseEvent toggleEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 2,
+                false, MouseEvent.BUTTON1);
         ui.selectPathForEvent(rootPath, toggleEvent);
         assertFalse(tree.isExpanded(rootPath));
-        assertEquals(new TreePath[] {rootPath}, tree.getSelectionPaths());
-
+        assertEquals(new TreePath[] { rootPath }, tree.getSelectionPaths());
         ui.selectPathForEvent(path1, toggleEvent);
         assertTrue(tree.isExpanded(rootPath));
         assertTrue(tree.isExpanded(path1));
-        assertEquals(new TreePath[] {path1}, tree.getSelectionPaths());
-
-        MouseEvent multiSelectionEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1);
+        assertEquals(new TreePath[] { path1 }, tree.getSelectionPaths());
+        MouseEvent multiSelectionEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.SHIFT_DOWN_MASK, 0, 0, 1, false, MouseEvent.BUTTON1);
         ui.selectPathForEvent(rootPath, multiSelectionEvent);
-        assertEquals(new TreePath[] {rootPath, path1}, tree.getSelectionPaths());
-
-        MouseEvent pressEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 1, false, MouseEvent.BUTTON1);
+        assertEquals(new TreePath[] { rootPath, path1 }, tree.getSelectionPaths());
+        MouseEvent pressEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 1,
+                false, MouseEvent.BUTTON1);
         ui.selectPathForEvent(rootPath, pressEvent);
-        assertEquals(new TreePath[] {rootPath}, tree.getSelectionPaths());
+        assertEquals(new TreePath[] { rootPath }, tree.getSelectionPaths());
         ui.selectPathForEvent(path11, pressEvent);
-        assertEquals(new TreePath[] {path11}, tree.getSelectionPaths());
-
-        MouseEvent wrongPressEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 1, false, MouseEvent.BUTTON3);
+        assertEquals(new TreePath[] { path11 }, tree.getSelectionPaths());
+        MouseEvent wrongPressEvent = new MouseEvent(tree, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0,
+                1, false, MouseEvent.BUTTON3);
         ui.selectPathForEvent(rootPath, wrongPressEvent);
-        assertEquals(new TreePath[] {path11}, tree.getSelectionPaths());
-
-        MouseEvent notPressEvent = new MouseEvent(tree, MouseEvent.MOUSE_DRAGGED, 0, 0, 0, 0, 1, false, MouseEvent.BUTTON1);
+        assertEquals(new TreePath[] { path11 }, tree.getSelectionPaths());
+        MouseEvent notPressEvent = new MouseEvent(tree, MouseEvent.MOUSE_DRAGGED, 0, 0, 0, 0,
+                1, false, MouseEvent.BUTTON1);
         ui.selectPathForEvent(rootPath, notPressEvent);
-        assertEquals(new TreePath[] {path11}, tree.getSelectionPaths());
+        assertEquals(new TreePath[] { path11 }, tree.getSelectionPaths());
     }
 
     public void testIsLeaf() {
         assertFalse(ui.isLeaf(0));
         assertFalse(ui.isLeaf(1));
-
         tree.expandRow(1);
         assertTrue(ui.isLeaf(2));
     }
@@ -1277,91 +1246,79 @@ public class BasicTreeUITest extends BasicSwingTestCase {
         BasicTreeUI.KeyHandler handler = ui.new KeyHandler();
         assertFalse(handler.isKeyDown);
         assertNull(handler.repeatKeyAction);
-
         handler.keyPressed(new KeyEvent(tree, KeyEvent.KEY_PRESSED, 0, 0, 'a', 'a'));
         assertFalse(handler.isKeyDown);
         assertNull(handler.repeatKeyAction);
-
         handler.isKeyDown = true;
         handler.keyReleased(new KeyEvent(tree, KeyEvent.KEY_RELEASED, 0, 0, 'a', 'a'));
         assertTrue(handler.isKeyDown);
         assertNull(handler.repeatKeyAction);
-
         assertTrue(tree.isSelectionEmpty());
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, 'a'));
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                'a'));
         assertTrue(tree.isSelectionEmpty());
-
         handler.isKeyDown = false;
         JFrame f = new JFrame();
         f.getContentPane().add(tree);
         f.pack();
         f.setVisible(true);
         SwingWaitTestCase.isRealized(f);
-
         tree.requestFocus();
         assertTrue(waitForFocus(tree));
-
         TreePath rootPath = new TreePath(root);
         TreePath path1 = rootPath.pathByAddingChild(node1);
         TreePath path2 = rootPath.pathByAddingChild(node2);
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, 'n', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path1}, tree.getSelectionPaths());
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, 'o', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path1}, tree.getSelectionPaths());
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, 'd', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path1}, tree.getSelectionPaths());
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, 'e', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path1}, tree.getSelectionPaths());
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, '2', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path2}, tree.getSelectionPaths());
-
-        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, '1', KeyEvent.KEY_LOCATION_UNKNOWN));
-        assertEquals(new TreePath[] {path2}, tree.getSelectionPaths());
-
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                'n', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path1 }, tree.getSelectionPaths());
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                'o', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path1 }, tree.getSelectionPaths());
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                'd', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path1 }, tree.getSelectionPaths());
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                'e', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path1 }, tree.getSelectionPaths());
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                '2', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path2 }, tree.getSelectionPaths());
+        handler.keyTyped(new KeyEvent(tree, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED,
+                '1', KeyEvent.KEY_LOCATION_UNKNOWN));
+        assertEquals(new TreePath[] { path2 }, tree.getSelectionPaths());
         f.dispose();
     }
 
     public void testComponentHandler() throws Exception {
         JScrollPane pane = new JScrollPane(tree);
-        assertFalse(hasListener(tree.getComponentListeners(), BasicTreeUI.ComponentHandler.class));
-
+        assertFalse(hasListener(tree.getComponentListeners(),
+                BasicTreeUI.ComponentHandler.class));
         tree.setLargeModel(true);
         assertTrue(hasListener(tree.getComponentListeners(), BasicTreeUI.ComponentHandler.class));
-
         tree.setRowHeight(0);
-        assertFalse(hasListener(tree.getComponentListeners(), BasicTreeUI.ComponentHandler.class));
-
+        assertFalse(hasListener(tree.getComponentListeners(),
+                BasicTreeUI.ComponentHandler.class));
         tree.setRowHeight(10);
         assertTrue(hasListener(tree.getComponentListeners(), BasicTreeUI.ComponentHandler.class));
-
-        BasicTreeUI.ComponentHandler handler = (ComponentHandler)getListener(tree.getComponentListeners(), BasicTreeUI.ComponentHandler.class);
+        BasicTreeUI.ComponentHandler handler = (ComponentHandler) getListener(tree
+                .getComponentListeners(), BasicTreeUI.ComponentHandler.class);
         assertNull(handler.timer);
         assertNull(handler.scrollBar);
         assertSame(pane, handler.getScrollPane());
-
         ui.getPreferredSize(tree);
         assertTrue(ui.validCachedPreferredSize);
         handler.getScrollPane().getVerticalScrollBar().setValueIsAdjusting(true);
         handler.componentMoved(new ComponentEvent(tree, ComponentEvent.COMPONENT_MOVED));
         assertNotNull(handler.timer);
         assertSame(handler.scrollBar, pane.getVerticalScrollBar());
-
-
         assertEquals(200, handler.timer.getDelay());
         assertSame(handler, handler.timer.getActionListeners()[0]);
         assertTrue(handler.timer.isRunning());
-
         ui.validCachedPreferredSize = true;
         assertTrue(ui.validCachedPreferredSize);
         handler.actionPerformed(null);
         assertTrue(handler.timer.isRunning());
         assertTrue(ui.validCachedPreferredSize);
-
         handler.getScrollPane().getVerticalScrollBar().setValueIsAdjusting(false);
         assertTrue(handler.timer.isRunning());
         Timer timer = handler.timer;

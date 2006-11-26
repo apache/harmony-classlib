@@ -15,13 +15,12 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
@@ -30,14 +29,15 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 
 public class BasicSeparatorUITest extends SwingTestCase {
-
     protected BasicSeparatorUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new BasicSeparatorUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         super.tearDown();
@@ -62,8 +62,10 @@ public class BasicSeparatorUITest extends SwingTestCase {
      */
     public void testCreateUI() {
         assertNotNull("created UI is not null", BasicSeparatorUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", BasicSeparatorUI.createUI(null) instanceof BasicSeparatorUI);
-        assertNotSame("created UI is of unique", BasicSeparatorUI.createUI(null), BasicSeparatorUI.createUI(null));
+        assertTrue("created UI is of the proper class",
+                BasicSeparatorUI.createUI(null) instanceof BasicSeparatorUI);
+        assertNotSame("created UI is of unique", BasicSeparatorUI.createUI(null),
+                BasicSeparatorUI.createUI(null));
     }
 
     /*
@@ -72,11 +74,9 @@ public class BasicSeparatorUITest extends SwingTestCase {
     public void testInstallUninstallDefaults() {
         JSeparator separator = new JSeparator();
         separator.setUI(ui);
-
         ui.uninstallDefaults(separator);
         assertNull(ui.highlight);
         assertNull(ui.shadow);
-
         UIManager.put("Separator.highlight", new ColorUIResource(1, 2, 3));
         UIManager.put("Separator.shadow", new ColorUIResource(10, 20, 30));
         UIManager.put("Separator.foreground", new ColorUIResource(11, 22, 33));
@@ -92,5 +92,4 @@ public class BasicSeparatorUITest extends SwingTestCase {
      */
     public void testInstallUninstallListeners() {
     }
-
 }

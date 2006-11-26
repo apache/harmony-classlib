@@ -18,8 +18,8 @@
  * @author Evgeniya G. Maenkova
  * @version $Revision$
  */
-
 package javax.swing.text;
+
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.JEditorPane;
@@ -27,21 +27,27 @@ import javax.swing.SwingTestCase;
 
 public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
     StyledEditorKit.StyledTextAction action;
+
     boolean bWasException;
+
     String message;
+
     JEditorPane jep;
+
     StyledEditorKit kit;
 
-    class StyledTextAction extends  StyledEditorKit.StyledTextAction {
+    class StyledTextAction extends StyledEditorKit.StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
         public StyledTextAction(final String name) {
             super(name);
         }
 
         public void actionPerformed(final ActionEvent e) {
-
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         jep = new JEditorPane();
         setIgnoreNotImplemented(true);
@@ -52,7 +58,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         super.setUp();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -80,26 +86,21 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         SimpleAttributeSet sas = createAttributeSet(2);
         action.setParagraphAttributes(jep, sas, false);
         checkParagraphAttributes(doc, -1, 5, sas, 0);
-
         jep.setSelectionStart(10);
         jep.setSelectionEnd(13);
         SimpleAttributeSet sas2 = createAttributeSet(3);
         action.setParagraphAttributes(jep, sas2, false);
         checkParagraphAttributes(doc, 9, 15, sas2, 6);
-
         jep.setCaretPosition(18);
         SimpleAttributeSet sas3 = createAttributeSet(4);
         action.setParagraphAttributes(jep, sas3, true);
-
         for (int i = 0; i < doc.getLength(); i++) {
             AttributeSet as = doc.getParagraphElement(i).getAttributes();
             if (i < 15) {
-               sas.addAttribute(AttributeSet.ResolveAttribute,
-                                as.getAttribute(AttributeSet.ResolveAttribute)
-                                );
-               sas2.addAttribute(AttributeSet.ResolveAttribute,
-                                 as.getAttribute(AttributeSet.ResolveAttribute)
-                                 );
+                sas.addAttribute(AttributeSet.ResolveAttribute, as
+                        .getAttribute(AttributeSet.ResolveAttribute));
+                sas2.addAttribute(AttributeSet.ResolveAttribute, as
+                        .getAttribute(AttributeSet.ResolveAttribute));
             }
             if (i < 5) {
                 assertEquals(sas, as);
@@ -119,50 +120,42 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
 
     public void testGetStyledDocument() {
         jep = new JEditorPane();
-
         try {
             action.getStyledDocument(jep);
-         } catch (IllegalArgumentException e) {
-             bWasException = true;
-             message = e.getMessage();
-         }
-
-         assertTrue(bWasException);
-         assertEquals("document must be StyledDocument", message);
-
-         StyledEditorKit styledKit = new StyledEditorKit();
-         jep.setEditorKit(styledKit);
-         assertEquals(jep.getDocument(), action.getStyledDocument(jep));
-
-         bWasException = false;
-         jep.setDocument(new PlainDocument());
-         try {
-             action.getStyledDocument(jep);
-         } catch (IllegalArgumentException e) {
-             bWasException = true;
-             message = e.getMessage();
-         }
-         assertTrue(bWasException);
-         assertEquals("document must be StyledDocument", message);
-    }
-
-    public void testGetStyledEditorKit() {
-        jep = new JEditorPane();
-
-        try {
-           action.getStyledEditorKit(jep);
         } catch (IllegalArgumentException e) {
             bWasException = true;
             message = e.getMessage();
         }
+        assertTrue(bWasException);
+        assertEquals("document must be StyledDocument", message);
+        StyledEditorKit styledKit = new StyledEditorKit();
+        jep.setEditorKit(styledKit);
+        assertEquals(jep.getDocument(), action.getStyledDocument(jep));
+        bWasException = false;
+        jep.setDocument(new PlainDocument());
+        try {
+            action.getStyledDocument(jep);
+        } catch (IllegalArgumentException e) {
+            bWasException = true;
+            message = e.getMessage();
+        }
+        assertTrue(bWasException);
+        assertEquals("document must be StyledDocument", message);
+    }
 
+    public void testGetStyledEditorKit() {
+        jep = new JEditorPane();
+        try {
+            action.getStyledEditorKit(jep);
+        } catch (IllegalArgumentException e) {
+            bWasException = true;
+            message = e.getMessage();
+        }
         assertTrue(bWasException);
         assertEquals("EditorKit must be StyledEditorKit", message);
-
         StyledEditorKit styledKit = new StyledEditorKit();
         jep.setEditorKit(styledKit);
         assertEquals(styledKit, action.getStyledEditorKit(jep));
-
         jep.setDocument(new PlainDocument());
         assertEquals(styledKit, action.getStyledEditorKit(jep));
     }
@@ -179,34 +172,27 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         action.setCharacterAttributes(jep, sas, false);
         assertEquals(sas, kit.getInputAttributes());
         assertEquals(attrs, doc.getCharacterElement(4).getAttributes());
-
         SimpleAttributeSet sas2 = createAttributeSet(2);
         action.setCharacterAttributes(jep, sas2, false);
         assertEquals(sas2, kit.getInputAttributes());
         assertEquals(attrs, doc.getCharacterElement(4).getAttributes());
-
         SimpleAttributeSet sas3 = createAttributeSet(3);
         action.setCharacterAttributes(jep, sas3, false);
         assertEquals(sas3, kit.getInputAttributes());
         assertEquals(attrs, doc.getCharacterElement(4).getAttributes());
-
         //there is selection
-
         jep.setSelectionStart(3);
         jep.setSelectionEnd(5);
         kit.getInputAttributes().removeAttributes(kit.getInputAttributes());
         attrs = kit.getInputAttributes();
-
         SimpleAttributeSet sas4 = createAttributeSet(4);
         action.setCharacterAttributes(jep, sas4, false);
         checkAttributes(doc, 3, 6, sas4, true);
         assertEquals(attrs, kit.getInputAttributes());
-
         SimpleAttributeSet sas5 = createAttributeSet(5);
         SimpleAttributeSet sas6 = new SimpleAttributeSet();
         sas6.addAttribute("&&", "$$$");
         action.setCharacterAttributes(jep, sas6, true);
-
         assertEquals(attrs, kit.getInputAttributes());
         action.setCharacterAttributes(jep, sas5, false);
         sas5.addAttribute("&&", "$$$");
@@ -214,19 +200,14 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         assertEquals(attrs, kit.getInputAttributes());
     }
 
-    static final void checkAttributes(final Document doc,
-                               final int start,
-                               final int end,
-                               final MutableAttributeSet set,
-                               final boolean ignoreResolveAttribute) {
+    static final void checkAttributes(final Document doc, final int start, final int end,
+            final MutableAttributeSet set, final boolean ignoreResolveAttribute) {
         for (int i = 0; i < doc.getLength(); i++) {
             AttributeSet as = getAttributeSetByOffset(doc, i);
             if (!ignoreResolveAttribute) {
-                set.addAttribute(AttributeSet.ResolveAttribute,
-                                 as.getAttribute(AttributeSet.ResolveAttribute)
-                                );
+                set.addAttribute(AttributeSet.ResolveAttribute, as
+                        .getAttribute(AttributeSet.ResolveAttribute));
             }
-
             if (i > start && i < end) {
                 assertEquals(set, as);
             } else {
@@ -235,16 +216,12 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         }
     }
 
-    final void checkParagraphAttributes(final AbstractDocument doc,
-                                        final int start,
-                                        final int end,
-                                        final MutableAttributeSet set,
-                                        final int from) {
+    final void checkParagraphAttributes(final AbstractDocument doc, final int start,
+            final int end, final MutableAttributeSet set, final int from) {
         for (int i = from; i < doc.getLength(); i++) {
             AttributeSet as = doc.getParagraphElement(i).getAttributes();
-            set.addAttribute(AttributeSet.ResolveAttribute,
-                                as.getAttribute(AttributeSet.ResolveAttribute)
-                                );
+            set.addAttribute(AttributeSet.ResolveAttribute, as
+                    .getAttribute(AttributeSet.ResolveAttribute));
             if (i > start && i < end) {
                 assertSame(as, doc.getParagraphElement(i));
                 assertEquals(set.getAttributeCount(), as.getAttributeCount());
@@ -254,7 +231,6 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
             }
         }
     }
-
 
     final SimpleAttributeSet createAttributeSet(final int i) {
         SimpleAttributeSet sas = new SimpleAttributeSet();
@@ -269,8 +245,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
         return sas;
     }
 
-    static final AttributeSet getAttributeSetByOffset(final Document doc,
-                                                      final int offset) {
+    static final AttributeSet getAttributeSetByOffset(final Document doc, final int offset) {
         Element elem = StyledEditorKitTest.getElementByOffset(doc, offset);
         return (elem == null) ? null : elem.getAttributes();
     }

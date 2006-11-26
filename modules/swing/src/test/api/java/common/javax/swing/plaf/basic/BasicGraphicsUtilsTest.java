@@ -28,7 +28,6 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.DebugGraphics;
 import javax.swing.Icon;
@@ -39,35 +38,41 @@ import javax.swing.SwingTestCase;
 
 public class BasicGraphicsUtilsTest extends SwingTestCase {
     private JFrame frame;
+
     private Graphics g;
 
     private int x = 0;
+
     private final int y = 0;
+
     private final int w = 10;
+
     private final int h = 7;
 
     private final Color shadow = Color.RED;
+
     private final Color darkShadow = Color.BLACK;
+
     private final Color highlight = Color.GREEN;
+
     private final Color lightHighlight = Color.ORANGE;
 
     public BasicGraphicsUtilsTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JFrame();
         frame.setSize(30, 30);
         frame.setVisible(true);
         g = frame.getContentPane().getGraphics();
-
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-
         frame.dispose();
     }
 
@@ -77,14 +82,13 @@ public class BasicGraphicsUtilsTest extends SwingTestCase {
 
     public void testDrawEtchedRect() {
         Color color = g.getColor();
-        BasicGraphicsUtils.drawEtchedRect(g, x, y, w, h, shadow, darkShadow,
-                                          highlight, lightHighlight);
+        BasicGraphicsUtils.drawEtchedRect(g, x, y, w, h, shadow, darkShadow, highlight,
+                lightHighlight);
         assertSame(color, g.getColor());
     }
 
     public void testGetEtchedInsets() {
-        assertEquals(new Insets(2, 2, 2, 2),
-                     BasicGraphicsUtils.getEtchedInsets());
+        assertEquals(new Insets(2, 2, 2, 2), BasicGraphicsUtils.getEtchedInsets());
     }
 
     public void testDrawGroove() {
@@ -94,27 +98,26 @@ public class BasicGraphicsUtilsTest extends SwingTestCase {
     }
 
     public void testGetGrooveInsets() {
-        assertEquals(new Insets(2, 2, 2, 2),
-                     BasicGraphicsUtils.getGrooveInsets());
+        assertEquals(new Insets(2, 2, 2, 2), BasicGraphicsUtils.getGrooveInsets());
     }
 
     public void testDrawBezel() {
         Color color = g.getColor();
-        BasicGraphicsUtils.drawBezel(g, x, y, w, h, true, true, shadow,
-                                     darkShadow, highlight, lightHighlight);
-        BasicGraphicsUtils.drawBezel(g, x, y, w, h, true, false, shadow,
-                                     darkShadow, highlight, lightHighlight);
-        BasicGraphicsUtils.drawBezel(g, x, y, w, h, false, true, shadow,
-                                     darkShadow, highlight, lightHighlight);
-        BasicGraphicsUtils.drawBezel(g, x, y, w, h, false, false, shadow,
-                                     darkShadow, highlight, lightHighlight);
+        BasicGraphicsUtils.drawBezel(g, x, y, w, h, true, true, shadow, darkShadow, highlight,
+                lightHighlight);
+        BasicGraphicsUtils.drawBezel(g, x, y, w, h, true, false, shadow, darkShadow, highlight,
+                lightHighlight);
+        BasicGraphicsUtils.drawBezel(g, x, y, w, h, false, true, shadow, darkShadow, highlight,
+                lightHighlight);
+        BasicGraphicsUtils.drawBezel(g, x, y, w, h, false, false, shadow, darkShadow,
+                highlight, lightHighlight);
         assertSame(color, g.getColor());
     }
 
     public void testDrawLoweredBezel() {
         Color color = g.getColor();
-        BasicGraphicsUtils.drawLoweredBezel(g, x, y, w, h, shadow, darkShadow,
-                                            highlight, lightHighlight);
+        BasicGraphicsUtils.drawLoweredBezel(g, x, y, w, h, shadow, darkShadow, highlight,
+                lightHighlight);
         if (isHarmony()) {
             assertSame(color, g.getColor());
         }
@@ -138,12 +141,15 @@ public class BasicGraphicsUtilsTest extends SwingTestCase {
     public void testGetPreferredButtonSize() {
         Icon icon = new ImageIcon(new BufferedImage(10, 20, BufferedImage.TYPE_INT_RGB));
         JMenuItem item = new JMenuItem() {
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("deprecation")
+            @Override
             public FontMetrics getFontMetrics(Font font) {
                 return Toolkit.getDefaultToolkit().getFontMetrics(font);
             }
         };
         item.setBorder(BorderFactory.createEmptyBorder(10, 20, 30, 40));
-
         item.setIcon(icon);
         assertEquals(new Dimension(70, 60), BasicGraphicsUtils.getPreferredButtonSize(item, 3));
     }

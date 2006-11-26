@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -28,18 +27,17 @@ import javax.swing.text.AbstractDocument.AbstractElement;
  * implementing TreeNode interface.
  *
  */
-public class AbstractDocument_BranchElement_TreeNodeTest
-    extends AbstractDocument_AbstractElement_TreeNodeTest {
-
+public class AbstractDocument_BranchElement_TreeNodeTest extends
+        AbstractDocument_AbstractElement_TreeNodeTest {
+    @Override
     protected void setUp() throws Exception {
         doc = new PlainDocument();
         doc.insertString(0, AbstractDocument_BranchElementTest.LTR
-                            + AbstractDocument_BranchElementTest.RTL
-                            + AbstractDocument_BranchElementTest.LTR
-                            + AbstractDocument_BranchElementTest.RTL
-                            + "\n01234", null);
+                + AbstractDocument_BranchElementTest.RTL
+                + AbstractDocument_BranchElementTest.LTR
+                + AbstractDocument_BranchElementTest.RTL + "\n01234", null);
         doc.writeLock();
-        aElement = (AbstractElement)doc.getDefaultRootElement();
+        aElement = (AbstractElement) doc.getDefaultRootElement();
         parented = doc.new BranchElement(parent = aElement, null);
         doc.writeUnlock();
     }

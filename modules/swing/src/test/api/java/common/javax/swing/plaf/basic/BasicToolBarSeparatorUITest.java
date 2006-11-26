@@ -21,7 +21,6 @@
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.JToolBar;
 import javax.swing.SwingTestCase;
 import javax.swing.UIManager;
@@ -29,16 +28,18 @@ import javax.swing.plaf.ComponentUI;
 
 public class BasicToolBarSeparatorUITest extends SwingTestCase {
     private JToolBar.Separator separator;
+
     private BasicToolBarSeparatorUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         separator = new JToolBar.Separator();
         ui = new BasicToolBarSeparatorUI();
         separator.setUI(ui);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -52,30 +53,26 @@ public class BasicToolBarSeparatorUITest extends SwingTestCase {
     }
 
     public void testGetPreferredSize() {
-        assertEquals(UIManager.getDimension("ToolBar.separatorSize"),
-                     ui.getPreferredSize(separator));
-
+        assertEquals(UIManager.getDimension("ToolBar.separatorSize"), ui
+                .getPreferredSize(separator));
         ui = new BasicToolBarSeparatorUI();
-        assertEquals(UIManager.getDimension("ToolBar.separatorSize"),
-                     ui.getPreferredSize(separator));
+        assertEquals(UIManager.getDimension("ToolBar.separatorSize"), ui
+                .getPreferredSize(separator));
     }
 
     public void testCreateUI() {
         ComponentUI ui1 = BasicToolBarSeparatorUI.createUI(separator);
         assertTrue(ui1 instanceof BasicToolBarSeparatorUI);
-
         ComponentUI ui2 = BasicToolBarSeparatorUI.createUI(separator);
         assertNotSame(ui1, ui2);
     }
 
     public void testInstallDefaults() {
         ui.installDefaults(separator);
-
         assertNull(separator.getBackground());
         assertNull(separator.getForeground());
-        assertEquals(UIManager.getDimension("ToolBar.separatorSize"),
-                     separator.getSeparatorSize());
-
+        assertEquals(UIManager.getDimension("ToolBar.separatorSize"), separator
+                .getSeparatorSize());
         Dimension size = new Dimension(1, 2);
         separator.setSeparatorSize(size);
         ui.installDefaults(separator);

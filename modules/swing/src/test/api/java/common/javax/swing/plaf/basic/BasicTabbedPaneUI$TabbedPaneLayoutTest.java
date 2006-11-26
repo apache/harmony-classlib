@@ -21,35 +21,35 @@
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
-
 public class BasicTabbedPaneUI$TabbedPaneLayoutTest extends SwingTestCase {
-
     private JTabbedPane tabbed;
+
     private BasicTabbedPaneUI ui;
+
     private BasicTabbedPaneUI.TabbedPaneLayout layout;
+
     private Dimension emptySize = new Dimension();
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         tabbed = new JTabbedPane();
         ui = new BasicTabbedPaneUI();
         tabbed.setUI(ui);
-        layout = (BasicTabbedPaneUI.TabbedPaneLayout)tabbed.getLayout();
-
+        layout = (BasicTabbedPaneUI.TabbedPaneLayout) tabbed.getLayout();
         tabbed.addTab("tab1", new JLabel());
         tabbed.setIconAt(0, new ImageIcon());
         tabbed.setDisabledIconAt(0, new ImageIcon());
-
         tabbed.addTab("tabtab2", new JLabel());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -75,7 +75,7 @@ public class BasicTabbedPaneUI$TabbedPaneLayoutTest extends SwingTestCase {
     }
 
     public void testPadSelectedTab() {
-        layout.padSelectedTab(JTabbedPane.TOP, -1);
+        layout.padSelectedTab(SwingConstants.TOP, -1);
     }
 
     public void testRotateTabRuns() {

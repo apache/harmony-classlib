@@ -21,27 +21,28 @@
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingTestCase;
 
 public class BasicTabbedPaneUIRTest extends SwingTestCase {
     JTabbedPane tp;
+
     BasicTabbedPaneUI ui;
 
     public BasicTabbedPaneUIRTest(final String name) {
         super(name);
-
         tp = new JTabbedPane();
         ui = new BasicTabbedPaneUI();
         tp.setUI(ui);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -50,17 +51,14 @@ public class BasicTabbedPaneUIRTest extends SwingTestCase {
         JPanel tabContent1 = new JPanel();
         tabContent1.setPreferredSize(new Dimension(300, 300));
         tabContent1.setMinimumSize(new Dimension(200, 200));
-
         JPanel tabContent2 = new JPanel();
         tabContent2.setPreferredSize(new Dimension(500, 200));
         tabContent2.setMinimumSize(new Dimension(400, 100));
-
         tp.addTab("tab1", tabContent1);
         tp.addTab("tab2", tabContent2);
         Dimension size = tp.getPreferredSize();
         assertTrue(size.width > 500);
         assertTrue(size.height > 300);
-
         size = tp.getMinimumSize();
         assertTrue(size.width > 400);
         assertTrue(size.height > 200);

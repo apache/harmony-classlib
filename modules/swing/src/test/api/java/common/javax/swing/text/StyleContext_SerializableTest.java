@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,7 +21,6 @@
 package javax.swing.text;
 
 import java.util.Enumeration;
-
 import javax.swing.SerializableTestCase;
 
 /**
@@ -32,37 +30,32 @@ import javax.swing.SerializableTestCase;
 public class StyleContext_SerializableTest extends SerializableTestCase {
     private StyleContext sc;
 
+    @Override
     public void testSerializable() throws Exception {
-        StyleContext loadedSC = (StyleContext)toLoad;
-
-        Enumeration names = loadedSC.getStyleNames();
+        StyleContext loadedSC = (StyleContext) toLoad;
+        Enumeration<?> names = loadedSC.getStyleNames();
         String name;
         assertTrue(names.hasMoreElements());
         while (names.hasMoreElements()) {
-            name = (String)names.nextElement();
+            name = (String) names.nextElement();
             Style original = sc.getStyle(name);
-            Style loaded   = loadedSC.getStyle(name);
-
-            assertTrue("Style name: '" + name +
-                       "' #original: " + original +
-                       "  #loaded: " + loaded,
-                    original.isEqual(loaded));
+            Style loaded = loadedSC.getStyle(name);
+            assertTrue("Style name: '" + name + "' #original: " + original + "  #loaded: "
+                    + loaded, original.isEqual(loaded));
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         sc = new StyleContext();
         Style style = sc.addStyle("aStyle", null);
         style.addAttribute(StyleConstants.Bold, Boolean.TRUE);
         style.addAttribute(StyleConstants.FontFamily, new String("Arial"));
-
         style = sc.getStyle(StyleContext.DEFAULT_STYLE);
         style.addAttribute(StyleConstants.FontSize, new Integer(24));
         style.addAttribute(new String("attrKey"), new String("attrValue"));
         style.addAttribute(new Integer(15), new Float(1.07));
-
         toSave = sc;
         super.setUp();
     }
-
 }

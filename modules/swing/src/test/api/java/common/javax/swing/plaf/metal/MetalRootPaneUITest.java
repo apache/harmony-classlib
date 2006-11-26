@@ -18,22 +18,17 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import java.awt.LayoutManager;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
-
 import javax.swing.SwingTestCase;
-
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 
 public class MetalRootPaneUITest extends SwingTestCase {
-
     private JRootPane rootPane;
 
     private MetalRootPaneUI ui;
@@ -43,9 +38,9 @@ public class MetalRootPaneUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JFrame();
         rootPane = frame.getRootPane();
         ui = new MetalRootPaneUI();
@@ -54,6 +49,7 @@ public class MetalRootPaneUITest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -73,20 +69,17 @@ public class MetalRootPaneUITest extends SwingTestCase {
         Border saveBorder = rootPane.getBorder();
         LayoutManager saveLayout = rootPane.getLayout();
         int saveComponentCount = rootPane.getLayeredPane().getComponentCount();
-
         ui.installUI(rootPane);
         assertTrue("didn't install border", rootPane.getBorder() == saveBorder);
         assertTrue("didn't install layout", rootPane.getLayout() == saveLayout);
         assertTrue("didn't install titlePane",
                 rootPane.getLayeredPane().getComponentCount() == saveComponentCount);
-
         // test install with windowDecorationStyle = JRootPane.FRAME
         rootPane.setWindowDecorationStyle(JRootPane.FRAME);
         ui.uninstallUI(rootPane);
         saveBorder = rootPane.getBorder();
         saveLayout = rootPane.getLayout();
         saveComponentCount = rootPane.getLayeredPane().getComponentCount();
-
         ui.installUI(rootPane);
         assertTrue("border != null", rootPane.getBorder() != null);
         assertTrue("installed border", rootPane.getBorder() != saveBorder);
@@ -105,20 +98,17 @@ public class MetalRootPaneUITest extends SwingTestCase {
         Border saveBorder = rootPane.getBorder();
         LayoutManager saveLayout = rootPane.getLayout();
         int saveComponentCount = rootPane.getLayeredPane().getComponentCount();
-
         ui.uninstallUI(rootPane);
         assertTrue("didn't uninstall border", rootPane.getBorder() == saveBorder);
         assertTrue("didn't uninstall layout", rootPane.getLayout() == saveLayout);
         assertTrue("didn't uninstall titlePane",
                 rootPane.getLayeredPane().getComponentCount() == saveComponentCount);
-
         // test uninstall with windowDecorationStyle = JRootPane.FRAME
         ui.installUI(rootPane);
         rootPane.setWindowDecorationStyle(JRootPane.FRAME);
         saveBorder = rootPane.getBorder();
         saveLayout = rootPane.getLayout();
         saveComponentCount = rootPane.getLayeredPane().getComponentCount();
-
         ui.uninstallUI(rootPane);
         assertTrue("uninstalled border", rootPane.getBorder() != saveBorder);
         assertTrue("uninstalled layout", rootPane.getLayout() != saveLayout);
@@ -134,7 +124,6 @@ public class MetalRootPaneUITest extends SwingTestCase {
         Border saveBorder = rootPane.getBorder();
         LayoutManager saveLayout = rootPane.getLayout();
         int saveComponentCount = rootPane.getLayeredPane().getComponentCount();
-
         // test windowDecorationStyle = JRootPane.FRAME
         rootPane.setWindowDecorationStyle(JRootPane.FRAME);
         assertTrue("border != null", rootPane.getBorder() != null);
@@ -143,14 +132,12 @@ public class MetalRootPaneUITest extends SwingTestCase {
         assertTrue("installed layout", rootPane.getLayout() != saveLayout);
         assertTrue("installed titlePane",
                 rootPane.getLayeredPane().getComponentCount() == saveComponentCount + 1);
-
         // test windowDecorationStyle = JRootPane.NONE
         rootPane.setWindowDecorationStyle(JRootPane.NONE);
         assertTrue("uninstalled border", rootPane.getBorder() == saveBorder);
         assertTrue("uninstalled layout", rootPane.getLayout() == saveLayout);
         assertTrue("uninstalled titlePane",
                 rootPane.getLayeredPane().getComponentCount() == saveComponentCount);
-
         // the border is not instanceof UIResource, must not be changed
         saveBorder = BorderFactory.createEmptyBorder();
         rootPane.setBorder(saveBorder);
@@ -164,7 +151,6 @@ public class MetalRootPaneUITest extends SwingTestCase {
         ComponentUI ui = MetalRootPaneUI.createUI(rootPane);
         assertTrue("not null", ui != null);
         assertTrue("instanceof MetalRootPaneUI", ui instanceof MetalRootPaneUI);
-
         ComponentUI ui2 = MetalRootPaneUI.createUI(rootPane);
         assertTrue("stateful", ui != ui2);
     }

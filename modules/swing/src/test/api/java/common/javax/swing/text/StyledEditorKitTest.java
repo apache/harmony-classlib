@@ -19,17 +19,19 @@
  * @version $Revision$
  */
 package javax.swing.text;
+
 import javax.swing.Action;
 import javax.swing.JEditorPane;
 import javax.swing.SwingTestCase;
 
-
-
 public class StyledEditorKitTest extends SwingTestCase {
     StyledEditorKit kit;
+
     class SimpleElement implements Element {
         String name;
+
         AttributeSet set = new SimpleAttributeSet();
+
         public SimpleElement(final String s) {
             name = s;
         }
@@ -79,15 +81,14 @@ public class StyledEditorKitTest extends SwingTestCase {
         }
     }
 
-
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         setIgnoreNotImplemented(true);
         kit = new StyledEditorKit();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -95,45 +96,37 @@ public class StyledEditorKitTest extends SwingTestCase {
     public void testStyledEditorKit() {
     }
 
-
     public void testClone() {
         Object kit1 = kit.clone();
         assertNotSame(kit1, kit);
         assertTrue(kit1 instanceof StyledEditorKit);
     }
 
-
     public void testGetActions() {
         Action[] actions = kit.getActions();
-        Action[] superActions =  new DefaultEditorKit().getActions();
+        Action[] superActions = new DefaultEditorKit().getActions();
         Action[] newActions = new Action[] {
-            new StyledEditorKit.FontSizeAction("font-size-48", 48),
-            new StyledEditorKit.FontSizeAction("font-size-36", 36),
-            new StyledEditorKit.FontSizeAction("font-size-24", 24),
-            new StyledEditorKit.FontSizeAction("font-size-18", 18),
-            new StyledEditorKit.FontSizeAction("font-size-16", 16),
-            new StyledEditorKit.FontSizeAction("font-size-14", 14),
-            new StyledEditorKit.FontSizeAction("font-size-12", 12),
-            new StyledEditorKit.FontSizeAction("font-size-10", 10),
-            new StyledEditorKit.FontSizeAction("font-size-8", 8),
-
-            new StyledEditorKit.FontFamilyAction("font-family-SansSerif",
-                                                 "SansSerif"),
-            new StyledEditorKit.FontFamilyAction("font-family-Serif",
-                                                 "Serif"),
-            new StyledEditorKit.FontFamilyAction("font-family-Monospaced",
-                                                 "Monospaced"),
-            new StyledEditorKit.BoldAction(),
-            new StyledEditorKit.UnderlineAction(),
-            new StyledEditorKit.ItalicAction(),
-            new StyledEditorKit.AlignmentAction("right-justify",
-                                                StyleConstants.ALIGN_RIGHT),
-            new StyledEditorKit.AlignmentAction("left-justify",
-                                                StyleConstants.ALIGN_LEFT),
-            new StyledEditorKit.AlignmentAction("center-justify",
-                                                StyleConstants.ALIGN_CENTER)
-                                                //,
-            //new StyledEditorKit.StyledInsertBreakAction("insert-break")
+                new StyledEditorKit.FontSizeAction("font-size-48", 48),
+                new StyledEditorKit.FontSizeAction("font-size-36", 36),
+                new StyledEditorKit.FontSizeAction("font-size-24", 24),
+                new StyledEditorKit.FontSizeAction("font-size-18", 18),
+                new StyledEditorKit.FontSizeAction("font-size-16", 16),
+                new StyledEditorKit.FontSizeAction("font-size-14", 14),
+                new StyledEditorKit.FontSizeAction("font-size-12", 12),
+                new StyledEditorKit.FontSizeAction("font-size-10", 10),
+                new StyledEditorKit.FontSizeAction("font-size-8", 8),
+                new StyledEditorKit.FontFamilyAction("font-family-SansSerif", "SansSerif"),
+                new StyledEditorKit.FontFamilyAction("font-family-Serif", "Serif"),
+                new StyledEditorKit.FontFamilyAction("font-family-Monospaced", "Monospaced"),
+                new StyledEditorKit.BoldAction(),
+                new StyledEditorKit.UnderlineAction(),
+                new StyledEditorKit.ItalicAction(),
+                new StyledEditorKit.AlignmentAction("right-justify", StyleConstants.ALIGN_RIGHT),
+                new StyledEditorKit.AlignmentAction("left-justify", StyleConstants.ALIGN_LEFT),
+                new StyledEditorKit.AlignmentAction("center-justify",
+                        StyleConstants.ALIGN_CENTER)
+        //,
+        //new StyledEditorKit.StyledInsertBreakAction("insert-break")
         };
         //There are some problems
         //1) no Foreground action in StyledEditorKit.getActions
@@ -142,7 +135,7 @@ public class StyledEditorKitTest extends SwingTestCase {
         for (int i = 0; i < superActions.length; i++) {
             boolean was = false;
             if (superActions[i].getClass().getName().equals(
-                "javax.swing.text.DefaultEditorKit$InsertBreakAction")) {
+                    "javax.swing.text.DefaultEditorKit$InsertBreakAction")) {
                 continue;
             }
             for (int j = 0; j < actions.length; j++) {
@@ -153,14 +146,12 @@ public class StyledEditorKitTest extends SwingTestCase {
             }
             assertTrue("action missed: " + superActions[i], was);
         }
-
         for (int i = 0; i < newActions.length; i++) {
             boolean was = false;
             for (int j = 0; j < actions.length; j++) {
-                if (newActions[i].getClass().getName().equals(
-                                 actions[j].getClass().getName())
-                    &&  newActions[i].getValue(Action.NAME).equals(
-                                 actions[j].getValue(Action.NAME))) {
+                if (newActions[i].getClass().getName().equals(actions[j].getClass().getName())
+                        && newActions[i].getValue(Action.NAME).equals(
+                                actions[j].getValue(Action.NAME))) {
                     was = true;
                     break;
                 }
@@ -211,7 +202,6 @@ public class StyledEditorKitTest extends SwingTestCase {
         assertEquals(sas, set);
     }
 
-
     public void testDeinstallJEditorPane() {
     }
 
@@ -227,8 +217,7 @@ public class StyledEditorKitTest extends SwingTestCase {
         removeObsolete(set);
         for (int i = 0; i < length; i++) {
             jep.setCaretPosition(i);
-            assertEquals(getElementByOffset(doc, i),
-                         kit.getCharacterAttributeRun());
+            assertEquals(getElementByOffset(doc, i), kit.getCharacterAttributeRun());
         }
     }
 
@@ -247,14 +236,12 @@ public class StyledEditorKitTest extends SwingTestCase {
             if (i > 3 && i < 12) {
                 assertEquals(set, kit.getInputAttributes());
             } else {
-                assertEquals(new SimpleAttributeSet(),
-                             kit.getInputAttributes());
+                assertEquals(new SimpleAttributeSet(), kit.getInputAttributes());
             }
         }
     }
 
-    static final Element getElementByOffset(final Document doc,
-                                            final int offset) {
+    static final Element getElementByOffset(final Document doc, final int offset) {
         int pos = (offset == 0) ? 0 : offset - 1;
         Element elem = doc.getDefaultRootElement();
         while (elem.getElementCount() > 0) {
@@ -264,30 +251,26 @@ public class StyledEditorKitTest extends SwingTestCase {
     }
 
     public void testGetViewFactory() {
-       ViewFactory factory = kit.getViewFactory();
-       Element element = new SimpleElement(AbstractDocument.ContentElementName);
-       assertEquals("javax.swing.text.LabelView",
-                    factory.create(element).getClass().getName());
-       element = new SimpleElement(AbstractDocument.ParagraphElementName);
-       assertEquals("javax.swing.text.ParagraphView",
-                    factory.create(element).getClass().getName());
-       element = new SimpleElement(AbstractDocument.SectionElementName);
-       View v = factory.create(element);
-       assertEquals("javax.swing.text.BoxView", v.getClass().getName());
-       assertEquals(View.Y_AXIS, ((BoxView)v).getAxis());
-       element = new SimpleElement(StyleConstants.ComponentElementName);
-       assertEquals("javax.swing.text.ComponentView",
-                    factory.create(element).getClass().getName());
-       element = new SimpleElement(StyleConstants.IconElementName);
-       assertEquals("javax.swing.text.IconView",
-                    factory.create(element).getClass().getName());
-       element = new SimpleElement("something");
-       assertEquals("javax.swing.text.LabelView",
-                    factory.create(element).getClass().getName());
-       ViewFactory factory1 = kit.getViewFactory();
-       assertEquals(factory, factory1);
+        ViewFactory factory = kit.getViewFactory();
+        Element element = new SimpleElement(AbstractDocument.ContentElementName);
+        assertEquals("javax.swing.text.LabelView", factory.create(element).getClass().getName());
+        element = new SimpleElement(AbstractDocument.ParagraphElementName);
+        assertEquals("javax.swing.text.ParagraphView", factory.create(element).getClass()
+                .getName());
+        element = new SimpleElement(AbstractDocument.SectionElementName);
+        View v = factory.create(element);
+        assertEquals("javax.swing.text.BoxView", v.getClass().getName());
+        assertEquals(View.Y_AXIS, ((BoxView) v).getAxis());
+        element = new SimpleElement(StyleConstants.ComponentElementName);
+        assertEquals("javax.swing.text.ComponentView", factory.create(element).getClass()
+                .getName());
+        element = new SimpleElement(StyleConstants.IconElementName);
+        assertEquals("javax.swing.text.IconView", factory.create(element).getClass().getName());
+        element = new SimpleElement("something");
+        assertEquals("javax.swing.text.LabelView", factory.create(element).getClass().getName());
+        ViewFactory factory1 = kit.getViewFactory();
+        assertEquals(factory, factory1);
     }
-
 
     public void testInstallJEditorPane() {
     }

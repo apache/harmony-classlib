@@ -18,12 +18,10 @@
  * @author Evgeniya G. Maenkova
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Container;
 import java.awt.GridLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingTestCase;
@@ -32,34 +30,37 @@ import javax.swing.text.Element;
 import javax.swing.text.FieldView;
 import javax.swing.text.View;
 
-
-
 public class BasicTextFieldUITest extends SwingTestCase {
     JFrame jf;
+
     JTextField jtf;
+
     JTextField jtfBidi;
+
     BasicTextFieldUI ui;
+
     final String S_RTL = "\u05dc" + "\u05dc" + "\u05dc" + "\u05dc";
+
     final String S_LTR = "aaaa";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         jf = new JFrame();
         jtf = new JTextField("JTextField \n JTextField");
-        jtfBidi = new JTextField(S_LTR + S_RTL +  "\n" + S_LTR);
+        jtfBidi = new JTextField(S_LTR + S_RTL + "\n" + S_LTR);
         ui = new BasicTextFieldUI();
         jtf.setUI(ui);
         jtfBidi.setUI(new BasicTextFieldUI());
-
         Container container = jf.getContentPane();
-        container.setLayout(new GridLayout(2,1,4,4));
+        container.setLayout(new GridLayout(2, 1, 4, 4));
         container.add(jtf);
         container.add(jtfBidi);
-
-        jf.setSize(200,200);
+        jf.setSize(200, 200);
         jf.pack();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -73,11 +74,11 @@ public class BasicTextFieldUITest extends SwingTestCase {
         view = ui.create(element);
         assertTrue(view instanceof FieldView);
         /* no view support for bidi text
-        ui = (BasicTextFieldUI)jtfBidi.getUI();
-        element = jtfBidi.getDocument().getDefaultRootElement();
-        view = ui.create(element);
-        assertFalse(view instanceof FieldView);
-        */
+         ui = (BasicTextFieldUI)jtfBidi.getUI();
+         element = jtfBidi.getDocument().getDefaultRootElement();
+         view = ui.create(element);
+         assertFalse(view instanceof FieldView);
+         */
     }
 
     public void testGetPropertyPrefix() {
@@ -98,5 +99,4 @@ public class BasicTextFieldUITest extends SwingTestCase {
         assertTrue(componentUI instanceof BasicTextFieldUI);
         assertNotSame(BasicTextFieldUI.createUI(jtf), componentUI);
     }
-
 }

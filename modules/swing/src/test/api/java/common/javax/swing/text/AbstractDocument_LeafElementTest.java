@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -31,25 +30,23 @@ import javax.swing.text.AbstractDocumentTest.DisAbstractedDocument;
  *
  */
 public class AbstractDocument_LeafElementTest extends BasicSwingTestCase {
-
     protected AbstractDocument doc;
-    protected LeafElement      leaf1;
-    protected LeafElement      leaf2;
-    protected AttributeSet[]   as;
 
+    protected LeafElement leaf1;
+
+    protected LeafElement leaf2;
+
+    protected AttributeSet[] as;
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         StyleContextTest.sc = StyleContext.getDefaultStyleContext();
-        as = new AttributeSet[] {
-            StyleContextTest.addAttribute(1),
-            StyleContextTest.addAttribute(null, 2, 2),
-            StyleContextTest.addAttribute(null, 5, 2)
-        };
-
+        as = new AttributeSet[] { StyleContextTest.addAttribute(1),
+                StyleContextTest.addAttribute(null, 2, 2),
+                StyleContextTest.addAttribute(null, 5, 2) };
         doc = new DisAbstractedDocument(new GapContent());
         doc.insertString(0, "0123456789", as[0]);
-
         doc.writeLock();
         BranchElement branch = doc.new BranchElement(null, as[1]);
         leaf1 = doc.new LeafElement(null, as[2], 0, 3);
@@ -95,20 +92,16 @@ public class AbstractDocument_LeafElementTest extends BasicSwingTestCase {
     public void testGetStartOffset() throws BadLocationException {
         assertEquals(0, leaf1.getStartOffset());
         assertEquals(5, leaf2.getStartOffset());
-
         doc.insertString(2, "insert", as[2]);
-
-        assertEquals(0,  leaf1.getStartOffset());
+        assertEquals(0, leaf1.getStartOffset());
         assertEquals(11, leaf2.getStartOffset());
     }
 
     public void testGetEndOffset() throws BadLocationException {
         assertEquals(3, leaf1.getEndOffset());
         assertEquals(8, leaf2.getEndOffset());
-
         doc.insertString(4, "insert", as[2]);
-
-        assertEquals(3,  leaf1.getEndOffset());
+        assertEquals(3, leaf1.getEndOffset());
         assertEquals(14, leaf2.getEndOffset());
     }
 
@@ -118,31 +111,24 @@ public class AbstractDocument_LeafElementTest extends BasicSwingTestCase {
 
     public void testLeafElement() {
         doc.writeLock();
-
-        AbstractDocument.LeafElement leaf = doc.new LeafElement(leaf1, as[2],
-                3, 9);
-
+        AbstractDocument.LeafElement leaf = doc.new LeafElement(leaf1, as[2], 3, 9);
         assertSame(leaf1, leaf.getParent());
         assertSame(leaf1, leaf.getParentElement());
         assertSame(leaf, leaf.getAttributes());
         assertEquals(as[2].getAttributeCount(), leaf.getAttributeCount());
         assertEquals(3, leaf.getStartOffset());
         assertEquals(9, leaf.getEndOffset());
-
-        int[] start    = {-1,  3,  3,  3}; // start offset
-        int[] expStart = {0,  3,  3,  3};  // expectations for start offset
-        int[] end      = {9, -1,  1, 20};  // end offset
-        int[] expEnd   = {9,  0,  1, 20};  // expectations for end offset
-        int[] intEnd   = {9,  3,  3, 20};  // expectations for our end offset
+        int[] start = { -1, 3, 3, 3 }; // start offset
+        int[] expStart = { 0, 3, 3, 3 }; // expectations for start offset
+        int[] end = { 9, -1, 1, 20 }; // end offset
+        int[] expEnd = { 9, 0, 1, 20 }; // expectations for end offset
+        int[] intEnd = { 9, 3, 3, 20 }; // expectations for our end offset
         for (int i = 0; i < start.length; i++) {
             leaf = doc.new LeafElement(null, null, start[i], end[i]);
-            assertEquals("Start (" + i + ")", expStart[i],
-                         leaf.getStartOffset());
-            assertEquals("End (" + i + ")",
-                         BasicSwingTestCase.isHarmony() ? intEnd[i] : expEnd[i],
-                         leaf.getEndOffset());
+            assertEquals("Start (" + i + ")", expStart[i], leaf.getStartOffset());
+            assertEquals("End (" + i + ")", BasicSwingTestCase.isHarmony() ? intEnd[i]
+                    : expEnd[i], leaf.getEndOffset());
         }
-
         doc.writeUnlock();
     }
 

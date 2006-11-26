@@ -113,6 +113,7 @@ public class ProgressMonitorInputStreamTest extends BasicSwingTestCase {
                 in.read();
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public Class expectedExceptionClass() {
                 return InterruptedIOException.class;

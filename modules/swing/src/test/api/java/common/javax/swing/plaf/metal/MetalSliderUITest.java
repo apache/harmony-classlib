@@ -25,13 +25,16 @@ import javax.swing.SwingTestCase;
 
 public class MetalSliderUITest extends SwingTestCase {
     private MetalSliderUI sliderUI;
+
     private JSlider slider;
 
+    @Override
     protected void setUp() throws Exception {
         slider = new JSlider();
         sliderUI = new MetalSliderUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         sliderUI = null;
         slider = null;
@@ -44,7 +47,8 @@ public class MetalSliderUITest extends SwingTestCase {
 
     public void testCreatePropertyChangeListener() throws Exception {
         assertNotNull(sliderUI.createPropertyChangeListener(slider));
-        assertFalse(sliderUI.createPropertyChangeListener(slider) == sliderUI.createPropertyChangeListener(slider));
+        assertFalse(sliderUI.createPropertyChangeListener(slider) == sliderUI
+                .createPropertyChangeListener(slider));
         assertTrue(sliderUI.createPropertyChangeListener(slider) instanceof MetalSliderUI.MetalPropertyListener);
     }
 

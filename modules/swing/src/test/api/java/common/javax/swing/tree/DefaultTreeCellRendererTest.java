@@ -25,7 +25,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -42,10 +41,12 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         renderer = new DefaultTreeCellRenderer();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         renderer = null;
     }
@@ -58,10 +59,11 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         assertNotNull(renderer.openIcon);
         assertSame(UIManager.getColor("Tree.selectionForeground"), renderer.textSelectionColor);
         assertSame(UIManager.getColor("Tree.foreground"), renderer.textNonSelectionColor);
-        assertSame(UIManager.getColor("Tree.selectionBackground"), renderer.backgroundSelectionColor);
+        assertSame(UIManager.getColor("Tree.selectionBackground"),
+                renderer.backgroundSelectionColor);
         assertSame(UIManager.getColor("Tree.background"), renderer.backgroundNonSelectionColor);
-        assertSame(UIManager.getColor("Tree.selectionBorderColor"), renderer.borderSelectionColor);
-
+        assertSame(UIManager.getColor("Tree.selectionBorderColor"),
+                renderer.borderSelectionColor);
         assertEquals(SwingConstants.LEFT, renderer.getHorizontalAlignment());
         assertEquals(SwingConstants.TRAILING, renderer.getHorizontalTextPosition());
         assertEquals(SwingConstants.CENTER, renderer.getVerticalAlignment());
@@ -88,43 +90,36 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
 
     public void testGetSetOpenIcon() throws Exception {
         assertSame(renderer.getDefaultOpenIcon(), renderer.getOpenIcon());
-
         Icon icon = createTestIcon();
         renderer.setOpenIcon(icon);
         assertSame(icon, renderer.openIcon);
         assertSame(icon, renderer.getOpenIcon());
-
         renderer.setOpenIcon(null);
         assertNull(renderer.getOpenIcon());
     }
 
     public void testGetSetClosedIcon() throws Exception {
         assertSame(renderer.getDefaultClosedIcon(), renderer.getClosedIcon());
-
         Icon icon = createTestIcon();
         renderer.setClosedIcon(icon);
         assertSame(icon, renderer.closedIcon);
         assertSame(icon, renderer.getClosedIcon());
-
         renderer.setClosedIcon(null);
         assertNull(renderer.getClosedIcon());
     }
 
     public void testGetSetLeafIcon() throws Exception {
         assertSame(renderer.getDefaultLeafIcon(), renderer.getLeafIcon());
-
         Icon icon = createTestIcon();
         renderer.setLeafIcon(icon);
         assertSame(icon, renderer.leafIcon);
         assertSame(icon, renderer.getLeafIcon());
-
         renderer.setLeafIcon(null);
         assertNull(renderer.getLeafIcon());
     }
 
     public void testGetSetTextSelectionColor() throws Exception {
         assertSame(renderer.textSelectionColor, renderer.getTextSelectionColor());
-
         renderer.setTextSelectionColor(Color.BLUE);
         assertSame(Color.BLUE, renderer.getTextSelectionColor());
         assertSame(renderer.textSelectionColor, renderer.getTextSelectionColor());
@@ -132,7 +127,6 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
 
     public void testGetSetTextNonSelectionColor() throws Exception {
         assertSame(renderer.textNonSelectionColor, renderer.getTextNonSelectionColor());
-
         renderer.setTextNonSelectionColor(Color.MAGENTA);
         assertSame(Color.MAGENTA, renderer.getTextNonSelectionColor());
         assertSame(renderer.textNonSelectionColor, renderer.getTextNonSelectionColor());
@@ -140,23 +134,22 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
 
     public void testGetSetBackgroundSelectionColor() throws Exception {
         assertSame(renderer.backgroundSelectionColor, renderer.getBackgroundSelectionColor());
-
         renderer.setBackgroundSelectionColor(Color.GREEN);
         assertSame(Color.GREEN, renderer.getBackgroundSelectionColor());
         assertSame(renderer.backgroundSelectionColor, renderer.getBackgroundSelectionColor());
     }
 
     public void testGetSetBackgroundNonSelectionColor() throws Exception {
-        assertSame(renderer.backgroundNonSelectionColor, renderer.getBackgroundNonSelectionColor());
-
+        assertSame(renderer.backgroundNonSelectionColor, renderer
+                .getBackgroundNonSelectionColor());
         renderer.setBackgroundNonSelectionColor(Color.GRAY);
         assertSame(Color.GRAY, renderer.getBackgroundNonSelectionColor());
-        assertSame(renderer.backgroundNonSelectionColor, renderer.getBackgroundNonSelectionColor());
+        assertSame(renderer.backgroundNonSelectionColor, renderer
+                .getBackgroundNonSelectionColor());
     }
 
     public void testGetSetBorderSelectionColor() throws Exception {
         assertSame(renderer.borderSelectionColor, renderer.getBorderSelectionColor());
-
         renderer.setBorderSelectionColor(Color.YELLOW);
         assertSame(Color.YELLOW, renderer.getBorderSelectionColor());
         assertSame(renderer.borderSelectionColor, renderer.getBorderSelectionColor());
@@ -164,13 +157,10 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
 
     public void testGetSetFont() throws Exception {
         assertNull(renderer.getFont());
-
         renderer.setFont(null);
         assertNull(renderer.getFont());
-
         renderer.setFont(new FontUIResource("font", 10, 0));
         assertNull(renderer.getFont());
-
         Font userFont = new Font("font", 20, 1);
         renderer.setFont(userFont);
         assertSame(userFont, renderer.getFont());
@@ -178,13 +168,10 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
 
     public void testSetBackground() throws Exception {
         assertNull(renderer.getBackground());
-
         renderer.setBackground(null);
         assertNull(renderer.getBackground());
-
         renderer.setBackground(new ColorUIResource(Color.BLUE));
         assertNull(renderer.getBackground());
-
         renderer.setBackground(Color.RED);
         assertSame(Color.RED, renderer.getBackground());
     }
@@ -193,8 +180,8 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         JTree tree = new JTree();
         tree.setFont(new Font("font", 20, 1));
         tree.setBackground(Color.MAGENTA);
-
-        assertSame(renderer, renderer.getTreeCellRendererComponent(tree, "value", false, false, false, 0, false));
+        assertSame(renderer, renderer.getTreeCellRendererComponent(tree, "value", false, false,
+                false, 0, false));
         assertFalse(renderer.isOpaque());
         assertNull(renderer.getBackground());
         assertSame(renderer.textNonSelectionColor, renderer.getForeground());
@@ -202,7 +189,6 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         assertSame(tree.getFont(), renderer.getFont());
         assertSame(renderer.getDefaultClosedIcon(), renderer.getIcon());
         assertNull(renderer.getBorder());
-
         renderer.getTreeCellRendererComponent(tree, "value", true, true, false, 0, false);
         assertFalse(renderer.isOpaque());
         assertNull(renderer.getBackground());
@@ -211,7 +197,6 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         assertSame(tree.getFont(), renderer.getFont());
         assertSame(renderer.getDefaultOpenIcon(), renderer.getIcon());
         assertNull(renderer.getBorder());
-
         renderer.getTreeCellRendererComponent(tree, "value", true, true, true, 0, true);
         assertFalse(renderer.isOpaque());
         assertNull(renderer.getBackground());
@@ -220,7 +205,6 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         assertSame(tree.getFont(), renderer.getFont());
         assertSame(renderer.getDefaultLeafIcon(), renderer.getIcon());
         assertNull(renderer.getBorder());
-
         renderer.setBackgroundSelectionColor(Color.RED);
         renderer.getTreeCellRendererComponent(tree, "value", true, true, true, 0, true);
         if (isHarmony()) {
@@ -240,15 +224,13 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         label.setFont(renderer.getFont());
         Dimension baseDimenstion = label.getPreferredSize();
         if (isHarmony()) {
-            assertEquals(new Dimension(baseDimenstion.width + 2, baseDimenstion.height), renderer.getPreferredSize());
+            assertEquals(new Dimension(baseDimenstion.width + 2, baseDimenstion.height),
+                    renderer.getPreferredSize());
         } else {
-            assertEquals(new Dimension(baseDimenstion.width + 3, baseDimenstion.height), renderer.getPreferredSize());
+            assertEquals(new Dimension(baseDimenstion.width + 3, baseDimenstion.height),
+                    renderer.getPreferredSize());
         }
     }
-
-
-
-
 
     private Icon createTestIcon() {
         return new Icon() {

@@ -29,17 +29,18 @@ public class ChangeEventTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         source = new Object();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         source = null;
     }
 
     public void testChangeEvent() throws Exception {
         ChangeEvent event = new ChangeEvent(source);
-
         assertEquals(source, event.getSource());
     }
 }

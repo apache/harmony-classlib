@@ -15,13 +15,12 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,7 +35,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 public class BasicMenuUI_MultithreadedTest extends BasicSwingTestCase {
-
     protected BasicMenuUI menuUI;
 
     private class ConcretePopupListener implements PopupMenuListener {
@@ -44,20 +42,25 @@ public class BasicMenuUI_MultithreadedTest extends BasicSwingTestCase {
 
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             visible = true;
-            synchronized(this) {
+            synchronized (this) {
                 notify();
             }
         }
 
-        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
-        public void popupMenuCanceled(PopupMenuEvent e) {}
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        }
+
+        public void popupMenuCanceled(PopupMenuEvent e) {
+        }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuUI = new BasicMenuUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         menuUI = null;
         super.tearDown();
@@ -66,45 +69,40 @@ public class BasicMenuUI_MultithreadedTest extends BasicSwingTestCase {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicMenuUI.setupPostTimer(JMenu)'
      */
+    @SuppressWarnings("deprecation")
     public void testSetupPostTimer() throws InterruptedException, InvocationTargetException {
         final MenuSelectionManager manager = MenuSelectionManager.defaultManager();
-
         JFrame frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
         final JMenu menu = new JMenu("menu");
         menu.setUI(menuUI);
-
         ConcretePopupListener listener = new ConcretePopupListener();
         menu.getPopupMenu().addPopupMenuListener(listener);
         menu.add(new JMenuItem("item"));
-
         frame.setJMenuBar(menuBar);
         menuBar.add(menu);
         final JButton button = new JButton();
         frame.getContentPane().add(button);
         frame.pack();
         frame.show();
-
         SwingWaitTestCase.requestFocusInWindowForComponent(button);
-
-
-        manager.setSelectedPath(new MenuElement[] {menuBar});
+        manager.setSelectedPath(new MenuElement[] { menuBar });
         menu.setDelay(100);
         setupTimerAntWait(menu, menuUI, listener);
         assertFalse(listener.visible);
-
-        manager.setSelectedPath(new MenuElement[] {menuBar, menu});
+        manager.setSelectedPath(new MenuElement[] { menuBar, menu });
         setupTimerAntWait(menu, menuUI, listener);
         assertTrue(listener.visible);
-
-        manager.setSelectedPath(new MenuElement[] {menuBar});
-        manager.setSelectedPath(new MenuElement[] {menuBar, menu});
+        manager.setSelectedPath(new MenuElement[] { menuBar });
+        manager.setSelectedPath(new MenuElement[] { menuBar, menu });
         menu.setDelay(10000);
         setupTimerAntWait(menu, menuUI, listener);
         assertFalse(listener.visible);
     }
 
-    private void setupTimerAntWait(final JMenu menu, final BasicMenuUI ui, final ConcretePopupListener listener) throws InterruptedException, InvocationTargetException {
+    private void setupTimerAntWait(final JMenu menu, final BasicMenuUI ui,
+            final ConcretePopupListener listener) throws InterruptedException,
+            InvocationTargetException {
         synchronized (listener) {
             listener.visible = false;
         }
@@ -117,5 +115,4 @@ public class BasicMenuUI_MultithreadedTest extends BasicSwingTestCase {
             listener.wait(1000);
         }
     }
-
 }

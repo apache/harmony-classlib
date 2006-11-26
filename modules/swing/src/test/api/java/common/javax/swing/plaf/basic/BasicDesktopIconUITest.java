@@ -18,22 +18,15 @@
  * @author Vadim L. Bogdanov
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
-
 import java.beans.PropertyVetoException;
-
 import javax.swing.JInternalFrame;
 import javax.swing.SwingTestCase;
-
 import javax.swing.event.MouseInputListener;
-
 import javax.swing.plaf.ComponentUI;
-
-import org.apache.harmony.x.swing.Utilities;
 
 public class BasicDesktopIconUITest extends SwingTestCase {
     private static boolean belongs(final Object o, final Object[] array) {
@@ -47,23 +40,26 @@ public class BasicDesktopIconUITest extends SwingTestCase {
 
     private static class MyBasicDesktopIconUI extends BasicDesktopIconUI {
         public MouseInputListener mouseInputListener;
+
+        @Override
         protected MouseInputListener createMouseInputListener() {
             mouseInputListener = super.createMouseInputListener();
             return mouseInputListener;
         }
     }
 
-
     private MyBasicDesktopIconUI ui;
+
     private JInternalFrame.JDesktopIcon icon;
+
     private JInternalFrame frame;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         frame = new JInternalFrame();
         icon = frame.getDesktopIcon();
         ui = new MyBasicDesktopIconUI();
@@ -73,6 +69,7 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -87,7 +84,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testCreateUI() {
         ComponentUI ui1 = BasicDesktopIconUI.createUI(frame);
         ComponentUI ui2 = BasicDesktopIconUI.createUI(frame);
-
         assertTrue("not null", ui1 != null);
         assertTrue("stateful", ui1 != ui2);
     }
@@ -105,7 +101,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testCreateMouseInputListener() {
         MouseInputListener l1 = ui.createMouseInputListener();
         MouseInputListener l2 = ui.createMouseInputListener();
-
         assertTrue("not null", l1 != null);
         if (isHarmony()) {
             assertSame("the same instance", l1, l2);
@@ -121,7 +116,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
         } catch (PropertyVetoException e) {
         }
         assertTrue("is icon", frame.isIcon());
-
         ui.deiconize();
         assertFalse("deiconized", frame.isIcon());
     }
@@ -132,7 +126,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testGetInsets() {
         final Insets validInsets = new Insets(5, 5, 5, 5);
         Insets insets = ui.getInsets(icon);
-
         assertTrue("not null", insets != null);
         assertEquals("ok", validInsets, insets);
     }
@@ -142,8 +135,7 @@ public class BasicDesktopIconUITest extends SwingTestCase {
      */
     public void testGetMaximumSize() {
         if (isHarmony()) {
-            assertEquals("== minimumSize",
-                         ui.getMinimumSize(icon), ui.getMaximumSize(icon));
+            assertEquals("== minimumSize", ui.getMinimumSize(icon), ui.getMaximumSize(icon));
         }
     }
 
@@ -152,8 +144,7 @@ public class BasicDesktopIconUITest extends SwingTestCase {
      */
     public void testGetMinimumSize() {
         if (isHarmony()) {
-            assertEquals("== preferredSize",
-                ui.getPreferredSize(icon), ui.getMinimumSize(icon));
+            assertEquals("== preferredSize", ui.getPreferredSize(icon), ui.getMinimumSize(icon));
         }
     }
 
@@ -173,7 +164,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
         int count = icon.getComponentCount();
         ui.uninstallComponents();
         assertEquals("uninstalled", count - 1, icon.getComponentCount());
-
         ui.installComponents();
         assertEquals("added 1 component", count, icon.getComponentCount());
         assertTrue("added iconPane", icon.isAncestorOf(ui.iconPane));
@@ -185,7 +175,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testUninstallComponents() {
         int count = icon.getComponentCount();
         assertTrue("added iconPane", icon.isAncestorOf(ui.iconPane));
-
         ui.uninstallComponents();
         assertEquals("uninstalled", count - 1, icon.getComponentCount());
         assertFalse("removed iconPane", icon.isAncestorOf(ui.iconPane));
@@ -197,7 +186,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testInstallDefaults() {
         icon.setBorder(null);
         icon.setLayout(null);
-
         ui.installDefaults();
         assertTrue("opaque", icon.isOpaque());
         assertTrue("border", icon.getBorder() != null);
@@ -209,7 +197,6 @@ public class BasicDesktopIconUITest extends SwingTestCase {
      */
     public void testUninstallDefaults() {
         ui.uninstallDefaults();
-
         assertNull("border", icon.getBorder());
         assertTrue("layout", icon.getLayout() instanceof BorderLayout);
     }
@@ -219,13 +206,11 @@ public class BasicDesktopIconUITest extends SwingTestCase {
      */
     public void testInstallListeners() {
         ui.uninstallListeners();
-
         ui.installListeners();
         MouseInputListener listener = ui.mouseInputListener;
-        assertTrue("installed mouseListener",
-                belongs(listener, icon.getMouseListeners()));
-        assertTrue("installed mouseMotionListener",
-                belongs(listener, icon.getMouseMotionListeners()));
+        assertTrue("installed mouseListener", belongs(listener, icon.getMouseListeners()));
+        assertTrue("installed mouseMotionListener", belongs(listener, icon
+                .getMouseMotionListeners()));
     }
 
     /*
@@ -234,11 +219,9 @@ public class BasicDesktopIconUITest extends SwingTestCase {
     public void testUninstallListeners() {
         MouseInputListener listener = ui.createMouseInputListener();
         ui.uninstallListeners();
-
-        assertFalse("uninstalled mouseListener",
-                belongs(listener, icon.getMouseListeners()));
-        assertFalse("uninstalled mouseMotionListener",
-                belongs(listener, icon.getMouseMotionListeners()));
+        assertFalse("uninstalled mouseListener", belongs(listener, icon.getMouseListeners()));
+        assertFalse("uninstalled mouseMotionListener", belongs(listener, icon
+                .getMouseMotionListeners()));
     }
 
     /*

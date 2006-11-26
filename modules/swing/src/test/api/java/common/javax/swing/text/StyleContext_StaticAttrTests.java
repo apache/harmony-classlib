@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -36,88 +35,78 @@ public class StyleContext_StaticAttrTests extends TestCase {
     private static class SampleAttribute {
         String name = "sampleAttribute";
 
-            public boolean equals(final Object obj) {
-                if (obj instanceof SampleAttribute)
-                    return name == ((SampleAttribute)obj).name;
-                else
-                    return false;
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj instanceof SampleAttribute) {
+                return name == ((SampleAttribute) obj).name;
             }
+            return false;
+        }
 
-            public int hashCode() {
-                return name.hashCode();
-            }
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
 
-            public String toString() {
-                return name;
-            }
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     /**
      * Array of objects that are registered as static attribute keys.
      */
-    private static final Object keys[] = {
-            StyleConstants.Bold,
-            StyleConstants.Italic,
-            StyleConstants.Background,
-            StyleConstants.Underline,
-            StyleConstants.Alignment
-    };
+    private static final Object keys[] = { StyleConstants.Bold, StyleConstants.Italic,
+            StyleConstants.Background, StyleConstants.Underline, StyleConstants.Alignment };
 
     /**
      * Array of strings that static attribute keys get registered with.
      */
     private static final Object strings[] = {
-        "javax.swing.text.StyleConstants$FontConstants.bold",
-        "javax.swing.text.StyleConstants$FontConstants.italic",
-        "javax.swing.text.StyleConstants$ColorConstants.background",
-        "javax.swing.text.StyleConstants$CharacterConstants.underline",
-        "javax.swing.text.StyleConstants$ParagraphConstants.Alignment"
-    };
+            "javax.swing.text.StyleConstants$FontConstants.bold",
+            "javax.swing.text.StyleConstants$FontConstants.italic",
+            "javax.swing.text.StyleConstants$ColorConstants.background",
+            "javax.swing.text.StyleConstants$CharacterConstants.underline",
+            "javax.swing.text.StyleConstants$ParagraphConstants.Alignment" };
 
     public void testGetStaticAttribute() {
         for (int i = 0; i < keys.length; i++) {
-            assertSame("Iteration: " + i,
-                       keys[i],
-                       StyleContext.getStaticAttribute(strings[i]));
+            assertSame("Iteration: " + i, keys[i], StyleContext.getStaticAttribute(strings[i]));
         }
     }
 
     public void testGetStaticAttributeKey() {
         for (int i = 0; i < keys.length; i++) {
-            assertEquals("Iteration: " + i,
-                         strings[i],
-                         StyleContext.getStaticAttributeKey(keys[i]));
+            assertEquals("Iteration: " + i, strings[i], StyleContext
+                    .getStaticAttributeKey(keys[i]));
         }
     }
 
     public void testRegisterStaticAttributeKey() {
         SampleAttribute key = new SampleAttribute();
-        String str = (String)StyleContext.getStaticAttributeKey(key);
-
+        String str = (String) StyleContext.getStaticAttributeKey(key);
         // We haven't registered our object yet, so result should be null
         assertNull(StyleContext.getStaticAttribute(str));
-
         StyleContext.registerStaticAttributeKey(key);
-
         // The method should return the same object with which we called
         // register... method
         assertSame(key, StyleContext.getStaticAttribute(str));
     }
-
     /*
-    The commented out methods are implicitly tested
-    with StyleContext_SerializableTest
-    public void testReadAttributes() {
-        // implementation simply calls testReadAttributeSet
-    }
+     The commented out methods are implicitly tested
+     with StyleContext_SerializableTest
+     public void testReadAttributes() {
+     // implementation simply calls testReadAttributeSet
+     }
 
-    public void testWriteAttributes() {
-        // implementation simply calls testWriteAttributeSet
-    }
+     public void testWriteAttributes() {
+     // implementation simply calls testWriteAttributeSet
+     }
 
-    public void testReadAttributeSet() {
-    }
+     public void testReadAttributeSet() {
+     }
 
-    public void testWriteAttributeSet() {
-    }*/
+     public void testWriteAttributeSet() {
+     }*/
 }

@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -37,6 +36,7 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
      *  0123456789012345678901
      */
     Content obj;
+
     /**
      * Shared segment of text which is used in testGetCharsXXX methods.
      */
@@ -50,12 +50,14 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         obj = new GapContent();
         obj.insertString(0, "This is a test string.");
         text = new Segment();
     }
+
     /**
      * Tests that Position IS NOT changed, after an insertion has occured
      * after this Position.
@@ -99,11 +101,11 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testCreatePositionInvalid() {
         try {
             obj.createPosition(-1);
-
             if (BasicSwingTestCase.isHarmony()) {
                 fail("BadLocationException should be thrown");
             }
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testCreatePositionFarAway() throws BadLocationException {
@@ -115,7 +117,6 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testGetCharsAfterGap() throws BadLocationException {
         // Move the gap
         obj.insertString(10, "big ");
-
         obj.getChars(19, 8, text);
         assertEquals("string.\n", text.toString());
     }
@@ -129,31 +130,30 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testGetCharsInvalidPosition() {
         try {
             obj.getChars(30, 4, text);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetCharsInvalidLength() {
         try {
             obj.getChars(15, 15, text);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetCharsNegativeLength() {
         try {
             obj.getChars(0, -2, new Segment());
-
             fail("BadLocationException must be thrown: negative length");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetCharsPartial() throws BadLocationException {
         // Move the gap
         obj.insertString(10, "big ");
-
         text.setPartialReturn(true);
         obj.getChars(8, 10, text);
         assertEquals("a big ", text.toString());
@@ -162,7 +162,6 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testGetCharsWithGap() throws BadLocationException {
         // Move the gap
         obj.insertString(10, "big ");
-
         obj.getChars(8, 10, text);
         assertEquals("a big test", text.toString());
     }
@@ -192,25 +191,25 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testGetStringInvalidLength() {
         try {
             obj.getString(15, 15);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetStringNegativeLength() {
         try {
             obj.getString(0, -2);
-
             fail("BadLocationException must be thrown: negative length");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetStringInvalidPosition() {
         try {
             obj.getString(30, 5);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testGetStringWithGap() throws BadLocationException {
@@ -237,9 +236,9 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testInsertStringInvalid() {
         try {
             obj.insertString(30, "text");
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testLength() {
@@ -280,25 +279,24 @@ public class AbstractDocument_ContentTest extends BasicSwingTestCase {
     public void testRemoveImplicit() {
         try {
             obj.remove(22, 1);
-
             fail("BadLocationException should be thrown");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testRemoveInvalidLength() {
         try {
             obj.remove(15, 15);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testRemoveInvalidPosition() {
         try {
             obj.remove(30, 15);
-
             fail("BadLocationException should be thrown.");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
-
 }

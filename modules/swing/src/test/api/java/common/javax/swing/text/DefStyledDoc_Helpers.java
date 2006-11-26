@@ -23,11 +23,9 @@ package javax.swing.text;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.event.DocumentEvent.ElementChange;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.DefaultStyledDocument.ElementSpec;
-
 import junit.framework.Assert;
 
 /**
@@ -45,6 +43,8 @@ public final class DefStyledDoc_Helpers extends Assert {
      * passed to some methods to <code>stdout</code>.
      */
     public static class DefStyledDocWithLogging extends DefaultStyledDocument {
+        private static final long serialVersionUID = 1L;
+
         public DefStyledDocWithLogging() {
             super();
         }
@@ -53,12 +53,12 @@ public final class DefStyledDoc_Helpers extends Assert {
             super(content, new StyleContext());
         }
 
+        @Override
         public void insertString(int offset, String text, AttributeSet attrs)
-            throws BadLocationException {
-
+                throws BadLocationException {
             if (logging) {
-                System.out.println(">>>doc.insertString(" + offset + ", '"
-                                   + text + "', " + attrs + ")");
+                System.out.println(">>>doc.insertString(" + offset + ", '" + text + "', "
+                        + attrs + ")");
             }
             super.insertString(offset, text, attrs);
             if (logging) {
@@ -66,12 +66,10 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
-        public void remove(int offset, int length)
-            throws BadLocationException {
-
+        @Override
+        public void remove(int offset, int length) throws BadLocationException {
             if (logging) {
-                System.out.println(">>>doc.remove(" + offset + ", "
-                                   + length + ")");
+                System.out.println(">>>doc.remove(" + offset + ", " + length + ")");
             }
             super.remove(offset, length);
             if (logging) {
@@ -79,6 +77,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void create(ElementSpec[] spec) {
             if (logging) {
                 System.out.println(">>>doc.create");
@@ -90,9 +89,8 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
-        protected void insert(int offset, ElementSpec[] spec)
-            throws BadLocationException {
-
+        @Override
+        protected void insert(int offset, ElementSpec[] spec) throws BadLocationException {
             if (logging) {
                 System.out.println(">>>doc.insert(" + offset + ", " + ")");
                 printElementSpecs(spec);
@@ -103,8 +101,8 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
-        protected void insertUpdate(DefaultDocumentEvent event,
-                                    AttributeSet attrs) {
+        @Override
+        protected void insertUpdate(DefaultDocumentEvent event, AttributeSet attrs) {
             if (logging) {
                 System.out.println(">>>doc.insertUpdate(" + ", " + attrs + ")");
             }
@@ -114,6 +112,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void removeUpdate(DefaultDocumentEvent event) {
             if (logging) {
                 System.out.println(">>>doc.removeUpdate");
@@ -124,6 +123,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void styleChanged(Style style) {
             if (logging) {
                 System.out.println(">>>styleChanged(" + style + ")");
@@ -134,38 +134,29 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
-        protected Element createBranchElement(Element parent,
-                                              AttributeSet as) {
+        @Override
+        protected Element createBranchElement(Element parent, AttributeSet as) {
             if (logging) {
-                System.out.println("createBranch(" + parent.getName()
-                                   + "["
-                                   + (parent.getElementCount() <= 0
-                                      ? "N/A"
-                                      : (parent.getStartOffset() + ", "
-                                         + parent.getEndOffset()))
-                                   + "], "
-                                   + (as == null
-                                      ? "null"
-                                      : new SimpleAttributeSet(as).toString())
-                                   + ")");
+                System.out.println("createBranch("
+                        + parent.getName()
+                        + "["
+                        + (parent.getElementCount() <= 0 ? "N/A" : (parent.getStartOffset()
+                                + ", " + parent.getEndOffset())) + "], "
+                        + (as == null ? "null" : new SimpleAttributeSet(as).toString()) + ")");
             }
             return super.createBranchElement(parent, as);
         }
 
-        protected Element createLeafElement(Element parent,
-                                            AttributeSet as, int start,
-                                            int end) {
+        @Override
+        protected Element createLeafElement(Element parent, AttributeSet as, int start, int end) {
             if (logging) {
-                System.out.println("createLeaf(" + parent.getName() + "["
-                                   + (parent.getElementCount() <= 0
-                                      ? "N/A"
-                                      : (parent.getStartOffset() + ", "
-                                         + parent.getEndOffset()))
-                                   + "], "
-                                   + (as == null
-                                      ? "null"
-                                      : new SimpleAttributeSet(as).toString())
-                                   + ", " + start + ", " + end + ")");
+                System.out.println("createLeaf("
+                        + parent.getName()
+                        + "["
+                        + (parent.getElementCount() <= 0 ? "N/A" : (parent.getStartOffset()
+                                + ", " + parent.getEndOffset())) + "], "
+                        + (as == null ? "null" : new SimpleAttributeSet(as).toString()) + ", "
+                        + start + ", " + end + ")");
             }
             return super.createLeafElement(parent, as, start, end);
         }
@@ -175,19 +166,18 @@ public final class DefStyledDoc_Helpers extends Assert {
      * The version of <code>DefaultStyledDocument.ElementBuffer</code>
      * which logs parameters passed to some methods to <code>stdout</code>.
      */
-    public static class ElementBufferWithLogging
-        extends DefaultStyledDocument.ElementBuffer {
+    public static class ElementBufferWithLogging extends DefaultStyledDocument.ElementBuffer {
+        private static final long serialVersionUID = 1L;
 
-        public ElementBufferWithLogging(final DefaultStyledDocument doc,
-                                        final Element root) {
+        public ElementBufferWithLogging(final DefaultStyledDocument doc, final Element root) {
             doc.super(root);
         }
 
-        public void change(int offset, int length,
-                           DefaultDocumentEvent event) {
+        @Override
+        public void change(int offset, int length, DefaultDocumentEvent event) {
             if (logging) {
-                System.out.println("->buf.change(" + offset + ", " + length
-                                   + ", \n\t" + event + ")");
+                System.out.println("->buf.change(" + offset + ", " + length + ", \n\t" + event
+                        + ")");
             }
             super.change(offset, length, event);
             if (logging) {
@@ -195,6 +185,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void changeUpdate() {
             if (logging) {
                 System.out.println("->buf.changeUpdate");
@@ -205,29 +196,31 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         public Element clone(Element parent, Element clonee) {
             if (logging) {
-                System.out.println("clone(" + parent.getName() + "["
-                                   + (parent.getElementCount() <= 0
-                                      ? "N/A"
-                                      : (parent.getStartOffset() + ", "
-                                         + parent.getEndOffset()))
-                                   + "], " + ", " + clonee.getName() + "["
-                                   + (!clonee.isLeaf()
-                                      && clonee.getElementCount() <= 0
-                                      ? "N/A"
-                                      : (clonee.getStartOffset() + ", "
-                                         + clonee.getEndOffset()))
-                                   + "])");
+                System.out.println("clone("
+                        + parent.getName()
+                        + "["
+                        + (parent.getElementCount() <= 0 ? "N/A" : (parent.getStartOffset()
+                                + ", " + parent.getEndOffset()))
+                        + "], "
+                        + ", "
+                        + clonee.getName()
+                        + "["
+                        + (!clonee.isLeaf() && clonee.getElementCount() <= 0 ? "N/A" : (clonee
+                                .getStartOffset()
+                                + ", " + clonee.getEndOffset())) + "])");
             }
             return super.clone(parent, clonee);
         }
 
+        @Override
         public void insert(int offset, int length, ElementSpec[] spec,
-                           DefaultDocumentEvent event) {
+                DefaultDocumentEvent event) {
             if (logging) {
-                System.out.println("->buf.insert(" + offset + ", " + length
-                                   + ", " + ", " + ")");
+                System.out
+                        .println("->buf.insert(" + offset + ", " + length + ", " + ", " + ")");
                 printElementSpecs(spec);
                 System.out.println(event);
             }
@@ -238,6 +231,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void insertUpdate(ElementSpec[] spec) {
             if (logging) {
                 System.out.println("->buf.insertUpdate");
@@ -249,11 +243,10 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
-        public void remove(int offset, int length,
-                           DefaultDocumentEvent event) {
+        @Override
+        public void remove(int offset, int length, DefaultDocumentEvent event) {
             if (logging) {
-                System.out.println("->buf.remove(" + offset + ", "
-                                   + length + ")");
+                System.out.println("->buf.remove(" + offset + ", " + length + ")");
             }
             super.remove(offset, length, event);
             if (logging) {
@@ -261,6 +254,7 @@ public final class DefStyledDoc_Helpers extends Assert {
             }
         }
 
+        @Override
         protected void removeUpdate() {
             if (logging) {
                 System.out.println("->buf.removeUpdate");
@@ -273,13 +267,12 @@ public final class DefStyledDoc_Helpers extends Assert {
     }
 
     public static final AttributeSet bold;
-    public static final AttributeSet italic;
 
+    public static final AttributeSet italic;
     static {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setBold(attrs, true);
         bold = attrs;
-
         attrs = new SimpleAttributeSet();
         StyleConstants.setItalic(attrs, true);
         italic = attrs;
@@ -296,13 +289,11 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param added the number of children added
      */
     public static void assertChange(final Object object, final Element element,
-                                    final int removed, final int added) {
-        ElementChange change = (ElementChange)object;
+            final int removed, final int added) {
+        ElementChange change = (ElementChange) object;
         assertSame("change.element", element, change.getElement());
-        assertEquals("change.removed.length", removed,
-                     change.getChildrenRemoved().length);
-        assertEquals("change.added.length",
-                     added, change.getChildrenAdded().length);
+        assertEquals("change.removed.length", removed, change.getChildrenRemoved().length);
+        assertEquals("change.added.length", added, change.getChildrenAdded().length);
     }
 
     /**
@@ -314,27 +305,23 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param addedOffsets the offsets of children added in the same form as
      *                     <code>removedOffsets</code>.
      */
-    public static void assertChange(final ElementChange change,
-                                    final int[] removedOffsets,
-                                    final int[] addedOffsets) {
+    public static void assertChange(final ElementChange change, final int[] removedOffsets,
+            final int[] addedOffsets) {
         final Element[] removed = change.getChildrenRemoved();
-        assertEquals("change.removed.length",
-                     removedOffsets.length / 2, removed.length);
+        assertEquals("change.removed.length", removedOffsets.length / 2, removed.length);
         for (int i = 0, j = 0; i < removed.length; i++, j += 2) {
-            assertEquals("change.removed[" + i + "].start",
-                         removedOffsets[j], removed[i].getStartOffset());
-            assertEquals("change.removed[" + i + "].end",
-                         removedOffsets[j + 1], removed[i].getEndOffset());
+            assertEquals("change.removed[" + i + "].start", removedOffsets[j], removed[i]
+                    .getStartOffset());
+            assertEquals("change.removed[" + i + "].end", removedOffsets[j + 1], removed[i]
+                    .getEndOffset());
         }
-
         final Element[] added = change.getChildrenAdded();
-        assertEquals("change.added.length",
-                     addedOffsets.length / 2, added.length);
+        assertEquals("change.added.length", addedOffsets.length / 2, added.length);
         for (int i = 0, j = 0; i < added.length; i++, j += 2) {
-            assertEquals("change.added[" + i + "].start",
-                         addedOffsets[j], added[i].getStartOffset());
-            assertEquals("change.added[" + i + "].end",
-                         addedOffsets[j + 1], added[i].getEndOffset());
+            assertEquals("change.added[" + i + "].start", addedOffsets[j], added[i]
+                    .getStartOffset());
+            assertEquals("change.added[" + i + "].end", addedOffsets[j + 1], added[i]
+                    .getEndOffset());
         }
     }
 
@@ -347,15 +334,11 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param removed offsets of the elements removed
      * @param added offsets of the elements added
      */
-    public static void assertChange(final Object change,
-                                    final Element element,
-                                    final int index,
-                                    final int[] removed, final int[] added) {
-        assertSame("change.element",
-                   element, ((ElementChange)change).getElement());
-        assertEquals("change.index",
-                     index, ((ElementChange)change).getIndex());
-        assertChange((ElementChange)change, removed, added);
+    public static void assertChange(final Object change, final Element element,
+            final int index, final int[] removed, final int[] added) {
+        assertSame("change.element", element, ((ElementChange) change).getElement());
+        assertEquals("change.index", index, ((ElementChange) change).getIndex());
+        assertChange((ElementChange) change, removed, added);
     }
 
     /**
@@ -365,17 +348,15 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param offsets the expected offsets in the form
      *                <code>{start1, end1, start2, end2, ...}</code>.
      */
-    public static void assertChildren(final Element element,
-                                      final int[] offsets) {
+    public static void assertChildren(final Element element, final int[] offsets) {
         final int count = element.getElementCount();
-        assertEquals("element.children.length",
-                     offsets.length / 2, count);
+        assertEquals("element.children.length", offsets.length / 2, count);
         for (int i = 0, j = 0; i < count; i++, j += 2) {
             final Element child = element.getElement(i);
-            assertEquals("element.children[" + i + "].start",
-                         offsets[j], child.getStartOffset());
-            assertEquals("element.children[" + i + "].end",
-                         offsets[j + 1], child.getEndOffset());
+            assertEquals("element.children[" + i + "].start", offsets[j], child
+                    .getStartOffset());
+            assertEquals("element.children[" + i + "].end", offsets[j + 1], child
+                    .getEndOffset());
         }
     }
 
@@ -388,21 +369,18 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param attributes the expected attributes; <code>null</code> if no
      *                   attributes expected.
      */
-    public static void assertChildren(final Element element,
-                                      final int[] offsets,
-                                      final AttributeSet[] attributes) {
+    public static void assertChildren(final Element element, final int[] offsets,
+            final AttributeSet[] attributes) {
         assertChildren(element, offsets);
-
-        assertEquals("element.attributes.length",
-                     attributes.length, element.getElementCount());
+        assertEquals("element.attributes.length", attributes.length, element.getElementCount());
         for (int i = 0; i < attributes.length; i++) {
             final Element child = element.getElement(i);
             if (attributes[i] == null) {
-                assertEquals("element.children[" + i + "].attributes.count",
-                             0, child.getAttributes().getAttributeCount());
+                assertEquals("element.children[" + i + "].attributes.count", 0, child
+                        .getAttributes().getAttributeCount());
             } else {
-                assertTrue("element.child[" + i + "].attributes",
-                           child.getAttributes().isEqual(attributes[i]));
+                assertTrue("element.child[" + i + "].attributes", child.getAttributes()
+                        .isEqual(attributes[i]));
             }
         }
     }
@@ -417,8 +395,7 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param length the length of the spec.
      */
     public static void assertSpec(final ElementSpec spec, final short type,
-                                  final short direction, final int offset,
-                                  final int length, final boolean isNullArray) {
+            final short direction, final int offset, final int length, final boolean isNullArray) {
         assertEquals("spec.type", type, spec.getType());
         assertEquals("spec.direction", direction, spec.getDirection());
         assertEquals("spec.offset", offset, spec.getOffset());
@@ -436,8 +413,7 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param length the length of the spec.
      */
     public static void assertSpec(final ElementSpec spec, final short type,
-                                  final short direction, final int offset,
-                                  final int length) {
+            final short direction, final int offset, final int length) {
         assertSpec(spec, type, direction, offset, length, true);
     }
 
@@ -447,10 +423,9 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param expected the expected spec.
      * @param actual the actual spec.
      */
-    public static void assertSpec(final ElementSpec expected,
-                                  final ElementSpec actual) {
-        assertSpec(actual, expected.getType(), expected.getDirection(),
-                   expected.getOffset(), expected.getLength());
+    public static void assertSpec(final ElementSpec expected, final ElementSpec actual) {
+        assertSpec(actual, expected.getType(), expected.getDirection(), expected.getOffset(),
+                expected.getLength());
     }
 
     /**
@@ -459,8 +434,7 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param expected array with expected specs.
      * @param actual array with the actual specs.
      */
-    public static void assertSpecs(final ElementSpec[] expected,
-                                   final ElementSpec[] actual) {
+    public static void assertSpecs(final ElementSpec[] expected, final ElementSpec[] actual) {
         assertEquals("specs.length", expected.length, actual.length);
         for (int i = 0; i < expected.length; i++) {
             assertSpec(expected[i], actual[i]);
@@ -476,12 +450,12 @@ public final class DefStyledDoc_Helpers extends Assert {
      *         <code>javax.swing.undo.CompoundEdit</code>, or <code>null</code>
      *         if something goes wrong.
      */
-    public static Vector getEdits(final DefaultDocumentEvent event) {
+    public static Vector<?> getEdits(final DefaultDocumentEvent event) {
         try {
-            Class eventSuperClass = event.getClass().getSuperclass();
+            Class<?> eventSuperClass = event.getClass().getSuperclass();
             Field f = eventSuperClass.getDeclaredField("edits");
             f.setAccessible(true);
-            return (Vector)(f.get(event));
+            return (Vector<?>) (f.get(event));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
@@ -509,11 +483,11 @@ public final class DefStyledDoc_Helpers extends Assert {
      * @param edits the list extracted from a <code>DefaultDocumentEvet</code>
      *              object.
      */
-    public static void printChanges(List edits) {
+    public static void printChanges(List<?> edits) {
         for (int i = 0; i < edits.size(); i++) {
             Object edit = edits.get(i);
             if (edit instanceof ElementChange) {
-                printChange((ElementChange)edit);
+                printChange((ElementChange) edit);
                 System.out.println();
             }
         }
@@ -537,8 +511,7 @@ public final class DefStyledDoc_Helpers extends Assert {
      */
     public static void printElementSpecs(ElementSpec[] spec) {
         for (int i = 0; i < spec.length; i++) {
-            System.out.println("\t" + spec[i]
-                               + (i != spec.length - 1 ? "," : ""));
+            System.out.println("\t" + spec[i] + (i != spec.length - 1 ? "," : ""));
         }
     }
 

@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import javax.swing.JViewport;
@@ -29,17 +27,20 @@ import javax.swing.UIManager;
 public class BasicViewportUITest extends SwingTestCase {
     private JViewport viewport;
 
+    @Override
     protected void setUp() throws Exception {
         viewport = new JViewport();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         viewport = null;
     }
 
     public void testCreateUI() {
         assertNotNull(BasicViewportUI.createUI(viewport));
-        assertTrue(BasicViewportUI.createUI(new JViewport()) == BasicViewportUI.createUI(new JViewport()));
+        assertTrue(BasicViewportUI.createUI(new JViewport()) == BasicViewportUI
+                .createUI(new JViewport()));
     }
 
     public void testDefaultValues() {

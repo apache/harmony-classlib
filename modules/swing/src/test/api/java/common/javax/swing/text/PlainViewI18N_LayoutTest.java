@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -32,32 +31,30 @@ import javax.swing.text.Position.Bias;
  */
 public class PlainViewI18N_LayoutTest extends SwingTestCase {
     private JTextArea area;
+
     private Document doc;
+
     private JFrame frame;
+
     private View rootView;
+
     private CompositeView view;
 
     /**
      * Tests values returned by <code>flipEastAndWestAtEnds()</code>.
      */
     public void testFlipEastAndWest() throws Exception {
-        boolean[] forward = new boolean[] {
-            false, false, false, false, false,
-            false, false, false, false, false,
-            false, false
-        };
-        boolean[] backward = new boolean[] {
-            false, false, false, false, false,
-            false, false, false, false, false,
-            false, false
-        };
+        boolean[] forward = new boolean[] { false, false, false, false, false, false, false,
+                false, false, false, false, false };
+        boolean[] backward = new boolean[] { false, false, false, false, false, false, false,
+                false, false, false, false, false };
         getLineView();
         final int length = doc.getLength() + 1;
         for (int i = 0; i <= length; i++) {
-            assertEquals("Bias.Forward[" + i + "]", forward[i],
-                         view.flipEastAndWestAtEnds(i, Bias.Forward));
-            assertEquals("Bias.Backward[" + i + "]", backward[i],
-                         view.flipEastAndWestAtEnds(i, Bias.Backward));
+            assertEquals("Bias.Forward[" + i + "]", forward[i], view.flipEastAndWestAtEnds(i,
+                    Bias.Forward));
+            assertEquals("Bias.Backward[" + i + "]", backward[i], view.flipEastAndWestAtEnds(i,
+                    Bias.Backward));
         }
     }
 
@@ -66,21 +63,14 @@ public class PlainViewI18N_LayoutTest extends SwingTestCase {
      * resposible for.
      */
     public void testViewLayout() throws Exception {
-        int[] levels = new int[] {0, 1, 2, 1, 0};
-        Element bidiRoot = ((AbstractDocument)doc).getBidiRootElement();
+        int[] levels = new int[] { 0, 1, 2, 1, 0 };
+        Element bidiRoot = ((AbstractDocument) doc).getBidiRootElement();
         assertEquals(5, bidiRoot.getElementCount());
         for (int i = 0; i < levels.length; i++) {
             Element child = bidiRoot.getElement(i);
-            assertEquals(levels[i],
-                         StyleConstants.getBidiLevel(child.getAttributes()));
+            assertEquals(levels[i], StyleConstants.getBidiLevel(child.getAttributes()));
         }
-        int[] viewPos = new int[] {
-            0, 2,
-            6, 8,
-            4, 6,
-            2, 4,
-            8, 11
-        };
+        int[] viewPos = new int[] { 0, 2, 6, 8, 4, 6, 2, 4, 8, 11 };
         getLineView();
         assertEquals(5, view.getViewCount());
         for (int i = 0, posIndex = 0; i < levels.length; i++, posIndex += 2) {
@@ -90,6 +80,7 @@ public class PlainViewI18N_LayoutTest extends SwingTestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         frame = new JFrame("PlainViewI18N Layout Test");
@@ -98,12 +89,11 @@ public class PlainViewI18N_LayoutTest extends SwingTestCase {
         frame.getContentPane().add(area);
         frame.setSize(150, 100);
         frame.pack();
-
         doc = area.getDocument();
-
         rootView = area.getUI().getRootView(area).getView(0);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         frame.dispose();
@@ -111,10 +101,9 @@ public class PlainViewI18N_LayoutTest extends SwingTestCase {
 
     private void getLineView() {
         if (isHarmony()) {
-            view = (CompositeView)rootView.getView(0);
+            view = (CompositeView) rootView.getView(0);
         } else {
-            view = (CompositeView)rootView.getView(0).getView(0);
+            view = (CompositeView) rootView.getView(0).getView(0);
         }
     }
-
 }

@@ -22,10 +22,8 @@ package javax.swing.event;
 
 import java.awt.EventQueue;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-
 import junit.framework.TestCase;
 
 public class MouseInputAdapterTest extends TestCase {
@@ -35,26 +33,28 @@ public class MouseInputAdapterTest extends TestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         adapter = new TestAdapter();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         adapter = null;
     }
 
-
     public void testMouseInputAdapter() throws Exception {
         JComponent component = new JPanel();
         component.addMouseListener(adapter);
-        component.dispatchEvent(new MouseEvent(component, MouseEvent.MOUSE_ENTERED, EventQueue.getMostRecentEventTime(), 0, 0, 0, 1, false));
+        component.dispatchEvent(new MouseEvent(component, MouseEvent.MOUSE_ENTERED, EventQueue
+                .getMostRecentEventTime(), 0, 0, 0, 1, false));
         assertTrue(adapter.isEventOccured());
     }
-
 
     private class TestAdapter extends MouseInputAdapter {
         private boolean eventOccured;
 
+        @Override
         public void mouseEntered(final MouseEvent e) {
             eventOccured = true;
         }

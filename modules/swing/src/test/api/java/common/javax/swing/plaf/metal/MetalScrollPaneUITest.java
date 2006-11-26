@@ -30,10 +30,12 @@ public class MetalScrollPaneUITest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         ui = new MetalScrollPaneUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
     }

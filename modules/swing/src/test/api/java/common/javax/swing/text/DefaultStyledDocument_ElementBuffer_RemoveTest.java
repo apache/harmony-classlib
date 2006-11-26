@@ -21,14 +21,12 @@
 package javax.swing.text;
 
 import java.util.List;
-
 import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.text.AbstractDocument.AbstractElement;
 import javax.swing.text.AbstractDocument.BranchElement;
 import javax.swing.text.AbstractDocument.Content;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.DefaultStyledDocument.ElementBuffer;
-
 import junit.framework.TestCase;
 
 /**
@@ -38,28 +36,34 @@ import junit.framework.TestCase;
  */
 public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     private DefaultStyledDocument doc;
+
     private ElementBuffer buf;
+
     private Element root;
+
     private Element paragraph;
+
     private Content content;
+
     private DefaultDocumentEvent event;
 
     private static final AttributeSet bold = DefStyledDoc_Helpers.bold;
+
     private static final AttributeSet italic = DefStyledDoc_Helpers.italic;
 
     private static final AttributeSet boldFalse;
-    private static final AttributeSet italicFalse;
 
+    private static final AttributeSet italicFalse;
     static {
         MutableAttributeSet mas = new SimpleAttributeSet(bold);
         StyleConstants.setBold(mas, false);
         boldFalse = mas;
-
         mas = new SimpleAttributeSet(italic);
         StyleConstants.setItalic(mas, false);
         italicFalse = mas;
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
@@ -67,38 +71,31 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
         buf = new DefStyledDoc_Helpers.ElementBufferWithLogging(doc, root);
         doc.buffer = buf;
         paragraph = root.getElement(0);
-
         content = doc.getContent();
-
         content.insertString(0, "plainbolditalic\ntext");
         // Create the structure equivalent to this sequence:
         //doc.insertString(doc.getLength(), "plain", null);    // 5 chars
         //doc.insertString(doc.getLength(), "bold", bold);     // 4 chars
         //doc.insertString(doc.getLength(), "italic", italic); // 6 chars
         //doc.insertString(doc.getLength(), "\ntext", null);   // 5 chars
-
         doc.writeLock(); // Write lock needed to modify document structure
-
         Element[] leaves = new Element[4];
         leaves[0] = doc.createLeafElement(paragraph, null, 0, 5);
         leaves[1] = doc.createLeafElement(paragraph, bold, 5, 9);
         leaves[2] = doc.createLeafElement(paragraph, italic, 9, 15);
         leaves[3] = doc.createLeafElement(paragraph, null, 15, 16);
-        ((BranchElement)paragraph).replace(0, 1, leaves);
-
-        BranchElement branch = (BranchElement)doc.createBranchElement(root,
-                                                                      null);
+        ((BranchElement) paragraph).replace(0, 1, leaves);
+        BranchElement branch = (BranchElement) doc.createBranchElement(root, null);
         leaves = new Element[1];
         leaves[0] = doc.createLeafElement(branch, null, 16, 21);
         branch.replace(0, 0, leaves);
-
         branch.addAttributes(boldFalse);
         branch.addAttributes(italicFalse);
-
         // Add this branch to the root
-        ((BranchElement)root).replace(1, 0, new Element[] {branch});
+        ((BranchElement) root).replace(1, 0, new Element[] { branch });
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         doc.writeUnlock();
@@ -112,15 +109,11 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     public void testRemoveElementStart() throws Exception {
         final Element boldElement = paragraph.getElement(1);
         final int offset = boldElement.getStartOffset();
-        final int length = (boldElement.getEndOffset()
-                            - boldElement.getStartOffset()) / 2;
-
+        final int length = (boldElement.getEndOffset() - boldElement.getStartOffset()) / 2;
         buf.remove(offset, length, createEvent(offset, length));
-
         assertEquals(0, getEdits(event).size());
-
-        assertChildren(paragraph, new int[] {0, 5, 5, 9, 9, 15, 15, 16},
-                       new AttributeSet[] {null, bold, italic, null});
+        assertChildren(paragraph, new int[] { 0, 5, 5, 9, 9, 15, 15, 16 }, new AttributeSet[] {
+                null, bold, italic, null });
     }
 
     /**
@@ -130,16 +123,12 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
      */
     public void testRemoveElementEnd() throws Exception {
         final Element boldElement = paragraph.getElement(1);
-        final int offset = (boldElement.getStartOffset()
-                            + boldElement.getEndOffset()) / 2;
+        final int offset = (boldElement.getStartOffset() + boldElement.getEndOffset()) / 2;
         final int length = boldElement.getEndOffset() - offset;
-
         buf.remove(offset, length, createEvent(offset, length));
-
         assertEquals(0, getEdits(event).size());
-
-        assertChildren(paragraph, new int[] {0, 5, 5, 9, 9, 15, 15, 16},
-                       new AttributeSet[] {null, bold, italic, null});
+        assertChildren(paragraph, new int[] { 0, 5, 5, 9, 9, 15, 15, 16 }, new AttributeSet[] {
+                null, bold, italic, null });
     }
 
     /**
@@ -150,17 +139,12 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
         final Element boldElement = paragraph.getElement(1);
         final int offset = boldElement.getStartOffset();
         final int length = boldElement.getEndOffset() - offset;
-
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), paragraph, 1,
-                     new int[] {5, 9}, new int[] {});
-
-        assertChildren(paragraph, new int[] {0, 5, 9, 15, 15, 16},
-                       new AttributeSet[] {null, italic, null});
+        assertChange(edits.get(0), paragraph, 1, new int[] { 5, 9 }, new int[] {});
+        assertChildren(paragraph, new int[] { 0, 5, 9, 15, 15, 16 }, new AttributeSet[] { null,
+                italic, null });
     }
 
     /**
@@ -173,19 +157,14 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
         final Element plainElement = paragraph.getElement(0);
         final Element boldElement = paragraph.getElement(1);
         final int offset = plainElement.getStartOffset();
-        final int length = (boldElement.getStartOffset()
-                            + boldElement.getEndOffset()) / 2 - offset;
-
+        final int length = (boldElement.getStartOffset() + boldElement.getEndOffset()) / 2
+                - offset;
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), paragraph, 0,
-                     new int[] {0, 5}, new int[] {});
-
-        assertChildren(paragraph, new int[] {5, 9, 9, 15, 15, 16},
-                       new AttributeSet[] {bold, italic, null});
+        assertChange(edits.get(0), paragraph, 0, new int[] { 0, 5 }, new int[] {});
+        assertChildren(paragraph, new int[] { 5, 9, 9, 15, 15, 16 }, new AttributeSet[] { bold,
+                italic, null });
     }
 
     /**
@@ -197,20 +176,14 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     public void testRemove2ElementsEnd() throws Exception {
         final Element plainElement = paragraph.getElement(0);
         final Element boldElement = paragraph.getElement(1);
-        final int offset = (plainElement.getStartOffset()
-                            + plainElement.getEndOffset()) / 2;
+        final int offset = (plainElement.getStartOffset() + plainElement.getEndOffset()) / 2;
         final int length = boldElement.getEndOffset() - offset;
-
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), paragraph, 1,
-                     new int[] {5, 9}, new int[] {});
-
-        assertChildren(paragraph, new int[] {0, 5, 9, 15, 15, 16},
-                       new AttributeSet[] {null, italic, null});
+        assertChange(edits.get(0), paragraph, 1, new int[] { 5, 9 }, new int[] {});
+        assertChildren(paragraph, new int[] { 0, 5, 9, 15, 15, 16 }, new AttributeSet[] { null,
+                italic, null });
     }
 
     /**
@@ -222,18 +195,14 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     public void testRemove2ElementsStartEnd() throws Exception {
         final Element plainElement = paragraph.getElement(0);
         final Element boldElement = paragraph.getElement(1);
-        final int offset = (plainElement.getStartOffset()
-                            + plainElement.getEndOffset()) / 2;
-        final int length = (boldElement.getStartOffset()
-                            + boldElement.getEndOffset()) / 2 - offset;
-
+        final int offset = (plainElement.getStartOffset() + plainElement.getEndOffset()) / 2;
+        final int length = (boldElement.getStartOffset() + boldElement.getEndOffset()) / 2
+                - offset;
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(0, edits.size());
-
-        assertChildren(paragraph, new int[] {0, 5, 5, 9, 9, 15, 15, 16},
-                       new AttributeSet[] {null, bold, italic, null});
+        assertChildren(paragraph, new int[] { 0, 5, 5, 9, 9, 15, 15, 16 }, new AttributeSet[] {
+                null, bold, italic, null });
     }
 
     /**
@@ -245,17 +214,12 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
         final Element boldElement = paragraph.getElement(1);
         final int offset = plainElement.getStartOffset();
         final int length = boldElement.getEndOffset() - offset;
-
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), paragraph, 0,
-                     new int[] {0, 5, 5, 9}, new int[] {});
-
-        assertChildren(paragraph, new int[] {9, 15, 15, 16},
-                       new AttributeSet[] {italic, null});
+        assertChange(edits.get(0), paragraph, 0, new int[] { 0, 5, 5, 9 }, new int[] {});
+        assertChildren(paragraph, new int[] { 9, 15, 15, 16 }, new AttributeSet[] { italic,
+                null });
     }
 
     /**
@@ -268,22 +232,14 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     public void testRemoveParagraphBreak() throws Exception {
         final int offset = paragraph.getEndOffset() - 1;
         final int length = 1;
-
-        ((AbstractElement)paragraph).addAttributes(bold);
-
+        ((AbstractElement) paragraph).addAttributes(bold);
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), root, 0,
-                     new int[] {0, 16, 16, 21}, new int[] {0, 21});
-
-        final AbstractElement branch = (AbstractElement)root.getElement(0);
-
-        assertChildren(branch, new int[] {0, 5, 5, 9, 9, 15, 16, 21},
-                       new AttributeSet[] {null, bold, italic, null});
-
+        assertChange(edits.get(0), root, 0, new int[] { 0, 16, 16, 21 }, new int[] { 0, 21 });
+        final AbstractElement branch = (AbstractElement) root.getElement(0);
+        assertChildren(branch, new int[] { 0, 5, 5, 9, 9, 15, 16, 21 }, new AttributeSet[] {
+                null, bold, italic, null });
         assertEquals(2, branch.getAttributeCount());
         assertTrue(branch.isDefined(AttributeSet.ResolveAttribute));
         assertTrue(branch.containsAttributes(bold));
@@ -299,22 +255,14 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
         final Element italicElement = paragraph.getElement(2);
         final int offset = italicElement.getStartOffset();
         final int length = paragraph.getEndOffset() - offset;
-
-        ((AbstractElement)paragraph).addAttributes(bold);
-
+        ((AbstractElement) paragraph).addAttributes(bold);
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), root, 0,
-                     new int[] {0, 16, 16, 21}, new int[] {0, 21});
-
-        final AbstractElement branch = (AbstractElement)root.getElement(0);
-
-        assertChildren(branch, new int[] {0, 5, 5, 9, 16, 21},
-                       new AttributeSet[] {null, bold, null});
-
+        assertChange(edits.get(0), root, 0, new int[] { 0, 16, 16, 21 }, new int[] { 0, 21 });
+        final AbstractElement branch = (AbstractElement) root.getElement(0);
+        assertChildren(branch, new int[] { 0, 5, 5, 9, 16, 21 }, new AttributeSet[] { null,
+                bold, null });
         assertEquals(2, branch.getAttributeCount());
         assertTrue(branch.isDefined(AttributeSet.ResolveAttribute));
         assertTrue(branch.containsAttributes(bold));
@@ -331,48 +279,34 @@ public class DefaultStyledDocument_ElementBuffer_RemoveTest extends TestCase {
     public void testRemoveFullParagraph() throws Exception {
         final int offset = paragraph.getStartOffset();
         final int length = paragraph.getEndOffset() - offset;
-
-        ((AbstractElement)paragraph).addAttributes(bold);
-
+        ((AbstractElement) paragraph).addAttributes(bold);
         buf.remove(offset, length, createEvent(offset, length));
-
-        final List edits = getEdits(event);
+        final List<?> edits = getEdits(event);
         assertEquals(1, edits.size());
-
-        assertChange(edits.get(0), root, 0,
-                     new int[] {0, 16, 16, 21}, new int[] {16, 21});
-
-        final AbstractElement branch = (AbstractElement)root.getElement(0);
-
-        assertChildren(branch, new int[] {16, 21},
-                       new AttributeSet[] {null});
-
+        assertChange(edits.get(0), root, 0, new int[] { 0, 16, 16, 21 }, new int[] { 16, 21 });
+        final AbstractElement branch = (AbstractElement) root.getElement(0);
+        assertChildren(branch, new int[] { 16, 21 }, new AttributeSet[] { null });
         assertEquals(2, branch.getAttributeCount());
         assertTrue(branch.isDefined(AttributeSet.ResolveAttribute));
         assertTrue(branch.containsAttributes(bold));
     }
 
-    private static void assertChange(final Object change,
-                                     final Element element,
-                                     final int index,
-                                     final int[] removed, final int[] added) {
-        DefStyledDoc_Helpers.assertChange(change, element, index,
-                                          removed, added);
+    private static void assertChange(final Object change, final Element element,
+            final int index, final int[] removed, final int[] added) {
+        DefStyledDoc_Helpers.assertChange(change, element, index, removed, added);
     }
 
-    private static void assertChildren(final Element element,
-                                       final int[] offsets,
-                                       final AttributeSet[] attributes) {
+    private static void assertChildren(final Element element, final int[] offsets,
+            final AttributeSet[] attributes) {
         DefStyledDoc_Helpers.assertChildren(element, offsets, attributes);
     }
 
-    private DefaultDocumentEvent createEvent(final int offset,
-                                             final int length) {
+    private DefaultDocumentEvent createEvent(final int offset, final int length) {
         event = doc.new DefaultDocumentEvent(offset, length, EventType.CHANGE);
         return event;
     }
 
-    private static List getEdits(final DefaultDocumentEvent event) {
+    private static List<?> getEdits(final DefaultDocumentEvent event) {
         return DefStyledDoc_Helpers.getEdits(event);
     }
 }

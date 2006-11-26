@@ -24,44 +24,32 @@ package org.apache.harmony.x.swing;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
-
-import javax.swing.JPanel;
 import javax.swing.SwingTestCase;
 
 public class UtilitiesTest extends SwingTestCase {
-
     public void testClipString() {
-        JPanel panel = new JPanel();
         FontMetrics metrics;
         String clippedStr;
         String initialString = "Long enough text for this label, can you see that it is clipped now?";
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 12));
         clippedStr = Utilities.clipString(metrics, initialString, 350);
         assertEquals("clipped string ", "Long enough text for this ...", clippedStr);
-
         clippedStr = Utilities.clipString(metrics, initialString, 100);
         assertEquals("clipped string ", "Long ...", clippedStr);
-
         clippedStr = Utilities.clipString(metrics, initialString, 10000);
         assertEquals("clipped string ", initialString, clippedStr);
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 60));
         clippedStr = Utilities.clipString(metrics, initialString, 1500);
         assertEquals("clipped string ", "Long enough text for t...", clippedStr);
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 50));
         clippedStr = Utilities.clipString(metrics, initialString, 500);
         assertEquals("clipped string ", "Long en...", clippedStr);
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 60));
         clippedStr = Utilities.clipString(metrics, initialString, 5);
         assertEquals("clipped string ", "...", clippedStr);
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 2));
         clippedStr = Utilities.clipString(metrics, initialString, 5);
         assertEquals("clipped string ", "...", clippedStr);
-
         metrics = getFontMetrics(new Font("fixed", Font.PLAIN, 3));
         clippedStr = Utilities.clipString(metrics, initialString, 5);
         assertEquals("clipped string ", "...", clippedStr);
@@ -70,11 +58,9 @@ public class UtilitiesTest extends SwingTestCase {
     public void testIsStringEmpty() {
         assertTrue(Utilities.isEmptyString(null));
         assertTrue(Utilities.isEmptyString(""));
-
         assertFalse(Utilities.isEmptyString(" "));
         assertFalse(Utilities.isEmptyString("\t"));
         assertFalse(Utilities.isEmptyString("\n"));
         assertFalse(Utilities.isEmptyString("\r"));
     }
-
 }

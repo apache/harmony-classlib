@@ -21,23 +21,25 @@
 package javax.swing.filechooser;
 
 import java.io.File;
-
 import javax.swing.SwingTestCase;
 
 public class FileViewTest extends SwingTestCase {
     private FileView view;
+
     private File file;
 
     public FileViewTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         view = new FileView() {
         };
         file = new File("");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         view = null;
         file = null;

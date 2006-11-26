@@ -15,21 +15,22 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.metal;
 
 import javax.swing.JButton;
 import javax.swing.plaf.basic.BasicSeparatorUITest;
 
 public class MetalSeparatorUITest extends BasicSeparatorUITest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new MetalSeparatorUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -37,10 +38,12 @@ public class MetalSeparatorUITest extends BasicSeparatorUITest {
     /*
      * Test method for 'javax.swing.plaf.metal.MetalSeparatorUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
         assertNotNull("created UI is not null", MetalSeparatorUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", MetalSeparatorUI.createUI(null) instanceof MetalSeparatorUI);
-        assertNotSame("created UI is of unique", MetalSeparatorUI.createUI(null), MetalSeparatorUI.createUI(null));
+        assertTrue("created UI is of the proper class",
+                MetalSeparatorUI.createUI(null) instanceof MetalSeparatorUI);
+        assertNotSame("created UI is of unique", MetalSeparatorUI.createUI(null),
+                MetalSeparatorUI.createUI(null));
     }
-
 }

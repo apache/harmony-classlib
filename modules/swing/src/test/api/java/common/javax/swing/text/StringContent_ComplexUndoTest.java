@@ -21,6 +21,7 @@
 package javax.swing.text;
 
 public class StringContent_ComplexUndoTest extends GapContent_ComplexUndoTest {
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         content = new StringContent();

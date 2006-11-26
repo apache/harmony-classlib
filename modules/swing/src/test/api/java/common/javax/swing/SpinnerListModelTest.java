@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class SpinnerListModelTest extends BasicSwingTestCase {
     private SpinnerListModel model;
 

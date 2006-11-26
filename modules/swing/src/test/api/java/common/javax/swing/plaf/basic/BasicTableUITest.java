@@ -22,7 +22,6 @@ package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.CellRendererPane;
 import javax.swing.JTable;
@@ -37,14 +36,15 @@ public class BasicTableUITest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         ui = new BasicTableUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
     }
-
 
     public void testBasicTableUI() throws Exception {
         assertNull(ui.table);
@@ -85,7 +85,6 @@ public class BasicTableUITest extends BasicSwingTestCase {
     public void testUninstallUI() throws Exception {
         JTable table = new JTable();
         ui.installUI(table);
-
         ui.uninstallUI(null);
         assertNull(ui.table);
         assertNull(ui.rendererPane);
@@ -94,9 +93,7 @@ public class BasicTableUITest extends BasicSwingTestCase {
     public void testGetMinimumMaximumPreferredSize() throws Exception {
         JTable table = new JTable();
         ui.table = table;
-
         assertEquals(new Dimension(), ui.getMinimumSize(null));
-
         TableColumn column1 = new TableColumn();
         column1.setMinWidth(20);
         column1.setPreferredWidth(50);
@@ -105,7 +102,6 @@ public class BasicTableUITest extends BasicSwingTestCase {
         assertEquals(new Dimension(20, 0), ui.getMinimumSize(null));
         assertEquals(new Dimension(100, 0), ui.getMaximumSize(null));
         assertEquals(new Dimension(50, 0), ui.getPreferredSize(null));
-
         TableColumn column2 = new TableColumn();
         column2.setMinWidth(10);
         column2.setPreferredWidth(20);
@@ -114,14 +110,12 @@ public class BasicTableUITest extends BasicSwingTestCase {
         assertEquals(new Dimension(30, 0), ui.getMinimumSize(null));
         assertEquals(new Dimension(140, 0), ui.getMaximumSize(null));
         assertEquals(new Dimension(70, 0), ui.getPreferredSize(null));
-
         table.setRowHeight(30);
-        ((DefaultTableModel)table.getModel()).addRow(new Object[] {"1"});
+        ((DefaultTableModel) table.getModel()).addRow(new Object[] { "1" });
         assertEquals(new Dimension(30, 30), ui.getMinimumSize(null));
         assertEquals(new Dimension(140, 30), ui.getMaximumSize(null));
         assertEquals(new Dimension(70, 30), ui.getPreferredSize(null));
-
-        ((DefaultTableModel)table.getModel()).addRow(new Object[] {"2", "2"});
+        ((DefaultTableModel) table.getModel()).addRow(new Object[] { "2", "2" });
         table.setRowHeight(1, 20);
         assertEquals(new Dimension(30, 50), ui.getMinimumSize(null));
         assertEquals(new Dimension(140, 50), ui.getMaximumSize(null));
@@ -131,10 +125,9 @@ public class BasicTableUITest extends BasicSwingTestCase {
     public void testPaint() throws Exception {
         ui.table = new JTable();
         ui.paint(null, null);
-
-        DefaultTableModel model = (DefaultTableModel)ui.table.getModel();
+        DefaultTableModel model = (DefaultTableModel) ui.table.getModel();
         model.addColumn("column1");
-        model.addRow(new Object[] {"1"});
+        model.addRow(new Object[] { "1" });
         ui.rendererPane = new CellRendererPane();
         Graphics g = createTestGraphics();
         g.setClip(0, 0, 100, 100);
@@ -148,7 +141,9 @@ public class BasicTableUITest extends BasicSwingTestCase {
         assertSame(UIManager.getColor("Table.gridColor"), ui.table.getGridColor());
         assertSame(UIManager.getColor("Table.foreground"), ui.table.getForeground());
         assertSame(UIManager.getColor("Table.background"), ui.table.getBackground());
-        assertSame(UIManager.getColor("Table.selectionForeground"), ui.table.getSelectionForeground());
-        assertSame(UIManager.getColor("Table.selectionBackground"), ui.table.getSelectionBackground());
+        assertSame(UIManager.getColor("Table.selectionForeground"), ui.table
+                .getSelectionForeground());
+        assertSame(UIManager.getColor("Table.selectionBackground"), ui.table
+                .getSelectionBackground());
     }
 }

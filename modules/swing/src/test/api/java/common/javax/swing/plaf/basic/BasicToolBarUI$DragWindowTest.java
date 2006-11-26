@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
-
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
@@ -32,12 +31,14 @@ import javax.swing.SwingTestCase;
 
 public class BasicToolBarUI$DragWindowTest extends SwingTestCase {
     private JToolBar toolBar;
+
     private BasicToolBarUI ui;
+
     private BasicToolBarUI.DragWindow dragWindow;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         ui = new BasicToolBarUI();
         toolBar = new JToolBar();
         toolBar.setUI(ui);
@@ -46,6 +47,7 @@ public class BasicToolBarUI$DragWindowTest extends SwingTestCase {
         dragWindow = ui.createDragWindow(toolBar);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

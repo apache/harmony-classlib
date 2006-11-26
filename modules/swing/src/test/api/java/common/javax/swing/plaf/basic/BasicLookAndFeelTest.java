@@ -14,12 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import javax.swing.Action;
@@ -30,10 +28,12 @@ import javax.swing.UIDefaults;
 public class BasicLookAndFeelTest extends SwingTestCase {
     private BasicLookAndFeel lf;
 
+    @Override
     public void setUp() {
         lf = basicLookAndFeelInstance();
     }
 
+    @Override
     public void tearDown() {
         lf = null;
     }
@@ -58,18 +58,27 @@ public class BasicLookAndFeelTest extends SwingTestCase {
 
     private LookAndFeel lookAndFeelInstance() {
         return new LookAndFeel() {
+            @Override
             public String getDescription() {
                 return null;
             }
+
+            @Override
             public String getID() {
                 return null;
             }
+
+            @Override
             public String getName() {
                 return null;
             }
+
+            @Override
             public boolean isNativeLookAndFeel() {
                 return false;
             }
+
+            @Override
             public boolean isSupportedLookAndFeel() {
                 return false;
             }
@@ -78,18 +87,29 @@ public class BasicLookAndFeelTest extends SwingTestCase {
 
     private BasicLookAndFeel basicLookAndFeelInstance() {
         return new BasicLookAndFeel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public String getDescription() {
                 return "basic description";
             }
+
+            @Override
             public String getID() {
                 return "basic id";
             }
+
+            @Override
             public String getName() {
                 return "basic name";
             }
+
+            @Override
             public boolean isNativeLookAndFeel() {
                 return false;
             }
+
+            @Override
             public boolean isSupportedLookAndFeel() {
                 return false;
             }

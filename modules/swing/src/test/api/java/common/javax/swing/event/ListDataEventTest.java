@@ -29,6 +29,7 @@ public class ListDataEventTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }
@@ -36,25 +37,21 @@ public class ListDataEventTest extends SwingTestCase {
     public void testListDataEvent() throws Exception {
         Object source = new Object();
         event = new ListDataEvent(source, ListDataEvent.CONTENTS_CHANGED, 0, 0);
-
         assertEquals(source, event.getSource());
     }
 
     public void testGetIndex0() throws Exception {
         event = new ListDataEvent(new Object(), ListDataEvent.CONTENTS_CHANGED, 10, 0);
-
         assertEquals(0, event.getIndex0());
     }
 
     public void testGetIndex1() throws Exception {
         event = new ListDataEvent(new Object(), ListDataEvent.CONTENTS_CHANGED, 10, 5);
-
         assertEquals(10, event.getIndex1());
     }
 
     public void testToString() throws Exception {
         event = new ListDataEvent(new Object(), ListDataEvent.INTERVAL_ADDED, 1, 2);
-
         assertTrue(event.toString().indexOf("ListDataEvent") > 0);
         assertTrue(event.toString().indexOf("type=" + ListDataEvent.INTERVAL_ADDED) > 0);
         assertTrue(event.toString().indexOf("index0=1") > 0);

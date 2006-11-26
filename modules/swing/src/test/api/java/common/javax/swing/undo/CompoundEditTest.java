@@ -26,12 +26,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
 public class CompoundEditTest extends AbstractUndoableEditTest {
-
     protected CompoundEdit ce;
 
     /*
      * @see AbstractUndoableEditTest#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ce = new CompoundEdit();
@@ -41,10 +41,12 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
     /*
      * Class under test for java.lang.String toString()
      */
+    @Override
     public void testToString() {
         assertNotNull(ce.toString());
     }
 
+    @Override
     public void testIsSignificant() {
         assertFalse(ce.isSignificant());
         ce.addEdit(new TestUndoableEdit(TestUndoableEdit.IS_SIGNIFICANT_FALSE));
@@ -53,13 +55,11 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         assertTrue(ce.isSignificant());
     }
 
+    @Override
     public void testCanUndo() {
         if (BasicSwingTestCase.isHarmony()) {
-            assertEquals(
-                    !ce.isInProgress() && (isAlive(ce) && hasBeenDone(ce)),
-                    ce.canUndo());
+            assertEquals(!ce.isInProgress() && (isAlive(ce) && hasBeenDone(ce)), ce.canUndo());
         }
-
         assertFalse(ce.canUndo());
         ce.end();
         assertTrue(ce.canUndo());
@@ -67,13 +67,11 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         assertFalse(ce.canUndo());
     }
 
+    @Override
     public void testCanRedo() {
         if (BasicSwingTestCase.isHarmony()) {
-            assertEquals(
-                    !ce.isInProgress() && (isAlive(ce) && !hasBeenDone(ce)),
-                    ce.canRedo());
+            assertEquals(!ce.isInProgress() && (isAlive(ce) && !hasBeenDone(ce)), ce.canRedo());
         }
-
         assertFalse(ce.canRedo());
         ce.end();
         ce.undo();
@@ -102,32 +100,43 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
      * CAN_REDO_FALSE: canRedo returns false.
      */
     protected static class TestUndoableEdit extends AbstractUndoableEdit {
+        private static final long serialVersionUID = 1L;
 
         public static int counter = 0;
 
         int id;
 
-        public static final int DIE =                       1 << 0;
-        public static final int UNDO =                      1 << 1;
-        public static final int REDO =                      1 << 2;
+        public static final int DIE = 1 << 0;
 
-        public static final int NAME =                      1 << 3;
-        public static final int UNDO_NAME =                 1 << 4;
-        public static final int REDO_NAME =                 1 << 5;
+        public static final int UNDO = 1 << 1;
 
-        public static final int ADD_EDIT_TRUE =             1 << 6;
-        public static final int ADD_EDIT_FALSE =            1 << 7;
-        public static final int REPLACE_EDIT_TRUE =         1 << 8;
-        public static final int REPLACE_EDIT_FALSE =        1 << 9;
+        public static final int REDO = 1 << 2;
 
-        public static final int IS_SIGNIFICANT_TRUE =       1 << 10;
-        public static final int IS_SIGNIFICANT_FALSE =      1 << 11;
+        public static final int NAME = 1 << 3;
 
-        public static final int DISCARD =                   1 << 12;
+        public static final int UNDO_NAME = 1 << 4;
 
-        public static final int UNDO_THROW_EXCEPTION =      1 << 13;
-        public static final int CAN_UNDO_FALSE =            1 << 14;
-        public static final int CAN_REDO_FALSE =            1 << 15;
+        public static final int REDO_NAME = 1 << 5;
+
+        public static final int ADD_EDIT_TRUE = 1 << 6;
+
+        public static final int ADD_EDIT_FALSE = 1 << 7;
+
+        public static final int REPLACE_EDIT_TRUE = 1 << 8;
+
+        public static final int REPLACE_EDIT_FALSE = 1 << 9;
+
+        public static final int IS_SIGNIFICANT_TRUE = 1 << 10;
+
+        public static final int IS_SIGNIFICANT_FALSE = 1 << 11;
+
+        public static final int DISCARD = 1 << 12;
+
+        public static final int UNDO_THROW_EXCEPTION = 1 << 13;
+
+        public static final int CAN_UNDO_FALSE = 1 << 14;
+
+        public static final int CAN_REDO_FALSE = 1 << 15;
 
         /**
          * If the method die is called and flag is set to DISCARD
@@ -153,12 +162,8 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         }
 
         public TestUndoableEdit(final int flag) {
-            if ((flag & DIE) != 0
-                    || (flag & UNDO) != 0
-                    || (flag & REDO) != 0
-                    || (flag & NAME) != 0
-                    || (flag & REDO_NAME) != 0
-                    || (flag & UNDO_NAME) != 0) {
+            if ((flag & DIE) != 0 || (flag & UNDO) != 0 || (flag & REDO) != 0
+                    || (flag & NAME) != 0 || (flag & REDO_NAME) != 0 || (flag & UNDO_NAME) != 0) {
                 id = counter++;
             } else {
                 id = 0;
@@ -171,6 +176,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             listeners.add(ChangeListener.class, listener);
         }
 
+        @Override
         public void die() {
             //System.out.println("die " + id);
             super.die();
@@ -178,7 +184,6 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
                 assertEquals(--counter, id);
                 dieCalled = true;
             }
-
             if ((flag & DISCARD) != 0) {
                 dieCalled = true;
             }
@@ -192,6 +197,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             return dieCalled;
         }
 
+        @Override
         public void undo() {
             //System.out.println("undo " + id);
             super.undo();
@@ -202,6 +208,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             }
         }
 
+        @Override
         public void redo() {
             //System.out.println("redo " + id);
             super.redo();
@@ -210,6 +217,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             }
         }
 
+        @Override
         public String getPresentationName() {
             if ((flag & NAME) != 0) {
                 return String.valueOf(id);
@@ -217,6 +225,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             return "";
         }
 
+        @Override
         public String getRedoPresentationName() {
             if ((flag & REDO_NAME) != 0) {
                 return String.valueOf(id);
@@ -224,6 +233,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             return "";
         }
 
+        @Override
         public String getUndoPresentationName() {
             if ((flag & UNDO_NAME) != 0) {
                 return String.valueOf(id);
@@ -231,35 +241,39 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             return "";
         }
 
+        @Override
         public boolean addEdit(final UndoableEdit edit) {
             return ((flag & ADD_EDIT_TRUE) != 0);
         }
 
+        @Override
         public boolean replaceEdit(final UndoableEdit edit) {
             isReplaceEditCalled = true;
             return ((flag & REPLACE_EDIT_TRUE) != 0);
         }
 
+        @Override
         public boolean isSignificant() {
             //System.out.println("isSignificant " + id);
             return (flag & IS_SIGNIFICANT_FALSE) == 0;
         }
 
+        @Override
         public boolean canUndo() {
             //System.out.println("canUndo " + id);
             //TODO: remove super.canUndo and add UNDO flag where it necessary
-            return (flag & CAN_UNDO_FALSE) == 0
-                  && ((flag & UNDO) != 0 || super.canUndo());
+            return (flag & CAN_UNDO_FALSE) == 0 && ((flag & UNDO) != 0 || super.canUndo());
         }
 
+        @Override
         public boolean canRedo() {
             //System.out.println("canRedo " + id);
             //TODO: remove super.canRedo and add REDO flag where it necessary
-            return (flag & CAN_REDO_FALSE) == 0
-                  && ((flag & REDO) != 0 || super.canRedo());
+            return (flag & CAN_REDO_FALSE) == 0 && ((flag & REDO) != 0 || super.canRedo());
         }
     }
 
+    @Override
     public void testUndo() {
         boolean bWasException = false;
         try {
@@ -268,16 +282,15 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             bWasException = true;
         }
         assertTrue("CannotUndoException must be thrown", bWasException);
-
         TestUndoableEdit.counter = 0;
         for (int i = 0; i < 10; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.UNDO));
         }
-
         ce.end();
         ce.undo();
     }
 
+    @Override
     public void testRedo() {
         boolean bWasException = false;
         try {
@@ -286,18 +299,17 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             bWasException = true;
         }
         assertTrue("CannotRedoException must be thrown", bWasException);
-
         TestUndoableEdit.counter = 0;
         for (int i = 0; i < 10; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.REDO));
         }
-
         ce.end();
         ce.undo();
         TestUndoableEdit.counter = 0;
         ce.redo();
     }
 
+    @Override
     public void testDie() {
         ce.die();
         TestUndoableEdit.counter = 0;
@@ -307,9 +319,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
             edits[i] = new TestUndoableEdit(TestUndoableEdit.DIE);
             ce.addEdit(edits[i]);
         }
-
         ce.die();
-
         for (int i = 0; i < count; i++) {
             assertTrue(edits[i].isDieCalled());
         }
@@ -335,13 +345,11 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
      */
     public void testGetPresentationName01() {
         assertEquals("", ce.getPresentationName());
-
         TestUndoableEdit.counter = 0;
         final int n = 10;
         for (int i = 0; i < n; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.NAME));
         }
-
         assertEquals(String.valueOf(n - 1), ce.getPresentationName());
     }
 
@@ -352,7 +360,6 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
      */
     public void testGetPresentationName02() {
         assertEquals("", ce.getPresentationName());
-
         TestUndoableEdit.counter = 1;
         ce.addEdit(new TestUndoableEdit(TestUndoableEdit.NAME));
         assertEquals(String.valueOf(1), ce.getPresentationName());
@@ -360,51 +367,44 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         assertEquals("", ce.getPresentationName());
     }
 
+    @Override
     public void testGetRedoPresentationName() {
-        assertEquals(
-                UIManager.getString("AbstractUndoableEdit.redoText"),
-                ce.getRedoPresentationName());
-
+        assertEquals(UIManager.getString("AbstractUndoableEdit.redoText"), ce
+                .getRedoPresentationName());
         TestUndoableEdit.counter = 0;
         final int n = 10;
         for (int i = 0; i < n; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.REDO_NAME));
         }
-
         assertEquals(String.valueOf(n - 1), ce.getRedoPresentationName());
     }
 
+    @Override
     public void testGetUndoPresentationName() {
-        assertEquals(
-                UIManager.getString("AbstractUndoableEdit.undoText"),
-                ce.getUndoPresentationName());
-
+        assertEquals(UIManager.getString("AbstractUndoableEdit.undoText"), ce
+                .getUndoPresentationName());
         TestUndoableEdit.counter = 0;
         int n = 10;
         for (int i = 0; i < n; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.UNDO_NAME));
         }
-
         assertEquals(String.valueOf(n - 1), ce.getUndoPresentationName());
     }
 
     public void testLastEdit() {
         assertNull(ce.lastEdit());
-
         TestUndoableEdit.counter = 0;
         final int n = 10;
         for (int i = 0; i < n; i++) {
             ce.addEdit(new TestUndoableEdit(TestUndoableEdit.DIE));
         }
-
-        assertEquals(n - 1, ((TestUndoableEdit)ce.lastEdit()).id);
+        assertEquals(n - 1, ((TestUndoableEdit) ce.lastEdit()).id);
     }
 
+    @Override
     public void testAddEdit() {
-        TestUndoableEdit ue = new TestUndoableEdit(
-                TestUndoableEdit.ADD_EDIT_FALSE
-                | TestUndoableEdit.UNDO
-                | TestUndoableEdit.REDO);
+        TestUndoableEdit ue = new TestUndoableEdit(TestUndoableEdit.ADD_EDIT_FALSE
+                | TestUndoableEdit.UNDO | TestUndoableEdit.REDO);
         assertTrue(ce.addEdit(ue));
         assertEquals(ue, ce.edits.elementAt(0));
         ce.end();
@@ -413,31 +413,24 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         ue.flag = TestUndoableEdit.UNDO;
         assertEquals(ue.canUndo(), ce.canUndo());
         assertEquals(ue.canRedo(), ue.canRedo());
-
         ce = new CompoundEdit();
         ue = new TestUndoableEdit(TestUndoableEdit.ADD_EDIT_TRUE);
         assertTrue(ce.addEdit(ue));
         assertEquals(ue, ce.edits.elementAt(0));
-
         ue = new TestUndoableEdit(TestUndoableEdit.REPLACE_EDIT_FALSE);
         assertTrue(ce.addEdit(ue));
         assertTrue(ce.edits.size() == 1);
-
-        ((TestUndoableEdit)ce.lastEdit()).flag = TestUndoableEdit.
-           ADD_EDIT_FALSE;
+        ((TestUndoableEdit) ce.lastEdit()).flag = TestUndoableEdit.ADD_EDIT_FALSE;
         ue = new TestUndoableEdit(TestUndoableEdit.REPLACE_EDIT_FALSE);
         assertTrue(ce.addEdit(ue));
         assertEquals(ue, ce.edits.elementAt(1));
-
         ue = new TestUndoableEdit(TestUndoableEdit.REPLACE_EDIT_TRUE);
         assertTrue(ce.addEdit(ue));
         assertTrue(ce.edits.size() == 2);
         assertTrue(ue.isReplaceEditCalled);
-
         ce.end();
         assertTrue(ce.canUndo());
         ce.undo();
         assertTrue(ce.canRedo());
     }
-
 }

@@ -24,7 +24,6 @@ import javax.swing.SwingTestCase;
 import javax.swing.tree.TreePath;
 
 public class TreeSelectionEventTest extends SwingTestCase {
-
     protected TreeSelectionEvent event;
 
     /*
@@ -37,7 +36,6 @@ public class TreeSelectionEventTest extends SwingTestCase {
         Object source = new Object();
         boolean isNew = true;
         event = new TreeSelectionEvent(source, path, isNew, oldSelection, newSelection);
-
         assertEquals(source, event.getSource());
         assertEquals(path, event.getPath());
         assertEquals(isNew, event.areNew[0]);
@@ -49,13 +47,13 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.TreeSelectionEvent(Object, TreePath[], boolean[], TreePath, TreePath)'
      */
     public void testTreeSelectionEventObjectTreePathArrayBooleanArrayTreePathTreePath() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
-
         assertEquals(source, event.getSource());
         assertEquals(paths[0], event.getPaths()[0]);
         assertEquals(paths[1], event.getPaths()[1]);
@@ -71,14 +69,15 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.cloneWithSource(Object)'
      */
     public void testCloneWithSource() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = "source";
         Object newSource = "newSource";
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
-        TreeSelectionEvent cloned = (TreeSelectionEvent)event.cloneWithSource(newSource);
+        TreeSelectionEvent cloned = (TreeSelectionEvent) event.cloneWithSource(newSource);
         assertEquals(newSource, cloned.getSource());
         assertEquals(paths[0], cloned.getPaths()[0]);
         assertEquals(paths[1], cloned.getPaths()[1]);
@@ -94,12 +93,12 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.getNewLeadSelectionPath()'
      */
     public void testGetNewLeadSelectionPath() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = "source";
-
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertEquals(newSelection, event.getNewLeadSelectionPath());
     }
@@ -108,12 +107,12 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.getOldLeadSelectionPath()'
      */
     public void testGetOldLeadSelectionPath() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = "source";
-
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertEquals(oldSelection, event.getOldLeadSelectionPath());
     }
@@ -122,19 +121,17 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.getPath()'
      */
     public void testGetPath() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
-
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertEquals(paths[0], event.getPath());
-
-        areNew = new boolean[] {false, false, true};
+        areNew = new boolean[] { false, false, true };
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertEquals(paths[0], event.getPath());
-
         event = new TreeSelectionEvent(source, paths[0], true, oldSelection, newSelection);
         assertEquals(paths[0], event.getPath());
     }
@@ -143,13 +140,13 @@ public class TreeSelectionEventTest extends SwingTestCase {
      * Test method for 'javax.swing.event.TreeSelectionEvent.getPaths()'
      */
     public void testGetPaths() {
-        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"), new TreePath("zxc")};
-        boolean[] areNew = new boolean[] {true, false, true};
+        TreePath[] paths = new TreePath[] { new TreePath("asd"), new TreePath("qwe"),
+                new TreePath("zxc") };
+        boolean[] areNew = new boolean[] { true, false, true };
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
-
         assertNotSame(paths, event.getPaths());
         assertEquals(paths[0], event.getPaths()[0]);
         assertEquals(paths[1], event.getPaths()[1]);
@@ -163,31 +160,28 @@ public class TreeSelectionEventTest extends SwingTestCase {
         TreePath path1 = new TreePath("asd");
         TreePath path2 = new TreePath("dsa");
         TreePath path3 = new TreePath("qwe");
-        TreePath path4 = new TreePath("ewq");
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
-
         event = new TreeSelectionEvent(source, path1, true, oldSelection, newSelection);
         assertTrue(event.isAddedPath(0));
-
         event = new TreeSelectionEvent(source, path1, false, oldSelection, newSelection);
         assertFalse(event.isAddedPath(0));
-
         event = new TreeSelectionEvent(source, path1, true, oldSelection, newSelection);
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 event.isAddedPath(1);
             }
         });
-
         TreePath[] paths = new TreePath[] { path1, path2, path3 };
-        boolean[] areNew = new boolean[] {true, false, true};
+        boolean[] areNew = new boolean[] { true, false, true };
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertTrue(event.isAddedPath(0));
         assertFalse(event.isAddedPath(1));
         assertTrue(event.isAddedPath(2));
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 event.isAddedPath(3);
             }
@@ -204,25 +198,19 @@ public class TreeSelectionEventTest extends SwingTestCase {
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
-
         event = new TreeSelectionEvent(source, path1, true, oldSelection, newSelection);
         assertTrue(event.isAddedPath());
-
         event = new TreeSelectionEvent(source, path1, false, oldSelection, newSelection);
         assertFalse(event.isAddedPath());
-
         event = new TreeSelectionEvent(source, null, true, null, null);
         assertTrue(event.isAddedPath());
-
         event = new TreeSelectionEvent(source, null, false, null, null);
         assertFalse(event.isAddedPath());
-
         TreePath[] paths = new TreePath[] { path1, path2, path3 };
-        boolean[] areNew = new boolean[] {true, false, true};
+        boolean[] areNew = new boolean[] { true, false, true };
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertTrue(event.isAddedPath());
-
-        areNew = new boolean[] {false, false, true};
+        areNew = new boolean[] { false, false, true };
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertFalse(event.isAddedPath());
     }
@@ -238,33 +226,29 @@ public class TreeSelectionEventTest extends SwingTestCase {
         TreePath oldSelection = new TreePath("old");
         TreePath newSelection = new TreePath("new");
         Object source = new Object();
-
         event = new TreeSelectionEvent(source, path1, true, oldSelection, newSelection);
         assertTrue(event.isAddedPath(path1));
-
         event = new TreeSelectionEvent(source, path1, false, oldSelection, newSelection);
         assertFalse(event.isAddedPath(path1));
-
         event = new TreeSelectionEvent(source, path1, true, oldSelection, newSelection);
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 event.isAddedPath(path2);
             }
         });
-
         TreePath[] paths = new TreePath[] { path1, path2, path3 };
-        boolean[] areNew = new boolean[] {true, false, true};
+        boolean[] areNew = new boolean[] { true, false, true };
         event = new TreeSelectionEvent(source, paths, areNew, oldSelection, newSelection);
         assertTrue(event.isAddedPath(path1));
         assertFalse(event.isAddedPath(path2));
         assertTrue(event.isAddedPath(path3));
         testExceptionalCase(new IllegalArgumentCase() {
+            @Override
             public void exceptionalAction() throws Exception {
                 event.isAddedPath(path4);
             }
         });
-
         event = new TreeSelectionEvent(source, null, null, oldSelection, newSelection);
     }
-
 }

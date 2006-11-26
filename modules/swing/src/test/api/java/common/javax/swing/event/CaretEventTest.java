@@ -26,28 +26,31 @@ import junit.framework.TestCase;
 
 public class CaretEventTest extends TestCase {
     SimpleCaretEvent sce;
+
     Object obj;
 
     class SimpleCaretEvent extends CaretEvent {
+        private static final long serialVersionUID = 1L;
 
         public SimpleCaretEvent(final Object obj) {
             super(obj);
         }
 
-        public int getMark(){
+        @Override
+        public int getMark() {
             return 0;
         }
 
-        public int getDot(){
+        @Override
+        public int getDot() {
             return 0;
         }
-
     }
-
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         obj = new Object();
         sce = new SimpleCaretEvent(obj);
@@ -57,13 +60,13 @@ public class CaretEventTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
     public void testCaretEvent() {
         assertNotNull(sce);
-        assertEquals(sce.getSource(),obj);
+        assertEquals(sce.getSource(), obj);
     }
-
-    }
+}

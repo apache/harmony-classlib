@@ -25,12 +25,9 @@ package javax.swing.plaf;
 import javax.accessibility.Accessible;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.plaf.ComponentUI;
-
 import javax.swing.SwingTestCase;
 
 public class ComponentUITest extends SwingTestCase {
-
     protected ComponentUI componentUI = null;
 
     public static void main(final String[] args) {
@@ -40,14 +37,17 @@ public class ComponentUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        componentUI = new ComponentUI(){};
+        componentUI = new ComponentUI() {
+        };
     }
 
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -85,18 +85,14 @@ public class ComponentUITest extends SwingTestCase {
 
     public void testGetAccessibleChild() {
         JPanel panel = new JPanel();
-
         Accessible child = componentUI.getAccessibleChild(panel, 0);
         assertNull(child);
-
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         panel.add(panel1);
         panel.add(panel2);
-
         child = componentUI.getAccessibleChild(panel, 0);
         assertTrue(child == panel1);
-
         child = componentUI.getAccessibleChild(panel, 1);
         assertTrue(child == panel2);
     }
@@ -104,12 +100,10 @@ public class ComponentUITest extends SwingTestCase {
     public void testGetAccessibleChildrenCount() {
         JPanel panel = new JPanel();
         assertTrue(componentUI.getAccessibleChildrenCount(panel) == 0);
-
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         panel.add(panel1);
         panel.add(panel2);
-
         assertTrue(componentUI.getAccessibleChildrenCount(panel) == 2);
     }
 
@@ -124,5 +118,4 @@ public class ComponentUITest extends SwingTestCase {
             assertTrue(isExceptionThrown);
         }
     }
-
 }

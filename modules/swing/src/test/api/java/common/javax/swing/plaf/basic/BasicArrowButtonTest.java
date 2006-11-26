@@ -14,25 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
 public class BasicArrowButtonTest extends SwingTestCase {
     private BasicArrowButton button;
 
+    @Override
     protected void setUp() throws Exception {
-        button = new BasicArrowButton(BasicArrowButton.NORTH);
+        button = new BasicArrowButton(SwingConstants.NORTH);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         button = null;
     }

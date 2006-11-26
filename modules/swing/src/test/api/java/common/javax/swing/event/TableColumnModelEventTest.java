@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -31,10 +30,12 @@ public class TableColumnModelEventTest extends BasicSwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         event = new TableColumnModelEvent(new DefaultTableColumnModel(), 5, 10);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
     }
@@ -43,7 +44,6 @@ public class TableColumnModelEventTest extends BasicSwingTestCase {
         assertTrue(event.getSource() instanceof DefaultTableColumnModel);
         assertEquals(5, event.getFromIndex());
         assertEquals(10, event.getToIndex());
-
         event = new TableColumnModelEvent(new DefaultTableColumnModel(), 10, 5);
         assertEquals(10, event.getFromIndex());
         assertEquals(5, event.getToIndex());

@@ -20,8 +20,6 @@
  */
 package javax.swing.plaf.basic;
 
-import java.awt.Dimension;
-
 import javax.swing.JToolTip;
 import javax.swing.SwingTestCase;
 import javax.swing.UIManager;
@@ -29,26 +27,37 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class BasicToolTipUITest extends SwingTestCase {
     private BasicToolTipUI tooltipUI;
+
     private JToolTip tooltip;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         try {
             UIManager.setLookAndFeel(new BasicLookAndFeel() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
                 public boolean isNativeLookAndFeel() {
                     return true;
                 }
+
+                @Override
                 public boolean isSupportedLookAndFeel() {
                     return true;
                 }
+
+                @Override
                 public String getDescription() {
                     return "";
                 }
 
+                @Override
                 public String getID() {
                     return "";
                 }
 
+                @Override
                 public String getName() {
                     return "";
                 }
@@ -60,6 +69,7 @@ public class BasicToolTipUITest extends SwingTestCase {
         tooltipUI = new BasicToolTipUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         tooltipUI = null;
         tooltip = null;

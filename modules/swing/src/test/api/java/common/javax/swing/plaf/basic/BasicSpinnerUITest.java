@@ -22,20 +22,23 @@ package javax.swing.plaf.basic;
 
 import java.awt.Component;
 import java.util.Arrays;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.JSpinner;
+import javax.swing.SwingConstants;
 
 public class BasicSpinnerUITest extends BasicSwingTestCase {
     private BasicSpinnerUI ui;
+
     private JSpinner spinner;
 
+    @Override
     public void setUp() {
         spinner = new JSpinner();
         spinner.getUI().uninstallUI(spinner);
         ui = new BasicSpinnerUI();
     }
 
+    @Override
     public void tearDown() {
         spinner = null;
         ui = null;
@@ -55,18 +58,17 @@ public class BasicSpinnerUITest extends BasicSwingTestCase {
     public void testCreatePreviousNextButton() {
         Component nextButton = ui.createNextButton();
         assertTrue(nextButton instanceof BasicArrowButton);
-        assertEquals(((BasicArrowButton)nextButton).getDirection(), BasicArrowButton.NORTH);
-        assertTrue(((BasicArrowButton)nextButton).getActionListeners().length > 0);
-        assertTrue(((BasicArrowButton)nextButton).getMouseListeners().length > 1);
-        assertTrue(((BasicArrowButton)nextButton).getFocusListeners().length > 1);
+        assertEquals(((BasicArrowButton) nextButton).getDirection(), SwingConstants.NORTH);
+        assertTrue(((BasicArrowButton) nextButton).getActionListeners().length > 0);
+        assertTrue(((BasicArrowButton) nextButton).getMouseListeners().length > 1);
+        assertTrue(((BasicArrowButton) nextButton).getFocusListeners().length > 1);
         assertNotSame(nextButton, ui.createNextButton());
-
         Component previousButton = ui.createPreviousButton();
         assertTrue(previousButton instanceof BasicArrowButton);
-        assertEquals(((BasicArrowButton)previousButton).getDirection(), BasicArrowButton.SOUTH);
-        assertTrue(((BasicArrowButton)previousButton).getActionListeners().length > 0);
-        assertTrue(((BasicArrowButton)previousButton).getMouseListeners().length > 1);
-        assertTrue(((BasicArrowButton)previousButton).getFocusListeners().length > 1);
+        assertEquals(((BasicArrowButton) previousButton).getDirection(), SwingConstants.SOUTH);
+        assertTrue(((BasicArrowButton) previousButton).getActionListeners().length > 0);
+        assertTrue(((BasicArrowButton) previousButton).getMouseListeners().length > 1);
+        assertTrue(((BasicArrowButton) previousButton).getFocusListeners().length > 1);
         assertNotSame(previousButton, ui.createPreviousButton());
     }
 

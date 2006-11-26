@@ -47,7 +47,7 @@ public class GapContent_GapVectorTest extends TestCase {
 
     public void testAllocateArray() {
         final int length = gv.getArrayLength();
-        char[] array = (char[])gv.allocateArray(150);
+        char[] array = (char[]) gv.allocateArray(150);
         assertEquals(150, array.length);
         assertEquals(length, gv.getArrayLength());
     }
@@ -57,7 +57,7 @@ public class GapContent_GapVectorTest extends TestCase {
     }
 
     public void testGetArrayLength() {
-        assertEquals(((char[])gv.getArray()).length, gv.getArrayLength());
+        assertEquals(((char[]) gv.getArray()).length, gv.getArrayLength());
     }
 
     public void testGetGapEnd() {
@@ -70,7 +70,6 @@ public class GapContent_GapVectorTest extends TestCase {
 
     public void testInsertStringValid() throws BadLocationException {
         gv.insertString(0, "z");
-
         assertEquals(1, gv.getGapStart());
     }
 
@@ -83,14 +82,13 @@ public class GapContent_GapVectorTest extends TestCase {
     public void testInsertStringInvalid() {
         try {
             gv.insertString(12, "z");
-
             fail("BadLocationException must be thrown");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testRemoveValid() throws BadLocationException {
         gv.remove(1, 7);
-
         assertEquals(1, gv.getGapStart());
         assertEquals(17, gv.getGapEnd());
     }
@@ -98,28 +96,25 @@ public class GapContent_GapVectorTest extends TestCase {
     public void testRemoveInvalidPosition() {
         try {
             gv.remove(10, 1);
-
             fail("BadLocationException should be thrown");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testRemoveInvalidSize() {
         // Try to remove more items than the array actually holds
         try {
             gv.remove(7, 10);
-
             fail("BadLocationException should be thrown");
-        } catch (BadLocationException e) { }
+        } catch (BadLocationException e) {
+        }
     }
 
     public void testReplace() throws BadLocationException {
-        char[] charArray = {'z', 'y', 'x', 'w', 'v'};
-
+        char[] charArray = { 'z', 'y', 'x', 'w', 'v' };
         gv.replace(3, 5, charArray, 3);
-
-        char[] chars1 = {'a', 'b', 'c', 'z', 'y', 'x'};
-        char[] chars2 = {'i', 'j'};
-
+        char[] chars1 = { 'a', 'b', 'c', 'z', 'y', 'x' };
+        char[] chars2 = { 'i', 'j' };
         char[] array = (char[]) gv.getArray();
         for (int i = 0; i < gv.getGapStart(); i++) {
             assertEquals("1 @ " + i, chars1[i], array[i]);
@@ -132,37 +127,30 @@ public class GapContent_GapVectorTest extends TestCase {
     public void testShiftEnd() {
         gv.shiftGap(5);
         gv.shiftEnd(20);
-
         // Check the gap boundaries and its size
         assertEquals(5, gv.getGapStart());
         assertEquals(36, gv.getGapEnd());
         assertEquals(31, gv.getGapEnd() - gv.getGapStart());
-
         // Check that values are copied
-        assertEquals('e', ((char[])gv.getArray())[gv.getGapStart() - 1]);
-        assertEquals('f', ((char[])gv.getArray())[gv.getGapEnd()]);
-
+        assertEquals('e', ((char[]) gv.getArray())[gv.getGapStart() - 1]);
+        assertEquals('f', ((char[]) gv.getArray())[gv.getGapEnd()]);
         try {
             gv.shiftEnd(1);
-
             fail("ArrayIndexOutOfBoundsException is expected as the size of "
-                 + "the array can't be decreased.");
-        } catch (ArrayIndexOutOfBoundsException e) { }
+                    + "the array can't be decreased.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
     }
 
-    public void testShiftEndOverfull() throws BadLocationException  {
-
+    public void testShiftEndOverfull() throws BadLocationException {
         gv.insertString(gv.getGapStart(), "0123456");
-
         int size = gv.getArrayLength();
         assertEquals(20, size);
         char c = '7';
         while (size == gv.getArrayLength()) {
             gv.insertString(gv.getGapStart(), String.valueOf(c));
-
             c++;
         }
-
         assertEquals(19, gv.getGapStart());
         assertEquals(41, gv.getGapEnd());
         assertEquals(42, gv.getArrayLength());
@@ -179,8 +167,7 @@ public class GapContent_GapVectorTest extends TestCase {
         gv.shiftGap(7);
         assertEquals(7, gv.getGapStart());
         assertEquals(16, gv.getGapEnd());
-
-        char[] array = (char[])gv.getArray();
+        char[] array = (char[]) gv.getArray();
         assertEquals('g', array[gv.getGapStart() - 1]);
         assertEquals('h', array[gv.getGapEnd()]);
     }

@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -23,7 +22,6 @@ package javax.swing.text;
 
 import javax.swing.text.AbstractDocument.AbstractElement;
 import javax.swing.tree.TreeNode;
-
 import junit.framework.TestCase;
 
 /**
@@ -36,18 +34,22 @@ import junit.framework.TestCase;
  */
 public class AbstractDocument_AbstractElement_TreeNodeTest extends TestCase {
     protected AbstractDocument doc;
-    protected AbstractElement  aElement;
-    protected AbstractElement  parented;
-    protected AbstractElement  parent;
 
+    protected AbstractElement aElement;
+
+    protected AbstractElement parented;
+
+    protected AbstractElement parent;
+
+    @Override
     protected void setUp() throws Exception {
         // Initialize static variables of enclosing class
         AbstractDocument_AbstractElementTest.init();
         // Copy their values to instance variables
-        doc      = AbstractDocument_AbstractElementTest.aDocument;
+        doc = AbstractDocument_AbstractElementTest.aDocument;
         aElement = AbstractDocument_AbstractElementTest.aElement;
         parented = AbstractDocument_AbstractElementTest.parented;
-        parent   = aElement;
+        parent = aElement;
     }
 
     public void testGetChildCount() {
@@ -56,10 +58,10 @@ public class AbstractDocument_AbstractElement_TreeNodeTest extends TestCase {
     }
 
     public void testGetChildAt() {
-        assertSame(aElement.getElement(0),  aElement.getChildAt(0));
-        assertSame(aElement.getElement(1),  aElement.getChildAt(1));
-        assertSame(aElement.getElement(2),  aElement.getChildAt(2));
-        assertSame(aElement.getElement(5),  aElement.getChildAt(5));
+        assertSame(aElement.getElement(0), aElement.getChildAt(0));
+        assertSame(aElement.getElement(1), aElement.getChildAt(1));
+        assertSame(aElement.getElement(2), aElement.getChildAt(2));
+        assertSame(aElement.getElement(5), aElement.getChildAt(5));
         assertSame(aElement.getElement(10), aElement.getChildAt(10));
     }
 
@@ -74,16 +76,13 @@ public class AbstractDocument_AbstractElement_TreeNodeTest extends TestCase {
         // the second one will come into play. Any way we get what we
         // want.
         assertTrue(node == null || (0 == aElement.getIndex(node)));
-        assertTrue((node = aElement.getChildAt(1)) == null ||
-                (1 == aElement.getIndex(node)));
+        assertTrue((node = aElement.getChildAt(1)) == null || (1 == aElement.getIndex(node)));
     }
 
     public void testGetParent() {
         assertNull(aElement.getParent());
         assertNotNull(parented.getParent());
         assertSame(parent, parented.getParent());
-
         assertSame(parented.getParentElement(), parented.getParent());
     }
-
 }

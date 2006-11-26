@@ -21,9 +21,9 @@
 package javax.swing.plaf.basic;
 
 import java.awt.KeyboardFocusManager;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Set;
-
 import javax.swing.JEditorPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -33,100 +33,73 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.JTextComponent;
 
 public class BasicTextUIRTest extends SwingTestCase {
-    private void checkEditableFTK(final JTextComponent comp,
-                                  final int hashCode1,
-                                  final int hashCode2) {
-        Set keys = comp.getFocusTraversalKeys(KeyboardFocusManager
-                                              .FORWARD_TRAVERSAL_KEYS);
+    private void checkEditableFTK(final JTextComponent comp, final int hashCode1,
+            final int hashCode2) {
+        Set<?> keys = comp.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
         assertEquals(1, keys.size());
         assertEquals(hashCode1, keys.hashCode());
         assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
-                                              KeyEvent.CTRL_DOWN_MASK)));
-        keys = comp.getFocusTraversalKeys(KeyboardFocusManager
-                                          .BACKWARD_TRAVERSAL_KEYS);
+                InputEvent.CTRL_DOWN_MASK)));
+        keys = comp.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
         assertEquals(1, keys.size());
         assertEquals(hashCode2, keys.hashCode());
-        assertTrue(keys
-                   .contains(KeyStroke
-                             .getKeyStroke(KeyEvent.VK_TAB,
-                                           KeyEvent.CTRL_DOWN_MASK
-                                           | KeyEvent.SHIFT_DOWN_MASK)));
+        assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)));
     }
 
     private void checkNotEditableFTK(final JTextComponent comp) {
-        Set keys = comp.getFocusTraversalKeys(KeyboardFocusManager
-                                              .FORWARD_TRAVERSAL_KEYS);
+        Set<?> keys = comp.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
         assertEquals(2, keys.size());
-
         assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
-                                              KeyEvent.CTRL_DOWN_MASK)));
+                InputEvent.CTRL_DOWN_MASK)));
         assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0)));
-
-        keys = comp.getFocusTraversalKeys(KeyboardFocusManager
-                                          .BACKWARD_TRAVERSAL_KEYS);
+        keys = comp.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
         assertEquals(2, keys.size());
-        assertTrue(keys.contains(KeyStroke
-                                 .getKeyStroke(KeyEvent
-                                               .VK_TAB,
-                                               KeyEvent.CTRL_DOWN_MASK
-                                               | KeyEvent.SHIFT_DOWN_MASK)));
-        assertTrue(keys.contains(KeyStroke
-                                 .getKeyStroke(KeyEvent.VK_TAB,
-                                               KeyEvent.SHIFT_DOWN_MASK)));
+        assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)));
+        assertTrue(keys.contains(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.SHIFT_DOWN_MASK)));
     }
 
-
-    public void  testFocusTraversalKeys() {
+    public void testFocusTraversalKeys() {
         JTextComponent textComp = new JTextArea();
-        int forwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
-           .hashCode();
-        int backwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS)
-           .hashCode();
+        int forwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS).hashCode();
+        int backwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS).hashCode();
         checkEditableFTK(textComp, forwardFTKHashCode, backwardFTKHashCode);
         textComp.setEditable(false);
         checkNotEditableFTK(textComp);
         textComp.setEditable(true);
         checkEditableFTK(textComp, forwardFTKHashCode, backwardFTKHashCode);
-
         textComp = new JEditorPane();
-        forwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
-           .hashCode();
-        backwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS)
-           .hashCode();
+        forwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS).hashCode();
+        backwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS).hashCode();
         checkEditableFTK(textComp, forwardFTKHashCode, backwardFTKHashCode);
         textComp.setEditable(false);
         checkNotEditableFTK(textComp);
         textComp.setEditable(true);
         checkEditableFTK(textComp, forwardFTKHashCode, backwardFTKHashCode);
-
         textComp = new JTextField();
-        forwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
-           .hashCode();
-        backwardFTKHashCode = textComp
-           .getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS)
-           .hashCode();
+        forwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS).hashCode();
+        backwardFTKHashCode = textComp.getFocusTraversalKeys(
+                KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS).hashCode();
         checkNotEditableFTK(textComp);
         textComp.setEditable(false);
         checkNotEditableFTK(textComp);
         textComp.setEditable(true);
         checkNotEditableFTK(textComp);
-
     }
-    
+
     public void testUninstallUI() {
         // Regression for HARMONY-1475
         JTextComponent textComp = new JTextField();
         AbstractDocument doc = ((AbstractDocument) textComp.getDocument());
-        assertTrue("listeners installed", 
-                   doc.getDocumentListeners().length > 0);
+        assertTrue("listeners installed", doc.getDocumentListeners().length > 0);
         textComp.getUI().uninstallUI(textComp);
-        assertEquals("no listeners installed", 0,
-                     doc.getDocumentListeners().length);
+        assertEquals("no listeners installed", 0, doc.getDocumentListeners().length);
     }
-
 }

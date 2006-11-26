@@ -25,7 +25,6 @@ package javax.swing.plaf.metal;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -40,7 +39,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.IconUIResource;
 
 public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
-
     PublicMetalCheckBoxUI publicUI;
 
     public static void main(final String[] args) {
@@ -50,28 +48,32 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         publicUI = new PublicMetalCheckBoxUI();
     }
 
+    @Override
     public void testCreateUI() {
         assertTrue("created UI is not null", null != MetalCheckBoxUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", MetalCheckBoxUI.createUI(null) instanceof MetalCheckBoxUI);
-        assertTrue("created UI is not shared", MetalCheckBoxUI.createUI(null) == MetalCheckBoxUI.createUI(null));
+        assertTrue("created UI is of the proper class",
+                MetalCheckBoxUI.createUI(null) instanceof MetalCheckBoxUI);
+        assertTrue("created UI is not shared",
+                MetalCheckBoxUI.createUI(null) == MetalCheckBoxUI.createUI(null));
     }
 
     class PublicMetalCheckBoxUI extends MetalCheckBoxUI {
+        @Override
         public String getPropertyPrefix() {
             return super.getPropertyPrefix();
         }
-
 
         public void setDisabledTextColor(final Color color) {
             disabledTextColor = color;
         }
 
+        @Override
         public Color getDisabledTextColor() {
             return super.getDisabledTextColor();
         }
@@ -80,6 +82,7 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
             focusColor = color;
         }
 
+        @Override
         public Color getFocusColor() {
             return super.getFocusColor();
         }
@@ -88,15 +91,18 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
             selectColor = color;
         }
 
+        @Override
         public Color getSelectColor() {
             return super.getSelectColor();
         }
 
+        @Override
         public void uninstallDefaults(final AbstractButton b) {
             super.uninstallDefaults(b);
         }
     }
 
+    @Override
     public void testUninstallDefaults() {
         JCheckBox button = new JCheckBox();
         UIManager.put("CheckBox.disabledText", new ColorUIResource(Color.red));
@@ -108,10 +114,9 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
         UIManager.put("CheckBox.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("CheckBox.border", border);
-        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB)));
+        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10,
+                BufferedImage.TYPE_INT_RGB)));
         UIManager.put("CheckBox.icon", icon);
-
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         publicUI.uninstallDefaults(button);
@@ -125,6 +130,7 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
         assertEquals("icon", icon, publicUI.getDefaultIcon());
     }
 
+    @Override
     public void testInstallDefaults() {
         JCheckBox button = new JCheckBox();
         UIManager.put("CheckBox.disabledText", new ColorUIResource(Color.red));
@@ -136,10 +142,9 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
         UIManager.put("CheckBox.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("CheckBox.border", border);
-        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB)));
+        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10,
+                BufferedImage.TYPE_INT_RGB)));
         UIManager.put("CheckBox.icon", icon);
-
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         assertEquals(Color.blue, button.getBackground());
@@ -155,5 +160,4 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
     public void testGetPropertyPrefix() {
         assertEquals("prefix ", "CheckBox.", publicUI.getPropertyPrefix());
     }
-
 }

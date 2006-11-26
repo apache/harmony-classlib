@@ -23,7 +23,6 @@
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -35,11 +34,9 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.PanelUI;
-
 import junit.framework.TestCase;
 
 public class BasicPanelUITest extends TestCase {
-
     protected BasicPanelUI panelUI = null;
 
     public static void main(final String[] args) {
@@ -49,6 +46,7 @@ public class BasicPanelUITest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         panelUI = new BasicPanelUI();
@@ -57,6 +55,7 @@ public class BasicPanelUITest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -70,7 +69,6 @@ public class BasicPanelUITest extends TestCase {
         assertNotNull(panel.getBackground());
         assertNotNull(panel.getForeground());
         assertNotNull(panel.getBorder());
-
         UIManager.put("Panel.background", Color.red);
         Border border2 = new BorderUIResource(BorderFactory.createEmptyBorder());
         UIManager.put("Panel.border", border2);
@@ -89,14 +87,12 @@ public class BasicPanelUITest extends TestCase {
         Border border2 = new BorderUIResource(BorderFactory.createEmptyBorder());
         UIManager.put("Panel.border", border2);
         panel.setOpaque(false);
-
         panel.setUI(panelUI);
         panelUI.installUI(panel);
         assertEquals(Color.red, panel.getBackground());
         assertEquals(Color.yellow, panel.getForeground());
         assertEquals(border2, panel.getBorder());
         assertFalse("opaque", panel.isOpaque());
-
         Border border1 = BorderFactory.createEmptyBorder();
         panel.setBorder(border1);
         panel.setUI(panelUI);
@@ -108,10 +104,8 @@ public class BasicPanelUITest extends TestCase {
         JComponent component = new JPanel();
         ComponentUI ui = BasicPanelUI.createUI(component);
         assertTrue(ui != null && (ui instanceof PanelUI));
-
         component = new JButton();
         ui = BasicPanelUI.createUI(component);
         assertTrue(ui != null);
     }
-
 }

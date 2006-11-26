@@ -15,24 +15,22 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.event;
 
 import javax.swing.JMenuItem;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
-
 import junit.framework.TestCase;
 
 public class MenuKeyEventTest extends TestCase {
-
     protected MenuKeyEvent event;
 
+    @Override
     protected void tearDown() throws Exception {
         event = null;
-
         super.tearDown();
     }
 
@@ -41,7 +39,6 @@ public class MenuKeyEventTest extends TestCase {
      */
     public void testMenuKeyEvent() {
         // TODO implement
-
     }
 
     /*
@@ -49,9 +46,11 @@ public class MenuKeyEventTest extends TestCase {
      */
     public void testGetPath() {
         MenuElement[] path = new MenuElement[1];
-        event = new MenuKeyEvent(new JMenuItem(), 1, 2, 3, 4, 'a', path, new MenuSelectionManager());
+        event = new MenuKeyEvent(new JMenuItem(), 1, 2, 3, 4, 'a', path,
+                new MenuSelectionManager());
         assertSame(path, event.getPath());
-        event = new MenuKeyEvent(new JMenuItem(), 1, 2, 3, 4, 'a', null, new MenuSelectionManager());
+        event = new MenuKeyEvent(new JMenuItem(), 1, 2, 3, 4, 'a', null,
+                new MenuSelectionManager());
         assertSame(null, event.getPath());
     }
 
@@ -61,5 +60,4 @@ public class MenuKeyEventTest extends TestCase {
     public void testGetMenuSelectionManager() {
         // TODO implement
     }
-
 }

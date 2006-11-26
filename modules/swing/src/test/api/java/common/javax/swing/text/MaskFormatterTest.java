@@ -25,16 +25,17 @@ import javax.swing.SwingTestCase;
 
 public class MaskFormatterTest extends SwingTestCase {
     MaskFormatter formatter;
+
     boolean bWasException;
 
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new MaskFormatter();
         bWasException = false;
-
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -62,7 +63,6 @@ public class MaskFormatterTest extends SwingTestCase {
             formatter = new MaskFormatter(mask);
             assertEquals(mask, formatter.getMask());
             checkMainProperties();
-
             mask = "#`ula?*h";
             formatter = new MaskFormatter(mask);
             assertEquals(mask, formatter.getMask());
@@ -83,7 +83,6 @@ public class MaskFormatterTest extends SwingTestCase {
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         try {
             formatter.stringToValue("ddd");
         } catch (ParseException e) {
@@ -91,7 +90,6 @@ public class MaskFormatterTest extends SwingTestCase {
         }
         assertTrue(bWasException);
     }
-
 
     public void testSetGetInvalidCharacters() {
         try {
@@ -102,13 +100,11 @@ public class MaskFormatterTest extends SwingTestCase {
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         try {
             formatter.stringToValue("#rra");
         } catch (ParseException e) {
             bWasException = true;
         }
-
         assertTrue(bWasException);
     }
 
@@ -122,8 +118,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("111$%$fff^^^fff", formatter.valueToString("111"));
             formatter.setPlaceholder("123$%$abc");
             assertEquals("123$%$abc", formatter.getPlaceholder());
-            assertEquals("AAA$%$abc^^^***",
-                         formatter.valueToString("AAA"));
+            assertEquals("AAA$%$abc^^^***", formatter.valueToString("AAA"));
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
@@ -134,11 +129,9 @@ public class MaskFormatterTest extends SwingTestCase {
             formatter.setMask("HHH$%$HHH^^^HHH");
             formatter.setPlaceholderCharacter('&');
             assertEquals('&', formatter.getPlaceholderCharacter());
-            assertEquals("456$%$6&&^^^&&&",
-                         formatter.valueToString("456$%$6"));
+            assertEquals("456$%$6&&^^^&&&", formatter.valueToString("456$%$6"));
             formatter.setPlaceholder("123$%$abc");
-            assertEquals("456$%$6bc^^^&&&",
-                         formatter.valueToString("456$%$6"));
+            assertEquals("456$%$6bc^^^&&&", formatter.valueToString("456$%$6"));
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
@@ -153,13 +146,11 @@ public class MaskFormatterTest extends SwingTestCase {
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
-
         try {
             formatter.stringToValue("rra");
         } catch (ParseException e) {
             bWasException = true;
         }
-
         assertTrue(bWasException);
     }
 
@@ -182,7 +173,6 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals(text, formatter.stringToValue(text));
             formatter.setValueContainsLiteralCharacters(false);
             assertEquals("4155551212", formatter.stringToValue(text));
-
         } catch (ParseException e) {
             assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
@@ -278,7 +268,6 @@ public class MaskFormatterTest extends SwingTestCase {
             bWasException = true;
         }
         checkException();
-
         try {
             formatter.setValueContainsLiteralCharacters(false);
             formatter.valueToString("y3");
@@ -299,9 +288,9 @@ public class MaskFormatterTest extends SwingTestCase {
 
     public void testStringToValue_InvalidPlaceHolderChar() {
         try {
-           formatter.setMask("UUU-UUU");
-           formatter.setPlaceholder("aaaaa");
-           formatter.setPlaceholderCharacter('x');
+            formatter.setMask("UUU-UUU");
+            formatter.setPlaceholder("aaaaa");
+            formatter.setPlaceholderCharacter('x');
         } catch (ParseException e) {
             assertTrue("Unexpected exception: " + e.getMessage(), false);
         }

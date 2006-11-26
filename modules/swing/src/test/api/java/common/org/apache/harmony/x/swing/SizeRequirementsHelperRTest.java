@@ -23,13 +23,13 @@ package org.apache.harmony.x.swing;
 import javax.swing.BasicSwingTestCase;
 import javax.swing.SizeRequirements;
 
-import org.apache.harmony.x.swing.SizeRequirementsHelper;
-
 public class SizeRequirementsHelperRTest extends BasicSwingTestCase {
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -37,8 +37,7 @@ public class SizeRequirementsHelperRTest extends BasicSwingTestCase {
     public void testCalculateAlignedPositions() {
         SizeRequirements total = new SizeRequirements(100, 100, Integer.MAX_VALUE, 0.5f);
         SizeRequirements[] children = new SizeRequirements[] {
-             new SizeRequirements(25, 25, 25, 0.5f),
-             new SizeRequirements(50, 50, 50, 0.5f)};
+                new SizeRequirements(25, 25, 25, 0.5f), new SizeRequirements(50, 50, 50, 0.5f) };
         int[] offsets = new int[children.length];
         int[] spans = new int[children.length];
         SizeRequirementsHelper.calculateAlignedPositions(100, total, children, offsets, spans);
@@ -46,11 +45,9 @@ public class SizeRequirementsHelperRTest extends BasicSwingTestCase {
         assertEquals(25, offsets[1]);
         assertEquals(25, spans[0]);
         assertEquals(50, spans[1]);
-
         total = new SizeRequirements(100, 1000, Integer.MAX_VALUE, 0.5f);
-        children = new SizeRequirements[] {
-             new SizeRequirements(50, 50, 250, 0.5f),
-             new SizeRequirements(100, 100, 500, 0.5f)};
+        children = new SizeRequirements[] { new SizeRequirements(50, 50, 250, 0.5f),
+                new SizeRequirements(100, 100, 500, 0.5f) };
         offsets = new int[children.length];
         spans = new int[children.length];
         SizeRequirementsHelper.calculateAlignedPositions(200, total, children, offsets, spans);

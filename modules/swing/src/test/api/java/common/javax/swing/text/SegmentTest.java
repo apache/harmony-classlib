@@ -20,20 +20,21 @@
  */
 package javax.swing.text;
 
+import java.text.CharacterIterator;
 import junit.framework.TestCase;
 
 public class SegmentTest extends TestCase {
     private Segment s;
 
-    private char[] arr =
-        new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'};
+    private char[] arr = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' };
 
+    @Override
     protected void setUp() {
         s = new Segment(arr, 2, 6);
     }
 
     public void testClone() {
-        Segment clone = (Segment)s.clone();
+        Segment clone = (Segment) s.clone();
         assertEquals(s.array, clone.array);
         assertEquals(s.count, clone.count);
         assertEquals(s.offset, clone.offset);
@@ -53,19 +54,17 @@ public class SegmentTest extends TestCase {
         s.setIndex(2);
         assertEquals(s.array[2], s.current());
         s.setIndex(s.getEndIndex());
-        assertEquals(Segment.DONE, s.current());
-
+        assertEquals(CharacterIterator.DONE, s.current());
         s = new Segment();
-        assertEquals(Segment.DONE, s.current());
+        assertEquals(CharacterIterator.DONE, s.current());
     }
 
     public void testFirst() {
         assertEquals(arr[2], s.first());
         assertEquals(s.array[s.getBeginIndex()], s.first());
         assertEquals(s.getBeginIndex(), s.getIndex());
-
         s = new Segment();
-        assertEquals(Segment.DONE, s.first());
+        assertEquals(CharacterIterator.DONE, s.first());
         assertEquals(s.getBeginIndex(), s.getIndex());
     }
 
@@ -73,13 +72,11 @@ public class SegmentTest extends TestCase {
         assertEquals(arr[7], s.last());
         assertEquals(s.array[s.getEndIndex() - 1], s.last());
         assertEquals(s.getEndIndex() - 1, s.getIndex());
-
         s = new Segment();
-        assertEquals(Segment.DONE, s.last());
+        assertEquals(CharacterIterator.DONE, s.last());
         assertEquals(s.getEndIndex(), s.getIndex());
-
         s = new Segment(arr, 2, 0);
-        assertEquals(Segment.DONE, s.last());
+        assertEquals(CharacterIterator.DONE, s.last());
         assertEquals(s.getEndIndex(), s.getIndex());
     }
 
@@ -89,34 +86,30 @@ public class SegmentTest extends TestCase {
         s.setIndex(4);
         assertEquals(arr[5], s.next());
         s.setIndex(s.getEndIndex());
-        assertEquals(Segment.DONE, s.next());
+        assertEquals(CharacterIterator.DONE, s.next());
         s.setIndex(s.getEndIndex() - 1);
-        assertEquals(Segment.DONE, s.next());
-
+        assertEquals(CharacterIterator.DONE, s.next());
         s = new Segment();
-        assertEquals(Segment.DONE, s.next());
+        assertEquals(CharacterIterator.DONE, s.next());
     }
 
     public void testPrevious() {
         s.setIndex(2);
-        assertEquals(Segment.DONE, s.previous());
+        assertEquals(CharacterIterator.DONE, s.previous());
         s.setIndex(5);
         assertEquals(arr[4], s.previous());
-
         s = new Segment();
-        assertEquals(Segment.DONE, s.previous());
+        assertEquals(CharacterIterator.DONE, s.previous());
     }
 
     public void testGetBeginIndex() {
         assertEquals(2, s.getBeginIndex());
-
         s = new Segment();
         assertEquals(0, s.getBeginIndex());
     }
 
     public void testGetEndIndex() {
         assertEquals(8, s.getEndIndex());
-
         s = new Segment();
         assertEquals(0, s.getEndIndex());
     }
@@ -125,7 +118,6 @@ public class SegmentTest extends TestCase {
         assertEquals(0, s.getIndex());
         s.setIndex(5);
         assertEquals(5, s.getIndex());
-
         s = new Segment();
         assertEquals(0, s.getIndex());
     }
@@ -148,21 +140,18 @@ public class SegmentTest extends TestCase {
     public void testSetIndex() {
         try {
             s.setIndex(-1);
-
             fail("IllegalArgumentException was expected");
-        } catch (IllegalArgumentException e) { }
+        } catch (IllegalArgumentException e) {
+        }
         assertEquals(0, s.getIndex());
-
         try {
             s.setIndex(s.getEndIndex() + 1);
-
             fail("IllegalArgumentException was expected");
-        } catch (IllegalArgumentException e) { }
+        } catch (IllegalArgumentException e) {
+        }
         assertEquals(0, s.getIndex());
-
-        assertEquals(Segment.DONE, s.setIndex(s.getEndIndex()));
+        assertEquals(CharacterIterator.DONE, s.setIndex(s.getEndIndex()));
         assertEquals(s.getEndIndex(), s.getIndex());
-
         assertEquals(arr[4], s.setIndex(4));
         assertEquals(4, s.getIndex());
     }

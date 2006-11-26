@@ -21,7 +21,6 @@
 package javax.swing.plaf.metal;
 
 import java.awt.Component;
-
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.SwingTestCase;
@@ -31,10 +30,12 @@ public class MetalRootPaneUIRTest extends SwingTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -44,7 +45,6 @@ public class MetalRootPaneUIRTest extends SwingTestCase {
         JDialog d = new JDialog();
         Component[] comps = d.getLayeredPane().getComponents();
         assertEquals(2, comps.length);
-
         Component titlePane = null;
         for (int i = 0; i < comps.length; i++) {
             if (comps[i] != d.getContentPane()) {
@@ -52,6 +52,6 @@ public class MetalRootPaneUIRTest extends SwingTestCase {
             }
         }
         assertTrue(titlePane instanceof JComponent);
-        assertEquals(1, ((JComponent)titlePane).getComponentCount());
+        assertEquals(1, ((JComponent) titlePane).getComponentCount());
     }
 }

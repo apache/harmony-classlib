@@ -14,24 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
-public class MetalScrollButtonTest extends SwingTestCase{
+public class MetalScrollButtonTest extends SwingTestCase {
     private MetalScrollButton button;
+
     private int width = 20;
 
+    @Override
     protected void setUp() throws Exception {
-        button = new MetalScrollButton(MetalScrollButton.HORIZONTAL, width, false);
+        button = new MetalScrollButton(SwingConstants.HORIZONTAL, width, false);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         button = null;
     }

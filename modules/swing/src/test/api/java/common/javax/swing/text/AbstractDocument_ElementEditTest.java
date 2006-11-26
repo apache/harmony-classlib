@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -25,7 +24,6 @@ import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.AbstractDocument.ElementEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-
 import junit.framework.TestCase;
 
 /**
@@ -34,37 +32,49 @@ import junit.framework.TestCase;
  *
  */
 public class AbstractDocument_ElementEditTest extends TestCase {
+    AbstractDocument doc;
 
-    AbstractDocument     doc;
     DefaultDocumentEvent insert;
+
     DefaultDocumentEvent remove;
-    ElementEdit          insertEdit;
-    ElementEdit          removeEdit;
-    Element              root;
+
+    ElementEdit insertEdit;
+
+    ElementEdit removeEdit;
+
+    Element root;
 
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new PlainDocument() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             protected void insertUpdate(final DefaultDocumentEvent event,
-                                        final AttributeSet attrs) {
+                    final AttributeSet attrs) {
                 insert = event;
                 //if (getName() == "testGetChildrenRemoved")
                 //    System.out.println(getName());
                 super.insertUpdate(event, attrs);
-                insertEdit = (ElementEdit)insert.getChange(root);
+                insertEdit = (ElementEdit) insert.getChange(root);
             }
+
+            @Override
             protected void removeUpdate(final DefaultDocumentEvent event) {
                 remove = event;
                 super.removeUpdate(event);
             }
+
+            @Override
             protected void postRemoveUpdate(final DefaultDocumentEvent event) {
                 assertSame(remove, event);
                 assertNull(remove.getChange(root));
                 super.postRemoveUpdate(event);
-                removeEdit = (ElementEdit)remove.getChange(root);
+                removeEdit = (ElementEdit) remove.getChange(root);
             }
         };
         root = doc.getBidiRootElement();
@@ -77,18 +87,16 @@ public class AbstractDocument_ElementEditTest extends TestCase {
         assertEquals(2, root.getElementCount());
         assertEquals(2, getBidiLevel(root.getElement(0)));
         assertEquals(1, getBidiLevel(root.getElement(1)));
-
         insertEdit.undo();
         assertEquals(1, root.getElementCount());
         assertEquals(0, getBidiLevel(root.getElement(0)));
         // The text is not affected with these undoes
         assertEquals("012\u05DE\u05DF\u05E0", doc.getText(0, doc.getLength()));
-
         try {
             insertEdit.undo();
-
             fail("CannotUndoException should be thrown");
-        } catch (CannotUndoException e) { }
+        } catch (CannotUndoException e) {
+        }
     }
 
     /**
@@ -96,13 +104,12 @@ public class AbstractDocument_ElementEditTest extends TestCase {
      * redoing document structure changes.
      */
     public void testUndo02() throws BadLocationException {
-        Element[] added   = removeEdit.getChildrenAdded();
+        Element[] added = removeEdit.getChildrenAdded();
         Element[] removed = removeEdit.getChildrenRemoved();
         removeEdit.undo();
         // The added and removed children must change their places after undo
         assertSame(added, removeEdit.getChildrenRemoved());
         assertSame(removed, removeEdit.getChildrenAdded());
-
         removeEdit.redo();
         // The children must return to thier places after redo
         assertSame(added, removeEdit.getChildrenAdded());
@@ -112,52 +119,40 @@ public class AbstractDocument_ElementEditTest extends TestCase {
     public void testRedo() throws BadLocationException {
         removeEdit.undo();
         insertEdit.undo();
-
         assertEquals(1, root.getElementCount());
         assertEquals(0, getBidiLevel(root.getElement(0)));
         // The text is not affected with these undoes
         assertEquals("012\u05DE\u05DF\u05E0", doc.getText(0, doc.getLength()));
-
         insertEdit.redo();
         assertEquals(2, root.getElementCount());
         assertEquals(2, getBidiLevel(root.getElement(0)));
         assertEquals(1, getBidiLevel(root.getElement(1)));
-
         removeEdit.redo();
         assertEquals(2, root.getElementCount());
         assertEquals(2, getBidiLevel(root.getElement(0)));
         assertEquals(1, getBidiLevel(root.getElement(1)));
-
         try {
             removeEdit.redo();
-
             fail("CannotRedoException should be thrown");
-        } catch (CannotRedoException e) { }
+        } catch (CannotRedoException e) {
+        }
     }
 
     public void testElementEdit() {
-        Element[] inserted = new Element[] {
-                doc.new BranchElement(null, null),
-                doc.new BranchElement(null, null)
-        };
-        Element[] removed = new Element[] {
-                doc.new LeafElement(null, null, 0, 1),
-                doc.new LeafElement(null, null, 1, 2),
-                doc.new LeafElement(null, null, 2, 3),
-        };
-        AbstractDocument.ElementEdit edit =
-            new AbstractDocument.ElementEdit(doc.getBidiRootElement(), 1,
-                                             removed, inserted);
-
+        Element[] inserted = new Element[] { doc.new BranchElement(null, null),
+                doc.new BranchElement(null, null) };
+        Element[] removed = new Element[] { doc.new LeafElement(null, null, 0, 1),
+                doc.new LeafElement(null, null, 1, 2), doc.new LeafElement(null, null, 2, 3), };
+        AbstractDocument.ElementEdit edit = new AbstractDocument.ElementEdit(doc
+                .getBidiRootElement(), 1, removed, inserted);
         assertSame(doc.getBidiRootElement(), edit.getElement());
         assertSame(inserted, edit.getChildrenAdded());
-        assertSame(removed,  edit.getChildrenRemoved());
+        assertSame(removed, edit.getChildrenRemoved());
         assertEquals(1, edit.getIndex());
     }
 
     private static int getBidiLevel(final Element e) {
-        return ((Integer)e.getAttributes()
-                .getAttribute(StyleConstants.BidiLevel)).intValue();
+        return ((Integer) e.getAttributes().getAttribute(StyleConstants.BidiLevel)).intValue();
     }
 
     public void testGetChildrenRemoved() {
@@ -169,7 +164,6 @@ public class AbstractDocument_ElementEditTest extends TestCase {
         assertEquals(7, removed[0].getEndOffset());
         assertEquals(0, getBidiLevel(removed[0]));
         //((AbstractElement)removed[0]).dump(System.out, 0);
-
         removed = removeEdit.getChildrenRemoved();
         assertEquals(2, removed.length);
         assertTrue(removed[0].isLeaf());
@@ -196,7 +190,6 @@ public class AbstractDocument_ElementEditTest extends TestCase {
         assertEquals(3, added[1].getStartOffset());
         assertEquals(7, added[1].getEndOffset());
         assertEquals(1, getBidiLevel(added[1]));
-
         added = removeEdit.getChildrenAdded();
         assertEquals(2, added.length);
         assertTrue(added[0].isLeaf());
@@ -219,9 +212,8 @@ public class AbstractDocument_ElementEditTest extends TestCase {
         assertEquals(0, removeEdit.getIndex());
         doc.insertString(6, "\nab\ncd\ne", null);
         doc.insertString(doc.getLength(), "\nnew line", null);
-        AbstractDocument.ElementEdit e =
-            (AbstractDocument.ElementEdit)insert.getChange(
-                    doc.getDefaultRootElement());
+        AbstractDocument.ElementEdit e = (AbstractDocument.ElementEdit) insert.getChange(doc
+                .getDefaultRootElement());
         // We've inserted 4 paragraphs of text, then indexes of elements
         // representing them are 0 - 3. When we insert a new paragraph, the
         // element representing the latest paragraph is modified. Hence it
@@ -229,7 +221,5 @@ public class AbstractDocument_ElementEditTest extends TestCase {
         // during this process.)
         // Thus the index should be 3 since the first element modified is at 3.
         assertEquals(3, e.getIndex());
-
     }
-
 }

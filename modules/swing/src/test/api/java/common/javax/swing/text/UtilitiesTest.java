@@ -26,7 +26,6 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.text.BreakIterator;
 import java.text.CharacterIterator;
-
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,32 +35,31 @@ import javax.swing.plaf.basic.BasicTextUI;
 public class UtilitiesTest extends SwingTestCase {
     JTextComponent textComponent;
 
-    TabExp         te   = new TabExp();
+    TabExp te = new TabExp();
 
-    JFrame         jf;
+    JFrame jf;
 
     //not implemented
     //JEditorPane jtp;
     //not implemented
     //JTextPane jtp;
+    JTextArea jta;
 
-    JTextArea      jta;
+    JTextField jtf;
 
-    JTextField     jtf;
+    Document doc_jta;
 
-    Document       doc_jta;
+    Document doc_jtp;
 
-    Document       doc_jtp;
+    Document doc_jtf;
 
-    Document       doc_jtf;
+    String sLTR = "aaaa";
 
-    String         sLTR = "aaaa";
+    String sRTL = "\u05dc" + "\u05dc" + "\u05dc" + "\u05dc";
 
-    String         sRTL = "\u05dc" + "\u05dc" + "\u05dc" + "\u05dc";
+    boolean bWasException;
 
-    boolean        bWasException;
-
-    String         message;
+    String message;
 
     class TabExp implements TabExpander {
         public float nextTabStop(final float f, final int i) {
@@ -70,19 +68,16 @@ public class UtilitiesTest extends SwingTestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         timeoutDelay = 10 * DEFAULT_TIMEOUT_DELAY;
-
         bWasException = false;
         message = null;
-
-        String content = sRTL + "\t" + sLTR + "\t" + sRTL + "\t\t" + sLTR
-                + "\n" + sLTR + "\t " + sLTR + " \t " + sLTR + sRTL + sRTL
-                + sRTL + sRTL + "\n" + sRTL + " " + sRTL + "  " + sRTL + "\n"
-                + sRTL + " " + sRTL + "; " + sRTL + "\n" + sRTL + ";" + sLTR
-                + " \t" + sRTL + "\t" + sRTL + " " + sRTL + ",";
-
+        String content = sRTL + "\t" + sLTR + "\t" + sRTL + "\t\t" + sLTR + "\n" + sLTR + "\t "
+                + sLTR + " \t " + sLTR + sRTL + sRTL + sRTL + sRTL + "\n" + sRTL + " " + sRTL
+                + "  " + sRTL + "\n" + sRTL + " " + sRTL + "; " + sRTL + "\n" + sRTL + ";"
+                + sLTR + " \t" + sRTL + "\t" + sRTL + " " + sRTL + ",";
         jf = new JFrame();
         jta = new JTextArea(content);
         jtf = new JTextField(content);
@@ -92,7 +87,6 @@ public class UtilitiesTest extends SwingTestCase {
         //doc_jtp = jtp.getDocument();
         doc_jtf = jtf.getDocument();
         //setContent();
-
         jf.getContentPane().setLayout(new GridLayout(2, 2));
         jf.getContentPane().add(jta);
         jf.getContentPane().add(jtf);
@@ -102,13 +96,11 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     protected void setContent() {
-        String str[] = {"Draws the given text, expanding any tabs",
+        String str[] = { "Draws the given text, expanding any tabs",
                 "that are contained using the given tab expansion technique",
                 "Determines the width of the given segment of text taking",
-                "Draws the given text, expanding any tabs",};
-
+                "Draws the given text, expanding any tabs", };
         SimpleAttributeSet[] attrs = new SimpleAttributeSet[4];
-
         attrs[0] = new SimpleAttributeSet();
         StyleConstants.setFontFamily(attrs[0], "SansSerif");
         StyleConstants.setFontSize(attrs[0], 16);
@@ -118,18 +110,16 @@ public class UtilitiesTest extends SwingTestCase {
         StyleConstants.setItalic(attrs[2], true);
         attrs[3] = new SimpleAttributeSet(attrs[0]);
         StyleConstants.setFontSize(attrs[3], 20);
-
         try {
             for (int i = 0; i < str.length; i++) {
-                doc_jtp.insertString(doc_jtp.getLength(), str[i] + "\n",
-                                     attrs[i]);
+                doc_jtp.insertString(doc_jtp.getLength(), str[i] + "\n", attrs[i]);
             }
         } catch (BadLocationException ble) {
             System.err.println("Error");
         }
-
     }
 
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -149,47 +139,43 @@ public class UtilitiesTest extends SwingTestCase {
         message = null;
     }
 
-    int getTabbedTextOffset(final Segment s, final FontMetrics fm, final int start, final int end,
-                            final TabExpander t, final int pos) {
+    int getTabbedTextOffset(final Segment s, final FontMetrics fm, final int start,
+            final int end, final TabExpander t, final int pos) {
         int res = start;
-        int width = end - start;
-        String str = "";
         boolean lastTab = true;
         int ret = 0;
         int tmp1 = 0;
-        int tmp2 = 0;
         //TODO end < start
         for (char c = s.first(); c != CharacterIterator.DONE; c = s.next()) {
-            if (c == '\t' && t == null)
+            if (c == '\t' && t == null) {
                 c = ' ';
+            }
             if (c == '\t') {
                 tmp1 = res;
-                res = (int)t.nextTabStop(res, s.getIndex() + pos
-                        - s.getBeginIndex());// + s.getIndex());
+                res = (int) t.nextTabStop(res, s.getIndex() + pos - s.getBeginIndex());// + s.getIndex());
                 lastTab = true;
-                str = "";
             } else {
                 res += fm.charWidth(c);
                 lastTab = false;
             }
-
             int diff = (lastTab) ? (res - tmp1) : (fm.charWidth(c));
             int tail = (diff / 2) + 1;
-            if (res < end + tail)
+            if (res < end + tail) {
                 ret++;
-            else
+            } else {
                 return ret;
+            }
         }
         return ret;
     }
 
-    int getTabbedTextWidth(final Segment s, final FontMetrics fm, final int x, final TabExpander t,
-                           final int pos) {
+    int getTabbedTextWidth(final Segment s, final FontMetrics fm, final int x,
+            final TabExpander t, final int pos) {
         return getTabbedTextEnd(s, fm, x, t, pos) - x;
     }
 
-    int getTabbedTextEnd(final Segment s, final FontMetrics fm, final int x, final TabExpander t,
-                         final int pos) {
+    int getTabbedTextEnd(final Segment s, final FontMetrics fm, final int x,
+            final TabExpander t, final int pos) {
         int res = x;
         String str = "";
         boolean isNullTabExpander = (t == null);
@@ -198,8 +184,7 @@ public class UtilitiesTest extends SwingTestCase {
         for (char c = s.first(); c != CharacterIterator.DONE; c = s.next()) {
             isTab = (c == '\t');
             if (isTab && !isNullTabExpander) {
-                res = (int)t.nextTabStop(fm.stringWidth(str) + res, s
-                        .getIndex()
+                res = (int) t.nextTabStop(fm.stringWidth(str) + res, s.getIndex()
                         + segmentOffset);
                 str = "";
             } else {
@@ -227,19 +212,14 @@ public class UtilitiesTest extends SwingTestCase {
                     assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
                 FontMetrics fm = g.getFontMetrics();
-                assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, te, j),
-                             getTabbedTextEnd(seg, fm, 23, te, j));
-
+                assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, te, j), getTabbedTextEnd(
+                        seg, fm, 23, te, j));
                 assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, null, j),
-                             getTabbedTextEnd(seg, fm, 23, null, j));
-
+                        getTabbedTextEnd(seg, fm, 23, null, j));
                 assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, te, 100),
-                             getTabbedTextEnd(seg, fm, 23, te, 100));
-
-                assertEquals(Utilities
-                        .drawTabbedText(seg, 23, 24, g, null, 100),
-                             getTabbedTextEnd(seg, fm, 23, null, 100));
-
+                        getTabbedTextEnd(seg, fm, 23, te, 100));
+                assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, null, 100),
+                        getTabbedTextEnd(seg, fm, 23, null, 100));
             }
         }
     }
@@ -268,16 +248,13 @@ public class UtilitiesTest extends SwingTestCase {
                     assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
                 assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, te, j),
-                             getTabbedTextWidth(seg, fm, 23, te, j));
-                assertEquals(
-                             Utilities.getTabbedTextWidth(seg, fm, 23, null, j),
-                             getTabbedTextWidth(seg, fm, 23, null, j));
-                assertEquals(
-                             Utilities.getTabbedTextWidth(seg, fm, 23, te, 100),
-                             getTabbedTextWidth(seg, fm, 23, te, 100));
-                assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, null,
-                                                          100),
-                             getTabbedTextWidth(seg, fm, 23, null, 100));
+                        getTabbedTextWidth(seg, fm, 23, te, j));
+                assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, null, j),
+                        getTabbedTextWidth(seg, fm, 23, null, j));
+                assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, te, 100),
+                        getTabbedTextWidth(seg, fm, 23, te, 100));
+                assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, null, 100),
+                        getTabbedTextWidth(seg, fm, 23, null, 100));
             }
         }
     }
@@ -288,8 +265,8 @@ public class UtilitiesTest extends SwingTestCase {
         //getTabbedTextWidthTest(jtp);
     }
 
-    int getTabbedTextOffsetRound(final Segment s, final FontMetrics fm, final int start, final int end,
-                                 final TabExpander t, final int pos, final boolean round) {
+    int getTabbedTextOffsetRound(final Segment s, final FontMetrics fm, final int start,
+            final int end, final TabExpander t, final int pos, final boolean round) {
         String str = "";
         int segmentOffset = pos - s.getBeginIndex();
         boolean isTab = false;
@@ -301,8 +278,7 @@ public class UtilitiesTest extends SwingTestCase {
         for (char c = s.first(); c != CharacterIterator.DONE; c = s.next()) {
             isTab = (c == '\t');
             if (isTab && !isNullTabExpander) {
-                tabEnd = (int)t.nextTabStop(currentEnd, s.getIndex()
-                        + segmentOffset);
+                tabEnd = (int) t.nextTabStop(currentEnd, s.getIndex() + segmentOffset);
                 str = "";
             } else {
                 str += (isTab) ? ' ' : c;
@@ -310,7 +286,6 @@ public class UtilitiesTest extends SwingTestCase {
             }
             currentEnd = isTab ? tabEnd : (tabEnd + fm.stringWidth(str));
             int delta = (round) ? (currentEnd - prevEnd) / 2 : 0;
-
             if (currentEnd > end + delta) {
                 break;
             }
@@ -323,9 +298,9 @@ public class UtilitiesTest extends SwingTestCase {
     void getTabbedTextOffsetRoundTest_BoundaryCases(final JTextComponent c) {
         Document doc = c.getDocument();
         Graphics g = c.getGraphics();
+        assertNotNull(g);
         Element root = doc.getDefaultRootElement();
         Segment seg = new Segment();
-
         for (int i = 0; i < root.getElementCount(); i++) {
             Element currentElem = root.getElement(i);
             int start = currentElem.getStartOffset();
@@ -336,33 +311,20 @@ public class UtilitiesTest extends SwingTestCase {
                 assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
             int textOffset = start + 9;
-
             FontMetrics fm = getFontMetrics(c.getFont(), 10);
             int textWidth = getTabbedTextWidth(seg, fm, 23, te, textOffset);
-            for (int k = -3; k < textWidth + 4; k = (k == 0) ? k = textWidth + 1
-                    : k + 1) {
+            for (int k = -3; k < textWidth + 4; k = (k == 0) ? k = textWidth + 1 : k + 1) {
                 int target = 23 + k;
                 int offset = (k <= 0) ? 0 : seg.count;
-                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23,
-                                                                   target, te,
-                                                                   textOffset,
-                                                                   false));
-                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23,
-                                                                   target, te,
-                                                                   textOffset,
-                                                                   true));
-                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23,
-                                                                   target,
-                                                                   null,
-                                                                   textOffset,
-                                                                   false));
-                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23,
-                                                                   target,
-                                                                   null,
-                                                                   textOffset,
-                                                                   true));
+                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23, target, te,
+                        textOffset, false));
+                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23, target, te,
+                        textOffset, true));
+                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23, target, null,
+                        textOffset, false));
+                assertEquals(offset, Utilities.getTabbedTextOffset(seg, fm, 23, target, null,
+                        textOffset, true));
             }
-
         }
     }
 
@@ -378,7 +340,6 @@ public class UtilitiesTest extends SwingTestCase {
         Element root = doc.getDefaultRootElement();
         Segment seg = new Segment();
         FontMetrics fm = g.getFontMetrics();
-
         for (int i = 0; i < root.getElementCount(); i++) {
             Element currentElem = root.getElement(i);
             int start = currentElem.getStartOffset();
@@ -388,22 +349,15 @@ public class UtilitiesTest extends SwingTestCase {
             } catch (BadLocationException e) {
                 assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
-
             int offset = start + 8;
-            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te,
-                                                         offset);
+            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te, offset);
             for (int k = 0; k < textWidth; k++) {
                 int target = 23 + k;
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te,
-                                                      offset, false), Utilities
-                        .getTabbedTextOffset(seg, fm, 23, target, te, offset,
-                                             false));
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te,
-                                                      offset, true), Utilities
-                        .getTabbedTextOffset(seg, fm, 23, target, te, offset,
-                                             true));
+                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te, offset, false),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, te, offset, false));
+                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te, offset, true),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, te, offset, true));
             }
-
         }
     }
 
@@ -419,7 +373,6 @@ public class UtilitiesTest extends SwingTestCase {
         FontMetrics fm = g.getFontMetrics();
         Element root = doc.getDefaultRootElement();
         Segment seg = new Segment();
-
         for (int i = 0; i < root.getElementCount(); i++) {
             Element currentElem = root.getElement(i);
             int start = currentElem.getStartOffset();
@@ -430,21 +383,15 @@ public class UtilitiesTest extends SwingTestCase {
             } catch (BadLocationException e) {
                 assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
-
-            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te,
-                                                         offset);
+            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te, offset);
             for (int k = 0; k < textWidth; k += 100) {
                 int target = 23 + k;
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target,
-                                                      null, offset, false),
-                             Utilities.getTabbedTextOffset(seg, fm, 23, target,
-                                                           null, offset, false));
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target,
-                                                      null, offset, true),
-                             Utilities.getTabbedTextOffset(seg, fm, 23, target,
-                                                           null, offset, true));
+                assertEquals(
+                        getTabbedTextOffsetRound(seg, fm, 23, target, null, offset, false),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, null, offset, false));
+                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, null, offset, true),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, null, offset, true));
             }
-
         }
     }
 
@@ -460,7 +407,6 @@ public class UtilitiesTest extends SwingTestCase {
         Element root = doc.getDefaultRootElement();
         Segment seg = new Segment();
         FontMetrics fm = g.getFontMetrics();
-
         for (int i = 0; i < root.getElementCount(); i++) {
             Element currentElem = root.getElement(i);
             int start = currentElem.getStartOffset();
@@ -471,17 +417,13 @@ public class UtilitiesTest extends SwingTestCase {
                 assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
             int offset = start + 6;
-            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te,
-                                                         offset);
+            int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te, offset);
             for (int k = -3; k < textWidth + 4; k++) {
                 int target = 23 + k;
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te,
-                                                      offset, true), Utilities
-                        .getTabbedTextOffset(seg, fm, 23, target, te, offset));
-                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target,
-                                                      null, offset, true),
-                             Utilities.getTabbedTextOffset(seg, fm, 23, target,
-                                                           null, offset));
+                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, te, offset, true),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, te, offset));
+                assertEquals(getTabbedTextOffsetRound(seg, fm, 23, target, null, offset, true),
+                        Utilities.getTabbedTextOffset(seg, fm, 23, target, null, offset));
             }
         }
     }
@@ -493,21 +435,17 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     int getBreakLocation(final Segment s, final FontMetrics fm, final int start, final int end,
-                         final TabExpander t, final int pos) {
+            final TabExpander t, final int pos) {
         int offset = s.offset;
-        int index = Utilities.getTabbedTextOffset(s, fm, start, end, t, pos,
-                false);
-
-        int fullIndex = offset +  index;
-
+        int index = Utilities.getTabbedTextOffset(s, fm, start, end, t, pos, false);
+        int fullIndex = offset + index;
         BreakIterator bi = BreakIterator.getWordInstance();
         bi.setText(s);
         if (bi.last() <= fullIndex) {
             return bi.last() - offset;
         }
         if (bi.isBoundary(fullIndex)) {
-            return Character.isWhitespace(s.array[fullIndex])
-                   ? index + 1 : index;
+            return Character.isWhitespace(s.array[fullIndex]) ? index + 1 : index;
         }
         int prev = bi.preceding(fullIndex);
         if (prev == bi.first()) {
@@ -515,7 +453,6 @@ public class UtilitiesTest extends SwingTestCase {
         }
         return prev - offset;
     }
-
 
     void getBreakLocationTest(final JTextComponent c) {
         Document doc = c.getDocument();
@@ -527,25 +464,20 @@ public class UtilitiesTest extends SwingTestCase {
             Element currentElem = root.getElement(i);
             int start = currentElem.getStartOffset();
             int end = currentElem.getEndOffset();
-            for (int j = start; j < Math.min(start + 10,end); j++) {
+            for (int j = start; j < Math.min(start + 10, end); j++) {
                 try {
                     doc.getText(start, (end - start), seg);
                 } catch (BadLocationException e) {
                     assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
-
-                int textWidth = Utilities
-                        .getTabbedTextWidth(seg, fm, 23, te, j);
+                int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te, j);
                 for (int k = 0; k < textWidth; k++) {
                     int target = 23 + k;
                     //TODO This test have to fail
-
-                    assertEquals(Utilities.getBreakLocation(seg, fm, 23,
-                                                            target, te, j),
-                                 getBreakLocation(seg, fm, 23, target, te, j));
-                    assertEquals(Utilities.getBreakLocation(seg, fm, 23,
-                                                            target, null, j),
-                                 getBreakLocation(seg, fm, 23, target, null, j));
+                    assertEquals(Utilities.getBreakLocation(seg, fm, 23, target, te, j),
+                            getBreakLocation(seg, fm, 23, target, te, j));
+                    assertEquals(Utilities.getBreakLocation(seg, fm, 23, target, null, j),
+                            getBreakLocation(seg, fm, 23, target, null, j));
                 }
             }
         }
@@ -553,24 +485,20 @@ public class UtilitiesTest extends SwingTestCase {
 
     public void testGetBreakLocation() {
         if (isHarmony()) {
-           getBreakLocationTest(jta);
+            getBreakLocationTest(jta);
         }
     }
 
     private void getParagraphElementTest(final JTextComponent c) {
-        AbstractDocument ad = (AbstractDocument)c.getDocument();
+        AbstractDocument ad = (AbstractDocument) c.getDocument();
         if (ad instanceof PlainDocument) {
             assertNull(Utilities.getParagraphElement(c, 5000));
             assertNull(Utilities.getParagraphElement(c, -5000));
         } else {
-            assertEquals(ad.getParagraphElement(5000), Utilities
-                    .getParagraphElement(c, 5000));
-            assertEquals(ad.getParagraphElement(-5000), Utilities
-                    .getParagraphElement(c, -5000));
+            assertEquals(ad.getParagraphElement(5000), Utilities.getParagraphElement(c, 5000));
+            assertEquals(ad.getParagraphElement(-5000), Utilities.getParagraphElement(c, -5000));
         }
-
         Element rootElement = ad.getDefaultRootElement();
-
         for (int i = 0; i < rootElement.getElementCount(); i++) {
             Element elem = rootElement.getElement(i);
             int start = elem.getStartOffset();
@@ -580,7 +508,6 @@ public class UtilitiesTest extends SwingTestCase {
                 assertEquals(elem, ad.getParagraphElement(j));
             }
         }
-
     }
 
     public void testGetParagraphElement() {
@@ -592,13 +519,13 @@ public class UtilitiesTest extends SwingTestCase {
     int getPositionAbove(final JTextComponent c, final int p, final int x)
             throws BadLocationException {
         int p0 = Utilities.getRowStart(c, p);
-        if (p0 == 0)
+        if (p0 == 0) {
             return -1;
+        }
         int end = p0 - 1;
         int diff = Integer.MAX_VALUE;
         int offset = 0;
         int start = Utilities.getRowStart(c, end);
-
         for (int i = start; i <= end; i++) {
             Rectangle rect = c.modelToView(i);
             assertNotNull(rect);
@@ -615,13 +542,13 @@ public class UtilitiesTest extends SwingTestCase {
             throws BadLocationException {
         int p0 = Utilities.getRowEnd(c, p);
         int length = c.getDocument().getLength();
-        if (p0 == length)
+        if (p0 == length) {
             return p;
+        }
         int start = p0 + 1;
         int diff = Integer.MAX_VALUE;
         int offset = 0;
         int end = Utilities.getRowEnd(c, start);
-
         for (int i = start; i <= end; i++) {
             Rectangle rect = c.modelToView(i);
             assertNotNull(rect);
@@ -635,7 +562,7 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     void getPositionAboveBelowTest(final JTextComponent c) {
-        BasicTextUI ui = (BasicTextUI)c.getUI();
+        BasicTextUI ui = (BasicTextUI) c.getUI();
         Document doc = c.getDocument();
         int length = doc.getLength();
         for (int i = 0; i < length; i++) {
@@ -643,29 +570,22 @@ public class UtilitiesTest extends SwingTestCase {
             int utilAbove1 = 0;
             int utilBelow = 0;
             int utilBelow1 = 0;
-
             int utilAboveT = 0;
             int utilAbove1T = 0;
             int utilBelowT = 0;
             int utilBelow1T = 0;
-
             int appendix = 23;
             Rectangle rect = null;
             try {
                 rect = ui.modelToView(c, i);
             } catch (BadLocationException e) {
             }
-
             assertNotNull(rect);
-
             try {
                 utilBelow = Utilities.getPositionBelow(c, i, rect.x);
                 utilBelowT = getPositionBelow(c, i, rect.x);
-                utilBelow1 = Utilities
-                        .getPositionBelow(c, i, rect.x + appendix);
-                utilBelow1T = Utilities.getPositionBelow(c, i, rect.x
-                        + appendix);
-
+                utilBelow1 = Utilities.getPositionBelow(c, i, rect.x + appendix);
+                utilBelow1T = Utilities.getPositionBelow(c, i, rect.x + appendix);
             } catch (BadLocationException e) {
                 assertFalse("Unexpected exception: " + e.getMessage(), true);
             }
@@ -674,7 +594,6 @@ public class UtilitiesTest extends SwingTestCase {
             assertEquals(utilBelow1, utilBelow1T);
             assertEquals(utilBelow, utilBelowT);
         }
-
         try {
             Utilities.getPositionAbove(c, -10, 100);
         } catch (BadLocationException e) {
@@ -689,7 +608,6 @@ public class UtilitiesTest extends SwingTestCase {
             bWasException = true;
         }
         checkWasException("Position not represented by view");
-
         try {
             Utilities.getPositionBelow(c, -10, 100);
         } catch (BadLocationException e) {
@@ -704,7 +622,6 @@ public class UtilitiesTest extends SwingTestCase {
             bWasException = true;
         }
         checkWasException("Position not represented by view");
-
     }
 
     public void testGetPositionAboveBelow() {
@@ -714,22 +631,20 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     void getWordStartTest(final JTextComponent c) {
-        AbstractDocument ad = (AbstractDocument)c.getDocument();
+        AbstractDocument ad = (AbstractDocument) c.getDocument();
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = ad.getLength();
         try {
             bi.setText(ad.getText(0, ad.getLength()));
         } catch (BadLocationException e) {
         }
-
         int iteratorWordStart = 0;
         bi.first();
-
         for (int i = 0; i < length; i++) {
             int utilitiesWordStart = 0;
-            if (i < length - 1)
+            if (i < length - 1) {
                 iteratorWordStart = bi.preceding(i + 1);
-            else {
+            } else {
                 bi.last();
                 iteratorWordStart = bi.previous();
             }
@@ -739,7 +654,6 @@ public class UtilitiesTest extends SwingTestCase {
             }
             assertEquals(iteratorWordStart, utilitiesWordStart);
         }
-
         /* According to spec */
         try {
             Utilities.getWordStart(c, length + 10);
@@ -748,7 +662,6 @@ public class UtilitiesTest extends SwingTestCase {
             bWasException = true;
         }
         checkWasException("No word at " + (length + 10));
-
         try {
             Utilities.getWordStart(c, -1);
         } catch (BadLocationException e) {
@@ -766,14 +679,13 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     void getWordEndTest(final JTextComponent c) {
-        AbstractDocument ad = (AbstractDocument)c.getDocument();
+        AbstractDocument ad = (AbstractDocument) c.getDocument();
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = ad.getLength();
         try {
             bi.setText(ad.getText(0, length));
         } catch (BadLocationException e) {
         }
-
         bi.first();
         for (int i = 0; i < length; i++) {
             int utilitiesWordEnd = 0;
@@ -791,9 +703,7 @@ public class UtilitiesTest extends SwingTestCase {
             message = e.getMessage();
             bWasException = true;
         }
-
         checkWasException("No word at " + (length + 10));
-
         try {
             Utilities.getWordEnd(c, -1);
         } catch (BadLocationException e) {
@@ -812,10 +722,8 @@ public class UtilitiesTest extends SwingTestCase {
 
     // may be in future...
     int getRowStart(final JTextComponent c, final int pos) throws BadLocationException {
-        int length = c.getDocument().getLength();
         Rectangle r = null;
         r = c.modelToView(pos);
-
         for (int i = pos; i >= 0; i--) {
             Rectangle tmp = null;
             tmp = c.modelToView(i);
@@ -828,8 +736,9 @@ public class UtilitiesTest extends SwingTestCase {
 
     int getRowEnd(final JTextComponent c, final int pos) throws BadLocationException {
         int length = c.getDocument().getLength();
-        if (c instanceof JTextField)
+        if (c instanceof JTextField) {
             return length;
+        }
         Rectangle r = null;
         r = c.modelToView(pos);
         for (int i = pos; i <= length; i++) {
@@ -845,6 +754,7 @@ public class UtilitiesTest extends SwingTestCase {
     void getRowStartEndTest(final JTextComponent c) throws Exception {
         Document doc = c.getDocument();
         View root = c.getUI().getRootView(c).getView(0);
+        assertNotNull(root);
         int length = doc.getLength();
         for (int i = 0; i < length; i++) {
             /*
@@ -866,16 +776,13 @@ public class UtilitiesTest extends SwingTestCase {
             assertEquals(getRowEnd(c, i), utilitiesRowEnd);
             assertEquals(getRowStart(c, i), utilitiesRowStart);
         }
-
         try {
             Utilities.getRowStart(c, 5000);
         } catch (BadLocationException e) {
             bWasException = true;
             message = e.getMessage();
         }
-
         checkWasException("Position not represented by view");
-
         try {
             Utilities.getRowEnd(c, 5000);
         } catch (BadLocationException e) {
@@ -883,9 +790,7 @@ public class UtilitiesTest extends SwingTestCase {
             message = e.getMessage();
         }
         ;
-
         checkWasException("Position not represented by view");
-
         try {
             Utilities.getRowStart(c, -10);
         } catch (BadLocationException e) {
@@ -902,32 +807,26 @@ public class UtilitiesTest extends SwingTestCase {
         }
         ;
         checkWasException("Position not represented by view");
-
         textComponent = c;
         textComponent.setSize(0, 0);
-
         assertEquals(-1, Utilities.getRowStart(c, -20));
         assertEquals(-1, Utilities.getRowEnd(c, 5000));
         assertEquals(-1, Utilities.getRowStart(c, 5));
         assertEquals(-1, Utilities.getRowEnd(c, 6));
-
     }
 
     public void testGetRowStartEnd() {
-
         try {
             getRowStartEndTest(jta);
             //getRowStartEndTest(jtp);
-
             getRowStartEndTest(jtf);
-
         } catch (Exception e) {
             assertFalse("Unexpected exception", true);
         }
     }
 
     void getPreviousWordTest(final JTextComponent c) {
-        AbstractDocument ad = (AbstractDocument)c.getDocument();
+        AbstractDocument ad = (AbstractDocument) c.getDocument();
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = ad.getLength();
         String content = null;
@@ -936,7 +835,6 @@ public class UtilitiesTest extends SwingTestCase {
             bi.setText(content);
         } catch (BadLocationException e) {
         }
-
         assertNotNull(content);
         bi.first();
         for (int i = 0; i < length; i++) {
@@ -945,18 +843,18 @@ public class UtilitiesTest extends SwingTestCase {
             while (iteratorPrevWord > 0
                     && ((content.charAt(iteratorPrevWord) == ' ' || content
                             .charAt(iteratorPrevWord) == '\n') || content
-                            .charAt(iteratorPrevWord) == '\t'))
+                            .charAt(iteratorPrevWord) == '\t')) {
                 iteratorPrevWord = bi.preceding(iteratorPrevWord);
+            }
             try {
                 utilitiesPrevWord = Utilities.getPreviousWord(c, i);
             } catch (BadLocationException e) {
             }
-            if (iteratorPrevWord == -1)
+            if (iteratorPrevWord == -1) {
                 iteratorPrevWord = 0;
+            }
             assertEquals(iteratorPrevWord, utilitiesPrevWord);
-
         }
-
         try {
             Utilities.getPreviousWord(c, -1);
         } catch (BadLocationException e) {
@@ -980,7 +878,7 @@ public class UtilitiesTest extends SwingTestCase {
     }
 
     void getNextWordTest(final JTextComponent c) {
-        AbstractDocument ad = (AbstractDocument)c.getDocument();
+        AbstractDocument ad = (AbstractDocument) c.getDocument();
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = ad.getLength();
         String content = null;
@@ -989,7 +887,6 @@ public class UtilitiesTest extends SwingTestCase {
             bi.setText(content);
         } catch (BadLocationException e) {
         }
-
         assertNotNull(content);
         bi.first();
         for (int i = 0; i < length; i++) {
@@ -998,18 +895,18 @@ public class UtilitiesTest extends SwingTestCase {
             while (iteratorNextWord < length
                     && ((content.charAt(iteratorNextWord) == ' ' || content
                             .charAt(iteratorNextWord) == '\n') || content
-                            .charAt(iteratorNextWord) == '\t'))
+                            .charAt(iteratorNextWord) == '\t')) {
                 iteratorNextWord = bi.following(iteratorNextWord);
+            }
             try {
                 utilitiesNextWord = Utilities.getNextWord(c, i);
             } catch (BadLocationException e) {
             }
-            if (iteratorNextWord == length)
+            if (iteratorNextWord == length) {
                 iteratorNextWord = 0;
-
+            }
             assertEquals(iteratorNextWord, utilitiesNextWord);
         }
-
         try {
             Utilities.getNextWord(c, length + 10);
         } catch (BadLocationException e) {

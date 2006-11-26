@@ -15,35 +15,35 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import javax.swing.plaf.ComponentUI;
 
 public class BasicCheckBoxMenuItemUITest extends BasicMenuItemUITest {
-
     protected BasicCheckBoxMenuItemUI checkBoxUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         checkBoxUI = new BasicCheckBoxMenuItemUI();
         menuItemUI = checkBoxUI;
         prefix = "CheckBoxMenuItem.";
     }
 
+    @Override
     protected void tearDown() throws Exception {
         checkBoxUI = null;
         menuItemUI = null;
         super.tearDown();
     }
 
-
     /*
      * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
         ComponentUI ui1 = BasicCheckBoxMenuItemUI.createUI(null);
         ComponentUI ui2 = BasicCheckBoxMenuItemUI.createUI(null);
@@ -54,6 +54,7 @@ public class BasicCheckBoxMenuItemUITest extends BasicMenuItemUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.getPropertyPrefix()'
      */
+    @Override
     public void testGetPropertyPrefix() {
         assertEquals("CheckBoxMenuItem", menuItemUI.getPropertyPrefix());
     }
@@ -63,5 +64,4 @@ public class BasicCheckBoxMenuItemUITest extends BasicMenuItemUITest {
      */
     public void testProcessMouseEvent() {
     }
-
 }

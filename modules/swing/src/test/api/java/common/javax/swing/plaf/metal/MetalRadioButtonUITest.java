@@ -25,7 +25,6 @@ package javax.swing.plaf.metal;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -38,11 +37,9 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.IconUIResource;
-
 import junit.framework.TestCase;
 
 public class MetalRadioButtonUITest extends TestCase {
-
     PublicMetalRadioButtonUI publicUI;
 
     public static void main(final String[] args) {
@@ -52,24 +49,26 @@ public class MetalRadioButtonUITest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         publicUI = new PublicMetalRadioButtonUI();
     }
 
     public void testCreateUI() {
         assertTrue("created UI is not null", null != MetalRadioButtonUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", MetalRadioButtonUI.createUI(null) instanceof MetalRadioButtonUI);
-        assertTrue("created UI is not shared", MetalRadioButtonUI.createUI(null) == MetalRadioButtonUI.createUI(null));
+        assertTrue("created UI is of the proper class",
+                MetalRadioButtonUI.createUI(null) instanceof MetalRadioButtonUI);
+        assertTrue("created UI is not shared",
+                MetalRadioButtonUI.createUI(null) == MetalRadioButtonUI.createUI(null));
     }
 
     class PublicMetalRadioButtonUI extends MetalRadioButtonUI {
-
         public void setDisabledTextColor(final Color color) {
             disabledTextColor = color;
         }
 
+        @Override
         public Color getDisabledTextColor() {
             return super.getDisabledTextColor();
         }
@@ -78,6 +77,7 @@ public class MetalRadioButtonUITest extends TestCase {
             focusColor = color;
         }
 
+        @Override
         public Color getFocusColor() {
             return super.getFocusColor();
         }
@@ -86,10 +86,12 @@ public class MetalRadioButtonUITest extends TestCase {
             selectColor = color;
         }
 
+        @Override
         public Color getSelectColor() {
             return super.getSelectColor();
         }
 
+        @Override
         public void uninstallDefaults(final AbstractButton b) {
             super.uninstallDefaults(b);
         }
@@ -106,10 +108,9 @@ public class MetalRadioButtonUITest extends TestCase {
         UIManager.put("RadioButton.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("RadioButton.border", border);
-        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB)));
+        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10,
+                BufferedImage.TYPE_INT_RGB)));
         UIManager.put("RadioButton.icon", icon);
-
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         publicUI.uninstallDefaults(button);
@@ -134,10 +135,9 @@ public class MetalRadioButtonUITest extends TestCase {
         UIManager.put("RadioButton.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("RadioButton.border", border);
-        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB)));
+        Icon icon = new IconUIResource(new ImageIcon(new BufferedImage(10, 10,
+                BufferedImage.TYPE_INT_RGB)));
         UIManager.put("RadioButton.icon", icon);
-
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         assertEquals(Color.blue, button.getBackground());
@@ -167,5 +167,4 @@ public class MetalRadioButtonUITest extends TestCase {
         publicUI.setFocusColor(Color.WHITE);
         assertEquals("FocusColor ", Color.WHITE, publicUI.getFocusColor());
     }
-
 }

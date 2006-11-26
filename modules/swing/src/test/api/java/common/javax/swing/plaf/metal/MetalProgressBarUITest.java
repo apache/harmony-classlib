@@ -18,7 +18,6 @@
  * @author Dennis Ushakov
  * @version $Revision$
  */
-
 package javax.swing.plaf.metal;
 
 import javax.swing.BasicSwingTestCase;
@@ -27,10 +26,12 @@ import javax.swing.JProgressBar;
 public class MetalProgressBarUITest extends BasicSwingTestCase {
     private JProgressBar progressBar;
 
+    @Override
     protected void setUp() throws Exception {
         progressBar = new JProgressBar();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         progressBar = null;
     }
@@ -39,6 +40,4 @@ public class MetalProgressBarUITest extends BasicSwingTestCase {
         assertNotNull(MetalSliderUI.createUI(progressBar));
         assertFalse(MetalSliderUI.createUI(progressBar) == MetalSliderUI.createUI(progressBar));
     }
-
 }
-

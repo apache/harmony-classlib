@@ -15,21 +15,18 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -51,13 +48,15 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.InsetsUIResource;
 
 public class BasicMenuItemUITest extends SwingTestCase {
-
     protected String prefix;
+
     protected BasicMenuItemUI menuItemUI;
 
     private Icon oldArrow;
+
     private Icon oldCheck;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuItemUI = new BasicMenuItemUI();
@@ -67,6 +66,7 @@ public class BasicMenuItemUITest extends SwingTestCase {
         MenuSelectionManager.defaultManager().clearSelectedPath();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         menuItemUI = null;
         UIManager.put(prefix + "arrowIcon", oldArrow);
@@ -77,6 +77,7 @@ public class BasicMenuItemUITest extends SwingTestCase {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicMenuItemUI.paint(Graphics, JComponent)'
      */
+    @SuppressWarnings("deprecation")
     public void testPaint() {
         JFrame frame = new JFrame();
         JMenuItem item = new JMenuItem();
@@ -91,9 +92,10 @@ public class BasicMenuItemUITest extends SwingTestCase {
      * Test method for 'javax.swing.plaf.basic.BasicMenuItemUI.getPreferredSize(JComponent)'
      */
     public void testGetSizes() {
-        Dimension minimum = new Dimension(0, 0);
-        Dimension maximum = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
         JMenuItem item = new JMenuItem() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public FontMetrics getFontMetrics(Font font) {
                 return BasicMenuItemUITest.this.getFontMetrics(font);
             }
@@ -104,21 +106,21 @@ public class BasicMenuItemUITest extends SwingTestCase {
         UIManager.put("OptionPane.margin", margin);
         menuItemUI = new BasicMenuItemUI();
         item.setUI(menuItemUI);
-
         assertNull(menuItemUI.getMinimumSize(item));
         assertNull(menuItemUI.getMaximumSize(item));
-        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon, menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap),
-                     menuItemUI.getPreferredSize(item));
-
+        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon,
+                menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap), menuItemUI
+                .getPreferredSize(item));
         item.setIcon(new ImageIcon(new BufferedImage(10, 20, BufferedImage.TYPE_INT_RGB)));
         assertNull(menuItemUI.getMinimumSize(item));
         assertNull(menuItemUI.getMaximumSize(item));
-        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon, menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap),
-                     menuItemUI.getPreferredSize(item));
-
+        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon,
+                menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap), menuItemUI
+                .getPreferredSize(item));
         item.setAccelerator(KeyStroke.getKeyStroke('a'));
-        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon, menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap),
-                     menuItemUI.getPreferredSize(item));
+        assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon,
+                menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap), menuItemUI
+                .getPreferredSize(item));
     }
 
     /*
@@ -126,13 +128,11 @@ public class BasicMenuItemUITest extends SwingTestCase {
      */
     public void testInstallUninstallUI() {
         JMenuItem item = new JMenuItem();
-
         menuItemUI.installUI(item);
         assertNotNull(item.getBorder());
         assertNotNull(SwingUtilities.getUIActionMap(item));
         assertNotNull(menuItemUI.mouseInputListener);
         assertEquals(0, item.getComponentCount());
-
         menuItemUI.uninstallUI(item);
         assertNull(item.getBorder());
         assertNull(SwingUtilities.getUIActionMap(item));
@@ -158,11 +158,16 @@ public class BasicMenuItemUITest extends SwingTestCase {
         item.setUI(menuItemUI);
         UIManager.getDefaults().put(prefix + "background", new ColorUIResource(Color.red));
         UIManager.getDefaults().put(prefix + "foreground", new ColorUIResource(Color.yellow));
-        UIManager.getDefaults().put(prefix + "acceleratorForeground", new ColorUIResource(Color.cyan));
-        UIManager.getDefaults().put(prefix + "acceleratorSelectionForeground", new ColorUIResource(Color.magenta));
-        UIManager.getDefaults().put(prefix + "selectionBackground", new ColorUIResource(Color.green));
-        UIManager.getDefaults().put(prefix + "selectionForeground", new ColorUIResource(Color.pink));
-        UIManager.getDefaults().put(prefix + "disabledForeground", new ColorUIResource(Color.orange));
+        UIManager.getDefaults().put(prefix + "acceleratorForeground",
+                new ColorUIResource(Color.cyan));
+        UIManager.getDefaults().put(prefix + "acceleratorSelectionForeground",
+                new ColorUIResource(Color.magenta));
+        UIManager.getDefaults().put(prefix + "selectionBackground",
+                new ColorUIResource(Color.green));
+        UIManager.getDefaults().put(prefix + "selectionForeground",
+                new ColorUIResource(Color.pink));
+        UIManager.getDefaults().put(prefix + "disabledForeground",
+                new ColorUIResource(Color.orange));
         Font font = new FontUIResource(item.getFont().deriveFont(100f));
         UIManager.getDefaults().put(prefix + "font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -174,7 +179,6 @@ public class BasicMenuItemUITest extends SwingTestCase {
         Icon check = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB));
         UIManager.getDefaults().put(prefix + "checkIcon", check);
         UIManager.getDefaults().put(prefix + "borderPainted", Boolean.FALSE);
-
         menuItemUI.defaultTextIconGap = 1000;
         menuItemUI.oldBorderPainted = true;
         menuItemUI.installDefaults();
@@ -194,7 +198,6 @@ public class BasicMenuItemUITest extends SwingTestCase {
         assertEquals(Color.orange, menuItemUI.disabledForeground);
         assertEquals(arrow, menuItemUI.arrowIcon);
         assertEquals(check, menuItemUI.checkIcon);
-
         menuItemUI.uninstallDefaults();
         assertNull(item.getBackground());
         assertNull(item.getForeground());
@@ -226,7 +229,7 @@ public class BasicMenuItemUITest extends SwingTestCase {
      */
     public void testInstallUninstallListeners() {
         JMenuItem item = new JMenuItem();
-        menuItemUI = (BasicMenuItemUI)item.getUI();
+        menuItemUI = (BasicMenuItemUI) item.getUI();
         menuItemUI.uninstallListeners();
         assertEquals(0, item.getMenuDragMouseListeners().length);
         assertEquals(0, item.getMenuKeyListeners().length);
@@ -236,7 +239,6 @@ public class BasicMenuItemUITest extends SwingTestCase {
         assertNull(menuItemUI.mouseInputListener);
         assertNull(menuItemUI.menuKeyListener);
         assertNull(menuItemUI.menuDragMouseListener);
-
         menuItemUI.menuItem = item;
         menuItemUI.installListeners();
         Object listener = menuItemUI.mouseInputListener;
@@ -261,16 +263,13 @@ public class BasicMenuItemUITest extends SwingTestCase {
     public void testInstallUninstallKeyboardActions() {
         JMenuItem item = new JMenuItem();
         item.setUI(menuItemUI);
-
         menuItemUI.uninstallKeyboardActions();
         assertEquals("RegisteredKeyStrokes", 0, item.getRegisteredKeyStrokes().length);
-
         menuItemUI.installKeyboardActions();
         assertEquals(14, item.getActionMap().allKeys().length);
         if (!isHarmony()) {
             assertEquals(1, item.getActionMap().getParent().keys().length);
         }
-
         menuItemUI.uninstallKeyboardActions();
         if (isHarmony()) {
             assertEquals(0, item.getActionMap().allKeys().length);
@@ -312,17 +311,11 @@ public class BasicMenuItemUITest extends SwingTestCase {
         Icon icon2 = new ImageIcon(new BufferedImage(10, 20, BufferedImage.TYPE_INT_RGB));
         Icon icon3 = new ImageIcon(new BufferedImage(100, 20, BufferedImage.TYPE_INT_RGB));
         Icon icon4 = new ImageIcon(new BufferedImage(1000, 20, BufferedImage.TYPE_INT_RGB));
-        Icon icon5 = new Icon() {
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-            }
-            public int getIconWidth() {
-                return 100000;
-            }
-            public int getIconHeight() {
-                return 0;
-            }
-        };
         JMenuItem item = new JMenuItem() {
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("deprecation")
+            @Override
             public FontMetrics getFontMetrics(Font font) {
                 return Toolkit.getDefaultToolkit().getFontMetrics(font);
             }
@@ -331,24 +324,29 @@ public class BasicMenuItemUITest extends SwingTestCase {
         UIManager.put("MenuItem.border", border);
         Insets margin = new InsetsUIResource(1, 2, 3, 4);
         UIManager.put("OptionPane.margin", margin);
-
         menuItemUI = new BasicMenuItemUI();
         item.setUI(menuItemUI);
-
-        assertEquals(new Dimension(61, 41), menuItemUI.getPreferredMenuItemSize(item, icon1, icon1, 0));
-        assertEquals(new Dimension(71, 41), menuItemUI.getPreferredMenuItemSize(item, icon1, icon2, 0));
-        assertEquals(new Dimension(171, 41), menuItemUI.getPreferredMenuItemSize(item, icon2, icon3, 0));
-        assertEquals(new Dimension(211, 41), menuItemUI.getPreferredMenuItemSize(item, icon2, icon3, 10));
-        assertEquals(new Dimension(251, 41), menuItemUI.getPreferredMenuItemSize(item, icon2, icon3, 20));
-
+        assertEquals(new Dimension(61, 41), menuItemUI.getPreferredMenuItemSize(item, icon1,
+                icon1, 0));
+        assertEquals(new Dimension(71, 41), menuItemUI.getPreferredMenuItemSize(item, icon1,
+                icon2, 0));
+        assertEquals(new Dimension(171, 41), menuItemUI.getPreferredMenuItemSize(item, icon2,
+                icon3, 0));
+        assertEquals(new Dimension(211, 41), menuItemUI.getPreferredMenuItemSize(item, icon2,
+                icon3, 10));
+        assertEquals(new Dimension(251, 41), menuItemUI.getPreferredMenuItemSize(item, icon2,
+                icon3, 20));
         item.setIcon(icon4);
-        assertEquals(new Dimension(1061, 61), menuItemUI.getPreferredMenuItemSize(item, icon1, icon1, 0));
-        assertEquals(new Dimension(1171, 61), menuItemUI.getPreferredMenuItemSize(item, icon2, icon3, 0));
+        assertEquals(new Dimension(1061, 61), menuItemUI.getPreferredMenuItemSize(item, icon1,
+                icon1, 0));
+        assertEquals(new Dimension(1171, 61), menuItemUI.getPreferredMenuItemSize(item, icon2,
+                icon3, 0));
     }
 
     /*
      * Test method for 'javax.swing.plaf.basic.BasicMenuItemUI.getPath()'
      */
+    @SuppressWarnings("deprecation")
     public void testGetPath() {
         JFrame frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
@@ -364,27 +362,24 @@ public class BasicMenuItemUITest extends SwingTestCase {
         frame.pack();
         frame.show();
         assertEquals(0, menuItemUI.getPath().length);
-
         MenuSelectionManager manager = MenuSelectionManager.defaultManager();
-        manager.setSelectedPath(new MenuElement[] {menuBar, menu, menu.getPopupMenu(), item});
+        manager.setSelectedPath(new MenuElement[] { menuBar, menu, menu.getPopupMenu(), item });
         assertEquals(4, menuItemUI.getPath().length);
         assertSame(menuBar, menuItemUI.getPath()[0]);
         assertSame(menu, menuItemUI.getPath()[1]);
         assertSame(menu.getPopupMenu(), menuItemUI.getPath()[2]);
         assertSame(item, menuItemUI.getPath()[3]);
-
-        manager.setSelectedPath(new MenuElement[] {menuBar, item2, menu2, menu.getPopupMenu()});
+        manager
+                .setSelectedPath(new MenuElement[] { menuBar, item2, menu2, menu.getPopupMenu() });
         assertEquals(5, menuItemUI.getPath().length);
         assertSame(menuBar, menuItemUI.getPath()[0]);
         assertSame(item2, menuItemUI.getPath()[1]);
         assertSame(menu2, menuItemUI.getPath()[2]);
         assertSame(menu.getPopupMenu(), menuItemUI.getPath()[3]);
         assertSame(item, menuItemUI.getPath()[4]);
-
-        manager.setSelectedPath(new MenuElement[] {menuBar});
+        manager.setSelectedPath(new MenuElement[] { menuBar });
         assertEquals(1, menuItemUI.getPath().length);
         assertSame(item, menuItemUI.getPath()[0]);
-
         manager.clearSelectedPath();
         assertEquals(0, menuItemUI.getPath().length);
         frame.dispose();
@@ -395,18 +390,21 @@ public class BasicMenuItemUITest extends SwingTestCase {
      */
     public void testDoClick() {
         class MyJMenuItem extends JMenuItem {
+            private static final long serialVersionUID = 1L;
+
             public int time = -111;
+
+            @Override
             public void doClick(final int pressTime) {
                 time = pressTime;
             }
         }
         MenuSelectionManager manager = new MenuSelectionManager();
-        manager.setSelectedPath(new MenuElement[] {new JMenu(), new JMenu()});
+        manager.setSelectedPath(new MenuElement[] { new JMenu(), new JMenu() });
         MyJMenuItem item = new MyJMenuItem();
         item.setUI(menuItemUI);
         menuItemUI.doClick(manager);
         assertEquals(0, manager.getSelectedPath().length);
         assertEquals(0, item.time);
     }
-
 }

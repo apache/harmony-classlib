@@ -14,17 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Sergey Burlak
  * @version $Revision$
  */
 package javax.swing.plaf.basic;
 
-import java.awt.Image;
-
 import javax.swing.BasicSwingTestCase;
-import javax.swing.Icon;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -33,14 +29,17 @@ import javax.swing.colorchooser.DefaultColorSelectionModel;
 
 public class BasicColorChooserUITest extends BasicSwingTestCase {
     private JColorChooser ch;
+
     private BasicColorChooserUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ch = new JColorChooser();
-        ui = (BasicColorChooserUI)ch.getUI();
+        ui = (BasicColorChooserUI) ch.getUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         ch = null;
@@ -63,20 +62,18 @@ public class BasicColorChooserUITest extends BasicSwingTestCase {
         assertNotNull(ui.createPropertyChangeListener());
         if (isHarmony()) {
             assertNotSame(ui.createPropertyChangeListener(), ui.createPropertyChangeListener());
-            assertSame(BasicColorChooserUI.PropertyHandler.class, ui.createPropertyChangeListener().getClass());
+            assertSame(BasicColorChooserUI.PropertyHandler.class, ui
+                    .createPropertyChangeListener().getClass());
         }
     }
 
     public void testInstallUninstallPreviewPanel() throws Exception {
         assertEquals(2, ch.getComponentCount());
         assertNotNull(findComponent(ch, JTabbedPane.class, true));
-
         ch.remove(ch.getComponent(1));
         assertEquals(1, ch.getComponentCount());
-
         ch.setPreviewPanel(new JPanel());
         assertEquals(1, ch.getComponentCount());
-
         ui.installPreviewPanel();
         assertEquals(1, ch.getComponentCount());
     }
@@ -84,21 +81,19 @@ public class BasicColorChooserUITest extends BasicSwingTestCase {
     public void testUninstallDefaultChoosers() throws Exception {
         assertEquals(2, ch.getComponentCount());
         assertNotNull(findComponent(ch, JTabbedPane.class, true));
-        assertEquals(3, ((JTabbedPane)findComponent(ch, JTabbedPane.class, true)).getTabCount());
-
+        assertEquals(3, ((JTabbedPane) findComponent(ch, JTabbedPane.class, true))
+                .getTabCount());
         ch.removeChooserPanel(ch.getChooserPanels()[0]);
         assertEquals(2, ch.getComponentCount());
         assertNotNull(findComponent(ch, JTabbedPane.class, true));
-        assertEquals(2, ((JTabbedPane)findComponent(ch, JTabbedPane.class, true)).getTabCount());
-
+        assertEquals(2, ((JTabbedPane) findComponent(ch, JTabbedPane.class, true))
+                .getTabCount());
         ch.removeChooserPanel(ch.getChooserPanels()[0]);
         assertEquals(2, ch.getComponentCount());
         assertNull(findComponent(ch, JTabbedPane.class, true));
-
         ch.removeChooserPanel(ch.getChooserPanels()[0]);
         assertEquals(2, ch.getComponentCount());
         assertNull(findComponent(ch, JTabbedPane.class, true));
-
         ui.defaultChoosers = new AbstractColorChooserPanel[0];
         ui.uninstallDefaultChoosers();
         assertEquals(2, ch.getComponentCount());
@@ -108,15 +103,15 @@ public class BasicColorChooserUITest extends BasicSwingTestCase {
     public void testInstallUninstallListeners() throws Exception {
         ui.uninstallListeners();
         int propChangeListCount = ch.getPropertyChangeListeners().length;
-        int changeListcount = ((DefaultColorSelectionModel)ch.getSelectionModel()).getChangeListeners().length;
-
+        int changeListcount = ((DefaultColorSelectionModel) ch.getSelectionModel())
+                .getChangeListeners().length;
         ui.installListeners();
-
         assertEquals(propChangeListCount + 1, ch.getPropertyChangeListeners().length);
-        assertEquals(changeListcount + 1, ((DefaultColorSelectionModel)ch.getSelectionModel()).getChangeListeners().length);
-
+        assertEquals(changeListcount + 1, ((DefaultColorSelectionModel) ch.getSelectionModel())
+                .getChangeListeners().length);
         ui.uninstallListeners();
         assertEquals(propChangeListCount, ch.getPropertyChangeListeners().length);
-        assertEquals(changeListcount, ((DefaultColorSelectionModel)ch.getSelectionModel()).getChangeListeners().length);
+        assertEquals(changeListcount, ((DefaultColorSelectionModel) ch.getSelectionModel())
+                .getChangeListeners().length);
     }
 }

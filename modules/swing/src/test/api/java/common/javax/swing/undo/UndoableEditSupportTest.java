@@ -21,25 +21,24 @@
 package javax.swing.undo;
 
 import java.util.Vector;
-
 import javax.swing.SwingTestCase;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.PlainDocument;
 
 public class UndoableEditSupportTest extends SwingTestCase {
-    ExtUESupport        ues1;
+    ExtUESupport ues1;
 
     UndoableEditSupport ues2;
 
-    PlainDocument       realSource;
+    PlainDocument realSource;
 
-    String              fireOrder;
+    String fireOrder;
 
     final String PATTERN = "@[^ }]*";
 
     class UEListener implements UndoableEditListener {
-        String            name;
+        String name;
 
         UndoableEditEvent event = null;
 
@@ -54,11 +53,11 @@ public class UndoableEditSupportTest extends SwingTestCase {
     }
 
     class ExtUESupport extends UndoableEditSupport {
-        boolean      wasCallCreate   = false;
+        boolean wasCallCreate = false;
 
-        boolean      wasCallPostEdit = false;
+        boolean wasCallPostEdit = false;
 
-        UndoableEdit ue              = null;
+        UndoableEdit ue = null;
 
         void resetDbgInfo() {
             wasCallPostEdit = false;
@@ -66,37 +65,43 @@ public class UndoableEditSupportTest extends SwingTestCase {
             ue = null;
         }
 
+        @Override
         protected void _postEdit(final UndoableEdit e) {
             wasCallPostEdit = true;
             ue = e;
             super._postEdit(e);
         }
 
+        @Override
         public synchronized void postEdit(final UndoableEdit a0) {
             super.postEdit(a0);
         }
 
+        @Override
         protected CompoundEdit createCompoundEdit() {
             wasCallCreate = true;
             return super.createCompoundEdit();
         }
-
     }
 
     class ExtCompoundEdit extends CompoundEdit {
+        private static final long serialVersionUID = 1L;
+
         boolean wasCallAddEdit = false;
 
-        boolean wasCallEnd     = false;
+        boolean wasCallEnd = false;
 
         public ExtCompoundEdit() {
             super();
         }
 
+        @Override
         public boolean addEdit(final UndoableEdit anEdit) {
             wasCallAddEdit = true;
             return super.addEdit(anEdit);
         }
 
+        @Override
         public void end() {
             wasCallEnd = true;
             super.end();
@@ -106,7 +111,6 @@ public class UndoableEditSupportTest extends SwingTestCase {
             wasCallAddEdit = false;
             wasCallEnd = false;
         }
-
     }
 
     void resetDbgInfo(final ExtCompoundEdit ce, final ExtUESupport ues) {
@@ -114,6 +118,7 @@ public class UndoableEditSupportTest extends SwingTestCase {
         ues.resetDbgInfo();
     }
 
+    @Override
     protected void setUp() throws Exception {
         ues1 = new ExtUESupport();
         realSource = new PlainDocument();
@@ -122,6 +127,7 @@ public class UndoableEditSupportTest extends SwingTestCase {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -150,19 +156,16 @@ public class UndoableEditSupportTest extends SwingTestCase {
         UEListener listener1 = new UEListener("1");
         UEListener listener2 = new UEListener("2");
         UEListener listener3 = new UEListener("3");
-
         ues1.addUndoableEditListener(listener1);
         ues1.addUndoableEditListener(listener2);
         ues1.addUndoableEditListener(listener3);
         UndoableEdit ue = new CompoundEdit();
         UndoableEditEvent uee = new UndoableEditEvent(ues1.realSource, ue);
         ues1._postEdit(ue);
-
         assertEquals("123", fireOrder);
         checkEvent(uee, listener1.event);
         checkEvent(uee, listener2.event);
         checkEvent(uee, listener3.event);
-
     }
 
     public void testBeginUpdate() {
@@ -176,7 +179,6 @@ public class UndoableEditSupportTest extends SwingTestCase {
                 assertFalse(ues1.wasCallCreate);
                 assertEquals(i + 1, ues1.getUpdateLevel());
             }
-
         }
     }
 
@@ -203,10 +205,8 @@ public class UndoableEditSupportTest extends SwingTestCase {
         for (int i = 0; i < 10; i++) {
             CompoundEdit ce1 = ues1.compoundEdit;
             UndoableEditEvent uee = new UndoableEditEvent(ues1.realSource, ce1);
-
             resetDbgInfo(ce, ues1);
             ues1.endUpdate();
-
             assertEquals(4 - i, ues1.updateLevel);
             if (ues1.updateLevel == 0) {
                 assertTrue(ues1.wasCallPostEdit);
@@ -222,9 +222,7 @@ public class UndoableEditSupportTest extends SwingTestCase {
             } else {
                 assertNull(ues1.compoundEdit);
             }
-
         }
-
         for (int i = 0; i < 20; i++) {
             ues1.wasCallCreate = false;
             ues1.beginUpdate();
@@ -271,25 +269,21 @@ public class UndoableEditSupportTest extends SwingTestCase {
                 checkUpdateLevel(count, ues1);
             }
         }
-
     }
 
     public void testPostEdit() {
         ues1.postEdit(null);
         assertTrue(true);
         assertNull(ues1.ue);
-
         UndoableEdit ue = new CompoundEdit();
         ues1.postEdit(ue);
         assertEquals(ue, ues1.ue);
     }
 
     String getString(final UndoableEditSupport ues) {
-        return ues.getClass().getName() + " " + "updateLevel: "
-               + ues.updateLevel + " " + "listeners: "
-               + ues.listeners.toString() + " " + "compoundEdit: "
-               + ues.compoundEdit;
-
+        return ues.getClass().getName() + " " + "updateLevel: " + ues.updateLevel + " "
+                + "listeners: " + ues.listeners.toString() + " " + "compoundEdit: "
+                + ues.compoundEdit;
     }
 
     void checkToString(final UndoableEditSupport ues) {
@@ -302,6 +296,7 @@ public class UndoableEditSupportTest extends SwingTestCase {
         checkToString(ues2);
     }
 
+    @SuppressWarnings("unchecked")
     void checkListeners(final UndoableEditSupport ues, final Vector v) {
         UndoableEditListener[] listeners = ues.getUndoableEditListeners();
         int length = v.size();
@@ -312,6 +307,7 @@ public class UndoableEditSupportTest extends SwingTestCase {
         assertEquals(v, ues.listeners);
     }
 
+    @SuppressWarnings("unchecked")
     public void testAddRemoveGetUndoableEditListener() {
         UEListener listener1 = new UEListener("1");
         UEListener listener2 = new UEListener("2");
@@ -320,27 +316,21 @@ public class UndoableEditSupportTest extends SwingTestCase {
         ues1.addUndoableEditListener(listener1);
         listenersVector.add(listener1);
         checkListeners(ues1, listenersVector);
-
         ues1.addUndoableEditListener(listener2);
         listenersVector.add(listener2);
         checkListeners(ues1, listenersVector);
-
         ues1.addUndoableEditListener(listener3);
         listenersVector.add(listener3);
         checkListeners(ues1, listenersVector);
-
         ues1.addUndoableEditListener(listener1);
         listenersVector.add(listener1);
         checkListeners(ues1, listenersVector);
-
         ues1.removeUndoableEditListener(listener2);
         listenersVector.remove(listener2);
         checkListeners(ues1, listenersVector);
-
         ues1.removeUndoableEditListener(listener1);
         listenersVector.remove(listener1);
         checkListeners(ues1, listenersVector);
-
         ues1.removeUndoableEditListener(listener3);
         listenersVector.remove(listener3);
         checkListeners(ues1, listenersVector);
@@ -350,13 +340,11 @@ public class UndoableEditSupportTest extends SwingTestCase {
         ExtCompoundEdit ce = new ExtCompoundEdit();
         ues1.compoundEdit = ce;
         resetDbgInfo(ce, ues1);
-
         UndoableEdit ue = new CompoundEdit();
         assertEquals(0, ues1.updateLevel);
         ues1.postEdit(ue);
         assertTrue(ues1.wasCallPostEdit);
         assertFalse(ce.wasCallAddEdit);
-
         ues1.updateLevel = 3;
         resetDbgInfo(ce, ues1);
         assertEquals(ce, ues1.compoundEdit);
@@ -365,5 +353,4 @@ public class UndoableEditSupportTest extends SwingTestCase {
         assertFalse(ues1.wasCallPostEdit);
         assertTrue(ce.wasCallAddEdit);
     }
-
 }

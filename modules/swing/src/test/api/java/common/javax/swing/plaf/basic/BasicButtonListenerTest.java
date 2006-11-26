@@ -22,7 +22,6 @@ package javax.swing.plaf.basic;
 
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
-
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -33,13 +32,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class BasicButtonListenerTest extends SwingTestCase {
-
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     public void testBasicButtonListener() {
         //TODO Implement BasicButtonListener().
@@ -55,12 +47,13 @@ public class BasicButtonListenerTest extends SwingTestCase {
 
     public void testInstallKeyboardActions() {
         AbstractButton button = new JButton();
-        BasicButtonListener listener =  new BasicButtonListener(button);
+        BasicButtonListener listener = new BasicButtonListener(button);
         assertEquals(0, button.getActionMap().size());
         assertNotNull(button.getActionMap().getParent());
         assertEquals(3, button.getActionMap().getParent().size());
         assertEquals(2, button.getRegisteredKeyStrokes().length);
         KeyStroke ks = button.getRegisteredKeyStrokes()[0];
+        assertNotNull(ks);
         listener.installKeyboardActions(button);
         assertEquals(0, button.getActionMap().size());
         assertEquals(3, button.getActionMap().getParent().size());
@@ -110,12 +103,13 @@ public class BasicButtonListenerTest extends SwingTestCase {
     }
 
     class AdvancedChangeListener implements ChangeListener {
-        public ArrayList events = new ArrayList();
-        public ArrayList states = new ArrayList();
+        public ArrayList<ChangeEvent> events = new ArrayList<ChangeEvent>();
+
+        public ArrayList<Boolean> states = new ArrayList<Boolean>();
 
         public void stateChanged(ChangeEvent e) {
             events.add(e);
-            ButtonModel model = (ButtonModel)e.getSource();
+            ButtonModel model = (ButtonModel) e.getSource();
             states.add(Boolean.valueOf(model.isPressed()));
             states.add(Boolean.valueOf(model.isArmed()));
         }
@@ -123,15 +117,12 @@ public class BasicButtonListenerTest extends SwingTestCase {
 
     public void testFocusLost() {
         final JToggleButton button = new JToggleButton();
-
         button.getModel().setPressed(true);
         button.getModel().setArmed(true);
         button.getModel().setRollover(true);
-
-        BasicButtonListener listener = (BasicButtonListener)button.getChangeListeners()[0];
+        BasicButtonListener listener = (BasicButtonListener) button.getChangeListeners()[0];
         AdvancedChangeListener changeListener = new AdvancedChangeListener();
         button.getModel().addChangeListener(changeListener);
-
         listener.focusLost(new FocusEvent(button, 0));
         if (isHarmony()) {
             assertEquals("number of events", 2, changeListener.events.size());
@@ -141,14 +132,11 @@ public class BasicButtonListenerTest extends SwingTestCase {
             assertEquals("Armed", Boolean.FALSE, changeListener.states.get(3));
             assertFalse("Pressed", button.getModel().isPressed());
         }
-
         assertFalse("Armed", button.getModel().isArmed());
         assertTrue("Rollover", button.getModel().isRollover());
     }
 
-
     public void testFocusGained() {
         //TODO Implement focusGained().
     }
-
 }

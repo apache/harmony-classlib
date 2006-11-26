@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -42,12 +41,13 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.InsetsUIResource;
 
 public class BasicMenuUITest extends SwingTestCase {
-
     protected BasicMenuUI menuUI;
 
     private Icon oldArrow;
+
     private Icon oldCheck;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         menuUI = new BasicMenuUI();
@@ -55,6 +55,7 @@ public class BasicMenuUITest extends SwingTestCase {
         oldCheck = UIManager.getIcon("Menu.checkIcon");
     }
 
+    @Override
     protected void tearDown() throws Exception {
         menuUI = null;
         UIManager.put("Menu.arrowIcon", oldArrow);
@@ -69,13 +70,10 @@ public class BasicMenuUITest extends SwingTestCase {
         JMenuBar bar = new JMenuBar();
         JMenu menu1 = new JMenu();
         menu1.setUI(menuUI);
-
         assertNull(menuUI.getMaximumSize(menu1));
-
         bar.add(menu1);
         assertEquals(menuUI.getPreferredSize(menu1).width, menuUI.getMaximumSize(menu1).width);
         assertEquals(Short.MAX_VALUE, menuUI.getMaximumSize(menu1).height);
-
         menu1.setPreferredSize(new Dimension(1000, 1000));
         assertEquals(1000, menuUI.getMaximumSize(menu1).width);
         assertEquals(Short.MAX_VALUE, menuUI.getMaximumSize(menu1).height);
@@ -105,11 +103,16 @@ public class BasicMenuUITest extends SwingTestCase {
         JMenu menu = new JMenu();
         UIManager.getDefaults().put("Menu.background", new ColorUIResource(Color.red));
         UIManager.getDefaults().put("Menu.foreground", new ColorUIResource(Color.yellow));
-        UIManager.getDefaults().put("Menu.acceleratorForeground", new ColorUIResource(Color.cyan));
-        UIManager.getDefaults().put("Menu.acceleratorSelectionForeground", new ColorUIResource(Color.magenta));
-        UIManager.getDefaults().put("Menu.selectionBackground", new ColorUIResource(Color.green));
-        UIManager.getDefaults().put("Menu.selectionForeground", new ColorUIResource(Color.pink));
-        UIManager.getDefaults().put("Menu.disabledForeground", new ColorUIResource(Color.orange));
+        UIManager.getDefaults().put("Menu.acceleratorForeground",
+                new ColorUIResource(Color.cyan));
+        UIManager.getDefaults().put("Menu.acceleratorSelectionForeground",
+                new ColorUIResource(Color.magenta));
+        UIManager.getDefaults().put("Menu.selectionBackground",
+                new ColorUIResource(Color.green));
+        UIManager.getDefaults()
+                .put("Menu.selectionForeground", new ColorUIResource(Color.pink));
+        UIManager.getDefaults().put("Menu.disabledForeground",
+                new ColorUIResource(Color.orange));
         Font font = new FontUIResource(menu.getFont().deriveFont(100f));
         UIManager.getDefaults().put("Menu.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -120,7 +123,6 @@ public class BasicMenuUITest extends SwingTestCase {
         UIManager.getDefaults().put("Menu.arrowIcon", arrow);
         Icon check = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB));
         UIManager.getDefaults().put("Menu.checkIcon", check);
-
         menu.setUI(menuUI);
         menuUI.installDefaults();
         assertEquals(Color.red, menu.getBackground());
@@ -140,7 +142,6 @@ public class BasicMenuUITest extends SwingTestCase {
         if (isHarmony()) {
             assertFalse(menu.isOpaque());
         }
-
         menuUI.uninstallDefaults();
         assertNull(menu.getBackground());
         assertNull(menu.getForeground());
@@ -163,7 +164,7 @@ public class BasicMenuUITest extends SwingTestCase {
      */
     public void testInstallUninstallListeners() {
         JMenu menu = new JMenu();
-        menuUI = (BasicMenuUI)menu.getUI();
+        menuUI = (BasicMenuUI) menu.getUI();
         menuUI.uninstallListeners();
         assertEquals(0, menu.getMenuDragMouseListeners().length);
         assertEquals(0, menu.getMenuKeyListeners().length);
@@ -174,7 +175,6 @@ public class BasicMenuUITest extends SwingTestCase {
         assertNull(menuUI.mouseInputListener);
         assertNull(menuUI.menuKeyListener);
         assertNull(menuUI.menuDragMouseListener);
-
         menuUI.menuItem = menu;
         menuUI.installListeners();
         assertNull(menuUI.changeListener);
@@ -194,7 +194,6 @@ public class BasicMenuUITest extends SwingTestCase {
         assertSame(menuUI.propertyChangeListener, menu.getPropertyChangeListeners()[0]);
         assertSame(menuUI.mouseInputListener, menu.getMouseMotionListeners()[0]);
         assertSame(menuUI.mouseInputListener, menu.getMouseListeners()[0]);
-
         menuUI.uninstallListeners();
         assertNull(menuUI.propertyChangeListener);
         assertNull(menuUI.mouseInputListener);
@@ -213,10 +212,8 @@ public class BasicMenuUITest extends SwingTestCase {
     public void testInstallUninstallKeyboardActions() {
         JMenu menu = new JMenu();
         menu.setUI(menuUI);
-
         menuUI.uninstallKeyboardActions();
         assertEquals("RegisteredKeyStrokes", 0, menu.getRegisteredKeyStrokes().length);
-
         menuUI.installKeyboardActions();
         if (isHarmony()) {
             assertEquals(14, menu.getActionMap().allKeys().length);
@@ -246,8 +243,8 @@ public class BasicMenuUITest extends SwingTestCase {
     public void testCreateMenuDragMouseListener() {
         assertNotNull(menuUI.createMenuDragMouseListener(null));
         if (isHarmony()) {
-            assertSame(menuUI.createMenuDragMouseListener(null),
-                       menuUI.createMenuDragMouseListener(null));
+            assertSame(menuUI.createMenuDragMouseListener(null), menuUI
+                    .createMenuDragMouseListener(null));
         }
     }
 
@@ -257,8 +254,7 @@ public class BasicMenuUITest extends SwingTestCase {
     public void testCreateMenuKeyListener() {
         if (isHarmony()) {
             assertNull(menuUI.createMenuKeyListener(null));
-            assertSame(menuUI.createMenuKeyListener(null),
-                       menuUI.createMenuKeyListener(null));
+            assertSame(menuUI.createMenuKeyListener(null), menuUI.createMenuKeyListener(null));
         } else {
             assertNotNull(menuUI.createMenuKeyListener(null));
         }
@@ -271,7 +267,6 @@ public class BasicMenuUITest extends SwingTestCase {
         assertNull(menuUI.changeListener);
         assertNull(menuUI.menuListener);
         assertNull(menuUI.propertyChangeListener);
-
     }
 
     /*
@@ -302,13 +297,11 @@ public class BasicMenuUITest extends SwingTestCase {
 
     public void testInstallUninstallUI() {
         JMenu item = new JMenu();
-
         menuUI.installUI(item);
         assertNotNull(item.getBorder());
         assertNotNull(SwingUtilities.getUIActionMap(item));
         assertNotNull(menuUI.mouseInputListener);
         assertEquals(0, item.getComponentCount());
-
         menuUI.uninstallUI(item);
         assertNull(item.getBorder());
         assertNull(SwingUtilities.getUIActionMap(item));

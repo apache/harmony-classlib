@@ -15,24 +15,24 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
-
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 public class BasicPopupMenuSeparatorUITest extends BasicSeparatorUITest {
-
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         ui = new BasicPopupMenuSeparatorUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -40,6 +40,7 @@ public class BasicPopupMenuSeparatorUITest extends BasicSeparatorUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicSeparatorUI.getPreferredSize(JComponent)'
      */
+    @Override
     public void testGetSizes() {
         JSeparator separator1 = new JSeparator(SwingConstants.HORIZONTAL);
         JSeparator separator2 = new JSeparator(SwingConstants.VERTICAL);
@@ -54,10 +55,13 @@ public class BasicPopupMenuSeparatorUITest extends BasicSeparatorUITest {
     /*
      * Test method for 'javax.swing.plaf.basic.BasicPopupMenuSeparatorUI.createUI(JComponent)'
      */
+    @Override
     public void testCreateUI() {
-        assertNotNull("created UI is not null", BasicPopupMenuSeparatorUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", BasicPopupMenuSeparatorUI.createUI(null) instanceof BasicPopupMenuSeparatorUI);
-        assertNotSame("created UI is of unique", BasicPopupMenuSeparatorUI.createUI(null), BasicPopupMenuSeparatorUI.createUI(null));
+        assertNotNull("created UI is not null", BasicPopupMenuSeparatorUI
+                .createUI(new JButton()));
+        assertTrue("created UI is of the proper class", BasicPopupMenuSeparatorUI
+                .createUI(null) instanceof BasicPopupMenuSeparatorUI);
+        assertNotSame("created UI is of unique", BasicPopupMenuSeparatorUI.createUI(null),
+                BasicPopupMenuSeparatorUI.createUI(null));
     }
-
 }

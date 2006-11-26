@@ -23,7 +23,6 @@ package javax.swing.plaf.basic;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -36,18 +35,21 @@ import javax.swing.event.PopupMenuListener;
 
 public class BasicComboPopupTest extends SwingTestCase {
     private BasicComboPopup popup;
+
     private JComboBox comboBox;
 
     public BasicComboPopupTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
-        comboBox = new JComboBox(new Object[] {"1", "2", "3"});
+        comboBox = new JComboBox(new Object[] { "1", "2", "3" });
         popup = new BasicComboPopup(comboBox);
-        ((BasicComboBoxUI)comboBox.getUI()).popup = popup;
+        ((BasicComboBoxUI) comboBox.getUI()).popup = popup;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         comboBox = null;
         popup = null;
@@ -57,40 +59,30 @@ public class BasicComboPopupTest extends SwingTestCase {
         assertNotNull(popup.comboBox);
         assertNotNull(popup.list);
         assertNotNull(popup.scroller);
-
         assertEquals(3, popup.list.getModel().getSize());
-
         popup = new BasicComboPopup(new JComboBox());
         assertNotNull(popup.list);
         assertEquals(0, popup.list.getModel().getSize());
         assertTrue(popup.comboBox.getModel() == popup.list.getModel());
-
         assertEquals(popup.getComponent(), popup);
         assertEquals(1, popup.getComponentCount());
         assertEquals(popup.scroller, popup.getComponent(0));
-
         assertEquals(ListSelectionModel.SINGLE_SELECTION, popup.list.getSelectionMode());
         assertTrue(popup.getBorder().getClass() == LineBorder.class);
         assertEquals(new Insets(1, 1, 1, 1), popup.getInsets());
-
         assertFalse(popup.isAutoScrolling);
     }
 
     public void testShowHide() throws Exception {
         createVisibleComboBox();
-
         popup.show();
         assertTrue(popup.isShowing());
-
         popup.show();
         assertTrue(popup.isShowing());
-
         popup.hide();
         assertFalse(popup.isShowing());
-
         popup.hide();
         assertFalse(popup.isShowing());
-
         popup.show();
         assertTrue(popup.isShowing());
     }
@@ -98,7 +90,6 @@ public class BasicComboPopupTest extends SwingTestCase {
     public void testGetList() throws Exception {
         assertNotNull(popup.getList());
         assertEquals(popup.list, popup.getList());
-
         JList newList = new JList();
         popup.list = newList;
         assertEquals(newList, popup.getList());
@@ -106,7 +97,6 @@ public class BasicComboPopupTest extends SwingTestCase {
 
     public void testGetMouseListener() throws Exception {
         assertNull(popup.mouseListener);
-
         assertEquals(popup.getMouseListener(), popup.mouseListener);
         if (isHarmony()) {
             assertTrue(popup.getMouseListener().getClass() == BasicComboPopup.InvocationMouseHandler.class);
@@ -115,7 +105,6 @@ public class BasicComboPopupTest extends SwingTestCase {
 
     public void testGetMouseMotionListener() throws Exception {
         assertNull(popup.mouseMotionListener);
-
         assertEquals(popup.getMouseMotionListener(), popup.mouseMotionListener);
         if (isHarmony()) {
             assertTrue(popup.getMouseMotionListener().getClass() == BasicComboPopup.InvocationMouseMotionHandler.class);
@@ -134,14 +123,13 @@ public class BasicComboPopupTest extends SwingTestCase {
         int itemListenerCount = comboBox.getItemListeners().length;
         int propertyChangeListenerCount = comboBox.getPropertyChangeListeners().length;
         int keyListenerCount = comboBox.getKeyListeners().length;
-
         popup = new BasicComboPopup(comboBox);
         assertEquals(mouseListenerCount, comboBox.getMouseListeners().length);
         assertEquals(mouseMotionListenerCount, comboBox.getMouseMotionListeners().length);
         assertEquals(keyListenerCount, comboBox.getKeyListeners().length);
         assertEquals(itemListenerCount + 1, comboBox.getItemListeners().length);
-        assertEquals(propertyChangeListenerCount + 1, comboBox.getPropertyChangeListeners().length);
-
+        assertEquals(propertyChangeListenerCount + 1,
+                comboBox.getPropertyChangeListeners().length);
         popup.uninstallingUI();
         assertEquals(mouseListenerCount, comboBox.getMouseListeners().length);
         assertEquals(mouseMotionListenerCount, comboBox.getMouseMotionListeners().length);
@@ -153,28 +141,22 @@ public class BasicComboPopupTest extends SwingTestCase {
     public void testFirePopupMenuWillBecomeVisibleInvisibleCanceled() throws Exception {
         PopupMenuController comboController = new PopupMenuController();
         PopupMenuController popupController = new PopupMenuController();
-
         popup.addPopupMenuListener(popupController);
         popup.comboBox.addPopupMenuListener(comboController);
-
         popup.firePopupMenuCanceled();
         assertNotNull(popupController.getEvent());
         assertNotNull(comboController.getEvent());
         assertEquals(PopupMenuController.MENU_CANCELED, popupController.getEventType());
         assertEquals(PopupMenuController.MENU_CANCELED, comboController.getEventType());
-
         popupController.reset();
         comboController.reset();
-
         popup.firePopupMenuWillBecomeInvisible();
         assertNotNull(popupController.getEvent());
         assertNotNull(comboController.getEvent());
         assertEquals(PopupMenuController.MENU_INVISIBLE, popupController.getEventType());
         assertEquals(PopupMenuController.MENU_INVISIBLE, comboController.getEventType());
-
         popupController.reset();
         comboController.reset();
-
         popup.firePopupMenuWillBecomeVisible();
         assertNotNull(popupController.getEvent());
         assertNotNull(comboController.getEvent());
@@ -222,7 +204,8 @@ public class BasicComboPopupTest extends SwingTestCase {
         if (isHarmony()) {
             assertTrue(popup.listMouseMotionListener.getClass() == BasicComboPopup.ListMouseMotionHandler.class);
             assertTrue(popup.createListMouseMotionListener().getClass() == BasicComboPopup.ListMouseMotionHandler.class);
-            assertFalse(popup.createListMouseMotionListener() == popup.createListMouseMotionListener());
+            assertFalse(popup.createListMouseMotionListener() == popup
+                    .createListMouseMotionListener());
         }
     }
 
@@ -230,7 +213,8 @@ public class BasicComboPopupTest extends SwingTestCase {
         if (isHarmony()) {
             assertTrue(popup.propertyChangeListener.getClass() == BasicComboPopup.PropertyChangeHandler.class);
             assertTrue(popup.createPropertyChangeListener().getClass() == BasicComboPopup.PropertyChangeHandler.class);
-            assertFalse(popup.createPropertyChangeListener() == popup.createPropertyChangeListener());
+            assertFalse(popup.createPropertyChangeListener() == popup
+                    .createPropertyChangeListener());
         }
     }
 
@@ -251,7 +235,6 @@ public class BasicComboPopupTest extends SwingTestCase {
         popup.list = new JList();
         int mouseListenerCount = popup.list.getMouseListeners().length;
         int mouseMotionListenerCount = popup.list.getMouseMotionListeners().length;
-
         popup.configureList();
         assertEquals(mouseListenerCount + 1, popup.list.getMouseListeners().length);
         assertEquals(mouseMotionListenerCount + 1, popup.list.getMouseMotionListeners().length);
@@ -280,20 +263,19 @@ public class BasicComboPopupTest extends SwingTestCase {
         int itemListenerCount = comboBox.getItemListeners().length;
         int propertyChangeListenerCount = comboBox.getPropertyChangeListeners().length;
         int keyListenerCount = comboBox.getKeyListeners().length;
-
         popup.installComboBoxListeners();
         assertEquals(mouseListenerCount, comboBox.getMouseListeners().length);
         assertEquals(mouseMotionListenerCount, comboBox.getMouseMotionListeners().length);
         assertEquals(keyListenerCount, comboBox.getKeyListeners().length);
         assertEquals(itemListenerCount + 1, comboBox.getItemListeners().length);
-        assertEquals(propertyChangeListenerCount + 1, comboBox.getPropertyChangeListeners().length);
+        assertEquals(propertyChangeListenerCount + 1,
+                comboBox.getPropertyChangeListeners().length);
     }
 
     public void testInstallUninstallKeyboardActions() throws Exception {
         int count = popup.comboBox.getActionMap().allKeys().length;
         popup.uninstallKeyboardActions();
         assertEquals(count, popup.comboBox.getActionMap().allKeys().length);
-
         popup.installKeyboardActions();
         assertEquals(count, popup.comboBox.getActionMap().allKeys().length);
     }
@@ -302,7 +284,6 @@ public class BasicComboPopupTest extends SwingTestCase {
         int mouseListenerCount = popup.list.getMouseListeners().length;
         int mouseMotionListenerCount = popup.list.getMouseMotionListeners().length;
         int selectionListenerCount = popup.list.getListSelectionListeners().length;
-
         popup.installListListeners();
         assertEquals(mouseListenerCount + 1, popup.list.getMouseListeners().length);
         assertEquals(mouseMotionListenerCount + 1, popup.list.getMouseMotionListeners().length);
@@ -316,17 +297,14 @@ public class BasicComboPopupTest extends SwingTestCase {
     public void testStartStopAutoscrolloing() throws Exception {
         assertNull(popup.autoscrollTimer);
         assertFalse(popup.isAutoScrolling);
-
         popup.startAutoScrolling(BasicComboPopup.SCROLL_UP);
         assertNotNull(popup.autoscrollTimer);
         assertTrue(popup.isAutoScrolling);
         assertEquals(BasicComboPopup.SCROLL_UP, popup.scrollDirection);
-
         popup.startAutoScrolling(BasicComboPopup.SCROLL_DOWN);
         assertNotNull(popup.autoscrollTimer);
         assertTrue(popup.isAutoScrolling);
         assertEquals(BasicComboPopup.SCROLL_DOWN, popup.scrollDirection);
-
         popup.stopAutoScrolling();
         assertFalse(popup.isAutoScrolling);
     }
@@ -335,20 +313,15 @@ public class BasicComboPopupTest extends SwingTestCase {
         if (isHarmony()) {
             createVisibleComboBox();
             popup.show();
-
             popup.list.setSelectedIndex(2);
             popup.autoScrollUp();
             assertEquals(0, popup.list.getSelectedIndex());
-
             popup.autoScrollUp();
             assertEquals(0, popup.list.getSelectedIndex());
-
             popup.autoScrollDown();
             assertEquals(2, popup.list.getSelectedIndex());
-
             popup.autoScrollDown();
             assertEquals(2, popup.list.getSelectedIndex());
-
             popup.autoScrollUp();
             assertEquals(0, popup.list.getSelectedIndex());
         }
@@ -356,13 +329,12 @@ public class BasicComboPopupTest extends SwingTestCase {
 
     public void testGetAccessibleContext() throws Exception {
         assertNotNull(popup.getAccessibleContext());
-//        Is not clear how it should be
-//        assertEquals(popup.comboBox, popup.getAccessibleContext().getAccessibleParent());
+        //        Is not clear how it should be
+        //        assertEquals(popup.comboBox, popup.getAccessibleContext().getAccessibleParent());
     }
 
     public void testTogglePopup() throws Exception {
         createVisibleComboBox();
-
         assertFalse(popup.isShowing());
         popup.togglePopup();
         assertTrue(popup.isShowing());
@@ -373,14 +345,16 @@ public class BasicComboPopupTest extends SwingTestCase {
     public void testConvertMouseEvent() throws Exception {
         MouseEvent original = createMouseEvent(0, 0);
         assertNotSame(original, popup.convertMouseEvent(original));
-
         comboBox.setLocation(0, 0);
-        assertEquals(new Point(10, 20), popup.convertMouseEvent(createMouseEvent(10, 20)).getPoint());
-        assertEquals(new Point(-10, -20), popup.convertMouseEvent(createMouseEvent(-10, -20)).getPoint());
-
+        assertEquals(new Point(10, 20), popup.convertMouseEvent(createMouseEvent(10, 20))
+                .getPoint());
+        assertEquals(new Point(-10, -20), popup.convertMouseEvent(createMouseEvent(-10, -20))
+                .getPoint());
         comboBox.setLocation(100, 200);
-        assertEquals(new Point(110, 220), popup.convertMouseEvent(createMouseEvent(10, 20)).getPoint());
-        assertEquals(new Point(90, 180), popup.convertMouseEvent(createMouseEvent(-10, -20)).getPoint());
+        assertEquals(new Point(110, 220), popup.convertMouseEvent(createMouseEvent(10, 20))
+                .getPoint());
+        assertEquals(new Point(90, 180), popup.convertMouseEvent(createMouseEvent(-10, -20))
+                .getPoint());
     }
 
     public void testGetPopupHeightForRowCount() throws Exception {
@@ -388,15 +362,12 @@ public class BasicComboPopupTest extends SwingTestCase {
         assertEquals(100, popup.getPopupHeightForRowCount(0));
         assertEquals(100, popup.getPopupHeightForRowCount(1));
         assertEquals(100, popup.getPopupHeightForRowCount(100));
-
-        popup = new BasicComboPopup(new JComboBox(new Object[] {"1"}));
+        popup = new BasicComboPopup(new JComboBox(new Object[] { "1" }));
         popup.list.setFont(comboBox.getFont().deriveFont(40f));
         int oneElemHeight = popup.getPopupHeightForRowCount(1);
         assertTrue(oneElemHeight > 0 && oneElemHeight != 100);
-
-        popup = new BasicComboPopup(new JComboBox(new Object[] {"1", "2", "3"}));
+        popup = new BasicComboPopup(new JComboBox(new Object[] { "1", "2", "3" }));
         popup.list.setFont(comboBox.getFont().deriveFont(40f));
-
         assertEquals(oneElemHeight, popup.getPopupHeightForRowCount(1));
         assertEquals(2 * oneElemHeight, popup.getPopupHeightForRowCount(2));
         assertEquals(3 * oneElemHeight, popup.getPopupHeightForRowCount(3));
@@ -404,11 +375,11 @@ public class BasicComboPopupTest extends SwingTestCase {
         assertEquals(100, popup.getPopupHeightForRowCount(0));
     }
 
-
     private MouseEvent createMouseEvent(final int x, final int y) {
         return new MouseEvent(comboBox, MouseEvent.MOUSE_CLICKED, 0, 0, x, y, 0, false);
     }
 
+    @SuppressWarnings("deprecation")
     private void createVisibleComboBox() {
         JFrame frame = new JFrame();
         frame.getContentPane().add(comboBox);
@@ -418,10 +389,13 @@ public class BasicComboPopupTest extends SwingTestCase {
 
     private class PopupMenuController implements PopupMenuListener {
         public static final int MENU_CANCELED = 1;
+
         public static final int MENU_VISIBLE = 2;
+
         public static final int MENU_INVISIBLE = 3;
 
         private PopupMenuEvent event;
+
         private int eventType;
 
         public void popupMenuCanceled(final PopupMenuEvent e) {

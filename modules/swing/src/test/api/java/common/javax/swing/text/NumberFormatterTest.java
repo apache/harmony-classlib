@@ -26,11 +26,13 @@ import javax.swing.SwingTestCase;
 public class NumberFormatterTest extends SwingTestCase {
     NumberFormatter formatter;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         formatter = new NumberFormatter();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -49,7 +51,6 @@ public class NumberFormatterTest extends SwingTestCase {
         NumberFormat numberFormat = NumberFormat.getInstance();
         formatter.setFormat(numberFormat);
         checkBaseProperties(numberFormat);
-
         formatter.setFormat(null);
         checkBaseProperties(null);
     }

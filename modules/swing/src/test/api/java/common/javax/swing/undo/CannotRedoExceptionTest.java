@@ -18,17 +18,17 @@
  * @author Evgeniya G. Maenkova
  * @version $Revision$
  */
-
 package javax.swing.undo;
 
 import junit.framework.TestCase;
 
-
 public class CannotRedoExceptionTest extends TestCase {
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -38,5 +38,4 @@ public class CannotRedoExceptionTest extends TestCase {
         assertNull(exception.getMessage());
         assertNull(exception.getCause());
     }
-
 }

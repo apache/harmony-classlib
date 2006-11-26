@@ -32,9 +32,7 @@ public class GapContentRTest extends TestCase {
     public void testShiftGap() throws BadLocationException {
         content = new GapContent(50);
         content.insertString(0, "01234567890123456789");
-        int[] offsets = new int[] {
-            9, 9, 10, 10, 13, 13, 14, 14, 15, 15, 20, 20, 21, 21
-        };
+        int[] offsets = new int[] { 9, 9, 10, 10, 13, 13, 14, 14, 15, 15, 20, 20, 21, 21 };
         Position[] pos = new Position[offsets.length];
         for (int i = 0; i < pos.length; i++) {
             pos[i] = content.createPosition(offsets[i]);

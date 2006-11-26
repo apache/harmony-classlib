@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Anton Avtamonov
  * @version $Revision$
@@ -31,8 +30,11 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         model = new AbstractTableModel() {
+            private static final long serialVersionUID = 1L;
+
             public int getRowCount() {
                 return 5;
             }
@@ -95,17 +97,14 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testAddRemoveGetTableModelListener() throws Exception {
         assertEquals(0, model.getTableModelListeners().length);
         assertEquals(0, model.getListeners(TableModelListener.class).length);
-
         TableModelListener listener1 = new TestTableModelListener();
         TableModelListener listener2 = new TestTableModelListener();
         model.addTableModelListener(listener1);
         assertEquals(1, model.getTableModelListeners().length);
         assertEquals(1, model.getListeners(TableModelListener.class).length);
-
         model.addTableModelListener(listener2);
         assertEquals(2, model.getTableModelListeners().length);
         assertEquals(2, model.getListeners(TableModelListener.class).length);
-
         model.removeTableModelListener(listener1);
         assertEquals(1, model.getTableModelListeners().length);
         assertEquals(1, model.getListeners(TableModelListener.class).length);
@@ -114,7 +113,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableDataChanged() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableDataChanged();
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -127,7 +125,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableStructureChanged() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableStructureChanged();
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -140,7 +137,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableRowsInserted() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableRowsInserted(5, 40000);
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -153,7 +149,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableRowsUpdated() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableRowsUpdated(5, 40000);
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -166,7 +161,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableRowsDeleted() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableRowsDeleted(5, 40000);
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -179,7 +173,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableCellUpdated() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         model.fireTableCellUpdated(5, 50);
         assertTrue(listener.eventOccured());
         assertEquals(model, listener.getEvent().getSource());
@@ -192,7 +185,6 @@ public class AbstractTableModelTest extends BasicSwingTableTestCase {
     public void testFireTableChanged() throws Exception {
         TestTableModelListener listener = new TestTableModelListener();
         model.addTableModelListener(listener);
-
         TableModelEvent event = new TableModelEvent(model, -5, 4, 3, TableModelEvent.INSERT);
         model.fireTableChanged(event);
         assertTrue(listener.eventOccured());

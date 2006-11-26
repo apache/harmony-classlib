@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -26,39 +25,37 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.JComponent;
 import javax.swing.text.Position.Bias;
-
 import junit.framework.TestCase;
 
 public class ViewTest extends TestCase {
-
     /**
      * View class that simply overrides abstract methods of View class.
      * No additional functionality is added.
      */
     public static class DisAbstractedView extends View {
-
         /**
          * Bounding shape. Used as the last parameter in
          * modelToView, viewToModel.
          */
         static final Rectangle2D bounding = new Rectangle(2, 2);
+
         /**
          * One of rectangles returned from modelToView.
          */
-        static final Rectangle2D r1       = new Rectangle(0, 0, 1, 1);
+        static final Rectangle2D r1 = new Rectangle(0, 0, 1, 1);
+
         /**
          * The second rectangle returned from modelToView.
          */
-        static final Rectangle2D r2       = new Rectangle(1, 1, 1, 1);
+        static final Rectangle2D r2 = new Rectangle(1, 1, 1, 1);
+
         /**
          *
          * @param element
          */
         static final Rectangle2D r3;
-
         static {
             r3 = new Rectangle2D.Double();
             Rectangle2D.union(r1, r2, r3);
@@ -68,35 +65,35 @@ public class ViewTest extends TestCase {
             super(element);
         }
 
+        @Override
         public float getPreferredSpan(final int axis) {
             return axis == X_AXIS ? 1.27f : 2.53f;
         }
 
-        public Shape modelToView(final int pos, final Shape shape,
-                                 final Bias bias)
-            throws BadLocationException {
-
+        @Override
+        public Shape modelToView(final int pos, final Shape shape, final Bias bias)
+                throws BadLocationException {
             mtvBias = bias;
             if (pos == 1) {
                 return r2;
-            } else {
-                return r1;
             }
+            return r1;
         }
 
+        @Override
         public void paint(final Graphics g, final Shape shape) {
         }
 
+        @Override
         public int viewToModel(final float x, final float y, final Shape shape,
                 final Bias[] biasReturn) {
             // Save the parameters
-            viewToModelParams.x     = x;
-            viewToModelParams.y     = y;
+            viewToModelParams.x = x;
+            viewToModelParams.y = y;
             viewToModelParams.shape = shape;
-            viewToModelParams.bias  = biasReturn;
+            viewToModelParams.bias = biasReturn;
             return 0;
         }
-
     }
 
     private static class ResizableView extends DisAbstractedView {
@@ -104,6 +101,7 @@ public class ViewTest extends TestCase {
             super(element);
         }
 
+        @Override
         public int getResizeWeight(final int axis) {
             return 1;
         }
@@ -115,50 +113,60 @@ public class ViewTest extends TestCase {
      */
     private static class ViewToModelParams {
         public Bias[] bias;
-        public Shape  shape;
-        public float  x;
-        public float  y;
+
+        public Shape shape;
+
+        public float x;
+
+        public float y;
     }
 
     boolean containerGetGraphicsCalled;
 
     // Used in testPreferenceChanged
     boolean preferenceChangedCalledOnParent;
-    View    preferenceChangedChild;
+
+    View preferenceChangedChild;
+
     boolean revalidateCalled;
+
     boolean tooltipGetViewCalled;
 
     boolean tooltipGetViewIndexCalled;
+
     /**
      * Document shared among tests.
      */
     private Document doc;
+
     /**
      * Paragraph element shared among tests. This is the second line of
      * text in the document.
      */
-    private Element  line;
+    private Element line;
+
     /**
      * View under which tests are run.
      */
-    private View     view;
+    private View view;
+
     /**
      * Bias passes to modelToView method in the last call.
      */
-    private static Bias              mtvBias;
+    private static Bias mtvBias;
+
     /**
      * Parameters passed to viewToModel method.
      */
     private static ViewToModelParams viewToModelParams;
 
     public void testBreakView() {
-        assertSame(view, view.breakView(View.X_AXIS,
-                   line.getStartOffset() + 1, 4, 4));
+        assertSame(view, view.breakView(View.X_AXIS, line.getStartOffset() + 1, 4, 4));
     }
 
     public void testCreateFragment() {
-        assertSame(view, view.createFragment(line.getStartOffset() + 1,
-                                             line.getEndOffset() - 1));
+        assertSame(view, view
+                .createFragment(line.getStartOffset() + 1, line.getEndOffset() - 1));
     }
 
     public void testGetAlignment() {
@@ -179,19 +187,13 @@ public class ViewTest extends TestCase {
         final float maxX = view.getMaximumSpan(View.X_AXIS); // = preferredSpan
         final float maxY = view.getMaximumSpan(View.Y_AXIS);
         assertEquals(maxX, view.getPreferredSpan(View.X_AXIS), 0.0001f);
-
         // By default return Bad, but...
-        assertEquals(View.BadBreakWeight,
-                     view.getBreakWeight(View.X_AXIS, 0.0f, maxX));
-        assertEquals(View.BadBreakWeight,
-                     view.getBreakWeight(View.Y_AXIS, 0.0f, maxY));
-
+        assertEquals(View.BadBreakWeight, view.getBreakWeight(View.X_AXIS, 0.0f, maxX));
+        assertEquals(View.BadBreakWeight, view.getBreakWeight(View.Y_AXIS, 0.0f, maxY));
         // ...but Good when length where to break is greater than
         // the length of the view
-        assertEquals(View.GoodBreakWeight,
-                     view.getBreakWeight(View.X_AXIS, 0.0f, maxX + 0.01f));
-        assertEquals(View.GoodBreakWeight,
-                     view.getBreakWeight(View.Y_AXIS, 0.0f, maxY + 0.01f));
+        assertEquals(View.GoodBreakWeight, view.getBreakWeight(View.X_AXIS, 0.0f, maxX + 0.01f));
+        assertEquals(View.GoodBreakWeight, view.getBreakWeight(View.Y_AXIS, 0.0f, maxY + 0.01f));
     }
 
     /**
@@ -199,22 +201,15 @@ public class ViewTest extends TestCase {
      */
     public void testGetBreakWeight02() {
         view = new ResizableView(line);
-
         final float maxX = view.getPreferredSpan(View.X_AXIS);
         final float maxY = view.getPreferredSpan(View.Y_AXIS);
-
         // By default return Bad, but...
-        assertEquals(View.BadBreakWeight,
-                     view.getBreakWeight(View.X_AXIS, 0.0f, maxX));
-        assertEquals(View.BadBreakWeight,
-                     view.getBreakWeight(View.Y_AXIS, 0.0f, maxY));
-
+        assertEquals(View.BadBreakWeight, view.getBreakWeight(View.X_AXIS, 0.0f, maxX));
+        assertEquals(View.BadBreakWeight, view.getBreakWeight(View.Y_AXIS, 0.0f, maxY));
         // ...but Good when length where to break is greater than
         // the length of the view
-        assertEquals(View.GoodBreakWeight,
-                     view.getBreakWeight(View.X_AXIS, 0.0f, maxX + 0.01f));
-        assertEquals(View.GoodBreakWeight,
-                     view.getBreakWeight(View.Y_AXIS, 0.0f, maxY + 0.01f));
+        assertEquals(View.GoodBreakWeight, view.getBreakWeight(View.X_AXIS, 0.0f, maxX + 0.01f));
+        assertEquals(View.GoodBreakWeight, view.getBreakWeight(View.Y_AXIS, 0.0f, maxY + 0.01f));
     }
 
     public void testGetChildAllocation() {
@@ -243,17 +238,20 @@ public class ViewTest extends TestCase {
     }
 
     public void testGetGraphics() {
-        view =
-            new DisAbstractedView(doc.getDefaultRootElement().getElement(0)) {
-                public Container getContainer() {
-                    return new JComponent() {
-                        public Graphics getGraphics() {
-                            containerGetGraphicsCalled = true;
-                            return null;
-                        }
-                    };
-                }
-            };
+        view = new DisAbstractedView(doc.getDefaultRootElement().getElement(0)) {
+            @Override
+            public Container getContainer() {
+                return new JComponent() {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public Graphics getGraphics() {
+                        containerGetGraphicsCalled = true;
+                        return null;
+                    }
+                };
+            }
+        };
         assertFalse(containerGetGraphicsCalled);
         assertNull(view.getGraphics());
         assertTrue(containerGetGraphicsCalled);
@@ -263,10 +261,10 @@ public class ViewTest extends TestCase {
      * Tests <code>getMaximumSpan</code> with default view setup.
      */
     public void testGetMaximumSpan01() {
-        assertEquals(view.getPreferredSpan(View.X_AXIS),
-                     view.getMaximumSpan(View.X_AXIS), 0.000001f);
-        assertEquals(view.getPreferredSpan(View.Y_AXIS),
-                     view.getMaximumSpan(View.Y_AXIS), 0.000001f);
+        assertEquals(view.getPreferredSpan(View.X_AXIS), view.getMaximumSpan(View.X_AXIS),
+                0.000001f);
+        assertEquals(view.getPreferredSpan(View.Y_AXIS), view.getMaximumSpan(View.Y_AXIS),
+                0.000001f);
     }
 
     /**
@@ -274,21 +272,18 @@ public class ViewTest extends TestCase {
      */
     public void testGetMaximumSpan02() {
         view = new ResizableView(line);
-
-        assertEquals(Integer.MAX_VALUE, view.getMaximumSpan(View.X_AXIS),
-                     0.000001f);
-        assertEquals(Integer.MAX_VALUE, view.getMaximumSpan(View.Y_AXIS),
-                     0.000001f);
+        assertEquals(Integer.MAX_VALUE, view.getMaximumSpan(View.X_AXIS), 0.000001f);
+        assertEquals(Integer.MAX_VALUE, view.getMaximumSpan(View.Y_AXIS), 0.000001f);
     }
 
     /**
      * Tests <code>getMinimumSpan</code> with default view setup.
      */
     public void testGetMinimumSpan01() {
-        assertEquals(view.getPreferredSpan(View.X_AXIS),
-                     view.getMinimumSpan(View.X_AXIS), 0.000001f);
-        assertEquals(view.getPreferredSpan(View.Y_AXIS),
-                     view.getMinimumSpan(View.Y_AXIS), 0.000001f);
+        assertEquals(view.getPreferredSpan(View.X_AXIS), view.getMinimumSpan(View.X_AXIS),
+                0.000001f);
+        assertEquals(view.getPreferredSpan(View.Y_AXIS), view.getMinimumSpan(View.Y_AXIS),
+                0.000001f);
     }
 
     /**
@@ -296,7 +291,6 @@ public class ViewTest extends TestCase {
      */
     public void testGetMinimumSpan02() {
         view = new ResizableView(line);
-
         assertEquals(0.0f, view.getMinimumSpan(View.X_AXIS), 0.000001f);
         assertEquals(0.0f, view.getMinimumSpan(View.Y_AXIS), 0.000001f);
     }
@@ -320,18 +314,19 @@ public class ViewTest extends TestCase {
     }
 
     public void testGetToolTipText() {
-        view =
-            new DisAbstractedView(doc.getDefaultRootElement().getElement(0)) {
-                public View getView(final int index) {
-                    tooltipGetViewCalled = true;
-                    return super.getView(index);
-                }
-                public int getViewIndex(final float x, final float y,
-                                        final Shape allocation) {
-                    tooltipGetViewIndexCalled = true;
-                    return super.getViewIndex(x, y, allocation);
-                }
-            };
+        view = new DisAbstractedView(doc.getDefaultRootElement().getElement(0)) {
+            @Override
+            public View getView(final int index) {
+                tooltipGetViewCalled = true;
+                return super.getView(index);
+            }
+
+            @Override
+            public int getViewIndex(final float x, final float y, final Shape allocation) {
+                tooltipGetViewIndexCalled = true;
+                return super.getViewIndex(x, y, allocation);
+            }
+        };
         assertNull(view.getToolTipText(0.0f, 0.0f, new Rectangle(2, 2)));
         // getToolTipText calls getViewIndex to get child at this location
         assertTrue(tooltipGetViewIndexCalled);
@@ -387,17 +382,16 @@ public class ViewTest extends TestCase {
      * Class under test for
      * Shape modelToView(int, Position.Bias, int, Position.Bias, Shape)
      */
-    public void testModelToViewintBiasintBiasShape()
-        throws BadLocationException {
-
-        Shape a = view.modelToView(1, Bias.Forward, 2, Bias.Forward,
-                DisAbstractedView.bounding);
+    public void testModelToViewintBiasintBiasShape() throws BadLocationException {
+        Shape a = view
+                .modelToView(1, Bias.Forward, 2, Bias.Forward, DisAbstractedView.bounding);
         assertEquals(DisAbstractedView.r3, a);
     }
 
     /*
      * Class under test for Shape modelToView(int, Shape)
      */
+    @SuppressWarnings("deprecation")
     public void testModelToViewintShape() throws BadLocationException {
         Shape a = view.modelToView(0, DisAbstractedView.bounding);
         assertSame(DisAbstractedView.r1, a);
@@ -405,11 +399,13 @@ public class ViewTest extends TestCase {
     }
 
     public void testPreferenceChanged() {
-        View parent =
-            new DisAbstractedView(doc.getDefaultRootElement()) {
-
+        View parent = new DisAbstractedView(doc.getDefaultRootElement()) {
+            @Override
             public Container getContainer() {
                 return new JTextComponent() {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
                     public void revalidate() {
                         revalidateCalled = true;
                         super.revalidate();
@@ -417,10 +413,10 @@ public class ViewTest extends TestCase {
                 };
             }
 
-            public void preferenceChanged(final View child,
-                                          final boolean w, final boolean h) {
+            @Override
+            public void preferenceChanged(final View child, final boolean w, final boolean h) {
                 preferenceChangedCalledOnParent = true;
-                preferenceChangedChild          = child;
+                preferenceChangedChild = child;
                 // Assert the conditions are true
                 assertFalse(revalidateCalled);
                 assertNull(getParent());
@@ -431,12 +427,10 @@ public class ViewTest extends TestCase {
             }
         };
         View child = getLine1View(doc);
-
         // Assert we get no exceptions or errors
         assertNull(view.getParent());
         view.preferenceChanged(child, true, false);
         assertFalse(preferenceChangedCalledOnParent);
-
         // Set parent and test, that parent gets called
         view.setParent(parent);
         view.preferenceChanged(child, true, false);
@@ -464,27 +458,24 @@ public class ViewTest extends TestCase {
         View v = new DisAbstractedView(line);
         assertSame(line, v.getElement());
         assertSame(doc, v.getDocument());
-
         v = new DisAbstractedView(null);
         assertNull(v.getElement());
         try {
             assertNull(v.getDocument());
-
-            fail("This causes the exception 'cause element is used " +
-                 "to get the document");
-        } catch (NullPointerException e) { }
-
+            fail("This causes the exception 'cause element is used " + "to get the document");
+        } catch (NullPointerException e) {
+        }
         try {
             assertEquals(0, v.getStartOffset());
-
-            fail("This causes the exception 'cause element is used " +
-                 "to get the offset");
-        } catch (NullPointerException e) { }
+            fail("This causes the exception 'cause element is used " + "to get the offset");
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
      * Class under test for int viewToModel(float, float, Shape)
      */
+    @SuppressWarnings("deprecation")
     public void testViewToModelfloatfloatShape() {
         Rectangle r = new Rectangle();
         view.viewToModel(0.1f, 0.2f, r);
@@ -498,13 +489,12 @@ public class ViewTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         doc = new PlainDocument();
         doc.insertString(0, "01234\nabcde", null);
         line = doc.getDefaultRootElement().getElement(1);
-
         view = new DisAbstractedView(line);
         viewToModelParams = new ViewToModelParams();
         mtvBias = null;
@@ -517,5 +507,4 @@ public class ViewTest extends TestCase {
     static final View getLine1View(final Document doc) {
         return new DisAbstractedView(doc.getDefaultRootElement().getElement(0));
     }
-
 }

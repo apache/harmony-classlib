@@ -18,7 +18,6 @@
  * @author Evgeniya G. Maenkova
  * @version $Revision$
  */
-
 package javax.swing.plaf.basic;
 
 import javax.swing.Action;
@@ -29,27 +28,27 @@ import javax.swing.JTextField;
 import javax.swing.SwingTestCase;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.text.DefaultEditorKit;
-import javax.swing.SwingWaitTestCase;
-
-
 
 public class BasicEditorPaneUITest extends SwingTestCase {
     JEditorPane jep;
+
     JFrame jf;
+
     BasicEditorPaneUI ui;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         setIgnoreNotImplemented(true);
         jf = new JFrame();
         jep = new JEditorPane();
-        ui = (BasicEditorPaneUI)jep.getUI();
+        ui = (BasicEditorPaneUI) jep.getUI();
         jf.getContentPane().add(jep);
-        jf.setSize(200,300);
+        jf.setSize(200, 300);
         jf.pack();
     }
 
-
+    @Override
     protected void tearDown() throws Exception {
         jf.dispose();
         super.tearDown();
@@ -67,19 +66,17 @@ public class BasicEditorPaneUITest extends SwingTestCase {
     }
 
     public void testGetEditorKit() {
-        assertEquals(jep.getEditorKit(),ui.getEditorKit(jep));
+        assertEquals(jep.getEditorKit(), ui.getEditorKit(jep));
         jep.setContentType("text/html");
-        assertEquals(jep.getEditorKit(),ui.getEditorKit(jep));
+        assertEquals(jep.getEditorKit(), ui.getEditorKit(jep));
         jep.setContentType("text/rtf");
-        assertEquals(jep.getEditorKit(),ui.getEditorKit(jep));
+        assertEquals(jep.getEditorKit(), ui.getEditorKit(jep));
         DefaultEditorKit kit = new DefaultEditorKit();
         jep.setEditorKit(kit);
-        assertEquals(jep.getEditorKit(),ui.getEditorKit(jep));
-
-        assertEquals(kit,ui.getEditorKit(new JTextField()));
-        assertEquals(kit,ui.getEditorKit(new JTextArea()));
-
-        BasicEditorPaneUI editorPaneUI = (BasicEditorPaneUI)BasicEditorPaneUI.createUI(jep);
+        assertEquals(jep.getEditorKit(), ui.getEditorKit(jep));
+        assertEquals(kit, ui.getEditorKit(new JTextField()));
+        assertEquals(kit, ui.getEditorKit(new JTextArea()));
+        BasicEditorPaneUI editorPaneUI = (BasicEditorPaneUI) BasicEditorPaneUI.createUI(jep);
         assertNull(editorPaneUI.getComponent());
     }
 
@@ -87,35 +84,34 @@ public class BasicEditorPaneUITest extends SwingTestCase {
         assertEquals("EditorPane", ui.getPropertyPrefix());
     }
 
-    void checkNames(final Action a1[], final Object a2[]){
-        for (int i = 0; i < a1.length; i ++){
-            String name = (String)a1[i].getValue(Action.NAME);
+    void checkNames(final Action a1[], final Object a2[]) {
+        for (int i = 0; i < a1.length; i++) {
+            String name = (String) a1[i].getValue(Action.NAME);
             boolean wasFound = false;
-            for(int j = 0; j < a2.length; j ++){
-                if (a2[j].equals(name)){
+            for (int j = 0; j < a2.length; j++) {
+                if (a2[j].equals(name)) {
                     wasFound = true;
                     break;
                 }
             }
             assertTrue(wasFound);
-            if (!wasFound)
+            if (!wasFound) {
                 System.out.println(name);
+            }
         }
     }
 
     public void testPropertyChange() {
         Action a1[] = jep.getActions();
         Object a2[] = jep.getActionMap().getParent().getParent().allKeys();
-        checkNames(a1,a2);
-
+        checkNames(a1, a2);
         jep.setContentType("text/html");
         a1 = jep.getActions();
         a2 = jep.getActionMap().getParent().getParent().allKeys();
-        checkNames(a1,a2);
-
+        checkNames(a1, a2);
         jep.setContentType("text/rtf");
         a1 = jep.getActions();
         a2 = jep.getActionMap().getParent().getParent().allKeys();
-        checkNames(a1,a2);
+        checkNames(a1, a2);
     }
 }

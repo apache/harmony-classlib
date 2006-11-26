@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,7 +21,6 @@
 package javax.swing.text;
 
 import javax.swing.text.DefaultStyledDocument.ElementSpec;
-
 import junit.framework.TestCase;
 
 public class DefaultStyledDocument_ElementSpecTest extends TestCase {
@@ -30,11 +28,13 @@ public class DefaultStyledDocument_ElementSpecTest extends TestCase {
      * ElementSpec created with ElementSpec(AttributeSet, short) constructor.
      */
     private ElementSpec spec1;
+
     /**
      * ElementSpec created with ElementSpec(AttributeSet, short, int)
      * constructor.
      */
     private ElementSpec spec2;
+
     /**
      * ElementSpec created with
      * ElementSpec(AttributeSet, short, char[], int, int) constructor.
@@ -42,34 +42,32 @@ public class DefaultStyledDocument_ElementSpecTest extends TestCase {
     private ElementSpec spec3;
 
     private static final AttributeSet attrs1;
+
     private static final AttributeSet attrs2;
+
     private static final AttributeSet attrs3;
 
     private char[] text;
-
     static {
         MutableAttributeSet mas;
-
         mas = new SimpleAttributeSet();
         StyleConstants.setBold(mas, true);
         attrs1 = mas.copyAttributes();
-
         mas = new SimpleAttributeSet();
         StyleConstants.setItalic(mas, true);
         attrs2 = mas.copyAttributes();
-
         mas = new SimpleAttributeSet(attrs1);
         mas.addAttributes(attrs2);
         attrs3 = mas.copyAttributes();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         spec1 = new ElementSpec(attrs1, ElementSpec.StartTagType);
         spec2 = new ElementSpec(attrs2, ElementSpec.ContentType, 10);
-        spec3 = new ElementSpec(attrs3, ElementSpec.EndTagType,
-                                text = "sample text".toCharArray(), 2, 4);
+        spec3 = new ElementSpec(attrs3, ElementSpec.EndTagType, text = "sample text"
+                .toCharArray(), 2, 4);
     }
 
     /*
@@ -80,15 +78,14 @@ public class DefaultStyledDocument_ElementSpecTest extends TestCase {
      * ElementSpec(AttributeSet, short, char[], int, int)
      * ElementSpec(AttributeSet, short, int)
      */
-/*
-    public void testElementSpecAttributeSetshort() {
-    }
-    public void testElementSpecAttributeSetshortcharArrayintint() {
-    }
-    public void testElementSpecAttributeSetshortint() {
-    }
-*/
-
+    /*
+     public void testElementSpecAttributeSetshort() {
+     }
+     public void testElementSpecAttributeSetshortcharArrayintint() {
+     }
+     public void testElementSpecAttributeSetshortint() {
+     }
+     */
     public void testGetArray() {
         assertNull(spec1.getArray());
         assertNull(spec2.getArray());
@@ -150,18 +147,11 @@ public class DefaultStyledDocument_ElementSpecTest extends TestCase {
      * Checks how directions represented in string.
      */
     public void testToStringDirection() {
-        final short[] direction = new short[] {
-            ElementSpec.OriginateDirection,
-            ElementSpec.JoinFractureDirection,
-            ElementSpec.JoinNextDirection,
-            ElementSpec.JoinPreviousDirection
-        };
-        final String[] text = new String[] {
-            "Originate",
-            "Fracture",
-            "JoinNext",
-            "JoinPrevious"
-        };
+        final short[] direction = new short[] { ElementSpec.OriginateDirection,
+                ElementSpec.JoinFractureDirection, ElementSpec.JoinNextDirection,
+                ElementSpec.JoinPreviousDirection };
+        final String[] text = new String[] { "Originate", "Fracture", "JoinNext",
+                "JoinPrevious" };
         for (int i = 0; i < direction.length; i++) {
             spec1.setDirection(direction[i]);
             assertEquals("@ " + i, text[i], spec1.toString().split(":")[1]);
@@ -169,14 +159,14 @@ public class DefaultStyledDocument_ElementSpecTest extends TestCase {
     }
 
     public void testToStringIvalidDirection() {
-        spec1.setDirection((short)25);
-        assertEquals((short)25, spec1.getDirection());
+        spec1.setDirection((short) 25);
+        assertEquals((short) 25, spec1.getDirection());
         assertEquals("StartTag:??:0", spec1.toString());
     }
 
     public void testToStringInvalidType() throws Exception {
-        spec1.setType((short)25);
-        assertEquals((short)25, spec1.getType());
+        spec1.setType((short) 25);
+        assertEquals((short) 25, spec1.getType());
         assertEquals("??:Originate:0", spec1.toString());
     }
 }

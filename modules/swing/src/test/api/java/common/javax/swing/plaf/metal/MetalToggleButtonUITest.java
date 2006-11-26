@@ -24,7 +24,6 @@ package javax.swing.plaf.metal;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -37,19 +36,23 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicToggleButtonUITest;
 
 public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
-
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(MetalToggleButtonUITest.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     public void testCreateUI() {
-        assertTrue("created UI is not null", null != MetalToggleButtonUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", MetalToggleButtonUI.createUI(null) instanceof MetalToggleButtonUI);
-        assertTrue("created UI is not shared", MetalToggleButtonUI.createUI(null) == MetalToggleButtonUI.createUI(null));
+        assertTrue("created UI is not null", null != MetalToggleButtonUI
+                .createUI(new JButton()));
+        assertTrue("created UI is of the proper class",
+                MetalToggleButtonUI.createUI(null) instanceof MetalToggleButtonUI);
+        assertTrue("created UI is not shared",
+                MetalToggleButtonUI.createUI(null) == MetalToggleButtonUI.createUI(null));
     }
 
     public void testPaintFocus() {
@@ -65,11 +68,11 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
     }
 
     class PublicMetalToggleButtonUI extends MetalToggleButtonUI {
-
         public void setDisabledTextColor(final Color color) {
             disabledTextColor = color;
         }
 
+        @Override
         public Color getDisabledTextColor() {
             return super.getDisabledTextColor();
         }
@@ -78,6 +81,7 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
             focusColor = color;
         }
 
+        @Override
         public Color getFocusColor() {
             return super.getFocusColor();
         }
@@ -86,15 +90,17 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
             selectColor = color;
         }
 
+        @Override
         public Color getSelectColor() {
             return super.getSelectColor();
         }
 
+        @Override
         public void uninstallDefaults(final AbstractButton b) {
             super.uninstallDefaults(b);
         }
-
     }
+
     public void testGetDisabledTextColor() {
         PublicMetalToggleButtonUI publicUI = new PublicMetalToggleButtonUI();
         assertNull("DisabledTextColor is null", publicUI.getDisabledTextColor());
@@ -128,7 +134,6 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
         UIManager.put("ToggleButton.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("ToggleButton.border", border);
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         assertEquals(Color.blue, button.getBackground());
@@ -152,7 +157,6 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
         UIManager.put("ToggleButton.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.put("ToggleButton.border", border);
-
         button.setUI(publicUI);
         publicUI.installDefaults(button);
         publicUI.uninstallDefaults(button);
@@ -164,5 +168,4 @@ public class MetalToggleButtonUITest extends BasicToggleButtonUITest {
         assertEquals("font", font, button.getFont());
         assertNull("border", button.getBorder());
     }
-
 }

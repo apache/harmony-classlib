@@ -26,16 +26,16 @@ import javax.swing.JButton;
 import javax.swing.SwingTestCase;
 
 public class BasicToggleButtonUITest extends SwingTestCase {
-
     public class MyBasicToggleButtonUI extends BasicToggleButtonUI {
+        @Override
         public String getPropertyPrefix() {
             return super.getPropertyPrefix();
         }
 
+        @Override
         public int getTextShiftOffset() {
             return super.getTextShiftOffset();
         }
-
     };
 
     public MyBasicToggleButtonUI ui = null;
@@ -47,16 +47,19 @@ public class BasicToggleButtonUITest extends SwingTestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         ui = new MyBasicToggleButtonUI();
     }
 
     public void testCreateUI() {
-        assertTrue("created UI is not null", null != BasicToggleButtonUI.createUI(new JButton()));
-        assertTrue("created UI is of the proper class", BasicToggleButtonUI.createUI(null) instanceof BasicToggleButtonUI);
-        assertTrue("created UI is of unique", BasicToggleButtonUI.createUI(null) == BasicToggleButtonUI.createUI(null));
+        assertTrue("created UI is not null", null != BasicToggleButtonUI
+                .createUI(new JButton()));
+        assertTrue("created UI is of the proper class",
+                BasicToggleButtonUI.createUI(null) instanceof BasicToggleButtonUI);
+        assertTrue("created UI is of unique",
+                BasicToggleButtonUI.createUI(null) == BasicToggleButtonUI.createUI(null));
     }
 
     public void testGetPropertyPrefix() {
@@ -66,5 +69,4 @@ public class BasicToggleButtonUITest extends SwingTestCase {
     public void testGetTextShiftOffset() {
         assertEquals("offset", 0, ui.getTextShiftOffset());
     }
-
 }

@@ -22,7 +22,6 @@ package javax.swing.text;
 
 import java.awt.Container;
 import java.awt.Rectangle;
-
 import javax.swing.JTextArea;
 import javax.swing.SwingTestCase;
 import javax.swing.event.DocumentEvent;
@@ -38,42 +37,49 @@ import javax.swing.text.FlowView_FlowStrategyTest.PartFactory;
  * has associated container.
  *
  */
-public class FlowView_FlowStrategy_HostedRTest extends SwingTestCase
-    implements DocumentListener {
-
+public class FlowView_FlowStrategy_HostedRTest extends SwingTestCase implements
+        DocumentListener {
     private DefaultStyledDocument doc;
+
     private Element p1;
+
     private DefaultDocumentEvent event;
+
     private FlowView view;
+
     private FlowStrategy strategy;
+
     private JTextArea textArea;
+
     private Rectangle alloc;
+
     private Rectangle paintRect;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
         doc.insertString(0, "test text\n2nd par", null);
         p1 = doc.getDefaultRootElement().getElement(0);
-
         textArea = new JTextArea(doc) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void repaint(int x, int y, int width, int height) {
                 paintRect = new Rectangle(x, y, width, height);
             }
         };
         view = new FlowViewImplWithFactory(p1, View.Y_AXIS, new PartFactory()) {
+            @Override
             public Container getContainer() {
                 return textArea;
             }
         };
-
         strategy = view.strategy;
         view.loadChildren(null);
-
         doc.addDocumentListener(this);
         alloc = new Rectangle(12, 17, 125, 541);
         paintRect = null;
-
         view.layout(alloc.width, alloc.height);
         assertTrue(view.isAllocationValid());
     }
@@ -94,23 +100,22 @@ public class FlowView_FlowStrategy_HostedRTest extends SwingTestCase
     }
 
     public void testChangedUpdate() throws BadLocationException {
-        doc.setCharacterAttributes(p1.getStartOffset(), 3,
-                                   doc.getAttributeContext().getEmptySet(),
-                                   true);
+        doc.setCharacterAttributes(p1.getStartOffset(), 3, doc.getAttributeContext()
+                .getEmptySet(), true);
         strategy.changedUpdate(view, event, alloc);
         assertEquals(alloc, paintRect);
         assertTrue(view.isAllocationValid());
     }
 
     public void insertUpdate(DocumentEvent e) {
-        event = (DefaultDocumentEvent)e;
+        event = (DefaultDocumentEvent) e;
     }
 
     public void removeUpdate(DocumentEvent e) {
-        event = (DefaultDocumentEvent)e;
+        event = (DefaultDocumentEvent) e;
     }
 
     public void changedUpdate(DocumentEvent e) {
-        event = (DefaultDocumentEvent)e;
+        event = (DefaultDocumentEvent) e;
     }
 }

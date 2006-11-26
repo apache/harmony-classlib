@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -31,30 +30,32 @@ import javax.swing.text.AbstractDocument_AbstractElementTest.DisAbstractedDocume
  * execution of test-methods.
  *
  */
-public class AbstractDocument_AbstractElement_MASTest
-    extends MutableAttributeSetTest {
-
+public class AbstractDocument_AbstractElement_MASTest extends MutableAttributeSetTest {
     protected DisAbstractedDocument aDocument;
-    protected DisAbstractedElement  aElement;
-    protected AbstractElement       parented;
-    protected AttributeSet          aSet;
+
+    protected DisAbstractedElement aElement;
+
+    protected AbstractElement parented;
+
+    protected AttributeSet aSet;
 
     public AbstractDocument_AbstractElement_MASTest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         aDocument = new DisAbstractedDocument(new GapContent());
         aDocument.writeLock();
-        aElement  = aDocument.new DisAbstractedElement(null, mas);
+        aElement = aDocument.new DisAbstractedElement(null, mas);
         mas = aElement;
-        as  = aElement;
+        as = aElement;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         aDocument.writeUnlock();
     }
-
 }

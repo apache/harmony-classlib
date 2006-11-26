@@ -74,7 +74,7 @@ public abstract class RobotTestCase extends TestCase {
 
             public void run() {
                 try {
-                    result = method.invoke(target, null);
+                    result = method.invoke(target);
                 } catch (Throwable e) {
                     e.printStackTrace();
                     result = null;

@@ -15,9 +15,9 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
@@ -26,8 +26,8 @@ import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.LayoutManager;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -41,15 +41,16 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.PopupMenuUITest;
 
 public class BasicPopupMenuUITest extends PopupMenuUITest {
-
     protected BasicPopupMenuUI basicPopupUI;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         basicPopupUI = new BasicPopupMenuUI();
         popupUI = basicPopupUI;
     }
 
+    @Override
     protected void tearDown() throws Exception {
         basicPopupUI = null;
         super.tearDown();
@@ -61,8 +62,7 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
     public void testCreateUI() {
         JPanel panel = new JPanel();
         ComponentUI ui1 = BasicPopupMenuUI.createUI(null);
-        BasicPopupMenuUI ui2 = (BasicPopupMenuUI)BasicPopupMenuUI.createUI(panel);
-
+        BasicPopupMenuUI ui2 = (BasicPopupMenuUI) BasicPopupMenuUI.createUI(panel);
         assertTrue(ui1 instanceof BasicPopupMenuUI);
         assertNotSame(ui1, ui2);
     }
@@ -70,13 +70,18 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
     /*
      * Test method for 'javax.swing.plaf.PopupMenuUI.isPopupTrigger(MouseEvent)'
      */
+    @Override
     public void testIsPopupTrigger() {
         Component source1 = new JPanel();
         JPopupMenu source2 = new JPopupMenu();
-        MouseEvent event1 = new MouseEvent(source1, MouseEvent.MOUSE_ENTERED, EventQueue.getMostRecentEventTime(), 0, 5, 5, 0, false);
-        MouseEvent event2 = new MouseEvent(source1, MouseEvent.MOUSE_WHEEL, EventQueue.getMostRecentEventTime(), 0, 5, 5, 0, true);
-        MouseEvent event3 = new MouseEvent(source1, MouseEvent.MOUSE_PRESSED, EventQueue.getMostRecentEventTime(), 0, 5, 5, 0, true);
-        MouseEvent event4 = new MouseEvent(source2, MouseEvent.MOUSE_RELEASED, EventQueue.getMostRecentEventTime(), MouseEvent.BUTTON1_DOWN_MASK, 1, 1, 1, true);
+        MouseEvent event1 = new MouseEvent(source1, MouseEvent.MOUSE_ENTERED, EventQueue
+                .getMostRecentEventTime(), 0, 5, 5, 0, false);
+        MouseEvent event2 = new MouseEvent(source1, MouseEvent.MOUSE_WHEEL, EventQueue
+                .getMostRecentEventTime(), 0, 5, 5, 0, true);
+        MouseEvent event3 = new MouseEvent(source1, MouseEvent.MOUSE_PRESSED, EventQueue
+                .getMostRecentEventTime(), 0, 5, 5, 0, true);
+        MouseEvent event4 = new MouseEvent(source2, MouseEvent.MOUSE_RELEASED, EventQueue
+                .getMostRecentEventTime(), InputEvent.BUTTON1_DOWN_MASK, 1, 1, 1, true);
         source2.setUI(popupUI);
         assertFalse(popupUI.isPopupTrigger(event1));
         assertFalse(popupUI.isPopupTrigger(event2));
@@ -92,11 +97,9 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         menu.setUI(basicPopupUI);
         LayoutManager oldManager = menu.getLayout();
         basicPopupUI.uninstallUI(menu);
-
         basicPopupUI.installUI(menu);
         assertNotNull(menu.getLayout());
         assertNotSame(oldManager, menu.getLayout());
-
         basicPopupUI.uninstallUI(menu);
         oldManager = new OverlayLayout(menu);
         menu.setLayout(oldManager);
@@ -115,7 +118,6 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         UIManager.getDefaults().put("PopupMenu.font", font);
         Border border = new BorderUIResource(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         UIManager.getDefaults().put("PopupMenu.border", border);
-
         menu.setUI(basicPopupUI);
         basicPopupUI.installDefaults();
         assertEquals(Color.red, menu.getBackground());
@@ -123,7 +125,6 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         assertEquals(font, menu.getFont());
         assertEquals(border, menu.getBorder());
         assertTrue(menu.isOpaque());
-
         basicPopupUI.uninstallDefaults();
         assertNull(menu.getBackground());
         assertNull(menu.getForeground());
@@ -138,21 +139,17 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         if (!isHarmony()) {
             return;
         }
-
         JPopupMenu menu = new JPopupMenu();
         menu.setUI(null);
         basicPopupUI.popupMenu = menu;
-
         menu.applyComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         basicPopupUI.installKeyboardActions();
         assertEquals(0, menu.getInputMap().keys().length);
         assertNotNull(menu.getInputMap().getParent());
         assertEquals(11, menu.getInputMap().getParent().keys().length);
         assertNull(menu.getInputMap().getParent().getParent());
-
         basicPopupUI.uninstallKeyboardActions();
         assertEquals(0, menu.getInputMap().allKeys().length);
-
         menu.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         basicPopupUI.installKeyboardActions();
         assertEquals(0, menu.getInputMap().keys().length);
@@ -170,16 +167,13 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         JPopupMenu menu = new JPopupMenu();
         menu.setUI(null);
         basicPopupUI.popupMenu = menu;
-
         basicPopupUI.installListeners();
         if (!isHarmony()) {
             assertEquals(1, menu.getPopupMenuListeners().length);
         }
-
         basicPopupUI.uninstallListeners();
         if (!isHarmony()) {
             assertEquals(0, menu.getPopupMenuListeners().length);
         }
     }
-
 }

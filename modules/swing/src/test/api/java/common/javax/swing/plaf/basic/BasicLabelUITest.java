@@ -22,7 +22,6 @@ package javax.swing.plaf.basic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingTestCase;
@@ -32,17 +31,20 @@ import javax.swing.plaf.ComponentUI;
 
 public class BasicLabelUITest extends SwingTestCase {
     private JLabel label;
+
     private BasicLabelUI ui;
 
     public BasicLabelUITest(final String name) {
         super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         label = new JLabel();
         ui = new BasicLabelUI();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ui = null;
         label = null;
@@ -60,14 +62,13 @@ public class BasicLabelUITest extends SwingTestCase {
         Dimension prefSize = ui.getPreferredSize(label);
         assertTrue(prefSize.width > 0);
         assertTrue(prefSize.height > 0);
-
         final Dimension d = new Dimension(100, 100);
         ui = new BasicLabelUI() {
+            @Override
             public Dimension getPreferredSize(final JComponent c) {
                 return d;
             }
         };
-
         assertSame(d, ui.getPreferredSize(label));
         assertSame(d, ui.getMinimumSize(label));
         assertSame(d, ui.getMaximumSize(label));
@@ -77,7 +78,6 @@ public class BasicLabelUITest extends SwingTestCase {
         Color c = new ColorUIResource(Color.black);
         label.setForeground(new ColorUIResource(c));
         label.setBackground(new ColorUIResource(c));
-
         ui.installUI(label);
         assertEquals(UIManager.getColor("Label.foreground"), label.getForeground());
         assertEquals(UIManager.getColor("Label.background"), label.getBackground());
@@ -90,7 +90,6 @@ public class BasicLabelUITest extends SwingTestCase {
         assertEquals(0, label.getInputMap().size());
         assertEquals(0, label.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).size());
         assertEquals(0, label.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).size());
-
         ui.installKeyboardActions(label);
         assertEquals(0, label.getInputMap().size());
         assertEquals(0, label.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).size());
@@ -100,7 +99,6 @@ public class BasicLabelUITest extends SwingTestCase {
     public void testInstallUninstallComponents() throws Exception {
         label.removeAll();
         assertEquals(0, label.getComponentCount());
-
         ui.installComponents(label);
         assertEquals(0, label.getComponentCount());
     }

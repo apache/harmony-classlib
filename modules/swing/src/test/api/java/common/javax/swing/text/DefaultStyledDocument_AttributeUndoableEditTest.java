@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -23,27 +22,27 @@ package javax.swing.text;
 
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.DefaultStyledDocument.AttributeUndoableEdit;
-
 import junit.framework.TestCase;
 
 /**
  * Tests DefaultStyledDocument.AttributeUndoableEdit class
  *
  */
-public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
-    implements UndoableEditListener {
-
+public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase implements
+        UndoableEditListener {
     private AttributeUndoableEdit undoEdit;
+
     private DefaultStyledDocument doc;
 
     private static final AttributeSet italic = DefStyledDoc_Helpers.italic;
+
     private static final AttributeSet bold = DefStyledDoc_Helpers.bold;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
@@ -58,16 +57,13 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
      */
     public void testUndoRedoNoReplace() {
         doc.setCharacterAttributes(2, 4, bold, false);
-
         doc.writeLock();
         try {
             undoEdit.undo();
-
             AttributeSet attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(1, attrs.getAttributeCount());
             assertFalse(attrs.containsAttributes(bold));
             assertTrue(attrs.containsAttributes(italic));
-
             undoEdit.redo();
             attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(2, attrs.getAttributeCount());
@@ -85,17 +81,13 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
     public void testUndoRedoItalicFalse() {
         final MutableAttributeSet italicFalse = new SimpleAttributeSet();
         StyleConstants.setItalic(italicFalse, false);
-
         doc.setCharacterAttributes(2, 4, italicFalse, false);
-
         doc.writeLock();
         try {
             undoEdit.undo();
-
             AttributeSet attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(1, attrs.getAttributeCount());
             assertTrue(attrs.containsAttributes(italic));
-
             undoEdit.redo();
             attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(1, attrs.getAttributeCount());
@@ -111,16 +103,13 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
      */
     public void testUndoRedoWithReplace() {
         doc.setCharacterAttributes(2, 4, bold, true);
-
         doc.writeLock();
         try {
             undoEdit.undo();
-
             AttributeSet attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(1, attrs.getAttributeCount());
             assertFalse(attrs.containsAttributes(bold));
             assertTrue(attrs.containsAttributes(italic));
-
             undoEdit.redo();
             attrs = doc.getCharacterElement(4).getAttributes();
             assertEquals(1, attrs.getAttributeCount());
@@ -157,8 +146,7 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
         assertSame(attrs, undoEdit.newAttributes);
         assertTrue(undoEdit.isReplacing);
         assertEquals(1, undoEdit.copy.getAttributeCount());
-        assertTrue(undoEdit.copy.containsAttribute(StyleConstants.BidiLevel,
-                                                   new Integer(0)));
+        assertTrue(undoEdit.copy.containsAttribute(StyleConstants.BidiLevel, new Integer(0)));
     }
 
     /**
@@ -168,13 +156,11 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
      */
     public void testChangeNoReplace() {
         doc.setCharacterAttributes(2, 4, bold, false);
-
         assertNotNull(undoEdit);
         assertSame(doc.getCharacterElement(4), undoEdit.element);
         assertTrue(undoEdit.newAttributes.isEqual(bold));
         assertFalse(undoEdit.isReplacing);
         assertTrue(undoEdit.copy.isEqual(italic));
-
         AttributeSet attrs = doc.getCharacterElement(4).getAttributes();
         assertEquals(2, attrs.getAttributeCount());
         assertTrue(attrs.containsAttributes(bold));
@@ -188,13 +174,11 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
      */
     public void testChangeWithReplace() {
         doc.setCharacterAttributes(2, 4, bold, true);
-
         assertNotNull(undoEdit);
         assertSame(doc.getCharacterElement(4), undoEdit.element);
         assertTrue(undoEdit.newAttributes.isEqual(bold));
         assertTrue(undoEdit.isReplacing);
         assertTrue(undoEdit.copy.isEqual(italic));
-
         AttributeSet attrs = doc.getCharacterElement(4).getAttributes();
         assertEquals(1, attrs.getAttributeCount());
         assertTrue(attrs.containsAttributes(bold));
@@ -202,15 +186,15 @@ public class DefaultStyledDocument_AttributeUndoableEditTest extends TestCase
     }
 
     public void undoableEditHappened(UndoableEditEvent e) {
-        searchForAttributeUE((DefaultDocumentEvent)e.getEdit());
+        searchForAttributeUE((DefaultDocumentEvent) e.getEdit());
     }
 
     private void searchForAttributeUE(DefaultDocumentEvent e) {
-        List edits = DefStyledDoc_Helpers.getEdits(e);
-        for (Iterator i = edits.iterator(); i.hasNext();) {
+        List<?> edits = DefStyledDoc_Helpers.getEdits(e);
+        for (Iterator<?> i = edits.iterator(); i.hasNext();) {
             Object edit = i.next();
             if (edit instanceof AttributeUndoableEdit) {
-                undoEdit = (AttributeUndoableEdit)edit;
+                undoEdit = (AttributeUndoableEdit) edit;
                 break;
             }
         }

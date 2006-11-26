@@ -21,10 +21,8 @@
 package javax.swing.text;
 
 import java.awt.Color;
-
 import javax.swing.BasicSwingTestCase;
 import javax.swing.text.AbstractDocument.AbstractElement;
-
 import junit.framework.TestCase;
 
 /**
@@ -34,18 +32,26 @@ import junit.framework.TestCase;
  */
 public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     private DefaultStyledDocument doc;
+
     private Element root;
+
     private StyleContext styles;
 
     private AttributeSet plain;
+
     private AttributeSet bold;
+
     private AttributeSet italic;
+
     private AttributeSet boldItalic;
+
     private AttributeSet background;
+
     private AttributeSet foreground;
 
     private static final class StyledText {
         public final String text;
+
         public final AttributeSet attr;
 
         public StyledText(final String text, final AttributeSet attr) {
@@ -54,13 +60,12 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-
         styles = new StyleContext();
         doc = new DefaultStyledDocument(styles);
         root = doc.getDefaultRootElement();
-
         initAttributes();
         initText();
     }
@@ -68,32 +73,23 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     private void initAttributes() {
         plain = styles.getEmptySet();
         bold = styles.addAttribute(plain, StyleConstants.Bold, Boolean.TRUE);
-        italic = styles.addAttribute(plain,
-                                     StyleConstants.Italic, Boolean.TRUE);
-        boldItalic = styles.addAttribute(bold,
-                                         StyleConstants.Italic, Boolean.TRUE);
-
+        italic = styles.addAttribute(plain, StyleConstants.Italic, Boolean.TRUE);
+        boldItalic = styles.addAttribute(bold, StyleConstants.Italic, Boolean.TRUE);
         foreground = background = styles.getEmptySet();
-        foreground = styles.addAttribute(foreground,
-                                         StyleConstants.Foreground,
-                                         Color.CYAN);
-        background = styles.addAttribute(background,
-                                         StyleConstants.Background,
-                                         Color.BLUE);
+        foreground = styles.addAttribute(foreground, StyleConstants.Foreground, Color.CYAN);
+        background = styles.addAttribute(background, StyleConstants.Background, Color.BLUE);
     }
 
     private void initText() throws BadLocationException {
         final StyledText[] styledText = new StyledText[] {
-            // First paragraph
-            new StyledText("plain", plain),
-            new StyledText("bold", bold),
-            new StyledText("italic\n", italic),
-            // Second and Third
-            new StyledText("Bold & Italic", boldItalic),
-            new StyledText(" & Plain\n", plain),
-            new StyledText("The very plain text", null)
-        };
-
+                // First paragraph
+                new StyledText("plain", plain),
+                new StyledText("bold", bold),
+                new StyledText("italic\n", italic),
+                // Second and Third
+                new StyledText("Bold & Italic", boldItalic),
+                new StyledText(" & Plain\n", plain),
+                new StyledText("The very plain text", null) };
         int offset = 0;
         for (int i = 0; i < styledText.length; i++) {
             doc.insertString(offset, styledText[i].text, styledText[i].attr);
@@ -199,13 +195,11 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
      * General checks for getLogicalStyle().
      */
     public void testGetLogicalStyle01() {
-        final StyleContext styles = (StyleContext)doc.getAttributeContext();
-        assertSame(styles.getStyle(StyleContext.DEFAULT_STYLE),
-                   doc.getLogicalStyle(5));
+        final StyleContext styles = (StyleContext) doc.getAttributeContext();
+        assertSame(styles.getStyle(StyleContext.DEFAULT_STYLE), doc.getLogicalStyle(5));
         final Element par = doc.getParagraphElement(5);
         final AttributeSet parAttrs = par.getAttributes();
-        assertSame(parAttrs.getAttribute(AttributeSet.ResolveAttribute),
-                   doc.getLogicalStyle(5));
+        assertSame(parAttrs.getAttribute(AttributeSet.ResolveAttribute), doc.getLogicalStyle(5));
     }
 
     /**
@@ -214,9 +208,7 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     public void testGetLogicalStyle02() {
         final StyleContext context = new StyleContext();
         final Style style = context.addStyle("aStyle", null);
-
-        final AbstractElement par = (AbstractElement)doc.getParagraphElement(5);
-
+        final AbstractElement par = (AbstractElement) doc.getParagraphElement(5);
         doc.writeLock();
         try {
             par.addAttribute(AttributeSet.ResolveAttribute, style);
@@ -231,7 +223,7 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
      * to non-Style object.
      */
     public void testGetLogicalStyle03() {
-        final AbstractElement par = (AbstractElement)doc.getParagraphElement(5);
+        final AbstractElement par = (AbstractElement) doc.getParagraphElement(5);
         final MutableAttributeSet set = new SimpleAttributeSet();
         StyleConstants.setForeground(set, Color.GREEN);
         StyleConstants.setBackground(set, Color.YELLOW);
@@ -262,13 +254,11 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         doc.setCharacterAttributes(3, 8, foreground, false);
         final Element par = doc.getParagraphElement(0);
         assertEquals(5, par.getElementCount());
-
         assertEquals(plain, par.getElement(0).getAttributes());
         assertEquals(foreground, par.getElement(1).getAttributes());
-        assertEquals(styles.addAttributes(bold, foreground),
-                     par.getElement(2).getAttributes());
-        assertEquals(styles.addAttributes(italic, foreground),
-                     par.getElement(3).getAttributes());
+        assertEquals(styles.addAttributes(bold, foreground), par.getElement(2).getAttributes());
+        assertEquals(styles.addAttributes(italic, foreground), par.getElement(3)
+                .getAttributes());
         assertEquals(italic, par.getElement(4).getAttributes());
     }
 
@@ -280,24 +270,19 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         doc.setCharacterAttributes(3, 8, foreground, false);
         final Element par = doc.getParagraphElement(0);
         assertEquals(5, par.getElementCount());
-
         Element span = par.getElement(0); // Plain (no attributes)
         assertEquals(0, span.getStartOffset());
         assertEquals(3, span.getEndOffset());
-
-        span = par.getElement(1);         // Foreground only
+        span = par.getElement(1); // Foreground only
         assertEquals(3, span.getStartOffset());
         assertEquals(5, span.getEndOffset());
-
-        span = par.getElement(2);         // Bold + Foreground
+        span = par.getElement(2); // Bold + Foreground
         assertEquals(5, span.getStartOffset());
         assertEquals(9, span.getEndOffset());
-
-        span = par.getElement(3);         // Italic + Foreground
+        span = par.getElement(3); // Italic + Foreground
         assertEquals(9, span.getStartOffset());
         assertEquals(11, span.getEndOffset());
-
-        span = par.getElement(4);         // Italic only
+        span = par.getElement(4); // Italic only
         assertEquals(11, span.getStartOffset());
         assertEquals(16, span.getEndOffset());
     }
@@ -311,7 +296,6 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         doc.setCharacterAttributes(3, 8, background, true);
         final Element par = doc.getParagraphElement(0);
         assertEquals(5, par.getElementCount());
-
         assertEquals(plain, par.getElement(0).getAttributes());
         assertEquals(background, par.getElement(1).getAttributes());
         assertEquals(background, par.getElement(2).getAttributes());
@@ -327,22 +311,19 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         doc.setCharacterAttributes(3, 8, background, true);
         final Element par = doc.getParagraphElement(0);
         assertEquals(5, par.getElementCount());
-
         Element span = par.getElement(0); // Plain (no attributes)
         assertEquals(0, span.getStartOffset());
         assertEquals(3, span.getEndOffset());
-
-        span = par.getElement(1);         // Background only
+        span = par.getElement(1); // Background only
         assertEquals(3, span.getStartOffset());
         assertEquals(5, span.getEndOffset());
-        span = par.getElement(2);         // Background only
+        span = par.getElement(2); // Background only
         assertEquals(5, span.getStartOffset());
         assertEquals(9, span.getEndOffset());
-        span = par.getElement(3);         // Background only
+        span = par.getElement(3); // Background only
         assertEquals(9, span.getStartOffset());
         assertEquals(11, span.getEndOffset());
-
-        span = par.getElement(4);         // Italic only
+        span = par.getElement(4); // Italic only
         assertEquals(11, span.getStartOffset());
         assertEquals(16, span.getEndOffset());
     }
@@ -354,9 +335,9 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     public void testSetCharacterAttributes05() {
         try {
             doc.setCharacterAttributes(3, 8, null, false);
-
             fail("NullPointerException is expected.");
-        } catch (NullPointerException e) { }
+        } catch (NullPointerException e) {
+        }
     }
 
     /**
@@ -366,9 +347,9 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     public void testSetCharacterAttributes06() {
         try {
             doc.setCharacterAttributes(3, 8, null, true);
-
             fail("NullPointerException is expected.");
-        } catch (NullPointerException e) { }
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testSetLogicalStyle() {
@@ -376,14 +357,12 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         final Style logicalStyle = context.addStyle("aStyle", null);
         logicalStyle.addAttribute(StyleConstants.Foreground, Color.CYAN);
         logicalStyle.addAttribute(StyleConstants.Background, Color.BLUE);
-
         doc.setLogicalStyle(16, logicalStyle);
         assertNotSame(logicalStyle, doc.getLogicalStyle(15)); // 1st par end - 1
-        assertSame(logicalStyle, doc.getLogicalStyle(16));    // 2nd par start
-        assertSame(logicalStyle, doc.getLogicalStyle(37));    // 2nd par end - 1
+        assertSame(logicalStyle, doc.getLogicalStyle(16)); // 2nd par start
+        assertSame(logicalStyle, doc.getLogicalStyle(37)); // 2nd par end - 1
         assertNotSame(logicalStyle, doc.getLogicalStyle(38)); // 3rd par start
-        assertSame(doc.getStyle(StyleContext.DEFAULT_STYLE),
-                   doc.getLogicalStyle(38));
+        assertSame(doc.getStyle(StyleContext.DEFAULT_STYLE), doc.getLogicalStyle(38));
     }
 
     public void testSetLogicalStyleInvalid() {
@@ -392,11 +371,10 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         logicalStyle.addAttribute(StyleConstants.Foreground, Color.CYAN);
         logicalStyle.addAttribute(StyleConstants.Background, Color.BLUE);
         final Style defaultStyle = doc.getStyle(StyleContext.DEFAULT_STYLE);
-
         doc.setLogicalStyle(-2, logicalStyle);
-        assertSame(logicalStyle, doc.getLogicalStyle(0));     // 1st par end - 1
-        assertSame(defaultStyle, doc.getLogicalStyle(16));    // 2nd par start
-        assertSame(defaultStyle, doc.getLogicalStyle(37));    // 2nd par end - 1
+        assertSame(logicalStyle, doc.getLogicalStyle(0)); // 1st par end - 1
+        assertSame(defaultStyle, doc.getLogicalStyle(16)); // 2nd par start
+        assertSame(defaultStyle, doc.getLogicalStyle(37)); // 2nd par end - 1
         assertSame(defaultStyle, doc.getLogicalStyle(38));
         doc.setLogicalStyle(doc.getLength() + 2, logicalStyle);
         assertSame(logicalStyle, doc.getLogicalStyle(doc.getLength()));
@@ -408,14 +386,10 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     public void testSetParagraphAttributes01() {
         doc.setParagraphAttributes(3, 13, foreground, false);
         assertFalse(doc.getLogicalStyle(3).containsAttributes(foreground));
-
         // The paragraph itself contains attributes, but not its resolve parent
-        assertTrue(root.getElement(0).getAttributes()
-                   .containsAttributes(foreground));
-        assertFalse(root.getElement(1).getAttributes()
-                    .containsAttributes(foreground));
-        assertFalse(root.getElement(2).getAttributes()
-                    .containsAttributes(foreground));
+        assertTrue(root.getElement(0).getAttributes().containsAttributes(foreground));
+        assertFalse(root.getElement(1).getAttributes().containsAttributes(foreground));
+        assertFalse(root.getElement(2).getAttributes().containsAttributes(foreground));
     }
 
     /**
@@ -425,13 +399,9 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         doc.setParagraphAttributes(3, 14, foreground, false);
         assertFalse(doc.getLogicalStyle(3).containsAttributes(foreground));
         assertFalse(doc.getLogicalStyle(3 + 14).containsAttributes(foreground));
-
-        assertTrue(root.getElement(0).getAttributes()
-                   .containsAttributes(foreground));
-        assertTrue(root.getElement(1).getAttributes()
-                    .containsAttributes(foreground));
-        assertFalse(root.getElement(2).getAttributes()
-                    .containsAttributes(foreground));
+        assertTrue(root.getElement(0).getAttributes().containsAttributes(foreground));
+        assertTrue(root.getElement(1).getAttributes().containsAttributes(foreground));
+        assertFalse(root.getElement(2).getAttributes().containsAttributes(foreground));
     }
 
     /**
@@ -444,7 +414,6 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
         // The attributes fully replaced including resolve parent
         assertNull(doc.getLogicalStyle(3));
         assertEquals(background, root.getElement(0).getAttributes());
-
         final Style defaultStyle = doc.getStyle(StyleContext.DEFAULT_STYLE);
         assertSame(defaultStyle, doc.getLogicalStyle(16));
         assertSame(defaultStyle, doc.getLogicalStyle(38));
@@ -456,54 +425,53 @@ public class DefaultStyledDocument_ElementsAndAttributesTest extends TestCase {
     public void testSetParagraphAttributes04() {
         try {
             doc.setParagraphAttributes(3, 1, null, false);
-
             fail("NullPointerException is expected");
-        } catch (NullPointerException e) { }
+        } catch (NullPointerException e) {
+        }
     }
 }
-
 /* The dump of the document used in these tests (after setUp()).
 
-<section>
-  <paragraph
-    resolver=NamedStyle:default {name=default,}
-  >
-    <content>
-      [0,5][plain]
-    <content
-      bold=true
-    >
-      [5,9][bold]
-    <content
-      italic=true
-    >
-      [9,16][italic
-]
-  <paragraph
-    resolver=NamedStyle:default {name=default,}
-  >
-    <content
-      bold=true
-      italic=true
-    >
-      [16,29][Bold & Italic]
-    <content>
-      [29,38][ & Plain
-]
-  <paragraph
-    resolver=NamedStyle:default {name=default,}
-  >
-    <content>
-      [38,57][The very plain text]
-    <content>
-      [57,58][
-]
-<bidi root>
-  <bidi level
-    bidiLevel=0
-  >
-    [0,58][plainbolditalic
-Bold & Italic & Plain
-Th...]
+ <section>
+ <paragraph
+ resolver=NamedStyle:default {name=default,}
+ >
+ <content>
+ [0,5][plain]
+ <content
+ bold=true
+ >
+ [5,9][bold]
+ <content
+ italic=true
+ >
+ [9,16][italic
+ ]
+ <paragraph
+ resolver=NamedStyle:default {name=default,}
+ >
+ <content
+ bold=true
+ italic=true
+ >
+ [16,29][Bold & Italic]
+ <content>
+ [29,38][ & Plain
+ ]
+ <paragraph
+ resolver=NamedStyle:default {name=default,}
+ >
+ <content>
+ [38,57][The very plain text]
+ <content>
+ [57,58][
+ ]
+ <bidi root>
+ <bidi level
+ bidiLevel=0
+ >
+ [0,58][plainbolditalic
+ Bold & Italic & Plain
+ Th...]
 
-*/
+ */

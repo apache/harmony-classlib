@@ -15,28 +15,37 @@
  *  limitations under the License.
  */
 /**
-* @author Alexander T. Simbirtsev
-* @version $Revision$
-*/
+ * @author Alexander T. Simbirtsev
+ * @version $Revision$
+ */
 package javax.swing.text;
 
 import javax.swing.BasicSwingTestCase;
 
 public class ElementIteratorTest extends BasicSwingTestCase {
-
     protected ElementIterator iterator;
+
     protected AbstractDocument doc;
 
     protected Element root;
+
     protected Element branch1;
+
     protected Element branch2;
+
     protected Element leaf1;
+
     protected Element leaf2;
+
     protected Element leaf3;
+
     protected Element leaf4;
+
     protected Element leaf5;
+
     protected Element leaf6;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new DefaultStyledDocument();
@@ -48,7 +57,6 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         doc.insertString(2, "XX", attr2);
         doc.insertString(4, "\n00", attr1);
         doc.insertString(7, "XX", attr2);
-
         root = doc.getRootElements()[0];
         branch1 = root.getElement(0);
         leaf1 = branch1.getElement(0);
@@ -61,6 +69,7 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         iterator = new ElementIterator(doc);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -71,7 +80,6 @@ public class ElementIteratorTest extends BasicSwingTestCase {
     public void testElementIteratorDocument() {
         assertSame(root, iterator.current());
         assertNull(iterator.previous());
-
         iterator.next();
         assertSame(root, iterator.first());
         assertNull(iterator.previous());
@@ -89,12 +97,10 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         assertSame(leaf3, iterator.next());
         assertNull(iterator.next());
         assertSame(branch1, iterator.first());
-
         iterator = new ElementIterator(leaf1);
         assertSame(leaf1, iterator.current());
         assertNull(iterator.next());
         assertNull(iterator.previous());
-
         iterator = new ElementIterator(leaf1);
         assertSame(leaf1, iterator.next());
         assertNull(iterator.current());
@@ -171,7 +177,6 @@ public class ElementIteratorTest extends BasicSwingTestCase {
      */
     public void testDepth() throws BadLocationException {
         assertEquals(0, iterator.depth());
-
         iterator.current();
         assertEquals(1, iterator.depth());
         iterator.next();
@@ -192,10 +197,8 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         assertEquals(3, iterator.depth());
         iterator.next();
         assertEquals(0, iterator.depth());
-
         iterator.first();
         assertEquals(1, iterator.depth());
-
         iterator = new ElementIterator(doc.getBidiRootElement());
         assertEquals(0, iterator.depth());
         iterator.next();
@@ -213,17 +216,13 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         iterator = new ElementIterator(branch2);
         iterator.current();
         iterator.next();
-
-        ElementIterator cloned = (ElementIterator)iterator.clone();
+        ElementIterator cloned = (ElementIterator) iterator.clone();
         assertSame(leaf4, cloned.current());
         assertSame(branch2, cloned.previous());
         assertSame(leaf5, cloned.next());
         assertSame(leaf6, cloned.next());
         assertNull(cloned.next());
-
         assertSame(leaf4, iterator.current());
-
         assertSame(branch2, cloned.first());
     }
-
 }

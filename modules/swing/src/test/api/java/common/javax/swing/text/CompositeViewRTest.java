@@ -22,22 +22,24 @@ package javax.swing.text;
 
 import javax.swing.BasicSwingTestCase;
 import javax.swing.text.CompositeViewTest.CompositeViewImpl;
-
 import junit.framework.TestCase;
 
 public class CompositeViewRTest extends TestCase {
-    private PlainDocument doc;      // Document used in tests
-    private Element       root;     // Default root element of the document
-    private CompositeView view;     // View object used in tests
-    private ViewFactory   factory;  // View factory used to create new views
+    private PlainDocument doc; // Document used in tests
 
+    private Element root; // Default root element of the document
+
+    private CompositeView view; // View object used in tests
+
+    private ViewFactory factory; // View factory used to create new views
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new PlainDocument();
         doc.insertString(0, "line1\nline2\n\u05DC\u05DD\nline3\n", null);
         // positions:        012345 678901 2     3     4 567890
         //                   0          1                     2
-
         view = new CompositeViewImpl(root = doc.getDefaultRootElement());
         view.loadChildren(factory = new ViewFactory() {
             public View create(final Element line) {
@@ -54,7 +56,6 @@ public class CompositeViewRTest extends TestCase {
         final int count = view.getViewCount();
         view.replace(0, 0, null);
         assertEquals(count, view.getViewCount());
-
         assertTrue(count > 0);
         view.replace(0, view.getViewCount(), null); // = removeAll()
         assertEquals(0, view.getViewCount());
@@ -63,23 +64,18 @@ public class CompositeViewRTest extends TestCase {
     public void testReplace03() throws Exception {
         View child = view.getView(0);
         assertSame(view, child.getParent());
-
         // This removes and places the same view at the same place
-        view.replace(0, 1, new View[] {child});
-
+        view.replace(0, 1, new View[] { child });
         assertSame(view, child.getParent());
     }
 
     public void testReplace04() throws Exception {
         View child = view.getView(0);
         assertSame(view, child.getParent());
-
         View parent = new PlainView(root);
         child.setParent(parent);
         assertSame(parent, child.getParent());
-
         view.remove(0);
-
         assertSame(parent, child.getParent());
     }
 
@@ -87,10 +83,10 @@ public class CompositeViewRTest extends TestCase {
      * <code>loadChildren</code> doesn't call <code>replace</code>.
      */
     public void testLoadChildren02() {
-        final boolean[] called = new boolean[] {false};
+        final boolean[] called = new boolean[] { false };
         view = new CompositeViewImpl(root) {
-            public void replace(final int index, final int length,
-                                final View[] views) {
+            @Override
+            public void replace(final int index, final int length, final View[] views) {
                 called[0] = true;
                 assertEquals(0, index);
                 if (BasicSwingTestCase.isHarmony()) {
@@ -102,11 +98,10 @@ public class CompositeViewRTest extends TestCase {
                 super.replace(index, length, views);
             }
         };
-
         view.loadChildren(factory);
-        assertTrue(called[0]);          called[0] = false;
+        assertTrue(called[0]);
+        called[0] = false;
         assertEquals(root.getElementCount(), view.getViewCount());
-
         assertTrue(view.getViewCount() > 0);
         view.loadChildren(factory);
         assertTrue(called[0]);

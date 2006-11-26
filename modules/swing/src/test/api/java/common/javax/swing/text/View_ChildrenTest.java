@@ -14,7 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * @author Alexey A. Ivanov
  * @version $Revision$
@@ -22,7 +21,6 @@
 package javax.swing.text;
 
 import javax.swing.text.ViewTest.DisAbstractedView;
-
 import junit.framework.TestCase;
 
 /**
@@ -31,15 +29,20 @@ import junit.framework.TestCase;
  */
 public class View_ChildrenTest extends TestCase {
     private Document doc;
-    private Element  line;
+
+    private Element line;
+
     private boolean replaceIsCalled = false;
-    private int     replaceLength;
 
-    private int     replaceOffset;
-    private View[]  replaceViews;
-    private View     view;
+    private int replaceLength;
 
-    private View    viewToAdd;
+    private int replaceOffset;
+
+    private View[] replaceViews;
+
+    private View view;
+
+    private View viewToAdd;
 
     public void testAppend() {
         view.append(viewToAdd);
@@ -57,8 +60,7 @@ public class View_ChildrenTest extends TestCase {
         assertEquals(0, replaceLength);
         assertEquals(1, replaceViews.length);
         assertSame(viewToAdd, replaceViews[0]);
-
-        replaceIsCalled = false;                // Reset the flag
+        replaceIsCalled = false; // Reset the flag
         view.insert(2, viewToAdd);
         assertTrue(replaceIsCalled);
         assertEquals(2, replaceOffset);
@@ -73,8 +75,7 @@ public class View_ChildrenTest extends TestCase {
         assertEquals(0, replaceOffset);
         assertEquals(1, replaceLength);
         assertNull(replaceViews);
-
-        replaceIsCalled = false;                // Reset the flag
+        replaceIsCalled = false; // Reset the flag
         view.remove(2);
         assertTrue(replaceIsCalled);
         assertEquals(2, replaceOffset);
@@ -101,21 +102,21 @@ public class View_ChildrenTest extends TestCase {
         assertSame(viewsToAdd, replaceViews);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         doc = new PlainDocument();
         doc.insertString(0, "01234\nabcde", null);
         line = doc.getDefaultRootElement().getElement(1);
-
         view = new DisAbstractedView(line) {
+            @Override
             public void replace(final int offset, final int length, final View[] views) {
                 replaceIsCalled = true;
-                replaceOffset   = offset;
-                replaceLength   = length;
-                replaceViews    = views;
+                replaceOffset = offset;
+                replaceLength = length;
+                replaceViews = views;
             }
         };
         viewToAdd = ViewTest.getLine1View(doc);
     }
-
 }

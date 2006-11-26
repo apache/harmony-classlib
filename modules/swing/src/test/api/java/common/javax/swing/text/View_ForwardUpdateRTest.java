@@ -24,14 +24,12 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent.ElementChange;
 import javax.swing.text.CompositeView_ModelViewTest.ChildView;
 import javax.swing.text.CompositeView_ModelViewTest.WithChildrenView;
 import javax.swing.text.Position.Bias;
-
 import junit.framework.TestCase;
 
 public class View_ForwardUpdateRTest extends TestCase {
@@ -41,7 +39,6 @@ public class View_ForwardUpdateRTest extends TestCase {
         protected ParentView(Element element, String name) {
             super(element);
             this.name = name;
-
             loadChildren(viewFactory);
         }
 
@@ -49,6 +46,7 @@ public class View_ForwardUpdateRTest extends TestCase {
             return name;
         }
 
+        @Override
         public String toString() {
             return getName() + " on " + getElement();
         }
@@ -61,29 +59,26 @@ public class View_ForwardUpdateRTest extends TestCase {
             return getName() + getModelRange();
         }
 
+        @Override
         public int getViewIndex(int pos, Bias bias) {
             int result = super.getViewIndex(pos, bias);
-            logger.println("\t" + getInfo() + ".getViewIndex("
-                           + pos + ", " + bias + ") = " + result);
+            logger.println("\t" + getInfo() + ".getViewIndex(" + pos + ", " + bias + ") = "
+                    + result);
             return result;
         }
 
-        protected void forwardUpdate(ElementChange change,
-                                     DocumentEvent event,
-                                     Shape shape,
-                                     ViewFactory factory) {
+        @Override
+        protected void forwardUpdate(ElementChange change, DocumentEvent event, Shape shape,
+                ViewFactory factory) {
             logger.println(">>> " + getInfo() + ".forwardUpdate");
-
             forwardUpdates.add(this);
             super.forwardUpdate(change, event, shape, factory);
-
             logger.println("<<< " + getInfo() + ".forwardUpdate");
         }
 
-        protected void forwardUpdateToView(View view,
-                                           DocumentEvent event,
-                                           Shape shape,
-                                           ViewFactory factory) {
+        @Override
+        protected void forwardUpdateToView(View view, DocumentEvent event, Shape shape,
+                ViewFactory factory) {
             viewsForwardedTo.add(view);
             super.forwardUpdateToView(view, event, shape, factory);
         }
@@ -106,6 +101,7 @@ public class View_ForwardUpdateRTest extends TestCase {
             super(element);
         }
 
+        @Override
         public String toString() {
             return "content on " + getElement();
         }
@@ -142,15 +138,18 @@ public class View_ForwardUpdateRTest extends TestCase {
     }
 
     private static final Rectangle rect = new Rectangle(200, 100);
+
     private static final Logger logger = new Logger(false);
 
     private Document doc;
+
     private Element root;
+
     private DocumentEvent docEvent;
+
     private ViewFactory viewFactory = new ViewFactory() {
         public View create(Element element) {
             final String name = element.getName();
-
             if (AbstractDocument.SectionElementName.equals(name)) {
                 return new RootView(element);
             } else if (AbstractDocument.ParagraphElementName.equals(name)) {
@@ -163,21 +162,19 @@ public class View_ForwardUpdateRTest extends TestCase {
     };
 
     private View view;
-    private List forwardUpdates = new ArrayList();
-    private List viewsForwardedTo = new ArrayList();
+
+    private List<ParentView> forwardUpdates = new ArrayList<ParentView>();
+
+    private List<View> viewsForwardedTo = new ArrayList<View>();
 
     public void testForwardUpdate01() throws BadLocationException {
         doc = new PlainDocument();
-
         doc.insertString(doc.getLength(), "line1", null);
         doc.insertString(doc.getLength(), "\nline2", null);
-
         root = doc.getDefaultRootElement();
         view = viewFactory.create(root);
-
         assertEquals(2, root.getElementCount());
         assertEquals(2, view.getViewCount());
-
         docEvent = new DocumentEvent() {
             public int getOffset() {
                 return 0;
@@ -200,7 +197,6 @@ public class View_ForwardUpdateRTest extends TestCase {
             }
         };
         view.forwardUpdate(null, docEvent, rect, viewFactory);
-
         assertEquals(2, viewsForwardedTo.size());
         assertSame(view.getView(0), viewsForwardedTo.get(0));
         assertSame(view.getView(1), viewsForwardedTo.get(1));
@@ -208,11 +204,9 @@ public class View_ForwardUpdateRTest extends TestCase {
 
     public void testForwardUpdate02() throws BadLocationException {
         initStyledDocument();
-
         final MutableAttributeSet fontSize = new SimpleAttributeSet();
         StyleConstants.setFontSize(fontSize, 36);
-
-        List expected = new ArrayList();
+        List<View> expected = new ArrayList<View>();
         logger.print(view);
         for (int i = 0; i < view.getViewCount(); i++) {
             View child = view.getView(i);
@@ -224,13 +218,8 @@ public class View_ForwardUpdateRTest extends TestCase {
             }
         }
         logger.println();
-
-        ((StyledDocument)doc).setCharacterAttributes(0, doc.getLength() + 1,
-                                                     fontSize, false);
-
-        view.forwardUpdate(docEvent.getChange(root), docEvent,
-                           rect, viewFactory);
-
+        ((StyledDocument) doc).setCharacterAttributes(0, doc.getLength() + 1, fontSize, false);
+        view.forwardUpdate(docEvent.getChange(root), docEvent, rect, viewFactory);
         logger.println();
         assertEquals(expected.size(), viewsForwardedTo.size());
         for (int i = 0; i < viewsForwardedTo.size(); i++) {
@@ -241,8 +230,7 @@ public class View_ForwardUpdateRTest extends TestCase {
 
     public void testForwardUpdate03() throws BadLocationException {
         initStyledDocument();
-
-        final List expected = new ArrayList();
+        final List<View> expected = new ArrayList<View>();
         // We will use the view for the second paragraph
         view = view.getView(1);
         logger.print(view);
@@ -251,20 +239,13 @@ public class View_ForwardUpdateRTest extends TestCase {
             logger.print("\t" + view.getView(i));
         }
         logger.println();
-
         final MutableAttributeSet fontSize = new SimpleAttributeSet();
         StyleConstants.setFontSize(fontSize, 36);
-        ((StyledDocument)doc).setCharacterAttributes(0, doc.getLength(),
-                                                     fontSize, false);
-
+        ((StyledDocument) doc).setCharacterAttributes(0, doc.getLength(), fontSize, false);
         assertEquals(-1, view.getViewIndex(docEvent.getOffset(), Bias.Forward));
-        assertEquals(view.getViewCount() - 1,
-                     view.getViewIndex(docEvent.getOffset()
-                                       + docEvent.getLength(), Bias.Forward));
-
-        view.forwardUpdate(docEvent.getChange(view.getElement()),
-                           docEvent, rect, viewFactory);
-
+        assertEquals(view.getViewCount() - 1, view.getViewIndex(docEvent.getOffset()
+                + docEvent.getLength(), Bias.Forward));
+        view.forwardUpdate(docEvent.getChange(view.getElement()), docEvent, rect, viewFactory);
         logger.println();
         assertEquals(expected.size(), viewsForwardedTo.size());
         for (int i = 0; i < viewsForwardedTo.size(); i++) {
@@ -273,6 +254,7 @@ public class View_ForwardUpdateRTest extends TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         CompositeView_ModelViewTest.shape = rect;
@@ -280,17 +262,13 @@ public class View_ForwardUpdateRTest extends TestCase {
 
     private void initStyledDocument() throws BadLocationException {
         doc = new DefaultStyledDocument();
-
         final MutableAttributeSet bold = new SimpleAttributeSet();
         StyleConstants.setBold(bold, true);
-
         doc.insertString(doc.getLength(), "plain", null);
         doc.insertString(doc.getLength(), "bold", bold);
         doc.insertString(doc.getLength(), "\nline2", null);
-
         root = doc.getDefaultRootElement();
         view = viewFactory.create(root);
-
         doc.addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
                 fail("insertUpdate is not expected");
