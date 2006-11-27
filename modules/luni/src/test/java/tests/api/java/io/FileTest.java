@@ -1798,6 +1798,7 @@ public class FileTest extends junit.framework.TestCase {
         // Test make a long path
         String longDirName = "abcdefghijklmnopqrstuvwx";// 24 chars
         StringBuilder sb = new StringBuilder(dir + File.separator);
+        StringBuilder sb2 = new StringBuilder(dir + File.separator);
         while (dir.getCanonicalPath().length() < 256 - longDirName.length()) {
             sb.append(longDirName + File.separator);
             dir = new File(sb.toString());
@@ -1807,6 +1808,14 @@ public class FileTest extends junit.framework.TestCase {
         while (dir.getCanonicalPath().length() < 256) {
             sb.append(0);
             dir = new File(sb.toString());
+            assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
+                    dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }
+        // Test make many paths
+        while (dir.getCanonicalPath().length() < 256) {
+            sb2.append(0);
+            dir = new File(sb2.toString());
             assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
                     dir.mkdir() && dir.exists());
             dir.deleteOnExit();
