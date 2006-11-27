@@ -337,7 +337,7 @@ hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
     int j=0;
     int lastbackslash=0;
     if(len >= 248){
-        len =len + 4;
+        len =len + 5;
         canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len);
         strcpy(canonicalpath,"\\\\?\\");
         for(i==0,j=4;i<len;i++){
@@ -357,6 +357,7 @@ hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
                 j++;
             }
         }
+        canonicalpath[j]='\0';
         returnVar = CreateDirectory (canonicalpath, 0);
         portLibrary->mem_free_memory(portLibrary, canonicalpath);
     }else{
