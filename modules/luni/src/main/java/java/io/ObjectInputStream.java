@@ -1091,7 +1091,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     private void readFieldValues(Object obj, ObjectStreamClass classDesc)
             throws OptionalDataException, ClassNotFoundException, IOException {
         // Now we must read all fields and assign them to the receiver
-        ObjectStreamField[] fields = classDesc.getLoadFields();
+    	ObjectStreamField[] fields = classDesc.getLoadFields();
+    	fields = (null == fields ? new ObjectStreamField[] {} : fields);
         Class<?> declaringClass = classDesc.forClass();
         if (declaringClass == null && mustResolve) {
             throw new ClassNotFoundException(classDesc.getName());
@@ -1686,6 +1687,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // Resolve the field signatures using the class loader of the
         // resolved class
         ObjectStreamField[] fields = newClassDesc.getLoadFields();
+        fields = (null == fields ? new ObjectStreamField[] {} : fields);
         ClassLoader loader = newClassDesc.forClass() == null ? callerClassLoader
                 : newClassDesc.forClass().getClassLoader();
         for (ObjectStreamField element : fields) {

@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.NotActiveException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.SerializablePermission;
 import java.io.StreamCorruptedException;
@@ -653,7 +655,57 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		Test another = (Test) in.readObject();
 		in.close();
 		assertEquals(test, another);
-	}  
+	}
+    
+    //Regression Test for JIRA-2249
+    public static class ObjectOutputStreamWithWriteDesc extends
+            ObjectOutputStream {
+        public ObjectOutputStreamWithWriteDesc(OutputStream os)
+                throws IOException {
+            super(os);
+        }
+
+        public void writeClassDescriptor(ObjectStreamClass desc)
+                throws IOException {
+        }
+    }
+
+    public static class ObjectIutputStreamWithReadDesc extends
+            ObjectInputStream {
+        private Class returnClass;
+
+        public ObjectIutputStreamWithReadDesc(InputStream is, Class returnClass)
+                throws IOException {
+            super(is);
+            this.returnClass = returnClass;
+        }
+
+        public ObjectStreamClass readClassDescriptor() throws IOException,
+                ClassNotFoundException {
+            return ObjectStreamClass.lookup(returnClass);
+
+        }
+    }
+    
+    static class TestClassForSerialization implements Serializable {
+	}
+
+    public void test_ClassDescriptor() throws IOException,
+			ClassNotFoundException {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStreamWithWriteDesc oos = new ObjectOutputStreamWithWriteDesc(
+				baos);
+		oos.writeObject(String.class);
+		oos.close();
+		Class cls = TestClassForSerialization.class;
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		ObjectIutputStreamWithReadDesc ois = new ObjectIutputStreamWithReadDesc(
+				bais, cls);
+		Object obj = ois.readObject();
+		ois.close();
+		assertEquals(cls, obj);
+	}
    
 
     /**
