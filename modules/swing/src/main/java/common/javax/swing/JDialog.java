@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Vadim L. Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.AWTEvent;
@@ -32,23 +27,51 @@ import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
-
 import java.awt.event.WindowEvent;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.x.swing.Utilities;
 
+/**
+ * <p>
+ * <i>JDialog</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class JDialog extends Dialog implements WindowConstants, Accessible, RootPaneContainer {
+    private static final long serialVersionUID = -864070866424508218L;
 
-public class JDialog extends Dialog
-    implements WindowConstants, Accessible, RootPaneContainer {
+    private static boolean defaultLookAndFeelDecorated;
 
-    private static boolean defaultLookAndFeelDecorated = false;
+    /**
+     * This class implements accessibility support for <code>JDialog</code>.
+     */
+    protected class AccessibleJDialog extends AccessibleAWTDialog {
+        private static final long serialVersionUID = 7312926302382808523L;
+
+        protected AccessibleJDialog() {
+        }
+
+        @Override
+        public String getAccessibleName() {
+            return getTitle();
+        }
+
+        @Override
+        public AccessibleStateSet getAccessibleStateSet() {
+            return super.getAccessibleStateSet();
+        }
+    }
 
     protected JRootPane rootPane;
+
     protected boolean rootPaneCheckingEnabled;
+
     protected AccessibleContext accessibleContext;
 
     private int defaultCloseOperation = HIDE_ON_CLOSE;
@@ -65,9 +88,8 @@ public class JDialog extends Dialog
      *        If gc is null, GraphicsConfiguration of the owner will be used.
      */
     public JDialog(final Frame owner, final String title, final boolean modal,
-                   final GraphicsConfiguration gc) {
-        super(owner == null ? JFrame.getSharedOwner() : owner,
-              title, modal, gc);
+            final GraphicsConfiguration gc) {
+        super(owner == null ? JFrame.getSharedOwner() : owner, title, modal, gc);
         dialogInit();
     }
 
@@ -85,7 +107,7 @@ public class JDialog extends Dialog
      *         true.
      */
     public JDialog(final Dialog owner, final String title, final boolean modal,
-                   final GraphicsConfiguration gc) throws HeadlessException {
+            final GraphicsConfiguration gc) throws HeadlessException {
         super(owner, title, modal, gc);
         dialogInit();
     }
@@ -118,8 +140,7 @@ public class JDialog extends Dialog
      * @throws HeadlessException - if GraphicsEnvironment.isHeadless()
      *         returns true.
      */
-    public JDialog(final Frame owner, final String title)
-            throws HeadlessException {
+    public JDialog(final Frame owner, final String title) throws HeadlessException {
         this(owner, title, false);
     }
 
@@ -149,8 +170,7 @@ public class JDialog extends Dialog
      * @throws HeadlessException - if GraphicsEnvironment.isHeadless()
      *         returns true.
      */
-    public JDialog(final Dialog owner, final String title)
-            throws HeadlessException {
+    public JDialog(final Dialog owner, final String title) throws HeadlessException {
         this(owner, title, false);
     }
 
@@ -165,8 +185,7 @@ public class JDialog extends Dialog
      * @throws HeadlessException - if GraphicsEnvironment.isHeadless()
      *         returns true.
      */
-    public JDialog(final Frame owner, final boolean modal)
-            throws HeadlessException {
+    public JDialog(final Frame owner, final boolean modal) throws HeadlessException {
         this(owner, null, modal);
     }
 
@@ -194,8 +213,7 @@ public class JDialog extends Dialog
      * @throws HeadlessException - if GraphicsEnvironment.isHeadless()
      *         returns true.
      */
-    public JDialog(final Dialog owner, final boolean modal)
-            throws HeadlessException {
+    public JDialog(final Dialog owner, final boolean modal) throws HeadlessException {
         this(owner, null, modal);
     }
 
@@ -220,35 +238,18 @@ public class JDialog extends Dialog
      *         returns true.
      */
     public JDialog() throws HeadlessException {
-        this((Frame)null, null, false);
-    }
-
-    /**
-     * This class implements accessibility support for <code>JDialog</code>.
-     */
-    protected class AccessibleJDialog extends AccessibleAWTDialog {
-        protected AccessibleJDialog() {
-        }
-
-        public String getAccessibleName() {
-            return getTitle();
-        }
-
-        public AccessibleStateSet getAccessibleStateSet() {
-            return super.getAccessibleStateSet();
-        }
+        this((Frame) null, null, false);
     }
 
     /**
      *
      */
-    protected void addImpl(final Component comp, final Object constraints,
-                           final int index) {
+    @Override
+    protected void addImpl(final Component comp, final Object constraints, final int index) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().add(comp, constraints, index);
             return;
         }
-
         super.addImpl(comp, constraints, index);
     }
 
@@ -261,9 +262,7 @@ public class JDialog extends Dialog
         if (rootPane != null) {
             remove(rootPane);
         }
-
         rootPane = root;
-
         if (root != null) {
             super.addImpl(root, null, 0);
         }
@@ -328,11 +327,11 @@ public class JDialog extends Dialog
      *
      * @return the accessible context for the dialog
      */
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJDialog();
         }
-
         return accessibleContext;
     }
 
@@ -341,15 +340,14 @@ public class JDialog extends Dialog
      *
      * @return string representation of this dialog
      */
+    @Override
     protected String paramString() {
         String result = super.paramString();
-
         if (getRootPane() != null) {
             result += ",rootPane=" + getRootPane().toString();
         } else {
             result += ",rootPane=null";
         }
-
         return result;
     }
 
@@ -358,18 +356,18 @@ public class JDialog extends Dialog
      *
      * @param e - window event
      */
+    @Override
     protected void processWindowEvent(final WindowEvent e) {
         super.processWindowEvent(e);
-
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
             switch (getDefaultCloseOperation()) {
-                case DISPOSE_ON_CLOSE:  // dispose
+                case DISPOSE_ON_CLOSE: // dispose
                     dispose();
                     break;
-                case HIDE_ON_CLOSE:  // hide
+                case HIDE_ON_CLOSE: // hide
                     setVisible(false);
                     break;
-                case DO_NOTHING_ON_CLOSE:  // do nothing
+                case DO_NOTHING_ON_CLOSE: // do nothing
                     break;
             }
         }
@@ -378,6 +376,7 @@ public class JDialog extends Dialog
     /**
      *
      */
+    @Override
     public void setLayout(final LayoutManager layout) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().setLayout(layout);
@@ -392,6 +391,7 @@ public class JDialog extends Dialog
      *
      * @param g - the graphics context to paint
      */
+    @Override
     public void update(final Graphics g) {
         paint(g);
     }
@@ -426,6 +426,7 @@ public class JDialog extends Dialog
     /**
      *
      */
+    @Override
     public void remove(final Component comp) {
         if (comp == getRootPane()) {
             // remove directly from JDialog
@@ -477,17 +478,13 @@ public class JDialog extends Dialog
      */
     protected void dialogInit() {
         setRootPaneCheckingEnabled(true);
-
         setRootPane(createRootPane());
-
         setLocale(JComponent.getDefaultLocale());
-
         // check isDefaultLookAndFeelDecorated()
         if (isDefaultLookAndFeelDecorated()) {
             setUndecorated(Utilities.lookAndFeelSupportsWindowDecorations());
             getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
         }
-
         /*
          * Enabling WindowEvents is required for processWindowEvent()
          * to function.
@@ -498,13 +495,12 @@ public class JDialog extends Dialog
          * components hierarchy.
          */
         enableEvents(AWTEvent.KEY_EVENT_MASK);
-
         /*
          * This class is a top level container for all Swing components. So,
          * it has to define a default focus traversal policy.
          */
-        setFocusTraversalPolicy(KeyboardFocusManager.
-            getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy());
+        setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy());
     }
 
     /**
@@ -516,8 +512,7 @@ public class JDialog extends Dialog
         return defaultCloseOperation;
     }
 
-    public static void setDefaultLookAndFeelDecorated(
-            final boolean defaultLookAndFeelDecorated) {
+    public static void setDefaultLookAndFeelDecorated(final boolean defaultLookAndFeelDecorated) {
         JDialog.defaultLookAndFeelDecorated = defaultLookAndFeelDecorated;
     }
 

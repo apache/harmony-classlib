@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing;
 
 import java.awt.Toolkit;
@@ -45,18 +41,29 @@ import javax.swing.text.NavigationFilter;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.TextAction;
 
+/**
+ * <p>
+ * <i>JFormattedTextField</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JFormattedTextField extends JTextField {
-    public abstract static class AbstractFormatter implements
-            Serializable {
+    private static final long serialVersionUID = 7685569367944517634L;
 
+    public abstract static class AbstractFormatter implements Serializable {
         private JFormattedTextField textField;
 
         private class ActionMapFormattersResource extends ActionMap {
+            private static final long serialVersionUID = 1L;
         }
 
+        @Override
         protected Object clone() throws CloneNotSupportedException {
-            AbstractFormatter formatter = (AbstractFormatter)
-                  super.clone();
+            AbstractFormatter formatter = (AbstractFormatter) super.clone();
             formatter.install(null);
             return formatter;
         }
@@ -112,8 +119,7 @@ public class JFormattedTextField extends JTextField {
             textField.setEditValid(isEditValid);
         }
 
-        public abstract Object stringToValue(final String text)
-            throws ParseException;
+        public abstract Object stringToValue(final String text) throws ParseException;
 
         public void uninstall() {
             removeFormattersActionMap();
@@ -121,14 +127,13 @@ public class JFormattedTextField extends JTextField {
             setDocumentFilter(null);
         }
 
-        public abstract String valueToString(final Object value)
-                throws ParseException;
+        public abstract String valueToString(final Object value) throws ParseException;
 
         private ActionMap createActionMap(final Action[] actions) {
             ActionMap result = new ActionMapFormattersResource();
             for (int i = 0; i < actions.length; i++) {
-                    Action action = actions[i];
-                    result.put(action.getValue(Action.NAME), action);
+                Action action = actions[i];
+                result.put(action.getValue(Action.NAME), action);
             }
             return result;
         }
@@ -165,7 +170,7 @@ public class JFormattedTextField extends JTextField {
         private void setDocumentFilter(final DocumentFilter filter) {
             Document doc = textField.getDocument();
             if (doc instanceof AbstractDocument) {
-                ((AbstractDocument)doc).setDocumentFilter(filter);
+                ((AbstractDocument) doc).setDocumentFilter(filter);
             }
         }
 
@@ -188,17 +193,18 @@ public class JFormattedTextField extends JTextField {
         }
     }
 
-
     public abstract static class AbstractFormatterFactory {
-        public abstract AbstractFormatter getFormatter(final
-                                                       JFormattedTextField tf);
+        public abstract AbstractFormatter getFormatter(final JFormattedTextField tf);
     }
 
     static class CommitAction extends NotifyAction {
+        private static final long serialVersionUID = 1L;
+
         public CommitAction(final String name) {
             super(name);
         }
 
+        @Override
         public void actionPerformed(final ActionEvent e) {
             JTextComponent source = getTextComponent(e);
             if (source instanceof JFormattedTextField) {
@@ -210,6 +216,7 @@ public class JFormattedTextField extends JTextField {
             super.actionPerformed(e);
         }
 
+        @Override
         public boolean isEnabled() {
             final JTextComponent focused = getFocusedComponent();
             return focused instanceof JFormattedTextField;
@@ -217,6 +224,8 @@ public class JFormattedTextField extends JTextField {
     }
 
     private static class CancelAction extends TextAction {
+        private static final long serialVersionUID = 1L;
+
         public CancelAction(final String name) {
             super(name);
         }
@@ -231,30 +240,45 @@ public class JFormattedTextField extends JTextField {
     }
 
     public static final int COMMIT = 0;
+
     public static final int COMMIT_OR_REVERT = 1;
+
     public static final int PERSIST = 3;
+
     public static final int REVERT = 2;
 
     private static final String UI_CLASS_ID = "FormattedTextFieldUI";
-    private static final String FORMATTER_FACTORY_PROPERTY_NAME
-        = "formatterFactory";
+
+    private static final String FORMATTER_FACTORY_PROPERTY_NAME = "formatterFactory";
+
     private static final String TEXT_FORMATTER_PROPERTY_NAME = "textFormatter";
+
     private static final String VALUE_PROPERTY_NAME = "value";
+
     private static final String EDIT_VALID_PROPERTY_NAME = "editValid";
 
     private static final String COMMIT_ACTION_NAME = "notify-field-accept";
+
     private static final String CANCEL_ACTION_NAME = "reset-field-edit";
-    private static final TextAction COMMIT_ACTION =
-        new CommitAction(COMMIT_ACTION_NAME);
-    private static final TextAction CANCEL_ACTION =
-        new CancelAction(CANCEL_ACTION_NAME);
+
+    private static final TextAction COMMIT_ACTION = new CommitAction(COMMIT_ACTION_NAME);
+
+    private static final TextAction CANCEL_ACTION = new CancelAction(CANCEL_ACTION_NAME);
+
     private static Action[] actions;
+
     private AbstractFormatterFactory factory;
+
     private Object value;
+
     private int focusLostBehaviour = COMMIT_OR_REVERT;
+
     private AbstractFormatter formatter;
+
     private boolean isEditValid;
+
     private DocumentListenerImpl docListener = new DocumentListenerImpl();
+
     private String lastSuccessfullyCommittedText;
 
     private class DocumentListenerImpl implements DocumentListener {
@@ -276,7 +300,7 @@ public class JFormattedTextField extends JTextField {
                     public void run() {
                         insertUpdate(e);
                     }
-                    });
+                });
                 return;
             }
             updateFormatterInternalValue();
@@ -287,7 +311,6 @@ public class JFormattedTextField extends JTextField {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         removeUpdate(e);
-
                     }
                 });
                 return;
@@ -319,8 +342,7 @@ public class JFormattedTextField extends JTextField {
         setFormatterFactory(createFactory(formatter));
     }
 
-    public JFormattedTextField(final AbstractFormatterFactory factory,
-                               final Object value) {
+    public JFormattedTextField(final AbstractFormatterFactory factory, final Object value) {
         setFormatterFactory(factory);
         setValue(value);
     }
@@ -332,22 +354,22 @@ public class JFormattedTextField extends JTextField {
     public void commitEdit() throws ParseException {
         String text = getText();
         if (formatter != null) {
-           setValue(formatter.stringToValue(text));
+            setValue(formatter.stringToValue(text));
         }
         lastSuccessfullyCommittedText = text;
     }
 
+    @Override
     public Action[] getActions() {
         if (actions == null) {
-            Action[] editorKitActions = ((TextUI) ui).getEditorKit(this)
-                .getActions();
+            Action[] editorKitActions = ((TextUI) ui).getEditorKit(this).getActions();
             int length = editorKitActions.length;
             actions = new Action[length + 2];
             System.arraycopy(editorKitActions, 0, actions, 0, length);
             actions[length] = COMMIT_ACTION;
             actions[length + 1] = CANCEL_ACTION;
         }
-        return (Action[]) actions.clone();
+        return actions.clone();
     }
 
     public int getFocusLostBehavior() {
@@ -362,6 +384,7 @@ public class JFormattedTextField extends JTextField {
         return factory;
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
@@ -378,6 +401,7 @@ public class JFormattedTextField extends JTextField {
         return isEditValid;
     }
 
+    @Override
     protected void processFocusEvent(final FocusEvent event) {
         if (event.getID() == FocusEvent.FOCUS_LOST && !event.isTemporary()) {
             switch (getFocusLostBehavior()) {
@@ -408,11 +432,11 @@ public class JFormattedTextField extends JTextField {
 
     private boolean changeQueryFactoryPolicy() {
         int focusLostBehaviour = getFocusLostBehavior();
-        return (focusLostBehaviour == PERSIST
-                || focusLostBehaviour == COMMIT_OR_REVERT)
+        return (focusLostBehaviour == PERSIST || focusLostBehaviour == COMMIT_OR_REVERT)
                 && lastSuccessfullyCommittedText != getText();
     }
 
+    @Override
     public void setDocument(final Document doc) {
         Document oldValue = getDocument();
         if (oldValue != null) {
@@ -429,18 +453,16 @@ public class JFormattedTextField extends JTextField {
     }
 
     public void setFocusLostBehavior(final int behavior) {
-        if (behavior != COMMIT && behavior != COMMIT_OR_REVERT
-                && behavior != PERSIST && behavior != REVERT) {
-            throw new IllegalArgumentException("setFocusLostBehavior "
-                                           + "must be one of: "
-                                           + "JFormattedTextField.COMMIT, "
-                                           + "JFormattedTextField.COMMIT_OR_"
-                                           + "REVERT, "
-                                           + "JFormattedTextField.PERSIST "
-                                           + "or JFormattedTextField.REVERT");
+        if (behavior != COMMIT && behavior != COMMIT_OR_REVERT && behavior != PERSIST
+                && behavior != REVERT) {
+            throw new IllegalArgumentException("setFocusLostBehavior " + "must be one of: "
+                    + "JFormattedTextField.COMMIT, " + "JFormattedTextField.COMMIT_OR_"
+                    + "REVERT, " + "JFormattedTextField.PERSIST "
+                    + "or JFormattedTextField.REVERT");
         }
         focusLostBehaviour = behavior;
     }
+
     /**
      * A PropertyChange event ("textFormatter") is propagated to each listener
      */
@@ -453,9 +475,9 @@ public class JFormattedTextField extends JTextField {
             formatter.install(this);
         }
         this.formatter = formatter;
-        firePropertyChange(TEXT_FORMATTER_PROPERTY_NAME,
-                           oldValue, formatter);
+        firePropertyChange(TEXT_FORMATTER_PROPERTY_NAME, oldValue, formatter);
     }
+
     /**
      * A PropertyChange event ("formattedFactory") is propagated to each
      * listener.
@@ -464,8 +486,7 @@ public class JFormattedTextField extends JTextField {
         Object oldValue = this.factory;
         this.factory = factory;
         updateFormatter(true);
-        firePropertyChange(FORMATTER_FACTORY_PROPERTY_NAME,
-                           oldValue, factory);
+        firePropertyChange(FORMATTER_FACTORY_PROPERTY_NAME, oldValue, factory);
     }
 
     /**
@@ -492,8 +513,7 @@ public class JFormattedTextField extends JTextField {
         return factory;
     }
 
-    private AbstractFormatterFactory createFactory(final AbstractFormatter
-                                                   formatter) {
+    private AbstractFormatterFactory createFactory(final AbstractFormatter formatter) {
         DefaultFormatterFactory factory = new DefaultFormatterFactory();
         factory.setDefaultFormatter(formatter);
         return factory;
@@ -501,9 +521,9 @@ public class JFormattedTextField extends JTextField {
 
     private AbstractFormatter createFormatter(final Format format) {
         if (format instanceof DateFormat) {
-            return new DateFormatter((DateFormat)format);
+            return new DateFormatter((DateFormat) format);
         } else if (format instanceof NumberFormat) {
-            return new NumberFormatter((NumberFormat)format);
+            return new NumberFormatter((NumberFormat) format);
         } else {
             return new InternationalFormatter(format);
         }

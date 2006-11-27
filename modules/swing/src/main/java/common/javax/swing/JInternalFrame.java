@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vadim L. Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.AWTEvent;
@@ -32,7 +26,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
@@ -41,18 +34,28 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.DesktopIconUI;
 import javax.swing.plaf.InternalFrameUI;
-
 import org.apache.harmony.x.swing.BlitSupport;
 import org.apache.harmony.x.swing.StringConstants;
 
-
-public class JInternalFrame extends JComponent
-    implements Accessible, WindowConstants, RootPaneContainer {
+/**
+ * <p>
+ * <i>JInternalFrame</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class JInternalFrame extends JComponent implements Accessible, WindowConstants,
+        RootPaneContainer {
+    private static final long serialVersionUID = 3837984427982803247L;
 
     /**
      * This class represents the internal frame when it is iconified.
      */
     public static class JDesktopIcon extends JComponent implements Accessible {
+        private static final long serialVersionUID = -4923863980546870453L;
 
         // The internal frame for this icon.
         private JInternalFrame internalFrame;
@@ -73,18 +76,21 @@ public class JInternalFrame extends JComponent
          * This class implements accessibility support for
          * <code>JDesktopIcon</code>.
          */
-        protected class AccessibleJDesktopIcon extends AccessibleJComponent
-                implements AccessibleValue {
+        protected class AccessibleJDesktopIcon extends AccessibleJComponent implements
+                AccessibleValue {
+            private static final long serialVersionUID = -7418555324455474398L;
 
             private Number currentAccessibleValue = new Integer(0);
 
             protected AccessibleJDesktopIcon() {
             }
 
+            @Override
             public AccessibleRole getAccessibleRole() {
                 return AccessibleRole.DESKTOP_ICON;
             }
 
+            @Override
             public AccessibleValue getAccessibleValue() {
                 return this;
             }
@@ -97,9 +103,8 @@ public class JInternalFrame extends JComponent
                 if (n == null) {
                     return false;
                 }
-
                 if (n instanceof Integer) {
-                    currentAccessibleValue = (Integer)n;
+                    currentAccessibleValue = n;
                 } else {
                     // XXX: 1.5 migration: replace this line with the commented line
                     currentAccessibleValue = new Integer(n.intValue());
@@ -133,7 +138,7 @@ public class JInternalFrame extends JComponent
          * @return UI object for this component
          */
         public DesktopIconUI getUI() {
-            return (DesktopIconUI)ui;
+            return (DesktopIconUI) ui;
         }
 
         /**
@@ -164,8 +169,7 @@ public class JInternalFrame extends JComponent
             // this.getInternalFrame().getDesktopIcon() != this;
             // so, we cannot write here just
             // return getInternalFrame().getDesktopPane();
-            Container result = SwingUtilities.getAncestorOfClass(
-                    JDesktopPane.class, this);
+            Container result = SwingUtilities.getAncestorOfClass(JDesktopPane.class, this);
             if (result == null) {
                 return getInternalFrame().getDesktopPane();
             }
@@ -177,11 +181,11 @@ public class JInternalFrame extends JComponent
          *
          * @return the accessible context for the icon
          */
+        @Override
         public AccessibleContext getAccessibleContext() {
             if (accessibleContext == null) {
                 accessibleContext = new AccessibleJDesktopIcon();
             }
-
             return accessibleContext;
         }
 
@@ -190,6 +194,7 @@ public class JInternalFrame extends JComponent
          *
          * @return the string "DesktopIconUI"
          */
+        @Override
         public String getUIClassID() {
             return "DesktopIconUI";
         }
@@ -198,13 +203,14 @@ public class JInternalFrame extends JComponent
          * Updates <code>UI's</code> for both <code>JInternalFrame</code>
          * and <code>JDesktopIcon</code>.
          */
+        @Override
         public void updateUI() {
             updateUIForIcon();
             getInternalFrame().updateUIForFrame();
         }
 
         void updateUIForIcon() {
-            setUI((DesktopIconUI)UIManager.getUI(this));
+            setUI((DesktopIconUI) UIManager.getUI(this));
         }
     }
 
@@ -268,8 +274,8 @@ public class JInternalFrame extends JComponent
     public static final String IS_ICON_PROPERTY = "icon";
 
     private static final Integer MIN_VALUE = new Integer(Integer.MIN_VALUE);
-    private static final Integer MAX_VALUE = new Integer(Integer.MAX_VALUE);
 
+    private static final Integer MAX_VALUE = new Integer(Integer.MAX_VALUE);
 
     /**
      * <code>JRootPane</code> containter of the internal frame.
@@ -384,8 +390,7 @@ public class JInternalFrame extends JComponent
      * @param resizable
      * @param closable
      */
-    public JInternalFrame(final String title, final boolean resizable,
-                          final boolean closable) {
+    public JInternalFrame(final String title, final boolean resizable, final boolean closable) {
         this(title, resizable, closable, false, false);
     }
 
@@ -398,9 +403,8 @@ public class JInternalFrame extends JComponent
      * @param closable
      * @param maximizable
      */
-    public JInternalFrame(final String title, final boolean resizable,
-                          final boolean closable,
-                          final boolean maximizable) {
+    public JInternalFrame(final String title, final boolean resizable, final boolean closable,
+            final boolean maximizable) {
         this(title, resizable, closable, maximizable, false);
     }
 
@@ -414,9 +418,8 @@ public class JInternalFrame extends JComponent
      * @param maximizable
      * @param iconifiable
      */
-    public JInternalFrame(final String title, final boolean resizable,
-                          final boolean closable, final boolean maximizable,
-                          final boolean iconifiable) {
+    public JInternalFrame(final String title, final boolean resizable, final boolean closable,
+            final boolean maximizable, final boolean iconifiable) {
         //super.hide();
         super.setVisible(false);
         this.title = title;
@@ -424,37 +427,25 @@ public class JInternalFrame extends JComponent
         this.closable = closable;
         this.maximizable = maximizable;
         this.iconable = iconifiable;
-
         // from frameInit()
         setRootPane(createRootPane());
-
         setLocale(JComponent.getDefaultLocale());
-
         // check isDefaultLookAndFeelDecorated()
         //if (isDefaultLookAndFeelDecorated()) {
         //    setUndecorated(true);
-            //getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-       // }
-
+        //getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+        // }
         setBackground(getContentPane().getBackground());
-
         // enable events
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         enableEvents(AWTEvent.KEY_EVENT_MASK);
-
-        setFocusTraversalPolicy(KeyboardFocusManager.
-                getCurrentKeyboardFocusManager().
-                getDefaultFocusTraversalPolicy());
-
+        setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy());
         updateUIForFrame();
-
         this.desktopIcon = new JDesktopIcon(this);
-
         setRootPaneCheckingEnabled(true);
-
         // non-selected internalFrame must have visible glassPane
         getGlassPane().setVisible(true);
-
         // just to be sure
         super.setFocusCycleRoot(true);
     }
@@ -463,22 +454,26 @@ public class JInternalFrame extends JComponent
      * This class implements accessibility support for
      * <code>JInternalFrame</code>.
      */
-    protected class AccessibleJInternalFrame extends AccessibleJComponent
-            implements AccessibleValue {
+    protected class AccessibleJInternalFrame extends AccessibleJComponent implements
+            AccessibleValue {
+        private static final long serialVersionUID = 8391910997005202445L;
 
         private Number currentAccessibleValue = new Integer(0);
 
         protected AccessibleJInternalFrame() {
         }
 
+        @Override
         public String getAccessibleName() {
             return getTitle();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.INTERNAL_FRAME;
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
@@ -491,9 +486,8 @@ public class JInternalFrame extends JComponent
             if (n == null) {
                 return false;
             }
-
             if (n instanceof Integer) {
-                currentAccessibleValue = (Integer)n;
+                currentAccessibleValue = n;
             } else {
                 // XXX: 1.5 migration: replace this line with the commented line
                 currentAccessibleValue = new Integer(n.intValue());
@@ -519,13 +513,12 @@ public class JInternalFrame extends JComponent
      * @param constraints - the constraints to be kept
      * @param index - the index
      */
-    protected void addImpl(final Component comp, final Object constraints,
-                           final int index) {
+    @Override
+    protected void addImpl(final Component comp, final Object constraints, final int index) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().add(comp, constraints, index);
             return;
         }
-
         super.addImpl(comp, constraints, index);
     }
 
@@ -549,13 +542,14 @@ public class JInternalFrame extends JComponent
      * @return UI object for this component
      */
     public InternalFrameUI getUI() {
-        return (InternalFrameUI)ui;
+        return (InternalFrameUI) ui;
     }
 
     /**
      * Updates <code>UI's</code> for both <code>JInternalFrame</code>
      * and <code>JDesktopIcon</code>.
      */
+    @Override
     public void updateUI() {
         updateUIForFrame();
         if (getDesktopIcon() != null) {
@@ -564,7 +558,7 @@ public class JInternalFrame extends JComponent
     }
 
     void updateUIForFrame() {
-        setUI((InternalFrameUI)UIManager.getUI(this));
+        setUI((InternalFrameUI) UIManager.getUI(this));
     }
 
     /**
@@ -591,8 +585,7 @@ public class JInternalFrame extends JComponent
      * @return all registered internal frame listeners
      */
     public InternalFrameListener[] getInternalFrameListeners() {
-        return (InternalFrameListener[])
-            listenerList.getListeners(InternalFrameListener.class);
+        return listenerList.getListeners(InternalFrameListener.class);
     }
 
     /**
@@ -603,42 +596,34 @@ public class JInternalFrame extends JComponent
     protected void fireInternalFrameEvent(final int id) {
         Object[] listeners = listenerList.getListenerList();
         InternalFrameEvent e = null;
-
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == InternalFrameListener.class) {
                 if (e == null) {
                     e = new InternalFrameEvent(this, id);
                 }
-
-                InternalFrameListener l = (InternalFrameListener)listeners[i + 1];
+                InternalFrameListener l = (InternalFrameListener) listeners[i + 1];
                 switch (id) {
-                case InternalFrameEvent.INTERNAL_FRAME_ACTIVATED:
-                    l.internalFrameActivated(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_DEACTIVATED:
-                    l.internalFrameDeactivated(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
-                    l.internalFrameIconified(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
-                    l.internalFrameDeiconified(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_CLOSING:
-                    l.internalFrameClosing(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_OPENED:
-                    l.internalFrameOpened(e);
-                    break;
-
-                case InternalFrameEvent.INTERNAL_FRAME_CLOSED:
-                    l.internalFrameClosed(e);
-                    break;
+                    case InternalFrameEvent.INTERNAL_FRAME_ACTIVATED:
+                        l.internalFrameActivated(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_DEACTIVATED:
+                        l.internalFrameDeactivated(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_ICONIFIED:
+                        l.internalFrameIconified(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_DEICONIFIED:
+                        l.internalFrameDeiconified(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_CLOSING:
+                        l.internalFrameClosing(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_OPENED:
+                        l.internalFrameOpened(e);
+                        break;
+                    case InternalFrameEvent.INTERNAL_FRAME_CLOSED:
+                        l.internalFrameClosed(e);
+                        break;
                 }
             }
         }
@@ -651,13 +636,10 @@ public class JInternalFrame extends JComponent
      */
     protected void setRootPane(final JRootPane root) {
         JRootPane oldValue = getRootPane();
-
         if (rootPane != null) {
             remove(rootPane);
         }
-
         rootPane = root;
-
         if (root != null) {
             super.addImpl(root, null, 0);
         }
@@ -669,6 +651,7 @@ public class JInternalFrame extends JComponent
      *
      * @return rootPane property
      */
+    @Override
     public JRootPane getRootPane() {
         return rootPane;
     }
@@ -686,6 +669,7 @@ public class JInternalFrame extends JComponent
     /**
      * @deprecated
      */
+    @Deprecated
     public void setMenuBar(final JMenuBar menuBar) {
         setJMenuBar(menuBar);
     }
@@ -693,6 +677,7 @@ public class JInternalFrame extends JComponent
     /**
      * @deprecated
      */
+    @Deprecated
     public JMenuBar getMenuBar() {
         return getJMenuBar();
     }
@@ -764,15 +749,11 @@ public class JInternalFrame extends JComponent
      * <code>desktoIcon</code>
      */
     public JDesktopPane getDesktopPane() {
-        Container result = SwingUtilities.getAncestorOfClass(JDesktopPane.class,
-                                                             this);
-
+        Container result = SwingUtilities.getAncestorOfClass(JDesktopPane.class, this);
         if (result == null) {
-            result = SwingUtilities.getAncestorOfClass
-                (JDesktopPane.class, getDesktopIcon());
+            result = SwingUtilities.getAncestorOfClass(JDesktopPane.class, getDesktopIcon());
         }
-
-        return (JDesktopPane)result;
+        return (JDesktopPane) result;
     }
 
     /**
@@ -780,11 +761,11 @@ public class JInternalFrame extends JComponent
      *
      * @return the accessible context for the internal frame
      */
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJInternalFrame();
         }
-
         return accessibleContext;
     }
 
@@ -836,6 +817,7 @@ public class JInternalFrame extends JComponent
      *
      * @return string representation of this frame
      */
+    @Override
     protected String paramString() {
         return super.paramString();
     }
@@ -856,6 +838,7 @@ public class JInternalFrame extends JComponent
      *
      * @return the string "InternalFrameUI"
      */
+    @Override
     public String getUIClassID() {
         return "InternalFrameUI";
     }
@@ -879,7 +862,7 @@ public class JInternalFrame extends JComponent
     public void setLayer(final int layer) {
         //if (getDesktopPane() == null) {
         if (getParent() instanceof JLayeredPane) {
-            ((JLayeredPane)getParent()).setLayer(this, layer);
+            ((JLayeredPane) getParent()).setLayer(this, layer);
         } else {
             JLayeredPane.putLayer(this, layer);
         }
@@ -913,6 +896,7 @@ public class JInternalFrame extends JComponent
         return normalBounds;
     }
 
+    @Override
     public void setLayout(final LayoutManager layout) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().setLayout(layout);
@@ -927,6 +911,7 @@ public class JInternalFrame extends JComponent
      *
      * @param g the <code>Graphics</code> object to paint
      */
+    @Override
     protected void paintComponent(final Graphics g) {
         if (blitSupport != null) {
             blitSupport.onPaint();
@@ -974,6 +959,7 @@ public class JInternalFrame extends JComponent
         return getRootPane().getGlassPane();
     }
 
+    @Override
     public void remove(final Component comp) {
         if (comp.getParent() == this) {
             // remove directly from JInternalFrame
@@ -1009,22 +995,17 @@ public class JInternalFrame extends JComponent
         if (isSelected()) {
             return getFocusOwner();
         }
-
         if (mostRecentFocusOwner != null) {
             return mostRecentFocusOwner;
         }
-
         Component result = null;
-        if (getFocusTraversalPolicy() instanceof
-                InternalFrameFocusTraversalPolicy) {
-            result = ((InternalFrameFocusTraversalPolicy)getFocusTraversalPolicy()).
-                getInitialComponent(this);
+        if (getFocusTraversalPolicy() instanceof InternalFrameFocusTraversalPolicy) {
+            result = ((InternalFrameFocusTraversalPolicy) getFocusTraversalPolicy())
+                    .getInitialComponent(this);
         }
-
         if (result == null) {
             return getFocusTraversalPolicy().getDefaultComponent(this);
         }
-
         return result;
     }
 
@@ -1038,10 +1019,8 @@ public class JInternalFrame extends JComponent
         if (!isSelected()) {
             return null;
         }
-
-        Component focusOwner = KeyboardFocusManager.
-            getCurrentKeyboardFocusManager().getFocusOwner();
-
+        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getFocusOwner();
         return isAncestorOf(focusOwner) ? focusOwner : null;
     }
 
@@ -1071,19 +1050,15 @@ public class JInternalFrame extends JComponent
         if (b && !isShowing() && !getDesktopIcon().isShowing()) {
             return; // can't select if the internal frame is not showing
         }
-
         if (b == isSelected()) {
             return;
         }
-
         Boolean oldValue = Boolean.valueOf(isSelected());
         Boolean newValue = Boolean.valueOf(b);
         fireVetoableChange(IS_SELECTED_PROPERTY, oldValue, newValue);
-
         // remember the focused component for the deactivated frame;
         // recall the last focused component for the activated frame;
         setMostRecentFocusOwner(getMostRecentFocusOwner());
-
         isSelected = b;
         if (isSelected()) {
             isSelected = false;
@@ -1091,11 +1066,9 @@ public class JInternalFrame extends JComponent
             isSelected = true;
         }
         firePropertyChange(IS_SELECTED_PROPERTY, oldValue, newValue);
-
         // fire internal frame events
-        fireInternalFrameEvent(isSelected()
-                               ? InternalFrameEvent.INTERNAL_FRAME_ACTIVATED
-                               : InternalFrameEvent.INTERNAL_FRAME_DEACTIVATED);
+        fireInternalFrameEvent(isSelected() ? InternalFrameEvent.INTERNAL_FRAME_ACTIVATED
+                : InternalFrameEvent.INTERNAL_FRAME_DEACTIVATED);
     }
 
     /**
@@ -1136,8 +1109,7 @@ public class JInternalFrame extends JComponent
         resizable = b;
         LookAndFeel.markPropertyNotInstallable(this,
                 StringConstants.INTERNAL_FRAME_RESIZABLE_PROPERTY);
-        firePropertyChange(StringConstants.INTERNAL_FRAME_RESIZABLE_PROPERTY,
-                           oldValue, b);
+        firePropertyChange(StringConstants.INTERNAL_FRAME_RESIZABLE_PROPERTY, oldValue, b);
     }
 
     /**
@@ -1160,11 +1132,9 @@ public class JInternalFrame extends JComponent
         Boolean oldValue = Boolean.valueOf(isMaximum());
         Boolean newValue = Boolean.valueOf(b);
         fireVetoableChange(IS_MAXIMUM_PROPERTY, oldValue, newValue);
-
         if (b && !isMaximum()) {
             setNormalBounds(getBounds());
         }
-
         isMaximum = b;
         firePropertyChange(IS_MAXIMUM_PROPERTY, oldValue, newValue);
     }
@@ -1188,8 +1158,7 @@ public class JInternalFrame extends JComponent
         maximizable = b;
         LookAndFeel.markPropertyNotInstallable(this,
                 StringConstants.INTERNAL_FRAME_MAXIMIZABLE_PROPERTY);
-        firePropertyChange(StringConstants.INTERNAL_FRAME_MAXIMIZABLE_PROPERTY,
-                           oldValue, b);
+        firePropertyChange(StringConstants.INTERNAL_FRAME_MAXIMIZABLE_PROPERTY, oldValue, b);
     }
 
     /**
@@ -1211,8 +1180,7 @@ public class JInternalFrame extends JComponent
         iconable = b;
         LookAndFeel.markPropertyNotInstallable(this,
                 StringConstants.INTERNAL_FRAME_ICONABLE_PROPERTY);
-        firePropertyChange(StringConstants.INTERNAL_FRAME_ICONABLE_PROPERTY,
-                           oldValue, b);
+        firePropertyChange(StringConstants.INTERNAL_FRAME_ICONABLE_PROPERTY, oldValue, b);
     }
 
     /**
@@ -1239,10 +1207,8 @@ public class JInternalFrame extends JComponent
         Boolean oldValue = Boolean.valueOf(isIcon());
         Boolean newValue = Boolean.valueOf(b);
         fireVetoableChange(IS_ICON_PROPERTY, oldValue, newValue);
-
         isIcon = b;
         firePropertyChange(IS_ICON_PROPERTY, oldValue, newValue);
-
         // fire internal frame events
         if (oldValue.booleanValue() != b) {
             if (oldValue.booleanValue()) {
@@ -1268,6 +1234,7 @@ public class JInternalFrame extends JComponent
      *
      * @param b the value is ignored
      */
+    @Override
     public final void setFocusCycleRoot(final boolean b) {
         // do nothing
     }
@@ -1278,6 +1245,7 @@ public class JInternalFrame extends JComponent
      *
      * @return true
      */
+    @Override
     public final boolean isFocusCycleRoot() {
         return true;
     }
@@ -1288,6 +1256,7 @@ public class JInternalFrame extends JComponent
      *
      * @return null
      */
+    @Override
     public final Container getFocusCycleRootAncestor() {
         return null;
     }
@@ -1304,12 +1273,8 @@ public class JInternalFrame extends JComponent
         if (isClosed() || !b) {
             return;
         }
-
         fireInternalFrameEvent(InternalFrameEvent.INTERNAL_FRAME_CLOSING);
-
-        fireVetoableChange(IS_CLOSED_PROPERTY,
-                           Boolean.valueOf(isClosed()), Boolean.valueOf(b));
-
+        fireVetoableChange(IS_CLOSED_PROPERTY, Boolean.valueOf(isClosed()), Boolean.valueOf(b));
         dispose();
     }
 
@@ -1334,8 +1299,7 @@ public class JInternalFrame extends JComponent
         closable = b;
         LookAndFeel.markPropertyNotInstallable(this,
                 StringConstants.INTERNAL_FRAME_CLOSABLE_PROPERTY);
-        firePropertyChange(StringConstants.INTERNAL_FRAME_CLOSABLE_PROPERTY,
-                           oldValue, b);
+        firePropertyChange(StringConstants.INTERNAL_FRAME_CLOSABLE_PROPERTY, oldValue, b);
     }
 
     /**
@@ -1371,16 +1335,15 @@ public class JInternalFrame extends JComponent
      */
     public void doDefaultCloseAction() {
         fireInternalFrameEvent(InternalFrameEvent.INTERNAL_FRAME_CLOSING);
-
         switch (getDefaultCloseOperation()) {
-        case DISPOSE_ON_CLOSE:  // dispose
-            dispose();
-            break;
-        case HIDE_ON_CLOSE:  // hide
-            setVisible(false);
-            break;
-        case DO_NOTHING_ON_CLOSE:  // do nothing
-            break;
+            case DISPOSE_ON_CLOSE: // dispose
+                dispose();
+                break;
+            case HIDE_ON_CLOSE: // hide
+                setVisible(false);
+                break;
+            case DO_NOTHING_ON_CLOSE: // do nothing
+                break;
         }
     }
 
@@ -1390,7 +1353,7 @@ public class JInternalFrame extends JComponent
      */
     public void moveToFront() {
         if (getParent() instanceof JLayeredPane) {
-            ((JLayeredPane)getParent()).setPosition(this, 0);
+            ((JLayeredPane) getParent()).setPosition(this, 0);
         }
     }
 
@@ -1400,7 +1363,7 @@ public class JInternalFrame extends JComponent
      */
     public void moveToBack() {
         if (getParent() instanceof JLayeredPane) {
-            ((JLayeredPane)getParent()).setPosition(this, -1);
+            ((JLayeredPane) getParent()).setPosition(this, -1);
         }
     }
 
@@ -1435,6 +1398,9 @@ public class JInternalFrame extends JComponent
      * is fired. The method does nothing if the internal frame is already
      * visible.
      */
+    @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
     public void show() {
         if (isVisible()) {
             return;
@@ -1442,23 +1408,17 @@ public class JInternalFrame extends JComponent
         if (blitSupport == null) {
             blitSupport = new BlitSupport(this);
         }
-
         if (getDesktopIcon() != null) {
             getDesktopIcon().setVisible(true);
         }
-
         moveToFront();
-
         // Note: how to set isVisible to true without calling of obsolete method?
         // cannot use super.setVisibile(true) - stack overflow will occur
         super.show();
-
         try {
             setSelected(true);
         } catch (final PropertyVetoException e) {
-
         }
-
         // fire INTERNAL_FRAME_OPENED when opening the first time
         if (firstTimeOpen) {
             fireInternalFrameEvent(InternalFrameEvent.INTERNAL_FRAME_OPENED);
@@ -1466,9 +1426,11 @@ public class JInternalFrame extends JComponent
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
     public void hide() {
         super.hide();
-
         // the desktop icon becomes visible when the internal frame becomes
         // visible; the same is correct for hiding
         if (getDesktopIcon() != null) {
@@ -1487,16 +1449,15 @@ public class JInternalFrame extends JComponent
             setSelected(false);
         } catch (final PropertyVetoException e) {
         }
-
         boolean oldValue = isClosed();
         isClosed = true;
         firePropertyChange(IS_CLOSED_PROPERTY, oldValue, true);
-
         if (!oldValue) {
             fireInternalFrameEvent(InternalFrameEvent.INTERNAL_FRAME_CLOSED);
         }
     }
 
+    @Override
     public void setBounds(final int x, final int y, final int w, final int h) {
         Dimension oldSize = getSize();
         super.setBounds(x, y, w, h);
@@ -1504,7 +1465,6 @@ public class JInternalFrame extends JComponent
             validate();
             return;
         }
-
         if (blitSupport != null) {
             blitSupport.paint();
         }

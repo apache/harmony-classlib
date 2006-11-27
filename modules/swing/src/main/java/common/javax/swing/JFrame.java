@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vadim L. Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.AWTEvent;
@@ -32,28 +26,57 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
-
 import java.awt.event.WindowEvent;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
-
-
-public class JFrame extends Frame
-    implements WindowConstants, Accessible, RootPaneContainer {
+/**
+ * <p>
+ * <i>JFrame</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
+public class JFrame extends Frame implements WindowConstants, Accessible, RootPaneContainer {
+    private static final long serialVersionUID = -1026528232454752719L;
 
     public static final int EXIT_ON_CLOSE = 3;
 
-    private static boolean defaultLookAndFeelDecorated = false;
+    private static boolean defaultLookAndFeelDecorated;
+
     private static Frame sharedFrame;
 
+    /**
+     * This class implements accessibility support for <code>JFrame</code>.
+     */
+    protected class AccessibleJFrame extends AccessibleAWTFrame {
+        private static final long serialVersionUID = -6604775962178425920L;
+
+        protected AccessibleJFrame() {
+            super();
+        }
+
+        @Override
+        public String getAccessibleName() {
+            return getTitle();
+        }
+
+        @Override
+        public AccessibleStateSet getAccessibleStateSet() {
+            return super.getAccessibleStateSet();
+        }
+    }
+
     protected JRootPane rootPane;
+
     protected boolean rootPaneCheckingEnabled;
+
     protected AccessibleContext accessibleContext;
 
     private int defaultCloseOperation = HIDE_ON_CLOSE;
@@ -109,32 +132,12 @@ public class JFrame extends Frame
         frameInit();
     }
 
-    /**
-     * This class implements accessibility support for <code>JFrame</code>.
-     */
-    protected class AccessibleJFrame extends AccessibleAWTFrame {
-        protected AccessibleJFrame() {
-        }
-
-        public String getAccessibleName() {
-            return getTitle();
-        }
-
-        public AccessibleStateSet getAccessibleStateSet() {
-            return super.getAccessibleStateSet();
-        }
-    }
-
-    /**
-     *
-     */
-    protected void addImpl(final Component comp, final Object constraints,
-                           final int index) {
+    @Override
+    protected void addImpl(final Component comp, final Object constraints, final int index) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().add(comp, constraints, index);
             return;
         }
-
         super.addImpl(comp, constraints, index);
     }
 
@@ -147,9 +150,7 @@ public class JFrame extends Frame
         if (rootPane != null) {
             remove(rootPane);
         }
-
         rootPane = root;
-
         if (root != null) {
             super.addImpl(root, null, 0);
         }
@@ -214,11 +215,11 @@ public class JFrame extends Frame
      *
      * @return the accessible context for the frame
      */
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJFrame();
         }
-
         return accessibleContext;
     }
 
@@ -227,15 +228,14 @@ public class JFrame extends Frame
      *
      * @return string representation of this frame
      */
+    @Override
     protected String paramString() {
         String result = super.paramString();
-
         if (getRootPane() != null) {
             result += ",rootPane=" + getRootPane().toString();
         } else {
             result += ",rootPane=null";
         }
-
         return result;
     }
 
@@ -244,20 +244,20 @@ public class JFrame extends Frame
      *
      * @param e - window event
      */
+    @Override
     protected void processWindowEvent(final WindowEvent e) {
         super.processWindowEvent(e);
-
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
             switch (getDefaultCloseOperation()) {
-                case DISPOSE_ON_CLOSE:  // dispose
+                case DISPOSE_ON_CLOSE: // dispose
                     dispose();
                     break;
-                case HIDE_ON_CLOSE:  // hide
+                case HIDE_ON_CLOSE: // hide
                     setVisible(false);
                     break;
-                case DO_NOTHING_ON_CLOSE:  // do nothing
+                case DO_NOTHING_ON_CLOSE: // do nothing
                     break;
-                case EXIT_ON_CLOSE:  // exit
+                case EXIT_ON_CLOSE: // exit
                     System.exit(0);
                     break;
             }
@@ -267,6 +267,7 @@ public class JFrame extends Frame
     /**
      *
      */
+    @Override
     public void setLayout(final LayoutManager layout) {
         if (isRootPaneCheckingEnabled()) {
             getContentPane().setLayout(layout);
@@ -281,6 +282,7 @@ public class JFrame extends Frame
      *
      * @param g - the graphics context to paint
      */
+    @Override
     public void update(final Graphics g) {
         paint(g);
     }
@@ -315,6 +317,7 @@ public class JFrame extends Frame
     /**
      *
      */
+    @Override
     public void remove(final Component comp) {
         // Note: differs from JInternalFrame's behavior,
         // how titlePane is removed?
@@ -366,8 +369,8 @@ public class JFrame extends Frame
                 break;
             default:
                 throw new IllegalArgumentException(
-                    "defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE,"
-                    + " HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
+                        "defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE,"
+                                + " HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
         }
         firePropertyChange("defaultCloseOperation", oldOperation, operation);
     }
@@ -386,26 +389,19 @@ public class JFrame extends Frame
      */
     protected void frameInit() {
         setRootPaneCheckingEnabled(true);
-
         setRootPane(createRootPane());
-
         setLocale(JComponent.getDefaultLocale());
-
         // check isDefaultLookAndFeelDecorated()
         if (isDefaultLookAndFeelDecorated()) {
             setUndecorated(Utilities.lookAndFeelSupportsWindowDecorations());
             getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
         }
-
         setBackground(getContentPane().getBackground());
-
         // enable events
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         enableEvents(AWTEvent.KEY_EVENT_MASK);
-
-        setFocusTraversalPolicy(KeyboardFocusManager.
-                getCurrentKeyboardFocusManager().
-                getDefaultFocusTraversalPolicy());
+        setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .getDefaultFocusTraversalPolicy());
     }
 
     /**
@@ -417,14 +413,14 @@ public class JFrame extends Frame
         return defaultCloseOperation;
     }
 
+    @Override
     public void setIconImage(final Image image) {
         Image oldValue = getIconImage();
         super.setIconImage(image);
         firePropertyChange(StringConstants.ICON_IMAGE_PROPERTY, oldValue, image);
     }
 
-    public static void setDefaultLookAndFeelDecorated(
-            final boolean defaultLookAndFeelDecorated) {
+    public static void setDefaultLookAndFeelDecorated(final boolean defaultLookAndFeelDecorated) {
         JFrame.defaultLookAndFeelDecorated = defaultLookAndFeelDecorated;
     }
 

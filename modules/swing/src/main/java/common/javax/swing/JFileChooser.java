@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Component;
@@ -32,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
@@ -40,79 +33,134 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 import javax.swing.plaf.FileChooserUI;
-
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <p>
+ * <i>JFileChooser</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class JFileChooser extends JComponent implements Accessible {
+    private static final long serialVersionUID = 1049148651561366602L;
+
     public static final String ACCEPT_ALL_FILE_FILTER_USED_CHANGED_PROPERTY = "acceptAllFileFilterUsedChanged";
+
     public static final String ACCESSORY_CHANGED_PROPERTY = "AccessoryChangedProperty";
+
     public static final String APPROVE_BUTTON_MNEMONIC_CHANGED_PROPERTY = "ApproveButtonMnemonicChangedProperty";
+
     public static final String APPROVE_BUTTON_TEXT_CHANGED_PROPERTY = "ApproveButtonTextChangedProperty";
+
     public static final String APPROVE_BUTTON_TOOL_TIP_TEXT_CHANGED_PROPERTY = "ApproveButtonToolTipTextChangedProperty";
+
     public static final String CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY = "ChoosableFileFilterChangedProperty";
+
     public static final String CONTROL_BUTTONS_ARE_SHOWN_CHANGED_PROPERTY = "ControlButtonsAreShownChangedProperty";
+
     public static final String DIALOG_TITLE_CHANGED_PROPERTY = "DialogTitleChangedProperty";
+
     public static final String DIALOG_TYPE_CHANGED_PROPERTY = "DialogTypeChangedProperty";
+
     public static final String DIRECTORY_CHANGED_PROPERTY = "directoryChanged";
+
     public static final String FILE_FILTER_CHANGED_PROPERTY = "fileFilterChanged";
+
     public static final String FILE_HIDING_CHANGED_PROPERTY = "FileHidingChanged";
+
     public static final String FILE_SELECTION_MODE_CHANGED_PROPERTY = "fileSelectionChanged";
+
     public static final String FILE_SYSTEM_VIEW_CHANGED_PROPERTY = "FileSystemViewChanged";
+
     public static final String FILE_VIEW_CHANGED_PROPERTY = "fileViewChanged";
+
     public static final String MULTI_SELECTION_ENABLED_CHANGED_PROPERTY = "MultiSelectionEnabledChangedProperty";
+
     public static final String SELECTED_FILE_CHANGED_PROPERTY = "SelectedFileChangedProperty";
+
     public static final String SELECTED_FILES_CHANGED_PROPERTY = "SelectedFilesChangedProperty";
 
     public static final String APPROVE_SELECTION = "ApproveSelection";
+
     public static final String CANCEL_SELECTION = "CancelSelection";
 
     public static final int ERROR_OPTION = -1;
+
     public static final int APPROVE_OPTION = 0;
+
     public static final int CANCEL_OPTION = 1;
 
     public static final int OPEN_DIALOG = 0;
+
     public static final int SAVE_DIALOG = 1;
+
     public static final int CUSTOM_DIALOG = 2;
 
     public static final int FILES_ONLY = 0;
+
     public static final int DIRECTORIES_ONLY = 1;
+
     public static final int FILES_AND_DIRECTORIES = 2;
 
     private static final String UI_CLASS_ID = "FileChooserUI";
 
     private File currentDirectory;
+
     private FileSystemView fileSystemView;
+
     private FileView fileView;
+
     private boolean dragEnabled;
+
     private boolean controlButtonsAreShown = true;
+
     private int dialogType = OPEN_DIALOG;
+
     private String dialogTitle;
+
     private boolean fileHidingEnabled = true;
+
     private FileFilter fileFilter;
+
     private boolean multiSelectionEnabled;
+
     private File selectedFile;
+
     private JComponent accessory;
+
     private File[] selectedFiles = new File[0];
-    private Collection choosableFileFilters = new LinkedList();
+
+    private Collection<FileFilter> choosableFileFilters = new LinkedList<FileFilter>();
+
     private String approveButtonText;
+
     private String approveButtonToolTipText;
+
     private int approveButtonMnemonic;
+
     private int fileSelectionMode = FILES_ONLY;
+
     private boolean acceptAllFileFilterUsed = true;
+
     private int chooseResult;
+
     private JDialog fileChooserDialog;
 
-
     protected class AccessibleJFileChooser extends AccessibleJComponent {
+        private static final long serialVersionUID = -6919995775059834138L;
+
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.FILE_CHOOSER;
         }
     }
 
-
     public JFileChooser() {
-        this((String)null);
+        this((String) null);
     }
 
     public JFileChooser(final String currentDirectoryPath) {
@@ -124,7 +172,7 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public JFileChooser(final FileSystemView fsv) {
-        this((File)null, fsv);
+        this((File) null, fsv);
     }
 
     public JFileChooser(final String currentDirectoryPath, final FileSystemView fsv) {
@@ -149,7 +197,7 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[])listenerList.getListeners(ActionListener.class);
+        return listenerList.getListeners(ActionListener.class);
     }
 
     public void addChoosableFileFilter(final FileFilter filter) {
@@ -158,15 +206,16 @@ public class JFileChooser extends JComponent implements Accessible {
             return;
         }
         choosableFileFilters.add(filter);
-        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue, toFileFilterArray(choosableFileFilters));
+        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue,
+                toFileFilterArray(choosableFileFilters));
         setFileFilter(filter);
     }
 
     public boolean removeChoosableFileFilter(final FileFilter filter) {
         FileFilter[] oldValue = toFileFilterArray(choosableFileFilters);
         boolean result = choosableFileFilters.remove(filter);
-        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue, toFileFilterArray(choosableFileFilters));
-
+        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue,
+                toFileFilterArray(choosableFileFilters));
         return result;
     }
 
@@ -176,13 +225,13 @@ public class JFileChooser extends JComponent implements Accessible {
         if (isAcceptAllFileFilterUsed()) {
             choosableFileFilters.add(getAcceptAllFileFilter());
         }
-        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue, toFileFilterArray(choosableFileFilters));
+        firePropertyChange(CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY, oldValue,
+                toFileFilterArray(choosableFileFilters));
     }
 
     public FileFilter[] getChoosableFileFilters() {
         return toFileFilterArray(choosableFileFilters);
     }
-
 
     public void approveSelection() {
         chooseResult = APPROVE_OPTION;
@@ -229,6 +278,7 @@ public class JFileChooser extends JComponent implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJFileChooser();
@@ -268,9 +318,9 @@ public class JFileChooser extends JComponent implements Accessible {
         String oldValue = this.approveButtonText;
         this.approveButtonText = approveButtonText;
         firePropertyChange(APPROVE_BUTTON_TEXT_CHANGED_PROPERTY, oldValue, approveButtonText);
-
-        if (approveButtonText != null && !approveButtonText.equals(getUI().getApproveButtonText(this))) {
-//            setDialogType(CUSTOM_DIALOG);
+        if (approveButtonText != null
+                && !approveButtonText.equals(getUI().getApproveButtonText(this))) {
+            //            setDialogType(CUSTOM_DIALOG);
         }
     }
 
@@ -303,7 +353,8 @@ public class JFileChooser extends JComponent implements Accessible {
         if (dir != null && dir.exists()) {
             if (!dir.isDirectory()) {
                 File parent = fileSystemView.getParentDirectory(dir);
-                while (parent != null && !isTraversable(parent) && !fileSystemView.isRoot(parent)) {
+                while (parent != null && !isTraversable(parent)
+                        && !fileSystemView.isRoot(parent)) {
                     parent = fileSystemView.getParentDirectory(parent);
                 }
                 if (parent != null) {
@@ -316,7 +367,6 @@ public class JFileChooser extends JComponent implements Accessible {
         if (currentDirectory == null) {
             currentDirectory = fileSystemView.getDefaultDirectory();
         }
-
         firePropertyChange(DIRECTORY_CHANGED_PROPERTY, oldValue, currentDirectory);
     }
 
@@ -335,13 +385,10 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public void setDialogType(final int dialogType) {
-        if (dialogType != OPEN_DIALOG
-            && dialogType != SAVE_DIALOG
-            && dialogType != CUSTOM_DIALOG) {
-
+        if (dialogType != OPEN_DIALOG && dialogType != SAVE_DIALOG
+                && dialogType != CUSTOM_DIALOG) {
             throw new IllegalArgumentException("Incorrect dialog type is specified");
         }
-
         int oldValue = this.dialogType;
         this.dialogType = dialogType;
         firePropertyChange(DIALOG_TYPE_CHANGED_PROPERTY, oldValue, dialogType);
@@ -365,7 +412,7 @@ public class JFileChooser extends JComponent implements Accessible {
         firePropertyChange(FILE_FILTER_CHANGED_PROPERTY, oldValue, filter);
     }
 
-    public int getFileSelectionMode()  {
+    public int getFileSelectionMode() {
         return fileSelectionMode;
     }
 
@@ -400,7 +447,7 @@ public class JFileChooser extends JComponent implements Accessible {
 
     public Icon getIcon(final File f) {
         Icon result = fileView != null ? fileView.getIcon(f) : null;
-        return  result != null ? result : getUI().getFileView(this).getIcon(f);
+        return result != null ? result : getUI().getFileView(this).getIcon(f);
     }
 
     public String getDescription(final File f) {
@@ -415,7 +462,7 @@ public class JFileChooser extends JComponent implements Accessible {
 
     public String getName(final File f) {
         String result = fileView != null ? fileView.getName(f) : null;
-        return  result != null ? result : getUI().getFileView(this).getName(f);
+        return result != null ? result : getUI().getFileView(this).getName(f);
     }
 
     public File getSelectedFile() {
@@ -445,19 +492,22 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public FileChooserUI getUI() {
-        return (FileChooserUI)ui;
+        return (FileChooserUI) ui;
     }
 
+    @Override
     public void updateUI() {
         setUI(UIManager.getUI(this));
     }
 
+    @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
     }
 
     public boolean isDirectorySelectionEnabled() {
-        return fileSelectionMode == DIRECTORIES_ONLY || fileSelectionMode == FILES_AND_DIRECTORIES;
+        return fileSelectionMode == DIRECTORIES_ONLY
+                || fileSelectionMode == FILES_AND_DIRECTORIES;
     }
 
     public boolean isFileHidingEnabled() {
@@ -485,7 +535,8 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public boolean isTraversable(final File f) {
-        Boolean result = fileView != null ? fileView.isTraversable(f) : getUI().getFileView(this).isTraversable(f);
+        Boolean result = fileView != null ? fileView.isTraversable(f) : getUI().getFileView(
+                this).isTraversable(f);
         return result != null ? result.booleanValue() : true;
     }
 
@@ -499,7 +550,6 @@ public class JFileChooser extends JComponent implements Accessible {
         fileChooserDialog = createDialog(parent);
         chooseResult = ERROR_OPTION;
         fileChooserDialog.setVisible(true);
-
         return chooseResult;
     }
 
@@ -524,12 +574,13 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     protected JDialog createDialog(final Component parent) throws HeadlessException {
-        Window ancestingWindow = parent instanceof Window ? (Window)parent : SwingUtilities.getWindowAncestor(parent);
+        Window ancestingWindow = parent instanceof Window ? (Window) parent : SwingUtilities
+                .getWindowAncestor(parent);
         final JDialog result;
         if (ancestingWindow instanceof Frame) {
-            result = new JDialog((Frame)ancestingWindow);
+            result = new JDialog((Frame) ancestingWindow);
         } else if (ancestingWindow instanceof Dialog) {
-            result = new JDialog((Dialog)ancestingWindow);
+            result = new JDialog((Dialog) ancestingWindow);
         } else {
             result = new JDialog();
         }
@@ -540,9 +591,7 @@ public class JFileChooser extends JComponent implements Accessible {
         if (JDialog.isDefaultLookAndFeelDecorated()) {
             result.getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
         }
-
         result.pack();
-
         return result;
     }
 
@@ -554,8 +603,7 @@ public class JFileChooser extends JComponent implements Accessible {
         }
     }
 
-
-    private FileFilter[] toFileFilterArray(final Collection fileFilterList) {
-        return (FileFilter[])fileFilterList.toArray(new FileFilter[fileFilterList.size()]);
+    private FileFilter[] toFileFilterArray(final Collection<FileFilter> fileFilterList) {
+        return fileFilterList.toArray(new FileFilter[fileFilterList.size()]);
     }
 }

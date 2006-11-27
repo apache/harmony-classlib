@@ -14,51 +14,54 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vadim L. Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-
 import java.util.Hashtable;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
 /**
- * This class implements a containter with support of layers.
- *
+ * <p>
+ * <i>JLabel</i> implements a container with support for layers.
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
  */
 public class JLayeredPane extends JComponent implements Accessible {
+    private static final long serialVersionUID = -2657754894035116214L;
 
     private static final int DELAULT_LAYER_NUMBER = 0;
+
     private static final int PALETTE_LAYER_NUMBER = 100;
+
     private static final int MODAL_LAYER_NUMBER = 200;
+
     private static final int POPUP_LAYER_NUMBER = 300;
+
     private static final int DRAG_LAYER_NUMBER = 400;
+
     private static final int FRAME_CONTENT_LAYER_NUMBER = -30000;
 
     public static final Integer DEFAULT_LAYER;
+
     public static final Integer PALETTE_LAYER;
+
     public static final Integer MODAL_LAYER;
+
     public static final Integer POPUP_LAYER;
+
     public static final Integer DRAG_LAYER;
+
     public static final Integer FRAME_CONTENT_LAYER;
 
     public static final String LAYER_PROPERTY = "layeredContainerLayer";
-
-    /**
-     *  The hash table used to store layers for components.
-     */
-    private Hashtable<java.awt.Component, java.lang.Integer> componentToLayer;
-
     static {
         DEFAULT_LAYER = new Integer(DELAULT_LAYER_NUMBER);
         PALETTE_LAYER = new Integer(PALETTE_LAYER_NUMBER);
@@ -69,19 +72,16 @@ public class JLayeredPane extends JComponent implements Accessible {
     }
 
     /**
-     * Constructs new <code>JLayeredPane</code>
-     */
-    public JLayeredPane() {
-    }
-
-    /**
      * Implements accessibility support for <code>JLayeredPane</code>
      */
     protected class AccessibleJLayeredPane extends AccessibleJComponent {
+        private static final long serialVersionUID = 3492700363505144784L;
+
         /**
          * Constructs new <code>AccessibleJLayeredPane</code>.
          */
         protected AccessibleJLayeredPane() {
+            super();
         }
 
         /**
@@ -90,9 +90,22 @@ public class JLayeredPane extends JComponent implements Accessible {
          * @return <code>AccessibleRole</code> that describes the accessible
          *         role of the object
          */
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.LAYERED_PANE;
         }
+    }
+
+    /**
+     *  The hash table used to store layers for components.
+     */
+    private Hashtable<Component, Integer> componentToLayer;
+
+    /**
+     * Constructs new <code>JLayeredPane</code>
+     */
+    public JLayeredPane() {
+        super();
     }
 
     /**
@@ -104,22 +117,19 @@ public class JLayeredPane extends JComponent implements Accessible {
      * @param index position of the component in the layer, where
      *        -1 means the bottommost position and 0 means the topmost position
      */
-    protected void addImpl(final Component comp, final Object constraints,
-                           final int index) {
+    @Override
+    protected void addImpl(final Component comp, final Object constraints, final int index) {
         super.remove(comp);
-
         int layer = DELAULT_LAYER_NUMBER;
         Object newConstraints = constraints;
         if (constraints == null) {
             layer = getLayer(comp);
         } else if (constraints instanceof Integer) {
-            layer = ((Integer)constraints).intValue();
+            layer = ((Integer) constraints).intValue();
             newConstraints = null;
             rememberLayerForComponent(comp, layer);
         }
-
         super.addImpl(comp, newConstraints, insertIndexForLayer(layer, index));
-
         /*
          * Unlike other containers, JLayeredPane has to validate added
          * components immediatelly (this is used, for example, in tool tips
@@ -133,11 +143,11 @@ public class JLayeredPane extends JComponent implements Accessible {
      *
      * @return <code>AccessibleContext</code> associated with this layered pane
      */
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJLayeredPane();
         }
-
         return accessibleContext;
     }
 
@@ -152,7 +162,6 @@ public class JLayeredPane extends JComponent implements Accessible {
         if (componentToLayer == null) {
             componentToLayer = new Hashtable<java.awt.Component, java.lang.Integer>();
         }
-
         return componentToLayer;
     }
 
@@ -161,6 +170,7 @@ public class JLayeredPane extends JComponent implements Accessible {
      *
      * @return string representation of this layered pane
      */
+    @Override
     protected String paramString() {
         return super.paramString();
     }
@@ -175,25 +185,19 @@ public class JLayeredPane extends JComponent implements Accessible {
     protected Integer getObjectForLayer(final int layer) {
         // TODO: replace with Integer.valueOf(layer) after migrating to 1.5
         switch (layer) {
-        case DELAULT_LAYER_NUMBER:
-            return DEFAULT_LAYER;
-
-        case PALETTE_LAYER_NUMBER:
-            return PALETTE_LAYER;
-
-        case MODAL_LAYER_NUMBER:
-            return MODAL_LAYER;
-
-        case POPUP_LAYER_NUMBER:
-            return POPUP_LAYER;
-
-        case DRAG_LAYER_NUMBER:
-            return DRAG_LAYER;
-
-        case FRAME_CONTENT_LAYER_NUMBER:
-            return FRAME_CONTENT_LAYER;
+            case DELAULT_LAYER_NUMBER:
+                return DEFAULT_LAYER;
+            case PALETTE_LAYER_NUMBER:
+                return PALETTE_LAYER;
+            case MODAL_LAYER_NUMBER:
+                return MODAL_LAYER;
+            case POPUP_LAYER_NUMBER:
+                return POPUP_LAYER;
+            case DRAG_LAYER_NUMBER:
+                return DRAG_LAYER;
+            case FRAME_CONTENT_LAYER_NUMBER:
+                return FRAME_CONTENT_LAYER;
         }
-
         return new Integer(layer);
     }
 
@@ -202,6 +206,7 @@ public class JLayeredPane extends JComponent implements Accessible {
      *
      * @param g the graphic context
      */
+    @Override
     public void paint(final Graphics g) {
         // JLayeredPane doesn't have UI,
         // it has to paint its background by itself
@@ -212,7 +217,6 @@ public class JLayeredPane extends JComponent implements Accessible {
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(savedColor);
         }
-
         super.paint(g);
     }
 
@@ -224,15 +228,12 @@ public class JLayeredPane extends JComponent implements Accessible {
      * @param position the position to set, 0 means the topmost position and
      *        -1 means the bottommost position
      */
-    public void setLayer(final Component c, final int layer,
-                         final int position) {
+    public void setLayer(final Component c, final int layer, final int position) {
         int index = getIndexOf(c);
-
         if (index == -1 || index == insertIndexForLayer(layer, position)) {
             rememberLayerForComponent(c, layer);
             return;
         }
-
         addImpl(c, getObjectForLayer(layer), position);
     }
 
@@ -260,7 +261,6 @@ public class JLayeredPane extends JComponent implements Accessible {
             // do nothing if c is not in the container
             return;
         }
-
         setLayer(c, layer, position);
     }
 
@@ -293,11 +293,9 @@ public class JLayeredPane extends JComponent implements Accessible {
         int index = getIndexOf(c);
         int layer = getLayer(c);
         int pos = -1;
-
         for (; index >= 0 && getLayer(getComponent(index)) == layer; index--) {
             pos++;
         }
-
         return pos;
     }
 
@@ -311,14 +309,12 @@ public class JLayeredPane extends JComponent implements Accessible {
         if (c == null) {
             return -1;
         }
-
         Object layer = getComponentToLayer().get(c);
         if (layer != null) {
-            return ((Integer)layer).intValue();
+            return ((Integer) layer).intValue();
         }
-
         if (c instanceof JComponent) {
-            return getLayer((JComponent)c);
+            return getLayer((JComponent) c);
         }
         return 0;
     }
@@ -330,19 +326,14 @@ public class JLayeredPane extends JComponent implements Accessible {
     public Component[] getComponentsInLayer(final int layer) {
         int size = getComponentCountInLayer(layer);
         Component[] result = new Component[size];
-
         if (size == 0) {
             return result;
         }
-
         int i = insertIndexForLayer(layer, 0);
-
         int j = 0;
-        for (; i < getComponentCount() && layer == getLayer(getComponent(i));
-                i++, j++) {
+        for (; i < getComponentCount() && layer == getLayer(getComponent(i)); i++, j++) {
             result[j] = getComponent(i);
         }
-
         return result;
     }
 
@@ -350,16 +341,11 @@ public class JLayeredPane extends JComponent implements Accessible {
         return insertIndexForLayer(layer, position, 0);
     }
 
-    private int insertIndexForLayer(final int layer, final int position,
-                                    final int startPosition) {
-        assert startPosition == 0
-            || getLayer(getComponent(startPosition - 1)) > layer
-            : "startPosition in the middle of the current layer";
-
+    private int insertIndexForLayer(final int layer, final int position, final int startPosition) {
+        assert startPosition == 0 || getLayer(getComponent(startPosition - 1)) > layer : "startPosition in the middle of the current layer";
         if (getComponentCount() == 0) {
             return 0;
         }
-
         // the bottommost position of layer n
         // is equivalent to topmost position of level n-1
         int adjustedPosition = position;
@@ -368,7 +354,6 @@ public class JLayeredPane extends JComponent implements Accessible {
             adjustedPosition = 0;
             adjustedLayer = layer - 1;
         }
-
         int result = startPosition;
         // looking position depending on layer
         for (; result < getComponentCount(); result++) {
@@ -376,25 +361,23 @@ public class JLayeredPane extends JComponent implements Accessible {
                 break;
             }
         }
-
         // looking for position depending on index in layer
-        for (; result < getComponentCount() && adjustedPosition > 0;
-                result++, adjustedPosition--) {
+        for (; result < getComponentCount() && adjustedPosition > 0; result++, adjustedPosition--) {
             if (getLayer(getComponent(result)) != adjustedLayer) {
                 break;
             }
         }
-
         return result;
     }
 
+    @Override
     public void remove(final int index) {
         Component comp = getComponent(index);
         getComponentToLayer().remove(comp);
-
         super.remove(index);
     }
 
+    @Override
     public void removeAll() {
         for (int i = getComponentCount() - 1; i >= 0; i--) {
             remove(i);
@@ -405,11 +388,11 @@ public class JLayeredPane extends JComponent implements Accessible {
         if (layer < lowestLayer() || layer > highestLayer()) {
             return 0;
         }
-
         int start = insertIndexForLayer(layer, 0);
         return insertIndexForLayer(layer, -1, start) - start;
     }
 
+    @Override
     public boolean isOptimizedDrawingEnabled() {
         return getComponentCount() <= 1;
     }
@@ -429,12 +412,11 @@ public class JLayeredPane extends JComponent implements Accessible {
     }
 
     public static JLayeredPane getLayeredPaneAbove(final Component c) {
-        return (JLayeredPane)SwingUtilities.
-            getAncestorOfClass(JLayeredPane.class, c);
+        return (JLayeredPane) SwingUtilities.getAncestorOfClass(JLayeredPane.class, c);
     }
 
     public static void putLayer(final JComponent c, final int layer) {
-        Integer l = (Integer)c.getClientProperty(LAYER_PROPERTY);
+        Integer l = (Integer) c.getClientProperty(LAYER_PROPERTY);
         if (l == null || l.intValue() != layer) {
             // the layer is really changed
             c.putClientProperty(LAYER_PROPERTY, new Integer(layer));
@@ -442,14 +424,13 @@ public class JLayeredPane extends JComponent implements Accessible {
     }
 
     public static int getLayer(final JComponent c) {
-        Integer layer = ((Integer)c.getClientProperty(LAYER_PROPERTY));
+        Integer layer = ((Integer) c.getClientProperty(LAYER_PROPERTY));
         return layer == null ? 0 : layer.intValue();
     }
 
-    private void rememberLayerForComponent(final Component c,
-                                              final int layer) {
+    private void rememberLayerForComponent(final Component c, final int layer) {
         if (c instanceof JComponent) {
-            putLayer((JComponent)c, layer);
+            putLayer((JComponent) c, layer);
         }
         getComponentToLayer().put(c, getObjectForLayer(layer));
     }

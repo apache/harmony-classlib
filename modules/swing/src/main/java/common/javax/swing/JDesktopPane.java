@@ -15,28 +15,28 @@
  *  limitations under the License.
  */
 
-/**
- * @author Vadim L. Bogdanov
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Component;
-
-import java.util.Vector;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
-
 import javax.swing.plaf.DesktopPaneUI;
 
 /**
- * A container used to create a virtual desktop.
- *
+ * <p>
+ * <i>JDesktopPane</i> is a container used to create a virtual desktop.
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
  */
 public class JDesktopPane extends JLayeredPane implements Accessible {
+    private static final long serialVersionUID = -5428199090710889698L;
 
     /**
      * Indicates that the entire content of the component should appear,
@@ -50,6 +50,19 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      */
     public static final int OUTLINE_DRAG_MODE = 1;
 
+    protected class AccessibleJDesktopPane extends AccessibleJComponent {
+        private static final long serialVersionUID = -44586801937888192L;
+
+        protected AccessibleJDesktopPane() {
+            super();
+        }
+
+        @Override
+        public AccessibleRole getAccessibleRole() {
+            return AccessibleRole.DESKTOP_PANE;
+        }
+    }
+
     // The style of dragging to use.
     private int dragMode = LIVE_DRAG_MODE;
 
@@ -62,15 +75,6 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
     public JDesktopPane() {
         setFocusCycleRoot(true);
         updateUI();
-    }
-
-    protected class AccessibleJDesktopPane extends AccessibleJComponent {
-        protected AccessibleJDesktopPane() {
-        }
-
-        public AccessibleRole getAccessibleRole() {
-            return AccessibleRole.DESKTOP_PANE;
-        }
     }
 
     /**
@@ -89,36 +93,32 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      * @return UI object for this component
      */
     public DesktopPaneUI getUI() {
-        return (DesktopPaneUI)ui;
+        return (DesktopPaneUI) ui;
     }
 
     /**
      * Resets UI object with the default object from <code>UIManager</code>
      */
+    @Override
     public void updateUI() {
-        setUI((DesktopPaneUI)UIManager.getUI(this));
+        setUI((DesktopPaneUI) UIManager.getUI(this));
     }
 
     /*
      * Returns all internal frames in the array including iconified frames.
      */
-    private JInternalFrame[] getAllFramesInArray(final Component[] array) {
-        Vector vector = new Vector(array.length);
-
+    private JInternalFrame[] getAllFramesInArray(Component[] array) {
+        List<JInternalFrame> result = new ArrayList<JInternalFrame>(array.length);
         for (int i = 0; i < array.length; i++) {
             if (array[i] instanceof JInternalFrame) {
                 // internal frame
-                vector.add(array[i]);
+                result.add((JInternalFrame) array[i]);
             } else if (array[i] instanceof JInternalFrame.JDesktopIcon) {
                 // iconified internal frame
-                vector.add(((JInternalFrame.JDesktopIcon)array[i]).
-                           getInternalFrame());
+                result.add(((JInternalFrame.JDesktopIcon) array[i]).getInternalFrame());
             }
         }
-
-        JInternalFrame[] frames = new JInternalFrame[vector.size()];
-        vector.toArray(frames);
-        return frames;
+        return result.toArray(new JInternalFrame[result.size()]);
     }
 
     /**
@@ -187,11 +187,11 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      *
      * @return the accessible context for the desktop pane
      */
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJDesktopPane();
         }
-
         return accessibleContext;
     }
 
@@ -200,6 +200,7 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      *
      * @return string representation of this desktop pane
      */
+    @Override
     protected String paramString() {
         return super.paramString();
     }
@@ -209,6 +210,7 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      *
      * @return the string "DesktopPaneUI"
      */
+    @Override
     public String getUIClassID() {
         return "DesktopPaneUI";
     }
@@ -218,6 +220,7 @@ public class JDesktopPane extends JLayeredPane implements Accessible {
      *
      * @return <code>true</code>
      */
+    @Override
     public boolean isOpaque() {
         return true;
     }
