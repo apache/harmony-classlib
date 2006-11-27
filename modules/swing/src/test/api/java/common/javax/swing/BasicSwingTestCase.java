@@ -140,10 +140,12 @@ public abstract class BasicSwingTestCase extends TestCase {
         });
         thread.start();
         thread.join(timeoutDelay);
-        if (thread.isAlive()) {
-            // TODO is this stop necessary?
-            thread.stop();
-            fail("Test interrupted due timeout");
+        int interruptAttempts = 0;
+        while (thread.isAlive()){
+            thread.interrupt();
+            if (interruptAttempts++ < 5) {
+                fail("Test interrupted due timeout");
+            }
         }
         if (exception[0] != null) {
             rethrow(exception[0]);
