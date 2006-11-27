@@ -608,7 +608,7 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public boolean getLoopbackMode() throws SocketException {
 		checkClosedAndBind(false);
-		return ((Boolean) impl.getOption(SocketOptions.IP_MULTICAST_LOOP))
+		return !((Boolean) impl.getOption(SocketOptions.IP_MULTICAST_LOOP))
 				.booleanValue();
 	}
 
@@ -625,7 +625,7 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public void setLoopbackMode(boolean loop) throws SocketException {
 		checkClosedAndBind(false);
-		impl.setOption(SocketOptions.IP_MULTICAST_LOOP, loop ? Boolean.TRUE
-				: Boolean.FALSE);
+		impl.setOption(SocketOptions.IP_MULTICAST_LOOP, loop ? Boolean.FALSE
+				: Boolean.TRUE);
 	}
 }

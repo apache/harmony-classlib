@@ -990,7 +990,47 @@ public class MulticastSocketTest extends SocketTestCase {
 			handleException(e, SO_USELOOPBACK);
 		}
 	}
+    
+    /**
+     * @tests java.net.MulticastSocket#setLoopbackMode(boolean)
+     */
+    public void test_setLoopbackModeSendReceive() throws IOException{
+        final String ADDRESS = "224.1.2.3";
+        final int PORT = 6789;
+        final String message = "Hello, world!";
 
+        // test send receive
+        MulticastSocket socket = null;
+        try {
+            // open a multicast socket
+            socket = new MulticastSocket(PORT);
+            socket.setLoopbackMode(false); // false indecates doing loop back
+            socket.joinGroup(InetAddress.getByName(ADDRESS));
+
+            // send the datagram
+            byte[] sendData = message.getBytes();
+            DatagramPacket sendDatagram = new DatagramPacket(sendData, 0,
+                    sendData.length, new InetSocketAddress(InetAddress
+                            .getByName(ADDRESS), PORT));
+            socket.send(sendDatagram);
+
+            // receive the datagram
+            byte[] recvData = new byte[100];
+            DatagramPacket recvDatagram = new DatagramPacket(recvData,
+                    recvData.length);
+            socket.setSoTimeout(5000); // prevent eternal block in
+            // socket.receive()
+            socket.receive(recvDatagram);
+            String recvMessage = new String(recvData, 0, recvDatagram
+                    .getLength());
+            assertEquals(message, recvMessage);
+        }finally {
+            if (socket != null)
+                socket.close();
+        }
+    }
+    
+    
 	/**
 	 * @tests java.net.MulticastSocket#setReuseAddress(boolean)
 	 */
