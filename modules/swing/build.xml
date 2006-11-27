@@ -185,7 +185,7 @@
                 unless="test.case">
 
                 <fileset dir="${hy.swing.src.test.api}/java/common">
-                    <include name="**/*Test*.java"/>
+                    <include name="**/*Test.java"/>
                     <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
