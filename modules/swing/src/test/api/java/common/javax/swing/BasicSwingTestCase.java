@@ -143,7 +143,7 @@ public abstract class BasicSwingTestCase extends TestCase {
         int interruptAttempts = 0;
         while (thread.isAlive()){
             thread.interrupt();
-            if (interruptAttempts++ < 5) {
+            if (interruptAttempts++ > 5) {
                 fail("Test interrupted due timeout");
             }
         }
