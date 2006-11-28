@@ -42,23 +42,22 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.provider.cert.X509CRLImpl;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
+import org.apache.harmony.security.x509.CRLNumber;
 import org.apache.harmony.security.x509.Certificate;
 import org.apache.harmony.security.x509.CertificateIssuer;
 import org.apache.harmony.security.x509.CertificateList;
-import org.apache.harmony.security.x509.CRLNumber;
 import org.apache.harmony.security.x509.DistributionPointName;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.GeneralName;
 import org.apache.harmony.security.x509.GeneralNames;
-import org.apache.harmony.security.x509.IssuingDistributionPoint;
 import org.apache.harmony.security.x509.InvalidityDate;
+import org.apache.harmony.security.x509.IssuingDistributionPoint;
 import org.apache.harmony.security.x509.ReasonCode;
 import org.apache.harmony.security.x509.ReasonFlags;
 import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
@@ -468,25 +467,16 @@ public class X509CRLImplTest extends TestCase {
     /**
      * verify(PublicKey key) method testing.
      */
-    public void testVerify1() {
-        try {
-            crl.verify(publicKey);
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+    public void testVerify1() throws Exception {
+        crl.verify(publicKey);
     }
     
     /**
      * verify(PublicKey key, String sigProvider) method testing.
      */
-    public void testVerify2() {
-        try {
-            crl.verify(publicKey, 
-                    Signature.getInstance("SHA1withDSA")
-                                    .getProvider().getName());
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+    public void testVerify2() throws Exception {
+        crl.verify(publicKey, Signature.getInstance("SHA1withDSA")
+                .getProvider().getName());
     }
     
     /**

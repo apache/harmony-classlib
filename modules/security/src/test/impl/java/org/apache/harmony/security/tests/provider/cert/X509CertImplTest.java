@@ -21,38 +21,62 @@
 
 package org.apache.harmony.security.tests.provider.cert;
 
-import java.io.*;
-import java.math.*;
-import java.util.*;
-import java.security.KeyPairGenerator;
-import java.security.Signature;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.security.KeyPair;
-import java.security.PublicKey;
+import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
-import javax.security.auth.x500.X500Principal;
-
-import org.apache.harmony.security.asn1.ASN1Integer;
-import org.apache.harmony.security.asn1.ASN1Sequence;
-import org.apache.harmony.security.asn1.ASN1Type;
-import org.apache.harmony.security.asn1.BitString;
-import org.apache.harmony.security.asn1.ObjectIdentifier;
-
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-
-import org.apache.harmony.security.asn1.ASN1BitString;
-import org.apache.harmony.security.provider.cert.X509CertImpl;
-import org.apache.harmony.security.tests.support.cert.TestUtils;
-import org.apache.harmony.security.x501.Name;
-import org.apache.harmony.security.x509.*;
-
 import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.security.auth.x500.X500Principal;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.tests.support.cert.TestUtils;
+import org.apache.harmony.security.x501.Name;
+import org.apache.harmony.security.x509.AlgorithmIdentifier;
+import org.apache.harmony.security.x509.AlternativeName;
+import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
+import org.apache.harmony.security.x509.BasicConstraints;
+import org.apache.harmony.security.x509.CRLDistributionPoints;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.CertificatePolicies;
+import org.apache.harmony.security.x509.DistributionPoint;
+import org.apache.harmony.security.x509.DistributionPointName;
+import org.apache.harmony.security.x509.ExtendedKeyUsage;
+import org.apache.harmony.security.x509.Extension;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.GeneralName;
+import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.GeneralSubtree;
+import org.apache.harmony.security.x509.GeneralSubtrees;
+import org.apache.harmony.security.x509.InhibitAnyPolicy;
+import org.apache.harmony.security.x509.KeyUsage;
+import org.apache.harmony.security.x509.NameConstraints;
+import org.apache.harmony.security.x509.PolicyConstraints;
+import org.apache.harmony.security.x509.PolicyInformation;
+import org.apache.harmony.security.x509.ReasonFlags;
+import org.apache.harmony.security.x509.SubjectKeyIdentifier;
+import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
+import org.apache.harmony.security.x509.TBSCertificate;
+import org.apache.harmony.security.x509.Validity;
 
 /**
  * X509CertImplTest
@@ -718,25 +742,16 @@ public class X509CertImplTest extends TestCase {
      * verify(PublicKey key) method testing.
      */
     public void testVerify1() throws Exception {
-        try {
-            certificate.verify(publicKey);
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+        certificate.verify(publicKey);
     }
     
     /**
      * TODO
      * verify(PublicKey key, String sigProvider) method testing.
      */
-    public void testVerify2() {
-        try {
-            certificate.verify(publicKey, 
-                    Signature.getInstance("SHA1withDSA")
-                                    .getProvider().getName());
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+    public void testVerify2() throws Exception {
+        certificate.verify(publicKey, Signature.getInstance("SHA1withDSA")
+                .getProvider().getName());
     }
     
     /**
