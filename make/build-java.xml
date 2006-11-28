@@ -125,7 +125,7 @@ ${built.files.list}
                debug="${hy.javac.debug}"
                includeAntRuntime="no">
             
-            <compilerarg value="-warn:none" />
+            <compilerarg line="${build.compilerarg}" />
             
             <src path="modules/accessibility/src/main/java/" />
             <src path="modules/annotation/src/main/java/" />
@@ -163,6 +163,7 @@ ${built.files.list}
             <src path="modules/swing/src/main/java/${hy.os}" />
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
+            <src path="modules/tools/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
 
             <classpath>

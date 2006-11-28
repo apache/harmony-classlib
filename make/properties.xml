@@ -157,6 +157,8 @@
     <property name="png.home" value="/usr" />
     <property name="lcms.home" value="/usr" />
     <property name="jpeg.home" value="/usr" />
+    
+    <property name="build.compilerarg" value="-warn:none" />
 
     <!-- default property for call-modules macro - i.e. all modules -->
     <property name="build.module" value="*" />
