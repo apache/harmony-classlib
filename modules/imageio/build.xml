@@ -165,6 +165,8 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
             <classpath>

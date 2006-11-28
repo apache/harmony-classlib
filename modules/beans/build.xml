@@ -201,6 +201,8 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
             <jvmarg value="-Xbootclasspath/a:${hy.beans.bin.internal}${path.separator}../../${junit.jar}"/>         
             
             <classpath>
@@ -235,6 +237,8 @@
                showoutput="on"
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
+
+            <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
                 <pathelement path="${hy.beans.bin.test}"/>

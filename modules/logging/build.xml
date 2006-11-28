@@ -172,6 +172,8 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
         	<!-- Required by various tests that set security manager etc -->
             <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
 

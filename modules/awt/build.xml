@@ -287,6 +287,8 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
             <jvmarg value="-DTEST_SRC_DIR=${hy.awt.bin.test}"/>
             <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test}${path.separator}${basedir}/../../${junit.jar}"/>
 

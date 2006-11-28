@@ -36,6 +36,7 @@
     <property name="hy.test.forkmode" value="once" />
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vm.name" value="ibm" />
+    <property name="hy.test.vmargs" value="" />
 
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
@@ -173,6 +174,13 @@ Harmony javac properties:
   hy.javac.source = ${hy.javac.source}
   hy.javac.debug  = ${hy.javac.debug}
   hy.javac.maxmem = ${hy.javac.maxmem}
+
+Harmony test properties:
+
+    hy.test.forkmode = ${hy.test.forkmode}
+    hy.test.timeout = ${hy.test.timeout}
+    hy.test.vm.name = ${hy.test.vm.name}
+    hy.test.vmargs = ${hy.test.vmargs}
 
 Harmony platform properties:
 

@@ -377,6 +377,8 @@
                    dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
 
+                <jvmarg line="${hy.test.vmargs}" />
+
                 <junit-elements />
 
                 <formatter type="xml" />

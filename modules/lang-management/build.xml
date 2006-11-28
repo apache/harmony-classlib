@@ -147,6 +147,8 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
             <classpath>
                 <pathelement path="${hy.lang-management.bin.test}"/>
             </classpath>
