@@ -118,12 +118,13 @@ ${built.files.list}
         </fail>
         <mkdir dir="${build.output}" />
 
-        <javac compiler="${hy.javac.compiler}"
+        <javac fork="yes" 
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
                destdir="${build.output}"
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
-               debug="${hy.javac.debug}"
-               includeAntRuntime="no">
+               debug="${hy.javac.debug}">
             
             <compilerarg line="${build.compilerarg}" />
             
@@ -171,15 +172,6 @@ ${built.files.list}
                     <include name="**/*.jar" />
                 </fileset>
             </classpath>
-
-            <!-- We need to set some BCP to avoid the compiler picking
-                 up the JRE's JARs -->
-            <bootclasspath>
-                <fileset dir="${depends.jars}">
-                    <!-- FIXME: picked mx4j arbitrarily, needs to be non-empty set -->
-                    <include name="**/mx4j.jar" />
-                </fileset>
-            </bootclasspath>
         </javac>
 
         <call-modules target="build" />
