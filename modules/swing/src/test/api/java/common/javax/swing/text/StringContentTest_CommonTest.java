@@ -24,7 +24,7 @@ import java.util.Vector;
 import javax.swing.BasicSwingTestCase;
 import javax.swing.undo.UndoableEdit;
 
-public class StringContentTest_CommonTests extends GapContentTest {
+public class StringContentTest_CommonTest extends GapContentTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();

@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  * removeAttributes(AttributeSet) methods.
  *
  */
-public class StyleContext_RemoveTests extends TestCase {
+public class StyleContext_RemoveTest extends TestCase {
     /**
      * Class supporting testing of removeAttributes(Enumeration) method
      * of StyleContext.

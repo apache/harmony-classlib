@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * writeAttributeSet methods.
  *
  */
-public class StyleContext_StaticAttrTests extends TestCase {
+public class StyleContext_StaticAttrTest extends TestCase {
     /**
      * Object that is used with registerStaticAttributeKey.
      */
