@@ -51,8 +51,4 @@ public class FailedLoginExceptionTest extends TestCase {
         message = "message";
         assertSame(message, new FailedLoginException(message).getMessage());
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(FailedLoginExceptionTest.class);
-    }
 }

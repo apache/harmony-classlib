@@ -43,12 +43,6 @@ import org.apache.harmony.auth.internal.SecurityTest;
  */
 
 public class SubjectDomainCombinerTest extends SecurityTest {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(
-                org.apache.harmony.auth.tests.javax.security.auth.SubjectDomainCombinerTest.class);
-    }
-
     /**
      * @tests javax.security.auth.SubjectDomainCombiner#SubjectDomainCombiner(
      *        javax.security.auth.Subject)

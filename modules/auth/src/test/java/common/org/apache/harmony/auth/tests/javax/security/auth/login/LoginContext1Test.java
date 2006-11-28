@@ -72,10 +72,6 @@ public class LoginContext1Test extends TestCase {
 
     private static final int SUFFICIENT = 3;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(LoginContext1Test.class);
-    }
-
     /**
      * Converts short (local) class names (like TestLoginModule) into the 
      * global (fully qualified) ones.<br>

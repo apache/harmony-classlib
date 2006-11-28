@@ -54,8 +54,4 @@ public class CredentialExpiredExceptionTest extends TestCase {
         assertSame(message, new CredentialExpiredException(message)
                 .getMessage());
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialExpiredExceptionTest.class);
-    }
 }

@@ -32,122 +32,118 @@ import junit.framework.TestCase;
 
 public class ChoiceCallbackTest extends TestCase {
 
-	ChoiceCallback cb;
+    ChoiceCallback cb;
 
-	String prompt = "prompt";
+    String prompt = "prompt";
 
-	int defaultChoice = 1;
+    int defaultChoice = 1;
 
-	String[] choices = { "AAA", "BBB" };
+    String[] choices = { "AAA", "BBB" };
 
-	int index[] = { 1, 2, 3 };
+    int index[] = { 1, 2, 3 };
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(ChoiceCallbackTest.class);
-	}
+    /**
+     * Class under test for Ctor
+     */
+    public final void testChoiceCallback_01() {
+        cb = new ChoiceCallback(prompt, choices, defaultChoice, true);
+        assertEquals(this.prompt, cb.getPrompt());
+        assertEquals(this.choices, cb.getChoices());
+        assertEquals(this.defaultChoice, cb.getDefaultChoice());
+        assertTrue(cb.allowMultipleSelections());
+    }
 
-	/**
-	 * Class under test for Ctor
-	 */
-	public final void testChoiceCallback_01() {
-		cb = new ChoiceCallback(prompt, choices, defaultChoice, true);
-		assertEquals(this.prompt, cb.getPrompt());
-		assertEquals(this.choices, cb.getChoices());
-		assertEquals(this.defaultChoice, cb.getDefaultChoice());
-		assertTrue(cb.allowMultipleSelections());
-	}
+    /**
+     * test for the method setSelectedIndexes
+     */
+    public final void testChoiceCallback_02() {
+        cb = new ChoiceCallback(prompt, choices, defaultChoice, false);
+        try {
+            cb.setSelectedIndexes(index);
+            fail("should be throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+        }
+        cb.setSelectedIndex(1);
+        assertEquals(1, cb.getSelectedIndexes()[0]);
+    }
+    
+    public final void testChoiceCallback_03() {
+        
+        try {
+            cb = new ChoiceCallback(prompt, null, defaultChoice, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
 
-	/**
-	 * test for the method setSelectedIndexes
-	 */
-	public final void testChoiceCallback_02() {
-		cb = new ChoiceCallback(prompt, choices, defaultChoice, false);
-		try {
-			cb.setSelectedIndexes(index);
-			fail("should be throw UnsupportedOperationException");
-		} catch (UnsupportedOperationException e) {
-		}
-		cb.setSelectedIndex(1);
-		assertEquals(1, cb.getSelectedIndexes()[0]);
-	}
-	
-	public final void testChoiceCallback_03() {
-		
-		try {
-			cb = new ChoiceCallback(prompt, null, defaultChoice, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
+        try {
+            cb = new ChoiceCallback(null, choices, defaultChoice, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
 
-		try {
-			cb = new ChoiceCallback(null, choices, defaultChoice, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
+        try {
+            cb = new ChoiceCallback(prompt, choices, -1, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            cb = new ChoiceCallback(prompt, new String[0], defaultChoice, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
 
-		try {
-			cb = new ChoiceCallback(prompt, choices, -1, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-		try {
-			cb = new ChoiceCallback(prompt, new String[0], defaultChoice, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
+        try {
+            cb = new ChoiceCallback("", choices, defaultChoice, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
 
-		try {
-			cb = new ChoiceCallback("", choices, defaultChoice, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
+        try {
+            cb = new ChoiceCallback(prompt, choices, 5, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            cb = new ChoiceCallback(prompt, choices, 2, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+    }
 
-		try {
-			cb = new ChoiceCallback(prompt, choices, 5, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-		try {
-			cb = new ChoiceCallback(prompt, choices, 2, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-	}
+    public final void testChoiceCallback_04() {
+        String[] ch = {null};
 
-	public final void testChoiceCallback_04() {
-		String[] ch = {null};
+        try {
+            cb = new ChoiceCallback(prompt, ch, 5, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        
+        String[] ch1 = {""};
 
-		try {
-			cb = new ChoiceCallback(prompt, ch, 5, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-		
-		String[] ch1 = {""};
+        try {
+            cb = new ChoiceCallback(prompt, ch1, 5, true);
+            fail("should be throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        
 
-		try {
-			cb = new ChoiceCallback(prompt, ch1, 5, true);
-			fail("should be throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-		
-
-	}
-	/**
-	 * test whether implementation is mutable
-	 */
-	public final void testMutable() {
-		String c[] = { "A", "B", "C" };
-		cb = new ChoiceCallback(prompt, c, defaultChoice, false);
-		c[0] = "D";
-		assertFalse("A".equals(cb.getChoices()[0]));
-		int selection[] = { 1, 2, 3 };
-		cb = new ChoiceCallback(prompt, c, defaultChoice, true);
-		cb.setSelectedIndexes(selection);
-		selection[0] = 4;
-		assertEquals(4, cb.getSelectedIndexes()[0]);
-		cb.getSelectedIndexes()[0] = 5;
-		assertEquals(5, cb.getSelectedIndexes()[0]);
-	}
+    }
+    /**
+     * test whether implementation is mutable
+     */
+    public final void testMutable() {
+        String c[] = { "A", "B", "C" };
+        cb = new ChoiceCallback(prompt, c, defaultChoice, false);
+        c[0] = "D";
+        assertFalse("A".equals(cb.getChoices()[0]));
+        int selection[] = { 1, 2, 3 };
+        cb = new ChoiceCallback(prompt, c, defaultChoice, true);
+        cb.setSelectedIndexes(selection);
+        selection[0] = 4;
+        assertEquals(4, cb.getSelectedIndexes()[0]);
+        cb.getSelectedIndexes()[0] = 5;
+        assertEquals(5, cb.getSelectedIndexes()[0]);
+    }
 
 }

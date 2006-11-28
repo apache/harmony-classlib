@@ -21,9 +21,7 @@
  */
 package org.ietf.jgss;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Tests GSSException class
@@ -155,13 +153,5 @@ public class GSSExceptionTest extends TestCase {
     public void testToString_0() {
         GSSException gssException= new GSSException(GSSException.BAD_NAME, GSSException.BAD_NAME, "Bad day today");
         assertEquals("GSSException: BAD NAME (Bad day today)",  gssException.toString() );
-    }
-    
-    public static Test suite() {
-        return new TestSuite(GSSExceptionTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
     }
 }

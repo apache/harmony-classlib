@@ -34,23 +34,18 @@ public class ConfirmationCallbackTest extends TestCase {
 
     ConfirmationCallback cc;
      int mt[] = { ConfirmationCallback.INFORMATION,
-            			ConfirmationCallback.WARNING, 
-            			ConfirmationCallback.ERROR 
-            			};
+                        ConfirmationCallback.WARNING, 
+                        ConfirmationCallback.ERROR 
+                        };
      int ot[] = { ConfirmationCallback.YES_NO_OPTION,
-            			ConfirmationCallback.YES_NO_CANCEL_OPTION ,
-            			ConfirmationCallback.OK_CANCEL_OPTION
-            			};
+                        ConfirmationCallback.YES_NO_CANCEL_OPTION ,
+                        ConfirmationCallback.OK_CANCEL_OPTION
+                        };
      int dopt[] = { ConfirmationCallback.YES, 
-            			ConfirmationCallback.NO,
-            			ConfirmationCallback.CANCEL, 
-            			ConfirmationCallback.OK 
-            			};
-
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ConfirmationCallbackTest.class);
-    }
+                        ConfirmationCallback.NO,
+                        ConfirmationCallback.CANCEL, 
+                        ConfirmationCallback.OK 
+                        };
 
     /**
      *  Ctor test  
@@ -174,8 +169,8 @@ public class ConfirmationCallbackTest extends TestCase {
       try {
           cc = new ConfirmationCallback(ConfirmationCallback.INFORMATION, opt, 3);
           fail("Default Option does not lie within the array boundaries of options ");
-      	} catch(IllegalArgumentException e){
-      	}
+        } catch(IllegalArgumentException e){
+        }
     }
     
     /**
@@ -213,15 +208,15 @@ public class ConfirmationCallbackTest extends TestCase {
             cc = new ConfirmationCallback("prompt", ConfirmationCallback.INFORMATION, opt2, 1);
           fail("2. Option type should not be null and empty ");
         } catch(IllegalArgumentException e){}
-      	try {
-      	    cc = new ConfirmationCallback("", ConfirmationCallback.INFORMATION, opt, 1);
-      	    fail("3. Prompt should not be null and empty ");
-      	} catch(IllegalArgumentException e){}
-      	try {
-      	    cc = new ConfirmationCallback(null, ConfirmationCallback.INFORMATION, opt, 1);
-      	    fail("4. Prompt should not be null and empty ");
-      	} catch(IllegalArgumentException e){
-      	}
+        try {
+            cc = new ConfirmationCallback("", ConfirmationCallback.INFORMATION, opt, 1);
+            fail("3. Prompt should not be null and empty ");
+        } catch(IllegalArgumentException e){}
+        try {
+            cc = new ConfirmationCallback(null, ConfirmationCallback.INFORMATION, opt, 1);
+            fail("4. Prompt should not be null and empty ");
+        } catch(IllegalArgumentException e){
+        }
 
     }
 

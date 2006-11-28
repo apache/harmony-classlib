@@ -31,11 +31,6 @@ import junit.framework.TestCase;
  * 
  */
 public class AuthenticationExceptionTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AuthenticationExceptionTest.class);
-    }
-
     /**
      * Constructor for AuthenticationExceptionTests.
      * 

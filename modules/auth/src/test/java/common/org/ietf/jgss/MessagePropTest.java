@@ -21,9 +21,7 @@
  */
 package org.ietf.jgss;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Tests MessageProp class
@@ -159,13 +157,4 @@ public class MessagePropTest extends TestCase {
         String s= mp.getMinorString();
         assertEquals("minor string", s);
     }
-    
-    public static Test suite() {
-        return new TestSuite(MessagePropTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
 }

@@ -43,6 +43,7 @@ public class RealmChoiceCallbackTest extends SerializationTest implements
             "t"};
 
     public static final int [] idx = {2, 3};
+    
     @Override
     protected Object[] getData() {
         Object [] oo = {
@@ -52,7 +53,7 @@ public class RealmChoiceCallbackTest extends SerializationTest implements
                 new RealmChoiceCallback(msgs[2], msgs, 0, false)
 
         };        
-for (Object element : oo) {
+        for (Object element : oo) {
             RealmChoiceCallback rc = (RealmChoiceCallback)element;           
             if (rc.allowMultipleSelections()) {
                 rc.setSelectedIndexes(idx);
@@ -60,7 +61,6 @@ for (Object element : oo) {
                 rc.setSelectedIndex(msgs.length - 1);
             }
         }
-//                
         return oo;
     }
 
@@ -84,7 +84,7 @@ for (Object element : oo) {
         int [] tIn = test.getSelectedIndexes();
 //        assertNull("in is not null", in);            
 //        assertNull("tIn is not null", tIn);
-//        
+
         if (!all) {
             assertEquals("Incorrect length in ", in.length, 1);
             assertEquals("Incorrect length tIn ", tIn.length, 1);
@@ -95,10 +95,5 @@ for (Object element : oo) {
                 assertEquals(in[i], tIn[i]);
             }            
         }
-//        
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RealmChoiceCallbackTest.class);
     }
 }

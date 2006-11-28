@@ -34,10 +34,6 @@ public class NameCallbackTest extends TestCase {
 
     NameCallback nc;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(NameCallbackTest.class);
-    }
-
     /**
      * Class under test for void NameCallback(String)
      */

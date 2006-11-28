@@ -34,14 +34,8 @@ import junit.framework.TestCase;
  */
 
 public class LanguageCallbackTest extends TestCase {
-
     LanguageCallback lc;
     
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(LanguageCallbackTest.class);
-    }
-
     /**
      * test of Ctor, method set/getLocale() 
      */

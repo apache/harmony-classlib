@@ -51,8 +51,4 @@ public class RefreshFailedExceptionTest extends TestCase {
         message = "message";
         assertSame(message, new RefreshFailedException(message).getMessage());
     }
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RefreshFailedExceptionTest.class);
-    }
 }

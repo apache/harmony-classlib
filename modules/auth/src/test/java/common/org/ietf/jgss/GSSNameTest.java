@@ -21,9 +21,7 @@
  */
 package org.ietf.jgss;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Tests GSSName interface
@@ -59,13 +57,4 @@ public class GSSNameTest extends TestCase {
         Oid oid= new Oid("1.2.840.113554.1.2.1.1");
         assertTrue(oid.equals(GSSName.NT_USER_NAME));
     }
-    
-    public static Test suite() {
-        return new TestSuite(GSSNameTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
 }

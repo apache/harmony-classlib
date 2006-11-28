@@ -50,8 +50,4 @@ public class SaslExceptionTest extends SerializationTest {
                 new SaslException(msgs[1], cause)
                 };
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslExceptionTest.class);
-    }
 }

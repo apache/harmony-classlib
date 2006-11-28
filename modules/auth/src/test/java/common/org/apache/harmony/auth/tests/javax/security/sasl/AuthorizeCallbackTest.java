@@ -32,11 +32,6 @@ import junit.framework.TestCase;
  */
 
 public class AuthorizeCallbackTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AuthorizeCallbackTest.class);
-    }
-
     /**
      * Test for <code>AuthorizeCallback(String authnID, String authzID)</code>
      * and get/set methods

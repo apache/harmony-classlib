@@ -51,8 +51,4 @@ public class AccountLockedExceptionTest extends TestCase {
         message = "message";
         assertSame(message, new AccountLockedException(message).getMessage());
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountLockedExceptionTest.class);
-    }
 }

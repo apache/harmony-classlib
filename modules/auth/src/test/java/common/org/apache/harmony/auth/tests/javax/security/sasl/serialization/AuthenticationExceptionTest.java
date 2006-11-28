@@ -50,8 +50,4 @@ public class AuthenticationExceptionTest extends SerializationTest {
                 new AuthenticationException(msgs[1], cause)
                 };
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AuthenticationExceptionTest.class);
-    }
 }

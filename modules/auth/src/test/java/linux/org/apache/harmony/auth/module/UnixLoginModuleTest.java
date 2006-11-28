@@ -36,21 +36,12 @@ import org.apache.harmony.auth.module.UnixLoginModule;
 /**
  * Unit test for UnixLoginModule
  */
+@SuppressWarnings("unchecked")
 public class UnixLoginModuleTest extends TestCase {
-
-    /**
-     * Standalone entry point.
-     * @param args
-     */
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnixLoginModuleTest.class);
-    }
 
     UnixLoginModule lm = new UnixLoginModule();
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         Subject subj = new Subject();
         CallbackHandler cbh = new TestCallbackHandler();

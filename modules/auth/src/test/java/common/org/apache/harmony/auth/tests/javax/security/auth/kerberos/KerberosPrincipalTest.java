@@ -247,8 +247,4 @@ public class KerberosPrincipalTest extends TestCase {
         assertFalse(new KerberosPrincipal("A@B").equals(null));
         assertFalse(new KerberosPrincipal("A@B").equals(new Object()));
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(KerberosPrincipalTest.class);
-    }
 }

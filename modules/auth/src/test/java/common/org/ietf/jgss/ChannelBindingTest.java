@@ -21,11 +21,10 @@
  */
 package org.ietf.jgss;
 
-import junit.framework.Test;
+import java.net.InetAddress;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.*;
-import java.net.*;
 
 /**
  * Tests ChannelBinding class
@@ -274,13 +273,4 @@ public class ChannelBindingTest extends TestCase {
         ChannelBinding cb = new ChannelBinding(null, null, data);
         assertEquals(312, cb.hashCode());
     }
-    
-    public static Test suite() {
-        return new TestSuite(ChannelBindingTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
 }

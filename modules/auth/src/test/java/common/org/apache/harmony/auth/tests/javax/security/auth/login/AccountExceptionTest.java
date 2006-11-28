@@ -51,8 +51,4 @@ public class AccountExceptionTest extends TestCase {
         message = "message";
         assertSame(message, new AccountException(message).getMessage());
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountExceptionTest.class);
-    }
 }

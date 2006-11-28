@@ -32,11 +32,6 @@ import junit.framework.TestCase;
  * Tests GSSManager class
  */
 public class GSSManagerTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(GSSManagerTest.class);
-    }
-
     /**
      * Tests loading of a default provider with valid class references.
      */

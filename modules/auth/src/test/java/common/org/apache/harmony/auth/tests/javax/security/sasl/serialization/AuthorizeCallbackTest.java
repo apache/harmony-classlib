@@ -74,8 +74,4 @@ public class AuthorizeCallbackTest extends SerializationTest implements
         assertEquals(test.isAuthorized(), is);
 
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AuthorizeCallbackTest.class);
-    }
 }

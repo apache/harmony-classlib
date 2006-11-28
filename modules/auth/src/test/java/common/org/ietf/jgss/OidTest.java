@@ -21,11 +21,10 @@
 */
 package org.ietf.jgss;
 
-import junit.framework.Test;
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.*;
-import java.io.*;
 
 /**
  * Tests Oid class
@@ -313,13 +312,5 @@ public class OidTest extends TestCase {
             fail("No expected GSSException");
         } catch (GSSException e) {
         }
-    }
-
-    public static Test suite() {
-        return new TestSuite(OidTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
     }
 }

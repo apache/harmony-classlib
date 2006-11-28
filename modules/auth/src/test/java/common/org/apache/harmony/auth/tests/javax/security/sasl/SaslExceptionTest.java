@@ -30,20 +30,6 @@ import junit.framework.TestCase;
  * Tests for constructors and methods of SaslException class
  */
 public class SaslExceptionTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslExceptionTest.class);
-    }
-
-    /**
-     * Constructor for SaslExceptionTests.
-     * 
-     * @param arg0
-     */
-    public SaslExceptionTest(String arg0) {
-        super(arg0);
-    }
-
     static String[] msgs = {
             "",
             "Check new message",

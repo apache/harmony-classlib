@@ -34,10 +34,6 @@ import junit.framework.TestCase;
 public class PasswordCallbackTest extends TestCase {
 
     PasswordCallback pc;
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(PasswordCallbackTest.class);
-    }
 
     public final void testPasswordCallback() {
         pc = new PasswordCallback("prompt", true);

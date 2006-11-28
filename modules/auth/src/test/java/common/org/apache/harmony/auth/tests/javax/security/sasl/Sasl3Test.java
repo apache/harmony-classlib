@@ -51,20 +51,7 @@ public class Sasl3Test extends TestCase {
     private static final String fClientClass = mySaslClientFactory.class.getName();;
 
     private Provider [] provs;
-    private boolean initProvs = false;
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(Sasl3Test.class);
-    }
-
-    /**
-     * Constructor for Sasl3Test.
-     * 
-     * @param arg0
-     */
-    public Sasl3Test(String arg0) {
-        super(arg0);
-    }
+    private boolean initProvs;
 
     @Override
     protected void setUp() throws Exception {

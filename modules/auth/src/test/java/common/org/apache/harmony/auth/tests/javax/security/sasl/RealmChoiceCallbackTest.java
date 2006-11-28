@@ -32,15 +32,6 @@ import junit.framework.TestCase;
  */
 
 public class RealmChoiceCallbackTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RealmChoiceCallbackTest.class);
-    }
-    
-    public RealmChoiceCallbackTest(String arg0) {
-        super(arg0);
-    }
-    
     private static final String[] prompts = {
             "Prompts",
             "Another prompt",

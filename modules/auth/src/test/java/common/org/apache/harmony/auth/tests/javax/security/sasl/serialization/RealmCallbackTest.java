@@ -66,8 +66,4 @@ public class RealmCallbackTest extends SerializationTest implements
         assertEquals(prompt, test.getPrompt());
 
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RealmCallbackTest.class);
-    }
 }

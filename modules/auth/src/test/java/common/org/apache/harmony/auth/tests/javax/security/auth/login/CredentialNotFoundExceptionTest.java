@@ -53,8 +53,4 @@ public class CredentialNotFoundExceptionTest extends TestCase {
         assertSame(message, new CredentialNotFoundException(message)
                 .getMessage());
     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);
-    }
 }

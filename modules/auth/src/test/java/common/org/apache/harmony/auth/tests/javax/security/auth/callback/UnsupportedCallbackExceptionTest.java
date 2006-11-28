@@ -36,10 +36,6 @@ public class UnsupportedCallbackExceptionTest extends TestCase {
 
     NameCallback nc = new NameCallback("prompt");
     
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnsupportedCallbackExceptionTest.class);
-    }
-    
     /**
      * Test for UnsupportedCallbackException(Callback c) ctor 
      */

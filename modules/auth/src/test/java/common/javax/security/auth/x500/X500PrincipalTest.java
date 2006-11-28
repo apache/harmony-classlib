@@ -27,9 +27,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import junit.framework.Test;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import tests.support.resource.Support_Resources;
 
 /**
@@ -1929,14 +1928,6 @@ public class X500PrincipalTest extends TestCase {
         X500Principal principal = new X500Principal(dn);
         String s = principal.getName(X500Principal.CANONICAL);
         assertEquals("cn=a\nb", s);
-    }
-
-    public static Test suite() {
-        return new TestSuite(X500PrincipalTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
     }
 
     public static final String[] RFC2253_SPECIAL = new String[] { ",", "=",

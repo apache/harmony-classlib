@@ -32,11 +32,7 @@ import junit.framework.TestCase;
 
 public class TextOutputCallbackTest extends TestCase {
 
-    TextOutputCallback text = null;
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TextOutputCallbackTest.class);
-    }
+    TextOutputCallback text;
 
     /**
      * Test for TextOutputCallback(int msgType,String msg) ctor 

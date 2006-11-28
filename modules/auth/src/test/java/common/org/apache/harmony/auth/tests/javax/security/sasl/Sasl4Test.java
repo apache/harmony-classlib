@@ -48,21 +48,7 @@ public class Sasl4Test extends TestCase {
     private static final String fServerClass = mySaslServerFactory.class.getName();
 
     private Provider [] provs;
-    private boolean initProvs = false;
-
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(Sasl4Test.class);
-    }
-
-    /**
-     * Constructor for Sasl4Test.
-     * 
-     * @param arg0
-     */
-    public Sasl4Test(String arg0) {
-        super(arg0);
-    }
+    private boolean initProvs;
 
     @Override
     protected void setUp() throws Exception {
