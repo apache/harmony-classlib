@@ -35,10 +35,6 @@ public class AbstractUndoableEditTest extends TestCase {
 
     private String defaultRedoName;
 
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(AbstractUndoableEditTest.class);
-    }
-
     @Override
     protected void setUp() throws Exception {
         obj = new AbstractUndoableEdit();
