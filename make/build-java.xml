@@ -108,7 +108,7 @@ ${built.files.list}
     <!-- =================================
           target: -compile
          ================================= -->
-    <target name="-compile" depends="-prepare-depends">
+    <target name="-compile" depends="-prepare-depends, -layout">
         <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
             <condition>
                 <not>
@@ -118,13 +118,12 @@ ${built.files.list}
         </fail>
         <mkdir dir="${build.output}" />
 
-        <javac fork="yes" 
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
+        <javac compiler="${hy.javac.compiler}"
                destdir="${build.output}"
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+               debug="${hy.javac.debug}"
+               includeAntRuntime="no">
             
             <compilerarg line="${build.compilerarg}" />
             
@@ -168,10 +167,19 @@ ${built.files.list}
             <src path="modules/x-net/src/main/java/" />
 
             <classpath>
-                <fileset dir="${depends.jars}">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </classpath>
+
+            <!-- We need to set some BCP to avoid the compiler picking
+                 up the JRE's JARs -->
+            <bootclasspath>
+                <fileset dir="${depends.jars}">
+                    <!-- FIXME: picked mx4j arbitrarily, needs to be non-empty set -->
+                    <include name="**/mx4j.jar" />
+                </fileset>
+            </bootclasspath>
         </javac>
 
         <call-modules target="build" />
