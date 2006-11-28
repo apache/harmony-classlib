@@ -46,6 +46,7 @@ public class HttpURLConnectionTest extends TestCase {
     static class MockServer extends Thread {
         ServerSocket serverSocket;
         boolean accepted = false;
+        boolean started = false;
 
         public MockServer(String name) throws IOException {
             super(name);
@@ -61,6 +62,7 @@ public class HttpURLConnectionTest extends TestCase {
         public void run() {
             try {
                 synchronized (bound) {
+                    started = true;
                     bound.notify();
                 }
                 try {
@@ -195,11 +197,11 @@ public class HttpURLConnectionTest extends TestCase {
 
         server.start();
         synchronized(bound) {
-            bound.wait(5000);
+            if (!server.started) bound.wait(5000);
         }
         proxy.start();
         synchronized(bound) {
-            bound.wait(5000);
+            if (!proxy.started) bound.wait(5000);
         }
 
         connection.connect();
@@ -240,11 +242,11 @@ public class HttpURLConnectionTest extends TestCase {
 
             server.start();
             synchronized(bound) {
-                bound.wait(5000);
+                if (!server.started) bound.wait(5000);
             }
             proxy.start();
             synchronized(bound) {
-                bound.wait(5000);
+                if (!proxy.started) bound.wait(5000);
             }
             connection.connect();
 
