@@ -50,7 +50,7 @@
           target: build
          ================================= -->
     <target name="build"
-        depends="overlay-oss, copy-includes, make-all, layout" />
+        depends="overlay-oss, copy-includes, layout, make-all" />
 
 
     <!-- ================================= 
@@ -62,10 +62,6 @@
 
     <!-- This target invokes make on the all target to compile all natives -->
     <target name="make-all" depends="copy-makefile-includes">
-    	<!-- Create the target directory structure -->
-        <mkdir dir="${hy.jdk}/jre/bin" />
-        <mkdir dir="${hy.jdk}/include" />
-    	<mkdir dir="${native.lib.target}"/>
     	
     	<!-- These module targets take care of building and copying
              their shared libs -->
@@ -113,6 +109,11 @@
          ================================= -->
     <target name="layout" depends="layout.windows"
         description="Construct the correct directory structure for native binaries">
+
+    	<!-- Create the target directory structure -->
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/include" />
+    	<mkdir dir="${native.lib.target}"/>
 
     	<!-- NLS catalog files -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">

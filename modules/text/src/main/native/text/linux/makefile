@@ -23,7 +23,7 @@ CFLAGS += -fpic -I../../icu4c
 BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \
-	../../icu4c/unicode/libicuuc.so.34 \
+	$(DLLPATH)libicuuc.so.34 \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
