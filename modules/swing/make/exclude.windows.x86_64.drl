@@ -137,3 +137,5 @@ javax/swing/JColorChooserTest.java
 javax/swing/colorchooser/ColorChooserComponentFactoryTest.java
 javax/swing/plaf/basic/BasicColorChooserUITest.java
 
+org/apache/harmony/swing/tests/javax/swing/text/parser/ContentModelCompatilityTestorg/apache/harmony/swing/tests/javax/swing/text/parser/ContentModelCompatilityTest.java
+

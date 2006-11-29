@@ -24,316 +24,487 @@ import java.io.Serializable;
 import java.util.Vector;
 
 /**
- *
- * Element's content representation. That's unary or binary expression.
- * Operands can be null (matched with null object), instance of Element,
- * instance of ContentType.
+ * 
+ * {@link Element}s content representation. That's unary or binary expression.
+ * Operands can be null (matched with null object), instance of {@link Element},
+ * instance of {@link ContentModel}.
+ * <p>
  * Valid operations can be unary operations (types):
- * 1)'+' - (e+) - e must occur one or more times;
- * 2)'*' - (e*) - e must occur zero or more times;
- * 3)'?' - (e?) - e must occur zero or one time;
- * 4)(0) - (e) - e must occur one time only
+ * <ol>
+ * <li> '+' - (e+) - e must occur one or more times;
+ * <li> '*' - (e*) - e must occur zero or more times;
+ * <li> '?' - (e?) - e must occur zero or one time;
+ * <li> (0) - (e) - e must occur one time only
+ * </ol>
+ * <p>
  * and binary operations (types):
- * 1)'|' - (e1|e2) means either e1 or e2 must occur, but not both;
- * 2)',' - (e1,e2) means both A and B must occur, in that order;
- * 3)'&' - (e1 & e2) means both e1 and e2 must occur, in any order *
+ * <ol>
+ * <li> '|' - (e1|e2) means either e1 or e2 must occur, but not both;
+ * <li> ',' - (e1,e2) means both A and B must occur, in that order;
+ * <li> '&' - (e1 & e2) means both e1 and e2 must occur, in any order;
+ * </ol>
  * (Operation interpretation corresponds to HTML 4.01 Specification (3.3.3))
- * As content model is using for dtd presentation here is some ambiguity
- * what null object can be matched with. So null shouldn't be passed to
- * constructor.
- *    No resursion is allowed.
- *    Content, next, type fields has the following limitation:
- *    1) if type is one from {'+', '*', '?'} content hasn't to be null;
- *    2) if type is one from {'|', ',', '&'} content and next have not to be
- *       null;
- *    3) content can be null if and only if type is 0;
- *    4) content can be null, instance of Element or instance of ContentModel;
- *    5) type can be one from the following '*', '+', '?', '|', '&', ','.
+ * <p>
+ * As content model is using for dtd presentation here is some ambiguity what
+ * null object can be matched with. So null shouldn't be passed to constructor.
+ * <p>
+ * No recursion is allowed.
+ * <p>
+ * Content, next, type fields has the following limitation:
+ * <ol>
+ * <li> if type is one from {'+', '*', '?'} content hasn't to be null and next
+ * can be not null, if a binary operation is applyed to them;
+ * <li> if type is one from {'|', ',', '&'} content hasn't to be null and next
+ * must be null;
+ * <li> content can be null, instance of Element or instance of ContentModel;
+ * <li> type can be one from the following '*', '+', '?', '|', '&', ','.
+ * </ol>
+ * 
+ * <p>
+ * The structure of a {@link ContentModel} is represented by a relation through
+ * its {@link ContentModel#content} and {@link ContentModel#next} fields. Using
+ * these fields and the information stored in the {@link ContentModel#type}
+ * field a {@link ContentModel} can be represented as a binary tree.
+ * <p>
+ * From now on, in the examples that will follow, we will consider the left
+ * branch and the one belonging to the {@link ContentModel#content} field and
+ * the right branch the {@link ContentModel#next} field.
+ * <p>
+ * Depending on the {@link ContentModel#type} of a {@link ContentModel}, the
+ * following cases may arise:
+ * <p>
+ * <b>CASE 1: A binary relation over some {@link ContentModel}s:</b>
+ * 
+ * <pre>
+ *                                 B
+ *                                / \ 
+ *                              C1  NULL
+ *                             /  \
+ *                                C2
+ *                               /  \
+ *                                  ...
+ *                                 /  \
+ *                                    Cn
+ *                                   /  \
+ *                                     NULL
+ * </pre>
+ * 
+ * Where the binary operation <b>B</b> is applyed to all the
+ * {@link ContentModel}s C1, C2, ..., Cn (that is a sequence of
+ * {@link ContentModel} related by the {@link ContentModel#next} field,
+ * finishing in a null value). This means that this {@link ContentModel}
+ * represents the content model:
+ * 
+ * <pre>
+ *                         (C1 B C2 B ... B Cn)
+ * </pre>
+ * 
+ * Here, obviously the <b>B</b> operator can be one of:
+ * <ul>
+ * <li> |
+ * <li> &
+ * <li> ,
+ * </ul>
+ * 
+ * <b>CASE 2: A unary relation applied to one {@link ContentModel}</b>
+ * 
+ * <pre>
+ *                                 U
+ *                                / \
+ *                              C1  NULL   
+ * </pre>
+ * 
+ * Where the unary operator <b>U</b> is only applyed to the
+ * {@link ContentModel} C1. This means that this {@link ContentModel} represents
+ * the content model:
+ * 
+ * <pre>
+ *                                 C1 U
+ * </pre>
+ * 
+ * Here, obviously the <b>U</b> operator can be one of:
+ * <ul>
+ * <li> +
+ * <li> *
+ * <li> ?
+ * <li> 0
+ * </ul>
+ * 
+ * <b>CASE 3: An element</b>
+ * 
+ * <pre>
+ * ELEM
+ * </pre>
+ * 
+ * Where this is only an instance of a {@link Element} class and obviosly
+ * denotes a {@link Element} of the {@link ContentModel}. An important fact to
+ * remark is that a {@link ContentModel} may not be just an {@link Element}, it
+ * must be applyed to at least one unary operator, usually the 0 operator.
+ * <p>
+ * This means that if we want to represent the <code>body</code>
+ * {@link ContentModel}, the {@link ContentModel} will be denoted by:
+ * 
+ * <pre>
+ *                                  0
+ *                            +-----+-----+
+ *                            |           |              
+ *                          BODY         NULL
+ * </pre>
+ * 
+ * <b>CASE 4: A null value</b>
+ * 
+ * <pre>
+ * NULL
+ * </pre>
+ * 
+ * The empty or null {@link ContentModel} is denoted by this value. It is also
+ * used to denote the end of a sequence of {@link ContentModel} (as seen in the
+ * CASE 1).
+ * 
+ * <p>
+ * As an example, if we want to represent the content model denoted by the
+ * expression:
+ * 
+ * <pre>
+ *                          ((E1? , E2)* &amp; E3)+
+ * </pre>
+ * 
+ * The {@link ContentModel} will be denoted by:
+ * 
+ * <pre>
+ *   
+ *  
+ *                                                          '+'
+ *                                                 +---------+---------+
+ *                                                 |                   |
+ *                                                '&amp;'                 NULL
+ *                                       +---------+---------+
+ *                                       |                   |
+ *                                      '*'                 NULL
+ *                             +---------+---------+
+ *                             |                   |
+ *                            '|'                 '0'
+ *                      +------+------+     +------+------+
+ *                      |             |     |             |
+ *                     '?'           NULL   E4           NULL
+ *            +---------+---------+
+ *            |                   |
+ *           '0'                 '0'
+ *     +------+------+     +------+------+
+ *     |             |     |             |
+ *     E1           NULL   E2           '+'
+ *                                +------+------+
+ *                                |             |
+ *                               '0'           NULL
+ *                          +-----+-----+
+ *                          |           |
+ *                          E3         NULL
+ * </pre>
+ * 
  */
 
 public final class ContentModel implements Serializable {
+
+    /**
+     * The type of the content model. It should be '*', '+', '?', '|', '&', ','
+     * or 0.
+     */
     public int type;
 
+    /**
+     * The content of the ContentModel.
+     */
     public Object content;
 
+    /**
+     * The next ContentModel in the ContentModel structure.
+     */
     public ContentModel next;
 
+    /**
+     * The symbols representing an obligatory single occurence of an expression.
+     */
     private static final char DEFAULT_TYPE = 0;
+
+    /**
+     * The symbols representing that an expression must occur at least one time.
+     */
     private static final char PLUS_TYPE = '+';
+
+    /**
+     * The symbols representing that an expression can occur zero or more times.
+     */
     private static final char STAR_TYPE = '*';
+
+    /**
+     * The symbols representing that an expression must occur zero or one time.
+     */
     private static final char QUESTION_TYPE = '?';
+
+    /**
+     * The symbols representing that any of the expressions related by this
+     * operator must occur.
+     */
     private static final char LINE_TYPE = '|';
+
+    /**
+     * The symbols representing that all the expressions in the given order must
+     * occur.
+     */
     private static final char COMMA_TYPE = ',';
+
+    /**
+     * The symbols representing that all the expressions in any order must
+     * occur.
+     */
     private static final char AMPER_TYPE = '&';
 
     /**
-     * @throws IllegalArgumentException in the following cases:
-     * 2) content model isn't instance of Element or Content Model
-     *    (in particular, content equals to null);
-     * 3) types isn't binary type mentioned above;
-     * 4) next equals to null.
+     * Returns a new {@link ContentModel}. The {@link ContentModel#type},
+     * {@link ContentModel#content} and {@link ContentModel#next} fields are
+     * filled with the information given as argument.
      */
-    public ContentModel(final int type,
-                        final Object content,
-                        final ContentModel next) {
-         checkBinaryType(type);
-         checkObjectParameter(content);
-         checkObjectParameter(next);
-         this.type = type;
-         this.content = content;
-         this.next = next;
+    public ContentModel(final int type, final Object content,
+            final ContentModel next) {
+        this.type = type;
+        this.content = content;
+        this.next = next;
     }
 
     /**
-     * @throws IllegalArgumentException in the following cases:
-     * 1) type isn't unary type;
-     * 2) next equals to null
+     * Returns a new {@link ContentModel}. The {@link ContentModel#type} and
+     * {ContentModel#content} fields are filled with the information given
+     * throough the arguments. The {@link ContentModel#next} field is set to
+     * null.
      */
-
-    public ContentModel(final int type,
-                        final ContentModel content) {
-        checkObjectParameter(content);
-        checkUnaryType(type);
+    public ContentModel(final int type, final ContentModel content) {
         this.type = type;
         this.content = content;
     }
 
     /**
-     * That content model will be mathed with exactly one element.
-     * Type will be 0.
-     * Element can be equals to null. in such case contentModel will be matched
-     * with an empty input stream.
+     * That content model will be mathed with exactly one element. Type will be
+     * 0. {@link Element} can be equals to null. In such case
+     * {@link ContentModel} will be matched with an empty input stream.
      */
-    public ContentModel(final Element element) {
-        content = element;
+    public ContentModel(final Element content) {
+        this.content = content;
     }
 
+    /**
+     * Returns a {@link ContentModel} with its {@link ContentModel#type} field
+     * set to 0 and its {@link ContentModel#content} and
+     * {@link ContentModel#next} fields set to null.
+     */
     public ContentModel() {
     }
 
+    /**
+     * Returns a representation of the {@link ContentModel} converted to a
+     * string.
+     * 
+     * @return a String representing the {@link ContentModel}
+     */
     public String toString() {
-        if (type == DEFAULT_TYPE) {
-            return content == null ? "null" : ((Element)content).getName();
-        } else if (isUnaryType(type)) {
-            ContentModel content = (ContentModel)this.content;
-            boolean need = !(content.content instanceof Element
-               && isExtUnaryType(content.type));
-            return getBracket("(", need) + content.toString()
-                + getBracket(")", need) + (char)type;
-        } else {
-           String contentToString = content instanceof Element
-               ? ((Element)content).getName() : content.toString();
-           boolean needLeft = (content instanceof ContentModel)
-              && ((ContentModel)content).type != type
-              && isBinaryType(((ContentModel)content).type);
-           boolean needRight = next != null && next.type != type
-               && isBinaryType(next.type);
-           return getBracket("(", needLeft) + contentToString
-               + getBracket(")", needLeft)
-               + (char) type
-               + getBracket("(", needRight) + next + getBracket(")", needRight);
+        String str = new String();
+
+        try {
+            if (type == DEFAULT_TYPE && content instanceof Element) {
+                    str = str + ((Element) content).getName();
+            } else {
+                if (type == PLUS_TYPE || type == STAR_TYPE || type == QUESTION_TYPE) {
+                    str = content + String.valueOf((char) type);
+                } else if (isBinaryOperator(type)) {
+                    ContentModel auxModel = (ContentModel) content;
+                    while (auxModel != null) {
+                        str = str + auxModel;
+                        if (auxModel.next != null) {
+                            str = str + " " + String.valueOf((char) type) + " ";
+                        }
+                        auxModel = auxModel.next;
+                    }
+                    str = "(" + str + ")";
+                } else {
+                    str = content.toString();
+                }
+            }
+            return str;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (content.getClass().getName());
         }
     }
 
-    private String getBracket(final String s, final boolean need) {
-        return need ? s : "";
+    private boolean isBinaryOperator(final int type) {
+        return (type == COMMA_TYPE || type == LINE_TYPE || type == AMPER_TYPE);
     }
-    
+
     /**
-     * Gets the <code>Element</code> that must be the first one to occur
-     * in the <code>ContentModel</code>.
-     * @return The first element that must appear in the
-     * <code>ContentModel</code>. Null if zero or more than one
-     * <code>Element</code> occurrence is possible.
+     * Returns the {@link Element} that must be first in the
+     * {@link ContentModel}.
+     * 
+     * @return The first element that may appear in the {@link ContentModel}.
+     *         Null if there is more than one possible {@link Element}.
      */
     public Element first() {
-        Element element = null;
-        if (type == DEFAULT_TYPE) {
-            element = (Element)content;
-        } else if (type == PLUS_TYPE || type == COMMA_TYPE) {
-            element = ((ContentModel)content).first();
+        Element element;
+        
+        try {
+            if (type == STAR_TYPE || type == QUESTION_TYPE || type == LINE_TYPE
+                    || type == AMPER_TYPE) {
+                element = null;
+            } else if (type == PLUS_TYPE || type == COMMA_TYPE) {
+                element = ((ContentModel) content).first();
+            } else {
+                element = (Element) content;
+            }
+            return element;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (content.getClass().getName());
         }
-        return element;
     }
-    
 
     /**
+     * Returns if a given token can occur as first elements in a
+     * {@link ContentModel}
+     * 
+     * @param token
+     *            the element we are interested in determining whether it can
+     *            occur as the first element of a {@link ContentModel}
+     * 
      * @return
-     * 1) Returns true if token is null or equals to content or this content
-     *    model equals to token;
-     * 2) if type equals to 0 return true if token equals to content and false
-     *    otherwise;
-     * 3) If type is one from the unary types returns false if token isn't
-     *    istance of Element or ContentModel. Otherwise, returns true if and
-     *    only if one of the following conditions is true:
-     *    a) content is instance of Element, token is instance of Element and
-     *       token equals to content
-     *    b) content is instance of ContentModel, token is instance of Element
-     *       and content.first(token) returns true;
-     *    c) content is instance of Element and token is instance of
-     *       ContentModel, token.type equals to 0 and content equals to
-     *       token.content;
-     *    d) content is instance of ContentModel, token is instance of
-     *       ContentModel and content.first(token) returns true;
-     * 4) If type is one from binary types then:
-     *    a) if content instance of Element and content equals to token returns
-     *       true;
-     *    b) if content instance of ContentModel and content.first(token)
-     *       equals to true, then returns true
-     *    c) if content.first(token) equals to true returns true;
-     *    d) if type equals to ',' returns true if and only if content is
-     *       instance of ContentModel and content.empty() && next.first(token)
-     *       equals to true.
-     *    e) if type equals to '| or '&' returns next.first(token).
-     *
-     */
+     * <ul>
+     * <li> if type equals to 0, returns true if and only if token equals to
+     * content.
+     * <li> if type is one from the unary types returns true if and only if one
+     * of the following conditions is true:
+     * <ol>
+     * <li> content is instance of {@link Element}, token is instance of
+     * {@link Element} and token equals to content
+     * <li> content is instance of {@link ContentModel}, token is instance of
+     * {@link Element} and content.first(token) returns true;
+     * </ol>
+     * <li> if type is one from binary types then:
+     * <ol>
+     * <li> if content instance of {@link Element} and content equals to token
+     * returns true;
+     * <li> if content instance of {@link ContentModel} and content.first(token)
+     * equals to true, then returns true;
+     * <li> if type equals to ',' returns true if and only if content is
+     * instance of {@link ContentModel} and:
+     * <ul>
+     * <li> for at least one of the {@link ContentModel} related by the ',',
+     * first(token) is true and,
+     * <li> for all the {@link ContentModel}s that preceded it, empty() is
+     * true.
+     * </ul>
+     * <li> if type equals to '| or '&', it returns true if and only if at least
+     * one of {@link ContentModel}s related by the '|' or '&' operator
+     * satisfies that first(token) is true.
+     * </ol>
+     * </ul>
+     */ 
+    public boolean first(Object token) {
+        boolean found = false;
+        boolean maybeNext = true;
+        ContentModel auxModel;
 
-    public boolean first(final Object token) {
-        if (token == null || token.equals(content) || equals(token)) {
-            return true;
-        }
-        if (type == DEFAULT_TYPE) {
-            return token.equals(content);
-        } else if (isUnaryType(type)) {
-            return canBeFirstInContent(token);
-        } else if (isBinaryType(type)) {
-            boolean contentIsModel = content instanceof ContentModel;
-            boolean contentIsElement = content instanceof Element;
-            if ((contentIsModel && ((ContentModel)content).first(token))
-                || (contentIsElement && content.equals(token))) {
-                return true;
+        if (type == COMMA_TYPE) {
+            auxModel = (ContentModel) content;
+            while (auxModel != null && maybeNext) {
+                found = auxModel.first(token);
+                maybeNext = !found && auxModel.empty();
+                auxModel = auxModel.next;
             }
-            switch (type) {
-            case COMMA_TYPE:
-                return  (contentIsModel && ((ContentModel)content).empty())
-                    && next.first(token);
-            case LINE_TYPE:
-            case AMPER_TYPE:
-                return next.first(token);
-            default:
-                return false;
+        } else if (type == LINE_TYPE || type == AMPER_TYPE) {
+            found = token.equals(content);
+            auxModel = (ContentModel) content;
+            while (auxModel != null && !found) {
+                found = token.equals(content) || auxModel.first((Element)token);
+                auxModel = auxModel.next;
             }
-        } else  {
-            return false;
-        }
-    }
 
-    private boolean canBeFirstInContent(final Object token) {
-        boolean contentIsElement = contentIsElement();
-        boolean tokenIsElement = token instanceof Element;
-        boolean tokenIsModel = token instanceof ContentModel;
-        if (!tokenIsElement && !tokenIsModel) {
-            return false;
+        } else if (type == PLUS_TYPE || type == STAR_TYPE
+                || type == QUESTION_TYPE) {
+            found = ((ContentModel) content).first(token);
+        } else {
+            found = content == token;
         }
 
-        boolean contentIsModel = !contentIsElement;
-        return (contentIsElement && tokenIsElement && token.equals(content))
-           || (contentIsModel && tokenIsElement
-               && ((ContentModel)content).first(token))
-           || (contentIsElement && tokenIsModel
-               && ((ContentModel)token).type == 0
-               && content.equals(((ContentModel)token).content))
-           || (contentIsModel && tokenIsModel
-               && ((ContentModel)content).first(token));
-
+        return found;
     }
-
 
     /**
      * Adds all elements of this contentModel to elemVec ignoring operations
      * between elements. For instance, for ((a+)| ((b*),(c?))) elements a,b,c
-     * will be added to the elemVec.
-     * It supposes that elemVec isn't null.
+     * will be added to the elemVec. The argument elemVec should not be null.
      * If content is null, nothing will be added to elemVec.
+     * 
+     * @param elemVec
+     *            the vector where the {@link Element}s of the
+     *            {@link ContentModel} will be added to.
+     * 
      */
-
     public void getElements(final Vector<Element> elemVec) {
-        if (content instanceof Element) {
-            elemVec.add((Element)content);
-        } else if (content != null) {
-            ((ContentModel)content).getElements(elemVec);
-        }
-        if (next != null) {
-            next.getElements(elemVec);
+        try {
+
+            if (type == LINE_TYPE || type == AMPER_TYPE || type == COMMA_TYPE) {
+                ContentModel auxModel = (ContentModel)content;
+                while (auxModel != null) {
+                    auxModel.getElements(elemVec);
+                    auxModel = auxModel.next;
+                }
+            } else if (type == PLUS_TYPE || type == STAR_TYPE || type == QUESTION_TYPE) {
+                ((ContentModel) content).getElements(elemVec);
+            } else {
+                elemVec.add((Element)content);
+            }                     
+
+        } catch (ClassCastException e) {
+            throw new ClassCastException (content.getClass().getName());
         }
     }
 
     /**
-     * @return: true if and only if some of the conditions is true:
-     * 1)type equals to 0 and content equals to null;
-     * 2)type equals to '*' or '?';
-     * 3)if type equals to '|' one of the following conditions is true:
-     *    a) content is instance of ContentModel and could match an empty input
-     *       stream;
-     *    b) next could match an empty input stream;
-     * 4)if type equals to ',' or '&' both conditions are true:
-     *    a) content is instance of ContentModel and could match an empty input
-     *       stream;
-     *    b) next could match an empty input stream;
+     * Checks if the {@link ContentModel} can match an empty expression.
+     * 
+     * @return true if and only if some of the conditions is true:
+     *         <ul>
+     *         <li> type equals to '*' or '?';
+     *         <li> type equals to '|' and one of the {@link ContentModel}s
+     *         related by the binary operator can be empty.
+     *         <li> type equals to '&' or ',' and all the {@link ContentModel}s
+     *         related by the binary operation can be empty.
+     *         </ul>
+     *         <p>
+     *         If the type equals '+', then it returns true if the
+     *         {@link ContentModel} applied to this operator can be empty;
+     *         <p>
+     *         If the type equals '0' then it returns false.
      */
     public boolean empty() {
-        switch (type) {
-        case DEFAULT_TYPE:
-            return content == null;
-        case STAR_TYPE:
-        case QUESTION_TYPE:
-            return true;
-        case PLUS_TYPE:
-            return false;
-        case LINE_TYPE:
-            return (!contentIsElement() && ((ContentModel)content).empty())
-            || next.empty();
-        case AMPER_TYPE:
-        case COMMA_TYPE:
-            return !contentIsElement() && ((ContentModel)content).empty()
-            && next.empty();
-        default:
-            return false;
+        boolean found = false;
+        ContentModel auxModel;
+
+        try {
+            if (type == PLUS_TYPE || type == LINE_TYPE) {
+                auxModel = (ContentModel) content;
+                while (auxModel != null && !found) {
+                    found = auxModel.empty();
+                    auxModel = auxModel.next;
+                }
+            } else if (type == AMPER_TYPE || type == COMMA_TYPE) {
+                auxModel = (ContentModel) content;       
+                found = true;
+                while (auxModel != null && found) {
+                    found = auxModel.empty();
+                    auxModel = auxModel.next;
+                }
+            } else {
+                found = (type == STAR_TYPE || type == QUESTION_TYPE);
+            }
+            return found;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (content.getClass().getName());
         }
-    }
-
-    private boolean isUnaryType(final int type) {
-        return type == STAR_TYPE || type == PLUS_TYPE || type == QUESTION_TYPE;
-    }
-
-    private boolean isExtUnaryType(final int type) {
-        return isUnaryType(type) || type == DEFAULT_TYPE;
-    }
-
-    private boolean isBinaryType(final int type) {
-        return type == LINE_TYPE || type == COMMA_TYPE || type == AMPER_TYPE;
-    }
-
-    private void checkBinaryType(final int type) {
-        if (!isBinaryType(type)) {
-            throw new IllegalArgumentException("Illegal type, must be "
-                                               + COMMA_TYPE + ", "
-                                               + LINE_TYPE + ", "
-                                               + AMPER_TYPE + "");
-        }
-    }
-
-    private void checkUnaryType(final int type) {
-        if (!isUnaryType(type)) {
-            throw new IllegalArgumentException("Illegal type, must be "
-                                               + STAR_TYPE + ", "
-                                               + PLUS_TYPE + ", "
-                                               + QUESTION_TYPE + "");
-        }
-    }
-
-    private void checkObjectParameter(final Object object) {
-        if (!(object instanceof Element || object instanceof ContentModel)) {
-            throw new IllegalArgumentException("Object have to be instance "
-                    + "of Element or ContentModel and not null");
-        }
-    }
-
-    private boolean contentIsElement() {
-        return isElement(content);
-    }
-
-    private boolean isElement(final Object obj) {
-        return obj instanceof Element;
     }
 }
