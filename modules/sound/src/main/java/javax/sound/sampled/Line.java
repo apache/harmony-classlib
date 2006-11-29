@@ -32,7 +32,7 @@ public interface Line {
             return lineClass;
         }
 
-        public boolean matches(Line.Info info) throws NotImplementedException {
+        public boolean matches(Line.Info info) {
             return lineClass.isAssignableFrom(info.getLineClass());
         }
         
