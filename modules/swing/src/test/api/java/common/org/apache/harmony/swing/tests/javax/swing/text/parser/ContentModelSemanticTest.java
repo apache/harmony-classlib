@@ -23,7 +23,6 @@
 
 package org.apache.harmony.swing.tests.javax.swing.text.parser;
 
-
 import javax.swing.text.html.parser.ContentModel;
 
 import javax.swing.text.parser.utils.DTDGetter;
@@ -44,713 +43,382 @@ import junit.framework.TestCase;
  **/
 public class ContentModelSemanticTest extends TestCase {
 
+    DTDGetter dtd = new DTDGetter("TestContentModelSemantic");
 
-
-
-DTDGetter dtd = new DTDGetter("TestContentModelSemantic");
-
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-
-    public void testContentModelSemantic_0_1(){
+    public void testContentModelSemantic_0_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 , el2)?");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 , el2)?");
     }
 
-
-    public void testContentModelSemantic_0_2(){
+    public void testContentModelSemantic_0_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), true);
     }
 
-
-    public void testContentModelSemantic_0_3(){
+    public void testContentModelSemantic_0_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_0_4(){
+    public void testContentModelSemantic_0_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_0_5(){
+    public void testContentModelSemantic_0_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertFalse(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertFalse(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_1_1(){
+    public void testContentModelSemantic_1_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 , el2)+");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 , el2)+");
     }
 
-
-    public void testContentModelSemantic_1_2(){
+    public void testContentModelSemantic_1_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), false);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), false);
     }
 
-
-    public void testContentModelSemantic_1_3(){
+    public void testContentModelSemantic_1_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.first().getName(), "el1");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.first().getName(), "el1");
     }
 
-
-    public void testContentModelSemantic_1_4(){
+    public void testContentModelSemantic_1_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_1_5(){
+    public void testContentModelSemantic_1_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertFalse(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
+        assertFalse(cm1.first(el2));
 
     }
 
-
-    public void testContentModelSemantic_2_1(){
+    public void testContentModelSemantic_2_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 , el2)*");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
+        assertEquals(cm1.toString(), "(el1 , el2)*");
 
     }
 
-
-    public void testContentModelSemantic_2_2(){
+    public void testContentModelSemantic_2_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
+        assertEquals(cm1.empty(), true);
 
     }
 
-
-    public void testContentModelSemantic_2_3(){
+    public void testContentModelSemantic_2_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
+        assertNull(cm1.first());
 
     }
 
-
-    public void testContentModelSemantic_2_4(){
+    public void testContentModelSemantic_2_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_2_5(){
+    public void testContentModelSemantic_2_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,',' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', ',', 0, 0, el1, el2);
 
-
-       try{
-           assertFalse(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertFalse(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_3_1(){
+    public void testContentModelSemantic_3_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 | el2)?");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 | el2)?");
     }
 
-
-    public void testContentModelSemantic_3_2(){
+    public void testContentModelSemantic_3_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), true);
     }
 
-
-    public void testContentModelSemantic_3_3(){
+    public void testContentModelSemantic_3_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_3_4(){
+    public void testContentModelSemantic_3_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_3_5(){
+    public void testContentModelSemantic_3_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_4_1(){
+    public void testContentModelSemantic_4_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 | el2)+");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 | el2)+");
     }
 
-
-    public void testContentModelSemantic_4_2(){
+    public void testContentModelSemantic_4_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), false);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), false);
     }
 
-
-    public void testContentModelSemantic_4_3(){
+    public void testContentModelSemantic_4_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_4_4(){
+    public void testContentModelSemantic_4_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_4_5(){
+    public void testContentModelSemantic_4_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_5_1(){
+    public void testContentModelSemantic_5_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 | el2)*");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 | el2)*");
     }
 
-
-    public void testContentModelSemantic_5_2(){
+    public void testContentModelSemantic_5_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), true);
     }
 
-
-    public void testContentModelSemantic_5_3(){
+    public void testContentModelSemantic_5_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_5_4(){
+    public void testContentModelSemantic_5_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_5_5(){
+    public void testContentModelSemantic_5_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'|' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '|', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_6_1(){
+    public void testContentModelSemantic_6_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 & el2)?");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 & el2)?");
     }
 
-
-    public void testContentModelSemantic_6_2(){
+    public void testContentModelSemantic_6_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), true);
     }
 
-
-    public void testContentModelSemantic_6_3(){
+    public void testContentModelSemantic_6_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_6_4(){
+    public void testContentModelSemantic_6_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_6_5(){
+    public void testContentModelSemantic_6_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('?' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('?', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_7_1(){
+    public void testContentModelSemantic_7_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 & el2)+");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 & el2)+");
     }
 
-
-    public void testContentModelSemantic_7_2(){
+    public void testContentModelSemantic_7_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), false);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), false);
     }
 
-
-    public void testContentModelSemantic_7_3(){
+    public void testContentModelSemantic_7_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_7_4(){
+    public void testContentModelSemantic_7_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_7_5(){
+    public void testContentModelSemantic_7_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('+' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('+', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-    public void testContentModelSemantic_8_1(){
+    public void testContentModelSemantic_8_1() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.toString(), "(el1 & el2)*");
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.toString(), "(el1 & el2)*");
     }
 
-
-    public void testContentModelSemantic_8_2(){
+    public void testContentModelSemantic_8_2() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertEquals(cm1.empty(), true);
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertEquals(cm1.empty(), true);
     }
 
-
-    public void testContentModelSemantic_8_3(){
+    public void testContentModelSemantic_8_3() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertNull(cm1.first());
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertNull(cm1.first());
     }
 
-
-    public void testContentModelSemantic_8_4(){
+    public void testContentModelSemantic_8_4() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el1));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el1));
     }
 
-
-    public void testContentModelSemantic_8_5(){
+    public void testContentModelSemantic_8_5() {
         Element el1 = newElement("el1");
         Element el2 = newElement("el2");
-        ContentModel cm1 = newContentModel('*' ,'&' , 0,0, el1, el2);
+        ContentModel cm1 = newContentModel('*', '&', 0, 0, el1, el2);
 
-
-       try{
-           assertTrue(cm1.first(el2));
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-
+        assertTrue(cm1.first(el2));
     }
 
-
-
-
-    Element newElement(String name){
-        return dtd.defineElement(name,0,false,false,null,null,null,null);
+    Element newElement(String name) {
+        return dtd.defineElement(name, 0, false, false, null, null, null, null);
     }
-    private ContentModel newContentModel(int op1, int op2, int opel1, int opel2, Element el1, Element el2){
-            ContentModel cm1 = null;
-       try{
-            ContentModel cmel2 = new ContentModel (  opel2, el2, null);
-            ContentModel cmel1 = new ContentModel (  opel1, el1, cmel2);
-            ContentModel cm2 = new ContentModel ( op2, cmel1, null);
-            cm1 = new ContentModel ( op1, cm2, null);
 
-       }catch(Exception e){
-            fail("Should not throw any exception making assertions but was  raised: " + e);
-       }
-       return cm1;
+    private ContentModel newContentModel(int op1, int op2, int opel1,
+            int opel2, Element el1, Element el2) {
+        ContentModel cmel2 = new ContentModel(opel2, el2, null);
+        ContentModel cmel1 = new ContentModel(opel1, el1, cmel2);
+        ContentModel cm2 = new ContentModel(op2, cmel1, null);
+
+        return new ContentModel(op1, cm2, null);
+    }
 }
-}
-
