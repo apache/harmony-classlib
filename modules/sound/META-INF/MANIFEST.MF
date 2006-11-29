@@ -19,6 +19,7 @@ Import-Package: java.io,
  java.util,
  java.util.jar,
  java.util.zip,
- org.apache.harmony.kernel.vm
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.luni.util
 Export-Package: javax.sound.midi,
  javax.sound.midi.spi
