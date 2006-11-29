@@ -15,53 +15,41 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleRelationTest extends BasicSwingTestCase {
-    private AccessibleRelation relation;
-
-    public void setUp() {
-        relation = new AccessibleRelation(AccessibleRelation.LABEL_FOR);
-    }
-
-    public void tearDown() {
-        relation = null;
-    }
+public class AccessibleRelationTest extends TestCase {
 
     public void testGetKey() {
+        AccessibleRelation relation = new AccessibleRelation(AccessibleRelation.LABEL_FOR);
         assertEquals(relation.key, relation.getKey());
     }
 
     public void testAccessibleRelation() {
+        AccessibleRelation relation = new AccessibleRelation(AccessibleRelation.LABEL_FOR);
         assertEquals(0, relation.getTarget().length);
     }
 
     public void testSetGetTarget() {
+        AccessibleRelation relation = new AccessibleRelation(AccessibleRelation.LABEL_FOR);
         StringBuffer target = new StringBuffer("text");
         relation.setTarget(target);
         assertEquals(1, relation.getTarget().length);
         assertSame(target, relation.getTarget()[0]);
 
-        StringBuffer[] targets = new StringBuffer[]{target, target};
+        StringBuffer[] targets = new StringBuffer[] { target, target };
         relation.setTarget(targets);
         assertEquals(2, relation.getTarget().length);
         assertNotSame(targets, relation.getTarget());
 
-        relation.setTarget((Object[])null);
+        relation.setTarget((Object[]) null);
         assertNotNull(relation.getTarget());
         assertEquals(0, relation.getTarget().length);
 
-        relation.setTarget((Object)null);
+        relation.setTarget((Object) null);
         assertNotNull(relation.getTarget());
         assertEquals(1, relation.getTarget().length);
         assertNull(relation.getTarget()[0]);
     }
 }
-

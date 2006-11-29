@@ -15,31 +15,19 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleResourceBundleTest extends BasicSwingTestCase {
-    private AccessibleResourceBundle resBundle;
+public class AccessibleResourceBundleTest extends TestCase {
 
-    public void setUp() {
-        resBundle = new AccessibleResourceBundle();
-    }
-
-    public void tearDown() {
-        resBundle = null;
-    }
-
+    @SuppressWarnings("deprecation")
     public void testGetContents() {
+        AccessibleResourceBundle resBundle = new AccessibleResourceBundle();
         Object[][] contents = resBundle.getContents();
-        if (isHarmony()) {
-            assertEquals(103, contents.length);
-        }
+        assertNotNull(contents);
+        assertTrue(contents.length > 0);
+        
         assertEquals(2, contents[10].length);
 
         contents[10] = new Object[] {"a", "b"};

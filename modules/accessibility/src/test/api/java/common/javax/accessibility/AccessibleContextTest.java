@@ -15,55 +15,68 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
-import java.awt.IllegalComponentStateException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleContextTest extends BasicSwingTestCase {
+public class AccessibleContextTest extends TestCase {
     private AccessibleContext context;
-    private PropertyChangeController propertyController;
 
+    private PropertyChangeListenerImpl propertyChangeListener;
+
+    @Override
     public void setUp() {
         context = new AccessibleContext() {
+            @Override
             public AccessibleRole getAccessibleRole() {
-                    return null;
-                };
+                return null;
+            }
+
+            @Override
             public AccessibleStateSet getAccessibleStateSet() {
-                    return null;
-                };
+                return null;
+            }
+
+            @Override
             public int getAccessibleIndexInParent() {
-                    return 0;
-                };
+                return 0;
+            }
+
+            @Override
             public int getAccessibleChildrenCount() {
-                    return 0;
-                };
+                return 0;
+            }
+
+            @Override
             public Accessible getAccessibleChild(int i) {
-                    return null;
-                };
-            public Locale getLocale() throws IllegalComponentStateException {
-                    return Locale.ENGLISH;
-                };
+                return null;
+            }
+
+            @Override
+            public Locale getLocale() {
+                return Locale.ENGLISH;
+            }
         };
-        propertyController = new PropertyChangeController(/*true*/);
-        context.addPropertyChangeListener(propertyController);
+        propertyChangeListener = new PropertyChangeListenerImpl();
+        context.addPropertyChangeListener(propertyChangeListener);
     }
 
+    @Override
     public void tearDown() {
         context = null;
+        propertyChangeListener.lastEvent = null;
     }
 
     public void testSetGetAccessibleName() {
         String name = "componentName";
         context.setAccessibleName(name);
-        assertTrue(propertyController.isChanged(AccessibleContext.ACCESSIBLE_NAME_PROPERTY));
+        assertEquals(AccessibleContext.ACCESSIBLE_NAME_PROPERTY,
+                propertyChangeListener.lastEvent.getPropertyName());
+        assertEquals(name, propertyChangeListener.lastEvent.getNewValue());
         assertEquals(name, context.getAccessibleName());
         assertEquals(name, context.accessibleName);
     }
@@ -71,7 +84,9 @@ public class AccessibleContextTest extends BasicSwingTestCase {
     public void testSetGetAccessibleDescription() {
         String description = "componentDescription";
         context.setAccessibleDescription(description);
-        assertTrue(propertyController.isChanged(AccessibleContext.ACCESSIBLE_DESCRIPTION_PROPERTY));
+        assertEquals(AccessibleContext.ACCESSIBLE_DESCRIPTION_PROPERTY,
+                propertyChangeListener.lastEvent.getPropertyName());
+        assertEquals(description, propertyChangeListener.lastEvent.getNewValue());
         assertEquals(description, context.getAccessibleDescription());
         assertEquals(description, context.accessibleDescription);
     }
@@ -84,6 +99,7 @@ public class AccessibleContextTest extends BasicSwingTestCase {
                 return null;
             }
 
+            @Override
             public String toString() {
                 return name;
             }
@@ -91,7 +107,7 @@ public class AccessibleContextTest extends BasicSwingTestCase {
         context.setAccessibleParent(parent);
         assertEquals(parent, context.getAccessibleParent());
         assertEquals(parent, context.accessibleParent);
-        assertFalse(propertyController.isChanged());
+        assertNull(propertyChangeListener.lastEvent);
     }
 
     public void testGetAccessibleOthers() {
@@ -104,7 +120,18 @@ public class AccessibleContextTest extends BasicSwingTestCase {
         assertNull(context.getAccessibleIcon());
         assertSame(context.getAccessibleRelationSet(), context.getAccessibleRelationSet());
         assertNull(context.getAccessibleTable());
-        assertFalse(propertyController.isChanged());
+        assertNull(propertyChangeListener.lastEvent);
+    }
+
+    private static class PropertyChangeListenerImpl implements PropertyChangeListener {
+        PropertyChangeEvent lastEvent;
+
+        PropertyChangeListenerImpl() {
+            super();
+        }
+
+        public void propertyChange(PropertyChangeEvent event) {
+            this.lastEvent = event;
+        }
     }
 }
-

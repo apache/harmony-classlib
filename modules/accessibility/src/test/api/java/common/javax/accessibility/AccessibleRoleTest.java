@@ -15,27 +15,15 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleRoleTest extends BasicSwingTestCase {
-    private AccessibleRole state;
-
-    protected void tearDown() throws Exception {
-        state = null;
-    }
-
+public class AccessibleRoleTest extends TestCase {
     public void testAccessibleState() throws Exception {
         String key = "something_unexpected";
-        state = new AccessibleRole(key);
+        AccessibleRole state = new AccessibleRole(key);
         assertEquals(key, state.key);
         assertEquals(key, state.toDisplayString());
     }
 }
-

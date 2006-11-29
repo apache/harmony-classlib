@@ -15,27 +15,25 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleRelationSetTest extends BasicSwingTestCase {
+public class AccessibleRelationSetTest extends TestCase {
     private AccessibleRelationSet set;
+
     private AccessibleRelation[] relations;
 
+    @Override
     public void setUp() {
         set = new AccessibleRelationSet();
         relations = new AccessibleRelation[] {
-                                  new AccessibleRelation(AccessibleRelation.CONTROLLED_BY),
-                                  new AccessibleRelation(AccessibleRelation.MEMBER_OF)};
+                new AccessibleRelation(AccessibleRelation.CONTROLLED_BY),
+                new AccessibleRelation(AccessibleRelation.MEMBER_OF) };
         set.addAll(relations);
     }
 
+    @Override
     public void tearDown() {
         set = null;
         relations = null;
@@ -44,11 +42,11 @@ public class AccessibleRelationSetTest extends BasicSwingTestCase {
     public void testAccessibleRelationSet() {
         assertNotNull(set.relations);
 
-        testExceptionalCase(new ExceptionalCase() {
-            public void exceptionalAction() throws Exception {
-                set = new AccessibleRelationSet(null);
-            }
-        });
+        try {
+            new AccessibleRelationSet(null);
+            fail("expected null pointer exception");
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testAddContains() {
@@ -57,33 +55,31 @@ public class AccessibleRelationSetTest extends BasicSwingTestCase {
 
         AccessibleRelation relation = new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR);
         assertTrue(set.add(relation));
-        if (isHarmony()) {
-            assertFalse(set.add(relation));
-        }
+        assertFalse(set.add(relation));
         assertTrue("Should contain added item", set.contains(AccessibleRelation.CONTROLLER_FOR));
-        assertFalse("Should not contain not added item", set.contains(AccessibleRelation.LABEL_FOR));
+        assertFalse("Should not contain not added item", set
+                .contains(AccessibleRelation.LABEL_FOR));
 
     }
 
     public void testNullOperations() {
         set.relations = null;
-        assertFalse("Empty set should not contain any item",
-                    set.contains(AccessibleRelation.LABEL_FOR));
-        assertNull("Empty set should not contain any item",
-                   set.get(AccessibleRelation.LABEL_FOR));
-        assertFalse("Empty set should not contain any item",
-                    set.remove(set.get(AccessibleRelation.LABEL_FOR)));
+        assertFalse("Empty set should not contain any item", set
+                .contains(AccessibleRelation.LABEL_FOR));
+        assertNull("Empty set should not contain any item", set
+                .get(AccessibleRelation.LABEL_FOR));
+        assertFalse("Empty set should not contain any item", set.remove(set
+                .get(AccessibleRelation.LABEL_FOR)));
         set.add(new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR));
         set.relations = null;
         set.addAll(relations);
     }
 
     public void testDupes() {
-        AccessibleRelation dupeRelation = new AccessibleRelation(AccessibleRelation.CONTROLLED_BY);
-        if (isHarmony()) {
-            assertFalse("Should not add duplicate item", set.add(dupeRelation));
-            assertFalse("Should not add duplicate item", set.add(relations[0]));
-        }
+        AccessibleRelation dupeRelation = new AccessibleRelation(
+                AccessibleRelation.CONTROLLED_BY);
+        assertFalse("Should not add duplicate item", set.add(dupeRelation));
+        assertFalse("Should not add duplicate item", set.add(relations[0]));
         assertNotSame(dupeRelation, set.get(AccessibleRelation.CONTROLLED_BY));
         assertSame(relations[0], set.get(AccessibleRelation.CONTROLLED_BY));
         set.remove(set.get(AccessibleRelation.CONTROLLED_BY));
@@ -92,14 +88,14 @@ public class AccessibleRelationSetTest extends BasicSwingTestCase {
         set.addAll(relations);
         set.addAll(relations);
         assertEquals("Should not add duplicate items in addAll", relations.length,
-                     set.relations.size());
+                set.relations.size());
     }
 
     public void testGet() {
-        assertSame("Get should return same value",
-                   relations[0], set.get(AccessibleRelation.CONTROLLED_BY));
-        assertNull("Get should return null if no such element present",
-                   set.get(AccessibleRelation.CONTROLLER_FOR));
+        assertSame("Get should return same value", relations[0], set
+                .get(AccessibleRelation.CONTROLLED_BY));
+        assertNull("Get should return null if no such element present", set
+                .get(AccessibleRelation.CONTROLLER_FOR));
     }
 
     public void testClear() {
@@ -116,12 +112,11 @@ public class AccessibleRelationSetTest extends BasicSwingTestCase {
     public void testToString() {
         String stateSetString = set.toString();
         assertTrue("String representation should contain elements representation",
-                   stateSetString.indexOf(relations[0].toString()) >= 0);
+                stateSetString.indexOf(relations[0].toString()) >= 0);
         assertTrue("String representation should contain elements representation",
-                   stateSetString.indexOf(relations[1].toString()) >= 0);
+                stateSetString.indexOf(relations[1].toString()) >= 0);
 
         set.relations = null;
         set.toString();
     }
 }
-

@@ -22,40 +22,26 @@
 
 package javax.accessibility;
 
-import javax.swing.BasicSwingTestCase;
+import junit.framework.TestCase;
 
-public class AccessibleBundleTest extends BasicSwingTestCase {
-    AccessibleBundle bundle;
-    Object[][] resources;
+public class AccessibleBundleTest extends TestCase {
 
-    public void setUp() {
-        bundle = new AccessibleBundle() {};
-        resources = new AccessibleResourceBundle().getContents();
-    }
-
-    public void tearDown() {
-        bundle = null;
-        resources = null;
-    }
-
+    @SuppressWarnings("deprecation")
     public void testToDisplayString() throws Exception {
-        for (int  i = 0; i < resources.length; i++) {
-            bundle.key = (String)resources[i][0];
-            assertEquals("DisplayString don't match resource: " + bundle.key,
-                         bundle.toDisplayString(), resources[i][1]);
-            assertEquals("toDisplayString don't match toString: " + bundle.key,
-                         bundle.toString(), bundle.toDisplayString());
+        AccessibleBundle bundle = new AccessibleBundle() {
+        };
+
+        Object[][] resources = new AccessibleResourceBundle().getContents();
+
+        for (int i = 0; i < resources.length; i++) {
+            bundle.key = (String) resources[i][0];
+            assertEquals("DisplayString don't match resource: " + bundle.key, bundle
+                    .toDisplayString(), resources[i][1]);
+            assertEquals("toDisplayString don't match toString: " + bundle.key, bundle
+                    .toString(), bundle.toDisplayString());
         }
         bundle.key = "ShouldNotFindSuchAString";
         assertEquals("Not bundled DisplayString should match itself",
-                     "ShouldNotFindSuchAString", bundle.toDisplayString());
-
-        testExceptionalCase(new ExceptionalCase() {
-            public void exceptionalAction() throws Exception {
-                bundle.key = null;
-                bundle.toDisplayString();
-            }
-        });
+                "ShouldNotFindSuchAString", bundle.toDisplayString());
     }
 }
-
