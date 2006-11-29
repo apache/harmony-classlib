@@ -38,6 +38,8 @@ public class AudioInputStream extends InputStream {
 
     private byte[] oneByte = new byte[1];
 
+    private long marketFramePos;
+
     public AudioInputStream(InputStream stream, AudioFormat format, long length) {
         this.stream = stream;
         this.format = format;
@@ -67,11 +69,14 @@ public class AudioInputStream extends InputStream {
         }
         int res;
         if (stream != null) { // InputStream
+            if (framePos == frameLength) {
+                return 0;
+            }
             res = stream.read();
             if (res == -1) {
                 return -1;
             }
-            framePos = +1;
+            framePos += 1;
             return res;
         } else { // TargetDataLine
             if (line.read(oneByte, 0, 1) == 0) {
@@ -87,7 +92,11 @@ public class AudioInputStream extends InputStream {
     }
 
     public int read(byte[] b, int off, int len) throws IOException {
-        int l = len - (len % frameSize);
+        int l = Math.min(len, (int) ((frameLength - framePos) * frameSize));
+        l = l - (l % frameSize);
+        if (l == 0) {
+            return 0;
+        }
         int res;
         if (stream != null) { // InputStream
             res = stream.read(b, off, l);
@@ -130,7 +139,8 @@ public class AudioInputStream extends InputStream {
 
     public int available() throws IOException {
         if (stream != null) { // InputStream
-            return stream.available();
+            return Math.min(stream.available(),
+                    (int)((frameLength - framePos) * frameSize));
         } else { // TargetDataLine
             return line.available();
         }
@@ -145,8 +155,9 @@ public class AudioInputStream extends InputStream {
     }
 
     public void mark(int readlimit) {
-        if (stream != null) { //I nputStream
+        if (stream != null) { //InputStream
             stream.mark(readlimit);
+            marketFramePos = framePos;
         } else { // TargetDataLine
             // do nothing
         }
@@ -155,6 +166,7 @@ public class AudioInputStream extends InputStream {
     public void reset() throws IOException {
         if (stream != null) { //InputStream
             stream.reset();
+            framePos = marketFramePos;
         } else { // TargetDataLine
             // do nothing
         }

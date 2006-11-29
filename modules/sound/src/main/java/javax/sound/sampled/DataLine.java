@@ -80,8 +80,12 @@ public interface DataLine extends Line {
             }
             
             DataLine.Info inf = (DataLine.Info)info;
-            if (minBufferSize < inf.getMinBufferSize() ||
-                    maxBufferSize > inf.getMaxBufferSize()) {
+            if ((minBufferSize != AudioSystem.NOT_SPECIFIED
+                    && inf.getMinBufferSize() != AudioSystem.NOT_SPECIFIED 
+                    && minBufferSize < inf.getMinBufferSize())
+                    || (maxBufferSize != AudioSystem.NOT_SPECIFIED
+                            && inf.getMaxBufferSize() != AudioSystem.NOT_SPECIFIED
+                            && maxBufferSize > inf.getMaxBufferSize())) {
                 return false;
             }
             
@@ -96,14 +100,14 @@ public interface DataLine extends Line {
         
         @Override
         public String toString() {
-            String formatStr = (formats.length == 1? formats[0].toString()
+            String formatStr = (formats.length == 1? "format " + formats[0].toString() //$NON-NLS-1$
                     : formats.length + " audio formats"); //$NON-NLS-1$
             String bufStr = ""; //$NON-NLS-1$
             if (minBufferSize != AudioSystem.NOT_SPECIFIED) {
-                bufStr = ", and buffers of " + minBufferSize + //$NON-NLS-1$
-                    "to " + maxBufferSize + " bytes"; //$NON-NLS-1$ //$NON-NLS-2$
+                bufStr = "and buffers of " + minBufferSize + //$NON-NLS-1$
+                    " to " + maxBufferSize + " bytes"; //$NON-NLS-1$ //$NON-NLS-2$
             }
-            return getLineClass() + " supporting " + formatStr + bufStr; //$NON-NLS-1$
+            return getLineClass() + " supporting " + formatStr + ", " + bufStr; //$NON-NLS-1$
         }
     }
 

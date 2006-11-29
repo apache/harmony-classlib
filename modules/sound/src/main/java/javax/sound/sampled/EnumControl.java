@@ -21,7 +21,7 @@ import org.apache.harmony.sound.internal.nls.Messages;
 
 public abstract class EnumControl extends Control {
     public static class Type extends Control.Type {
-        public static final Type REVERB = new Type("REVERB"); //$NON-NLS-1$
+        public static final Type REVERB = new Type("Reverb"); //$NON-NLS-1$
 
         protected Type(String name) {
             super(name);

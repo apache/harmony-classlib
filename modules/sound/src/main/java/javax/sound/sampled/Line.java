@@ -33,7 +33,7 @@ public interface Line {
         }
 
         public boolean matches(Line.Info info) throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+            return lineClass.isAssignableFrom(info.getLineClass());
         }
         
         @Override

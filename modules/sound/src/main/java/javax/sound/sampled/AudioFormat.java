@@ -129,9 +129,10 @@ public class AudioFormat {
         this.sampleSizeInBits = sampleSizeInBits;
         this.channels = channels;
         this.frameSize = sampleSizeInBits >> 3;
-        if ((sampleSizeInBits & 0x7) == 0) {
+        if ((sampleSizeInBits & 0x7) != 0) {
             this.frameSize++;
         }
+        this.frameSize *= channels;
         this.frameRate = sampleRate;
         this.bigEndian = bigEndian;
 
@@ -194,6 +195,11 @@ public class AudioFormat {
         
         if (format.getFrameRate() != AudioSystem.NOT_SPECIFIED &&
                 frameRate != format.getFrameRate()) {
+            return false;
+        }
+        
+        if ((sampleSizeInBits > 8) 
+                && (bigEndian != format.isBigEndian())) {
             return false;
         }
         return true;

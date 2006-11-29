@@ -81,6 +81,13 @@ public class AudioFileFormat {
         return Collections.unmodifiableMap(prop);
     }
     
+    public Object getProperty(String key) {
+        if (prop == null) {
+            return null;
+        }
+        return prop.get(key);
+    }
+    
     public String toString() {
         return type + " (." + type.getExtension() + ") file, data format: " + format + //$NON-NLS-1$ //$NON-NLS-2$
             " frame length: " + frameLength; //$NON-NLS-1$

@@ -64,6 +64,6 @@ public abstract class BooleanControl extends Control {
     }
 
     public String toString() {
-        return getType() + " Control with current value: " + value; //$NON-NLS-1$
+        return getType() + " Control with current value: " + getStateLabel(value); //$NON-NLS-1$
     }
 }
