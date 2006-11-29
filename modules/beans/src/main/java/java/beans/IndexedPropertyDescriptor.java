@@ -30,6 +30,12 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             String getterName, String setterName, String indexedGetterName,
             String indexedSetterName) throws IntrospectionException {
         super(propertyName, beanClass, getterName, setterName);
+
+        // RI behaves like this
+        if (indexedGetterName == null && indexedSetterName == null &&
+                (getterName != null || setterName != null)) {
+            throw new IntrospectionException(Messages.getString("beans.50"));
+        }
         setIndexedReadMethod(beanClass, indexedGetterName);
         setIndexedWriteMethod(beanClass, indexedSetterName);
     }
@@ -37,6 +43,12 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     public IndexedPropertyDescriptor(String propertyName, Method getter, Method setter,
             Method indexedGetter, Method indexedSetter) throws IntrospectionException {
         super(propertyName, getter, setter);
+        
+        // we need this in order to be compatible with RI
+        if (indexedGetter == null && indexedSetter == null &&
+                (getter != null || setter != null)) {
+            throw new IntrospectionException(Messages.getString("beans.50"));
+        }
         setIndexedReadMethod(indexedGetter);
         setIndexedWriteMethod(indexedSetter);
     }
@@ -48,6 +60,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
         String setterName;
         String indexedGetterName;
         String indexedSetterName;
+
         // array getter
         getterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
         if (hasMethod(beanClass, getterName)) {
@@ -69,9 +82,14 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             setIndexedWriteMethod(beanClass, indexedSetterName);
         }
         // RI seems to behave a bit differently
-        if (indexedGetter == null && indexedSetter == null && getReadMethod() == null
-                && getWriteMethod() == null) {
-            throw new IntrospectionException(Messages.getString("beans.01", propertyName)); //$NON-NLS-1$
+        if (indexedGetter == null && indexedSetter == null &&
+                getReadMethod() == null && getWriteMethod() == null) {
+            throw new IntrospectionException(
+                    Messages.getString("beans.01", propertyName)); //$NON-NLS-1$
+        }
+        if (indexedGetter == null && indexedSetter == null) {
+            // not an indexed property indeed
+            throw new IntrospectionException(Messages.getString("beans.50"));
         }
     }
 
@@ -81,6 +99,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             Class<?>[] parameterTypes;
             Class<?> returnType;
             Class<?> indexedPropertyType;
+
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(Messages.getString("beans.21")); //$NON-NLS-1$
             }
@@ -107,6 +126,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             Class<?> firstParameterType;
             Class<?> secondParameterType;
             Class<?> propType;
+
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(Messages.getString("beans.25")); //$NON-NLS-1$
             }
@@ -162,10 +182,12 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 
     public Class<?> getIndexedPropertyType() {
         Class<?> result = null;
+
         if (indexedGetter != null) {
             result = indexedGetter.getReturnType();
         } else if (indexedSetter != null) {
             Class<?>[] parameterTypes = indexedSetter.getParameterTypes();
+
             result = parameterTypes[1];
         }
         return result;
@@ -174,12 +196,13 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     private void setIndexedReadMethod(Class<?> beanClass, String indexedGetterName) {
         Method[] getters = findMethods(beanClass, indexedGetterName);
         boolean result = false;
+
         for (Method element : getters) {
             try {
                 setIndexedReadMethod(element);
                 result = true;
-            } catch (IntrospectionException ie) {
-            }
+            } catch (IntrospectionException ie) {}
+
             if (result) {
                 break;
             }
@@ -189,12 +212,13 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     private void setIndexedWriteMethod(Class<?> beanClass, String indexedSetterName) {
         Method[] setters = findMethods(beanClass, indexedSetterName);
         boolean result = false;
+
         for (Method element : setters) {
             try {
                 setIndexedWriteMethod(element);
                 result = true;
-            } catch (IntrospectionException ie) {
-            }
+            } catch (IntrospectionException ie) {}
+
             if (result) {
                 break;
             }
