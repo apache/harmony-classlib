@@ -17,7 +17,7 @@
 # Makefile for module 'fdlibm'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 FDLIBM_DIST=../../fdlibm_dist/
 

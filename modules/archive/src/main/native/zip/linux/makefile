@@ -17,7 +17,7 @@
 # Makefile for module 'zip'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic -I../../zlib_dist
 BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \

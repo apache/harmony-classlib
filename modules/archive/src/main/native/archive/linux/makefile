@@ -17,7 +17,7 @@
 # Makefile for module 'archive'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic -I$(SHARED)common -I../../zlib_dist \
 	-I../../include/shared

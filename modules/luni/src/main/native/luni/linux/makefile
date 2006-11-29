@@ -17,7 +17,7 @@
 # Makefile for module 'luni'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 # CFLAGS += -fpic -Wall -Werror 
 CFLAGS += -fpic -Wall

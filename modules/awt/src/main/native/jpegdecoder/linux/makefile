@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
 

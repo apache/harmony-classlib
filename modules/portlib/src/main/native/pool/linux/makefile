@@ -17,7 +17,7 @@
 # Makefile for module 'pool'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)pool.o $(SHAREDSUB)pool_cap.o
 LIBNAME = $(LIBPATH)libhypool.a

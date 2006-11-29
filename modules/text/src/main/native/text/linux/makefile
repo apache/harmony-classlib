@@ -17,7 +17,7 @@
 # Makefile for module 'text'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic -I../../icu4c
 BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o

@@ -17,7 +17,7 @@
 # Makefile for module 'vmi stubs'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o

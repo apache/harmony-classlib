@@ -17,7 +17,7 @@
 # Makefile for 'launcher'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \

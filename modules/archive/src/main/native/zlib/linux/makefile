@@ -17,7 +17,7 @@
 # Makefile for module 'zlib'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 ZLIB_DIST=../../zlib_dist/# Path to zlib
 

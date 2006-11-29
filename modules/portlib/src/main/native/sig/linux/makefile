@@ -17,7 +17,7 @@
 # Makefile for module 'hysig'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o

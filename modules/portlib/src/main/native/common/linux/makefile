@@ -17,7 +17,7 @@
 # Makefile for module 'common'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)libglob.o $(SHAREDSUB)iohelp.o \
 	$(SHAREDSUB)exceptions.o $(SHAREDSUB)strhelp.o \
