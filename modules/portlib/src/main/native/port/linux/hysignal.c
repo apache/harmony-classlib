@@ -18,7 +18,6 @@
 #include "hyport.h"
 #include "hythread.h"
 #include <signal.h>
-#include <sys/ucontext.h>
 #include <unistd.h>
 #include <setjmp.h>
 #include <semaphore.h>
@@ -29,12 +28,9 @@
 
 #include <jsig.h>
 
-#define __USE_GNU
-#include <dlfcn.h>
-#undef __USE_GNU
+#include "hysignal_context.h"
 
 #define MAX_PORTLIB_SIGNAL_TYPES  8
-#define MAX_UNIX_SIGNAL_TYPES  _NSIG
 
 typedef void (*linux386_sigaction) (int, siginfo_t *, void *);
 
@@ -77,16 +73,6 @@ static hythread_monitor_t masterHandlerMonitor;
 static hythread_monitor_t asyncReporterShutdownMonitor;
 static U_32 asyncThreadCount;
 static U_32 attachedPortLibraries;
-
-typedef struct HyLinux386SignalInfo
-{
-  U_32 portLibrarySignalType;
-  void *handlerAddress;
-  void *handlerAddress2;
-  struct sigcontext *sigContext;
-  siginfo_t *sigInfo;
-  Dl_info dl_info;
-} HyLinux386SignalInfo;
 
 struct HySignalHandlerRecord
 {
@@ -138,41 +124,16 @@ struct
 /* the number of xmm registers */
 #define NXMMREGS 8
 
-#define CDEV_CURRENT_FUNCTION _prototypes_private
-
 static U_32 destroySignalTools (HyPortLibrary * portLibrary);
-
-static U_32 infoForFPR (struct HyPortLibrary *portLibrary,
-                        struct HyLinux386SignalInfo *info, I_32 index,
-                        const char **name, void **value);
 
 static void masterSynchSignalHandler (int signal, siginfo_t * sigInfo,
                                       void *contextInfo);
-
-static U_32 infoForGPR (struct HyPortLibrary *portLibrary,
-                        struct HyLinux386SignalInfo *info, I_32 index,
-                        const char **name, void **value);
 
 static void removeAsyncHandlers (HyPortLibrary * portLibrary);
 
 static U_32 mapPortLibSignalToUnix (U_32 portLibSignal);
 
 static U_32 mapUnixSignalToPortLib (U_32 signalNo, siginfo_t * sigInfo);
-
-static U_32 infoForSignal (struct HyPortLibrary *portLibrary,
-                           struct HyLinux386SignalInfo *info, I_32 index,
-                           const char **name, void **value);
-
-static void fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary,
-                                      U_32 portLibSignalType,
-                                      hysig_handler_fn handler,
-                                      siginfo_t * signalInfo,
-                                      void *contextInfo,
-                                      struct HyLinux386SignalInfo *hyinfo);
-
-static U_32 infoForModule (struct HyPortLibrary *portLibrary,
-                           struct HyLinux386SignalInfo *info, I_32 index,
-                           const char **name, void **value);
 
 static I_32 registerMasterHandlers (HyPortLibrary * portLibrary, U_32 flags,
                                     U_32 allowedSubsetOfFlags);
@@ -189,17 +150,11 @@ static void masterASynchSignalHandler (int signal, siginfo_t * sigInfo,
 
 static int HYTHREAD_PROC asynchSignalReporter (void *userData);
 
-static U_32 infoForControl (struct HyPortLibrary *portLibrary,
-                            struct HyLinux386SignalInfo *info, I_32 index,
-                            const char **name, void **value);
-
 static U_32 registerSignalHandlerWithOS (HyPortLibrary * portLibrary,
                                          U_32 portLibrarySignalNo,
                                          linux386_sigaction handler);
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_can_protect
 I_32 VMCALL
 hysig_can_protect (struct HyPortLibrary *portLibrary, U_32 flags)
 {
@@ -223,9 +178,7 @@ hysig_can_protect (struct HyPortLibrary *portLibrary, U_32 flags)
     }
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_info
 U_32 VMCALL
 hysig_info (struct HyPortLibrary * portLibrary, void *info, U_32 category,
             I_32 index, const char **name, void **value)
@@ -251,9 +204,7 @@ hysig_info (struct HyPortLibrary * portLibrary, void *info, U_32 category,
     }
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_info_count
 U_32 VMCALL
 hysig_info_count (struct HyPortLibrary * portLibrary, void *info,
                   U_32 category)
@@ -262,9 +213,7 @@ hysig_info_count (struct HyPortLibrary * portLibrary, void *info,
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_protect
 /**
  * We register the master signal handlers here to deal with -Xrs
  */
@@ -341,9 +290,7 @@ hysig_protect (struct HyPortLibrary * portLibrary, hysig_protected_fn fn,
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_set_async_signal_handler
 U_32 VMCALL
 hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
                                 hysig_handler_fn handler, void *handler_arg,
@@ -441,9 +388,7 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_shutdown
 /*
  * The full shutdown routine "sig_full_shutdown" overwrites this once we've completed startup 
  */
@@ -453,9 +398,7 @@ hysig_shutdown (struct HyPortLibrary *portLibrary)
   return;
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_startup
 /**
  * Start up the signal handling component of the port library
  *
@@ -496,9 +439,6 @@ hysig_startup (struct HyPortLibrary * portLibrary)
   return result;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION countInfoInCategory
 
 static U_32
 countInfoInCategory (struct HyPortLibrary *portLibrary, void *info,
@@ -518,390 +458,6 @@ countInfoInCategory (struct HyPortLibrary *portLibrary, void *info,
   return count;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION infoForSignal
-
-static U_32
-infoForSignal (struct HyPortLibrary *portLibrary,
-               struct HyLinux386SignalInfo *info, I_32 index,
-               const char **name, void **value)
-{
-  *name = "";
-
-  switch (index)
-    {
-
-    case HYPORT_SIG_SIGNAL_TYPE:
-    case 0:
-      *name = "HyGeneric_Signal_Number";
-      *value = &info->portLibrarySignalType;
-      return HYPORT_SIG_VALUE_32;
-
-    case HYPORT_SIG_SIGNAL_PLATFORM_SIGNAL_TYPE:
-    case 1:
-      *name = "Signal_Number";
-      *value = &info->sigInfo->si_signo;
-      return HYPORT_SIG_VALUE_32;
-
-    case HYPORT_SIG_SIGNAL_ERROR_VALUE:
-    case 2:
-      *name = "Error_Value";
-      *value = &info->sigInfo->si_errno;
-      return HYPORT_SIG_VALUE_32;
-
-    case HYPORT_SIG_SIGNAL_CODE:
-    case 3:
-      *name = "Signal_Code";
-      *value = &info->sigInfo->si_code;
-      return HYPORT_SIG_VALUE_32;
-
-    case HYPORT_SIG_SIGNAL_HANDLER:
-    case 4:
-      *name = "Handler1";
-      *value = &info->handlerAddress;
-      return HYPORT_SIG_VALUE_ADDRESS;
-
-    case 5:
-      *name = "Handler2";
-      *value = &info->handlerAddress2;
-      return HYPORT_SIG_VALUE_ADDRESS;
-
-    case HYPORT_SIG_SIGNAL_INACCESSIBLE_ADDRESS:
-    case 6:
-      /* si_code > 0 indicates that the signal was generated by the kernel */
-      if (info->sigInfo->si_code > 0)
-        {
-          if ((info->sigInfo->si_signo == SIGBUS)
-              || (info->sigInfo->si_signo == SIGSEGV))
-            {
-              *name = "InaccessibleAddress";
-              *value = &info->sigInfo->si_addr;
-              return HYPORT_SIG_VALUE_ADDRESS;
-            }
-        }
-      return HYPORT_SIG_VALUE_UNDEFINED;
-
-    default:
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    }
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION infoForFPR
-
-static U_32
-infoForFPR (struct HyPortLibrary *portLibrary,
-            struct HyLinux386SignalInfo *info, I_32 index, const char **name,
-            void **value)
-{
-  static const char *n_xmm[] = {
-    "xmm0",
-    "xmm1",
-    "xmm2",
-    "xmm3",
-    "xmm4",
-    "xmm5",
-    "xmm6",
-    "xmm7"
-  };
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-  switch (index)
-    {
-    default:
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    }
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION infoForGPR
-
-static U_32
-infoForGPR (struct HyPortLibrary *portLibrary,
-            struct HyLinux386SignalInfo *info, I_32 index, const char **name,
-            void **value)
-{
-  *name = "";
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-  switch (index)
-    {
-    case HYPORT_SIG_GPR_X86_EDI:
-	case HYPORT_SIG_GPR_AMD64_RDI:
-    case 0:
-#ifdef HYX86_64
-      *name = "RDI";
-      *value = &info->sigContext->rdi;
-#endif
-#ifdef HYX86
-      *name = "EDI";
-      *value = &info->sigContext->edi;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_GPR_X86_ESI:
-	case HYPORT_SIG_GPR_AMD64_RSI:
-    case 1:
-#ifdef HYX86
-      *name = "ESI";
-      *value = &info->sigContext->esi;
-#endif
-#ifdef HYX86_64
-      *name = "RSI";
-      *value = &info->sigContext->rsi;
-#endif
-      return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_GPR_X86_EAX:
-    case HYPORT_SIG_GPR_AMD64_RAX:
-    case 2:
-#ifdef HYX86
-      *name = "EAX";
-      *value = &info->sigContext->eax;
-#endif
-#ifdef HYX86_64
-      *name = "RAX";
-      *value = &info->sigContext->rax;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_GPR_X86_EBX:
-    case HYPORT_SIG_GPR_AMD64_RBX:
-    case 3:
-#ifdef HYX86
-      *name = "EBX";
-      *value = &info->sigContext->ebx;
-#endif
-#ifdef HYX86_64
-      *name = "RBX";
-      *value = &info->sigContext->rbx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_GPR_X86_ECX:
-    case HYPORT_SIG_GPR_AMD64_RCX:
-    case 4:
-#ifdef HYX86
-      *name = "ECX";
-      *value = &info->sigContext->ecx;
-#endif
-#ifdef HYX86_64
-      *name = "RCX";
-      *value = &info->sigContext->rcx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_GPR_X86_EDX:
-    case HYPORT_SIG_GPR_AMD64_RDX:
-    case 5:
-#ifdef HYX86
-      *name = "EDX";
-      *value = &info->sigContext->edx;
-#endif
-#ifdef HYX86_64
-      *name = "RDX";
-      *value = &info->sigContext->rdx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    default:
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    }
-
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION infoForControl
-
-static U_32
-infoForControl (struct HyPortLibrary *portLibrary,
-                struct HyLinux386SignalInfo *info, I_32 index,
-                const char **name, void **value)
-{
-  *name = "";
-  U_8 *eip;
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-  switch (index)
-    {
-    case HYPORT_SIG_CONTROL_PC:
-    case 0:
-#ifdef HYX86
-      *name = "EIP";
-      *value = (void *) &(info->sigContext->eip);
-#endif
-#ifdef HYX86_64
-      *name = "RIP";
-      *value = (void *) &(info->sigContext->rip);
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-#ifdef HYX86
-    case 1:
-      *name = "ES";
-      *value = (void *) &(info->sigContext->es);
-      return HYPORT_SIG_VALUE_ADDRESS;
-    case 2:
-      *name = "DS";
-      *value = (void *) &(info->sigContext->ds);
-      return HYPORT_SIG_VALUE_ADDRESS;
-#endif
-    case HYPORT_SIG_CONTROL_SP:
-    case 3:
-#ifdef HYX86
-      *name = "ESP";
-      *value = (void *) &(info->sigContext->esp);
-#endif
-#ifdef HYX86_64
-      *name = "RSP";
-      *value = (void *) &(info->sigContext->rsp);
-#endif
-      return HYPORT_SIG_VALUE_ADDRESS;
-    case 4:
-#ifndef HYIA64
-      *name = "EFlags";
-      *value = (void *) &(info->sigContext->eflags);
-      return HYPORT_SIG_VALUE_ADDRESS;
-    case 5:
-      *name = "CS";
-      *value = (void *) &(info->sigContext->cs);
-#endif
-      return HYPORT_SIG_VALUE_ADDRESS;
-#ifdef HYX86
-    case 6:
-      *name = "SS";
-      *value = (void *) &(info->sigContext->ss);
-      return HYPORT_SIG_VALUE_ADDRESS;
-#endif
-	case HYPORT_SIG_CONTROL_BP:
-    case 7:
-#ifdef HYX86
-      *name = "EBP";
-      *value = &info->sigContext->ebp;
-#endif
-#ifdef HYX86_64
-      *name = "RBP";
-      *value = &info->sigContext->rbp;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-    default:
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    }
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION infoForModule
-
-static U_32
-infoForModule (struct HyPortLibrary *portLibrary,
-               struct HyLinux386SignalInfo *info, I_32 index,
-               const char **name, void **value)
-{
-  void *address;
-  Dl_info *dl_info = &(info->dl_info);
-  *name = "";
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-#ifdef HYX86
-  address = (void *) info->sigContext->eip;
-  int dl_result = dladdr ((void *) info->sigContext->eip, dl_info);
-#endif
-#ifdef HYX86_64
-  address = (void *) info->sigContext->rip;
-  int dl_result = dladdr ((void *) info->sigContext->rip, dl_info);
-#endif
-#ifdef HYIA64
-  int dl_result = 0;
-#endif
-  switch (index)
-    {
-    case HYPORT_SIG_MODULE_NAME:
-    case 0:
-      *name = "Module";
-      if (dl_result)
-        {
-          *value = (void *) (dl_info->dli_fname);
-          return HYPORT_SIG_VALUE_STRING;
-        }
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    case 1:
-      *name = "Module_base_address";
-      if (dl_result)
-        {
-          *value = (void *) &(dl_info->dli_fbase);
-          return HYPORT_SIG_VALUE_ADDRESS;
-        }
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    case 2:
-      *name = "Symbol";
-      if (dl_result)
-        {
-          if (dl_info->dli_sname != NULL)
-            {
-              *value = (void *) (dl_info->dli_sname);
-              return HYPORT_SIG_VALUE_STRING;
-            }
-        }
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    case 3:
-      *name = "Symbol_address";
-      if (dl_result)
-        {
-          *value = (void *) &(dl_info->dli_saddr);
-          return HYPORT_SIG_VALUE_ADDRESS;
-        }
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    default:
-      return HYPORT_SIG_VALUE_UNDEFINED;
-    }
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION masterExceptionHandler
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION fillInLinux386SignalInfo
-
-static void
-fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary,
-                          U_32 portLibSignalType, hysig_handler_fn handler,
-                          siginfo_t * signalInfo, void *contextInfo,
-                          struct HyLinux386SignalInfo *hyinfo)
-{
-  struct sigcontext *sigContext;
-  ucontext_t *uContext;
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-  uContext = (ucontext_t *) contextInfo;
-  sigContext = (struct sigcontext *) &uContext->uc_mcontext;
-  memset (hyinfo, 0, sizeof (*hyinfo));
-
-  hyinfo->portLibrarySignalType = portLibSignalType;
-  hyinfo->handlerAddress = (void *) handler;
-  hyinfo->handlerAddress2 = (void *) masterSynchSignalHandler;
-  hyinfo->sigContext = sigContext;
-  hyinfo->sigInfo = signalInfo;
-  /* module info is filled on demand */
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION asynchSignalReporter
 
 /**
  * Reports the asynchronous signal to all listeners.
@@ -987,9 +543,6 @@ asynchSignalReporter (void *userData)
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION masterSynchSignalHandler
 
 /**
  * This signal handler is specific to synchronous signals.
@@ -1030,10 +583,17 @@ masterSynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
           struct HyLinux386SignalInfo hyinfo;
           U_32 result;
 
+          memset (&hyinfo, 0, sizeof(hyinfo));
+
+          hyinfo.portLibrarySignalType = portLibType;
+          hyinfo.handlerAddress = (void *) thisRecord->handler;
+          hyinfo.handlerAddress2 = (void *) masterSynchSignalHandler;
+
+          hyinfo.sigInfo = sigInfo;
+
           /* found a suitable handler */
           /* what signal type do we want to pass on here? port or platform based ? */
-          fillInLinux386SignalInfo (thisRecord->portLibrary, portLibType,
-                                    thisRecord->handler, sigInfo, contextInfo,
+          fillInLinux386SignalInfo (thisRecord->portLibrary, contextInfo,
                                     &hyinfo);
 
           /* remove the handler we are about to invoke, now, in case the handler crashes */
@@ -1084,9 +644,6 @@ masterSynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION masterASynchSignalHandler
 
 /** 
  * Determines the signal received and notifies the asynch signal reporter
@@ -1126,9 +683,6 @@ masterASynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION registerSignalHandlerWithOS
 
 /**
  * Register the signal handler with the OS, generally used to register the master signal handlers 
@@ -1188,9 +742,6 @@ registerSignalHandlerWithOS (HyPortLibrary * portLibrary,
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION mapUnixSignalToPortLib
 
  /**
  * The linux signal number is converted to the corresponding port library 
@@ -1230,9 +781,6 @@ mapUnixSignalToPortLib (U_32 signalNo, siginfo_t * sigInfo)
     }
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION mapPortLibSignalToUnix
 
 /**
  * The defined port library signal is converted to the corresponding unix 
@@ -1261,9 +809,6 @@ mapPortLibSignalToUnix (U_32 portLibSignal)
     }
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION registerMasterHandlers
 
 /**
  * Registers the master handler for the signals in flags that don't have one
@@ -1336,9 +881,6 @@ registerMasterHandlers (HyPortLibrary * portLibrary, U_32 flags,
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION initializeSignalTools
 
 static U_32
 initializeSignalTools (HyPortLibrary * portLibrary)
@@ -1408,9 +950,6 @@ initializeSignalTools (HyPortLibrary * portLibrary)
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION destroySignalTools
 
 static U_32
 destroySignalTools (HyPortLibrary * portLibrary)
@@ -1427,9 +966,7 @@ destroySignalTools (HyPortLibrary * portLibrary)
   return 0;
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_set_options
 I_32 VMCALL
 hysig_set_options (struct HyPortLibrary * portLibrary, U_32 options)
 {
@@ -1452,9 +989,7 @@ hysig_set_options (struct HyPortLibrary * portLibrary, U_32 options)
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hysig_get_options
 /* these options should always be 0 */
 U_32 VMCALL
 hysig_get_options (struct HyPortLibrary * portLibrary)
@@ -1464,9 +999,6 @@ hysig_get_options (struct HyPortLibrary * portLibrary)
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION sig_full_shutdown
 
 static void VMCALL
 sig_full_shutdown (struct HyPortLibrary *portLibrary)
@@ -1509,9 +1041,6 @@ sig_full_shutdown (struct HyPortLibrary *portLibrary)
 
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION removeAsyncHandlers
 
 static void
 removeAsyncHandlers (HyPortLibrary * portLibrary)
@@ -1548,9 +1077,6 @@ removeAsyncHandlers (HyPortLibrary * portLibrary)
   hythread_monitor_exit (asyncMonitor);
 }
 
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION hysig_chain_at_shutdown_and_exit
 
 /*  @internal 
  *
@@ -1577,9 +1103,3 @@ hysig_chain_at_shutdown_and_exit (struct HyPortLibrary *portLibrary)
     }
 
 }
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION
-
-#undef CDEV_CURRENT_FUNCTION

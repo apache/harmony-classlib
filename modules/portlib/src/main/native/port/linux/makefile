@@ -27,9 +27,10 @@ BUILDFILES = \
 	$(SHAREDSUB)hygp.o hyipcmutex.o hymem.o \
 	hymmap.o $(SHAREDSUB)hynls.o hynlshelpers.o hyosdump.o \
 	$(SHAREDSUB)hyport.o $(SHAREDSUB)hyportcontrol.o hyportptb.o \
-	hysharedhelper.o hyshmem.o hyshsem.o hysignal.o hysl.o hysock.o \
+	hysharedhelper.o hyshmem.o hyshsem.o hysl.o hysock.o \
 	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
-	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o
+	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o \
+	hysignal.o hysignal_context.o
 
 MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a $(DLLPATH)libhysig.so
 
