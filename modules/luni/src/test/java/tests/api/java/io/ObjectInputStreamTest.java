@@ -688,6 +688,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
     }
     
     static class TestClassForSerialization implements Serializable {
+		private static final long serialVersionUID = 1L;
 	}
 
     public void test_ClassDescriptor() throws IOException,
@@ -705,6 +706,55 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		Object obj = ois.readObject();
 		ois.close();
 		assertEquals(cls, obj);
+	}
+        
+
+	// Regression Test for JIRA-2340
+    public static class ObjectOutputStreamWithWriteDesc1 extends
+			ObjectOutputStream {
+		public ObjectOutputStreamWithWriteDesc1(OutputStream os)
+				throws IOException {
+			super(os);
+		}
+
+		public void writeClassDescriptor(ObjectStreamClass desc)
+				throws IOException {
+			super.writeClassDescriptor(desc);
+		}
+	}
+
+	public static class ObjectIutputStreamWithReadDesc1 extends
+			ObjectInputStream {		
+
+		public ObjectIutputStreamWithReadDesc1(InputStream is)
+				throws IOException {
+			super(is);			
+		}
+
+		public ObjectStreamClass readClassDescriptor() throws IOException,
+				ClassNotFoundException {
+			return super.readClassDescriptor();
+
+		}
+	}
+	
+	public void test_readClassDescriptor() throws IOException,
+			ClassNotFoundException {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStreamWithWriteDesc1 oos = new ObjectOutputStreamWithWriteDesc1(
+				baos);
+		ObjectStreamClass desc = ObjectStreamClass
+		.lookup(TestClassForSerialization.class);
+		oos.writeClassDescriptor(desc);
+		oos.close();
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		ObjectIutputStreamWithReadDesc1 ois = new ObjectIutputStreamWithReadDesc1(
+				bais);
+		Object obj = ois.readClassDescriptor();
+		ois.close();
+		assertEquals(desc.getClass(), obj.getClass());
 	}
    
 

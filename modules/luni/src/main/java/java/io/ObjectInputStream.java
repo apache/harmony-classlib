@@ -721,7 +721,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 streamClass.setLoadFields(new ObjectStreamField[0]);
                 registerObjectRead(streamClass, new Integer(nextHandle()),
                         false);
-                streamClass.setSuperclass(readClassDesc());
+                checkedSetSuperClassDesc(streamClass, readClassDesc());                
                 return streamClass;
             case TC_REFERENCE:
                 return (ObjectStreamClass) readCyclicReference();
@@ -1591,7 +1591,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // Consume unread class annotation data and TC_ENDBLOCKDATA
         discardData();
         ObjectStreamClass superClass = readClassDesc();
-        classDesc.setSuperclass(superClass);
+        checkedSetSuperClassDesc(classDesc, superClass);         
         // Check SUIDs, note all SUID for Enum is 0L
         if (0L != classDesc.getSerialVersionUID()
                 || 0L != superClass.getSerialVersionUID()) {
@@ -1696,8 +1696,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         // Consume unread class annotation data and TC_ENDBLOCKDATA
         discardData();
-        newClassDesc.setSuperclass(readClassDesc());
-
+        checkedSetSuperClassDesc(newClassDesc, readClassDesc());      
         return newClassDesc;
     }
 
@@ -1749,6 +1748,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         // We must register the class descriptor before reading field
         // descriptors.
+        //if called outside of readObject, the descriptorHandle might be null
+        descriptorHandle = (null == descriptorHandle? new Integer(nextHandle()):descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
         descriptorHandle = null;
 
@@ -2739,4 +2740,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             return fullName.substring(k + 1);
         }        
     }
+    
+    //Avoid recursive defining.
+    private static void checkedSetSuperClassDesc(ObjectStreamClass desc,
+			ObjectStreamClass superDesc) throws StreamCorruptedException {
+		if (desc.equals(superDesc)) {
+			throw new StreamCorruptedException();
+		}
+		desc.setSuperclass(superDesc);
+	}
 }
