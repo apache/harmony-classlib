@@ -17,7 +17,6 @@
 
 package java.util.zip;
 
-
 /**
  * The Deflater class is used to compress bytes using the DEFLATE compression
  * algorithm. Deflation is performed by the ZLIB compression library.
@@ -46,27 +45,69 @@ public class Deflater {
 	private static final int Z_NO_FLUSH = 0;
 
 	private static final int Z_FINISH = 4;
+    
+    // Fill in the JNI id caches
+    private static native void oneTimeInitialization();
+
+    static {
+        oneTimeInitialization();
+    }
 
 	private int flushParm = Z_NO_FLUSH;
 
 	private boolean finished;
 
-	int compressLevel = DEFAULT_COMPRESSION;
+	private int compressLevel = DEFAULT_COMPRESSION;
 
-	int strategy = DEFAULT_STRATEGY;
+	private int strategy = DEFAULT_STRATEGY;
 
-	long streamHandle = -1;
+	private long streamHandle = -1;
 
-	byte[] inputBuffer;
+	private byte[] inputBuffer;
 
-	int inRead = 0, inLength = 0;
+	private int inRead;
+    
+    private int inLength;
+    
+    /**
+     * Constructs a new Deflater instance with default compression level and
+     * strategy.
+     */
+    public Deflater() {
+        this(DEFAULT_COMPRESSION, false);
+    }
+    
+    /**
+     * Constructs a new Deflater instance with compression level level and
+     * default compression strategy. THe compression level provided must be
+     * between 0 and 9.
+     * 
+     * @param level
+     *            the compression level to use
+     */
+    public Deflater(int level) {
+        this(level, false);
+    }
 
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization();
-
-	static {
-		oneTimeInitialization();
-	}
+    /**
+     * Constructs a new Deflater instance with compression level level and
+     * default compression strategy. If the noHeader parameter is specified then
+     * no ZLIB header will be written as part of the compressed output. The
+     * compression level specified must be between 0 and 9.
+     * 
+     * @param level
+     *            the compression level to use
+     * @param noHeader
+     *            if true do not write the ZLIB header
+     */
+    public Deflater(int level, boolean noHeader) {
+        super();
+        if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION) {
+            throw new IllegalArgumentException();
+        }
+        compressLevel = level;
+        streamHandle = createStream(compressLevel, strategy, noHeader);
+    }
 
 	/**
 	 * Deflates data into the supplied buffer
@@ -107,7 +148,7 @@ public class Deflater {
 		throw new ArrayIndexOutOfBoundsException();
 	}
 
-	private native synchronized int deflateImpl(byte[] buf, int off,
+	private synchronized native int deflateImpl(byte[] buf, int off,
 			int nbytes, long handle, int flushParm1);
 
 	private synchronized native void endImpl(long handle);
@@ -185,7 +226,7 @@ public class Deflater {
 		return (int)getTotalInImpl(streamHandle);
 	}
 
-	private native synchronized long getTotalInImpl(long handle);
+	private synchronized native long getTotalInImpl(long handle);
 
 	/**
 	 * Returns the total number of compressed bytes output by this Deflater.
@@ -215,7 +256,7 @@ public class Deflater {
 	 * @see #setInput(byte[])
 	 * @see #setInput(byte[], int, int)
 	 */
-	public boolean needsInput() {
+	public synchronized boolean needsInput() {
 		if (inputBuffer == null) {
             return true;
         }
@@ -241,7 +282,7 @@ public class Deflater {
 		inputBuffer = null;
 	}
 
-	private native synchronized void resetImpl(long handle);
+	private synchronized native void resetImpl(long handle);
 
 	public void setDictionary(byte[] buf) {
 		setDictionary(buf, 0, buf.length);
@@ -268,7 +309,7 @@ public class Deflater {
         }
 	}
 
-	private native synchronized void setDictionaryImpl(byte[] buf, int off,
+	private synchronized native void setDictionaryImpl(byte[] buf, int off,
 			int nbytes, long handle);
 
 	/**
@@ -303,10 +344,10 @@ public class Deflater {
         }
 	}
 
-	private native synchronized void setLevelsImpl(int level, int strategy,
+	private synchronized native void setLevelsImpl(int level, int strategy,
 			long handle);
 
-	private native synchronized void setInputImpl(byte[] buf, int off,
+	private synchronized native void setInputImpl(byte[] buf, int off,
 			int nbytes, long handle);
 
 	/**
@@ -348,45 +389,6 @@ public class Deflater {
             throw new IllegalStateException();
         }
 		this.strategy = strategy;
-	}
-
-	/**
-	 * Constructs a new Deflater instance with default compression level and
-	 * strategy.
-	 */
-	public Deflater() {
-		this(DEFAULT_COMPRESSION, false);
-	}
-
-	/**
-	 * Constructs a new Deflater instance with compression level level and
-	 * default compression strategy. If the noHeader parameter is specified then
-	 * no ZLIB header will be written as part of the compressed output. The
-	 * compression level specified must be between 0 and 9.
-	 * 
-	 * @param level
-	 *            the compression level to use
-	 * @param noHeader
-	 *            if true do not write the ZLIB header
-	 */
-	public Deflater(int level, boolean noHeader) {
-		if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION) {
-            throw new IllegalArgumentException();
-        }
-		compressLevel = level;
-		streamHandle = createStream(compressLevel, strategy, noHeader);
-	}
-
-	/**
-	 * Constructs a new Deflater instance with compression level level and
-	 * default compression strategy. THe compression level provided must be
-	 * between 0 and 9.
-	 * 
-	 * @param level
-	 *            the compression level to use
-	 */
-	public Deflater(int level) {
-		this(level, false);
 	}
 	
     /**
