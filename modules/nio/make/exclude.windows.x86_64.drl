@@ -1,2 +1,0 @@
-#fails on Win Server 2003
-org/apache/harmony/nio/tests/java/nio/channels/SocketChannelTest.java

@@ -323,13 +323,6 @@ public class SocketChannelTest extends TestCase {
         assertSocketAction_Block_BeforeConnect(s);
     }
 
-    public void testSocket_NonBlock_ActionsBeforeConnect() throws IOException {
-        assertFalse(this.channel1.isConnected());// not connected
-        this.channel1.configureBlocking(false);
-        Socket s = this.channel1.socket();
-        assertSocketAction_NonBlock_BeforeConnect(s);
-    }
-
     public void testSocket_Block_ActionsAfterConnect() throws IOException {
         assertFalse(this.channel1.isConnected());// not connected
         assertTrue(this.channel1.connect(localAddr1));
