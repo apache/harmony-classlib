@@ -545,6 +545,32 @@ public class DefaultListSelectionModelTest extends SwingTestCase {
         checkIntervalState(6, 10, false);
     }
 
+    public void testMoveLeadSelectionIndex() throws Exception {
+        model.addListSelectionListener(listener);
+        model.setSelectionInterval(3, 6);
+
+        listener.reset();
+        model.moveLeadSelectionIndex(-1);
+        assertEquals(6, model.getLeadSelectionIndex());
+        assertEquals(0, listener.getEvents().size());
+
+        listener.reset();
+        model.moveLeadSelectionIndex(2);
+        assertEquals(2, model.getLeadSelectionIndex());
+        checkIntervalState(0, 2, false);
+        checkIntervalState(3, 6, true);
+        checkIntervalState(7, 10, false);
+        checkSingleEvent(2, 6, false);
+
+        listener.reset();
+        model.moveLeadSelectionIndex(8);
+        assertEquals(8, model.getLeadSelectionIndex());
+        checkIntervalState(0, 2, false);
+        checkIntervalState(3, 6, true);
+        checkIntervalState(7, 10, false);
+        checkSingleEvent(2, 8, false);
+    }
+
     public void testToString() throws Exception {
         assertNotNull(model.toString());
     }

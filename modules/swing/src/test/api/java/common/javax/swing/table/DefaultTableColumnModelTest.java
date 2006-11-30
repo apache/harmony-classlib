@@ -366,11 +366,7 @@ public class DefaultTableColumnModelTest extends BasicSwingTestCase {
         assertTrue(listener.eventOccured());
         assertEquals(TestTableColumnModelListener.SELECTION_CHANGED, listener.getEventType());
         assertEquals(model.getSelectionModel(), listener.getEvent().getSource());
-        if (isHarmony()) {
-            assertEquals(1, ((ListSelectionEvent) listener.getEvent()).getFirstIndex());
-        } else {
-            assertEquals(0, ((ListSelectionEvent) listener.getEvent()).getFirstIndex());
-        }
+        assertEquals(1, ((ListSelectionEvent) listener.getEvent()).getFirstIndex());
         assertEquals(2, ((ListSelectionEvent) listener.getEvent()).getLastIndex());
         listener.reset();
         ListSelectionEvent event = new ListSelectionEvent("source", 4, 7, true);

@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
-
 package javax.swing;
 
 import java.awt.Color;
@@ -45,8 +39,19 @@ import javax.swing.plaf.ComponentUI;
 
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <p>
+ * <i>UIManager</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as
+ * a performance optimization, not as a guarantee of serialization
+ * compatibility.</li>
+ * </ul>
+ */
 public class UIManager implements Serializable {
+    private static final long serialVersionUID = -7909287654867514204L;
 
     public static class LookAndFeelInfo {
         private String name;
@@ -57,6 +62,7 @@ public class UIManager implements Serializable {
             this.className = className;
         }
 
+        @Override
         public String toString() {
             return this.getClass().getName() + "[" + name + " " + className + "]";
         }
@@ -69,6 +75,7 @@ public class UIManager implements Serializable {
             return className;
         }
 
+        @Override
         public boolean equals(final Object object) {
             if (object == null) {
                 return false;
@@ -101,9 +108,9 @@ public class UIManager implements Serializable {
             new LookAndFeelInfo("Metal", METAL_LOOK_AND_FEEL_CLASS)};
 
     private static LookAndFeel lookAndFeel;
-    private static UIDefaults uiDefaults;
+    private static UIDefaults uiDefaults = new UIDefaults();
     private static Properties props;
-    private static List installedLFs;
+    private static List<LookAndFeelInfo> installedLFs;
     private static SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(UIManager.class);
     private static UIDefaults userUIDefaults;
 
@@ -205,18 +212,18 @@ public class UIManager implements Serializable {
     }
 
     public static void setInstalledLookAndFeels(final LookAndFeelInfo[] lfs) {
-        installedLFs = new LinkedList(Arrays.asList(lfs));
+        installedLFs = new LinkedList<LookAndFeelInfo>(Arrays.asList(lfs));
     }
 
     public static void installLookAndFeel(final LookAndFeelInfo lfInfo) {
         if (installedLFs == null) {
-            installedLFs = new LinkedList();
+            installedLFs = new LinkedList<LookAndFeelInfo>();
         }
         installedLFs.add(lfInfo);
     }
 
     public static LookAndFeelInfo[] getInstalledLookAndFeels() {
-        return (LookAndFeelInfo[])installedLFs.toArray(new LookAndFeelInfo[installedLFs.size()]);
+        return installedLFs.toArray(new LookAndFeelInfo[installedLFs.size()]);
     }
 
     public static UIDefaults getLookAndFeelDefaults() {
@@ -247,12 +254,15 @@ public class UIManager implements Serializable {
 
         final UIDefaults uiDefs = lookAndFeel.getDefaults();
         uiDefaults = new UIDefaults() {
+            private static final long serialVersionUID = -4220137347255884538L;
+
+            @Override
             public Object get(final Object key, final Locale locale) {
                 Object result = getUserUIDefaults().get(key, locale);
                 if (result != null) {
                     return result;
                 }
-                result = uiDefs.get(key, locale);
+                result = uiDefs != null ? uiDefs.get(key, locale) : null;
                 if (result != null) {
                     return result;
                 }
@@ -260,10 +270,12 @@ public class UIManager implements Serializable {
                 return super.get(key, locale);
             }
 
+            @Override
             public Object put(final Object key, final Object value) {
                 return UIManager.put(key, value);
             }
 
+            @Override
             public synchronized void clear() {
                 getUserUIDefaults().clear();
             }
@@ -335,7 +347,7 @@ public class UIManager implements Serializable {
     private static void initialize() {
         props = loadSwingProperties();
         setDefaultLookAndFeel();
-        installedLFs = new ArrayList(getDefaultInstalledLFs());
+        installedLFs = new ArrayList<LookAndFeelInfo>(getDefaultInstalledLFs());
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .setDefaultFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
     }
@@ -365,11 +377,11 @@ public class UIManager implements Serializable {
         return defaultValue;
     }
 
-    private static List getDefaultInstalledLFs() {
+    private static List<LookAndFeelInfo> getDefaultInstalledLFs() {
         if (getProperty(INSTALLED_LAFS, null) != null) {
             return getInstalledLFsFromPropertyFile();
         }
-        List result = new LinkedList();
+        List<LookAndFeelInfo> result = new LinkedList<LookAndFeelInfo>();
         for (int i = 0; i < ALL_LFS.length; i++) {
             try {
                 if (((LookAndFeel)Class.forName(ALL_LFS[i].getClassName()).newInstance()).isSupportedLookAndFeel()) {
@@ -390,13 +402,13 @@ public class UIManager implements Serializable {
      * ...
      * @return LookAndFeelInfo[]
      */
-    private static List getInstalledLFsFromPropertyFile() {
+    private static List<LookAndFeelInfo> getInstalledLFsFromPropertyFile() {
         String lfNames = props.getProperty(INSTALLED_LAFS);
         if (lfNames == null) {
-            return new LinkedList();
+            return new LinkedList<LookAndFeelInfo>();
         }
         String[] names = lfNames.split(",");
-        List result = new LinkedList();
+        List<LookAndFeelInfo> result = new LinkedList<LookAndFeelInfo>();
         for (int i = 0; i < names.length; i++) {
             String token = names[i];
             String lfNameProperty = new StringBuffer(INSTALLED_LAF).append(".")

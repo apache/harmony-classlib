@@ -39,7 +39,7 @@ public class MetalLookAndFeelTest extends SwingTestCase {
 
     public void testSize() throws Exception {
         if (isHarmony()) {
-            assertEquals(558, new MetalLookAndFeel().getDefaults().size());
+            assertEquals(559, new MetalLookAndFeel().getDefaults().size());
         }
     }
 

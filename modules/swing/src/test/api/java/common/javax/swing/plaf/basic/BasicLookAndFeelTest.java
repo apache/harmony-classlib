@@ -45,7 +45,7 @@ public class BasicLookAndFeelTest extends SwingTestCase {
     public void testDefaultsTable() {
         UIDefaults defaults = lf.getDefaults();
         if (isHarmony()) {
-            assertEquals(474, defaults.size());
+            assertEquals(475, defaults.size());
         }
         assertNull(lookAndFeelInstance().getDefaults());
     }
