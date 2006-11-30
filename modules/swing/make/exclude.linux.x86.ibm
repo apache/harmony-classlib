@@ -23,7 +23,6 @@ javax/swing/text/FlowViewTest.java
 javax/swing/text/GapContentTest.java
 javax/swing/text/GapContent_InternalTest.java
 javax/swing/text/InternationalFormatterTest.java
-javax/swing/text/ParagraphViewTest.java
 javax/swing/text/PlainViewI18N_LayoutTest.java
 javax/swing/text/PlainViewI18N_LineView_UpdateTest.java
 javax/swing/text/StringContentTest.java

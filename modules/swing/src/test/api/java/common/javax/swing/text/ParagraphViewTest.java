@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
+
 package javax.swing.text;
 
 import java.awt.Container;
@@ -50,6 +47,7 @@ public class ParagraphViewTest extends BasicSwingTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        setIgnoreNotImplemented(true);
         doc = new DefaultStyledDocument();
         doc.insertString(0, "plainbolditalic\nparagraph2", null);
         //                   0123456789012345
@@ -341,16 +339,6 @@ public class ParagraphViewTest extends BasicSwingTestCase {
         assertEquals(2, view.getViewCount());
         int width = (int) view.getPreferredSpan(View.X_AXIS);
         int height = (int) view.getPreferredSpan(View.Y_AXIS);
-        //        for (int i = 0; i < view.getViewCount(); i++) {
-        //            System.out.println("[" + i + "]: ("
-        //                               +  view.getOffset(View.X_AXIS, i) + ", "
-        //                               + view.getOffset(View.Y_AXIS, i) + ") x ("
-        //                               +  view.getSpan(View.X_AXIS, i) + ", "
-        //                               + view.getSpan(View.Y_AXIS, i) + ") <-- "
-        //                               + view.getView(i).getPreferredSpan(View.X_AXIS)
-        //                               + " x "
-        //                               + view.getView(i).getPreferredSpan(View.Y_AXIS));
-        //        }
         assertEquals(64 /*WIDTH*/, width);
         assertEquals(PartView.CHAR_HEIGHT * 2, height);
         Shape alloc = new Rectangle(WIDTH, HEIGHT * 2);

@@ -14,12 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- * Created on 19.01.2005
 
- */
 package org.apache.harmony.x.swing;
 
 import java.awt.Font;
@@ -62,5 +57,15 @@ public class UtilitiesTest extends SwingTestCase {
         assertFalse(Utilities.isEmptyString("\t"));
         assertFalse(Utilities.isEmptyString("\n"));
         assertFalse(Utilities.isEmptyString("\r"));
+    }
+
+    // Regression for HARMONY-2253
+    public void testSafeIntSum() {
+        assertEquals(0, Utilities.safeIntSum(9, -9));
+        assertEquals(0, Utilities.safeIntSum(-9, 9));
+        assertEquals(-18, Utilities.safeIntSum(-9, -9));
+        assertEquals(Integer.MIN_VALUE + 1, Utilities.safeIntSum(Integer.MIN_VALUE, 1));
+        // assertEquals(Integer.MIN_VALUE, Utilities.safeIntSum(Integer.MIN_VALUE, -1));
+        // assertEquals(Integer.MIN_VALUE, Utilities.safeIntSum(Integer.MIN_VALUE + 2, -2));
     }
 }

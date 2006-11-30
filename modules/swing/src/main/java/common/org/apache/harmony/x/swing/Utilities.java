@@ -693,8 +693,8 @@ public class Utilities implements SwingConstants {
     public static Point getMousePointerScreenLocation() {
         Point p = null;
         try {
-            p = (Point)AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
+            p = AccessController.doPrivileged(new PrivilegedAction<Point>() {
+                public Point run() {
                     return MouseInfo.getPointerInfo().getLocation();
                 }
             });
@@ -818,14 +818,14 @@ public class Utilities implements SwingConstants {
      */
     public static MenuElement[] getSubElements(final Container menu) {
         final Component[] components = menu.getComponents();
-        final ArrayList result = new ArrayList(components.length);
+        final ArrayList<MenuElement> result = new ArrayList<MenuElement>(components.length);
         for (int i = 0; i < components.length; i++) {
             if (components[i] instanceof MenuElement) {
-                result.add(components[i]);
+                result.add((MenuElement)components[i]);
             }
         }
 
-        return (MenuElement[])result.toArray(new MenuElement[result.size()]);
+        return result.toArray(new MenuElement[result.size()]);
     }
 
     /**
@@ -856,10 +856,10 @@ public class Utilities implements SwingConstants {
         if (!(element instanceof Container)) {
             return new MenuElement[0];
         }
-        final ArrayList hierarchy = new ArrayList();
+        final ArrayList<MenuElement> hierarchy = new ArrayList<MenuElement>();
         Container c = (Container)element;
         do {
-            hierarchy.add(0, c);
+            hierarchy.add(0, (MenuElement)c);
             if (c instanceof JMenuBar) {
                 break;
             }
@@ -870,7 +870,7 @@ public class Utilities implements SwingConstants {
             }
         } while (c != null && c instanceof MenuElement);
 
-        return (MenuElement[])hierarchy.toArray(new MenuElement[hierarchy.size()]);
+        return hierarchy.toArray(new MenuElement[hierarchy.size()]);
     }
 
     /**
@@ -969,14 +969,19 @@ public class Utilities implements SwingConstants {
      * Returns sum of two integers. This function prevents overflow, and
      * if the result were greater than Integer.MAX_VALUE, the maximum
      * integer would be returned.
+     * <p><strong>Note:</strong> this does not prevent underflow.
      *
      * @param item1 the first number
      * @param item2 the second number
      * @return the sum
      */
     public static int safeIntSum(final int item1, final int item2) {
-        return (item1 > Integer.MAX_VALUE - item2) ? Integer.MAX_VALUE
-                : item1 + item2;
+        if (item2 > 0) {
+            return (item1 > Integer.MAX_VALUE - item2) ? Integer.MAX_VALUE
+                                                       : item1 + item2;
+        }
+        // TODO Handle negative values correctly: MIN_VALUE - 1 == MIN_VALUE
+        return item1 + item2;
     }
 
     /**
