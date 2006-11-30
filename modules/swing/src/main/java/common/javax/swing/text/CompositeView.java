@@ -20,20 +20,21 @@
  */
 package javax.swing.text;
 
-import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
 import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.text.TextUtils;
-import org.apache.harmony.x.swing.Utilities;
 
 
 public abstract class CompositeView extends View {
     private View[] children;
-    private final Insets insets = new Insets(0, 0, 0, 0);
     private final Rectangle rect = new Rectangle();
+    private short topInset;
+    private short leftInset;
+    private short bottomInset;
+    private short rightInset;
 
     public CompositeView(final Element element) {
         super(element);
@@ -45,6 +46,7 @@ public abstract class CompositeView extends View {
     protected abstract boolean isBefore(int x, int y, Rectangle rc);
     protected abstract View getViewAtPoint(int x, int y, Rectangle alloc);
 
+    @Override
     public Shape getChildAllocation(final int index, final Shape shape) {
         Rectangle rc = getInsideAllocation(shape);
         childAllocation(index, rc);
@@ -52,10 +54,12 @@ public abstract class CompositeView extends View {
         return rc;
     }
 
+    @Override
     public View getView(final int index) {
         return children[index];
     }
 
+    @Override
     public int getViewIndex(final int pos, final Bias bias) {
         int offset = bias == Bias.Backward ? pos - 1 : pos;
         if (offset < getStartOffset() || offset >= getEndOffset()) {
@@ -65,10 +69,12 @@ public abstract class CompositeView extends View {
         return getViewIndexAtPosition(offset);
     }
 
+    @Override
     public int getViewCount() {
         return children.length;
     }
 
+    @Override
     public void replace(final int index, final int length, final View[] views) {
         int toAdd = views != null ? views.length : 0;
 
@@ -100,6 +106,7 @@ public abstract class CompositeView extends View {
         }
     }
 
+    @Override
     public void setParent(final View parentView) {
         super.setParent(parentView);
 
@@ -108,6 +115,7 @@ public abstract class CompositeView extends View {
         }
     }
 
+    @Override
     public Shape modelToView(final int pos, final Shape shape, final Bias bias)
             throws BadLocationException {
         int index = getViewIndexAtPosition(bias == Bias.Backward ? pos - 1
@@ -121,6 +129,7 @@ public abstract class CompositeView extends View {
                                        + " not found", pos);
     }
 
+    @Override
     public Shape modelToView(final int p1, final Bias b1,
                              final int p2, final Bias b2, final Shape shape)
         throws BadLocationException {
@@ -170,6 +179,7 @@ public abstract class CompositeView extends View {
         return rc1.union(rc2);
     }
 
+    @Override
     public int viewToModel(final float x,
                            final float y,
                            final Shape shape,
@@ -194,6 +204,7 @@ public abstract class CompositeView extends View {
         }
     }
 
+    @Override
     public int getNextVisualPositionFrom(final int pos,
                                          final Bias bias,
                                          final Shape shape,
@@ -259,29 +270,29 @@ public abstract class CompositeView extends View {
     }
 
     protected short getTopInset() {
-        return (short)insets.top;
+        return topInset;
     }
 
     protected short getLeftInset() {
-        return (short)insets.left;
+        return leftInset;
     }
 
     protected short getBottomInset() {
-        return (short)insets.bottom;
+        return bottomInset;
     }
 
     protected short getRightInset() {
-        return (short)insets.right;
+        return rightInset;
     }
 
     protected void setInsets(final short top,
                              final short left,
                              final short bottom,
                              final short right) {
-        insets.top    = top;
-        insets.left   = left;
-        insets.bottom = bottom;
-        insets.right  = right;
+        topInset    = top;
+        leftInset   = left;
+        bottomInset = bottom;
+        rightInset  = right;
     }
 
     protected void setParagraphInsets(final AttributeSet attrs) {
@@ -297,7 +308,11 @@ public abstract class CompositeView extends View {
         }
 
         rect.setBounds(shape.getBounds());
-        return Utilities.subtractInsets(rect, insets);
+        rect.x += getLeftInset();
+        rect.y += getTopInset();
+        rect.width  -= (getLeftInset() + getRightInset());
+        rect.height -= (getTopInset() + getBottomInset());
+        return rect;
     }
 
     protected int getNextEastWestVisualPositionFrom(final int pos,

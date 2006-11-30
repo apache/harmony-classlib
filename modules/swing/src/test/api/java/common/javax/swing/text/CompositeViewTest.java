@@ -291,6 +291,58 @@ public class CompositeViewTest extends BasicSwingTestCase {
         assertNull(view.getInsideAllocation(null));
     }
 
+    // Regression test for HARMONY-2189
+    public void testGetInsideAllocationOverridden() {
+        final Marker top = new Marker();
+        final Marker left = new Marker();
+        final Marker bottom = new Marker();
+        final Marker right = new Marker();
+
+        view = new CompositeViewImpl(root = doc.getDefaultRootElement()) {
+            @Override
+            protected short getTopInset() {
+                top.setOccurred();
+                return 12;
+            }
+
+            @Override
+            protected short getLeftInset() {
+                left.setOccurred();
+                return 11;
+            }
+
+            @Override
+            protected short getBottomInset() {
+                bottom.setOccurred();
+                return 3;
+            }
+
+            @Override
+            protected short getRightInset() {
+                right.setOccurred();
+                return 9;
+            }
+        };
+        view.loadChildren(factory);
+
+        view.setParagraphInsets(getAttributeSet());
+        assertFalse(top.isOccurred());
+        assertFalse(left.isOccurred());
+        assertFalse(bottom.isOccurred());
+        assertFalse(right.isOccurred());
+
+        Rectangle rc = view.getInsideAllocation(new Rectangle(20, 30, 50, 40));
+        assertTrue(top.isOccurred());
+        assertTrue(left.isOccurred());
+        assertTrue(bottom.isOccurred());
+        assertTrue(right.isOccurred());
+
+        assertEquals(20 + 11, rc.x);
+        assertEquals(30 + 12, rc.y);
+        assertEquals(50 - 11 - 9, rc.width);
+        assertEquals(40 - 12 - 3, rc.height);
+    }
+
     /*
      * See tests for individual methods namely EastWest and NorthSouth in
      * class CompositeView_NextNSVisPosTest
