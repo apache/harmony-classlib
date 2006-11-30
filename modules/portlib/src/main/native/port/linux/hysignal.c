@@ -32,7 +32,7 @@
 
 #define MAX_PORTLIB_SIGNAL_TYPES  8
 
-typedef void (*linux386_sigaction) (int, siginfo_t *, void *);
+typedef void (*unix_sigaction) (int, siginfo_t *, void *);
 
 /* Store the previous signal handlers, we need to restore them when we're done */
 static struct
@@ -48,19 +48,19 @@ static U_32 shutDownASynchReporter;
 
 static U_32 attachedPortLibraries;
 
-typedef struct HyLinux386AsyncHandlerRecord
+typedef struct HyUnixAsyncHandlerRecord
 {
   HyPortLibrary *portLib;
   hysig_handler_fn handler;
   void *handler_arg;
   U_32 flags;
-  struct HyLinux386AsyncHandlerRecord *next;
-} HyLinux386AsyncHandlerRecord;
+  struct HyUnixAsyncHandlerRecord *next;
+} HyUnixAsyncHandlerRecord;
 
 /* holds the options set by hysig_set_options */
 static U_32 signalOptions;
 
-static HyLinux386AsyncHandlerRecord *asyncHandlerList;
+static HyUnixAsyncHandlerRecord *asyncHandlerList;
 
 static sem_t wakeUpASynchReporter;
 static sem_t sigQuitPendingSem;
@@ -152,7 +152,7 @@ static int HYTHREAD_PROC asynchSignalReporter (void *userData);
 
 static U_32 registerSignalHandlerWithOS (HyPortLibrary * portLibrary,
                                          U_32 portLibrarySignalNo,
-                                         linux386_sigaction handler);
+                                         unix_sigaction handler);
 
 
 I_32 VMCALL
@@ -269,14 +269,12 @@ hysig_protect (struct HyPortLibrary * portLibrary, hysig_protected_fn fn,
               /* the handler had long jumped back here -- reset the signal handler stack and return */
               hythread_tls_set (thisThread, tlsKey, thisRecord.previous);
               *result = 0;
-              /* Trc_PRT_signal_hysignal_sigProtect_Exit_exception(); */
               return HYPORT_SIG_EXCEPTION_OCCURRED;
             }
         }
 
       if (hythread_tls_set (thisThread, tlsKey, &thisRecord))
         {
-          /* Trc_PRT_signal_hysignal_sigProtect_Exit2_error(); */
           return HYPORT_SIG_ERROR;
         }
 
@@ -299,8 +297,8 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
 
   U_32 rc = 0;
   U_32 signalsRegisteredWithOS = 0;
-  HyLinux386AsyncHandlerRecord *cursor;
-  HyLinux386AsyncHandlerRecord **previousLink;
+  HyUnixAsyncHandlerRecord *cursor;
+  HyUnixAsyncHandlerRecord **previousLink;
 
   hythread_monitor_enter (masterHandlerMonitor);
   if (HYPORT_SIG_OPTIONS_REDUCED_SIGNALS & signalOptions)
@@ -361,7 +359,7 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
       /* cursor will only be NULL if we failed to find it in the list */
       if (flags != 0)
         {
-          HyLinux386AsyncHandlerRecord *record =
+          HyUnixAsyncHandlerRecord *record =
             portLibrary->mem_allocate_memory (portLibrary, sizeof (*record));
 
           if (record == NULL)
@@ -466,11 +464,9 @@ static int HYTHREAD_PROC
 asynchSignalReporter (void *userData)
 {
   U_32 type;
-  HyLinux386AsyncHandlerRecord *cursor;
+  HyUnixAsyncHandlerRecord *cursor;
   U_32 result = FALSE;
   U_32 asyncSignalFlag = 0;
-
-  /* Trc_PRT_signal_hysignal_asynchSignalReporter_Entry(signal); */
 
   /* Need an exit condition... */
   for (;;)
@@ -561,7 +557,6 @@ masterSynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
 
   thisRecord = NULL;
 
-  /* Trc_PRT_signal_hysignal_masterHandler_Entry(signal, sigInfo, contextInfo); */
   portLibType = mapUnixSignalToPortLib (signal, sigInfo);
 
   /* record this signal in tls so that jsig_handler can be called if any of the handlers decide we should be shutting down */
@@ -580,28 +575,30 @@ masterSynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
     {
       if (thisRecord->flags & portLibType)
         {
-          struct HyLinux386SignalInfo hyinfo;
+          struct HyUnixSignalInfo hyInfo;
+          struct HyPlatformSignalInfo platformSignalInfo;
           U_32 result;
 
-          memset (&hyinfo, 0, sizeof(hyinfo));
+          memset(&hyInfo, 0, sizeof(hyInfo));
+          memset(&platformSignalInfo, 0, sizeof(platformSignalInfo));
 
-          hyinfo.portLibrarySignalType = portLibType;
-          hyinfo.handlerAddress = (void *) thisRecord->handler;
-          hyinfo.handlerAddress2 = (void *) masterSynchSignalHandler;
-
-          hyinfo.sigInfo = sigInfo;
+          hyInfo.portLibrarySignalType = portLibType;
+          hyInfo.handlerAddress = (void *) thisRecord->handler;
+          hyInfo.handlerAddress2 = (void *) masterSynchSignalHandler;
+          hyInfo.sigInfo = sigInfo;
+          hyInfo.platformSignalInfo = platformSignalInfo;
 
           /* found a suitable handler */
           /* what signal type do we want to pass on here? port or platform based ? */
-          fillInLinux386SignalInfo (thisRecord->portLibrary, contextInfo,
-                                    &hyinfo);
+          fillInUnixSignalInfo (thisRecord->portLibrary, contextInfo,
+                                &hyInfo);
 
           /* remove the handler we are about to invoke, now, in case the handler crashes */
           hythread_tls_set (thisThread, tlsKey, thisRecord->previous);
 
           result =
             thisRecord->handler (thisRecord->portLibrary, portLibType,
-                                 &hyinfo, thisRecord->handler_arg);
+                                 &hyInfo, thisRecord->handler_arg);
 
           /* The only case in which we don't want the previous handler back on top is if it just returned HYPORT_SIG_EXCEPTION_RETURN
            *              In this case we will remove it from the top after executing the siglongjmp */
@@ -676,7 +673,6 @@ masterASynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
       break;
     }
 
-  /* Trc_PRT_signal_hysignal_AsynchSignalHandler_Entry(signal, sigInfo, contextInfo); */
   sem_post (&wakeUpASynchReporter);
 
   return;
@@ -699,7 +695,7 @@ masterASynchSignalHandler (int signal, siginfo_t * sigInfo, void *contextInfo)
 static U_32
 registerSignalHandlerWithOS (HyPortLibrary * portLibrary,
                              U_32 portLibrarySignalNo,
-                             linux386_sigaction handler)
+                             unix_sigaction handler)
 {
   struct sigaction newAction;
   U_32 unixSignalNo;
@@ -831,7 +827,7 @@ registerMasterHandlers (HyPortLibrary * portLibrary, U_32 flags,
                         U_32 allowedSubsetOfFlags)
 {
   U_32 flagsSignalsOnly, flagsWithoutHandlers;
-  linux386_sigaction handler;
+  unix_sigaction handler;
 
   if (allowedSubsetOfFlags == HYPORT_SIG_FLAG_SIGALLSYNC)
     {
@@ -1046,8 +1042,8 @@ static void
 removeAsyncHandlers (HyPortLibrary * portLibrary)
 {
   /* clean up the list of async handlers */
-  HyLinux386AsyncHandlerRecord *cursor;
-  HyLinux386AsyncHandlerRecord **previousLink;
+  HyUnixAsyncHandlerRecord *cursor;
+  HyUnixAsyncHandlerRecord **previousLink;
 
   hythread_monitor_enter (asyncMonitor);
 

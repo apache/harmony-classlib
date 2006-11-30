@@ -23,36 +23,41 @@
 #include <dlfcn.h>
 #undef __USE_GNU
 
-typedef struct HyLinux386SignalInfo
+typedef struct HyPlatformSignalInfo
+{
+  struct sigcontext *sigContext;
+  Dl_info dl_info;
+} HyPlatformSignalInfo;
+
+typedef struct HyUnixSignalInfo
 {
   U_32 portLibrarySignalType;
   void *handlerAddress;
   void *handlerAddress2;
-  struct sigcontext *sigContext;
   siginfo_t *sigInfo;
-  Dl_info dl_info;
-} HyLinux386SignalInfo;
+  struct HyPlatformSignalInfo platformSignalInfo;
+} HyUnixSignalInfo;
 
 U_32 infoForFPR (struct HyPortLibrary *portLibrary,
-                 struct HyLinux386SignalInfo *info, I_32 index,
+                 struct HyUnixSignalInfo *info, I_32 index,
                  const char **name, void **value);
 
 U_32 infoForGPR (struct HyPortLibrary *portLibrary,
-                 struct HyLinux386SignalInfo *info, I_32 index,
+                 struct HyUnixSignalInfo *info, I_32 index,
                  const char **name, void **value);
 
 U_32 infoForModule (struct HyPortLibrary *portLibrary,
-                    struct HyLinux386SignalInfo *info, I_32 index,
+                    struct HyUnixSignalInfo *info, I_32 index,
                     const char **name, void **value);
 
 U_32 infoForControl (struct HyPortLibrary *portLibrary,
-                     struct HyLinux386SignalInfo *info, I_32 index,
+                     struct HyUnixSignalInfo *info, I_32 index,
                      const char **name, void **value);
 
 U_32 infoForSignal (struct HyPortLibrary *portLibrary,
-                    struct HyLinux386SignalInfo *info, I_32 index,
+                    struct HyUnixSignalInfo *info, I_32 index,
                     const char **name, void **value);
 
-void fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary,
-                               void *contextInfo,
-                               struct HyLinux386SignalInfo *hyinfo);
+void fillInUnixSignalInfo (struct HyPortLibrary *portLibrary,
+                           void *contextInfo,
+                           struct HyUnixSignalInfo *hyInfo);

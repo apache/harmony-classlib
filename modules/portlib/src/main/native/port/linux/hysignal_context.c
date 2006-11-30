@@ -20,11 +20,11 @@
 #include <string.h>
 #include <sys/ucontext.h>
 #include "hysignal_context.h"
-
+#include <assert.h>
 
 void
-fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary, void *contextInfo,
-                          struct HyLinux386SignalInfo *hyinfo)
+fillInUnixSignalInfo (struct HyPortLibrary *portLibrary, void *contextInfo,
+                          struct HyUnixSignalInfo *hyInfo)
 {
   struct sigcontext *sigContext;
   ucontext_t *uContext;
@@ -36,14 +36,14 @@ fillInLinux386SignalInfo (struct HyPortLibrary *portLibrary, void *contextInfo,
   uContext = (ucontext_t *) contextInfo;
   sigContext = (struct sigcontext *) &uContext->uc_mcontext;
 
-  hyinfo->sigContext = sigContext;
+  hyInfo->platformSignalInfo.sigContext = sigContext;
   /* module info is filled on demand */
 }
 
 
 U_32
 infoForSignal (struct HyPortLibrary *portLibrary,
-               struct HyLinux386SignalInfo *info, I_32 index,
+               struct HyUnixSignalInfo *info, I_32 index,
                const char **name, void **value)
 {
   *name = "";
@@ -109,7 +109,7 @@ infoForSignal (struct HyPortLibrary *portLibrary,
 
 U_32
 infoForFPR (struct HyPortLibrary *portLibrary,
-            struct HyLinux386SignalInfo *info, I_32 index, const char **name,
+            struct HyUnixSignalInfo *info, I_32 index, const char **name,
             void **value)
 {
   static const char *n_xmm[] = {
@@ -137,7 +137,7 @@ infoForFPR (struct HyPortLibrary *portLibrary,
 
 U_32
 infoForGPR (struct HyPortLibrary *portLibrary,
-            struct HyLinux386SignalInfo *info, I_32 index, const char **name,
+            struct HyUnixSignalInfo *info, I_32 index, const char **name,
             void **value)
 {
   *name = "";
@@ -153,11 +153,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 0:
 #ifdef HYX86_64
       *name = "RDI";
-      *value = &info->sigContext->rdi;
+      *value = &info->platformSignalInfo.sigContext->rdi;
 #endif
 #ifdef HYX86
       *name = "EDI";
-      *value = &info->sigContext->edi;
+      *value = &info->platformSignalInfo.sigContext->edi;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ESI:
@@ -165,11 +165,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 1:
 #ifdef HYX86
       *name = "ESI";
-      *value = &info->sigContext->esi;
+      *value = &info->platformSignalInfo.sigContext->esi;
 #endif
 #ifdef HYX86_64
       *name = "RSI";
-      *value = &info->sigContext->rsi;
+      *value = &info->platformSignalInfo.sigContext->rsi;
 #endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EAX:
@@ -177,11 +177,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 2:
 #ifdef HYX86
       *name = "EAX";
-      *value = &info->sigContext->eax;
+      *value = &info->platformSignalInfo.sigContext->eax;
 #endif
 #ifdef HYX86_64
       *name = "RAX";
-      *value = &info->sigContext->rax;
+      *value = &info->platformSignalInfo.sigContext->rax;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EBX:
@@ -189,11 +189,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 3:
 #ifdef HYX86
       *name = "EBX";
-      *value = &info->sigContext->ebx;
+      *value = &info->platformSignalInfo.sigContext->ebx;
 #endif
 #ifdef HYX86_64
       *name = "RBX";
-      *value = &info->sigContext->rbx;
+      *value = &info->platformSignalInfo.sigContext->rbx;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ECX:
@@ -201,11 +201,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 4:
 #ifdef HYX86
       *name = "ECX";
-      *value = &info->sigContext->ecx;
+      *value = &info->platformSignalInfo.sigContext->ecx;
 #endif
 #ifdef HYX86_64
       *name = "RCX";
-      *value = &info->sigContext->rcx;
+      *value = &info->platformSignalInfo.sigContext->rcx;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EDX:
@@ -213,11 +213,11 @@ infoForGPR (struct HyPortLibrary *portLibrary,
     case 5:
 #ifdef HYX86
       *name = "EDX";
-      *value = &info->sigContext->edx;
+      *value = &info->platformSignalInfo.sigContext->edx;
 #endif
 #ifdef HYX86_64
       *name = "RDX";
-      *value = &info->sigContext->rdx;
+      *value = &info->platformSignalInfo.sigContext->rdx;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     default:
@@ -229,7 +229,7 @@ infoForGPR (struct HyPortLibrary *portLibrary,
 
 U_32
 infoForControl (struct HyPortLibrary *portLibrary,
-                struct HyLinux386SignalInfo *info, I_32 index,
+                struct HyUnixSignalInfo *info, I_32 index,
                 const char **name, void **value)
 {
   *name = "";
@@ -245,59 +245,59 @@ infoForControl (struct HyPortLibrary *portLibrary,
     case 0:
 #ifdef HYX86
       *name = "EIP";
-      *value = (void *) &(info->sigContext->eip);
+      *value = (void *) &(info->platformSignalInfo.sigContext->eip);
 #endif
 #ifdef HYX86_64
       *name = "RIP";
-      *value = (void *) &(info->sigContext->rip);
+      *value = (void *) &(info->platformSignalInfo.sigContext->rip);
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
 #ifdef HYX86
     case 1:
       *name = "ES";
-      *value = (void *) &(info->sigContext->es);
+      *value = (void *) &(info->platformSignalInfo.sigContext->es);
       return HYPORT_SIG_VALUE_ADDRESS;
     case 2:
       *name = "DS";
-      *value = (void *) &(info->sigContext->ds);
+      *value = (void *) &(info->platformSignalInfo.sigContext->ds);
       return HYPORT_SIG_VALUE_ADDRESS;
 #endif
     case HYPORT_SIG_CONTROL_SP:
     case 3:
 #ifdef HYX86
       *name = "ESP";
-      *value = (void *) &(info->sigContext->esp);
+      *value = (void *) &(info->platformSignalInfo.sigContext->esp);
 #endif
 #ifdef HYX86_64
       *name = "RSP";
-      *value = (void *) &(info->sigContext->rsp);
+      *value = (void *) &(info->platformSignalInfo.sigContext->rsp);
 #endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case 4:
 #ifndef HYIA64
       *name = "EFlags";
-      *value = (void *) &(info->sigContext->eflags);
+      *value = (void *) &(info->platformSignalInfo.sigContext->eflags);
       return HYPORT_SIG_VALUE_ADDRESS;
     case 5:
       *name = "CS";
-      *value = (void *) &(info->sigContext->cs);
+      *value = (void *) &(info->platformSignalInfo.sigContext->cs);
 #endif
       return HYPORT_SIG_VALUE_ADDRESS;
 #ifdef HYX86
     case 6:
       *name = "SS";
-      *value = (void *) &(info->sigContext->ss);
+      *value = (void *) &(info->platformSignalInfo.sigContext->ss);
       return HYPORT_SIG_VALUE_ADDRESS;
 #endif
 	case HYPORT_SIG_CONTROL_BP:
     case 7:
 #ifdef HYX86
       *name = "EBP";
-      *value = &info->sigContext->ebp;
+      *value = &info->platformSignalInfo.sigContext->ebp;
 #endif
 #ifdef HYX86_64
       *name = "RBP";
-      *value = &info->sigContext->rbp;
+      *value = &info->platformSignalInfo.sigContext->rbp;
 #endif
 	  return HYPORT_SIG_VALUE_ADDRESS;
     default:
@@ -308,11 +308,11 @@ infoForControl (struct HyPortLibrary *portLibrary,
 
 U_32
 infoForModule (struct HyPortLibrary *portLibrary,
-               struct HyLinux386SignalInfo *info, I_32 index,
+               struct HyUnixSignalInfo *info, I_32 index,
                const char **name, void **value)
 {
   void *address;
-  Dl_info *dl_info = &(info->dl_info);
+  Dl_info *dl_info = &(info->platformSignalInfo.dl_info);
   *name = "";
 
 #ifdef HYIA64
@@ -320,16 +320,19 @@ infoForModule (struct HyPortLibrary *portLibrary,
 #endif
 
 #ifdef HYX86
-  address = (void *) info->sigContext->eip;
-  int dl_result = dladdr ((void *) info->sigContext->eip, dl_info);
+  address = (void *) info->platformSignalInfo.sigContext->eip;
+  int dl_result =
+    dladdr ((void *) info->platformSignalInfo.sigContext->eip, dl_info);
 #endif
 #ifdef HYX86_64
-  address = (void *) info->sigContext->rip;
-  int dl_result = dladdr ((void *) info->sigContext->rip, dl_info);
+  address = (void *) info->platformSignalInfo.sigContext->rip;
+  int dl_result =
+    dladdr ((void *) info->platformSignalInfo.sigContext->rip, dl_info);
 #endif
 #ifdef HYIA64
   int dl_result = 0;
 #endif
+
   switch (index)
     {
     case HYPORT_SIG_MODULE_NAME:
