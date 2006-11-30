@@ -20,7 +20,6 @@
 #include <string.h>
 #include <sys/ucontext.h>
 #include "hysignal_context.h"
-#include <assert.h>
 
 void
 fillInUnixSignalInfo (struct HyPortLibrary *portLibrary, void *contextInfo,
@@ -28,10 +27,6 @@ fillInUnixSignalInfo (struct HyPortLibrary *portLibrary, void *contextInfo,
 {
   struct sigcontext *sigContext;
   ucontext_t *uContext;
-
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
 
   uContext = (ucontext_t *) contextInfo;
   sigContext = (struct sigcontext *) &uContext->uc_mcontext;
@@ -123,10 +118,6 @@ infoForFPR (struct HyPortLibrary *portLibrary,
     "xmm7"
   };
 
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
   switch (index)
     {
     default:
@@ -142,84 +133,38 @@ infoForGPR (struct HyPortLibrary *portLibrary,
 {
   *name = "";
 
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
   switch (index)
     {
     case HYPORT_SIG_GPR_X86_EDI:
-	case HYPORT_SIG_GPR_AMD64_RDI:
     case 0:
-#ifdef HYX86_64
-      *name = "RDI";
-      *value = &info->platformSignalInfo.sigContext->rdi;
-#endif
-#ifdef HYX86
       *name = "EDI";
       *value = &info->platformSignalInfo.sigContext->edi;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ESI:
-	case HYPORT_SIG_GPR_AMD64_RSI:
     case 1:
-#ifdef HYX86
       *name = "ESI";
       *value = &info->platformSignalInfo.sigContext->esi;
-#endif
-#ifdef HYX86_64
-      *name = "RSI";
-      *value = &info->platformSignalInfo.sigContext->rsi;
-#endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EAX:
-    case HYPORT_SIG_GPR_AMD64_RAX:
     case 2:
-#ifdef HYX86
       *name = "EAX";
       *value = &info->platformSignalInfo.sigContext->eax;
-#endif
-#ifdef HYX86_64
-      *name = "RAX";
-      *value = &info->platformSignalInfo.sigContext->rax;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EBX:
-    case HYPORT_SIG_GPR_AMD64_RBX:
     case 3:
-#ifdef HYX86
       *name = "EBX";
       *value = &info->platformSignalInfo.sigContext->ebx;
-#endif
-#ifdef HYX86_64
-      *name = "RBX";
-      *value = &info->platformSignalInfo.sigContext->rbx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ECX:
-    case HYPORT_SIG_GPR_AMD64_RCX:
     case 4:
-#ifdef HYX86
       *name = "ECX";
       *value = &info->platformSignalInfo.sigContext->ecx;
-#endif
-#ifdef HYX86_64
-      *name = "RCX";
-      *value = &info->platformSignalInfo.sigContext->rcx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EDX:
-    case HYPORT_SIG_GPR_AMD64_RDX:
     case 5:
-#ifdef HYX86
       *name = "EDX";
       *value = &info->platformSignalInfo.sigContext->edx;
-#endif
-#ifdef HYX86_64
-      *name = "RDX";
-      *value = &info->platformSignalInfo.sigContext->rdx;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
@@ -235,24 +180,13 @@ infoForControl (struct HyPortLibrary *portLibrary,
   *name = "";
   U_8 *eip;
 
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
   switch (index)
     {
     case HYPORT_SIG_CONTROL_PC:
     case 0:
-#ifdef HYX86
       *name = "EIP";
       *value = (void *) &(info->platformSignalInfo.sigContext->eip);
-#endif
-#ifdef HYX86_64
-      *name = "RIP";
-      *value = (void *) &(info->platformSignalInfo.sigContext->rip);
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
-#ifdef HYX86
+      return HYPORT_SIG_VALUE_ADDRESS;
     case 1:
       *name = "ES";
       *value = (void *) &(info->platformSignalInfo.sigContext->es);
@@ -261,45 +195,28 @@ infoForControl (struct HyPortLibrary *portLibrary,
       *name = "DS";
       *value = (void *) &(info->platformSignalInfo.sigContext->ds);
       return HYPORT_SIG_VALUE_ADDRESS;
-#endif
     case HYPORT_SIG_CONTROL_SP:
     case 3:
-#ifdef HYX86
       *name = "ESP";
       *value = (void *) &(info->platformSignalInfo.sigContext->esp);
-#endif
-#ifdef HYX86_64
-      *name = "RSP";
-      *value = (void *) &(info->platformSignalInfo.sigContext->rsp);
-#endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case 4:
-#ifndef HYIA64
       *name = "EFlags";
       *value = (void *) &(info->platformSignalInfo.sigContext->eflags);
       return HYPORT_SIG_VALUE_ADDRESS;
     case 5:
       *name = "CS";
       *value = (void *) &(info->platformSignalInfo.sigContext->cs);
-#endif
       return HYPORT_SIG_VALUE_ADDRESS;
-#ifdef HYX86
     case 6:
       *name = "SS";
       *value = (void *) &(info->platformSignalInfo.sigContext->ss);
       return HYPORT_SIG_VALUE_ADDRESS;
-#endif
-	case HYPORT_SIG_CONTROL_BP:
+    case HYPORT_SIG_CONTROL_BP:
     case 7:
-#ifdef HYX86
       *name = "EBP";
       *value = &info->platformSignalInfo.sigContext->ebp;
-#endif
-#ifdef HYX86_64
-      *name = "RBP";
-      *value = &info->platformSignalInfo.sigContext->rbp;
-#endif
-	  return HYPORT_SIG_VALUE_ADDRESS;
+      return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
@@ -315,23 +232,9 @@ infoForModule (struct HyPortLibrary *portLibrary,
   Dl_info *dl_info = &(info->platformSignalInfo.dl_info);
   *name = "";
 
-#ifdef HYIA64
-  assert(0); // should never be here
-#endif
-
-#ifdef HYX86
   address = (void *) info->platformSignalInfo.sigContext->eip;
   int dl_result =
     dladdr ((void *) info->platformSignalInfo.sigContext->eip, dl_info);
-#endif
-#ifdef HYX86_64
-  address = (void *) info->platformSignalInfo.sigContext->rip;
-  int dl_result =
-    dladdr ((void *) info->platformSignalInfo.sigContext->rip, dl_info);
-#endif
-#ifdef HYIA64
-  int dl_result = 0;
-#endif
 
   switch (index)
     {
