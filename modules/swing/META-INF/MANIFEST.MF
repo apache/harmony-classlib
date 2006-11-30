@@ -56,5 +56,6 @@ Export-Package: javax.swing,
  javax.swing.plaf.metal,
  javax.swing.table,
  javax.swing.text,
+ javax.swing.text.html.parser,
  javax.swing.tree,
  javax.swing.undo
