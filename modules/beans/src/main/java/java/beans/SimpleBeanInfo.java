@@ -19,54 +19,20 @@ package java.beans;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.net.URL;
 
 public class SimpleBeanInfo implements BeanInfo {
 
-    public SimpleBeanInfo() {
-    }
+    public SimpleBeanInfo() {}
 
     public Image loadImage(String resourceName) {
-        byte[] result = null;
-        InputStream is = FileInputStream.class
-                .getResourceAsStream(resourceName);
-
-        if (is != null) {
-            ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
-
-            byte b;
-            try {
-                while ((b = (byte) is.read()) != -1) {
-                    byteArrayList.add(new Byte(b));
-                }
-
-                result = new byte[byteArrayList.size()];
-
-                Iterator<Byte> i = byteArrayList.iterator();
-                int idx = 0;
-                while (i.hasNext()) {
-                    result[idx++] = i.next().byteValue();
-                }
-
-            } catch (IOException ioe) {
-                byteArrayList.clear();
-                System.out.println(ioe.getClass() + ": " + ioe.getMessage()); //$NON-NLS-1$
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException ioe) {
-                    System.out.println(ioe.getClass() + ": " //$NON-NLS-1$
-                            + ioe.getMessage());
-                }
-            }
-
-            return Toolkit.getDefaultToolkit().createImage(result);
+        URL file = getClass().getResource(resourceName);
+        
+        if (file != null) {
+            return Toolkit.getDefaultToolkit().createImage(file);
+        } else {
+            return null;
         }
-        return null;
     }
 
     public PropertyDescriptor[] getPropertyDescriptors() {

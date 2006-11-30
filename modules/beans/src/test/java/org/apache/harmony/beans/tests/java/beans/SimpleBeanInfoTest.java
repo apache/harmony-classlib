@@ -88,5 +88,12 @@ public class SimpleBeanInfoTest extends TestCase {
         image = info.loadImage("/gif/test.gif");
         assertNotNull(image);
         assertTrue(image instanceof Image);
+
+        // regression for HARMONY-2241
+        info = new SimpleBeanInfo() {};
+        image = info.loadImage("testB.jpg");
+        assertNotNull(image);
+        assertTrue(image instanceof Image);
     }
+
 }
