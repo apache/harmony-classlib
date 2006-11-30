@@ -7,16 +7,11 @@ javax/swing/JFormattedTextField_CommitActionRTest.java
 javax/swing/JInternalFrame_MultithreadedTest.java
 javax/swing/JTextField_NotifyActionRTest.java
 javax/swing/ProgressMonitorTest.java
-javax/swing/RobotTestCase.java
-javax/swing/SerializableTestCase.java
 javax/swing/SpringTest.java
-javax/swing/SwingWaitTestCase.java
-javax/swing/TestBundle.java
 javax/swing/plaf/basic/BasicDesktopPaneUIActionsTest.java
 javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java
 javax/swing/plaf/basic/BasicOptionPaneUITest.java
 javax/swing/plaf/basic/BasicTreeUITest.java
-javax/swing/table/BasicSwingTableTestCase.java
 javax/swing/text/DefaultCaret_MultithreadedTest.java
 javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java
 javax/swing/text/FlowViewTest.java
@@ -31,7 +26,6 @@ javax/swing/text/StyleConstantsTest.java
 javax/swing/text/StyleContextTest.java
 javax/swing/text/StyledEditorKitTest.java
 javax/swing/text/TextAction_MultithreadedTest.java
-javax/swing/text/ViewTestHelpers.java
 javax/swing/text/View_ForwardUpdateRTest.java
 
 javax/swing/JComboBoxTest.java
@@ -137,5 +131,4 @@ javax/swing/plaf/basic/BasicColorChooserUITest.java
 javax/swing/text/View_VisualPositionTest.java
 javax/swing/text/View_VisualPosition_PartTest.java
 javax/swing/text/CompositeView_VisualPositionTest.java
-org/apache/harmony/swing/tests/javax/swing/text/parser/ContentModelCompatilityTestorg/apache/harmony/swing/tests/javax/swing/text/parser/ContentModelCompatilityTest.java
-
+org/apache/harmony/swing/tests/javax/swing/text/parser/ContentModelCompatilityTest.java
