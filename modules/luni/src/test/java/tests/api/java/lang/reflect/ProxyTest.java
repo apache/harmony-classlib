@@ -220,6 +220,64 @@ public class ProxyTest extends junit.framework.TestCase {
 		}
 		assertTrue("Did not detect non proxy object ", aborted);
 	}
+        
+    //Regression Test for HARMONY-2355
+    public void test_newProxyInstance_withCompatibleReturnTypes() {
+        Object o = Proxy
+                .newProxyInstance(this.getClass().getClassLoader(),
+                        new Class[] { ITestReturnObject.class,
+                                ITestReturnString.class },
+                        new TestProxyHandler(new TestProxyImpl()));
+        assertNotNull(o);
+    }
+
+    public void test_newProxyInstance_withNonCompatibleReturnTypes() {
+        try {
+            Proxy.newProxyInstance(this.getClass().getClassLoader(),
+                    new Class[] { ITestReturnInteger.class,
+                            ITestReturnString.class }, new TestProxyHandler(
+                            new TestProxyImpl()));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+    }
+
+    public static interface ITestReturnObject {
+        Object f();
+    }
+
+    public static interface ITestReturnString {
+        String f();
+    }
+
+    public static interface ITestReturnInteger {
+        Integer f();
+    }
+
+    public static class TestProxyImpl implements ITestReturnObject,
+            ITestReturnString {
+        public String f() {
+            // do nothing
+            return null;
+        }
+    }
+
+    public static class TestProxyHandler implements InvocationHandler {
+        private Object proxied;
+
+        public TestProxyHandler(Object object) {
+            proxied = object;
+        }
+
+        public Object invoke(Object object, Method method, Object[] args)
+                throws Throwable {
+            // do nothing
+            return method.invoke(proxied, args);
+        }
+
+    }
 
 	protected void setUp() {
 	}

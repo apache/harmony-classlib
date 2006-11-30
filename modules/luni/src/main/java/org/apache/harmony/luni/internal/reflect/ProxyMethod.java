@@ -77,9 +77,18 @@ class ProxyMethod {
             }
         }
 
-        if (method.getReturnType() != otherMethod.getReturnType()) {
-            throw new IllegalArgumentException(Msg.getString("K00f2", method.getName()));
-        }
+        Class<?> thisMethodReturnType = method.getReturnType();
+        Class<?> otherMethodReturnType = otherMethod.getReturnType();
+        if (!thisMethodReturnType.isAssignableFrom(otherMethodReturnType)) {
+            if (otherMethodReturnType.isAssignableFrom(thisMethodReturnType)) {
+                // substitute returnType of method with that of otherMethod
+                method = otherMethod;
+            } else {
+                throw new IllegalArgumentException(Msg.getString("K00f2",
+                        method.getName()));
+            }
+        }        
+        
         if (commonExceptions.length != 0) {
             Class[] otherExceptions = otherMethod.getExceptionTypes();
             if (otherExceptions.length == 0) {
@@ -119,4 +128,5 @@ class ProxyMethod {
         }
         return true;
     }
+
 }
