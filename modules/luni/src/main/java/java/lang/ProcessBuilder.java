@@ -19,7 +19,6 @@ package java.lang;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +65,7 @@ public final class ProcessBuilder {
             throw new NullPointerException();
         }
         this.command = command;
-        this.environment = new ProcessHashMap<String, String>(System.getenv());
+        this.environment = new org.apache.harmony.luni.platform.Environment.EnvironmentMap(System.getenv());
     }
 
     /**
@@ -215,30 +214,6 @@ public final class ProcessBuilder {
         Process process = Runtime.getRuntime().exec(cmdArray, envArray, directory);
         // TODO implement support for redirectErrorStream
         return process;
-    }
-    
-    private static class ProcessHashMap<K, V> extends HashMap<K, V> {
-
-        public ProcessHashMap(Map<K, V> env) {
-            super(env);
-        }
-        @Override
-        public V put(K key, V value) {
-            if(key == null || value == null){
-                throw new NullPointerException();
-            }
-            return super.put(key, value);
-        }
-        @Override
-        public V get(Object key) {
-            if(key == null){
-                throw new NullPointerException();
-            }
-            if(!(key instanceof String)){
-                throw new ClassCastException(key.getClass().getName());
-            }
-            return super.get(key);
-        }
     }
 }
 

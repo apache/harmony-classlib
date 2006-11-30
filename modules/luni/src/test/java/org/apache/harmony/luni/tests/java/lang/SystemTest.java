@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.Properties;
 
 public class SystemTest extends junit.framework.TestCase {
@@ -299,6 +300,88 @@ public class SystemTest extends junit.framework.TestCase {
 			System.setProperties(orgProps);
 		}
 	}
+    
+    //Regression Test for Harmony-2356
+    public void testEnvUnmodifiable() {
+        Map map = System.getenv();
+        try {
+            map.containsKey(null);
+            fail("Should throw NullPointerExcepiton.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            map.containsKey(new Integer(10));
+            fail("Should throw ClassCastException.");
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        try {
+            map.containsValue(null);
+            fail("Should throw NullPointerExcepiton.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            map.containsValue(new Integer(10));
+            fail("Should throw ClassCastException.");
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        try {
+            map.get(null);
+            fail("Should throw NullPointerExcepiton.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            map.get(new Integer(10));
+            fail("Should throw ClassCastException.");
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        try {
+            map.put(null, "AAA");
+            fail("Should throw UnsupportedOperationExcepiton.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            map.put("AAA", new Integer(10));
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            map.put("AAA", "BBB");
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            map.clear();
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            map.remove(null);
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+    }
 
 	@Override
     protected void setUp() {
