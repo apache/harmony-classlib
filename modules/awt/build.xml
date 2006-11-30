@@ -301,7 +301,7 @@
                 unless="test.case">
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
-                    <include name="**/*Test*.java"/>
+                    <include name="**/*Test.java"/>
                     <excludesfile name="${exclude.file}" />
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">

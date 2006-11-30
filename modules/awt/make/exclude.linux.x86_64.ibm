@@ -1,12 +1,6 @@
 java/awt/ToolkitRTest.java
-java/awt/AWTTestCase.java
 java/awt/ButtonTest.java
-java/awt/SerializeTestCase.java
 java/awt/geom/ShapeTest.java
-java/awt/geom/ShapeTestCase.java
-java/awt/geom/GeomTestCase.java
-java/awt/geom/PathIteratorTestCase.java
-org/apache/harmony/awt/gl/MultiRectAreaTestCase.java
 java/awt/MenuTest.java
 java/awt/AccessibleAWTCanvasTest.java
 java/awt/AccessibleAWTComponentTest.java
