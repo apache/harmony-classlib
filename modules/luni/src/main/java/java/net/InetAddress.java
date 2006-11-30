@@ -792,6 +792,10 @@ public class InetAddress extends Object implements Serializable {
                 reachable = isReachableByTCP(this, null, timeout);
             }
         } else {
+            //Not Bind to any address
+            if (null == netif.addresses) {
+                return false;
+            }                               
             // binds to all address on this NetworkInterface, tries ICMP ping
             // first
             reachable = isReachableByICMPUseMultiThread(netif, ttl, timeout);
@@ -813,20 +817,42 @@ public class InetAddress extends Object implements Serializable {
         Enumeration<InetAddress> addresses = netif.getInetAddresses();
         reached = false;
         addrCount = netif.addresses.length;
+        boolean needWait = false;
         while (addresses.hasMoreElements()) {
             final InetAddress addr = addresses.nextElement();
+            
+            //loopback interface can only reach to local addresses
+            if(addr.isLoopbackAddress())
+            {
+                Enumeration<NetworkInterface> NetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+                while(NetworkInterfaces.hasMoreElements())
+                {
+                    NetworkInterface networkInterface = NetworkInterfaces.nextElement();
+                    Enumeration<InetAddress> localAddresses = networkInterface.getInetAddresses();
+                    while(localAddresses.hasMoreElements())
+                    {
+                        if(InetAddress.this.equals(localAddresses.nextElement()))
+                        {
+                            return true;
+                        }
+                    }                    
+                }
+                continue;
+            }
+            
+            needWait = true;
             new Thread() {
                 @Override
                 public void run() {
                     boolean threadReached = false;
                     // if isICMP, tries ICMP ping, else TCP echo
                     if (isICMP) {
-                        threadReached = NETIMPL.isReachableByICMP(addr,
-                                InetAddress.this, ttl, timeout);
+                        threadReached = NETIMPL.isReachableByICMP(
+                                InetAddress.this, addr, ttl, timeout);
                     } else {
                         try {
-                            threadReached = isReachableByTCP(addr,
-                                    InetAddress.this, timeout);
+                            threadReached = isReachableByTCP(
+                                    InetAddress.this, addr, timeout);
                         } catch (IOException e) {
                             // do nothing
                         }
@@ -850,14 +876,20 @@ public class InetAddress extends Object implements Serializable {
                 }
             }.start();
         }
-        synchronized (waitReachable) {
-            try {
-                // wait for notification
-                waitReachable.wait();
-            } catch (InterruptedException e) {
-                // do nothing
+        
+        if (needWait) {
+            synchronized (waitReachable) {
+                try {
+                    // wait for notification
+                    waitReachable.wait();
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+                return reached;
             }
-            return reached;
+        }
+        else {
+            return false;
         }
     }    
 

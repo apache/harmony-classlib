@@ -17,12 +17,16 @@
 
 package org.apache.harmony.luni.tests.java.net;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
@@ -500,6 +504,41 @@ public class InetAddressTest extends junit.framework.TestCase {
             assertEquals(initAddr.getHostName(), desrAddr.getHostName());
         }
     };
+    
+    // Regression Test for Harmony-2290
+    public void test_isReachableLjava_net_NetworkInterfaceII_loopbackInterface() throws IOException {
+        final int TTL = 20;
+        final int TIME_OUT = 3000;
+        
+        NetworkInterface loopbackInterface = null;
+        ArrayList<InetAddress> localAddresses = new ArrayList<InetAddress>();
+        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface
+                .getNetworkInterfaces();
+        while (networkInterfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = networkInterfaces.nextElement();
+            Enumeration<InetAddress> addresses = networkInterface
+                    .getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                if (address.isLoopbackAddress()) {
+                    loopbackInterface = networkInterface;
+                } else {
+                    localAddresses.add(address);
+                }
+            }
+        }
+
+        //loopbackInterface can reach local address
+        if (null != loopbackInterface) {
+            for (InetAddress destAddress : localAddresses) {
+                assertTrue(destAddress.isReachable(loopbackInterface, TTL, TIME_OUT));
+            }
+        }
+
+        //loopback Interface cannot reach outside address
+        InetAddress destAddress = InetAddress.getByName("www.google.com");
+        assertFalse(destAddress.isReachable(loopbackInterface, TTL, TIME_OUT));
+    }
 
     /**
      * @tests serialization/deserialization compatibility.
