@@ -90,6 +90,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <src>
                 <pathelement location="${hy.awt.src.main.java}"/>
                 <pathelement location="${hy.awt.src.main.java.platform}" />
@@ -236,6 +238,8 @@
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
 
             <src>
                 <pathelement location="${hy.awt.src.test.api}/java/common" />

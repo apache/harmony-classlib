@@ -125,6 +125,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <src>
                 <pathelement location="${hy.security.src.main.java}"/>
                 <pathelement location="${hy.security.src.main.java.platform}" />
@@ -374,6 +376,8 @@
                debug="${hy.javac.debug}">
 
                 <javac-elements />
+
+                <compilerarg line="${build.compilerarg}" />
 
                 <bootclasspath>
                     <fileset dir="${hy.jdk}/jre/lib/boot">

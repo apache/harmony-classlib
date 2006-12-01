@@ -80,6 +80,9 @@
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
             <src path="src/main/java" />
             <src path="standard/src/main/java" />
             <bootclasspath>
@@ -127,6 +130,9 @@
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
             <src path="src/test/java" />
             <src path="standard/src/test/java" />
             <bootclasspath>

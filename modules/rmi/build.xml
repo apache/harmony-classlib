@@ -79,6 +79,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -186,6 +188,8 @@
                debug="${hy.javac.debug}">
 
                 <javac-elements />
+
+                <compilerarg line="${build.compilerarg}" />
 
                 <bootclasspath>
                     <fileset dir="${hy.jdk}/jre/lib/boot">
