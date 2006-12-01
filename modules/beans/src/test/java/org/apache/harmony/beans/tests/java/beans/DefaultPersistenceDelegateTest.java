@@ -475,7 +475,6 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
         MockFoo oldBean;
         MockFoo newBean;
-        MockFooLabel complexLabel;
 
         enc = new CollectingEncoder();
         oldBean = new MockFoo();
@@ -718,6 +717,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * Mock bean with no getter.
      */
     public static class MockNoGetterBean extends MockFoo {
+        private static final long serialVersionUID = 5528972237047564849L;
+
         public void setII(Integer i) {
         }
     }
@@ -794,6 +795,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * Mock bean with a transient property.
      */
     public static class MockTransientBean extends MockFoo {
+
+        private static final long serialVersionUID = 6924332068595493238L;
     }
 
     /*

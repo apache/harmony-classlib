@@ -15,20 +15,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
 import java.util.EventObject;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
-
 public class MisprintEvent extends EventObject {
+
+    private static final long serialVersionUID = 6237503200476618235L;
 
     public MisprintEvent(Object object) {
         super(object);

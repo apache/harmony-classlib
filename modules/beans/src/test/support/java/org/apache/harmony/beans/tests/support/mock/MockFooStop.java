@@ -23,19 +23,14 @@ import java.io.Serializable;
  * test Introspector
  */
 public class MockFooStop implements Serializable {
+    private static final long serialVersionUID = -3007105946173048551L;
+
     private String label;
 
-    /**
-     * @return Returns the label.
-     */
     public String getLabel() {
         return label;
     }
 
-    /**
-     * @param label
-     *            The label to set.
-     */
     public void setLabel(String label) {
         this.label = label;
     }

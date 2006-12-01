@@ -952,6 +952,7 @@ public class BeanContextSupportTest extends TestCase {
         // Regression for HARMONY-1393
         class TestBeanException extends BeanContextChildSupport implements
                 BeanContextProxy {
+            private static final long serialVersionUID = -8544245159647566063L;
             private final BeanContextChildSupport childSupport = new BeanContextChildSupport();
 
             public BeanContextChild getBeanContextProxy() {

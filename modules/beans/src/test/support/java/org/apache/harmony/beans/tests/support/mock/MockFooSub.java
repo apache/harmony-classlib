@@ -22,32 +22,25 @@ package org.apache.harmony.beans.tests.support.mock;
  */
 public class MockFooSub extends MockFooChild {
 
+    private static final long serialVersionUID = -6190124759553440748L;
+
     private String text;
 
-    /**
-     * @return Returns the text.
-     */
     public String getText() {
         return text;
     }
 
-    /**
-     * @param text
-     *            The text to set.
-     */
     public void setText(String text) {
         this.text = text;
     }
 
     @Override
-    public void addMockPropertyChangeListener(
-            MockPropertyChangeListener listener) {
+    public void addMockPropertyChangeListener(MockPropertyChangeListener listener) {
 
     }
 
     @Override
-    public void removeMockPropertyChangeListener(
-            MockPropertyChangeListener listener) {
+    public void removeMockPropertyChangeListener(MockPropertyChangeListener listener) {
 
     }
 }

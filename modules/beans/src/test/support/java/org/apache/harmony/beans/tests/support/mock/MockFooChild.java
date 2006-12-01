@@ -21,30 +21,23 @@ package org.apache.harmony.beans.tests.support.mock;
  * test Introspector
  */
 public class MockFooChild extends MockFoo {
+    private static final long serialVersionUID = -5817959822261385626L;
+
     private String childName;
 
-    /**
-     * @return Returns the childName.
-     */
     public String getChildName() {
         return childName;
     }
 
-    /**
-     * @param childName
-     *            The childName to set.
-     */
     public void setChildName(String childName) {
         this.childName = childName;
     }
 
-    public void addMockPropertyChangeListener(
-            MockPropertyChangeListener listener) {
+    public void addMockPropertyChangeListener(MockPropertyChangeListener listener) {
 
     }
 
-    public void removeMockPropertyChangeListener(
-            MockPropertyChangeListener listener) {
+    public void removeMockPropertyChangeListener(MockPropertyChangeListener listener) {
 
     }
 }

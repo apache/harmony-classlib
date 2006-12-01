@@ -136,6 +136,7 @@ public class BeanContextSupportTest extends TestCase {
      * Test method bcsChildren() with no parameters.
      * <p>
      */
+    @SuppressWarnings("unchecked")
     public void testBcsChildren() {
         BeanContextSupport sup = new BeanContextSupport();
         sup.add(new BeanContextChildSupport());

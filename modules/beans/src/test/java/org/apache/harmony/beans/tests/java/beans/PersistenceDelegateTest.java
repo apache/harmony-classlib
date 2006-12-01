@@ -36,11 +36,6 @@ import org.apache.harmony.beans.tests.support.mock.MockFooStop;
  */
 public class PersistenceDelegateTest extends TestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
     /*
      * Test the constructor.
      */
@@ -321,7 +316,7 @@ public class PersistenceDelegateTest extends TestCase {
         public MockPersistenceDelegate2() {}
         
         public MockPersistenceDelegate2(boolean mutatesToFlag) {
-            this.mutatesToFlag = mutatesToFlag;
+            this.mutatesToFlag = Boolean.valueOf(mutatesToFlag);
         }
 
         @Override
@@ -342,7 +337,7 @@ public class PersistenceDelegateTest extends TestCase {
             methods.push("mutatesTo");
 
             if (mutatesToFlag != null) {
-                return mutatesToFlag;
+                return mutatesToFlag.booleanValue();
             }
             return super.mutatesTo(oldInstance, newInstance);
         }

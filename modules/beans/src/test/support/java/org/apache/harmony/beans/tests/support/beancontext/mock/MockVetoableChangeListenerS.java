@@ -25,8 +25,9 @@ import java.io.Serializable;
 /**
  * Mock of VetoableChangeListener
  */
-public class MockVetoableChangeListenerS implements VetoableChangeListener,
-        Serializable {
+public class MockVetoableChangeListenerS implements VetoableChangeListener, Serializable {
+
+    private static final long serialVersionUID = -455571860616755790L;
 
     public PropertyChangeEvent lastEvent;
 
@@ -40,13 +41,7 @@ public class MockVetoableChangeListenerS implements VetoableChangeListener,
         lastEvent = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-     */
-    public void vetoableChange(PropertyChangeEvent evt)
-            throws PropertyVetoException {
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
         lastEvent = evt;
     }
 

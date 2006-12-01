@@ -48,16 +48,10 @@ public class EventHandlerTest extends TestCase {
 
     private final String text = "something";
 
-    /**
-     * 
-     */
     public EventHandlerTest() {
         super();
     }
 
-    /**
-     * 
-     */
     public EventHandlerTest(String name) {
         super(name);
     }
@@ -991,7 +985,7 @@ public class EventHandlerTest extends TestCase {
                 PropertyChangeListener.class, bean, "goodProp3", "source.prop2");
         try { 
             ((PropertyChangeListener) proxy).propertyChange( 
-                    new PropertyChangeEvent(bean, "goodProp3", true, false)); 
+                    new PropertyChangeEvent(bean, "goodProp3", Boolean.TRUE, Boolean.FALSE)); 
             fail(); 
         } catch (Exception e) { 
             // expected 

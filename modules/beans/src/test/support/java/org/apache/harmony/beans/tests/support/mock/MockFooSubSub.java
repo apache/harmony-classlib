@@ -22,19 +22,14 @@ package org.apache.harmony.beans.tests.support.mock;
  */
 public class MockFooSubSub extends MockFooSub {
 
+    private static final long serialVersionUID = 2473405304400125998L;
+
     private int flags;
 
-    /**
-     * @return Returns the flags.
-     */
     public int getFlags() {
         return flags;
     }
 
-    /**
-     * @param flags
-     *            The flags to set.
-     */
     public void setFlags(int flags) {
         this.flags = flags;
     }

@@ -15,18 +15,11 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
-
 public class SampleException extends Exception {
+
+    private static final long serialVersionUID = 8001501122369182728L;
 
     public SampleException(String msg) {
     }

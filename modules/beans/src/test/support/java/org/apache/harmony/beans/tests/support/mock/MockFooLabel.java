@@ -23,29 +23,26 @@ import java.io.Serializable;
  * Test the default bean info search path.
  */
 public class MockFooLabel implements Serializable {
+    private static final long serialVersionUID = -1305056517480261922L;
+
     private String text;
 
-    public MockFooLabel() {}
-    
-    public MockFooLabel(String text) {
-        this.text = text; 
+    public MockFooLabel() {
     }
-    
-    /**
-     * @return Returns the text.
-     */
+
+    public MockFooLabel(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }
 
-    /**
-     * @param text
-     *            The text to set.
-     */
     public void setText(String text) {
         this.text = text;
     }
-    
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof MockFooLabel) {
             return false;

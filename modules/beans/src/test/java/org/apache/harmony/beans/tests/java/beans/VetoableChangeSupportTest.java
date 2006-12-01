@@ -1565,8 +1565,8 @@ public class VetoableChangeSupportTest extends TestCase {
         } catch (PropertyVetoException ok) {
         }
 
-        assertEquals(1, vlistener.event.getOldValue());
-        assertEquals(0, vlistener.event.getNewValue());
+        assertEquals(Integer.valueOf(1), vlistener.event.getOldValue());
+        assertEquals(Integer.valueOf(0), vlistener.event.getNewValue());
     }
 
     /*
@@ -1669,6 +1669,8 @@ public class VetoableChangeSupportTest extends TestCase {
     }
 
     public static class MockSource implements Serializable {
+
+        private static final long serialVersionUID = 2592367737991345105L;
 
         private String name;
 

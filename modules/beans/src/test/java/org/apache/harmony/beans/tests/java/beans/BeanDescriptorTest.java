@@ -135,6 +135,8 @@ public class BeanDescriptorTest extends TestCase {
 
     class MyCustomizer extends Component implements Customizer {
 
+        private static final long serialVersionUID = 76060185562822787L;
+
         HashSet<PropertyChangeListener> listeners;
 
         Object bean;

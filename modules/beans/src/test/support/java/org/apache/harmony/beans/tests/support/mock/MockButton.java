@@ -25,6 +25,8 @@ import java.io.Serializable;
  * This is a mock bean for EventHandler test.
  */
 public class MockButton implements Serializable {
+    private static final long serialVersionUID = 9216444906795513297L;
+
     String name;
 
     String label;
@@ -43,33 +45,19 @@ public class MockButton implements Serializable {
         this.support.addPropertyChangeListener(listener);
     }
 
-    /**
-     * @return Returns the label.
-     */
     public String getLabel() {
         return label;
     }
 
-    /**
-     * @param label
-     *            The label to set.
-     */
     public void setLabel(String label) {
         this.support.firePropertyChange("label", this.label, label);
         this.label = label;
     }
 
-    /**
-     * @return Returns the name.
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @param name
-     *            The name to set.
-     */
     public void setName(String name) {
         this.name = name;
     }

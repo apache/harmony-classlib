@@ -237,10 +237,10 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
             } else if (method.getName().equals("getProp")) {
                 return new Integer(i);
             } else if (method.getName().equals("hashCode")) {
-                return this.hashCode() + 113;
+                return Integer.valueOf(this.hashCode() + 113);
             } else if (method.getName().equals("equals") && args.length == 1) {
-                return proxy.getClass().getName().equals(
-                        args[0].getClass().getName());
+                return Boolean.valueOf(proxy.getClass().getName().equals(
+                        args[0].getClass().getName()));
             }
             return null;
         }

@@ -23,6 +23,8 @@ import java.applet.Applet;
  * test java.beans.Beans
  */
 public class MockAppletBean extends Applet {
+    private static final long serialVersionUID = -1501701773486783824L;
+
     private String propertyOne;
 
     private boolean initBeenCalled;
@@ -41,17 +43,10 @@ public class MockAppletBean extends Applet {
         this.initBeenCalled = value;
     }
 
-    /**
-     * @return Returns the propertyOne.
-     */
     public String getPropertyOne() {
         return propertyOne;
     }
 
-    /**
-     * @param propertyOne
-     *            The propertyOne to set.
-     */
     public void setPropertyOne(String propertyOne) {
         this.propertyOne = propertyOne;
     }

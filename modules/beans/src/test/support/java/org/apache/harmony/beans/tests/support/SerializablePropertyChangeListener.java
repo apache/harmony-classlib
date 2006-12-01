@@ -15,23 +15,15 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
+public class SerializablePropertyChangeListener implements PropertyChangeListener, Serializable {
 
-public class SerializablePropertyChangeListener implements
-        PropertyChangeListener, Serializable {
+    private static final long serialVersionUID = -4159288131626418260L;
 
     public void propertyChange(PropertyChangeEvent event) {
     }

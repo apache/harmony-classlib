@@ -15,20 +15,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
 import java.io.Serializable;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public class SerializableBean implements Serializable {
+
+    private static final long serialVersionUID = -753653007843975743L;
 
     private int value;
 

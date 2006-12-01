@@ -143,7 +143,7 @@ public class IntrospectorTest extends TestCase {
         for (EventSetDescriptor descriptor : descriptors) {
             Method m = descriptor.getAddListenerMethod();
             if (m != null) {
-                Class[] exceptionTypes = m.getExceptionTypes();
+                Class<?>[] exceptionTypes = m.getExceptionTypes();
                 boolean found = false;
 
                 for (Class<?> et : exceptionTypes) {

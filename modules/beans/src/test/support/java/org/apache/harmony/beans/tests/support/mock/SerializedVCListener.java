@@ -25,8 +25,9 @@ import java.io.Serializable;
 /**
  * test VetoableChangeSupport
  */
-public class SerializedVCListener implements Serializable,
-        VetoableChangeListener {
+public class SerializedVCListener implements Serializable, VetoableChangeListener {
+
+    private static final long serialVersionUID = -3110366593959548316L;
 
     String propertyName;
 
@@ -43,19 +44,11 @@ public class SerializedVCListener implements Serializable,
         }
 
         SerializedVCListener other = (SerializedVCListener) o;
-        return ((this.name == null ? other.name == null : this.name
-                .equals(other.name)) && (this.propertyName == null ? other.propertyName == null
+        return ((this.name == null ? other.name == null : this.name.equals(other.name)) && (this.propertyName == null ? other.propertyName == null
                 : this.propertyName.equals(other.propertyName)));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-     */
-    public void vetoableChange(PropertyChangeEvent event)
-            throws PropertyVetoException {
-        // TODO Auto-generated method stub
+    public void vetoableChange(PropertyChangeEvent event) throws PropertyVetoException {
 
     }
 

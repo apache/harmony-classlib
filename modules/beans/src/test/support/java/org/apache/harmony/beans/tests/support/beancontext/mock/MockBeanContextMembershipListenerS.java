@@ -24,8 +24,10 @@ import java.io.Serializable;
 /**
  * Mock of BeanContextMembershipListener
  */
-public class MockBeanContextMembershipListenerS implements
-        BeanContextMembershipListener, Serializable {
+public class MockBeanContextMembershipListenerS implements BeanContextMembershipListener,
+        Serializable {
+
+    private static final long serialVersionUID = -7929429772961643840L;
 
     public String id;
 
@@ -45,21 +47,11 @@ public class MockBeanContextMembershipListenerS implements
         lastEvent = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextMembershipListener#childrenAdded(java.beans.beancontext.BeanContextMembershipEvent)
-     */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         lastEventAdd = true;
         lastEvent = bcme;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextMembershipListener#childrenRemoved(java.beans.beancontext.BeanContextMembershipEvent)
-     */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         lastEventRemove = true;
         lastEvent = bcme;

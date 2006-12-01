@@ -186,34 +186,32 @@ public class StatementTest extends TestCase {
         public char getChar(int idx) throws IllegalAccessException {
             if (text == null) {
                 throw new IllegalAccessException("Text property is null.");
-            } else {
-                return text.charAt(idx);
             }
+            return text.charAt(idx);
         }
 
         public void setChar(int idx, char value) throws IllegalAccessException {
             if (text == null) {
                 throw new IllegalAccessException("Text property is null.");
-            } else {
-                // IndexOutOfBounds exception is thrown if indexed bounds
-                // are violated
-                StringBuffer sb = new StringBuffer(text.length());
-
-                if (idx < 0 || idx >= text.length()) {
-                    throw new IndexOutOfBoundsException();
-                }
-
-                if (idx > 0) {
-                    sb.append(text.substring(0, idx));
-                }
-                sb.append(value);
-
-                if (idx < (text.length() - 1)) {
-                    sb.append(text.substring(idx + 1));
-                }
-
-                text = sb.toString();
             }
+            // IndexOutOfBounds exception is thrown if indexed bounds
+            // are violated
+            StringBuffer sb = new StringBuffer(text.length());
+
+            if (idx < 0 || idx >= text.length()) {
+                throw new IndexOutOfBoundsException();
+            }
+
+            if (idx > 0) {
+                sb.append(text.substring(0, idx));
+            }
+            sb.append(value);
+
+            if (idx < (text.length() - 1)) {
+                sb.append(text.substring(idx + 1));
+            }
+
+            text = sb.toString();
         }
     }
 
@@ -952,6 +950,7 @@ public class StatementTest extends TestCase {
             throw new NullPointerException();
         }
 
+        @SuppressWarnings("unchecked")
         public MockObject(Object o, Vector v, Class c) {
             reset();
             calledMethod = "new5";
@@ -1029,7 +1028,7 @@ public class StatementTest extends TestCase {
         // receivedArguments.add(o2);
         // }
 
-        public static Class forName(String o) {
+        public static Class<?> forName(String o) {
             reset();
             calledMethod = "forName";
             receivedArguments.add(o);

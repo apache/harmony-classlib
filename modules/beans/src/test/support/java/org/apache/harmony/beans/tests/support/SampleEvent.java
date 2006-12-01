@@ -15,20 +15,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package org.apache.harmony.beans.tests.support;
 
 import java.util.EventObject;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public class SampleEvent extends EventObject {
+
+    private static final long serialVersionUID = 5298423873363309034L;
 
     private final int i = 7;
 

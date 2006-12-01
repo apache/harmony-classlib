@@ -173,7 +173,7 @@ public class BeanContextServicesSupportTest extends TestCase {
     public void testHasServiceClass() {
         // Instantiate services and add service
         BeanContextServicesSupport sup = new BeanContextServicesSupport();
-        Class cl = new Object().getClass();
+        Class<?> cl = new Object().getClass();
         sup.addService(cl, getProvider(), true);
 
         assertTrue("Service not found", sup.hasService(cl));
@@ -277,10 +277,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     /**
      * Fake implementation of provider
      */
+    @SuppressWarnings("unchecked")
     private BeanContextServiceProvider getProvider() {
 
         return new BeanContextServiceProvider() {
-
+            
             public java.util.Iterator getCurrentServiceSelectors(
                     BeanContextServices bcs, Class serviceClass) {
 

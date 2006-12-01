@@ -26,6 +26,8 @@ import java.io.Serializable;
  */
 public class MockBeanContextProxyS implements BeanContextProxy, Serializable {
 
+    private static final long serialVersionUID = 1003496111741970301L;
+
     private String id;
 
     private BeanContextChild bcc;
@@ -49,11 +51,6 @@ public class MockBeanContextProxyS implements BeanContextProxy, Serializable {
         return id.hashCode() + bcc.hashCode();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextProxy#getBeanContextProxy()
-     */
     public BeanContextChild getBeanContextProxy() {
         return bcc;
     }

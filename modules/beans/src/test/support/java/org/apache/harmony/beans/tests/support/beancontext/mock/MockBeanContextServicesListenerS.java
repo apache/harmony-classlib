@@ -25,8 +25,10 @@ import java.io.Serializable;
 /**
  * Mock of BeanContextServicesListener
  */
-public class MockBeanContextServicesListenerS implements
-        BeanContextServicesListener, Serializable {
+public class MockBeanContextServicesListenerS implements BeanContextServicesListener,
+        Serializable {
+
+    private static final long serialVersionUID = -2513090204796560433L;
 
     public String id;
 
@@ -34,22 +36,12 @@ public class MockBeanContextServicesListenerS implements
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
-     */
     public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-        // nothing
+
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
-     */
     public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-        // nothing
+
     }
 
 }

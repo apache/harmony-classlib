@@ -24,8 +24,9 @@ import java.io.Serializable;
 /**
  * Mock of PropertyChangeListener
  */
-public class MockPropertyChangeListenerS implements PropertyChangeListener,
-        Serializable {
+public class MockPropertyChangeListenerS implements PropertyChangeListener, Serializable {
+
+    private static final long serialVersionUID = 2047816547264017403L;
 
     public PropertyChangeEvent lastEvent;
 
@@ -39,11 +40,6 @@ public class MockPropertyChangeListenerS implements PropertyChangeListener,
         lastEvent = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
     public void propertyChange(PropertyChangeEvent evt) {
         lastEvent = evt;
     }

@@ -28,8 +28,9 @@ import java.io.Serializable;
 /**
  * Delegate to BeanContextChildSupport
  */
-public class MockBeanContextChildDelegateS implements BeanContextChild,
-        Serializable {
+public class MockBeanContextChildDelegateS implements BeanContextChild, Serializable {
+
+    private static final long serialVersionUID = -8741207393863151473L;
 
     public String id;
 
@@ -39,53 +40,26 @@ public class MockBeanContextChildDelegateS implements BeanContextChild,
         this.id = id;
     }
 
-    /**
-     * @param name
-     * @param pcl
-     */
-    public void addPropertyChangeListener(String name,
-            PropertyChangeListener pcl) {
+    public void addPropertyChangeListener(String name, PropertyChangeListener pcl) {
         support.addPropertyChangeListener(name, pcl);
     }
 
-    /**
-     * @param name
-     * @param vcl
-     */
-    public void addVetoableChangeListener(String name,
-            VetoableChangeListener vcl) {
+    public void addVetoableChangeListener(String name, VetoableChangeListener vcl) {
         support.addVetoableChangeListener(name, vcl);
     }
 
-    /**
-     * @return
-     */
     public BeanContext getBeanContext() {
         return support.getBeanContext();
     }
 
-    /**
-     * @param name
-     * @param pcl
-     */
-    public void removePropertyChangeListener(String name,
-            PropertyChangeListener pcl) {
+    public void removePropertyChangeListener(String name, PropertyChangeListener pcl) {
         support.removePropertyChangeListener(name, pcl);
     }
 
-    /**
-     * @param name
-     * @param vcl
-     */
-    public void removeVetoableChangeListener(String name,
-            VetoableChangeListener vcl) {
+    public void removeVetoableChangeListener(String name, VetoableChangeListener vcl) {
         support.removeVetoableChangeListener(name, vcl);
     }
 
-    /**
-     * @param bc
-     * @throws java.beans.PropertyVetoException
-     */
     public void setBeanContext(BeanContext bc) throws PropertyVetoException {
         support.setBeanContext(bc);
     }

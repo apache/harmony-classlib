@@ -23,19 +23,14 @@ import java.io.Serializable;
  * Test the default bean info search path.
  */
 public class MockFooButton implements Serializable {
+    private static final long serialVersionUID = -2605949066932919527L;
+
     private String text;
 
-    /**
-     * @return Returns the text.
-     */
     public String getText() {
         return text;
     }
 
-    /**
-     * @param text
-     *            The text to set.
-     */
     public void setText(String text) {
         this.text = text;
     }

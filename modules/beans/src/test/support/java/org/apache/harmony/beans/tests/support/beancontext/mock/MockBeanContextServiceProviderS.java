@@ -26,8 +26,10 @@ import java.util.Iterator;
  * Mock of BeanContextServiceProvider
  */
 @SuppressWarnings("unchecked")
-public class MockBeanContextServiceProviderS implements
-        BeanContextServiceProvider, Serializable {
+public class MockBeanContextServiceProviderS implements BeanContextServiceProvider,
+        Serializable {
+
+    private static final long serialVersionUID = -4704593364692129549L;
 
     public String id;
 
@@ -35,34 +37,15 @@ public class MockBeanContextServiceProviderS implements
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextServiceProvider#getService(java.beans.beancontext.BeanContextServices,
-     *      java.lang.Object, java.lang.Class, java.lang.Object)
-     */
-    public Object getService(BeanContextServices bcs, Object requestor,
-            Class serviceClass, Object serviceSelector) {
+    public Object getService(BeanContextServices bcs, Object requestor, Class serviceClass,
+            Object serviceSelector) {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextServiceProvider#releaseService(java.beans.beancontext.BeanContextServices,
-     *      java.lang.Object, java.lang.Object)
-     */
-    public void releaseService(BeanContextServices bcs, Object requestor,
-            Object service) {
+    public void releaseService(BeanContextServices bcs, Object requestor, Object service) {
         // nothing
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.beancontext.BeanContextServiceProvider#getCurrentServiceSelectors(java.beans.beancontext.BeanContextServices,
-     *      java.lang.Class)
-     */
     public Iterator<Object> getCurrentServiceSelectors(BeanContextServices bcs,
             Class serviceClass) {
         return null;

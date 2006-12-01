@@ -112,6 +112,7 @@ public class XMLEncoderTest extends TestCase {
             return result;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public PersistenceDelegate getPersistenceDelegate(Class type) {
             PersistenceDelegate result = super.getPersistenceDelegate(type);
@@ -305,10 +306,9 @@ public class XMLEncoderTest extends TestCase {
             public void close() throws IOException {
                 if (closeCalled) {
                     throw new IOException("close already called!");
-                } else {
-                    closeCalled = true;
-                    super.close();
                 }
+                closeCalled = true;
+                super.close();
             }
         };
         XMLEncoder enc = new XMLEncoder(out);
@@ -725,6 +725,7 @@ public class XMLEncoderTest extends TestCase {
             final Object object = new Object();
             e.setPersistenceDelegate(AType.class,
                     new DefaultPersistenceDelegate() {
+                        @SuppressWarnings("unchecked")
                         @Override
                         protected void initialize(Class type,
                                 Object oldInstance, Object newInstance,

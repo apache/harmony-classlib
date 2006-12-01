@@ -1291,6 +1291,8 @@ public class PropertyChangeSupportTest extends TestCase {
     static class MockPropertyChangeListener implements PropertyChangeListener,
             Serializable {
 
+        private static final long serialVersionUID = 161877638385579731L;
+
         private transient Object expSrc;
 
         private String expPropName;
@@ -1386,6 +1388,7 @@ public class PropertyChangeSupportTest extends TestCase {
     /**
      * Regression test for concurrent modification of listener set
      */
+    @SuppressWarnings("unused")
     public void testConcurrentModification() {
         PropertyChangeSupport changeSupport = new PropertyChangeSupport("bogus");
         MockPropertyChangeListener3 changeListener = new MockPropertyChangeListener3(
