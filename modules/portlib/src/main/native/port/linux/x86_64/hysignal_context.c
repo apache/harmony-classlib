@@ -165,6 +165,46 @@ infoForGPR (struct HyPortLibrary *portLibrary,
       *name = "RDX";
       *value = &info->platformSignalInfo.sigContext->rdx;
       return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R8:
+    case 6:
+      *name = "R8";
+      *value = &info->platformSignalInfo.sigContext->r8;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R9:
+    case 7:
+      *name = "R9";
+      *value = &info->platformSignalInfo.sigContext->r9;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R10:
+    case 8:
+      *name = "R10";
+      *value = &info->platformSignalInfo.sigContext->r10;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R11:
+    case 9:
+      *name = "R11";
+      *value = &info->platformSignalInfo.sigContext->r11;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R12:
+    case 10:
+      *name = "R12";
+      *value = &info->platformSignalInfo.sigContext->r12;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R13:
+    case 11:
+      *name = "R13";
+      *value = &info->platformSignalInfo.sigContext->r13;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R14:
+    case 12:
+      *name = "R14";
+      *value = &info->platformSignalInfo.sigContext->r14;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case HYPORT_SIG_GPR_AMD64_R15:
+    case 13:
+      *name = "R15";
+      *value = &info->platformSignalInfo.sigContext->r15;
+      return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
@@ -187,6 +227,14 @@ infoForControl (struct HyPortLibrary *portLibrary,
       *name = "RIP";
       *value = (void *) &(info->platformSignalInfo.sigContext->rip);
       return HYPORT_SIG_VALUE_ADDRESS;
+    case 1:
+      *name = "GS";
+      *value = (void *) &(info->platformSignalInfo.sigContext->gs);
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case 2:
+      *name = "FS";
+      *value = (void *) &(info->platformSignalInfo.sigContext->fs);
+      return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_CONTROL_SP:
     case 3:
       *name = "RSP";
@@ -204,6 +252,22 @@ infoForControl (struct HyPortLibrary *portLibrary,
     case 6:
       *name = "RBP";
       *value = &info->platformSignalInfo.sigContext->rbp;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case 7:
+      *name = "ERR";
+      *value = &info->platformSignalInfo.sigContext->err;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case 8:
+      *name = "TRAPNO";
+      *value = &info->platformSignalInfo.sigContext->trapno;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case 9:
+      *name = "OLDMASK";
+      *value = &info->platformSignalInfo.sigContext->oldmask;
+      return HYPORT_SIG_VALUE_ADDRESS;
+    case 10:
+      *name = "CR2";
+      *value = &info->platformSignalInfo.sigContext->cr2;
       return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
