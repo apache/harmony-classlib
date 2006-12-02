@@ -3831,6 +3831,7 @@ hysock_writeto (struct HyPortLibrary * portLibrary, hysocket_t sock,
 
 #define CDEV_CURRENT_FUNCTION hysock_cleanupNetlinkContext
 
+#if (defined(HAS_RTNETLINK))
 /**
  *   Convenience function to release any allocated memory for a netlinkContext
  * 
@@ -3849,7 +3850,7 @@ void hysock_cleanupNetlinkContext(HyPortLibrary *portLib, struct netlinkContext_
     
     return;
 }
-
+#endif
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hysock_get_network_interfaces
