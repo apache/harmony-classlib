@@ -206,6 +206,11 @@ import java.util.Vector;
 public final class ContentModel implements Serializable {
 
     /**
+     * The serialization UID value.
+     */
+    static final long serialVersionUID = -1130825523866321257L;
+    
+    /**
      * The type of the content model. It should be '*', '+', '?', '|', '&', ','
      * or 0.
      */
@@ -416,7 +421,7 @@ public final class ContentModel implements Serializable {
                 auxModel = auxModel.next;
             }
         } else if (type == LINE_TYPE || type == AMPER_TYPE) {
-            found = token.equals(content);
+            found = ((Element) token).equals(content);
             auxModel = (ContentModel) content;
             while (auxModel != null && !found) {
                 found = token.equals(content) || auxModel.first((Element)token);
