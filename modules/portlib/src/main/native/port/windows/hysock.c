@@ -49,7 +49,7 @@ typedef struct selectFDSet_struct
   fd_set writeSet;
   fd_set readSet;
   fd_set exceptionSet;
-} selectFDSet_strut;
+} selectFDSet_struct;
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 
