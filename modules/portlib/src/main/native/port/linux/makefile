@@ -19,7 +19,7 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE -I$(HY_ARCH)
+CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE -I$(HY_PLATFORM)
 
 BUILDFILES = \
 	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \
@@ -30,7 +30,7 @@ BUILDFILES = \
 	hysharedhelper.o hyshmem.o hyshsem.o hysl.o hysock.o \
 	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
 	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o \
-	hysignal.o $(HY_ARCH)/hysignal_context.o
+	hysignal.o $(HY_PLATFORM)/hysignal_context.o
 
 MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a $(DLLPATH)libhysig.so
 
