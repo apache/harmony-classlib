@@ -38,7 +38,8 @@ public class SerialRefTest extends TestCase {
 
 	private MockRef ref;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		ref = new MockRef();
 		sr = new SerialRef(ref);
@@ -158,15 +159,18 @@ public class SerialRefTest extends TestCase {
 	};
 
 	static class MockAbnormalRef extends MockRef {
-		public Object getObject() throws SQLException {
+		@Override
+        public Object getObject() throws SQLException {
 			throw new SQLException();
 		}
 
-		public Object getObject(Map<String, Class<?>> map) throws SQLException {
+		@Override
+        public Object getObject(Map<String, Class<?>> map) throws SQLException {
 			throw new SQLException();
 		}
 
-		public void setObject(Object value) throws SQLException {
+		@Override
+        public void setObject(Object value) throws SQLException {
 			throw new SQLException();
 		}
 	};
