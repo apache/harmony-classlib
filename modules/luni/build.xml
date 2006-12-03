@@ -68,7 +68,7 @@
         </copy>
 
         <antcall target="copy-native-includes-windows" />
-        <antcall target="copy-native-includes-linux" />
+        <antcall target="copy-native-includes-unix" />
     </target>
 
     <target name="copy-native-includes-windows" if="is.windows">
@@ -79,7 +79,7 @@
         </copy>
     </target>
 
-    <target name="copy-native-includes-linux" if="is.linux">
+    <target name="copy-native-includes-unix" if="is.unix">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/linux">
                 <include name="jclprots.h" />
