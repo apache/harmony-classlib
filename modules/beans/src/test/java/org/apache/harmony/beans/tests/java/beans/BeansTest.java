@@ -337,24 +337,34 @@ public class BeansTest extends TestCase {
         assertFalse(Beans.isInstanceOf(bean, String.class));
     }
 
-    public void testSetDesignTime_true() {
-        Beans.setDesignTime(true);
-        assertTrue(Beans.isDesignTime());
+    public void testSetDesignTime() {
+        boolean value = Beans.isDesignTime();
+        try {
+            Beans.setDesignTime(true);
+            assertTrue(Beans.isDesignTime());
+            
+            Beans.setDesignTime(false);
+            assertFalse(Beans.isDesignTime());
+        } finally {
+            Beans.setDesignTime(value);
+        }
     }
 
-    public void testSetDesignTime_false() {
-        Beans.setDesignTime(false);
-        assertFalse(Beans.isDesignTime());
+    public void testSetGuiAvailable() {
+        boolean value = Beans.isGuiAvailable();
+        try {
+            Beans.setGuiAvailable(true);
+            assertTrue(Beans.isGuiAvailable());
+            
+            Beans.setGuiAvailable(false);
+            assertFalse(Beans.isGuiAvailable());
+        } finally {
+            Beans.setGuiAvailable(value);
+        }
     }
-
-    public void testSetGuiAvailable_true() {
-        Beans.setGuiAvailable(true);
-        assertTrue(Beans.isGuiAvailable());
-    }
-
-    public void testSetGuiAvailable_false() {
-        Beans.setGuiAvailable(false);
-        assertFalse(Beans.isGuiAvailable());
+    
+    public void testIsGuiAvailableDefault() {
+        assertTrue("GUI is available by default", Beans.isGuiAvailable()); 
     }
 
     /**

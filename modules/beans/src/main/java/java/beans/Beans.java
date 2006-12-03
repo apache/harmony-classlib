@@ -28,7 +28,7 @@ public class Beans {
 
     private static boolean designTime = false;
 
-    private static boolean guiAvailable = false;
+    private static boolean guiAvailable = true;
 
     public Beans() {
     }
