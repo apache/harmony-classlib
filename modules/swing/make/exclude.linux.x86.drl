@@ -1,3 +1,4 @@
+javax/swing/SpinnerDateModelTest.java
 javax/swing/JEditorPaneTest.java
 
 javax/swing/AccessibleJComponent_MultithreadedTest.java
