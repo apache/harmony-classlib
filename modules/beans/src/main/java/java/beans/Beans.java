@@ -120,23 +120,23 @@ public class Beans {
         return targetType == null ? false : targetType.isInstance(bean);
     }
 
-    public static void setGuiAvailable(boolean isGuiAvailable)
+    public static synchronized void setGuiAvailable(boolean isGuiAvailable)
             throws SecurityException {
         checkPropertiesAccess();
         guiAvailable = isGuiAvailable;
     }
 
-    public static void setDesignTime(boolean isDesignTime)
+    public static synchronized void setDesignTime(boolean isDesignTime)
             throws SecurityException {
         checkPropertiesAccess();
         designTime = isDesignTime;
     }
 
-    public static boolean isGuiAvailable() {
+    public static synchronized boolean isGuiAvailable() {
         return guiAvailable;
     }
 
-    public static boolean isDesignTime() {
+    public static synchronized boolean isDesignTime() {
         return designTime;
     }
 
