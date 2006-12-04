@@ -50,10 +50,12 @@ class BeanInfoImpl implements BeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
         if (propertyDescriptors == null) {
-            HashMap<String, PropertyDescriptor> result = new HashMap<String, PropertyDescriptor>();
+            HashMap<String, PropertyDescriptor> result =
+                    new HashMap<String, PropertyDescriptor>();
 
             if (beanClass != null) {
-                List<Method> beanClassMethodsArrayList = getPublicMethods(beanClass);
+                List<Method> beanClassMethodsArrayList =
+                        getPublicMethods(beanClass);
 
                 ArrayList<Method> setters = new ArrayList<Method>();
                 ArrayList<Method> getters = new ArrayList<Method>();
@@ -126,7 +128,8 @@ class BeanInfoImpl implements BeanInfo {
 
     public EventSetDescriptor[] getEventSetDescriptors() {
         if (eventSetDescriptors == null) {
-            Map<String, EventSetDescriptor> result = new HashMap<String, EventSetDescriptor>();
+            Map<String, EventSetDescriptor> result =
+                    new HashMap<String, EventSetDescriptor>();
             List<Method> beanClassMethodsArrayList = getPublicMethods(beanClass);
 
             for (Method method : beanClassMethodsArrayList) {
@@ -159,14 +162,9 @@ class BeanInfoImpl implements BeanInfo {
                             // name and
                             // listener name extracted from registration method
                             // are the same
-                            int k = listenerTypeName.lastIndexOf('$');
-                            String listenerNameFromParam;
+                            String listenerNameFromParam =
+                                    extractShortClassName(listenerTypeName);
                             
-                            k = (k == -1 ?
-                                    listenerTypeName.lastIndexOf('.') : k);
-                            listenerNameFromParam = listenerTypeName
-                                    .substring(k + 1); //$NON-NLS-1$
-
                             String listenerNameFromMethod = listenerCoreName
                                     + "Listener"; //$NON-NLS-1$
 
@@ -179,7 +177,8 @@ class BeanInfoImpl implements BeanInfo {
                             // package (and encapsulating type if any) 
                             // with listener
                             String eventTypeName = listenerTypeName.substring(
-                                    0, k + 1) //$NON-NLS-1$
+                                    0, listenerTypeName.indexOf(
+                                            listenerNameFromParam))
                                     + listenerCoreName + "Event"; //$NON-NLS-1$
 
                             // classes generated from classes names
@@ -198,7 +197,8 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method[] methods = listenerType.getMethods();
-                            Vector<Method> listenerMethodsVec = new Vector<Method>();
+                            Vector<Method> listenerMethodsVec =
+                                    new Vector<Method>();
                             for (Method element : methods) {
                                 Class<?>[] listenerMethodParams = element
                                         .getParameterTypes();
@@ -350,7 +350,8 @@ class BeanInfoImpl implements BeanInfo {
             throws Exception {
         String result = null;
 
-        if (methodName.startsWith("set") || methodName.startsWith("get")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (methodName.startsWith("set") //$NON-NLS-1$ 
+                || methodName.startsWith("get")) { //$NON-NLS-2$
             result = methodName.substring(3);
             result = Introspector.decapitalize(result);
         } else if (methodName.startsWith("is")) { //$NON-NLS-1$
@@ -451,6 +452,17 @@ class BeanInfoImpl implements BeanInfo {
         } // methods loop
     } // end of method
 
+    /**
+     * @param fullClassName full name of the class
+     * @return name with package and encapsulating class info omitted 
+     */
+    static String extractShortClassName(String fullClassName) {
+        int k = fullClassName.lastIndexOf('$');
+        
+        k = (k == -1 ? fullClassName.lastIndexOf('.') : k);
+        return fullClassName.substring(k + 1);
+    }
+    
     private Class<?> beanClass = null;
 
     private PropertyDescriptor[] propertyDescriptors = null;

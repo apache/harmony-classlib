@@ -19,14 +19,15 @@ package java.beans;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.TooManyListenersException;
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class EventSetDescriptor extends FeatureDescriptor {
     private Class<?> listenerType;
 
-    private final ArrayList<MethodDescriptor> listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
+    private ArrayList<MethodDescriptor> listenerMethodDescriptors;
+
+    private Method[] listenerMethods;
 
     private Method getListenerMethod;
 
@@ -38,112 +39,111 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     private boolean inDefaultEventSet = true;
 
-    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType,
-            String listenerMethodName) throws IntrospectionException {
-        super();
-        if (eventSetName == null) {
-            throw new NullPointerException();
-        }
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
+            Class<?> listenerType, String listenerMethodName)
+            throws IntrospectionException {
+        Method m;
+
+        checkNotNull(sourceClass, eventSetName, listenerType,
+                listenerMethodName);
+
         setName(eventSetName);
         setDisplayName(eventSetName);
         this.listenerType = listenerType;
-        this.listenerMethodDescriptors.add(new MethodDescriptor(findMethodByName(listenerType,
-                listenerMethodName)));
-        this.addListenerMethod = findMethodByPrefix(sourceClass, "add", "", //$NON-NLS-1$ //$NON-NLS-2$
-                listenerType);
-        this.removeListenerMethod = findMethodByPrefix(sourceClass, "remove", //$NON-NLS-1$
-                "", listenerType); //$NON-NLS-1$
+        m = findListenerMethodByName(listenerMethodName);
+        checkEventType(eventSetName, m);
+        listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
+        listenerMethodDescriptors.add(new MethodDescriptor(m));
+        addListenerMethod = findMethodByPrefix(
+                sourceClass, "add", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        removeListenerMethod = findMethodByPrefix(
+                sourceClass, "remove", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
         if (addListenerMethod == null && removeListenerMethod == null) {
-            throw new IntrospectionException(Messages.getString("beans.38")); //$NON-NLS-1$
+            throw new IntrospectionException(
+                    Messages.getString("beans.38")); //$NON-NLS-1$
         }
-        this.getListenerMethod = findMethodByPrefix(sourceClass, "get", "s", //$NON-NLS-1$ //$NON-NLS-2$
-                listenerType);
-        this.unicast = isUnicastByDefault(addListenerMethod);
+
+        getListenerMethod = findMethodByPrefix(
+                sourceClass, "get", "s"); //$NON-NLS-1$ //$NON-NLS-2$
+        unicast = isUnicastByDefault(addListenerMethod);
     }
 
-    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType,
-            String[] listenerMethodNames, String addListenerMethodName,
-            String removeListenerMethodName) throws IntrospectionException {
-        super();
-        setName(eventSetName);
-        setDisplayName(eventSetName);
-        this.listenerType = listenerType;
-        if (listenerMethodNames == null) {
-            throw new NullPointerException();
-        }
-        for (String element : listenerMethodNames) {
-            try {
-                listenerMethodDescriptors.add(new MethodDescriptor(findMethodByName(
-                        listenerType, element)));
-            } catch (IntrospectionException ie) {
-                listenerMethodDescriptors.clear();
-                throw ie;
-            }
-        }
-        this.addListenerMethod = findMethodByName(listenerType, addListenerMethodName);
-        this.removeListenerMethod = findMethodByName(listenerType, removeListenerMethodName);
-        this.getListenerMethod = null;
-        this.unicast = isUnicastByDefault(addListenerMethod);
-    }
-
-    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType,
-            String[] listenerMethodNames, String addListenerMethodName,
-            String removeListenerMethodName, String getListenerMethodName)
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
+            Class<?> listenerType, String[] listenerMethodNames,
+            String addListenerMethodName, String removeListenerMethodName)
             throws IntrospectionException {
-        super();
+        this(sourceClass, eventSetName, listenerType,
+                listenerMethodNames, addListenerMethodName,
+                removeListenerMethodName, null);
+        
+    }
+
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
+            Class<?> listenerType, String[] listenerMethodNames,
+            String addListenerMethodName, String removeListenerMethodName,
+            String getListenerMethodName) throws IntrospectionException {
+
+        checkNotNull(sourceClass, eventSetName, listenerType,
+                listenerMethodNames);
+
         setName(eventSetName);
         setDisplayName(eventSetName);
         this.listenerType = listenerType;
-        if (listenerMethodNames == null) {
-            throw new NullPointerException();
-        }
+
+        listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
         for (String element : listenerMethodNames) {
-            try {
-                listenerMethodDescriptors.add(new MethodDescriptor(findMethodByName(
-                        listenerType, element)));
-            } catch (IntrospectionException ie) {
-                listenerMethodDescriptors.clear();
-                throw ie;
-            }
+            Method m = findListenerMethodByName(element);
+
+            checkEventType(eventSetName, m);
+            listenerMethodDescriptors.add(new MethodDescriptor(m));
         }
-        this.addListenerMethod = findMethodByName(listenerType, addListenerMethodName);
-        this.removeListenerMethod = findMethodByName(listenerType, removeListenerMethodName);
-        this.getListenerMethod = findMethodByName(listenerType, getListenerMethodName);
+
+        if (addListenerMethodName != null) {
+            this.addListenerMethod = findAddRemoveListenerMethod(
+                    sourceClass, addListenerMethodName);
+        }
+        if (removeListenerMethodName != null) {
+            this.removeListenerMethod = findAddRemoveListenerMethod(
+                    sourceClass, removeListenerMethodName);
+        }
+        if (getListenerMethodName != null) {
+            this.getListenerMethod = findGetListenerMethod(
+                    sourceClass, getListenerMethodName);
+        }
         this.unicast = isUnicastByDefault(addListenerMethod);
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
-            Method[] listenerMethods, Method addListenerMethod, Method removeListenerMethod)
-            throws IntrospectionException {
-        super();
-        setName(eventSetName);
-        setDisplayName(eventSetName);
-        this.listenerType = listenerType;
-        if (listenerMethods != null) {
-            for (Method element : listenerMethods) {
-                if (checkMethod(listenerType, element)) {
-                    this.listenerMethodDescriptors.add(new MethodDescriptor(element));
-                }
-            }
-        }
-        this.addListenerMethod = addListenerMethod;
-        this.removeListenerMethod = removeListenerMethod;
+            Method[] listenerMethods, Method addListenerMethod,
+            Method removeListenerMethod) throws IntrospectionException {
+        this(eventSetName, listenerType, listenerMethods, addListenerMethod,
+                removeListenerMethod, null);
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
-            Method[] listenerMethods, Method addListenerMethod, Method removeListenerMethod,
-            Method getListenerMethod) throws IntrospectionException {
-        super();
+            Method[] listenerMethods, Method addListenerMethod,
+            Method removeListenerMethod, Method getListenerMethod)
+            throws IntrospectionException {
+
         setName(eventSetName);
         setDisplayName(eventSetName);
         this.listenerType = listenerType;
+
+        this.listenerMethods = listenerMethods;
         if (listenerMethods != null) {
+            listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
+
             for (Method element : listenerMethods) {
+                // XXX do we need this check?
+                //checkEventType(eventSetName, element);
                 if (checkMethod(listenerType, element)) {
-                    this.listenerMethodDescriptors.add(new MethodDescriptor(element));
+                    this.listenerMethodDescriptors.add(
+                            new MethodDescriptor(element));
                 }
             }
         }
+
         this.addListenerMethod = addListenerMethod;
         this.removeListenerMethod = removeListenerMethod;
         this.getListenerMethod = getListenerMethod;
@@ -151,47 +151,106 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
-            MethodDescriptor[] listenerMethodDescriptors, Method addListenerMethod,
-            Method removeListenerMethod) throws IntrospectionException {
-        super();
-        setName(eventSetName);
-        setDisplayName(eventSetName);
-        this.listenerType = listenerType;
+            MethodDescriptor[] listenerMethodDescriptors,
+            Method addListenerMethod, Method removeListenerMethod)
+            throws IntrospectionException {
+        this(eventSetName, listenerType, null, addListenerMethod,
+                removeListenerMethod, null);
+
         if (listenerMethodDescriptors != null) {
+            this.listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
+
             for (MethodDescriptor element : listenerMethodDescriptors) {
                 Method listenerMethod = element.getMethod();
+
+                // XXX
+                //checkEventType(eventSetName, listenerMethod);
                 if (checkMethod(listenerType, listenerMethod)) {
                     this.listenerMethodDescriptors.add(element);
                 }
             }
         }
-        this.addListenerMethod = addListenerMethod;
-        this.removeListenerMethod = removeListenerMethod;
-        this.getListenerMethod = null;
-        this.unicast = isUnicastByDefault(addListenerMethod);
     }
 
-    public Method[] getListenerMethods() {
-        Method[] result = new Method[listenerMethodDescriptors.size()];
-        Iterator<MethodDescriptor> i = listenerMethodDescriptors.iterator();
-        int idx = 0;
-        while (i.hasNext()) {
-            MethodDescriptor md = i.next();
-            result[idx] = md.getMethod();
-            idx++;
+    // ensures that there is no nulls
+    private void checkNotNull(Object sourceClass, Object eventSetName,
+            Object listenerType, Object listenerMethodName) {
+        if (sourceClass == null) {
+            throw new NullPointerException(Messages.getString("beans.0C"));
         }
-        return result;
+        if (eventSetName == null) {
+            throw new NullPointerException(Messages.getString("beans.53"));
+        }
+        if (listenerType == null) {
+            throw new NullPointerException(Messages.getString("beans.54"));
+        }
+        if (listenerMethodName == null) {
+            throw new NullPointerException(Messages.getString("beans.52"));
+        }
+    }
+
+    /**
+     * Checks that given listener method has an argument of the valid type. 
+     * @param eventSetName event set name
+     * @param listenerMethod listener method
+     * @throws IntrospectionException if check fails
+     */
+    private static void checkEventType(String eventSetName,
+            Method listenerMethod) throws IntrospectionException {
+        Class<?>[] params = listenerMethod.getParameterTypes();
+        String firstParamTypeName = null;
+        String eventTypeName = prepareEventTypeName(eventSetName);
+        
+        if (params.length > 0) {
+            firstParamTypeName = BeanInfoImpl.extractShortClassName(
+                    params[0].getName());
+        }
+        
+        if (firstParamTypeName == null ||
+                !firstParamTypeName.equals(eventTypeName)) {
+            throw new IntrospectionException(
+                    Messages.getString("beans.51", //$NON-NLS-1$
+                            listenerMethod.getName(), eventTypeName));
+        }   
+    }
+    
+    private static String prepareEventTypeName(String eventSetName) {
+        StringBuilder sb = new StringBuilder();
+
+        if (eventSetName != null && eventSetName.length() > 0) {
+            sb.append(Character.toUpperCase(eventSetName.charAt(0)));
+            
+            if (eventSetName.length() > 1) {
+                sb.append(eventSetName.substring(1));
+            }
+        }
+
+        sb.append("Event"); //$NON-NLS-1$
+        return sb.toString();
+    }
+    
+    public Method[] getListenerMethods() {
+        int i = 0;
+
+        if (listenerMethods != null) {
+            return listenerMethods;
+        }
+
+        if (listenerMethodDescriptors != null) {
+            listenerMethods = new Method[listenerMethodDescriptors.size()];
+            for (MethodDescriptor md : listenerMethodDescriptors) {
+                listenerMethods[i++] = md.getMethod();
+            }
+            return listenerMethods;
+        }
+
+        return null;
     }
 
     public MethodDescriptor[] getListenerMethodDescriptors() {
-        MethodDescriptor[] result = new MethodDescriptor[listenerMethodDescriptors.size()];
-        Iterator<MethodDescriptor> i = listenerMethodDescriptors.iterator();
-        int idx = 0;
-        while (i.hasNext()) {
-            result[idx] = i.next();
-            idx++;
-        }
-        return result;
+        return listenerMethodDescriptors == null ? null :
+                listenerMethodDescriptors.toArray(
+                       new MethodDescriptor[listenerMethodDescriptors.size()]);
     }
 
     public Method getRemoveListenerMethod() {
@@ -226,50 +285,98 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return inDefaultEventSet;
     }
 
-    private Class<?> getEventType(Class<?> listenerType) throws ClassNotFoundException {
+    /**
+     * @return type of event associated with the current event set descriptor
+     * @throws ClassNotFoundException if event class is not found
+     */
+    private Class<?> getEventType() throws ClassNotFoundException {
         String listenerTypeName = listenerType.getName();
-        int idx = listenerTypeName.lastIndexOf("Listener"); //$NON-NLS-1$
-        String eventTypeName = listenerTypeName;
-        if (idx != -1) {
-            eventTypeName = listenerTypeName.substring(0, idx) + "Event"; //$NON-NLS-1$
-        }
+        String prefix = listenerTypeName.substring(0,
+                listenerTypeName.indexOf(
+                        BeanInfoImpl.extractShortClassName(listenerTypeName)));
+        String eventTypeName = prefix + prepareEventTypeName(getName());
+        
         return Class.forName(eventTypeName, true, listenerType.getClassLoader());
     }
 
     private boolean checkMethod(Class<?> listenerType, Method listenerMethod)
             throws IntrospectionException {
-        if (listenerMethod != null
-                && !listenerMethod.getDeclaringClass().isAssignableFrom(listenerType)) {
+        if (listenerMethod != null && listenerType != null &&    
+            !listenerMethod.getDeclaringClass().isAssignableFrom(listenerType)) {
             throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
                     listenerMethod.getName(), listenerType.getName()));
         }
         return true;
     }
 
-    private Method findMethodByName(Class<?> listenerType, String listenerMethodName)
+    /**
+     * Searches for the method in listener that has the given name. Parameter
+     * check is also performed for found methods.
+     * @param listenerMethodName name of listener method
+     * @return found method if any
+     * @throws IntrospectionException if no method is found or other error
+     * has occured
+     */
+    private Method findListenerMethodByName(String listenerMethodName) 
             throws IntrospectionException {
         try {
-            return listenerType.getMethod(listenerMethodName,
-                    new Class[] { getEventType(listenerType) });
+            return listenerType.getMethod(listenerMethodName, getEventType());
         } catch (NoSuchMethodException nsme) {
-            throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
+            throw new IntrospectionException(Messages.getString(
+                    "beans.31", //$NON-NLS-1$
                     listenerMethodName, listenerType.getName()));
         } catch (ClassNotFoundException cnfe) {
             throw new IntrospectionException(Messages.getString(
                     "beans.32", listenerType.getName())); //$NON-NLS-1$
         }
     }
+    
+    /**
+     * Searches for {add|remove}Listener methods in the event source.
+     * Parameter check is also performed.
+     * @param sourceClass event source class
+     * @param methodName method name to search
+     * @return found method
+     * @throws IntrospectionException if no valid method found
+     */
+    private Method findAddRemoveListenerMethod(Class<?> sourceClass,
+            String methodName) throws IntrospectionException {
+        try {
+            return sourceClass.getMethod(methodName, listenerType);
+        } catch (Exception e) {
+            throw new IntrospectionException(
+                    Messages.getString("beans.31", //$NON-NLS-1$
+                            methodName, listenerType.getName()));
+        }
+    }
 
-    private Method findMethodByPrefix(Class<?> sourceClass, String prefix, String postfix,
-            Class<?> listenerType) {
-        String fullName = listenerType.getName();
-        int idx = fullName.lastIndexOf("."); //$NON-NLS-1$
-        String methodName = prefix + fullName.substring(idx + 1) + postfix;
+    /**
+     * @param sourceClass class of event source
+     * @param methodName name of the custom getListeners() method
+     * @return found Method object for custom getListener or null if nothing
+     *  is found
+     */
+    private Method findGetListenerMethod(Class<?> sourceClass,
+            String methodName) {
+        try {
+            return sourceClass.getMethod(methodName);
+        } catch (Exception e) {
+            // RI keeps silence here and just retunrs null
+            return null;
+        }
+    }
+
+    private Method findMethodByPrefix(Class<?> sourceClass,
+            String prefix, String postfix) {
+        String shortName = BeanInfoImpl.extractShortClassName(
+                listenerType.getName());
+        String methodName = prefix + shortName + postfix;
+
         try {
             if (prefix.equals("get")) { //$NON-NLS-1$
-                return sourceClass.getMethod(methodName, new Class[] {});
+                return sourceClass.getMethod(methodName);
             }
-            return sourceClass.getMethod(methodName, new Class[] { listenerType });
+            return sourceClass.getMethod(methodName, listenerType);
         } catch (NoSuchMethodException nsme) {
             return null;
         }
@@ -287,43 +394,46 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return false;
     }
 
-    private static Method checkRegistrationMethod(Class<?> listenerType,
-            Method registrationMethod) throws IntrospectionException {
-        if (registrationMethod == null) {
-            return null;
-        }
-        Class<?> returnType = registrationMethod.getReturnType();
-        Class<?>[] parameterTypes;
-        if (returnType != void.class) {
-            throw new IntrospectionException(Messages.getString(
-                    "beans.33", registrationMethod.getName())); //$NON-NLS-1$
-        }
-        parameterTypes = registrationMethod.getParameterTypes();
-        if (parameterTypes == null || parameterTypes.length != 1) {
-            throw new IntrospectionException(Messages.getString(
-                    "beans.34", registrationMethod.getName())); //$NON-NLS-1$
-        } else if (parameterTypes[0] != listenerType) {
-            throw new IntrospectionException(Messages.getString(
-                    "beans.35", listenerType.getName())); //$NON-NLS-1$
-        } else {
-            return registrationMethod;
-        }
-    }
 
-    private static Method checkGetListenerMethod(Class<?> listenerType, Method getListenerMethod)
-            throws IntrospectionException {
-        if (getListenerMethod == null) {
-            return null;
-        }
-        Class<?>[] parameterTypes = getListenerMethod.getParameterTypes();
-        Class<?> returnType;
-        if (parameterTypes.length != 0) {
-            throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
-        }
-        returnType = getListenerMethod.getReturnType();
-        if (returnType.isArray() && returnType.getComponentType() == listenerType) {
-            return getListenerMethod;
-        }
-        throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
-    }
+//TODO investigate, do we need the following code?
+
+//    private static Method checkRegistrationMethod(Class<?> listenerType,
+//            Method registrationMethod) throws IntrospectionException {
+//        if (registrationMethod == null) {
+//            return null;
+//        }
+//        Class<?> returnType = registrationMethod.getReturnType();
+//        Class<?>[] parameterTypes;
+//        if (returnType != void.class) {
+//            throw new IntrospectionException(Messages.getString(
+//                    "beans.33", registrationMethod.getName())); //$NON-NLS-1$
+//        }
+//        parameterTypes = registrationMethod.getParameterTypes();
+//        if (parameterTypes == null || parameterTypes.length != 1) {
+//            throw new IntrospectionException(Messages.getString(
+//                    "beans.34", registrationMethod.getName())); //$NON-NLS-1$
+//        } else if (parameterTypes[0] != listenerType) {
+//            throw new IntrospectionException(Messages.getString(
+//                    "beans.35", listenerType.getName())); //$NON-NLS-1$
+//        } else {
+//            return registrationMethod;
+//        }
+//    }
+
+//    private static Method checkGetListenerMethod(Class<?> listenerType, Method getListenerMethod)
+//            throws IntrospectionException {
+//        if (getListenerMethod == null) {
+//            return null;
+//        }
+//        Class<?>[] parameterTypes = getListenerMethod.getParameterTypes();
+//        Class<?> returnType;
+//        if (parameterTypes.length != 0) {
+//            throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
+//        }
+//        returnType = getListenerMethod.getReturnType();
+//        if (returnType.isArray() && returnType.getComponentType() == listenerType) {
+//            return getListenerMethod;
+//        }
+//        throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
+//    }
 }

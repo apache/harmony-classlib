@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 
 import org.apache.harmony.beans.tests.support.OtherBean;
 import org.apache.harmony.beans.tests.support.SampleListener;
@@ -36,6 +38,21 @@ import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
  * Unit test for EventSetDescriptor
  */
 public class EventSetDescriptorTest extends TestCase {
+    
+    public EventSetDescriptorTest() {}
+    
+    public EventSetDescriptorTest(String s) {
+        super(s);
+    }
+    
+    public static TestSuite suite() {
+//        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(EventSetDescriptorTest.class);
+
+//        suite.addTest(new EventSetDescriptorTest(
+//                "testEventSetDescriptorClassStringClassString"));
+        return suite;
+    }
 
     /*
      * Class under test for void EventSetDescriptor(Class, String, Class,
@@ -78,11 +95,13 @@ public class EventSetDescriptorTest extends TestCase {
         String listenerMethodName = eventSetName;
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Class<?> listenerType = MockPropertyChangeListener.class;
+
         try {
             new EventSetDescriptor(sourceClass, "FFF", listenerType,
                     listenerMethodName);
             fail("Should throw IntrospectionException.");
         } catch (IntrospectionException e) {
+            // valid
         }
     }
 
@@ -130,8 +149,16 @@ public class EventSetDescriptorTest extends TestCase {
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Class<?> listenerType = MockPropertyChangeListener.class;
 
-        new EventSetDescriptor(sourceClass, "", listenerType,
-                listenerMethodName);
+        try {
+            // RI doesn't throw exception here but this doesn't really make
+            // much sense. Moreover, it is against the java.beans 
+            // package description: null values or empty Strings are not
+            // valid parameters unless explicitly stated
+            new EventSetDescriptor(sourceClass, "", listenerType,
+                    listenerMethodName);
+        } catch (IntrospectionException e) {
+            // valid
+        }
     }
 
     /*
@@ -145,6 +172,7 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
                 eventSetName, listenerType, listenerMethodName);
+
         assertEquals(listenerMethodName, esd.getListenerMethods()[0].getName());
     }
 
@@ -287,6 +315,8 @@ public class EventSetDescriptorTest extends TestCase {
                 .getName());
         assertEquals(listenerMethodNames[1], esd.getListenerMethods()[1]
                 .getName());
+        assertEquals(MockPropertyChangeEvent.class, esd.getListenerMethods()[1]
+                .getParameterTypes()[0]);        
         assertEquals(2, esd.getListenerMethodDescriptors().length);
         assertEquals(listenerMethodNames[0],
                 esd.getListenerMethodDescriptors()[0].getMethod().getName());
@@ -377,30 +407,17 @@ public class EventSetDescriptorTest extends TestCase {
         String addMethod = "addMockPropertyChangeListener";
         String removeMethod = "removeMockPropertyChangeListener";
 
-        EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
-                eventSetName, listenerType, listenerMethodNames, addMethod,
-                removeMethod);
-        assertEquals(addMethod, esd.getAddListenerMethod().getName());
-        assertEquals(removeMethod, esd.getRemoveListenerMethod().getName());
-        assertNull(esd.getGetListenerMethod());
-        assertEquals(2, esd.getListenerMethods().length);
-        assertEquals(listenerMethodNames[0], esd.getListenerMethods()[0]
-                .getName());
-        assertEquals(listenerMethodNames[1], esd.getListenerMethods()[1]
-                .getName());
-        // ESD does not check parameter type.
-        assertEquals(MockPropertyChangeEvent.class, esd.getListenerMethods()[1]
-                .getParameterTypes()[0]);
-
-        assertEquals(2, esd.getListenerMethodDescriptors().length);
-        assertEquals(listenerMethodNames[0],
-                esd.getListenerMethodDescriptors()[0].getMethod().getName());
-        assertEquals(listenerMethodNames[1],
-                esd.getListenerMethodDescriptors()[1].getMethod().getName());
-
-        assertEquals(listenerType, esd.getListenerType());
-        assertTrue(esd.isInDefaultEventSet());
-        assertFalse(esd.isUnicast());
+        try {
+            // RI doesn't throw exception here but this
+            // is against the java.beans package description:
+            // null values or empty Strings are not
+            // valid parameters unless explicitly stated
+            EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+                    eventSetName, listenerType, listenerMethodNames, addMethod,
+                    removeMethod);            
+        } catch (IntrospectionException e) {
+            // valid
+        }
     }
 
     /*
@@ -613,7 +630,7 @@ public class EventSetDescriptorTest extends TestCase {
         String addMethod = "addMockPropertyChangeListener";
         String removeMethod = "removeMockPropertyChangeListener";
         String getMethod = null;
-        ;
+
         EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
                 eventSetName, listenerType, listenerMethodNames, addMethod,
                 removeMethod, getMethod);
@@ -675,6 +692,10 @@ public class EventSetDescriptorTest extends TestCase {
         assertEquals(addMethod, esd.getAddListenerMethod());
         assertEquals(removeMethod, esd.getRemoveListenerMethod());
         assertNull(esd.getGetListenerMethod());
+
+        // RI reports true in the following assertion, so it returns exactly
+        // the same array as it was specified in the EventSetDescriptor
+        // construtor. 
         assertEquals(listenerMethods, esd.getListenerMethods());
 
         assertEquals(2, esd.getListenerMethodDescriptors().length);
@@ -713,7 +734,6 @@ public class EventSetDescriptorTest extends TestCase {
         assertEquals(addMethod, esd.getAddListenerMethod());
         assertEquals(removeMethod, esd.getRemoveListenerMethod());
         assertNull(esd.getGetListenerMethod());
-        assertEquals(listenerMethods, esd.getListenerMethods());
 
         assertEquals(2, esd.getListenerMethodDescriptors().length);
         assertEquals(listenerMethods[0], esd.getListenerMethodDescriptors()[0]
@@ -736,21 +756,22 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = new Method[] {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
+                        MockPropertyChangeEvent.class),
                 listenerType.getMethod("mockPropertyChange2",
-                        new Class[] { MockPropertyChangeEvent.class }), };
+                        MockPropertyChangeEvent.class) };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, listenerMethods, addMethod, removeMethod);
 
         assertEquals(addMethod, esd.getAddListenerMethod());
         assertEquals(removeMethod, esd.getRemoveListenerMethod());
         assertNull(esd.getGetListenerMethod());
+
+        //RI asserts to true here
         assertEquals(listenerMethods, esd.getListenerMethods());
 
         assertEquals(2, esd.getListenerMethodDescriptors().length);
@@ -774,15 +795,14 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = new Method[] {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
+                        MockPropertyChangeEvent.class),
                 listenerType.getMethod("mockPropertyChange2",
-                        new Class[] { MockPropertyChangeEvent.class }), };
+                        MockPropertyChangeEvent.class) };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName, null,
                 listenerMethods, addMethod, removeMethod);
 
@@ -811,10 +831,9 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, (Method[]) null, addMethod, removeMethod);
 
@@ -1031,18 +1050,17 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
+                        MockPropertyChangeEvent.class),
                 listenerType.getMethod("mockPropertyChange2",
-                        new Class[] { MockPropertyChangeEvent.class }), };
+                        MockPropertyChangeEvent.class)};
         MethodDescriptor[] listenerMethodDescriptors = {
                 new MethodDescriptor(listenerMethods[0]),
                 new MethodDescriptor(listenerMethods[1]), };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
 
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, listenerMethodDescriptors, addMethod,
@@ -1075,10 +1093,9 @@ public class EventSetDescriptorTest extends TestCase {
 
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
 
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, (MethodDescriptor[]) null, addMethod,
@@ -1098,22 +1115,22 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
-                listenerType.getMethod("mockPropertyChange_Invalid",
-                        (Class[]) null), };
+                        MockPropertyChangeEvent.class),
+                listenerType.getMethod("mockPropertyChange_Invalid") };
         MethodDescriptor[] listenerMethodDescriptors = {
                 new MethodDescriptor(listenerMethods[0]),
-                new MethodDescriptor(listenerMethods[1]), };
+                new MethodDescriptor(listenerMethods[1]) };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
 
+        // RI doesn't check parameters of listener methods
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, listenerMethodDescriptors, addMethod,
                 removeMethod);
+
         assertEquals(0, esd.getListenerMethods()[1].getParameterTypes().length);
         assertEquals(listenerMethodDescriptors[1], esd
                 .getListenerMethodDescriptors()[1]);
@@ -1125,18 +1142,17 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
+                        MockPropertyChangeEvent.class),
                 listenerType.getMethod("mockPropertyChange2",
-                        new Class[] { MockPropertyChangeEvent.class }), };
+                        MockPropertyChangeEvent.class) };
         MethodDescriptor[] listenerMethodDescriptors = {
                 new MethodDescriptor(listenerMethods[0]),
                 new MethodDescriptor(listenerMethods[1]), };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener", listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
 
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, listenerMethodDescriptors, addMethod,
@@ -1205,18 +1221,17 @@ public class EventSetDescriptorTest extends TestCase {
         Class<?> listenerType = MockPropertyChangeListener.class;
         Method[] listenerMethods = {
                 listenerType.getMethod("mockPropertyChange",
-                        new Class[] { MockPropertyChangeEvent.class }),
+                        MockPropertyChangeEvent.class),
                 listenerType.getMethod("mockPropertyChange2",
-                        new Class[] { MockPropertyChangeEvent.class }), };
+                        MockPropertyChangeEvent.class) };
         MethodDescriptor[] listenerMethodDescriptors = {
                 new MethodDescriptor(listenerMethods[0]),
                 new MethodDescriptor(listenerMethods[1]), };
         Class<MockSourceClass> sourceClass = MockSourceClass.class;
         Method addMethod = sourceClass.getMethod(
-                "addMockPropertyChangeListener", new Class[] { listenerType });
+                "addMockPropertyChangeListener",listenerType);
         Method removeMethod = sourceClass.getMethod(
-                "removeMockPropertyChangeListener",
-                new Class[] { listenerType });
+                "removeMockPropertyChangeListener", listenerType);
 
         EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
                 listenerType, listenerMethodDescriptors, addMethod,
