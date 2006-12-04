@@ -89,4 +89,9 @@ public class WindowProcHandler implements Callback.Handler {
                     className, winError));
         }
     }
+
+    public static void registerWindowClass(String className) {
+        registerCallback();
+        registerWindowClass(className, instance.windowProcPtr);
+    }
 }

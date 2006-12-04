@@ -16,6 +16,7 @@ HYGL_0.1 {
         Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_bltBG;
         Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_blt;
         Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_xor;
+   Java_org_apache_harmony_awt_gl_ImageSurface_updateCache;
         Java_org_apache_harmony_awt_gl_Surface_initIDs;
     local : *;
 };

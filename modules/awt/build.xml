@@ -164,6 +164,13 @@
             </fileset>
         </copy>
 
+        <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/oglwrapper">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="-build-native-unix" if="is.unix">
@@ -209,6 +216,8 @@
         <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os}"
               target="clean"/>
     </target>
 
@@ -294,6 +303,7 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <jvmarg value="-DTEST_SRC_DIR=${hy.awt.bin.test}"/>
+<!--            <jvmarg value="-Djava2d.opengl=true"/> -->
             <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test}${path.separator}${basedir}/../../${junit.jar}"/>
 
             <formatter type="xml" />

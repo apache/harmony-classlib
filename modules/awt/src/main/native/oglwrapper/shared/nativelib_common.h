@@ -14,8 +14,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey Kuksenko
+ /**
+ * @author Oleg V. Khaschansky
  * @version $Revision$
  */
 #ifndef NATIVELIB_COMMON_H
@@ -29,9 +29,9 @@
 #define mkstr(x) #x
 
 
-#define LOAD_LIB(res, name) res = (jlong)(intptr_t)dlopen(mkstr(lib##name.so), RTLD_LAZY)
+#define LOAD_LIB(res, name) res = dlopen(mkstr(lib##name.so), RTLD_LAZY)
 
-#define FindFunction(lib, name) dlsym(lib, name)
+#define FindFunction(lib, name) (void *)dlsym(lib, name)
 
 #define INIT_GL_GET_PROC_ADDRESS
 
@@ -40,6 +40,8 @@
 #endif
 
 typedef void* libHandler;
+
+#define __stdcall
 
 // END common linux section----------------------------
 #ifdef           __i386__
@@ -56,19 +58,24 @@ typedef void* libHandler;
 #else        //WINDOWS
 // common windows section------------------------------
 #include <windows.h>
-#include <stdio.h>
+
+#define mkstr(x) #x
+#define GL Opengl32
+#define GLU Glu32
 
 typedef HMODULE libHandler;
 
-#define LOAD_LIB(res, name) res = ::LoadLibraryA(name)
+#define LOAD_LIB(res, name) res =::LoadLibraryA(mkstr(name))
 
-extern void * (__stdcall * p_nbridge_wglGetProcAddress) (void *);
+//#define FindFunction(lib, name) ::GetProcAddress(lib, name)
+
+void * (__stdcall * p_nbridge_wglGetProcAddress) (void *);
 
 #undef FindFunction
-extern void *findFunctionRes;
+void *findFunctionRes = NULL;
 #define FindFunction(lib, name) ((findFunctionRes = (void *)::GetProcAddress(lib, name)) ? findFunctionRes : (*p_nbridge_wglGetProcAddress)(name))
 
-#define INIT_GL_GET_PROC_ADDRESS p_nbridge_wglGetProcAddress = (void * (__stdcall *) (void *)) ::GetProcAddress(libOpenGL32, "wglGetProcAddress");
+#define INIT_GL_GET_PROC_ADDRESS p_nbridge_wglGetProcAddress = (void * (__stdcall *) (void *)) ::GetProcAddress(libGL, "wglGetProcAddress");
 
 // END common windows section--------------------------
 #ifdef           _WIN32

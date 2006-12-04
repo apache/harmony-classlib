@@ -52,6 +52,12 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
 
     private byte []idBytes = null;
 
+    static boolean useOpenGL;
+    static {
+        String opengl = System.getProperty("java2d.opengl"); //$NON-NLS-1$
+        useOpenGL = opengl != null && opengl.equals("true"); //$NON-NLS-1$
+    };
+
     public WinGraphicsDevice(int left, int top, int right, int bottom, String id, boolean primary) {
         type = TYPE_RASTER_SCREEN;
         bounds = new Rectangle(left, top, right-left, bottom-top);
@@ -100,7 +106,9 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
             int dci = win32.GetPixelFormat(hdc);
             Win32.PIXELFORMATDESCRIPTOR pfd = win32.createPIXELFORMATDESCRIPTOR(false);
             if (win32.DescribePixelFormat(hdc, dci, pfd.size(), pfd) > 0) {
-                defaultConfig = new WinGraphicsConfiguration(this, dci, pfd);
+                defaultConfig = useOpenGL ?
+                        new WGLGraphicsConfiguration(this, dci, pfd):
+                        new WinGraphicsConfiguration(this, dci, pfd);
             } else {
                 getConfigurations();
             }
@@ -138,7 +146,9 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
             Vector<WinGraphicsConfiguration> gcv = new Vector<WinGraphicsConfiguration>(100);
             int i = 1;
             while (win32.DescribePixelFormat(hdc, i, pfd.size(), pfd) > 0) {
-                WinGraphicsConfiguration gc = new WinGraphicsConfiguration(this, i, pfd);
+                WinGraphicsConfiguration gc = useOpenGL ?
+                        new WGLGraphicsConfiguration(this, i, pfd):
+                        new WinGraphicsConfiguration(this, i, pfd);
 
                 if (!gcv.contains(gc)) {
                     gcv.add(gc);

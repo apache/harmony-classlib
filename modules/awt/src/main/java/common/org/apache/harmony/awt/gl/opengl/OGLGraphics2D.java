@@ -157,15 +157,14 @@ public final class OGLGraphics2D extends CommonGraphics2D {
     private double gradObjectPlane[];
     private boolean isGPCyclic;
 
+    private long oshdc = 0; // device context for windows offscreen image
 
     public OGLGraphics2D(NativeWindow nwin, int tx, int ty, MultiRectArea clip) {
-        /*
         if (nwin instanceof OGLVolatileImage.OGLOffscreenWindow) {
-            ctxmgr = (OGLContextManager) getDeviceConfiguration();
-            ctxmgr.makeCurrent(ctxmgr.getOGLContext(), nwin.getId());
-            return;
+            OGLVolatileImage.OGLOffscreenWindow offWin = (OGLVolatileImage.OGLOffscreenWindow) nwin;
+            oshdc = offWin.getHdc();
         }
-        */
+
         this.nwin = nwin;
 
         ctxmgr = (OGLContextManager) getDeviceConfiguration();
@@ -366,8 +365,8 @@ public final class OGLGraphics2D extends CommonGraphics2D {
     }
 
     final void makeCurrent() {
-        long oglContext = ctxmgr.getOGLContext();
-        ctxmgr.makeCurrent(oglContext, nwin.getId());
+        long oglContext = ctxmgr.getOGLContext(nwin.getId(), oshdc);
+        ctxmgr.makeCurrent(oglContext, nwin.getId(), oshdc);
         OGLContextValidator.validateContext(this);
     }
 
@@ -409,7 +408,19 @@ public final class OGLGraphics2D extends CommonGraphics2D {
             LockedArray lVertices = Utils.arraccess.lockArrayShort(vertices);
 
             gl.glVertexPointer(2, GLDefs.GL_INT, 0, lVertices.getAddress());
-            gl.glDrawArrays(GLDefs.GL_QUADS, 0, vertices.length/2);
+
+            // At least one configuration (ATI MOBILITY FIRE GL T2 card on win32) has
+            // problems with the large arrays, so workaround is used when
+            // the number of vertices exceeds 1024
+            if (vertices.length < 2048) {
+                gl.glDrawArrays(GLDefs.GL_QUADS, 0, vertices.length/2);
+            } else {
+                int iters = vertices.length / 2048;
+                for (int i = 0; i < iters; i++) {
+                    gl.glDrawArrays(GLDefs.GL_QUADS, i*1024, 1024);
+                }
+                gl.glDrawArrays(GLDefs.GL_QUADS, iters*1024, (vertices.length % 2048)/2);
+            }
 
             lVertices.release();
         }
@@ -1297,12 +1308,15 @@ public final class OGLGraphics2D extends CommonGraphics2D {
      * @return true on success
      */
     private final boolean setCurrentRead(OGLGraphics2D read) {
-        long oglContext = ctxmgr.getOGLContext();
-        if (read.ctxmgr.getOGLContext() != oglContext) {
+        long oglContext = ctxmgr.getOGLContext(nwin.getId(), oshdc);
+        if (read.ctxmgr.getOGLContext(read.nwin.getId(), read.oshdc) != oglContext)
             return false;
-        }
 
-        ctxmgr.makeContextCurrent(oglContext, nwin.getId(), read.nwin.getId());
+        ctxmgr.makeContextCurrent(
+                oglContext,
+                nwin.getId(), read.nwin.getId(),
+                oshdc, read.oshdc
+        );
         return true;
     }
 

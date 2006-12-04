@@ -63,6 +63,10 @@ public class OGLVolatileImage extends GLVolatileImage {
             return pbuffer.id;
         }
 
+        public long getHdc() {
+            return pbuffer.hdc;
+        }
+
         public Rectangle getBounds() {
             return bounds;
         }

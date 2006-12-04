@@ -138,15 +138,15 @@ public class XGraphicsDevice extends GLGraphicsDevice {
             X11.XVisualInfo info = x11.createXVisualInfo(
                     infosPtr.getElementPointer(i*infosPtr.size())
             );
-            configs[i] = //useOpenGL ?
-//                    new GLXGraphicsConfiguration(this, info) :
+            configs[i] = useOpenGL ?
+                    new GLXGraphicsConfiguration(this, info) :
                     new XGraphicsConfiguration(this, info);
 
             if (info.get_visualid() == defVisId)
                 defaultConfigIdx = i;
         }
 
-/*        if (useOpenGL) {
+        if (useOpenGL) {
             //defVisId = 36;
             defVisId = GLXGraphicsConfiguration.GlxConfigsRec.getBestGLXVisualId(display, screen);
             for (int i=0; i<numVisualInfos; i++) {
@@ -156,7 +156,6 @@ public class XGraphicsDevice extends GLGraphicsDevice {
                 }
             }
         }
-*/        
     }
 
     public int getType() {

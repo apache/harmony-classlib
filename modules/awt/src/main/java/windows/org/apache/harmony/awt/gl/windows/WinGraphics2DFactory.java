@@ -24,6 +24,7 @@ import java.awt.*;
 
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.gl.opengl.OGLGraphics2D;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.WinFontManager;
 import org.apache.harmony.awt.gl.font.WindowsFont;
@@ -44,12 +45,20 @@ public class WinGraphics2DFactory extends CommonGraphics2DFactory {
     @Deprecated
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {
         Insets ins = nw.getInsets();
-        return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
+        if (WinGraphicsDevice.useOpenGL) {
+            return new OGLGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
+        } else {
+            return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
+        }
     }
 
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, int width, int height) {
         Insets ins = nw.getInsets();
-        return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
+        if (WinGraphicsDevice.useOpenGL) {
+            return new OGLGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
+        } else {
+            return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
+        }
     }
 
     public GraphicsEnvironment createGraphicsEnvironment(WindowFactory wf) {
