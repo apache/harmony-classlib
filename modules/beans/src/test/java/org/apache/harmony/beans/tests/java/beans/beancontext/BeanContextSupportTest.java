@@ -19,6 +19,7 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.Visibility;
@@ -28,6 +29,7 @@ import java.beans.beancontext.BeanContextChildSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.beans.beancontext.BeanContextProxy;
+import java.beans.beancontext.BeanContextServicesSupport;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -75,11 +77,13 @@ public class BeanContextSupportTest extends TestCase {
 
     private static class MockBeanContextSupport extends BeanContextSupport {
 
-        static final long serialVersionUID = -4165267256277214588L;
+        private static final long serialVersionUID = -4165267256277214588L;
 
-        public transient MethodInvocationRecords records;
+        transient MethodInvocationRecords records;
 
-        public transient boolean vetoAddRemove = false;
+        transient boolean vetoAddRemove = false;
+        
+        transient boolean waitOnChildInHooks = true;
 
         /**
          * 
@@ -235,11 +239,13 @@ public class BeanContextSupportTest extends TestCase {
          */
         @Override
         protected void childJustAddedHook(Object child, BCSChild bcsc) {
-            // check lock
-            try {
-                child.wait(1);
-            } catch (InterruptedException e) {
-                // never occur
+            if (waitOnChildInHooks) {
+                // check lock
+                try {
+                    child.wait(1);
+                } catch (InterruptedException e) {
+                    // never occur
+                }
             }
             super.childJustAddedHook(child, bcsc);
             records.add("childJustAddedHook", child, bcsc, null);
@@ -253,11 +259,13 @@ public class BeanContextSupportTest extends TestCase {
          */
         @Override
         protected void childJustRemovedHook(Object child, BCSChild bcsc) {
-            // check lock
-            try {
-                child.wait(1);
-            } catch (InterruptedException e) {
-                // never occur
+            if (waitOnChildInHooks) {
+                // check lock
+                try {
+                    child.wait(1);
+                } catch (InterruptedException e) {
+                    // never occur
+                }
             }
             super.childJustRemovedHook(child, bcsc);
             records.add("childJustRemovedHook", child, bcsc, null);
@@ -453,6 +461,7 @@ public class BeanContextSupportTest extends TestCase {
 
     public void testAdd_BCP() {
         MockBeanContextSupport support = new MockBeanContextSupport();
+        support.waitOnChildInHooks = false;
         MockBeanContextMembershipListener l1 = new MockBeanContextMembershipListener();
         MockPropertyChangeListener l2 = new MockPropertyChangeListener();
         MockVetoableChangeListener l3 = new MockVetoableChangeListener();
@@ -1148,7 +1157,7 @@ public class BeanContextSupportTest extends TestCase {
         MockBeanContextChild child = new MockBeanContextChild();
         support.add(child);
 
-        final String RESOURCE_NAME = "org/apache/harmony/beans/tests/java/beans/beancontext/mock/mockdata.txt";
+        final String RESOURCE_NAME = "org/apache/harmony/beans/tests/support/beancontext/mock/mockdata.txt";
         URL url = support.getResource(RESOURCE_NAME, child);
         assertTrue(url.toString().endsWith(RESOURCE_NAME));
     }
@@ -1202,7 +1211,7 @@ public class BeanContextSupportTest extends TestCase {
         MockBeanContextChild child = new MockBeanContextChild();
         support.add(child);
 
-        final String RESOURCE_NAME = "org/apache/harmony/beans/tests/java/beans/beancontext/mock/mockdata.txt";
+        final String RESOURCE_NAME = "org/apache/harmony/beans/tests/support/beancontext/mock/mockdata.txt";
         InputStream ins = support.getResourceAsStream(RESOURCE_NAME, child);
         assertEquals("mockdata", new BufferedReader(new InputStreamReader(ins))
                 .readLine());
@@ -1230,7 +1239,7 @@ public class BeanContextSupportTest extends TestCase {
         MockBeanContextSupport support = new MockBeanContextSupport();
 
         MockBeanContextChild child = (MockBeanContextChild) support
-                .instantiateChild("org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContextChild");
+                .instantiateChild(MockBeanContextChild.class.getName());
         assertTrue(support.contains(child));
         assertEquals(1, support.size());
     }
@@ -1542,6 +1551,7 @@ public class BeanContextSupportTest extends TestCase {
      */
     public void testRemoveObject_BCP() {
         MockBeanContextSupport support = new MockBeanContextSupport();
+        support.waitOnChildInHooks = false;
         MockBeanContextMembershipListener l1 = new MockBeanContextMembershipListener();
         support.addBeanContextMembershipListener(l1);
 
@@ -1588,6 +1598,7 @@ public class BeanContextSupportTest extends TestCase {
      */
     public void testRemoveObject_BCP2() {
         MockBeanContextSupport support = new MockBeanContextSupport();
+        support.waitOnChildInHooks = false;
         MockBeanContextMembershipListener l1 = new MockBeanContextMembershipListener();
         support.addBeanContextMembershipListener(l1);
 
@@ -2024,16 +2035,10 @@ public class BeanContextSupportTest extends TestCase {
     public void testSerialization_Compatibility() throws Exception {
         MockBeanContextDelegateS mock = new MockBeanContextDelegateS("main id");
         BeanContextSupport support = mock.support;
-        support
-                .addBeanContextMembershipListener(new MockBeanContextMembershipListener());
-        support
-                .addBeanContextMembershipListener(new MockBeanContextMembershipListenerS(
-                        "l2"));
-        support
-                .addBeanContextMembershipListener(new MockBeanContextMembershipListenerS(
-                        "l3"));
-        support
-                .addBeanContextMembershipListener(new MockBeanContextMembershipListener());
+        support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
+        support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l2"));
+        support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l3"));
+        support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
         support.add("abcd");
         support.add(new MockBeanContextChild());
         support.add(new MockBeanContextChildS("a child"));
@@ -2041,8 +2046,7 @@ public class BeanContextSupportTest extends TestCase {
         support.add("1234");
 
         MockBeanContextDelegateS serMock = (MockBeanContextDelegateS) SerializationTester
-                .readObject(mock,
-                        "serialization/java/beans/beancontext/BeanContextSupport.ser");
+                .readObject(mock, "serialization/java/beans/beancontext/BeanContextSupport.ser");
         assertEquals(mock.id, serMock.id);
         assertSame(mock, mock.support.beanContextChildPeer);
         assertSame(serMock, serMock.support.beanContextChildPeer);
@@ -2148,5 +2152,5 @@ public class BeanContextSupportTest extends TestCase {
                 "okToUseGui"));
         assertEquals(Utils.getField(orig, "designTime"), Utils.getField(ser,
                 "designTime"));
-    }
+    }   
 }
