@@ -27,10 +27,10 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.security.src.main.java.platform"
-              value="${hy.security.src.main.java}/../${hy.os}" />
+              value="${hy.security.src.main.java}/../${hy.os.family}" />
 
     <property name="hy.security.src.test.java.platform"
-              value="${hy.security.src.test.java}/../${hy.os}" />
+              value="${hy.security.src.test.java}/../${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -75,11 +75,11 @@
     <target name="-test-module" depends="build, compile-tests, test-jar, copy-tests-resources, run-tests" />
 
     <!-- Build native code -->
-    <available file="${hy.security.src.main.native}/security/${hy.os}" property="native.present" />
+    <available file="${hy.security.src.main.native}/security/${hy.os.family}" property="native.present" />
 
 
     <target name="build-native" if="native.present" >
-        <make dir="${hy.security.src.main.native}/security/${hy.os}" />
+        <make dir="${hy.security.src.main.native}/security/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -91,7 +91,7 @@
     
     <!-- Clean natives -->
     <target name="clean-native" if="native.present" >
-        <make dir="${hy.security.src.main.native}/security/${hy.os}" target="clean" />
+        <make dir="${hy.security.src.main.native}/security/${hy.os.family}" target="clean" />
     </target>
 
 

@@ -27,7 +27,7 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.nio.src.test.java.platform"
-              value="${hy.nio.src.test.java}/../${hy.os}" />
+              value="${hy.nio.src.test.java}/../${hy.os.family}" />
     <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
 
@@ -66,7 +66,7 @@
 
     <!-- Build natives.-->
     <target name="build-native">
-        <make dir="${hy.nio.src.main.native}/nio/${hy.os}" />
+        <make dir="${hy.nio.src.main.native}/nio/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -87,7 +87,7 @@
 
     <!-- Clean natives. -->
     <target name="clean-native">
-        <make dir="${hy.nio.src.main.native}/nio/${hy.os}"
+        <make dir="${hy.nio.src.main.native}/nio/${hy.os.family}"
                       target="clean" />
     </target>
 

@@ -81,7 +81,7 @@
 
     <target name="copy-native-includes-unix" if="is.unix">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/linux">
+            <fileset dir="${hy.luni.src.main.native}/include/unix">
                 <include name="jclprots.h" />
             </fileset>
         </copy>
@@ -95,10 +95,10 @@
     <target name="build-native-core" >
 
         <!-- Build fdlibm lib -->
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" />
 
         <!-- Build vmi dll -->
-        <make dir="${hy.luni.src.main.native}/vmi/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" />
 
         <!-- On Linux we want to copy the libvmi.so into the
              deploy/lib directory so that the natives can link
@@ -116,7 +116,7 @@
     <!-- Build secondary native luni components -->
     <target name="build-native-secondary" >
         <!-- Build luni dll -->
-        <make dir="${hy.luni.src.main.native}/luni/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/luni">
                 <patternset includes="*${shlib.suffix}*" />
@@ -124,10 +124,10 @@
         </copy>
 
         <!-- Build vmls lib -->
-        <make dir="${hy.luni.src.main.native}/vmls/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" />
 
         <!-- Build launcher executables -->
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
 
         <!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -155,11 +155,11 @@
 
     <!-- Clean natives -->
     <target name="clean-native">
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmi/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/luni/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmls/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os}"
+        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
               target="clean" />
     </target>
 

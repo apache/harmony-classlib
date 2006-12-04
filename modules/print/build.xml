@@ -27,7 +27,7 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.print.src.main.java.platform"
-              value="${hy.print.src.main.java}/../${hy.os}" />
+              value="${hy.print.src.main.java}/../${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -98,7 +98,7 @@
     </target>
     
     <target name="build-native" if="is.windows">
-        <make dir="${hy.print.src.main.native}/print/${hy.os}" />
+        <make dir="${hy.print.src.main.native}/print/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.print.src.main.native}/print/">

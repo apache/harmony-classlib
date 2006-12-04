@@ -65,16 +65,16 @@
     
     <!-- Build native code -->
     <target name="build-native" >
-        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
+        <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}" />
         
-        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
+        <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
         <fileset dir="${hy.archive.src.main.native}/zlib">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
         
-    <make dir="${hy.archive.src.main.native}/archive/${hy.os}" />
+    <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}" />
     <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
         <fileset dir="${hy.archive.src.main.native}/archive">
                 <patternset includes="*${shlib.suffix}*" />
@@ -84,10 +84,10 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
-        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
+        <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}" target="clean" />
+        <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}"
               target="clean" />
-        <make dir="${hy.archive.src.main.native}/archive/${hy.os}"
+        <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}"
               target="clean" />
     </target>
 

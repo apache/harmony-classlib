@@ -28,10 +28,10 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.auth.src.main.java.platform"
-              value="${hy.auth.src.main.java}/../${hy.os}" />
+              value="${hy.auth.src.main.java}/../${hy.os.family}" />
 
     <property name="hy.auth.src.test.java.platform"
-              value="${hy.auth.src.test.java}/../${hy.os}" />
+              value="${hy.auth.src.test.java}/../${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -71,7 +71,7 @@
     
     <!-- Build native code -->
     <target name="build-native" >
-    <make dir="${hy.auth.src.main.native}/auth/${hy.os}" />
+    <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" />
 
     <!-- Copy the built shared libs over to the jre/bin dir -->
     <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -83,7 +83,7 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-    <make dir="${hy.auth.src.main.native}/auth/${hy.os}" target="clean" />
+    <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" target="clean" />
     </target>
 
     <target name="clean">

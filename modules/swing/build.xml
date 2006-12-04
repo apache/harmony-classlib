@@ -27,10 +27,10 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.swing.src.main.java.platform"
-              value="${hy.swing.src.main.java}/../${hy.os}" />
+              value="${hy.swing.src.main.java}/../${hy.os.family}" />
 
     <property name="hy.swing.src.test.java.platform"
-              value="${hy.swing.src.test.java}/../${hy.os}" />
+              value="${hy.swing.src.test.java}/../${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>

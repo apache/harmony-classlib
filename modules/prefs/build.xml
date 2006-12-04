@@ -60,7 +60,7 @@
     <!-- Build natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
     <target name="build-native" if="is.windows">
-    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" />
+    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os.family}" />
 
     <!-- Copy the built shared libs over to the jre/bin dir -->
     <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -82,7 +82,7 @@
     <!-- Clean natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
     <target name="clean-native" if="is.windows">
-    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" target="clean" />
+    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os.family}" target="clean" />
     </target>
 
 

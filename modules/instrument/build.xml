@@ -68,7 +68,7 @@
     
     <!-- Build native code -->
     <target name="build-native" >
-        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" />
+        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -80,7 +80,7 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" target="clean" />
+        <make dir="${hy.instrument.src.main.native}/instrument/${hy.os.family}" target="clean" />
     </target>
 
     <target name="clean">

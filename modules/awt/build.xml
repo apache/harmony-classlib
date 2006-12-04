@@ -27,10 +27,10 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.awt.src.main.java.platform"
-              value="${hy.awt.src.main.java}/../${hy.os}" />
+              value="${hy.awt.src.main.java}/../${hy.os.family}" />
 
     <property name="hy.awt.src.test.api.java.platform"
-              value="${hy.awt.src.test.api}/java/${hy.os}" />
+              value="${hy.awt.src.test.api}/java/${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -139,8 +139,8 @@
     </target>
 
     <target name="build-native"
-        depends="-build-native-linux,-build-native-windows">
-        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
+        depends="-build-native-unix,-build-native-windows">
+        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/lcmm">
@@ -148,7 +148,7 @@
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}" />
+        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/jpegdecoder">
@@ -156,7 +156,7 @@
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/gl/${hy.os}" />
+        <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/gl">
@@ -166,8 +166,8 @@
 
     </target>
 
-    <target name="-build-native-linux" if="is.linux">
-        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}" />
+    <target name="-build-native-unix" if="is.unix">
+        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/x11wrapper">
@@ -175,7 +175,7 @@
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os}" />
+        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/linuxfont">
@@ -185,7 +185,7 @@
     </target>
 
     <target name="-build-native-windows" if="is.windows">
-        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}" />
+        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/win32wrapper">
@@ -193,7 +193,7 @@
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/winfont/${hy.os}" />
+        <make dir="${hy.awt.src.main.native}/winfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/winfont">
@@ -203,26 +203,26 @@
     </target>
 
     <target name="clean-native"
-            depends="-clean-native-linux,-clean-native-windows">
-        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}"
+            depends="-clean-native-unix,-clean-native-windows">
+        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}"
+        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/gl/${hy.os}"
+        <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}"
               target="clean"/>
     </target>
 
-    <target name="-clean-native-linux" if="is.linux">
-        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}"
+    <target name="-clean-native-unix" if="is.unix">
+        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os}"
+        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}"
               target="clean"/>
     </target>
 
     <target name="-clean-native-windows" if="is.windows">
-        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}"
+        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/winfont/${hy.os}"
+        <make dir="${hy.awt.src.main.native}/winfont/${hy.os.family}"
               target="clean"/>
     </target>
 

@@ -49,6 +49,12 @@
         <os family="unix" />
     </condition>
 
+    <!-- Normalized operating system family -->
+    <condition property="hy.os.family" value="windows">
+        <isset property="is.windows" />
+    </condition>
+    <property name="hy.os.family" value="unix" />
+
     <!-- Normalized operating system name -->
 
     <!-- this special case makes sense -->
@@ -185,6 +191,7 @@ Harmony test properties:
 Harmony platform properties:
 
   hy.os = ${hy.os}
+  hy.os.family = ${hy.os.family}
   hy.arch = ${hy.arch}
   hy.bits = ${hy.bits}
   hy.platform = ${hy.platform}

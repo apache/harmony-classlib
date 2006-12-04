@@ -35,7 +35,7 @@
     <!-- ================================= 
           target: properties
          ================================= -->
-    <target name="properties" depends="windows-properties, linux-properties" />
+    <target name="properties" depends="windows-properties, unix-properties" />
 
     <!-- ================================= 
           target: windows-properties              
@@ -45,10 +45,10 @@
     </target>
 
     <!-- ================================= 
-          target: linux-properties              
+          target: unix-properties              
          ================================= -->
-    <target name="linux-properties" if="is.linux">
-        <property name="target.platform" value="linux" />
+    <target name="unix-properties" if="is.unix">
+        <property name="target.platform" value="unix" />
     </target>
 	
     <!-- ================================= 
@@ -60,7 +60,7 @@
         <exec executable="doxygen${exe.suffix}" dir="..">
             <arg line="doc/kernel/kernel.cfg" />
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
-            <env key="HARMONY_OS" value="${hy.os}" />
+            <env key="HARMONY_OS" value="${hy.os.family}" />
         </exec>
     </target>
 
@@ -73,7 +73,7 @@
         <exec executable="doxygen${exe.suffix}" dir="..">
             <arg line="doc/classlib/classlib.cfg" />
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
-            <env key="HARMONY_OS" value="${hy.os}" />
+            <env key="HARMONY_OS" value="${hy.os.family}" />
         </exec>
     </target>
 	

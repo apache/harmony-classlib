@@ -119,7 +119,7 @@
     </target>
 
     <target name="build-native" >
-        <make dir="${hy.misc.src.main.native}/accessors/${hy.os}" />
+        <make dir="${hy.misc.src.main.native}/accessors/${hy.os.family}" />
 
     <!-- Copy the built shared libs over to the jre/bin dir -->
     <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -131,7 +131,7 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-        <make dir="${hy.misc.src.main.native}/accessors/${hy.os}"
+        <make dir="${hy.misc.src.main.native}/accessors/${hy.os.family}"
               target="clean" />
     </target>
 
