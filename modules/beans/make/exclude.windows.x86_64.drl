@@ -1,5 +1,4 @@
 org/apache/harmony/beans/tests/java/beans/EncoderTest.java
-org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java
 org/apache/harmony/beans/tests/java/beans/PropertyChangeSupportTest.java
 org/apache/harmony/beans/tests/java/beans/PropertyEditorManagerTest.java
 org/apache/harmony/beans/tests/java/beans/VetoableChangeListenerProxyTest.java
