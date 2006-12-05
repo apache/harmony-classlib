@@ -286,9 +286,10 @@ public class TransferHandler implements Serializable {
            beanInfo = Introspector.getBeanInfo(c.getClass());
         } catch (IntrospectionException e) {
         }
-        for (int i = 0; i < beanInfo.getPropertyDescriptors().length; i++) {
-            String name = beanInfo.getPropertyDescriptors()[i]
-                          .getName();
+        
+        PropertyDescriptor[] list = beanInfo.getPropertyDescriptors(); 
+        for (int i = 0; i < list.length; i++) {
+            String name = list[i].getName();
             if (name.equals(propertyName)) {
                 return COPY;
             }
