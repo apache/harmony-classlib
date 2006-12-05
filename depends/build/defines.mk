@@ -23,8 +23,13 @@ AS = as
 AR = ar
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
+OSLIBS =
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
+
+ifneq ($(HY_OS),freebsd)
+OSLIBS += -ldl
+endif
 
 EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
