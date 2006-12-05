@@ -24,10 +24,12 @@ AR = ar
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
 
+include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
+
 EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
 SHAREDSUB=../shared/
 
-CFLAGS = -O1 $(HY_CFLAGS) -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         -D$(HY_ARCH_DEFINE) $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+CFLAGS = -O1 $(HY_CFLAGS) -D_REENTRANT -DIPv6_FUNCTION_SUPPORT $(VMDEBUG) \
+         -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)

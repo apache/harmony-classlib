@@ -118,25 +118,6 @@
     </condition>
     <property name="hy.arch" value="${os.arch}" />
     
-    <condition property="hy.arch.define" value="HYX86">
-        <equals arg1="${hy.arch}" arg2="x86"/>
-    </condition>
-    <condition property="hy.arch.define" value="HYX86_64">
-        <equals arg1="${hy.arch}" arg2="x86_64"/>
-    </condition>
-    <condition property="hy.arch.define" value="HYIA64">
-        <equals arg1="${hy.arch}" arg2="ia64"/>
-    </condition>
-
-    <condition property="hy.cflags" value="-fpic">
-        <equals arg1="${hy.arch}" arg2="x86_64"/>
-    </condition>
-    <condition property="hy.cflags" value="-march=pentium3">
-        <not>
-            <equals arg1="${hy.arch}" arg2="ia64"/>
-        </not>
-    </condition>
-    
     <!-- Normalized platform name -->
     <property name="hy.platform" value="${hy.os}.${hy.arch}"/>
     <property name="hy.platform.path" value="${hy.os}/${hy.arch}"/>
@@ -211,8 +192,6 @@ Harmony platform properties:
   make.command = ${make.command}
 
   hy.hdk = ${hy.hdk}
-  hy.cflags = ${hy.cflags}
-  hy.arch.define = ${hy.arch.define}
 
 
 The following property is only set if the "svn-prop" target has been
@@ -301,8 +280,6 @@ properties in preference to these:
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
-                <env key="HY_CFLAGS" value="${hy.cflags}" />
-                <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />
                 <arg line="@{target}" />
             </exec>
         </sequential>

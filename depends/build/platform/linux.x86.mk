@@ -1,0 +1,1 @@
+HY_CFLAGS = -DLINUX -DLINUX_X86 -DHYX86 -march=pentium3

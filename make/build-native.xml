@@ -205,7 +205,7 @@
 	<mkdir dir="${hy.hdk}/build/make" />
 	<copy todir="${hy.hdk}/build/make" overwrite="yes">
             <fileset dir="${depends.build}">
-                <include name="*" />
+                <include name="**" />
             </fileset>
         </copy>
     </target>
