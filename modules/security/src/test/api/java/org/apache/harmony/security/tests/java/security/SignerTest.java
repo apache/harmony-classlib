@@ -147,6 +147,14 @@ public class SignerTest extends TestCase {
      */
     public void test_setKeyPairLjava_security_KeyPair() throws Exception {
         
+        // Regression for HARMONY-2408
+        // test: NullPointerException if pair is null
+        try {
+            new SignerStub("name").setKeyPair(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+        
         // test: SecurityException if permission is denied
         SecurityManager oldSm = System.getSecurityManager();
         MySecurityManager sm = new MySecurityManager();
