@@ -17,10 +17,6 @@
 
 package javax.sound.sampled;
 
-import javax.sound.sampled.Line;
-
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public interface Port extends Line {
 
     public static class Info extends Line.Info {
@@ -30,20 +26,20 @@ public interface Port extends Line {
         private boolean isSource;
 
         public static final Info MICROPHONE = new Info(Port.class,
-                "MICROPHONE", true);
+                "MICROPHONE", true); //$NON-NLS-1$
 
-        public static final Info LINE_IN = new Info(Port.class, "LINE_IN", true);
+        public static final Info LINE_IN = new Info(Port.class, "LINE_IN", true); //$NON-NLS-1$
 
         public static final Info COMPACT_DISC = new Info(Port.class,
-                "COMPACT_DISC", true);
+                "COMPACT_DISC", true); //$NON-NLS-1$
 
-        public static final Info SPEAKER = new Info(Port.class, "SPEAKER",
+        public static final Info SPEAKER = new Info(Port.class, "SPEAKER", //$NON-NLS-1$
                 false);
 
-        public static final Info HEADPHONE = new Info(Port.class, "HEADPHONES",
+        public static final Info HEADPHONE = new Info(Port.class, "HEADPHONES", //$NON-NLS-1$
                 false);
 
-        public static final Info LINE_OUT = new Info(Port.class, "LINE_OUT",
+        public static final Info LINE_OUT = new Info(Port.class, "LINE_OUT", //$NON-NLS-1$
                 false);
 
         public Info(Class<?> lineClass, String name, boolean isSource) {
@@ -60,20 +56,25 @@ public interface Port extends Line {
             return this.isSource;
         }
 
-        public boolean matches(Line.Info info) throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+        public boolean matches(Line.Info info) {
+            if (super.matches(info) && Port.Info.class.equals(info.getClass())
+                    && name.equals(((Port.Info) info).getName())
+                    && isSource == ((Port.Info) info).isSource()) {
+                return true;
+            }
+            return false;
         }
 
-        public final boolean equals(Object obj) throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+        public final boolean equals(Object obj) {
+            return this == obj;
         }
 
-        public final int hashCode() throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+        public final int hashCode() {
+            return name.hashCode() ^ getLineClass().hashCode();
         }
 
-        public final String toString() throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+        public final String toString() {
+            return name + (isSource ? " source port" : " target port"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }

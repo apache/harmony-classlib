@@ -17,8 +17,6 @@
 
 package javax.sound.sampled;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public interface Mixer extends Line {
     static class Info{
         private String name;
@@ -26,7 +24,7 @@ public interface Mixer extends Line {
         private String description;
         private String version;        
         
-        public Info(String name, String vendor, String description, String version) {
+        protected Info(String name, String vendor, String description, String version) {
             this.name = name;
             this.vendor = vendor;
             this.description = description;
@@ -60,8 +58,8 @@ public interface Mixer extends Line {
         }
         
         @Override
-        public String toString() throws NotImplementedException {
-            throw new NotImplementedException("not yet implemented");
+        public String toString() {
+            return name + ", version " + version; //$NON-NLS-1$
         }
     }
 

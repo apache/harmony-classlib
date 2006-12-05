@@ -25,6 +25,9 @@ public class LineEvent extends EventObject {
      * 
      */
     private static final long serialVersionUID = -1274246333383880410L;
+    
+    private LineEvent.Type type;
+    private long position;
 
     public static class Type {
 
@@ -69,6 +72,23 @@ public class LineEvent extends EventObject {
 
     public LineEvent(Line line, LineEvent.Type type, long position) {
         super(line);
-        throw new Error("Not yet imlemented");
+        this.type = type;
+        this.position = position;
+    }
+    
+    public final Line getLine() {
+        return (Line)getSource();
+    }
+    
+    public final LineEvent.Type getType() {
+        return type;
+    }
+    
+    public final long getFramePosition() {
+        return position;
+    }
+    
+    public String toString() {
+        return type + " event from line " + getLine(); //$NON-NLS-1$
     }
 }

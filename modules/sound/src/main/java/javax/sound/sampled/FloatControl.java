@@ -17,63 +17,30 @@
 
 package javax.sound.sampled;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public abstract class FloatControl extends Control {
 
     public static class Type extends Control.Type {
-        public static final Type MASTER_GAIN = new Type("MASTER_GAIN");
+        public static final Type MASTER_GAIN = new Type("Master Gain"); //$NON-NLS-1$
 
-        public static final Type AUX_SEND = new Type("AUX_SEND");
+        public static final Type AUX_SEND = new Type("AUX Send"); //$NON-NLS-1$
 
-        public static final Type AUX_RETURN = new Type("AUX_RETURN");
+        public static final Type AUX_RETURN = new Type("AUX Return"); //$NON-NLS-1$
 
-        public static final Type REVERB_SEND = new Type("REVERB_SEND");
+        public static final Type REVERB_SEND = new Type("Reverb Send"); //$NON-NLS-1$
 
-        public static final Type REVERB_RETURN = new Type("REVERB_RETURN");
+        public static final Type REVERB_RETURN = new Type("Reverb Return"); //$NON-NLS-1$
 
-        public static final Type VOLUME = new Type("VOLUME");
+        public static final Type VOLUME = new Type("Volume"); //$NON-NLS-1$
 
-        public static final Type PAN = new Type("PAN");
+        public static final Type PAN = new Type("Pan"); //$NON-NLS-1$
 
-        public static final Type BALANCE = new Type("BALANCE");
+        public static final Type BALANCE = new Type("Balance"); //$NON-NLS-1$
 
-        public static final Type SAMPLE_RATE = new Type("SAMPLE_RATE");
+        public static final Type SAMPLE_RATE = new Type("Sample Rate"); //$NON-NLS-1$
 
         protected Type(String name) {
             super(name);
         }
-    }
-
-    protected FloatControl(FloatControl.Type type, float minimum,
-            float maximum, float precision, int updatePeriod,
-            float initialValue, String units, String minLabel, String midLabel,
-            String maxLabel) {
-        super(type);
-        this.maximum = maximum;
-        this.maxLabel = maxLabel;
-        this.midLabel = midLabel;
-        this.minLabel = minLabel;
-        this.minimum = minimum;
-        this.precision = precision;
-        this.units = units;
-        this.updatePeriod = updatePeriod;
-        this.value = initialValue;
-    }
-
-    protected FloatControl(FloatControl.Type type, float minimum,
-            float maximum, float precision, int updatePeriod,
-            float initialValue, String units) {
-        super(type);
-        this.maximum = maximum;
-        this.maxLabel = "";
-        this.midLabel = "";
-        this.minLabel = "";
-        this.minimum = minimum;
-        this.precision = precision;
-        this.units = units;
-        this.updatePeriod = updatePeriod;
-        this.value = initialValue;
     }
 
     private float value;
@@ -94,7 +61,33 @@ public abstract class FloatControl extends Control {
 
     private int updatePeriod;
 
+    protected FloatControl(FloatControl.Type type, float minimum,
+            float maximum, float precision, int updatePeriod,
+            float initialValue, String units, String minLabel, String midLabel,
+            String maxLabel) {
+        super(type);
+        this.maximum = maximum;
+        this.maxLabel = maxLabel;
+        this.midLabel = midLabel;
+        this.minLabel = minLabel;
+        this.minimum = minimum;
+        this.precision = precision;
+        this.units = units;
+        this.updatePeriod = updatePeriod;
+        this.value = initialValue;
+    }
+
+    protected FloatControl(FloatControl.Type type, float minimum,
+            float maximum, float precision, int updatePeriod,
+            float initialValue, String units) {
+        this(type, minimum, maximum, precision, updatePeriod, initialValue,
+                units, "", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
     public void setValue(float newValue) {
+        if (newValue > maximum || newValue < minimum) {
+            throw new IllegalArgumentException("value does not fall within the allowable range"); //$NON-NLS-1$
+        }
         this.value = newValue;
     }
 
@@ -134,12 +127,13 @@ public abstract class FloatControl extends Control {
         return this.updatePeriod;
     }
 
-    public void shift(float from, float to, int microseconds) throws NotImplementedException {
-        throw new NotImplementedException("not yet implemented");
+    public void shift(float from, float to, int microseconds) {
+        setValue(to);
     }
 
-    public String toString() throws NotImplementedException {
-        throw new NotImplementedException("not yet implemented");
+    public String toString() {
+        return getType() + " with current value: "+ value + " " + units  //$NON-NLS-1$ //$NON-NLS-2$
+            + " (range: " + minimum + " - " + maximum + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 }
