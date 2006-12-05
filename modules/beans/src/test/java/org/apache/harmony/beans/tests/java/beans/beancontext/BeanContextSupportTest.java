@@ -1932,7 +1932,7 @@ public class BeanContextSupportTest extends TestCase {
         String in[] = new String[5];
         String out[] = (String[]) support.toArray(in);
         assertSame(in, out);
-        List<String> expected = Arrays.asList(new String[] { "a", "b", "c" });
+        List<String> expected = Arrays.asList(new String[] { "a", "b", "c"});
         for (int i = 0; i < expected.size(); i++) {
             assertTrue(expected.contains(out[i]));
         }
@@ -2152,5 +2152,15 @@ public class BeanContextSupportTest extends TestCase {
                 "okToUseGui"));
         assertEquals(Utils.getField(orig, "designTime"), Utils.getField(ser,
                 "designTime"));
-    }   
+    }
+
+
+    public void testPropertyChangePropertyChangeEvent() {
+        BeanContextServicesSupport s = new BeanContextServicesSupport();
+        PropertyChangeSupport p= new PropertyChangeSupport(new Object());
+
+        p.addPropertyChangeListener(s);
+        p.firePropertyChange(null, new Object(), new Object());
+    }
+
 }

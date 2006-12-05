@@ -774,12 +774,14 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     }
 
     public void propertyChange(PropertyChangeEvent pce) {
+        Object source;
 
-        if (!pce.getPropertyName().equals(BEAN_CONTEXT)) {
+        if (pce == null || pce.getPropertyName() == null ||
+                !pce.getPropertyName().equals(BEAN_CONTEXT)) {
             return;
         }
 
-        Object source = pce.getSource();
+        source = pce.getSource();
 
         if (source instanceof BCSChild) {
             BCSChild ch = (BCSChild) source;
