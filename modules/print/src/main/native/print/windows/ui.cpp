@@ -38,7 +38,7 @@
 
 #include <commdlg.h>
 #include <wingdi.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <Windef.h>
 #include <winspool.h>
 

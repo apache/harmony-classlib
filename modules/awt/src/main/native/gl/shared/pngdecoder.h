@@ -23,7 +23,7 @@
 #ifndef _Included_PNGDecoder
 #define _Included_PNGDecoder
 
-#include <malloc.h> // Strange because it's already included in pngconf.h, but it's needed
+#include <stdlib.h> // Strange because it's already included in pngconf.h, but it's needed
 //#include <setjmp.h>
 
 #include "png.h"

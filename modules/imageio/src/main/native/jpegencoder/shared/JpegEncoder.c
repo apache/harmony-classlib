@@ -20,7 +20,7 @@
  */
 
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <assert.h>
 
 #include "org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter.h"

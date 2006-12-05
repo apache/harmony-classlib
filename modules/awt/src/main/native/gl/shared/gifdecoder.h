@@ -24,7 +24,7 @@
 #define _Included_JPEGDecoder
 
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <assert.h>
 
 #include "org_apache_harmony_awt_gl_image_GifDecoder.h"

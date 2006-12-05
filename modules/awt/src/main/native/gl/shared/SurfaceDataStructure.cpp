@@ -21,7 +21,7 @@
  */
  
 #include <stdlib.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <memory.h>
 
 #include "SurfaceDataStructure.h"
