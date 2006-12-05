@@ -46,7 +46,7 @@ EXE_EXTENSION_CHAR: the executable has a delimiter that we want to stop at as pa
 */
 /* By default order doubles in the native (i.e. big/little endian) ordering. */
 #define HY_PLATFORM_DOUBLE_ORDER
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 /* NOTE: Linux supports different processors -- do not assume 386 */
 #if defined(HYX86_64) || defined(HYIA64)
 #define DATA_TYPES_DEFINED

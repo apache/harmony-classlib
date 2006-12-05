@@ -21,7 +21,7 @@
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H
 
-#ifdef       __linux__
+#if defined(LINUX) || defined(FREEBSD)
 // common linux section--------------------------------
 #include <dlfcn.h>
 #include <stdint.h>

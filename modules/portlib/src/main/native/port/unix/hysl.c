@@ -36,7 +36,7 @@
 /* Start copy from hyfiletext.c */
 /* __STDC_ISO_10646__ indicates that the platform wchar_t encoding is Unicode */
 /* but older versions of libc fail to set the flag, even though they are Unicode */
-#if defined(__STDC_ISO_10646__) || defined(LINUX)
+#if defined(__STDC_ISO_10646__) || defined(LINUX) || defined(FREEBSD)
 #define HYVM_USE_MBTOWC
 #else
 #define HYVM_USE_ICONV

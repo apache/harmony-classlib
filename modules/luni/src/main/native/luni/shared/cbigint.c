@@ -18,7 +18,7 @@
 #include <string.h>
 #include "cbigint.h"
 
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define USE_LL
 #endif
 

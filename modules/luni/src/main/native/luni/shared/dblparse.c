@@ -22,7 +22,7 @@
 #include "jclglob.h"
 #include "exceptions.h"
 
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define USE_LL
 #endif
 
