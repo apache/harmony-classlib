@@ -45,6 +45,9 @@
     <condition property="is.linux">
         <os name="linux" />
     </condition>
+    <condition property="is.freebsd">
+        <os name="freebsd" />
+    </condition>
     <condition property="is.unix">
         <os family="unix" />
     </condition>
@@ -63,6 +66,9 @@
     </condition>
     <condition property="hy.os" value="linux">
         <os name="linux" />
+    </condition>
+    <condition property="hy.os" value="freebsd">
+        <os name="freebsd" />
     </condition>
 
     <property name="hy.os" value="${os.name}" />
@@ -140,10 +146,24 @@
     <condition property="make.command" value="nmake.exe">
         <isset property="is.windows"/>
     </condition>
+    <condition property="make.command" value="gmake">
+        <isset property="is.freebsd"/>
+    </condition>
     <property name="make.command" value="make" />
 
+    <condition property="png.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
     <property name="png.home" value="/usr" />
+
+    <condition property="lcms.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
     <property name="lcms.home" value="/usr" />
+
+    <condition property="jpeg.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
     <property name="jpeg.home" value="/usr" />
     
     <property name="build.compilerarg" value="-warn:none" />
