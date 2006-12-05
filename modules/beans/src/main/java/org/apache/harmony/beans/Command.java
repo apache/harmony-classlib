@@ -838,7 +838,7 @@ public class Command {
     // private static String translateStatus(int status) {
     // String result = "unknown";
     // if(status == Command.INITIALIZED) {
-    // result = "intialized";
+    // result = "initialized";
     // } else if(status == Command.CHILDREN_FILTERED) {
     // result = "children filtered";
     // } else if(status == Command.COMMAND_EXECUTED) {

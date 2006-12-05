@@ -39,7 +39,7 @@ import org.apache.harmony.beans.tests.support.SerializablePropertyChangeListener
 import tests.util.SerializationTester;
 
 /**
- * Test class PropertyeChangeSupport.
+ * Test class PropertyChangeSupport.
  */
 public class PropertyChangeSupportTest extends TestCase {
 
@@ -52,7 +52,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener) with a
+     * Test the method addPropertyChangeListener(PropertyChangeListener) with a
      * normal listener parameter.
      */
     public void testAddPropertyChangeListener_PropertyChangeListener_Normal() {
@@ -91,7 +91,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener) with a
+     * Test the method addPropertyChangeListener(PropertyChangeListener) with a
      * null listener parameter.
      */
     public void testAddPropertyChangeListener_PropertyChangeListener_Null() {
@@ -105,7 +105,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener) with a
+     * Test the method addPropertyChangeListener(PropertyChangeListener) with a
      * listener parameter that has already been registered.
      */
     public void testAddPropertyChangeListener_PropertyChangeListener_Duplicate() {
@@ -123,7 +123,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener,
+     * Test the method addPropertyChangeListener(PropertyChangeListener,
      * String) with a normal listener parameter and property name parameter.
      */
     public void testAddPropertyChangeListener_PropertyChangeListener_String_Normal() {
@@ -169,7 +169,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener,
+     * Test the method addPropertyChangeListener(PropertyChangeListener,
      * String) with a null listener parameter and a normal property name
      * parameter.
      */
@@ -191,7 +191,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener,
+     * Test the method addPropertyChangeListener(PropertyChangeListener,
      * String) with a normal listener parameter and a null property name
      * parameter.
      */
@@ -227,7 +227,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method addPropertyChangeListener(PropertyeChangeListener,
+     * Test the method addPropertyChangeListener(PropertyChangeListener,
      * String) with a listener parameter that has already been registered for
      * the named property.
      */
@@ -266,7 +266,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener)
+     * Test the method removePropertyChangeListener(PropertyChangeListener)
      * with a normal listener parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_Normal() {
@@ -302,7 +302,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener)
+     * Test the method removePropertyChangeListener(PropertyChangeListener)
      * with a null listener parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_Null() {
@@ -317,7 +317,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener)
+     * Test the method removePropertyChangeListener(PropertyChangeListener)
      * with a non-registered listener parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_NonRegistered() {
@@ -328,7 +328,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener,
+     * Test the method removePropertyChangeListener(PropertyChangeListener,
      * String) when a listener for all properties has been registered.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_AllRegistered() {
@@ -350,7 +350,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener,
+     * Test the method removePropertyChangeListener(PropertyChangeListener,
      * String) when a listener for the named property has been registered.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_PropertyRegistered() {
@@ -375,7 +375,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener,
+     * Test the method removePropertyChangeListener(PropertyChangeListener,
      * String) with a non-registered listener parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_NonRegistered() {
@@ -387,7 +387,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener,
+     * Test the method removePropertyChangeListener(PropertyChangeListener,
      * String) with a null listener parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_NullListener() {
@@ -403,7 +403,7 @@ public class PropertyChangeSupportTest extends TestCase {
     }
 
     /*
-     * Test the method removePropertyChangeListener(PropertyeChangeListener,
+     * Test the method removePropertyChangeListener(PropertyChangeListener,
      * String) with a null property name parameter.
      */
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_NullProperty() {
@@ -1425,7 +1425,7 @@ public class PropertyChangeSupportTest extends TestCase {
      *        java.lang.String, java.beans.PropertyChangeListener)
      */
     public void testRemovePropertyChangeListener() {
-        // Regerssion for HARMONY-386
+        // Regression for HARMONY-386
         PropertyChangeSupport prop = new PropertyChangeSupport(new Object());
 
         PropertyChangeListener lis1 = new PropertyChangeListener() {
@@ -1451,7 +1451,7 @@ public class PropertyChangeSupportTest extends TestCase {
      *        java.lang.String, java.beans.PropertyChangeListener)
      */
     public void testRemovePropertyChangeListener2() {
-        // Regerssion for HARMONY-320
+        // Regression for HARMONY-320
         PropertyChangeListener listener = new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent arg0) {

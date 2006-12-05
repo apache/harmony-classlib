@@ -57,7 +57,7 @@ public class BeanContextChildSupport implements BeanContextChild,
         // implements BeanContextChild
         this.beanContextChildPeer = (bcc == null ? this : bcc);
 
-        // Initialize necessary fileds for later use
+        // Initialize necessary fields for later use
         pcSupport = new PropertyChangeSupport(this.beanContextChildPeer);
         vcSupport = new VetoableChangeSupport(this.beanContextChildPeer);
         this.rejectedSetBCOnce = false;
@@ -146,7 +146,7 @@ public class BeanContextChildSupport implements BeanContextChild,
     public synchronized void setBeanContext(BeanContext bc)
             throws PropertyVetoException {
 
-        // Do nothing if the old and new values are uqual
+        // Do nothing if the old and new values are equal
         if ((this.beanContext == null) && (bc == null)) {
             return;
         }

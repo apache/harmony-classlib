@@ -386,7 +386,7 @@ public class IntrospectorTest extends TestCase {
     }
 
     /*
-     * Therer is a BeanInfo class + test cache info
+     * There is a BeanInfo class + test cache info
      */
     public void testGetBeanInfoClass_HaveBeanInfo()
             throws IntrospectionException {

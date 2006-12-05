@@ -362,7 +362,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     }
 
     /*
-     * Test instantiate() with a property name that has an unregular getter
+     * Test instantiate() with a property name that has an irregular getter
      * method, defined by its beaninfo.
      */
     public void testInstantiate_NotRegularGetter() throws Exception {

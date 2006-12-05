@@ -282,7 +282,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     public void addBeanContextMembershipListener(
             BeanContextMembershipListener bcml) {
 
-        // BeanContextMembershipListener canj not be null
+        // BeanContextMembershipListener can not be null
         if (bcml == null) {
             throw new NullPointerException(Messages.getString("beans.29")); //$NON-NLS-1$
         }
@@ -333,7 +333,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             childJustAddedHook(targetChild, ch);
         }
 
-        // Fire memebership event
+        // Fire membership event
         fireChildrenAdded(getBCME(new Object[] { targetChild }));
     }
 

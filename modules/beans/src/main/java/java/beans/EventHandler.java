@@ -201,7 +201,7 @@ public class EventHandler implements InvocationHandler {
                         arg = method.invoke(null, new Object[] {});
                     } else {
                         // cannot access property getter
-                        // RI thorws NPE here so we should do the same
+                        // RI throws NPE here so we should do the same
                         throw new NullPointerException(Messages.getString(
                                 "beans.12", propertyName)); //$NON-NLS-1$
                     }

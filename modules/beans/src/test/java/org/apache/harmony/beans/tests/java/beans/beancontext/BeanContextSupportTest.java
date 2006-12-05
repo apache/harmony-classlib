@@ -1941,11 +1941,11 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testValidatePendingAdd() {
-        // coverd by testAdd
+        // covered by testAdd
     }
 
     public void testValidatePendingRemove() {
-        // coverd by testRemove
+        // covered by testRemove
     }
 
     public void testVetoableChange() throws PropertyVetoException {

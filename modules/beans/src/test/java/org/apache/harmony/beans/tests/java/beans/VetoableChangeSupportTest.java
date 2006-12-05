@@ -780,7 +780,7 @@ public class VetoableChangeSupportTest extends TestCase {
     }
 
     /*
-     * register listener for lablel property
+     * register listener for label property
      */
     public void testFireVetoableChangeStringbooleanboolean_listener_Property_invalid()
             throws PropertyVetoException {
@@ -864,13 +864,13 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeListener proxy = EventHandler.create(
                 VetoableChangeListener.class, source, "setText");
         support.addVetoableChangeListener(proxy);
-        support.fireVetoableChange("label_invalide", 1, 2);
+        support.fireVetoableChange("label_invalid", 1, 2);
 
         assertEquals("called", source.getText());
     }
 
     /*
-     * oldvalue=newVlaue register listener for all
+     * oldvalue=newValue register listener for all
      */
     public void testFireVetoableChangeStringintint_SameValue()
             throws PropertyVetoException {
@@ -929,13 +929,13 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeListener proxy = EventHandler.create(
                 VetoableChangeListener.class, source, "setText");
         support.addVetoableChangeListener("label", proxy);
-        support.fireVetoableChange("label_invalide", 1, 2);
+        support.fireVetoableChange("label_invalid", 1, 2);
 
         assertEquals("text.default", source.getText());
     }
 
     /*
-     * oldvalue=newVlaue register listener for one property - "label"
+     * oldvalue=newValue register listener for one property - "label"
      */
     public void testFireVetoableChangeStringintint_listener_SameValue()
             throws PropertyVetoException {
@@ -1797,7 +1797,7 @@ public class VetoableChangeSupportTest extends TestCase {
                         + " new: " + event.getNewValue());
             }
             if (veto) {
-                throw new PropertyVetoException("Vete Change", event);
+                throw new PropertyVetoException("Veto Change", event);
             }
         }
 

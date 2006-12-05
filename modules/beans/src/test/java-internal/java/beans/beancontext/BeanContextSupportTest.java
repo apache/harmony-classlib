@@ -243,7 +243,7 @@ public class BeanContextSupportTest extends TestCase {
         BeanContextChildSupport ch = new BeanContextChildSupport();
         sup.add(ch);
 
-        // Remove unexisting child
+        // Remove non-existent child
         assertFalse(sup.remove(new Object(), true));
 
         // Remove it
@@ -263,7 +263,7 @@ public class BeanContextSupportTest extends TestCase {
         BeanContextChildSupport ch = new BeanContextChildSupport();
         sup.add(ch);
 
-        // Remove unexisting child
+        // Remove non-existent child
         assertFalse(sup.remove(new Object()));
 
         // Remove it

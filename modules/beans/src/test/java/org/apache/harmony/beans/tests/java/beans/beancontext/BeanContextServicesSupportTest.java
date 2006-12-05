@@ -512,11 +512,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testCreateBCSChild() {
-        // coverd in super's testcase
+        // covered in super's testcase
     }
 
     public void testCreateBCSSServiceProvider() {
-        // coverd by addService
+        // covered by addService
     }
 
     /*

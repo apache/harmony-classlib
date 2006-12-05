@@ -28,7 +28,7 @@ package org.apache.harmony.beans.tests.support;
 
 public class MisprintBean {
 
-    // public void addMiisprintListener(MisprintListenerr ml) {}
+    // public void addMisprintListener(MisprintListenerr ml) {}
     public void removeMisprintListener(MisprintListenerr ml) {
     }
 }

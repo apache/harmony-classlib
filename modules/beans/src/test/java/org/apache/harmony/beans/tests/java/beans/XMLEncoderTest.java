@@ -200,7 +200,7 @@ public class XMLEncoderTest extends TestCase {
     }
 
     public void testWriteStatement() {
-        // coverd by testWriteStatement
+        // covered by testWriteStatement
 
          //Regression for HARMONY-1521
          //no exception expected

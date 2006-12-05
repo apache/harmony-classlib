@@ -37,7 +37,7 @@ public abstract class PersistenceDelegate {
                     pd.initialize(type, oldInstance, newInstance, out);
                 } catch (StackOverflowError err) {
                     // circular redundancy
-                    // we should catch in order to be compatilbe with RI
+                    // we should catch in order to be compatible with RI
                 }
             }
         } else {
