@@ -143,20 +143,25 @@ public class SignerTest extends TestCase {
     }
 
     /**
-     * verify Signer.setkeyPair() throws SecurityException if permission is denied
+     * @tests java.security.Signer#setKeyPair(java.security.KeyPair) 
      */
-    public void testSetKeyPair_denied() throws Exception {
+    public void test_setKeyPairLjava_security_KeyPair() throws Exception {
+        
+        // test: SecurityException if permission is denied
+        SecurityManager oldSm = System.getSecurityManager();
         MySecurityManager sm = new MySecurityManager();
         sm.denied.add(new SecurityPermission("setSignerKeyPair"));
         System.setSecurityManager(sm);
         try {
-            Signer s = new SignerStub("sss7");            
+            Signer s = new SignerStub("sss7");
             try {
-                s.setKeyPair(new KeyPair(new PublicKeyStub("public", "fff", null), new PrivateKeyStub("private", "fff", null)));
+                s.setKeyPair(new KeyPair(new PublicKeyStub("public", "fff",
+                        null), new PrivateKeyStub("private", "fff", null)));
                 fail("SecurityException should be thrown");
-            } catch (SecurityException ok) {}            
+            } catch (SecurityException ok) {
+            }
         } finally {
-            System.setSecurityManager(null);
+            System.setSecurityManager(oldSm);
         }        
     }
 
