@@ -16,9 +16,9 @@
  */
 
 /**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
+ * @author Aleksei Y. Semenov
+ * @version $Revision$
+ */
 
 package java.security;
 
@@ -31,22 +31,22 @@ package java.security;
  */
 
 public abstract class Signer extends Identity {
-    
+
     /**
      * @com.intel.drl.spec_ref 
-     */   
+     */
     private static final long serialVersionUID = -1763464102261361480L;
-    
+
     /**
      * @com.intel.drl.spec_ref 
      */
     private PrivateKey privateKey;
-    
+
     /**
      * @com.intel.drl.spec_ref 
      */
-    protected  Signer() {
-        super();        
+    protected Signer() {
+        super();
     }
 
     /**
@@ -69,44 +69,48 @@ public abstract class Signer extends Identity {
      */
     public PrivateKey getPrivateKey() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm!=null) {
+        if (sm != null) {
             sm.checkSecurityAccess("getSignerPrivateKey"); //$NON-NLS-1$
         }
-        
+
         return privateKey;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref 
-     */    
-    public final void setKeyPair(KeyPair pair) throws InvalidParameterException, KeyException {
-        if ((pair==null) || (pair.getPrivate()==null) || (pair.getPublic()==null)) throw new InvalidParameterException(); 
+     */
+    public final void setKeyPair(KeyPair pair)
+            throws InvalidParameterException, KeyException {
+        if ((pair == null) || (pair.getPrivate() == null)
+                || (pair.getPublic() == null)) {
+            throw new InvalidParameterException();
+        }
         SecurityManager sm = System.getSecurityManager();
-        if (sm!=null) {
+        if (sm != null) {
             sm.checkSecurityAccess("setSignerKeyPair"); //$NON-NLS-1$
         }
         final PublicKey pk = pair.getPublic();
         try {
-            AccessController.doPrivileged(
-                    new PrivilegedExceptionAction() {
-                        public Object run() throws KeyManagementException {
-                            setPublicKey(pk);
-                            return null;
-                        }
-                    }
-            );
+            AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                public Object run() throws KeyManagementException {
+                    setPublicKey(pk);
+                    return null;
+                }
+            });
         } catch (PrivilegedActionException e) {
             throw new KeyException(e.getException());
         }
-        this.privateKey = pair.getPrivate(); 
+        this.privateKey = pair.getPrivate();
     }
-    
+
     /**
      * @com.intel.drl.spec_ref 
-     */    
-    public String toString() {        
-        String s = "[Signer]"+getName(); //$NON-NLS-1$
-        if (getScope()!=null) s = s+"["+getScope().toString()+"]"; //$NON-NLS-1$ //$NON-NLS-2$
+     */
+    public String toString() {
+        String s = "[Signer]" + getName(); //$NON-NLS-1$
+        if (getScope() != null) {
+            s = s + "[" + getScope().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
         return s;
     }
 }
