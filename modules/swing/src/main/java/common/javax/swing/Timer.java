@@ -23,7 +23,6 @@ package javax.swing;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.EventListener;
 import java.util.TimerTask;
 
 import javax.swing.event.EventListenerList;
@@ -160,7 +159,7 @@ public class Timer implements Serializable {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[])listenerList.getListeners(ActionListener.class);
+        return listenerList.getListeners(ActionListener.class);
     }
 
     protected void fireActionPerformed(final ActionEvent event) {
@@ -171,15 +170,11 @@ public class Timer implements Serializable {
     }
 
     public static void setLogTimers(final boolean isLogTimers) {
-        synchronized (Timer.class) {
-            Timer.isLogTimers = isLogTimers;
-        }
+        Timer.isLogTimers = isLogTimers;
     }
 
     public static boolean getLogTimers() {
-        synchronized (Timer.class) {
-            return isLogTimers;
-        }
+        return isLogTimers;
     }
 
     private void stopImpl() {
