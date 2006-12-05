@@ -18,7 +18,8 @@
 package javax.sound.sampled;
 
 public interface Mixer extends Line {
-    static class Info{
+
+    public static class Info {
         private String name;
         private String vendor;
         private String description;
@@ -36,19 +37,19 @@ public interface Mixer extends Line {
             return this == another;
         }
         
-        public String getDescription() {
+        public final String getDescription() {
             return description;
         }
         
-        public String getName() {
+        public final String getName() {
             return name;
         }
         
-        public String getVendor() {
+        public final String getVendor() {
             return vendor;
         }
         
-        public String getVersion() {
+        public final String getVersion() {
             return version;
         }
         
@@ -58,7 +59,7 @@ public interface Mixer extends Line {
         }
         
         @Override
-        public String toString() {
+        public final String toString() {
             return name + ", version " + version; //$NON-NLS-1$
         }
     }
