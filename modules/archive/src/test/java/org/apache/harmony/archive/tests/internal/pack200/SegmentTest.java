@@ -31,10 +31,12 @@ public class SegmentTest extends TestCase {
 	 * @param args
 	 * @throws Exception
 	 */
-	public void testHelloWorld() throws Exception {
-		assertNotNull(Segment.parse(Segment.class
-				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/HelloWorld.pack")));
-	}
+// Commented on request in HARMONY-2246
+// Will be uncommented later     
+//	public void testHelloWorld() throws Exception {
+//		assertNotNull(Segment.parse(Segment.class
+//				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/HelloWorld.pack")));
+//	}
 	/**
 	 * @param args
 	 * @throws Exception

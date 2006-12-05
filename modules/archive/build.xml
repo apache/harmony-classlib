@@ -238,7 +238,6 @@
 
                 <fileset dir="${hy.archive.src.test.java}">
                     <include name="**/*Test.java"/>
-		    <exclude name="org/apache/harmony/archive/tests/internal/pack200/SegmentTest.java" />
                 </fileset>
             </batchtest>
         </junit>
