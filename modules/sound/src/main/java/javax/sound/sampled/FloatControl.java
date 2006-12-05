@@ -17,6 +17,8 @@
 
 package javax.sound.sampled;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public abstract class FloatControl extends Control {
 
     public static class Type extends Control.Type {
@@ -86,7 +88,8 @@ public abstract class FloatControl extends Control {
 
     public void setValue(float newValue) {
         if (newValue > maximum || newValue < minimum) {
-            throw new IllegalArgumentException("value does not fall within the allowable range"); //$NON-NLS-1$
+            // sound.0F=value does not fall within the allowable range
+            throw new IllegalArgumentException(Messages.getString("sound.0F")); //$NON-NLS-1$
         }
         this.value = newValue;
     }
