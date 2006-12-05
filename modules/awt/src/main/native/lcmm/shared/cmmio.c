@@ -20,6 +20,7 @@
  * 
  */
 
+#include <stdlib.h>
 #include "cmmapi.h"
 
 
@@ -543,7 +544,7 @@ BOOL cmmGetProfileElement(
     return FALSE;    
   }
 
-  *dataSize = MIN(*dataSize, hProfile->TagSizes[idx]);
+  *dataSize = __min(*dataSize, hProfile->TagSizes[idx]);
 
 
 
@@ -587,7 +588,7 @@ long cmmGetProfileElementSize(LPLCMSICCPROFILE hProfile, icTagSignature sig) {
 
 BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
 
-  size_t bytesToRead = MIN(size, sizeof(icHeader));
+  size_t bytesToRead = __min(size, sizeof(icHeader));
 
   hProfile->Seek(hProfile->stream, 0);
 

@@ -20,6 +20,7 @@
  * 
  */
 
+#include <stdlib.h>
 #include "JPEGDecoder.h"
 
 typedef enum TAG_DECODER_STATE{
@@ -90,7 +91,7 @@ METHODDEF(void) gl_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes) 
     srcmgr = (gl_jpeg_source_mgr*) cinfo->src;
     srcmgr->skip_input_bytes += num_bytes;
   
-    skipbytes = MIN(srcmgr->base.bytes_in_buffer, srcmgr->skip_input_bytes);
+    skipbytes = __min(srcmgr->base.bytes_in_buffer, srcmgr->skip_input_bytes);
 
     if(skipbytes < srcmgr->base.bytes_in_buffer) {
             memmove(srcmgr->jpeg_buffer,
@@ -354,7 +355,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
     }
   }
 
-  consumed = MIN(bytesInBuffer, freeInJpegBuffer);
+  consumed = __min(bytesInBuffer, freeInJpegBuffer);
 
   // filling buffer with the new data  
   buffer = (*env)->GetPrimitiveArrayCritical(env, jbuffer, 0);
@@ -368,7 +369,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
     glDecompress->srcMgr.valid_buffer_length += consumed;
 
     if(glDecompress->srcMgr.skip_input_bytes) {
-        int skipbytes = (int) MIN((size_t) glDecompress->srcMgr.valid_buffer_length, glDecompress->srcMgr.skip_input_bytes);
+        int skipbytes = (int) __min((size_t) glDecompress->srcMgr.valid_buffer_length, glDecompress->srcMgr.skip_input_bytes);
 
         if(skipbytes < glDecompress->srcMgr.valid_buffer_length) {
             memmove(glDecompress->srcMgr.jpeg_buffer,
@@ -449,7 +450,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
         }
 
     // Calculate output buffer size and allocate memory for it
-    glDecompress->maxScanlines = MAX((int)(MAX_BUFFER / glDecompress->scanlineSize), 1);
+    glDecompress->maxScanlines = __max((int)(MAX_BUFFER / glDecompress->scanlineSize), 1);
     glDecompress->outBufferSize = glDecompress->maxScanlines; // * glDecompress->scanlineSize;    
 
     glDecompress->outBuffer = malloc(glDecompress->outBufferSize * sizeof(JSAMPROW));
