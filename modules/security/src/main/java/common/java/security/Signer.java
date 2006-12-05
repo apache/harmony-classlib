@@ -91,8 +91,8 @@ public abstract class Signer extends Identity {
         }
         final PublicKey pk = pair.getPublic();
         try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws KeyManagementException {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                public Void run() throws KeyManagementException {
                     setPublicKey(pk);
                     return null;
                 }
@@ -109,7 +109,7 @@ public abstract class Signer extends Identity {
     public String toString() {
         String s = "[Signer]" + getName(); //$NON-NLS-1$
         if (getScope() != null) {
-            s = s + "[" + getScope().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            s = s + '[' + getScope().toString() + ']';
         }
         return s;
     }
