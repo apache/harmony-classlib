@@ -372,9 +372,13 @@ public class Timer_MultithreadedTest extends TestCase {
     public void testSetLogTimers() {
         class LogOutputStream extends OutputStream {
             public boolean written = false;
+            public boolean log_allowed = false;
 
             @Override
             public void write(int b) throws IOException {
+                //if we fail we know who is logging by stack trace
+                assertTrue("log must not be written", log_allowed);
+
                 written = true;
             }
         }
@@ -391,10 +395,11 @@ public class Timer_MultithreadedTest extends TestCase {
             assertFalse("[1] doesn't log timers", Timer.getLogTimers());
             listener.waitAction(250);
             assertTrue("[1] action performed ", listener.performed);
-            assertFalse("[1] log's not written", logOut.written);
             timer.stop();
             listener.reset();
+
             Timer.setLogTimers(true);
+            logOut.log_allowed = true;
             timer.start();
             listener.waitAction(250);
             assertTrue("[2] logs timers ", Timer.getLogTimers());
@@ -403,13 +408,14 @@ public class Timer_MultithreadedTest extends TestCase {
             timer.stop();
             listener.waitAction(200);
             listener.reset();
+
             Timer.setLogTimers(false);
             logOut.written = false;
+            logOut.log_allowed = false;
             timer.start();
             listener.waitAction(50);
             assertFalse("[3] doesn't log timers ", Timer.getLogTimers());
             assertTrue("[3] action performed", listener.performed);
-            assertFalse("[3] log's not written", logOut.written);
         } finally {
             System.setOut(oldOut);
             Timer.setLogTimers(false);
