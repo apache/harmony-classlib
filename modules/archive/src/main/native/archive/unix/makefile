@@ -19,8 +19,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -I$(SHARED)common -I../../zlib_dist \
-	-I../../include/shared
+INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
+CFLAGS += -fpic
 
 BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
 	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \

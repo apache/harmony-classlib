@@ -15,7 +15,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -I$(SHARED)common -I/usr/X11R6/include
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I/usr/X11R6/include
 
 BUILDFILES = \
   org_apache_harmony_awt_nativebridge_linux_ErrorHandler.o \

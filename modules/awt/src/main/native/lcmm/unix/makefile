@@ -17,7 +17,8 @@ include $(HY_HDK)/build/make/defines.mk
 
 LCMS_DIR=$(HY_HDK)/../depends/libs/build/lcms
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(LCMS_DIR)
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(LCMS_DIR)
 
 BUILDFILES = \
   $(SHAREDSUB)/cmmerror.o \

@@ -13,4 +13,4 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-HY_CFLAGS = -DLINUX -DLINUX_IA64 -DHYIA64
+DEFINES += -DLINUX -DLINUX_IA64 -DHYIA64

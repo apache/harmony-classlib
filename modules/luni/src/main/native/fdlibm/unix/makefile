@@ -44,11 +44,9 @@ BUILDFILES = \
 	$(FDLIBM_DIST)w_log.o $(FDLIBM_DIST)w_log10.o $(FDLIBM_DIST)w_pow.o $(FDLIBM_DIST)w_remainder.o \
 	$(FDLIBM_DIST)w_scalb.o $(FDLIBM_DIST)w_sinh.o $(FDLIBM_DIST)w_sqrt.o
 
-# CFLAGS are overriden not just appended to
-CFLAGS= -O0 -fpic -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
-        -DHY_PLATFORM_DOUBLE_ORDER \
-	-I. -I$(SHAREDSUB) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include \
-	-ffloat-store $(VMDEBUG)
+# OPTS is overriden
+OPTS := -O0 -ffloat-store -fpic
+DEFINES += -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a
 

@@ -15,7 +15,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include
 
 BUILDFILES = \
   $(SHAREDSUB)/org_apache_harmony_awt_gl_opengl_GL.o

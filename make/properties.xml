@@ -24,6 +24,9 @@
         Ant file of common properties to be imported by other ant files
     </description>
 
+    <!-- Release configuration -->
+    <property name="hy.cfg" value="debug" />
+
     <!-- Javac properties -->
     <!-- Explicitly set to ECJ as the default compiler. -->
     <property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
@@ -174,6 +177,10 @@
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
         <echo>
+Harmony release configuration property:
+
+  hy.cfg = ${hy.cfg}
+
 Harmony javac properties:
 
   hy.javac.compiler = ${hy.javac.compiler}
@@ -297,6 +304,7 @@ properties in preference to these:
                   executable="${make.command}"
                   dir="@{dir}">
                 <env key="HY_HDK" value="${hy.hdk}" />
+                <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />

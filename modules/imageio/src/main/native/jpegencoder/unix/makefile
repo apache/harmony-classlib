@@ -17,7 +17,8 @@ include $(HY_HDK)/build/make/defines.mk
 
 JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
 
 BUILDFILES = \
   $(SHAREDSUB)/JpegEncoder.o \

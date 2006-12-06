@@ -13,5 +13,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-HY_CFLAGS = -DFREEBSD -DFREEBSD_X86 -DHYX86 -march=pentium3 \
-            -DNEEDS_SYS_TYPES
+DEFINES += -DFREEBSD -DFREEBSD_X86 -DHYX86 -DNEEDS_SYS_TYPES
+OPT += -march=pentium3

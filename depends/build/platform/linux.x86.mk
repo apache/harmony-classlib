@@ -13,4 +13,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-HY_CFLAGS = -DLINUX -DLINUX_X86 -DHYX86 -march=pentium3
+DEFINES += -DLINUX -DLINUX_X86 -DHYX86
+OPT += -march=pentium3

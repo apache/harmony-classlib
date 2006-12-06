@@ -19,7 +19,7 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic 
+CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 MDLLIBFILES = \
         $(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \

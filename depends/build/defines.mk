@@ -36,5 +36,11 @@ LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
 SHAREDSUB=../shared/
 
-CFLAGS = -O1 $(HY_CFLAGS) -D_REENTRANT -DIPv6_FUNCTION_SUPPORT $(VMDEBUG) \
-         -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+DEFINES += -D_REENTRANT -DIPv6_FUNCTION_SUPPORT
+INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+
+ifeq ($(HY_CFG),release)
+OPT += -O1
+else
+OPT += -g
+endif

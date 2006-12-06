@@ -15,7 +15,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -I$(SHARED)common
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common
 
 BUILDFILES = \
   $(SHAREDSUB)org_apache_harmony_misc_accessors_ArrayAccessorImpl.o \

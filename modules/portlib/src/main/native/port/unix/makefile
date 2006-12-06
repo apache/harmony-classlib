@@ -19,7 +19,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE -I$(HY_PLATFORM)
+INCLUDES += -DHYPORT_LIBRARY_DEFINE -I$(HY_PLATFORM)
+CFLAGS += -fpic
 
 BUILDFILES = \
 	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \

@@ -15,9 +15,9 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic -I$(SHARED)common \
-	  -I/usr/X11R6/include -I/usr/include/freetype2 \
-	  -Iinclude # TOFIX move includes
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I/usr/X11R6/include -I/usr/include/freetype2 \
+            -Iinclude # TOFIX move includes
 
 BUILDFILES = LinuxNativeFont.o
 

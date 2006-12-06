@@ -17,7 +17,8 @@
 # Configuration Makefile
 #
 
-CXXFLAGS=$(CFLAGS)
+CFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CFLAGS)
+CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS)
 
 all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 

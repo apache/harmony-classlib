@@ -13,4 +13,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-HY_CFLAGS = -DLINUX -DLINUX_X86_64 -DHYX86_86 -fpic
+DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_86
+OPT += -fpic

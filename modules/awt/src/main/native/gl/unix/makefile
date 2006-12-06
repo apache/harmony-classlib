@@ -17,7 +17,8 @@ include $(HY_HDK)/build/make/defines.mk
 
 PNG_DIR=$(HY_HDK)/../depends/libs/build/png
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR)
+CFLAGS += -fpic
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR)
 
 BUILDFILES = \
   $(SHAREDSUB)/blitter.o \
