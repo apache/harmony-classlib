@@ -99,15 +99,24 @@
     <condition property="is.ia64">
         <equals arg1="ia64" arg2="${os.arch}"/>
     </condition>
+    <condition property="is.s390x">
+        <equals arg1="${os.arch}" arg2="s390x" />
+    </condition>
+    <condition property="is.s390">
+        <equals arg1="${os.arch}" arg2="s390" />
+    </condition>
+
     <condition property="is.64bit">
         <or>
             <isset property="is.ia64" />
             <isset property="is.x86_64" />
+            <isset property="is.s390x" />
         </or>
     </condition>
     <condition property="is.32bit">
         <or>
             <isset property="is.x86" />
+            <isset property="is.s390" /> <!-- 31bit of course -->
         </or>
     </condition>
     <condition property="hy.bits" value="32">
@@ -213,6 +222,8 @@ Harmony platform properties:
   is.x86 = ${is.x86}
   is.x86_64 = ${is.x86_64}
   is.ia64 = ${is.ia64}
+  is.s390 = ${is.s390}
+  is.s390x = ${is.s390x}
 
   exe.suffix = ${exe.suffix}
   shlib.suffix = ${shlib.suffix}
