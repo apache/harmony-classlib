@@ -80,6 +80,7 @@ public class PropertyChangeSupportTest extends TestCase {
         sup.removePropertyChangeListener(sup.getPropertyChangeListeners()[0]);
         assertEquals(0, sup.getPropertyChangeListeners().length);
         sup.addPropertyChangeListener(l4);
+        //RI asserts to true here, really strange behavior
         assertNotSame(l3, ((PropertyChangeListenerProxy) sup
                 .getPropertyChangeListeners()[0]).getListener());
         assertNotSame(l4, sup.getPropertyChangeListeners()[0]);
@@ -100,8 +101,7 @@ public class PropertyChangeSupportTest extends TestCase {
 
         sup.addPropertyChangeListener(null);
         PropertyChangeListener[] listeners = sup.getPropertyChangeListeners();
-        assertEquals(1, listeners.length);
-        assertSame(null, listeners[0]);
+        assertEquals(0, listeners.length);
     }
 
     /*
@@ -133,10 +133,11 @@ public class PropertyChangeSupportTest extends TestCase {
         PropertyChangeListener l2 = new MockPropertyChangeListener();
         PropertyChangeListener l3 = new PropertyChangeListenerProxy("myProp",
                 l2);
+        PropertyChangeListener[] listeners;
 
         sup.addPropertyChangeListener("myProp2", l1);
 
-        PropertyChangeListener[] listeners = sup.getPropertyChangeListeners();
+        listeners = sup.getPropertyChangeListeners();
         assertEquals(1, listeners.length);
         assertSame(l1, ((PropertyChangeListenerProxy) listeners[0])
                 .getListener());
@@ -180,14 +181,10 @@ public class PropertyChangeSupportTest extends TestCase {
         sup.addPropertyChangeListener("myProp", null);
 
         PropertyChangeListener[] listeners = sup.getPropertyChangeListeners();
-        assertEquals(1, listeners.length);
-        assertSame(null, ((PropertyChangeListenerProxy) listeners[0])
-                .getListener());
+        assertEquals(0, listeners.length);
 
         new PropertyChangeListenerProxy("myProp", null);
-        assertEquals(1, listeners.length);
-        assertSame(null, ((PropertyChangeListenerProxy) listeners[0])
-                .getListener());
+        assertEquals(0, listeners.length);
     }
 
     /*
@@ -203,27 +200,10 @@ public class PropertyChangeSupportTest extends TestCase {
         PropertyChangeListener l3 = new PropertyChangeListenerProxy("myProp",
                 l2);
 
-        try {
-            sup.addPropertyChangeListener(null, l1);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
-
-        try {
-            sup.addPropertyChangeListener(null, l3);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
-
+        sup.addPropertyChangeListener(null, l1);
+        sup.addPropertyChangeListener(null, l3);
         l3 = new PropertyChangeListenerProxy(null, l2);
-        try {
-            sup.addPropertyChangeListener(l3);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.addPropertyChangeListener(l3);
     }
 
     /*
@@ -308,10 +288,11 @@ public class PropertyChangeSupportTest extends TestCase {
     public void testRemovePropertyChangeListener_PropertyChangeListener_Null() {
         Object src = new Object();
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
+
         sup.removePropertyChangeListener(null);
         assertEquals(0, sup.getPropertyChangeListeners().length);
         sup.addPropertyChangeListener(null);
-        assertEquals(1, sup.getPropertyChangeListeners().length);
+        assertEquals(0, sup.getPropertyChangeListeners().length);
         sup.removePropertyChangeListener(null);
         assertEquals(0, sup.getPropertyChangeListeners().length);
     }
@@ -397,7 +378,7 @@ public class PropertyChangeSupportTest extends TestCase {
         sup.removePropertyChangeListener("myProp", null);
         assertEquals(0, sup.getPropertyChangeListeners().length);
         sup.addPropertyChangeListener("myProp", null);
-        assertEquals(1, sup.getPropertyChangeListeners().length);
+        assertEquals(0, sup.getPropertyChangeListeners().length);
         sup.removePropertyChangeListener("myProp", null);
         assertEquals(0, sup.getPropertyChangeListeners().length);
     }
@@ -409,18 +390,13 @@ public class PropertyChangeSupportTest extends TestCase {
     public void testRemovePropertyChangeListener_PropertyChangeListener_String_NullProperty() {
         Object src = new Object();
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
-        // sup
-        // .removePropertyChangeListener(null,
-        // new MockPropertyChangeListener());
+
+        sup.removePropertyChangeListener(null,
+                new MockPropertyChangeListener());
         sup.addPropertyChangeListener("myProp",
                 new MockPropertyChangeListener());
-        try {
-            sup.removePropertyChangeListener(null,
-                    new MockPropertyChangeListener());
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.removePropertyChangeListener(null,
+                new MockPropertyChangeListener());
     }
 
     /*
@@ -504,15 +480,11 @@ public class PropertyChangeSupportTest extends TestCase {
     public void testGetPropertyChangeListener_String_Null() {
         Object src = new Object();
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
-        // sup.getPropertyChangeListeners(null);
+
+        sup.getPropertyChangeListeners(null);
         sup.addPropertyChangeListener("myProp",
                 new MockPropertyChangeListener());
-        try {
-            sup.getPropertyChangeListeners(null);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.getPropertyChangeListeners(null);
     }
 
     /*
@@ -574,16 +546,12 @@ public class PropertyChangeSupportTest extends TestCase {
     public void testHasListener_Null() {
         Object src = new Object();
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
-        // assertFalse(sup.hasListeners(null));
-
         PropertyChangeListener l1 = new MockPropertyChangeListener();
+
+        assertFalse(sup.hasListeners(null));
+
         sup.addPropertyChangeListener("myProP", l1);
-        try {
-            sup.hasListeners(null);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.hasListeners(null);
     }
 
     /*
@@ -780,12 +748,7 @@ public class PropertyChangeSupportTest extends TestCase {
         Object oldValue = new Object();
 
         sup.addPropertyChangeListener(null);
-        try {
-            sup.firePropertyChange("myProp", oldValue, newValue);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.firePropertyChange("myProp", oldValue, newValue);
     }
 
     /*
@@ -999,21 +962,12 @@ public class PropertyChangeSupportTest extends TestCase {
      * listener has been registered.
      */
     public void testFirePropertyChange_PropertyChangeEvent_NullListener() {
-        Object src = new Object();
-        PropertyChangeSupport sup = new PropertyChangeSupport(src);
-        Object newValue = new Object();
-        Object oldValue = new Object();
-        Object src2 = new Object();
-        PropertyChangeEvent event = new PropertyChangeEvent(src2, "myProp",
-                oldValue, newValue);
+        PropertyChangeSupport sup = new PropertyChangeSupport(new Object());
+        PropertyChangeEvent event = new PropertyChangeEvent(new Object(),
+                "myProp", new Object(), new Object());
 
         sup.addPropertyChangeListener(null);
-        try {
-            sup.firePropertyChange(event);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.firePropertyChange(event);
     }
 
     /*
@@ -1107,16 +1061,10 @@ public class PropertyChangeSupportTest extends TestCase {
      * listener has been registered.
      */
     public void testFirePropertyChange_Boolean_NullListener() {
-        Object src = new Object();
-        PropertyChangeSupport sup = new PropertyChangeSupport(src);
+        PropertyChangeSupport sup = new PropertyChangeSupport(new Object());
 
         sup.addPropertyChangeListener(null);
-        try {
-            sup.firePropertyChange("myProp", true, false);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.firePropertyChange("myProp", true, false);
     }
 
     /*
@@ -1127,8 +1075,8 @@ public class PropertyChangeSupportTest extends TestCase {
     public void testFirePropertyChange_Int_Normal() {
         Object src = new Object();
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
-        Integer newValue = new Integer(1);
-        Integer oldValue = new Integer(2);
+        int newValue = 1;
+        int oldValue = 2;
 
         MockPropertyChangeListener l1 = new MockPropertyChangeListener(src,
                 "myProp", oldValue, newValue);
@@ -1142,8 +1090,7 @@ public class PropertyChangeSupportTest extends TestCase {
         sup.addPropertyChangeListener(l3);
         sup.addPropertyChangeListener("myProp", l4);
 
-        sup.firePropertyChange("myProp", oldValue.intValue(), newValue
-                .intValue());
+        sup.firePropertyChange("myProp", oldValue, newValue);
         l1.assertCalled();
         l2.assertCalled();
         l4.assertCalled();
@@ -1216,12 +1163,7 @@ public class PropertyChangeSupportTest extends TestCase {
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
 
         sup.addPropertyChangeListener(null);
-        try {
-            sup.firePropertyChange("myProp", 1, 2);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        sup.firePropertyChange("myProp", 1, 2);
     }
 
     /*
