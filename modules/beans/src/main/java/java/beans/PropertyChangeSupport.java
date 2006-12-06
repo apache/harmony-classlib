@@ -34,9 +34,12 @@ public class PropertyChangeSupport implements Serializable {
 
     private transient Object sourceBean;
 
-    private transient List<PropertyChangeListener> allPropertiesChangeListeners = new ArrayList<PropertyChangeListener>();
+    private transient List<PropertyChangeListener> allPropertiesChangeListeners =
+            new ArrayList<PropertyChangeListener>();
 
-    private transient Map<String, List<PropertyChangeListener>> selectedPropertiesChangeListeners = new HashMap<String, List<PropertyChangeListener>>();
+    private transient Map<String, List<PropertyChangeListener>>
+            selectedPropertiesChangeListeners =
+            new HashMap<String, List<PropertyChangeListener>>();
 
     // fields for serialization compatibility
     private Hashtable<String, List<PropertyChangeListener>> children;
@@ -70,8 +73,8 @@ public class PropertyChangeSupport implements Serializable {
     public synchronized void removePropertyChangeListener(String propertyName,
             PropertyChangeListener listener) {
         if ((propertyName != null) && (listener != null)) {
-            List<PropertyChangeListener> listeners = selectedPropertiesChangeListeners
-                    .get(propertyName);
+            List<PropertyChangeListener> listeners =
+                    selectedPropertiesChangeListeners.get(propertyName);
 
             if (listeners != null) {
                 listeners.remove(listener);
@@ -82,15 +85,25 @@ public class PropertyChangeSupport implements Serializable {
     public synchronized void addPropertyChangeListener(String propertyName,
             PropertyChangeListener listener) {
         if ((listener != null) && (propertyName != null)) {
-            List<PropertyChangeListener> listeners = selectedPropertiesChangeListeners
-                    .get(propertyName);
+            List<PropertyChangeListener> listeners =
+                    selectedPropertiesChangeListeners.get(propertyName);
 
             if (listeners == null) {
                 listeners = new ArrayList<PropertyChangeListener>();
                 selectedPropertiesChangeListeners.put(propertyName, listeners);
             }
 
-            listeners.add(listener);
+            // RI compatibility
+            if (listener instanceof PropertyChangeListenerProxy) {
+                PropertyChangeListenerProxy proxy =
+                        (PropertyChangeListenerProxy) listener;
+
+                listeners.add(new PropertyChangeListenerProxy(
+                        proxy.getPropertyName(),
+                        (PropertyChangeListener) proxy.getListener()));
+            } else {
+                listeners.add(listener);
+            }
         }
     }
 
@@ -103,7 +116,8 @@ public class PropertyChangeSupport implements Serializable {
         }
 
         return (listeners == null) ? new PropertyChangeListener[] {}
-                : getAsPropertyChangeListenerArray(listeners);
+                : listeners.toArray(
+                        new PropertyChangeListener[listeners.size()]);
     }
 
     public void firePropertyChange(String propertyName, boolean oldValue,
@@ -141,8 +155,8 @@ public class PropertyChangeSupport implements Serializable {
     public synchronized boolean hasListeners(String propertyName) {
         boolean result = allPropertiesChangeListeners.size() > 0;
         if (!result && (propertyName != null)) {
-            List<PropertyChangeListener> listeners = selectedPropertiesChangeListeners
-                    .get(propertyName);
+            List<PropertyChangeListener> listeners =
+                    selectedPropertiesChangeListeners.get(propertyName);
             if (listeners != null) {
                 result = listeners.size() > 0;
             }
@@ -156,8 +170,8 @@ public class PropertyChangeSupport implements Serializable {
             if (listener instanceof PropertyChangeListenerProxy) {
                 String name = ((PropertyChangeListenerProxy) listener)
                         .getPropertyName();
-                PropertyChangeListener lst = (PropertyChangeListener) ((PropertyChangeListenerProxy) listener)
-                        .getListener();
+                PropertyChangeListener lst = (PropertyChangeListener)
+                        ((PropertyChangeListenerProxy) listener).getListener();
 
                 removePropertyChangeListener(name, lst);
             } else {
@@ -172,8 +186,8 @@ public class PropertyChangeSupport implements Serializable {
             if (listener instanceof PropertyChangeListenerProxy) {
                 String name = ((PropertyChangeListenerProxy) listener)
                         .getPropertyName();
-                PropertyChangeListener lst = (PropertyChangeListener) ((PropertyChangeListenerProxy) listener)
-                        .getListener();
+                PropertyChangeListener lst = (PropertyChangeListener)
+                        ((PropertyChangeListenerProxy) listener).getListener();
                 addPropertyChangeListener(name, lst);
             } else {
                 allPropertiesChangeListeners.add(listener);
@@ -182,55 +196,49 @@ public class PropertyChangeSupport implements Serializable {
     }
 
     public synchronized PropertyChangeListener[] getPropertyChangeListeners() {
-        ArrayList<PropertyChangeListener> result = new ArrayList<PropertyChangeListener>(
-                allPropertiesChangeListeners);
+        ArrayList<PropertyChangeListener> result =
+                new ArrayList<PropertyChangeListener>(
+                        allPropertiesChangeListeners);
 
-        Iterator<String> keysIterator = selectedPropertiesChangeListeners
-                .keySet().iterator();
-        while (keysIterator.hasNext()) {
-            String propertyName = keysIterator.next();
+        for (String propertyName : selectedPropertiesChangeListeners.keySet()) {
+            List<PropertyChangeListener> selectedListeners =
+                    selectedPropertiesChangeListeners.get(propertyName);
 
-            List<PropertyChangeListener> selectedListeners = selectedPropertiesChangeListeners
-                    .get(propertyName);
             if (selectedListeners != null) {
 
-                Iterator<PropertyChangeListener> i = selectedListeners
-                        .iterator();
-                while (i.hasNext()) {
-                    PropertyChangeListener listener = i.next();
+                for (PropertyChangeListener listener : selectedListeners) {
                     result.add(new PropertyChangeListenerProxy(propertyName,
                             listener));
                 }
             }
         }
 
-        return getAsPropertyChangeListenerArray(result);
+        return result.toArray(new PropertyChangeListener[result.size()]);
     }
 
     private void writeObject(ObjectOutputStream oos) throws IOException {
-        List<PropertyChangeListener> allSerializedPropertiesChangeListeners = new ArrayList<PropertyChangeListener>();
-        Iterator<PropertyChangeListener> i = allPropertiesChangeListeners
-                .iterator();
-        while (i.hasNext()) {
-            PropertyChangeListener pcl = i.next();
+        List<PropertyChangeListener> allSerializedPropertiesChangeListeners =
+                new ArrayList<PropertyChangeListener>();
+
+        for (PropertyChangeListener pcl : allPropertiesChangeListeners) {
             if (pcl instanceof Serializable) {
                 allSerializedPropertiesChangeListeners.add(pcl);
             }
         }
 
-        Map<String, List<PropertyChangeListener>> selectedSerializedPropertiesChangeListeners = new HashMap<String, List<PropertyChangeListener>>();
-        Iterator<String> keyIterator = selectedPropertiesChangeListeners
-                .keySet().iterator();
-        while (keyIterator.hasNext()) {
-            String propertyName = keyIterator.next();
-            List<PropertyChangeListener> keyValues = selectedPropertiesChangeListeners
-                    .get(propertyName);
-            if (keyValues != null) {
-                List<PropertyChangeListener> serializedPropertiesChangeListeners = new ArrayList<PropertyChangeListener>();
+        Map<String, List<PropertyChangeListener>>
+                selectedSerializedPropertiesChangeListeners =
+                        new HashMap<String, List<PropertyChangeListener>>();
 
-                Iterator<PropertyChangeListener> j = keyValues.iterator();
-                while (j.hasNext()) {
-                    PropertyChangeListener pcl = j.next();
+        for (String propertyName : selectedPropertiesChangeListeners.keySet()) {
+            List<PropertyChangeListener> keyValues =
+                    selectedPropertiesChangeListeners.get(propertyName);
+
+            if (keyValues != null) {
+                List<PropertyChangeListener> serializedPropertiesChangeListeners
+                        = new ArrayList<PropertyChangeListener>();
+
+                for (PropertyChangeListener pcl : keyValues) {
                     if (pcl instanceof Serializable) {
                         serializedPropertiesChangeListeners.add(pcl);
                     }
@@ -287,14 +295,14 @@ public class PropertyChangeSupport implements Serializable {
 
     private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
             boolean oldValue, boolean newValue) {
-        return new PropertyChangeEvent(sourceBean, propertyName, new Boolean(
-                oldValue), new Boolean(newValue));
+        return new PropertyChangeEvent(sourceBean, propertyName, oldValue,
+                newValue);
     }
 
     private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
             int oldValue, int newValue) {
-        return new PropertyChangeEvent(sourceBean, propertyName, new Integer(
-                oldValue), new Integer(newValue));
+        return new PropertyChangeEvent(sourceBean, propertyName, oldValue,
+                newValue);
     }
 
     private void doFirePropertyChange(PropertyChangeEvent event) {
@@ -340,15 +348,4 @@ public class PropertyChangeSupport implements Serializable {
         }
     }
 
-    private static PropertyChangeListener[] getAsPropertyChangeListenerArray(
-            List<PropertyChangeListener> listeners) {
-        Object[] objects = listeners.toArray();
-        PropertyChangeListener[] arrayResult = new PropertyChangeListener[objects.length];
-
-        for (int i = 0; i < objects.length; ++i) {
-            arrayResult[i] = (PropertyChangeListener) objects[i];
-        }
-
-        return arrayResult;
-    }
 }
