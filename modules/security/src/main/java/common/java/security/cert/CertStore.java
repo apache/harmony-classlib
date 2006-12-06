@@ -202,13 +202,12 @@ public class CertStore {
      * @com.intel.drl.spec_ref
      */
     public static final String getDefaultType() {
-        String defaultType = (String) AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
+        String defaultType = AccessController
+                .doPrivileged(new java.security.PrivilegedAction<String>() {
+                    public String run() {
                         return Security.getProperty(PROPERTYNAME);
                     }
-                }
-            );
+                });
         return (defaultType == null ? DEFAULTPROPERTY : defaultType);
     }
 }
