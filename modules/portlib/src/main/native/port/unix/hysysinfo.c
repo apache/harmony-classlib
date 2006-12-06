@@ -98,14 +98,18 @@ IDATA VMCALL hysysinfo_get_env (struct HyPortLibrary *portLibrary,
 const char *VMCALL
 hysysinfo_get_CPU_architecture (struct HyPortLibrary *portLibrary)
 {
-#if defined(LINUXPPC)
-#if defined(PPC64)
-  return HYPORT_ARCH_PPC64;
-#else
+#if defined(HYPPC32)
   return HYPORT_ARCH_PPC;
-#endif
+#elif defined(HYPPC64)
+  return HYPORT_ARCH_PPC64;
+#elif defined(HYS390)
+  return HYPORT_ARCH_S390;
+#elif defined(HYS390X)
+  return HYPORT_ARCH_S390X;
 #elif defined(HYX86)
   return HYPORT_ARCH_X86;
+#elif defined(HYX86_64)
+  return HYPORT_ARCH_X86_64;
 #elif defined(ARMGNU)
   return HYPORT_ARCH_ARM;
 #else

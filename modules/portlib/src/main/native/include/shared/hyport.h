@@ -1017,7 +1017,7 @@ typedef struct HyPortLibrary
 #define HYPORT_ARCH_S390  "s390"
 #define HYPORT_ARCH_S390X  "s390x"
 #define HYPORT_ARCH_PARISC  "PA-RISC"
-#define HYPORT_ARCH_HAMMER  "amd64"
+#define HYPORT_ARCH_X86_64  "amd64"
 #define HYPORT_TTY_IN  0
 #define HYPORT_TTY_OUT  1
 #define HYPORT_TTY_ERR  2
