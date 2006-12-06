@@ -27,6 +27,12 @@
 #endif
 
 
+// Just a useful macro
+#undef MIN
+
+#define MIN(a,b)    ((a) < (b) ? (a) : (b))
+
+
 LPLCMSICCPROFILE cmmOpenProfile(LPBYTE dataPtr, DWORD dwSize);
 
 BOOL cmmCloseProfile(LPLCMSICCPROFILE hProfile);

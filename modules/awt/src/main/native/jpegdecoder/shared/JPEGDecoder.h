@@ -43,4 +43,12 @@ jfieldID img_JPEG_bytesConsumedID;
 jfieldID img_JPEG_currScanlineID;
 jfieldID img_JPEG_hNativeDecoderID;
 
+/* MIN(a, b) macro */
+#undef MIN
+#define MIN(a, b) ((a) < (b))?(a):(b)
+
+/* MAX(a, b) macro */
+#undef MAX
+#define MAX(a, b) ((a) > (b))?(a):(b)
+
 #endif
