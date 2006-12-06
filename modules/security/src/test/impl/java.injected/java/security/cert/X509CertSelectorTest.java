@@ -35,6 +35,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
@@ -580,7 +581,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match
      */
-    public void testSetIssuer2() {
+    public void testSetIssuer2() throws IOException {
         String name1 = "O=First Org.";
         String name2 = "O=Second Org.";
         X500Principal iss1 = new X500Principal(name1);
@@ -589,33 +590,19 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_2 = new TestCert(iss2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setIssuer((String) null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
-        assertTrue("Any certificates should match "
-                                + "in the case of null issuer criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setIssuer(name1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setIssuer((String) null);
+        assertTrue(
+                "Any certificates should match in the case of null issuer criteria.",
+                selector.match(cert_1) && selector.match(cert_2));
+
+        selector.setIssuer(name1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setIssuer(name2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+        selector.setIssuer(name2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -649,7 +636,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match
      */
-    public void testSetIssuer3() {
+    public void testSetIssuer3() throws IOException {
         byte[] name1 = new byte[]
             //manually obtained DER encoding of "O=First Org." issuer name;
             {48, 21, 49, 19, 48, 17, 6, 3, 85, 4, 10, 19, 10,
@@ -664,33 +651,19 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_2 = new TestCert(iss2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setIssuer((byte[]) null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
-        assertTrue("Any certificates should match "
-                                + "in the case of null issuer criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setIssuer(name1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setIssuer((byte[]) null);
+        assertTrue(
+                "Any certificates should match in the case of null issuer criteria.",
+                selector.match(cert_1) && selector.match(cert_2));
+
+        selector.setIssuer(name1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setIssuer(name2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+        selector.setIssuer(name2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -698,7 +671,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if the method return null in the case of not specified criteria,
      * if the returned value [does not]corresponds to [not]specified 
      */
-    public void testGetIssuerAsBytes() {
+    public void testGetIssuerAsBytes() throws IOException {
         byte[] name1 = new byte[]
             //manually obtained DER encoding of "O=First Org." issuer name;
             {48, 21, 49, 19, 48, 17, 6, 3, 85, 4, 10, 19, 10,
@@ -711,24 +684,19 @@ public class X509CertSelectorTest extends TestCase {
         X500Principal iss2 = new X500Principal(name2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            assertNull("Selector should return null", 
-                                                selector.getIssuerAsBytes());
-            selector.setIssuer(iss1);
-            assertEquals("The returned issuer should be equal to specified",
-                            new X500Principal(name1), 
-                            new X500Principal(selector.getIssuerAsBytes()));
-            assertFalse("The returned issuer should differ",
-                            new X500Principal(name2).equals( 
-                            new X500Principal(selector.getIssuerAsBytes())));
-            selector.setIssuer(iss2);
-            assertEquals("The returned issuer should be equal to specified",
-                            new X500Principal(name2), 
-                            new X500Principal(selector.getIssuerAsBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        assertNull("Selector should return null", selector.getIssuerAsBytes());
+
+        selector.setIssuer(iss1);
+        assertEquals("The returned issuer should be equal to specified",
+                new X500Principal(name1), new X500Principal(selector
+                        .getIssuerAsBytes()));
+        assertFalse("The returned issuer should differ", new X500Principal(
+                name2).equals(new X500Principal(selector.getIssuerAsBytes())));
+
+        selector.setIssuer(iss2);
+        assertEquals("The returned issuer should be equal to specified",
+                new X500Principal(name2), new X500Principal(selector
+                        .getIssuerAsBytes()));
     }
 
     /**
@@ -780,7 +748,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match
      */
-    public void testSetSubject2() {
+    public void testSetSubject2() throws IOException {
         String name1 = "O=First Org.";
         String name2 = "O=Second Org.";
         X500Principal sub1 = new X500Principal(name1);
@@ -789,33 +757,20 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_2 = new TestCert(sub2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setSubject((String) null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
-        assertTrue("Any certificates should match "
-                                + "in the case of null subject criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setSubject(name1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setSubject((String) null);
+        assertTrue(
+                "Any certificates should match in the case of null subject criteria.",
+                selector.match(cert_1) && selector.match(cert_2));
+
+        selector.setSubject(name1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setSubject(name2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+
+        selector.setSubject(name2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -850,7 +805,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match
      */
-    public void testSetSubject3() {
+    public void testSetSubject3() throws IOException {
         byte[] name1 = new byte[]
             //manually obtained DER encoding of "O=First Org." issuer name;
             {48, 21, 49, 19, 48, 17, 6, 3, 85, 4, 10, 19, 10,
@@ -865,33 +820,20 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_2 = new TestCert(sub2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setSubject((byte[]) null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
-        assertTrue("Any certificates should match "
-                                + "in the case of null issuer criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setSubject(name1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setSubject((byte[]) null);
+        assertTrue(
+                "Any certificates should match in the case of null issuer criteria.",
+                selector.match(cert_1) && selector.match(cert_2));
+
+        selector.setSubject(name1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setSubject(name2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+
+        selector.setSubject(name2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -899,7 +841,7 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if the method return null in the case of not specified criteria,
      * if the returned value [does not]corresponds to [not]specified 
      */
-    public void testGetSubjectAsBytes() {
+    public void testGetSubjectAsBytes() throws IOException {
         byte[] name1 = new byte[]
             //manually obtained DER encoding of "O=First Org." issuer name;
             {48, 21, 49, 19, 48, 17, 6, 3, 85, 4, 10, 19, 10,
@@ -912,24 +854,19 @@ public class X509CertSelectorTest extends TestCase {
         X500Principal sub2 = new X500Principal(name2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            assertNull("Selector should return null", 
-                                                selector.getSubjectAsBytes());
-            selector.setSubject(sub1);
-            assertEquals("The returned issuer should be equal to specified",
-                            new X500Principal(name1), 
-                            new X500Principal(selector.getSubjectAsBytes()));
-            assertFalse("The returned issuer should differ",
-                            new X500Principal(name2).equals( 
-                            new X500Principal(selector.getSubjectAsBytes())));
-            selector.setSubject(sub2);
-            assertEquals("The returned issuer should be equal to specified",
-                            new X500Principal(name2), 
-                            new X500Principal(selector.getSubjectAsBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        assertNull("Selector should return null", selector.getSubjectAsBytes());
+        selector.setSubject(sub1);
+
+        assertEquals("The returned issuer should be equal to specified",
+                new X500Principal(name1), new X500Principal(selector
+                        .getSubjectAsBytes()));
+        assertFalse("The returned issuer should differ", new X500Principal(
+                name2).equals(new X500Principal(selector.getSubjectAsBytes())));
+
+        selector.setSubject(sub2);
+        assertEquals("The returned issuer should be equal to specified",
+                new X500Principal(name2), new X500Principal(selector
+                        .getSubjectAsBytes()));
     }
 
     /**
@@ -1144,51 +1081,31 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match
      */
-    public void testSetSubjectPublicKeyAlgID() {
+    public void testSetSubjectPublicKeyAlgID() throws Exception {
         String pkaid1 = "1.2.840.113549.1.1.1"; // RSA (source: http://asn1.elibel.tm.fr)
         String pkaid2 = "1.2.840.10040.4.1"; // DSA (source: http://asn1.elibel.tm.fr)
-        PublicKey pkey1;
-        PublicKey pkey2;
-        try {
-            pkey1 = new TestKeyPair("RSA").getPublic();
-            pkey2 = new TestKeyPair("DSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: "
-                    + e.getMessage());
-            return;
-        }
+
+        PublicKey pkey1 = new TestKeyPair("RSA").getPublic();
+        PublicKey pkey2 = new TestKeyPair("DSA").getPublic();
+
         TestCert cert_1 = new TestCert(pkey1);
         TestCert cert_2 = new TestCert(pkey2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setSubjectPublicKeyAlgID(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setSubjectPublicKeyAlgID(null);
         assertTrue("Any certificate should match in the case of null "
-                                            + "subjectPublicKeyAlgID criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setSubjectPublicKeyAlgID(pkaid1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                + "subjectPublicKeyAlgID criteria.", selector.match(cert_1)
+                && selector.match(cert_2));
+
+        selector.setSubjectPublicKeyAlgID(pkaid1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setSubjectPublicKeyAlgID(pkaid2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+
+        selector.setSubjectPublicKeyAlgID(pkaid2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -1210,19 +1127,15 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if the method return null in the case of not specified criteria,
      * if the returned value [does not]corresponds to [not]specified 
      */
-    public void testGetSubjectPublicKeyAlgID() {
+    public void testGetSubjectPublicKeyAlgID() throws IOException {
         String pkaid1 = "1.2.840.113549.1.1.1"; // RSA encryption (source: http://asn1.elibel.tm.fr)
         String pkaid2 = "1.2.840.113549.1.1.2"; // MD2 with RSA encryption (source: http://asn1.elibel.tm.fr)
         X509CertSelector selector = new X509CertSelector();
 
         assertNull("Selector should return null", 
                                         selector.getSubjectPublicKeyAlgID());
-        try {
-            selector.setSubjectPublicKeyAlgID(pkaid1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+
+        selector.setSubjectPublicKeyAlgID(pkaid1);
         assertTrue("The returned oid should be equal to specified",
                     pkaid1.equals(selector.getSubjectPublicKeyAlgID()));
         assertFalse("The returned oid should differ",
@@ -1234,18 +1147,9 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if any certificates match in the case of null criteria,
      * if [not]proper certificates [do not]match.
      */
-    public void testSetSubjectPublicKey1() {
-        PublicKey pkey1;
-        PublicKey pkey2;
-        try {
-            pkey1 = new TestKeyPair("RSA").getPublic();
-            pkey2 = new TestKeyPair("DSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: "
-                    + e.getMessage());
-            return;
-        }
+    public void testSetSubjectPublicKey1() throws Exception {
+        PublicKey pkey1 = new TestKeyPair("RSA").getPublic();
+        PublicKey pkey2 = new TestKeyPair("DSA").getPublic();
 
         TestCert cert_1 = new TestCert(pkey1);
         TestCert cert_2 = new TestCert(pkey2);
@@ -1270,15 +1174,10 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if the method return null in the case of not specified criteria,
      * if the returned value corresponds to specified 
      */
-    public void testGetSubjectPublicKey1() {
-        PublicKey pkey;
-        try {
-            pkey = new TestKeyPair("RSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: " + e.getMessage());
-            return;
-        }
+    public void testGetSubjectPublicKey1() throws Exception {
+
+        PublicKey pkey = new TestKeyPair("RSA").getPublic();
+
         X509CertSelector selector = new X509CertSelector();
 
         assertNull("Selector should return null", 
@@ -1296,18 +1195,9 @@ public class X509CertSelectorTest extends TestCase {
      * if [not]proper certificates [do not]match, and if the initialization 
      * object are copied during the initialization.
      */
-    public void testSetSubjectPublicKey2() {
-        PublicKey pkey1;
-        PublicKey pkey2;
-        try {
-            pkey1 = new TestKeyPair("RSA").getPublic();
-            pkey2 = new TestKeyPair("DSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: "
-                    + e.getMessage());
-            return;
-        }
+    public void testSetSubjectPublicKey2() throws Exception {
+        PublicKey pkey1 = new TestKeyPair("RSA").getPublic();
+        PublicKey pkey2 = new TestKeyPair("DSA").getPublic();
 
         byte[] encoding1 = pkey1.getEncoded();
         byte[] encoding2 = pkey2.getEncoded();
@@ -1315,36 +1205,24 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_2 = new TestCert(pkey2);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setSubjectPublicKey((byte[]) null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setSubjectPublicKey((byte[]) null);
         assertTrue("Any certificate should match in the case of null "
-                                            + "subjectPublicKey criteria.",
-                    selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setSubjectPublicKey(encoding1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                + "subjectPublicKey criteria.", selector.match(cert_1)
+                && selector.match(cert_2));
+
+        selector.setSubjectPublicKey(encoding1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
-        encoding1[0] ++;
+                selector.match(cert_1));
+
+        encoding1[0]++;
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setSubjectPublicKey(encoding2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                selector.match(cert_2));
+
+        selector.setSubjectPublicKey(encoding2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
@@ -1352,25 +1230,17 @@ public class X509CertSelectorTest extends TestCase {
      * Tests if the method return null in the case of not specified criteria,
      * if the returned value corresponds to specified 
      */
-    public void testGetSubjectPublicKey2() {
-        PublicKey pkey;
-        try {
-            pkey = new TestKeyPair("RSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: " + e.getMessage());
-            return;
-        }
+    public void testGetSubjectPublicKey2() throws Exception {
+
+        PublicKey pkey = new TestKeyPair("RSA").getPublic();
+
         X509CertSelector selector = new X509CertSelector();
 
         assertNull("Selector should return null", 
                                             selector.getSubjectPublicKey());
-        try {
-            selector.setSubjectPublicKey(pkey.getEncoded());
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+
+        selector.setSubjectPublicKey(pkey.getEncoded());
+
         PublicKey result = selector.getSubjectPublicKey();
         
         assertEquals("The name of algorithm should be RSA",
@@ -1437,7 +1307,7 @@ public class X509CertSelectorTest extends TestCase {
     /**
      * setExtendedKeyUsage(Set<String> keyPurposeSet) method testing.
      */
-    public void testSetExtendedKeyUsage() {
+    public void testSetExtendedKeyUsage() throws IOException {
         HashSet ku1 = new HashSet(Arrays.asList(new String[] {
                 "1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.2", "1.3.6.1.5.5.7.3.3", 
                 "1.3.6.1.5.5.7.3.4", "1.3.6.1.5.5.7.3.8", "1.3.6.1.5.5.7.3.9", 
@@ -1452,40 +1322,27 @@ public class X509CertSelectorTest extends TestCase {
         TestCert cert_3 = new TestCert((Set) null);
         X509CertSelector selector = new X509CertSelector();
 
-        try {
-            selector.setExtendedKeyUsage(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        selector.setExtendedKeyUsage(null);
         assertTrue("Any certificate should match in the case of null "
-                                                + "extendedKeyUsage criteria.",
-                            selector.match(cert_1) && selector.match(cert_2));
-        try {
-            selector.setExtendedKeyUsage(ku1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                + "extendedKeyUsage criteria.", selector.match(cert_1)
+                && selector.match(cert_2));
+
+        selector.setExtendedKeyUsage(ku1);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_1));
+                selector.match(cert_1));
         assertFalse("The certificate should not match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
         assertTrue("The certificate which does not have a keyUsage extension "
-                   + "implicitly allows all keyUsage values.",
-                                                        selector.match(cert_3));
+                + "implicitly allows all keyUsage values.", selector
+                .match(cert_3));
         ku1.remove("1.3.6.1.5.5.7.3.7"); // remove the missing in ku2 keyUsage
         assertFalse("The modification of initialization object "
-                    + "should not affect the modification of internal object.",
-                                                        selector.match(cert_2));
-        try {
-            selector.setExtendedKeyUsage(ku2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                + "should not affect the modification of internal object.",
+                selector.match(cert_2));
+
+        selector.setExtendedKeyUsage(ku2);
         assertTrue("The certificate should match the selection criteria.",
-                                                        selector.match(cert_2));
+                selector.match(cert_2));
     }
 
     /**
