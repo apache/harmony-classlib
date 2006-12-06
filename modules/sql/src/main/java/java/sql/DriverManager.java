@@ -203,13 +203,13 @@ public class DriverManager {
      */
     public static Connection getConnection(String url, String user,
             String password) throws SQLException {
-        if (user == null || password == null) {
-            // sql.7=Userid and/or password not supplied
-            throw new SQLException(Messages.getString("sql.7")); //$NON-NLS-1$
-        }
         Properties theProperties = new Properties();
-        theProperties.setProperty("user", user); //$NON-NLS-1$
-        theProperties.setProperty("password", password); //$NON-NLS-1$
+        if(null != user){
+            theProperties.setProperty("user", user); //$NON-NLS-1$
+        }
+        if(null != password){
+            theProperties.setProperty("password", password); //$NON-NLS-1$
+        }
         return getConnection(url, theProperties);
     }
 

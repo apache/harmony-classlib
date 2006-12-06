@@ -85,21 +85,6 @@ public class TestHelper_Driver1 implements Driver {
                      * data1 which is set up not to require a user/password
                      * combination
                      */
-                    if (datasource.equals("data1")) {
-                        // do nothing...
-                    } else {
-                        if (info == null) {
-                            throw new SQLException("Properties bundle is null");
-                        }
-                        String user = (String) info.get(userProperty);
-                        String password = (String) info.get(passwordProperty);
-                        if (user == null || password == null) {
-                            throw new SQLException("Userid and/or password not supplied");
-                        }
-                        if (!user.equals(validuser) || !password.equals(validpassword)) {
-                            throw new SQLException("Userid and/or password not valid");
-                        } // end if
-                    } // end if
                     // It all checks out - so return a connection
                     Connection connection = new TestHelper_Connection1();
                     return connection;

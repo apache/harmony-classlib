@@ -156,14 +156,15 @@ public class DriverManagerTest extends TestCase {
 	// invalid connection - URL is null
 	static String invalidConnectionURL3 = null;
 
-	static String[] invalidConnectionURLs = { invalidConnectionURL1,
-			invalidConnectionURL2, invalidConnectionURL3 };
+	static String[] invalidConnectionURLs = { invalidConnectionURL2,
+            invalidConnectionURL3 };
 
 	public void testGetConnectionString() throws SQLException {
 		Connection theConnection = null;
 		// validConnection - no user & password required
 		theConnection = DriverManager.getConnection(validConnectionURL);
 		assertNotNull(theConnection);
+        assertNotNull(DriverManager.getConnection(invalidConnectionURL1));
 
 		for (String element : invalidConnectionURLs) {
 			try {
@@ -216,10 +217,11 @@ public class DriverManagerTest extends TestCase {
 		Properties invalidProps1 = new Properties();
 		invalidProps1.setProperty("user", invaliduser1);
 		invalidProps1.setProperty("password", invalidpassword1);
-		String[] invalidURLs = { null, validURL1, validURL1, invalidURL1,
+		String[] invalidURLs = { null, invalidURL1,
 				invalidURL2, invalidURL3 };
-		Properties[] invalidProps = { validProps, nullProps, invalidProps1,
-				validProps, validProps, validProps };
+		Properties[] invalidProps = { nullProps, invalidProps1};
+        
+        
 
 		Connection theConnection = null;
 		// validConnection - user & password required
@@ -231,12 +233,15 @@ public class DriverManagerTest extends TestCase {
 			theConnection = null;
 			try {
 				theConnection = DriverManager.getConnection(invalidURLs[i],
-						invalidProps[i]);
+						validProps);
 				fail("Should throw SQLException");
 			} catch (SQLException e) {
                 //expected
 			} // end try
 		} // end for
+        for (Properties invalidProp : invalidProps) {
+            assertNotNull(DriverManager.getConnection(validURL1, invalidProp));
+        } 
 	} // end method testGetConnectionStringProperties()
 
 	/*
@@ -255,16 +260,15 @@ public class DriverManagerTest extends TestCase {
 		String[] invalid4 = { invalidURL1, validuser1, validpassword1 };
 		String[] invalid5 = { validURL1, invaliduser1, invalidpassword1 };
 		String[] invalid6 = { validURL1, validuser1, invalidpassword1 };
-		String[][] invalid = { invalid1, invalid2, invalid3, invalid4,
-				invalid5, invalid6 };
+		String[][] invalids1 = { invalid1, invalid4};
+        String[][] invalids2 = {invalid2, invalid3, invalid5, invalid6 };
 
 		Connection theConnection = null;
 		// validConnection - user & password required
         theConnection = DriverManager.getConnection(validURL1, validuser1,
                 validpassword1);
         assertNotNull(theConnection);
-
-		for (String[] theData : invalid) {
+		for (String[] theData : invalids1) {
 			theConnection = null;
 			try {
 				theConnection = DriverManager.getConnection(theData[0],
@@ -274,6 +278,10 @@ public class DriverManagerTest extends TestCase {
                 //expected
 			} // end try
 		} // end for
+        for (String[] theData : invalids2) {
+            assertNotNull(DriverManager.getConnection(theData[0], theData[1],
+                    theData[2]));
+        } 
 	} // end method testGetConnectionStringStringString()
 
 	static String validURL1 = "jdbc:mikes1";
