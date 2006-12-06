@@ -521,7 +521,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_
     gi->graphics->SetTransform(gi->matrix);
 
     if (x1 == x2 && y1 == y2)
-        gi->graphics->DrawLine(gi->pen, ((REAL)x1)-0.1, (REAL)y1, ((REAL)x2)+0.1, (REAL)y2);
+        gi->graphics->DrawLine(gi->pen, ((REAL)x1)-0.1f, (REAL)y1, ((REAL)x2)+0.1f, (REAL)y2);
     else
         gi->graphics->DrawLine(gi->pen, x1, y1, x2, y2);
     

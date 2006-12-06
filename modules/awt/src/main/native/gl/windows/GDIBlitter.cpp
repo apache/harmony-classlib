@@ -50,7 +50,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
 
-         srcSurf->invalidated = invalidated;
+      srcSurf->invalidated = invalidated != 0;
       HDC tmpDC = CreateCompatibleDC(dstSurf->gi->hdc);
       int w = srcSurf->width;
       int h = srcSurf->height;
@@ -195,7 +195,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       BLITSTRUCT blitStruct;
       memset(&blitStruct, 0, sizeof(BLITSTRUCT));
 
-         srcSurf->invalidated = invalidated;
+      srcSurf->invalidated = invalidated != 0;
       if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)) return;
 
       XFORM currentTransform, transform;
@@ -473,7 +473,7 @@ BOOL initBitmap
     if(!srcBmp){
         return false;
     }
-       updateCache(srcSurf, env, srcData, alphaPre);
+       updateCache(srcSurf, env, srcData, alphaPre != 0);
        SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
     return true;
 }
