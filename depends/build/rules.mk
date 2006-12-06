@@ -26,14 +26,14 @@ $(LIBNAME): $(BUILDFILES)
 	$(AR) rcv $@ $(BUILDFILES)
 
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) \
+	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) $(LDFLAGS) \
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) $(SYSLIBFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
 	-lc -lm $(OSLIBS) $(LDFLAGS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(CC) $(VMLINK) \
+	$(CC) $(VMLINK) $(LDFLAGS) \
 	$(BUILDFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
 	-o $@ -lm -lpthread -lc $(OSLIBS) \
