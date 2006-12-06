@@ -74,13 +74,4 @@ public class Signer2Test extends junit.framework.TestCase {
 		signer.setKeyPair(pair);
 		signer.getPrivateKey();
 	}
-
-	/**
-	 * @tests java.security.Signer#toString()
-	 */
-	public void test_toString() {
-		SignerImpl signer = new SignerImpl("test");
-		assertEquals("Unexpected return from toString method",
-				"[Signer]test", signer.toString());
-	}
 }

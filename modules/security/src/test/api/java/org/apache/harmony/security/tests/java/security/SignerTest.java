@@ -57,11 +57,11 @@ public class SignerTest extends TestCase {
     }
 
     /**
-     * verify  Signer.toString()
+     * @tests java.security.Signer#toString()
      */
-    public void testToString() throws Exception {
+    public void test_toString() throws Exception {
         Signer s1 = new SignerStub("testToString1");
-        s1.toString();
+        assertEquals("[Signer]testToString1", s1.toString());
 
         Signer s2 = new SignerStub("testToString2", IdentityScope.getSystemScope());
         s2.toString();
