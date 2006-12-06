@@ -445,6 +445,9 @@ public abstract class URLConnection {
 	 * @since 1.4
 	 */
 	public Map<String, List<String>> getRequestProperties() {
+        if (connected) {
+            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+        }
 		return Collections.emptyMap();
 	}
 
@@ -656,7 +659,7 @@ public abstract class URLConnection {
 	 * @see #setRequestProperty
 	 */
     public String getRequestProperty(String field) {
-        if (this.connected == true) {
+        if (connected) {
             throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
         }
         return null;

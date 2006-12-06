@@ -382,6 +382,22 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		}
 
 	}
+    
+    /**
+     * @tests java.net.URLConnection#getRequestProperties()
+     */
+    public void test_getRequestProperties_Exception() throws IOException {
+        URL url = new URL("http", "test", 80, "index.html", new NewHandler());
+        URLConnection urlCon = url.openConnection();       
+        urlCon.connect();
+        
+        try {
+            urlCon.getRequestProperties();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.net.URLConnection#getHeaderField(java.lang.String)
@@ -844,25 +860,6 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 * @tests java.net.URLConnection#getRequestProperty(java.lang.String)
 	 */
 	public void test_getRequestProperty_LString_Exception() throws IOException {
-        class NewHandler extends URLStreamHandler {
-            protected URLConnection openConnection(URL u)
-                    throws java.io.IOException {
-                return new HttpURLConnection(u) {
-                    @Override
-                    public void disconnect() {
-                        // do nothing
-                    }
-                    @Override
-                    public boolean usingProxy() {
-                        return false;
-                    }
-                    @Override
-                    public void connect() throws IOException {
-                        connected = true;
-                    }
-                };
-            }
-        }
         URL url = new URL("http", "test", 80, "index.html", new NewHandler());
         URLConnection urlCon = url.openConnection();
         urlCon.setRequestProperty("test", "testProperty");
@@ -1076,4 +1073,25 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	protected void tearDown() {
 		((HttpURLConnection) uc).disconnect();
 	}
+}
+
+class NewHandler extends URLStreamHandler {
+    protected URLConnection openConnection(URL u) throws java.io.IOException {
+        return new HttpURLConnection(u) {
+            @Override
+            public void disconnect() {
+                // do nothing
+            }
+
+            @Override
+            public boolean usingProxy() {
+                return false;
+            }
+
+            @Override
+            public void connect() throws IOException {
+                connected = true;
+            }
+        };
+    }
 }
