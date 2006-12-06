@@ -485,7 +485,7 @@ inline void updateCache
                                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
                                        d = dst;
 
-                                       for(int x = 0; x < w; x++){
+                                       for(unsigned int x = 0; x < w; x++){
                                                bitnum = x * pixelBits;
                                                s = src + bitnum / 8;
                                                elem = *s;
@@ -630,7 +630,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_createSurfSt
           surf->scanline_stride = scanlineStride;
                  surf->offset = offset;
                  surf->has_alpha = hasAlpha;
-                 surf->isAlphaPre = isAlphaPre;
+                 surf->isAlphaPre = isAlphaPre != 0;
                  surf->transparency = transparency;
                  if(dataType == TYPE_BYTE){
                          surf->scanline_stride_byte = scanlineStride;
@@ -955,7 +955,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_updateCache
     SURFACE_STRUCTURE *surf = (SURFACE_STRUCTURE *)ptr;
        jlong cachePtr = 0;
        if(surf != NULL){
-               updateCache(surf, env, data, (bool)alphaPre);
+               updateCache(surf, env, data, alphaPre != 0);
                cachePtr = (jlong)surf->bmpData;
        }
        return cachePtr;

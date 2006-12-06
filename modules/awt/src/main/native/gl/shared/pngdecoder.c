@@ -154,7 +154,6 @@ void destroyPng(png_decoder_info_ptr *decoderInfoP) {
 void gl_info_callback(png_structp png_ptr, png_infop info) {
   JNIEnv *env;
   jobject obj;
-  png_color_16p imageBackground;
   boolean hasTRNS = FALSE;
 
   // Get pointer to global info
