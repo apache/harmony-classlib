@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
@@ -185,96 +184,60 @@ public class EnumTest extends TestCase {
     }
     
     /**
-     * @test Serialization/deserilazation compatibility with RI.
-     */
-    public void test_compatibilitySerialization() throws Exception{
-        assertTrue(SerializationTester.assertCompabilityEquals(Sample.CURLY,"serialization/java/lang/EnumTest.golden.1.ser"));
-    }
-    
-    /**
-     * @test Serialization/deserilazation compatibility with RI.
-     */
-    public void test_compatibilitySerialization_inClass() throws Exception{
-        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum(),"serialization/java/lang/EnumTest.golden.2.ser"));
-    }
-    
-    /**
-     * @test Serialization/deserilazation compatibility.
-     */
-    public void test_serialization() throws IOException, ClassNotFoundException{
-        Sample object = Sample.CURLY;
-        Sample deObject = (Sample) SerializationTester
-                .getDeserilizedObject(object);
-        assertEquals(object, deObject);
-    }
-    
-    /**
-     * test a class that has enums as its fields.
-     * 
-     * @test Serialization/deserilazation compatibility.
-     */
-    public void test_serialization_inClass() throws IOException, ClassNotFoundException{
-        MockEnum mock = new MockEnum();
-        MockEnum test = (MockEnum) SerializationTester
-                .getDeserilizedObject(mock);
-        assertEquals(mock.i,test.i);
-        assertEquals(mock.str,test.str);
-        assertEquals(mock.samEnum,test.samEnum);
-    }
-    
-    /**
-     * test a class that has enums and a string of same name as its fields.
-     * 
-     * @test Serialization/deserilazation compatibility with RI.
-     */
-    public void test_compatibilitySerialization_inClass_Complex() throws Exception{
-        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),"serialization/java/lang/EnumTest.golden.3.ser"));
-    }
-    
-    /**
      * @test Serialization/deserilazation compatibility with Harmony.
      */
     public void test_compatibilitySerialization_inClass_Complex_Harmony() throws Exception{
-        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),"serialization/java/lang/EnumTest.Harmony.ser"));
+        // TODO migrate to the new testing framework 
+        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),
+            "serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser"));
     }
     
     /**
-     * test a class that has enums and a string of same name as its fields.
-     * 
-     * @test Serialization/deserilazation compatibility.
+     * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization_inClass_Complex() throws Exception{
-        MockEnum2 mock = new MockEnum2();
-        MockEnum2 test = (MockEnum2) SerializationTester
-                .getDeserilizedObject(mock);
-        assertEquals(mock.i,test.i);
-        assertEquals(mock.str,test.str);
-        assertEquals(mock.samEnum,test.samEnum);
-    }       
-    
-    /**
-     * test a map class that has enums.
-     * 
-     * @test Serialization/deserialization compatibility.
-     */
-    public void test_serialization_inMap() throws Exception {
+    public void testSerializationSelf() throws Exception {
+
+        // test a map class that has enums.
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
         enumColorMap.put(Color.Red, 1);
         enumColorMap.put(Color.Blue, 3);
-        SerializationTest.verifySelf(enumColorMap);
+
+        Object[] testCases = { enumColorMap, Sample.CURLY };
+
+        SerializationTest.verifySelf(testCases);
+
+        // test a class that has enums as its fields.
+        MockEnum mock = new MockEnum();
+        MockEnum test = (MockEnum) SerializationTest.copySerializable(mock);
+        assertEquals(mock.i, test.i);
+        assertEquals(mock.str, test.str);
+        assertEquals(mock.samEnum, test.samEnum);
+
+        // test a class that has enums and a string of same name as its fields.
+        MockEnum2 mock2 = new MockEnum2();
+        MockEnum2 test2 = (MockEnum2) SerializationTest.copySerializable(mock2);
+        assertEquals(mock2.i, test2.i);
+        assertEquals(mock2.str, test2.str);
+        assertEquals(mock2.samEnum, test2.samEnum);
     }
-    
+
     /**
-     * test a map class that has enums.
-     * 
-     * @test Serialization/deserialization compatibility.
+     * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization_inMap() throws Exception {
+    public void testSerializationCompatibility() throws Exception {
+
         // regression test for Harmony-1163
         HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
         enumColorMap.put(Color.Red, 1);
-        enumColorMap.put(Color.Blue, 3);        
-        assertTrue(SerializationTester.assertCompabilityEquals(enumColorMap,"serialization/java/lang/EnumTest.golden.4.ser"));
+        enumColorMap.put(Color.Blue, 3);
+
+        Object[] testCases = { Sample.CURLY, new MockEnum(),
+        // test a class that has enums and a string of same name as its fields.
+                new MockEnum2(),
+                // test a map class that has enums.
+                enumColorMap, };
+
+        SerializationTest.verifyGolden(this, testCases);
     }
 }
