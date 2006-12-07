@@ -38,7 +38,7 @@ import java.math.BigDecimal;
  * can be used as a JavaBeans component, perhaps being used in a visual
  * programming environment.
  * <p>
- * Facilities are provided for get/set of propoerties relating to the Database
+ * Facilities are provided for get/set of properties relating to the Database
  * and the SQL Command and for getting/setting data within the Rows represented
  * by the RowSet. The RowSet supports JavaBeans events so that other components
  * in an application can be informed when various changes happen to the RowSet,
@@ -154,7 +154,7 @@ public interface RowSet extends ResultSet {
     public int getMaxRows() throws SQLException;
 
     /**
-     * Gets the value of the password propoerty for this RowSet. This property
+     * Gets the value of the password property for this RowSet. This property
      * is used when making a connection to the database and should be set before
      * invoking the <code>execute</code> method.
      * 
@@ -187,7 +187,7 @@ public interface RowSet extends ResultSet {
     /**
      * Gets the custom mapping of SQL types for this RowSet, if any.
      * 
-     * @return a Map olding the custom mappings of SQL types to Java classes for
+     * @return a Map holding the custom mappings of SQL types to Java classes for
      *         this RowSet. By default, the Map is empty.
      * @throws SQLException
      *             if an error occurs accessing the database.
@@ -452,7 +452,7 @@ public interface RowSet extends ResultSet {
      * @param theDate
      *            the Date to use
      * @param theCalendar
-     *            the Calendar to use in coverting the Date to an SQL DATE value
+     *            the Calendar to use in converting the Date to an SQL DATE value
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -807,7 +807,7 @@ public interface RowSet extends ResultSet {
     public void setTransactionIsolation(int level) throws SQLException;
 
     /**
-     * Sets the type of this RowSet. By default, the type is non-scollable.
+     * Sets the type of this RowSet. By default, the type is non-scrollable.
      * 
      * @param type
      *            the new type for the RowSet. One of:

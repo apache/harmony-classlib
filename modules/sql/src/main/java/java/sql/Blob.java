@@ -46,7 +46,7 @@ public interface Blob {
      * 
      * @param pos
      *            the position of the first byte in the Blob to get, where the
-     *            first byte in the Blob hss position = 1
+     *            first byte in the Blob has position = 1
      * @param length
      *            the number of bytes to get
      * @return a byte array containing the data from the Blob, starting at pos

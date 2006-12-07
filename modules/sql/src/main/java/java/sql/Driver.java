@@ -38,7 +38,7 @@ public interface Driver {
      * @param url
      *            the URL to connect to.
      * @return true if the driver thinks that is can open a connection to the
-     *         supplied URL, flase otherwise. Typically, the driver will respond
+     *         supplied URL, false otherwise. Typically, the driver will respond
      *         true if it thinks that it can handle the subprotocol specified by
      *         the driver.
      * @throws SQLException

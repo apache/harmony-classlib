@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat;
  * <p>
  * Time points are handled as millisecond values - milliseconds since the epoch,
  * January 1st 1970, 00:00:00.000 GMT. Time values passed to the java.sql.Date
- * class are "normalised" to the time 00:00:00.000 GMT on the date implied by
+ * class are "normalized" to the time 00:00:00.000 GMT on the date implied by
  * the time value.
  */
 public class Date extends java.util.Date {
@@ -203,7 +203,7 @@ public class Date extends java.util.Date {
         }
         int firstIndex = dateString.indexOf('-');
         int secondIndex = dateString.indexOf('-', firstIndex + 1);
-        // secondIndex == -1 means none or only one separater '-' has been
+        // secondIndex == -1 means none or only one separator '-' has been
         // found.
         // The string is separated into three parts by two separator characters,
         // if the first or the third part is null string, we should throw

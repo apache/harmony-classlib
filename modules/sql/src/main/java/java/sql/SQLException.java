@@ -113,7 +113,7 @@ public class SQLException extends Exception implements Serializable {
     }
 
     /**
-     * Retrieves the SQLException chanied to this SQLException, if any.
+     * Retrieves the SQLException chained to this SQLException, if any.
      * 
      * @return The SQLException chained to this SQLException. null if there is
      *         no SQLException chained to this SQLException.

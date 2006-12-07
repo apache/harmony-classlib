@@ -35,7 +35,7 @@ import java.net.URL;
  * <p>
  * When the getObject method is called with an object which implements the
  * SQLData interface, the JDBC driver determines the SQL type of the UDT being
- * mapped by caling the SQLData.getSQLType method. The driver creates an
+ * mapped by calling the SQLData.getSQLType method. The driver creates an
  * instance of an SQLInput stream, filling the stream with the attributes of the
  * UDT. The SQLInput stream is passed to the SQLData.readSQL method which then
  * calls the SQLInput reader methods to read the attributes.

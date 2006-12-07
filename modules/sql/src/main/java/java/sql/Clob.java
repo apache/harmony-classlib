@@ -94,10 +94,10 @@ public interface Clob {
      * in this Clob object.
      * 
      * @param searchstr
-     *            th String to seach for
+     *            th String to search for
      * @param start
      *            the position at which to start the search within this Clob.
-     * @return a long value with the position at which the specificed String
+     * @return a long value with the position at which the specified String
      *         occurs within this Clob.
      * @throws SQLException
      *             if an error occurs accessing the Clob

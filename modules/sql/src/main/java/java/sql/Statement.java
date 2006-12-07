@@ -522,7 +522,7 @@ public interface Statement {
      * <p>
      * Cursor names must be unique within one Connection.
      * <p>
-     * With the Cursor name set, it can then be utilised in SQL positioned
+     * With the Cursor name set, it can then be utilized in SQL positioned
      * update or delete statements to determine the current row in a ResultSet
      * generated from this Statement. The positioned update or delete must be
      * done with a different Statement than this one.
@@ -560,7 +560,7 @@ public interface Statement {
      *            ResultSet.FETCH_REVERSE
      * @throws SQLException
      *             if there is an error while accessing the database or if the
-     *             fetch direction is unrecognised
+     *             fetch direction is unrecognized
      */
     public void setFetchDirection(int direction) throws SQLException;
 

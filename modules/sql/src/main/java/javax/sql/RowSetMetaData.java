@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * RowSetMetaData extends ResultSetMetaData, adding new operations for carrying
  * out value sets.
  * <p>
- * Application code would not mormally call this interface directly. It would be
+ * Application code would not normally call this interface directly. It would be
  * called internally when <code>RowSet.execute</code> is called.
  */
 public interface RowSetMetaData extends ResultSetMetaData {
@@ -35,7 +35,7 @@ public interface RowSetMetaData extends ResultSetMetaData {
     /**
      * Sets automatic numbering for a specified column in the RowSet. If
      * automatic numbering is on, the column is read only. The default value is
-     * for automatice numbering to be off.
+     * for automatic numbering to be off.
      * 
      * @param columnIndex
      *            the index number for the column, where the first column has
@@ -153,7 +153,7 @@ public interface RowSetMetaData extends ResultSetMetaData {
      *            the index number for the column, where the first column has
      *            index 1.
      * @param theTypeName
-     *            a string containing the Type Name for the colunm
+     *            a string containing the Type Name for the column
      * @throws SQLException
      *             if a problem occurs accessing the database
      */
@@ -201,7 +201,7 @@ public interface RowSetMetaData extends ResultSetMetaData {
      *            the index number for the column, where the first column has
      *            index 1.
      * @param thePrecision
-     *            an integer containoing the number of decimal digits
+     *            an integer containing the number of decimal digits
      * @throws SQLException
      *             if a problem occurs accessing the database
      */

@@ -56,7 +56,7 @@ import java.net.URL;
  * column names are used, it is not possible to guarantee that the name will
  * retrieve data from the intended column - for certainty it is better to use
  * column indexes. Ideally the columns should be read left-to-right and read
- * once only, since not all * databases are optimised to handle other techniques
+ * once only, since not all * databases are optimized to handle other techniques
  * of reading the data.
  * <p>
  * When reading data, the JDBC driver maps the SQL data retrieved from the

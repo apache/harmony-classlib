@@ -25,7 +25,7 @@ import junit.framework.TestCase;
  * JUnit Testcase for the java.sql.SQLPermission class
  * 
  * Note that the SQLPermission class only defines 2 constructors and all other
- * methods are inherited. This testcase explicity tets the constructors but also
+ * methods are inherited. This testcase explicitly tets the constructors but also
  * implicitly tests some of the inherited query methods.
  * 
  */
@@ -70,4 +70,5 @@ public class SQLPermissionTest extends TestCase {
 	} // end method testSQLPermissionString
 
 } // end class SQLPermissionTest
+
 

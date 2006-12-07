@@ -18,7 +18,7 @@
 package java.sql;
 
 /**
- * A Savepoint is an instant during the current transaction that can be utilised
+ * A Savepoint is an instant during the current transaction that can be utilized
  * by a Rollback from the Connection.rollback method. Rolling back to a
  * particular Savepoint means that all changes that occurred after that
  * Savepoint are removed.

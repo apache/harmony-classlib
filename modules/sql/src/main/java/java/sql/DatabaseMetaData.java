@@ -1090,7 +1090,7 @@ public interface DatabaseMetaData {
      * <li>DatabaseMetaData.tableIndexStatistic - table statistics returned
      * with Index descriptions</li>
      * <li>DatabaseMetaData.tableIndexClustered - a clustered Index</li>
-     * <li>DatabaseMetaData.tableIndexHased - a hashed Index</li>
+     * <li>DatabaseMetaData.tableIndexHashed - a hashed Index</li>
      * <li>DatabaseMetaData.tableIndexOther - other style of Index</li>
      * </ul>
      * </li>
@@ -1683,7 +1683,7 @@ public interface DatabaseMetaData {
      * have a direct supertype, it is not listed.
      * <p>
      * The listing is returned as a ResultSet where there is one row for a
-     * specific UDT which describes its supertype, with the data organised in
+     * specific UDT which describes its supertype, with the data organized in
      * columns as follows:
      * <ol>
      * <li><code>TYPE_CAT</code> - String - the UDT Catalog name (possibly

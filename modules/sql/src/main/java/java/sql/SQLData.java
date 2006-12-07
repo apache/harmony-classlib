@@ -60,7 +60,7 @@ public interface SQLData {
      * Reads data from the database into this object. This method follows these
      * steps:
      * <ul>
-     * <li>Utilise the passed input stream to read the attributes or entries of
+     * <li>Utilize the passed input stream to read the attributes or entries of
      * the SQL type</li>
      * <li>This is carried out by reading each entry from the input stream,
      * ordered as the are the SQL definition.</li>
@@ -83,7 +83,7 @@ public interface SQLData {
     public void readSQL(SQLInput stream, String typeName) throws SQLException;
 
     /**
-     * Writes the object to a supplied SQLOuput data stream, writing it out as
+     * Writes the object to a supplied SQLOutput data stream, writing it out as
      * an SQL value to the data source.
      * <p>
      * This method follows the following steps:

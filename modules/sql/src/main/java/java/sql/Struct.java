@@ -53,7 +53,7 @@ public interface Struct {
      * method uses the supplied type map for customized type mappings. Where
      * there is no entry in the Type Map which matches the this structured type,
      * the JDBC driver uses the default mapping. The Connection type map is
-     * never utilised by this method.
+     * never utilized by this method.
      * 
      * @param theMap
      *            a Map describing how SQL Type names are mapped to classes.

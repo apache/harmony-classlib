@@ -41,7 +41,7 @@ public interface XAResource {
     public static final int TMFAIL = 0x20000000;
 
     /**
-     * Flag to indicate that the caller is joiing sn existing transaction
+     * Flag to indicate that the caller is joining sn existing transaction
      * branch.
      */
     public static final int TMJOIN = 0x200000;
@@ -250,7 +250,7 @@ public interface XAResource {
      *            an integer. Must be one of XAResource.TMNOFLAGS,
      *            XAResource.TMJOIN, or XAResource.TMRESUME.
      *            <p>
-     *            TMJOIN implies that the start applies to joiing a transaction
+     *            TMJOIN implies that the start applies to joining a transaction
      *            previously passed to the Resource Manager.
      *            <p>
      *            TMRESUME implies that the start applies to a suspended

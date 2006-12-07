@@ -84,7 +84,7 @@ public interface PooledConnection {
 
     /**
      * Creates a connection to the database. This method is typically called by
-     * the Connectio Pool manager when an application invokes the method
+     * the Connection Pool manager when an application invokes the method
      * <code>DataSource.getConnection</code> and there are no PooledConnection
      * objects available in the connection pool.
      * 
@@ -98,7 +98,7 @@ public interface PooledConnection {
     /**
      * Deregister the supplied ConnectionEventListener from this
      * PooledConnection. Once deregistered, the ConnectionEventListener will not
-     * longer receive events ocurring in the PooledConnection.
+     * longer receive events occurring in the PooledConnection.
      * 
      * @param theListener
      *            an object which implements the ConnectionEventListener

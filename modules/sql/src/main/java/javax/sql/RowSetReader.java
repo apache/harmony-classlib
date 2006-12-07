@@ -23,7 +23,7 @@ import java.sql.SQLException;
  * An interface which provides functionality for a disconnected RowSet to get
  * data from a data source into its rows. The RowSet calls the RowSetReader
  * interface when the RowSet's execute method is invoked - a RowSetReader must
- * firat be registered with the RowSet for this to work.
+ * first be registered with the RowSet for this to work.
  */
 public interface RowSetReader {
 
