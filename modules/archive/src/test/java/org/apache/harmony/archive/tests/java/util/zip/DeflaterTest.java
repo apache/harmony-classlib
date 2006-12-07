@@ -1245,4 +1245,16 @@ public class DeflaterTest extends junit.framework.TestCase {
         assertEquals(compressedDataLength, def.getTotalOut());
         assertEquals(compressedDataLength, def.getBytesWritten());
     }
+    
+    //Regression Test for HARMONY-2481
+    public void test_deflate_beforeSetInput() throws Exception {
+        Deflater deflater = new Deflater();
+        deflater.finish();
+        byte[] buffer = new byte[1024];
+        assertEquals(8, deflater.deflate(buffer));
+        byte[] expectedBytes = { 120, -100, 3, 0, 0, 0, 0, 1 };
+        for (int i = 0; i < expectedBytes.length; i++) {
+            assertEquals(expectedBytes[i], buffer[i]);
+        }
+    }
 }

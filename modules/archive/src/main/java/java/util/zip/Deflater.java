@@ -48,6 +48,9 @@ public class Deflater {
     
     // Fill in the JNI id caches
     private static native void oneTimeInitialization();
+    
+    // A stub buffer used when deflate() called while inputBuffer has not been set.
+    private static final byte[] STUB_INPUT_BUFFER = new byte[0];
 
     static {
         oneTimeInitialization();
@@ -140,9 +143,13 @@ public class Deflater {
 		if (streamHandle == -1) {
             throw new IllegalStateException();
         }
-		// avoid int overflow, check null buf
-		if (off <= buf.length && nbytes >= 0 && off >= 0
-				&& buf.length - off >= nbytes) {
+        // avoid int overflow, check null buf
+        if (off <= buf.length && nbytes >= 0 && off >= 0
+                && buf.length - off >= nbytes) {
+            // put a stub buffer, no effect.
+            if (null == inputBuffer) {
+                setInput(STUB_INPUT_BUFFER);
+            }
             return deflateImpl(buf, off, nbytes, streamHandle, flushParm);
         }
 		throw new ArrayIndexOutOfBoundsException();
