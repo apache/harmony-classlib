@@ -15,8 +15,9 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -25,7 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import tests.util.SerializationTester;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class IdentityHashMap2Test extends junit.framework.TestCase {
 
@@ -318,19 +320,28 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		assertTrue("newset and keyset do not have same elements 2", set
 				.equals(newset));
 	}
-    
+
+    // comparator for IdentityHashMap objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            IdentityHashMap init = (IdentityHashMap) initial;
+            IdentityHashMap desr = (IdentityHashMap) deserialized;
+
+            assertEquals("Size", init.size(), desr.size());
+        }
+    };
+
     /**
-     * @tests java.util.IdentityHashMap#serializationTest
+     * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_serialization_compatibility() throws Exception {
+    public void testSerializationCompatibility() throws Exception {
         IdentityHashMap<String, String> identityHashMap = new IdentityHashMap<String, String>();
         identityHashMap.put("key1", "value1");
         identityHashMap.put("key2", "value2");
         identityHashMap.put("key3", "value3");
 
-        IdentityHashMap<String, String> nobj = (IdentityHashMap<String, String>) SerializationTester
-                .readObject(identityHashMap,
-                        "serialization/java/util/IdentityHashMapTest.golden.0.ser");
-        assertEquals(identityHashMap.size(), nobj.size());
+        SerializationTest.verifyGolden(this, identityHashMap, COMPARATOR);
     }
 }

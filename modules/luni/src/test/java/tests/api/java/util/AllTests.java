@@ -54,7 +54,6 @@ public class AllTests {
 		suite.addTestSuite(HashSetTest.class);
 		suite.addTestSuite(HashtableTest.class);
 		suite.addTestSuite(IdentityHashMapTest.class);
-		suite.addTestSuite(IdentityHashMap2Test.class);
 		suite.addTestSuite(LinkedHashMapTest.class);
 		suite.addTestSuite(LinkedHashSetTest.class);
 		suite.addTestSuite(LinkedListTest.class);

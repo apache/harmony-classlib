@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tests.api.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class InetSocketAddressTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/InetSocketAddress.golden.1.ser";
-    
-    private static final String SERIALIZATION_FILE_NAME_UNRESOLVED = "serialization/java/net/InetSocketAddress.golden.2.ser";
+public class InetSocketAddressTest extends TestCase {
 
     /**
      * @tests java.net.InetSocketAddress#InetSocketAddress(String, int)
@@ -87,54 +85,42 @@ public class InetSocketAddressTest extends TestCase {
 			this.port = port;
 		}
 	};
-    
+
+    // comparator for InetSocketAddress objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            InetSocketAddress init = (InetSocketAddress) initial;
+            InetSocketAddress desr = (InetSocketAddress) deserialized;
+
+            assertEquals("HostName", init.getHostName(), desr.getHostName());
+            assertEquals("Port", init.getPort(), desr.getPort());
+            assertEquals("Address", init.getAddress(), desr.getAddress());
+        }
+    };
+
     /**
-     * @tests serialization/deserialization.
+     * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization_unresolved() throws Exception {
-        InetSocketAddress ia= InetSocketAddress.createUnresolved("badhost",1000);
-        InetSocketAddress deIA = (InetSocketAddress) SerializationTester
-                .getDeserilizedObject(ia);
-        assertEquals(ia.getHostName(),deIA.getHostName());
-        assertEquals(ia.getPort(), deIA.getPort());
-        assertEquals(ia.getAddress(), deIA.getAddress());
-    }
-    
-    /**
-     * @tests serialization/deserialization.
-     */
-    public void test_serialization() throws Exception {
-        InetSocketAddress ia= InetSocketAddress.createUnresolved("badhost",1000);
-        InetSocketAddress deIA = (InetSocketAddress) SerializationTester
-                .getDeserilizedObject(ia);
-        assertEquals(ia.getHostName(),deIA.getHostName());
-        assertEquals(ia.getPort(), deIA.getPort());
-        assertEquals(ia.getAddress(), deIA.getAddress());
+    public void testSerializationSelf() throws Exception {
+
+        Object[] testCases = {
+                InetSocketAddress.createUnresolved("badhost", 1000), // unresolved
+                new InetSocketAddress("Localhost", 1000) };
+
+        SerializationTest.verifySelf(testCases, COMPARATOR);
     }
 
     /**
-     * @tests serialization/deserialization.
+     * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_serializationCompatibility_unresolved() throws Exception {
-        InetSocketAddress ia= InetSocketAddress.createUnresolved("badhost",1000);
-        InetSocketAddress deIA = (InetSocketAddress) SerializationTester
-                .readObject(ia,
-                        SERIALIZATION_FILE_NAME_UNRESOLVED);
-        assertEquals(ia.getHostName(),deIA.getHostName());
-        assertEquals(ia.getPort(), deIA.getPort());
-        assertEquals(ia.getAddress(), deIA.getAddress());
-    }
-    
-    /**
-     * @tests serialization/deserialization.
-     */
-    public void test_serializationCompatibility() throws Exception {
-        InetSocketAddress ia= new InetSocketAddress("Localhost",1000);
-        InetSocketAddress deIA = (InetSocketAddress) SerializationTester
-                .readObject(ia,
-                        SERIALIZATION_FILE_NAME);
-        assertEquals(ia.getAddress(), deIA.getAddress());
-        assertEquals(ia.getPort(), deIA.getPort());
-        assertEquals(ia.getHostName().toLowerCase(),deIA.getHostName().toLowerCase());
+    public void testSerializationCompatibility() throws Exception {
+
+        Object[] testCases = {
+                InetSocketAddress.createUnresolved("badhost", 1000), // unresolved
+                new InetSocketAddress("Localhost", 1000) };
+
+        SerializationTest.verifyGolden(this, testCases, COMPARATOR);
     }
 }
