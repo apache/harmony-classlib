@@ -270,6 +270,10 @@ public class Runtime {
      * @param hook the hook (a Thread) to register
      */
     public void addShutdownHook(Thread hook) {
+        // Check hook for null
+        if (hook == null)
+            throw new NullPointerException("null is not allowed here");
+                
         return;
     }
 
@@ -280,6 +284,10 @@ public class Runtime {
      * @return true if the hook could be de-registered
      */
     public boolean removeShutdownHook(Thread hook) {
+        // Check hook for null
+        if (hook == null)
+            throw new NullPointerException("null is not allowed here");
+                
         return false;
     }
 
