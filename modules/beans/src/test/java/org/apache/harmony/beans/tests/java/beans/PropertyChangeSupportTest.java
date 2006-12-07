@@ -517,7 +517,7 @@ public class PropertyChangeSupportTest extends TestCase {
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
         PropertyChangeListener l1 = new MockPropertyChangeListener();
         PropertyChangeListener l2 = new MockPropertyChangeListener();
-        PropertyChangeListener l3 = new PropertyChangeListenerProxy("myProp2",
+        PropertyChangeListener l3 = new PropertyChangeListenerProxy("myProp",
                 l2);
 
         assertFalse(sup.hasListeners("myProp"));
@@ -527,8 +527,9 @@ public class PropertyChangeSupportTest extends TestCase {
         assertTrue(sup.hasListeners("myProp"));
         sup.removePropertyChangeListener("myProp", l2);
         assertFalse(sup.hasListeners("myProp"));
+        // The following assertion fails on RI. See HARMONY-2526
         sup.addPropertyChangeListener("myProp", l3);
-        assertFalse(sup.hasListeners("myProp"));
+        assertTrue(sup.hasListeners("myProp"));
     }
 
     /*
