@@ -23,9 +23,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.RandomAccess;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class ArraysTest extends TestCase {
 
@@ -341,7 +341,9 @@ public class ArraysTest extends TestCase {
         assertEquals("1", stringsList.get(1));
         assertTrue(stringsList instanceof RandomAccess);
         assertTrue(stringsList instanceof Serializable);
-        SerializationTester.assertEquals(stringsList);
+        
+        assertEquals(stringsList, SerializationTest
+                .copySerializable((Serializable) stringsList));
         
         //test from javadoc
         List<String> stooges = Arrays.asList("Larry", "Moe", "Curly");
