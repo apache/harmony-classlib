@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-public class IdentityHashMap2Test extends junit.framework.TestCase {
+public class IdentityHashMapTest extends junit.framework.TestCase {
 
 	/**
 	 * @tests java.util.IdentityHashMap#containsKey(java.lang.Object)
