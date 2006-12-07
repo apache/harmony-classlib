@@ -17,6 +17,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#if defined(NEEDS_SYS_TYPES)
+#include <sys/types.h>
+#endif
 
 #define min(a, b) ((a < b) ? a : b)
 

@@ -17,6 +17,9 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#if defined(NEEDS_SYS_TYPES)
+#include <sys/types.h>
+#endif
 #include "MemMacros.h"
 #include "org_apache_harmony_misc_accessors_ObjectAccessor.h"
 

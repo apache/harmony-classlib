@@ -19,6 +19,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#if defined(NEEDS_SYS_TYPES)
+#include <sys/types.h>
+#endif
 
 #include "MemMacros.h"
 
