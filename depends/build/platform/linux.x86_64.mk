@@ -13,5 +13,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_86
+DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_64
 OPT += -fpic
