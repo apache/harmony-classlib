@@ -47,11 +47,6 @@ public class SSLProtocolExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "SSLProtocolException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>SSLProtocolException(String)</code> constructor
      * Assertion: constructs SSLProtocolException with detail message msg.
@@ -64,11 +59,6 @@ public class SSLProtocolExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -82,11 +72,5 @@ public class SSLProtocolExceptionTest extends TestCase {
         SSLProtocolException tE = new SSLProtocolException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
-
 }

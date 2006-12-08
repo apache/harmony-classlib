@@ -47,11 +47,6 @@ public class SSLExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "SSLException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>SSLException(String)</code> constructor Assertion:
      * constructs SSLException with detail message msg. Parameter
@@ -64,11 +59,6 @@ public class SSLExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -81,11 +71,6 @@ public class SSLExceptionTest extends TestCase {
         SSLException tE = new SSLException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -97,11 +82,6 @@ public class SSLExceptionTest extends TestCase {
         SSLException tE = new SSLException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -123,11 +103,6 @@ public class SSLExceptionTest extends TestCase {
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
         }
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -139,11 +114,6 @@ public class SSLExceptionTest extends TestCase {
         SSLException tE = new SSLException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -158,11 +128,6 @@ public class SSLExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -185,11 +150,6 @@ public class SSLExceptionTest extends TestCase {
             //	assertNotNull("getCause() must not return null", tE.getCause());
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
-        }
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
         }
     }
 
@@ -219,11 +179,6 @@ public class SSLExceptionTest extends TestCase {
                 // tE.getCause());
                 assertEquals("getCause() must return "
                         .concat(tCause.toString()), tE.getCause(), tCause);
-            }
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
             }
         }
     }
