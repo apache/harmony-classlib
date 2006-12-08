@@ -22,5 +22,6 @@ Import-Package: java.awt.font,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.luni.util,
  tests.support;hy_usage=test;resolution:=optional,
- tests.util;hy_usage=test;resolution:=optional
+ tests.util;hy_usage=test;resolution:=optional,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: java.text
