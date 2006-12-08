@@ -48,7 +48,7 @@ public class PolicyQualifierInfo {
      */
     public PolicyQualifierInfo(byte[] encoded) throws IOException {
         if (encoded == null) {
-            throw new IOException(Messages.getString("security.0A")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("security.0A")); //$NON-NLS-1$
         }
         if (encoded.length == 0) {
             throw new IOException(Messages.getString("security.69")); //$NON-NLS-1$

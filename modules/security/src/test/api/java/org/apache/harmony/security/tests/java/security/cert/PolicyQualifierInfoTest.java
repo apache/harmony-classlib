@@ -47,12 +47,11 @@ public class PolicyQualifierInfoTest extends TestCase {
      * parameter does not represent a valid and parsable policy
      * qualifier info
      */
-    public final void testPolicyQualifierInfo01() {
+    public final void test_Ctor() throws IOException {
         try {
             // pass null
             new PolicyQualifierInfo(null);
-            fail("IOE or NPE expected");
-        } catch (IOException e) {
+            fail("No expected NullPointerException");
         } catch (NullPointerException e) {
         }
 
