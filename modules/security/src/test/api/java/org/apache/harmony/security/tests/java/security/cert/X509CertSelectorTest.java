@@ -28,9 +28,25 @@ import junit.framework.TestCase;
 public class X509CertSelectorTest extends TestCase {
 
     /**
-     * @tests addSubjectAlternativeName(int type, String name)
+     * @tests java.security.cert.X509CertSelector#addSubjectAlternativeName(int, byte[])
      */
-    public void testAddSubjectAlternativeName() {
+    public void test_addSubjectAlternativeNameLintLbyte_array() throws IOException {
+        // Regression for HARMONY-2487
+        int[] types = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        for (int i = 0; i < types.length; i++) {
+            try {
+                new X509CertSelector().addSubjectAlternativeName(types[i],
+                        (byte[]) null);
+                fail("No expected NullPointerException for type: " + i);
+            } catch (NullPointerException e) {
+            }
+        }
+    }
+
+    /**
+     * @tests java.security.cert.X509CertSelector#addSubjectAlternativeName(int, String)
+     */
+    public void test_addSubjectAlternativeNameLintLjava_lang_String() {
         // Regression for HARMONY-727
         int[] types = { 0, 2, 3, 4, 5, 6, 7, 8 };
         for (int i = 0; i < types.length; i++) {
@@ -42,11 +58,26 @@ public class X509CertSelectorTest extends TestCase {
             }
         }
     }
-    
+
     /**
-     * @tests addPathToName(int type, String name)
+     * @tests java.security.cert.X509CertSelector#addPathToName(int, byte[])
      */
-    public void testAddPathToName() {
+    public void test_addPathToNameLintLbyte_array() throws IOException {
+        // Regression for HARMONY-2487
+        int[] types = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        for (int i = 0; i < types.length; i++) {
+            try {
+                new X509CertSelector().addPathToName(types[i], (byte[]) null);
+                fail("No expected NullPointerException for type: " + i);
+            } catch (NullPointerException e) {
+            }
+        }
+    }
+
+    /**
+     * @tests java.security.cert.X509CertSelector#addPathToName(int, String)
+     */
+    public void test_addPathToNameLintLjava_lang_String() {
         // Regression for HARMONY-724
         for (int type = 0; type <= 8; type++) {
             try {
@@ -57,5 +88,4 @@ public class X509CertSelectorTest extends TestCase {
             }
         }
     }
-
 }

@@ -250,7 +250,7 @@ public class GeneralName {
     public GeneralName(int tag, byte[] name) 
                                     throws IOException {
         if (name == null) {
-            throw new IOException(Messages.getString("security.28")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("security.28")); //$NON-NLS-1$
         }
         if ((tag < 0) || (tag > 8)) {
             throw new IOException(Messages.getString("security.183", tag)); //$NON-NLS-1$
