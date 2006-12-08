@@ -32,7 +32,7 @@ class PosPlusGroupQuantifierSet extends GroupQuantifierSet {
     public PosPlusGroupQuantifierSet(AbstractSet innerSet, AbstractSet next,
             int type) {
         super(innerSet, next, type);
-        ((JointSet) innerSet).fSet.setNext(FSet.posFSet);
+        ((JointSet) innerSet).setNext(FSet.posFSet);
 
     }
 

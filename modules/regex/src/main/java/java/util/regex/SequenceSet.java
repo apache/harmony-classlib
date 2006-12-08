@@ -107,6 +107,16 @@ class SequenceSet extends LeafSet {
             return ((CharSet) set).getChar() == string.charAt(0);
         } else if (set instanceof RangeSet) {
             return ((RangeSet) set).accepts(0, string.substring(0, 1)) > 0;
+        } else if (set instanceof SupplRangeSet) {
+            return ((SupplRangeSet) set).contains(string.charAt(0)) 
+                    || ((string.length() > 1) && ((SupplRangeSet) set).contains(Character
+                           .toCodePoint(string.charAt(0), string.charAt(1))));
+        } else if ((set instanceof SupplCharSet)) {
+            return  (string.length() > 1)
+                    ? ((SupplCharSet) set).getCodePoint() 
+                            == Character.toCodePoint(string.charAt(0),
+                            string.charAt(1))
+                    : false;
         }
 
         return true;

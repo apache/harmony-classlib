@@ -198,7 +198,7 @@ class DecomposedCharSet extends JointSet {
             StringBuffer strBuff = new StringBuffer();
             
             for (int i = 0; i < decomposedCharLength; i++) {
-                strBuff.append(Lexer.toChars(decomposedChar[i]));
+                strBuff.append(Character.toChars(decomposedChar[i]));
             }
             decomposedCharUTF16 = strBuff.toString();
         }
@@ -231,9 +231,9 @@ class DecomposedCharSet extends JointSet {
             char high = testString.charAt(strIndex++);
             char low = testString.charAt(strIndex);
             
-            if (Lexer.isSurrogatePair(high, low)) {
+            if (Character.isSurrogatePair(high, low)) {
                 char [] curCodePointUTF16 = new char [] {high, low};
-                curChar = Lexer.codePointAt(curCodePointUTF16, 0);
+                curChar = Character.codePointAt(curCodePointUTF16, 0);
                 readCharsForCodePoint = 2;
             } else {
                 curChar = high;

@@ -27,7 +27,7 @@ package java.util.regex;
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.12.2.2 $
  */
-final class DotSet extends LeafSet {
+final class DotSet extends JointSet {
     
     AbstractLineTerminator lt;
 
@@ -36,21 +36,47 @@ final class DotSet extends LeafSet {
         this.lt = lt;
     }
 
-    public int accepts(int strIndex, CharSequence testString) {
-        char ch = testString.charAt(strIndex);
-        return lt.isLineTerminator(ch) ? -1 : 1;
+    public int matches(int stringIndex, CharSequence testString,
+        MatchResultImpl matchResult) {
+        int strLength = matchResult.getRightBound();
 
-        /*
-         * return (strIndex<testString.length() && testString.charAt(strIndex) !=
-         * '\n') ? 1 : -1;
-         */
+        if (stringIndex + 1 > strLength) {
+            matchResult.hitEnd = true;
+            return -1;
+        }
+        char high = testString.charAt(stringIndex);
+
+        if (Character.isHighSurrogate(high) && (stringIndex + 2 <= strLength)) {
+            char low = testString.charAt(stringIndex + 1);
+
+            if (Character.isSurrogatePair(high, low)) {
+                return lt.isLineTerminator(Character.toCodePoint(high, low))? -1 
+                : next.matches(stringIndex + 2, testString, matchResult);
+            }
+        }
+
+        return lt.isLineTerminator(high)? -1
+               : next.matches(stringIndex + 1, testString, matchResult);    	        
     }
 
     protected String getName() {
         return "."; //$NON-NLS-1$
     }
 
+
+    public AbstractSet getNext() {
+        return this.next;
+    }
+  
+    public void setNext(AbstractSet next) {
+        this.next = next;
+    }
+
     public int getType() {
         return AbstractSet.TYPE_DOTSET;
     }
+
+    public boolean hasConsumed(MatchResultImpl matchResult) {         
+        return true;
+    }    
 }

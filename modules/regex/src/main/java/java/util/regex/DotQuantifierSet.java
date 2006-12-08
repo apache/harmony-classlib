@@ -29,11 +29,11 @@ package java.util.regex;
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.11.2.2 $
  */
-class DotQuantifierSet extends LeafQuantifierSet {
+class DotQuantifierSet extends QuantifierSet {
     
     AbstractLineTerminator lt;
 
-    public DotQuantifierSet(LeafSet innerSet, AbstractSet next, int type,
+    public DotQuantifierSet(AbstractSet innerSet, AbstractSet next, int type,
             AbstractLineTerminator lt) {
         super(innerSet, next, type);
         this.lt = lt;
@@ -48,7 +48,7 @@ class DotQuantifierSet extends LeafQuantifierSet {
         findLineTerminator(stringIndex, strLength, testString);
 
         if (startSearch < 0) {
-            startSearch = matchResult.getRightBound();
+            startSearch = strLength;
         }
 
         if (startSearch <= stringIndex) {
@@ -97,6 +97,9 @@ class DotQuantifierSet extends LeafQuantifierSet {
         return res;
     }
 
+    /*
+     * All line terminators are from Basic Multilingual Pane
+     */
     private int findLineTerminator(int from, int to, CharSequence testString) {
         for (int i = from; i < to; i++) {
             if (lt.isLineTerminator(testString.charAt(i))) {
@@ -115,4 +118,7 @@ class DotQuantifierSet extends LeafQuantifierSet {
         return -1;
     }
 
+    protected String getName() {
+        return "<DotQuant>";
+    }
 }
