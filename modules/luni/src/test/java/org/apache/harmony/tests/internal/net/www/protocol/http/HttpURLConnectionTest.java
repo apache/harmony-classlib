@@ -164,7 +164,9 @@ public class HttpURLConnectionTest extends TestCase {
             new MockServer("ServerSocket for HttpURLConnectionTest");
         httpServer.start();
         synchronized(bound) {
-            bound.wait(5000);
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
         }
         HttpURLConnection c = (HttpURLConnection)
             new URL("http://127.0.0.1:" + httpServer.port()).openConnection();
