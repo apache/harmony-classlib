@@ -63,7 +63,7 @@ import com.ibm.icu4jni.charset.CharsetProviderICU;
  * encoded in "UTF-8". Each line of their content specifies the class name of a
  * charset provider which extends <code>java.nio.spi.CharsetProvider</code>.
  * A line should ends with '\r', '\n' or '\r\n'. Leading and trailing
- * whitespaces are trimed. Blank lines, and lines (after trimed) starting with
+ * whitespaces are trimmed. Blank lines, and lines (after trimmed) starting with
  * "#" which are regarded as comments, are both ignored. Duplicates of already
  * appeared names are also ignored. Both the configuration files and the
  * provider classes will be loaded using the thread context class loader.
@@ -180,7 +180,7 @@ public abstract class Charset implements Comparable<Charset> {
 		// check whether the given canonical name is legal
 		checkCharsetName(canonicalName);
 		this.canonicalName = canonicalName;
-		// check each aliase and put into a set
+		// check each alias and put into a set
 		this.aliasesSet = new HashSet<String>();
 		if (null != aliases) {
 			for (int i = 0; i < aliases.length; i++) {
@@ -720,7 +720,7 @@ public abstract class Charset implements Comparable<Charset> {
 	 * 
 	 * @param buffer
 	 *            the byte buffer containing the content to be decoded
-	 * @return a character buffer containing the output of the dencoding
+	 * @return a character buffer containing the output of the decoding
 	 */
 	public final CharBuffer decode(ByteBuffer buffer) {
 		CharsetDecoder d = getCachedCharsetDecoder(canonicalName);

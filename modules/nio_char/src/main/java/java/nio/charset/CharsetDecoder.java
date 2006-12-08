@@ -35,7 +35,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * <li>Invoking the {@link #reset() reset} method to reset the decoder if the
  * decoder has been used;</li>
  * <li>Invoking the {@link #decode(ByteBuffer, CharBuffer, boolean) decode}
- * method until the addtional input is not needed, the <code>endOfInput</code>
+ * method until the additional input is not needed, the <code>endOfInput</code>
  * parameter must be set to false, the input buffer must be filled and the
  * output buffer must be flushed between invocations;</li>
  * <li>Invoking the {@link #decode(ByteBuffer, CharBuffer, boolean) decode}
@@ -67,7 +67,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * alternatives are to ignore it or to replace the erroneous input with the
  * replacement string. The replacement string is "\uFFFD" by default and can be
  * changed by invoking {@link #replaceWith(String) replaceWith} method. The
- * invoker of this decoder can choose one way by specifing a
+ * invoker of this decoder can choose one way by specifying a
  * {@link CodingErrorAction CodingErrorAction} instance for each error type via
  * {@link #onMalformedInput(CodingErrorAction) onMalformedInput} method and
  * {@link #onUnmappableCharacter(CodingErrorAction) onUnmappableCharacter}
@@ -133,7 +133,7 @@ public abstract class CharsetDecoder {
 	private byte[] remains = null;
 	
 	// replaceString should be put into output by next decode invocation
-	// if OVERFLOW occured in current decode invocation.
+	// if OVERFLOW occurred in current decode invocation.
 	private boolean needReplace = false;
 
 	/*
@@ -207,7 +207,7 @@ public abstract class CharsetDecoder {
 	/**
 	 * This is a facade method for decoding operation.
 	 * <p>
-	 * This method decodes the remaning byte sequence of the given byte buffer
+	 * This method decodes the remaining byte sequence of the given byte buffer
 	 * into a new character buffer. This method performs a complete decoding
 	 * operation, resets at first, then decodes, and flushes at last.
 	 * </p>
@@ -232,7 +232,7 @@ public abstract class CharsetDecoder {
 	 *             encountered, and the action for unmappable character error is
 	 *             {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}.
 	 *             Unmappable means the byte sequence at the input buffer's
-	 *             current postion cannot be mapped to a Unicode character
+	 *             current position cannot be mapped to a Unicode character
 	 *             sequence.
 	 * @throws CharacterCodingException
 	 *             if other exception happened during the decode operation
@@ -268,7 +268,7 @@ public abstract class CharsetDecoder {
 		output.flip();
 		CharBuffer truncatedBuffer = null;
 		// truncate elements after limit in the output.
-		// clippedBuffer has the same value of capcity and limit.
+		// clippedBuffer has the same value of capacity and limit.
 		if (output.limit() == output.capacity()) {
 			truncatedBuffer = output;
 		} else {
@@ -311,17 +311,17 @@ public abstract class CharsetDecoder {
 	/**
 	 * Decodes bytes starting at the current position of the given input buffer,
 	 * and writes the equivalent character sequence into the given output buffer
-	 * from its current postion.
+	 * from its current position.
 	 * <p>
 	 * The buffers' position will be changed with the reading and writing
-	 * operation, but their limis and marks will be kept intact.
+	 * operation, but their limits and marks will be kept intact.
 	 * </p>
 	 * <p>
 	 * A <code>CoderResult</code> instance will be returned according to
 	 * following rules:
 	 * <ul>
 	 * <li>{@link CoderResult#OVERFLOW CoderResult.OVERFLOW} indicates that
-	 * even though not all of the input has ben processed, the buffer the output
+	 * even though not all of the input has been processed, the buffer the output
 	 * is being written to has reached its capacity. In the event of this code
 	 * being returned this method should be called once more with an
 	 * <code>out</code> argument that has not already been filled.</li>
@@ -332,13 +332,13 @@ public abstract class CharsetDecoder {
 	 * called once more with additional input.</li>
 	 * <li>A {@link CoderResult#malformedForLength(int) malformed input} result
 	 * indicates that some malformed input error encountered, and the erroneous
-	 * bytes start at the input buffer's postion and their number can be got by
+	 * bytes start at the input buffer's position and their number can be got by
 	 * result's {@link CoderResult#length() length}. This kind of result can be
 	 * returned only if the malformed action is
 	 * {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}. </li>
 	 * <li>A {@link CoderResult#unmappableForLength(int) unmappable character}
 	 * result indicates that some unmappable character error encountered, and
-	 * the erroneous bytes start at the input buffer's postion and their number
+	 * the erroneous bytes start at the input buffer's position and their number
 	 * can be got by result's {@link CoderResult#length() length}. This kind of
 	 * result can be returned only if the unmappable character action is
 	 * {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}. </li>
@@ -488,12 +488,12 @@ public abstract class CharsetDecoder {
 	 * decoding operation. The rules to construct the <code>CoderResult</code>
 	 * is same as the {@link #decode(ByteBuffer, CharBuffer, boolean) decode}.
 	 * When exception encountered in the decoding operation, most implementation
-	 * of this mehtod will return a relevant result object to
+	 * of this method will return a relevant result object to
 	 * {@link #decode(ByteBuffer, CharBuffer, boolean) decode} method, and some
 	 * performance optimized implementation may handle the exception and
 	 * implement the error action itself.
 	 * 
-	 * The buffers are scanned from their current positions, and their postions
+	 * The buffers are scanned from their current positions, and their positions
 	 * will be modified accordingly, while their marks and limits will be
 	 * intact. At most {@link ByteBuffer#remaining() in.remaining()} characters
 	 * will be read, and {@link CharBuffer#remaining() out.remaining()} bytes
@@ -518,11 +518,11 @@ public abstract class CharsetDecoder {
 	 * charset will be the same for the rest of the decode operation.
 	 * </p>
 	 * <p>
-	 * If insuffient bytes have been read to determine the charset,
-	 * <code>IllegalStateException</code> will be throwed.
+	 * If insufficient bytes have been read to determine the charset,
+	 * <code>IllegalStateException</code> will be thrown.
 	 * </p>
 	 * <p>
-	 * The default implementation alwyas throws
+	 * The default implementation always throws
 	 * <code>UnsupportedOperationException</code>, so it should be overridden
 	 * by subclass if needed.
 	 * </p>
@@ -530,9 +530,9 @@ public abstract class CharsetDecoder {
 	 * @return the charset detected by this decoder, or null if it is not yet
 	 *         determined
 	 * @throws UnsupportedOperationException
-	 *             if this decoder does not implmenet an auto-detecting charset
+	 *             if this decoder does not implement an auto-detecting charset
 	 * @throws IllegalStateException
-	 *             if insuffient bytes have been read to determine the charset
+	 *             if insufficient bytes have been read to determine the charset
 	 */
 	public Charset detectedCharset() {
 		throw new UnsupportedOperationException();
@@ -542,7 +542,7 @@ public abstract class CharsetDecoder {
 	 * Flush this decoder.
 	 * 
 	 * This method will call {@link #implFlush(CharBuffer) implFlush}. Some
-	 * decoders may need to write some charaters to the output buffer when they
+	 * decoders may need to write some characters to the output buffer when they
 	 * have read all input bytes, subclasses can overridden
 	 * {@link #implFlush(CharBuffer) implFlush} to perform writing action.
 	 * 
@@ -552,7 +552,7 @@ public abstract class CharsetDecoder {
 	 * <code>CoderResult.OVERFLOW</code> will be returned, and this method
 	 * must be called again with a character buffer that has more spaces.
 	 * Otherwise this method will return <code>CoderResult.UNDERFLOW</code>,
-	 * which means one decoding process has been completed sucessfully.
+	 * which means one decoding process has been completed successfully.
 	 * 
 	 * During the flush, the output buffer's position will be changed
 	 * accordingly, while its mark and limit will be intact.
@@ -581,7 +581,7 @@ public abstract class CharsetDecoder {
 	}
 
 	/**
-	 * Flush this decoder. Default implementaion does nothing and always return
+	 * Flush this decoder. Default implementation does nothing and always return
 	 * <code>CoderResult.UNDERFLOW</code>, and this method can be overridden
 	 * if needed.
 	 * 
@@ -596,7 +596,7 @@ public abstract class CharsetDecoder {
 
 	/**
 	 * Notify that this decoder's <code>CodingErrorAction</code> specified for
-	 * malformed input error has been changed. Default implementaion does
+	 * malformed input error has been changed. Default implementation does
 	 * nothing, and this method can be overridden if needed.
 	 * 
 	 * @param newAction
@@ -608,7 +608,7 @@ public abstract class CharsetDecoder {
 
 	/**
 	 * Notify that this decoder's <code>CodingErrorAction</code> specified for
-	 * unmappable character error has been changed. Default implementaion does
+	 * unmappable character error has been changed. Default implementation does
 	 * nothing, and this method can be overridden if needed.
 	 * 
 	 * @param newAction
@@ -620,7 +620,7 @@ public abstract class CharsetDecoder {
 
 	/**
 	 * Notify that this decoder's replacement has been changed. Default
-	 * implementaion does nothing, and this method can be overridden if needed.
+	 * implementation does nothing, and this method can be overridden if needed.
 	 * 
 	 * @param newReplacement
 	 *            the new replacement string
@@ -630,7 +630,7 @@ public abstract class CharsetDecoder {
 	}
 
 	/**
-	 * Reset this decoder's charset related state. Default implementaion does
+	 * Reset this decoder's charset related state. Default implementation does
 	 * nothing, and this method can be overridden if needed.
 	 */
 	protected void implReset() {
@@ -678,10 +678,10 @@ public abstract class CharsetDecoder {
 
 	/**
 	 * Gets this decoder's <code>CodingErrorAction</code> when malformed input
-	 * occured during decoding process.
+	 * occurred during decoding process.
 	 * 
 	 * @return this decoder's <code>CodingErrorAction</code> when malformed
-	 *         input occured during decoding process.
+	 *         input occurred during decoding process.
 	 */
 	public CodingErrorAction malformedInputAction() {
 		return malformAction;
@@ -765,7 +765,7 @@ public abstract class CharsetDecoder {
 	 * @return this decoder
 	 * @throws IllegalArgumentException
 	 *             if the given replacement cannot satisfy the requirement
-	 *             metioned above
+	 *             mentioned above
 	 */
 	public final CharsetDecoder replaceWith(String newReplacement) {
 		if (null == newReplacement || newReplacement.length() == 0) {
@@ -799,10 +799,10 @@ public abstract class CharsetDecoder {
 
 	/**
 	 * Gets this decoder's <code>CodingErrorAction</code> when unmappable
-	 * character occured during decoding process.
+	 * character occurred during decoding process.
 	 * 
 	 * @return this decoder's <code>CodingErrorAction</code> when unmappable
-	 *         character occured during decoding process.
+	 *         character occurred during decoding process.
 	 */
 	public CodingErrorAction unmappableCharacterAction() {
 		return unmapAction;

@@ -64,7 +64,7 @@ public class CharsetEncoderTest extends TestCase {
     }
 
     /**
-     * Helper for contructor tests
+     * Helper for constructor tests
      */
 
     public static class MockCharsetEncoderForHarmony141 extends CharsetEncoder {

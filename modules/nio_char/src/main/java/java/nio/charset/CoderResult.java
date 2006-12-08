@@ -36,7 +36,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * units has been encountered. Get an instance of this type of result by calling
  * <code>CoderResult.malformedForLength(int)</code> with the length of the
  * malformed-input.
- * <li>An unmappable-charactor error indicates a sequence of input units can
+ * <li>An unmappable-character error indicates a sequence of input units can
  * not be mapped to the output charset. Get an instance of this type of result
  * by calling <code>CoderResult.unmappableForLength(int)</code> with the input
  * sequence size indicating the identity of the unmappable character.

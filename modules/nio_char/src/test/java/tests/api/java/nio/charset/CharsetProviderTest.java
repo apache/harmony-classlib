@@ -194,7 +194,7 @@ public class CharsetProviderTest extends TestCase {
 	}
 
 	/*
-	 * Test the method isSupported(String) with insufficient prililege to use
+	 * Test the method isSupported(String) with insufficient privilege to use
 	 * charset provider.
 	 */
 	public void testIsSupported_InsufficientPrililege() throws Exception {

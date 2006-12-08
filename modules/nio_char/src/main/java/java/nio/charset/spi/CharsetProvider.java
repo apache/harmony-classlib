@@ -34,7 +34,7 @@ public abstract class CharsetProvider {
 	 * 
 	 * @throws SecurityException
 	 *             if there is a security manager installed that does not permit
-	 *             the runtime permission labelled "charsetProvider".
+	 *             the runtime permission labeled "charsetProvider".
 	 */
 	protected CharsetProvider() {
 		SecurityManager securityManager = System.getSecurityManager();
