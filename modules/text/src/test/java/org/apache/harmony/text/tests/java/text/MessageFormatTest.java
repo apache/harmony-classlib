@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import junit.framework.TestCase;
 import tests.support.Support_MessageFormat;
@@ -757,5 +758,15 @@ public class MessageFormatTest extends TestCase {
 		Object[] res = mf.parse("1,00,00");
 		assertEquals("Assert 0: incorrect size of parsed data ", 1, res.length);
 		assertEquals("Assert 1: parsed value incorrectly", new Long(10000), (Long)res[0]);
-	} 
+	}
+	public void test_format_Object() { 
+		// Regression for HARMONY-1875
+        Locale.setDefault(Locale.CANADA); 
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC")); 
+        String pat="text here {0, date, yyyyyyyyy } and here"; 
+        String etalon="text here 000002006 and here"; 
+        MessageFormat obj = new MessageFormat(pat); 
+        assertEquals(etalon, obj.format(new Object[]{new Date((new Date().getTime()))})); 
+    } 
+
 }

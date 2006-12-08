@@ -362,7 +362,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
                 DateFormat.YEAR_FIELD);
         test.test(" yyy", cal, " 99", DateFormat.YEAR_FIELD);
         test.test(" yyyy", cal, " 1999", DateFormat.YEAR_FIELD);
-        test.test(" yyyyy", cal, " 1999", DateFormat.YEAR_FIELD);
+        test.test(" yyyyy", cal, " 01999", DateFormat.YEAR_FIELD);
 
         test.test(" M", cal, " 6", DateFormat.MONTH_FIELD);
         test.test(" M", new GregorianCalendar(1999, Calendar.NOVEMBER, 2),

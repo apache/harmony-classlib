@@ -158,7 +158,7 @@ public class SimpleDateFormat extends DateFormat {
                 if (count < 4) {
                     appendNumber(buffer, 2, year %= 100);
                 } else {
-                    appendNumber(buffer, 4, year);
+                    appendNumber(buffer, count, year);
                 }
                 break;
             case MONTH_FIELD:
