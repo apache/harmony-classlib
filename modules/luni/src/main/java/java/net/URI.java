@@ -1173,8 +1173,6 @@ public final class URI implements Comparable<URI>, Serializable {
 		// (index > index2 && index2!=-1 || index == -1))
 		// return path;
 
-		StringBuffer newpath = new StringBuffer();
-
 		index = 0;
 		index2 = 0;
 		int pathlen = path.length();
@@ -1228,7 +1226,7 @@ public final class URI implements Comparable<URI>, Serializable {
 		}
 
 		// put the path back together
-		newpath = new StringBuffer();
+        StringBuffer newpath = new StringBuffer();
 		if (path.startsWith("/")) {
             newpath.append('/');
         }

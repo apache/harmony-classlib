@@ -111,7 +111,7 @@ public class MulticastSocket extends DatagramSocket {
 
 		// check if it is set at the IPV6 level. If so then use that. Otherwise
 		// do it at the IPV4 level
-		Integer theIndex = new Integer(0);
+		Integer theIndex = Integer.valueOf(0);
 		try {
 			theIndex = (Integer) impl.getOption(SocketOptions.IP_MULTICAST_IF2);
 		} catch (SocketException e) {
@@ -231,7 +231,7 @@ public class MulticastSocket extends DatagramSocket {
 			NetworkInterface netInterface) throws IOException {
 		checkClosedAndBind(false);
 		if (null == groupAddress) {
-			throw new IllegalArgumentException(Msg.getString("K0331"));
+			throw new IllegalArgumentException(Msg.getString("K0318"));
 		}
 
 		if ((netInterface != null) && (netInterface.getFirstAddress() == null)) {
@@ -243,9 +243,9 @@ public class MulticastSocket extends DatagramSocket {
 			InetAddress groupAddr = ((InetSocketAddress) groupAddress)
 					.getAddress();
 
-			if ((groupAddr) == null) {
+			if (groupAddr == null) {
 				throw new SocketException(Msg.getString(
-						"K0317", groupAddr.getHostName())); //$NON-NLS-1$
+						"K0331")); //$NON-NLS-1$
 			}
 
 			if (!groupAddr.isMulticastAddress()) {
@@ -307,7 +307,7 @@ public class MulticastSocket extends DatagramSocket {
 			NetworkInterface netInterface) throws IOException {
 		checkClosedAndBind(false);
 		if (null == groupAddress) {
-			throw new IllegalArgumentException(Msg.getString("K0331"));
+			throw new IllegalArgumentException(Msg.getString("K0318"));
 		}
 
 		if ((netInterface != null) && (netInterface.getFirstAddress() == null)) {
@@ -319,9 +319,9 @@ public class MulticastSocket extends DatagramSocket {
 			InetAddress groupAddr = ((InetSocketAddress) groupAddress)
 					.getAddress();
 
-			if ((groupAddr) == null) {
+			if (groupAddr == null) {
 				throw new SocketException(Msg.getString(
-						"K0317", groupAddr.getHostName())); //$NON-NLS-1$
+						"K0331")); //$NON-NLS-1$
 			}
 
 			if (!groupAddr.isMulticastAddress()) {
@@ -411,13 +411,13 @@ public class MulticastSocket extends DatagramSocket {
 		NetworkInterface theInterface = NetworkInterface.getByInetAddress(addr);
 		if ((theInterface != null) && (theInterface.getIndex() != 0)) {
 			try {
-				impl.setOption(SocketOptions.IP_MULTICAST_IF2, new Integer(
+				impl.setOption(SocketOptions.IP_MULTICAST_IF2, Integer.valueOf(
 						theInterface.getIndex()));
 			} catch (SocketException e) {
 			}
 		} else if (addr.isAnyLocalAddress()) {
 			try {
-				impl.setOption(SocketOptions.IP_MULTICAST_IF2, new Integer(0));
+				impl.setOption(SocketOptions.IP_MULTICAST_IF2, Integer.valueOf(0));
 			} catch (SocketException e) {
 			}
 		} else if (addr instanceof Inet6Address) {
@@ -456,7 +456,7 @@ public class MulticastSocket extends DatagramSocket {
 						impl
 								.setOption(
 										SocketOptions.IP_MULTICAST_IF2,
-										new Integer(
+										    Integer.valueOf(
 												NetworkInterface.NO_INTERFACE_INDEX));
 					} catch (SocketException e) {
 						// for now just do this, -- could be narrowed?
@@ -509,7 +509,7 @@ public class MulticastSocket extends DatagramSocket {
 						// is used to set the interface on systems which support
 						// IPV6
 						impl.setOption(SocketOptions.IP_MULTICAST_IF2,
-								new Integer(netInterface.getIndex()));
+								Integer.valueOf(netInterface.getIndex()));
 					} catch (SocketException e) {
 						// for now just do this -- could be narrowed?
 					}

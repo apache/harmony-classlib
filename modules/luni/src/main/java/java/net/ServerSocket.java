@@ -295,7 +295,7 @@ public class ServerSocket {
 	public synchronized void setSoTimeout(int timeout) throws SocketException {
 		checkClosedAndCreate(true);
 		if (timeout >= 0) {
-			impl.setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+			impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
 		} else {
 			throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
 		}
@@ -478,7 +478,7 @@ public class ServerSocket {
 	public void setReceiveBufferSize(int size) throws SocketException {
 		checkClosedAndCreate(true);
 		if (size >= 1) {
-            impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+            impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
         } else {
             throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
         }

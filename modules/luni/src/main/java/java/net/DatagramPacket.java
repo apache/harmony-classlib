@@ -268,7 +268,7 @@ public final class DatagramPacket {
 	/**
 	 * Answer the SocketAddress for this packet.
 	 */
-	public SocketAddress getSocketAddress() {
+	public synchronized SocketAddress getSocketAddress() {
 		return new InetSocketAddress(getAddress(), getPort());
 	}
 
@@ -278,7 +278,7 @@ public final class DatagramPacket {
 	 * @param sockAddr
 	 *            the machine address and port
 	 */
-	public void setSocketAddress(SocketAddress sockAddr) {
+	public synchronized void setSocketAddress(SocketAddress sockAddr) {
 		if (!(sockAddr instanceof InetSocketAddress)) {
 			throw new IllegalArgumentException(Msg.getString(
 					"K0316", sockAddr == null ? null : sockAddr.getClass())); //$NON-NLS-1$

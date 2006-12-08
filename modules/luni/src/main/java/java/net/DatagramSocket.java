@@ -435,7 +435,7 @@ public class DatagramSocket {
 	public synchronized void setSendBufferSize(int size) throws SocketException {
 		if (size >= 1) {
 			checkClosedAndBind(false);
-			impl.setOption(SocketOptions.SO_SNDBUF, new Integer(size));
+			impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
 		} else
 			throw new IllegalArgumentException(Msg.getString("K0035"));
 	}
@@ -454,7 +454,7 @@ public class DatagramSocket {
 			throws SocketException {
 		if (size >= 1) {
 			checkClosedAndBind(false);
-			impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+			impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
 		} else
 			throw new IllegalArgumentException(Msg.getString("K0035"));
 	}
@@ -474,7 +474,7 @@ public class DatagramSocket {
 	public synchronized void setSoTimeout(int timeout) throws SocketException {
 		if (timeout >= 0) {
 			checkClosedAndBind(false);
-			impl.setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+			impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
 		} else
 			throw new IllegalArgumentException(Msg.getString("K0036"));
 	}
@@ -767,7 +767,7 @@ public class DatagramSocket {
 		checkClosedAndBind(false);
 		if (value < 0 || value > 255)
 			throw new IllegalArgumentException();
-		impl.setOption(SocketOptions.IP_TOS, new Integer(value));
+		impl.setOption(SocketOptions.IP_TOS, Integer.valueOf(value));
 	}
 
 	/**

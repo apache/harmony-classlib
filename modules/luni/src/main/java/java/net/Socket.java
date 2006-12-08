@@ -594,7 +594,7 @@ public class Socket {
     public synchronized void setSendBufferSize(int size) throws SocketException {
         checkClosedAndCreate(true);
         if (size >= 1) {
-            impl.setOption(SocketOptions.SO_SNDBUF, new Integer(size));
+            impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
         } else {
             throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
         }
@@ -614,7 +614,7 @@ public class Socket {
             throws SocketException {
         checkClosedAndCreate(true);
         if (size >= 1) {
-            impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+            impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
         } else {
             throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
         }
@@ -636,7 +636,7 @@ public class Socket {
         checkClosedAndCreate(true);
         if (!on || 0 <= timeout) {
             int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
-            impl.setOption(SocketOptions.SO_LINGER, new Integer(val));
+            impl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
         } else {
             throw new IllegalArgumentException(Msg.getString("K0045")); //$NON-NLS-1$
         }
@@ -656,7 +656,7 @@ public class Socket {
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         checkClosedAndCreate(true);
         if (timeout >= 0) {
-            impl.setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+            impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
         } else {
             throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
         }
@@ -674,7 +674,7 @@ public class Socket {
      */
     public void setTcpNoDelay(boolean on) throws SocketException {
         checkClosedAndCreate(true);
-        impl.setOption(SocketOptions.TCP_NODELAY, new Boolean(on));
+        impl.setOption(SocketOptions.TCP_NODELAY, Boolean.valueOf(on));
     }
 
     /**
@@ -1081,7 +1081,7 @@ public class Socket {
         if (value < 0 || value > 255) {
             throw new IllegalArgumentException();
         }
-        impl.setOption(SocketOptions.IP_TOS, new Integer(value));
+        impl.setOption(SocketOptions.IP_TOS, Integer.valueOf(value));
     }
 
     /**

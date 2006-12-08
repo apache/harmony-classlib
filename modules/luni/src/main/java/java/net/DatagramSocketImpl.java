@@ -33,14 +33,11 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 
 	protected int localPort;
 
-	int receiveTimeout;
-
 	/**
 	 * Constructs an unbound datagram socket implementation.
 	 */
 	public DatagramSocketImpl() {
         localPort = -1;
-        receiveTimeout = 0;
 	}
 
 	/**

@@ -341,7 +341,7 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 		if (response == null) {
             return -1;
         }
-		response.trim();
+		response = response.trim();
 		int mark = response.indexOf(" ") + 1;
 		if (mark == 0) {
             return -1;
