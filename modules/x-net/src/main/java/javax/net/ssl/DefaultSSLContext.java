@@ -43,9 +43,9 @@ class DefaultSSLContext {
 
     public static SSLContext getContext() {
         if (defaultSSLContext == null) {
-            defaultSSLContext = (SSLContext) AccessController
-                    .doPrivileged(new java.security.PrivilegedAction() {
-                        public Object run() {
+            defaultSSLContext = AccessController
+                    .doPrivileged(new java.security.PrivilegedAction<SSLContext>() {
+                        public SSLContext run() {
                             return findDefault();
                         }
                     });

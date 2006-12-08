@@ -65,9 +65,9 @@ public class KeyManagerFactoryImpl extends KeyManagerFactorySpi {
             }
         } else {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            String keyStoreName = (String) AccessController
-                    .doPrivileged(new java.security.PrivilegedAction() {
-                        public Object run() {
+            String keyStoreName = AccessController
+                    .doPrivileged(new java.security.PrivilegedAction<String>() {
+                        public String run() {
                             return System.getProperty("javax.net.ssl.keyStore");
                         }
                     });
@@ -82,9 +82,9 @@ public class KeyManagerFactoryImpl extends KeyManagerFactorySpi {
                     throw new KeyStoreException(e);
                 }
             } else {
-                keyStorePwd = (String) AccessController
-                        .doPrivileged(new java.security.PrivilegedAction() {
-                            public Object run() {
+                keyStorePwd = AccessController
+                        .doPrivileged(new java.security.PrivilegedAction<String>() {
+                            public String run() {
                                 return System
                                         .getProperty("javax.net.ssl.keyStorePassword");
                             }

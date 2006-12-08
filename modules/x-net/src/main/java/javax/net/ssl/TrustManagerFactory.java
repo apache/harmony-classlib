@@ -173,12 +173,11 @@ public class TrustManagerFactory {
      *  
      */
     public static final String getDefaultAlgorithm() {
-        return (String) AccessController.doPrivileged(
-            new java.security.PrivilegedAction() {
-                public Object run() {
-                    return Security.getProperty(PROPERTYNAME);
-                }
-            }
-         );
+        return AccessController
+                .doPrivileged(new java.security.PrivilegedAction<String>() {
+                    public String run() {
+                        return Security.getProperty(PROPERTYNAME);
+                    }
+                });
     }
 }

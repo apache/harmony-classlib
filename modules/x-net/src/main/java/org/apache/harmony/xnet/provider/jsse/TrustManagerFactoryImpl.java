@@ -55,10 +55,11 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
             keyStore = ks;
         } else {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            String keyStoreName = (String) AccessController
-                    .doPrivileged(new java.security.PrivilegedAction() {
-                        public Object run() {
-                            return System.getProperty("javax.net.ssl.trustStore");
+            String keyStoreName = AccessController
+                    .doPrivileged(new java.security.PrivilegedAction<String>() {
+                        public String run() {
+                            return System
+                                    .getProperty("javax.net.ssl.trustStore");
                         }
                     });
             String keyStorePwd = null;
@@ -74,9 +75,9 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
                     throw new KeyStoreException(e);
                 }
             } else {
-                keyStorePwd = (String) AccessController
-                        .doPrivileged(new java.security.PrivilegedAction() {
-                            public Object run() {
+                keyStorePwd = AccessController
+                        .doPrivileged(new java.security.PrivilegedAction<String>() {
+                            public String run() {
                                 return System
                                         .getProperty("javax.net.ssl.trustStorePassword");
                             }

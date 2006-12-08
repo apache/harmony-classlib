@@ -102,21 +102,12 @@ public class Logger {
     
     static {
         try {
-            names = (String[]) AccessController.doPrivileged(
-                    new PrivilegedAction() {
-                        public Object run() {
-                            return System.getProperty("jsse", "").split(",");
-                        }
-                    });
-            /* 1.5:
-            names = AccessController.doPrivileged(
-                    new PrivilegedAction<String[]>() {
+            names = AccessController
+                    .doPrivileged(new PrivilegedAction<String[]>() {
                         public String[] run() {
                             return System.getProperty("jsse", "").split(",");
                         }
-                    }
-                );
-            */
+                    });
         } catch (Exception e) {
             names = new String[0];
         }
