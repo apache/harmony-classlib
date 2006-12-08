@@ -52,11 +52,6 @@ public class NoSuchProviderExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "NoSuchProvideException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>NoSuchProviderException()</code> constructor Assertion:
      * constructs NoSuchProviderException with no detail message
@@ -65,11 +60,6 @@ public class NoSuchProviderExceptionTest extends TestCase {
         NoSuchProviderException tE = new NoSuchProviderException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -84,11 +74,6 @@ public class NoSuchProviderExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -102,11 +87,5 @@ public class NoSuchProviderExceptionTest extends TestCase {
         NoSuchProviderException tE = new NoSuchProviderException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
-
 }

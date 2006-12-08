@@ -53,11 +53,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
 
     private static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "CertificateEncodingException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>CertificateEncodingException()</code> constructor
      * Assertion: constructs CertificateEncodingException with no detail message
@@ -66,11 +61,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
         CertificateEncodingException tE = new CertificateEncodingException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -85,11 +75,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -103,11 +88,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
         CertificateEncodingException tE = new CertificateEncodingException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -121,11 +101,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
                 cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -145,11 +120,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -162,11 +132,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
                 null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -181,11 +146,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -206,11 +166,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -235,12 +190,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
             assertNotNull("getCause() must not return null", tE.getCause());
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
-
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 }

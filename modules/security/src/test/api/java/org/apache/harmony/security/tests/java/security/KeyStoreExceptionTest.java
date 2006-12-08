@@ -51,11 +51,6 @@ public class KeyStoreExceptionTest extends TestCase {
 
     private static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "KeyStoreException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>KeyStoreException()</code> constructor Assertion:
      * constructs KeyStoreException with no detail message
@@ -64,11 +59,6 @@ public class KeyStoreExceptionTest extends TestCase {
         KeyStoreException tE = new KeyStoreException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -83,11 +73,6 @@ public class KeyStoreExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -100,11 +85,6 @@ public class KeyStoreExceptionTest extends TestCase {
         KeyStoreException tE = new KeyStoreException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -116,11 +96,6 @@ public class KeyStoreExceptionTest extends TestCase {
         KeyStoreException tE = new KeyStoreException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -139,11 +114,6 @@ public class KeyStoreExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -155,11 +125,6 @@ public class KeyStoreExceptionTest extends TestCase {
         KeyStoreException tE = new KeyStoreException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -174,11 +139,6 @@ public class KeyStoreExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -198,11 +158,6 @@ public class KeyStoreExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -227,12 +182,6 @@ public class KeyStoreExceptionTest extends TestCase {
             assertNotNull("getCause() must not return null", tE.getCause());
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
-
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 }

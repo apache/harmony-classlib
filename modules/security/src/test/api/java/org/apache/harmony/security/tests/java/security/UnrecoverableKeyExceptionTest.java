@@ -52,11 +52,6 @@ public class UnrecoverableKeyExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "UnrecoverableKeyException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>UnrecoverableKeyException()</code> constructor
      * Assertion: constructs UnrecoverableKeyException with no detail message
@@ -65,11 +60,6 @@ public class UnrecoverableKeyExceptionTest extends TestCase {
         UnrecoverableKeyException tE = new UnrecoverableKeyException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -84,11 +74,6 @@ public class UnrecoverableKeyExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -102,11 +87,6 @@ public class UnrecoverableKeyExceptionTest extends TestCase {
         UnrecoverableKeyException tE = new UnrecoverableKeyException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
 }

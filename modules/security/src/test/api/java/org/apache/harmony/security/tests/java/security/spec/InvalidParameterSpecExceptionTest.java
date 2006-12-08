@@ -52,11 +52,6 @@ public class InvalidParameterSpecExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "InvalidParameterSpecException:  ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>InvalidParameterSpecException()</code> constructor
      * Assertion: constructs InvalidParameterSpecException with no detail
@@ -66,11 +61,6 @@ public class InvalidParameterSpecExceptionTest extends TestCase {
         InvalidParameterSpecException tE = new InvalidParameterSpecException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -85,11 +75,6 @@ public class InvalidParameterSpecExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -104,11 +89,5 @@ public class InvalidParameterSpecExceptionTest extends TestCase {
                 msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
-
 }

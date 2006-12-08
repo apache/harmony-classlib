@@ -51,11 +51,6 @@ public class KeyExceptionTest extends TestCase {
 
     private static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "KeyException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>KeyException()</code> constructor Assertion: constructs
      * KeyException with no detail message

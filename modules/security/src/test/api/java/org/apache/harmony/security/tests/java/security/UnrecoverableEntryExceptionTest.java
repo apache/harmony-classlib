@@ -47,11 +47,6 @@ public class UnrecoverableEntryExceptionTest extends TestCase {
 
     static String errNotExc = "Not UnrecoverableEntryException object";
 
-    static String createErr(Exception tE, Exception eE) {
-        return "UnrecoverableEntryException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /*
      * Class under test for void UnrecoverableEntryException()
      */
@@ -59,11 +54,6 @@ public class UnrecoverableEntryExceptionTest extends TestCase {
         UnrecoverableEntryException tE = new UnrecoverableEntryException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /*
@@ -76,11 +66,6 @@ public class UnrecoverableEntryExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 }

@@ -53,11 +53,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
 
     private static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "CertPathBuilderException ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>CertPathBuilderException()</code> constructor Assertion:
      * constructs CertPathBuilderException with no detail message
@@ -66,11 +61,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         CertPathBuilderException tE = new CertPathBuilderException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -85,11 +75,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -103,11 +88,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         CertPathBuilderException tE = new CertPathBuilderException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -120,11 +100,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         CertPathBuilderException tE = new CertPathBuilderException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -143,11 +118,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -159,11 +129,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         CertPathBuilderException tE = new CertPathBuilderException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -178,11 +143,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -202,11 +162,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -231,12 +186,6 @@ public class CertPathBuilderExceptionTest extends TestCase {
             assertNotNull("getCause() must not return null", tE.getCause());
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
-
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 }

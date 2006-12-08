@@ -58,11 +58,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
 
     private static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "CertPathValidatorException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>CertPathValidatorException()</code> constructor
      * Assertion: constructs CertPathValidatorException with no detail message
@@ -71,11 +66,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         CertPathValidatorException tE = new CertPathValidatorException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -90,11 +80,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -108,11 +93,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         CertPathValidatorException tE = new CertPathValidatorException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -125,11 +105,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         CertPathValidatorException tE = new CertPathValidatorException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -148,11 +123,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -165,11 +135,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
                 null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -184,11 +149,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -209,11 +169,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         assertNotNull("getCause() must not return null", tE.getCause());
         assertEquals("getCause() must return ".concat(tCause.toString()), tE
                 .getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -238,12 +193,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
             assertNotNull("getCause() must not return null", tE.getCause());
             assertEquals("getCause() must return ".concat(tCause.toString()),
                     tE.getCause(), tCause);
-
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -261,11 +210,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
         assertNull("getCause() must return null", tE.getCause());
         assertNull("getCertPath() must return null", tE.getCertPath());
         assertEquals("getIndex() must be -1", tE.getIndex(), -1);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -320,11 +264,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
                         .concat(tCause.toString()), tE.getCause(), tCause);
                 assertNull("getCertPath() must return null", tE.getCertPath());
                 assertEquals("getIndex() must return -1", tE.getIndex(), -1);
-                try {
-                    throw tE;
-                } catch (Exception e) {
-                    assertTrue(createErr(tE, e), tE.equals(e));
-                }
             } catch (IndexOutOfBoundsException e) {
                 fail("Unexpected exception: " + e.toString()
                         + " Parameters: msg: " + msgs[i]
@@ -394,11 +333,6 @@ public class CertPathValidatorExceptionTest extends TestCase {
                         "getCertPath() must return ".concat(cp.toString()), tE
                                 .getCertPath(), cp);
                 assertEquals("getIndex() must return -1", tE.getIndex(), -1);
-                try {
-                    throw tE;
-                } catch (Exception e) {
-                    assertTrue(createErr(tE, e), tE.equals(e));
-                }
 
             } catch (IndexOutOfBoundsException e) {
                 fail("Unexpected IndexOutOfBoundsException was thrown. "
