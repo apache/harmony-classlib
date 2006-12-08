@@ -28,10 +28,13 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
+
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import tests.support.Support_BitSet;
 import tests.support.Support_DecimalFormat;
-import tests.util.SerializationTester;
 
 public class DecimalFormatTest extends TestCase {
 
@@ -1486,11 +1489,10 @@ public class DecimalFormatTest extends TestCase {
     }
 
     /**
-     * @tests serialization/deserialization
+     * @tests serialization/deserialization compatibility.
      */
-    public void test_serializationHarmonyCompatible() throws Exception {
-        DecimalFormat df = new DecimalFormat();
-        assertTrue(SerializationTester.assertEquals(df));
+    public void testSerializationSelf() throws Exception {
+        SerializationTest.verifySelf(new DecimalFormat());
     }
 
     /**
