@@ -132,3 +132,4 @@ javax/swing/plaf/basic/BasicColorChooserUITest.java
 javax/swing/text/View_VisualPositionTest.java
 javax/swing/text/View_VisualPosition_PartTest.java
 javax/swing/text/CompositeView_VisualPositionTest.java
+javax/swing/InputMapTest.java

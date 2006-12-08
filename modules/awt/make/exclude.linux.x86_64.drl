@@ -46,3 +46,12 @@ java/awt/font/TextMeasurerTest.java
 org/apache/harmony/awt/gl/MultiRectAreaLineCashTest.java
 org/apache/harmony/awt/gl/MultiRectAreaRectCashTest.java
 org/apache/harmony/awt/gl/linux/XGraphics2DRTest.java
+java/awt/BasicStrokeTest.java
+java/awt/KeyboardFocusManagerRTest.java
+java/awt/geom/CubicCurve2DDoubleTest.java
+java/awt/geom/CubicCurve2DFloatTest.java
+java/awt/geom/CubicCurve2DTest.java
+java/awt/geom/Line2DTest.java
+java/awt/geom/Rectangle2DTest.java
+java/awt/image/BufferedImageFilterTest.java
+
