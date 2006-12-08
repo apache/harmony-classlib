@@ -108,17 +108,17 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     // cache for readResolve methods
     private IdentityHashMap<Class<?>, Object> readResolveCache;
     
-    private static final Hashtable<String, Class> PRIMITIVE_CLASSES = new Hashtable<String,Class>();
+    private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String,Class<?>>();
     
     static {
-		PRIMITIVE_CLASSES.put("byte", byte.class);
-		PRIMITIVE_CLASSES.put("short", short.class);
-		PRIMITIVE_CLASSES.put("int", int.class);
-		PRIMITIVE_CLASSES.put("long", long.class);
-		PRIMITIVE_CLASSES.put("boolean", boolean.class);
-		PRIMITIVE_CLASSES.put("char", char.class);
-		PRIMITIVE_CLASSES.put("float", float.class);
-		PRIMITIVE_CLASSES.put("double", double.class);
+		PRIMITIVE_CLASSES.put("byte", byte.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("short", short.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("int", int.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("long", long.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("boolean", boolean.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("char", char.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("float", float.class); //$NON-NLS-1$
+		PRIMITIVE_CLASSES.put("double", double.class); //$NON-NLS-1$
 	}
 
     // Internal type used to keep track of validators & corresponding priority
@@ -1772,7 +1772,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     protected Class<?> resolveProxyClass(String[] interfaceNames)
             throws IOException, ClassNotFoundException {
         ClassLoader loader = VM.getNonBootstrapClassLoader();
-        Class[] interfaces = new Class[interfaceNames.length];
+        Class<?>[] interfaces = new Class<?>[interfaceNames.length];
         for (int i = 0; i < interfaceNames.length; i++) {
             interfaces[i] = Class.forName(interfaceNames[i], false, loader);
         }
@@ -2371,7 +2371,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			throws IOException, ClassNotFoundException {		
 		String className = osClass.getName();
 		//if it is primitive class, for example, long.class
-		Class cls = PRIMITIVE_CLASSES.get(className);
+		Class<?> cls = PRIMITIVE_CLASSES.get(className);
 		if (null == cls) {
 			//not primitive class
             //Use the first non-null ClassLoader on the stack. If null, use the
@@ -2732,13 +2732,12 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     private static String getBaseName(String fullName) {
-        int k = fullName.lastIndexOf(".");
+        int k = fullName.lastIndexOf("."); //$NON-NLS-1$
 
         if (k == -1 || k == (fullName.length() - 1)) {
             return fullName;
-        } else {
-            return fullName.substring(k + 1);
-        }        
+        }
+        return fullName.substring(k + 1);        
     }
     
     //Avoid recursive defining.

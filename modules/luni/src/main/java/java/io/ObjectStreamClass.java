@@ -61,15 +61,15 @@ public class ObjectStreamClass implements Serializable {
     private static final int FIELD_MODIFIERS_MASK;
     private static final int METHOD_MODIFIERS_MASK;
     
-	private static final Class[] READ_PARAM_TYPES;
+	private static final Class<?>[] READ_PARAM_TYPES;
 
-	private static final Class[] WRITE_PARAM_TYPES;
+	private static final Class<?>[] WRITE_PARAM_TYPES;
 
-	static final Class[] EMPTY_CONSTRUCTOR_PARAM_TYPES;
+	static final Class<?>[] EMPTY_CONSTRUCTOR_PARAM_TYPES;
 
 	private static final Class<Void> VOID_CLASS;
 
-	static final Class[] UNSHARED_PARAM_TYPES;
+	static final Class<?>[] UNSHARED_PARAM_TYPES;
 
 	private static native void oneTimeInitialization();
 

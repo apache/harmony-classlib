@@ -169,11 +169,8 @@ public class File implements Serializable, Comparable<File> {
 	}
 
 	private String calculatePath(String dirPath, String name) {
-
         dirPath = fixSlashes(dirPath);
-
-        if (name != ""){
-
+        if (name != ""){ //$NON-NLS-1$
             // Remove all the proceeding separator chars from name
             name = fixSlashes(name);
             while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
@@ -183,10 +180,8 @@ public class File implements Serializable, Comparable<File> {
             // Ensure there is a separator char between dirPath and name
             if (dirPath.length() > 0 && (dirPath.charAt(dirPath.length() - 1) == separatorChar)) {
                 return dirPath + name;
-            } else {
-                return dirPath + separatorChar + name;
             }
-
+            return dirPath + separatorChar + name;
         }
         
         return dirPath;
@@ -1271,12 +1266,12 @@ public class File implements Serializable, Comparable<File> {
 	public URI toURI() {
 		String name = getAbsoluteName();
 		try {
-			if (!name.startsWith("/")) {
+			if (!name.startsWith("/")) { //$NON-NLS-1$
                 // start with sep.
 				return new URI("file", null, //$NON-NLS-1$
 						new StringBuilder(name.length() + 1).append('/').append(
 								name).toString(), null, null);
-            } else if (name.startsWith("//")) {
+            } else if (name.startsWith("//")) { //$NON-NLS-1$
                 return new URI("file", name, null); // UNC path //$NON-NLS-1$
             }
 			return new URI("file", null, name, null, null); //$NON-NLS-1$
@@ -1298,11 +1293,11 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public URL toURL() throws java.net.MalformedURLException {
 		String name = getAbsoluteName();
-		if (!name.startsWith("/")) {
+		if (!name.startsWith("/")) { //$NON-NLS-1$
             // start with sep.
 			return new URL("file", "", -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ //$NON-NLS-2$
 					.append('/').append(name).toString(), null);
-        } else if (name.startsWith("//")) {
+        } else if (name.startsWith("//")) { //$NON-NLS-1$
             return new URL("file:" + name); // UNC path //$NON-NLS-1$
         }
 		return new URL("file", "", -1, name, null); //$NON-NLS-1$ //$NON-NLS-2$

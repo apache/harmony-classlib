@@ -189,7 +189,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			if (!mustCheck) {
 				try {
 					Method method = implementationClass.getMethod(
-							"writeUnshared",
+							"writeUnshared", //$NON-NLS-1$
 							ObjectStreamClass.UNSHARED_PARAM_TYPES);
 					mustCheck = method.getDeclaringClass() != thisClass;
 				} catch (NoSuchMethodException e) {
@@ -954,7 +954,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 			if (Proxy.isProxyClass(classToWrite)) {
 				output.writeByte(TC_PROXYCLASSDESC);
-				Class[] interfaces = classToWrite.getInterfaces();
+				Class<?>[] interfaces = classToWrite.getInterfaces();
 				output.writeInt(interfaces.length);
 				for (int i = 0; i < interfaces.length; i++) {
                     output.writeUTF(interfaces[i].getName());
