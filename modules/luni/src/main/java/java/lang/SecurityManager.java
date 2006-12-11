@@ -42,12 +42,11 @@ import org.apache.harmony.luni.util.PriviAction;
  * security verification for a running program.
  */
 public class SecurityManager {
-
-    static String[] securePackageList;
     
     private static final PropertyPermission READ_WRITE_ALL_PROPERTIES_PERMISSION = new PropertyPermission(
             "*", "read,write");
 
+    private static String[] securePackageList;
 
 	/**
 	 * Flag to indicate whether a security check is in progress.
@@ -292,38 +291,36 @@ public class SecurityManager {
 	}
 
 	/**
-	 * Checks whether the running program is allowed to access the specified
-	 * package.
-	 * 
-	 * @param packageName
-	 *            the name of the package to be accessed.
-	 */
-	public void checkPackageAccess(String packageName) {
-		if (packageName == null) {
+     * Checks whether the running program is allowed to access the specified package.
+     * 
+     * @param packageName the name of the package to be accessed.
+     */
+    public void checkPackageAccess(String packageName) {
+        if (packageName == null) {
             throw new NullPointerException();
         }
-		if (securePackageList == null) {
-			String securePackages = getSecurityProperty("package.access");
-			if (securePackages != null) {
-				StringTokenizer tokenizer = new StringTokenizer(securePackages,
-						", ");
-				int i = 0;
-				securePackageList = new String[tokenizer.countTokens()];
-				while (tokenizer.hasMoreTokens()) {
-					securePackageList[i++] = tokenizer.nextToken();
-				}
-			} else {
-				securePackageList = new String[0];
-			}
-		}
-		for (int i = 0; i < securePackageList.length; i++) {
-			if (packageName.startsWith(securePackageList[i])) {
-				checkPermission(new RuntimePermission("accessClassInPackage."
-						+ packageName));
-				return;
-			}
-		}
-	}
+        synchronized (SecurityManager.class) {
+            if (securePackageList == null) {
+                String securePackages = getSecurityProperty("package.access");
+                if (securePackages != null) {
+                    StringTokenizer tokenizer = new StringTokenizer(securePackages, ", ");
+                    int i = 0;
+                    securePackageList = new String[tokenizer.countTokens()];
+                    while (tokenizer.hasMoreTokens()) {
+                        securePackageList[i++] = tokenizer.nextToken();
+                    }
+                } else {
+                    securePackageList = new String[0];
+                }
+            }
+            for (int i = 0; i < securePackageList.length; i++) {
+                if (packageName.startsWith(securePackageList[i])) {
+                    checkPermission(new RuntimePermission("accessClassInPackage." + packageName));
+                    return;
+                }
+            }
+        }
+    }
 
 	/**
 	 * Checks whether the running program is allowed to define new classes in
@@ -432,33 +429,29 @@ public class SecurityManager {
 	}
 
 	/**
-	 * Checks whether the running program is allowed to create a top level
-	 * window.
-	 * 
-	 * @param window
-	 *            The non-null window for which to check access
-	 */
-	public boolean checkTopLevelWindow(Object window) {
-		if (window == null) {
+     * Checks whether the running program is allowed to create a top level window.
+     * 
+     * @param window The non-null window for which to check access
+     */
+    public boolean checkTopLevelWindow(Object window) {
+        if (window == null) {
             throw new NullPointerException();
         }
-		try {
-			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
-			Class[] args = new Class[] { java.lang.String.class };
-			Constructor<?> constructor = awtPermission.getConstructor(args);
-			Object[] constructorArgs = new Object[] { "showWindowWithoutWarningBanner" };
-			Permission perm = (Permission) constructor.newInstance(constructorArgs);
-			checkPermission(perm);
-		} catch (ClassNotFoundException e) {
-		} catch (NoSuchMethodException e) {
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
-		} catch (InvocationTargetException e) {
-		} catch (SecurityException e) {
-			return false;
-		}
-		return true;
-	}
+        try {
+            Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
+            Constructor<?> constructor = awtPermission.getConstructor(String.class);
+            Object perm = constructor.newInstance("showWindowWithoutWarningBanner");
+            checkPermission((Permission)perm);
+        } catch (ClassNotFoundException e) {
+        } catch (NoSuchMethodException e) {
+        } catch (InstantiationException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        } catch (SecurityException e) {
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * Checks whether the running program is allowed to access the system
@@ -467,11 +460,9 @@ public class SecurityManager {
 	public void checkSystemClipboardAccess() {
 		try {
 			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
-			Class[] args = new Class[] { String.class };
-			Constructor<?> constructor = awtPermission.getConstructor(args);
-			Object[] constructorArgs = new Object[] { "accessClipboard" };
-			Permission perm = (Permission) constructor.newInstance(constructorArgs);
-			checkPermission(perm);
+			Constructor<?> constructor = awtPermission.getConstructor(String.class);
+			Object perm = constructor.newInstance("accessClipboard");
+			checkPermission((Permission)perm);
 			return;
 		} catch (ClassNotFoundException e) {
 		} catch (NoSuchMethodException e) {
@@ -489,11 +480,9 @@ public class SecurityManager {
 	public void checkAwtEventQueueAccess() {
 		try {
 			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
-			Class[] ar = new Class[] { String.class };
-			Constructor<?> constructor = awtPermission.getConstructor(ar);
-			Object[] constructorArgs = new Object[] { "accessEventQueue" };
-			Permission perm = (Permission) constructor.newInstance(constructorArgs);
-			checkPermission(perm);
+			Constructor<?> constructor = awtPermission.getConstructor(String.class);
+			Object perm = constructor.newInstance("accessEventQueue");
+			checkPermission((Permission)perm);
 			return;
 		} catch (ClassNotFoundException e) {
 		} catch (NoSuchMethodException e) {
@@ -555,129 +544,134 @@ public class SecurityManager {
 	 * 
 	 * @return Class[] all of the classes in the stack.
 	 */
-	protected Class[] getClassContext() {
+	@SuppressWarnings("unchecked")
+    protected Class[] getClassContext() {
 		return Class.getStackClasses(-1, false);
 	}
 
 	/**
-	 * Answers the class loader of the first class in the stack whose class
-	 * loader is not a system class loader.
-	 * 
-	 * @return ClassLoader the most recent non-system class loader.
-	 * 
-	 * @deprecated Use checkPermission
-	 */
-	@Deprecated
+     * Answers the class loader of the first class in the stack whose class loader is not a
+     * system class loader.
+     * 
+     * @return ClassLoader the most recent non-system class loader.
+     * 
+     * @deprecated Use checkPermission
+     */
+    @Deprecated
     protected ClassLoader currentClassLoader() {
 
-		// First, check if AllPermission is allowed. If so, then we
-		// are effectively running in an unsafe environment, so just
-		// answer null (==> everything is a system class).
-		try {
-			checkPermission(new AllPermission());
-			return null;
-		} catch (SecurityException ex) {
-		}
+        /*
+         * First, check if AllPermission is allowed. If so, then we are effectively running in
+         * an unsafe environment, so just answer null (==> everything is a system class).
+         */
+        try {
+            checkPermission(new AllPermission());
+            return null;
+        } catch (SecurityException ex) {
+        }
 
-		// Now, check if there are any non-system class loaders in
-		// the stack up to the first privileged method (or the end
-		// of the stack.
-		Class[] classes = Class.getStackClasses(-1, true);
-		for (int i = 0; i < classes.length; i++) {
-			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader()) {
+        /*
+         * Now, check if there are any non-system class loaders in the stack up to the first
+         * privileged method (or the end of the stack.
+         */
+        Class<?>[] classes = Class.getStackClasses(-1, true);
+        for (int i = 0; i < classes.length; i++) {
+            ClassLoader cl = classes[i].getClassLoaderImpl();
+            if (!cl.isSystemClassLoader()) {
                 return cl;
             }
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
-	/**
-	 * Answers the index in the stack of three first class whose class loader is
-	 * not a system class loader.
-	 * 
-	 * @return int the frame index of the first method whose class was loaded by
-	 *         a non-system class loader.
-	 * 
-	 * @deprecated Use checkPermission
-	 */
-	@Deprecated
+    /**
+     * Answers the index in the stack of three first class whose class loader is not a system
+     * class loader.
+     * 
+     * @return int the frame index of the first method whose class was loaded by a non-system
+     *         class loader.
+     * 
+     * @deprecated Use checkPermission
+     */
+    @Deprecated
     protected int classLoaderDepth() {
-		// First, check if AllPermission is allowed. If so, then we
-		// are effectively running in an unsafe environment, so just
-		// answer -1 (==> everything is a system class).
-		try {
-			checkPermission(new AllPermission());
-			return -1;
-		} catch (SecurityException ex) {
-		}
+        /*
+         * First, check if AllPermission is allowed. If so, then we are effectively running in
+         * an unsafe environment, so just answer -1 (==> everything is a system class).
+         */
+        try {
+            checkPermission(new AllPermission());
+            return -1;
+        } catch (SecurityException ex) {
+        }
 
-		// Now, check if there are any non-system class loaders in
-		// the stack up to the first privileged method (or the end
-		// of the stack.
-		Class[] classes = Class.getStackClasses(-1, true);
-		for (int i = 0; i < classes.length; i++) {
-			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader()) {
+        /*
+         * Now, check if there are any non-system class loaders in the stack up to the first
+         * privileged method (or the end of the stack.
+         */
+        Class<?>[] classes = Class.getStackClasses(-1, true);
+        for (int i = 0; i < classes.length; i++) {
+            ClassLoader cl = classes[i].getClassLoaderImpl();
+            if (!cl.isSystemClassLoader()) {
                 return i;
             }
-		}
-		return -1;
-	}
+        }
+        return -1;
+    }
 
-	/**
-	 * Answers the first class in the stack which was loaded by a class loader
-	 * which is not a system class loader.
-	 * 
-	 * @return Class the most recent class loaded by a non-system class loader.
-	 * 
-	 * @deprecated Use checkPermission
-	 */
-	@Deprecated
+    /**
+     * Answers the first class in the stack which was loaded by a class loader which is not a
+     * system class loader.
+     * 
+     * @return Class the most recent class loaded by a non-system class loader.
+     * 
+     * @deprecated Use checkPermission
+     */
+    @Deprecated
     protected Class<?> currentLoadedClass() {
-		// First, check if AllPermission is allowed. If so, then we
-		// are effectively running in an unsafe environment, so just
-		// answer null (==> everything is a system class).
-		try {
-			checkPermission(new AllPermission());
-			return null;
-		} catch (SecurityException ex) {
-		}
+        /*
+         * First, check if AllPermission is allowed. If so, then we are effectively running in
+         * an unsafe environment, so just answer null (==> everything is a system class).
+         */
+        try {
+            checkPermission(new AllPermission());
+            return null;
+        } catch (SecurityException ex) {
+        }
 
-		// Now, check if there are any non-system class loaders in
-		// the stack up to the first privileged method (or the end
-		// of the stack.
-		Class[] classes = Class.getStackClasses(-1, true);
-		for (int i = 0; i < classes.length; i++) {
-			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader()) {
+        /*
+         * Now, check if there are any non-system class loaders in the stack up to the first
+         * privileged method (or the end of the stack.
+         */
+        Class<?>[] classes = Class.getStackClasses(-1, true);
+        for (int i = 0; i < classes.length; i++) {
+            ClassLoader cl = classes[i].getClassLoaderImpl();
+            if (!cl.isSystemClassLoader()) {
                 return classes[i];
             }
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
-	/**
-	 * Answers the index in the stack of the first method which is contained in
-	 * a class called <code>name</code>. If no methods from this class are in
-	 * the stack, return -1.
-	 * 
-	 * @param name
-	 *            String the name of the class to look for.
-	 * @return int the depth in the stack of a the first method found.
-	 * 
-	 * @deprecated Use checkPermission
-	 */
-	@Deprecated
+    /**
+     * Answers the index in the stack of the first method which is contained in a class called
+     * <code>name</code>. If no methods from this class are in the stack, return -1.
+     * 
+     * @param name String the name of the class to look for.
+     * @return int the depth in the stack of a the first method found.
+     * 
+     * @deprecated Use checkPermission
+     */
+    @Deprecated
     protected int classDepth(String name) {
-		Class[] classes = Class.getStackClasses(-1, false);
-		for (int i = 0; i < classes.length; i++) {
+        Class<?>[] classes = Class.getStackClasses(-1, false);
+        for (int i = 0; i < classes.length; i++) {
             if (classes[i].getName().equals(name)) {
                 return i;
             }
         }
-		return -1;
-	}
+        return -1;
+    }
 
 	/**
 	 * Answers true if there is a method on the stack from the specified class,
