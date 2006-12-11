@@ -46,6 +46,9 @@ public class KerberosTicketTest extends TestCase {
 
     private static final int KEY_TYPE = 1;
 
+    // number of flags used by Kerberos protocol
+    private static final int FLAGS_NUM = 32;
+    
     private static final boolean[] flags = { true, false, true, false, true,
             false, true, false, true, false, true, false, };
 
@@ -198,6 +201,86 @@ public class KerberosTicketTest extends TestCase {
     }
 
     /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#getFlags()
+     */
+    public void test_getFlags() {
+
+        boolean[] myFlags = new boolean[] { true, //reserved
+                true, // forwardable
+                true, // forwarded
+                true, // proxiable
+                true, // proxy
+                true, // may-postdate 
+                true, // postdated
+                true, // invalid
+                true, // renewable
+                true, // initial
+                true, // pre-authent
+                true // hw-authent 
+        };
+
+        KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, myFlags, // <=== we test this
+                authTime, startTime, endTime, renewTill, addesses);
+
+        // test: returned value is copied
+        assertNotSame(krbTicket.getFlags(), krbTicket.getFlags());
+
+        // test: flags values
+        assertTrue(krbTicket.isForwardable());
+        assertTrue(krbTicket.isForwarded());
+        assertTrue(krbTicket.isInitial());
+        assertTrue(krbTicket.isPostdated());
+        assertTrue(krbTicket.isProxiable());
+        assertTrue(krbTicket.isProxy());
+        assertTrue(krbTicket.isRenewable());
+
+        //
+        // test: number of flags less the in Kerberos protocol (<32)
+        //
+        boolean[] ktFlags = krbTicket.getFlags();
+        assertEquals("flags length", FLAGS_NUM, ktFlags.length);
+        int index = 0;
+        // must match to initial array
+        for (; index < flags.length; index++) {
+            assertEquals("Index: " + index, myFlags[index], ktFlags[index]);
+        }
+        // the rest is expected to be false
+        for (; index < FLAGS_NUM; index++) {
+            assertEquals("Index: " + index, false, ktFlags[index]);
+        }
+
+        //
+        // test: flags array is greater then 32
+        //
+        myFlags = new boolean[50];
+
+        krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
+                KEY_TYPE, myFlags, // <=== we test this 
+                authTime, startTime, endTime, renewTill, addesses);
+
+        ktFlags = krbTicket.getFlags();
+
+        assertEquals(myFlags.length, ktFlags.length);
+        for (index = 0; index < ktFlags.length; index++) {
+            assertEquals(false, ktFlags[index]);
+        }
+
+        // initial array is copied
+        assertFalse(krbTicket.isForwardable());
+        myFlags[1] = true;
+        assertFalse(krbTicket.isForwardable());
+
+        //
+        // test: Null value
+        //
+        krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
+                KEY_TYPE, null, // <=== we test this
+                authTime, startTime, endTime, renewTill, addesses);
+        assertTrue(Arrays.equals(new boolean[FLAGS_NUM], krbTicket.getFlags()));
+    }
+
+    /**
      * @tests javax.security.auth.kerberos.KerberosTicket#getServer() 
      */
     public void test_getServer() throws Exception {
@@ -286,7 +369,7 @@ public class KerberosTicketTest extends TestCase {
         assertEquals(authTime, krbTicket.getStartTime());
         assertNotSame(authTime, krbTicket.getStartTime());
     }
-    
+
     /**
      * @tests javax.security.auth.kerberos.KerberosTicket#destroy()
      * @tests javax.security.auth.kerberos.KerberosTicket#isDestroyed()

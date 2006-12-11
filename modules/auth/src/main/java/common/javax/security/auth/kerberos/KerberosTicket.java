@@ -57,8 +57,8 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     // INITIAL flag
     private static final int INITIAL = 9;
 
-    // UNUSED flag, 12 - 32 bit reserved
-    private static final int UNUSED = 31;
+    // number of flags used by Kerberos protocol
+    private static final int FLAGS_NUM = 32;
 
     // line feed 
     private static final String LF = "\n"; //$NON-NLS-1$
@@ -132,20 +132,16 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
         this.sessionKey = new KeyImpl(keyBytes, keyType);
 
         if (flags == null) {
-            this.flags = new boolean[UNUSED];
-        } else if (flags.length > UNUSED) {
+            this.flags = new boolean[FLAGS_NUM];
+        } else if (flags.length > FLAGS_NUM) {
             this.flags = new boolean[flags.length];
-            //Arrays.fill(flags, UNUSED, flags.length, false);
             System.arraycopy(flags, 0, this.flags, 0, this.flags.length);
         } else {
-            this.flags = new boolean[flags.length];
-            //System.arraycopy(flags, 0, this.flags, 0, this.flags.length);
-            for (int i = 0; i < flags.length; i++) {
-                this.flags[i] = flags[i];
-            }
+            this.flags = new boolean[FLAGS_NUM];
+            System.arraycopy(flags, 0, this.flags, 0, flags.length);
         }
 
-        if (flags[RENEWABLE] && renewTill == null) {
+        if (this.flags[RENEWABLE] && renewTill == null) {
             throw new IllegalArgumentException(Messages.getString("auth.41")); //$NON-NLS-1$
         }
 
