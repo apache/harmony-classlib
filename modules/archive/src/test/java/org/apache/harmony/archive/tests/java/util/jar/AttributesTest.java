@@ -287,7 +287,7 @@ public class AttributesTest extends TestCase {
         Attributes.Name name = new Attributes.Name("null");
         attribute.put(name, null);
         assertEquals(2, attribute.size());
-        assertEquals(null, attribute.get(name));
+        assertNull(attribute.get(name));
     }
 
 }
