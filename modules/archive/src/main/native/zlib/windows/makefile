@@ -25,11 +25,6 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 ZLIB_DIST=..\..\zlib_dist\# Path to zlib
 
-# override HYCFLAGS to get different warning behaviour (W3 not WX)
-HYCFLAGS = \
-  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
-  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
