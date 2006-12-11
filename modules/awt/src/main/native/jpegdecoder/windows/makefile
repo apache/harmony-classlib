@@ -22,14 +22,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-# TOFIX: fix warning so we can use default HYCFLAGS
-# That is:
-# HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include -I$(JPEG_DIR)
-HYCFLAGS = \
-  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
-  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I. \
-  -I$(SHAREDSUB)\include -I$(JPEG_DIR)
+HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include -I$(JPEG_DIR)
 
 BUILDFILES = $(SHAREDSUB)JpegDecoder.obj
 

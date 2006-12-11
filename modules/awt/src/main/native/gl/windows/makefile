@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+APPVER = 5.0 # Need WINVER=0x0500 to get HMONITOR defined.
 !include <$(HY_HDK)\build\make\defines.mak>
 
 PNG_DIR=$(HY_HDK)\..\depends\libs\build\png\# avoid continuation
@@ -22,17 +23,8 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-# TOFIX: fix warning so we can use default HYCFLAGS
-# That is:
-# HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)include /I$(SHAREDSUB) \
-#            /I$(PNG_DIR) /Iinclude
-# Need WINVER=0x0500 to get HMONITOR defined.
-HYCFLAGS = \
-  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
-  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0500 \
-  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I. \
-  /I$(SHAREDSUB)include /I$(SHAREDSUB) \
-  /I$(PNG_DIR) /Iinclude
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)include /I$(SHAREDSUB) \
+           /I$(PNG_DIR) /Iinclude
 
 BUILDFILES = \
   BitmapSurface.obj \
