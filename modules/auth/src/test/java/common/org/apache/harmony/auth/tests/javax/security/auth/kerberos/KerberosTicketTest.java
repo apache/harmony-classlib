@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
+import javax.security.auth.RefreshFailedException;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
 
@@ -420,5 +421,55 @@ public class KerberosTicketTest extends TestCase {
             fail("No expected IllegalStateException");
         } catch (IllegalStateException e) {
         }
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#refresh()
+     */
+    public void test_refresh() throws Exception {
+
+        boolean[] myFlags = new boolean[] { true, //reserved
+                true, // forwardable
+                true, // forwarded
+                true, // proxiable
+                true, // proxy
+                true, // may-postdate 
+                true, // postdated
+                true, // invalid
+                true, // renewable: <=== we test this
+                true, // initial
+                true, // pre-authent
+                true // hw-authent 
+        };
+
+        // test: should not renew ticket because renewTill < current time 
+        Date newRenewTill = new Date((new Date()).getTime() - 3600000);
+
+        KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
+                sessionKey, KEY_TYPE, myFlags, authTime, startTime, endTime,
+                newRenewTill, // <=== we test this: it is less then current time
+                addesses);
+
+        try {
+            krbTicket.refresh();
+            fail("No expected RefreshFailedException");
+        } catch (RefreshFailedException e) {
+        }
+        
+        // test: should not renew ticket because renewable flag is false
+        newRenewTill = new Date((new Date()).getTime() + 3600000);
+        myFlags[8] = false;
+
+        krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
+                KEY_TYPE, myFlags, // <=== we test this: it is not renewable
+                authTime, startTime, endTime, newRenewTill, addesses);
+        
+        try {
+            krbTicket.refresh();
+            fail("No expected RefreshFailedException");
+        } catch (RefreshFailedException e) {
+        }
+        
+        // TODO test: ticket refreshing 
     }
 }
