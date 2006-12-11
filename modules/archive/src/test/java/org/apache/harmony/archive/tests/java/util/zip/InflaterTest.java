@@ -712,5 +712,11 @@ public class InflaterTest extends junit.framework.TestCase {
         int res = inf.inflate(new byte[0], 0, 0);
 
         assertEquals(0, res);
+
+        // Regression for HARMONY-2508
+        Inflater inflater = new Inflater();
+        byte[] b = new byte[1024];
+        assertEquals(0, inflater.inflate(b));
+        inflater.end();       
     }
 }

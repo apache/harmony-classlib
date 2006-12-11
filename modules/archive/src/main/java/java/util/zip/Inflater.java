@@ -174,7 +174,11 @@ public class Inflater {
 			if (streamHandle == -1) {
                 throw new IllegalStateException();
             }
-
+            
+            if (needsInput()) {
+                return 0;
+            }
+            
 			boolean neededDict = needsDictionary;
 			needsDictionary = false;
 			int result = inflateImpl(buf, off, nbytes, streamHandle);
