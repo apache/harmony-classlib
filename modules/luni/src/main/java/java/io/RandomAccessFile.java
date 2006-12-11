@@ -612,7 +612,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     public final String readUTF() throws IOException {
         int utfSize = readUnsignedShort();
         if (utfSize == 0) {
-            return new String();
+            return "";
         }
         byte[] buf = new byte[utfSize];
         if (read(buf, 0, buf.length) == buf.length) {

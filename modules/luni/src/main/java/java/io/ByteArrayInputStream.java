@@ -109,7 +109,7 @@ public class ByteArrayInputStream extends InputStream {
 	 *            ignored.
 	 */
 	@Override
-    public void mark(int readlimit) {
+    public synchronized void mark(int readlimit) {
 		mark = pos;
 	}
 

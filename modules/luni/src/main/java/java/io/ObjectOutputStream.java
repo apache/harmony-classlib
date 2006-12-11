@@ -671,7 +671,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @see #nextHandle
 	 */
 	private Integer registerObjectWritten(Object obj) {
-		Integer handle = new Integer(nextHandle());
+		Integer handle = Integer.valueOf(nextHandle());
 		registerObjectWritten(obj, handle);
 		return handle;
 	}
@@ -2016,7 +2016,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         currentPutField = null;
 
         output.writeByte(TC_ENUM);
-        while (!theClass.isEnum() && null != theClass ){
+        while ( theClass != null && !theClass.isEnum() ){
         	// write enum only
             theClass = theClass.getSuperclass();
         }

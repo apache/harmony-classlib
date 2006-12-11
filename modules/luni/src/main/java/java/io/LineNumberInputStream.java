@@ -124,6 +124,7 @@ public class LineNumberInputStream extends FilterInputStream {
 			if (lastChar == '\n') {
                 lastChar = -1;
             }
+            // fall through
 		case '\n':
 			lineNumber++;
 		}

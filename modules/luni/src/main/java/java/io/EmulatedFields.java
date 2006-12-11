@@ -414,7 +414,7 @@ class EmulatedFields {
 	public void put(String name, byte value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Byte.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Byte(value);
+			slot.fieldValue = Byte.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -435,7 +435,7 @@ class EmulatedFields {
 	public void put(String name, char value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Character.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Character(value);
+			slot.fieldValue = Character.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -456,7 +456,7 @@ class EmulatedFields {
 	public void put(String name, double value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Double.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Double(value);
+			slot.fieldValue = Double.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -477,7 +477,7 @@ class EmulatedFields {
 	public void put(String name, float value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Float.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Float(value);
+			slot.fieldValue = Float.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -498,7 +498,7 @@ class EmulatedFields {
 	public void put(String name, int value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Integer.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Integer(value);
+			slot.fieldValue = Integer.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -519,7 +519,7 @@ class EmulatedFields {
 	public void put(String name, long value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Long.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Long(value);
+			slot.fieldValue = Long.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -564,7 +564,7 @@ class EmulatedFields {
 	public void put(String name, short value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Short.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Short(value);
+			slot.fieldValue = Short.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();
@@ -585,7 +585,7 @@ class EmulatedFields {
 	public void put(String name, boolean value) throws IllegalArgumentException {
 		ObjectSlot slot = findSlot(name, Boolean.TYPE);
 		if (slot != null) {
-			slot.fieldValue = new Boolean(value);
+			slot.fieldValue = Boolean.valueOf(value);
 			slot.defaulted = false; // No longer default value
 		} else
 			throw new IllegalArgumentException();

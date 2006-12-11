@@ -127,6 +127,15 @@ public class ObjectStreamField implements Comparable<Object> {
 		// Either both primitives or both not primitives. Compare based on name.
 		return this.getName().compareTo(f.getName());
 	}
+    
+    
+    public boolean equals(Object arg0) {
+        return compareTo(arg0) == 0;
+    }
+    
+    public int hashCode() {
+        return getName().hashCode();
+    }
 
 	/**
 	 * Return the name of the field the receiver represents

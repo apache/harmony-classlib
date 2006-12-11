@@ -719,7 +719,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 ObjectStreamClass streamClass = ObjectStreamClass
                         .lookup(proxyClass);
                 streamClass.setLoadFields(new ObjectStreamField[0]);
-                registerObjectRead(streamClass, new Integer(nextHandle()),
+                registerObjectRead(streamClass, Integer.valueOf(nextHandle()),
                         false);
                 checkedSetSuperClassDesc(streamClass, readClassDesc());                
                 return streamClass;
@@ -1032,21 +1032,21 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             element.defaulted = false;
             Class<?> type = element.field.getType();
             if (type == Integer.TYPE) {
-                element.fieldValue = new Integer(input.readInt());
+                element.fieldValue = Integer.valueOf(input.readInt());
             } else if (type == Byte.TYPE) {
-                element.fieldValue = new Byte(input.readByte());
+                element.fieldValue = Byte.valueOf(input.readByte());
             } else if (type == Character.TYPE) {
-                element.fieldValue = new Character(input.readChar());
+                element.fieldValue = Character.valueOf(input.readChar());
             } else if (type == Short.TYPE) {
-                element.fieldValue = new Short(input.readShort());
+                element.fieldValue = Short.valueOf(input.readShort());
             } else if (type == Boolean.TYPE) {
-                element.fieldValue = new Boolean(input.readBoolean());
+                element.fieldValue = Boolean.valueOf(input.readBoolean());
             } else if (type == Long.TYPE) {
-                element.fieldValue = new Long(input.readLong());
+                element.fieldValue = Long.valueOf(input.readLong());
             } else if (type == Float.TYPE) {
-                element.fieldValue = new Float(input.readFloat());
+                element.fieldValue = Float.valueOf(input.readFloat());
             } else if (type == Double.TYPE) {
-                element.fieldValue = new Double(input.readDouble());
+                element.fieldValue = Double.valueOf(input.readDouble());
             } else {
                 // Either array or Object
                 try {
@@ -1546,7 +1546,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc = readClassDesc();
 
         if (classDesc != null) {
-            Integer newHandle = new Integer(nextHandle());
+            Integer newHandle = Integer.valueOf(nextHandle());
             Class<?> localClass = classDesc.forClass();
             if (localClass != null) {
                 registerObjectRead(localClass, newHandle, unshared);
@@ -1580,7 +1580,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc;
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
-        descriptorHandle = new Integer(nextHandle());
+        descriptorHandle = Integer.valueOf(nextHandle());
         classDesc = readClassDescriptor();
         if (descriptorHandle != null) {
             registerObjectRead(classDesc, descriptorHandle, false);
@@ -1616,7 +1616,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first
         ObjectStreamClass classDesc = readEnumDesc();
-        Integer newHandle = new Integer(nextHandle());
+        Integer newHandle = Integer.valueOf(nextHandle());
         // read name after class desc
         String name;
         byte tc = nextTC();
@@ -1662,7 +1662,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // subclasses during readClassDescriptor()
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
-        descriptorHandle = new Integer(nextHandle());
+        descriptorHandle = Integer.valueOf(nextHandle());
         ObjectStreamClass newClassDesc = readClassDescriptor();
         if (descriptorHandle != null) {
             registerObjectRead(newClassDesc, descriptorHandle, unshared);
@@ -1792,7 +1792,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      *             If an IO exception happened when reading the handle
      */
     private Integer readNewHandle() throws IOException {
-        return new Integer(input.readInt());
+        return Integer.valueOf(input.readInt());
     }
 
     /**
@@ -1825,7 +1825,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
         }
 
-        Integer newHandle = new Integer(nextHandle());
+        Integer newHandle = Integer.valueOf(nextHandle());
 
         // Note that these values come from the Stream, and in fact it could be
         // that the classes have been changed so that the info below now
@@ -2012,7 +2012,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             result = resolveObject(result);
         }
         int newHandle = nextHandle();
-        registerObjectRead(result, new Integer(newHandle), unshared);
+        registerObjectRead(result, Integer.valueOf(newHandle), unshared);
 
         return result;
     }
@@ -2035,7 +2035,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             result = resolveObject(result);
         }
         int newHandle = nextHandle();
-        registerObjectRead(result, new Integer(newHandle), unshared);
+        registerObjectRead(result, Integer.valueOf(newHandle), unshared);
 
         return result;
     }

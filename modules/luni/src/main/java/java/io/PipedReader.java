@@ -214,7 +214,7 @@ public class PipedReader extends Reader {
                     }
                     first = false;
                     // Notify callers of receive()
-                    notifyAll();
+                    lock.notifyAll();
                     lock.wait(1000);
                 }
             } catch (InterruptedException e) {
@@ -312,7 +312,7 @@ public class PipedReader extends Reader {
             lastWriter = Thread.currentThread();
             try {
                 while (data != null && out == in) {
-                    notifyAll();
+                    lock.notifyAll();
                     wait(1000);
                     if (lastReader != null && !lastReader.isAlive()) {
                         throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
@@ -369,7 +369,7 @@ public class PipedReader extends Reader {
             while (count > 0) {
                 try {
                     while (data != null && out == in) {
-                        notifyAll();
+                        lock.notifyAll();
                         wait(1000);
                         if (lastReader != null && !lastReader.isAlive()) {
                             throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
@@ -417,13 +417,13 @@ public class PipedReader extends Reader {
 	void done() {
 		synchronized (lock) {
 			isClosed = true;
-			notifyAll();
+			lock.notifyAll();
 		}
 	}
 
 	void flush() {
 		synchronized (lock) {
-			notifyAll();
+			lock.notifyAll();
 		}
 	}
 }

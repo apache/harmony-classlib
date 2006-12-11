@@ -170,7 +170,7 @@ public class File implements Serializable, Comparable<File> {
 
 	private String calculatePath(String dirPath, String name) {
         dirPath = fixSlashes(dirPath);
-        if (name != ""){ //$NON-NLS-1$
+        if (!name.equals("")){ //$NON-NLS-1$
             // Remove all the proceeding separator chars from name
             name = fixSlashes(name);
             while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
@@ -1253,7 +1253,7 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	@Override
     public String toString() {
-		return path.toString();
+		return path;
 	}
 
 	/**
