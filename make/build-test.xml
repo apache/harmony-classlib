@@ -54,30 +54,34 @@
 
     <target name="gen-report" depends="full-report,short-report" />
 
+    <property name="report.dir" value="${tests.output}/html"/>
+
     <target name="full-report" unless="short.report" >
+        <delete dir="${report.dir}" />
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}">
                 <include name="TEST*-*.xml"/>
             </fileset>
-            <report format="frames" todir="${tests.output}/html"/>
+            <report format="frames" todir="${report.dir}"/>
         </junitreport>
 
         <!-- use this property just to get the slashes to display right in the echo -->
-        <property name="display-location" location="${tests.output}/html/index.html"/>
+        <property name="display-location" location="${report.dir}/index.html"/>
         <echo message="The test report is in ${display-location}"/>
     </target>
 
     <target name="short-report" if="short.report" >
+        <delete dir="${report.dir}" />
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}" includes="TEST*-*.xml">
                 <containsregexp expression='(errors|failures)="[1-9]' />
                 <exclude name="TESTS-TestSuites.xml" />
             </fileset>
-            <report format="frames" todir="${tests.output}/html"/>
+            <report format="frames" todir="${report.dir}"/>
         </junitreport>
 
         <!-- use this property just to get the slashes to display right in the echo -->
-        <property name="display-location" location="${tests.output}/html/index.html"/>
+        <property name="display-location" location="${report.dir}/index.html"/>
         <echo message="The short test report is in ${display-location}"/>
     </target>
 
