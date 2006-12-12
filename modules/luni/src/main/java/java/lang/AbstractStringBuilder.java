@@ -326,7 +326,7 @@ abstract class AbstractStringBuilder {
                 }
                 return;
             }
-            throw new ArrayIndexOutOfBoundsException();
+            throw new StringIndexOutOfBoundsException("offset " + start + ", len " + length + ", array.length " + chars.length);
         }
         throw new StringIndexOutOfBoundsException(index);
     }

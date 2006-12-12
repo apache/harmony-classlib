@@ -347,18 +347,22 @@ public class StringBuffer2Test extends junit.framework.TestCase {
 		// java.lang.StringBuffer.insert(int, char [], int, int)
 		char[] c = new char[] { 'n', 'o', 't', ' ' };
 		testBuffer.insert(8, c, 0, 4);
-		assertTrue("Insert failed: " + testBuffer.toString(), testBuffer
-				.toString().equals("This is not a test buffer"));
+		assertEquals("This is not a test buffer", testBuffer.toString());
 
-		boolean exception = false;
 		StringBuffer buf1 = new StringBuffer("abcd");
 		try {
 			buf1.insert(-1, (char[]) null, 0, 0);
+            fail("Should throw StringIndexOutOfBoundsException");
 		} catch (StringIndexOutOfBoundsException e) {
-			exception = true;
-		} catch (NullPointerException e) {
+            //expected
 		}
-		assertTrue("Should throw StringIndexOutOfBoundsException", exception);
+        
+        try {
+            testBuffer.insert(testBuffer.length() - 1, c, -1, 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            //expected
+        }
+		
 	}
 
 	/**
