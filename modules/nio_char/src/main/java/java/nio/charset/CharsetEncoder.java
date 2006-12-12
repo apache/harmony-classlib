@@ -35,7 +35,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * <li>Invoking the {@link #reset() reset} method to reset the encoder if the
  * encoder has been used;</li>
  * <li>Invoking the {@link #encode(CharBuffer, ByteBuffer, boolean) encode}
- * method until the addtional input is not needed, the <code>endOfInput</code>
+ * method until the additional input is not needed, the <code>endOfInput</code>
  * parameter must be set to false, the input buffer must be filled and the
  * output buffer must be flushed between invocations;</li>
  * <li>Invoking the {@link #encode(CharBuffer, ByteBuffer, boolean) encode}
