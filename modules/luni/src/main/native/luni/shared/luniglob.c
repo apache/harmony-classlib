@@ -263,7 +263,7 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
 
     returnCode = properties_load(PORTLIB, propsFile, &props, &number);
 
-	bootstrapClassPath = "";
+    bootstrapClassPath = "";
 
     if (JNI_OK == returnCode && number != 0)
     {
@@ -272,14 +272,14 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
         char cpSeparator[] = {(char)hysysinfo_get_classpathSeparator (), '\0'};
 		
 		/* Read current value of bootclasspath property */
-		rcGetProperty = (*vmInterface)->GetSystemProperty (vmInterface,
+        rcGetProperty = (*vmInterface)->GetSystemProperty (vmInterface,
             BOOTCLASSPATH_PROPERTY,
             &bootstrapClassPath);
 
-		if (VMI_ERROR_NONE != rcGetProperty)
+        if (VMI_ERROR_NONE != rcGetProperty)
         {
             returnCode = JNI_ERR;
-			goto cleanup;
+            goto cleanup;
         }
 
         qsort(props, number, sizeof(key_value_pair), props_compare);
