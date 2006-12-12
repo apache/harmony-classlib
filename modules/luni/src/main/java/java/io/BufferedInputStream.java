@@ -54,14 +54,12 @@ public class BufferedInputStream extends FilterInputStream {
      * The current position within the byte array <code>buf</code>.
      */
     protected int pos;
-    
+
     private boolean closed = false;
-    
-    
 
     /**
      * Constructs a new <code>BufferedInputStream</code> on the InputStream
-     * <code>in</code>. The default buffer size (2K) is allocated and all
+     * <code>in</code>. The default buffer size (8Kb) is allocated and all
      * reads can now be filtered through this stream.
      * 
      * @param in
@@ -69,7 +67,7 @@ public class BufferedInputStream extends FilterInputStream {
      */
     public BufferedInputStream(InputStream in) {
         super(in);
-        buf = (in == null) ? null : new byte[2048];
+        buf = (in == null) ? null : new byte[8192];
     }
 
     /**
@@ -84,11 +82,11 @@ public class BufferedInputStream extends FilterInputStream {
      */
     public BufferedInputStream(InputStream in, int size) {
         super(in);
-        if (size > 0) {
-            buf = (in == null) ? null : new byte[size];
-        } else {
+        if (size <= 0) {
+            // K0058=size must be > 0
             throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
         }
+        buf = (in == null) ? null : new byte[size];
     }
 
     /**
@@ -104,6 +102,7 @@ public class BufferedInputStream extends FilterInputStream {
     @Override
     public synchronized int available() throws IOException {
         if (buf == null) {
+            // K0059=Stream is closed
             throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
         return count - pos + in.available();
@@ -118,10 +117,10 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized void close() throws IOException {
-    	if(null != in ){
+        if (null != in) {
             super.close();
             in = null;
-    	}
+        }
         buf = null;
         closed = true;
     }
@@ -201,19 +200,21 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized int read() throws IOException {
-        if (buf != null) {
-            /* Are there buffered bytes available? */
-            if (pos >= count && fillbuf() == -1) {
-                return -1; /* no, fill buffer */
-            }
-
-            /* Did filling the buffer fail with -1 (EOF)? */
-            if (count - pos > 0) {
-                return buf[pos++] & 0xFF;
-            }
-            return -1;
+        if (buf == null) {
+            // K0059=Stream is closed
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
-        throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+
+        /* Are there buffered bytes available? */
+        if (pos >= count && fillbuf() == -1) {
+            return -1; /* no, fill buffer */
+        }
+
+        /* Did filling the buffer fail with -1 (EOF)? */
+        if (count - pos > 0) {
+            return buf[pos++] & 0xFF;
+        }
+        return -1;
     }
 
     /**
@@ -240,65 +241,66 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized int read(byte[] buffer, int offset, int length)
-			throws IOException {
-		if (closed) {
-			throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-		}
-		// avoid int overflow
-		if (offset > buffer.length - length || offset < 0 || length < 0) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (length == 0) {
-			return 0;
-		}
-		if (null == buf) {
-			throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-		}
+            throws IOException {
+        if (closed) {
+            // K0059=Stream is closed
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+        }
+        // avoid int overflow
+        if (offset > buffer.length - length || offset < 0 || length < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (length == 0) {
+            return 0;
+        }
+        if (null == buf) {
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+        }
 
-		int required;
-		if (pos < count) {
-			/* There are bytes available in the buffer. */
-			int copylength = count - pos >= length ? length : count - pos;
-			System.arraycopy(buf, pos, buffer, offset, copylength);
-			pos += copylength;
-			if (copylength == length || in.available() == 0) {
-				return copylength;
-			}
-			offset += copylength;
-			required = length - copylength;
-		} else {
-			required = length;
-		}
+        int required;
+        if (pos < count) {
+            /* There are bytes available in the buffer. */
+            int copylength = count - pos >= length ? length : count - pos;
+            System.arraycopy(buf, pos, buffer, offset, copylength);
+            pos += copylength;
+            if (copylength == length || in.available() == 0) {
+                return copylength;
+            }
+            offset += copylength;
+            required = length - copylength;
+        } else {
+            required = length;
+        }
 
-		while (true) {
-			int read;
-			/*
-			 * If we're not marked and the required size is greater than the
-			 * buffer, simply read the bytes directly bypassing the buffer.
-			 */
-			if (markpos == -1 && required >= buf.length) {
-				read = in.read(buffer, offset, required);
-				if (read == -1) {
-					return required == length ? -1 : length - required;
-				}
-			} else {
-				if (fillbuf() == -1) {
-					return required == length ? -1 : length - required;
-				}
-				read = count - pos >= required ? required : count - pos;
-				System.arraycopy(buf, pos, buffer, offset, read);
-				pos += read;
-			}
-			required -= read;
-			if (required == 0) {
-				return length;
-			}
-			if (in.available() == 0) {
-				return length - required;
-			}
-			offset += read;
-		}
-	}
+        while (true) {
+            int read;
+            /*
+             * If we're not marked and the required size is greater than the
+             * buffer, simply read the bytes directly bypassing the buffer.
+             */
+            if (markpos == -1 && required >= buf.length) {
+                read = in.read(buffer, offset, required);
+                if (read == -1) {
+                    return required == length ? -1 : length - required;
+                }
+            } else {
+                if (fillbuf() == -1) {
+                    return required == length ? -1 : length - required;
+                }
+                read = count - pos >= required ? required : count - pos;
+                System.arraycopy(buf, pos, buffer, offset, read);
+                pos += read;
+            }
+            required -= read;
+            if (required == 0) {
+                return length;
+            }
+            if (in.available() == 0) {
+                return length - required;
+            }
+            offset += read;
+        }
+    }
 
     /**
      * Reset this BufferedInputStream to the last marked location. If the
@@ -313,13 +315,15 @@ public class BufferedInputStream extends FilterInputStream {
 
     @Override
     public synchronized void reset() throws IOException {
-    	if (closed) {
-    		throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$	
-    	}
+        if (closed) {
+            // K0059=Stream is closed
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$	
+        }
         if (-1 == markpos) {
-        	throw new IOException(Msg.getString("K005a")); //$NON-NLS-1$
-        }    
-        pos = markpos;         
+            // K005a=Mark has been invalidated.
+            throw new IOException(Msg.getString("K005a")); //$NON-NLS-1$
+        }
+        pos = markpos;
     }
 
     /**
@@ -338,6 +342,7 @@ public class BufferedInputStream extends FilterInputStream {
     @Override
     public synchronized long skip(long amount) throws IOException {
         if (null == in) {
+            // K0059=Stream is closed
             throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
         if (amount < 1) {
