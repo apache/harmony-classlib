@@ -91,7 +91,9 @@ public class InputStreamReader extends Reader {
 	public InputStreamReader(InputStream in, final String enc)
 			throws UnsupportedEncodingException {
 		super(in);
-		enc.length();
+        if(enc == null) {
+            throw new NullPointerException();
+        }
 		this.in = in;
 		try {
 			decoder = Charset.forName(enc).newDecoder()

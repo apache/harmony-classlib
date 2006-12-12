@@ -84,7 +84,9 @@ public class OutputStreamWriter extends Writer {
 	public OutputStreamWriter(OutputStream out, final String enc)
 			throws UnsupportedEncodingException {
 		super(out);
-		enc.length();
+        if(enc == null) {
+            throw new NullPointerException();
+        }
 		this.out = out;
 		try {
 			encoder = Charset.forName(enc).newEncoder();
