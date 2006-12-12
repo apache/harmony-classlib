@@ -17,7 +17,10 @@
 APPVER=4.0 #Default Windows version
 !endif
 
-TARGETOS=WIN95
+!ifndef TARGETOS
+TARGETOS=WIN95 #Compile for Win95 by default
+!endif
+
 _WIN32_IE=0x0500
 SEHMAP = TRUE
 !include <win32.mak>
