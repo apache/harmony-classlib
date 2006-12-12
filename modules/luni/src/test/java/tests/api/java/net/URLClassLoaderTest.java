@@ -28,6 +28,8 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.luni.util.InvalidJarIndexException;
+
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
 
@@ -49,7 +51,6 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
      * @tests java.net.URLClassLoader#URLClassLoader(java.net.URL[])
      */
     public void test_Constructor$Ljava_net_URL() {
-        // ClassLoader cl = new BogusClassLoader();
         URL[] u = new URL[0];
         ucl = new URLClassLoader(u);
         assertTrue("Failed to set parent", ucl != null
@@ -59,10 +60,10 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         boolean exception = false;
         try {
             Class.forName("test", false, loader);
+            fail("Should throw ClassNotFoundException");
         } catch (ClassNotFoundException e) {
-            exception = true;
+            // expected
         }
-        assertTrue("Should throw ClassNotFoundException", exception);
     }
 
     /**
@@ -74,8 +75,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         URL[] u = new URL[0];
         ucl = new URLClassLoader(u, cl);
         URL res = ucl.getResource("J");
-        assertEquals("Failed to set parent", "/BogusClassLoader",
-                res == null ? false : res.getFile());
+        assertNotNull(res);
+        assertEquals("Failed to set parent", "/BogusClassLoader", res.getFile());
     }
 
     /**
@@ -91,20 +92,18 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         urls[1] = new URL(Support_Resources.getResourceURL("/subdir1/"));
         ucl = new URLClassLoader(urls);
         res = ucl.findResources("RESOURCE.TXT");
-
-        if (res == null) {
-            fail("Failed to locate resources");
-        }
+        assertNotNull("Failed to locate resources", res);
 
         int i = 0;
         while (res.hasMoreElements()) {
             StringBuffer sb = new StringBuffer();
             InputStream is = ((URL) res.nextElement()).openStream();
             int c;
-            while ((c = is.read()) != -1)
+            while ((c = is.read()) != -1) {
                 sb.append((char) c);
-            assertTrue("Returned incorrect resource/or in wrong order: "
-                    + sb.toString(), sb.toString().equals(resValues[i++]));
+            }
+            assertEquals("Returned incorrect resource/or in wrong order",
+                    resValues[i++], sb.toString());
         }
         assertTrue("Incorrect number of resources returned: " + i, i == 2);
     }
@@ -121,8 +120,9 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                 + "!/");
         ucl = new URLClassLoader(urls);
         URL[] ucUrls = ucl.getURLs();
-        for (int i = 0; i < urls.length; i++)
-            assertTrue("Returned incorrect URL[]", urls[i].equals(ucUrls[i]));
+        for (int i = 0; i < urls.length; i++) {
+            assertEquals("Returned incorrect URL[]", urls[i], ucUrls[i]);
+        }
     }
 
     /**
@@ -149,7 +149,6 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                 + Support_Resources.getResourceURL("/UCL/UCL.jar!/"));
         ucl = URLClassLoader.newInstance(urls);
         cl = ucl.loadClass("ucl.ResClass");
-
         assertNotNull("Failed to load class from explicit jar URL", cl);
     }
 
@@ -162,8 +161,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         URL[] u = new URL[0];
         ucl = URLClassLoader.newInstance(u, cl);
         URL res = ucl.getResource("J");
-        assertEquals("Failed to set parent", "/BogusClassLoader",
-                res == null ? false : res.getFile());
+        assertNotNull(res);
+        assertEquals("Failed to set parent", "/BogusClassLoader", res.getFile());
     }
 
     /**
@@ -180,8 +179,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         URL[] u = new URL[0];
         ucl = new URLClassLoader(u, cl, new TestFactory());
         URL res = ucl.getResource("J");
-        assertEquals("Failed to set parent", "/BogusClassLoader",
-                res == null ? false : res.getFile());
+        assertNotNull(res);
+        assertEquals("Failed to set parent", "/BogusClassLoader", res.getFile());
     }
 
     /**
@@ -193,8 +192,9 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
             throws ClassNotFoundException, IOException {
         File resources = Support_Resources.createTempFolder();
         String resPath = resources.toString();
-        if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
+        if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
             resPath = resPath.substring(1);
+        }
 
         java.net.URL[] urls = new java.net.URL[1];
         java.net.URLClassLoader ucl = null;
@@ -239,8 +239,9 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                     && url2.equals(new URL("jar:file:/"
                             + resPath.replace('\\', '/')
                             + "/JarIndex/hyts_23.jar!/bpack/"));
-            if (en.hasMoreElements())
+            if (en.hasMoreElements()) {
                 resourcesFound = false;
+            }
         } catch (NoSuchElementException e) {
             resourcesFound = false;
         }
@@ -249,25 +250,19 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         Class c2 = Class.forName("bpack.Homer", true, ucl);
         assertNotNull(c2);
 
-        exception = false;
         try {
             Class.forName("bpack.Bart", true, ucl);
-        } catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
-            exception = true;
-        } catch (ClassNotFoundException e) {
-            exception = false;
+            fail("InvalidJarIndexException should be thrown");
+        } catch (InvalidJarIndexException e) {
+            // expected
         }
-        assertTrue("InvalidJarIndexException should be thrown", exception);
 
-        goodException = false;
         try {
             Class.forName("Main4", true, ucl);
-        } catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
-            goodException = false;
+            fail("ClassNotFoundException should be thrown");
         } catch (ClassNotFoundException e) {
-            goodException = true;
+            // Expected
         }
-        assertTrue("ClassNotFoundException should be thrown", goodException);
 
         Support_Resources.copyFile(resources, "JarIndex", "hyts_22-new.jar");
         urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_22-new.jar");
@@ -277,15 +272,12 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_31.jar");
         ucl = URLClassLoader.newInstance(urls, null);
 
-        exception = false;
         try {
             Class.forName("cpack.Mock", true, ucl);
-        } catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
-            exception = false;
+            fail("ClassNotFoundException should be thrown");
         } catch (ClassNotFoundException e) {
-            exception = true;
+            // Expected
         }
-        assertTrue("InvalidJarIndexException should be thrown", exception);
 
         // testing circular reference
         Support_Resources.copyFile(resources, "JarIndex", "hyts_41.jar");
@@ -293,18 +285,12 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_41.jar");
         ucl = URLClassLoader.newInstance(urls, null);
         en = ucl.findResources("bpack/");
-        try {
-            resourcesFound = true;
-            resourcesFound = resourcesFound
-                    && ((URL) en.nextElement()).equals(new URL("jar:file:/"
-                            + resPath.replace('\\', '/')
-                            + "/JarIndex/hyts_42.jar!/bpack/"));
-            if (en.hasMoreElements())
-                resourcesFound = false;
-        } catch (NoSuchElementException e) {
-            resourcesFound = false;
-        }
+        resourcesFound = resourcesFound
+                && ((URL) en.nextElement()).equals(new URL("jar:file:/"
+                        + resPath.replace('\\', '/')
+                        + "/JarIndex/hyts_42.jar!/bpack/"));
         assertTrue("Resources not found (2)", resourcesFound);
+        assertFalse("No more resources expected", en.hasMoreElements());
     }
 
     /**
@@ -326,8 +312,9 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
             java.io.InputStream is = res.openStream();
 
             int c;
-            while ((c = is.read()) != -1)
+            while ((c = is.read()) != -1) {
                 sb.append((char) c);
+            }
             is.close();
         } catch (IOException e) {
         }
@@ -338,17 +325,18 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
     /**
      * @tests java.net.URLClassLoader#getResource(java.lang.String)
      */
-    public void test_getResourceLjava_lang_String() throws MalformedURLException {
+    public void test_getResourceLjava_lang_String()
+            throws MalformedURLException {
         URL url1 = new URL("file:///");
-        URLClassLoader loader = new URLClassLoader(
-                new URL[] { url1 }, null);
+        URLClassLoader loader = new URLClassLoader(new URL[] { url1 }, null);
         long start = System.currentTimeMillis();
         // try without the leading /
         URL result = loader.getResource("dir1/file1");
         long end = System.currentTimeMillis();
         long time = end - start;
-        if (time < 100)
+        if (time < 100) {
             time = 100;
+        }
 
         start = System.currentTimeMillis();
         // try with the leading forward slash
