@@ -456,7 +456,7 @@ void updateAll(LPLCMSICCPROFILE Icc) {
 // ------------------------- API
 
 
-
+#pragma warning(disable : 4028)
 LPLCMSICCPROFILE cmmOpenProfile(LPBYTE dataPtr, DWORD dwSize) {
 
   LPLCMSICCPROFILE Icc = cmsOpenProfileFromMem(dataPtr, dwSize);
