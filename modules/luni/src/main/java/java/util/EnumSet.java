@@ -325,11 +325,11 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
             return set;
         }
     }
-
+    
     @SuppressWarnings("unchecked")
-    private Object writeReplace() {
+    Object writeReplace() {
         SerializationProxy proxy = new SerializationProxy();
-        proxy.elements = (Enum[]) toArray();
+        proxy.elements = toArray(new Enum[0]);
         proxy.elementType = elementClass;
         return proxy;
     }
