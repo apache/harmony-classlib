@@ -17,54 +17,53 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import java.security.Permission;
-import java.security.PermissionCollection;
-import java.security.Permissions;
+import java.util.HashSet;
+import java.util.Set;
 
 class MutableSecurityManager extends SecurityManager {
 
     static final RuntimePermission SET_SECURITY_MANAGER = new RuntimePermission("setSecurityManager");
     
-    private PermissionCollection enabled;
+    private final Set<Permission> permissions;
     
-    private PermissionCollection denied;
+    private String deny;
 
     public MutableSecurityManager() {
         super();
-        this.enabled = new Permissions();
+        this.permissions = new HashSet<Permission>();
     }
     
     public MutableSecurityManager(Permission... permissions) {
         this();
         for (int i = 0; i < permissions.length; i++) {
-            this.enabled.add(permissions[i]);
+            this.permissions.add(permissions[i]);
         }
     }
 
     void addPermission(Permission permission) {
-        enabled.add(permission);
+        permissions.add(permission);
+    }
+
+    void removePermission(Permission permission) {
+        permissions.remove(permission);
     }
 
     void clearPermissions() {
-        enabled = new Permissions();
+        permissions.clear();
     }
     
-    void denyPermission(Permission p) {
-        if (denied == null) {
-            denied = new Permissions();
-        }
-        denied.add(p);
+    void denyPermission(String name) {
+        deny = name;
     }
 
     @Override
     public void checkPermission(Permission permission) {
-        if (enabled.implies(permission)) {
+        if (permissions.contains(permission)) {
             return;
         }
-        
-        if (denied != null && denied.implies(permission)){
-            throw new SecurityException("Denied " + permission);
+        if (permission.getName().equals(deny)){
+            throw new SecurityException();
         }
-        
         super.checkPermission(permission);
     }
 }
