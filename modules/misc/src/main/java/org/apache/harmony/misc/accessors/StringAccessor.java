@@ -126,7 +126,7 @@ public class StringAccessor {
     public long getChars(long buf, long buflen, String str, int start, int len) {
         String substr = str.substring(start, start + len);
         long addr = getChars(substr);
-        Malloc.memcpy(buf, addr, Math.min(buflen, substr.length() * 2));
+        Malloc.memcpy(buf, addr, Math.min(buflen, (substr.length() + 1) * 2));
         Malloc.free(addr);
         return buf;
     }
