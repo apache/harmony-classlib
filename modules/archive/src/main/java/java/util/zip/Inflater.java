@@ -45,7 +45,11 @@ public class Inflater {
 	static {
 		oneTimeInitialization();
 	}
-
+    
+    private static final byte MAGIC_NUMBER = 120;
+    private boolean gotFirstByte = false;
+    private boolean pass_magic_number_check = true;
+    
 	/**
 	 * Release any resources associated with this Inflater. Any unused
 	 * input/output is discarded. This is also called by the finalize method.
@@ -175,6 +179,10 @@ public class Inflater {
                 throw new IllegalStateException();
             }
             
+            if (!pass_magic_number_check) {
+                throw new DataFormatException();
+            }
+
             if (needsInput()) {
                 return 0;
             }
@@ -310,6 +318,12 @@ public class Inflater {
 			setInputImpl(buf, off, nbytes, streamHandle);
 		} else {
             throw new ArrayIndexOutOfBoundsException();
+        }
+        
+        if(!gotFirstByte && nbytes>0)
+        {
+           pass_magic_number_check = (buf[off] == MAGIC_NUMBER || nbytes > 1);           
+           gotFirstByte = true;
         }
 	}
 

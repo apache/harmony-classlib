@@ -717,6 +717,18 @@ public class InflaterTest extends junit.framework.TestCase {
         Inflater inflater = new Inflater();
         byte[] b = new byte[1024];
         assertEquals(0, inflater.inflate(b));
-        inflater.end();       
-    }
+        inflater.end();
+        
+        // Regression for HARMONY-2510
+        inflater = new Inflater();
+        byte[] input = new byte[] { -1 };
+        inflater.setInput(input);
+        try {
+            inflater.inflate(b);
+            fail("should throw DataFormateException");
+        } catch (DataFormatException e) {
+            // expected
+        }       
+    }   
+    
 }
