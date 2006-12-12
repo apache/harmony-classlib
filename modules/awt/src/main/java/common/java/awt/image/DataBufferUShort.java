@@ -20,6 +20,8 @@
  */
 package java.awt.image;
 
+import org.apache.harmony.awt.internal.nls.Messages;
+
 
 public final class DataBufferUShort extends DataBuffer {
 
@@ -27,6 +29,12 @@ public final class DataBufferUShort extends DataBuffer {
 
     public DataBufferUShort(short dataArrays[][], int size, int offsets[]) {
         super(TYPE_USHORT, size, dataArrays.length, offsets);
+        for(int i = 0; i < dataArrays.length; i++){
+            if(dataArrays[i].length < offsets[i] + size){
+                // awt.28d=Length of dataArray[{0}] is less than size + offset[{1}]
+                throw new IllegalArgumentException(Messages.getString("awt.28D", i, i));  //$NON-NLS-1$
+            }
+        }
         data = dataArrays.clone();
     }
 
@@ -37,6 +45,10 @@ public final class DataBufferUShort extends DataBuffer {
 
     public DataBufferUShort(short dataArray[], int size, int offset) {
         super(TYPE_USHORT, size, 1, offset);
+        if(dataArray.length < size + offset){
+            // awt.28E=Length of dataArray is less than size + offset
+            throw new IllegalArgumentException(Messages.getString("awt.28E")); //$NON-NLS-1$
+        }
         data = new short[1][];
         data[0] = dataArray;
     }

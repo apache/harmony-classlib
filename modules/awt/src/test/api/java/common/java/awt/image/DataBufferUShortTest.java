@@ -69,6 +69,33 @@ public class DataBufferUShortTest extends TestCase {
     public DataBufferUShortTest(String name) {
         super(name);
     }
+    
+    public final void testDataBufferUShort_1(){
+        // Test for constructor DataBufferUShort(short[] dataArray, int size, int offset)
+        short data[] = new short[10];
+        DataBufferUShort dbus = null;
+        try{
+            dbus = new DataBufferUShort(data, 10, 10);
+            fail("No IllegalArgumentException");
+        }catch(IllegalArgumentException e){
+            assertTrue(true);
+        }
+    }
+    
+    public final void testDataBufferUShort_2(){
+        // Test for constructor DataBufferUShort(short[][] dataArray, int size, int[] offsets)
+        short data[][] = new short[2][0];
+        data[0] = new short[20];
+        data[1] = new short[10];
+        int offsets[] = new int[]{10, 10};
+        DataBufferUShort dbus = null;
+        try{
+            dbus = new DataBufferUShort(data, 10, offsets);
+            fail("No IllegalArgumentException");
+        }catch(IllegalArgumentException e){
+            assertTrue(true);
+        }
+    }
 
     public final void testGetDataType(){
         assertEquals(DataBuffer.TYPE_USHORT, db1.getDataType());
