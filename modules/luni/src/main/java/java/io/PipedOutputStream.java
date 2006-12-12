@@ -147,7 +147,8 @@ public class PipedOutputStream extends OutputStream {
     @Override
     public void write(byte buffer[], int offset, int count) throws IOException {
         if (dest == null) {
-            throw new IOException("Pipe not connected.");
+            // K007b=Pipe Not Connected
+            throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
         }
         super.write(buffer, offset, count);
     }

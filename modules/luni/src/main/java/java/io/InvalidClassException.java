@@ -15,8 +15,7 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 /**
  * A problem was found with the class of one of the objects being serialized or
@@ -34,55 +33,55 @@ package java.io;
  */
 public class InvalidClassException extends ObjectStreamException {
 
-	private static final long serialVersionUID = -4333316296251054416L;
+    private static final long serialVersionUID = -4333316296251054416L;
 
-	/**
-	 * The fully qualified name of the class that caused the problem
-	 */
-	public String classname;
+    /**
+     * The fully qualified name of the class that caused the problem
+     */
+    public String classname;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public InvalidClassException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public InvalidClassException(String detailMessage) {
+        super(detailMessage);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * the fully qualified name of the class which caused the exception filled
-	 * in.
-	 * 
-	 * @param className
-	 *            The detail message for the exception.
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public InvalidClassException(String className, String detailMessage) {
-		super(detailMessage);
-		this.classname = className;
-	}
+    /**
+     * Constructs a new instance of this class with its walkback, message and
+     * the fully qualified name of the class which caused the exception filled
+     * in.
+     * 
+     * @param className
+     *            The detail message for the exception.
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public InvalidClassException(String className, String detailMessage) {
+        super(detailMessage);
+        this.classname = className;
+    }
 
-	/**
-	 * Answers the extra information message which was provided when the
-	 * exception was created. If no message was provided at creation time, then
-	 * answer null. If a message was provided and a class name which caused the
-	 * exception, the values are concatenated and returned.
-	 * 
-	 * @return The receiver's message, possibly concatenated with the name of
-	 *         the class that caused the problem.
-	 */
-	@Override
+    /**
+     * Answers the extra information message which was provided when the
+     * exception was created. If no message was provided at creation time, then
+     * answer null. If a message was provided and a class name which caused the
+     * exception, the values are concatenated and returned.
+     * 
+     * @return The receiver's message, possibly concatenated with the name of
+     *         the class that caused the problem.
+     */
+    @Override
     public String getMessage() {
-		String msg = super.getMessage();
-		if (classname != null) {
-			msg = classname + "; " + msg;
-		}
-		return msg;
-	}
+        String msg = super.getMessage();
+        if (classname != null) {
+            msg = classname + "; " + msg; //$NON-NLS-1$
+        }
+        return msg;
+    }
 
 }

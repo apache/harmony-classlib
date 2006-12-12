@@ -48,7 +48,9 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
 
     private boolean isReadOnly;
 
-    private class RepositionLock {}
+    private class RepositionLock {
+    }
+
     private Object repositionLock = new RepositionLock();
 
     /**
@@ -612,7 +614,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     public final String readUTF() throws IOException {
         int utfSize = readUnsignedShort();
         if (utfSize == 0) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         byte[] buf = new byte[utfSize];
         if (read(buf, 0, buf.length) == buf.length) {
@@ -739,10 +741,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      * @see #read(byte[], int, int)
      */
     public void write(byte[] buffer, int offset, int count) throws IOException {
-    	if (count > buffer.length - offset || count < 0 || offset < 0) {
+        if (count > buffer.length - offset || count < 0 || offset < 0) {
             throw new IndexOutOfBoundsException();
         }
-        if (count == 0){
+        if (count == 0) {
             return;
         }
         synchronized (repositionLock) {
