@@ -20,7 +20,7 @@
 
 uLong crc32 PROTOTYPE ((uLong crc, const Bytef * buf, uInt size));
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_CRC32_updateImpl (JNIEnv * env, jobject recv,
                                      jbyteArray buf, int off, int len,
                                      jlong crc)
@@ -36,7 +36,7 @@ Java_java_util_zip_CRC32_updateImpl (JNIEnv * env, jobject recv,
   return result;
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_CRC32_updateByteImpl (JNIEnv * env, jobject recv,
                                          jbyte val, jlong crc)
 {

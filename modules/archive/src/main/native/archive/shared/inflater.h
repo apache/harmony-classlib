@@ -28,37 +28,37 @@ typedef struct JCLZipStream
 
 void zfree PROTOTYPE ((void *opaque, void *address));
 void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
-void JNICALL Java_java_util_zip_Inflater_endImpl (JNIEnv * env, jobject recv,
+JNIEXPORT void JNICALL Java_java_util_zip_Inflater_endImpl (JNIEnv * env, jobject recv,
                                                   jlong handle);
-void JNICALL Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env,
+JNIEXPORT void JNICALL Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env,
                                                        jobject recv,
                                                        jbyteArray buf,
                                                        jint off, jint len,
                                                        jlong handle);
-jint JNICALL Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env,
+JNIEXPORT jint JNICALL Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env,
                                                       jobject recv,
                                                       jbyteArray buf, int off,
                                                       int len, jlong handle);
-void JNICALL Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env,
+JNIEXPORT void JNICALL Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env,
                                                             jobject recv,
                                                             jbyteArray dict,
                                                             int off, int len,
                                                             jlong handle);
-void JNICALL Java_java_util_zip_Inflater_oneTimeInitialization (JNIEnv * env,
+JNIEXPORT void JNICALL Java_java_util_zip_Inflater_oneTimeInitialization (JNIEnv * env,
                                                                 jclass clazz);
-void JNICALL Java_java_util_zip_Inflater_resetImpl (JNIEnv * env,
+JNIEXPORT void JNICALL Java_java_util_zip_Inflater_resetImpl (JNIEnv * env,
                                                     jobject recv,
                                                     jlong handle);
-jlong JNICALL Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env,
+JNIEXPORT jlong JNICALL Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env,
                                                          jobject recv,
                                                          jlong handle);
-jlong JNICALL Java_java_util_zip_Inflater_createStream (JNIEnv * env,
+JNIEXPORT jlong JNICALL Java_java_util_zip_Inflater_createStream (JNIEnv * env,
                                                         jobject recv,
                                                         jboolean noHeader);
-jlong JNICALL Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env,
+JNIEXPORT jlong JNICALL Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env,
                                                         jobject recv,
                                                         jlong handle);
-jint JNICALL Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env,
+JNIEXPORT jint JNICALL Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env,
                                                        jobject recv,
                                                        jlong handle);
 

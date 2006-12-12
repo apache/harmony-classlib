@@ -25,7 +25,7 @@
   * Create a System Process with the specified
   * environment and arguments 
   */
-jlongArray JNICALL
+JNIEXPORT jlongArray JNICALL
 Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv * env, jclass clazz,
             jobject recv,
             jobjectArray arg1,
@@ -171,7 +171,7 @@ failed:
 }
 
 /* Kill the receiver */
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_SystemProcess_destroyImpl (JNIEnv * env, jobject recv)
 {
   jlong pHandle;
@@ -183,7 +183,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_destroyImpl (JNIEnv 
 }
 
 /* Close the input stream*/
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl (JNIEnv * env,
                 jobject recv)
 {
@@ -192,7 +192,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl (JNIE
         FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd));
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl (JNIEnv * env,
                  jobject recv)
 {
@@ -202,7 +202,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl (JNI
 }
 
 /* Read nbytes from the receiver */
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_readImpl (JNIEnv * env, jobject recv,
                jbyteArray buffer,
                jint offset, jint nbytes,
@@ -215,7 +215,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_readImpl (JNIEn
 }
 
 /* Return the number of byes available to be read without blocking */
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl (JNIEnv * env,
               jobject recv)
 {
@@ -236,7 +236,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl (
 }
 
 /* Write nbytes to the receiver */
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_writeImpl (JNIEnv * env,
                  jobject recv,
                  jbyteArray buffer,
@@ -249,7 +249,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_writeImpl (JNI
 }
 
 /* Set the descriptor field od the receiver */
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl (JNIEnv * env,
                 jobject recv,
                 jobject arg1, jlong arg2)
@@ -257,7 +257,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl (JNIE
   setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) ((IDATA) arg2));
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_setFDImpl (JNIEnv * env,
                  jobject recv,
                  jobject arg1, jlong arg2)
@@ -266,7 +266,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_setFDImpl (JNI
 }
 
 /* Wait for the receiver to finish then return the exit value */
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_internal_process_SystemProcess_waitForCompletionImpl (JNIEnv * env,
                  jobject recv)
 {
@@ -278,7 +278,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_waitForCompletionImp
   return (jint) waitForProc ((IDATA) pHandle);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization (JNIEnv * env,
                  jclass clazz)
 {
@@ -288,7 +288,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitializatio
   JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_SystemProcess_handle, fid);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_oneTimeInitialization (JNIEnv * env,
                  jclass clazz)
 {
@@ -305,7 +305,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_oneTimeInitial
   JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd, fid);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_oneTimeInitialization (JNIEnv * env,
                 jclass clazz)
 {
@@ -323,7 +323,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_oneTimeInitiali
 }
 
 /* Close the handle */
-void JNICALL
+JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_internal_process_SystemProcess_closeImpl (JNIEnv * env, jobject recv)
 {
   jlong pHandle;

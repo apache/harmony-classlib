@@ -18,7 +18,7 @@
 #include "vmi.h"
 #include "jclglob.h"
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_ObjectStreamClass_getFieldSignature (JNIEnv * env, jclass clazz,
                                                   jobject reflectField)
 {
@@ -28,7 +28,7 @@ Java_java_io_ObjectStreamClass_getFieldSignature (JNIEnv * env, jclass clazz,
                                                             MID_java_lang_reflect_Field_getSignature));
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_ObjectStreamClass_getMethodSignature (JNIEnv * env, jclass clazz,
                                                    jobject reflectMethod)
 {
@@ -38,7 +38,7 @@ Java_java_io_ObjectStreamClass_getMethodSignature (JNIEnv * env, jclass clazz,
                                                             MID_java_lang_reflect_Method_getSignature));
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_ObjectStreamClass_getConstructorSignature (JNIEnv * env,
                                                         jclass clazz,
                                                         jobject
@@ -51,7 +51,7 @@ Java_java_io_ObjectStreamClass_getConstructorSignature (JNIEnv * env,
                                                             MID_java_lang_reflect_Constructor_getSignature));
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_ObjectStreamClass_hasClinit (JNIEnv * env, jclass clazz,
                                           jobject targetClass)
 {
@@ -71,7 +71,7 @@ Java_java_io_ObjectStreamClass_hasClinit (JNIEnv * env, jclass clazz,
     }
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_io_ObjectStreamClass_oneTimeInitialization (JNIEnv * env,
                                                       jclass clazz)
 {

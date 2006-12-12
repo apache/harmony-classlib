@@ -23,7 +23,7 @@
 #include "helpers.h"
 #include "jclprots.h"
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_deleteFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -38,7 +38,7 @@ Java_java_io_File_deleteFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result == 0;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_deleteDirImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -53,7 +53,7 @@ Java_java_io_File_deleteDirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result == 0;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   struct dirEntry
@@ -152,7 +152,7 @@ cleanup:
   return answer;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isDirectoryImpl (JNIEnv * env, jobject recv,
                                    jbyteArray path)
 {
@@ -168,7 +168,7 @@ Java_java_io_File_isDirectoryImpl (JNIEnv * env, jobject recv,
   return result == HyIsDir;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -183,7 +183,7 @@ Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result >= 0;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -198,7 +198,7 @@ Java_java_io_File_isFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result == HyIsFile;
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_io_File_lastModifiedImpl (JNIEnv * env, jobject recv,
                                     jbyteArray path)
 {
@@ -214,7 +214,7 @@ Java_java_io_File_lastModifiedImpl (JNIEnv * env, jobject recv,
   return result;
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_io_File_lengthImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -234,7 +234,7 @@ Java_java_io_File_lengthImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isAbsoluteImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   I_32 result = 0;
@@ -264,7 +264,7 @@ release:
   return result;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_mkdirImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -279,7 +279,7 @@ Java_java_io_File_mkdirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result == 0;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_renameToImpl (JNIEnv * env, jobject recv,
                                 jbyteArray pathExist, jbyteArray pathNew)
 {
@@ -301,7 +301,7 @@ Java_java_io_File_renameToImpl (JNIEnv * env, jobject recv,
   return result == 0;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_File_getCanonImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   /* This needs work.  Currently is does no more or less than VAJ-20 ST implementation
@@ -325,7 +325,7 @@ Java_java_io_File_getCanonImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return answer;
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -354,7 +354,7 @@ Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return 0;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_File_rootsImpl (JNIEnv * env, jclass clazz)
 {
   char rootStrings[HyMaxPath], *rootCopy;
@@ -396,7 +396,7 @@ Java_java_io_File_rootsImpl (JNIEnv * env, jclass clazz)
   return answer;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isHiddenImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   I_32 result;
@@ -410,7 +410,7 @@ Java_java_io_File_isHiddenImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_setLastModifiedImpl (JNIEnv * env, jobject recv,
                                        jbyteArray path, jlong time)
 {
@@ -427,7 +427,7 @@ Java_java_io_File_setLastModifiedImpl (JNIEnv * env, jobject recv,
   return result;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_setReadOnlyImpl (JNIEnv * env, jobject recv,
                                    jbyteArray path)
 {
@@ -440,7 +440,7 @@ Java_java_io_File_setReadOnlyImpl (JNIEnv * env, jobject recv,
   return setPlatformReadOnly (env, pathCopy);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_io_File_oneTimeInitialization (JNIEnv * env, jclass clazz)
 {
   jclass arrayClass = (*env)->FindClass (env, "[B");
@@ -453,13 +453,13 @@ Java_java_io_File_oneTimeInitialization (JNIEnv * env, jclass clazz)
   return;
 }
 
-jbyteArray JNICALL
+JNIEXPORT jbyteArray JNICALL
 Java_java_io_File_properPathImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   return getPlatformPath (env, path);
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isReadOnlyImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   I_32 result;
@@ -473,7 +473,7 @@ Java_java_io_File_isReadOnlyImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isWriteOnlyImpl (JNIEnv * env, jobject recv,
                                    jbyteArray path)
 {
@@ -488,7 +488,7 @@ Java_java_io_File_isWriteOnlyImpl (JNIEnv * env, jobject recv,
   return result;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_io_File_getLinkImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   jbyteArray answer;
@@ -513,7 +513,7 @@ Java_java_io_File_getLinkImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return answer;
 }
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_File_isCaseSensitiveImpl (JNIEnv * env, jclass clazz)
 {
 /* Assume all other platforms ARE case sensitive and add to this list when they prove otherwise */

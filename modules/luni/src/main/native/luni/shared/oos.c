@@ -17,7 +17,7 @@
 
 #include "jni.h"
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_io_ObjectOutputStream_getFieldLong (JNIEnv * env, jclass clazz,
                                               jobject targetObject,
                                               jobject declaringClass,
@@ -38,7 +38,8 @@ Java_java_io_ObjectOutputStream_getFieldLong (JNIEnv * env, jclass clazz,
       return (*env)->GetLongField (env, targetObject, fid);
     }
 }
-jshort JNICALL
+
+JNIEXPORT jshort JNICALL
 Java_java_io_ObjectOutputStream_getFieldShort (JNIEnv * env, jclass clazz,
                                                jobject targetObject,
                                                jobject declaringClass,
@@ -59,7 +60,8 @@ Java_java_io_ObjectOutputStream_getFieldShort (JNIEnv * env, jclass clazz,
       return (*env)->GetShortField (env, targetObject, fid);
     }
 }
-jdouble JNICALL
+
+JNIEXPORT jdouble JNICALL
 Java_java_io_ObjectOutputStream_getFieldDouble (JNIEnv * env, jclass clazz,
                                                 jobject targetObject,
                                                 jobject declaringClass,
@@ -80,7 +82,8 @@ Java_java_io_ObjectOutputStream_getFieldDouble (JNIEnv * env, jclass clazz,
       return (*env)->GetDoubleField (env, targetObject, fid);
     }
 }
-jboolean JNICALL
+
+JNIEXPORT jboolean JNICALL
 Java_java_io_ObjectOutputStream_getFieldBool (JNIEnv * env, jclass clazz,
                                               jobject targetObject,
                                               jobject declaringClass,
@@ -101,7 +104,8 @@ Java_java_io_ObjectOutputStream_getFieldBool (JNIEnv * env, jclass clazz,
       return (*env)->GetBooleanField (env, targetObject, fid);
     }
 }
-jbyte JNICALL
+
+JNIEXPORT jbyte JNICALL
 Java_java_io_ObjectOutputStream_getFieldByte (JNIEnv * env, jclass clazz,
                                               jobject targetObject,
                                               jobject declaringClass,
@@ -122,7 +126,8 @@ Java_java_io_ObjectOutputStream_getFieldByte (JNIEnv * env, jclass clazz,
       return (*env)->GetByteField (env, targetObject, fid);
     }
 }
-jfloat JNICALL
+
+JNIEXPORT jfloat JNICALL
 Java_java_io_ObjectOutputStream_getFieldFloat (JNIEnv * env, jclass clazz,
                                                jobject targetObject,
                                                jobject declaringClass,
@@ -145,7 +150,7 @@ Java_java_io_ObjectOutputStream_getFieldFloat (JNIEnv * env, jclass clazz,
 
 }
 
-jchar JNICALL
+JNIEXPORT jchar JNICALL
 Java_java_io_ObjectOutputStream_getFieldChar (JNIEnv * env, jclass clazz,
                                               jobject targetObject,
                                               jobject declaringClass,
@@ -166,7 +171,8 @@ Java_java_io_ObjectOutputStream_getFieldChar (JNIEnv * env, jclass clazz,
       return (*env)->GetCharField (env, targetObject, fid);
     }
 }
-jobject JNICALL
+
+JNIEXPORT jobject JNICALL
 Java_java_io_ObjectOutputStream_getFieldObj (JNIEnv * env, jclass clazz,
                                              jobject targetObject,
                                              jobject declaringClass,
@@ -192,7 +198,8 @@ Java_java_io_ObjectOutputStream_getFieldObj (JNIEnv * env, jclass clazz,
       return (*env)->GetObjectField (env, targetObject, fid);
     }
 }
-jint JNICALL
+
+JNIEXPORT jint JNICALL
 Java_java_io_ObjectOutputStream_getFieldInt (JNIEnv * env, jclass clazz,
                                              jobject targetObject,
                                              jobject declaringClass,

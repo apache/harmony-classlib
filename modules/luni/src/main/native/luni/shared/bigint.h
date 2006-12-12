@@ -17,22 +17,22 @@
 
 #if !defined(bigint_h)
 #define bigint_h
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_subImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_subImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src1, jlongArray src2));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_divImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_divImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray topObject,
             jlongArray bottomObject));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_mulImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_mulImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src1, jlongArray src2));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_negImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_negImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_addImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_addImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src1, jlongArray src2));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_remImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_remImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray topObject,
             jlongArray bottomObject));
-jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_shlImpl
+JNIEXPORT jlongArray JNICALL Java_org_apache_harmony_math_util_BigInteger_shlImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src, jint shiftval));
-jint JNICALL Java_org_apache_harmony_math_util_BigInteger_compImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_math_util_BigInteger_compImpl
 PROTOTYPE ((JNIEnv * env, jclass cls, jlongArray src1, jlongArray src2));
 #endif /* bigint_h */

@@ -20,7 +20,7 @@
 #include "vmi.h"
 #include "helpers.h"
 
-jstring JNICALL
+JNIEXPORT jstring JNICALL
 Java_java_util_TimeZone_getCustomTimeZone (JNIEnv * env, jclass clazz,
                                            jintArray tzinfo,
                                            jbooleanArray isCustomTimeZone)

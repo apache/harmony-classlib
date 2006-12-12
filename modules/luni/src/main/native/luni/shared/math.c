@@ -59,13 +59,13 @@ internal_acos (jdouble arg1)
   return result;
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_acos (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_acos (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_acos (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_acos (arg1);
@@ -324,297 +324,297 @@ internal_tanh (jdouble arg1)
 }
 
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_asin (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_asin (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_asin (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_asin (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_atan (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_atan (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_atan (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_atan (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_atan2 (JNIEnv * env, jclass jclazz, jdouble arg1,
                                  jdouble arg2)
 {
   return internal_atan2 (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_atan2 (JNIEnv * env, jclass jclazz, jdouble arg1,
                            jdouble arg2)
 {
   return internal_atan2 (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_cbrt (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cbrt (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_cbrt (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cbrt (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_ceil (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_ceil (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_ceil (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_ceil (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_cos (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cos (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_cos (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cos (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_cosh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cosh (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_cosh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cosh (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_exp (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_exp (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_exp (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_exp (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_expm1 (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_expm1 (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_expm1 (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_expm1 (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_floor (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_floor (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_floor (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_floor (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_hypot (JNIEnv * env, jclass jclazz,
                                          jdouble arg1, jdouble arg2)
 {
   return internal_hypot (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_hypot (JNIEnv * env, jclass jclazz, jdouble arg1,
                                    jdouble arg2)
 {
   return internal_hypot (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_IEEEremainder (JNIEnv * env, jclass jclazz,
                                          jdouble arg1, jdouble arg2)
 {
   return internal_IEEEremainder (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_IEEEremainder (JNIEnv * env, jclass jclazz, jdouble arg1,
                                    jdouble arg2)
 {
   return internal_IEEEremainder (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_log (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_log (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_log10 (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log10 (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_log10 (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log10 (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_log1p (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log1p (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_log1p(JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log1p (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_nextafter (JNIEnv * env, jclass jclazz, jdouble arg1, jdouble arg2)
 {
   return internal_nextafter(arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_nextafter (JNIEnv * env, jclass jclazz, jdouble arg1, jdouble arg2)
 {
   return internal_nextafter(arg1, arg2);
 }
 
-jfloat JNICALL
+JNIEXPORT jfloat JNICALL
 Java_java_lang_StrictMath_nextafterf (JNIEnv * env, jclass jclazz, jfloat arg1, jfloat arg2)
 {
   return internal_nextafterf(arg1, arg2);
 }
 
-jfloat JNICALL
+JNIEXPORT jfloat JNICALL
 Java_java_lang_Math_nextafterf (JNIEnv * env, jclass jclazz, jfloat arg1, jfloat arg2)
 {
   return internal_nextafterf(arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_pow (JNIEnv * env, jclass jclazz, jdouble arg1,
                                jdouble arg2)
 {
   return internal_pow (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_pow (JNIEnv * env, jclass jclazz, jdouble arg1,
                          jdouble arg2)
 {
   return internal_pow (arg1, arg2);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_rint (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_rint (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_rint (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_rint (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_sin (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sin (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_sin (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sin (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_sinh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sinh (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_sinh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sinh (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_sqrt (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sqrt (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_sqrt (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sqrt (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_tan (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_tan (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_tan (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_tan (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_StrictMath_tanh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_tanh (arg1);
 }
 
-jdouble JNICALL
+JNIEXPORT jdouble JNICALL
 Java_java_lang_Math_tanh (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_tanh (arg1);

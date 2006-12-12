@@ -17,7 +17,7 @@
 
 #include "jni.h"
 
-void JNICALL
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2Z
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jboolean newValue)
@@ -37,7 +37,7 @@ void JNICALL
     }
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2C
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jchar newValue)
@@ -56,7 +56,8 @@ void JNICALL
       (*env)->SetCharField (env, targetObject, fid, newValue);
     }
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2I
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jint newValue)
@@ -76,7 +77,7 @@ void JNICALL
     }
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2F
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jfloat newValue)
@@ -95,7 +96,8 @@ void JNICALL
       (*env)->SetFloatField (env, targetObject, fid, newValue);
     }
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2D
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jdouble newValue)
@@ -115,7 +117,8 @@ void JNICALL
     }
 
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2S
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jshort newValue)
@@ -135,7 +138,8 @@ void JNICALL
     }
 
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2J
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jlong newValue)
@@ -154,7 +158,8 @@ void JNICALL
       (*env)->SetLongField (env, targetObject, fid, newValue);
     }
 }
-jobject JNICALL
+
+JNIEXPORT jobject JNICALL
 Java_java_io_ObjectInputStream_newInstance (JNIEnv * env, jclass clazz,
                                             jobject instantiationClass,
                                             jobject constructorClass)
@@ -173,7 +178,8 @@ Java_java_io_ObjectInputStream_newInstance (JNIEnv * env, jclass clazz,
     }
 
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
   Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2B
   (JNIEnv * env, jclass clazz, jobject targetObject, jobject declaringClass,
    jobject fieldName, jbyte newValue)
@@ -192,7 +198,8 @@ void JNICALL
       (*env)->SetByteField (env, targetObject, fid, newValue);
     }
 }
-void JNICALL
+
+JNIEXPORT void JNICALL
 Java_java_io_ObjectInputStream_objSetField (JNIEnv * env, jclass clazz,
                                             jobject targetObject,
                                             jobject declaringClass,

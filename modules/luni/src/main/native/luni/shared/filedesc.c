@@ -19,7 +19,7 @@
 #include "exceptions.h"
 #include "jclglob.h"
 
-jboolean JNICALL
+JNIEXPORT jboolean JNICALL
 Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
 {
   /**
@@ -30,7 +30,7 @@ Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
   return (IDATA) descriptor != -1;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_io_FileDescriptor_sync (JNIEnv * env, jobject recv)
 {
   /* Cause all unwritten data to be written out to the OS */
@@ -57,7 +57,7 @@ Java_java_io_FileDescriptor_sync (JNIEnv * env, jobject recv)
     }
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_io_FileDescriptor_oneTimeInitialization (JNIEnv * env,
                                                    jclass fdClazz)
 {

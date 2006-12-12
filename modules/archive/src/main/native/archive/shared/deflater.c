@@ -27,7 +27,7 @@
 void zfree PROTOTYPE ((void *opaque, void *address));
 void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
 					       jbyteArray dict, int off,
 					       int len, jlong handle)
@@ -54,7 +54,7 @@ Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
   stream->dict = dBytes;
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Deflater_getTotalInImpl (JNIEnv * env, jobject recv,
 					    jlong handle)
 {
@@ -64,7 +64,7 @@ Java_java_util_zip_Deflater_getTotalInImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_in;
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Deflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 					     jlong handle)
 {
@@ -74,7 +74,7 @@ Java_java_util_zip_Deflater_getTotalOutImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_out;
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_util_zip_Deflater_getAdlerImpl (JNIEnv * env, jobject recv,
 					  jlong handle)
 {
@@ -86,7 +86,7 @@ Java_java_util_zip_Deflater_getAdlerImpl (JNIEnv * env, jobject recv,
 }
 
 /* Create a new stream . This stream cannot be used until it has been properly initialized. */
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
 					  jint level, jint strategy,
 					  jboolean noHeader)
@@ -136,7 +136,7 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
   return (jlong) ((IDATA) jstream);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_setInputImpl (JNIEnv * env, jobject recv,
 					  jbyteArray buf, jint off, jint len,
 					  jlong handle)
@@ -166,7 +166,7 @@ Java_java_util_zip_Deflater_setInputImpl (JNIEnv * env, jobject recv,
   return;
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_util_zip_Deflater_deflateImpl (JNIEnv * env, jobject recv,
 					 jbyteArray buf, int off, int len,
 					 jlong handle, int flushParm)
@@ -217,7 +217,7 @@ Java_java_util_zip_Deflater_deflateImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_out - sout;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -234,7 +234,7 @@ Java_java_util_zip_Deflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
   jclmem_free_memory (env, stream);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_resetImpl (JNIEnv * env, jobject recv,
 				       jlong handle)
 {
@@ -244,7 +244,7 @@ Java_java_util_zip_Deflater_resetImpl (JNIEnv * env, jobject recv,
   deflateReset (stream->stream);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_setLevelsImpl (JNIEnv * env, jobject recv,
 					   int level, int strategy,
 					   jlong handle)
@@ -267,7 +267,7 @@ Java_java_util_zip_Deflater_setLevelsImpl (JNIEnv * env, jobject recv,
     throwNewIllegalStateException (env, "");
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_oneTimeInitialization (JNIEnv * env, jclass clazz)
 {
   jfieldID fid;

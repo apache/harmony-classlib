@@ -31,7 +31,7 @@
  * @return	an array of InetAddress's
  */
 
-jobjectArray JNICALL
+JNIEXPORT jobjectArray JNICALL
 Java_java_net_InetAddress_getAliasesByNameImpl (JNIEnv * env, jclass clazz,
                                                 jstring aName)
 {
@@ -83,7 +83,7 @@ Java_java_net_InetAddress_getAliasesByNameImpl (JNIEnv * env, jclass clazz,
  *
  * @return	the InetAddress representing the host
  */
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_net_InetAddress_getHostByAddrImpl (JNIEnv * env, jclass clazz,
                                              jbyteArray addr)
 {
@@ -133,7 +133,7 @@ Java_java_net_InetAddress_getHostByAddrImpl (JNIEnv * env, jclass clazz,
  * @return	the InetAddress representing the host
  */
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_net_InetAddress_getHostByNameImpl (JNIEnv * env, jclass clazz,
                                              jstring aName,
                                              jboolean preferIPv6Addresses)
@@ -226,7 +226,7 @@ Java_java_net_InetAddress_getHostByNameImpl (JNIEnv * env, jclass clazz,
  * @return	the local host name
  */
 
-jstring JNICALL
+JNIEXPORT jstring JNICALL
 Java_java_net_InetAddress_getHostNameImpl (JNIEnv * env, jclass clazz)
 {
 
@@ -255,7 +255,7 @@ Java_java_net_InetAddress_getHostNameImpl (JNIEnv * env, jclass clazz)
  * @return	the network address
  */
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_net_InetAddress_inetAddrImpl (JNIEnv * env, jclass clazz,
                                         jstring host)
 {
@@ -289,7 +289,7 @@ Java_java_net_InetAddress_inetAddrImpl (JNIEnv * env, jclass clazz,
  * @return	the dotted ip string
  */
 
-jstring JNICALL
+JNIEXPORT jstring JNICALL
 Java_java_net_InetAddress_inetNtoaImpl (JNIEnv * env, jclass clazz,
                                         jint hipAddr)
 {
@@ -313,7 +313,7 @@ Java_java_net_InetAddress_inetNtoaImpl (JNIEnv * env, jclass clazz,
     }
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_net_InetAddress_oneTimeInitialization (JNIEnv * env, jclass clazz,
                                                  jboolean ipv6_support)
 {

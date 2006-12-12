@@ -42,7 +42,7 @@ throwJavaZIOException (JNIEnv * env, const char *message)
   throwNewExceptionByName(env, "java/util/zip/ZipException", message);
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
                                         jbyteArray zipName)
 {
@@ -99,7 +99,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
   return 0;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
                                          jlong zipPointer, jstring entryName)
 {
@@ -175,7 +175,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
   return java_ZipEntry;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -225,7 +225,7 @@ throwNewIllegalArgumentException (JNIEnv * env, const char *message)
   throwNewExceptionByName(env, "java/lang/IllegalArgumentException", message);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_ZipFile_ntvinit (JNIEnv * env, jclass cls)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -271,7 +271,7 @@ Java_java_util_zip_ZipFile_ntvinit (JNIEnv * env, jclass cls)
   JCL_CACHE_SET (env, zipfile_handles, zipfileHandles);
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
                                                  jlong descriptor)
 {
@@ -291,7 +291,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
   return nextEntryPointer;
 }
 
-jobject JNICALL
+JNIEXPORT jobject JNICALL
 Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
                                                      jobject recv,
                                                      jlong descriptor,
@@ -379,7 +379,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
   return java_ZipEntry;
 }
 
-jbyteArray JNICALL
+JNIEXPORT jbyteArray JNICALL
 Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
 					                          jlong descriptor,
                                               jstring entryName)

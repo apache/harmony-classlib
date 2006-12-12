@@ -26,7 +26,7 @@
 void throwNewDataFormatException (JNIEnv * env, const char *message);
 
 /* Create a new stream . This stream cannot be used until it has been properly initialized. */
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
                                           jboolean noHeader)
 {
@@ -77,7 +77,7 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
   return (jlong) ((IDATA) jstream);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env, jobject recv,
                                           jbyteArray buf, jint off, jint len,
                                           jlong handle)
@@ -107,7 +107,7 @@ Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env, jobject recv,
   return;
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
                                          jbyteArray buf, int off, int len,
                                          jlong handle)
@@ -168,7 +168,7 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_out - sout;
 }
 
-jint JNICALL
+JNIEXPORT jint JNICALL
 Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env, jobject recv,
                                           jlong handle)
 {
@@ -179,7 +179,7 @@ Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env, jobject recv,
   return stream->stream->adler;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Inflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -195,7 +195,7 @@ Java_java_util_zip_Inflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
   jclmem_free_memory (env, stream);
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env, jobject recv,
                                                jbyteArray dict, int off,
                                                int len, jlong handle)
@@ -222,7 +222,7 @@ Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env, jobject recv,
   stream->dict = dBytes;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Inflater_resetImpl (JNIEnv * env, jobject recv,
                                        jlong handle)
 {
@@ -247,7 +247,7 @@ throwNewDataFormatException (JNIEnv * env, const char *message)
   throwNewExceptionByName(env, "java/util/zip/DataFormatException", message);
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env, jobject recv,
                                              jlong handle)
 {
@@ -258,7 +258,7 @@ Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 
 }
 
-jlong JNICALL
+JNIEXPORT jlong JNICALL
 Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env, jobject recv,
                                             jlong handle)
 {
@@ -268,7 +268,7 @@ Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_in;
 }
 
-void JNICALL
+JNIEXPORT void JNICALL
 Java_java_util_zip_Inflater_oneTimeInitialization (JNIEnv * env, jclass clazz)
 {
   jfieldID fid;

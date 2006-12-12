@@ -43,7 +43,7 @@ static void freeReferences (JNIEnv * env);
  * This DLL is being loaded, do any initialization required.
  * This may be called more than once.
  */
-jint JNICALL
+JNIEXPORT jint JNICALL
 JNI_OnLoad (JavaVM * vm, void *reserved)
 {
   JniIDCache *idCache;
@@ -142,7 +142,7 @@ fail:
  * This DLL is being unloaded, do any clean up required.
  * This may be called more than once!!
  */
-void JNICALL
+JNIEXPORT void JNICALL
 JNI_OnUnload (JavaVM * vm, void *reserved)
 {
   JNIEnv *env;

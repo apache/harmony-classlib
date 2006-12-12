@@ -19,7 +19,7 @@
 #include "exceptions.h"
 #include "jclglob.h"
 
-jclass JNICALL
+JNIEXPORT jclass JNICALL
 Java_java_lang_reflect_Proxy_defineClassImpl (JNIEnv * env, jclass recvClass,
                                               jobject classLoader,
                                               jstring className,

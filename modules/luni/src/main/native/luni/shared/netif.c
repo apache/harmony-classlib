@@ -30,7 +30,7 @@
  * @return			an array of NetworkInterface objects of length 0 or more
  */
 
-jobjectArray JNICALL
+JNIEXPORT jobjectArray JNICALL
 Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
                                                          jclass clazz)
 {

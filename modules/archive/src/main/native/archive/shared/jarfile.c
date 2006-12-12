@@ -73,7 +73,7 @@ createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
   return java_ZipEntry;
 }
 
-jarray JNICALL
+JNIEXPORT jarray JNICALL
 Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 					       jbyteArray zipName)
 {
