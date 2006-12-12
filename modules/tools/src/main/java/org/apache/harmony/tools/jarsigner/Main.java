@@ -18,6 +18,9 @@
 package org.apache.harmony.tools.jarsigner;
 
 import java.io.OutputStream;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 
 /**
@@ -26,28 +29,34 @@ import java.io.OutputStream;
  */
 public class Main {
     /**
-     * Does the actual work on JAR signing and verification, based on the
-     * parameter param. If something goes wrong an exception is thrown.
-     * 
-     * @param param
-     * @throws Exception
-     */
-    static void doWork(JSParameters param) throws Exception {
-        // TODO
-    }
-    
-    /**
      * The main method to run from another program.
+     * Parses the arguments, and performs the actual work 
+     * on JAR signing and verification. 
+     * If something goes wrong an exception is thrown.
      * 
      * @param args -
      *            command line with options.
      */
     public static void run(String[] args, OutputStream out) throws Exception {
-        // TODO
-        if (out != System.out){
-            UserInteractor.setOutputStream(out);
-        }
+        // set up logging
+        Logger logger = Logger.getLogger(JSParameters.loggerName);
+        logger.setUseParentHandlers(false);
+        Handler handler = new StreamHandler(out, new JSLogFormatter());
+        logger.addHandler(handler);
         
+        // parse command line arguments
+        JSParameters param = ArgParser.parseArgs(args, null);
+        // print help if incorrect or no arguments
+        if (param == null) {
+            JSHelper.printHelp();
+            return;
+        }
+        // do the actual work
+        if (param.isVerify()) {
+            JSVerifier.verifyJar(param);
+        } else {
+            JSSigner.signJar(param);
+        }
     }
 
     
@@ -61,8 +70,11 @@ public class Main {
         try {
             run(args, System.out);
         } catch (Exception e) {
-            // System.out.println("JarSigner error: " + e);
-            e.printStackTrace();
+            System.out.print("JarSigner error: "
+                    + e
+                    + ((e.getCause() != null) ? ", caused by " + e.getCause()
+                            : ""));
+            //e.printStackTrace();
         }
     }
 

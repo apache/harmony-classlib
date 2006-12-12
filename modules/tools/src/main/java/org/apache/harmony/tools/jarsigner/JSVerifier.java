@@ -22,5 +22,8 @@ package org.apache.harmony.tools.jarsigner;
  */
 public class JSVerifier {
     // TODO
+    public static void verifyJar(JSParameters param){
+        // TODO
+    }
 }
 

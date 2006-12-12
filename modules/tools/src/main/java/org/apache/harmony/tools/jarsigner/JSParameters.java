@@ -21,19 +21,21 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.util.jar.JarFile;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.harmony.tools.keytool.KeytoolParameters;
 import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 
 /**
  * The class encapsulates paramaters for jarsigner most of which are ususally
  * given in command line.
  */
-public class JSParameters {
+class JSParameters {
     /**
      * Default location of the keystore. Used when the value is not supplied by
      * the user.
@@ -54,8 +56,8 @@ public class JSParameters {
     // JAR file to work with
     private JarFile jarFile;
     
-    // JAR file URL 
-    private URI jarURI;
+    // JAR file URI or path 
+    private String jarURIPath;
 
     // alias to access an entry in keystore
     private String alias;
@@ -165,7 +167,7 @@ public class JSParameters {
     void setDefault(){
         keyStore = null;
         jarFile = null;
-        jarURI = null;        
+        jarURIPath = null;        
         alias = null;
         storeURI = null;        
         storeType = KeyStore.getDefaultType();
@@ -199,7 +201,7 @@ public class JSParameters {
         isSilent = false;
         proxy = null;
         proxyPort = 8888;
-        proxyType = null;
+        proxyType = Proxy.Type.HTTP;
     }
     
     // Getters and setters down here
@@ -301,10 +303,10 @@ public class JSParameters {
     }
 
     /**
-     * @param jarURI
+     * @param jarURIPath
      */
-    public void setJarURI(URI jarURI) {
-        this.jarURI = jarURI;
+    public void setJarURIorPath(String jarURIPath) {
+        this.jarURIPath = jarURIPath;
     }
 
     /**
@@ -575,10 +577,21 @@ public class JSParameters {
     JarFile getJarFile() throws IOException {
         if (jarFile == null) {
             try {
-                jarFile = new JarFile(new File(jarURI), isVerify);
+                File file;
+                try {
+                    // try to open the file as if jarURIPath is an URI
+                    URI jarURI = new URI(jarURIPath);
+                    file = new File(jarURI);
+                } catch (URISyntaxException e) {
+                    // try to open the file as if jarURIPath is a path
+                    file = new File(jarURIPath);
+                } catch (IllegalArgumentException e) {
+                    file = new File(jarURIPath);
+                }
+                jarFile = new JarFile(file, isVerify);
             } catch (IOException e) {
                 throw (IOException) new IOException("Failed to load JAR file "
-                        + jarURI).initCause(e);
+                        + jarURIPath).initCause(e);
             }
         }
         return jarFile;
@@ -587,8 +600,8 @@ public class JSParameters {
     /**
      * @return
      */
-    URI getJarURI() {
-        return jarURI;
+    String getJarURIorPath() {
+        return jarURIPath;
     }
 
     /**
@@ -613,11 +626,17 @@ public class JSParameters {
         if (keyStore == null) {
             String ksProvName = (ksProviderName != null) ? ksProviderName
                     : providerName;
+            // If the path to the store is not specified, try to open
+            // the store using the default path.
+            if (storeURI == null) {
+                storeURI = KeytoolParameters.defaultKeystorePath;
+            }
             try {
                 keyStore = KeyStoreLoaderSaver.loadStore(storeURI, storeType,
                         storePass, ksProvName);
             } catch (Exception e) {
-                throw new JarSignerException("Cannot load the keystore " + storeURI, e);
+                throw new JarSignerException("Cannot load the keystore "
+                        + storeURI, e);
             }
         }
         return keyStore;

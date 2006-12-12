@@ -22,5 +22,8 @@ package org.apache.harmony.tools.jarsigner;
  */
 public class JSSigner {
     // TODO
+    public static void signJar(JSParameters param){
+        // TODO
+    }
 }
 

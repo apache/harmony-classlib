@@ -23,17 +23,15 @@ import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
+import java.util.logging.Logger;
 
 /**
  * The class to parse the program arguments. 
  */
-public class ArgParser {
-    // TODO
+class ArgParser {
     // options names to compare to //
     final static String sVerify = "-verify";
 
@@ -57,25 +55,35 @@ public class ArgParser {
     
     final static String sSectionsOnly = "-sectionsonly";
     
-    final static String sProvider = "-provider";
+    final static String sProvider = "-providerclass";
     
     final static String sProviderName = "-providername";
 
-    final static String sCertProvider = "-certprovider";
+    final static String sCertProvider = "-certproviderclass";
     
     final static String sCertProviderName = "-certprovidername";
 
-    final static String sSigProvider = "-sigprovider";
+    final static String sSigProvider = "-sigproviderclass";
     
     final static String sSigProviderName = "-sigprovidername";
 
-    final static String sKSProvider = "-ksprovider";
+    final static String sKSProvider = "-ksproviderclass";
     
     final static String sKSProviderName = "-ksprovidername";
+    
+    final static String sMDProvider = "-mdproviderclass";
+    
+    final static String sMDProviderName = "-mdprovidername";
     
     final static String sTSA = "-tsa";
     
     final static String sTSAcert = "-tsacert";
+    
+    final static String sProxy = "-proxy";
+    
+    final static String sProxyType = "-proxytype";
+
+    final static String sSilent = "-silent";
     
     final static String sAltSigner = "-altsigner";
     
@@ -89,18 +97,16 @@ public class ArgParser {
      *         zero-sized, an unknown option is found or an expected option
      *         value is not given or not of an expected type. If null is
      *         returned, the param object contents is not defined.
-     * @throws JarSignerException  
-     * @throws IOException 
-     * @throws NoSuchAlgorithmException 
-     * @throws UnrecoverableKeyException 
-     * @throws KeyStoreException 
-     * @throws NoSuchProviderException 
-     * @throws CertificateException 
+     *         
+     * @throws JarSignerException
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws UnrecoverableKeyException
+     * @throws NoSuchAlgorithmException
      */
     static JSParameters parseArgs(String[] args, JSParameters param)
-            throws JarSignerException, KeyStoreException,
-            UnrecoverableKeyException, NoSuchAlgorithmException, IOException,
-            CertificateException, NoSuchProviderException {
+            throws JarSignerException, IOException, KeyStoreException,
+            UnrecoverableKeyException, NoSuchAlgorithmException {
         if (args == null){
             return null;
         }
@@ -110,7 +116,7 @@ public class ArgParser {
         if (param == null){
             param = new JSParameters();
         } else {
-            // clean param
+            // clean the param
             param.setDefault();
         }
         
@@ -150,6 +156,10 @@ public class ArgParser {
                 }
                 if (args[i].equalsIgnoreCase(sVerbose)) {
                     param.setVerbose(true);
+                    continue;
+                }
+                if (args[i].equalsIgnoreCase(sSilent)) {
+                    param.setSilent(true);
                     continue;
                 }
                 if (args[i].equalsIgnoreCase(sInternalSF)) {
@@ -196,18 +206,46 @@ public class ArgParser {
                     param.setKsProviderName(args[++i]);
                     continue;
                 }
+                if (args[i].equalsIgnoreCase(sMDProvider)) {
+                    param.setMdProvider(args[++i]);
+                    addProvider(args[i]);
+                    continue;
+                }
+                if (args[i].equalsIgnoreCase(sMDProviderName)) {
+                    param.setMdProviderName(args[++i]);
+                    continue;
+                }
                 if (args[i].equalsIgnoreCase(sTSA)) {
                     try {
-                        // TODO: URI scheme
                         param.setTsaURI(new URI(args[++i]));
                     } catch (URISyntaxException e) {
                         throw new JarSignerException("Argument " + args[i]
-                                + " is not a path or URL");
+                                + " is not an URI");
                     }
                     continue;
                 }
                 if (args[i].equalsIgnoreCase(sTSAcert)) {
                     param.setTsaCertAlias(args[++i]);
+                    continue;
+                }
+                if (args[i].equalsIgnoreCase(sProxy)) {
+                    int colonPos = args[++i].lastIndexOf(':');
+                    if (colonPos == -1) {
+                        param.setProxy(args[i]);
+                        continue;
+                    } 
+
+                    String proxy = args[i].substring(0, colonPos);
+                    int port;
+                    try {
+                        port = Integer.parseInt(args[i].substring(colonPos + 1,
+                                args[i].length()));
+                    } catch (NumberFormatException e) {
+                        throw new JarSignerException(
+                                "Proxy port must be an integer value.");
+                    }
+                    param.setProxy(proxy);
+                    param.setProxyPort(port);
                     continue;
                 }
                 if (args[i].equalsIgnoreCase(sAltSigner)) {
@@ -221,13 +259,7 @@ public class ArgParser {
                 
                 if ((param.isVerify() && i == args.length - 1)
                         || (!param.isVerify() && i == args.length - 2)) {
-                    try {
-                        // TODO: URI scheme
-                        param.setJarURI(new URI(args[i]));
-                    } catch (URISyntaxException e) {
-                        throw new JarSignerException("Argument " + args[i]
-                                + " is not a path or URL");
-                    }
+                    param.setJarURIorPath(args[i]);
                     continue;
                 }
                 if (!param.isVerify() && i == args.length - 1){
@@ -243,6 +275,7 @@ public class ArgParser {
         }
         
         // set specific provider names the same as the main provider name
+        // if their values are not set.
         String providerName = param.getProviderName();
         if (providerName != null){
             if (param.getCertProviderName() == null){
@@ -254,22 +287,45 @@ public class ArgParser {
             if (param.getKsProviderName() == null){
                 param.setKsProviderName(providerName);
             }
+            if (param.getMdProviderName() == null){
+                param.setMdProviderName(providerName);
+            }
         }
         
         // if the store password is not given, prompt for it
         if (param.getStorePass() == null) {
             param.setStorePass(UserInteractor
                     .getDataFromUser("Enter keystore password:  "));
+            // ckeck the password
+            param.getKeyStore();
         }
         
-        if (param.getAlias() == null){
-            // TODO
+        if (param.getAlias() == null && !param.isVerify()) {
+            param.setAlias(new String(UserInteractor
+                    .getDataFromUser("Enter alias name:  ")));
         }
+        if (!param.getKeyStore().containsAlias(param.getAlias())) {
+            throw new JarSignerException("The alias " + param.getAlias()
+                    + " does not exist in keystore");
+        }
+            
         // if key password is not given, try to inplace it with store password
-        if (param.getKeyPass() == null){
+        if (param.getKeyPass() == null) {
             param.setKeyPass(tryStorePassAsKeyPass(param.getKeyStore(), param
                     .getAlias(), param.getStorePass()));
         }
+
+        // TODO: if decide to implement such abilities, remove this code
+        if (param.isInternalSF() || param.isSectionsOnly()
+                || param.getAltSigner() != null
+                || param.getAltSignerPath() != null) {
+            Logger.getLogger(JSParameters.loggerName).warning(
+                    "Options " + sAltSigner + ", " + sAltSignerPath + ", "
+                            + sInternalSF + ", " + sSectionsOnly
+                            + " are currently ignored since they eliminate "
+                            + "useful optimizations. ");
+        }
+        
         
         return param;
     }
