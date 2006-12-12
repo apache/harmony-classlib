@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+TARGETOS = WINNT # Need _WIN32_WINNT=0x0500 to get GLYPHSET defined.
+APPVER = 5.0 
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=fontlib
@@ -20,12 +22,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-# TOFIX: fix warning so we can use default HYCFLAGS -WX
-HYCFLAGS = \
-  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
-  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0501 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I. \
-  /Iinclude /I..\..\gl\windows\include \
+HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include \
   -DUNICODE -D_UNICODE
 
 BUILDFILES = winFont.obj
