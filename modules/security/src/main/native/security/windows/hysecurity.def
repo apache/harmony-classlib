@@ -4,5 +4,3 @@ SECTIONS
 	.data	READ WRITE
 	.text	EXECUTE READ
 
-EXPORTS
-	Java_org_apache_harmony_security_provider_crypto_RandomBitsSupplier_getWindowsRandom
