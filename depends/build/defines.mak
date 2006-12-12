@@ -29,7 +29,7 @@ SHAREDSUB=..\shared\# ditto
 
 HYCOMMONCFLAGS = \
   -WX -GF -Gs -MD -Zm400 \
-  -D_DLL -D_MT -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ \
+  -D_DLL -D_MT -D_WINSOCKAPI_ \
   /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
   
 HYDEBUGCFLAGS = \
