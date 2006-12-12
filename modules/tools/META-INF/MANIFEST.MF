@@ -30,8 +30,10 @@ Import-Package: java.io,
  org.apache.harmony.luni.util,
  org.apache.harmony.security.asn1;version="1.0.0",
  org.apache.harmony.security.pkcs10;version="1.0.0",
+ org.apache.harmony.security.pkcs7;version="1.0.0",
  org.apache.harmony.security.provider.cert;version="1.0.0",
  org.apache.harmony.security.x501;version="1.0.0",
- org.apache.harmony.security.x509;version="1.0.0"
+ org.apache.harmony.security.x509;version="1.0.0",
+ org.apache.harmony.security.x509.tsp;version="1.0.0"
 Export-Package: org.apache.harmony.tools.javac,
  org.apache.harmony.tools.keytool
