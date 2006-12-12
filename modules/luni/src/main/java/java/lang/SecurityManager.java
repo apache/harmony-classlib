@@ -46,7 +46,8 @@ public class SecurityManager {
     private static final PropertyPermission READ_WRITE_ALL_PROPERTIES_PERMISSION = new PropertyPermission(
             "*", "read,write");
 
-    private static String[] securePackageList;
+    private static final String PKG_ACC_KEY = "package.access";
+    private static final String PKG_DEF_KEY = "package.definition";
 
 	/**
 	 * Flag to indicate whether a security check is in progress.
@@ -299,26 +300,8 @@ public class SecurityManager {
         if (packageName == null) {
             throw new NullPointerException();
         }
-        synchronized (SecurityManager.class) {
-            if (securePackageList == null) {
-                String securePackages = getSecurityProperty("package.access");
-                if (securePackages != null) {
-                    StringTokenizer tokenizer = new StringTokenizer(securePackages, ", ");
-                    int i = 0;
-                    securePackageList = new String[tokenizer.countTokens()];
-                    while (tokenizer.hasMoreTokens()) {
-                        securePackageList[i++] = tokenizer.nextToken();
-                    }
-                } else {
-                    securePackageList = new String[0];
-                }
-            }
-            for (int i = 0; i < securePackageList.length; i++) {
-                if (packageName.startsWith(securePackageList[i])) {
-                    checkPermission(new RuntimePermission("accessClassInPackage." + packageName));
-                    return;
-                }
-            }
+        if (checkPackageProperty(PKG_ACC_KEY, packageName)) {
+            checkPermission(new RuntimePermission("accessClassInPackage." + packageName));
         }
     }
 
@@ -330,26 +313,44 @@ public class SecurityManager {
 	 *            the name of the package to add a class to.
 	 */
 	public void checkPackageDefinition(String packageName) {
-		if (packageName == null) {
-            throw new NullPointerException();
-        }
-		String securePackages = getSecurityProperty("package.definition");
-		if (securePackages != null) {
-			StringTokenizer tokenizer = new StringTokenizer(securePackages,
-					", ");
-			while (tokenizer.hasMoreTokens()) {
-				if (packageName.startsWith(tokenizer.nextToken())) {
-					checkPermission(new RuntimePermission(
-							"defineClassInPackage." + packageName));
-					return;
-				}
-			}
-		}
+	    if (packageName == null) {
+	        throw new NullPointerException();
+	    }
+            if (checkPackageProperty(PKG_DEF_KEY, packageName)) {
+                checkPermission(new RuntimePermission("defineClassInPackage." + packageName));
+            }
 	}
 
-	private String getSecurityProperty(final String property) {
-        PrivilegedAction<String> pa = PriviAction.getSecurityProperty(property);
-        return AccessController.doPrivileged(pa);
+    /**
+     * Returns true if the package name is restricted by 
+     * the specified security property.
+     */
+    private static boolean checkPackageProperty(
+            final String property, final String pkg) 
+    {
+            String list = AccessController.doPrivileged(PriviAction
+                .getSecurityProperty(property));
+        if (list != null) {
+            int plen = pkg.length();
+            StringTokenizer tokenizer = new StringTokenizer(list, ", ");
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                int tlen = token.length();
+                if (plen > tlen) {
+                    if (pkg.startsWith(token)
+                            && (token.charAt(tlen - 1) == '.' || pkg
+                                    .charAt(tlen) == '.')) {
+                        return true;
+                    }
+                } else if (plen + 1 >= tlen && token.startsWith(pkg)) {
+                    if (plen == tlen || token.charAt(tlen - 1) == '.') {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 	/**
