@@ -56,7 +56,7 @@ public class PopulationCodec extends Codec {
 	public long[] decode(int n, InputStream in) throws IOException, Pack200Exception {
 		long favoured[] =new long[n]; // there must be <= n  values, but probably a lot less
 		long result[];
-		// read table of favourites first
+		// read table of favorites first
 		long smallest = Long.MAX_VALUE;
 		long last = 0;
 		long value = 0; // TODO Are these sensible starting points?
@@ -90,9 +90,9 @@ public class PopulationCodec extends Codec {
 					throw new Pack200Exception("Cannot calculate token codec from " + k + " and " + l);
 			}
 		}
-		// read favourites
+		// read favorites
 		result = tokenCodec.decode(n, in);
-		// read unfavourites
+		// read unfavorites
 		last = 0;
 		for(int i=0;i<n;i++) {
 			int index = (int) result[i];

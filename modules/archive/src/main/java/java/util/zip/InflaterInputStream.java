@@ -26,7 +26,7 @@ import java.io.InputStream;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * InflaterOuputStream read data which has been compressed using the DEFLATE
+ * InflaterOutputStream read data which has been compressed using the DEFLATE
  * compression method.
  * 
  * @see Inflater

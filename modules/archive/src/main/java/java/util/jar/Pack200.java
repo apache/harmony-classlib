@@ -45,7 +45,7 @@ public abstract class Pack200 {
 
 	/**
 	 * The method first read from system property for the classname of a Packer,
-	 * if such property exsists,the class shall be initialized; or the default
+	 * if such property exists, the class shall be initialized; or the default
 	 * Packer will be returned
 	 * 
 	 * @return a instance of Packer
@@ -72,7 +72,7 @@ public abstract class Pack200 {
 
 	/**
 	 * The method first read from system property for the classname of a
-	 * Unpacker, if such property exsists,the class shall be initialized; or the
+	 * Unpacker, if such property exists, the class shall be initialized; or the
 	 * default Unpacker will be returned
 	 * 
 	 * @return a instance of Unpacker

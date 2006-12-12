@@ -26,7 +26,7 @@ import java.util.Vector;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * ZipOuputStream is used to write ZipEntries to the underlying stream. Output
+ * ZipOutputStream is used to write ZipEntries to the underlying stream. Output
  * from ZipOutputStream conforms to the ZipFile file format.
  * 
  * @see ZipInputStream

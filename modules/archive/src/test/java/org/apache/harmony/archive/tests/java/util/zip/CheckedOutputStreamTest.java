@@ -42,7 +42,7 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			fail("Unable to find file");
 		} catch (SecurityException e) {
 			fail(
-					"file cannot be opend for writing due to security reasons");
+					"file cannot be opened for writing due to security reasons");
 		}
 	}
 
@@ -74,7 +74,7 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			fail("Unable to find file");
 		} catch (SecurityException e) {
 			fail(
-					"file cannot be opend for writing due to security reasons");
+					"file cannot be opened for writing due to security reasons");
 		}
 	}
 
@@ -128,7 +128,7 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			fail("Unable to find file");
 		} catch (SecurityException e) {
 			fail(
-					"file cannot be opend for writing due to security reasons");
+					"file cannot be opened for writing due to security reasons");
 		} catch (IndexOutOfBoundsException e) {
 			fail("Index for write is out of bounds");
 		}

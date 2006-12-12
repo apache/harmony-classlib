@@ -82,7 +82,7 @@ public class InflaterInputStreamTest extends TestCase {
 		InflaterInputStream inflatIP = new InflaterInputStream(infile,
 				inflate);
 
-		inflatIP.read(byteArray, 0, 5);// ony suppose to read in 5 bytes
+		inflatIP.read(byteArray, 0, 5);// only suppose to read in 5 bytes
 		inflatIP.close();
 	}
 
@@ -150,7 +150,7 @@ public class InflaterInputStreamTest extends TestCase {
 
 		for (int j = 0; j < orgBuffer.length; j++) {
 			assertTrue(
-				"orginal compressed data did not equal decompressed data",
+				"original compressed data did not equal decompressed data",
 				buffer[j] == orgBuffer[j]);
 		}
 	}
@@ -248,10 +248,10 @@ public class InflaterInputStreamTest extends TestCase {
 
 		skip = inflatIP2.skip(Integer.MAX_VALUE);
 		// System.out.println(skip);
-		assertEquals("method skip() returned wrong number of bytes skiped",
+		assertEquals("method skip() returned wrong number of bytes skipped",
 				5, skip);
 
-		// test for skiping of 2 bytes
+		// test for skipping of 2 bytes
 		InputStream infile3 = Support_Resources
 				.getStream("hyts_constru(OD).txt");
 		InflaterInputStream inflatIP3 = new InflaterInputStream(infile3);
@@ -268,7 +268,7 @@ public class InflaterInputStreamTest extends TestCase {
 
 		for (int j = 2; j < orgBuffer.length; j++) {
 			assertTrue(
-				"orginal compressed data did not equal decompressed data",
+				"original compressed data did not equal decompressed data",
 				buffer[j - 2] == orgBuffer[j]);
 		}
 	}

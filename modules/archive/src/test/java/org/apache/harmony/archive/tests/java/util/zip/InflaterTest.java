@@ -398,13 +398,13 @@ public class InflaterTest extends junit.framework.TestCase {
 				inflate.inflate(outPutInf);
 			}
 			for (int i = 0; i < byteArray.length; i++) {
-				assertEquals("the output array from inflate should contain 0 because the header of inflate and deflate did not match, but this faled",
+				assertEquals("the output array from inflate should contain 0 because the header of inflate and deflate did not match, but this failed",
 						0, outPutBuff1[i]);
 			}
 		} catch (DataFormatException e) {
 			r = 1;
 		}
-		assertEquals("Error: exception should be thrown becuase of header inconsistancy",
+		assertEquals("Error: exception should be thrown because of header inconsistency",
 				1, r);
 
 	}
@@ -535,14 +535,14 @@ public class InflaterTest extends junit.framework.TestCase {
 	public void test_setDictionary$B() {
         //FIXME This test doesn't pass in Harmony classlib or Sun 5.0_7 RI
         /*
-		// test method of java.tuil.zip.inflater.setDictionary(byte)
+		// test method of java.util.zip.inflater.setDictionary(byte)
 		byte dictionaryArray[] = { 'e', 'r', 't', 'a', 'b', 2, 3 };
 		byte byteArray[] = { 4, 5, 3, 2, 'a', 'b', 6, 7, 8, 9, 0, 's', '3',
 				'w', 'r' };
 
 		byte outPutInf[] = new byte[100];
 
-		// trying to inflate without seting a dictionary
+		// trying to inflate without setting a dictionary
 
 		Inflater inflateWO = new Inflater();
 		byte outPutInf2[] = new byte[100];
@@ -607,7 +607,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		Inflater inflate = new Inflater();
 		inflate.setInput(byteArray, offSet, length);
 		assertTrue(
-				"setInputBII did not deliever the right number of bytes to the input buffer",
+				"setInputBII did not deliver the right number of bytes to the input buffer",
 				inflate.getRemaining() == length);
 		// boundary check
 		inflate.reset();

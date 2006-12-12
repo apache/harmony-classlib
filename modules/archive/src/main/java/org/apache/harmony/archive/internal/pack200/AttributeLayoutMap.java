@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Stores a mapping from attribute names to their corresponding layout types.
  * Note that names of attribute layouts and their formats are <emph>not</emph>
- * internationalised, and should not be translated.
+ * internationalized, and should not be translated.
  */
 public class AttributeLayoutMap {
 	// create a whole bunch of AttributeLayouts here

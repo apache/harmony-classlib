@@ -479,7 +479,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 			java.io.File f = new java.io.File(tempFileName);
 			f.delete();
 		} catch (java.io.IOException e) {
-			System.out.println("Exception durnig tearDown");
+			System.out.println("Exception during tearDown");
 		}
 	}
 

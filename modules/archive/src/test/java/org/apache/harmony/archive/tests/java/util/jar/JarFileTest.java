@@ -470,7 +470,7 @@ public class JarFileTest extends TestCase {
             while (in.available() > 0) {
                 in.read(buffer);
             }
-            fail("should throw Security Excetpion");
+            fail("should throw Security Exception");
         } catch (SecurityException e) {
             // desired
         }
@@ -492,7 +492,7 @@ public class JarFileTest extends TestCase {
             ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
-                fail("should throw Security Excetpion");
+                fail("should throw Security Exception");
             } catch (SecurityException e) {
                 // desired
             }
@@ -515,7 +515,7 @@ public class JarFileTest extends TestCase {
             ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
-                fail("should throw Security Excetpion");
+                fail("should throw Security Exception");
             } catch (SecurityException e) {
                 // desired
             }
@@ -524,7 +524,7 @@ public class JarFileTest extends TestCase {
 
     /*
      * If the content of the .SA file is modified, no matter what it resides,
-     * JarFile.getInfputStream of any JarEntry will throw Security Exception.
+     * JarFile.getInputStream of any JarEntry will throw Security Exception.
      */
     public void test_JarFile_Modified_SF_EntryAttributes() throws IOException {
         String modifiedJarName = "Modified_SF_EntryAttributes.jar";
@@ -536,7 +536,7 @@ public class JarFileTest extends TestCase {
             ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
-                fail("should throw Security Excetpion");
+                fail("should throw Security Exception");
             } catch (SecurityException e) {
                 // desired
             }

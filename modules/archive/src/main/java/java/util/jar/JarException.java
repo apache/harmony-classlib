@@ -20,7 +20,7 @@ package java.util.jar;
 import java.util.zip.ZipException;
 
 /**
- * This runtime exception is thrown when a problem occurrs while reading a JAR
+ * This runtime exception is thrown when a problem occurs while reading a JAR
  * file.
  */
 public class JarException extends ZipException {

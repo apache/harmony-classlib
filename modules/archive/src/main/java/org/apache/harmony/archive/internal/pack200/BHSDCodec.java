@@ -201,14 +201,14 @@ public final class BHSDCodec extends Codec {
 	/**
 	 * Returns the largest value that this codec can represent.
 	 * 
-	 * @eturn the largest value that this codec can represent.
+	 * @return the largest value that this codec can represent.
 	 */
 	public long largest() {
 		long result;
 		if (isDelta()) {
 			result = Long.MAX_VALUE;
 		} else {
-			// TODO This can probably be optimised into a better mathematical statement
+			// TODO This can probably be optimized into a better mathematical statement
 			if (s == 0) {
 				result = cardinality() - 1;
 			} else if (s == 1) {
@@ -225,7 +225,7 @@ public final class BHSDCodec extends Codec {
 	/**
 	 * Returns the smallest value that this codec can represent.
 	 * 
-	 * @eturn the smallest value that this codec can represent.
+	 * @return the smallest value that this codec can represent.
 	 */
 	public long smallest() {
 		long result;

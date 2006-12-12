@@ -30,7 +30,7 @@ public class JarOutputStream extends ZipOutputStream {
     private Manifest manifest;
 
     /**
-     * Contructs a new JarOuputStream using os as the underlying stream.
+     * Constructs a new JarOutputStream using os as the underlying stream.
      * Manifest information for the JarFile to be written is obtained from the
      * parameter Manifest, mf.
      * 
@@ -54,7 +54,7 @@ public class JarOutputStream extends ZipOutputStream {
     }
 
     /**
-     * Contructs a new JarOuputStream using os as the underlying stream.
+     * Constructs a new JarOutputStream using os as the underlying stream.
      * 
      * @param os
      *            The OutputStream to write to

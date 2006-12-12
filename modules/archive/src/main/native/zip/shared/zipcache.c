@@ -87,7 +87,7 @@ typedef struct HaZipDirEntry
 
 typedef struct HyZipCacheEntry
 {
-  HyZipCache info;              /* publically visible part */
+  HyZipCache info;              /* publicly visible part */
   HaZipChunkHeader *currentChunk;
   HaZipDirEntry *chunkActiveDir;
   HaZipDirEntry root;
@@ -134,7 +134,7 @@ PROTOTYPE ((const void *src1, const void *src2, UDATA length));
  * @param[in] zipName the zip file name
  * @param[in] zipNameLength
  *
- * @return the new zip cache if one was succesfully created, NULL otherwise
+ * @return the new zip cache if one was successfully created, NULL otherwise
  *
 */
 
@@ -756,7 +756,7 @@ zipCache_enumNew (HyZipCache * zipCache, char *directoryName, void **handle)
  *
  * @return 0 on success
  * @return -1 if all the directories have been returned already
- * @return the required size of nameBuf if nameBufSize is insuffient to hold the entire name (does not skip the element)
+ * @return the required size of nameBuf if nameBufSize is insufficient to hold the entire name (does not skip the element)
  *
  * @see zipCache_enumNew
 *

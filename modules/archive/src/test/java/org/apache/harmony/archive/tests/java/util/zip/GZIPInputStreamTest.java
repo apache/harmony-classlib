@@ -122,7 +122,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 					2074883667L, inGZIP.getChecksum().getValue());
 			for (int i = 0; i < orgBuf.length; i++) {
 				assertTrue(
-						"the decompressed data does not equal the orginal data decompressed",
+						"the decompressed data does not equal the original data decompressed",
 						orgBuf[i] == outBuf[i]);
 				// System.out.println(orgBuf[i] + " " + outBuf[i]);
 			}

@@ -42,7 +42,7 @@ import java.io.InputStream;
  * as itself, aka {@link #BYTE1}, B is 1 (each byte takes a maximum of 1 byte).</dd>
  * <dt>H</dt>
  * <dd>The radix of the integer. Values are defined as a sequence of values,
- * where value <code>n</code> is multipled by <code>H^<sup>n</sup></code>.
+ * where value <code>n</code> is multiplied by <code>H^<sup>n</sup></code>.
  * So the number 1234 may be represented as the sequence 4 3 2 1 with a radix
  * (H) of 10. Note that other permutations are also possible; 43 2 1 will also
  * encode 1234. The co-parameter L is defined as 256-H. This is important
@@ -63,7 +63,7 @@ import java.io.InputStream;
  * codec is a non-delta encoding, then the value is ignored if passed. If the
  * codec is a delta encoding, it is a run-time error to call the value without
  * the extra parameter, and the previous value should be returned. (It was
- * designed this way to support multi-threaded access without requring a new
+ * designed this way to support multi-threaded access without requiring a new
  * instance of the Codec to be cloned for each use.)
  * <dt>
  * </dl>

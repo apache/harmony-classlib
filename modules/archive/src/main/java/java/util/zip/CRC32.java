@@ -68,7 +68,7 @@ public class CRC32 implements java.util.zip.Checksum {
 	 * @param buf
 	 *            Buffer to update Checksum
 	 * @param off
-	 *            Offest in buf to obtain data from
+	 *            Offset in buf to obtain data from
 	 * @param nbytes
 	 *            Number of bytes to read from buf
 	 */

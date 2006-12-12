@@ -66,9 +66,9 @@ public class Adler32 implements java.util.zip.Checksum {
 	 * offset and using nbytes of data.
 	 * 
 	 * @param buf
-	 *            bufffer to obtain dat from
+	 *            buffer to obtain dat from
 	 * @param off
-	 *            offset i buf to conpy from
+	 *            offset i buf to copy from
 	 * @param nbytes
 	 *            number of bytes from buf to use
 	 */

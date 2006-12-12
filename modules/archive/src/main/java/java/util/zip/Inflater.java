@@ -254,7 +254,7 @@ public class Inflater {
 
 	/**
 	 * Sets the preset dictionary to be used for inflation to buf.
-	 * needsDictioanry() can be called to determine whether the current input
+	 * needsDictionary() can be called to determine whether the current input
 	 * was deflated using a preset dictionary.
 	 * 
 	 * @param buf

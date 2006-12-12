@@ -150,7 +150,7 @@ public class JarEntry extends ZipEntry {
 
         for (Certificate element : certs) {
             if (!(element instanceof X509Certificate)) {
-                // Only X509CErtificate-s are taken into account - see API spec.
+                // Only X509Certificate-s are taken into account - see API spec.
                 continue;
             }
             X509Certificate x509 = (X509Certificate) element;

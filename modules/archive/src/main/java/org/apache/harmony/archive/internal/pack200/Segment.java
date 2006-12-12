@@ -808,7 +808,7 @@ public class Segment {
 			}
 		}
 		if (codeBands > 0)
-			throw new Error("Can't handle non-abstract, non-native methods/initialisers at the moment (found " + codeBands + " code bands)");
+			throw new Error("Can't handle non-abstract, non-native methods/initializers at the moment (found " + codeBands + " code bands)");
 		debug("unimplemented code_headers");
 		debug("unimplemented code_max_stack");
 		debug("unimplemented code_max_na_locals");
@@ -995,7 +995,7 @@ public class Segment {
 	 * <code>public static void main(String args[])</code> has a form of
 	 * <code>[L(V)</code> and a classes array of
 	 * <code>[java.lang.String]</code>. The {@link #cpSignature} is a string
-	 * represenation identical to the bytecode equivalent
+	 * representation identical to the bytecode equivalent
 	 * <code>[Ljava/lang/String;(V)</code> TODO Check that the form is as
 	 * above and update other types e.g. J
 	 * 
@@ -1092,7 +1092,7 @@ public class Segment {
 			last = (int) Codec.DELTA5.decode(in, last);
 			bigSuffixData[i] = new char[(int) last];
 		}
-		// initialise big suffix data
+		// initialize big suffix data
 		for (int i = 0; i < bigSuffix; i++) {
 			char[] singleBigSuffixData = bigSuffixData[i];
 			last = 0;
@@ -1514,7 +1514,7 @@ public class Segment {
 			int size = (int) fileSize[i];
 			// TODO This buggers up if file_size > 2^32. Probably an array is
 			// not the right choice, and
-			// we should just serialise the bugger here?
+			// we should just serialize the bugger here?
 			fileBits[i] = new byte[size];
 			for (int j = 0; j < size; j++) {
 				fileBits[i][j] = (byte) Codec.BYTE1.decode(in);
