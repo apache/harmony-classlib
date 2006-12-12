@@ -110,7 +110,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_Malloc_memmove
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_Malloc_strncpy
   (JNIEnv *env, jclass self, jlong addr1, jlong addr2, jlong len)
 {
-    strncpy(jlong2addr(char, addr1), jlong2addr(const char, addr2), len);
+    strncpy(jlong2addr(char, addr1), jlong2addr(const char, addr2), (size_t)len);
     return addr1;
 }
 

@@ -358,7 +358,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_MemoryAccessor_get
 {
   char *buf = (char*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, 0);
 
-  memcpy(buf + offset, jlong2addr(char, addr), size);
+  memcpy(buf + offset, jlong2addr(char, addr), (size_t)size);
 
   (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, buf, 0);
 }
@@ -373,7 +373,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_MemoryAccessor_set
 {
   char *buf = (char*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, 0);
 
-  memcpy(jlong2addr(char, addr), buf + offset, size);
+  memcpy(jlong2addr(char, addr), buf + offset, (size_t)size);
 
   (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, buf, 0);
 }
@@ -569,7 +569,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_misc_accessors_MemoryAccessor_get
   (JNIEnv *env, jobject self, jlong addr, jlong size)
 {
     int mult = 1;
-    int i;
+    jlong i;
     jbyte* block = jlong2addr(jbyte, addr);
     jint res = 0;
     for (i = size - 1; i >= 0; i--) {

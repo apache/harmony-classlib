@@ -21,7 +21,7 @@
 #include <sys/types.h>
 #endif
 
-#define min(a, b) ((a < b) ? a : b)
+#define MIN(a, b) ((a < b) ? a : b)
 
 #include "MemMacros.h"
 #include "org_apache_harmony_misc_accessors_StringAccessor.h"
@@ -97,11 +97,11 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_createStringUTF__JJ
   (JNIEnv *env, jobject self, jlong ptr, jlong len)
 {
-    const jlong tmplen = len + 2;
+    const size_t tmplen = (size_t)len + 2;
     char* cstr = (char*)malloc(tmplen);
     jstring res;
     memset(cstr, 0, tmplen);
-    strncpy(cstr, jlong2addr(const char, ptr), len);
+    strncpy(cstr, jlong2addr(const char, ptr), (size_t)len);
     res = (*env)->NewStringUTF(env, cstr);
     free(cstr);
     return res;
@@ -115,5 +115,5 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_createString__JJ
   (JNIEnv *env, jobject self, jlong ptr, jlong len)
 {
-    return (*env)->NewString(env, jlong2addr(const jchar, ptr), min(len >> 1, jstrlen(jlong2addr(const jchar, ptr))));
+    return (*env)->NewString(env, jlong2addr(const jchar, ptr), (jsize)MIN(len >> 1, jstrlen(jlong2addr(const jchar, ptr))));
 }
