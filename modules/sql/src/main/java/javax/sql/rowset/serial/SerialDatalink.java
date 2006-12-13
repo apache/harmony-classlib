@@ -44,7 +44,7 @@ public class SerialDatalink implements Serializable, Cloneable {
      */
     public SerialDatalink(URL url) throws SerialException {
         if (url == null) {
-            throw new SerialException(Messages.getString("sql.12")); // $NON-NLS-1$
+            throw new SerialException(Messages.getString("sql.12")); //$NON-NLS-1$
         }
         this.url = url;
     }

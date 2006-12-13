@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 
 public class SyncFactory {
-    public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname";
+    public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
 
-    public static String ROWSET_SYNC_VENDOR = "rowset.provider.vendor";
+    public static String ROWSET_SYNC_VENDOR = "rowset.provider.vendor"; //$NON-NLS-1$
 
-    public static String ROWSET_SYNC_PROVIDER_VERSION = "rowset.provider.version";
+    public static String ROWSET_SYNC_PROVIDER_VERSION = "rowset.provider.version"; //$NON-NLS-1$
 
     public static void registerProvider(String providerID) throws SyncFactoryException {
         throw new UnsupportedOperationException();

@@ -27,9 +27,9 @@ import java.sql.SQLException;
 import javax.sql.RowSet;
 
 public interface WebRowSet extends CachedRowSet, Joinable, ResultSet, RowSet {
-    String PUBLIC_XML_SCHEMA = "--//Sun Microsystems, Inc.//XSD Schema//EN";
+    String PUBLIC_XML_SCHEMA = "--//Sun Microsystems, Inc.//XSD Schema//EN"; //$NON-NLS-1$
 
-    String SCHEMA_SYSTEM_ID = "http://java.sun.com/xml/ns/jdbc/webrowset.xsd";
+    String SCHEMA_SYSTEM_ID = "http://java.sun.com/xml/ns/jdbc/webrowset.xsd"; //$NON-NLS-1$
 
     void readXml(Reader reader) throws SQLException;
 

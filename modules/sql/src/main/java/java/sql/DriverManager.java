@@ -163,7 +163,7 @@ public class DriverManager {
             throws SQLException {
         // 08 - connection exception
         // 001 - SQL-client unable to establish SQL-connection
-        String sqlState = "08001";
+        String sqlState = "08001"; //$NON-NLS-1$
         if (url == null) {
             // sql.5=The url cannot be null
             throw new SQLException(Messages.getString("sql.5"), sqlState); //$NON-NLS-1$
@@ -246,7 +246,7 @@ public class DriverManager {
         // sql.6=No suitable driver
         //SQLState: 08 - connection exception
         //001 - SQL-client unable to establish SQL-connection
-        throw new SQLException(Messages.getString("sql.6"), "08001"); //$NON-NLS-1$
+        throw new SQLException(Messages.getString("sql.6"), "08001"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
