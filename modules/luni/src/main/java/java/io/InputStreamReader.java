@@ -47,11 +47,11 @@ public class InputStreamReader extends Reader {
 
     private static final int BUFFER_SIZE = 8192;
 
+    private boolean endOfInput = false;
+
     CharsetDecoder decoder;
 
     ByteBuffer bytes = ByteBuffer.allocate(BUFFER_SIZE);
-
-    CharBuffer chars = CharBuffer.allocate(BUFFER_SIZE);
 
     /**
      * Constructs a new InputStreamReader on the InputStream <code>in</code>.
@@ -71,7 +71,6 @@ public class InputStreamReader extends Reader {
         decoder = Charset.forName(encoding).newDecoder().onMalformedInput(
                 CodingErrorAction.REPLACE).onUnmappableCharacter(
                 CodingErrorAction.REPLACE);
-        chars.limit(0);
     }
 
     /**
@@ -103,7 +102,6 @@ public class InputStreamReader extends Reader {
         } catch (IllegalArgumentException e) {
             throw new UnsupportedEncodingException();
         }
-        chars.limit(0);
     }
 
     /**
@@ -121,7 +119,6 @@ public class InputStreamReader extends Reader {
         dec.averageCharsPerByte();
         this.in = in;
         decoder = dec;
-        chars.limit(0);
     }
 
     /**
@@ -140,7 +137,6 @@ public class InputStreamReader extends Reader {
         decoder = charset.newDecoder().onMalformedInput(
                 CodingErrorAction.REPLACE).onUnmappableCharacter(
                 CodingErrorAction.REPLACE);
-        chars.limit(0);
     }
 
     /**
@@ -348,17 +344,12 @@ public class InputStreamReader extends Reader {
     @Override
     public int read() throws IOException {
         synchronized (lock) {
-            if (isOpen()) {
-                if (chars.limit() == chars.position()) {
-                    fillBuf();
-                }
-                if (chars.limit() == 0) {
-                    return -1;
-                }
-                return chars.get();
-            }
-            // K0070=InputStreamReader is closed.
-            throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+            if (!isOpen())
+                // K0070=InputStreamReader is closed.
+                throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+
+            char buf[] = new char[1];
+            return read(buf, 0, 1) != -1 ? buf[0] : -1;
         }
     }
 
@@ -392,34 +383,76 @@ public class InputStreamReader extends Reader {
                 if (length == 0) {
                     return 0;
                 }
-                // read at least once
-                if (chars.limit() == chars.position()) {
-                    fillBuf();
-                }
-                int position = chars.position();
-                int availableChars = chars.limit() - position;
-                // read at least once for one byte
-                int needChars = length;
-                while (availableChars < needChars) {
-                    System.arraycopy(chars.array(), position, buf, offset,
-                            availableChars);
-                    chars.position(position + availableChars);
-                    needChars -= availableChars;
-                    offset += availableChars;
-                    if (in.available() <= 0) {
-                        return needChars == length ? -1 : length - needChars;
-                    }
-                    fillBuf();
-                    position = chars.position();
-                    availableChars = chars.limit();
-                    if (availableChars == 0) {
-                        return needChars == length ? -1 : length - needChars;
-                    }
-                }
-                System.arraycopy(chars.array(), position, buf, offset,
-                        needChars);
-                chars.position(chars.position() + needChars);
-                return length;
+				
+	            CharBuffer out = CharBuffer.wrap(buf, offset, length);
+	            CoderResult result = CoderResult.UNDERFLOW;
+	            byte[] a = bytes.array();
+	            boolean has_been_read = false;
+
+	            
+	            if(!bytes.hasRemaining() || bytes.limit() == bytes.capacity()) {
+		            // Nothing is available in the buffer...
+	            	if(!bytes.hasRemaining())
+		            bytes.clear();
+		            int readed = in.read(a, bytes.arrayOffset(), bytes.remaining());
+		            if(readed == -1) {
+			            endOfInput = true;
+			            return -1;
+		            }
+		            bytes.limit(readed);
+		            has_been_read = true;
+	            }
+	            while (out.hasRemaining()) {
+                    if (bytes.hasRemaining()) {
+                        result = decoder.decode(bytes, out, false);
+                        if (!bytes.hasRemaining() && endOfInput) {
+                            decoder.decode(bytes, out, true);
+                            decoder.flush(out);
+                            decoder.reset();
+                            break;
+                        }
+                        if(!out.hasRemaining() || bytes.position() == bytes.limit())
+                        bytes.compact();
+                    } 
+                    if(in.available() > 0 && (!has_been_read && out.hasRemaining()) || out.position() == 0 ) {
+	                    bytes.compact();
+	                    int to_read = bytes.remaining();
+	                    int off = bytes.arrayOffset() + bytes.position();
+	
+	                    to_read = in.read(a, off, to_read);
+	                    if (to_read == -1) {
+	                    	if(bytes.hasRemaining())
+	                    	bytes.flip();
+	                        endOfInput = true;
+	                        break;
+	                    }
+	                    has_been_read = true;
+						if(to_read > 0) {
+							bytes.limit(bytes.position()+to_read);
+							bytes.position(0);
+						}
+					} else 
+						break;
+ 	            }
+
+ 	            if(result == CoderResult.UNDERFLOW && endOfInput) {
+	 	            result = decoder.decode(bytes, out, true);
+                            // FIXME: should flush at first, but seems ICU has a bug that 
+                            // it will throw IAE if some malform/unmappable bytes found during
+                            // decoding
+                            //   result = decoder.flush(chars);
+	 	            decoder.reset();
+	            }
+ 	            if(result.isMalformed()) {
+ 	                throw new MalformedInputException(result.length());
+ 	            }else if(result.isUnmappable()){
+ 	                throw new UnmappableCharacterException(result.length());
+ 	            }
+	            if(result == CoderResult.OVERFLOW && bytes.position()!=0) 
+	            	bytes.flip();
+	            
+	            return out.position() - offset == 0 ? -1 : out.position() - offset;
+				
             }
             // K0070=InputStreamReader is closed.
             throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
@@ -432,46 +465,6 @@ public class InputStreamReader extends Reader {
      */
     private boolean isOpen() {
         return in != null;
-    }
-
-    /*
-     * refill the buffer from wrapped InputStream
-     */
-    private void fillBuf() throws IOException {
-        chars.clear();
-        int read = 0;
-        do {
-            try {
-                read = in.read(bytes.array());
-            } catch (IOException e) {
-                chars.limit(0);
-                throw e;
-            }
-            boolean endOfInput = false;
-            if (read == -1) {
-                bytes.limit(0);
-                endOfInput = true;
-            } else {
-                bytes.limit(read);
-            }
-            CoderResult result = decoder.decode(bytes, chars, endOfInput);
-            if (result.isMalformed()) {
-                throw new MalformedInputException(result.length());
-            } else if (result.isUnmappable()) {
-                throw new UnmappableCharacterException(result.length());
-            }
-            if (endOfInput) {
-                /*
-                 * FIXME: should flush at first, but seems ICU has a bug that it
-                 * will throw IAE if some malform/unmappable bytes found during
-                 * decoding.
-                 */
-                // result = decoder.flush(chars);
-                decoder.reset();
-            }
-            bytes.clear();
-        } while (read > 0 && chars.position() == 0);
-        chars.flip();
     }
 
     /**
@@ -499,7 +492,8 @@ public class InputStreamReader extends Reader {
                 throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
             }
             try {
-                return chars.limit() > chars.position() || in.available() > 0;
+	        return bytes.limit() != BUFFER_SIZE
+                || in.available() > 0;
             } catch (IOException e) {
                 return false;
             }

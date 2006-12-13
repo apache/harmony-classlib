@@ -324,10 +324,35 @@ public class BufferedReader extends Reader {
 	public String readLine() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
+				/* Are there buffered characters available? */
+				if ((pos >= count) && (fillbuf() == -1)) {
+					return null;
+				}
+				for (int charPos = pos; charPos < count; charPos++) {
+					char ch = buf[charPos];
+					if (ch > '\r')
+						continue;
+					if (ch == '\n') {
+						String res = new String(buf, pos, charPos - pos);
+						pos = charPos + 1;
+						return res;
+					} else if (ch == '\r') {
+						String res = new String(buf, pos, charPos - pos);
+						pos = charPos + 1;
+						if (((pos < count) || (fillbuf() != -1))
+								&& (buf[pos] == '\n')) {
+							pos++;
+						}
+						return res;
+					}
+				}
+
 				char eol = '\0';
 				StringBuilder result = new StringBuilder(80);
 				/* Typical Line Length */
 
+				result.append(buf, pos, count - pos);
+				pos = count;
 				while (true) {
 					/* Are there buffered characters available? */
 					if (pos >= count) {
@@ -342,9 +367,10 @@ public class BufferedReader extends Reader {
                         }
 					}
 					for (int charPos = pos; charPos < count; charPos++) {
-						if (eol == '\0'
-								&& (buf[charPos] == '\n' || buf[charPos] == '\r')) {
-							eol = buf[charPos];
+						if (eol == '\0') {
+							if ((buf[charPos] == '\n' || buf[charPos] == '\r')) {
+								eol = buf[charPos];
+							}
 						} else if (eol == '\r' && (buf[charPos] == '\n')) {
 							if (charPos > pos) {
                                 result.append(buf, pos, charPos - pos - 1);
@@ -359,11 +385,11 @@ public class BufferedReader extends Reader {
 							return result.toString();
 						}
 					}
-					if (eol != '\0') {
-                        result.append(buf, pos, count - pos - 1);
-                    } else {
-                        result.append(buf, pos, count - pos);
-                    }
+					if (eol == '\0') {
+						result.append(buf, pos, count - pos);
+					} else {
+						result.append(buf, pos, count - pos - 1);
+					}
 					pos = count;
 				}
 			}

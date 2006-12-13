@@ -130,12 +130,6 @@ public abstract class CharsetDecoder {
 	// the current status
 	private int status;
 
-	private byte[] remains = null;
-	
-	// replaceString should be put into output by next decode invocation
-	// if OVERFLOW occurred in current decode invocation.
-	private boolean needReplace = false;
-
 	/*
 	 * --------------------------------------- Constructor
 	 * ---------------------------------------
@@ -266,18 +260,8 @@ public abstract class CharsetDecoder {
 		}
 
 		output.flip();
-		CharBuffer truncatedBuffer = null;
-		// truncate elements after limit in the output.
-		// clippedBuffer has the same value of capacity and limit.
-		if (output.limit() == output.capacity()) {
-			truncatedBuffer = output;
-		} else {
-			truncatedBuffer = CharBuffer.allocate(output.remaining());
-			truncatedBuffer.put(output);
-			truncatedBuffer.flip();
-		}
 		status = FLUSH;
-		return truncatedBuffer;
+		return output;
 	}
 
 	/*
@@ -384,43 +368,13 @@ public abstract class CharsetDecoder {
 			throw new IllegalStateException();
 		}
 
-		// the last decode invocation hasn't put replace string into out 
-		// because of OVERFLOW
-		if(needReplace){
-			if(out.remaining() >= replace.length()){
-				out.put(replace);
-				needReplace = false;
-			}else{
-				return CoderResult.OVERFLOW;
-			}
-		}
-		
 		CoderResult result = null;
-
-		// save old values of remains.length and the position of in.
-		int remainsLength = 0;
-		int inOldPosition = in.position();
-
-		// construct decodingBuffer for decode.
-		// put "remains" and "in" into decodingBuffer.
-		ByteBuffer decodingBuffer = null;
-		if (remains != null) {
-			remainsLength = remains.length;
-			decodingBuffer = ByteBuffer.allocate(remains.length
-					+ in.remaining());
-			decodingBuffer.put(remains);
-			remains = null;
-		} else {
-			decodingBuffer = ByteBuffer.allocate(in.remaining());
-		}
-		decodingBuffer.put(in);
-		decodingBuffer.flip();
 
 		// begin to decode
 		while (true) {
 			CodingErrorAction action = null;
 			try {
-				result = decodeLoop(decodingBuffer, out);
+				result = decodeLoop(in, out);
 			} catch (BufferOverflowException ex) {
 				// unexpected exception
 				throw new CoderMalfunctionError(ex);
@@ -432,49 +386,35 @@ public abstract class CharsetDecoder {
 			/*
 			 * result handling
 			 */
-			if (result.isUnderflow()) {
-				if (endOfInput) {
-					if (decodingBuffer.hasRemaining()) {
-						result = CoderResult.malformedForLength(decodingBuffer
-								.remaining());
-						decodingBuffer.position(decodingBuffer.limit());
-					}
-				} else {
-					if (decodingBuffer.hasRemaining()) {
-						remains = new byte[decodingBuffer.remaining()];
-						decodingBuffer.get(remains);
-					}
+			if(result.isUnderflow()) {
+				int remaining = in.remaining();
+        			if(endOfInput && remaining > 0) {
+        				result = CoderResult.malformedForLength(remaining);
+				}else{
+					status = endOfInput ? END : ONGOING;
+        				return result;
 				}
+         		}
+			if (result.isOverflow()) {
+				return result;
 			}
 			// set coding error handle action
-			if (result.isMalformed()) {
-				action = malformAction;
-			} else if (result.isUnmappable()) {
+			action = malformAction;
+			if(result.isUnmappable()) {
 				action = unmapAction;
 			}
 			// If the action is IGNORE or REPLACE, we should continue decoding.
-			if (action == CodingErrorAction.IGNORE) {
-				continue;
-			} else if (action == CodingErrorAction.REPLACE) {
-				if (out.remaining() < replace.length()) {
-					result = CoderResult.OVERFLOW;
-					needReplace = true;
-				} else {
-					out.put(replace);
-					continue;
+			if(action == CodingErrorAction.REPLACE) {
+				if(out.remaining() < replace.length()) {
+					return CoderResult.OVERFLOW;
 				}
+				out.put(replace);
+			}else{
+				if(action != CodingErrorAction.IGNORE) 
+					return result;
 			}
-			// otherwise, the decode process ends.
-			break;
+			in.position(in.position() + result.length());
 		}
-		// set in new position
-		int offset = decodingBuffer.position() > remainsLength ? (decodingBuffer
-				.position() - remainsLength)
-				: 0;
-		in.position(inOldPosition + offset);
-
-		status = endOfInput ? END : ONGOING;
-		return result;
 	}
 
 	/**
@@ -792,7 +732,6 @@ public abstract class CharsetDecoder {
 	 */
 	public final CharsetDecoder reset() {
 		status = INIT;
-		remains = null;
 		implReset();
 		return this;
 	}

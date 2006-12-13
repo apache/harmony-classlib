@@ -197,8 +197,7 @@ public class CharsetDecoderTest extends TestCase {
 		result = decoder.decode(in, out, true);
 		out.flip();
 		assertTrue(result.isUnderflow());
-		// TODO: the following assertion fails on the Reference Impl -- see HARMONY-148
-		assertEquals("abb", out.toString());
+		assertEquals("bb", out.toString());
 	}
 
 	/*

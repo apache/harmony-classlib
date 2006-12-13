@@ -123,11 +123,6 @@ public abstract class CharsetEncoder {
 	// internal status
 	private int status;
 
-	//
-	private char[] remains = null;
-
-	private boolean needReplace = false;
-
 	// action for malformed input
 	private CodingErrorAction malformAction;
 
@@ -377,18 +372,8 @@ public abstract class CharsetEncoder {
 		} else if (result.isUnmappable()) {
 			throw new UnmappableCharacterException(result.length());
 		}
-		ByteBuffer truncatedBuffer = null;
-		// truncate elements after limit in the output.
-		// clippedBuffer has the same value of capacity and limit.
-		if (output.limit() == output.capacity()) {
-			truncatedBuffer = output;
-		} else {
-			truncatedBuffer = ByteBuffer.allocate(output.remaining());
-			truncatedBuffer.put(output);
-			truncatedBuffer.flip();
-		}
 		status = FLUSH;
-		return truncatedBuffer;
+		return output;
 	}
 
 	/*
@@ -487,98 +472,45 @@ public abstract class CharsetEncoder {
 			throw new IllegalStateException();
 		}
 
-		// construct encodingBuffer for encode.
-		// put "remains" and "in" into encodingBuffer.
-		int remainsLength = 0;
-		int inOldPosition = in.position();
-		CharBuffer encodingBuffer = null;
-
-		// check whether need to put the last input replace string.
-		if (needReplace) {
-			if (out.remaining() >= replace.length) {
-				out.put(replace);
-				needReplace = false;
-			} else {
-				return CoderResult.OVERFLOW;
-			}
-		}
-
-		if (remains != null) {
-			remainsLength = remains.length;
-			encodingBuffer = CharBuffer.allocate(remains.length
-					+ in.remaining());
-			encodingBuffer.put(remains);
-			remains = null;
-		} else {
-			encodingBuffer = CharBuffer.allocate(in.remaining());
-		}
-		encodingBuffer.put(in);
-		encodingBuffer.flip();
-
-		CoderResult result = CoderResult.UNDERFLOW;
-		if (encodingBuffer.remaining() > 0) {
-			while (true) {
-				CodingErrorAction action = null;
-				try {
-					result = encodeLoop(encodingBuffer, out);
-				} catch (BufferOverflowException ex) {
-					throw new CoderMalfunctionError(ex);
-				} catch (BufferUnderflowException ex) {
-					throw new CoderMalfunctionError(ex);
-				}
-				/*
-				 * result handling
-				 */
-				if (result.isUnderflow()) {
-					if (endOfInput) {
-						if (encodingBuffer.hasRemaining()) {
-							result = CoderResult
-									.malformedForLength(encodingBuffer
-											.remaining());
-							encodingBuffer.position(encodingBuffer.limit());
-						}
-					} else {
-						if (encodingBuffer.hasRemaining()) {
-							remains = new char[encodingBuffer.remaining()];
-							encodingBuffer.get(remains);
-						}
-					}
-				}
-				// set coding error handle action
-				if (result.isMalformed()) {
-					action = malformAction;
-				} else if (result.isUnmappable()) {
-					action = unmapAction;
-				}
-				// If the action is IGNORE or REPLACE, we should continue
-				// decoding.
-				if (action == CodingErrorAction.IGNORE) {
-					continue;
-				} else if (action == CodingErrorAction.REPLACE) {
-					if (out.remaining() < replace.length) {
-						if (!endOfInput) {
-							// set needReplace flag.
-							// replace string will be put next time.
-							needReplace = true;
-						}
-						result = CoderResult.OVERFLOW;
-					} else {
-						out.put(replace);
-						continue;
-					}
-				}
-				// otherwise, the decode process ends.
-				break;
-			}
-		}
-		// set in new position
-		int offset = encodingBuffer.position() > remainsLength ? (encodingBuffer
-				.position() - remainsLength)
-				: 0;
-		in.position(inOldPosition + offset);
-
-		status = endOfInput ? END : ONGOING;
-		return result;
+		CoderResult result;
+    	while(true){
+        	try{
+                    result = encodeLoop(in, out);
+        	} catch(BufferOverflowException e){
+                    throw new CoderMalfunctionError (e);
+        	} catch(BufferUnderflowException e){
+                    throw new CoderMalfunctionError (e);
+        	}
+        	if(result.isUnderflow()) {
+        	        int remaining = in.remaining();
+        		if(endOfInput && remaining > 0) {
+        			result = CoderResult.malformedForLength(remaining);
+        		}else{
+        			status = endOfInput ? END : ONGOING;
+        			return result;
+        		}
+        		
+        	}
+        	if (result.isOverflow()) {
+        		return result;
+        	}
+        	CodingErrorAction action = malformAction;
+        	if(result.isUnmappable()) {
+        		action = unmapAction;
+        	}
+        	// If the action is IGNORE or REPLACE, we should continue
+        	// encoding.
+        	if(action == CodingErrorAction.REPLACE) {
+        		if(out.remaining() < replace.length) {
+        			return CoderResult.OVERFLOW;
+        		}
+        		out.put(replace);
+        	}else{
+        		if(action != CodingErrorAction.IGNORE) 
+				return result;
+        	}
+        	in.position(in.position() + result.length());
+    	}
 	}
 
 	/**

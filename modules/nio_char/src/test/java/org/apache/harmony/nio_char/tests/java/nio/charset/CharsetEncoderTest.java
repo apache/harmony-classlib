@@ -163,7 +163,7 @@ public class CharsetEncoderTest extends TestCase {
 		assertEquals(4, out.remaining());
 		assertTrue(result.isUnderflow());
 		result = encoder.encode(in2, out, true);
-		assertEquals(0, out.remaining());
-		assertTrue(result.isUnderflow());
+		assertEquals(4, out.remaining());
+		assertTrue(result.isMalformed());
 	}
 }

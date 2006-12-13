@@ -717,12 +717,12 @@ public class CharsetDecoderTest extends TestCase {
 			String result = new String(input);
 			if (result.startsWith("malform")) {
 				// reset the cursor to the error position
-				in.position(inPosition + "malform".length());
+				in.position(inPosition);
 				// set the error length
 				return CoderResult.malformedForLength("malform".length());
 			} else if (result.startsWith("unmap")) {
 				// reset the cursor to the error position
-				in.position(inPosition + "unmap".length());
+				in.position(inPosition);
 				// set the error length
 				return CoderResult.unmappableForLength("unmap".length());
 			} else if (result.startsWith("runtime")) {
