@@ -17,7 +17,6 @@
 
 package java.nio.charset;
 
-
 import java.io.IOException;
 
 /**
@@ -27,22 +26,16 @@ import java.io.IOException;
  */
 public class CharacterCodingException extends IOException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    /*
+     * This constant is used during deserialization to check the J2SE version
+     * which created the serialized object.
+     */
+    private static final long serialVersionUID = 8421532232154627783L;
 
-	/*
-	 * This constant is used during deserialization to check the J2SE version
-	 * which created the serialized object.
-	 */
-	private static final long serialVersionUID = 8421532232154627783L; // J2SE 1.4.2
-
-	/**
-	 * Default constructor.
-	 */
-	public CharacterCodingException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public CharacterCodingException() {
+        super();
+    }
 }

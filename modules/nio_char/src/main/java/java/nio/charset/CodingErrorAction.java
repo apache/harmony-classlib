@@ -16,76 +16,49 @@
 
 package java.nio.charset;
 
-
 /**
  * Used to indicate what kind of actions to take in case of encoding/decoding
  * errors. Currently three actions are defined, namely, IGNORE, REPLACE and
  * REPORT.
- * 
  */
 public class CodingErrorAction {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    /**
+     * Indicating the action to ignore any errors.
+     */
+    public static final CodingErrorAction IGNORE = new CodingErrorAction(
+            "IGNORE"); //$NON-NLS-1$
 
-	/**
-	 * Indicating the action to ignore any errors.
-	 */
-	public static final CodingErrorAction IGNORE = new CodingErrorAction(
-			"IGNORE"); //$NON-NLS-1$
+    /**
+     * Indicating the action to fill in the output with a replacement character
+     * when malformed input or an unmappable character is encountered.
+     */
+    public static final CodingErrorAction REPLACE = new CodingErrorAction(
+            "REPLACE"); //$NON-NLS-1$
 
-	/**
-	 * Indicating the action to fill in the output with a replacement character
-	 * when malformed input or an unmappable character is encountered.
-	 */
-	public static final CodingErrorAction REPLACE = new CodingErrorAction(
-			"REPLACE"); //$NON-NLS-1$
+    /**
+     * Indicating the action to report the encountered error in an appropriate
+     * manner, for example, throw an exception or return an informative result.
+     */
+    public static final CodingErrorAction REPORT = new CodingErrorAction(
+            "REPORT"); //$NON-NLS-1$
 
-	/**
-	 * Indicating the action to report the encountered error in an appropriate
-	 * manner, for example, throw an exception or return an informative result.
-	 */
-	public static final CodingErrorAction REPORT = new CodingErrorAction(
-			"REPORT"); //$NON-NLS-1$
+    // The name of this action
+    private String action;
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Instance variables
-	 * -------------------------------------------------------------------
-	 */
+    /*
+     * Can't instantiate outside.
+     */
+    private CodingErrorAction(String action) {
+        this.action = action;
+    }
 
-	// the name of this action
-	private String action;
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/*
-	 * Can't instantiate outside.
-	 */
-	private CodingErrorAction(String action) {
-		this.action = action;
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods overriding parent class Object
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Returns a text description of this action indication..
-	 * 
-	 * @return a text description of this action indication.
-	 */
-	public String toString() {
-		return "Action: " + this.action; //$NON-NLS-1$
-	}
-
+    /**
+     * Returns a text description of this action indication..
+     * 
+     * @return a text description of this action indication.
+     */
+    public String toString() {
+        return "Action: " + this.action; //$NON-NLS-1$
+    }
 }

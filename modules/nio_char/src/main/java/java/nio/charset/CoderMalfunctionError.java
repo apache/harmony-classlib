@@ -17,39 +17,24 @@
 
 package java.nio.charset;
 
-
 /**
  * Errors thrown when the encoder/decoder is malfunctioning.
- * 
  */
 public class CoderMalfunctionError extends Error {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    /*
+     * This constant is used during deserialization to check the J2SE version
+     * which created the serialized object.
+     */
+    private static final long serialVersionUID = -1151412348057794301L;
 
-	/*
-	 * This constant is used during deserialization to check the J2SE version
-	 * which created the serialized object.
-	 */
-	private static final long serialVersionUID = -1151412348057794301L; // J2SE 1.4.2
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Constructs an instance of this error.
-	 * 
-	 * @param ex
-	 *            the original exception thrown by the encoder/decoder
-	 */
-	public CoderMalfunctionError(Exception ex) {
-		super(ex);
-	}
-
+    /**
+     * Constructs an instance of this error.
+     * 
+     * @param ex
+     *            the original exception thrown by the encoder/decoder
+     */
+    public CoderMalfunctionError(Exception ex) {
+        super(ex);
+    }
 }

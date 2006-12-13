@@ -21,42 +21,41 @@ import java.util.Iterator;
 
 /**
  * The service provider class for character sets.
- * 
  */
 public abstract class CharsetProvider {
 
-	// The permission required to construct a new provider.
-	private static final RuntimePermission CONSTRUCT_PERM = new RuntimePermission(
-			"charsetProvider"); //$NON-NLS-1$
+    // The permission required to construct a new provider.
+    private static final RuntimePermission CONSTRUCT_PERM = new RuntimePermission(
+            "charsetProvider"); //$NON-NLS-1$
 
-	/**
-	 * Constructor for subclassing with concrete types.
-	 * 
-	 * @throws SecurityException
-	 *             if there is a security manager installed that does not permit
-	 *             the runtime permission labeled "charsetProvider".
-	 */
-	protected CharsetProvider() {
-		SecurityManager securityManager = System.getSecurityManager();
-		if (securityManager != null)
-			securityManager.checkPermission(CONSTRUCT_PERM);
-	}
+    /**
+     * Constructor for subclassing with concrete types.
+     * 
+     * @throws SecurityException
+     *             if there is a security manager installed that does not permit
+     *             the runtime permission labeled "charsetProvider".
+     */
+    protected CharsetProvider() {
+        SecurityManager securityManager = System.getSecurityManager();
+        if (securityManager != null)
+            securityManager.checkPermission(CONSTRUCT_PERM);
+    }
 
-	/**
-	 * Answers an iterator over all the available charsets.
-	 * 
-	 * @return the iterator.
-	 */
-	public abstract Iterator<Charset> charsets();
+    /**
+     * Answers an iterator over all the available charsets.
+     * 
+     * @return the iterator.
+     */
+    public abstract Iterator<Charset> charsets();
 
-	/**
-	 * Answers the named charset.
-	 * <p>
-	 * If the charset is unavailable the method returns <code>null</code>.
-	 * 
-	 * @param charsetName
-	 *            the canonical or alias name of a character set.
-	 * @return the charset, or <code>null</code> if unavailable.
-	 */
-	public abstract Charset charsetForName(String charsetName);
+    /**
+     * Answers the named charset.
+     * <p>
+     * If the charset is unavailable the method returns <code>null</code>.
+     * 
+     * @param charsetName
+     *            the canonical or alias name of a character set.
+     * @return the charset, or <code>null</code> if unavailable.
+     */
+    public abstract Charset charsetForName(String charsetName);
 }

@@ -19,65 +19,38 @@ package java.nio.charset;
 
 import org.apache.harmony.niochar.internal.nls.Messages;
 
-
 /**
  * Thrown when an illegal charset name is encountered.
- * 
  */
 public class IllegalCharsetNameException extends IllegalArgumentException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    /*
+     * This constant is used during deserialization to check the J2SE version
+     * which created the serialized object.
+     */
+    private static final long serialVersionUID = 1457525358470002989L;
 
-	/*
-	 * This constant is used during deserialization to check the J2SE version
-	 * which created the serialized object.
-	 */
-	private static final long serialVersionUID = 1457525358470002989L; // J2SE 1.4.2
+    // The illegal charset name
+    private String charsetName;
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Instance variables
-	 * -------------------------------------------------------------------
-	 */
-
-	// the illegal charset name
-	private String charsetName;
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Constructs an instance of this exception with the supplied charset name.
-	 * 
-	 * @param charset
-	 *            the encountered illegal charset name
-	 */
-	public IllegalCharsetNameException(String charset) {
+    /**
+     * Constructs an instance of this exception with the supplied charset name.
+     * 
+     * @param charset
+     *            the encountered illegal charset name
+     */
+    public IllegalCharsetNameException(String charset) {
         // niochar.0F=The illegal charset name is "{0}".
-		super(Messages.getString("niochar.0F", charset));  //$NON-NLS-1$
-		this.charsetName = charset;
-	}
+        super(Messages.getString("niochar.0F", charset)); //$NON-NLS-1$
+        this.charsetName = charset;
+    }
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Gets the encountered illegal charset name.
-	 * 
-	 * @return the encountered illegal charset name
-	 */
-	public String getCharsetName() {
-		return this.charsetName;
-	}
-
+    /**
+     * Gets the encountered illegal charset name.
+     * 
+     * @return the encountered illegal charset name
+     */
+    public String getCharsetName() {
+        return this.charsetName;
+    }
 }

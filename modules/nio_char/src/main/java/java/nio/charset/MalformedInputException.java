@@ -19,80 +19,47 @@ package java.nio.charset;
 
 import org.apache.harmony.niochar.internal.nls.Messages;
 
-
 /**
  * Thrown when a malformed input is encountered, for example, a byte sequence is
  * illegal for the given charset.
- * 
  */
 public class MalformedInputException extends CharacterCodingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    /*
+     * This constant is used during deserialization to check the J2SE version
+     * which created the serialized object.
+     */
+    private static final long serialVersionUID = -3438823399834806194L;
 
-	/*
-	 * This constant is used during deserialization to check the J2SE version
-	 * which created the serialized object.
-	 */
-	private static final long serialVersionUID = -3438823399834806194L; // J2SE 1.4.2
+    // the length of the malformed input
+    private int inputLength;
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Instance variables
-	 * -------------------------------------------------------------------
-	 */
+    /**
+     * Constructs an instance of this exception.
+     * 
+     * @param length
+     *            the length of the malformed input
+     */
+    public MalformedInputException(int length) {
+        this.inputLength = length;
+    }
 
-	// the length of the malformed input
-	private int inputLength;
+    /**
+     * Gets the length of the malformed input.
+     * 
+     * @return the length of the malformed input
+     */
+    public int getInputLength() {
+        return this.inputLength;
+    }
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Constructs an instance of this exception.
-	 * 
-	 * @param length
-	 *            the length of the malformed input
-	 */
-	public MalformedInputException(int length) {
-		this.inputLength = length;
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Gets the length of the malformed input.
-	 * 
-	 * @return the length of the malformed input
-	 */
-	public int getInputLength() {
-		return this.inputLength;
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods overriding parent class Throwable
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Gets a message describing this exception.
-	 * 
-	 * @return a message describing this exception
-	 */
-	public String getMessage() {
+    /**
+     * Gets a message describing this exception.
+     * 
+     * @return a message describing this exception
+     */
+    public String getMessage() {
         // niochar.05=Malformed input length is {0}.
-		return Messages.getString("niochar.05", this.inputLength);  //$NON-NLS-1$
-	}
-
+        return Messages.getString("niochar.05", this.inputLength); //$NON-NLS-1$
+    }
 }
