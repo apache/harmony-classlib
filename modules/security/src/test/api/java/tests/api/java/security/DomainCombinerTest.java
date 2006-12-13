@@ -20,6 +20,7 @@ package tests.api.java.security;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.AllPermission;
+import java.security.BasicPermission;
 import java.security.CodeSource;
 import java.security.DomainCombiner;
 import java.security.Permission;
@@ -75,27 +76,33 @@ public class DomainCombinerTest extends junit.framework.TestCase {
 		final AccessControlContext c1 = new AccessControlContext(parent,
 				new MyCombiner(1));
 
+                class TestPermission extends BasicPermission {
+                    TestPermission(String s) {
+                        super(s);
+                    }
+                }
         
         SecurityManager sm = new SecurityManager() {
             public void checkPermission(Permission p) {
-                if( p == null || !"setSecurityManager".equals(p.getName()) ) {
+                if( p instanceof TestPermission ) {
                     super.checkPermission(p);   
                 }
             }
         };
+        sm.checkPermission(new SecurityPermission("let it load"));
         
         System.setSecurityManager(sm);
 		try {
 			AccessController.doPrivileged(new PrivilegedAction() {
 				public Object run() {
 					// AccessController.getContext();
-					AccessController.checkPermission(new SecurityPermission(
+					AccessController.checkPermission(new TestPermission(
 							"MyTest"));
 
 					AccessController.doPrivileged(new PrivilegedAction() {
 						public Object run() {
 							AccessController
-									.checkPermission(new SecurityPermission(
+									.checkPermission(new TestPermission(
 											"MyTest"));
 							return null;
 						}

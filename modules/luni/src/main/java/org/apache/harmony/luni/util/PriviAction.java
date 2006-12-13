@@ -53,8 +53,8 @@ public class PriviAction<T> implements PrivilegedAction<T> {
 	 * 
 	 * @see Security#getProperty
 	 */
-	public static <T> PrivilegedAction<T> getSecurityProperty(String property) {
-		return new PriviAction<T>(GET_SECURITY_PROPERTY, property);
+	public static PrivilegedAction<String> getSecurityProperty(String property) {
+		return new PriviAction<String>(GET_SECURITY_PROPERTY, property);
 	}
 
 	private PriviAction(int action, Object arg) {

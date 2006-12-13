@@ -2605,19 +2605,11 @@ public class DatagramChannelTest extends TestCase {
         }
 
         public void checkPermission(Permission perm) {
-
-            if (perm.getName().equals("setSecurityManager")) {
-                return;
-            }
-            super.checkPermission(perm);
-
+            // no-op
         }
 
         public void checkPermission(Permission perm, Object context) {
-            if (perm.getName().equals("setSecurityManager")) {
-                return;
-            }
-            super.checkPermission(perm, context);
+            // no-op
         }
 
         public void checkConnect(String host, int port) {
