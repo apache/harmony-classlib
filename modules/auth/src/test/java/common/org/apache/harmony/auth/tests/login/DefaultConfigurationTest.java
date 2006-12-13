@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.auth.login;
+package org.apache.harmony.auth.tests.login;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +33,7 @@ import javax.security.auth.login.AppConfigurationEntry;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.login.DefaultConfiguration;
 import org.apache.harmony.auth.tests.support.TestUtils;
 
 import tests.support.resource.Support_Resources;

@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.auth.login;
+package org.apache.harmony.auth.tests.login;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,9 +32,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.security.auth.login.AppConfigurationEntry;
+
 import junit.framework.TestCase;
+
+import org.apache.harmony.auth.login.DefaultConfigurationParser;
 import org.apache.harmony.auth.login.DefaultConfigurationParser.InvalidFormatException;
+
 import tests.support.resource.Support_Resources;
 
 /**
