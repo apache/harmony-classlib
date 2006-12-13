@@ -169,6 +169,7 @@ ${built.files.list}
             <classpath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
+                    <exclude name="**/*-src.jar" />
                 </fileset>
             </classpath>
 
