@@ -853,7 +853,7 @@ public class DeflaterTest extends TestCase {
 		for (int i = 0; i < byteArray.length; i++) {
             assertEquals(byteArray[i], outPutInf[i]);
         }
-		assertEquals("final decompressed data contained more bytes than original - construcotrIZ",
+		assertEquals("final decompressed data contained more bytes than original - constructorIZ",
 				0, outPutInf[byteArray.length]);
 		infl.end();
 

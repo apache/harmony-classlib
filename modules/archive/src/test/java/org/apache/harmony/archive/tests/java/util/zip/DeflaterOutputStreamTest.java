@@ -91,7 +91,7 @@ public class DeflaterOutputStreamTest extends TestCase {
         defl = new Deflater();
         dos = new MyDeflaterOutputStream(fos, defl);
 
-        // Test to see if DflaterOutputStream was created with the correct
+        // Test to see if DeflaterOutputStream was created with the correct
         // buffer.
         assertEquals("Incorrect Buffer Size", 512, dos.getProtectedBuf().length);
 
@@ -108,7 +108,7 @@ public class DeflaterOutputStreamTest extends TestCase {
         FileOutputStream fos = new FileOutputStream(f1);
         MyDeflaterOutputStream dos = new MyDeflaterOutputStream(fos);
 
-        // Test to see if DflaterOutputStream was created with the correct
+        // Test to see if DeflaterOutputStream was created with the correct
         // buffer.
         assertEquals("Incorrect Buffer Size", 512, dos.getProtectedBuf().length);
 
@@ -154,7 +154,7 @@ public class DeflaterOutputStreamTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
 
-        // Test to see if DflaterOutputStream was created with the correct
+        // Test to see if DeflaterOutputStream was created with the correct
         // buffer.
         dos = new MyDeflaterOutputStream(fos, defl, buf);
         assertEquals("Incorrect Buffer Size", 5, dos.getProtectedBuf().length);
