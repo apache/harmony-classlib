@@ -20,6 +20,7 @@ package org.apache.harmony.auth.module;
 import java.net.InetAddress;
 import java.util.Map;
 
+import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -51,14 +52,28 @@ public class Krb5LoginModule implements LoginModule {
 
     private CallbackHandler callbackHandler;
 
+    private KerberosPrincipal client;
+    
+    private KerberosTicket krbTicket;
+    
     public boolean abort() throws LoginException {
-        // TODO
-        return false;
+        
+        try {
+            krbTicket.destroy();
+        } catch (DestroyFailedException e) {
+            throw new LoginException();
+        }
+
+        client = null;
+        krbTicket = null;
+        
+        return true;
     }
 
     public boolean commit() throws LoginException {
-        // TODO
-        return false;
+        subject.getPrincipals().add(client);
+        subject.getPrivateCredentials().add(krbTicket);
+        return true;
     }
 
     public void initialize(Subject subject, CallbackHandler callbackHandler,
@@ -124,9 +139,8 @@ public class Krb5LoginModule implements LoginModule {
             buf.append('@');
             buf.append(reply.getCrealm());
 
-            KerberosPrincipal client = new KerberosPrincipal(buf.toString(),
+            client = new KerberosPrincipal(buf.toString(),
                     reply.getCname().getType());
-            subject.getPrincipals().add(client);
 
             // add ticket to private credentials
             byte[] ticket = reply.getTicket().getEncoded();
@@ -149,14 +163,12 @@ public class Krb5LoginModule implements LoginModule {
 
             boolean[] flags = reply.getFlags().toBooleanArray();
 
-            KerberosTicket krbTicket = new KerberosTicket(ticket, client,
+            krbTicket = new KerberosTicket(ticket, client,
                     server, sessionKey, keyType, flags, reply.getAuthtime(),
                     reply.getStarttime(), reply.getEndtime(), reply
                             .getRenewtill(),
                     //TODO InetAddress[] clientAddresses
                     null);
-
-            subject.getPrivateCredentials().add(krbTicket);
 
             return true; //FIXME 
         } catch (Exception e) {
@@ -167,7 +179,19 @@ public class Krb5LoginModule implements LoginModule {
     }
 
     public boolean logout() throws LoginException {
-        // TODO
-        return false;
+
+        subject.getPrincipals().remove(client);
+        subject.getPrivateCredentials().remove(krbTicket);
+        
+        try {
+            krbTicket.destroy();
+        } catch (DestroyFailedException e) {
+            throw new LoginException();
+        }
+
+        client = null;
+        krbTicket = null;
+
+        return true;
     }
 }
