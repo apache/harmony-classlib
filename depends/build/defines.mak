@@ -36,7 +36,7 @@ HYCOMMONCFLAGS = \
   /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
   
 HYDEBUGCFLAGS = \
-  -Zi
+  -Zi -Od
   
 HYRELEASECFLAGS = \
   -Ogityb1  
