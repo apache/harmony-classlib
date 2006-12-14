@@ -24,12 +24,19 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 import javax.security.auth.RefreshFailedException;
+import javax.security.auth.kerberos.KerberosKey;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.tests.support.TestUtils;
+
 public class KerberosTicketTest extends TestCase {
+
+    private static final String ENV_KDC = "java.security.krb5.kdc";
+
+    private static final String ENV_REALM = "java.security.krb5.realm";
 
     // ticket's ASN.1 encoding  
     private static final byte[] ticket = { 0x01, 0x02, 0x03, 0x04 };
@@ -49,7 +56,7 @@ public class KerberosTicketTest extends TestCase {
 
     // number of flags used by Kerberos protocol
     private static final int FLAGS_NUM = 32;
-    
+
     private static final boolean[] flags = { true, false, true, false, true,
             false, true, false, true, false, true, false, };
 
@@ -442,7 +449,9 @@ public class KerberosTicketTest extends TestCase {
                 true // hw-authent 
         };
 
-        // test: should not renew ticket because renewTill < current time 
+        //
+        // test: should not renew ticket because renewTill < current time
+        //
         Date newRenewTill = new Date((new Date()).getTime() - 3600000);
 
         KerberosTicket krbTicket = new KerberosTicket(ticket, pClient, pServer,
@@ -455,21 +464,116 @@ public class KerberosTicketTest extends TestCase {
             fail("No expected RefreshFailedException");
         } catch (RefreshFailedException e) {
         }
-        
+
+        //
         // test: should not renew ticket because renewable flag is false
+        //
         newRenewTill = new Date((new Date()).getTime() + 3600000);
         myFlags[8] = false;
 
-        krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
+        krbTicket = new KerberosTicket(encTicket, pClient, pServer, sessionKey,
                 KEY_TYPE, myFlags, // <=== we test this: it is not renewable
                 authTime, startTime, endTime, newRenewTill, addesses);
-        
+
         try {
             krbTicket.refresh();
             fail("No expected RefreshFailedException");
         } catch (RefreshFailedException e) {
         }
-        
+
+        //
+        // test: dependency on system props 'kdc' and 'realm'
+        //
+
+        // verify that env. is clean
+        assertNull(System.getProperty(ENV_KDC));
+        assertNull(System.getProperty(ENV_REALM));
+
+        // create real DES key
+        byte[] newSessionKey = new KerberosKey(new KerberosPrincipal(
+                "me@MY.REALM"), "pwd".toCharArray(), "DES").getEncoded();
+
+        myFlags[8] = true;
+        krbTicket = new KerberosTicket(encTicket, pClient, pServer,
+                newSessionKey, KEY_TYPE, myFlags, authTime, startTime, endTime,
+                newRenewTill, addesses);
+
+        // case 1: unset 'kdc' and set 'realm'
+        TestUtils.setSystemProperty(ENV_KDC, "some_value");
+        try {
+            krbTicket.refresh();
+            fail("No expected RefreshFailedException");
+        } catch (RefreshFailedException e) {
+        } finally {
+            TestUtils.setSystemProperty(ENV_KDC, null);
+        }
+
+        // case 2: set 'kdc' and unset 'realm' sys.props
+        TestUtils.setSystemProperty(ENV_REALM, "some_value");
+        try {
+            krbTicket.refresh();
+            fail("No expected RefreshFailedException");
+        } catch (RefreshFailedException e) {
+        } finally {
+            TestUtils.setSystemProperty(ENV_REALM, null);
+        }
+
         // TODO test: ticket refreshing 
     }
+
+    // Hands-created ticket encoding:
+    // - tkt-vno: 5
+    // - realm: 'MY.REALM'
+    // - sname: {type=0, string=krbtgt/MY.REALM}
+    // - enc-part: {etype=3,kvno=1,cipher=0} (i.e. it is empty)
+    private static final byte[] encTicket = {
+            // [APPLICATION 1]
+            (byte) 0x61,
+            (byte) 0x45,
+            // SEQUENCE 
+            (byte) 0x30,
+            (byte) 0x43,
+
+            // tkt-vno [0] INTEGER (5)
+            (byte) 0xa0,
+            (byte) 0x03,
+            (byte) 0x02,
+            (byte) 0x01,
+            (byte) 0x05,
+
+            // realm [1] Realm = 'MY.REALM'
+            (byte) 0xa1, (byte) 0x0a, (byte) 0x1b, (byte) 0x08, (byte) 0x4d,
+            (byte) 0x59, (byte) 0x2e, (byte) 0x52,
+            (byte) 0x45,
+            (byte) 0x41,
+            (byte) 0x4c,
+            (byte) 0x4d,
+
+            // sname [2] PrincipalName
+            (byte) 0xa2,
+            (byte) 0x1d,
+            (byte) 0x30,
+            (byte) 0x1b,
+            // name-type
+            (byte) 0xa0, (byte) 0x03,
+            (byte) 0x02,
+            (byte) 0x01,
+            (byte) 0x00,
+            // name-string: SEQUENCE OF krbtgt/MY.REALM
+            (byte) 0xa1, (byte) 0x14, (byte) 0x30, (byte) 0x12, (byte) 0x1b,
+            (byte) 0x06, (byte) 0x6b, (byte) 0x72, (byte) 0x62, (byte) 0x74,
+            (byte) 0x67, (byte) 0x74, (byte) 0x1b, (byte) 0x08, (byte) 0x4d,
+            (byte) 0x59, (byte) 0x2e, (byte) 0x52, (byte) 0x45, (byte) 0x41,
+            (byte) 0x4c, (byte) 0x4d,
+
+            // enc-part [3] EncryptedData 
+            (byte) 0xa3, (byte) 0x11,
+            // SEQUENCE
+            (byte) 0x30, (byte) 0x0F,
+            // etype
+            (byte) 0xa0, (byte) 0x03, (byte) 0x02, (byte) 0x01, (byte) 0x03,
+            // kvno
+            (byte) 0xa1, (byte) 0x03, (byte) 0x02, (byte) 0x01, (byte) 0x01,
+            // cipher  
+            (byte) 0xa2, (byte) 0x03, (byte) 0x04, (byte) 0x01, (byte) 0x00 };
 }

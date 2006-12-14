@@ -21,12 +21,15 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
+
 import javax.crypto.SecretKey;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Refreshable;
 
+import org.apache.harmony.auth.internal.kerberos.v5.KerberosException;
+import org.apache.harmony.auth.internal.kerberos.v5.KrbClient;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.utils.Array;
 
@@ -308,8 +311,11 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
             throw new RefreshFailedException(Messages.getString("auth.45")); //$NON-NLS-1$
         }
 
-        //TODO: need access to a KDC server          
-        throw new UnsupportedOperationException();
+        try {
+            KrbClient.doTGS();
+        } catch (KerberosException e) {
+            throw new RefreshFailedException(e.getMessage());
+        }
     }
 
     public boolean isCurrent() {

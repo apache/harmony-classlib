@@ -23,7 +23,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import javax.crypto.SecretKey;
+import javax.security.auth.kerberos.KerberosKey;
+import javax.security.auth.kerberos.KerberosPrincipal;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.DerInputStream;
@@ -33,10 +34,45 @@ import org.apache.harmony.security.asn1.DerInputStream;
  */
 public class KrbClient {
 
+    // default kdc server
+    private static final String DEFAULT_KDC = "java.security.krb5.kdc"; //$NON-NLS-1$
+
+    // default realm
+    private static final String DEFAULT_REALM = "java.security.krb5.realm"; //$NON-NLS-1$
+
+    private static String kdc;
+
+    private static String realm;
+
+    private static int port = 88;//default
+
     private static final int BUF_SIZE = 1024;
 
     private KrbClient() {
         // no objects
+    }
+
+    private static void setEnv() throws KerberosException {
+        if (kdc != null && realm != null) {
+            return;
+        }
+
+        //TODO put in doPrivileged
+        kdc = System.getProperty(DEFAULT_KDC);
+        realm = System.getProperty(DEFAULT_REALM);
+        if (kdc == null && realm != null || kdc != null && realm == null) {
+            // both properties should be set or unset together
+            throw new KerberosException();//FIXME message
+        } else if (kdc == null && realm == null) {
+            // reading config from configuration file 'krb5.conf'
+            throw new KerberosException();//FIXME not yet implemented
+        }
+
+        int pos = kdc.indexOf(':');
+        if (pos != -1) {
+            port = Integer.parseInt(kdc.substring(pos + 1));
+            kdc = kdc.substring(0, pos);
+        }
     }
 
     /**
@@ -48,15 +84,20 @@ public class KrbClient {
      * @param realm - client's realm
      * @return - ticket
      */
-    public static KDCReply doAS(InetAddress address, int port,
-            PrincipalName cname, String realm, PrincipalName sname,
-            SecretKey key) {
+    public static KDCReply doAS(PrincipalName cname, char[] password)
+            throws KerberosException {
+
+        setEnv();
+
+        PrincipalName sname = new PrincipalName(PrincipalName.NT_SRV_XHST,
+                new String[] { "krbtgt", realm }); //$NON-NLS-1$
 
         KDCRequest request = new KDCRequest(KDCRequest.AS_REQ, cname, realm,
                 sname);
 
         try {
-            DatagramSocket socket = request.send(address, port);
+            DatagramSocket socket = request.send(InetAddress.getByName(kdc),
+                    port);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream(BUF_SIZE);
 
@@ -76,21 +117,31 @@ public class KrbClient {
             if (in.tag == KDCReply.AS_REP_ASN1.constrId) { //TODO AS reply
                 KDCReply reply = (KDCReply) KDCReply.AS_REP_ASN1.decode(in);
 
+                KerberosKey key = new KerberosKey(new KerberosPrincipal(cname
+                        .getName()[0]
+                        + '@' + realm, cname.getType()), password, "DES");
+
                 reply.decrypt(key);
 
                 return reply;
             } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
                 KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
                 // auth.52=Error code: {0}
-                throw new RuntimeException(Messages.getString(
+                throw new KerberosException(Messages.getString(
                         "auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
             } else {
-                new RuntimeException(); //FIXME
+                new KerberosException(); //FIXME
             }
 
         } catch (IOException e) {
-            new RuntimeException(e); //FIXME 
+            new KerberosException(e.getMessage()); //FIXME 
         }
+
+        return null;
+    }
+
+    public static KDCReply doTGS() throws KerberosException {
+        setEnv();
 
         return null;
     }
