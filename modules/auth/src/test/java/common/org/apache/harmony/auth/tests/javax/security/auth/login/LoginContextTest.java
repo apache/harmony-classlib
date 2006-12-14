@@ -770,7 +770,7 @@ public class LoginContextTest extends TestCase {
 
         // tmp user home to avoid presence of ${user.home}/.java.login.config
         String tmpUserHome = System.getProperty("java.io.tmpdir")
-                + File.separatorChar + "tmpUserHomeForLoggingContextTest";
+                + File.separatorChar + "tmpUserHomeForLoginContextTest";
         File dir = new File(tmpUserHome);
         if (!dir.exists()) {
             dir.mkdirs();
