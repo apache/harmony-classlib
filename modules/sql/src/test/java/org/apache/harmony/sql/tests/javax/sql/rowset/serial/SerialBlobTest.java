@@ -136,6 +136,144 @@ public class SerialBlobTest extends TestCase {
         }
     }
 
+    public void testPosition$BJ() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        SerialBlob serialBlob = new SerialBlob(buf);
+
+        assertBlobPosition_BytePattern(serialBlob);
+
+        MockSerialBlob mockBlob = new MockSerialBlob();
+        mockBlob.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        serialBlob = new SerialBlob(mockBlob);
+        assertBlobPosition_BytePattern(serialBlob);
+    }
+
+    public void testPositionLBlobJ() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        SerialBlob serialBlob = new SerialBlob(buf);
+        assertBlobPosition_BlobPattern(serialBlob);
+
+        MockSerialBlob mockBlob = new MockSerialBlob();
+        mockBlob.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        serialBlob = new SerialBlob(mockBlob);
+        assertBlobPosition_BlobPattern(serialBlob);
+    }
+
+    private void assertBlobPosition_BytePattern(Blob blob)
+            throws SerialException, SQLException {
+        byte[] pattern;
+        long pos;
+
+        pattern = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        pos = blob.position(pattern, 1);
+        assertEquals(1, pos);
+        
+        pattern = new byte[] { 2, 3, 4 };
+        pos = blob.position(pattern, 1);
+        assertEquals(2, pos);
+        pos = blob.position(pattern, 2);
+        assertEquals(2, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern = new byte[] { 2, 4 };
+        pos = blob.position(pattern, 1);
+        // RI's bug: RI doesn't returns -1 here even if the pattern can not be
+        // found
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        pos = blob.position(pattern, 1);
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern = new byte[] { 2, 3, 4 };
+        pos = blob.position(pattern, 0);
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, -1);
+        assertEquals(-1, pos);
+
+        // exceptional case
+        pos = blob.position((byte[]) null, -1);
+        assertEquals(-1, pos);
+        try {
+            pos = blob.position((byte[]) null, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    private void assertBlobPosition_BlobPattern(Blob blob)
+            throws SerialException, SQLException {
+        MockSerialBlob pattern = new MockSerialBlob();
+        long pos;
+
+        pattern.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        pos = blob.position(pattern, 1);
+        assertEquals(1, pos);
+        
+        pattern.buf = new byte[] { 2, 3, 4 };
+        pos = blob.position(pattern, 1);
+        assertEquals(2, pos);
+        pos = blob.position(pattern, 2);
+        assertEquals(2, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern.buf = new byte[] { 2, 4 };
+        pos = blob.position(pattern, 1);
+        // RI's bug: RI doesn't returns -1 here even if the pattern can not be
+        // found
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        pos = blob.position(pattern, 1);
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, 3);
+        assertEquals(-1, pos);
+
+        pattern.buf = new byte[] { 2, 3, 4 };
+        pos = blob.position(pattern, 0);
+        assertEquals(-1, pos);
+        pos = blob.position(pattern, -1);
+        assertEquals(-1, pos);
+
+        // exceptional case
+        try {
+            pos = blob.position((Blob) null, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            pos = blob.position((Blob) null, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        MockSerialBlob abnormalBlob = new MockSerialBlob(true);
+        try {
+            blob.position(abnormalBlob, 1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            blob.position(abnormalBlob, -1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+
     static class MockSerialBlob implements Blob {
         public byte buf[] = new byte[1];
 

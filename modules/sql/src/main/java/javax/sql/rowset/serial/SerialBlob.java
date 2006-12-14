@@ -152,9 +152,49 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
         return position(patternBytes, start);
     }
 
+    /**
+     * Search for the position in this Blob at which the specified pattern
+     * begins, starting at a specified position within the Blob.
+     * 
+     * @param pattern
+     *            a byte array containing the pattern of data to search for in
+     *            this Blob
+     * @param start
+     *            the position within this Blob to start the search, where the
+     *            first position in the Blob is 1
+     * @return a long value with the position at which the pattern begins. -1 if
+     *         the pattern is not found in this Blob.
+     * @throws SerialException
+     *             if an error is encountered
+     * @throws SQLException
+     *             if an error occurs accessing the Blob
+     */
     public long position(byte[] pattern, long start) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        if (start < 1 || len - (start - 1) < pattern.length) {
+            return -1;
+        }
+
+        for (int i = (int) (start - 1); i <= (len - pattern.length); ++i) {
+            if (match(buf, i, pattern)) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
+    /*
+     * Returns true if the bytes array contains exactly the same elements from
+     * start position to start + subBytes.length as subBytes. Otherwise returns
+     * false. 
+     */
+    private boolean match(byte[] bytes, int start, byte[] subBytes) {
+        for (int i = 0; i < subBytes.length;) {
+            if (bytes[start++] != subBytes[i++]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public OutputStream setBinaryStream(long pos) throws SerialException,
@@ -172,7 +212,8 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
         throw new NotImplementedException();
     }
 
-    public void truncate(long len) throws SerialException, NotImplementedException {
+    public void truncate(long len) throws SerialException,
+            NotImplementedException {
         throw new NotImplementedException();
     }
 
