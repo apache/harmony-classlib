@@ -29,7 +29,7 @@ public final class StringCharacterIterator implements CharacterIterator {
 
     /**
      * Constructs a new StringCharacterIterator on the specified String. The
-     * begin and current indexes are set to the begining of the String, the end
+     * begin and current indexes are set to the beginning of the String, the end
      * index is set to the length of the String.
      * 
      * @param value
@@ -44,7 +44,7 @@ public final class StringCharacterIterator implements CharacterIterator {
     /**
      * Constructs a new StringCharacterIterator on the specified String with the
      * current index set to the specified value. The begin index is set to the
-     * begining of the String, the end index is set to the length of the String.
+     * beginning of the String, the end index is set to the length of the String.
      * 
      * @param value
      *            the new source String to iterate

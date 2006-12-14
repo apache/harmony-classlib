@@ -31,7 +31,7 @@ import org.apache.harmony.text.internal.nls.Messages;
  * defined in the Unicode Standard Annex #9, version 13, also described in The
  * Unicode Standard, Version 4.0 .
  * 
- * Use a Bidi object to get the infomation on the position reordering of a
+ * Use a Bidi object to get the information on the position reordering of a
  * bidirectional text, such as Arabic or Hebrew. The natural display ordering of
  * horizontal text in these languages is from right to left, while they order
  * numbers from left to right.
@@ -335,7 +335,7 @@ public final class Bidi {
     }
 
     /**
-     * Create a new Bidi object containing the infomation of one line from this
+     * Create a new Bidi object containing the information of one line from this
      * object.
      * 
      * @param lineStart
@@ -476,7 +476,7 @@ public final class Bidi {
     }
 
     /**
-     * Reorder a range of objects according to their spefied levels. This is a
+     * Reorder a range of objects according to their specified levels. This is a
      * convenience function that does not use a Bidi object. The range of
      * objects at index from objectStart to objectStart + count will be
      * reordered according to the range of levels at index from levelStart to
@@ -487,7 +487,7 @@ public final class Bidi {
      * @param levelStart
      *            the start offset of the range of the levels.
      * @param objects
-     *            the object array to reoeder.
+     *            the object array to reorder.
      * @param objectStart
      *            the start offset of the range of objects.
      * @param count

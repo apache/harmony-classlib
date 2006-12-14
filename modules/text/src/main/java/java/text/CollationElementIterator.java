@@ -198,9 +198,9 @@ public final class CollationElementIterator {
      * </p>
      * <p>
      * If the decomposition mode is on, and offset is in the middle of a
-     * decomposible range of source text, the iterator may not return a correct
+     * decomposable range of source text, the iterator may not return a correct
      * result for the next forwards or backwards iteration. The user must ensure
-     * that the offset is not in the middle of a decomposible range.
+     * that the offset is not in the middle of a decomposable range.
      * </p>
      * 
      * @param newOffset
@@ -213,7 +213,7 @@ public final class CollationElementIterator {
     }
 
     /**
-     * Sets a new source string interator for iteration, and reset the offset to
+     * Sets a new source string iterator for iteration, and reset the offset to
      * the beginning of the text.
      * 
      * @param source

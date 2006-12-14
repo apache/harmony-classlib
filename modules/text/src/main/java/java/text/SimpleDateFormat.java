@@ -33,7 +33,7 @@ import java.util.Vector;
 import org.apache.harmony.text.internal.nls.Messages;
 
 /**
- * SimpleDateFormat is used to format and parse gregorian calendar dates and
+ * SimpleDateFormat is used to format and parse Gregorian calendar dates and
  * times based on a pattern of date and time fields. Each date and time field is
  * specified in the pattern by a specific character. The characters used can be
  * either localized or non-localized. For some fields, which have both numeric
@@ -577,7 +577,7 @@ public class SimpleDateFormat extends DateFormat {
      *            StringBuffer to store the resulting formatted String
      * @param field
      *            FieldPosition to set begin and end index of the field
-     *            specifed, if it is part of the format for this date
+     *            specified, if it is part of the format for this date
      * @param fields
      *            Vector used to store the FieldPositions for each field in this
      *            date

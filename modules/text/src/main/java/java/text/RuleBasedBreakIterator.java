@@ -18,14 +18,14 @@
 package java.text;
 
 /*
- * Default implmentation of BreakIterator, wrap
+ * Default implementation of BreakIterator, wrap
  * com.ibm.icu.text.RuleBasedBreakIterator
  * 
  */
 class RuleBasedBreakIterator extends BreakIterator {
 
     /*
-     * Wraping construction
+     * Wrapping construction
      */
     RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator iterator) {
         super(iterator);

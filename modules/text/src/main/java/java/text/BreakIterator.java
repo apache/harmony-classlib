@@ -24,13 +24,13 @@ import java.util.Locale;
  * can be got by some factory methods:
  * <ul>
  * <li>
- * <code>getCharacterIntance()<code> returns a BreakIterator that iterate the 
+ * <code>getCharacterInstance()<code> returns a BreakIterator that iterate the 
  * logical characters without worrying about how the character is stored. For 
  * example, some character may be stored in more than one Unicode code point 
  * according to Unicode specification, this character can handle the logical 
  * characters with multi code points.</li>
  * <li>
- * <code>getWordIntance()<code> returns a <code>BreakIterator</code> that 
+ * <code>getWordInstance()<code> returns a <code>BreakIterator</code> that 
  * iterate the word-breaks. The beginning and end of each word(including numbers) 
  * is treated as boundary position. Whitespace and punctuation are kept separate 
  * from real words.</li>

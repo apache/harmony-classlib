@@ -169,7 +169,7 @@ public class RuleBasedCollator extends Collator {
      * Obtains the <code>CollationKey</code> for the given source text.
      * 
      * @param source
-     *            the speicifed source text
+     *            the specified source text
      * @return the <code>CollationKey</code> for the given source text.
      */
     @Override

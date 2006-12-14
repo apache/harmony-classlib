@@ -451,7 +451,7 @@ public class DecimalFormatTest extends TestCase {
         NumberFormat nform = DecimalFormat.getInstance(Locale.US);
         DecimalFormat form = (DecimalFormat) nform;
 
-        // If Object(including null) is not of type Nubmer,
+        // If Object(including null) is not of type Number,
         // IllegalArgumentException will be thrown out
         try {
             form.format(new Object(), new StringBuffer(), new FieldPosition(0));
@@ -1550,7 +1550,7 @@ public class DecimalFormatTest extends TestCase {
                 .getMinimumIntegerDigits());
         assertEquals(df.getMultiplier(), deserializedDF.getMultiplier());
 
-        // Delibrately omitted this assertion. Since different data resource
+        // Deliberately omitted this assertion. Since different data resource
         // will cause the assertion fail.
         // assertEquals(df, deserializedDF);
 

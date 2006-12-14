@@ -688,7 +688,7 @@ public abstract class NumberFormat extends Format {
         }
 
         /**
-         * serizalization method resolve instances to the constant
+         * serialization method resolve instances to the constant
          * NumberFormat.Field values
          */
         @Override

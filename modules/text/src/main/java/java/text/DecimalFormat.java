@@ -241,7 +241,7 @@ public class DecimalFormat extends NumberFormat {
      * 
      * @param number
      *            the object to format
-     * @param toAppandTo
+     * @param toAppendTo
      *            the StringBuffer
      * @param pos
      *            the FieldPosition
@@ -755,7 +755,7 @@ public class DecimalFormat extends NumberFormat {
      * @throws IOException
      *             if some I/O error occurs
      * @throws ClassNotFoundException
-     *             if some class of serilized objects or fields cannot be found
+     *             if some class of serialized objects or fields cannot be found
      */
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
@@ -835,7 +835,7 @@ public class DecimalFormat extends NumberFormat {
     /*
      * Copies decimal format symbols from text object to ICU one.
      * 
-     * @param icu the object which recieves the new values. @param dfs the
+     * @param icu the object which receives the new values. @param dfs the
      * object which contains the new values.
      */
     private void copySymbols(final com.ibm.icu.text.DecimalFormatSymbols icu,
