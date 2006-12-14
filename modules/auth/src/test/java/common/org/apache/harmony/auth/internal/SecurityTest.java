@@ -164,7 +164,7 @@ public class SecurityTest extends TestCase {
 
     /**
      * Sets grant mode
-     * all permissions are denided, test can only grant specific permission
+     * all permissions are denied, test can only grant specific permission
      */
     public void grantMode() {
         mode = false;

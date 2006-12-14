@@ -83,7 +83,7 @@ public class SubjectDomainCombinerTest extends SecurityTest {
 
         ProtectionDomain[] pd;
 
-        // test case: both prarameters are null
+        // test case: both parameters are null
         assertNull(combiner.combine(null, null));
 
         // test case: check assigned principals

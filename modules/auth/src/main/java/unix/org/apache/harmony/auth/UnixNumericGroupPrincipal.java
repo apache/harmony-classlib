@@ -23,7 +23,7 @@ import java.security.Principal;
 import org.apache.harmony.auth.internal.nls.Messages;
 
 /**
- * This class represents a unix groupd by its group id. 
+ * This class represents a unix groups by its group id. 
  */
 public class UnixNumericGroupPrincipal implements Serializable, Principal {
 

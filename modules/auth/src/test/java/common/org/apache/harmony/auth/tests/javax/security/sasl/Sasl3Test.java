@@ -129,7 +129,7 @@ public class Sasl3Test extends TestCase {
         try {
             Sasl.createSaslClient(new String[] { "NAME-1" }, null, "protocol",
                     null, null, cbH);
-            fail("SaslException should be thrown when mechamisms is wrong");
+            fail("SaslException should be thrown when mechanisms is wrong");
         } catch (SaslException e) {
         }
         try {

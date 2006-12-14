@@ -95,7 +95,7 @@ public class KerberosTicketTest extends TestCase {
         // returned value is copied
         assertNotSame(krbTicket.getAuthTime(), krbTicket.getAuthTime());
 
-        // auth time: null value is illegal for contructor
+        // auth time: null value is illegal for constructor
         try {
             new KerberosTicket(ticket, pClient, pServer, sessionKey, KEY_TYPE,
                     flags, null, startTime, endTime, renewTill, addesses);
@@ -115,7 +115,7 @@ public class KerberosTicketTest extends TestCase {
 
         assertSame(pClient, krbTicket.getClient());
 
-        // client principal: null value is illegal for contructor
+        // client principal: null value is illegal for constructor
         try {
             new KerberosTicket(ticket, null, pServer, sessionKey, KEY_TYPE,
                     flags, authTime, startTime, endTime, renewTill, addesses);
@@ -142,7 +142,7 @@ public class KerberosTicketTest extends TestCase {
         assertNotSame(krbTicket.getClientAddresses(), krbTicket
                 .getClientAddresses());
 
-        // addesses: null value is OK for contructor
+        // addesses: null value is OK for constructor
         krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
                 KEY_TYPE, flags, authTime, startTime, endTime, renewTill, null);
         assertNull(krbTicket.getClientAddresses());
@@ -165,7 +165,7 @@ public class KerberosTicketTest extends TestCase {
         // KerberosTicket instance is immutable 
         assertNotSame(krbTicket.getEncoded(), krbTicket.getEncoded());
 
-        // ticket: null value is illegal for contructor
+        // ticket: null value is illegal for constructor
         try {
             new KerberosTicket(null, pClient, pServer, sessionKey, KEY_TYPE,
                     flags, authTime, startTime, endTime, renewTill, addesses);
@@ -192,7 +192,7 @@ public class KerberosTicketTest extends TestCase {
         // returned value is copied
         assertNotSame(krbTicket.getEndTime(), krbTicket.getEndTime());
 
-        // end time: null value is illegal for contructor
+        // end time: null value is illegal for constructor
         try {
             new KerberosTicket(ticket, pClient, pServer, sessionKey, KEY_TYPE,
                     flags, authTime, startTime, null, renewTill, addesses);
@@ -292,7 +292,7 @@ public class KerberosTicketTest extends TestCase {
 
         assertSame(pServer, krbTicket.getServer());
 
-        // server principal: null value is illegal for contructor
+        // server principal: null value is illegal for constructor
         try {
             new KerberosTicket(ticket, pClient, null, sessionKey, KEY_TYPE,
                     flags, authTime, startTime, endTime, renewTill, addesses);
@@ -325,7 +325,7 @@ public class KerberosTicketTest extends TestCase {
         assertEquals("algorithm", "DES", sKey.getAlgorithm());
         assertEquals("format", "RAW", sKey.getFormat());
 
-        // sessionKey: null value is illegal for contructor
+        // sessionKey: null value is illegal for constructor
         try {
             new KerberosTicket(ticket, pClient, pServer, null, KEY_TYPE, flags,
                     authTime, startTime, endTime, renewTill, addesses);
@@ -364,7 +364,7 @@ public class KerberosTicketTest extends TestCase {
         // returned value is copied 
         assertNotSame(krbTicket.getStartTime(), krbTicket.getStartTime());
 
-        // start time: null value is valid for contructor
+        // start time: null value is valid for constructor
         krbTicket = new KerberosTicket(ticket, pClient, pServer, sessionKey,
                 KEY_TYPE, flags, authTime, null, endTime, renewTill, addesses);
         assertEquals(authTime, krbTicket.getStartTime());

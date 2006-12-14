@@ -269,7 +269,7 @@ public class LoginContext1Test extends TestCase {
      * static field {@link #staticMask}.<br>
      * By default, all the methods return <code>true</code> (success) and do not
      * throw anything.<br>
-     * The constatnts <b>FAIL_AT_*</b> shows where to fail. Then if 
+     * The constants <b>FAIL_AT_*</b> shows where to fail. Then if 
      * {@link staticRE} field is set, then this RuntimeException will be thrown,
      * otherwise if {@link #staticErr} is set, then this Error will be thrown, 
      * otherwise, if {@link #staticLE} is set, then this LoginException will be 
@@ -687,10 +687,10 @@ public class LoginContext1Test extends TestCase {
 
         //1st, static installed Config must be queried 
         assertTrue(TestConfig.get().wasTheNameQueried(name));
-        //2d, the another config must be quered for other
+        //2d, the another config must be queried for other
         assertTrue(TestConfig.get().wasTheNameQueried("other"));
 
-        // Valid names which exist but does not have eny entries must 
+        // Valid names which exist but does not have any entries must 
         // also be accepted. Empty set will be considered as a problem 
         // much later - at login() phase
         new LoginContext(CONFIG_NAME);
@@ -1781,7 +1781,7 @@ public class LoginContext1Test extends TestCase {
 
     /**
      * Tests LoginContext.getSubject()<br>
-     * Must return subject created after succesful login.
+     * Must return subject created after successful login.
      */
     public void testGetSubject_01() throws Exception {
         TestConfig.addInstalledRequired("TestLoginModule_Success");
@@ -1794,7 +1794,7 @@ public class LoginContext1Test extends TestCase {
 
     /**
      * Tests LoginContext.getSubject()<br>
-     * Must return null until succesful login().
+     * Must return null until successful login().
      */
     public void testGetSubject_02() throws Exception {
         TestConfig.addInstalledRequired("TestLoginModule");

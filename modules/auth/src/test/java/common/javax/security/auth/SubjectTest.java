@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
 
 
 /**
- * Tests Subject and its innner classes implementation. 
+ * Tests Subject and its inner classes implementation. 
  */
 
 public class SubjectTest extends SecurityTest {
@@ -183,7 +183,7 @@ public class SubjectTest extends SecurityTest {
 
     /**
      * Testing Subject(boolean,Set,Set,Set) constructor
-     * in resticted security context
+     * in restricted security context
      */
     public final void testSubject_3Set_NoPermissions() {
 
@@ -556,7 +556,7 @@ public class SubjectTest extends SecurityTest {
         assertTrue(obj2.equals(obj3));
         assertTrue(obj1.equals(obj3));
 
-        // consistenty
+        // consistency
         assertTrue(obj3.equals(obj1));
         assertTrue(obj3.equals(obj1));
 
@@ -586,19 +586,19 @@ public class SubjectTest extends SecurityTest {
         //doesn't verify private credential permissions on itself
         assertTrue(subject1.equals(subject1));
 
-        // principals comparision goes before
+        // principals comparison goes before
         // no SecurityException expected 
         Subject subject2 = new Subject(false, hash, new HashSet(), hash);
 
         assertFalse(subject1.equals(subject2));
 
-        // public credential comparision goes before
+        // public credential comparison goes before
         // no SecurityException expected 
         subject2 = new Subject(false, new HashSet(), hash, hash);
 
         assertFalse(subject1.equals(subject2));
 
-        // principal and public credentils sets are equal
+        // principal and public credentials sets are equal
         // Expected: SecurityException
         subject2 = new Subject(false, new HashSet(), new HashSet(), hash);
         try {

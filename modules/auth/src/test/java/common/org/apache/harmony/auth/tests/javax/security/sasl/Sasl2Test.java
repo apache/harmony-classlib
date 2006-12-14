@@ -463,7 +463,7 @@ public class Sasl2Test extends TestCase {
     /**
      * Test for <code>getSaslServerFactories()</code> method 
      * 
-     * Assertion: returns enumeration of factories for producing SaslServert.
+     * Assertion: returns enumeration of factories for producing SaslServer.
      * 
      * Enumeration consists of 4 elements.
      * 

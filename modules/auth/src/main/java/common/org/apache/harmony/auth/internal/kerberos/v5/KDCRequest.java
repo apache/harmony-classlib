@@ -138,7 +138,7 @@ public class KDCRequest {
         protected void getValues(Object object, Object[] values) {
             KDCRequest request = (KDCRequest) object;
 
-            // FIXME: hardcoded - no KDCoptions are set
+            // FIXME: hardcoded - no KDCOptions are set
             // note: number of bits should be >= 32
             // (see RFC 4120, 5.2.8. KerberosFlags)
             values[0] = new byte[] { (byte) 0x03, (byte) 0x05, (byte) 0x00, (byte) 0x00,

@@ -202,7 +202,7 @@ public class LoginContextTest extends TestCase {
      *               are created in the constructor above
      * 
      * Expected: not null subject, null callback handler or
-     *           wraped default callback handler, not null shared
+     *           wrapped default callback handler, not null shared
      *           state and not null options.
      */
     public final void testLC_String_LoginModuleInitialize() throws Exception {
@@ -212,7 +212,7 @@ public class LoginContextTest extends TestCase {
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
 
-        // reset initialised login modules list 
+        // reset initialized login modules list 
         MyLoginModule.reset();
 
         LoginContext context = new LoginContext(moduleName);
@@ -249,7 +249,7 @@ public class LoginContextTest extends TestCase {
 
             context.login();
 
-            // TODO how to test defualt callback handler wrapping for LoginContext(java.lang.String)?
+            // TODO how to test default callback handler wrapping for LoginContext(java.lang.String)?
 
             // FIXME wrap a handler
             //assertFalse("Handler", MyLoginModule.handler.getClass().equals(
@@ -361,7 +361,7 @@ public class LoginContextTest extends TestCase {
      * Precondition: parameters for login module initialization
      *               are created in the constructor above
      * 
-     * Expected: not null subject, wraped provided callback handler,
+     * Expected: not null subject, wrapped provided callback handler,
      *           not null shared state and not null options.
      */
     public final void testLC_StringCallbackHandler_LoginModuleInitialize()
@@ -372,7 +372,7 @@ public class LoginContextTest extends TestCase {
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
 
-        // reset initialised login modules list 
+        // reset initialized login modules list 
         MyLoginModule.reset();
 
         LoginContext context = new LoginContext(moduleName, handler);
@@ -524,7 +524,7 @@ public class LoginContextTest extends TestCase {
      *               are created in the constructor above
      * 
      * Expected: provided subject, null callback handler or
-     *           wraped default callback handler, not null shared
+     *           wrapped default callback handler, not null shared
      *           state and not null options.
      */
     public final void testLC_StringSubject_LoginModuleInitialize()
@@ -535,7 +535,7 @@ public class LoginContextTest extends TestCase {
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
 
-        // reset initialised login modules list 
+        // reset initialized login modules list 
         MyLoginModule.reset();
 
         LoginContext context = new LoginContext(moduleName, subject);
@@ -669,7 +669,7 @@ public class LoginContextTest extends TestCase {
      * Precondition: parameters for login module initialization
      *               are created in the constructor above
      * 
-     * Expected: provided subject, wraped default callback handler,
+     * Expected: provided subject, wrapped default callback handler,
      *           not null shared state and not null options.
      */
 
@@ -681,7 +681,7 @@ public class LoginContextTest extends TestCase {
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
 
-        // reset initialised login modules list
+        // reset initialized login modules list
         MyLoginModule.reset();
 
         LoginContext context = new LoginContext(moduleName, subject, handler);
@@ -770,7 +770,7 @@ public class LoginContextTest extends TestCase {
 
         // tmp user home to avoid presence of ${user.home}/.java.login.config
         String tmpUserHome = System.getProperty("java.io.tmpdir")
-                + File.separatorChar + "tmpUserHomeForLogingContextTest";
+                + File.separatorChar + "tmpUserHomeForLoggingContextTest";
         File dir = new File(tmpUserHome);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -910,7 +910,7 @@ public class LoginContextTest extends TestCase {
         /**
          * Reset configuration.
          * 
-         * Afer invokation the configuration doesn't have login modules
+         * After invocation the configuration doesn't have login modules
          * and the method Configuration.getAppConfigurationEntry(String)
          * always returns null;
          */

@@ -67,7 +67,7 @@ public class DefaultConfigParserTest extends TestCase {
 	}
 
 	/**
-	 *  test on existance of a application name  
+	 *  test on existence of a application name  
 	 * @throws Exception
 	 */
 	public final void testConfigParser_01() throws Exception {

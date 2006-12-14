@@ -599,7 +599,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
     }
 
     /**
-     * Returns the set of pincipals which to represent like array[x][y]
+     * Returns the set of principals which to represent like array[x][y]
      * Implementation specific.
      */
     public final void testGetPrincipals_01() {

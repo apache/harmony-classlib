@@ -316,7 +316,7 @@ Java_org_apache_harmony_auth_module_NTSystem_load
 	// step +1: get primary group sid
 	//
 	if( NULL == (lpGroupData = QueryInfo(jenv, hUser, TokenPrimaryGroup)) ) {
-		errMsg = "Unable to get primaty group";
+		errMsg = "Unable to get primary group";
 		goto exit;
 	};
 

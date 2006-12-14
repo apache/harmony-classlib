@@ -201,7 +201,7 @@ public class PolicyTest extends TestCase {
             // Principal javax.security.auth.MyPrincipal "duke"
             //
 
-            // no prinipals at all
+            // no principals at all
             subject = new Subject();
             c = p.getPermissions(subject, null);
             assertFalse("Elements: ", c.elements().hasMoreElements());
@@ -259,7 +259,7 @@ public class PolicyTest extends TestCase {
             assertEquals("Permission: ", per, new RuntimePermission(
                     "createClassLoader"));
 
-            // reset subject : no prinipals at all
+            // reset subject : no principals at all
             subject = new Subject();
             c = p.getPermissions(subject, source);
             assertFalse("Elements: ", c.elements().hasMoreElements());

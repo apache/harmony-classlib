@@ -108,7 +108,7 @@ public class RealmChoiceCallbackTest extends TestCase {
      * int defaultChoice, boolean multiple) </code> constructor
      * 
      * Assertion: creates RealmChoiceCallback object which does not allow
-     * multiple chices
+     * multiple choices
      */ 
     public void test02() {
         RealmChoiceCallback rCCB;
@@ -126,12 +126,12 @@ public class RealmChoiceCallbackTest extends TestCase {
             ind = new int[3];
             try {
                 rCCB.setSelectedIndexes(ind);
-                fail("UnsupportedOperationException should be thrown fot non-multiple callback");
+                fail("UnsupportedOperationException should be thrown for non-multiple callback");
             } catch (UnsupportedOperationException e) {
             }
             try {
                 rCCB.setSelectedIndexes(null);
-                fail("UnsupportedOperationException should be thrown fot non-multiple callback");
+                fail("UnsupportedOperationException should be thrown for non-multiple callback");
             } catch (UnsupportedOperationException e) {
             }
             for (int j = 0; j < indexes.length; j++) {
@@ -148,7 +148,7 @@ public class RealmChoiceCallbackTest extends TestCase {
      * int defaultChoice, boolean multiple) </code> constructor
      * 
      * Assertion: creates RealmChoiceCallback object which allows
-     * multiple chices
+     * multiple choices
      */ 
     public void test03() {
         RealmChoiceCallback rCCB;
@@ -165,7 +165,7 @@ public class RealmChoiceCallbackTest extends TestCase {
             assertNull("Incorrect selected indexes", ind);
             rCCB.setSelectedIndexes(indexes);
             ind = rCCB.getSelectedIndexes();
-            assertEquals("Incoddect index length", ind.length, indexes.length);
+            assertEquals("Incorrect index length", ind.length, indexes.length);
             for (int j = 0; j < indexes.length; j++) {
                 assertEquals("Incorrect index number: " + Integer.toString(j),
                         ind[j], indexes[j]);
@@ -178,7 +178,7 @@ public class RealmChoiceCallbackTest extends TestCase {
             }
             rCCB.setSelectedIndexes(indexes);
             ind = rCCB.getSelectedIndexes();
-            assertEquals("Incoddect index length", ind.length, indexes.length);
+            assertEquals("Incorrect index length", ind.length, indexes.length);
             for (int j = 0; j < indexes.length; j++) {
                 assertEquals("Incorrect index number: " + Integer.toString(j),
                         ind[j], indexes[j]);

@@ -53,7 +53,7 @@ public class Krb5LoginModuleTest extends TestCase {
     private final TreeMap<String, String> options = new TreeMap<String, String>();
 
     /**
-     * Sets system env. properties and optionaly starts local mock server
+     * Sets system env. properties and optionally starts local mock server
      */
     @Override
     protected void setUp() throws Exception {

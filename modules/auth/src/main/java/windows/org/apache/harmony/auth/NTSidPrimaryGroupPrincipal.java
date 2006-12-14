@@ -30,7 +30,7 @@ public class NTSidPrimaryGroupPrincipal extends NTSid {
     private static final long serialVersionUID = 1652712324814773197L;
 
     /**
-     * A constructor which takes group SID as its only argumant. 
+     * A constructor which takes group SID as its only argument. 
      * @param sid group SID
      */
     public NTSidPrimaryGroupPrincipal(String sid) {

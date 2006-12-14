@@ -125,7 +125,7 @@ public class Sasl4Test extends TestCase {
         cbH = new Sasl3Test.cbHandN();
         try {
             Sasl.createSaslServer("MECH-1", "protocol", null, null, cbH);
-            fail("SaslException should be thrown when mechamisms is wrong");
+            fail("SaslException should be thrown when mechanisms is wrong");
         } catch (SaslException e) {
         }
         try {

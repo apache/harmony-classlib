@@ -29,7 +29,7 @@ import javax.security.sasl.RealmChoiceCallback;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Test for RealmChoiceCallback seialization
+ * Test for RealmChoiceCallback serialization
  * 
  */
 

@@ -29,7 +29,7 @@ import javax.security.sasl.AuthorizeCallback;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Test for AuthorizeCallback seialization
+ * Test for AuthorizeCallback serialization
  * 
  */
 

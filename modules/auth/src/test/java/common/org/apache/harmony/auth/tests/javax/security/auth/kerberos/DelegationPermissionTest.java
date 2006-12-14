@@ -145,7 +145,7 @@ public class DelegationPermissionTest extends TestCase {
     // testing of the KrbDelegationPermissionCollection
     
     
-    // testing of the add coolection method
+    // testing of the add collection method
     public void testAddCollection()   {
         DelegationPermission dp = new DelegationPermission("\"AAA\" \"BBB\"");
         PermissionCollection pc1 = dp.newPermissionCollection();

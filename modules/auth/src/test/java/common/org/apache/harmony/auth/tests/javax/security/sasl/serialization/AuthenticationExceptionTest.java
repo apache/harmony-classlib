@@ -27,7 +27,7 @@ import javax.security.sasl.AuthenticationException;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Test for AuthoricationException seialization
+ * Test for AuthenticationException serialization
  * 
  */
 

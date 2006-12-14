@@ -193,7 +193,7 @@ public class X500PrincipalTest extends TestCase {
 
     /**
      * Inits X500Principal with byte array
-     * Itins other X500Principal with equivalent string
+     * Inits other X500Principal with equivalent string
      * checks if <code>equals</code> returns true for first against second one 
      */
     public void testEquals() throws Exception {
@@ -720,7 +720,7 @@ public class X500PrincipalTest extends TestCase {
     }
 
     /**
-     * FIXME test is faild - implement unicode normalization
+     * FIXME test is failed - implement unicode normalization
      * @throws Exception
      */
     public void testGetNameUnicodeNormalized() throws Exception {
@@ -1980,7 +1980,7 @@ public class X500PrincipalTest extends TestCase {
         // testing OID case :  OID => <name string>
         // tested all OIDs from RFC 2253 (2.3) and RFC 1779 (Table 1)
 
-        // differen variants of 2.5.4.3 (CN) OID
+        // different variants of 2.5.4.3 (CN) OID
         list.add("OID.2.5.4.3=A", "CN=A", "CN=A");
         list.add("oid.2.5.4.3=A", "CN=A", "CN=A");
         list.add("2.5.4.3=A", "CN=A", "CN=A");
@@ -2220,13 +2220,13 @@ public class X500PrincipalTest extends TestCase {
         //FIXME list.add("CN=\"\\\r\"", "CN=\"\\\r\""); // "\<CR>" 
 
         // AttributeValue : RFC 1779 compatibility
-        list.add("CN=  A  ", "CN=A", "CN=A", "cn=a"); // leading & traling spaces
+        list.add("CN=  A  ", "CN=A", "CN=A", "cn=a"); // leading & trailing spaces
         list.add("CN=\\  A  ", "CN=\\  A", "CN=\"  A\"", "cn=a", null,
                 (byte) 0x01); // escaped leading space
         list.add("CN=  A \\ ", "CN=A \\ ", "CN=\"A  \"", "cn=a", null,
-                (byte) 0x01); // escaped traling space
+                (byte) 0x01); // escaped trailing space
 
-        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & traling spaces
+        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & trailing spaces
 
         StringBuffer errorMsg = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
@@ -2314,7 +2314,7 @@ public class X500PrincipalTest extends TestCase {
         String[] illegalDN = new String[] {
         // RDN
                 //FIXME " ", // space only
-                "CN", // atttibute type only
+                "CN", // attribute type only
                 "CN=A;", // RFC 1779: BNF allows this, but ...
                 "CN=A,", // RFC 1779: BNF allows this, but ...
                 ",CN=A", // no AttributeType for first RDN
@@ -2399,7 +2399,7 @@ public class X500PrincipalTest extends TestCase {
         // Empty
         //
         list.add(new byte[] { 0x30, 0x00 }, "", "", "");
-        list.add(new byte[] { 0x30, 0x02, 0x31, 0x00 }, "", "", ""); //??? invalid size contraints
+        list.add(new byte[] { 0x30, 0x02, 0x31, 0x00 }, "", "", ""); //??? invalid size constraints
 
         //
         // Known OID + string with different tags(all string) 

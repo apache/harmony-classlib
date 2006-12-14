@@ -80,7 +80,7 @@ public final class PrivateCredentialPermission extends Permission {
     }
 
     /**
-     * Initialize a PivateCredentialPermission object and checks that a target
+     * Initialize a PrivateCredentialPermission object and checks that a target
      * name has a correct format: CredentialClass 1*(PrincipalClass
      * "PrincipalName")
      */

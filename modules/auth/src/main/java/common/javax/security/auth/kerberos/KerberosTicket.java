@@ -201,7 +201,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
 
     public final boolean isForwarded() {
         checkState();
-        //TODO: was based on authentication involving a forwarde TGT ?
+        //TODO: was based on authentication involving a forwarded TGT ?
         return flags[FORWARDED];
     }
 

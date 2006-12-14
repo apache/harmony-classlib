@@ -44,7 +44,7 @@ public class NTSid implements Serializable, Principal {
     private String domain;
 
     /**
-     * A constructor which takes object's SID as its only argumant. 
+     * A constructor which takes object's SID as its only argument. 
      * @param sid SID
      */
     public NTSid(String sid) {

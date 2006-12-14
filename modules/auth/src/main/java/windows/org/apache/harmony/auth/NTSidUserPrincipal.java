@@ -29,7 +29,7 @@ public class NTSidUserPrincipal extends NTSid {
     private static final long serialVersionUID = -76980455882379611L;
 
     /**
-     * A constructor which takes user SID as its only argumant. 
+     * A constructor which takes user SID as its only argument. 
      * @param sid user SID
      */
     public NTSidUserPrincipal(String sid) {

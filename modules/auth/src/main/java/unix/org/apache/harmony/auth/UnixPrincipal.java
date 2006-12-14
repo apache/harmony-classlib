@@ -64,7 +64,7 @@ public class UnixPrincipal implements Serializable, Principal {
 
     /**
      * Compares two UnixPrincipal objects.<br>
-     * Two pricipal objects are considered equal if they are both of type 
+     * Two principal objects are considered equal if they are both of type 
      * UnixPrincipal and their names are equal.
      */
     @Override

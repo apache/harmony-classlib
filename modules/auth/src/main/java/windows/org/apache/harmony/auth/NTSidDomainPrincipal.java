@@ -29,7 +29,7 @@ public class NTSidDomainPrincipal extends NTSid {
     private static final long serialVersionUID = -8278226353092135089L;
 
     /**
-     * A constructor which takes domain's SID as its only argumant. 
+     * A constructor which takes domain's SID as its only argument. 
      * @param sid domain SID
      */
     public NTSidDomainPrincipal(String sid) {
@@ -40,7 +40,7 @@ public class NTSidDomainPrincipal extends NTSid {
      * A constructor which takes an extended set of information - domain SID, 
      * and its name 
      * @param sid domain SID
-     * @param domani name of the domain
+     * @param domain name of the domain
      */
     public NTSidDomainPrincipal(String sid, String domain) {
         super(sid, domain, domain);
