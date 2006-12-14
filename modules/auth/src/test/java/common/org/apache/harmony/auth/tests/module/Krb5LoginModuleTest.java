@@ -97,7 +97,7 @@ public class Krb5LoginModuleTest extends TestCase {
      */
     public void test_Config() throws Exception {
 
-        // create loging module for testing
+        // create login module for testing
         Krb5LoginModule module = new Krb5LoginModule();
         module.initialize(null, new MockCallbackHandler(), null, options);
 
