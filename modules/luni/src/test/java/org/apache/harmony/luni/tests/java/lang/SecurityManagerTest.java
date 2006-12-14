@@ -166,12 +166,18 @@ public class SecurityManagerTest extends TestCase {
     private static class checkPermissionLjava_security_PermissionTesting {
         public static void main(String[] args) {
             MutableSecurityManager sm = new MutableSecurityManager();
+            sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
             System.setSecurityManager(sm);
             try {
-                System.getSecurityManager().checkPermission(
-                    new RuntimePermission("createClassLoader"));
-                fail("This should throw a SecurityException");
-            } catch (SecurityException ok) {}
+                try {
+                    System.getSecurityManager().checkPermission(
+                            new RuntimePermission("createClassLoader"));
+                    fail("This should throw a SecurityException");
+                } catch (SecurityException e) {
+                }
+            } finally {
+                System.setSecurityManager(null);
+            }
         }
     }
 
