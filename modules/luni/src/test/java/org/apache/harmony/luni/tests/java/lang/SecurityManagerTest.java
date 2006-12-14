@@ -18,6 +18,8 @@ package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
 import java.security.Security;
+import java.security.SecurityPermission;
+import java.security.AllPermission;
 import tests.support.Support_Exec;
 
 import junit.framework.TestCase;
@@ -119,15 +121,12 @@ public class SecurityManagerTest extends TestCase {
      */
     public void test_checkMemberAccessLjava_lang_ClassI() {
         MutableSecurityManager sm = new MutableSecurityManager();
-        sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+        // enable all but access check
+        sm.addPermission(new AllPermission());
         sm.denyPermission(new RuntimePermission("accessDeclaredMembers"));
         System.setSecurityManager(sm);
         try {
-            try {
-                getClass().getDeclaredFields();
-            } catch (SecurityException e) {
-                fail("This should not throw a security exception");
-            }
+            getClass().getDeclaredFields();
 
             try {
                 Object.class.getDeclaredFields();
@@ -167,18 +166,12 @@ public class SecurityManagerTest extends TestCase {
     private static class checkPermissionLjava_security_PermissionTesting {
         public static void main(String[] args) {
             MutableSecurityManager sm = new MutableSecurityManager();
-            sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
             System.setSecurityManager(sm);
             try {
-                try {
-                    System.getSecurityManager().checkPermission(
-                            new RuntimePermission("createClassLoader"));
-                    fail("This should throw a SecurityException");
-                } catch (SecurityException e) {
-                }
-            } finally {
-                System.setSecurityManager(null);
-            }
+                System.getSecurityManager().checkPermission(
+                    new RuntimePermission("createClassLoader"));
+                fail("This should throw a SecurityException");
+            } catch (SecurityException ok) {}
         }
     }
 

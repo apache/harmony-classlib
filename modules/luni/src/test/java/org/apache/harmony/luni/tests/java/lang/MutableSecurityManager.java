@@ -56,13 +56,15 @@ class MutableSecurityManager extends SecurityManager {
     }
 
     @Override
-    public void checkPermission(Permission permission) {
-        if (enabled.implies(permission)) {
-            return;
-        }
-        
+    public void checkPermission(Permission permission) 
+    {
+        // denied should take precedence over allowed
         if (denied != null && denied.implies(permission)){
             throw new SecurityException("Denied " + permission);
+        }
+
+        if (enabled.implies(permission)) {
+            return;
         }
         
         super.checkPermission(permission);
