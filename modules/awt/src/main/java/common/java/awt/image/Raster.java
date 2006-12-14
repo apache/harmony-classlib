@@ -327,6 +327,10 @@ public class Raster {
 
     public static WritableRaster createPackedRaster(DataBuffer dataBuffer,
             int w, int h, int scanlineStride, int bandMasks[], Point location) {
+        if (dataBuffer == null) {
+            // awt.278=dataBuffer is null
+            throw new NullPointerException(Messages.getString("awt.278")); //$NON-NLS-1$
+        }
 
         if (w <= 0 || h <= 0) {
             // awt.22E=w or h is less than or equal to zero
@@ -346,11 +350,6 @@ public class Raster {
         if (bandMasks == null) {
             // awt.27C=bandMasks is null
             throw new RasterFormatException(Messages.getString("awt.27C")); //$NON-NLS-1$
-        }
-
-        if (dataBuffer == null) {
-            // awt.278=dataBuffer is null
-            throw new NullPointerException(Messages.getString("awt.278")); //$NON-NLS-1$
         }
 
         if (dataBuffer.getNumBanks() > 1) {
