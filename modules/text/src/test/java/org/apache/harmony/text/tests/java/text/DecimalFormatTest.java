@@ -377,7 +377,7 @@ public class DecimalFormatTest extends TestCase {
     }
 
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_getMaximumIntegerDigits() {
+    public void test_getMaximumIntegerDigits() {
         final int maxIntDigit = 309;
 
         // When use default locale, in this case zh_CN
@@ -792,7 +792,7 @@ public class DecimalFormatTest extends TestCase {
      *        java.text.FieldPosition)
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_formatDLjava_lang_StringBufferLjava_text_FieldPosition() {
+    public void test_formatDLjava_lang_StringBufferLjava_text_FieldPosition() {
         new Support_DecimalFormat(
                 "test_formatDLjava_lang_StringBufferLjava_text_FieldPosition")
                 .t_format_with_FieldPosition();
@@ -1025,7 +1025,7 @@ public class DecimalFormatTest extends TestCase {
      *        java.text.FieldPosition)
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_formatJLjava_lang_StringBufferLjava_text_FieldPosition() {
+    public void test_formatJLjava_lang_StringBufferLjava_text_FieldPosition() {
         int failCount = 0;
         Support_BitSet failures = new Support_BitSet();
 
@@ -1098,7 +1098,7 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#formatToCharacterIterator(java.lang.Object)
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_formatToCharacterIteratorLjava_lang_Object() {
+    public void test_formatToCharacterIteratorLjava_lang_Object() {
 
         try {
             // Regression for HARMONY-466
@@ -1176,10 +1176,11 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#getCurrency()
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_getCurrency() {
+    public void test_getCurrency() {
         Currency currK = Currency.getInstance("KRW");
         Currency currX = Currency.getInstance("XXX");
         Currency currE = Currency.getInstance("EUR");
+        Currency curr01;
 
         DecimalFormat df = (DecimalFormat) NumberFormat
                 .getCurrencyInstance(new Locale("ko", "KR"));
@@ -1201,6 +1202,11 @@ public class DecimalFormatTest extends TestCase {
         assertTrue("Test4: Returned incorrect currency",
                 df.getCurrency() == currE);
 
+        // Regression for HARMONY-1351
+        df = (DecimalFormat) NumberFormat.getCurrencyInstance(new Locale("QWERTY"));
+        assertTrue("Test5: Returned incorrect currency",
+                df.getCurrency() == currX);
+        
         // JDK fails these tests since it doesn't have the PREEURO variant
         // df = (DecimalFormat)NumberFormat.getCurrencyInstance(new Locale("fr",
         // "FR","PREEURO"));
@@ -1254,7 +1260,7 @@ public class DecimalFormatTest extends TestCase {
      *        java.text.ParsePosition)
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_parseLjava_lang_StringLjava_text_ParsePosition() {
+    public void test_parseLjava_lang_StringLjava_text_ParsePosition() {
         DecimalFormat format = (DecimalFormat) NumberFormat
                 .getNumberInstance(Locale.ENGLISH);
         ParsePosition pos = new ParsePosition(0);
@@ -1475,7 +1481,7 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#setMultiplier(int)
      */
     //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_setMultiplierI() {
+    public void test_setMultiplierI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMultiplier(10);
         assertEquals("Wrong multiplier", 10, df.getMultiplier());

@@ -281,10 +281,10 @@ public class DecimalFormat extends NumberFormat {
      */
     @Override
     public Currency getCurrency() {
-        if (dform.getCurrency() == null) {
-            return null;
-        }
-        return Currency.getInstance(dform.getCurrency().getCurrencyCode());
+        final com.ibm.icu.util.Currency cur = dform.getCurrency();
+        final String code = (cur == null) ? "XXX" : cur.getCurrencyCode(); //$NON-NLS-1$
+
+        return Currency.getInstance(code);
     }
 
     /**
