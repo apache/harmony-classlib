@@ -44,7 +44,8 @@ extern "C"
     VMI_ERROR_UNIMPLEMENTED = 2,        /**< Function has not been implemented */
     VMI_ERROR_UNSUPPORTED_VERSION = 3,  /**< The requested VM interface version is not supported */
     VMI_ERROR_OUT_OF_MEMORY = 4,        /**< Not enough memory was available to complete the request */
-    VMI_ERROR_NOT_FOUND = 5,            /**< The requested system property was not found */
+    VMI_ERROR_ILLEGAL_ARG = 5,          /**< An attempt to set illegal value 
+                                        (e.g. NULL value is not allowed in system properties) */
     VMI_ERROR_READ_ONLY = 6,            /**< An attempt was made to modify a read-only item */
     vmiErrorEnsureWideEnum = 0x1000000  /* ensure 4-byte enum */
   } vmiError;

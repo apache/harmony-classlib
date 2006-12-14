@@ -274,9 +274,14 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
             BOOTCLASSPATH_PROPERTY,
             &bootstrapClassPath);
 
-        /* Gregory - no property is found, VM bootclasspath is not defined */
-        if (VMI_ERROR_NONE != rcGetProperty)
-            bootstrapClassPath = NULL;
+        if (VMI_ERROR_NONE != rcGetProperty) {
+            returnCode = JNI_ERR;
+            goto cleanup;
+        }
+        if (!bootstrapClassPath) {
+            /* no such property yet */
+            bootstrapClassPath = "";
+        }
 
         qsort(props, number, sizeof(key_value_pair), props_compare);
 
