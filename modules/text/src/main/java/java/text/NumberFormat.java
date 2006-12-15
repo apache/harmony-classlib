@@ -462,7 +462,8 @@ public abstract class NumberFormat extends Format {
     @Override
     public final Object parseObject(String string, ParsePosition position) {
         if (position == null) {
-            throw new NullPointerException(Messages.getString("text.08"));
+            // text.1A=position is null
+            throw new NullPointerException(Messages.getString("text.1A")); //$NON-NLS-1$
         }
 
         try {
