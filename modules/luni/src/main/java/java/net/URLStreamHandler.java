@@ -407,7 +407,7 @@ public abstract class URLStreamHandler {
 	 *         <code>false</code> if the hosts are different
 	 */
 	protected boolean hostsEqual(URL url1, URL url2) {
-        String host1 = url1.getHost(), host2 = url2.getHost();
+        String host1 = getHost(url1), host2 = getHost(url2);
         if (host1 == host2 || (host1 != null && host1.equalsIgnoreCase(host2))) {
             return true;
         }
@@ -451,4 +451,16 @@ public abstract class URLStreamHandler {
         }
 		return p1 == p2;
 	}
+    
+    /*
+     * If the URL host is empty while protocal is file, the host is regarded as
+     * localhost.
+     */
+    private static String getHost(URL url) {
+        String host = url.getHost();
+        if ("file".equals(url.getProtocol()) && "".equals(host)) {
+            host = "localhost";
+        }
+        return host;
+    }
 }

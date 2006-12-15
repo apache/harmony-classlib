@@ -783,6 +783,23 @@ public class URLTest extends junit.framework.TestCase {
         u = new URL("file", null, -1, "/d:/somedir/");
         u1 = new URL("file:/d:/somedir/");
         assertFalse(u.sameFile(u1));
+        
+        // regression test for Harmony-2136
+        URL url1 = new URL("file:///anyfile");
+        URL url2 = new URL("file://localhost/anyfile");
+        assertTrue(url1.sameFile(url2));
+
+        url1 = new URL("http:///anyfile");
+        url2 = new URL("http://localhost/anyfile");
+        assertFalse(url1.sameFile(url2));
+
+        url1 = new URL("ftp:///anyfile");
+        url2 = new URL("ftp://localhost/anyfile");
+        assertFalse(url1.sameFile(url2));
+
+        url1 = new URL("jar:file:///anyfile.jar!/");
+        url2 = new URL("jar:file://localhost/anyfile.jar!/");
+        assertFalse(url1.sameFile(url2));
     }
 
 	/**
