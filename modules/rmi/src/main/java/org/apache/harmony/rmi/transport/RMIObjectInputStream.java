@@ -34,6 +34,8 @@ import org.apache.harmony.rmi.common.GetBooleanPropAction;
 import org.apache.harmony.rmi.common.RMIProperties;
 import org.apache.harmony.rmi.internal.nls.Messages;
 
+import org.apache.harmony.kernel.vm.VM;
+
 
 /**
  * The RMIObjectInputStream is a subclass of ObjectInputStream performing
@@ -46,9 +48,6 @@ public class RMIObjectInputStream extends ObjectInputStream {
 
     // Annotations for serialized objects.
     private ObjectInputStream locStream;
-
-    // ClassLoader which will be used for classes resolving
-    private ClassLoader defaultLoader = null;
 
     // True if this stream was created for handling a RemoteCall
     private boolean isRCallStream = false;
@@ -120,7 +119,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
             annot = null;
         }
         Class cl = RMIClassLoader.loadClass(annot, streamCl.getName(),
-                defaultLoader);
+                VM.getNonBootstrapClassLoader());
         return cl;
     }
 
@@ -141,7 +140,8 @@ public class RMIObjectInputStream extends ObjectInputStream {
         if (useCodebaseOnly) {
             annot = null;
         }
-        Class cl = RMIClassLoader.loadProxyClass(annot, interf, defaultLoader);
+        Class cl = RMIClassLoader.loadProxyClass(annot, interf,
+                VM.getNonBootstrapClassLoader());
         return cl;
     }
 
@@ -169,39 +169,33 @@ public class RMIObjectInputStream extends ObjectInputStream {
      * @throws ClassNotFoundException if class of a serialized object
      *         could not be found
      */
-    public synchronized Object readRMIObject(Class cl, ClassLoader loader)
+    public synchronized Object readRMIObject(Class cl)
             throws IOException, ClassNotFoundException {
-        defaultLoader = loader;
-
-        try {
-            if (cl.isPrimitive()) {
-                if (cl == Boolean.TYPE) {
-                    return new Boolean(readBoolean());
-                } else if (cl == Byte.TYPE) {
-                    return new Byte(readByte());
-                } else if (cl == Short.TYPE) {
-                    return new Short(readShort());
-                } else if (cl == Integer.TYPE) {
-                    return new Integer(readInt());
-                } else if (cl == Long.TYPE) {
-                    return new Long(readLong());
-                } else if (cl == Float.TYPE) {
-                    return new Float(readFloat());
-                } else if (cl == Double.TYPE) {
-                    return new Double(readDouble());
-                } else if (cl == Character.TYPE) {
-                    return new Character(readChar());
-                } else if (cl == Void.TYPE) {
-                    return null;
-                } else {
-                    // rmi.7F=Unknown primitive class: {0}
-                    throw new IOException(Messages.getString("rmi.7F", cl)); //$NON-NLS-1$
-                }
+        if (cl.isPrimitive()) {
+            if (cl == Boolean.TYPE) {
+                return new Boolean(readBoolean());
+            } else if (cl == Byte.TYPE) {
+                return new Byte(readByte());
+            } else if (cl == Short.TYPE) {
+                return new Short(readShort());
+            } else if (cl == Integer.TYPE) {
+                return new Integer(readInt());
+            } else if (cl == Long.TYPE) {
+                return new Long(readLong());
+            } else if (cl == Float.TYPE) {
+                return new Float(readFloat());
+            } else if (cl == Double.TYPE) {
+                return new Double(readDouble());
+            } else if (cl == Character.TYPE) {
+                return new Character(readChar());
+            } else if (cl == Void.TYPE) {
+                return null;
             } else {
-                return readObject();
+                // rmi.7F=Unknown primitive class: {0}
+                throw new IOException(Messages.getString("rmi.7F", cl)); //$NON-NLS-1$
             }
-        } finally {
-            defaultLoader = null;
+        } else {
+            return readObject();
         }
     }
 

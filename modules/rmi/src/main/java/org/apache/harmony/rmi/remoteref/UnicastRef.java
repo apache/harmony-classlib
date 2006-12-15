@@ -158,7 +158,7 @@ public class UnicastRef extends RemoteRefBase {
                         (RMIObjectInputStream) call.getInputStream();
 
                 try {
-                    toReturn = oin.readRMIObject(m.getReturnType(), null);
+                    toReturn = oin.readRMIObject(m.getReturnType());
                 } catch (IOException ioe) {
                     // rmi.70=IOException occured while unmarshalling return value
                     throw new UnmarshalException(Messages.getString("rmi.70"), ioe); //$NON-NLS-1$

@@ -24,6 +24,7 @@ package org.apache.harmony.rmi;
 
 import java.rmi.MarshalledObject;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 
 import junit.framework.Test;
@@ -80,16 +81,63 @@ public class MarshalledObjectTest extends TestCase {
      *          If some error occurs.
      */
     public void testGet() throws Exception {
-        assertNull(new MarshalledObject(null).get());
-        String str = new String("TEST");
-        assertEquals(str, new MarshalledObject(str).get());
         Hashtable ht = new Hashtable();
+        String str = new String("TEST");
+
+        assertNull(new MarshalledObject(null).get());
+        assertEquals(str, new MarshalledObject(str).get());
         ht.put(new Integer(1), str);
         ht.put(new Integer(2), "TEST1");
         MarshalledObject mo = new MarshalledObject(ht);
         assertEquals(ht, mo.get());
         ht.put(new Integer(2), "TEST2");
         assertTrue(! ht.equals(mo.get()));
+    }
+
+    /**
+     * Tests if RMI runtime is able to load classes if thread context classloader
+     * is null (regression test for HARMONY-1967)
+     */
+    public void testNullLoader() throws Exception {
+        ClassLoader old_cl = Thread.currentThread().getContextClassLoader();
+
+        try {
+            MarshalledObject mo = new MarshalledObject(new TestClass());
+            Object obj = null;
+
+            // 1-st get: thread context classloader is equal to system classloader
+            try {
+                obj = mo.get();
+
+                if (obj.getClass().getClassLoader() != old_cl) {
+                    fail("1-st get failed: loaded through: "
+                            + obj.getClass().getClassLoader() + ", expected: " + old_cl);
+            } else {
+                System.out.println("1-st get passed.");
+            }
+            } catch (Exception ex) {
+                fail("1-st get failed: " + ex);
+            }
+
+            // 2-nd get: thread context classloader is equal to null
+            Thread.currentThread().setContextClassLoader(null);
+
+            try {
+                obj = mo.get();
+
+                if (obj.getClass().getClassLoader() != old_cl) {
+                    fail("2-nd get failed: loaded through: "
+                            + obj.getClass().getClassLoader() + ", expected: " + old_cl);
+                } else {
+                    System.out.println("2-nd get passed.");
+                }
+            } catch (Exception ex) {
+                fail("2-nd get failed: " + ex);
+            }
+        } finally {
+            // restore thread context classloader
+            Thread.currentThread().setContextClassLoader(old_cl);
+        }
     }
 
     /**
@@ -109,5 +157,12 @@ public class MarshalledObjectTest extends TestCase {
      */
     public static void main(String args[]) {
         junit.textui.TestRunner.run(suite());
+    }
+
+
+    /**
+     * Auxilary empty class.
+     */
+    static class TestClass implements Serializable {
     }
 }

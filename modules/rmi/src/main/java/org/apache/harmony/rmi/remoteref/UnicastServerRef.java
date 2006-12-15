@@ -543,8 +543,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
 
         try {
             for (int i = 0; i < paramTypes.length; ++i) {
-                params[i] = oin.readRMIObject(paramTypes[i],
-                        paramTypes[i].getClassLoader());
+                params[i] = oin.readRMIObject(paramTypes[i]);
             }
         } catch (RemoteException re) {
             // rmi.69=RemoteException occured while unmarshalling arguments
