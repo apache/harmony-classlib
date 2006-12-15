@@ -4,6 +4,9 @@ javax/swing/JEditorPaneTest.java
 javax/swing/AccessibleJComponent_MultithreadedTest.java
 javax/swing/AccessibleJComponent_MultithreadedTest.java
 javax/swing/JComponent_MultithreadedTest.java
+javax/swing/JFileChooserTest.java
+javax/swing/plaf/metal/MetalFileChooserUITest.java
+javax/swing/plaf/metal/MetalIconFactoryTest.java
 javax/swing/JFormattedTextField_CommitActionRTest.java
 javax/swing/JInternalFrame_MultithreadedTest.java
 javax/swing/JTextField_NotifyActionRTest.java
