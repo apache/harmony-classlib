@@ -144,6 +144,20 @@ public class AlgorithmParametersTest extends TestCase {
         //
         params.init(new MyAlgorithmParameterSpec());
         assertSame(enc, params.getEncoded(strFormatParam));
+        
+        //
+        // test: if format param is null
+        //
+        paramSpi = new MyAlgorithmParameters() {
+            protected byte[] engineGetEncoded(String format) throws IOException {
+                assertNull(format); // null is passed to spi-provider
+                return enc;
+            }
+        };
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(new MyAlgorithmParameterSpec());
+        assertSame(enc, params.getEncoded(null));
     }
 
 	/**
