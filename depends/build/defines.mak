@@ -34,12 +34,16 @@ HYCOMMONCFLAGS = \
   -WX -GF -Gs -MD -Zm400 \
   -D_DLL -D_MT -D_WINSOCKAPI_ \
   /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
-  
+
+!ifndef HYDEBUGCFLAGS
 HYDEBUGCFLAGS = \
   -Zi -Od
-  
+!endif
+
+!ifndef HYRELEASECFLAGS  
 HYRELEASECFLAGS = \
-  -Ogityb1  
+  -Ogityb1
+!endif
 
 !IF "$(HY_CFG)" == "debug"
 HYCFLAGS = $(HYDEBUGCFLAGS) $(HYCOMMONCFLAGS)
