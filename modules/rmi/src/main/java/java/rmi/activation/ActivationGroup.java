@@ -136,9 +136,12 @@ public abstract class ActivationGroup extends UnicastRemoteObject
         }
         // rmi.log.1C=current_AS = {0}
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1C", current_AS)); //$NON-NLS-1$
+
         // rmi.log.23=current_AS.ref = {0}
-        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.23", //$NON-NLS-1$
-                ((RemoteObject) current_AS).getRef()));
+        if (current_AS instanceof RemoteObject) { 
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.23", //$NON-NLS-1$
+                    ((RemoteObject) current_AS).getRef()));
+        }
         // rmi.log.24=---------- END -> ActivationGroup.getSystem() ----------
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.24")); //$NON-NLS-1$
         return current_AS;
