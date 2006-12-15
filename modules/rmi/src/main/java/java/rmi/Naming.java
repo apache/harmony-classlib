@@ -72,6 +72,10 @@ public final class Naming {
 
     public static void bind(String name, Remote obj) throws AlreadyBoundException,
             MalformedURLException, RemoteException {
+        if (obj == null) {
+            throw new NullPointerException(Messages.getString("rmi.5C")); //$NON-NLS-1$
+        }
+
         if (name == null) {
             // rmi.00=URL could not be null.
             throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
