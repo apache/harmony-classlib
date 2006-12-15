@@ -26,50 +26,6 @@ import java.util.Arrays;
 public class AlgorithmParameters2Test extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.security.AlgorithmParameters#getEncoded()
-	 */
-	public void test_getEncoded() throws Exception {
-		// Test for method byte []
-		// java.security.AlgorithmParameters.getEncoded()
-		AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
-
-		byte[] enc = null;
-		try {
-			enc = params.getEncoded();
-			fail("should not get encoded from un-initialized instance");
-		} catch (IOException e) {
-			// expected
-		}
-
-		params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-				BigInteger.ONE));
-		enc = params.getEncoded();
-		assertNotNull("encoded is null", enc);
-	}
-
-	/**
-	 * @tests java.security.AlgorithmParameters#getEncoded(java.lang.String)
-	 */
-    public void test_getEncodedLjava_lang_String() throws Exception {
-        // Test for method byte []
-        // java.security.AlgorithmParameters.getEncoded(java.lang.String)
-        AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
-
-        params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-                BigInteger.ONE));
-        
-        // getEncoded behavior is not specified for unknown 'format'
-        // different providers work in different manner:
-        // 1.5 RI provider uses primary encoding format,
-        // but BC provider returns null.
-        // As it is provider specific behavior - it is not tested.
-        //byte[] enc = params.getEncoded("JUNK");
-
-        byte[] enc = params.getEncoded("ASN.1");
-        assertNotNull("ANS.1 should be supported", enc);
-    }
-
-	/**
 	 * @tests java.security.AlgorithmParameters#getParameterSpec(java.lang.Class)
 	 */
 	public void test_getParameterSpecLjava_lang_Class() throws Exception {

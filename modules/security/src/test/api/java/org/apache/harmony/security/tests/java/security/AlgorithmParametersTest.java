@@ -23,11 +23,13 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.AlgorithmParametersSpi;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.DSAParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
 import junit.framework.TestCase;
@@ -73,6 +75,75 @@ public class AlgorithmParametersTest extends TestCase {
         // test: not null value
         ap = new DummyAlgorithmParameters(null, p, "AAA");
         assertEquals("AAA", ap.getAlgorithm());
+    }
+
+    /**
+     * @tests java.security.AlgorithmParameters#getEncoded()
+     */
+    public void test_getEncoded() throws Exception {
+
+        final byte[] enc = new byte[] { 0x02, 0x01, 0x03 };
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected byte[] engineGetEncoded() throws IOException {
+                return enc;
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        //
+        // test: IOException if not initialized
+        //
+        try {
+            params.getEncoded();
+            fail("should not get encoded from un-initialized instance");
+        } catch (IOException e) {
+            // expected
+        }
+
+        //
+        // test: corresponding spi method is invoked
+        //
+        params.init(new MyAlgorithmParameterSpec());
+        assertSame(enc, params.getEncoded());
+    }
+
+    /**
+     * @tests java.security.AlgorithmParameters#getEncoded(String)
+     */
+    public void test_getEncodedLjava_lang_String() throws Exception {
+
+        final byte[] enc = new byte[] { 0x02, 0x01, 0x03 };
+
+        final String strFormatParam = "format";
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected byte[] engineGetEncoded(String format) throws IOException {
+                assertEquals(strFormatParam, format);
+                return enc;
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        //
+        // test: IOException if not initialized
+        //
+        try {
+            params.getEncoded(strFormatParam);
+            fail("should not get encoded from un-initialized instance");
+        } catch (IOException e) {
+            // expected
+        }
+
+        //
+        // test: corresponding spi method is invoked
+        //
+        params.init(new MyAlgorithmParameterSpec());
+        assertSame(enc, params.getEncoded(strFormatParam));
     }
 
 	/**
@@ -170,18 +241,6 @@ public class AlgorithmParametersTest extends TestCase {
 
 	private void checkUnititialized(AlgorithmParameters ap) {
 		try {
-			ap.getEncoded();
-			fail("getEncoded(): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		
-		try {
-			ap.getEncoded("aaa");
-			fail("getEncoded(format): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		
-		try {
 		    //make it compilable on 1.5
 			ap.getParameterSpec((Class<AlgorithmParameterSpec>)new Object().getClass());
 			fail("getParameterSpec(): No expected InvalidParameterSpecException");
@@ -195,14 +254,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         assertSame("getProvider() failed", p, ap.getProvider());
         assertEquals("getAlgorithm() failed", "ABC", ap.getAlgorithm());
-
-        ap.getEncoded();
-        assertTrue("getEncoded() failed",
-                MyAlgorithmParameters.runEngineGetEncoded1);
-
-        ap.getEncoded("aaa");
-        assertTrue("getEncoded(format) failed",
-                MyAlgorithmParameters.runEngineGetEncoded2);
 
         //make it compilable on 1.5
         ap.getParameterSpec((Class<AlgorithmParameterSpec>) new Object()
@@ -245,10 +296,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         public static boolean runEngineGetParameterSpec = false;
 
-        public static boolean runEngineGetEncoded1 = false;
-
-        public static boolean runEngineGetEncoded2 = false;
-
         public static boolean runEngineToString = false;
 
         protected void engineInit(AlgorithmParameterSpec paramSpec)
@@ -272,12 +319,10 @@ public class AlgorithmParametersTest extends TestCase {
         }
 
         protected byte[] engineGetEncoded() throws IOException {
-            runEngineGetEncoded1 = true;
             return null;
         }
 
         protected byte[] engineGetEncoded(String format) throws IOException {
-            runEngineGetEncoded2 = true;
             return null;
         }
 
