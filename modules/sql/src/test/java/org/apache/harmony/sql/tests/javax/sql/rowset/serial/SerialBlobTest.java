@@ -103,6 +103,11 @@ public class SerialBlobTest extends TestCase {
         assertEquals(3, data[1]);
         assertEquals(4, data[2]);
 
+        // Harmony-2725 RI's bug : RI throws SerialException here.
+        data = serialBlob.getBytes(2, 1);
+        assertEquals(1, data.length);
+        assertEquals(2, data[0]);
+
         data = serialBlob.getBytes(1, 10);
         assertEquals(8, data.length);
         assertTrue(Arrays.equals(buf, data));
@@ -167,7 +172,7 @@ public class SerialBlobTest extends TestCase {
         pattern = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         pos = blob.position(pattern, 1);
         assertEquals(1, pos);
-        
+
         pattern = new byte[] { 2, 3, 4 };
         pos = blob.position(pattern, 1);
         assertEquals(2, pos);
@@ -215,7 +220,7 @@ public class SerialBlobTest extends TestCase {
         pattern.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         pos = blob.position(pattern, 1);
         assertEquals(1, pos);
-        
+
         pattern.buf = new byte[] { 2, 3, 4 };
         pos = blob.position(pattern, 1);
         assertEquals(2, pos);
