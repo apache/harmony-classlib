@@ -24,8 +24,6 @@ package org.apache.harmony.security.tests.java.security;
 
 import java.security.AlgorithmParameters;
 import java.security.AlgorithmParametersSpi;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
@@ -77,109 +75,85 @@ public class AlgorithmParametersTest extends TestCase {
         assertEquals("AAA", ap.getAlgorithm());
     }
 
-	/*
-	 * Class under test for AlgorithmParameters getInstance(String)
-	 */
-	public void testGetInstanceString() {
-		AlgorithmParameters ap = null;
-		
-		try {
-			ap = AlgorithmParameters.getInstance("ABC");		
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		}
-		checkUnititialized(ap);
-		
-		try {
-			ap.init(new MyAlgorithmParameterSpec());
-		} catch (java.security.spec.InvalidParameterSpecException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineInit1) {
-			fail("init() failed");
-		}
-		try {
-			ap.init(new byte[6]);
-			fail("getEncoded(format): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		try {
-			ap.init(new byte[6], "aaa");
-			fail("getEncoded(format): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		checkAP(ap, p);
-	}
+	/**
+     * @tests java.security.AlgorithmParameters#getInstance(String)
+     */
+    public void test_getInstanceLjava_lang_String() throws Exception {
 
-	/*
-	 * Class under test for AlgorithmParameters getInstance(String, String)
-	 */
-	public void testGetInstanceStringString() {
-		AlgorithmParameters ap = null;
-		
-		try {
-			ap = AlgorithmParameters.getInstance("ABC", "MyProvider");	
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
-		}
-		checkUnititialized(ap);
-		
-		try {
-			ap.init(new byte[6]);
-		} catch (java.io.IOException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineInit2) {
-			fail("init() failed");
-		}
-		try {
-			ap.init(new MyAlgorithmParameterSpec());
-			fail("getEncoded(format): No expected InvalidParameterSpecException");
-		} catch (java.security.spec.InvalidParameterSpecException e) {
-		}
-		try {
-			ap.init(new byte[6], "aaa");
-			fail("getEncoded(format): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		checkAP(ap, p);
-	}
+        AlgorithmParameters ap = AlgorithmParameters.getInstance("ABC");
 
-	/*
-	 * Class under test for AlgorithmParameters getInstance(String, Provider)
-	 */
-	public void testGetInstanceStringProvider() {
-		AlgorithmParameters ap = null;
-		
-		try {
-			ap = AlgorithmParameters.getInstance("ABC", p);	
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		}
-		checkUnititialized(ap);
-		
-		try {
-			ap.init(new byte[6], "aaa");
-		} catch (java.io.IOException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineInit3) {
-			fail("init() failed");
-		}
-		try {
-			ap.init(new MyAlgorithmParameterSpec());
-			fail("getEncoded(format): No expected InvalidParameterSpecException");
-		} catch (java.security.spec.InvalidParameterSpecException e) {
-		}
-		try {
-			ap.init(new byte[6]);
-			fail("getEncoded(format): No expected IOException");
-		} catch (java.io.IOException e) {
-		}
-		checkAP(ap, p);
-	}
+        checkUnititialized(ap);
+
+        ap.init(new MyAlgorithmParameterSpec());
+
+        assertTrue("init() failed", MyAlgorithmParameters.runEngineInit1);
+
+        try {
+            ap.init(new byte[6]);
+            fail("getEncoded(format): No expected IOException");
+        } catch (java.io.IOException e) {
+        }
+        try {
+            ap.init(new byte[6], "aaa");
+            fail("getEncoded(format): No expected IOException");
+        } catch (java.io.IOException e) {
+        }
+        checkAP(ap, p);
+    }
+
+    /**
+     * @tests java.security.AlgorithmParameters#getInstance(String, String)
+     */
+    public void test_getInstanceLjava_lang_StringLjava_lang_String()
+            throws Exception {
+
+        AlgorithmParameters ap = AlgorithmParameters.getInstance("ABC",
+                "MyProvider");
+
+        checkUnititialized(ap);
+
+        ap.init(new byte[6]);
+
+        assertTrue("init() failed", MyAlgorithmParameters.runEngineInit2);
+
+        try {
+            ap.init(new MyAlgorithmParameterSpec());
+            fail("getEncoded(format): No expected InvalidParameterSpecException");
+        } catch (java.security.spec.InvalidParameterSpecException e) {
+        }
+        try {
+            ap.init(new byte[6], "aaa");
+            fail("getEncoded(format): No expected IOException");
+        } catch (java.io.IOException e) {
+        }
+        checkAP(ap, p);
+    }
+
+    /**
+     * @tests java.security.AlgorithmParameters#getInstance(String, Provider)
+     */
+    public void test_getInstanceLjava_lang_StringLjava_security_Provider()
+            throws Exception {
+
+        AlgorithmParameters ap = AlgorithmParameters.getInstance("ABC", p);
+
+        checkUnititialized(ap);
+
+        ap.init(new byte[6], "aaa");
+        assertTrue("init() failed", MyAlgorithmParameters.runEngineInit3);
+
+        try {
+            ap.init(new MyAlgorithmParameterSpec());
+            fail("getEncoded(format): No expected InvalidParameterSpecException");
+        } catch (java.security.spec.InvalidParameterSpecException e) {
+        }
+        try {
+            ap.init(new byte[6]);
+            fail("getEncoded(format): No expected IOException");
+        } catch (java.io.IOException e) {
+        }
+        checkAP(ap, p);
+    }
 
     /**
      * @tests java.security.AlgorithmParameters#getProvider()
@@ -214,52 +188,31 @@ public class AlgorithmParametersTest extends TestCase {
 		} catch (java.security.spec.InvalidParameterSpecException e) {
 		}
 		
-		if (ap.toString() != null) {
-			fail("Unititialized: toString() failed");
-		}
+        assertNull("Unititialized: toString() failed", ap.toString());
 	}
 	
-	private void checkAP(AlgorithmParameters ap, Provider p) {	
-		if (ap.getProvider() != p) {
-			fail("getProvider() failed");
-		}
-		if (!"ABC".equals(ap.getAlgorithm())) {
-			fail("getAlgorithm() failed");			
-		}
-		
-		try {
-			ap.getEncoded();
-		} catch (java.io.IOException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineGetEncoded1) {
-			fail("getEncoded() failed");
-		}
-		
-		try {
-			ap.getEncoded("aaa");
-		} catch (java.io.IOException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineGetEncoded2) {
-			fail("getEncoded(format) failed");
-		}		
-		
-		try {
-			//make it compilable on 1.5
-			ap.getParameterSpec((Class<AlgorithmParameterSpec>)new Object().getClass());
-		} catch (java.security.spec.InvalidParameterSpecException e) {
-			fail(e.toString());
-		}
-		if (!MyAlgorithmParameters.runEngineGetParameterSpec) {
-			fail("getParameterSpec() failed");
-		}
-		
-		if (!"AlgorithmParameters".equals(ap.toString()) ||
-				!MyAlgorithmParameters.runEngineToString) {
-			fail("toString() failed");
-		}
-	}
+	private void checkAP(AlgorithmParameters ap, Provider p) throws Exception {
+
+        assertSame("getProvider() failed", p, ap.getProvider());
+        assertEquals("getAlgorithm() failed", "ABC", ap.getAlgorithm());
+
+        ap.getEncoded();
+        assertTrue("getEncoded() failed",
+                MyAlgorithmParameters.runEngineGetEncoded1);
+
+        ap.getEncoded("aaa");
+        assertTrue("getEncoded(format) failed",
+                MyAlgorithmParameters.runEngineGetEncoded2);
+
+        //make it compilable on 1.5
+        ap.getParameterSpec((Class<AlgorithmParameterSpec>) new Object()
+                .getClass());
+        assertTrue("getParameterSpec() failed",
+                MyAlgorithmParameters.runEngineGetParameterSpec);
+
+        assertEquals("AlgorithmParameters", ap.toString());
+        assertTrue("toString() failed", MyAlgorithmParameters.runEngineToString);
+    }
 
 	private class MyProvider extends Provider {
 		MyProvider() {

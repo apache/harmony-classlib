@@ -20,11 +20,7 @@ package org.apache.harmony.security.tests.java.security;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.Security;
 import java.security.spec.DSAParameterSpec;
-import java.security.spec.InvalidParameterSpecException;
 import java.util.Arrays;
 
 public class AlgorithmParameters2Test extends junit.framework.TestCase {
@@ -72,33 +68,6 @@ public class AlgorithmParameters2Test extends junit.framework.TestCase {
         byte[] enc = params.getEncoded("ASN.1");
         assertNotNull("ANS.1 should be supported", enc);
     }
-
-	/**
-	 * @tests java.security.AlgorithmParameters#getInstance(java.lang.String)
-	 */
-	public void test_getInstanceLjava_lang_String() throws Exception {
-		// Test for method java.security.AlgorithmParameters
-		// java.security.AlgorithmParameters.getInstance(java.lang.String)
-		AlgorithmParameters.getInstance("DSA");
-	}
-
-	/**
-	 * @tests java.security.AlgorithmParameters#getInstance(java.lang.String,
-	 *        java.lang.String)
-	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String() throws Exception {
-		// Test for method java.security.AlgorithmParameters
-		// java.security.AlgorithmParameters.getInstance(java.lang.String,
-		// java.lang.String)
-
-		// Opting for DSA here as it is pretty widely supported
-       	Provider[] provs = Security.getProviders("AlgorithmParameters.DSA");
-
-       	for (int i = 0; i < provs.length; i++) {
-       		Provider provider = provs[i];
-       		AlgorithmParameters.getInstance("DSA", provider.getName());
-       	}// end for
-	}
 
 	/**
 	 * @tests java.security.AlgorithmParameters#getParameterSpec(java.lang.Class)
