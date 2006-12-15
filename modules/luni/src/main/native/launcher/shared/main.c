@@ -977,6 +977,22 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   return 0;
 }
 
+static BOOLEAN findDirInPath(char *path, char *dir, char *separator)
+{
+  char *pos;
+  int dirlen = strlen(dir);
+
+  while ((pos = strchr(path, *separator)) != NULL) {
+    int pathlen = pos - path;
+    if (dirlen == pathlen && !strncmp(path, dir, dirlen)) {
+      return TRUE;
+    }
+    path += pathlen + 1;
+  }
+
+  return !strcmp(dir, path);
+}
+
 /**
 * Update path to point to directory containing VM's DLLs 
 * 
@@ -1021,7 +1037,8 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
    */
     
   for (i=0; i < count; i++) { 
-    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) != 0) {
+    if (newPathToAdd[i] != NULL
+        && findDirInPath(oldPath, newPathToAdd[i], separator) != 0) {
         found++;
     }
   }
@@ -1042,7 +1059,8 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
   strLen = strlen(variableName) + strlen("=") + strlen(oldPath);
   
   for (i=0; i < count; i++) {
-    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) == 0) {
+    if (newPathToAdd[i] != NULL
+        && findDirInPath(oldPath, newPathToAdd[i],separator) == 0) {
         strLen += strlen(newPathToAdd[i]);
         strLen++; // for each separator
     }
@@ -1054,7 +1072,8 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
   strcat (newPath, "=");
   
   for (i=0; i < count; i++) { 
-    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) == 0) {
+    if (newPathToAdd[i] != NULL
+        && findDirInPath(oldPath, newPathToAdd[i], separator) == 0) {
         if (i != 0) {
             strcat(newPath, separator);
         }
