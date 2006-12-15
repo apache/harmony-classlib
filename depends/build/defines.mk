@@ -39,8 +39,16 @@ SHAREDSUB=../shared/
 DEFINES += -D_REENTRANT -DIPv6_FUNCTION_SUPPORT
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
+ifndef HYDEBUGCFLAGS
+HYDEBUGCFLAGS = -g
+endif
+
+ifndef HYRELEASECFLAGS  
+HYRELEASECFLAGS = -O1
+endif
+
 ifeq ($(HY_CFG),release)
-OPT += -O1
+OPT += $(HYRELEASECFLAGS)
 else
-OPT += -g
+OPT += $(HYDEBUGCFLAGS)
 endif
