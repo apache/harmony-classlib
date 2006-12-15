@@ -221,6 +221,14 @@ public class NumberFormatTest extends junit.framework.TestCase {
     public void test_parseObjectLjava_lang_StringLjava_text_ParsePosition() {
     	// regression test for HARMONY-1003
     	assertNull(NumberFormat.getInstance().parseObject("0", new ParsePosition(-1)));
+    
+         // Regression for HARMONY-1685
+         try {
+             NumberFormat.getInstance().parseObject("test", null);
+             fail("NullPointerException expected");
+         } catch (NullPointerException e) {
+            //expected
+	    }
     }
     
     protected void setUp() {
