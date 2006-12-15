@@ -60,10 +60,6 @@ public abstract class AlgorithmParametersSpi {
     protected abstract <T extends AlgorithmParameterSpec> T engineGetParameterSpec(
             Class<T> paramSpec) throws InvalidParameterSpecException;
 
-    //    FIXME 1.5 signature: protected abstract <T extends
-    // AlgorithmParameterSpec> T engineGetParameterSpec(Class<T> paramSpec)
-    // throws InvalidParameterSpecException;
-
     /**
      * @com.intel.drl.spec_ref
      *  
