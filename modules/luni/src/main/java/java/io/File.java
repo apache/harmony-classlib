@@ -1095,8 +1095,7 @@ public class File implements Serializable, Comparable<File> {
 		case 0:
 			return true;
 		case 1:
-		case 3:
-			return false;
+            return false;
 		default:
 			throw new IOException(Msg.getString("K01c2", path)); //$NON-NLS-1$
 		}

@@ -341,74 +341,85 @@ public class FileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.File#createNewFile()
 	 */
-	public void test_createNewFile() {
-		// Test for method java.io.File.createNewFile()
-		try {
-			String base = System.getProperty("java.io.tmpdir");
-			boolean dirExists = true;
-			int numDir = 1;
-			File dir = new File(base, String.valueOf(numDir));
-			// Making sure that the directory does not exist.
-			while (dirExists) {
-				// If the directory exists, add one to the directory number
-				// (making
-				// it a new directory name.)
-				if (dir.exists()) {
-					numDir++;
-					dir = new File(base, String.valueOf(numDir));
-				} else {
-					dirExists = false;
-				}
-			}
+    public void test_createNewFile() throws IOException {
+        // Test for method java.io.File.createNewFile()
+        String base = System.getProperty("java.io.tmpdir");
+        boolean dirExists = true;
+        int numDir = 1;
+        File dir = new File(base, String.valueOf(numDir));
+        // Making sure that the directory does not exist.
+        while (dirExists) {
+            // If the directory exists, add one to the directory number
+            // (making
+            // it a new directory name.)
+            if (dir.exists()) {
+                numDir++;
+                dir = new File(base, String.valueOf(numDir));
+            } else {
+                dirExists = false;
+            }
+        }
 
-			// Test for trying to create a file in a directory that does not
-			// exist.
-			try {
-				// Try to create a file in a directory that does not exist
-				File f1 = new File(dir, "tempfile.tst");
-				f1.createNewFile();
-				fail("IOException not thrown");
-			} catch (IOException e) {
-			}
+        // Test for trying to create a file in a directory that does not
+        // exist.
+        try {
+            // Try to create a file in a directory that does not exist
+            File f1 = new File(dir, "tempfile.tst");
+            f1.createNewFile();
+            fail("IOException not thrown");
+        } catch (IOException e) {
+        }
 
-			dir.mkdir();
+        dir.mkdir();
 
-			File f1 = new File(dir, "tempfile.tst");
-			File f2 = new File(dir, "tempfile.tst");
-			try {
-				assertTrue("File Should Not Exist", !f1.isFile());
-				f1.createNewFile();
-				assertTrue("File Should Exist.", f1.isFile());
-				assertTrue("File Should Exist.", f2.isFile());
-				String dirName = f1.getParent();
-				if (!dirName.endsWith(slash))
-					dirName += slash;
-				assertTrue("File Saved To Wrong Directory.", dirName.equals(dir
-						.getPath()
-						+ slash));
-				assertEquals("File Saved With Incorrect Name.", "tempfile.tst", f1.getName()
-						);
+        File f1 = new File(dir, "tempfile.tst");
+        File f2 = new File(dir, "tempfile.tst");
+        f1.deleteOnExit();
+        f2.deleteOnExit();
+        dir.deleteOnExit();
+        assertFalse("File Should Not Exist", f1.isFile());
+        f1.createNewFile();
+        assertTrue("File Should Exist.", f1.isFile());
+        assertTrue("File Should Exist.", f2.isFile());
+        String dirName = f1.getParent();
+        if (!dirName.endsWith(slash))
+            dirName += slash;
+        assertTrue("File Saved To Wrong Directory.", dirName.equals(dir
+                .getPath()
+                + slash));
+        assertEquals("File Saved With Incorrect Name.", "tempfile.tst", f1
+                .getName());
 
-				// Test for creating a file that already exists.
-				assertTrue(
-						"File Already Exists, createNewFile Should Return False.",
-						!f2.createNewFile());
-			} finally {
-				f1.delete();
-				f2.delete();
-				dir.delete();
-			}
-
-			f1 = new File(base);
-			try {
-				assertFalse(f1.createNewFile());
-			} catch (IOException innerE) {
-                fail("Incorrectly threw IOException from createNewFile when file is existing directory");
-			}
-		} catch (IOException e) {
-			fail("Unexpected IOException During Test: " + e);
-		}
-	}
+        // Test for creating a file that already exists.
+        assertFalse("File Already Exists, createNewFile Should Return False.",
+                f2.createNewFile());
+        
+        // Test create an illegal file
+        String sep = File.separator;
+        f1 = new File(sep+"..");
+        try {
+            f1.createNewFile();
+            fail("should throw IOE");
+        } catch (IOException e) {
+            // expected;
+        }
+        f1 = new File(sep+"a"+sep+".."+sep+".."+sep);
+        try {
+            f1.createNewFile();
+            fail("should throw IOE");
+        } catch (IOException e) {
+            // expected;
+        }
+        
+        // Test create an exist path
+        f1 = new File(base);
+        try {
+            assertFalse(f1.createNewFile());
+            fail("should throw IOE");
+        } catch (IOException e) {
+            // expected;
+        }
+    }
 
 	/**
 	 * @tests java.io.File#createTempFile(java.lang.String, java.lang.String)
