@@ -22,15 +22,15 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.AlgorithmParametersSpi;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.InvalidParameterSpecException;
 
 import junit.framework.TestCase;
-
-import org.apache.harmony.security.tests.support.MyAlgorithmParameters;
 
 /**
  * Tests for <code>AlgorithmParameters</code> class constructors and
@@ -217,7 +217,7 @@ public class AlgorithmParametersTest extends TestCase {
 	private class MyProvider extends Provider {
 		MyProvider() {
 			super("MyProvider", 1.0, "Provider for testing");
-			put("AlgorithmParameters.ABC", "org.apache.harmony.security.tests.support.MyAlgorithmParameters");
+            put("AlgorithmParameters.ABC", MyAlgorithmParameters.class.getName());
 		}
 		
 		MyProvider(String name, double version, String info) {
@@ -234,4 +234,56 @@ public class AlgorithmParametersTest extends TestCase {
 			super(paramSpi, provider, algorithm);
 		}
 	}
+    
+    public static class MyAlgorithmParameters extends AlgorithmParametersSpi {
+
+        public static boolean runEngineInit1 = false;
+
+        public static boolean runEngineInit2 = false;
+
+        public static boolean runEngineInit3 = false;
+
+        public static boolean runEngineGetParameterSpec = false;
+
+        public static boolean runEngineGetEncoded1 = false;
+
+        public static boolean runEngineGetEncoded2 = false;
+
+        public static boolean runEngineToString = false;
+
+        protected void engineInit(AlgorithmParameterSpec paramSpec)
+                throws InvalidParameterSpecException {
+            runEngineInit1 = true;
+        }
+
+        protected void engineInit(byte[] params) throws IOException {
+            runEngineInit2 = true;
+        }
+
+        protected void engineInit(byte[] params, String format)
+                throws IOException {
+            runEngineInit3 = true;
+        }
+
+        protected AlgorithmParameterSpec engineGetParameterSpec(Class paramSpec)
+                throws InvalidParameterSpecException {
+            runEngineGetParameterSpec = true;
+            return null;
+        }
+
+        protected byte[] engineGetEncoded() throws IOException {
+            runEngineGetEncoded1 = true;
+            return null;
+        }
+
+        protected byte[] engineGetEncoded(String format) throws IOException {
+            runEngineGetEncoded2 = true;
+            return null;
+        }
+
+        protected String engineToString() {
+            runEngineToString = true;
+            return "AlgorithmParameters";
+        }
+    }
 }
