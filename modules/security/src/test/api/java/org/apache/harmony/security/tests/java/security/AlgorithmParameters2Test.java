@@ -30,16 +30,6 @@ import java.util.Arrays;
 public class AlgorithmParameters2Test extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.security.AlgorithmParameters#getAlgorithm()
-	 */
-	public void test_getAlgorithm() throws Exception {
-		// Test for method java.lang.String
-		// java.security.AlgorithmParameters.getAlgorithm()
-		String alg = AlgorithmParameters.getInstance("DSA").getAlgorithm();
-		assertEquals("algorithm name should be DSA", alg, "DSA");
-	}
-
-	/**
 	 * @tests java.security.AlgorithmParameters#getEncoded()
 	 */
 	public void test_getEncoded() throws Exception {
@@ -130,17 +120,6 @@ public class AlgorithmParameters2Test extends junit.framework.TestCase {
        		assertTrue("p is wrong ", spec.getP().equals(BigInteger.ONE));
        		assertTrue("q is wrong ", spec.getQ().equals(BigInteger.ONE));
        		assertTrue("g is wrong ", spec.getG().equals(BigInteger.ONE));
-	}
-
-	/**
-	 * @tests java.security.AlgorithmParameters#getProvider()
-	 */
-	public void test_getProvider() throws Exception {
-		// Test for method java.security.Provider
-		// java.security.AlgorithmParameters.getProvider()
-        Provider p = AlgorithmParameters.getInstance("DSA").getProvider();
-        assertNotNull("provider is null", p);
-
 	}
 
 	/**

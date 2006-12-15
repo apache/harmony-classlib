@@ -22,9 +22,15 @@
 
 package org.apache.harmony.security.tests.java.security;
 
-import java.security.*;
-import junit.framework.TestCase;
+import java.security.AlgorithmParameters;
+import java.security.AlgorithmParametersSpi;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+
+import junit.framework.TestCase;
 
 import org.apache.harmony.security.tests.support.MyAlgorithmParameters;
 
@@ -56,14 +62,20 @@ public class AlgorithmParametersTest extends TestCase {
 		super.tearDown();
 		Security.removeProvider(p.getName());
 	}
-	
-	public void testAlgorithmParameters() {
-		Provider p = new MyProvider();
-		AlgorithmParameters ap = new DummyAlgorithmParameters(null, p, "AAA");
-		if (p != ap.getProvider() || !"AAA".equals(ap.getAlgorithm())) {
-			fail("Constructor failed");
-		}
-	}
+
+    /**
+     * @tests java.security.AlgorithmParameters#getAlgorithm()
+     */
+    public void test_getAlgorithm() throws Exception {
+
+        // test: null value
+        AlgorithmParameters ap = new DummyAlgorithmParameters(null, p, null);
+        assertNull(ap.getAlgorithm());
+
+        // test: not null value
+        ap = new DummyAlgorithmParameters(null, p, "AAA");
+        assertEquals("AAA", ap.getAlgorithm());
+    }
 
 	/*
 	 * Class under test for AlgorithmParameters getInstance(String)
@@ -168,6 +180,19 @@ public class AlgorithmParametersTest extends TestCase {
 		}
 		checkAP(ap, p);
 	}
+
+    /**
+     * @tests java.security.AlgorithmParameters#getProvider()
+     */
+    public void test_getProvider() throws Exception {
+        // test: null value
+        AlgorithmParameters ap = new DummyAlgorithmParameters(null, null, "AAA");
+        assertNull(ap.getProvider());
+
+        // test: not null value
+        ap = new DummyAlgorithmParameters(null, p, "AAA");
+        assertSame(p, ap.getProvider());
+    }
 
 	private void checkUnititialized(AlgorithmParameters ap) {
 		try {
