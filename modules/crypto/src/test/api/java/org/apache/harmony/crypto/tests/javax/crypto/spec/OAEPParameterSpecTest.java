@@ -40,7 +40,7 @@ public class OAEPParameterSpecTest extends TestCase {
     /**
      * OAEPParameterSpec(String mdName, String mgfName, AlgorithmParameterSpec
      * mgfSpec, PSource pSrc) method testing. Tests that NullPointerException
-     * is thrown in the case of inapropriate constructor parameters and checks
+     * is thrown in the case of inappropriate constructor parameters and checks
      * the value of DEFAULT field.
      */
     public void testOAEPParameterSpec() {

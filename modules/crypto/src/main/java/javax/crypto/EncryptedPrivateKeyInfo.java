@@ -342,9 +342,9 @@ public class EncryptedPrivateKeyInfo {
             // OID provided to the ctor
             // get rid of possible leading "OID."
             this.oid = AlgNameMapper.normalize(this.algName);
-            // try to find mappping OID->algName
+            // try to find mapping OID->algName
             this.algName = AlgNameMapper.map2AlgName(this.oid);
-            // if there is no mappping OID->algName
+            // if there is no mapping OID->algName
             // set OID as algName
             if (this.algName == null) {
                 this.algName = this.oid;
@@ -352,7 +352,7 @@ public class EncryptedPrivateKeyInfo {
         } else {
             String stdName = AlgNameMapper.getStandardName(this.algName);
             // Alg name provided to the ctor
-            // try to find mappping algName->OID or
+            // try to find mapping algName->OID or
             // (algName->stdAlgName)->OID
             this.oid = AlgNameMapper.map2OID(this.algName);
             if (this.oid == null) {

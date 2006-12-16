@@ -71,19 +71,19 @@ public class KeyAgreementSpiTest extends TestCase {
         assertNull("Not null result", kaSpi.engineGenerateSecret("aaa"));
         try {
             kaSpi.engineGenerateSecret("");
-            fail("NoSuchAlgorithmException must be throwm");
+            fail("NoSuchAlgorithmException must be thrown");
         } catch (NoSuchAlgorithmException e) {
         }
         Key key = null;
         try {
             kaSpi.engineInit(key, new SecureRandom());
-            fail("IllegalArgumentException must be throwm");
+            fail("IllegalArgumentException must be thrown");
         } catch (IllegalArgumentException e) {
         }
         AlgorithmParameterSpec params = null;
         try {
             kaSpi.engineInit(key, params, new SecureRandom());
-            fail("IllegalArgumentException must be throwm");
+            fail("IllegalArgumentException must be thrown");
         } catch (IllegalArgumentException e) {
         }        
     }

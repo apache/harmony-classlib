@@ -414,19 +414,19 @@ public class KeyGeneratorTest extends TestCase {
 
         for (int i = 0; i < kgs.length; i++) {
             sKey = kgs[i].generateKey();
-            assertEquals("Incorect algorithm", sKey.getAlgorithm()
+            assertEquals("Incorrect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(new SecureRandom());
             sKey = kgs[i].generateKey();
-            assertEquals("Incorect algorithm", sKey.getAlgorithm()
+            assertEquals("Incorrect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(defaultKeySize);
             sKey = kgs[i].generateKey();
-            assertEquals("Incorect algorithm", sKey.getAlgorithm()
+            assertEquals("Incorrect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(defaultKeySize, new SecureRandom());
             sKey = kgs[i].generateKey();
-            assertEquals("Incorect algorithm", sKey.getAlgorithm()
+            assertEquals("Incorrect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
         }
     }

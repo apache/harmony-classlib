@@ -39,7 +39,7 @@ public class RC2ParameterSpecTest extends TestCase {
     /**
      * RC2ParameterSpec(int effectiveKeyBits, byte[] iv) method testing.
      * Tests that IllegalArgumentException is thrown in the case of
-     * inapropriate constructor parameters and that input iv array is
+     * inappropriate constructor parameters and that input iv array is
      * copied to protect against subsequent modification.
      */
     public void testRC2ParameterSpec1() {
@@ -70,7 +70,7 @@ public class RC2ParameterSpecTest extends TestCase {
     /**
      * RC2ParameterSpec(int effectiveKeyBits, byte[] iv, int offset) method
      * testing. Tests that IllegalArgumentException is thrown in the case of
-     * inapropriate constructor parameters and that input iv array is
+     * inappropriate constructor parameters and that input iv array is
      * copied to protect against subsequent modification.
      */
     public void testRC2ParameterSpec2() {
@@ -139,7 +139,7 @@ public class RC2ParameterSpecTest extends TestCase {
     }
 
     /**
-     * equals(Object obj) method testing. Tests the correctnel of equal
+     * equals(Object obj) method testing. Tests the correctness of equal
      * operation: it should be reflexive, symmetric, transitive, consistent
      * and should be false on null object.
      */

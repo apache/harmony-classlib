@@ -383,7 +383,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             }
         }
 
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -524,7 +524,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -655,7 +655,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public final void testGetAlgParameters01_01() throws Exception {
@@ -696,7 +696,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -728,7 +728,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -736,7 +736,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
      * Assertion: returns the algorithm parameters <br>
      * Test preconditions: test object created using ctor which takes
      * AlgorithmParameters and encrypted data as a parameters; <br>
-     * Expected: the same algorithm parameters as ones passed to the ctormust be
+     * Expected: the same algorithm parameters as ones passed to the ctor must be
      * returned
      * 
      * @throws IOException
@@ -764,7 +764,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -796,7 +796,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -824,7 +824,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -859,7 +859,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -890,7 +890,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -919,7 +919,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -954,7 +954,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -991,7 +991,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1025,7 +1025,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public final void testGetKeySpecCipher01() {
@@ -1051,7 +1051,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1091,7 +1091,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowed) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1128,7 +1128,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public final void testGetKeySpecKey01() {
@@ -1154,7 +1154,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1192,7 +1192,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1225,7 +1225,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public final void testGetKeySpecKeyString01() throws Exception {
@@ -1271,7 +1271,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1320,7 +1320,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
                 }
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1367,7 +1367,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
                 }
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public final void testGetKeySpecKeyProvider01() throws Exception {
@@ -1412,7 +1412,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -1507,7 +1507,7 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
                 }
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     public static class TestDataGenerator {

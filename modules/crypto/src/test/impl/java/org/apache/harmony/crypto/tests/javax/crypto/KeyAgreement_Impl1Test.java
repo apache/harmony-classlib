@@ -83,7 +83,7 @@ public class KeyAgreement_Impl1Test extends TestCase {
         assertNull("Provider must be null", keyA.getProvider());
         try {
             keyA.doPhase(null, true);
-            fail("NullPointerEXception must be thrown");
+            fail("NullPointerException must be thrown");
         } catch (NullPointerException e) {
         }
     }

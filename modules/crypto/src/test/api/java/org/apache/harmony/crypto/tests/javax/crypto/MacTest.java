@@ -168,7 +168,7 @@ public class MacTest extends TestCase {
                 try {
                     Mac.getInstance(validValues[i], invalidValues[j]);
                     fail("NoSuchProviderException must be thrown (algorithm: "
-                            .concat(validValues[i]).concat(" provoder: ")
+                            .concat(validValues[i]).concat(" provider: ")
                             .concat(invalidValues[j]).concat(")"));
                 } catch (NoSuchProviderException e) {
                 }

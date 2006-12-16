@@ -128,7 +128,7 @@ public class CipherInputStreamTest extends TestCase {
 
     /**
      * read(byte[] b, int off, int len) method testing. Tests that method
-     * returns the correct value (related to the InputStream), that it dicards
+     * returns the correct value (related to the InputStream), that it discards
      * bytes in the case of null buffer, and that it returns -1 at the end of
      * stream.
      */

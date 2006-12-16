@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for ExemptionMechanismException seialization
+ * Test for ExemptionMechanismException serialization
  * 
  */
 

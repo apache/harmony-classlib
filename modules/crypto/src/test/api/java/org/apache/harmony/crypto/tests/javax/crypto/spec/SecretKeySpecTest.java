@@ -37,7 +37,7 @@ public class SecretKeySpecTest extends TestCase {
 
     /**
      * SecretKeySpec(byte[] key, String algorithm) method testing. Tests that
-     * IllegalArgumentException is thrown in the case of inapropriate
+     * IllegalArgumentException is thrown in the case of inappropriate
      * constructor parameters and that input iv array is
      * copied to protect against subsequent modification.
      */
@@ -76,7 +76,7 @@ public class SecretKeySpecTest extends TestCase {
     /**
      * SecretKeySpec(byte[] key, int offset, int len, String algorithm) method
      * testing. Tests that IllegalArgumentException is thrown in
-     * the case of inapropriate constructor parameters and that input iv array
+     * the case of inappropriate constructor parameters and that input iv array
      * is copied to protect against subsequent modification.
      */
     public void testSecretKeySpec2() {
@@ -212,7 +212,7 @@ public class SecretKeySpecTest extends TestCase {
     }
 
     /**
-     * equals(Object obj) method testing. Tests the correctnel of equal
+     * equals(Object obj) method testing. Tests the correctness of equal
      * operation: it should be reflexive, symmetric, transitive, consistent
      * and should be false on null object.
      */

@@ -123,19 +123,19 @@ public class ExemptionMechanism_ImplTest extends TestCase {
         key = new SecretKeySpec(new byte[10], "DSA");
         try {
             exMech.init(key);
-            fail("ExemptionMechanismException must be throwm");
+            fail("ExemptionMechanismException must be thrown");
         } catch (ExemptionMechanismException e) {
             assertTrue("Empty message", (e.getMessage().length() > 0));
         }
         try {
             exMech.init(key, params);
-            fail("ExemptionMechanismException must be throwm");
+            fail("ExemptionMechanismException must be thrown");
         } catch (ExemptionMechanismException e) {
             assertTrue("Empty message", (e.getMessage().length() > 0));
         }
         try {
             exMech.init(key, parSpec);
-            fail("ExemptionMechanismException must be throwm");
+            fail("ExemptionMechanismException must be thrown");
         } catch (ExemptionMechanismException e) {
             assertTrue("Empty message", (e.getMessage().length() > 0));
         }

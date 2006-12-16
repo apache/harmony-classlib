@@ -69,19 +69,19 @@ public class CipherSpiTest extends TestCase {
         assertEquals("Incorrect result of engineUpdate(byte, int, int)",
                 bb.length, 2);
         bb = cSpi.engineDoFinal(bb1, 1, 2);
-        assertEquals("Incorrect result of enfineDoFinal(byte, int, int)", 2,
+        assertEquals("Incorrect result of engineDoFinal(byte, int, int)", 2,
                 bb.length);
         assertEquals(
-                "Incorrect result of enfineUpdate(byte, int, int, byte, int)",
+                "Incorrect result of engineUpdate(byte, int, int, byte, int)",
                 cSpi.engineUpdate(bb1, 1, 2, bb2, 7), 2);
         assertEquals(
-                "Incorrect result of enfineDoFinal(byte, int, int, byte, int)",
+                "Incorrect result of engineDoFinal(byte, int, int, byte, int)",
                 2, cSpi.engineDoFinal(bb1, 1, 2, bb2, 0));
     }
     
     /**
      * Test for <code>engineGetKeySize(Key)</code> method 
-     * Assertion: It throws UnsupportedOperationException if it is not overriden
+     * Assertion: It throws UnsupportedOperationException if it is not overridden
      */
     public void testCipherSpi02() throws Exception {
         CipherSpi cSpi = new myCipherSpi();
@@ -94,7 +94,7 @@ public class CipherSpiTest extends TestCase {
 
     /**
      * Test for <code>engineWrap(Key)</code> method 
-     * Assertion: It throws UnsupportedOperationException if it is not overriden
+     * Assertion: It throws UnsupportedOperationException if it is not overridden
      */
     public void testCipherSpi03() throws Exception {
         CipherSpi cSpi = new myCipherSpi();
@@ -107,7 +107,7 @@ public class CipherSpiTest extends TestCase {
 
     /**
      * Test for <code>engineUnwrap(byte[], String, int)</code> method
-     * Assertion: It throws UnsupportedOperationException if it is not overriden
+     * Assertion: It throws UnsupportedOperationException if it is not overridden
      */
     public void testCipherSpi04() throws Exception {
         CipherSpi cSpi = new myCipherSpi();

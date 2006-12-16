@@ -65,7 +65,7 @@ public class EncryptedPrivateKeyInfo_ImplTest extends TestCase {
             } catch (NoSuchAlgorithmException allowed) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -90,7 +90,7 @@ public class EncryptedPrivateKeyInfo_ImplTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 
     /**
@@ -119,6 +119,6 @@ public class EncryptedPrivateKeyInfo_ImplTest extends TestCase {
             } catch (NoSuchAlgorithmException allowedFailure) {
             }
         }
-        assertTrue("Test not perfrormed", performed);
+        assertTrue("Test not performed", performed);
     }
 }

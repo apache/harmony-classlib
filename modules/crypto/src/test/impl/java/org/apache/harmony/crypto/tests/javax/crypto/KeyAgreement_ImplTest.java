@@ -101,19 +101,19 @@ public class KeyAgreement_ImplTest extends TestCase {
         assertNull("Not null result", keyAgr.generateSecret("aaa"));
         try {
             keyAgr.generateSecret("");
-            fail("NoSuchAlgorithmException must be throwm");
+            fail("NoSuchAlgorithmException must be thrown");
         } catch (NoSuchAlgorithmException e) {
         }
         Key key = null;
         try {
             keyAgr.init(key, new SecureRandom());
-            fail("IllegalArgumentException must be throwm");
+            fail("IllegalArgumentException must be thrown");
         } catch (IllegalArgumentException e) {
         }
         AlgorithmParameterSpec params = null;
         try {
             keyAgr.init(key, params, new SecureRandom());
-            fail("IllegalArgumentException must be throwm");
+            fail("IllegalArgumentException must be thrown");
         } catch (IllegalArgumentException e) {
         }
     }

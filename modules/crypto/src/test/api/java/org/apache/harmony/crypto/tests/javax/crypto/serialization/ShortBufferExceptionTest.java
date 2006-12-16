@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for ShortBufferException seialization
+ * Test for ShortBufferException serialization
  * 
  */
 

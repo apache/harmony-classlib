@@ -46,7 +46,7 @@ public class ExemptionMechanismTest extends TestCase {
 
     /**
      * Test for <code>ExemptionMechanism</code> constructor 
-     * Assertion: cretes new object using provider and mechanism name
+     * Assertion: creates new object using provider and mechanism name
      */
     public void testExemptionMechanism() throws Exception {
         Provider mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider",

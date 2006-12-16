@@ -39,7 +39,7 @@ public class DHParameterSpecTest extends TestCase {
     /**
      * DHParameterSpec class testing. Tests the equivalence of parameters
      * specified in the constructor with the values returned by getters.
-     * The tested object is creaded by different constructors.
+     * The tested object is created by different constructors.
      */
     public void testDHParameterSpec() {
         BigInteger[] ps = {new BigInteger("-1000000000000"), BigInteger.ZERO,

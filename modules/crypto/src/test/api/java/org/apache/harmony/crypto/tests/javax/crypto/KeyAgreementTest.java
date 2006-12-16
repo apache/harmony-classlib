@@ -366,7 +366,7 @@ public class KeyAgreementTest extends TestCase {
      * <code>init(Key key, SecureRandom random)</code>
      * <code>init(Key key, AlgorithmParameterSpec params)</code>
      * <code>init(Key key, AlgorithmParameterSpec params, SecureRandom random)</code>
-     * Assertion: throws InvalidKeyException when key is inapporopriate
+     * Assertion: throws InvalidKeyException when key is inappropriate
      */
     public void testInit01() throws Exception {
         if (!DEFSupported) {
@@ -419,7 +419,7 @@ public class KeyAgreementTest extends TestCase {
      * <code>init(Key key, AlgorithmParameterSpec params)</code>
      * <code>init(Key key, AlgorithmParameterSpec params, SecureRandom random)</code>
      * Assertion: throws AlgorithmParameterException when params are
-     * inapporopriate
+     * inappropriate
      */
     public void testInit02() throws Exception {
         if (!DEFSupported) {
