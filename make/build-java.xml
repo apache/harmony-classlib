@@ -218,7 +218,7 @@ ${built.files.list}
         </copy>
 
         <!-- Copy across the extension dependency jars -->
-        <copy todir="${hy.jdk}/jre/lib/ext" flatten="yes">
+        <copy todir="${hy.jdk}/jre/lib/ext" flatten="yes" overwrite="true">
             <fileset file="${bcprov.jar}" />
         </copy>
 
