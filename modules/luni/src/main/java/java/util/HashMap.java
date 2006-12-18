@@ -269,7 +269,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
-        super.putAll(map);
+        putAllImpl(map);
     }
 
     /**
@@ -512,6 +512,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     @Override
     public V put(K key, V value) {
+        return putImpl(key, value);
+    }
+    
+    private V putImpl(K key, V value) {
         int index = getModuloHash(key);
         Entry<K,V> entry = findEntry(key, index);
 
@@ -551,11 +555,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
         if (!map.isEmpty()) {
-            int capacity = elementCount + map.size();
-            if (capacity > threshold) {
-                rehash(capacity);
-            }
-            super.putAll(map);
+            putAllImpl(map);
+        }
+    }
+    
+    private void putAllImpl(Map<? extends K, ? extends V> map) {
+        int capacity = elementCount + map.size();
+        if (capacity > threshold) {
+            rehash(capacity);
+        }
+        for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+            putImpl(entry.getKey(), entry.getValue());
         }
     }
 

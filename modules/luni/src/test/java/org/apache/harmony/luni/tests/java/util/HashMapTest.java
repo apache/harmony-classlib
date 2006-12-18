@@ -17,12 +17,34 @@
 package org.apache.harmony.luni.tests.java.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class HashMapTest extends TestCase {
+    class SubMap<K, V> extends HashMap<K, V> {
+        public SubMap(Map<? extends K, ? extends V> m) {
+            super(m);
+        }
+
+        public V put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * @tests java.util.HashMap#HashMap(java.util.Map)
+     */
+    public void test_ConstructorLjava_util_Map() {
+        HashMap map = new HashMap();
+        map.put("a", "a");
+        SubMap map2 = new SubMap(map); 
+        assertTrue(map2.containsKey("a"));
+        assertTrue(map2.containsValue("a"));
+    }
+
     /**
      * @tests serialization/deserialization.
      */
