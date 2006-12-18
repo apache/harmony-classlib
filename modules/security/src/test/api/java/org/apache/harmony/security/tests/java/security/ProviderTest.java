@@ -311,7 +311,15 @@ public class ProviderTest extends TestCase {
         }
     }
 */
-
+    //Regression for HARMONY-2760.
+    public void testConstructor() {
+		MyProvider myProvider = new MyProvider(null, 1, null);
+		assertNull(myProvider.getName());
+		assertNull(myProvider.getInfo());
+		assertEquals("null", myProvider.getProperty("Provider.id name"));
+		assertEquals("null", myProvider.getProperty("Provider.id info"));
+	}
+    
     class MyProvider extends Provider {
         MyProvider() {
             super("MyProvider", 1.0, "Provider for testing");

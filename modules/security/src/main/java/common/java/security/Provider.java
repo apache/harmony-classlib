@@ -720,9 +720,9 @@ public abstract class Provider extends Properties {
     // Provider.id name, Provider.id version, Provider.id info, 
     // Provider.id className
     private void putProviderInfo() {
-        super.put("Provider.id name", name); //$NON-NLS-1$
-        super.put("Provider.id version", versionString); //$NON-NLS-1$
-        super.put("Provider.id info", info); //$NON-NLS-1$
+        super.put("Provider.id name", null != name ? name : "null"); //$NON-NLS-1$
+		super.put("Provider.id version", versionString); //$NON-NLS-1$
+		super.put("Provider.id info", null != info ? info : "null"); //$NON-NLS-1$
         super.put("Provider.id className", this.getClass().getName()); //$NON-NLS-1$
     }
 
