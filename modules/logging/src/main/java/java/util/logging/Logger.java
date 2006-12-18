@@ -235,9 +235,9 @@ public class Logger {
             }
         }
         // try all class loaders up the class stack
-        final Class[] classes = AccessController
-                .doPrivileged(new PrivilegedAction<Class[]>() {
-                    public Class[] run() {
+        final Class<?>[] classes = AccessController
+                .doPrivileged(new PrivilegedAction<Class<?>[]>() {
+                    public Class<?>[] run() {
                         return (new PrivateSecurityManager())
                                 .privateGetClassContext();
                     }
@@ -1366,7 +1366,7 @@ public class Logger {
      * This security manager is used to access the class context.
      */
     static class PrivateSecurityManager extends SecurityManager {
-        public Class[] privateGetClassContext() {
+        public Class<?>[] privateGetClassContext() {
             return super.getClassContext();
         }
     }
