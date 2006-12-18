@@ -357,4 +357,95 @@ public class NumericShaperTest extends TestCase {
         
     }
 
+    /*
+     * Test method for 'java.awt.font.NumericShaper.shape(char[], int, int)' with 
+     * illegal parameters.
+     */
+    public final void testShapeCharArrayIntInt_IllegalArguments() {
+        // regression test for Harmony-1584
+        int ranges = NumericShaper.ARABIC;
+        NumericShaper localNumericShaper = NumericShaper
+                .getContextualShaper(ranges);
+        char[] chars = new char[] {};
+        int start = 0;
+        int count = 1;
+        try {
+            localNumericShaper.shape(chars, start, count);
+            fail("len = 0: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            // expected
+        }
+
+        chars = new char[] {'a', 'b', 'c'};
+        start = -1;
+        count = 1;
+        try {
+            localNumericShaper.shape(chars, start, count);
+            fail("start < 0: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            // expected
+        }
+
+        // count < 0: silent run expected
+        start = 1;
+        count = -1;
+        localNumericShaper.shape(chars, start, count);
+
+        start = 3;
+        count = 5;
+        try {
+            localNumericShaper.shape(chars, start, count);
+            fail("start + count > len: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            // expected
+        }
+
+    }
+
+    /*
+     * Test method for 'java.awt.font.NumericShaper.shape(char[], int, int, int)' with 
+     * illegal parameters. 
+     */
+    public final void testShapeCharArrayIntIntInt_IllegalArguments() {
+        // regression test for Harmony-1584
+        int ranges = NumericShaper.ARABIC;
+        NumericShaper localNumericShaper = NumericShaper
+                .getContextualShaper(ranges);
+        char[] chars = new char[] {};
+        int start = 0;
+        int count = 1;
+        int index = NumericShaper.ARABIC;
+        try {
+            localNumericShaper.shape(chars, start, count, index);
+            fail("len = 0: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            //expected
+        }
+
+        chars = new char[] {'a', 'b', 'c'};
+        start = -1;
+        count = 1;
+        try {
+            localNumericShaper.shape(chars, start, count, index);
+            fail("start < 0: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            // expected
+        }
+
+        // count < 0: silent run expected
+        start = 1;
+        count = -1;
+        localNumericShaper.shape(chars, start, count, index);
+
+        start = 3;
+        count = 5;
+        try {
+            localNumericShaper.shape(chars, start, count, index);
+            fail("start + count > len: ArrayIndexOutOfBoundsException expected!");
+        } catch (ArrayIndexOutOfBoundsException expectedException) {
+            // expected
+        }
+
+    }
+
 }

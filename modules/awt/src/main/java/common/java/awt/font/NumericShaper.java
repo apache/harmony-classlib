@@ -537,18 +537,6 @@ public final class NumericShaper implements Serializable {
     }
 
     public void shape(char[] text, int start, int count, int context) {
-        int len = text.length;
-
-        if ((start < 0) || ((start + count) > len)) {
-            // awt.19A=start or count arguments are out of text range
-            throw new IndexOutOfBoundsException(Messages.getString("awt.19A")); //$NON-NLS-1$
-        }
-
-        if (count < 0) {
-            // awt.19B=count argument must be positive
-            throw new IllegalArgumentException(Messages.getString("awt.19B")); //$NON-NLS-1$
-        }
-
         if (isContextual()){
             contextualShape(text, start, count, getIndexFromRange(context));
         } else {
@@ -557,18 +545,6 @@ public final class NumericShaper implements Serializable {
     }
 
     public void shape(char[] text, int start, int count) {
-        int len = text.length;
-
-        if ((start < 0) || ((start + count) > len)) {
-            // awt.19A=start or count arguments are out of text range
-            throw new IndexOutOfBoundsException(Messages.getString("awt.19A")); //$NON-NLS-1$
-        }
-
-        if (count < 0) {
-            // awt.19B=count argument must be positive
-            throw new IllegalArgumentException(Messages.getString("awt.19B")); //$NON-NLS-1$
-        }
-
         if (isContextual()){
             contextualShape(text, start, count, fDefaultContextIndex);
         } else {
