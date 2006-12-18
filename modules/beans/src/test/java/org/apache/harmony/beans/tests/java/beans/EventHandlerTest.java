@@ -732,6 +732,14 @@ public class EventHandlerTest extends TestCase {
                 new Class[] { Object.class });
         assertEquals(Boolean.FALSE, handler.invoke(proxy, equalsMethod,
                 new String[] { "mock" }));
+        // Test null method with non-proxy Object.
+        handler = new EventHandler(new Object(), "a", "a", "a");
+        try {
+            handler.invoke(new Object(), null, new Object[] {});
+            fail("should throw NPE.");
+        } catch (NullPointerException e) {
+            // expected;
+        }
     }
 
     public void testIncompatibleMethod() {

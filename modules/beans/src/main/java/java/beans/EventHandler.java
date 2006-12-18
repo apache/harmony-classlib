@@ -60,7 +60,6 @@ public class EventHandler implements InvocationHandler {
 
             // if a valid object
             if (handler instanceof EventHandler) {
-
                 // if the method from the Object class is called
                 if (method.getDeclaringClass().equals(Object.class)) {
                     if (method.getName().equals("hashCode") && //$NON-NLS-1$
@@ -98,6 +97,12 @@ public class EventHandler implements InvocationHandler {
                                 "beans.4D"));
                     }
                 }
+            }
+        } else {
+            //HARMONY-2495
+            if (null == method) {
+                throw new NullPointerException(Messages.getString(
+                        "beans.55")); //$NON-NLS-1$
             }
         }
 
