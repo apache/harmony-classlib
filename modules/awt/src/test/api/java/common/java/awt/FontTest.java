@@ -21,6 +21,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Collections;
 
@@ -142,4 +143,44 @@ public class FontTest extends TestCase {
             // expected
         }
     }
+    
+    /**
+     * Checks Font.getStringBounds() methods if FontRenderContext parameter is NULL. 
+     *
+     */
+    public void test_Font_getStringBounds_WithNullFRC() {
+        // regression test for Harmony-1595
+        Font font = Font.decode("Arial");
+        try {
+            font.getStringBounds(new char[] { 'a' }, 0, 1,
+                    (FontRenderContext) null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            font.getStringBounds(new StringCharacterIterator("a"), 0, 1,
+                    (FontRenderContext) null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        String str = "str";
+        try {
+            font.getStringBounds(str, 0, 1, (FontRenderContext) null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            font.getStringBounds(str, (FontRenderContext) null);
+            fail("NullPointerException expected!");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
 }

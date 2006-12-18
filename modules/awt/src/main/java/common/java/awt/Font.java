@@ -681,6 +681,10 @@ public class Font implements Serializable {
                     (end - start)));
         }
 
+        if (frc == null) {
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
+        }
+
         chars = new char[end - start];
 
         ci.setIndex(start);
@@ -719,6 +723,10 @@ public class Font implements Serializable {
             // awt.97=Wrong range length: {0}
             throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
                     (end - start)));
+        }
+
+        if (frc == null) {
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
         }
 
         FontPeerImpl peer = (FontPeerImpl) this.getPeer();
