@@ -92,12 +92,12 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * <p>
  * The "%u" unique field is used to avoid conflicts and set to 0 at first. If
  * one <code>FileHandler</code> tries to open the filename which is currently
- * in use by another process, it will repeatedly increment the unique number field
- * and try again. If the "%u" component has not been included in the file name
- * pattern and some contention on a file does occur then a unique numerical
+ * in use by another process, it will repeatedly increment the unique number
+ * field and try again. If the "%u" component has not been included in the file
+ * name pattern and some contention on a file does occur then a unique numerical
  * value will be added to the end of the filename in question immediately to the
- * right of a dot. The unique IDs for avoiding conflicts is only guaranteed to work
- * reliably when using a local disk file system.
+ * right of a dot. The unique IDs for avoiding conflicts is only guaranteed to
+ * work reliably when using a local disk file system.
  * </p>
  * 
  */
@@ -105,11 +105,6 @@ public class FileHandler extends StreamHandler {
 
     private static final String LCK_EXT = ".lck"; //$NON-NLS-1$
 
-    /*
-     * ---------------------------------------------
-     * constants
-     * ---------------------------------------------
-     */
     private static final int DEFAULT_COUNT = 1;
 
     private static final int DEFAULT_LIMIT = 0;
@@ -118,76 +113,61 @@ public class FileHandler extends StreamHandler {
 
     private static final String DEFAULT_PATTERN = "%h/java%u.log"; //$NON-NLS-1$
 
-    /*
-     * ---------------------------------------------
-     * class variables
-     * ---------------------------------------------
-     */
-    //maintain all file locks hold by this process
+    // maintain all file locks hold by this process
     private static final Hashtable<String, FileLock> allLocks = new Hashtable<String, FileLock>();
 
-    /*
-     * ---------------------------------------------
-     * instance variables
-     * ---------------------------------------------
-     */
-
-    //the count of files which the output cycle through
+    // the count of files which the output cycle through
     private int count;
 
-    //the size limitation in byte of log file
+    // the size limitation in byte of log file
     private int limit;
 
-    //whether the FileHandler should open a existing file for output in append mode
+    // whether the FileHandler should open a existing file for output in append
+    // mode
     private boolean append;
 
-    //the pattern for output file name
+    // the pattern for output file name
     private String pattern;
 
-    //maintain a LogManager instance for convenience
+    // maintain a LogManager instance for convenience
     private LogManager manager;
 
-    //output stream, which can measure the output file length
+    // output stream, which can measure the output file length
     private MeasureOutputStream output;
 
-    //used output file
+    // used output file
     private File[] files;
 
-    //output file lock
+    // output file lock
     FileLock lock = null;
 
-    //current output file name
+    // current output file name
     String fileName = null;
-    
-    //current unique ID
+
+    // current unique ID
     int uniqueID = -1;
 
-    /*
-     * ---------------------------------------------
-     * constructors
-     * ---------------------------------------------
-     */
     /**
-     * Construct a <code>FileHandler</code> using <code>LogManager</code> 
+     * Construct a <code>FileHandler</code> using <code>LogManager</code>
      * properties or their default value
      * 
-     * @throws IOException			
-     * 				if any IO exception happened
-     * @throws SecurityException	
-     * 				if security manager exists and it determines that caller 
-     * 				does not have the required permissions to control this handler,
-     * 				required permissions include <code>LogPermission("control")</code>
-     * 				and other permission like <code>FilePermission("write")</code>, 
-     * 				etc.
-     * 								
+     * @throws IOException
+     *             if any IO exception happened
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
      */
     public FileHandler() throws IOException {
         init(null, null, null, null);
     }
 
-    //init properties
-    private void init(String p, Boolean a, Integer l, Integer c) throws IOException{
-        //check access
+    // init properties
+    private void init(String p, Boolean a, Integer l, Integer c)
+            throws IOException {
+        // check access
         manager = LogManager.getLogManager();
         manager.checkAccess();
         initProperties(p, a, l, c);
@@ -196,21 +176,24 @@ public class FileHandler extends StreamHandler {
 
     private void initOutputFiles() throws FileNotFoundException, IOException {
         while (true) {
-            //try to find a unique file which is not locked by other process
+            // try to find a unique file which is not locked by other process
             uniqueID++;
-            //FIXME: improve performance here
+            // FIXME: improve performance here
             for (int generation = 0; generation < count; generation++) {
-                //cache all file names for rotation use
+                // cache all file names for rotation use
                 files[generation] = new File(parseFileName(generation));
             }
             fileName = files[0].getAbsolutePath();
             synchronized (allLocks) {
-                //if current process has held lock for this fileName
-                //continue to find next file
+                /*
+                 * if current process has held lock for this fileName continue
+                 * to find next file
+                 */
                 if (null != allLocks.get(fileName)) {
                     continue;
                 }
-                if(files[0].exists() && (!append || files[0].length() >= limit)){
+                if (files[0].exists()
+                        && (!append || files[0].length() >= limit)) {
                     for (int i = count - 1; i > 0; i--) {
                         if (files[i].exists()) {
                             files[i].delete();
@@ -218,7 +201,8 @@ public class FileHandler extends StreamHandler {
                         files[i - 1].renameTo(files[i]);
                     }
                 }
-                FileOutputStream fileStream = new FileOutputStream(fileName+LCK_EXT);
+                FileOutputStream fileStream = new FileOutputStream(fileName
+                        + LCK_EXT);
                 FileChannel channel = fileStream.getChannel();
                 /*
                  * if lock is unsupported and IOException thrown, just let the
@@ -227,24 +211,24 @@ public class FileHandler extends StreamHandler {
                  */
                 lock = channel.tryLock();
                 if (null == lock) {
-                    try{
+                    try {
                         fileStream.close();
-                    }catch(Exception e){
-                        //ignore
+                    } catch (Exception e) {
+                        // ignore
                     }
                     continue;
                 }
-				allLocks.put(fileName, lock);
-				break;
+                allLocks.put(fileName, lock);
+                break;
             }
         }
-        output = new MeasureOutputStream(new BufferedOutputStream(new FileOutputStream(fileName, append)),
-                files[0].length());
+        output = new MeasureOutputStream(new BufferedOutputStream(
+                new FileOutputStream(fileName, append)), files[0].length());
         setOutputStream(output);
     }
 
     private void initProperties(String p, Boolean a, Integer l, Integer c) {
-        super.initProperties("ALL", null, "java.util.logging.XMLFormatter",  //$NON-NLS-1$//$NON-NLS-2$
+        super.initProperties("ALL", null, "java.util.logging.XMLFormatter", //$NON-NLS-1$//$NON-NLS-2$
                 null);
         String className = this.getClass().getName();
         pattern = (null == p) ? getStringProperty(className + ".pattern", //$NON-NLS-1$
@@ -284,12 +268,12 @@ public class FileHandler extends StreamHandler {
     }
 
     /**
-     *  Transform the pattern to the valid file name, replacing
-     *  any patterns, and applying generation and uniqueID if
-     *  present
-     *
-     *  @param gen generation of this file
-     *  @return transformed filename ready for use
+     * Transform the pattern to the valid file name, replacing any patterns, and
+     * applying generation and uniqueID if present
+     * 
+     * @param gen
+     *            generation of this file
+     * @return transformed filename ready for use
      */
     private String parseFileName(int gen) {
         int cur = 0;
@@ -297,13 +281,15 @@ public class FileHandler extends StreamHandler {
         boolean hasUniqueID = false;
         boolean hasGeneration = false;
 
-        //TODO privilege code? 
+        // TODO privilege code?
 
         String tempPath = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-        boolean tempPathHasSepEnd = (tempPath == null ? false : tempPath.endsWith(File.separator));
+        boolean tempPathHasSepEnd = (tempPath == null ? false : tempPath
+                .endsWith(File.separator));
 
         String homePath = System.getProperty("user.home"); //$NON-NLS-1$
-        boolean homePathHasSepEnd = (homePath == null ? false : homePath.endsWith(File.separator));
+        boolean homePathHasSepEnd = (homePath == null ? false : homePath
+                .endsWith(File.separator));
 
         StringBuilder sb = new StringBuilder();
         pattern = pattern.replace('/', File.separatorChar);
@@ -312,35 +298,35 @@ public class FileHandler extends StreamHandler {
         while ((next = pattern.indexOf('%', cur)) >= 0) {
             if (++next < pattern.length()) {
                 switch (value[next]) {
-                case 'g':
-                    sb.append(value, cur, next - cur - 1).append(gen);
-                    hasGeneration = true;
-                    break;
-                case 'u':
-                    sb.append(value, cur, next - cur - 1).append(uniqueID);
-                    hasUniqueID = true;
-                    break;
-                case 't':
-                    /*
-                     *  we should probably try to do something cute here like
-                     *  lookahead for adjacent '/'
-                     */
-                    sb.append(value, cur, next - cur - 1).append(tempPath);
-                    if (!tempPathHasSepEnd) {
-                        sb.append(File.separator);
-                    }
-                    break;
-                case 'h':
-                    sb.append(value, cur, next - cur - 1).append(homePath);
-                    if (!homePathHasSepEnd){
-                        sb.append(File.separator);
-                    }
-                    break;
-                case '%':
-                    sb.append(value, cur, next - cur - 1).append('%');
-                    break;
-                default:
-                    sb.append(value, cur, next - cur);
+                    case 'g':
+                        sb.append(value, cur, next - cur - 1).append(gen);
+                        hasGeneration = true;
+                        break;
+                    case 'u':
+                        sb.append(value, cur, next - cur - 1).append(uniqueID);
+                        hasUniqueID = true;
+                        break;
+                    case 't':
+                        /*
+                         * we should probably try to do something cute here like
+                         * lookahead for adjacent '/'
+                         */
+                        sb.append(value, cur, next - cur - 1).append(tempPath);
+                        if (!tempPathHasSepEnd) {
+                            sb.append(File.separator);
+                        }
+                        break;
+                    case 'h':
+                        sb.append(value, cur, next - cur - 1).append(homePath);
+                        if (!homePathHasSepEnd) {
+                            sb.append(File.separator);
+                        }
+                        break;
+                    case '%':
+                        sb.append(value, cur, next - cur - 1).append('%');
+                        break;
+                    default:
+                        sb.append(value, cur, next - cur);
                 }
                 cur = ++next;
             } else {
@@ -361,7 +347,8 @@ public class FileHandler extends StreamHandler {
         return sb.toString();
     }
 
-    //get boolean LogManager property, if invalid value got, using default value
+    // get boolean LogManager property, if invalid value got, using default
+    // value
     private boolean getBooleanProperty(String key, boolean defaultValue) {
         String property = manager.getProperty(key);
         if (null == property) {
@@ -376,210 +363,213 @@ public class FileHandler extends StreamHandler {
         return result;
     }
 
-    //get String LogManager property, if invalid value got, using default value
+    // get String LogManager property, if invalid value got, using default value
     private String getStringProperty(String key, String defaultValue) {
         String property = manager.getProperty(key);
         return property == null ? defaultValue : property;
     }
 
-    //get int LogManager property, if invalid value got, using default value
+    // get int LogManager property, if invalid value got, using default value
     private int getIntProperty(String key, int defaultValue) {
         String property = manager.getProperty(key);
         int result = defaultValue;
         if (null != property) {
             try {
                 result = Integer.parseInt(property);
-            } catch (Exception e) {//ignore
+            } catch (Exception e) {
+                // ignore
             }
         }
         return result;
     }
 
     /**
-     * Construct a <code>FileHandler</code>, the given name pattern is used as
-     * output filename, the file limit is set to zero(no limit), and the file 
-     * count is set to one, other configuration using <code>LogManager</code> 
+     * Construct a <code>FileHandler</code>, the given name pattern is used
+     * as output filename, the file limit is set to zero(no limit), and the file
+     * count is set to one, other configuration using <code>LogManager</code>
      * properties or their default value
      * 
      * This handler write to only one file and no amount limit.
-     *
-     * @param  pattern
-     * 				the name pattern of output file 
-     * @throws IOException			
-     * 				if any IO exception happened
-     * @throws SecurityException	
-     * 				if security manager exists and it determines that caller 
-     * 				does not have the required permissions to control this handler,
-     * 				required permissions include <code>LogPermission("control")</code>
-     * 				and other permission like <code>FilePermission("write")</code>, 
-     * 				etc.
-     * 								
+     * 
+     * @param pattern
+     *            the name pattern of output file
+     * @throws IOException
+     *             if any IO exception happened
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
+     * @throws NullPointerException
+     *             if the pattern is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             if the pattern is empty.
      */
     public FileHandler(String pattern) throws IOException {
-        if(null == pattern){
+        if (pattern.equals("")) { //$NON-NLS-1$
             // logging.19=Pattern cannot be empty
-            throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("logging.19")); //$NON-NLS-1$
         }
-        if("".equals(pattern)){ //$NON-NLS-1$
-            throw new IllegalArgumentException();
-        }
-        init(pattern, null, Integer.valueOf(DEFAULT_LIMIT), Integer.valueOf(
-                DEFAULT_COUNT));
+        init(pattern, null, Integer.valueOf(DEFAULT_LIMIT), Integer
+                .valueOf(DEFAULT_COUNT));
     }
 
     /**
-	 * Construct a <code>FileHandler</code>, the given name pattern is used
-	 * as output filename, the file limit is set to zero(i.e. no limit applies),
-	 * the file count is initialized to one, and the value of
-	 * <code>append</code> becomes the new instance's append mode. Other
-	 * configuration is done using <code>LogManager</code> properties.
-	 * 
-	 * This handler write to only one file and no amount limit.
-	 * 
-	 * @param pattern
-	 *            the name pattern of output file
-	 * @param append
-	 *            the append mode
-	 * @throws IOException
-	 *             if any IO exception happened
-	 * @throws SecurityException
-	 *             if security manager exists and it determines that caller does
-	 *             not have the required permissions to control this handler,
-	 *             required permissions include
-	 *             <code>LogPermission("control")</code> and other permission
-	 *             like <code>FilePermission("write")</code>, etc.
-	 * 
-	 */
+     * Construct a <code>FileHandler</code>, the given name pattern is used
+     * as output filename, the file limit is set to zero(i.e. no limit applies),
+     * the file count is initialized to one, and the value of
+     * <code>append</code> becomes the new instance's append mode. Other
+     * configuration is done using <code>LogManager</code> properties.
+     * 
+     * This handler write to only one file and no amount limit.
+     * 
+     * @param pattern
+     *            the name pattern of output file
+     * @param append
+     *            the append mode
+     * @throws IOException
+     *             if any IO exception happened
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
+     * @throws NullPointerException
+     *             if the pattern is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             if the pattern is empty.
+     */
     public FileHandler(String pattern, boolean append) throws IOException {
-        if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
-            // logging.19=Pattern cannot be empty
-            throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
-        }        
+        if (pattern.equals("")) { //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("logging.19")); //$NON-NLS-1$ 
+        }
+
         init(pattern, Boolean.valueOf(append), Integer.valueOf(DEFAULT_LIMIT),
                 Integer.valueOf(DEFAULT_COUNT));
     }
 
     /**
-     * Construct a <code>FileHandler</code>, the given name pattern is used as
-     * output filename, the file limit is set to given limit argument, and 
-     * the file count is set to given count argument, other configuration using 
-     * <code>LogManager</code> properties  or their default value
+     * Construct a <code>FileHandler</code>, the given name pattern is used
+     * as output filename, the file limit is set to given limit argument, and
+     * the file count is set to given count argument, other configuration using
+     * <code>LogManager</code> properties or their default value
      * 
-     * This handler is configured to write to a rotating set of count files, 
-     * when the limit of bytes has been written to one output file, another file 
-     * will be opened instead.  
-     *
-     * @param  pattern
-     * 				the name pattern of output file
-     * @param  limit
-     * 				the data amount limit in bytes of one output file, cannot less
-     * 				than one
-     * @param  count
-     * 				the maximum number of files can be used, cannot less than one 
-     * @throws IOException			
-     * 				if any IO exception happened
-     * @throws SecurityException	
-     * 				if security manager exists and it determines that caller 
-     * 				does not have the required permissions to control this handler,
-     * 				required permissions include <code>LogPermission("control")</code>
-     * 				and other permission like <code>FilePermission("write")</code>, 
-     * 				etc.
+     * This handler is configured to write to a rotating set of count files,
+     * when the limit of bytes has been written to one output file, another file
+     * will be opened instead.
+     * 
+     * @param pattern
+     *            the name pattern of output file
+     * @param limit
+     *            the data amount limit in bytes of one output file, cannot less
+     *            than one
+     * @param count
+     *            the maximum number of files can be used, cannot less than one
+     * @throws IOException
+     *             if any IO exception happened
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
+     * @throws NullPointerException
+     *             if pattern is <code>null</code>.
      * @throws IllegalArgumentException
-     * 				if count<1, or limit<0 								
+     *             if count<1, or limit<0
      */
     public FileHandler(String pattern, int limit, int count) throws IOException {
-        if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
-            // logging.19=Pattern cannot be empty
-            throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
-        }        
+        if (pattern.equals("")) { //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("logging.19")); //$NON-NLS-1$ 
+        }
         if (limit < 0 || count < 1) {
-            // logging.1B=The limit and count property must be larger than 0 and 1, respectively
+            // logging.1B=The limit and count property must be larger than 0 and
+            // 1, respectively
             throw new IllegalArgumentException(Messages.getString("logging.1B")); //$NON-NLS-1$
         }
         init(pattern, null, Integer.valueOf(limit), Integer.valueOf(count));
     }
 
     /**
-     * Construct a <code>FileHandler</code>, the given name pattern is used as
-     * output filename, the file limit is set to given limit argument, the file 
-     * count is set to given count argument, and the append mode is set to given
-     * append argument, other configuration using <code>LogManager</code> 
-     * properties  or their default value
+     * Construct a <code>FileHandler</code>, the given name pattern is used
+     * as output filename, the file limit is set to given limit argument, the
+     * file count is set to given count argument, and the append mode is set to
+     * given append argument, other configuration using <code>LogManager</code>
+     * properties or their default value
      * 
-     * This handler is configured to write to a rotating set of count files, 
-     * when the limit of bytes has been written to one output file, another file 
-     * will be opened instead. 
+     * This handler is configured to write to a rotating set of count files,
+     * when the limit of bytes has been written to one output file, another file
+     * will be opened instead.
      * 
-     * @param  pattern
-     * 				the name pattern of output file
-     * @param  limit
-     * 				the data amount limit in bytes of one output file, cannot less
-     * 				than one
-     * @param  count
-     * 				the maximum number of files can be used, cannot less than one 
-     * @param  append
-     * 				the append mode
-     * @throws IOException			
-     * 				if any IO exception happened
-     * @throws SecurityException	
-     * 				if security manager exists and it determines that caller 
-     * 				does not have the required permissions to control this handler,
-     * 				required permissions include <code>LogPermission("control")</code>
-     * 				and other permission like <code>FilePermission("write")</code>, 
-     * 				etc.
+     * @param pattern
+     *            the name pattern of output file
+     * @param limit
+     *            the data amount limit in bytes of one output file, cannot less
+     *            than one
+     * @param count
+     *            the maximum number of files can be used, cannot less than one
+     * @param append
+     *            the append mode
+     * @throws IOException
+     *             if any IO exception happened
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
+     * @throws NullPointerException
+     *             if pattern is <code>null</code>.
      * @throws IllegalArgumentException
-     * 				if count<1, or limit<0
-     * 								
+     *             if count<1, or limit<0
      */
     public FileHandler(String pattern, int limit, int count, boolean append)
             throws IOException {
-        if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
-            // logging.19=Pattern cannot be empty
-            throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
-        }        
+        if (pattern.equals("")) { //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("logging.19")); //$NON-NLS-1$ 
+        }
         if (limit < 0 || count < 1) {
-            // logging.1B=The limit and count property must be larger than 0 and 1, respectively
+            // logging.1B=The limit and count property must be larger than 0 and
+            // 1, respectively
             throw new IllegalArgumentException(Messages.getString("logging.1B")); //$NON-NLS-1$
         }
-        init(pattern, Boolean.valueOf(append), Integer.valueOf(limit), Integer.valueOf(
-                count));
+        init(pattern, Boolean.valueOf(append), Integer.valueOf(limit), Integer
+                .valueOf(count));
     }
 
-    /*
-     * ---------------------------------------------
-     * Methods overrides StreamHandler
-     * ---------------------------------------------
-     */
     /**
      * Flush and close all opened files.
      * 
-     * @throws SecurityException	
-     * 				if security manager exists and it determines that caller 
-     * 				does not have the required permissions to control this handler,
-     * 				required permissions include <code>LogPermission("control")</code>
-     * 				and other permission like <code>FilePermission("write")</code>, 
-     * 				etc.
+     * @throws SecurityException
+     *             if security manager exists and it determines that caller does
+     *             not have the required permissions to control this handler,
+     *             required permissions include
+     *             <code>LogPermission("control")</code> and other permission
+     *             like <code>FilePermission("write")</code>, etc.
      */
     @Override
     public void close() {
-        //release locks
+        // release locks
         super.close();
         allLocks.remove(fileName);
         try {
             FileChannel channel = lock.channel();
             lock.release();
             channel.close();
-            File file = new File(fileName+LCK_EXT);
+            File file = new File(fileName + LCK_EXT);
             file.delete();
         } catch (IOException e) {
-            //ignore
+            // ignore
         }
     }
 
     /**
      * Publish a <code>LogRecord</code>
      * 
-     * @param record the log record to be published
+     * @param record
+     *            the log record to be published
      */
     @Override
     public void publish(LogRecord record) {
@@ -596,8 +586,9 @@ public class FileHandler extends StreamHandler {
     }
 
     /**
-     * This output stream use decorator pattern to add measure feature to OutputStream
-     * which can detect the total size(in bytes) of output, the initial size can be set
+     * This output stream use decorator pattern to add measure feature to
+     * OutputStream which can detect the total size(in bytes) of output, the
+     * initial size can be set
      */
     static class MeasureOutputStream extends OutputStream {
 
@@ -649,7 +640,5 @@ public class FileHandler extends StreamHandler {
         public void setLength(long newLength) {
             length = newLength;
         }
-
     }
-
 }
