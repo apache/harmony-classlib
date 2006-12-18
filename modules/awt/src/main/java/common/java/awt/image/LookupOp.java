@@ -58,6 +58,9 @@ public class LookupOp implements BufferedImageOp, RasterOp {
     }
 
     public LookupOp(LookupTable lookup, RenderingHints hints) {
+        if (lookup == null){
+            throw new NullPointerException(Messages.getString("awt.01", "lookup"));
+        }
         lut = lookup;
         this.hints = hints;
         canUseIpp = lut instanceof ByteLookupTable || lut instanceof ShortLookupTable;
