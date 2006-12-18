@@ -237,19 +237,19 @@ public class NamingExceptionTest extends TestCase {
 		ex.setRootCause(new Exception(trace2));
 		ex.printStackTrace();
 		str = new String(bStream.toByteArray());
-		assertTrue(str.indexOf(trace1) < 0);
+		assertTrue(str.indexOf(trace1) > 0);
 		assertTrue(str.indexOf(trace2) > 0);
 		bStream.reset();
 
 		ex.printStackTrace(stream);
 		str = new String(bStream.toByteArray());
-		assertTrue(str.indexOf(trace1) < 0);
+		assertTrue(str.indexOf(trace1) > 0);
 		assertTrue(str.indexOf(trace2) > 0);
 		bStream.reset();
 
 		ex.printStackTrace(new PrintWriter(stream, true));
 		str = new String(bStream.toByteArray());
-		assertTrue(str.indexOf(trace1) < 0);
+		assertTrue(str.indexOf(trace1) > 0);
 		assertTrue(str.indexOf(trace2) > 0);
 		bStream.reset();
 
