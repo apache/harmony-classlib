@@ -166,6 +166,11 @@
     </condition>
     <property name="make.command" value="make" />
 
+    <condition property="make.arg" value="/nologo">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="make.arg" value="" />
+
     <condition property="png.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
@@ -322,6 +327,7 @@ properties in preference to these:
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
+                <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>
         </sequential>
