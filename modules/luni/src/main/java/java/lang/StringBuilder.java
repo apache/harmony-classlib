@@ -119,7 +119,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(boolean)
      */
     public StringBuilder append(boolean b) {
-        append0(b ? "true" : "false");
+        append0(b ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
         return this;
     }
 
@@ -408,7 +408,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(boolean)
      */
     public StringBuilder insert(int offset, boolean b) {
-        insert0(offset, b ? "true" : "false");
+        insert0(offset, b ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
         return this;
     }
 
@@ -540,7 +540,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(Object)
      */
     public StringBuilder insert(int offset, Object obj) {
-        insert0(offset, obj == null ? "null" : obj.toString());
+        insert0(offset, obj == null ? "null" : obj.toString()); //$NON-NLS-1$
         return this;
     }
 
@@ -633,7 +633,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see CharSequence#toString()
      */
     public StringBuilder insert(int offset, CharSequence s) {
-        insert0(offset, s == null ? "null" : s.toString());
+        insert0(offset, s == null ? "null" : s.toString()); //$NON-NLS-1$
         return this;
     }
 

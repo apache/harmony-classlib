@@ -63,10 +63,12 @@ abstract class AbstractStringBuilder {
      * Restores internal state after deserialization.
      */
     final void set(char[] val, int len) throws InvalidObjectException {
-        if (val == null)
+        if (val == null) {
             val = new char[0];
-        if (val.length < len)
-            throw new InvalidObjectException(Msg.getString("K0199"));
+        }
+        if (val.length < len) {
+            throw new InvalidObjectException(Msg.getString("K0199")); //$NON-NLS-1$
+        }
 
         shared = false;
         value = val;
@@ -78,8 +80,9 @@ abstract class AbstractStringBuilder {
     }
 
     AbstractStringBuilder(int capacity) {
-        if (capacity < 0)
+        if (capacity < 0) {
             throw new NegativeArraySizeException();
+        }
         value = new char[capacity];
     }
 
@@ -173,10 +176,12 @@ abstract class AbstractStringBuilder {
     }
 
     final void append0(CharSequence s, int start, int end) {
-        if (s == null)
-            s = "null";
-        if (start < 0 || end < 0 || start > end || end > s.length())
+        if (s == null) {
+            s = "null"; //$NON-NLS-1$
+        }
+        if (start < 0 || end < 0 || start > end || end > s.length()) {
             throw new IndexOutOfBoundsException();
+        }
 
         append0(s.subSequence(start, end).toString());
     }
@@ -199,14 +204,17 @@ abstract class AbstractStringBuilder {
      * Retrieves the character at the <code>index</code>.
      * </p>
      * 
-     * @param The index of character in this object to retrieve.
+     * @param The
+     *            index of character in this object to retrieve.
      * @return The char value.
-     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
-     *         greater than or equal to the current {@link #length()}.
+     * @throws IndexOutOfBoundsException
+     *             if <code>index</code> is negative or greater than or equal
+     *             to the current {@link #length()}.
      */
     public char charAt(int index) {
-        if (index < 0 || index >= count)
+        if (index < 0 || index >= count) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         return value[index];
     }
 
@@ -239,8 +247,9 @@ abstract class AbstractStringBuilder {
     }
 
     final void deleteCharAt0(int location) {
-        if (0 > location || location >= count)
+        if (0 > location || location >= count) {
             throw new StringIndexOutOfBoundsException(location);
+        }
         int length = count - location - 1;
         if (length > 0) {
             if (!shared) {
@@ -269,7 +278,8 @@ abstract class AbstractStringBuilder {
      * there is no guarantee that the capacity will change.
      * </p>
      * 
-     * @param minimumCapacity The new minimum capacity to set.
+     * @param minimumCapacity
+     *            The new minimum capacity to set.
      */
     public void ensureCapacity(int min) {
         if (min > value.length) {
@@ -283,19 +293,24 @@ abstract class AbstractStringBuilder {
      * <code>char[]</code> passed.
      * </p>
      * 
-     * @param start The inclusive start index of the characters to copy from
-     *        this object.
-     * @param end The exclusive end index of the characters to copy from this
-     *        object.
-     * @param dest The <code>char[]</code> to copy the characters to.
-     * @param destStart The inclusive start index of the <code>dest</code>
-     *        parameter to begin copying to.
-     * @throws IndexOutOfBoundsException if the <code>start</code> is
-     *         negative, the <code>destStart</code> is negative, the
-     *         <code>start</code> is greater than <code>end</code>, the
-     *         <code>end</code> is greater than the current {@link #length()}
-     *         or <code>destStart + end - begin</code> is greater than
-     *         <code>dest.length</code>.
+     * @param start
+     *            The inclusive start index of the characters to copy from this
+     *            object.
+     * @param end
+     *            The exclusive end index of the characters to copy from this
+     *            object.
+     * @param dest
+     *            The <code>char[]</code> to copy the characters to.
+     * @param destStart
+     *            The inclusive start index of the <code>dest</code> parameter
+     *            to begin copying to.
+     * @throws IndexOutOfBoundsException
+     *             if the <code>start</code> is negative, the
+     *             <code>destStart</code> is negative, the <code>start</code>
+     *             is greater than <code>end</code>, the <code>end</code>
+     *             is greater than the current {@link #length()} or
+     *             <code>destStart + end - begin</code> is greater than
+     *             <code>dest.length</code>.
      */
     public void getChars(int start, int end, char[] dest, int destStart) {
         if (start > count || end > count || start > end) {
@@ -326,7 +341,8 @@ abstract class AbstractStringBuilder {
                 }
                 return;
             }
-            throw new StringIndexOutOfBoundsException("offset " + start + ", len " + length + ", array.length " + chars.length);
+            throw new StringIndexOutOfBoundsException("offset " + start
+                    + ", len " + length + ", array.length " + chars.length);
         }
         throw new StringIndexOutOfBoundsException(index);
     }
@@ -343,8 +359,9 @@ abstract class AbstractStringBuilder {
 
     final void insert0(int index, String string) {
         if (0 <= index && index <= count) {
-            if (string == null)
-                string = "null";
+            if (string == null) {
+                string = "null"; //$NON-NLS-1$
+            }
             int min = string.length();
             if (min != 0) {
                 move(min, index);
@@ -357,11 +374,13 @@ abstract class AbstractStringBuilder {
     }
 
     final void insert0(int index, CharSequence s, int start, int end) {
-        if (s == null)
-            s = "null";
+        if (s == null) {
+            s = "null"; //$NON-NLS-1$
+        }
         if (index < 0 || index > count || start < 0 || end < 0 || start > end
-                || end > s.length())
+                || end > s.length()) {
             throw new IndexOutOfBoundsException();
+        }
         insert0(index, s.subSequence(start, end).toString());
     }
 
@@ -400,8 +419,9 @@ abstract class AbstractStringBuilder {
 
     final void replace0(int start, int end, String string) {
         if (start >= 0) {
-            if (end > count)
+            if (end > count) {
                 end = count;
+            }
             if (end > start) {
                 int stringLength = string.length();
                 int diff = end - start - stringLength;
@@ -431,8 +451,9 @@ abstract class AbstractStringBuilder {
                 return;
             }
             if (start == end) {
-                if (string == null)
+                if (string == null) {
                     throw new NullPointerException();
+                }
                 insert0(start, string);
                 return;
             }
@@ -465,10 +486,13 @@ abstract class AbstractStringBuilder {
      * Sets the character at the <code>index</code> in this object.
      * </p>
      * 
-     * @param index the zero-based index of the character to replace.
-     * @param ch the character to set.
-     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
-     *         greater than or equal to the current {@link #length()}.
+     * @param index
+     *            the zero-based index of the character to replace.
+     * @param ch
+     *            the character to set.
+     * @throws IndexOutOfBoundsException
+     *             if <code>index</code> is negative or greater than or equal
+     *             to the current {@link #length()}.
      */
     public void setCharAt(int index, char ch) {
         if (0 > index || index >= count) {
@@ -488,15 +512,18 @@ abstract class AbstractStringBuilder {
      * will contain the <code>char</code> value of <code>\u0000</code>.
      * </p>
      * 
-     * @param length the new length of this StringBuffer
+     * @param length
+     *            the new length of this StringBuffer
      * 
-     * @exception IndexOutOfBoundsException when <code>length < 0</code>
+     * @exception IndexOutOfBoundsException
+     *                when <code>length < 0</code>
      * 
      * @see #length
      */
     public void setLength(int length) {
-        if (length < 0)
+        if (length < 0) {
             throw new StringIndexOutOfBoundsException(length);
+        }
         if (count < length) {
             if (length > value.length) {
                 enlargeBuffer(length);
@@ -520,15 +547,18 @@ abstract class AbstractStringBuilder {
      * <code>start</code> index to the current end.
      * </p>
      * 
-     * @param start The inclusive start index to begin the subsequence.
+     * @param start
+     *            The inclusive start index to begin the subsequence.
      * @return A String containing the subsequence.
-     * @throws StringIndexOutOfBoundsException if <code>start</code> is
-     *         negative or greater than the current {@link #length()}.
+     * @throws StringIndexOutOfBoundsException
+     *             if <code>start</code> is negative or greater than the
+     *             current {@link #length()}.
      */
     public String substring(int start) {
         if (0 <= start && start <= count) {
-            if (start == count)
-                return "";
+            if (start == count) {
+                return ""; //$NON-NLS-1$
+            }
 
             shared = true;
             return new String(start, count - start, value);
@@ -542,17 +572,20 @@ abstract class AbstractStringBuilder {
      * <code>start</code> index to the <code>start</code> index.
      * </p>
      * 
-     * @param start The inclusive start index to begin the subsequence.
-     * @param end The exclusive end index to end the subsequence.
+     * @param start
+     *            The inclusive start index to begin the subsequence.
+     * @param end
+     *            The exclusive end index to end the subsequence.
      * @return A String containing the subsequence.
-     * @throws StringIndexOutOfBoundsException if <code>start</code> is
-     *         negative, greater than the current {@link #length()} or greater
-     *         than <code>end</code>.
+     * @throws StringIndexOutOfBoundsException
+     *             if <code>start</code> is negative, greater than the current
+     *             {@link #length()} or greater than <code>end</code>.
      */
     public String substring(int start, int end) {
         if (0 <= start && start <= end && end <= count) {
-            if (start == end)
-                return "";
+            if (start == end) {
+                return ""; //$NON-NLS-1$
+            }
 
             shared = true;
             return new String(value, start, end - start);
@@ -569,11 +602,13 @@ abstract class AbstractStringBuilder {
      */
     @Override
     public String toString() {
-        if (count == 0)
-            return "";
+        if (count == 0) {
+            return ""; //$NON-NLS-1$
+        }
 
-        if (count >= 256 && count <= (value.length >> 1))
+        if (count >= 256 && count <= (value.length >> 1)) {
             return new String(value, 0, count);
+        }
         shared = true;
         return new String(0, count, value);
     }
@@ -584,12 +619,14 @@ abstract class AbstractStringBuilder {
      * from the <code>start</code> index to the <code>start</code> index.
      * </p>
      * 
-     * @param start The inclusive start index to begin the subsequence.
-     * @param end The exclusive end index to end the subsequence.
+     * @param start
+     *            The inclusive start index to begin the subsequence.
+     * @param end
+     *            The exclusive end index to end the subsequence.
      * @return A CharSequence containing the subsequence.
-     * @throws IndexOutOfBoundsException if <code>start</code> is negative,
-     *         greater than the current {@link #length()} or greater than
-     *         <code>end</code>.
+     * @throws IndexOutOfBoundsException
+     *             if <code>start</code> is negative, greater than the current
+     *             {@link #length()} or greater than <code>end</code>.
      * 
      * @since 1.4
      */
@@ -603,7 +640,8 @@ abstract class AbstractStringBuilder {
      * towards the end.
      * 
      * 
-     * @param string the string to find
+     * @param string
+     *            the string to find
      * @return the index in this StringBuffer of the specified character, -1 if
      *         the character isn't found
      * 
@@ -620,8 +658,10 @@ abstract class AbstractStringBuilder {
      * The search for the character starts at the specified offset and moves
      * towards the end.
      * 
-     * @param subString the string to find
-     * @param start the starting offset
+     * @param subString
+     *            the string to find
+     * @param start
+     *            the starting offset
      * @return the index in this StringBuffer of the specified character, -1 if
      *         the character isn't found
      * 
@@ -630,30 +670,35 @@ abstract class AbstractStringBuilder {
      * @since 1.4
      */
     public int indexOf(String subString, int start) {
-        if (start < 0)
+        if (start < 0) {
             start = 0;
+        }
         int subCount = subString.length();
         if (subCount > 0) {
-            if (subCount + start > count)
+            if (subCount + start > count) {
                 return -1;
+            }
             // TODO optimize charAt to direct array access
             char firstChar = subString.charAt(0);
             while (true) {
                 int i = start;
                 boolean found = false;
-                for (; i < count; i++)
+                for (; i < count; i++) {
                     if (value[i] == firstChar) {
                         found = true;
                         break;
                     }
-                if (!found || subCount + i > count)
+                }
+                if (!found || subCount + i > count) {
                     return -1; // handles subCount > count || start >= count
+                }
                 int o1 = i, o2 = 0;
                 while (++o2 < subCount && value[++o1] == subString.charAt(o2)) {
                     // Intentionally empty
                 }
-                if (o2 == subCount)
+                if (o2 == subCount) {
                     return i;
+                }
                 start = i + 1;
             }
         }
@@ -665,11 +710,12 @@ abstract class AbstractStringBuilder {
      * character. The search for the character starts at the end and moves
      * towards the beginning.
      * 
-     * @param string the string to find
+     * @param string
+     *            the string to find
      * @return the index in this StringBuffer of the specified character, -1 if
      *         the character isn't found
-     * @throws NullPointerException if the <code>string</code> parameter is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if the <code>string</code> parameter is <code>null</code>.
      * 
      * @see String#lastIndexOf(java.lang.String)
      * 
@@ -684,12 +730,15 @@ abstract class AbstractStringBuilder {
      * The search for the character starts at the specified offset and moves
      * towards the beginning.
      * 
-     * @param subString the string to find
-     * @param start the starting offset
+     * @param subString
+     *            the string to find
+     * @param start
+     *            the starting offset
      * @return the index in this StringBuffer of the specified character, -1 if
      *         the character isn't found
-     * @throws NullPointerException if the <code>subString</code> parameter is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if the <code>subString</code> parameter is
+     *             <code>null</code>.
      * @see String#lastIndexOf(java.lang.String,int)
      * @since 1.4
      */
@@ -697,28 +746,32 @@ abstract class AbstractStringBuilder {
         int subCount = subString.length();
         if (subCount <= count && start >= 0) {
             if (subCount > 0) {
-                if (start > count - subCount)
+                if (start > count - subCount) {
                     start = count - subCount; // count and subCount are both
+                }
                 // >= 1
                 // TODO optimize charAt to direct array access
                 char firstChar = subString.charAt(0);
                 while (true) {
                     int i = start;
                     boolean found = false;
-                    for (; i >= 0; --i)
+                    for (; i >= 0; --i) {
                         if (value[i] == firstChar) {
                             found = true;
                             break;
                         }
-                    if (!found)
+                    }
+                    if (!found) {
                         return -1;
+                    }
                     int o1 = i, o2 = 0;
                     while (++o2 < subCount
                             && value[++o1] == subString.charAt(o2)) {
                         // Intentionally empty
                     }
-                    if (o2 == subCount)
+                    if (o2 == subCount) {
                         return i;
+                    }
                     start = i - 1;
                 }
             }
@@ -749,18 +802,21 @@ abstract class AbstractStringBuilder {
      * Retrieves the Unicode code point value at the <code>index</code>.
      * </p>
      * 
-     * @param index The index to the <code>char</code> code unit within this
-     *        object.
+     * @param index
+     *            The index to the <code>char</code> code unit within this
+     *            object.
      * @return The Unicode code point value.
-     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
-     *         greater than or equal to {@link #length()}.
+     * @throws IndexOutOfBoundsException
+     *             if <code>index</code> is negative or greater than or equal
+     *             to {@link #length()}.
      * @see Character
      * @see Character#codePointAt(char[], int, int)
      * @since 1.5
      */
     public int codePointAt(int index) {
-        if (index < 0 || index >= count)
+        if (index < 0 || index >= count) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         return Character.codePointAt(value, index, count);
     }
 
@@ -770,18 +826,21 @@ abstract class AbstractStringBuilder {
      * <code>index</code>.
      * </p>
      * 
-     * @param index The index to the <code>char</code> code unit within this
-     *        object.
+     * @param index
+     *            The index to the <code>char</code> code unit within this
+     *            object.
      * @return The Unicode code point value.
-     * @throws IndexOutOfBoundsException if <code>index</code> is less than 1
-     *         or greater than {@link #length()}.
+     * @throws IndexOutOfBoundsException
+     *             if <code>index</code> is less than 1 or greater than
+     *             {@link #length()}.
      * @see Character
      * @see Character#codePointBefore(char[], int, int)
      * @since 1.5
      */
     public int codePointBefore(int index) {
-        if (index < 1 || index > count)
+        if (index < 1 || index > count) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         return Character.codePointBefore(value, index);
     }
 
@@ -791,17 +850,21 @@ abstract class AbstractStringBuilder {
      * <code>beginIndex</code> and <code>endIndex</code>.
      * </p>
      * 
-     * @param beginIndex The inclusive beginning index of the subsequence.
-     * @param endIndex The exclusive end index of the subsequence.
+     * @param beginIndex
+     *            The inclusive beginning index of the subsequence.
+     * @param endIndex
+     *            The exclusive end index of the subsequence.
      * @return The number of Unicode code points in the subsequence.
-     * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
-     *         negative or greater than <code>endIndex</code> or
-     *         <code>endIndex</code> is greater than {@link #length()}.
+     * @throws IndexOutOfBoundsException
+     *             if <code>beginIndex</code> is negative or greater than
+     *             <code>endIndex</code> or <code>endIndex</code> is greater
+     *             than {@link #length()}.
      * @since 1.5
      */
     public int codePointCount(int beginIndex, int endIndex) {
-        if (beginIndex < 0 || endIndex > count || beginIndex > endIndex)
+        if (beginIndex < 0 || endIndex > count || beginIndex > endIndex) {
             throw new StringIndexOutOfBoundsException();
+        }
         return Character.codePointCount(value, beginIndex, endIndex
                 - beginIndex);
     }
@@ -812,13 +875,16 @@ abstract class AbstractStringBuilder {
      * <code>index</code> by <code>codePointOffset</code> code points.
      * </p>
      * 
-     * @param index The index within this object to calculate the offset from.
-     * @param codePointOffset The number of code points to count.
+     * @param index
+     *            The index within this object to calculate the offset from.
+     * @param codePointOffset
+     *            The number of code points to count.
      * @return The index within this object that is the offset.
-     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
-     *         greater than {@link #length()} or if there aren't enough code
-     *         points before or after <code>index</code> to match
-     *         <code>codePointOffset</code>.
+     * @throws IndexOutOfBoundsException
+     *             if <code>index</code> is negative or greater than
+     *             {@link #length()} or if there aren't enough code points
+     *             before or after <code>index</code> to match
+     *             <code>codePointOffset</code>.
      * @since 1.5
      */
     public int offsetByCodePoints(int index, int codePointOffset) {
