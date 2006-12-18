@@ -177,7 +177,6 @@ public class Window extends Container implements Accessible {
             setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
                     .getDefaultFocusTraversalPolicy());
             redrawManager = new RedrawManager(this);
-            setFont(new Font("dialog", Font.PLAIN, 12)); // TODO: fix it //$NON-NLS-1$
             cursor = Cursor.getDefaultCursor(); // for Window cursor is always
                                                 // set(non-null)
         } finally {

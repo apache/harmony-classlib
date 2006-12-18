@@ -170,4 +170,13 @@ public class WindowTest extends TestCase {
         checkPropertyFields("alwaysOnTop", w, Boolean.TRUE);
         assertEquals(Boolean.FALSE, oldValue);
     }
+    
+    /*
+     * Check if getFont() returns null for if font wasn't set before.
+     */
+    public void testGetFont_Default(){
+        // regression test for Harmony-1605
+        assertEquals(null, w.getFont());
+    }
+    
 }
