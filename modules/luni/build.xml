@@ -62,8 +62,9 @@
         <copy todir="${hy.jdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/shared">
                 <include name="jni.h" />
-                <include name="jniport.h" />
+                <include name="jni_types.h" />
                 <include name="jvmti.h" />
+                <include name="jvmti_types.h" />
             </fileset>
         </copy>
 
@@ -206,8 +207,9 @@
         <delete failonerror="false">
             <fileset dir="${hy.jdk}/include">
                 <include name="jni.h" />
-                <include name="jniport.h" />
+                <include name="jni_types.h" />
                 <include name="jvmti.h" />
+                <include name="jvmti_types.h" />
             </fileset>
         </delete>
     </target>
