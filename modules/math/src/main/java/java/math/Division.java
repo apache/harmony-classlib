@@ -21,7 +21,7 @@ import org.apache.harmony.math.internal.nls.Messages;
 
 /**
  * Static library that provides all operations related with division and modular
- * arithmetic to {@link BigInteger}. Some methos are provided in both mutable
+ * arithmetic to {@link BigInteger}. Some methods are provided in both mutable
  * and immutable way. There are several variants provided listed below:
  * 
  * <ul type="circle">
@@ -654,7 +654,7 @@ class Division {
     
     /**
      *
-     * Based on "New Algorithm for Classical Modular Inverse" Róbert Lórencz.
+     * Based on "New Algorithm for Classical Modular Inverse" RÃ³bert LÃ³rencz.
      * LNCS 2523 (2002)
      *
      * @return a^(-1) mod m
