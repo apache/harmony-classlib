@@ -17,10 +17,13 @@
 
 package java.awt;
 
+import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.text.CharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Collections;
+
 import junit.framework.TestCase;
 
 public class FontTest extends TestCase {
@@ -105,6 +108,38 @@ public class FontTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+    }
+    
+    /*
+     * Compatibility test. We check that Harmony throws same 
+     * exceptions as RI does.
+     */
+    public void test_Font_getStringBounds_WithNullTextSource() {
+        // regression test for Harmony-1591
+        Font font = new Font("dialog", Font.PLAIN, 12);
+        FontRenderContext cnt = new FontRenderContext(null, false, true);
+        try {
+            font.getStringBounds((char[]) null, -16, 1, cnt);
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
 
+        try {
+            font.getStringBounds((String) null, -16, 1, cnt);
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            font.getStringBounds((CharacterIterator) null, -16, 1, cnt);
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            font.getStringBounds((String) null, cnt);
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 }

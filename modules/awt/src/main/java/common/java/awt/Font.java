@@ -701,32 +701,17 @@ public class Font implements Serializable {
 
     public Rectangle2D getStringBounds(String str, int start, int end,
             FontRenderContext frc) {
-        if (start < 0) {
-            // awt.95=Wrong start index: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
-        }
-        if ( end > str.length()) {
-            // awt.96=Wrong finish index: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
-        }
-        if (start > end) {
-            // awt.97=Wrong range length: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
-                    (end-start)));
-        }
 
         return this.getStringBounds((str.substring(start, end)), frc);
     }
 
     public Rectangle2D getStringBounds(char[] chars, int start, int end,
             FontRenderContext frc) {
-        int finish = chars.length;
-
         if (start < 0) {
             // awt.95=Wrong start index: {0}
             throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
         }
-        if ( end > finish) {
+        if ( end > chars.length) {
             // awt.96=Wrong finish index: {0}
             throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
         }
