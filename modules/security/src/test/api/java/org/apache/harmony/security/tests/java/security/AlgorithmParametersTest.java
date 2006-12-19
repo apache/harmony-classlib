@@ -282,7 +282,6 @@ public class AlgorithmParametersTest extends TestCase {
         checkUnititialized(ap);
 
         ap.init(new byte[6], "aaa");
-        assertTrue("init() failed", MyAlgorithmParameters.runEngineInit3);
 
         try {
             ap.init(new MyAlgorithmParameterSpec());
@@ -377,6 +376,82 @@ public class AlgorithmParametersTest extends TestCase {
         assertTrue(paramSpi.runEngineInitB$);
     }
 
+    /**
+     * @tests java.security.AlgorithmParameters#init(byte[],String)
+     */
+    public void test_init$BLjava_lang_String() throws Exception {
+
+        //
+        // test: corresponding spi method is invoked
+        //
+        final byte[] enc = new byte[] { 0x02, 0x01, 0x03 };
+        final String strFormatParam = "format";
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected void engineInit(byte[] params, String format)
+                    throws IOException {
+
+                runEngineInitB$String = true;
+                assertSame(enc, params);
+                assertSame(strFormatParam, format);
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        params.init(enc, strFormatParam);
+        assertTrue(paramSpi.runEngineInitB$String);
+
+        //
+        // test: IOException if already initialized
+        //
+        try {
+            params.init(enc, strFormatParam);
+            fail("No expected IOException");
+        } catch (IOException e) {
+            // expected
+        }
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(new MyAlgorithmParameterSpec());
+        try {
+            params.init(enc, strFormatParam);
+            fail("No expected IOException");
+        } catch (IOException e) {
+            // expected
+        }
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(enc);
+        try {
+            params.init(enc, strFormatParam);
+            fail("No expected IOException");
+        } catch (IOException e) {
+            // expected
+        }
+
+        //
+        // test: if params and format are null
+        //
+        paramSpi = new MyAlgorithmParameters() {
+
+            protected void engineInit(byte[] params, String format)
+                    throws IOException {
+
+                runEngineInitB$String = true;
+
+                // null is passed to spi-provider
+                assertNull(params);
+                assertNull(format);
+            }
+        };
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(null, null);
+        assertTrue(paramSpi.runEngineInitB$String);
+    }
+
 	private void checkUnititialized(AlgorithmParameters ap) {
         assertNull("Unititialized: toString() failed", ap.toString());
 	}
@@ -417,7 +492,7 @@ public class AlgorithmParametersTest extends TestCase {
 
         public boolean runEngineInitB$ = false;
 
-        public static boolean runEngineInit3 = false;
+        public boolean runEngineInitB$String = false;
 
         public static boolean runEngineToString = false;
 
@@ -431,7 +506,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         protected void engineInit(byte[] params, String format)
                 throws IOException {
-            runEngineInit3 = true;
         }
 
         protected AlgorithmParameterSpec engineGetParameterSpec(Class paramSpec)
