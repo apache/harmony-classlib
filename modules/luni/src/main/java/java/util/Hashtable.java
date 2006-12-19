@@ -439,33 +439,39 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		return new Collections.SynchronizedSet<Map.Entry<K, V>>(new AbstractSet<Map.Entry<K,V>>() {
 			@Override
             public int size() {
-				return elementCount;
+                synchronized (Hashtable.this) {
+                    return elementCount;
+                }				
 			}
 
 			@Override
             public void clear() {
-				Hashtable.this.clear();
+                Hashtable.this.clear();
 			}
 
 			@Override
             @SuppressWarnings("unchecked")
             public boolean remove(Object object) {
-				if (contains(object)) {
-					Hashtable.this.remove(((Map.Entry<K, V>)object).getKey());
-					return true;
-				}
-				return false;
+                synchronized (Hashtable.this) {
+    				if (contains(object)) {
+    					Hashtable.this.remove(((Map.Entry<K, V>)object).getKey());
+    					return true;
+    				}
+    				return false;
+                }
 			}
 
 			@Override
             @SuppressWarnings("unchecked")
             public boolean contains(Object object) {
-				Entry<K, V> entry = getEntry(((Map.Entry<K, V>)object).getKey());
-				return object.equals(entry);
+                synchronized (Hashtable.this) {
+    				Entry<K, V> entry = getEntry(((Map.Entry<K, V>)object).getKey());
+    				return object.equals(entry);
+                }
 			}
 
 			@Override
-            public Iterator<Map.Entry<K,V>> iterator() {
+            public Iterator<Map.Entry<K,V>> iterator() {                
 				return new HashIterator<Map.Entry<K, V>>(new MapEntry.Type<Map.Entry<K, V>, K, V>() {
 					public Map.Entry<K, V> get(MapEntry<K, V> entry) {
 						return entry;
@@ -614,26 +620,32 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
             new AbstractSet<K>() {
     			@Override
                 public boolean contains(Object object) {
-    				return containsKey(object);
+                    synchronized (Hashtable.this) {
+                        return containsKey(object);
+                    }
     			}
     
     			@Override
                 public int size() {
-    				return elementCount;
+                    synchronized (Hashtable.this) {
+                        return elementCount;
+                    }
     			}
     
     			@Override
                 public void clear() {
-    				Hashtable.this.clear();
+                    Hashtable.this.clear();
     			}
     
     			@Override
                 public boolean remove(Object key) {
-    				if (containsKey(key)) {
-    					Hashtable.this.remove(key);
-    					return true;
-    				}
-    				return false;
+                    synchronized (Hashtable.this) {
+        				if (containsKey(key)) {
+        					Hashtable.this.remove(key);
+        					return true;
+        				}
+        				return false;
+                    }
     			}
     
     			@Override
@@ -843,17 +855,21 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		return new Collections.SynchronizedCollection<V>(new AbstractCollection<V>() {
 			@Override
             public boolean contains(Object object) {
-				return Hashtable.this.contains(object);
+                synchronized (Hashtable.this) {
+                    return Hashtable.this.contains(object);
+                }
 			}
 
 			@Override
             public int size() {
-				return elementCount;
+                synchronized (Hashtable.this) {
+                    return elementCount;
+                }
 			}
 
 			@Override
             public void clear() {
-				Hashtable.this.clear();
+                Hashtable.this.clear();  
 			}
 
 			@Override

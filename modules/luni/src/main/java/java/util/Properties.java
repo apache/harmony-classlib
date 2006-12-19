@@ -58,7 +58,7 @@ public class Properties extends Hashtable<Object,Object> {
 	
 	private static final long serialVersionUID = 4112578634029874840L;
 
-    private DocumentBuilder builder = null;
+    private transient DocumentBuilder builder = null;
 
     private static final String PROP_DTD_NAME 
             = "http://java.sun.com/dtd/properties.dtd";
@@ -462,7 +462,7 @@ public class Properties extends Hashtable<Object,Object> {
 	 *            the value
 	 * @return the old value mapped to the key, or null
 	 */
-	public synchronized Object setProperty(String name, String value) {
+	public Object setProperty(String name, String value) {
 		return put(name, value);
 	}
 

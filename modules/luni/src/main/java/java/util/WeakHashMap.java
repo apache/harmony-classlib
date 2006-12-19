@@ -43,7 +43,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     private int threshold;
 
-    transient int modCount;
+    volatile int modCount;
     
     //Simple utility method to isolate unchecked cast for array creation
     @SuppressWarnings("unchecked")

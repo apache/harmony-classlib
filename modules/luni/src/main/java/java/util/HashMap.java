@@ -526,7 +526,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
                         % elementData.length;
             }
-            entry = createEntry(key, index, value);
+            createEntry(key, index, value);
             return null;
         }
         

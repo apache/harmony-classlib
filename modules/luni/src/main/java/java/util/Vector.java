@@ -342,7 +342,9 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 			int pos = 0;
 
 			public boolean hasMoreElements() {
-				return pos < elementCount;
+                synchronized (Vector.this) {
+                    return pos < elementCount;
+                }
 			}
 
 			public E nextElement() {

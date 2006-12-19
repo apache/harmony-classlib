@@ -1025,7 +1025,7 @@ public final class Formatter implements Closeable, Flushable {
             // only '-' is valid for flags
             if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
                 throw new FormatFlagsConversionMismatchException(formatToken
-                        .getStrFlags().toString(), formatToken
+                        .getStrFlags(), formatToken
                         .getConversionType());
             }
 
@@ -1110,8 +1110,7 @@ public final class Formatter implements Closeable, Flushable {
 
             int flags = formatToken.getFlags();
             if (FormatToken.FLAGS_UNSET != flags) {
-                throw new IllegalFormatFlagsException(formatToken.getStrFlags()
-                        .toString());
+                throw new IllegalFormatFlagsException(formatToken.getStrFlags());
             }
 
             if (null == lineSeparator) {
@@ -1212,9 +1211,9 @@ public final class Formatter implements Closeable, Flushable {
             }
             if ('d' != currentConversionType) {
                 if (formatToken.isFlagSet(FormatToken.FLAG_ADD)
-                        | formatToken.isFlagSet(FormatToken.FLAG_SPACE)
-                        | formatToken.isFlagSet(FormatToken.FLAG_COMMA)
-                        | formatToken.isFlagSet(FormatToken.FLAG_PARENTHESIS)) {
+                        || formatToken.isFlagSet(FormatToken.FLAG_SPACE)
+                        || formatToken.isFlagSet(FormatToken.FLAG_COMMA)
+                        || formatToken.isFlagSet(FormatToken.FLAG_PARENTHESIS)) {
                     throw new FormatFlagsConversionMismatchException(
                             formatToken.getStrFlags(), formatToken
                                     .getConversionType());
@@ -2086,7 +2085,7 @@ public final class Formatter implements Closeable, Flushable {
 
         private void transform_N() {
             // TODO System.nanoTime();
-            long nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000;
+            long nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000L;
             result.append(paddingZeros(nanosecond, 9));
         }
 

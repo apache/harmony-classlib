@@ -719,8 +719,8 @@ public class GregorianCalendar extends Calendar {
         timeVal += days * 86400000;
         // Use local time to compare with the gregorian change
         if (year == changeYear
-                && timeVal >= gregorianCutover + julianError() * 86400000) {
-            timeVal -= julianError() * 86400000;
+                && timeVal >= gregorianCutover + julianError() * 86400000L) {
+            timeVal -= julianError() * 86400000L;
         }
 
         // It is not possible to simply subtract getOffset(timeVal) from timeVal
