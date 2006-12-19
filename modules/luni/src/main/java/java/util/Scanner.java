@@ -2282,9 +2282,7 @@ public final class Scanner implements Iterator<String> {
         int oldLimit = buffer.limit();
         int newCapacity = oldCapacity * DIPLOID;
         char[] newBuffer = new char[newCapacity];
-        if (buffer != null) {
-            System.arraycopy(buffer.array(), 0, newBuffer, 0, oldLimit);
-        }
+        System.arraycopy(buffer.array(), 0, newBuffer, 0, oldLimit);
         buffer = CharBuffer.wrap(newBuffer, 0, newCapacity);
         buffer.position(oldPosition);
         buffer.limit(oldLimit);
