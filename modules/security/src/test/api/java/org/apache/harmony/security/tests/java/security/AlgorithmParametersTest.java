@@ -23,15 +23,12 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.AlgorithmParametersSpi;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.DSAParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
-import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -172,18 +169,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         ap.init(new MyAlgorithmParameterSpec());
 
-        assertTrue("init() failed", MyAlgorithmParameters.runEngineInit1);
-
-        try {
-            ap.init(new byte[6]);
-            fail("getEncoded(format): No expected IOException");
-        } catch (java.io.IOException e) {
-        }
-        try {
-            ap.init(new byte[6], "aaa");
-            fail("getEncoded(format): No expected IOException");
-        } catch (java.io.IOException e) {
-        }
         checkAP(ap, p);
     }
 
@@ -200,16 +185,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         ap.init(new byte[6]);
 
-        try {
-            ap.init(new MyAlgorithmParameterSpec());
-            fail("getEncoded(format): No expected InvalidParameterSpecException");
-        } catch (java.security.spec.InvalidParameterSpecException e) {
-        }
-        try {
-            ap.init(new byte[6], "aaa");
-            fail("getEncoded(format): No expected IOException");
-        } catch (java.io.IOException e) {
-        }
         checkAP(ap, p);
     }
 
@@ -268,7 +243,6 @@ public class AlgorithmParametersTest extends TestCase {
         params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
         params.init(new MyAlgorithmParameterSpec());
         assertNull(params.getParameterSpec(null));
-
     }
 
     /**
@@ -283,16 +257,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         ap.init(new byte[6], "aaa");
 
-        try {
-            ap.init(new MyAlgorithmParameterSpec());
-            fail("getEncoded(format): No expected InvalidParameterSpecException");
-        } catch (java.security.spec.InvalidParameterSpecException e) {
-        }
-        try {
-            ap.init(new byte[6]);
-            fail("getEncoded(format): No expected IOException");
-        } catch (java.io.IOException e) {
-        }
         checkAP(ap, p);
     }
 
@@ -307,6 +271,76 @@ public class AlgorithmParametersTest extends TestCase {
         // test: not null value
         ap = new DummyAlgorithmParameters(null, p, "AAA");
         assertSame(p, ap.getProvider());
+    }
+
+    /**
+     * @tests java.security.AlgorithmParameters#init(java.security.spec.AlgorithmParameterSpec)
+     */
+    public void test_initLjava_security_spec_AlgorithmParameterSpec()
+            throws Exception {
+
+        //
+        // test: corresponding spi method is invoked
+        //
+        final MyAlgorithmParameterSpec spec = new MyAlgorithmParameterSpec();
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected void engineInit(AlgorithmParameterSpec paramSpec)
+                    throws InvalidParameterSpecException {
+                assertSame(spec, paramSpec);
+                runEngineInit_AlgParamSpec = true;
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        params.init(spec);
+        assertTrue(paramSpi.runEngineInit_AlgParamSpec);
+
+        //
+        // test: InvalidParameterSpecException if already initialized
+        //
+        try {
+            params.init(spec);
+            fail("No expected InvalidParameterSpecException");
+        } catch (InvalidParameterSpecException e) {
+            // expected
+        }
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(new byte[0]);
+        try {
+            params.init(spec);
+            fail("No expected InvalidParameterSpecException");
+        } catch (InvalidParameterSpecException e) {
+            // expected
+        }
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(new byte[0], "format");
+        try {
+            params.init(spec);
+            fail("No expected InvalidParameterSpecException");
+        } catch (InvalidParameterSpecException e) {
+            // expected
+        }
+
+        //
+        // test: if paramSpec is null
+        //
+        paramSpi = new MyAlgorithmParameters() {
+
+            protected void engineInit(AlgorithmParameterSpec paramSpec)
+                    throws InvalidParameterSpecException {
+                assertNull(paramSpec);// null is passed to spi-provider
+                runEngineInit_AlgParamSpec = true;
+            }
+        };
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init((AlgorithmParameterSpec) null);
+        assertTrue(paramSpi.runEngineInit_AlgParamSpec);
     }
 
     /**
@@ -488,7 +522,7 @@ public class AlgorithmParametersTest extends TestCase {
     
     public static class MyAlgorithmParameters extends AlgorithmParametersSpi {
 
-        public static boolean runEngineInit1 = false;
+        public boolean runEngineInit_AlgParamSpec = false;
 
         public boolean runEngineInitB$ = false;
 
@@ -498,7 +532,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         protected void engineInit(AlgorithmParameterSpec paramSpec)
                 throws InvalidParameterSpecException {
-            runEngineInit1 = true;
         }
 
         protected void engineInit(byte[] params) throws IOException {
