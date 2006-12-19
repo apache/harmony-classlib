@@ -145,6 +145,7 @@ public class AlgorithmParametersTest extends TestCase {
         
         //
         // test: if format param is null
+        // Regression test for HARMONY-2680
         //
         paramSpi = new MyAlgorithmParameters() {
             protected byte[] engineGetEncoded(String format) throws IOException {
@@ -230,6 +231,7 @@ public class AlgorithmParametersTest extends TestCase {
 
         //
         // test: if paramSpec is null
+        // Regression test for HARMONY-2733
         //
         paramSpi = new MyAlgorithmParameters() {
 
@@ -467,6 +469,7 @@ public class AlgorithmParametersTest extends TestCase {
 
         //
         // test: if params and format are null
+        // Regression test for HARMONY-2724
         //
         paramSpi = new MyAlgorithmParameters() {
 
@@ -499,16 +502,18 @@ public class AlgorithmParametersTest extends TestCase {
         assertTrue("toString() failed", MyAlgorithmParameters.runEngineToString);
     }
 
-	private class MyProvider extends Provider {
-		MyProvider() {
-			super("MyProvider", 1.0, "Provider for testing");
-            put("AlgorithmParameters.ABC", MyAlgorithmParameters.class.getName());
-		}
-		
-		MyProvider(String name, double version, String info) {
-			super(name, version, info);
-		}
-	}
+    @SuppressWarnings("serial")
+    private class MyProvider extends Provider {
+        MyProvider() {
+            super("MyProvider", 1.0, "Provider for testing");
+            put("AlgorithmParameters.ABC", MyAlgorithmParameters.class
+                    .getName());
+        }
+
+        MyProvider(String name, double version, String info) {
+            super(name, version, info);
+        }
+    }
 	
 	private class MyAlgorithmParameterSpec implements java.security.spec.AlgorithmParameterSpec{
 	}
