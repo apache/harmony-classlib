@@ -134,9 +134,16 @@ public class LookupOp implements BufferedImageOp, RasterOp {
     public final WritableRaster filter(Raster src, WritableRaster dst) {
         if (dst == null) {
             dst = createCompatibleDestRaster(src);
-        } else if (src.getNumBands() != dst.getNumBands()) {
-            // awt.237=Source and destinations rasters do not have the same number of bands
-            throw new IllegalArgumentException(Messages.getString("awt.237")); //$NON-NLS-1$
+        } else {
+            if (src.getNumBands() != dst.getNumBands()) {
+                throw new IllegalArgumentException(Messages.getString("awt.237")); //$NON-NLS-1$            }
+            }
+            if (src.getWidth() != dst.getWidth()){
+                throw new IllegalArgumentException(Messages.getString("awt.28F")); //$NON-NLS-1$            }
+            }
+            if (src.getHeight() != dst.getHeight()){
+                throw new IllegalArgumentException(Messages.getString("awt.290")); //$NON-NLS-1$            }
+            }
         }
 
         if (lut.getNumComponents() != 1 && lut.getNumComponents() != src.getNumBands()) {
@@ -186,16 +193,29 @@ public class LookupOp implements BufferedImageOp, RasterOp {
         if (dst == null) {
             finalDst = dst;
             dst = createCompatibleDestImage(src, null);
-        } else if (!srcCM.equals(dst.getColorModel())) {
-            // Treat BufferedImage.TYPE_INT_RGB and BufferedImage.TYPE_INT_ARGB as same
-            if (
-                    !((src.getType() == BufferedImage.TYPE_INT_RGB ||
-                       src.getType() == BufferedImage.TYPE_INT_ARGB) &&
-                      (dst.getType() == BufferedImage.TYPE_INT_RGB ||
-                       dst.getType() == BufferedImage.TYPE_INT_ARGB))
-            ) {
-                finalDst = dst;
-                dst = createCompatibleDestImage(src, null);
+        } else {
+            if (src.getWidth() != dst.getWidth()){
+                throw new IllegalArgumentException(
+                        "Source and destination images do not have " +
+                        "the same width!");
+            }
+
+            if (src.getHeight() != dst.getHeight()){
+                throw new IllegalArgumentException(
+                        "Source and destination images do not have " +
+                        "the same height!");
+            }
+
+            if (!srcCM.equals(dst.getColorModel())) {
+                // Treat BufferedImage.TYPE_INT_RGB and
+                // BufferedImage.TYPE_INT_ARGB as same
+                if (!((src.getType() == BufferedImage.TYPE_INT_RGB || src
+                        .getType() == BufferedImage.TYPE_INT_ARGB) && (dst
+                        .getType() == BufferedImage.TYPE_INT_RGB || dst
+                        .getType() == BufferedImage.TYPE_INT_ARGB))) {
+                    finalDst = dst;
+                    dst = createCompatibleDestImage(src, null);
+                }
             }
         }
 

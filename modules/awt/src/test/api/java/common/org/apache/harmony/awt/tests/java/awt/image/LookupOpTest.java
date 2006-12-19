@@ -18,6 +18,8 @@
 package org.apache.harmony.awt.tests.java.awt.image;
 
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.awt.image.ByteLookupTable;
 import java.awt.image.LookupOp;
 import java.awt.image.LookupTable;
 
@@ -37,6 +39,61 @@ public class LookupOpTest extends TestCase {
         super.tearDown();
     }
 
+    public static BufferedImage getImage(int w, int h) {
+        return new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+    }
+
+    /*
+     * Test method for 'java.awt.image.LookupOp.filter()' when src and dst have
+     * different heights or widths.
+     */
+    public final void test_LookupOp_filter_DifferentDimentionsTest() {
+        // regression test for Harmony-1632
+        byte[] array0 = new byte[96];
+        ByteLookupTable localByteLookupTable = new ByteLookupTable(1, array0);
+        LookupOp localLookupOp = new LookupOp(localByteLookupTable, null);
+
+        BufferedImage localBufferedImage = getImage(5069, 19);
+
+        // filter(BI,BI) non-equal widths
+        BufferedImage localBufferedImage1 = getImage(6, 19);
+        try {
+            localLookupOp.filter(localBufferedImage, localBufferedImage1);
+            fail("IllegalArgumentException expected!");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // filter(R,WR) non-equal widths
+
+        try {
+            localLookupOp.filter(localBufferedImage.getRaster(),
+                    localBufferedImage1.getRaster());
+            fail("IllegalArgumentException expected!");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // filter(BI,BI) non-equal heights
+
+        localBufferedImage1 = getImage(5069, 5);
+        try {
+            localLookupOp.filter(localBufferedImage, localBufferedImage1);
+            fail("IllegalArgumentException expected!");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // filter(R, WR) non-equal heights
+        try {
+            localLookupOp.filter(localBufferedImage.getRaster(),
+                    localBufferedImage1.getRaster());
+            fail("IllegalArgumentException expected!");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
     /*
      * Test method for 'java.awt.image.LookupOp.LookupOp(LookupTable, RenderingHints)'
      * when the LookupTable argument is null.
@@ -51,7 +108,4 @@ public class LookupOpTest extends TestCase {
             // expected
         }
     }
-
-    
-
 }
