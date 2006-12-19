@@ -23,13 +23,11 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.AlgorithmParametersSpi;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.DSAParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
 import junit.framework.TestCase;
@@ -215,6 +213,64 @@ public class AlgorithmParametersTest extends TestCase {
     }
 
     /**
+     * @tests java.security.AlgorithmParameters#getParameterSpec(Class)
+     */
+    public void test_getParameterSpecLjava_lang_Class() throws Exception {
+
+        final MyAlgorithmParameterSpec myParamSpec = new MyAlgorithmParameterSpec();
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected AlgorithmParameterSpec engineGetParameterSpec(
+                    Class paramSpec) {
+                return myParamSpec;
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        //
+        // test: InvalidParameterSpecException if not initialized
+        //
+        try {
+            params.getParameterSpec(null);
+            fail("No expected InvalidParameterSpecException");
+        } catch (InvalidParameterSpecException e) {
+            // expected
+        }
+        try {
+            params.getParameterSpec(MyAlgorithmParameterSpec.class);
+            fail("No expected InvalidParameterSpecException");
+        } catch (InvalidParameterSpecException e) {
+            // expected
+        }
+
+        //
+        // test: corresponding spi method is invoked
+        //
+        params.init(new MyAlgorithmParameterSpec());
+        assertSame(myParamSpec, params
+                .getParameterSpec(MyAlgorithmParameterSpec.class));
+
+        //
+        // test: if paramSpec is null
+        //
+        paramSpi = new MyAlgorithmParameters() {
+
+            protected AlgorithmParameterSpec engineGetParameterSpec(
+                    Class paramSpec) {
+                assertNull(paramSpec); // null is passed to spi-provider
+                return null;
+            }
+        };
+
+        params = new DummyAlgorithmParameters(paramSpi, p, "algorithm");
+        params.init(new MyAlgorithmParameterSpec());
+        assertNull(params.getParameterSpec(null));
+
+    }
+
+    /**
      * @tests java.security.AlgorithmParameters#getInstance(String, Provider)
      */
     public void test_getInstanceLjava_lang_StringLjava_security_Provider()
@@ -254,13 +310,6 @@ public class AlgorithmParametersTest extends TestCase {
     }
 
 	private void checkUnititialized(AlgorithmParameters ap) {
-		try {
-		    //make it compilable on 1.5
-			ap.getParameterSpec((Class<AlgorithmParameterSpec>)new Object().getClass());
-			fail("getParameterSpec(): No expected InvalidParameterSpecException");
-		} catch (java.security.spec.InvalidParameterSpecException e) {
-		}
-		
         assertNull("Unititialized: toString() failed", ap.toString());
 	}
 	
@@ -268,12 +317,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         assertSame("getProvider() failed", p, ap.getProvider());
         assertEquals("getAlgorithm() failed", "ABC", ap.getAlgorithm());
-
-        //make it compilable on 1.5
-        ap.getParameterSpec((Class<AlgorithmParameterSpec>) new Object()
-                .getClass());
-        assertTrue("getParameterSpec() failed",
-                MyAlgorithmParameters.runEngineGetParameterSpec);
 
         assertEquals("AlgorithmParameters", ap.toString());
         assertTrue("toString() failed", MyAlgorithmParameters.runEngineToString);
@@ -308,8 +351,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         public static boolean runEngineInit3 = false;
 
-        public static boolean runEngineGetParameterSpec = false;
-
         public static boolean runEngineToString = false;
 
         protected void engineInit(AlgorithmParameterSpec paramSpec)
@@ -328,7 +369,6 @@ public class AlgorithmParametersTest extends TestCase {
 
         protected AlgorithmParameterSpec engineGetParameterSpec(Class paramSpec)
                 throws InvalidParameterSpecException {
-            runEngineGetParameterSpec = true;
             return null;
         }
 
