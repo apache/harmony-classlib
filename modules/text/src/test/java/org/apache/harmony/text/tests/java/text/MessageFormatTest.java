@@ -44,6 +44,8 @@ public class MessageFormatTest extends TestCase {
 
     private MessageFormat format1, format2, format3;
 
+    private Locale defaultLocale;
+    
     private void checkSerialization(MessageFormat format) {
         try {
             ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -712,6 +714,9 @@ public class MessageFormatTest extends TestCase {
      * is called before a test is executed.
      */
     protected void setUp() {
+    	defaultLocale = Locale.getDefault();
+    	Locale.setDefault(Locale.US);
+    	
         // test with repeating formats and max argument index < max offset
         String pattern = "A {3, number, currency} B {2, time} C {0, number, percent} D {4}  E {1,choice,0#off|1#on} F {0, date}";
         format1 = new MessageFormat(pattern);
@@ -730,6 +735,7 @@ public class MessageFormatTest extends TestCase {
      * method is called after a test is executed.
      */
     protected void tearDown() {
+    	Locale.setDefault(defaultLocale);
     }
     
     
