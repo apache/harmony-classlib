@@ -59,7 +59,7 @@ public class LookupOp implements BufferedImageOp, RasterOp {
 
     public LookupOp(LookupTable lookup, RenderingHints hints) {
         if (lookup == null){
-            throw new NullPointerException(Messages.getString("awt.01", "lookup"));
+            throw new NullPointerException(Messages.getString("awt.01", "lookup")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         lut = lookup;
         this.hints = hints;
@@ -195,15 +195,11 @@ public class LookupOp implements BufferedImageOp, RasterOp {
             dst = createCompatibleDestImage(src, null);
         } else {
             if (src.getWidth() != dst.getWidth()){
-                throw new IllegalArgumentException(
-                        "Source and destination images do not have " +
-                        "the same width!");
+                throw new IllegalArgumentException(Messages.getString("awt.291")); //$NON-NLS-1$
             }
 
             if (src.getHeight() != dst.getHeight()){
-                throw new IllegalArgumentException(
-                        "Source and destination images do not have " +
-                        "the same height!");
+                throw new IllegalArgumentException(Messages.getString("awt.292")); //$NON-NLS-1$
             }
 
             if (!srcCM.equals(dst.getColorModel())) {
