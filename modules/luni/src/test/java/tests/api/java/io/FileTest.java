@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectStreamClass;
+import java.io.ObjectStreamField;
 import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -2188,6 +2190,20 @@ public class FileTest extends junit.framework.TestCase {
                 new String[] {}, false);
         assertFalse(dir.exists());
         assertFalse(subDir.exists());
+    }
+    
+    /**
+     * @tests serilization
+     */
+    public void test_objectStreamClass_getFields() throws Exception {
+        //Regression for HARMONY-2674
+        ObjectStreamClass objectStreamClass = ObjectStreamClass
+                .lookup(File.class);
+        ObjectStreamField[] objectStreamFields = objectStreamClass.getFields();
+        assertEquals(1, objectStreamFields.length);
+        ObjectStreamField objectStreamField = objectStreamFields[0];
+        assertEquals("path", objectStreamField.getName());
+        assertEquals(String.class, objectStreamField.getType());
     }
     
 	/**

@@ -50,7 +50,7 @@ public class File implements Serializable, Comparable<File> {
 
 	private String path;
 
-	byte[] properPath;
+	transient byte[] properPath;
 
 	/**
 	 * System dependent file separator character.
