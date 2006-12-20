@@ -81,8 +81,12 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
-        return new PKIXCertPathValidatorResult(trustAnchor,
-                policyTree, subjectPublicKey);
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            // Actually, the exception will not be thrown out.
+            throw new Error(e);
+        }
     }
 
     /**

@@ -188,6 +188,25 @@ public class PKIXCertPathBuilderResultTest extends TestCase {
         }
     }
 
+    public final void test_clone() {
+
+        // Regression for HARMONY-2786.
+        TrustAnchor ta = TestUtils.getTrustAnchor();
+        assertNotNull(getName()
+                + ": not performed (could not create test TrustAnchor)", ta);
+
+        PKIXCertPathBuilderResult init = new PKIXCertPathBuilderResult(
+                new MyCertPath(testEncoding), ta, TestUtils.getPolicyTree(),
+                testPublicKey);
+
+        PKIXCertPathBuilderResult clone = (PKIXCertPathBuilderResult) init
+                .clone();
+        assertSame(init.getCertPath(), clone.getCertPath());
+        assertSame(init.getPolicyTree(), clone.getPolicyTree());
+        assertSame(init.getPublicKey(), clone.getPublicKey());
+        assertSame(init.getTrustAnchor(), clone.getTrustAnchor());
+    }
+
     /**
      * Test for <code>getCertPath()</code> method<br>
      * Assertion: the built and validated <code>CertPath</code>

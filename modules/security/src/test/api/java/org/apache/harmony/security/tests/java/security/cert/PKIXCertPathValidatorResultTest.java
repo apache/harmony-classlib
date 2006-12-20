@@ -29,9 +29,9 @@ import java.security.cert.PolicyNode;
 import java.security.cert.TrustAnchor;
 import java.security.spec.InvalidKeySpecException;
 
-import org.apache.harmony.security.tests.support.cert.TestUtils;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.cert.TestUtils;
 
 /**
  * Tests for <code>PKIXCertPathValidatorResult</code>
@@ -270,6 +270,29 @@ public class PKIXCertPathValidatorResultTest extends TestCase {
         assertSame("trustAncor", vr1.getTrustAnchor(), vr2.getTrustAnchor());
         assertSame("policyTree", vr1.getPolicyTree(), vr2.getPolicyTree());
         assertSame("publicKey", vr1.getPublicKey(), vr2.getPublicKey());
+
+        // Regression for HARMONY-2786.
+        byte[] encoding = { 0x01 };
+        MyPKIXCertPathBuilderResult my = new MyPKIXCertPathBuilderResult(ta,
+                TestUtils.getPolicyTree(), testPublicKey, encoding);
+        MyPKIXCertPathBuilderResult myClone = (MyPKIXCertPathBuilderResult) my
+                .clone();
+        assertSame(my.getPolicyTree(), myClone.getPolicyTree());
+        assertSame(my.getPublicKey(), myClone.getPublicKey());
+        assertSame(my.getTrustAnchor(), myClone.getTrustAnchor());
+        assertSame(my.enc, myClone.enc);
+    }
+
+    class MyPKIXCertPathBuilderResult extends PKIXCertPathValidatorResult {
+
+        public byte[] enc; // byte array is cloneable
+
+        public MyPKIXCertPathBuilderResult(TrustAnchor trustAnchor,
+                PolicyNode policyTree, PublicKey subjectPublicKey, byte[] enc) {
+            super(trustAnchor, policyTree, subjectPublicKey);
+
+            this.enc = enc;
+        }
     }
 
     /**
