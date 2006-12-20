@@ -61,7 +61,8 @@ public class UnresolvedPermissionTest extends TestCase {
         catch (Exception ok) {}
 
         //Regression for HARMONY-733
-        assertNotNull(new UnresolvedPermission("", name, action, null));
+        up = new UnresolvedPermission("", "name", "action", null);
+        assertEquals("", up.getName());
     }
     
     /** 
