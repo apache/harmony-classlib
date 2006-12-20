@@ -18,6 +18,7 @@ package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,15 @@ public class ProcessBuilderTest extends TestCase {
         ProcessBuilder pb = new ProcessBuilder("command");
         assertEquals(1, pb.command().size());
         assertEquals("command", pb.command().get(0));
+
+        // Regression for HARMONY-2675
+        pb = new ProcessBuilder("AAA");
+        pb.command("BBB","CCC");
+        List<String> list = pb.command();
+        list.add("DDD");
+        String[] command = new String[3];
+        list.toArray(command);
+        assertTrue(Arrays.equals(new String[]{"BBB","CCC","DDD"}, command));
     }
 
     public void testCommandStringArray() {

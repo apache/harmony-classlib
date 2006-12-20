@@ -18,7 +18,7 @@ package java.lang;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class ProcessBuilder {
      * @param command The program and arguments.
      */
     public ProcessBuilder(String... command) {
-        this(Arrays.asList(command));
+        this(toList(command));
     }
 
     /**
@@ -90,7 +90,7 @@ public final class ProcessBuilder {
      * @return A reference to this instance.
      */
     public ProcessBuilder command(String... command) {
-        return command(Arrays.asList(command));
+        return command(toList(command));
     }
 
     /**
@@ -214,6 +214,14 @@ public final class ProcessBuilder {
         Process process = Runtime.getRuntime().exec(cmdArray, envArray, directory);
         // TODO implement support for redirectErrorStream
         return process;
+    }
+    
+    private static List<String> toList(String[] strings) {
+        ArrayList<String> arrayList = new ArrayList<String>(strings.length);
+        for (String string : strings) {
+            arrayList.add(string);
+        }
+        return arrayList;
     }
 }
 
