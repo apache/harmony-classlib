@@ -56,9 +56,9 @@ public class UnresolvedPermissionTest extends TestCase {
         
         try {
             new UnresolvedPermission(null, name, action, null);
-            fail("exception is not thrown on null type");
+            fail("No expected NullPointerException");
+        } catch (NullPointerException ok) {
         }
-        catch (Exception ok) {}
 
         //Regression for HARMONY-733
         up = new UnresolvedPermission("", "name", "action", null);
