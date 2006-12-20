@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
 package javax.swing;
 
 import java.awt.event.ActionEvent;
@@ -27,22 +23,32 @@ import java.util.TimerTask;
 
 import javax.swing.event.EventListenerList;
 
+/**
+ * <p>
+ * <i>Timer</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class Timer implements Serializable {
 
     private class FiringEventRunnable implements Runnable {
         private ActionEvent event;
         private int queuedCounter;
 
-        public void preQueueInit(final long scheduledTime) {
+        public synchronized void preQueueInit(final long scheduledTime) {
             queuedCounter++;
             event = new ActionEvent(Timer.this, 0, null, scheduledTime, 0);
         }
 
-        public boolean isQueued() {
+        public synchronized boolean isQueued() {
             return queuedCounter > 0;
         }
         
-        public void run() {
+        public synchronized void run() {
             if (getLogTimers()) {
                 System.out.println("Timer ringing: " + Timer.this);
             }
@@ -65,6 +71,8 @@ public class Timer implements Serializable {
     private boolean isRepeats = true;
     private boolean isCoalesce = true;
     private TimerTask timerTask;
+
+    private static final long serialVersionUID = 3624204224649954546L;
 
     /**
      * this thread is used to execute all timers
@@ -188,6 +196,7 @@ public class Timer implements Serializable {
         return new TimerTask() {
             private final FiringEventRunnable fireEvent = new FiringEventRunnable();
             
+            @Override
             public void run() {
                 if (!isCoalesce || !fireEvent.isQueued()) {
                     fireEvent.preQueueInit(scheduledExecutionTime());
