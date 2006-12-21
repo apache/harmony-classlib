@@ -317,14 +317,14 @@ public final class UnresolvedPermission extends Permission
         fields.put("actions", getUnresolvedActions()); //$NON-NLS-1$
         out.writeFields();
         if (targetCerts == null) {
-            out.write(0);
+            out.writeInt(0);
         } else {
-            out.write(targetCerts.length);
+            out.writeInt(targetCerts.length);
             for (int i = 0; i < targetCerts.length; i++) {
                 try {
                     byte[] enc = targetCerts[i].getEncoded();
                     out.writeUTF(targetCerts[i].getType());
-                    out.write(enc.length);
+                    out.writeInt(enc.length);
                     out.write(enc);
                 } catch (CertificateEncodingException cee) {
                     throw ((IOException)new NotSerializableException(
@@ -349,13 +349,13 @@ public final class UnresolvedPermission extends Permission
         }
         targetName = (String)fields.get("name", null); //$NON-NLS-1$
         targetActions = (String)fields.get("actions", null); //$NON-NLS-1$
-        int certNumber = in.read();
+        int certNumber = in.readInt();
         if (certNumber != 0) {
             targetCerts = new Certificate[certNumber];
             for (int i = 0; i < certNumber; i++) {
                 try {
                     String type = in.readUTF();
-                    int length = in.read();
+                    int length = in.readInt();
                     byte[] enc = new byte[length];
                     in.readFully(enc, 0, length);
                     targetCerts[i] = CertificateFactory.getInstance(type)

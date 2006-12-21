@@ -22,9 +22,12 @@
 
 package org.apache.harmony.security.tests.java.security.serialization;
 
+import java.io.ByteArrayInputStream;
 import java.security.UnresolvedPermission;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 
+import org.apache.harmony.security.tests.support.cert.TestUtils;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
@@ -44,5 +47,21 @@ public class UnresolvedPermissionTest extends SerializationTest {
         return new Object[] {
                 new UnresolvedPermission("type", "name", "actions", null),
                 new UnresolvedPermission("type", null, null, new Certificate[0]) };
+    }
+    
+    public void testSerializationWithCertificates() throws Exception {
+
+        // Regression for HARMONY-2762
+        CertificateFactory certificateFactory = CertificateFactory
+                .getInstance("X.509");
+        Certificate certificate = certificateFactory
+                .generateCertificate(new ByteArrayInputStream(TestUtils
+                        .getEncodedX509Certificate()));
+
+        UnresolvedPermission unresolvedPermission = new UnresolvedPermission(
+                "java.security.SecurityPermission", "a.b.c", "action",
+                new Certificate[] { certificate });
+        SerializationTest.verifySelf(unresolvedPermission);
+        SerializationTest.verifyGolden(this, unresolvedPermission);
     }
 }
