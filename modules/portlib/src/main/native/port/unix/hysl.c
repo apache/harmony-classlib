@@ -100,8 +100,6 @@ hysl_close_shared_library (struct HyPortLibrary *portLibrary,
  * @param[in] portLibrary The port library.
  * @param[in] name path Null-terminated string containing the shared library.
  * @param[out] descriptor Pointer to memory which is filled in with shared-library handle on success.
- * @param[out] errBuf Buffer to contain an error message on failure.
- * @param[in] bufLen Size of errBuf.
  * @param[in] decorate Boolean value indicates whether name should be decorated if it contains path information and cannot be found.
  *
  * @return 0 on success, any other value on failure.
