@@ -49,6 +49,29 @@ public class Support_Exec extends TestCase {
 		proc.destroy();
 		return output.toString();
 	}
+	
+	public static String execJava(String[] args, String[] classpath, String[] envp,
+			boolean displayOutput) throws IOException, InterruptedException {
+		// this function returns the output of the process as a string
+		Object[] execArgs = execJavaNoSystemClasspath(args, classpath, envp, displayOutput);
+		Process proc = (Process) execArgs[0];
+
+		StringBuffer output = new StringBuffer();
+		InputStream in = proc.getInputStream();
+		int result;
+		byte[] bytes = new byte[1024];
+		while ((result = in.read(bytes)) != -1) {
+			output.append(new String(bytes, 0, result));
+			if (displayOutput)
+				System.out.write(bytes, 0, result);
+		}
+		in.close();
+		proc.waitFor();
+		checkStderr(execArgs);
+		proc.destroy();
+		return output.toString();
+	}
+
 
 	public static void checkStderr(Object[] execArgs) {
 		StringBuffer errBuf = (StringBuffer) execArgs[1];
@@ -58,6 +81,73 @@ public class Support_Exec extends TestCase {
 			}
 		}
 	}
+	
+	private static Object[] execJavaNoSystemClasspath(String[] args, String[] classpath, String[] envp,
+			final boolean displayOutput) throws IOException, InterruptedException {
+		// this function returns the resulting process from the exec
+		int baseArgs = 0;
+		String[] execArgs = null;
+        baseArgs = (classpath == null) ? 1 : 3;
+        execArgs = new String[baseArgs + args.length];
+        String executable = System.getProperty("java.home");
+        if (!executable.endsWith(File.separator))
+            executable += File.separator;
+        executable += "bin" + File.separator;
+        execArgs[0] = executable + "java";
+        
+		String classPathString = "";
+		if (classpath != null) {
+            for (int i = 0; i < classpath.length; i++) {
+            	if( i != 0) {
+            		classPathString += File.pathSeparator;
+            	}
+                classPathString +=  classpath[i];
+            }
+            execArgs[1] = "-cp";
+            execArgs[2] = "\"" + classPathString + "\"";
+		}
+
+        for (int i = 0; i < args.length; i++)
+            execArgs[baseArgs + i] = args[i];
+
+		final Process proc = Runtime.getRuntime().exec(execArgs, envp);
+		final StringBuffer errBuf = new StringBuffer();
+		Thread errThread = new Thread(new Runnable() {
+			public void run() {
+				synchronized (errBuf) {
+					synchronized (proc) {
+						proc.notifyAll();
+					}
+					InputStream err = proc.getErrorStream();
+					int result;
+					byte[] bytes = new byte[1024];
+					try {
+						while ((result = err.read(bytes)) != -1) {
+							if(displayOutput) {
+							   System.err.write(bytes, 0, result);
+							}
+							errBuf.append(new String(bytes));
+						}
+						err.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						PrintStream printer = new PrintStream(out);
+						e.printStackTrace(printer);
+						printer.close();
+						errBuf.append(new String(out.toByteArray()));
+					}
+				}
+			}
+		});
+		synchronized (proc) {
+			errThread.start();
+			// wait for errThread to start
+			proc.wait();
+		}
+		return new Object[] { proc, errBuf };
+	}
+
 
 	public static Object[] execJava2(String[] args, String[] classpath,
 			boolean displayOutput) throws IOException, InterruptedException {
