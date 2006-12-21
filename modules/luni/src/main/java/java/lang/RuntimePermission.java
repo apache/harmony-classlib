@@ -72,6 +72,9 @@ public final class RuntimePermission extends BasicPermission {
 	static final RuntimePermission permissionToStopThread = new RuntimePermission(
 			"stopThread");
 
+	static final RuntimePermission permissionToSetContextClassLoader = new RuntimePermission(
+			"setContextClassLoader");
+
 	/**
 	 * Creates an instance of this class with the given name.
 	 * 
