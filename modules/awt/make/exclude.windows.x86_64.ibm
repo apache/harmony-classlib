@@ -15,7 +15,6 @@ java/awt/GridLayoutTest.java
 java/awt/RobotTest.java
 java/awt/WindowRTest.java
 java/awt/datatransfer/ClipboardTest.java
-java/awt/BorderLayoutTest.java
 java/awt/ButtonRTest.java
 java/awt/CardLayoutTest.java
 java/awt/ChoiceTest.java

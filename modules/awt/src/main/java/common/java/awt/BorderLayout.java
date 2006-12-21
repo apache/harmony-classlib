@@ -172,6 +172,9 @@ public class BorderLayout implements LayoutManager2, Serializable {
     public void addLayoutComponent(Component comp, Object constraints) {
         toolkit.lockAWT();
         try {
+            if (comp == null) {
+                throw new NullPointerException("Component is null");
+            }
             if ((constraints == null) || (constraints instanceof String)) {
                 addLayoutComponent((String) constraints, comp);
             } else {

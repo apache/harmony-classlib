@@ -119,6 +119,14 @@ public class BorderLayoutTest extends AWTTestCase {
         assertTrue(notString);
         assertTrue(wrongString);
         assertFalse(oneTwice);
+        
+        // Regression test HARMONY-1667
+        try {
+            layout.addLayoutComponent(null, BorderLayout.CENTER);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     public final void testRemoveLayoutComponent() {
