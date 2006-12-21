@@ -94,6 +94,10 @@ public class LogStream extends PrintStream {
      */
     @Deprecated
     public void write(byte[] b, int off, int len) {
+        if (len < 0) {
+            throw new ArrayIndexOutOfBoundsException("len < 0: " + len); //$NON-NLS-1$
+        }
+
         for (int i = 0; i < len; ++i) {
             write(b[off + i]);
         }

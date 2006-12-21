@@ -17,6 +17,8 @@
  */
 package org.apache.harmony.rmi.server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.rmi.server.LogStream;
 import junit.framework.TestCase;
 
@@ -42,5 +44,43 @@ public class LogStreamTest extends TestCase {
             // expected
         }
     }
-    
+
+    /**
+     * Test for java.rmi.server.LogStream.write(byte[], int, int)
+     * testing invalid offsets/lengths. 
+     */
+    public void testWriteArrInvalidOffLen() throws Exception {
+        // Regression test for HARMONY-1691
+        // list of invalid offsets/lengths pairs
+        int[][] invalidPairs = new int[][] {
+            { -2, 1 },
+            { 0, -6 },
+            { 6, 1 },
+            { 0, 6 } };
+
+        // store original default stream for LogStream
+        PrintStream prevOut = LogStream.getDefaultStream();
+
+        try {
+            // set empty default stream to not print garbage to System.out/err
+            LogStream.setDefaultStream(
+                    new PrintStream(new ByteArrayOutputStream()));
+            LogStream ls = LogStream.log("test");
+
+            for (int i = 0; i < invalidPairs.length; ++i) {
+                try {
+                    ls.write(new byte[] { 1, 1 },
+                            invalidPairs[i][0], invalidPairs[i][1]);
+                    fail("IndexOutOfBoundsException "
+                            + "is not thrown when off = " + invalidPairs[i][0]
+                            + ", len = " + invalidPairs[i][1]);
+                } catch (IndexOutOfBoundsException e) {
+                    //expected
+                }
+            }
+        } finally {
+            // restore original stream
+            LogStream.setDefaultStream(prevOut);
+        }
+    }
 }
