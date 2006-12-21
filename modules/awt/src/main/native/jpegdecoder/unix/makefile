@@ -18,10 +18,10 @@ include $(HY_HDK)/build/make/defines.mk
 JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
 
 CFLAGS += -fpic
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include -I$(JPEG_DIR)
 
 BUILDFILES = \
-  $(SHAREDSUB)/JpegDecoder.o \
+  $(SHAREDSUB)JpegDecoder.o \
   libjpeg.a
 
 MDLLIBFILES = \
