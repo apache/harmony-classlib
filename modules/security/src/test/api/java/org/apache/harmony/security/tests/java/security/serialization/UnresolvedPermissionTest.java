@@ -41,7 +41,8 @@ public class UnresolvedPermissionTest extends SerializationTest {
      */
     protected Object[] getData() {
         // test with real certificates ?
-        return new Object[] {new UnresolvedPermission("sjdvb.asef", "", "", null),
-                new UnresolvedPermission("&^%$m,3298746", null, null, new Certificate[0])};
+        return new Object[] {
+                new UnresolvedPermission("type", "name", "actions", null),
+                new UnresolvedPermission("type", null, null, new Certificate[0]) };
     }
 }
