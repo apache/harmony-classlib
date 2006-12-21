@@ -321,7 +321,7 @@ public class FtpURLConnection extends URLConnection {
      * Creates a output stream for writing to this URL Connection.
      * 
      * @return The output stream to write to
-     * @throws when the OutputStream could not be created
+     * @throws IOException when the OutputStream could not be created
      * 
      * @see #getContent()
      * @see #getInputStream()

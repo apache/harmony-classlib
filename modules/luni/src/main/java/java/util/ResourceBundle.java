@@ -268,9 +268,11 @@ public abstract class ResourceBundle {
 			Class<?> bundleClass = Class.forName(bundleName, true, loader);
 			bundle = (ResourceBundle) bundleClass.newInstance();
 			bundle.setLocale(locale);
-		} catch (Exception e) {
 		} catch (LinkageError e) {
-		}
+		} catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InstantiationException e) {
+        }
 
 		if (bundle == null) {
 			final String fileName = bundleName.replace('.', '/');

@@ -21,8 +21,8 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_no extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"First_Day",new java.lang.Integer(2),},
-		{"Minimal_Days",new java.lang.Integer(4),},
+		{"First_Day",java.lang.Integer.valueOf(2),},
+		{"Minimal_Days",java.lang.Integer.valueOf(4),},
 		{"months",new String[]{"januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember","",},
 },
 		{"shortMonths",new String[]{"jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des","",},

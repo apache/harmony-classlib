@@ -383,7 +383,7 @@ public class URLClassLoader extends SecureClassLoader {
                             newExtensions[k] = null;
                         } else {
                             result = findInExtensions(explore(newExtensions[k],
-                                    i), name, i, resources, url);
+                                    i), name, i, null, url);
                             if (result != null) {
                                 return result;
                             }
@@ -485,7 +485,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @return java.net.URL[]
      */
     public URL[] getURLs() {
-        return orgUrls;
+        return orgUrls.clone();
     }
 
     /**

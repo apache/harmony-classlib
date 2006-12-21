@@ -35,7 +35,7 @@ final class AdapterManager implements IAdapterManager {
 	private final HashMap<Class, List<IAdapterFactory>> factories = new HashMap<Class, List<IAdapterFactory>>();
 
 	public Object getAdapter(IAdaptable adaptable, Class adapterType) {
-		List factoryList = factories.get(adaptable);
+		List factoryList = factories.get(adapterType);
 		if (factoryList != null) {
 			for (Iterator factoryItr = factoryList.iterator(); factoryItr
 					.hasNext();) {

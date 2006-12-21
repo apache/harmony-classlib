@@ -42,7 +42,7 @@ public class TwoKeyHashMap<E, K, V> extends AbstractMap<String, V> {
     private Collection<V> values;
     private int size;
     private int arrSize;
-    private transient int modCount;
+    private int modCount;
     
     private Entry<E, K, V>[] arr;
 
@@ -136,7 +136,7 @@ public class TwoKeyHashMap<E, K, V> extends AbstractMap<String, V> {
         if (key1 == null && key2 == null) {
             int index = arrSize;
             if (arr[index] == null) {
-                arr[index] = createEntry(0, key1, key2, value, null);
+                arr[index] = createEntry(0, null, null, value, null);
                 size++;
                 modCount++;
                 return null;

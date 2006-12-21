@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -96,11 +97,15 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		public boolean equals(Object obj) {
-			return jar == ((LRUKey) obj).jar;
+			return obj instanceof LRUKey && jar == ((LRUKey) obj).jar;
 		}
+        
+        public int hashCode() {
+            return jar.hashCode();
+        }
 	}
 
-	static final class LRUComparitor<T> implements Comparator<LRUKey> {
+	static final class LRUComparitor<T> implements Comparator<LRUKey>, Serializable {
 		LRUComparitor() {
 		}
 

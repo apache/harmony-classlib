@@ -445,7 +445,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #size
 	 */
 	@Override
-    public E get(int location) {
+    public synchronized E get(int location) {
 		return elementAt(location);
 	}
 

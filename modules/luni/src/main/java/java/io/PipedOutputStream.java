@@ -89,12 +89,14 @@ public class PipedOutputStream extends OutputStream {
             throw new NullPointerException();
         }
         if (this.dest == null) {
-            if (!stream.isConnected) {
-                stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
-                stream.isConnected = true;
-                this.dest = stream;
-            } else {
-                throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+            synchronized (stream) {
+                if (!stream.isConnected) {
+                    stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
+                    stream.isConnected = true;
+                    this.dest = stream;
+                } else {
+                    throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+                }
             }
         } else {
             throw new IOException(Msg.getString("K0079")); //$NON-NLS-1$

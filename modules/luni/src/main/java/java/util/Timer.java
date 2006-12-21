@@ -295,6 +295,7 @@ public class Timer {
             tasks.root.deleteIfCancelled(tasks);
             return tasks.deletedCancelledNumber;
         }
+
     }
 
 	/* This object will be used in synchronization purposes */
@@ -304,7 +305,7 @@ public class Timer {
 	@SuppressWarnings("unused")
     private Object finalizer = new Object() {  //$NON-LOCK-1$
 		@Override
-        public void finalize() {
+        protected void finalize() {
 			synchronized (impl) {
 				impl.finished = true;
 				impl.notify();

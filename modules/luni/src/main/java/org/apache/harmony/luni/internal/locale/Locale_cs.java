@@ -21,7 +21,7 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_cs extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"First_Day",new java.lang.Integer(2),},
+		{"First_Day",java.lang.Integer.valueOf(2),},
 		{"ampm",new String[]{"dop.","odp.",},
 },
 		{"eras",new String[]{"p\u0159.Kr.","po Kr.",},

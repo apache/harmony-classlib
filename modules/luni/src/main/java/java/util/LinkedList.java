@@ -381,9 +381,20 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
-		return new LinkedList<E>(this);
+        try {
+            LinkedList<E> l = (LinkedList<E>) super.clone();
+            l.size = 0;
+            l.voidLink = new Link<E>(null, null, null);
+            l.voidLink.previous = l.voidLink;
+            l.voidLink.next = l.voidLink;
+            l.addAll(this);
+            return l;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
 	}
 
 	/**

@@ -249,7 +249,7 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * @throws IOException
 	 *             If an error occurs when writing to output stream
 	 */
-	public void writeTo(OutputStream out) throws IOException {
+	public synchronized void writeTo(OutputStream out) throws IOException {
 		out.write(buf, 0, count);
 	}
 }

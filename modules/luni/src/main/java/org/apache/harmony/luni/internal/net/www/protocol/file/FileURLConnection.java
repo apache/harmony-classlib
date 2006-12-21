@@ -195,7 +195,7 @@ public class FileURLConnection extends URLConnection {
             if (File.separatorChar != '/') {
                 path = path.replace('/', File.separatorChar);
             }
-            permission = new FilePermission(path, new String("read"));
+            permission = new FilePermission(path, "read");
         }
         return permission;
     }

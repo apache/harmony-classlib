@@ -62,7 +62,7 @@ public class InetAddress extends Object implements Serializable {
 	String hostName;
 	
     private class WaitReachable {}
-    private Object waitReachable = new WaitReachable();
+    private transient Object waitReachable = new WaitReachable();
     
     private boolean reached;
     

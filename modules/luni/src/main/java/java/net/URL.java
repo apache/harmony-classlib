@@ -586,26 +586,38 @@ public final class URL implements java.io.Serializable {
 			StringTokenizer st = new StringTokenizer(packageList, "|"); //$NON-NLS-1$
 			while (st.hasMoreTokens()) {
 				String className = st.nextToken() + "." + protocol + ".Handler"; //$NON-NLS-1$ //$NON-NLS-2$
-				try {
-					strmHandler = (URLStreamHandler) Class.forName(className,
-							true, ClassLoader.getSystemClassLoader())
-							.newInstance();
-					streamHandlers.put(protocol, strmHandler);
+
+					try {
+                        strmHandler = (URLStreamHandler) Class.forName(className,
+                        		true, ClassLoader.getSystemClassLoader())
+                        		.newInstance();
+                    } catch (IllegalAccessException e) {
+                    } catch (InstantiationException e) {
+                    } catch (ClassNotFoundException e) {
+                    }
+                    if(strmHandler != null) {
+                        streamHandlers.put(protocol, strmHandler);
+                    }
 					return;
-				} catch (Exception e) {
-				}
+
 			}
 		}
 
 		// No one else has provided a handler, so try our internal one.
-		try {
+
 			String className = "org.apache.harmony.luni.internal.net.www.protocol." + protocol //$NON-NLS-1$
 					+ ".Handler"; //$NON-NLS-1$
-			strmHandler = (URLStreamHandler) Class.forName(className)
-					.newInstance();
-			streamHandlers.put(protocol, strmHandler);
-		} catch (Exception e) {
-		}
+			try {
+                strmHandler = (URLStreamHandler) Class.forName(className)
+                		.newInstance();
+            } catch (IllegalAccessException e) {
+            } catch (InstantiationException e) {
+            } catch (ClassNotFoundException e) {
+            }
+            if(strmHandler != null) {
+                streamHandlers.put(protocol, strmHandler);
+            }
+
 	}
 
 	/**

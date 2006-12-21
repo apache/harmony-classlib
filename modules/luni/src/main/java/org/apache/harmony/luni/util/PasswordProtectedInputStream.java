@@ -40,7 +40,7 @@ public class PasswordProtectedInputStream extends FilterInputStream {
      */
     public PasswordProtectedInputStream(InputStream in, byte[] password) {
         super(in);
-        this.password = password;
+        this.password = password.clone();
     }
 
     @Override

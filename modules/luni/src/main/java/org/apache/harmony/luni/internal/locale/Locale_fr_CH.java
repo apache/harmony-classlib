@@ -21,7 +21,7 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_fr_CH extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"Minimal_Days",new java.lang.Integer(4),},
+		{"Minimal_Days",java.lang.Integer.valueOf(4),},
 		{"LocalPatternChars","GanjkHmsSEDFwWxhKzZ",},
 		{"Date_SHORT","dd.MM.yy",},
 		{"Date_LONG","d. MMMM yyyy",},

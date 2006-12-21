@@ -21,7 +21,7 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_kk extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"First_Day",new java.lang.Integer(2),},
+		{"First_Day",java.lang.Integer.valueOf(2),},
 		{"months",new String[]{"\u049b\u0430\u04a3\u0442\u0430\u0440","\u0430\u049b\u043f\u0430\u043d","\u043d\u0430\u0443\u0440\u044b\u0437","\u0441\u04d9\u0443\u0456\u0440","\u043c\u0430\u043c\u044b\u0440","\u043c\u0430\u0443\u0441\u044b\u043c","\u0448\u0456\u043b\u0434\u0435","\u0442\u0430\u043c\u044b\u0437","\u049b\u044b\u0440\u043a\u04af\u0439\u0435\u043a","\u049b\u0430\u0437\u0430\u043d","\u049b\u0430\u0440\u0430\u0448\u0430","\u0436\u0435\u043b\u0442\u043e\u049b\u0441\u0430\u043d","",},
 },
 		{"shortMonths",new String[]{"\u049a\u0430\u04a3","\u0410\u049b\u043f","\u041d\u0430\u0443","\u0421\u04d9\u0443","\u041c\u0430\u043c","\u041c\u0430\u0443","\u0428\u0456\u043b","\u0422\u0430\u043c","\u049a\u044b\u0440","\u049a\u0430\u0437","\u049a\u0430\u0440","\u0416\u0435\u043b","",},

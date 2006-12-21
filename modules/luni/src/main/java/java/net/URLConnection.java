@@ -229,13 +229,15 @@ public abstract class URLConnection {
 		if (packageList != null) {
 			final StringTokenizer st = new StringTokenizer(packageList, "|");
 			while (st.countTokens() > 0) {
-				try {
-					Class<?> cl = Class.forName(st.nextToken() + "." + typeString,
-							true, ClassLoader.getSystemClassLoader());
-					cHandler = cl.newInstance();
-				} catch (Exception e) {
-				}
-			}
+                try {
+                    Class<?> cl = Class.forName(st.nextToken() + "." + typeString,
+                    		true, ClassLoader.getSystemClassLoader());
+                    cHandler = cl.newInstance();
+                } catch (ClassNotFoundException e) {
+                } catch (IllegalAccessException e) {
+                } catch (InstantiationException e) {
+                }					
+            }
 		}
 
 		if (cHandler == null) {

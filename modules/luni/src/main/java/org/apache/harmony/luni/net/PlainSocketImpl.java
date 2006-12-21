@@ -254,16 +254,16 @@ class PlainSocketImpl extends SocketImpl {
     @Override
     public Object getOption(int optID) throws SocketException {
         if (optID == SocketOptions.SO_TIMEOUT) {
-            return new Integer(receiveTimeout);
+            return Integer.valueOf(receiveTimeout);
         } else if (optID == SocketOptions.IP_TOS) {
-            return new Integer(trafficClass);
+            return Integer.valueOf(trafficClass);
         } else {
             // Call the native first so there will be
             // an exception if the socket if closed.
             Object result = netImpl.getSocketOption(fd, optID);
             if (optID == SocketOptions.TCP_NODELAY
                     && (netImpl.getSocketFlags() & TCP_NODELAY) != 0) {
-                return new Boolean(tcpNoDelay);
+                return Boolean.valueOf(tcpNoDelay);
             }
             return result;
         }

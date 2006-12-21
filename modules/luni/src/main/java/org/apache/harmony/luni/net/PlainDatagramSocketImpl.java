@@ -156,9 +156,9 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
     @Override
     public Object getOption(int optID) throws SocketException {
         if (optID == SocketOptions.SO_TIMEOUT) {
-            return new Integer(receiveTimeout);
+            return Integer.valueOf(receiveTimeout);
         } else if (optID == SocketOptions.IP_TOS) {
-            return new Integer(trafficClass);
+            return Integer.valueOf(trafficClass);
         } else {
             // Call the native first so there will be
             // an exception if the socket if closed.
@@ -343,7 +343,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     @Override
     public void setTimeToLive(int ttl) throws java.io.IOException {
-        setOption(IP_MULTICAST_TTL, new Byte((byte) (ttl & 0xFF)));
+        setOption(IP_MULTICAST_TTL, Byte.valueOf((byte) (ttl & 0xFF)));
         if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
             this.ttl = ttl;
         }
@@ -351,7 +351,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     @Override
     public void setTTL(byte ttl) throws java.io.IOException {
-        setOption(IP_MULTICAST_TTL, new Byte(ttl));
+        setOption(IP_MULTICAST_TTL, Byte.valueOf(ttl));
         if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
             this.ttl = ttl;
         }

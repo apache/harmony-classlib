@@ -21,7 +21,7 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_en_HK extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"First_Day",new java.lang.Integer(2),},
+		{"First_Day",java.lang.Integer.valueOf(2),},
 		{"Date_SHORT","d/MM/yy",},
 		{"Date_MEDIUM","d/MMM/yyyy",},
 		{"Date_LONG","d MMMM yyyy",},

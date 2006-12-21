@@ -1274,7 +1274,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             Iterator<ObjectStreamClass> streamIt = streamClassList.iterator();
             while (streamIt.hasNext()) {
                 ObjectStreamClass streamClass = streamIt.next();
-                readObjectForClass(object, streamClass);
+                readObjectForClass(null, streamClass);
             }
         } else {
             ArrayList<Class<?>> classList = new ArrayList<Class<?>>(32);
@@ -1457,7 +1457,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
         }
 
-        Integer newHandle = new Integer(nextHandle());
+        Integer newHandle = Integer.valueOf(nextHandle());
 
         // Array size
         int size = input.readInt();
@@ -1565,7 +1565,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         byte tc = nextTC();
         switch (tc) {
         case TC_CLASSDESC:
-            return readEnumDescInternal(tc);            
+            return readEnumDescInternal();            
         case TC_REFERENCE:
             return (ObjectStreamClass) readCyclicReference();
         case TC_NULL:
@@ -1576,7 +1576,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }        
     }
     
-    private ObjectStreamClass readEnumDescInternal(byte tc) throws IOException, ClassNotFoundException{
+    private ObjectStreamClass readEnumDescInternal() throws IOException, ClassNotFoundException{
         ObjectStreamClass classDesc;
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
@@ -1599,7 +1599,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     .getString("K00da", superClass, //$NON-NLS-1$
                             superClass));
         }
-        tc = nextTC();
+        byte tc = nextTC();
         // discard TC_ENDBLOCKDATA after classDesc if any
         if (tc == TC_ENDBLOCKDATA) {
             // read next parent class. For enum, it may be null
@@ -1749,7 +1749,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // We must register the class descriptor before reading field
         // descriptors.
         //if called outside of readObject, the descriptorHandle might be null
-        descriptorHandle = (null == descriptorHandle? new Integer(nextHandle()):descriptorHandle);
+        descriptorHandle = (null == descriptorHandle? Integer.valueOf(nextHandle()):descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
         descriptorHandle = null;
 
@@ -2376,7 +2376,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			//not primitive class
             //Use the first non-null ClassLoader on the stack. If null, use the
 			// system class loader
-			return cls = Class.forName(className, true, callerClassLoader);
+			return Class.forName(className, true, callerClassLoader);
 		}
 		return cls;
 	}

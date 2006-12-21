@@ -50,7 +50,7 @@ public class Observable {
 	}
 
 	/**
-	 * Clears the changed flag for this Observable.
+	 * Clears the changed flag for this Observable.  After calling <code>clearChanged()</code>, <code>hasChanged()</code> will return false.
 	 */
 	protected synchronized void clearChanged() {
 		changed = false;
@@ -93,25 +93,27 @@ public class Observable {
 	}
 
 	/**
-	 * If the changed flag is set, calls the <code>update()</code> method for
+	 * If <code>hasChanged()</code> returns true, calls the <code>update()</code> method for
 	 * every Observer in the list of observers using null as the argument.
-	 * Clears the changed flag.
+	 * Afterwards calls <code>clearChanged()</code>.
+     * 
+     * Equivalent to calling <code>notifyObservers(null)</code>
 	 */
 	public void notifyObservers() {
 		notifyObservers(null);
 	}
 
 	/**
-	 * If the changed flag is set, calls the <code>update()</code> method for
+	 * If <code>hasChanged()</code> returns true, calls the <code>update()</code> method for
 	 * every Observer in the list of observers using the specified argument.
-	 * Clears the changed flag.
+	 * Afterwards calls <code>clearChanged()</code>.
 	 * 
 	 * @param data
 	 *            the argument passed to update()
 	 */
     @SuppressWarnings("unchecked")
     public void notifyObservers(Object data) {
-		if (changed) {
+		if (hasChanged()) {
 			// Must clone the vector in case deleteObserver is called
 			Vector<Observer> clone = (Vector<Observer>)observers.clone();
 			int size = clone.size();
@@ -123,7 +125,7 @@ public class Observable {
 	}
 
 	/**
-	 * Sets the changed flag for this Observable.
+	 * Sets the changed flag for this Observable. After calling <code>setChanged()</code>, <code>hasChanged()</code> will return true.
 	 */
 	protected synchronized void setChanged() {
 		changed = true;

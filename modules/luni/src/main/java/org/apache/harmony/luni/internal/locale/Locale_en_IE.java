@@ -21,7 +21,7 @@ package org.apache.harmony.luni.internal.locale;
 public class Locale_en_IE extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
-		{"First_Day",new java.lang.Integer(2),},
+		{"First_Day",java.lang.Integer.valueOf(2),},
 		{"timezones",new String[][]{new String[]{"Europe/London","Greenwich Mean Time","GMT","Ireland Summer Time","IST",},
 new String[]{"PST","Pacific Standard Time","PST","Pacific Daylight Time","PDT",},
 new String[]{"America/Los_Angeles","Pacific Standard Time","PST","Pacific Daylight Time","PDT",},

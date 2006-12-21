@@ -1056,7 +1056,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (response == null || !response.startsWith("HTTP/")) {
             return -1;
         }
-        response.trim();
+        response = response.trim();
         int mark = response.indexOf(" ") + 1;
         if (mark == 0) {
             return -1;
