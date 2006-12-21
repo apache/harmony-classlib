@@ -468,6 +468,12 @@ public class BasicComboBoxUITest extends SwingTestCase {
         assertEquals(newRenderer, ui.popup.getList().getCellRenderer());
     }
 
+    public void testRemove_NullEditor() throws Exception{
+        // Regression test for Harmony-1749
+        BasicComboBoxUI cb = new BasicComboBoxUI();
+        cb.removeEditor();
+    }
+    
     @SuppressWarnings("deprecation")
     private void createVisibleCombo() {
         frame.getContentPane().add(comboBox);

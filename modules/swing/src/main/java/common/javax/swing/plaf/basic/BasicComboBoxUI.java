@@ -369,9 +369,11 @@ public class BasicComboBoxUI extends ComboBoxUI {
     }
 
     public void removeEditor() {
-        comboBox.remove(editor);
-        unconfigureEditor();
-        editor = null;
+        if (editor != null){
+            comboBox.remove(editor);
+            unconfigureEditor();
+            editor = null;
+        }
     }
 
     public boolean isPopupVisible(final JComboBox c) {
