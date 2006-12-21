@@ -46,16 +46,15 @@ final class EventDispatchThread extends Thread  {
 
         try {
             runModalLoop(null);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            toolkit.shutdownWatchdog.forceShutdown();
         }
-
-        toolkit.shutdownWatchdog.forceShutdown();
     }
 
     void runModalLoop(ModalContext context) {
         long lastPaintTime = System.currentTimeMillis();
         while (!shutdownPending && (context == null || context.isModalLoopRunning())) {
+            try {
             EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
 
             NativeEvent ne = nativeQueue.getNextEvent();
@@ -84,6 +83,9 @@ final class EventDispatchThread extends Thread  {
                     lastPaintTime = System.currentTimeMillis();
                     waitForAnyEvent();
                 }
+            }
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }
