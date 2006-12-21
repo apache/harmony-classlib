@@ -27,48 +27,10 @@ public class ConnectExceptionTest extends junit.framework.TestCase {
 
 	/**
 	 * @tests java.net.ConnectException#ConnectException()
+     * @tests java.net.ConnectException#ConnectException(java.lang.String)
 	 */
 	public void test_Constructor() {
-		// Test for method java.net.ConnectException()
-
-		try {
-			int portNumber = Support_PortManager.getNextPort();
-			new Socket(InetAddress.getLocalHost().getHostName(), portNumber);
-		} catch (ConnectException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during Constructor test : " + e.getMessage());
-		}
-		fail("Failed to generate exception");
-	}
-
-	/**
-	 * @tests java.net.ConnectException#ConnectException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.net.ConnectException(java.lang.String)
-		try {
-			int portNumber = Support_PortManager.getNextPort();
-			new Socket(InetAddress.getLocalHost().getHostName(), portNumber);
-		} catch (ConnectException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during Constructor test : " + e.getMessage());
-		}
-		fail("Failed to generate exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+        assertNull("Wrong message", new ConnectException().getMessage());
+	    assertEquals("Wrong message", "message", new ConnectException("message").getMessage());
 	}
 }
