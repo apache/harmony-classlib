@@ -342,7 +342,7 @@ hyfile_seek (struct HyPortLibrary * portLibrary, IDATA fd, I_64 offset,
  * @param[in] portLibrary The port library
  * @param[in] path file/path name being queried.
  *
- * @return EslsFile if a file, EslsDir if a directory, negative portable error code on failure.
+ * @return HyIsFile if a file, HyIsDir if a directory, negative portable error code on failure.
  */
 I_32 VMCALL
 hyfile_attr (struct HyPortLibrary *portLibrary, const char *path)
