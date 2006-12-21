@@ -367,7 +367,7 @@ Image implements WritableRenderedImage, Transparency{
             throw new NullPointerException(Messages.getString("awt.225")); //$NON-NLS-1$
         }
         if (properties == null) {
-            return null;
+            return Image.UndefinedProperty;
         }
         Object property = properties.get(name);
         if (property == null) {
