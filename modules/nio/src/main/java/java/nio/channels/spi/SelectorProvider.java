@@ -111,7 +111,7 @@ public abstract class SelectorProvider extends Object {
      * load the provider in the jar file of class path.
      */
     static SelectorProvider loadProviderByJar() {
-        Enumeration enumeration = null;
+        Enumeration<URL> enumeration = null;
 
         ClassLoader classLoader = AccessController.doPrivileged(
                 new PrivilegedAction<ClassLoader>() {
@@ -133,7 +133,7 @@ public abstract class SelectorProvider extends Object {
             String className = null;
             try {
                 br = new BufferedReader(new InputStreamReader(
-                        ((URL) enumeration.nextElement()).openStream()));
+                        (enumeration.nextElement()).openStream()));
             } catch (Exception e) {
                 continue;
             }
@@ -168,7 +168,7 @@ public abstract class SelectorProvider extends Object {
                             final String className =
                                 System.getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
                             if (null != className) {
-                                Class spClass = ClassLoader
+                                Class<?> spClass = ClassLoader
                                         .getSystemClassLoader().loadClass(
                                                 className);
                                 return (SelectorProvider)spClass.newInstance();

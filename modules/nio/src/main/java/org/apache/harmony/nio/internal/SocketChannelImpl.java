@@ -98,9 +98,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // connect success
     private static final int CONNECT_SUCCESS = 0;
 
-    // a address of localhost
-    private static final byte[] localAddrArray = { 127, 0, 0, 1 };
-
     // -------------------------------------------------------------------
     // Instance Variables
     // -------------------------------------------------------------------

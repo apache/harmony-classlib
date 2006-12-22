@@ -190,7 +190,7 @@ final class SelectorImpl extends AbstractSelector {
     private void prepareChannels() {
         readableChannels.add(source);
         synchronized (keysLock) {
-            for (Iterator i = keys.iterator(); i.hasNext();) {
+            for (Iterator<SelectionKey> i = keys.iterator(); i.hasNext();) {
                 SelectionKeyImpl key = (SelectionKeyImpl) i.next();
                 key.oldInterestOps = key.interestOps();
                 boolean isReadableChannel = ((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & key.oldInterestOps) != 0;
@@ -203,10 +203,8 @@ final class SelectorImpl extends AbstractSelector {
                 }
             }
         }
-        readable = (SelectableChannel[]) readableChannels
-                .toArray(new SelectableChannel[0]);
-        writable = (SelectableChannel[]) writableChannels
-                .toArray(new SelectableChannel[0]);
+        readable = readableChannels.toArray(new SelectableChannel[0]);
+        writable = writableChannels.toArray(new SelectableChannel[0]);
         readableChannels.clear();
         writableChannels.clear();
     }
@@ -386,7 +384,7 @@ final class SelectorImpl extends AbstractSelector {
         }
 
         public <T> T[] toArray(T[] a) {
-            return (T[]) set.toArray(a);
+            return set.toArray(a);
         }
     }
 }

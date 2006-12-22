@@ -1421,8 +1421,7 @@ public class SocketChannelTest extends TestCase {
         try {
             connected = this.channel1.finishConnect();
         } catch (SocketException e) {
-            System.err
-                    .println("Finish connection failed, probably due to reset by peer error.");
+            // Finish connection failed, probably due to reset by peer error.
         }
         if (connected) {
             statusConnected_NotPending();

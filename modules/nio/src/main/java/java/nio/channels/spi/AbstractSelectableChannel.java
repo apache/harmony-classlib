@@ -45,7 +45,9 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      */
     private List<SelectionKey> keyList = new ArrayList<SelectionKey>();
 
-    private class BlockingLock {}
+    private class BlockingLock {
+    }
+
     private final Object blockingLock = new BlockingLock();
 
     boolean isBlocking = true;
@@ -83,7 +85,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      */
     synchronized public final SelectionKey keyFor(Selector selector) {
         for (int i = 0; i < keyList.size(); i++) {
-            SelectionKey key = (SelectionKey) keyList.get(i);
+            SelectionKey key = keyList.get(i);
             if (null != key && key.selector() == selector) {
                 return key;
             }
@@ -119,14 +121,14 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
                 throw new IllegalBlockingModeException();
             }
             if (!selector.isOpen()) {
-                if (0 == interestSet){
+                if (0 == interestSet) {
                     // throw ISE exactly to keep consistency
                     throw new IllegalSelectorException();
                 }
                 // throw NPE exactly to keep consistency
                 throw new NullPointerException();
             }
-            if (0 == interestSet){
+            if (0 == interestSet) {
                 // throw ISE exactly to keep consistency
                 throw new IllegalSelectorException();
             }
@@ -154,7 +156,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     synchronized protected final void implCloseChannel() throws IOException {
         implCloseSelectableChannel();
         for (int i = 0; i < keyList.size(); i++) {
-            SelectionKey key = (SelectionKey) keyList.get(i);
+            SelectionKey key = keyList.get(i);
             if (null != key) {
                 key.cancel();
             }
