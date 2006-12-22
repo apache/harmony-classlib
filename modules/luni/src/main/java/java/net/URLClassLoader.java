@@ -987,172 +987,169 @@ public class URLClassLoader extends SecureClassLoader {
         boolean readAvailable = false;
         boolean findInExtensions = searchURLs == urls;
         final String name = new StringBuffer(clsName.replace('.', '/')).append(
-                ".class").toString();
+                ".class").toString(); //$NON-NLS-1$
         for (int i = 0; i < searchURLs.length; i++) {
-            if (searchURLs[i] != null) {
-                Manifest manifest = null;
-                InputStream is = null;
-                JarEntry entry = null;
-                JarFile jf = null;
-                byte[] clBuf = null;
-                try {
-                    URL thisURL = searchURLs[i];
-                    String protocol = thisURL.getProtocol();
-                    if (protocol.equals("jar")) {
-                        jf = resCache.get(thisURL);
-                        if (jf == null) {
-                            // If the connection for testURL or thisURL is used,
-                            // getJarFile() will throw an exception if the entry
-                            // doesn't exist.
-                            URL jarURL = ((JarURLConnection) thisURL
-                                    .openConnection()).getJarFileURL();
-                            try {
-                                JarURLConnection juc = (JarURLConnection) new URL(
-                                        "jar", "", jarURL.toExternalForm()
-                                                + "!/").openConnection();
-                                jf = juc.getJarFile();
-                                resCache.put(thisURL, jf);
-                            } catch (IOException e) {
-                                // Don't look for this jar file again
-                                searchURLs[i] = null;
-                                throw e;
-                            }
-                        }
-                        if (thisURL.getFile().endsWith("!/")) {
-                            entry = jf.getJarEntry(name);
-                        } else {
-                            String file = thisURL.getFile();
-                            int sepIdx = file.lastIndexOf("!/");
-                            if (sepIdx == -1) {
-                                // Invalid URL, don't look here again
-                                searchURLs[i] = null;
-                                continue;
-                            }
-                            sepIdx += 2;
-                            String entryName = new StringBuffer(file.length()
-                                    - sepIdx + name.length()).append(
-                                    file.substring(sepIdx)).append(name)
-                                    .toString();
-                            entry = jf.getJarEntry(entryName);
-                        }
-                        if (entry != null) {
-                            readAvailable = true;
-                            is = jf.getInputStream(entry);
-                            manifest = jf.getManifest();
-                        }
-                    } else if (protocol.equals("file")) {
-                        String filename = thisURL.getFile();
-                        String host = thisURL.getHost();
-                        if (host != null && host.length() > 0) {
-                            filename = new StringBuffer(host.length()
-                                    + filename.length() + name.length() + 2)
-                                    .append("//").append(host).append(filename)
-                                    .append(name).toString();
-                        } else {
-                            filename = new StringBuffer(filename.length()
-                                    + name.length()).append(filename).append(
-                                    name).toString();
-                        }
-
-                        //Just return null for caller to throw ClassNotFoundException.
+            Manifest manifest = null;
+            InputStream is = null;
+            JarEntry entry = null;
+            JarFile jf = null;
+            byte[] clBuf = null;
+            try {
+                URL thisURL = searchURLs[i];
+                String protocol = thisURL.getProtocol();
+                if (protocol.equals("jar")) { //$NON-NLS-1$
+                    jf = resCache.get(thisURL);
+                    if (jf == null) {
+                        // If the connection for testURL or thisURL is used,
+                        // getJarFile() will throw an exception if the entry
+                        // doesn't exist.
+                        URL jarURL = ((JarURLConnection) thisURL
+                                .openConnection()).getJarFileURL();
                         try {
-                            filename = URLDecoder.decode(filename, "UTF-8");
-                        } catch (IllegalArgumentException e) {
-                            return null;
+                            JarURLConnection juc = (JarURLConnection) new URL(
+                                    "jar", "", jarURL.toExternalForm() + "!/") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    .openConnection();
+                            jf = juc.getJarFile();
+                            resCache.put(thisURL, jf);
+                        } catch (IOException e) {
+                            // Don't look for this jar file again
+                            searchURLs[i] = null;
+                            throw e;
                         }
-
-                        File file = new File(filename);
-                        // Don't throw exceptions for speed
-                        if (file.exists()) {
-                            is = new FileInputStream(file);
-                            readAvailable = true;
-                        } else {
+                    }
+                    if (thisURL.getFile().endsWith("!/")) {
+                        entry = jf.getJarEntry(name);
+                    } else {
+                        String file = thisURL.getFile();
+                        int sepIdx = file.lastIndexOf("!/");
+                        if (sepIdx == -1) {
+                            // Invalid URL, don't look here again
+                            searchURLs[i] = null;
                             continue;
                         }
-                    } else {
-                        is = targetURL(thisURL, name).openStream();
-                    }
-                } catch (MalformedURLException e) {
-                    // Keep iterating through the URL list
-                } catch (IOException e) {
-                }
-                if (is != null) {
-                    URL codeSourceURL = null;
-                    Certificate[] certificates = null;
-                    CodeSource codeS = null;
-                    try {
-                        codeSourceURL = findInExtensions ? orgUrls[i]
-                                : ((JarURLConnection) searchURLs[i]
-                                        .openConnection()).getJarFileURL();
-                    } catch (IOException e) {
-                        codeSourceURL = searchURLs[i];
-                    }
-                    if (is != null) {
-                        try {
-                            clBuf = getBytes(is, readAvailable);
-                            is.close();
-                        } catch (IOException e) {
-                            return null;
-                        }
+                        sepIdx += 2;
+                        String entryName = new StringBuffer(file.length()
+                                - sepIdx + name.length()).append(
+                                file.substring(sepIdx)).append(name).toString();
+                        entry = jf.getJarEntry(entryName);
                     }
                     if (entry != null) {
-                        certificates = entry.getCertificates();
+                        readAvailable = true;
+                        is = jf.getInputStream(entry);
+                        manifest = jf.getManifest();
                     }
-                    // Use the original URL, not the possible jar URL
-                    codeS = new CodeSource(codeSourceURL, certificates);
-                    int dotIndex = clsName.lastIndexOf(".");
-                    if (dotIndex != -1) {
-                        String packageName = clsName.substring(0, dotIndex);
-                        synchronized (this) {
-                            Package packageObj = getPackage(packageName);
-                            if (packageObj == null) {
-                                if (manifest != null) {
-                                    definePackage(packageName, manifest,
-                                            codeSourceURL);
-                                } else {
-                                    definePackage(packageName, null, null,
-                                            null, null, null, null, null);
+                } else if (protocol.equals("file")) {
+                    String filename = thisURL.getFile();
+                    String host = thisURL.getHost();
+                    if (host != null && host.length() > 0) {
+                        filename = new StringBuffer(host.length()
+                                + filename.length() + name.length() + 2)
+                                .append("//").append(host).append(filename)
+                                .append(name).toString();
+                    } else {
+                        filename = new StringBuffer(filename.length()
+                                + name.length()).append(filename).append(name)
+                                .toString();
+                    }
+
+                    // Just return null for caller to throw
+                    // ClassNotFoundException.
+                    try {
+                        filename = URLDecoder.decode(filename, "UTF-8");
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+
+                    File file = new File(filename);
+                    // Don't throw exceptions for speed
+                    if (file.exists()) {
+                        is = new FileInputStream(file);
+                        readAvailable = true;
+                    } else {
+                        continue;
+                    }
+                } else {
+                    is = targetURL(thisURL, name).openStream();
+                }
+            } catch (MalformedURLException e) {
+                // Keep iterating through the URL list
+            } catch (IOException e) {
+            }
+            if (is != null) {
+                URL codeSourceURL = null;
+                Certificate[] certificates = null;
+                CodeSource codeS = null;
+                try {
+                    codeSourceURL = findInExtensions ? orgUrls[i]
+                            : ((JarURLConnection) searchURLs[i]
+                                    .openConnection()).getJarFileURL();
+                } catch (IOException e) {
+                    codeSourceURL = searchURLs[i];
+                }
+                if (is != null) {
+                    try {
+                        clBuf = getBytes(is, readAvailable);
+                        is.close();
+                    } catch (IOException e) {
+                        return null;
+                    }
+                }
+                if (entry != null) {
+                    certificates = entry.getCertificates();
+                }
+                // Use the original URL, not the possible jar URL
+                codeS = new CodeSource(codeSourceURL, certificates);
+                int dotIndex = clsName.lastIndexOf(".");
+                if (dotIndex != -1) {
+                    String packageName = clsName.substring(0, dotIndex);
+                    synchronized (this) {
+                        Package packageObj = getPackage(packageName);
+                        if (packageObj == null) {
+                            if (manifest != null) {
+                                definePackage(packageName, manifest,
+                                        codeSourceURL);
+                            } else {
+                                definePackage(packageName, null, null, null,
+                                        null, null, null, null);
+                            }
+                        } else {
+                            boolean exception = false;
+                            if (manifest != null) {
+                                String dirName = packageName.replace('.', '/')
+                                        + "/";
+                                if (isSealed(manifest, dirName)) {
+                                    exception = !packageObj
+                                            .isSealed(codeSourceURL);
                                 }
                             } else {
-                                boolean exception = false;
-                                if (manifest != null) {
-                                    String dirName = packageName.replace('.',
-                                            '/')
-                                            + "/";
-                                    if (isSealed(manifest, dirName)) {
-                                        exception = !packageObj
-                                                .isSealed(codeSourceURL);
-                                    }
-                                } else {
-                                    exception = packageObj.isSealed();
-                                }
-                                if (exception) {
-                                    throw new SecurityException(
-                                            org.apache.harmony.luni.util.Msg
-                                                    .getString("K004c"));
-                                }
+                                exception = packageObj.isSealed();
+                            }
+                            if (exception) {
+                                throw new SecurityException(
+                                        org.apache.harmony.luni.util.Msg
+                                                .getString("K004c"));
                             }
                         }
                     }
-                    return defineClass(clsName, clBuf, 0, clBuf.length, codeS);
                 }
-                if ((jf != null) && findInExtensions) {
-                    if (indexes[i] != null) {
-                        try {
-                            Class<?> c = (Class<?>) findInIndex(i, clsName, null,
-                                    false);
-                            if (c != null) {
-                                return c;
-                            }
-                        } catch (InvalidJarIndexException ex) {
-                            // Ignore misleading/wrong jar index
-                        }
-                    } else {
-                        Class<?> c = (Class<?>) findInExtensions(explore(
-                                searchURLs[i], i), clsName, i, null, false);
+                return defineClass(clsName, clBuf, 0, clBuf.length, codeS);
+            }
+            if ((jf != null) && findInExtensions) {
+                if (indexes[i] != null) {
+                    try {
+                        Class<?> c = (Class<?>) findInIndex(i, clsName, null,
+                                false);
                         if (c != null) {
                             return c;
                         }
+                    } catch (InvalidJarIndexException ex) {
+                        // Ignore misleading/wrong jar index
+                    }
+                } else {
+                    Class<?> c = (Class<?>) findInExtensions(explore(
+                            searchURLs[i], i), clsName, i, null, false);
+                    if (c != null) {
+                        return c;
                     }
                 }
             }
@@ -1166,10 +1163,9 @@ public class URLClassLoader extends SecureClassLoader {
      * @param indexNumber
      *            int the index in extensions to consider
      * 
-     * @return URL[] the URLs of bundled extensions that have been found (i.e. the
-     *         URL of jar files in the class-path attribute), or null if none.
-     *         if an INDEX.LIST has been found, an empty array is
-     *         returned
+     * @return URL[] the URLs of bundled extensions that have been found (i.e.
+     *         the URL of jar files in the class-path attribute), or null if
+     *         none. if an INDEX.LIST has been found, an empty array is returned
      */
     URL[] explore(URL url, int indexNumber) {
         URL[] internal;

@@ -45,6 +45,17 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         }
     }
 
+    public class URLClassLoaderExt extends URLClassLoader {
+
+        public URLClassLoaderExt(URL[] urls) {
+            super(urls);
+        }
+
+        public Class<?> findClass(String cl) throws ClassNotFoundException {
+            return super.findClass(cl);
+        }
+    }
+    
     URLClassLoader ucl;
 
     /**
@@ -291,6 +302,10 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                         + "/JarIndex/hyts_42.jar!/bpack/"));
         assertTrue("Resources not found (2)", resourcesFound);
         assertFalse("No more resources expected", en.hasMoreElements());
+       
+        // Regression test for HARMONY-2357.
+        URLClassLoaderExt cl = new URLClassLoaderExt(new URL[557]);    
+        cl.findClass("0");                                         
     }
 
     /**
