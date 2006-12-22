@@ -141,37 +141,4 @@ public class BasicTextPaneUITest extends SwingTestCase {
         assertFalse(font.getFamily().equals(newStyle.getAttribute(StyleConstants.FontFamily)));
         assertEquals(font.getName(), newStyle.getAttribute(StyleConstants.FontFamily));
     }
-    public void testPropertyChange_NullFont() {
-        // regression test to HARMONY-1799
-        
-        textPane = new JTextPane();
-
-        textPane.setFont(font);
-        Style style = textPane.getStyle(StyleContext.DEFAULT_STYLE);
-        style.addAttribute(StyleConstants.Italic, Boolean.TRUE);
-        style.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-        textPane.setFont(null);
-        assertNull(style.getAttribute(StyleConstants.FontFamily));
-        assertNull(style.getAttribute(StyleConstants.Italic));
-        assertNull(style.getAttribute(StyleConstants.Bold));
-
-        StyledDocument newDoc = new DefaultStyledDocument();
-        Style newStyle = newDoc.getStyle(StyleContext.DEFAULT_STYLE);
-        assertEquals(1, newStyle.getAttributeCount());
-        newStyle.addAttribute(StyleConstants.Italic, Boolean.FALSE);
-        newStyle.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-        newStyle.addAttribute(StyleConstants.StrikeThrough, Boolean.FALSE);
-        textPane.setForeground(Color.RED);
-        textPane.setDocument(newDoc);
-        assertSame(textPane.getStyle(StyleContext.DEFAULT_STYLE), newStyle);
-        assertNull(textPane.getFont());
-        assertNull(newStyle.getAttribute(StyleConstants.FontFamily));
-        assertNull(newStyle.getAttribute(StyleConstants.Italic));
-        assertNull(newStyle.getAttribute(StyleConstants.Bold));
-        assertSame(newStyle.getAttribute(StyleConstants.Foreground),
-                   textPane.getForeground());
-        assertFalse(((Boolean)newStyle.getAttribute(StyleConstants.StrikeThrough))
-                     .booleanValue());
-    }
-
 }

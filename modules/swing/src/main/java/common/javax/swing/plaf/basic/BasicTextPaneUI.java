@@ -67,6 +67,9 @@ public class BasicTextPaneUI extends BasicEditorPaneUI implements ViewFactory {
         }
 
         final Font f = pane.getFont();
+        if (f == null) {
+            return;
+        }
 
         final Style style = getDefaultStyle(e);
 
@@ -80,16 +83,9 @@ public class BasicTextPaneUI extends BasicEditorPaneUI implements ViewFactory {
 
 
     private void updateFontAttributes(final Style style, final Font f) {
-        if (f == null){
-            style.removeAttribute(StyleConstants.Italic);
-            style.removeAttribute(StyleConstants.Bold);
-            style.removeAttribute(StyleConstants.FontFamily);
-            style.removeAttribute(StyleConstants.FontSize);
-        } else {
-            style.addAttribute(StyleConstants.Italic, Boolean.valueOf(f.isItalic()));
-            style.addAttribute(StyleConstants.Bold, Boolean.valueOf(f.isBold()));
-            style.addAttribute(StyleConstants.FontFamily, f.getName());
-            style.addAttribute(StyleConstants.FontSize, new Integer(f.getSize()));
-        }
+        style.addAttribute(StyleConstants.Italic, Boolean.valueOf(f.isItalic()));
+        style.addAttribute(StyleConstants.Bold, Boolean.valueOf(f.isBold()));
+        style.addAttribute(StyleConstants.FontFamily, f.getName());
+        style.addAttribute(StyleConstants.FontSize, new Integer(f.getSize()));
     }
 }
