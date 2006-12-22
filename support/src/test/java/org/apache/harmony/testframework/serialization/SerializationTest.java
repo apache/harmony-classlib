@@ -85,7 +85,7 @@ public abstract class SerializationTest extends TestCase {
     public static final String GOLDEN_PATH = "RESOURCE_DIR";
 
     private static final String outputPath = System.getProperty(GOLDEN_PATH,
-                                                          "test/common/unit");
+            "src/test/resources/serialization");
 
     /**
      * Parameterized c-tor inherited from superclass.
@@ -172,12 +172,19 @@ public abstract class SerializationTest extends TestCase {
      * @throws IOException
      */
     protected void produceGoldenFiles() throws IOException {
+
+        String goldenPath = outputPath + File.separatorChar
+                + getClass().getName().replace('.', File.separatorChar)
+                + ".golden.";
+
         Object[] data = getData();
         for (int i = 0; i < data.length; i++) {
-            File gf = getDataFile(i);
-            gf.getParentFile().mkdirs();
-            gf.createNewFile();
-            putObjectToStream(data[i], new FileOutputStream(gf));
+
+            File goldenFile = new File(goldenPath + i + ".ser");
+            goldenFile.getParentFile().mkdirs();
+            goldenFile.createNewFile();
+
+            putObjectToStream(data[i], new FileOutputStream(goldenFile));
         }
     }
 
