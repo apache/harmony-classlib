@@ -25,84 +25,92 @@ package java.util;
  * @see java.lang.Object#wait(long)
  */
 public abstract class TimerTask implements Runnable {
+    /* Lock object for synchronization. It's also used by Timer class. */
+    final Object lock = new Object();
 
-	/* If timer was cancelled */
-	private boolean cancelled;
+    /* If timer was cancelled */
+    boolean cancelled;
 
-	/* Slots used by Timer */
-	long when;
+    /* Slots used by Timer */
+    long when;
 
-	long period;
+    long period;
 
-	boolean fixedRate;
+    boolean fixedRate;
 
-	/*
-	 * The time when task will be executed, or the time when task was launched
-	 * if this is task in progress.
-	 */
-	private long scheduledTime;
+    /*
+     * The time when task will be executed, or the time when task was launched
+     * if this is task in progress.
+     */
+    private long scheduledTime;
 
-	/*
-	 * Method called from the Timer object when scheduling an event
-	 * @param time 
-	 */
-	void setScheduledTime(long time) {
-		scheduledTime = time;
-	}
+    /*
+     * Method called from the Timer for synchronized getting of when field.
+     */
+    long getWhen() {
+        synchronized (lock) {
+            return when;
+        }
+    }
 
-	/*
-	 * Is TimerTask scheduled into any timer?
-	 * 
-	 * @return <code>true</code> if the timer task is scheduled,
-	 *         <code>false</code> otherwise.
-	 */
-	boolean isScheduled() {
-		return when > 0 || scheduledTime > 0;
-	}
+    /*
+     * Method called from the Timer object when scheduling an event @param time
+     */
+    void setScheduledTime(long time) {
+        synchronized (lock) {
+            scheduledTime = time;
+        }
+    }
 
-	/*
-	 * Is TimerTask cancelled?
-	 * 
-	 * @return <code>true</code> if the timer task is cancelled,
-	 *         <code>false</code> otherwise.
-	 */
-	boolean isCancelled() {
-		return cancelled;
-	}
+    /*
+     * Is TimerTask scheduled into any timer?
+     * 
+     * @return <code>true</code> if the timer task is scheduled, <code>false</code>
+     * otherwise.
+     */
+    boolean isScheduled() {
+        synchronized (lock) {
+            return when > 0 || scheduledTime > 0;
+        }
+    }
 
-	protected TimerTask() {
-		super();
-	}
+    protected TimerTask() {
+        super();
+    }
 
-	/**
-	 * Cancels the Task and removes it from the Timer's queue. Generally, it
-	 * returns false if the call did not prevent a TimerTask from running at
-	 * least once. Subsequent calls have no effect.
-	 * 
-	 * @return <code>true</code> if the call prevented a scheduled execution
-	 *         from taking place, <code>false</code> otherwise.
-	 */
-	public boolean cancel() {
-		boolean willRun = !cancelled && when > 0;
-		cancelled = true;
-		return willRun;
-	}
+    /**
+     * Cancels the Task and removes it from the Timer's queue. Generally, it
+     * returns false if the call did not prevent a TimerTask from running at
+     * least once. Subsequent calls have no effect.
+     * 
+     * @return <code>true</code> if the call prevented a scheduled execution
+     *         from taking place, <code>false</code> otherwise.
+     */
+    public boolean cancel() {
+        synchronized (lock) {
+            boolean willRun = !cancelled && when > 0;
+            cancelled = true;
+            return willRun;
+        }
+    }
 
-	/**
-	 * Returns the scheduled execution time. If the task execution is in
-	 * progress returns the execution time of ongoing task. Tasks which have not
-	 * yet run return an undefined value.
-	 * 
-	 * @return the most recent execution time.
-	 */
-	public long scheduledExecutionTime() {
-		return scheduledTime;
-	}
+    /**
+     * Returns the scheduled execution time. If the task execution is in
+     * progress returns the execution time of ongoing task. Tasks which have not
+     * yet run return an undefined value.
+     * 
+     * @return the most recent execution time.
+     */
+    public long scheduledExecutionTime() {
+        synchronized (lock) {
+            return scheduledTime;
+        }
+    }
 
-	/**
-	 * The task to run should be specified in the implementation of the run()
-	 * method.
-	 */
-	public abstract void run();
+    /**
+     * The task to run should be specified in the implementation of the run()
+     * method.
+     */
+    public abstract void run();
 
 }
