@@ -68,8 +68,8 @@ public class MemoryAccessor {
 
     /**
      * Finds the offset of the first different element in two
-     * memory blocks. If no difference the size is returned. If reoreder is set
-     * changes the byte order of first block elements before comparsion.
+     * memory blocks. If no difference the size is returned. If reorder is set
+     * changes the byte order of first block elements before comparison.
      * @param addr1 start address of the first block
      * @param addr2 start address of the second block
      * @param elemSize size of the element can be 1, 2, 4, 8
@@ -126,7 +126,7 @@ public class MemoryAccessor {
     public final native boolean getBoolean(long addr);
 
     /**
-     * Reads data from memory address in plaform byte order into boolean array.
+     * Reads data from memory address in platform byte order into boolean array.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -144,7 +144,7 @@ public class MemoryAccessor {
     public final native byte getByte(long addr);
 
     /**
-     * Reads data from memory address in plaform byte order into byte array.
+     * Reads data from memory address in platform byte order into byte array.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -155,7 +155,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads a char value from memory address in a plaform byte order.
+     * Reads a char value from memory address in a platform byte order.
      * @param addr memory address
      * @return memory value
      */
@@ -164,7 +164,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads data from memory address in a plaform byte order into char array.
+     * Reads data from memory address in a platform byte order into char array.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -208,14 +208,14 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads a double value from memory address in a plaform byte order.
+     * Reads a double value from memory address in a platform byte order.
      * @param addr memory address
      * @return memory value
      */
     public final native double getDouble(long addr);
 
     /**
-     * Reads data from memory address in plaform byte order into array of doubles.
+     * Reads data from memory address in platform byte order into array of doubles.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -264,7 +264,7 @@ public class MemoryAccessor {
     public final native float getFloat(long addr);
 
     /**
-     * Reads data from memory address in plaform byte order into float array.
+     * Reads data from memory address in platform byte order into float array.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -315,7 +315,7 @@ public class MemoryAccessor {
     public final native int getHashCode(long addr, long size);
 
     /**
-     * Reads an integer value from memory address in plaform byte order.
+     * Reads an integer value from memory address in platform byte order.
      * @param addr memory address
      * @return memory value
      */
@@ -335,7 +335,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads data from memory address in plaform byte order into array of integers.
+     * Reads data from memory address in platform byte order into array of integers.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -384,7 +384,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads data from memory address in plaform byte order into array of longs.
+     * Reads data from memory address in platform byte order into array of longs.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -415,7 +415,7 @@ public class MemoryAccessor {
     private native final int getNativeByteOrder0();
 
     /**
-     * Reads a short value from memory address in plaform byte order.
+     * Reads a short value from memory address in platform byte order.
      * @param addr memory address
      * @return memory value
      */
@@ -435,7 +435,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Reads data from memory address in plaform byte order into short array.
+     * Reads data from memory address in platform byte order into short array.
      * @param addr data start address in memory
      * @param value array to save data
      * @param offset initial offset in java array
@@ -545,7 +545,7 @@ public class MemoryAccessor {
     public final native void setBoolean(long addr, boolean value);
 
     /**
-     * Writes data from boolean array to memory address in plaform byte order.
+     * Writes data from boolean array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -563,7 +563,7 @@ public class MemoryAccessor {
     public final native void setByte(long addr, byte value);
 
     /**
-     * Writes data from byte array to memory address in plaform byte order.
+     * Writes data from byte array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -574,7 +574,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes char value to memory address in plaform byte order.
+     * Writes char value to memory address in platform byte order.
      * @param addr memory address
      * @param value new memory value
      */
@@ -597,7 +597,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from char array to memory address in plaform byte order.
+     * Writes data from char array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -628,7 +628,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes a double value to memory address in plaform byte order,
+     * Writes a double value to memory address in platform byte order,
      * @param addr memory address
      * @param value new memory value
      */
@@ -649,7 +649,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from double array to memory address in plaform byte order.
+     * Writes data from double array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -678,7 +678,7 @@ public class MemoryAccessor {
     private final native void setDoubleReorder(long addr, double value);
 
     /**
-     * Writes a float value to memory address in plaform byte order.
+     * Writes a float value to memory address in platform byte order.
      * @param addr memory address
      * @param value new memory value
      */
@@ -699,7 +699,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from float array to memory address in plaform byte order.
+     * Writes data from float array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -728,7 +728,7 @@ public class MemoryAccessor {
     private final native void setFloatReorder(long addr, float value);
 
     /**
-     * Writes an integer value to memory address in plaform byte order.
+     * Writes an integer value to memory address in  platform byte order.
      * @param addr memory address
      * @param value new memory value
      */
@@ -749,7 +749,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from integer array to memory address in plaform byte order.
+     * Writes data from integer array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -778,7 +778,7 @@ public class MemoryAccessor {
     private final native void setIntReorder(long addr, int value);
 
     /**
-     * Writes a long value to memory address in plaform byte order.
+     * Writes a long value to memory address in platform byte order.
      * @param addr memory address
      * @param value new memory value
      */
@@ -799,7 +799,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from long array to memory address in plaform byte order.
+     * Writes data from long array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array
@@ -829,7 +829,7 @@ public class MemoryAccessor {
 
 
     /**
-     * Writes a short value to memory address in plaform byte order.
+     * Writes a short value to memory address in platform byte order.
      * @param addr memory address
      * @param value new memory value
      */
@@ -850,7 +850,7 @@ public class MemoryAccessor {
     }
 
     /**
-     * Writes data from short array to memory address in plaform byte order.
+     * Writes data from short array to memory address in platform byte order.
      * @param addr data start address in memory
      * @param value data array
      * @param offset initial offset in java array

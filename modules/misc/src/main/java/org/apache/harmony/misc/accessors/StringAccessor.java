@@ -65,7 +65,7 @@ public class StringAccessor {
      * last copied string char, 2 trailing 0 are added. For ANSI chars buffer
      * should be at least len bytes, for international chars buffer should be at
      * least 3 * len bytes (see JNI 5.0 spec on Modified UTF-8 Strings) to
-     * guarantie String chars will fully fit.
+     * guaranty String chars will fully fit.
      * <p>
      * This method has an effect of GetStringUTFRegion JNI call.
      *
@@ -107,7 +107,7 @@ public class StringAccessor {
      * Copies len UTF16 (Unicode) encoded chars or buflen bytes whichever is
      * smaller from String to native buffer. If there is a room in buffer after
      * last copied string char, 2 trailing 0 are added. Buffer should be at
-     * least 2 * len bytes to guarantie String chars will fully fit.
+     * least 2 * len bytes to guaranty String chars will fully fit.
      * <p>
      * This method has an effect of GetStringRegion JNI call.
      *
@@ -219,7 +219,7 @@ public class StringAccessor {
      * in byteOrder order.
      * @param strObj Java string
      * @param str native string memory address
-     * @param len lenght of native string
+     * @param len length of native string
      * @param byteOrder either ByteOrder.BIG_ENDIAN or ByteOrder.LITTLE_ENDIAN
      * @return 0 if strings are equal,
      * &lt;0 if Java string is lexicographically less than the native string,
@@ -251,7 +251,7 @@ public class StringAccessor {
      * in platform default order.
      * @param strObj Java string
      * @param str native string memory address
-     * @param len lenght of native string
+     * @param len length of native string
      * @return 0 if strings are equal,
      * &lt;0 if Java string is lexicographically less than the native string,
      * &gt;0 if Java string is lexicographically greater than the native string.

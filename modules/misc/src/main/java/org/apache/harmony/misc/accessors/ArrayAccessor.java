@@ -123,7 +123,7 @@ public class ArrayAccessor {
     static final HashMap objectLockMap = new HashMap();
 
     /**
-     * Allocates and immediately locks a primitive type array for supposingly a
+     * Allocates and immediately locks a primitive type array for supposedly a
      * long period of time. The purpose of this method is to give a hint to
      * object allocator that an array needs to be locked initially. This may
      * help to increase the performance on certain virtual machine
@@ -144,7 +144,7 @@ public class ArrayAccessor {
     }
 
     /**
-     * Allocates and immediately locks a primitive type array for supposingly a
+     * Allocates and immediately locks a primitive type array for supposedly a
      * short period of time. The purpose of this method is to give a hint to
      * object allocator that an array needs to be locked initially. This may
      * help to increase the performance on certain virtual machine
@@ -166,7 +166,7 @@ public class ArrayAccessor {
     }
 
     /**
-     * Locks an existing array for supposingly a short period of time.
+     * Locks an existing array for supposedly a short period of time.
      * Typically, this method would instruct a virtual machine that the given
      * array should stay unmovable for a short period of time, such as one
      * native library call. This method returns an instance of
@@ -199,7 +199,7 @@ public class ArrayAccessor {
     }
 
     /**
-     * Locks an existing array for supposingly a long period of time and returns
+     * Locks an existing array for  supposedly a long period of time and returns
      * its location in memory. Typically, this method would instruct a virtual
      * machine that the given array should stay unmovable for a long period of
      * time. As a consequence, this method call may be expensive potentially may

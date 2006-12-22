@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * Fields and methods are identified in the class with help of ID's those actual meaning
  * is implementation dependent.
  * Depending on a platform, ID's may represent the real offets in the physical memory,
- * though it is not always guranteed. Unlike the {@link ArrayAccessor} class, users should not rely on
+ * though it is not always guaranteed. Unlike the {@link ArrayAccessor} class, users should not rely on
  * any correspondence between ID's and memory address space. However, it is guaranteed that ID's, once
  * obtained, are valid during the whole lifetime of the given class and can equally be
  * applied for all its instances.
@@ -558,7 +558,7 @@ public class ObjectAccessor {
 
     /**
      * Returns the ID for the reflected static field.
-     * Deafult iumplementation delegates to the
+     * Default implementation delegates to the
      * {@link #getFieldID(Field)} call.
      *
      * @param f reflected field
@@ -571,7 +571,7 @@ public class ObjectAccessor {
 
     /**
      * Returns the ID for the specified method or constructor.
-     * Use class constants for primritive parameter types. For example,
+     * Use class constants for primitive parameter types. For example,
      * for <code>byte</code> type use the {@link java.lang.Byte#TYPE} class.
      * @param c a class the method belongs to
      * @param name method name or <code>null</code> in case of constructor
@@ -611,7 +611,7 @@ public class ObjectAccessor {
 
     /**
      * Returns the ID for the specified static method.
-     * Use class constants for primritive parameter types. For example,
+     * Use class constants for primitive parameter types. For example,
      * for <code>byte</code> type use the {@link java.lang.Byte#TYPE} class.
      * @param c a class the method belongs to
      * @param name method name or <code>null</code> in case of constructor
@@ -682,7 +682,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param methodID method ID
-     * @param obj an object those method or constutor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])
      */
@@ -695,7 +695,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param c a class where method or constructor is defined
-     * @param obj an object those method or construtor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param methodID method ID
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])
@@ -721,7 +721,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param methodID method ID
-     * @param obj an object those method or constutor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])
      */
@@ -734,7 +734,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param c a class where method or constructor is defined
-     * @param obj an object those method or construtor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param methodID method ID
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])
@@ -760,7 +760,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param methodID method ID
-     * @param obj an object those method or constutor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])
      */
@@ -773,7 +773,7 @@ public class ObjectAccessor {
      * For example, byte value should be wrapped with {@link java.lang.Byte#TYPE}.
      * Use the {@link #getMethodID(Class, String, Class[])} call to obtain the method ID.
      * @param c a class where method or constructor is defined
-     * @param obj an object those method or construtor needs to be called
+     * @param obj an object those method or constructor needs to be called
      * @param methodID method ID
      * @param args array of arguments
      * @see #getMethodID(Class, String, Class[])

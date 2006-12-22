@@ -23,7 +23,7 @@ import org.apache.harmony.misc.internal.nls.Messages;
  * Factory for all accessors. This class is used to get the instances of various
  * accessor classes methods. 
  * Each factory method checks security permission before it returns 
- * an appropriate accessor singelton.
+ * an appropriate accessor singleton.
  */
 public class AccessorFactory {
 
@@ -48,7 +48,7 @@ public class AccessorFactory {
     /**
      * Returns the {@link MemoryAccessor}.
      *
-     * @throws SecurityException if a requester class is loaded by diffrent
+     * @throws SecurityException if a requester class is loaded by different
      * class loader from the one used for loading the accessors (i.e. boot class loader).
      */
     public static MemoryAccessor getMemoryAccessor() {
@@ -59,7 +59,7 @@ public class AccessorFactory {
     /**
      * Returns the {@link ObjectAccessor}.
      *
-     * @throws SecurityException if a requester class is loaded by diffrent
+     * @throws SecurityException if a requester class is loaded by different
      * class loader from the one used for loading the accessors (i.e. boot class loader).
      */
     public static ObjectAccessor getObjectAccessor() {
@@ -70,7 +70,7 @@ public class AccessorFactory {
     /**
      * Returns the {@link ArrayAccessor}.
      *
-     * @throws SecurityException if a requester class is loaded by diffrent
+     * @throws SecurityException if a requester class is loaded by different
      * class loader from the one used for loading the accessors (i.e. boot class loader).
      */
     public static ArrayAccessor getArrayAccessor() {
@@ -81,7 +81,7 @@ public class AccessorFactory {
     /**
      * Returns the {@link StringAccessor}.
      *
-     * @throws SecurityException if a requester class is loaded by diffrent
+     * @throws SecurityException if a requester class is loaded by different
      * class loader from the one used for loading the accessors (i.e. boot class loader).
      */
     public static StringAccessor getStringAccessor() {
@@ -92,7 +92,7 @@ public class AccessorFactory {
     /**
      * Returns the {@link ThreadStackAccessor}.
      *
-     * @throws SecurityException if a requester class is loaded by diffrent
+     * @throws SecurityException if a requester class is loaded by different
      * class loader from the one used for loading the accessors (i.e. boot class loader).
      */
     public static ThreadStackAccessor getThreadStackAccessor() {

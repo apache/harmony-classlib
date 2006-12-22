@@ -18,7 +18,7 @@
 package org.apache.harmony.misc;
 
 /**
- * This class is a convenience method to sequentaly calculate hash code of the
+ * This class is a convenience method to sequentially calculate hash code of the
  * object based on the field values. The result depends on the order of elements
  * appended. The exact formula is the same as for
  * <code>java.util.List.hashCode</code>.
@@ -37,7 +37,7 @@ package org.apache.harmony.misc;
  * }
  * </code></pre>
  * 
- * The hash code calulation can be expressed in 2 forms.
+ * The hash code calculation can be expressed in 2 forms.
  * 
  * <p>
  * For maximum performance:

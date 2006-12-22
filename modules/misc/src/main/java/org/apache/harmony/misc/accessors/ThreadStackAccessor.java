@@ -42,7 +42,7 @@ public class ThreadStackAccessor {
      private ThreadStackAccessor() {}
     
     /**
-     * Returnes the class from the specified depth in the stack. If the
+     * Returns the class from the specified depth in the stack. If the
      * specified depth is equal to zero then the caller of the caller of this
      * method should be returned. Reflection stack frames should not be taken
      * into account. 

@@ -80,7 +80,7 @@ public class LockedArray {
     /**
      * Unlocks the array. This method gives a hint to virtual
      * machine that this array no longer needs to be locked in memory. The
-     * array address becomes invalid after this call and shoud no longer be
+     * array address becomes invalid after this call and should no longer be
      * used. This method does nothing if the array was already released
      * once.
      * <p>
@@ -99,7 +99,7 @@ public class LockedArray {
      * Unlocks the array. This method gives a hint to virtual
      * machine that this array no longer needs to be locked in memory and virtual
      * machine should not copy values back to Java array.
-     * The array address becomes invalid after this call and shoud no longer be
+     * The array address becomes invalid after this call and should no longer be
      * used. This method does nothing if the array was already released
      * once.
      * <p>
