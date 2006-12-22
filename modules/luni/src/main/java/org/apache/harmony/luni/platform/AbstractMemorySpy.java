@@ -37,10 +37,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 	protected ReferenceQueue<Object> notifyQueue = new ReferenceQueue<Object>();
 
-    private class Lock {}
-	protected Object lock = new Lock();
-
-	final class AddressWrapper {
+   	final class AddressWrapper {
 		final PlatformAddress shadow;
 
 		final PhantomReference<PlatformAddress> wrAddress;
@@ -60,7 +57,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 	public void alloc(PlatformAddress address) {
 		AddressWrapper wrapper = new AddressWrapper(address);
-		synchronized (lock) {
+		synchronized (this) {
 			memoryInUse.put(wrapper.shadow, wrapper);
 			refToShadow.put(wrapper.wrAddress, wrapper.shadow);
 		}
@@ -68,7 +65,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 	public boolean free(PlatformAddress address) {
 		AddressWrapper wrapper;
-		synchronized (lock) {
+		synchronized (this) {
 			wrapper = memoryInUse.remove(address);
 		}
 		if (wrapper == null) {
@@ -91,7 +88,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	 */
 	public void autoFree(PlatformAddress address) {
 		AddressWrapper wrapper;
-		synchronized (lock) {
+		synchronized (this) {
 			wrapper = memoryInUse.get(address);
 		}
 		if (wrapper != null) {
@@ -101,7 +98,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 	protected void orphanedMemory(Reference ref) {
 		AddressWrapper wrapper;
-		synchronized (lock) {
+		synchronized (this) {
 			PlatformAddress shadow = refToShadow.remove(ref);
 			wrapper = memoryInUse.remove(shadow);
 		}

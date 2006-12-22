@@ -39,12 +39,6 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 		Closeable {
 
     private static final String TOKEN_NULL = "null"; //$NON-NLS-1$
-    
-	/**
-	 * protect writes to the underlying stream.
-	 */
-    private class Lock {} 
-	private Object lock = new Lock();
 
 	/**
 	 * indicates whether or not this PrintStream has incurred an error.
@@ -244,16 +238,14 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * 
 	 */
 	@Override
-    public void close() {
-		synchronized (lock) {
-			flush();
-			if (out != null) {
-				try {
-					out.close();
-					out = null;
-				} catch (IOException e) {
-					setError();
-				}
+    public synchronized void close() {
+		flush();
+		if (out != null) {
+			try {
+				out.close();
+				out = null;
+			} catch (IOException e) {
+				setError();
 			}
 		}
 	}
@@ -265,14 +257,12 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * 
 	 */
 	@Override
-    public void flush() {
-		synchronized (lock) {
-			if (out != null) {
-				try {
-					out.flush();
-					return;
-				} catch (IOException e) {
-				}
+    public synchronized void flush() {
+		if (out != null) {
+			try {
+				out.flush();
+				return;
+			} catch (IOException e) {
 			}
 		}
 		setError();
@@ -472,26 +462,24 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * @param str
 	 *            the <code>String</code> to print on this PrintStream.
 	 */
-	public void print(String str) {
-		synchronized (lock) {
-			if (out == null) {
-				setError();
-				return;
-			}
-			if (str == null) {
-				print("null"); //$NON-NLS-1$
-				return;
-			}
+	public synchronized void print(String str) {
+		if (out == null) {
+			setError();
+			return;
+		}
+		if (str == null) {
+			print("null"); //$NON-NLS-1$
+			return;
+		}
 
-			try {
-				if (encoding == null) {
-                    write(str.getBytes());
-                } else {
-                    write(str.getBytes(encoding));
-                }
-			} catch (IOException e) {
-				setError();
-			}
+		try {
+			if (encoding == null) {
+                write(str.getBytes());
+            } else {
+                write(str.getBytes(encoding));
+            }
+		} catch (IOException e) {
+			setError();
 		}
 	}
 
@@ -607,11 +595,9 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * @param str
 	 *            the <code>String</code> to print on this PrintStream.
 	 */
-	public void println(String str) {
-		synchronized (lock) {
-			print(str);
-			newline();
-		}
+	public synchronized void println(String str) {
+		print(str);
+		newline();
 	}
 
 	/**
@@ -654,7 +640,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 			// avoid int overflow
 			if (0 <= offset && offset <= buffer.length && 0 <= count
 					&& count <= buffer.length - offset) {
-				synchronized (lock) {
+				synchronized (this) {
 					if (out == null) {
 						setError();
 						return;
@@ -688,20 +674,18 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 *            the byte to be written
 	 */
 	@Override
-    public void write(int oneByte) {
-		synchronized (lock) {
-			if (out == null) {
-				setError();
-				return;
-			}
-			try {
-				out.write(oneByte);
-				if (autoflush && (oneByte & 0xFF) == '\n') {
-                    flush();
-                }
-			} catch (IOException e) {
-				setError();
-			}
+    public synchronized void write(int oneByte) {
+		if (out == null) {
+			setError();
+			return;
+		}
+		try {
+			out.write(oneByte);
+			if (autoflush && (oneByte & 0xFF) == '\n') {
+                flush();
+            }
+		} catch (IOException e) {
+			setError();
 		}
 	}
 

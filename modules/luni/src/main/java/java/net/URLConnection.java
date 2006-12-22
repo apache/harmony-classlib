@@ -1039,7 +1039,7 @@ public abstract class URLConnection {
 		return getClass().getName() + ":" + url.toString();
 	}
 
-	class DefaultContentHandler extends java.net.ContentHandler {
+	static class DefaultContentHandler extends java.net.ContentHandler {
 
 		/**
 		 * @param u

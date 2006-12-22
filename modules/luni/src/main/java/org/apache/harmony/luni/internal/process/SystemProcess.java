@@ -71,7 +71,7 @@ public class SystemProcess extends Process {
 
         final SystemProcess p = new SystemProcess();
 
-        p.lock = p.new Lock();
+        p.lock = new Lock();
 
         Runnable waitingThread = new Runnable() {
             public void run() {
@@ -160,7 +160,7 @@ public class SystemProcess extends Process {
 
     private int exitCode;
 
-    private class Lock {}
+    private static class Lock {}
     private Object lock;
 
     private boolean waiterStarted;

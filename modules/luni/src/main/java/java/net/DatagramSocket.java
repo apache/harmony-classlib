@@ -46,7 +46,7 @@ public class DatagramSocket {
 
 	private boolean isClosed = false;
 
-    private class Lock {}
+    private static class Lock {}
 	private Object lock = new Lock();
 
 	/**

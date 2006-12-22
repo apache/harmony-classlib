@@ -122,7 +122,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	}
 
     // Internal type used to keep track of validators & corresponding priority
-    class InputValidationDesc {
+    static class InputValidationDesc {
         ObjectInputValidation validator;
 
         int priority;

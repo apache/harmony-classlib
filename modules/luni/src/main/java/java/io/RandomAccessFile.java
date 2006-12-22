@@ -48,7 +48,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
 
     private boolean isReadOnly;
 
-    private class RepositionLock {
+    private static class RepositionLock {
     }
 
     private Object repositionLock = new RepositionLock();
