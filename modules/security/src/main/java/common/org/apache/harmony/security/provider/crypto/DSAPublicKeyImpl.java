@@ -40,6 +40,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.DSAParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.apache.harmony.security.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
 
@@ -52,7 +53,6 @@ import org.apache.harmony.security.asn1.ASN1Integer;
 //import org.apache.harmony.security.asn1.ASN1OctetString;
 
 import org.apache.harmony.security.internal.nls.Messages;
-import org.apache.harmony.crypto.utils.AlgNameMapper;
 
 import org.apache.harmony.security.PublicKeyImpl;
 

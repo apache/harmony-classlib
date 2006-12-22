@@ -42,8 +42,8 @@ import java.util.Random;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.utils.AlgNameMapper;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.BasicConstraints;

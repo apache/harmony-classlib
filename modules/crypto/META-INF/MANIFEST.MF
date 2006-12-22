@@ -24,10 +24,10 @@ Import-Package: java.io,
  org.apache.harmony.security.asn1,
  org.apache.harmony.security.fortress,
  org.apache.harmony.security.tests.support;hy_usage=test;resolution:=optional,
+ org.apache.harmony.security.utils,
  org.apache.harmony.security.x509,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.support.resource;hy_usage=test;resolution:=optional
 Export-Package: javax.crypto,
  javax.crypto.interfaces,
- javax.crypto.spec,
- org.apache.harmony.crypto.utils;version="1.0.0"
+ javax.crypto.spec

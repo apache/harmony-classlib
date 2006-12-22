@@ -35,11 +35,11 @@ import java.security.spec.DSAPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
-import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.PrivateKeyImpl;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs8.PrivateKeyInfo;
+import org.apache.harmony.security.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 
 /**

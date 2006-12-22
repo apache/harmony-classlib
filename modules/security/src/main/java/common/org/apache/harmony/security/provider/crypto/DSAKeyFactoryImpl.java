@@ -42,6 +42,7 @@ import java.security.interfaces.DSAPublicKey;
 
 import org.apache.harmony.security.provider.crypto.DSAPrivateKeyImpl;
 import org.apache.harmony.security.provider.crypto.DSAPublicKeyImpl;
+import org.apache.harmony.security.utils.AlgNameMapper;
 
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Integer;
@@ -53,7 +54,6 @@ import org.apache.harmony.security.asn1.ASN1OctetString;
 
 import org.apache.harmony.security.internal.nls.Messages;
 
-import org.apache.harmony.crypto.utils.AlgNameMapper;
 
 public class DSAKeyFactoryImpl extends KeyFactorySpi {
 

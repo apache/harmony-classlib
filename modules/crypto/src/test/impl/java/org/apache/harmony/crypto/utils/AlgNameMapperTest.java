@@ -17,6 +17,8 @@
 
 package org.apache.harmony.crypto.utils;
 
+import org.apache.harmony.security.utils.AlgNameMapper;
+
 import junit.framework.TestCase;
 
 public class AlgNameMapperTest extends TestCase {

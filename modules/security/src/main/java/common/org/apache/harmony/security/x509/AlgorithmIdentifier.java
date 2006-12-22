@@ -24,13 +24,13 @@ package org.apache.harmony.security.x509;
 
 import java.util.Arrays;
 
-import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.utils.AlgNameMapper;
 
 
 /**
