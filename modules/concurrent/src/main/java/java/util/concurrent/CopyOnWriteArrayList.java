@@ -387,7 +387,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         return sb.toString();
     }
 
-    // private and pakage private methods
+    // private and package private methods
 
     @SuppressWarnings("unchecked")
     private final E[] newElementArray(int size) {
@@ -554,7 +554,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 
     /**
      * Checks if the specified range of the
-     * array contains all of the elemnts in the collection
+     * array contains all of the elements in the collection
      *
      * @param c     collection with elements
      * @param data  array where to search the elements
@@ -1021,7 +1021,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         }
 
         /**
-         * Imlementation of <code>ListIterator</code> for the
+         * Implementation of <code>ListIterator</code> for the
          * <code>SubList</code>
          * gets a snapshot of the sublist,
          * never throws ConcurrentModificationException
