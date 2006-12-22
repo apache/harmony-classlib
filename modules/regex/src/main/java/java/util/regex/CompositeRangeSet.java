@@ -86,7 +86,7 @@ package java.util.regex;
  * characters into two ranges: the first consisting of these surrogate
  * characters and the second consisting of all others characters
  * from the parent range.
- * This class represents the parent range splitted in such a manner.
+ * This class represents the parent range split in such a manner.
  */
 class CompositeRangeSet extends JointSet {
 

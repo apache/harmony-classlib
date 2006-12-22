@@ -306,7 +306,7 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyGraph extends LazyAlnum {
         protected AbstractCharClass computeValue() {
-            /* plus punctiation */
+            /* plus punctuation */
             return ((CharClass) super.computeValue()).add(0x21, 0x40).add(0x5B,
                     0x60).add(0x7B, 0x7E);
         }

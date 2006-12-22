@@ -62,7 +62,7 @@ abstract class AbstractSet {
     }
 
     /**
-     * Checks if this node matches in given position and requrcively call
+     * Checks if this node matches in given position and recursively call
      * next node matches on positive self match. Returns positive integer if 
      * entire match succeed, negative otherwise
      * @param stringIndex - string index to start from;
@@ -183,11 +183,11 @@ abstract class AbstractSet {
     /**
      * Returns true if the given node intersects with this one,
      * false otherwise.
-     * This method is bieng used for quantifiers construction, 
+     * This method is being used for quantifiers construction, 
      * lets consider the following regular expression (a|b)*ccc.
      * 
      * (a|b) does not intersects with "ccc" and thus can be quantified 
-     * greedly (w/o kickbacks), like *+ instead of *.
+     * greedily (w/o kickbacks), like *+ instead of *.
      * 
      * @param set - usually previous node
      * 

@@ -66,11 +66,11 @@ class DotQuantifierSet extends QuantifierSet {
         // we don't skip line terminators here, but return zero match instead
         // //
 
-        // 2. find first occurance of the searched pattern
+        // 2. find first occurrence of the searched pattern
         // //
         int res = next.find(stringIndex, testString, matchResult);
 
-        // 3. Check if we have other occurances till the end of line
+        // 3. Check if we have other occurrences till the end of line
         // (because .* is greedy and we need last one)
         // //
         if (res >= 0) {

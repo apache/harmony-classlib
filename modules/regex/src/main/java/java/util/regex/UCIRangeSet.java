@@ -23,7 +23,7 @@ package java.util.regex;
 
 /**
  * Represents node accepting single character from the given char class. Note,
- * this class contains normalaized characters fo unicode case, asci case is
+ * this class contains normalized characters fo unicode case, asci case is
  * supported through adding both symbols to the range.
  * 
  * @author Nikolay A. Kuznetsov

@@ -220,7 +220,7 @@ public final class Pattern implements Serializable {
 	 * than ASCII, then the UNICODE_CASE must also be set to enable Unicode case
 	 * detection.
 	 * <dt><code>UNICODE_CASE</code> (0x0040)
-	 * <dd>Enables Unicode case folding if used in conjuntion with the
+	 * <dd>Enables Unicode case folding if used in conjunction with the
 	 * <code>CASE_INSENSITIVE</code> flag. If <code>CASE_INSENSITIVE</code>
 	 * is not set, then this flag has no effect.
 	 * <dt><code>COMMENTS</code> (0x0004)
@@ -242,7 +242,7 @@ public final class Pattern implements Serializable {
 	 * <dd>Enables the DOT (".") character in regular expressions to match line
 	 * terminators. By default, line terminators are not matched by DOT.
 	 * <dt><code>CANON_EQ</code> (0x0080)
-	 * <dd>Enables matching of character sequences which are cacnonically
+	 * <dd>Enables matching of character sequences which are canonically
 	 * equivalent according to the Unicode standard. Canonical equivalence is
 	 * described here: http://www.unicode.org/reports/tr15/. By default,
 	 * canonical equivalence is not detected while matching.
@@ -1007,7 +1007,7 @@ public final class Pattern implements Serializable {
     }
 
     /**
-     * proceess [...] ranges
+     * process [...] ranges
      */
     private CharClass processRangeExpression(boolean alt) {
         CharClass res = new CharClass(alt, hasFlag(Pattern.CASE_INSENSITIVE),
@@ -1335,7 +1335,7 @@ public final class Pattern implements Serializable {
     }
 
     /**
-     * Dismiss public costructor.
+     * Dismiss public constructor.
      * 
      */
     private Pattern() {

@@ -330,21 +330,21 @@ public class PatternTest extends TestCase {
 		String pattern = "b)a";
 		try {
 			Pattern.compile(pattern);
-            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
+            fail("Expected a PatternSyntaxException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
 			// pass
 		}
 		pattern = "bcde)a";
 		try {
 			Pattern.compile(pattern);
-            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
+            fail("Expected a PatternSyntaxException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
 			// pass
 		}
 		pattern = "bbg())a";
 		try {
 			Pattern pat = Pattern.compile(pattern);
-            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
+            fail("Expected a PatternSyntaxException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
 			// pass
 		}
@@ -352,7 +352,7 @@ public class PatternTest extends TestCase {
 		pattern = "cdb(?i))a";
 		try {
 			Pattern pat = Pattern.compile(pattern);
-            fail("Expected a PatternSyntacException when compiling pattern: " + pattern);
+            fail("Expected a PatternSyntaxException when compiling pattern: " + pattern);
 		} catch (PatternSyntaxException e) {
 			// pass
 		}
@@ -793,7 +793,7 @@ public class PatternTest extends TestCase {
 		pat = Pattern.compile("(?>aa|a)aabb");
 		assertFalse(pat.matcher("aaabb").matches());
 
-		// quantifiers over look aheads
+		// quantifiers over look ahead
 		pat = Pattern.compile(".*(?<=abc)*\\.log$");
 		assertTrue(pat.matcher("cde.log").matches());
 		pat = Pattern.compile(".*(?<=abc)+\\.log$");

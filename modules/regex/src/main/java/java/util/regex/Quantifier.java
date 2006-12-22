@@ -23,7 +23,7 @@ package java.util.regex;
 
 /**
  * Represents RE quantifier; contains two fields responsible for min and max
- * number of repetitions. Negative value for maximum bumber of repetition
+ * number of repetitions. Negative value for maximum number of repetition
  * represents infinity(i.e. +,*)
  * 
  * @author Nikolay A. Kuznetsov

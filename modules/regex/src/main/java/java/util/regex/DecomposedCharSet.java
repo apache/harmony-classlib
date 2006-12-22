@@ -214,7 +214,7 @@ class DecomposedCharSet extends JointSet {
      * 
      * @param strIndex - index to read codepoint at
      * @param testString - input
-     * @param matchResult - auxilary object
+     * @param matchResult - auxiliary object
      * @return codepoint at given strIndex at testString and
      */
     public int codePointAt(int strIndex, CharSequence testString,

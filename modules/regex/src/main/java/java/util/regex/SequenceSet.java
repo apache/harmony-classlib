@@ -22,9 +22,9 @@
 package java.util.regex;
 
 /**
- * This class represents nodes constructed with character sequenses. For
+ * This class represents nodes constructed with character sequences. For
  * example, lets consider regular expression: ".*word.*". During regular
- * expression compilation phase character sequense w-o-r-d, will be represented
+ * expression compilation phase character sequence w-o-r-d, will be represented
  * with single node for the entire word.
  * 
  * During the match phase, Moyer-Moore algorithm will be used for fast
@@ -99,7 +99,7 @@ class SequenceSet extends LeafSet {
     }
 
     public String getName() {
-        return "secuence: " + string; //$NON-NLS-1$
+        return "sequence: " + string; //$NON-NLS-1$
     }
 
     public boolean first(AbstractSet set) {

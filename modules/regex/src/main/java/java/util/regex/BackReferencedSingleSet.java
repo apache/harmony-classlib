@@ -43,7 +43,7 @@ class BackReferencedSingleSet extends SingleSet {
      *
      * To fix this problem we replace backreferenced groups with instances of 
      * this class, which will use matches instead of find; this will affect 
-     * perfomance, but ensure correctness of the match.
+     * performance, but ensure correctness of the match.
      */
 
 	public BackReferencedSingleSet(AbstractSet child, FSet fSet) {

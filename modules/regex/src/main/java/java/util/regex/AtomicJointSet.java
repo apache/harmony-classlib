@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 /**
  * This class represent atomic group (?>X), once X matches,
- * this match become unchangable till the end of the match.
+ * this match become unchangeable till the end of the match.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.4.2.2 $

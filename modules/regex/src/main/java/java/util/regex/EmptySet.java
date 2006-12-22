@@ -22,7 +22,7 @@
 package java.util.regex;
 
 /**
- * Valid constatnt zero character match.
+ * Valid constant zero character match.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.4.2.2 $

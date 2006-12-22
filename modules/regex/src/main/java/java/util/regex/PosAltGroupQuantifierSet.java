@@ -23,7 +23,7 @@ package java.util.regex;
 
 /**
  * Possessive quantifier over group, see java.util.regex.GroupQuantifierSet 
- * for more dertails.
+ * for more details.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.7.2.2 $

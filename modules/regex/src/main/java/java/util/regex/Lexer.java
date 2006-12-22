@@ -493,7 +493,7 @@ class Lexer {
 
     /**
      * Moves pointer one position right; save current character to lookBack;
-     * lookAhead to current one and finaly read one more to lookAhead;
+     * lookAhead to current one and finally read one more to lookAhead;
      */
     private void movePointer() {
         // swap pointers
@@ -505,7 +505,7 @@ class Lexer {
         boolean reread;
         do {
             reread = false;
-            // read next character analize it and construct token:
+            // read next character analyze it and construct token:
             // //
             
             lookAhead = (index < pattern.length) ? nextCodePoint() : 0;
@@ -762,7 +762,7 @@ class Lexer {
                                      */
                                     if (lookAhead >= 256) {
                                     	
-                                    	//Erase auxiliaury bit
+                                    	//Erase auxiliary bit
                                     	lookAhead = (lookAhead & 0xff);    
                                     	flags = lookAhead;
                                     	lookAhead = lookAhead << 16;
@@ -1264,7 +1264,7 @@ class Lexer {
         
         if (Character.isHighSurrogate(high)) {
             
-            //low and high char may be delimetered by spaces
+            //low and high char may be delimited by spaces
             int lowExpectedIndex = prevNW + 1;
             
             if (lowExpectedIndex < pattern.length) { 

@@ -26,7 +26,7 @@ import java.util.Arrays;
 import org.apache.harmony.regex.internal.nls.Messages;
 
 /**
- * Match result implementaion
+ * Match result implementation
  * Note: probably it might make sense to combine this class with Matcher.
  *  
  * @author Nikolay A. Kuznetsov

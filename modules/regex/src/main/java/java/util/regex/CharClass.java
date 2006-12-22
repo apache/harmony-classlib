@@ -65,7 +65,7 @@ class CharClass extends AbstractCharClass {
 
     /*
      * We can use this method safely even if nonBitSet != null 
-     * due to specific of range constrcutions in regular expressions.
+     * due to specific of range constructions in regular expressions.
      */
     public CharClass add(int ch) {
         if (ci) {
@@ -103,7 +103,7 @@ class CharClass extends AbstractCharClass {
     }
 
     /*
-     * The difference between add(AbstarctCharClass) and union(AbstractCharClass)
+     * The difference between add(AbstractCharClass) and union(AbstractCharClass)
      * is that add() is used for constructions like "[^abc\\d]"
      * (this pattern doesn't match "1")
      * while union is used for constructions like "[^abc[\\d]]"

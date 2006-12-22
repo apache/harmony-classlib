@@ -22,7 +22,7 @@
 package java.util.regex;
 
 /**
- * Default quantifier over groups, in fact this type of quantifiier is
+ * Default quantifier over groups, in fact this type of quantifier is
  * generally used for constructions we cant identify number of characters they 
  * consume.
  * 

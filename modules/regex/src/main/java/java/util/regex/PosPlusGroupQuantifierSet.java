@@ -22,7 +22,7 @@
 package java.util.regex;
 
 /**
- * Posessive + quantifier node over groups.
+ * Possessive + quantifier node over groups.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.7.2.2 $

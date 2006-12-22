@@ -23,7 +23,7 @@ package java.util.regex;
 
 /**
  * Represents word boundary, checks current character and previous one if
- * differet types returns true;
+ * different types returns true;
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.3.2.2 $
