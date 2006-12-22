@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
- * TODO some sync mechanism wich backend, Performance - check file edit date
+ * TODO some sync mechanism with backend, Performance - check file edit date
  */
 /*
  * Default implementation of <code>AbstractPreferences</code> for Linux platform,
@@ -145,7 +145,7 @@ class FilePreferencesImpl extends AbstractPreferences {
     /*
      * (non-Javadoc)
      * 
-     * @see java.util.prefs.AbstractPreferences#chilrenNamesSpi()
+     * @see java.util.prefs.AbstractPreferences#childrenNamesSpi()
      */
     protected String[] childrenNamesSpi() throws BackingStoreException {
         String[] names = AccessController

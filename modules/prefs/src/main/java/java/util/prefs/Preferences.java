@@ -34,7 +34,7 @@ import org.apache.harmony.prefs.internal.nls.Messages;
  * hierarchical way. Two hierarchy tree is maintained, one for system
  * preferences shared by all users, and the other for user preferences which is
  * specific for each user. Preferences hierarchy tree and data is stored
- * persistly in implementation-dependent backend, and user doesn't need to care
+ * precisely in implementation-dependent backend, and user doesn't need to care
  * about the details.
  * <p>
  * Every node has one name and one unique absolute path in a similar way with

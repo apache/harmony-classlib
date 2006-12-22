@@ -21,7 +21,7 @@ import java.util.EventListener;
 import java.util.prefs.NodeChangeEvent;
 
 /**
- * This interface is used to handle preferences node change event. Implmenetation 
+ * This interface is used to handle preferences node change event. Implementation 
  * of this interface can be installed by <code>Preferences</code> instance.
  * 
  * @see Preferences
