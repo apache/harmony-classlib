@@ -307,10 +307,10 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	}
 
 	/**
-	 * Returns a double at the specifed index, and the position is not changed.
+	 * Returns a double at the specified index, and the position is not changed.
 	 * 
 	 * @param index     The index, must be no less than zero and less than limit
-	 * @return A double at the specifed index.
+	 * @return A double at the specified index.
 	 * @exception IndexOutOfBoundsException If index is invalid
 	 */
 	public abstract double get(int index);
@@ -407,7 +407,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	/**
 	 * Writes <code>double</code>s in the given double array to the current
 	 * position and increase the position by the number of <code>double</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -429,7 +429,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	/**
 	 * Writes <code>double</code>s in the given double array, starting from
 	 * the specified offset, to the current position and increase the position
-	 * by the number of <code>double</code>s writtern.
+	 * by the number of <code>double</code>s written.
 	 * 
 	 * @param src
 	 *            The source double array

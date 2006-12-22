@@ -54,7 +54,7 @@ public class SelectorProviderTest extends TestCase {
         System.setSecurityManager(new MockSelectorProviderSecurityManager());
         try {
             // should not throw SecurityException since it has been initialized
-            // in the begining of this method.
+            // in the beginning of this method.
             SelectorProvider testProvider = SelectorProvider.provider();
             assertNotNull(testProvider);
         } finally {

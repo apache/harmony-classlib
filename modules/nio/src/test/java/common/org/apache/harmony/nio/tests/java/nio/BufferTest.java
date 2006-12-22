@@ -163,13 +163,13 @@ public class BufferTest extends TestCase {
             buf.limit(-1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
-            // exptected
+            // expected
         }
         try {
             buf.limit(buf.capacity() + 1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
-            // exptected
+            // expected
         }
 
         // restore state
@@ -220,13 +220,13 @@ public class BufferTest extends TestCase {
             buf.position(-1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
-            // exptected
+            // expected
         }
         try {
             buf.position(buf.limit() + 1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
-            // exptected
+            // expected
         }
         
         buf.mark();
@@ -250,7 +250,7 @@ public class BufferTest extends TestCase {
                 buf.reset();
                 fail("Should throw Exception"); //$NON-NLS-1$
             } catch (InvalidMarkException e) {
-                // exptected
+                // expected
             }
         }
         
@@ -289,7 +289,7 @@ public class BufferTest extends TestCase {
             buf.reset();
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (InvalidMarkException e) {
-            // exptected
+            // expected
         }
 
         // restore state
@@ -309,7 +309,7 @@ public class BufferTest extends TestCase {
             buf.reset();
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (InvalidMarkException e) {
-            // exptected
+            // expected
         }
 
         // restore state

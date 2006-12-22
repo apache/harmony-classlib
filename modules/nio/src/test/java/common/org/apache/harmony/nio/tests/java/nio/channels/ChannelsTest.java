@@ -43,7 +43,7 @@ import junit.framework.TestCase;
 
 /**
  * Note: the test case uses a temp text file named "test" which contains 31
- * charactors : "P@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]"
+ * characters : "P@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]"
  * 
  */
 
@@ -648,7 +648,7 @@ public class ChannelsTest extends TestCase {
     }
 	
     /**
-	 * @tests java.nio.channesl.Channels#newReader(ReadableByteChannel channel,
+	 * @tests java.nio.channels.Channels#newReader(ReadableByteChannel channel,
 	 *        String charsetName)
 	 */
 	public void test_newReader_LReadableByteChannel_LString()

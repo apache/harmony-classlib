@@ -44,7 +44,7 @@ import java.io.IOException;
  * <p>
  * Once a lock is acquired it is immutable in all its state except <code>isValid()</code>.  The lock
  * will initially be valid, but may be rendered invalid by explicit removal of the lock, using <code>
- * release()</code>, or implictly by closing the channel or exiting the process (terminating the JVM).</p>
+ * release()</code>, or implicitly by closing the channel or exiting the process (terminating the JVM).</p>
  * <p>
  * <em>Platform dependencies</em></p>
  * <p>
@@ -136,7 +136,7 @@ public abstract class FileLock {
 	}
 
 	/**
-	 * Answers true if the file lock is shared with other proceses and false if
+	 * Answers true if the file lock is shared with other processes and false if
 	 * it is not.
 	 * 
 	 * @return true if the lock is a shared lock, and false if it is exclusive.

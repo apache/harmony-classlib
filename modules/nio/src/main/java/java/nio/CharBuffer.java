@@ -124,7 +124,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 * <p>
 	 * The new buffer's position will be <code>start</code>, limit will be
 	 * <code>end</code>, capacity will be the length of the char sequence.
-	 * The new buffer is readnly.
+	 * The new buffer is readonly.
 	 * </p>
 	 * 
 	 * @param chseq
@@ -396,11 +396,11 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	}
 
 	/**
-	 * Returns a char at the specifed index, and the position is not changed.
+	 * Returns a char at the specified index, and the position is not changed.
 	 * 
 	 * @param index
 	 *            The index, must be no less than zero and less than limit
-	 * @return A char at the specifed index.
+	 * @return A char at the specified index.
 	 * @exception IndexOutOfBoundsException
 	 *                If index is invalid
 	 */
@@ -510,7 +510,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	/**
 	 * Writes <code>char</code>s in the given char array to the current
 	 * position and increase the position by the number of <code>char</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -532,7 +532,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	/**
 	 * Writes <code>char</code>s in the given char array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>char</code>s writtern.
+	 * the number of <code>char</code>s written.
 	 * 
 	 * @param src
 	 *            The source char array
@@ -638,7 +638,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	/**
 	 * Write <code>char</code>s of the given string to the current position
 	 * of this buffer, and increase the position by the number of
-	 * <code>char</code>s writtern.
+	 * <code>char</code>s written.
 	 * 
 	 * @param str
 	 *            The string to write

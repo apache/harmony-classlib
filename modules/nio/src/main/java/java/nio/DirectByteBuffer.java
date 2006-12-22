@@ -58,7 +58,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 
     /*
      * Constructs a new direct byte buffer of the given capacity on newly
-     * allocatd OS memory.  The memory will have been zeroed.  When the
+     * allocated OS memory.  The memory will have been zeroed.  When the
      * instance is discarded the OS memory will be freed if it has not
      * already been done so by an explicit call to #free().  Callers are
      * encouraged to explicitly free the memory where possible.

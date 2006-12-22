@@ -72,7 +72,7 @@ public abstract class FileChannelImpl extends FileChannel {
 
 	/*
 	 * Create a new file channel implementation class that wraps the given file
-	 * handle and operates in the specififed mode.
+	 * handle and operates in the specified mode.
 	 * 
 	 */
     public FileChannelImpl(Object stream, long handle) {

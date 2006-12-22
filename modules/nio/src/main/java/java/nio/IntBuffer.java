@@ -319,11 +319,11 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	}
 
 	/**
-	 * Returns a int at the specifed index, and the position is not changed.
+	 * Returns a int at the specified index, and the position is not changed.
 	 * 
 	 * @param index
 	 *            The index, must be no less than zero and less than limit
-	 * @return A int at the specifed index.
+	 * @return A int at the specified index.
 	 * @exception IndexOutOfBoundsException
 	 *                If index is invalid
 	 */
@@ -420,7 +420,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	/**
 	 * Writes <code>int</code>s in the given int array to the current
 	 * position and increase the position by the number of <code>int</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -442,7 +442,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	/**
 	 * Writes <code>int</code>s in the given int array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>int</code>s writtern.
+	 * the number of <code>int</code>s written.
 	 * 
 	 * @param src
 	 *            The source int array

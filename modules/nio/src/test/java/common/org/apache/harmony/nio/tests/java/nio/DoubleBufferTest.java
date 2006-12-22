@@ -48,7 +48,7 @@ public class DoubleBufferTest extends AbstractBufferTest {
 
     /*
      * Test with bit sequences that represent the IEEE754 doubles Positive
-     * inifinity, negative infinity, and NaN.
+     * infinity, negative infinity, and NaN.
      */
     public void testNaNs() {
         long[] nans = new long[] { 0x7ff0000000000000L, 0xfff0000000000000L,

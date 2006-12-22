@@ -20,16 +20,16 @@ package java.nio.channels;
 import java.io.IOException;
 
 /**
- * Channels that implement this interface are both asynchronously closeable and
- * interruptable.
+ * Channels that implement this interface are both asynchronously closable and
+ * interruptible.
  * <p>
- * A channel that is asynchronously closeable permits a thread blocked on an IO
+ * A channel that is asynchronously closable permits a thread blocked on an IO
  * operation (the IO thread) to be released by another thread calling the
  * channel's <code>close()</code> method. The IO thread will throw an
  * <code>AsynchronousCloseException</code> and the channel will be closed.
  * </p>
  * <p>
- * A channel that is interruptable permits a thread blocked on an IO operation
+ * A channel that is interruptible permits a thread blocked on an IO operation
  * (the IO thread) to be interrupted by another thread (by invoking
  * <code>interrupt()</code> on the IO thread). When the IO thread is
  * interrupted it will throw a <code>ClosedByInterruptException</code>

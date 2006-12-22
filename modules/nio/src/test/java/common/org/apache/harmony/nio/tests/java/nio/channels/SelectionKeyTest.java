@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import tests.support.Support_PortManager;
 
 /*
- * Tests for SelectionKey and its default implemetation
+ * Tests for SelectionKey and its default implementation
  */
 public class SelectionKeyTest extends TestCase {
 

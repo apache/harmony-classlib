@@ -186,7 +186,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The channel.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     public abstract DatagramChannel openDatagramChannel() throws IOException;
 
@@ -195,7 +195,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The pipe.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     public abstract Pipe openPipe() throws IOException;
 
@@ -204,7 +204,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The selector.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     public abstract AbstractSelector openSelector() throws IOException;
 
@@ -213,7 +213,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The channel.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     public abstract ServerSocketChannel openServerSocketChannel()
             throws IOException;
@@ -223,7 +223,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The channel.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     public abstract SocketChannel openSocketChannel() throws IOException;
 
@@ -232,7 +232,7 @@ public abstract class SelectorProvider extends Object {
      * 
      * @return The channel.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      * @throws SecurityException
      *             If there is a security manager, and it denies
      *             RuntimePermission("selectorProvider").

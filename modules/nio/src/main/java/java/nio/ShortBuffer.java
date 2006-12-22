@@ -320,11 +320,11 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	}
 
 	/**
-	 * Returns a short at the specifed index, and the position is not changed.
+	 * Returns a short at the specified index, and the position is not changed.
 	 * 
 	 * @param index
 	 *            The index, must be no less than zero and less than limit
-	 * @return A short at the specifed index.
+	 * @return A short at the specified index.
 	 * @exception IndexOutOfBoundsException
 	 *                If index is invalid
 	 */
@@ -425,7 +425,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	/**
 	 * Writes <code>short</code>s in the given short array to the current
 	 * position and increase the position by the number of <code>short</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -447,7 +447,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	/**
 	 * Writes <code>short</code>s in the given short array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>short</code>s writtern.
+	 * the number of <code>short</code>s written.
 	 * 
 	 * @param src
 	 *            The source short array

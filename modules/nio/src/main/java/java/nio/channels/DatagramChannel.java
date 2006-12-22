@@ -172,7 +172,7 @@ public abstract class DatagramChannel extends AbstractSelectableChannel
 	 * @param target
 	 *            The byte buffer to store the received datagram.
 	 * @return Address of the datagram if the transfer is performed, or null if
-	 *         the channel is in non-blocking mode and the datagrama are
+	 *         the channel is in non-blocking mode and the datagram are
 	 *         unavailable.
 	 * @throws ClosedChannelException
 	 *             If the channel is already closed.

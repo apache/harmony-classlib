@@ -51,7 +51,7 @@ class MappedByteBufferFactory {
 
 	static MappedByteBuffer getBuffer(PlatformAddress addr, int mapmode,
 			long size, int offset) throws Exception {
-		// Spec points out explicitly that the size of mmap should be no greater than
+		// Spec points out explicitly that the size of map should be no greater than
         // Integer.MAX_VALUE, so long to int cast is safe here.
 		return (MappedByteBuffer) constructor.newInstance(new Object[] { addr,
 				new Integer((int) size), new Integer(offset),

@@ -27,7 +27,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
 /**
- * This class roots the implementation of interruptable channels.
+ * This class roots the implementation of interruptible channels.
  * <p>
  * The basic usage pattern for an interruptible channel is to invoke
  * <code>begin()</code> before any IO operations, then
@@ -55,7 +55,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 					});
 			setInterruptAction.setAccessible(true);
 		} catch (Exception e) {
-			// FIXME: be accomodate before VM actually provides
+			// FIXME: be accommodate before VM actually provides
 			// setInterruptAction method
 			// throw new Error(e);
 		}
@@ -109,7 +109,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * corresponding <code>end(boolean)</code>.
 	 */
 	protected final void begin() {
-		// FIXME: be accomodate before VM actually provides
+		// FIXME: be accommodate before VM actually provides
 		// setInterruptAction method
 		if (setInterruptAction != null) {
 			try {
@@ -134,7 +134,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * End an IO operation that was previously started with <code>begin()</code>.
 	 * 
 	 * @param success
-	 *            pass true if the operation succeeded and had a side effcet on
+	 *            pass true if the operation succeeded and had a side effect on
 	 *            the Java system, or false if not.
 	 * @throws AsynchronousCloseException
 	 *             the channel was closed while the IO operation was in
@@ -143,7 +143,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 *             the thread conducting the IO operation was interrupted.
 	 */
 	protected final void end(boolean success) throws AsynchronousCloseException {
-		// FIXME: be accomodate before VM actually provides
+		// FIXME: be accommodate before VM actually provides
 		// setInterruptAction method
 		if (setInterruptAction != null) {
 			try {
@@ -174,7 +174,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * <code>AsynchronousCloseException</code>.
 	 * 
 	 * @throws IOException
-	 *             if a problem occurs closig the channel.
+	 *             if a problem occurs closing the channel.
 	 */
 	protected abstract void implCloseChannel() throws IOException;
 }

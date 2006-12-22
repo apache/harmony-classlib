@@ -504,7 +504,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         return sum;
     }
     /*
-     * wirte the source. return the count of bytes written.
+     * write the source. return the count of bytes written.
      */
     private int writeImpl(ByteBuffer source) throws IOException {
         if (!source.hasRemaining()) {

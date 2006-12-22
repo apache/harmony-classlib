@@ -24,7 +24,7 @@ package java.nio;
  * <ul>
  * <li>Capacity, is the number of elements a buffer can hold. Capacity is no
  * less than zero and never changes.</li>
- * <li>Posotion, is a cursor of this buffer. Elements are read or write at the
+ * <li>Position, is a cursor of this buffer. Elements are read or write at the
  * position if you do not specify an index explicitly. Position is no less than
  * zero and no greater than the limit.</li>
  * <li>Limit controls the scope of accessible elements. You can only read or

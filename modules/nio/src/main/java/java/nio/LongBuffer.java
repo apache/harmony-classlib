@@ -321,11 +321,11 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
 	}
 
 	/**
-	 * Returns a long at the specifed index, and the position is not changed.
+	 * Returns a long at the specified index, and the position is not changed.
 	 * 
 	 * @param index
 	 *            The index, must be no less than zero and less than limit
-	 * @return A long at the specifed index.
+	 * @return A long at the specified index.
 	 * @exception IndexOutOfBoundsException
 	 *                If index is invalid
 	 */
@@ -428,7 +428,7 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
 	/**
 	 * Writes <code>long</code>s in the given long array to the current
 	 * position and increase the position by the number of <code>long</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -450,7 +450,7 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
 	/**
 	 * Writes <code>long</code>s in the given long array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>long</code>s writtern.
+	 * the number of <code>long</code>s written.
 	 * 
 	 * @param src
 	 *            The source long array

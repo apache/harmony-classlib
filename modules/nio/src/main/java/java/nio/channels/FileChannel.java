@@ -37,11 +37,11 @@ import java.nio.channels.spi.AbstractInterruptibleChannel;
  * write-only. FileChannels created from a RandomAccessFile created in mode "rw"
  * are read/write. FileChannels created from a RandomAccessFile that was opened
  * in append-mode will also be in append-mode -- meaning that each write will be
- * preceeded by a seek to the end of file. Some platforms will seek and write
+ * proceeded by a seek to the end of file. Some platforms will seek and write
  * atomically, others will not.
  * </p>
  * <p>
- * FileChannels has a virtual pointer into the file which is refered to as a
+ * FileChannels has a virtual pointer into the file which is referred to as a
  * file <em>position</em>. The position can be manipulated by repositioning
  * it within the file, and its current position can be queried.
  * </p>
@@ -165,7 +165,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 * @throws ClosedChannelException
 	 *             if the channel is already closed.
 	 * @throws IOException
-	 *             some other problem occured.
+	 *             some other problem occurred.
 	 */
 	public abstract void force(boolean metadata) throws IOException;
 
@@ -195,7 +195,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 *             The channel was closed while the calling thread was waiting
 	 *             to acquire the lock.
 	 * @throws IOException
-	 *             some other problem occured obtaining the requested lock.
+	 *             some other problem occurred obtaining the requested lock.
 	 */
 	public final FileLock lock() throws IOException {
 		return lock(0L, Long.MAX_VALUE, false);
@@ -382,7 +382,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 *             operation is in progress. The calling thread will have the
 	 *             interrupt state set, and the channel will be closed.
 	 * @throws IOException
-	 *             some other IO error occured.
+	 *             some other IO error occurred.
 	 */
 	public abstract int read(ByteBuffer buffer, long position)
 			throws IOException;
@@ -435,7 +435,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
      * Transfers bytes into this channel's file from the given readable byte
      * channel. It may be very efficient.
      * 
-     * By invoking this methid, it will read form the source channel and write
+     * By invoking this method, it will read form the source channel and write
      * into the file channel.
      * 
      * Note: no guarantee whether all bytes may be transferred. And it does not
@@ -471,7 +471,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
      * Transfers data from the file to the given channel. It may be very
      * efficient.
      * 
-     * By invoking this methid, it will read form the file and write into the
+     * By invoking this method, it will read form the file and write into the
      * writable channel.
      * 
      * Note: no guarantee whether all bytes may be transfered.And it does not
@@ -524,7 +524,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 * @throws NonWritableChannelException
 	 *             the channel cannot be written.
 	 * @throws IOException
-	 *             some other IO problem occured.
+	 *             some other IO problem occurred.
 	 * @return this channel
 	 */
 	public abstract FileChannel truncate(long size) throws IOException;
@@ -568,7 +568,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
      * </p>
      * 
      * @param position
-     *            the starting positon
+     *            the starting position
      * @param size
      *            the size of file to lock
      * @param shared
@@ -630,7 +630,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 * @throws IllegalArgumentException
 	 *             if <code>position</code> is less than <code>-1</code>.
 	 * @throws ClosedChannelException
-	 *             if the channel is aleady closed.
+	 *             if the channel is already closed.
 	 * @throws NonWritableChannelException
 	 *             if the channel was not opened in write-mode.
 	 * @throws AsynchronousCloseException
@@ -641,7 +641,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 *             operation is in progress. The calling thread will have the
 	 *             interrupt state set, and the channel will be closed.
 	 * @throws IOException
-	 *             some other IO error occured.
+	 *             some other IO error occurred.
 	 */
 	public abstract int write(ByteBuffer buffer, long position)
 			throws IOException;

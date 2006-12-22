@@ -353,7 +353,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * <code>byte</code>s are exactly the same. Position, limit, capacity and
 	 * mark are not considered.</p>
 	 * 
-	 * @param other the object to comapre against
+	 * @param other the object to compare against
 	 * @return Whether this byte buffer equals to another object.
 	 */
 	public boolean equals(Object other) {
@@ -442,10 +442,10 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	}
 
 	/**
-	 * Returns a byte at the specifed index, and the position is not changed.
+	 * Returns a byte at the specified index, and the position is not changed.
 	 * 
 	 * @param index     The index, must be no less than zero and less than limit
-	 * @return A byte at the specifed index.
+	 * @return A byte at the specified index.
 	 * @exception IndexOutOfBoundsException If index is invalid
 	 */
 	public abstract byte get(int index);
@@ -742,7 +742,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	/**
 	 * Writes <code>byte</code>s in the given byte array to the current
 	 * position and increase the position by the number of <code>byte</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -764,7 +764,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	/**
 	 * Writes <code>byte</code>s in the given byte array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>byte</code>s writtern.
+	 * the number of <code>byte</code>s written.
 	 * 
 	 * @param src
 	 *            The source byte array
@@ -864,7 +864,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	/**
 	 * Write a char to the specified index of this buffer.
 	 * <p>
-	 * The char is converted to bytes using the current byte order. The posotion
+	 * The char is converted to bytes using the current byte order. The position
 	 * is not changed.
 	 * </p>
 	 * 
@@ -902,7 +902,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * Write a double to the specified index of this buffer.
 	 * <p>
 	 * The double is converted to bytes using the current byte order. The
-	 * posotion is not changed.
+	 * position is not changed.
 	 * </p>
 	 * 
 	 * @param index
@@ -939,7 +939,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * Write a float to the specified index of this buffer.
 	 * <p>
 	 * The float is converted to bytes using the current byte order. The
-	 * posotion is not changed.
+	 * position is not changed.
 	 * </p>
 	 * 
 	 * @param index
@@ -975,7 +975,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	/**
 	 * Write a int to the specified index of this buffer.
 	 * <p>
-	 * The int is converted to bytes using the current byte order. The posotion
+	 * The int is converted to bytes using the current byte order. The position
 	 * is not changed.
 	 * </p>
 	 * 
@@ -1050,7 +1050,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * Write a short to the specified index of this buffer.
 	 * <p>
 	 * The short is converted to bytes using the current byte order. The
-	 * posotion is not changed.
+	 * position is not changed.
 	 * </p>
 	 * 
 	 * @param index

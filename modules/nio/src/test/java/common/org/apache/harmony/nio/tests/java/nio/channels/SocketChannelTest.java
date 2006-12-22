@@ -301,7 +301,7 @@ public class SocketChannelTest extends TestCase {
         assertFalse(this.channel1.isConnected());
         assertTrue(this.channel1.isConnectionPending());
         Socket s1 = this.channel1.socket();
-        // status of not conneted
+        // status of not connected
         assertSocketBeforeConnect(s1);
         Socket s2 = this.channel1.socket();
         // same
@@ -340,7 +340,7 @@ public class SocketChannelTest extends TestCase {
         assertFalse(this.channel1.isConnected());
         assertTrue(this.channel1.isConnectionPending());
         Socket s1 = this.channel1.socket();
-        // Action of not conneted
+        // Action of not connected
         assertSocketAction_NonBlock_BeforeConnect(s1);
         Socket s2 = this.channel1.socket();
         // same

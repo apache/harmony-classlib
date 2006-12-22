@@ -436,7 +436,7 @@ public class DatagramChannelTest extends TestCase {
                     assertFalse(channel1.isBlocking());
                     datagramSocket1.close();
                 } catch (Exception e) {
-                    // do nonthing
+                    // do nothing
                 }
             }
         }.start();
@@ -2276,7 +2276,7 @@ public class DatagramChannelTest extends TestCase {
                     Thread.sleep(TIME_UNIT);
                     channel2.close();
                 } catch (Exception e) {
-                    // do nonthing
+                    // do nothing
                 }
             }
         }.start();

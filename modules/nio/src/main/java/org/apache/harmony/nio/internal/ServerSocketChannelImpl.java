@@ -63,7 +63,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     // The fd to interact with native code
     private final FileDescriptor fd;
 
-    // The interanl ServerSocket
+    // The internal ServerSocket
     private final ServerSocket socket;
 
     private final SocketImpl impl;

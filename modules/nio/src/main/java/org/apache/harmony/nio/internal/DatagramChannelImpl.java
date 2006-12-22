@@ -501,7 +501,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     }
 
     /*
-     * wirte the source. return the count of bytes written.
+     * write the source. return the count of bytes written.
      */
     private int writeImpl(ByteBuffer buf) throws IOException {
         // the return value

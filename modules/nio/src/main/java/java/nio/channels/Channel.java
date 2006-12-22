@@ -30,7 +30,7 @@ import java.io.IOException;
  * </code>.
  * </p>
  * <p>
- * Particular implementations or sub-interfaces of Channel dictate whther they
+ * Particular implementations or sub-interfaces of Channel dictate whether they
  * are thread-safe or not.
  * </p>
  * 
@@ -56,7 +56,7 @@ public interface Channel extends Closeable {
 	 * </p>
 	 * <p>
 	 * If multiple threads attempts to simultaneously close a channel, then only
-	 * one thread will runthe closure code, and others will be blocked until the
+	 * one thread will run the closure code, and others will be blocked until the
 	 * first returns.
 	 * </p>
 	 * 

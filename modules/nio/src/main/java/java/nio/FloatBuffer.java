@@ -309,10 +309,10 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 	}
 
 	/**
-	 * Returns a float at the specifed index, and the position is not changed.
+	 * Returns a float at the specified index, and the position is not changed.
 	 * 
 	 * @param index     The index, must be no less than zero and less than limit
-	 * @return A float at the specifed index.
+	 * @return A float at the specified index.
 	 * @exception IndexOutOfBoundsException If index is invalid
 	 */
 	public abstract float get(int index);
@@ -407,7 +407,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 	/**
 	 * Writes <code>float</code>s in the given float array to the current
 	 * position and increase the position by the number of <code>float</code>s
-	 * writtern.
+	 * written.
 	 * <p>
 	 * Calling this method has the same effect as
 	 * <code>put(src, 0, src.length)</code>.
@@ -429,7 +429,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 	/**
 	 * Writes <code>float</code>s in the given float array, starting from the
 	 * specified offset, to the current position and increase the position by
-	 * the number of <code>float</code>s writtern.
+	 * the number of <code>float</code>s written.
 	 * 
 	 * @param src
 	 *            The source float array

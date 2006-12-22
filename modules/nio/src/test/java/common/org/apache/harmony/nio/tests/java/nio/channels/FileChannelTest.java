@@ -1715,7 +1715,7 @@ public class FileChannelTest extends TestCase {
         writeOnlyFileChannel.close();
         try {
             writeOnlyFileChannel.map(MapMode.READ_WRITE, 0, -1);
-            fail("should throw ClosedChannelExeption.");
+            fail("should throw ClosedChannelException.");
         } catch (ClosedChannelException ex) {
             // expected;
         }
@@ -1761,7 +1761,7 @@ public class FileChannelTest extends TestCase {
         readOnlyFileChannel.close();
         try {
             readOnlyFileChannel.map(MapMode.READ_WRITE, 0, -1);
-            fail("should throw ClosedChannelExeption.");
+            fail("should throw ClosedChannelException.");
         } catch (ClosedChannelException ex) {
             // expected;
         }
@@ -1775,7 +1775,7 @@ public class FileChannelTest extends TestCase {
         readWriteFileChannel.close();
         try {
             readWriteFileChannel.map(MapMode.READ_WRITE, 0, -1);
-            fail("should throw ClosedChannelExeption.");
+            fail("should throw ClosedChannelException.");
         } catch (ClosedChannelException ex) {
             // expected;
         }
@@ -2268,7 +2268,7 @@ public class FileChannelTest extends TestCase {
             // expected
         }
 
-        // first throws NullPointerExcepiton
+        // first throws NullPointerException
         readWriteFileChannel.close();
         try {
             readWriteFileChannel.write(writeBuffers, 0, 0);

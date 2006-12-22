@@ -49,7 +49,7 @@ final class LockManager {
     }
 
     /*
-     * Add a new pending lock to the manager. Thows an exception if the lock
+     * Add a new pending lock to the manager. Throws an exception if the lock
      * would overlap an existing lock. Once the lock is acquired it remains in
      * this set as an acquired lock.
      */

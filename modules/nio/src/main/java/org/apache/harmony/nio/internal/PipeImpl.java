@@ -28,7 +28,7 @@ import java.nio.channels.spi.SelectorProvider;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 
 /*
- * default implemetation of Pipe
+ * default implementation of Pipe
  * 
  */
 
@@ -91,7 +91,7 @@ final class PipeImpl extends Pipe {
     }
 
     /*
-     * default implemetation of SourceChannel
+     * default implementation of SourceChannel
      */
     private class SourceChannelImpl extends Pipe.SourceChannel implements
             FileDescriptorHandler {
@@ -148,7 +148,7 @@ final class PipeImpl extends Pipe {
     }
 
     /*
-     * default implemetation of SinkChannel
+     * default implementation of SinkChannel
      */
     private class SinkChannelImpl extends Pipe.SinkChannel implements
             FileDescriptorHandler {

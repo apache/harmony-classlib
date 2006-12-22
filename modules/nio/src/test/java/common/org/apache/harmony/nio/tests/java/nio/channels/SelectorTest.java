@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 import tests.support.Support_PortManager;
 
 /*
- * Tests for Selector and its default implemetation
+ * Tests for Selector and its default implementation
  */
 public class SelectorTest extends TestCase {
 

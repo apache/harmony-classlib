@@ -93,7 +93,7 @@ public abstract class SocketChannel extends AbstractSelectableChannel implements
 	 * 
 	 * @param address
 	 *            The socket address to be connected.
-	 * @return The new opend channel.
+	 * @return The new opened channel.
 	 * @throws AsynchronousCloseException
 	 *             If the channel is closed by another thread while this method
 	 *             is in operation.

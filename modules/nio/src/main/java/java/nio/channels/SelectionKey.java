@@ -114,10 +114,10 @@ public abstract class SelectionKey {
 
     /**
      * Tells whether the channel of this key is interested in accept operation
-     * and ready for acception.
+     * and ready for acceptation.
      * 
      * @return true if the channel is interested in accept operation and ready
-     *         for acception
+     *         for acceptation
      * @throws CancelledKeyException
      *             If the key has been cancelled already
      */

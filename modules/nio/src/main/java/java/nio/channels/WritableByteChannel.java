@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * A WriteableByteChannel is a type of Channel that can write bytes.
+ * A WritableByteChannel is a type of Channel that can write bytes.
  * <p>
- * Writes are synchronous on a WriteableByteChannel, that is, if a write is
+ * Writes are synchronous on a WritableByteChannel, that is, if a write is
  * already in progress on the channel then subsequent writes will block until
  * the first write completes. It is undefined whether non-write operations will
  * block.

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Abstract class for selectable channels.
  * <p>
- * In this class, there are methods about registring/deregistering a channel,
+ * In this class, there are methods about registering/deregistering a channel,
  * about channel closing. It realize the multi-thread safe.
  * </p>
  * 
@@ -165,7 +165,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      * Implement the closing function of the SelectableChannel.
      * 
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     protected abstract void implCloseSelectableChannel() throws IOException;
 
@@ -219,7 +219,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      *            <code>true</code> for blocking mode; <code>false</code>
      *            for non-blocking mode.
      * @throws IOException
-     *             If some I/O exception occured.
+     *             If some I/O exception occurred.
      */
     protected abstract void implConfigureBlocking(boolean blockingMode)
             throws IOException;

@@ -106,7 +106,7 @@ public abstract class AbstractSelector extends Selector {
      *            The interest set.
      * @param attachment
      *            The attachment of the key.
-     * @return The key related with the channel and the selecotr.
+     * @return The key related with the channel and the selector.
      */
     protected abstract SelectionKey register(AbstractSelectableChannel channel,
             int operations, Object attachment);
@@ -123,7 +123,7 @@ public abstract class AbstractSelector extends Selector {
     }
 
     protected final void begin() {
-        // FIXME: be accomodate before VM actually provides
+        // FIXME: be accommodate before VM actually provides
         // setInterruptAction method
         if (AbstractInterruptibleChannel.setInterruptAction != null) {
             try {
@@ -140,7 +140,7 @@ public abstract class AbstractSelector extends Selector {
     }
 
     protected final void end() {
-        // FIXME: be accomodate before VM actually provides
+        // FIXME: be accommodate before VM actually provides
         // setInterruptAction method
         if (AbstractInterruptibleChannel.setInterruptAction != null) {
             try {
