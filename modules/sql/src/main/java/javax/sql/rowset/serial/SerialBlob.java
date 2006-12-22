@@ -186,7 +186,7 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
     /*
      * Returns true if the bytes array contains exactly the same elements from
      * start position to start + subBytes.length as subBytes. Otherwise returns
-     * false. 
+     * false.
      */
     private boolean match(byte[] bytes, int start, byte[] subBytes) {
         for (int i = 0; i < subBytes.length;) {
@@ -203,13 +203,20 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
     }
 
     public int setBytes(long pos, byte[] theBytes) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        return setBytes(pos, theBytes, 0, theBytes.length);
     }
 
-    public int setBytes(long pos, byte[] theBytes, int offset, int len)
-            throws SQLException, NotImplementedException {
-        throw new NotImplementedException();
+    public int setBytes(long pos, byte[] theBytes, int offset, int length)
+            throws SQLException {
+        if (pos < 1 || length < 0 || pos > (len - length + 1)) {
+            throw new SerialException(Messages.getString("sql.15")); // $NON-NLS-1$
+        }
+        if (offset < 0 || length < 0 || offset > (theBytes.length - length)) {
+            throw new SerialException(Messages.getString("sql.16")); // $NON-NLS-1$
+        }
+        System.arraycopy(theBytes, offset, buf, (int) pos - 1, length);
+        return length;
     }
 
     public void truncate(long len) throws SerialException,

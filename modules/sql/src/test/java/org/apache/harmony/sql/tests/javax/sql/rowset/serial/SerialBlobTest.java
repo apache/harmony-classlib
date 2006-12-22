@@ -141,6 +141,128 @@ public class SerialBlobTest extends TestCase {
         }
     }
 
+    public void testSetBytesJ$B() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] theBytes = { 9, 10, 11 };
+        SerialBlob serialBlob = new SerialBlob(buf);
+
+        int count = serialBlob.setBytes(1, theBytes);
+        byte[] res = serialBlob.getBytes(1, buf.length);
+        byte[] expected = { 9, 10, 11, 4, 5, 6, 7, 8 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(3, count);
+
+        count = serialBlob.setBytes(2, theBytes);
+        res = serialBlob.getBytes(1, buf.length);
+        expected = new byte[] { 9, 9, 10, 11, 5, 6, 7, 8 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(3, count);
+
+        count = serialBlob.setBytes(6, theBytes);
+        res = serialBlob.getBytes(1, buf.length);
+        expected = new byte[] { 9, 9, 10, 11, 5, 9, 10, 11 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(3, count);
+
+        try {
+            serialBlob.setBytes(-1, theBytes);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialBlob.setBytes(10, theBytes);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        // Non bug difference from RI, Harmony-2836
+        try {
+            serialBlob.setBytes(7, theBytes);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+    }
+
+    public void testSetBytesJ$BII() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] theBytes = { 9, 10, 11 };
+        SerialBlob serialBlob = new SerialBlob(buf);
+
+        int count = serialBlob.setBytes(1, theBytes, 0, 3);
+        byte[] res = serialBlob.getBytes(1, buf.length);
+        byte[] expected = { 9, 10, 11, 4, 5, 6, 7, 8 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(3, count);
+        
+        count = serialBlob.setBytes(3, theBytes, 1, 2);
+        res = serialBlob.getBytes(1, buf.length);
+        expected = new byte[] { 9, 10, 10, 11, 5, 6, 7, 8 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(2, count);
+
+        count = serialBlob.setBytes(6, theBytes, 0, 2);
+        res = serialBlob.getBytes(1, buf.length);
+        expected = new byte[] { 9, 10, 10, 11, 5, 9, 10, 8 };
+        assertTrue(Arrays.equals(expected, res));
+        assertEquals(2, count);
+
+        try {
+            serialBlob.setBytes(7, theBytes, 0, 10);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialBlob.setBytes(-1, theBytes, 0, 2);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialBlob.setBytes(10, theBytes, 0, 2);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialBlob.setBytes(1, theBytes, -1, 2);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialBlob.setBytes(1, theBytes, 0, 10);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        // Non bug difference from RI, Harmony-2836
+        try {
+            serialBlob.setBytes(7, theBytes, 0, 3);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        // Non bug difference from RI, Harmony-2836
+        try {
+            serialBlob.setBytes(7, theBytes, 0, -1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+    }
+
     public void testPosition$BJ() throws Exception {
         byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
         SerialBlob serialBlob = new SerialBlob(buf);
