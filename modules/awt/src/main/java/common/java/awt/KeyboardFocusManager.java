@@ -18,6 +18,7 @@
 package java.awt;
 
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
@@ -26,7 +27,8 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,8 +51,6 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     final static int[] contTraversalIDs = { FORWARD_TRAVERSAL_KEYS, BACKWARD_TRAVERSAL_KEYS,
             UP_CYCLE_TRAVERSAL_KEYS, DOWN_CYCLE_TRAVERSAL_KEYS };
 
-    private final Map<Integer, Set<? extends AWTKeyStroke>> defaultFocusTraversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
-
     private FocusTraversalPolicy defaultFocusTraversalPolicy = new DefaultFocusTraversalPolicy();
 
     // focus state is static, i. e. 1 per class loader:
@@ -71,6 +71,18 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     static Window focusedWindow;
 
     static Window actualFocusedWindow;
+    
+    static final Set<AWTKeyStroke> DEFAULT_FWD_KS;
+
+    static final Set<AWTKeyStroke> DEFAULT_BWD_KS;
+
+    static final Set<AWTKeyStroke> EMPTY_UNMOD_SET;
+
+    static final String            TK_NAMES[] = {
+            "forwardDefaultFocusTraversalKeys", //$NON-NLS-1$
+            "backwardDefaultFocusTraversalKeys", //$NON-NLS-1$
+            "upCycleDefaultFocusTraversalKeys", //$NON-NLS-1$
+            "downCycleDefaultFocusTraversalKeys" }; //$NON-NLS-1$
 
     private static Window prevFocusedWindow;
 
@@ -81,12 +93,34 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     private PropertyChangeSupport propertyChangeSupport;
 
     private VetoableChangeSupport vetoableChangeSupport;
+    
+    private final Set<AWTKeyStroke>[] traversalKeys;
+    
+    static {
+        Set<AWTKeyStroke> s = Collections.emptySet();
 
-    //    private final Toolkit toolkit = Toolkit.getDefaultToolkit();
+        EMPTY_UNMOD_SET = Collections.unmodifiableSet(s);
+
+        s = new LinkedHashSet<AWTKeyStroke>();
+        s.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
+        s.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.CTRL_DOWN_MASK));
+        DEFAULT_FWD_KS = Collections.unmodifiableSet(s);
+
+        s = new LinkedHashSet<AWTKeyStroke>();
+        s.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.SHIFT_DOWN_MASK));
+        s.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
+                InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK));
+        DEFAULT_BWD_KS = Collections.unmodifiableSet(s);
+    }
+
     public KeyboardFocusManager() {
-        for (int element : contTraversalIDs) {
-            defaultFocusTraversalKeys.put(new Integer(element), null);
-        }
+        traversalKeys = new Set[4];
+        traversalKeys[0] = DEFAULT_FWD_KS;
+        traversalKeys[1] = DEFAULT_BWD_KS;
+        traversalKeys[2] = EMPTY_UNMOD_SET;
+        traversalKeys[3] = EMPTY_UNMOD_SET;
     }
 
     public void addKeyEventDispatcher(KeyEventDispatcher dispatcher) {
@@ -182,9 +216,9 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
 
     @SuppressWarnings("unchecked")
     public Set<AWTKeyStroke> getDefaultFocusTraversalKeys(int id) {
-        Integer kId = Integer.valueOf(id);
-        checkTraversalKeysID(defaultFocusTraversalKeys, kId);
-        return (Set<AWTKeyStroke>) defaultFocusTraversalKeys.get(kId);
+        checkTraversalKeyId(id, 3);
+
+        return traversalKeys[id];
     }
 
     public FocusTraversalPolicy getDefaultFocusTraversalPolicy() {
@@ -340,27 +374,18 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
     }
 
     public void setDefaultFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
-        Integer kId = Integer.valueOf(id);
-        Set<? extends AWTKeyStroke> oldKeyStrokes = defaultFocusTraversalKeys.get(kId);
-        checkTraversalKeysID(defaultFocusTraversalKeys, kId);
-        checkKeyStrokes(contTraversalIDs, defaultFocusTraversalKeys, kId, keystrokes);
-        defaultFocusTraversalKeys.put(kId, keystrokes);
-        String propName = null;
-        switch (id) {
-            case FORWARD_TRAVERSAL_KEYS:
-                propName = "forwardDefaultFocusTraversalKeys"; //$NON-NLS-1$
-                break;
-            case BACKWARD_TRAVERSAL_KEYS:
-                propName = "backwardDefaultFocusTraversalKeys"; //$NON-NLS-1$
-                break;
-            case UP_CYCLE_TRAVERSAL_KEYS:
-                propName = "upCycleDefaultFocusTraversalKeys"; //$NON-NLS-1$
-                break;
-            case DOWN_CYCLE_TRAVERSAL_KEYS:
-                propName = "downCycleDefaultFocusTraversalKeys"; //$NON-NLS-1$
-                break;
+        final Set<AWTKeyStroke> old;
+
+        checkTraversalKeyId(id, 3);
+
+        if (keystrokes == null) {
+            throw new IllegalArgumentException(Messages.getString(
+                    "awt.01", "keystrokes")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        firePropertyChange(propName, oldKeyStrokes, keystrokes);
+
+        old = traversalKeys[id];
+        setFocusTraversalKeys(id,keystrokes, traversalKeys);
+        firePropertyChange(TK_NAMES[id], old, keystrokes);
     }
 
     public void setDefaultFocusTraversalPolicy(FocusTraversalPolicy defaultPolicy) {
@@ -508,6 +533,41 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
                 }
             }
         }
+    }
+    
+    static void checkTraversalKeyId(final int id, final int maxValue) {
+        if ((id < 0) || (id > maxValue)) {
+            // awt.78=invalid focus traversal key identifier
+            throw new IllegalArgumentException(Messages.getString("awt.78")); //$NON-NLS-1$
+        }
+    }
+    
+    static void setFocusTraversalKeys(final int id,
+            final Set<? extends AWTKeyStroke> keystrokes,
+            final Set<AWTKeyStroke>[] traversalKeys) {
+        for (AWTKeyStroke ks : keystrokes) {
+            if (ks == null) {
+                // awt.79=cannot set null focus traversal key
+                throw new IllegalArgumentException(Messages.getString("awt.79")); //$NON-NLS-1$
+            }
+
+            if (ks.getKeyEventType() == KeyEvent.KEY_TYPED) {
+                // awt.7A=focus traversal keys cannot map to KEY_TYPED
+                // events
+                throw new IllegalArgumentException(Messages.getString("awt.7A")); //$NON-NLS-1$
+            }
+
+            for (int i = 0; i < traversalKeys.length; i++) {
+                if ((i != id) && traversalKeys[i].contains(ks)) {
+                    // awt.7B=focus traversal keys must be unique for a
+                    // Component
+                    throw new IllegalArgumentException(Messages
+                            .getString("awt.7B")); //$NON-NLS-1$
+                }
+            }
+        }
+
+        traversalKeys[id] = Collections.unmodifiableSet(keystrokes);
     }
 
     boolean requestFocus(Component c, boolean temporary, boolean crossWindow, boolean callCB) {

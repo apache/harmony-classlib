@@ -14,13 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
 package java.awt;
 
 import java.awt.event.KeyEvent;
+import java.util.Set;
 
 import junit.framework.TestCase;
 @SuppressWarnings("serial")
@@ -28,6 +25,10 @@ public class KeyboardFocusManagerRTest extends TestCase {
     Robot robot;
     Frame f;
     KeyboardFocusManager kfm;
+    
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(KeyboardFocusManagerRTest.class);
+    }
 
     @Override
     protected void setUp() throws Exception {
@@ -89,6 +90,12 @@ public class KeyboardFocusManagerRTest extends TestCase {
             fail("IllegalArgumentException was not thrown!");
         } catch (IllegalArgumentException iae) {
         }
+        
+        // Regression test for HARMONY-2493
+        KeyboardFocusManagerImpl obj = new KeyboardFocusManagerImpl();
+        Set keys = obj.getDefaultFocusTraversalKeys(1);
+        assertNotNull(keys);
+        assertTrue(keys.size() > 0); 
     }
 
     @SuppressWarnings("deprecation")
@@ -102,9 +109,46 @@ public class KeyboardFocusManagerRTest extends TestCase {
         assertNull("focus owner is null", kfm.getFocusOwner());
         assertNull("permanent focus owner is null", kfm.getPermanentFocusOwner());
     }
+    
+    class KeyboardFocusManagerImpl extends java.awt.KeyboardFocusManager {
+        public KeyboardFocusManagerImpl() {
+            super();
+        }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(KeyboardFocusManagerRTest.class);
-    }
+        public boolean dispatchEvent(AWTEvent arg0) {
+            return false;
+        }
 
+        public boolean dispatchKeyEvent(KeyEvent arg0) {
+            return false;
+        }
+
+        public boolean postProcessKeyEvent(KeyEvent arg0) {
+            return false;
+        }
+
+        public void processKeyEvent(Component arg0, KeyEvent arg1) {
+        }
+
+        protected void enqueueKeyEvents(long arg0, Component arg1) {
+        }
+
+        protected void dequeueKeyEvents(long arg0, Component arg1) {
+        }
+
+        protected void discardKeyEvents(Component arg0) {
+        }
+
+        public void focusNextComponent(Component arg0) {
+        }
+
+        public void focusPreviousComponent(Component arg0) {
+        }
+
+        public void upFocusCycle(Component arg0) {
+        }
+
+        public void downFocusCycle(Container arg0) {
+        }
+    } 
 }

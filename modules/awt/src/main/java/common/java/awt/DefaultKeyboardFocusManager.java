@@ -42,29 +42,6 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         return ( (w == null) || w.isActivateable());
     }
 
-    public DefaultKeyboardFocusManager() {
-        toolkit.lockAWT();
-        try {
-            Set<AWTKeyStroke> forSet = new HashSet<AWTKeyStroke>();
-            forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
-            forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-                                                    InputEvent.CTRL_DOWN_MASK));
-            setDefaultFocusTraversalKeys(FORWARD_TRAVERSAL_KEYS, forSet);
-            Set<AWTKeyStroke> backSet= new HashSet<AWTKeyStroke>();
-            backSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-                                                     InputEvent.SHIFT_DOWN_MASK));
-            backSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-                                                     InputEvent.SHIFT_DOWN_MASK |
-                                                     InputEvent.CTRL_DOWN_MASK));
-            setDefaultFocusTraversalKeys(BACKWARD_TRAVERSAL_KEYS, backSet);
-            Set<AWTKeyStroke> emptySet = Collections.emptySet();
-            setDefaultFocusTraversalKeys(UP_CYCLE_TRAVERSAL_KEYS, emptySet);
-            setDefaultFocusTraversalKeys(DOWN_CYCLE_TRAVERSAL_KEYS, emptySet);
-        } finally {
-            toolkit.unlockAWT();
-        }
-    }
-
     @Override
     protected void dequeueKeyEvents(long a0, Component a1) {
         toolkit.lockAWT();
@@ -551,4 +528,5 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
     }
 
 }
+
 

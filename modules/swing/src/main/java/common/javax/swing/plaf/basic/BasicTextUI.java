@@ -21,6 +21,7 @@
 package javax.swing.plaf.basic;
 
 
+import java.awt.AWTKeyStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -42,7 +43,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -577,20 +578,24 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         }
     }
 
-    final Set getDefaultFocusTraversalKeys(final int mode) {
-          Set result = component.getFocusTraversalKeys(mode);
+    final Set<AWTKeyStroke> getDefaultFocusTraversalKeys(final int mode) {
+          Set<AWTKeyStroke> result = component.getFocusTraversalKeys(mode);
+          
           if (result == null) {
-              result = new HashSet();
+              result = new LinkedHashSet<AWTKeyStroke>();
               if (mode == KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS) {
                   result.add(KeyStroke.getKeyStroke(KeyEvent.VK_TAB,
-                                              KeyEvent.CTRL_DOWN_MASK));
+                                              InputEvent.CTRL_DOWN_MASK));
               } else {
                   result.add(KeyStroke
                              .getKeyStroke(KeyEvent.VK_TAB,
-                                           KeyEvent.CTRL_DOWN_MASK
-                                           | KeyEvent.SHIFT_DOWN_MASK));
+                                     InputEvent.CTRL_DOWN_MASK
+                                           | InputEvent.SHIFT_DOWN_MASK));
               }
+         } else {
+             result = new LinkedHashSet<AWTKeyStroke>(result);
          }
+          
          return result;
       }
 
@@ -598,15 +603,16 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         if (component == null) {
             return;
         }
-        Set forwardFocusTraversalKeys =
+        Set<AWTKeyStroke> forwardFocusTraversalKeys =
             getDefaultFocusTraversalKeys(KeyboardFocusManager
                                          .FORWARD_TRAVERSAL_KEYS);
-        Set backwardFocusTraversalKeys =
+        Set<AWTKeyStroke> backwardFocusTraversalKeys =
             getDefaultFocusTraversalKeys(KeyboardFocusManager
                                          .BACKWARD_TRAVERSAL_KEYS);
         KeyStroke tabPressed = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
         KeyStroke shiftTabPressed = KeyStroke
-            .getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_DOWN_MASK);
+            .getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
+        
         if (component.isEditable()) {
             forwardFocusTraversalKeys.remove(tabPressed);
             backwardFocusTraversalKeys.remove(shiftTabPressed);
@@ -1035,4 +1041,5 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         setDocument(document);
     }
 }
+
 
