@@ -122,6 +122,7 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 				+ ".hyts_resource";
 		ResourceBundle bundle = ResourceBundle.getBundle(name, Locale
 				.getDefault());
+            assertEquals("Wrong value read", "parent", bundle.getString("property"));
 		bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
 		assertEquals("Wrong cached value", 
 				"resource", bundle.getString("property"));
