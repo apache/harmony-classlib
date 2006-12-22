@@ -283,7 +283,7 @@ public class LoggerTest extends TestCase {
 	}
 
 	/*
-	 * Test getLogger(String), getting a logger with invalid level configed.
+	 * Test getLogger(String), getting a logger with invalid level configured.
 	 */
 	public void testGetLogger_InvalidLevel() throws Exception {
 		// config the level
@@ -1148,7 +1148,7 @@ public class LoggerTest extends TestCase {
 
 	/*
 	 * Test setParent(Logger) for the mock logger since it is advised not to
-	 * call this method on named loggers. Test normal condistions.
+	 * call this method on named loggers. Test normal conditions.
 	 */
 	public void testSetParent_Normal() {
 		Logger log = new MockLogger(null, null);
@@ -1230,7 +1230,7 @@ public class LoggerTest extends TestCase {
 	}
 
 	/*
-	 * Test getName() for emtpy name.
+	 * Test getName() for empty name.
 	 */
 	public void testGetName_Empty() {
 		Logger log = Logger.getLogger("");
@@ -3408,7 +3408,7 @@ public class LoggerTest extends TestCase {
     
     public void testLoadResourceBundleNonExistent() {
         try {
-            // Try a load a non-existant resource bundle.
+            // Try a load a non-existent resource bundle.
             LoggerExtension.loadResourceBundle("missinglogger.properties");
             fail("Expected an exception.");
         } catch (MissingResourceException ex) {

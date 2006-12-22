@@ -290,7 +290,7 @@ public class LevelTest extends TestCase implements Serializable {
     /**
      * @tests serialization/deserialization compatibility.
      * 
-     * Test serilaziation of pre-defined const levels. It is expected that the
+     * Test serialization of pre-defined const levels. It is expected that the
      * deserialized cost level should be the same instance as the existing one.
      */
     public void testSerialization_ConstLevel() throws Exception {
@@ -302,7 +302,7 @@ public class LevelTest extends TestCase implements Serializable {
     /**
      * @tests serialization/deserialization compatibility.
      * 
-     * Test serilaziation of normal instance of Level. It is expected that the
+     * Test serialization of normal instance of Level. It is expected that the
      * deserialized level object should be equal to the original one.
      */
     public void testSerialization_InstanceLevel() throws Exception {

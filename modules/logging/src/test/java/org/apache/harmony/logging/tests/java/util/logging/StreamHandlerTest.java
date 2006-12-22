@@ -292,7 +292,7 @@ public class StreamHandlerTest extends TestCase {
 	}
 
 	/*
-	 * Test the constructor with null fomatter, and invalid relevant log manager
+	 * Test the constructor with null formatter, and invalid relevant log manager
 	 * properties are set.
 	 */
 	public void testConstructor_HasParameters_ValidPropertiesNullStream()

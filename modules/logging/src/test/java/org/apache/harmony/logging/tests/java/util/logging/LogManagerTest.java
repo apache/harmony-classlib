@@ -172,7 +172,7 @@ public class LogManagerTest extends TestCase {
 		assertNull(grandson.getParent());
 		assertNull(otherChild.getParent());
 
-		// whenever a logger is added to a LogManager, hierachy will be updated
+		// whenever a logger is added to a LogManager, hierarchy will be updated
 		// accordingly
 		assertTrue(mockManager.addLogger(child));
 		assertNull(child.getParent());
@@ -504,7 +504,7 @@ public class LogManagerTest extends TestCase {
 //			mockManager.readConfiguration();
 //			// level DO has effect
 //			assertEquals(Level.WARNING, foo.getLevel());
-//			// for non specifed logger, level is reset to null
+//			// for non specified logger, level is reset to null
 //			assertNull(fo.getLevel());
 //
 //			// read properties don't affect handler
@@ -539,7 +539,7 @@ public class LogManagerTest extends TestCase {
 		// level DO has effect
 		assertEquals(Level.WARNING, foo.getLevel());
 
-		// for non specifed logger, level is reset to null
+		// for non specified logger, level is reset to null
 		assertNull(fo.getLevel());
 
 		// read properties don't affect handler
@@ -707,7 +707,7 @@ public class LogManagerTest extends TestCase {
                     .PropertiesToInputStream(props));
             assertEquals(3, manager.getLogger("").getHandlers().length);
 
-            // invalid config class which throw exception, just pring exception
+            // invalid config class which throw exception, just print exception
             // and
             // message
             props.setProperty("config", className
@@ -715,7 +715,7 @@ public class LogManagerTest extends TestCase {
             manager.readConfiguration(EnvironmentHelper
                     .PropertiesToInputStream(props));
 
-            // invalid config class without default constructor, just pring
+            // invalid config class without default constructor, just print
             // exception and message
             props.setProperty("config", className
                     + "$MockInvalidConfigNoDefaultConstructor");

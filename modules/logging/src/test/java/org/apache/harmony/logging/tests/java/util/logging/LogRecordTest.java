@@ -389,7 +389,7 @@ public class LogRecordTest extends TestCase {
 	}
 
 	// mock class, try to test when the sourceclass and sourcemethod of
-	// LogRecord is inited
+	// LogRecord is initiated
 	public static class RecordFactory {
 
 		public static LogRecord getDefaultRecord() {
@@ -422,7 +422,7 @@ public class LogRecordTest extends TestCase {
 		public void log(LogRecord record) {
 			if (isLoggable(record.getLevel())) {
 				// call the handlers of this logger
-				// TODO: What if an exception occured in handler?
+				// TODO: What if an exception occurred in handler?
 				Handler[] ha = this.getHandlers();
 				for (int i = 0; i < ha.length; i++) {
 					ha[i].publish(record);
