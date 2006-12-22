@@ -161,7 +161,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
     }
 
     /**
-     * Return the modifiers for the modelled constructor. The Modifier class
+     * Return the modifiers for the modeled constructor. The Modifier class
      * should be used to decode the result.
      * 
      * @return the modifiers
@@ -172,7 +172,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
     }
 
     /**
-     * Return the name of the modelled constructor. This is the name of the
+     * Return the name of the modeled constructor. This is the name of the
      * declaring class.
      * 
      * @return the name
@@ -207,7 +207,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
 
     /**
      * Return a new instance of the declaring class, initialized by dynamically
-     * invoking the modelled constructor. This reproduces the effect of
+     * invoking the modeled constructor. This reproduces the effect of
      * <code>new declaringClass(arg1, arg2, ... , argN)</code> This method
      * performs the following:
      * <ul>
@@ -215,7 +215,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
      * class cannot be instantiated (i.e. abstract class, an interface, an array
      * type, or a base type) then an InstantiationException is thrown.</li>
      * <li>If this Constructor object is enforcing access control (see
-     * AccessibleObject) and the modelled constructor is not accessible from the
+     * AccessibleObject) and the modeled constructor is not accessible from the
      * current context, an IllegalAccessException is thrown.</li>
      * <li>If the number of arguments passed and the number of parameters do
      * not match, an IllegalArgumentException is thrown.</li>
@@ -227,7 +227,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
      * <li>If the resulting argument cannot be converted to the parameter type
      * via a widening conversion, an IllegalArgumentException is thrown.</li>
      * </ul>
-     * <li>The modelled constructor is then invoked. If an exception is thrown
+     * <li>The modeled constructor is then invoked. If an exception is thrown
      * during the invocation, it is caught and wrapped in an
      * InvocationTargetException. This exception is then thrown. If the
      * invocation completes normally, the newly initialized object is returned.
@@ -237,7 +237,7 @@ public final class Constructor<T> extends AccessibleObject implements GenericDec
      * @return the new, initialized, object
      * @exception java.lang.InstantiationException if the class cannot be
      *            instantiated
-     * @exception java.lang.IllegalAccessException if the modelled constructor
+     * @exception java.lang.IllegalAccessException if the modeled constructor
      *            is not accessible
      * @exception java.lang.IllegalArgumentException if an incorrect number of
      *            arguments are passed, or an argument could not be converted by

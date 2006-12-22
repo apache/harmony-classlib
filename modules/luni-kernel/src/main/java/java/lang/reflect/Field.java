@@ -106,13 +106,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object. This reproduces
 	 * the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * The value of the field is returned. If the type of this field is a base
@@ -126,7 +126,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native Object get(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -135,13 +135,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a boolean. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -152,7 +152,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native boolean getBoolean(Object object)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -161,13 +161,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a byte. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -178,7 +178,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native byte getByte(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -187,13 +187,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a char. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -204,7 +204,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native char getChar(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -223,13 +223,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a double. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -240,7 +240,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native double getDouble(Object object)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -249,13 +249,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a float. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -266,7 +266,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native float getFloat(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -275,13 +275,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as an int. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -292,7 +292,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native int getInt(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -301,13 +301,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a long. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * 
 	 * @param object
@@ -318,13 +318,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native long getLong(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
 
 	/**
-	 * Return the modifiers for the modelled field. The Modifier class should be
+	 * Return the modifiers for the modeled field. The Modifier class should be
 	 * used to decode the result.
 	 * 
 	 * @return the modifiers
@@ -333,7 +333,7 @@ public final class Field extends AccessibleObject implements Member {
 	public native int getModifiers();
 
 	/**
-	 * Return the name of the modelled field.
+	 * Return the name of the modeled field.
 	 * 
 	 * @return the name
 	 */
@@ -345,13 +345,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Return the value of the field in the specified object as a short. This
 	 * reproduces the effect of <code>object.fieldName</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * 
@@ -363,7 +363,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native short getShort(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
@@ -395,13 +395,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the boolean value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the field type is a base type, the value is automatically unwrapped.
@@ -418,7 +418,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void set(Object object, Object value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -427,13 +427,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the boolean value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -448,7 +448,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setBoolean(Object object, boolean value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -457,13 +457,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the byte value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -478,7 +478,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setByte(Object object, byte value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -487,13 +487,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the char value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -508,7 +508,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setChar(Object object, char value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -517,13 +517,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the double value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -538,7 +538,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setDouble(Object object, double value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -547,13 +547,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the float value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -568,7 +568,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setFloat(Object object, float value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -577,13 +577,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the int value. This
 	 * reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -598,7 +598,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setInt(Object object, int value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -607,13 +607,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the long value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -628,7 +628,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setLong(Object object, long value)
 			throws IllegalAccessException, IllegalArgumentException;
@@ -637,13 +637,13 @@ public final class Field extends AccessibleObject implements Member {
 	 * Set the value of the field in the specified object to the short value.
 	 * This reproduces the effect of <code>object.fieldName = value</code>
 	 * <p>
-	 * If the modelled field is static, the object argument is ignored.
+	 * If the modeled field is static, the object argument is ignored.
 	 * Otherwise, if the object is null, a NullPointerException is thrown. If
 	 * the object is not an instance of the declaring class of the method, an
 	 * IllegalArgumentException is thrown.
 	 * <p>
 	 * If this Field object is enforcing access control (see AccessibleObject)
-	 * and the modelled field is not accessible from the current context, an
+	 * and the modeled field is not accessible from the current context, an
 	 * IllegalAccessException is thrown.
 	 * <p>
 	 * If the value cannot be converted to the field type via a widening
@@ -658,7 +658,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @throws IllegalArgumentException
 	 *             if the object is not compatible with the declaring class
 	 * @throws IllegalAccessException
-	 *             if modelled field is not accessible
+	 *             if modeled field is not accessible
 	 */
 	public native void setShort(Object object, short value)
 			throws IllegalAccessException, IllegalArgumentException;

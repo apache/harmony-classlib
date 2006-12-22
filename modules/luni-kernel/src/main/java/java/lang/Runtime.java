@@ -37,7 +37,7 @@ public class Runtime {
     }
     
     /**
-     * Execute progAray[0] in a separate platform process The new process
+     * Execute progArray[0] in a separate platform process The new process
      * inherits the environment of the caller.
      * 
      * @param progArray the array containing the program to execute as well as
@@ -52,7 +52,7 @@ public class Runtime {
     }
 
     /**
-     * Execute progArray[0] in a seperate platform process The new process uses
+     * Execute progArray[0] in a separate platform process The new process uses
      * the environment provided in envp
      * 
      * @param progArray the array containing the program to execute a well as
@@ -69,7 +69,7 @@ public class Runtime {
     }
 
     /**
-     * Execute progArray[0] in a seperate platform process. The new process uses
+     * Execute progArray[0] in a separate platform process. The new process uses
      * the environment provided in envp
      * 
      * @param progArray the array containing the program to execute a well as
@@ -89,7 +89,7 @@ public class Runtime {
     }
 
     /**
-     * Execute program in a seperate platform process The new process inherits
+     * Execute program in a separate platform process The new process inherits
      * the environment of the caller.
      * 
      * @param prog the name of the program to execute
@@ -103,7 +103,7 @@ public class Runtime {
     }
 
     /**
-     * Execute prog in a seperate platform process The new process uses the
+     * Execute prog in a separate platform process The new process uses the
      * environment provided in envp
      * 
      * @param prog the name of the program to execute
@@ -119,7 +119,7 @@ public class Runtime {
     }
 
     /**
-     * Execute prog in a seperate platform process The new process uses the
+     * Execute prog in a separate platform process The new process uses the
      * environment provided in envp
      * 
      * @param prog the name of the program to execute

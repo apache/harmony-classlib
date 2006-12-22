@@ -203,7 +203,7 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	}
 
 	/**
-	 * Return the modifiers for the modelled method. The Modifier class
+	 * Return the modifiers for the modeled method. The Modifier class
 	 * should be used to decode the result.
 	 * 
 	 * @return the modifiers
@@ -214,7 +214,7 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	}
 
 	/**
-	 * Return the name of the modelled method.
+	 * Return the name of the modeled method.
 	 * 
 	 * @return the name
 	 */
@@ -257,19 +257,19 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	}
 
 	/**
-	 * Return the result of dynamically invoking the modelled method. This
+	 * Return the result of dynamically invoking the modeled method. This
 	 * reproduces the effect of
 	 * <code>receiver.methodName(arg1, arg2, ... , argN)</code> This method
 	 * performs the following:
 	 * <ul>
-	 * <li>If the modelled method is static, the receiver argument is ignored.
+	 * <li>If the modeled method is static, the receiver argument is ignored.
 	 * </li>
 	 * <li>Otherwise, if the receiver is null, a NullPointerException is
 	 * thrown.</li>
 	 * If the receiver is not an instance of the declaring class of the method,
 	 * an IllegalArgumentException is thrown.
 	 * <li>If this Method object is enforcing access control (see
-	 * AccessibleObject) and the modelled method is not accessible from the
+	 * AccessibleObject) and the modeled method is not accessible from the
 	 * current context, an IllegalAccessException is thrown.</li>
 	 * <li>If the number of arguments passed and the number of parameters do
 	 * not match, an IllegalArgumentException is thrown.</li>
@@ -281,8 +281,8 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * <li>If the resulting argument cannot be converted to the parameter type
 	 * via a widening conversion, an IllegalArgumentException is thrown.</li>
 	 * </ul>
-	 * <li>If the modelled method is static, it is invoked directly. If it is
-	 * non-static, the modelled method and the receiver are then used to perform
+	 * <li>If the modeled method is static, it is invoked directly. If it is
+	 * non-static, the modeled method and the receiver are then used to perform
 	 * a standard dynamic method lookup. The resulting method is then invoked.
 	 * </li>
 	 * <li>If an exception is thrown during the invocation it is caught and
@@ -295,14 +295,14 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * </ul>
 	 * 
 	 * @param receiver
-	 * 	          The object on which to call the modelled method
+	 * 	          The object on which to call the modeled method
 	 * @param args
 	 *            the arguments to the method
 	 * @return the new, initialized, object
 	 * @throws java.lang.NullPointerException
 	 *                if the receiver is null for a non-static method
 	 * @throws java.lang.IllegalAccessException
-	 *                if the modelled method is not accessible
+	 *                if the modeled method is not accessible
 	 * @throws java.lang.IllegalArgumentException
 	 *                if an incorrect number of arguments are passed, the
 	 *                receiver is incompatible with the declaring class, or an

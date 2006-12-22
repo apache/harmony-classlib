@@ -510,7 +510,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /**
      * Outputs to <code>System.out</code> a text representation of the
      * hierarchy of Threads and ThreadGroups in the receiver (and recursively).
-     * Proper identation is done to suggest the nesting of groups inside groups
+     * Proper indentation is done to suggest the nesting of groups inside groups
      * and threads inside groups.
      */
     public void list() {
@@ -522,9 +522,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /*
      * Outputs to <code>System.out</code>a text representation of the
      * hierarchy of Threads and ThreadGroups in the receiver (and recursively).
-     * The identation will be four spaces per level of nesting.
+     * The indentation will be four spaces per level of nesting.
      * 
-     * @param levels How many levels of nesting, so that proper identetion can
+     * @param levels How many levels of nesting, so that proper indentation can
      * be output.
      */
     private void list(int levels) {
@@ -535,10 +535,10 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
         // Print the receiver
         System.out.println(this.toString());
 
-        // Print the children threads, with 1 extra identation
+        // Print the children threads, with 1 extra indentation
         synchronized (this.childrenThreadsLock) {
             for (int i = 0; i < numThreads; i++) {
-                // children get an extra identation, 4 spaces for each level
+                // children get an extra indentation, 4 spaces for each level
                 for (int j = 0; j <= levels; j++) {
                     System.out.print("    ");
                 }

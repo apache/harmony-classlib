@@ -201,7 +201,7 @@ public final class StackTraceElement implements Serializable {
     }
 
     /**
-     * Return a String representating this StackTraceElement object
+     * Return a String representing this StackTraceElement object
      * 
      * @return String representing this object
      */

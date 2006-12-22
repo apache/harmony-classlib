@@ -228,7 +228,7 @@ public final class VM {
 
     /**
      * Return the type of the specified entry on the class path for a
-     * ClassLoader. Valid tyes are: CPE_TYPE_UNKNOWN CPE_TYPE_DIRECTORY
+     * ClassLoader. Valid types are: CPE_TYPE_UNKNOWN CPE_TYPE_DIRECTORY
      * CPE_TYPE_JAR CPE_TYPE_TCP - this is obsolete CPE_TYPE_UNUSABLE
      * 
      * @param classLoader the ClassLoader

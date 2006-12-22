@@ -210,8 +210,7 @@ public class Object {
      * starts running.
      * 
      * @param time long The maximum time to wait in milliseconds.
-     * @param frac int The fraction of a mSec to wait, specified in nano
-     *        seconds.
+     * @param frac int The fraction of a mSec to wait, specified in nanoseconds.
      * @throws InterruptedException to interrupt the wait.
      * @see #notify
      * @see #notifyAll
