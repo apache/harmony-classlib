@@ -304,8 +304,13 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertFalse("No more resources expected", en.hasMoreElements());
        
         // Regression test for HARMONY-2357.
-        URLClassLoaderExt cl = new URLClassLoaderExt(new URL[557]);    
-        cl.findClass("0");                                         
+        try {
+            URLClassLoaderExt cl = new URLClassLoaderExt(new URL[557]);
+            cl.findClass("0");
+            fail("NullPointerException should be thrown");
+        } catch (NullPointerException npe) {
+            // Expected
+        }
     }
 
     /**
