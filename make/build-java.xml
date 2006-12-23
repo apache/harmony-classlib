@@ -213,6 +213,7 @@ ${built.files.list}
                 <patternset includes="mx4j_3.0.1/*.jar" />
                 <patternset includes="yoko_M1-20061027/yoko-rmi.jar" />
                 <patternset includes="yoko_M2-20061115/yoko.jar" />
+                <patternset includes="yoko_M2-20061115/yoko-core.jar" />
                 <patternset includes="bcel-5.2/*.jar" />
             </fileset>
             <fileset dir="${depends.manifests}"/>

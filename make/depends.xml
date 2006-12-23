@@ -33,6 +33,7 @@
 
     <target name="-check">
         <check-one-file src="${yoko.url}" dest="${yoko.jar}" />
+        <check-one-file src="${yoko-core.url}" dest="${yoko-core.jar}" />
         <check-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}" />
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
@@ -211,6 +212,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${yoko.dir}" />
     <download-one-file src="${yoko.url}" dest="${yoko.jar}"
                            md5="${yoko.md5}" />
+
+    <mkdir dir="${yoko-core.dir}" />
+    <download-one-file src="${yoko-core.url}" dest="${yoko-core.jar}"
+                           md5="${yoko-core.md5}" />
 
     <mkdir dir="${yoko-rmi.dir}" />
     <download-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}"
