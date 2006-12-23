@@ -24,12 +24,9 @@ import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeListenerProxy;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.naming.OperationNotSupportedException;
 
 import junit.framework.TestCase;
 
