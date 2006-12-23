@@ -73,6 +73,11 @@
         </delete>
     </target>
 
+    <target name="clean-native" if="is.windows">
+        <make dir="${hy.print.src.main.native}/print/${hy.os.family}"
+              target="clean" />
+    </target>
+
     <target name="compile-java">
         <echo message="Compiling PRINT classes" />
 
