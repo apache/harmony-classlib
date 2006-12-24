@@ -102,7 +102,7 @@ public abstract class AbstractPreferences extends Preferences {
      * -----------------------------------------------------------
      */
     /** Marker class for 'lock' field. */
-    private class Lock {}
+    private static class Lock {}
     /** The object used to lock this node. */
     protected final Object lock;
     
