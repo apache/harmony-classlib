@@ -14,41 +14,35 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
-/*
+/**
  * Default implementation of <code>PreferencesFactory</code> for windows 
  * platform, using windows Registry as back end.
  * 
  * @since 1.4
  */
 class RegistryPreferencesFactoryImpl implements PreferencesFactory {
+    //user root preferences
+    private static final Preferences USER_ROOT = new RegistryPreferencesImpl(true);
+
+    //system root preferences
+    private static final Preferences SYSTEM_ROOT = new RegistryPreferencesImpl(false);
     
-    /*
-     * Default constructor
-     */
     public RegistryPreferencesFactoryImpl() {
     	super();
     }
 
-    /* (non-Javadoc)
-     * @see java.util.prefs.PreferencesFactory#userRoot()
-     */
     public Preferences userRoot() {
-        return RegistryPreferencesImpl.USER_ROOT;
+        return USER_ROOT;
     }
 
-    /* (non-Javadoc)
-     * @see java.util.prefs.PreferencesFactory#systemRoot()
-     */
     public Preferences systemRoot() {
-        return RegistryPreferencesImpl.SYSTEM_ROOT;
+        return SYSTEM_ROOT;
     }
-
 }
 
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 /**
@@ -24,20 +23,22 @@ package java.util.prefs;
  * @since 1.4
  */
 class FilePreferencesFactoryImpl implements PreferencesFactory {
-    
-    /**
-     * Default constructor
-     */
+    //  user root preferences
+    private static final Preferences USER_ROOT = new FilePreferencesImpl(true);
+
+    //  system root preferences
+    private static final Preferences SYSTEM_ROOT = new FilePreferencesImpl(false);
+
     public FilePreferencesFactoryImpl() {
-    	super();
+        super();
     }
 
     public Preferences userRoot() {
-        return FilePreferencesImpl.userRoot;
+        return USER_ROOT;
     }
 
     public Preferences systemRoot() {
-        return FilePreferencesImpl.systemRoot;    
+        return SYSTEM_ROOT;
     }
 
 }

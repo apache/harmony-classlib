@@ -19,7 +19,7 @@ package java.util.prefs;
 
 import org.apache.harmony.prefs.internal.nls.Messages;
 
-/*
+/**
  * Default implementation of <code>AbstractPreferences</code> for windows platform,
  * using windows registry as back end. 
  * 
@@ -32,36 +32,33 @@ class RegistryPreferencesImpl extends AbstractPreferences {
 	}
 
     /*
-	 * -------------------------------------------------------------- Constants
+	 * -------------------------------------------------------------- 
+     * Class fields
 	 * --------------------------------------------------------------
 	 */
     //registry path for root preferences 
-    private final static String ROOT_PATH = "SOFTWARE\\JavaSoft\\Prefs"; //$NON-NLS-1$
+    private static final String ROOT_PATH = "SOFTWARE\\JavaSoft\\Prefs"; //$NON-NLS-1$
 
     //index for returned error code
-    private final static int ERROR_CODE = 0;
+    private static final int ERROR_CODE = 0;
 
     //error code for registry access    
-    final static int RETURN_SUCCESS = 0;
+    private static final int RETURN_SUCCESS = 0;
 
-    final static int RETURN_FILE_NOT_FOUND = 1;
+    @SuppressWarnings("unused")
+    private static final int RETURN_FILE_NOT_FOUND = 1;
 
-    final static int RETURN_ACCESS_DENIED = 2;
+    private static final int RETURN_ACCESS_DENIED = 2;
 
-    final static int RETURN_UNKNOWN_ERROR = 3;
-
-    //user root preferences
-    final static Preferences USER_ROOT = new RegistryPreferencesImpl(true);
-
-    //system root preferences
-    final static Preferences SYSTEM_ROOT = new RegistryPreferencesImpl(false);
+    @SuppressWarnings("unused")
+    private static final int RETURN_UNKNOWN_ERROR = 3;
 
     /*
      * --------------------------------------------------------------
-     * Variables
+     * Instance fields
      * --------------------------------------------------------------
      */
-    //registry path for this preferences, default value is root's path
+    //registry path for this preferences, default value is the root path
     private byte[] path = ROOT_PATH.getBytes();
 
     /*
@@ -69,7 +66,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
      * Constructors
      * --------------------------------------------------------------
      */
-    /*
+    /**
      * Construct <code>RegistryPreferencesImpl</code> instance using given parent 
      * and given name 
      */
@@ -79,7 +76,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         path = (ROOT_PATH + encodeWindowsStr(absolutePath())).getBytes();
     }
 
-    /*
+    /**
      * Construct root <code>RegistryPreferencesImpl</code> instance, construct 
      * user root if userNode is true, system root otherwise
      */
@@ -88,11 +85,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         this.userNode = userNode;
     }
 
-    /*
-     * --------------------------------------------------------------
-     * Methods implement AbstractPreferences
-     * --------------------------------------------------------------
-     */
+    @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
         int[] error = new int[1];
         byte[][] names = getChildNames(path, userNode, error);
@@ -107,6 +100,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         return result;
     }
 
+    @Override
     protected AbstractPreferences childSpi(String name) {
         int[] error = new int[1];
         RegistryPreferencesImpl result = new RegistryPreferencesImpl(this, name);
@@ -118,6 +112,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         return result;
     }
 
+    @Override
     protected void flushSpi() throws BackingStoreException {
         int[] error = new int[1];
         flushPrefs(path, userNode, error);
@@ -127,6 +122,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         }
     }
 
+    @Override
     protected String getSpi(String key) {
         int[] error = new int[1];
         byte[] result = getValue(path, encodeWindowsStr(key).getBytes(), userNode, error);
@@ -136,6 +132,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         return new String(result);
     }
 
+    @Override
     protected String[] keysSpi() throws BackingStoreException {
         int[] errorCode = new int[1];
         byte[][] keys = keys(path, userNode, errorCode);
@@ -150,6 +147,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         return result;
     }
 
+    @Override
     protected void putSpi(String name, String value) {
         int[] errorCode = new int[1];
         putValue(path, encodeWindowsStr(name).getBytes(), value.getBytes(), userNode, errorCode);
@@ -159,6 +157,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         }
     }
 
+    @Override
     protected void removeNodeSpi() throws BackingStoreException {
         int[] error = new int[1];
         removeNode(((RegistryPreferencesImpl) parent()).path,
@@ -169,6 +168,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         }
     }
 
+    @Override
     protected void removeSpi(String key) {
         int[] errorCode = new int[1];
         removeKey(path, encodeWindowsStr(key).getBytes(), userNode, errorCode);
@@ -178,6 +178,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         }
     }
 
+    @Override
     protected void syncSpi() throws BackingStoreException {
         flushSpi();
     }
@@ -200,6 +201,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         }
         return buffer.toString();
     }
+    
     private static String decodeWindowsStr(String str){
         StringBuffer buffer = new StringBuffer();
         char[] chars = str.toCharArray();
@@ -249,5 +251,3 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     private native void flushPrefs(byte[] registryPath, boolean isUserNode,
             int[] errorCode) throws SecurityException;
 }
-
-

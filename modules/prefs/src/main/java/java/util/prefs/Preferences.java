@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.io.IOException;
@@ -25,8 +24,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.harmony.prefs.internal.nls.Messages;
-
-
 
 /**
  * <code>Preferences</code> instance represents one node in preferences tree,
@@ -92,11 +89,12 @@ import org.apache.harmony.prefs.internal.nls.Messages;
  */
 public abstract class Preferences {
     
-    /**
+    /*
      * ---------------------------------------------------------
-     * Constants
+     * Class fields 
      * ---------------------------------------------------------
      */
+    
 	/**
 	 * Maximum size in characters of preferences key  
 	 */
@@ -113,13 +111,14 @@ public abstract class Preferences {
 	public static final int MAX_VALUE_LENGTH = 8192;
 
 	//permission
-	private static final RuntimePermission perm = new RuntimePermission("preferences"); //$NON-NLS-1$
-	//factory used to get user/system prefs root
+	private static final RuntimePermission PREFS_PERM = new RuntimePermission("preferences"); //$NON-NLS-1$
+	
+    //factory used to get user/system prefs root
 	private static final PreferencesFactory factory;
 	
     /**
      * ---------------------------------------------------------
-     * Static init
+     * Class initializer
      * ---------------------------------------------------------
      */		
 	static{
@@ -139,25 +138,27 @@ public abstract class Preferences {
             // prefs.10=Cannot initiate PreferencesFactory: {0}. Caused by {1}
             throw new InternalError(Messages.getString("prefs.10", factoryClassName, e));   //$NON-NLS-1$
         }
-	    
 	}
 	
-    /**
+    /*
      * ---------------------------------------------------------
      * Constructors
      * ---------------------------------------------------------
-     */	
+     */
+    
 	/**
-	 *	Default constructor, just for using by subclass.
+	 *	Default constructor, for use by subclasses only.
 	 */
-	protected Preferences() {//empty constructor
+	protected Preferences() {
+        super();
 	}
 	
-    /**
+    /*
      * ---------------------------------------------------------
      * Methods
      * ---------------------------------------------------------
-     */	
+     */
+    
 	/**
 	 * Get this preference node's absolute path string.
 	 * 
@@ -784,7 +785,7 @@ public abstract class Preferences {
     private static void checkSecurity() {
         SecurityManager manager = System.getSecurityManager();
         if(null != manager){
-            manager.checkPermission(perm);
+            manager.checkPermission(PREFS_PERM);
         }
         
     }
@@ -843,5 +844,6 @@ public abstract class Preferences {
 	 * @return a string description of this node
 	 * 
 	 */
-	public abstract String toString();
+	@Override
+    public abstract String toString();
 }

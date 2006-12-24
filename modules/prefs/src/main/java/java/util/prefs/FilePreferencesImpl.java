@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.io.File;
@@ -29,11 +28,10 @@ import java.util.Set;
 import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
- * TODO some sync mechanism with backend, Performance - check file edit date
- */
-/*
  * Default implementation of <code>AbstractPreferences</code> for Linux platform,
- * using file system as back end. 
+ * using file system as back end.
+ * 
+ * TODO some sync mechanism with backend, Performance - check file edit date
  * 
  * @since 1.4
  */
@@ -41,59 +39,52 @@ class FilePreferencesImpl extends AbstractPreferences {
 
     /*
      * --------------------------------------------------------------
-     * Constants
+     * Class fields
      * --------------------------------------------------------------
      */
-    //  user root preferences
-    static final Preferences userRoot;
-
-    //  system root preferences
-    static final Preferences systemRoot;
 
     //prefs file name
-    private static final String prefsFileName = "prefs.xml"; //$NON-NLS-1$
+    private static final String PREFS_FILE_NAME = "prefs.xml"; //$NON-NLS-1$
 
     //home directory for user prefs
-    static String USER_HOME;
+    private static String USER_HOME;
 
     //home directory for system prefs
-    static String SYSTEM_HOME;
+    private static String SYSTEM_HOME;
 
     /*
      * --------------------------------------------------------------
-     * static init
+     * Class initializer
      * --------------------------------------------------------------
      */
     static {
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            public Object run() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            public Void run() {
                 USER_HOME = System.getProperty("user.home") + "/.java/.userPrefs";//$NON-NLS-1$ //$NON-NLS-2$
                 SYSTEM_HOME = System.getProperty("java.home") + "/.systemPrefs";//$NON-NLS-1$//$NON-NLS-2$
                 return null;
             }
 
         });
-        userRoot = new FilePreferencesImpl(true);
-        systemRoot = new FilePreferencesImpl(false);
     }
 
     /*
      * --------------------------------------------------------------
-     * Variables
+     * Instance fields
      * --------------------------------------------------------------
      */
 
     //file path for this preferences node
-    String path;
+    private String path;
 
     //internal cache for prefs key-value pair
     private Properties prefs;
 
     //file represents this preferences node
-    File prefsFile;
+    private File prefsFile;
 
     //parent dir for this preferences node
-    File dir;
+    private File dir;
 
     //cache for removed prefs key-value pair
     private Set<String> removed = new HashSet<String>();
@@ -106,7 +97,19 @@ class FilePreferencesImpl extends AbstractPreferences {
      * Constructors
      * --------------------------------------------------------------
      */
-    /*
+    
+    /**
+     * Construct root <code>FilePreferencesImpl</code> instance, construct 
+     * user root if userNode is true, system root otherwise
+     */
+    FilePreferencesImpl(boolean userNode) {
+        super(null, ""); //$NON-NLS-1$
+        this.userNode = userNode;
+        path = userNode ? USER_HOME : SYSTEM_HOME;
+        initPrefs();
+    }
+    
+    /**
      * Construct a prefs using given parent and given name 
      */
     private FilePreferencesImpl(AbstractPreferences parent, String name) {
@@ -122,31 +125,11 @@ class FilePreferencesImpl extends AbstractPreferences {
                 return Boolean.valueOf(!dir.exists());
             }
         })).booleanValue();
-        prefsFile = new File(path + File.separator + prefsFileName);
+        prefsFile = new File(path + File.separator + PREFS_FILE_NAME);
         prefs = XMLParser.loadFilePrefs(prefsFile);
     }
 
-    /*
-     * Construct root <code>FilePreferencesImpl</code> instance, construct 
-     * user root if userNode is true, system root otherwise
-     */
-    private FilePreferencesImpl(boolean userNode) {
-        super(null, ""); //$NON-NLS-1$
-        this.userNode = userNode;
-        path = userNode ? USER_HOME : SYSTEM_HOME;
-        initPrefs();
-    }
-
-    /*
-     * --------------------------------------------------------------
-     * Methods implement AbstractPreferences
-     * --------------------------------------------------------------
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#childrenNamesSpi()
-     */
+    @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
         String[] names = AccessController
                 .doPrivileged(new PrivilegedAction<String[]>() {
@@ -167,21 +150,13 @@ class FilePreferencesImpl extends AbstractPreferences {
         return names;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#childSpi()
-     */
+    @Override
     protected AbstractPreferences childSpi(String name) {
         FilePreferencesImpl child = new FilePreferencesImpl(this, name);
         return child;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#flushSpi()
-     */
+    @Override
     protected void flushSpi() throws BackingStoreException {
         try {
             //if removed, return
@@ -210,11 +185,7 @@ class FilePreferencesImpl extends AbstractPreferences {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#getSpi(java.lang.String)
-     */
+    @Override
     protected String getSpi(String key) {
         try {
             if (null == prefs) {
@@ -226,31 +197,18 @@ class FilePreferencesImpl extends AbstractPreferences {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#keysSpi()
-     */
+    @Override
     protected String[] keysSpi() throws BackingStoreException {
         return prefs.keySet().toArray(new String[0]);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#putSpi(java.lang.String,
-     *      java.lang.String)
-     */
+    @Override
     protected void putSpi(String name, String value) {
         prefs.setProperty(name, value);
         updated.add(name);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#removeNodeSpi()
-     */
+    @Override
     protected void removeNodeSpi() throws BackingStoreException {
         boolean removeSucceed = (AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
@@ -264,24 +222,15 @@ class FilePreferencesImpl extends AbstractPreferences {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#removeSpi(java.lang.String)
-     */
+    @Override
     protected void removeSpi(String key) {
         prefs.remove(key);
         updated.remove(key);
         removed.add(key);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.prefs.AbstractPreferences#syncSpi()
-     */
+    @Override
     protected void syncSpi() throws BackingStoreException {
         flushSpi();
     }
-
 }
