@@ -55,23 +55,55 @@ import org.apache.harmony.prefs.internal.nls.Messages;
 public abstract class AbstractPreferences extends Preferences {
     /*
      * -----------------------------------------------------------
-     * Constants
+     * Class fields
      * -----------------------------------------------------------
      */
-    //the unhandled events collection
-    static final List<EventObject> events = new LinkedList<EventObject>();
-    //the event dispatcher thread
-    private final static EventDispatcher dispatcher = new EventDispatcher("Preference Event Dispatcher"); //$NON-NLS-1$
+    /** the unhandled events collection */
+    private static final List<EventObject> events = new LinkedList<EventObject>();
+    /** the event dispatcher thread */
+    private static final EventDispatcher dispatcher = new EventDispatcher("Preference Event Dispatcher"); //$NON-NLS-1$
 
     /*
      * -----------------------------------------------------------
-     * variables
+     * Class initializer
      * -----------------------------------------------------------
      */
-    /**
-     * The object used to lock this node. 
+    static {
+        dispatcher.setDaemon(true);
+        dispatcher.start();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Preferences uroot = Preferences.userRoot();
+                Preferences sroot = Preferences.systemRoot();
+                try {
+                    uroot.flush();
+                } catch (BackingStoreException e) {//ignore
+                }
+                try {
+                    sroot.flush();
+                } catch (BackingStoreException e) {//ignore
+                }
+            }
+        });
+    }
+    
+    /*
+     * -----------------------------------------------------------
+     * Instance fields (package-private)
+     * -----------------------------------------------------------
      */
+    /** true if this node is in user preference hierarchy */
+    boolean userNode;
+
+    /*
+     * -----------------------------------------------------------
+     * Instance fields (private)
+     * -----------------------------------------------------------
+     */
+    /** Marker class for 'lock' field. */
     private class Lock {}
+    /** The object used to lock this node. */
     protected final Object lock;
     
     /**
@@ -82,15 +114,12 @@ public abstract class AbstractPreferences extends Preferences {
      */
     protected boolean newNode;
 
-    //cached child nodes
+    /** cached child nodes */
     private Map<String, AbstractPreferences> cachedNode;
 
-    //true if this node is in user preference hierarchy
-    boolean userNode;
-
     //the collections of listeners
-    List<EventListener> nodeChangeListeners;
-    List<EventListener> preferenceChangeListeners;
+    private List<EventListener> nodeChangeListeners;
+    private List<EventListener> preferenceChangeListeners;
 
     //this node's name
     private String nodeName;
@@ -106,31 +135,7 @@ public abstract class AbstractPreferences extends Preferences {
 
     /*
      * -----------------------------------------------------------
-     * Class init
-     * -----------------------------------------------------------
-     */
-    static {
-        dispatcher.setDaemon(true);
-        dispatcher.start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                Preferences uroot = Preferences.userRoot();
-                Preferences sroot = Preferences.systemRoot();
-                try {
-                    uroot.flush();
-                } catch (BackingStoreException e) {//ignore
-                }
-                try {
-                    sroot.flush();
-                } catch (BackingStoreException e) {//ignore
-                }
-            }
-        });
-    }
-
-    /*
-     * -----------------------------------------------------------
-     * Constructor
+     * Constructors
      * -----------------------------------------------------------
      */
     /**
@@ -323,10 +328,7 @@ public abstract class AbstractPreferences extends Preferences {
      * Methods inherited from Preferences
      * -----------------------------------------------------------
      */
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#absolutePath()
-     */
+    @Override
     public String absolutePath() {
         if (parentPref == null) {
             return "/"; //$NON-NLS-1$
@@ -336,10 +338,7 @@ public abstract class AbstractPreferences extends Preferences {
         return parentPref.absolutePath() + "/" + nodeName; //$NON-NLS-1$
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#childrenNames()
-     */
+    @Override
     public String[] childrenNames() throws BackingStoreException {
         synchronized (lock) {
             checkState();
@@ -352,10 +351,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#clear()
-     */
+    @Override
     public void clear() throws BackingStoreException {
         synchronized (lock) {
             String[] keyList = keys();
@@ -365,10 +361,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#exportNode(java.io.OutputStream)
-     */
+    @Override
     public void exportNode(OutputStream ostream) throws IOException,
             BackingStoreException {
         if(ostream == null) {
@@ -380,10 +373,7 @@ public abstract class AbstractPreferences extends Preferences {
 
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#exportSubtree(java.io.OutputStream)
-     */
+    @Override
     public void exportSubtree(OutputStream ostream) throws IOException,
             BackingStoreException {
         if(ostream == null) {
@@ -394,10 +384,7 @@ public abstract class AbstractPreferences extends Preferences {
         XMLParser.exportPrefs(this, ostream, true);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#flush()
-     */
+    @Override
     public void flush() throws BackingStoreException {
         synchronized (lock) {
             flushSpi();
@@ -409,10 +396,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#get(java.lang.String, java.lang.String)
-     */
+    @Override
     public String get(String key, String deflt) {
         if (key == null) {
             throw new NullPointerException();
@@ -429,10 +413,7 @@ public abstract class AbstractPreferences extends Preferences {
         return (result == null ? deflt : result);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getBoolean(java.lang.String, boolean)
-     */
+    @Override
     public boolean getBoolean(String key, boolean deflt) {
         String result = get(key, null);
         if (result == null) {
@@ -446,10 +427,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getByteArray(java.lang.String, byte[])
-     */
+    @Override
     public byte[] getByteArray(String key, byte[] deflt) {
         String svalue = get(key, null);
         if (svalue == null) {
@@ -471,10 +449,7 @@ public abstract class AbstractPreferences extends Preferences {
         return dres;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getDouble(java.lang.String, double)
-     */
+    @Override
     public double getDouble(String key, double deflt) {
         String result = get(key, null);
         if (result == null) {
@@ -489,10 +464,7 @@ public abstract class AbstractPreferences extends Preferences {
         return dres;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getFloat(java.lang.String, float)
-     */
+    @Override
     public float getFloat(String key, float deflt) {
         String result = get(key, null);
         if (result == null) {
@@ -507,10 +479,7 @@ public abstract class AbstractPreferences extends Preferences {
         return fres;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getInt(java.lang.String, int)
-     */
+    @Override
     public int getInt(String key, int deflt) {
         String result = get(key, null);
         if (result == null) {
@@ -525,10 +494,7 @@ public abstract class AbstractPreferences extends Preferences {
         return ires;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#getLong(java.lang.String, long)
-     */
+    @Override
     public long getLong(String key, long deflt) {
         String result = get(key, null);
         if (result == null) {
@@ -543,18 +509,12 @@ public abstract class AbstractPreferences extends Preferences {
         return lres;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#isUserNode()
-     */
+    @Override
     public boolean isUserNode() {
         return root == Preferences.userRoot();
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#keys()
-     */
+    @Override
     public String[] keys() throws BackingStoreException {
         synchronized (lock) {
             checkState();
@@ -562,18 +522,12 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#name()
-     */
+    @Override
     public String name() {
         return nodeName;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#node(java.lang.String)
-     */
+    @Override
     public Preferences node(String name) {
         AbstractPreferences startNode = null;
         synchronized (lock) {
@@ -652,10 +606,7 @@ public abstract class AbstractPreferences extends Preferences {
         return temp;
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#nodeExists(java.lang.String)
-     */
+    @Override
     public boolean nodeExists(String name) throws BackingStoreException {
         AbstractPreferences startNode = null;
         synchronized (lock) {
@@ -685,10 +636,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#parent()
-     */
+    @Override
     public Preferences parent() {
         checkState();
         return parentPref;
@@ -701,10 +649,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#put(java.lang.String, java.lang.String)
-     */
+    @Override
     public void put(String key, String value) {
         if (null == key || null == value) {
             throw new NullPointerException();
@@ -719,67 +664,46 @@ public abstract class AbstractPreferences extends Preferences {
         notifyPreferenceChange(key, value);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putBoolean(java.lang.String, boolean)
-     */
+    @Override
     public void putBoolean(String key, boolean value) {
         String sval = String.valueOf(value);
         put(key, sval);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putByteArray(java.lang.String, byte[])
-     */
+    @Override
     public void putByteArray(String key, byte[] value) {
         try {
             put(key, Base64.encode(value, "US-ASCII")); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
-            //should not happen
+            throw new AssertionError(e);
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putDouble(java.lang.String, double)
-     */
+    @Override
     public void putDouble(String key, double value) {
         String sval = Double.toString(value);
         put(key, sval);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putFloat(java.lang.String, float)
-     */
+    @Override
     public void putFloat(String key, float value) {
         String sval = Float.toString(value);
         put(key, sval);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putInt(java.lang.String, int)
-     */
+    @Override
     public void putInt(String key, int value) {
         String sval = Integer.toString(value);
         put(key, sval);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#putLong(java.lang.String, long)
-     */
+    @Override
     public void putLong(String key, long value) {
         String sval = Long.toString(value);
         put(key, sval);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#remove(java.lang.String)
-     */
+    @Override
     public void remove(String key) {
         synchronized (lock) {
             checkState();
@@ -788,10 +712,7 @@ public abstract class AbstractPreferences extends Preferences {
         notifyPreferenceChange(key, null);
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#removeNode()
-     */
+    @Override
     public void removeNode() throws BackingStoreException {
         if (root == this) {
             // prefs.A=Cannot remove root node\!
@@ -826,10 +747,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#addNodeChangeListener(java.util.prefs.NodeChangeListener)
-     */
+    @Override
     public void addNodeChangeListener(NodeChangeListener ncl) {
         if (null == ncl) {
             throw new NullPointerException();
@@ -840,10 +758,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#addPreferenceChangeListener(java.util.prefs.PreferenceChangeListener)
-     */
+    @Override
     public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
         if (null == pcl) {
             throw new NullPointerException();
@@ -854,10 +769,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#removeNodeChangeListener(java.util.prefs.NodeChangeListener)
-     */
+    @Override
     public void removeNodeChangeListener(NodeChangeListener ncl) {
         checkState();
         synchronized (nodeChangeListeners) {
@@ -869,10 +781,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#removePreferenceChangeListener(java.util.prefs.PreferenceChangeListener)
-     */
+    @Override
     public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
         checkState();
         synchronized (preferenceChangeListeners) {
@@ -884,10 +793,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#sync()
-     */
+    @Override
     public void sync() throws BackingStoreException {
         synchronized (lock) {
             checkState();
@@ -900,10 +806,7 @@ public abstract class AbstractPreferences extends Preferences {
         }
     }
 
-    /*
-     *  (non-Javadoc)
-     * @see java.util.prefs.Preferences#toString()
-     */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(isUserNode() ? "User" : "System"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -938,14 +841,11 @@ public abstract class AbstractPreferences extends Preferences {
     }
 
     private static class EventDispatcher extends Thread {
-        public EventDispatcher(){
-            super();
-        }
-        
-        public EventDispatcher(String name){
+        EventDispatcher(String name){
             super(name);
         }
         
+        @Override
         public void run() {
             while (true) {
                 EventObject event = null;
