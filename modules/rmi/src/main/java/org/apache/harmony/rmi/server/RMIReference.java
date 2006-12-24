@@ -31,7 +31,7 @@ import org.apache.harmony.rmi.internal.nls.Messages;
 
 /**
  * Extension of WeakReference. It could contain strong reference to the object.
- * Also hashCode() and equals() methods are overriden. This class is used for
+ * Also hashCode() and equals() methods are overridden. This class is used for
  * storing exported rmi objects.
  *
  * @author  Mikhail A. Markov

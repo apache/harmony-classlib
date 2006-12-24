@@ -128,9 +128,9 @@ public class UnicastRemoteObject extends RemoteServer {
      *        method because it returns RemoteStub class (but Proxy class could
      *        not be casted to it)
      *
-     * @return stub for exportec object
+     * @return stub for exported object
      *
-     * @throws RemoteException if any error occured while exporting object
+     * @throws RemoteException if any error occurred while exporting object
      */
     private static Remote exportObject(Remote obj,
                                        int port,

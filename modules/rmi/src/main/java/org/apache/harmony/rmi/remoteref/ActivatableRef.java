@@ -164,7 +164,7 @@ public class ActivatableRef extends UnicastRef2 {
 
     /**
      * If the internal remote reference of this ActivatableRef is null, the activatable object is activated using
-     * ActivationID.activate() methiod. After that the remote call is delegated to the ref, by means of calling its 'invoke' method.
+     * ActivationID.activate() method. After that the remote call is delegated to the ref, by means of calling its 'invoke' method.
      */
     public Object invoke(Remote obj, Method method, Object[] params, long opnum)
             throws Exception {
@@ -195,7 +195,7 @@ public class ActivatableRef extends UnicastRef2 {
         /*
          * If the group's VM was killed(or something bad happened to it) we may have stale activatable reference to the object.
          * In this case rref.invoke() will throw 3 types of Exceptions: ConnectException, ConnectIOException and UnknownObjectException
-         * which should be catched and activation group should be activated again.
+         * which should be caught and activation group should be activated again.
          */
         try {
             return rref.invoke(obj, method, params, opnum);
@@ -226,7 +226,7 @@ public class ActivatableRef extends UnicastRef2 {
     }
 
     /**
-     * Standart remoteEquals implementaion.
+     * Standard remoteEquals implementation.
      *
      * @param ref
      *

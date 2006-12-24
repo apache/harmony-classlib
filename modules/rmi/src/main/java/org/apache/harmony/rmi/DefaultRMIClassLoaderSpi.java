@@ -423,7 +423,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
     /*
      * Finds loader in classloaders table. Returns it as a result if it's not
      * null, otherwise creates URLLoader, adds it to the table and returns it
-     * as a result. Checks persmission on found/created loader.
+     * as a result. Checks permission on found/created loader.
      *
      * @param codebase list of URLs separated by spaces
      *
@@ -666,7 +666,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
 
 
     /*
-     * This class is a subclass of URLClassLoader. It containts annotations for
+     * This class is a subclass of URLClassLoader. It contains annotations for
      * classes and also permissions to be checked if requested.
      */
     private static class URLLoader extends URLClassLoader {

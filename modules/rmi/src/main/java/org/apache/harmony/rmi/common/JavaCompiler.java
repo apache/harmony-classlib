@@ -176,7 +176,7 @@ public abstract class JavaCompiler implements RMIProperties {
      *
      * @param   pattern
      *          Pattern (regular expression)
-     *          describing the file that has to be retutned.
+     *          describing the file that has to be returned.
      *          The first file matching this pattern would be returned.
      *
      * @param   name

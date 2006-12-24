@@ -48,7 +48,7 @@ public class MarshalledObjectInputStream extends RMIObjectInputStream {
      * @param objBytes serialized objects array
      * @param locBytes annotations for serialized objects
      *
-     * @throws IOException if an I/O error occured during streams initialization
+     * @throws IOException if an I/O error occurred during streams initialization
      */
     public MarshalledObjectInputStream(byte[] objBytes, byte[] locBytes)
             throws IOException {

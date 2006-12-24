@@ -472,7 +472,7 @@ public final class RMIUtil {
      * @return  List of remote interfaces for the specified class.
      *
      * @throws  IllegalArgumentException
-     *          If some error occured while creating the list.
+     *          If some error occurred while creating the list.
      */
     public static String[] getRemoteInterfacesNames(Class cls)
             throws IllegalArgumentException {
@@ -501,7 +501,7 @@ public final class RMIUtil {
      *          and having method hashes as keys.
      *
      * @throws  RMIHashException
-     *          If error occured while calculating method hash.
+     *          If error occurred while calculating method hash.
      */
     public static Map getRemoteMethods(Class cls) throws RMIHashException {
         Map map = new HashMap();

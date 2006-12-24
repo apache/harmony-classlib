@@ -85,7 +85,7 @@ public abstract class ServerConnection
      * @param s Socket connected to the client
      * @param mgr ServerConnectionManager managing this connection
      *
-     * @throws IOException if an I/O error occured during getting
+     * @throws IOException if an I/O error occurred during getting
      *         input/output streams from specified socket
      */
     public ServerConnection(Socket s, ServerConnectionManager mgr)
@@ -102,7 +102,7 @@ public abstract class ServerConnection
 
     /**
      * Acknowledges RMI protocol version, RMI protocol type etc. and wait for
-     * remote calls from client. After call message dispatch call to apropriate
+     * remote calls from client. After call message dispatch call to appropriate
      * UnicastServerRef for processing.
      */
     public void run() {
@@ -241,7 +241,7 @@ public abstract class ServerConnection
      *
      * @return acknowledged protocol number
      *
-     * @throws RemoteException if any I/O exception occured during protocol
+     * @throws RemoteException if any I/O exception occurred during protocol
      *         acknowledgement
      */
     protected abstract int clientProtocolAck() throws IOException;
@@ -255,7 +255,7 @@ public abstract class ServerConnection
      * @return 0x50 code if this code is received from the client or -1 if
      *         the socket was closed while waiting for CALL_MSG code
      *
-     * @throws IOException if any I/O error occured while communicating with
+     * @throws IOException if any I/O error occurred while communicating with
      *         client
      */
     protected abstract int waitCallMsg() throws IOException;

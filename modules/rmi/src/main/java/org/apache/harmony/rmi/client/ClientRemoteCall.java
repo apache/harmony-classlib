@@ -83,7 +83,7 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
      *
      * @return ObjectInputStream to read objects from
      *
-     * @throws IOException if an I/O error occured during stream construction
+     * @throws IOException if an I/O error occurred during stream construction
      */
     public ObjectInput getInputStream() throws IOException {
         if (oin == null) {
@@ -98,7 +98,7 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
      *
      * @return ObjectOutputStream to write objects to
      *
-     * @throws IOException if an I/O error occured during stream construction
+     * @throws IOException if an I/O error occurred during stream construction
      */
 
     public ObjectOutput getOutputStream() throws IOException {
@@ -223,11 +223,11 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
         try {
             obj = oin.readObject();
         } catch (IOException ioe) {
-            // rmi.3C=IOException occured while unmarshalling returned exception
+            // rmi.3C=IOException occurred while unmarshalling returned exception
             throw new UnmarshalException(Messages.getString("rmi.3C"), ioe); //$NON-NLS-1$
                     
         } catch (ClassNotFoundException cnfe) {
-            // rmi.3D=ClassNotFoundException occured while unmarshalling returned exception
+            // rmi.3D=ClassNotFoundException occurred while unmarshalling returned exception
             throw new UnmarshalException(Messages.getString("rmi.3D"), cnfe); //$NON-NLS-1$
         }
 

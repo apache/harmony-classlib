@@ -50,7 +50,7 @@ public class TcpConnection extends ClientConnection {
     // status of availability for remote calls
     private boolean available;
 
-    // lock object for synchtonization
+    // lock object for synchronization
     private class Lock {}
     private Object lock = new Lock();
 
@@ -82,7 +82,7 @@ public class TcpConnection extends ClientConnection {
      *
      * @return acknowledged protocol number
      *
-     * @throws RemoteException if any I/O exception occured during protocol
+     * @throws RemoteException if any I/O exception occurred during protocol
      *         acknowledgement
      */
     protected int serverProtocolAck() throws RemoteException {
@@ -110,7 +110,7 @@ public class TcpConnection extends ClientConnection {
             } catch (Exception ex) {
             }
 
-            // read protocol acknoledgement
+            // read protocol acknowledgement
             DataInputStream din = new DataInputStream(in);
             int ack = din.readByte();
 

@@ -73,7 +73,7 @@ final class RMIObjectInfo {
 
     /*
      * Constructs RemoteObjectInfo holding the specified information.
-     * The ClassLoader for dispatching calls is chosed using the following
+     * The ClassLoader for dispatching calls is chosen using the following
      * rules:
      * 1) If current thread context ClassLoader is null, then ClassLoader
      *    which loads Class of remote object will be the ClassLoader for
@@ -85,7 +85,7 @@ final class RMIObjectInfo {
      *    of the ClassLoader which loads Class of remote object, then
      *    current thread context ClassLoader will be the ClassLoader for for
      *    dispatching calls.
-     * 4) Otherwise ClassLoader which loads Class of remkote object will
+     * 4) Otherwise ClassLoader which loads Class of remote object will
      *    be the ClassLoader fo dispatching calls.
      *
      * @param ref reference to remote object

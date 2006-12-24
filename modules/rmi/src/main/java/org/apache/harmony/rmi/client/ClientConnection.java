@@ -75,7 +75,7 @@ public abstract class ClientConnection implements RMIProtocolConstants {
      * @param s Connected socket
      * @param ep server's endpoint
      *
-     * @throws RemoteException if any I/O error occured during connection
+     * @throws RemoteException if any I/O error occurred during connection
      *         creation
      */
     public ClientConnection(Socket s, Endpoint ep) throws RemoteException {
@@ -125,18 +125,18 @@ public abstract class ClientConnection implements RMIProtocolConstants {
      *
      * @return acknowledged protocol number
      *
-     * @throws RemoteException if any I/O exception occured during protocol
+     * @throws RemoteException if any I/O exception occurred during protocol
      *         acknowledgement
      */
     protected abstract int serverProtocolAck() throws RemoteException;
 
     /**
-     * Writes RMI protocol header and RMI protocol vertion to the open
+     * Writes RMI protocol header and RMI protocol version to the open
      * OutputStream.
      *
      * @param dout DataOutputStream to write header to
      *
-     * @throws RemoteException if any I/O error occured while writing header
+     * @throws RemoteException if any I/O error occurred while writing header
      */
     protected void writeHeader(DataOutputStream dout) throws RemoteException {
         try {
@@ -207,7 +207,7 @@ public abstract class ClientConnection implements RMIProtocolConstants {
     /**
      * By default flushes output stream of this connection.
      *
-     * @throws IOException if any I/O error occured
+     * @throws IOException if any I/O error occurred
      */
     public void releaseOutputStream() throws IOException {
         out.flush();

@@ -214,7 +214,7 @@ public class DefaultRMISocketFactory extends RMISocketFactory
      * Helper method: returns non-null RMIClientSocketFactory.
      * Returns specified RMIClientSocketFactory if it is not null; otherwise
      * returns result of getSocketFactory method call if it is not null;
-     * ottherwise returns result of getDefaultSocketFactory method call.
+     * otherwise returns result of getDefaultSocketFactory method call.
      *
      * @param csf RMIClientSocketFactory to check
      *
@@ -231,7 +231,7 @@ public class DefaultRMISocketFactory extends RMISocketFactory
      * Helper method: returns non-null RMIServerSocketFactory.
      * Returns specified RMIServerSocketFactory if it is not null; otherwise
      * returns result of getSocketFactory method call if it is not null;
-     * ottherwise returns result of getDefaultSocketFactory method call.
+     * otherwise returns result of getDefaultSocketFactory method call.
      *
      * @param ssf RMIServerSocketFactory to check
      *

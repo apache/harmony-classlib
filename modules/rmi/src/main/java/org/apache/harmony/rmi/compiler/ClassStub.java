@@ -891,10 +891,10 @@ final class ClassStub implements RmicConstants {
         }
 
         /**
-         * Returns stub imlementation for this method
+         * Returns stub implementation for this method
          * (Stub v1.1/v1.2/vCompat).
          *
-         * @return  Stub imlementation for this method.
+         * @return  Stub implementation for this method.
          */
         String getStubImpl() {
             return (getStubImplHeader()
@@ -910,10 +910,10 @@ final class ClassStub implements RmicConstants {
         }
 
         /**
-         * Returns header for the stub implementaton for this method
+         * Returns header for the stub implementation for this method
          * (Stub v1.1/v1.2/vCompat).
          *
-         * @return  Stub imlementation header for this method.
+         * @return  Stub implementation header for this method.
          */
         private String getStubImplHeader() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
@@ -943,10 +943,10 @@ final class ClassStub implements RmicConstants {
         }
 
         /**
-         * Returns the stub implementaton code section source for this method
+         * Returns the stub implementation code section source for this method
          * (Stub v1.1/vCompat).
          *
-         * @return  Stub imlementation code for this method.
+         * @return  Stub implementation code for this method.
          */
         private String getStubImplCodeV11() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
@@ -1010,10 +1010,10 @@ final class ClassStub implements RmicConstants {
         }
 
         /**
-         * Returns the stub implementaton code section source for this method
+         * Returns the stub  implementation code section source for this method
          * (Stub v1.2/vCompat).
          *
-         * @return  Stub imlementation code for this method.
+         * @return  Stub implementation code for this method.
          */
         private String getStubImplCodeV12() {
             StringBuffer buffer = new StringBuffer(indenter.indent());
@@ -1051,10 +1051,10 @@ final class ClassStub implements RmicConstants {
         }
 
         /**
-         * Returns the stub implementaton catch block for this method
+         * Returns the stub implementation catch block for this method
          * (Stub v1.1/v1.2/vCompat).
          *
-         * @return  Stub imlementation catch block for this method.
+         * @return  Stub implementation catch block for this method.
          */
         private String getStubImplCatchBlock() {
             StringBuffer buffer = new StringBuffer();

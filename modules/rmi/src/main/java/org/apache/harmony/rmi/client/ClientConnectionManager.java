@@ -82,7 +82,7 @@ public final class ClientConnectionManager {
      *
      * @return opened connection
      *
-     * @throws RemoteException if any error occured while obtaining connection
+     * @throws RemoteException if any error occurred while obtaining connection
      */
     public static ClientConnection getConnection(Endpoint ep)
             throws RemoteException {

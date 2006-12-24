@@ -231,7 +231,7 @@ final class RmicUtil implements RmicConstants {
      * @param   packageName
      *          Package name (for subdirectory).
      *
-     * @return  File object for a directoty like this:
+     * @return  File object for a directory like this:
      *          <code>baseDir/my/java/package</code>.
      *
      * @throws  RMICompilerException

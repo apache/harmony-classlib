@@ -201,7 +201,7 @@ public class RMIClassLoader {
      *
      * @return provider obtained from default resource
      *
-     * @throws IOException if any I/O error occured while trying to read
+     * @throws IOException if any I/O error occurred while trying to read
      *         provider name from default resource
      */
     private static String getSpiFromResource() throws IOException {

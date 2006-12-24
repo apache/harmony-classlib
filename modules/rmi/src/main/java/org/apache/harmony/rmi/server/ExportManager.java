@@ -101,7 +101,7 @@ public class ExportManager {
      *
      * @return stub for exported object
      *
-     * @throws RemoteException if any exception occured while exporting
+     * @throws RemoteException if any exception occurred while exporting
      *         specified remote object
      */
     public static Remote exportObject(Remote obj,
@@ -133,7 +133,7 @@ public class ExportManager {
      *
      * @return stub for exported object
      *
-     * @throws RemoteException if any exception occured while exporting
+     * @throws RemoteException if any exception occurred while exporting
      *         specified remote object
      */
     public static Remote exportObject(Remote obj,
@@ -267,7 +267,7 @@ public class ExportManager {
     }
 
     /*
-     * Decrease the number of active callse by one.
+     * Decrease the number of active calls by one.
      */
     static void removeActiveCall() {
         synchronized (callsLock) {
@@ -289,7 +289,7 @@ public class ExportManager {
 
 
     /*
-     * Thread removind objects from the table when they are scheduled for GC.
+     * Thread removing objects from the table when they are scheduled for GC.
      * It blocks VM from exiting as it's run with setDaemon(false).
      */
     private static class Scavenger implements Runnable {

@@ -55,7 +55,7 @@ public class HttpConnection extends ClientConnection
      *
      * @return acknowledged protocol number
      *
-     * @throws RemoteException if any I/O exception occured during protocol
+     * @throws RemoteException if any I/O exception occurred during protocol
      *         acknowledgement
      */
     protected int serverProtocolAck() throws RemoteException {

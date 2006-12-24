@@ -51,7 +51,7 @@ public class TcpServerConnection extends ServerConnection {
     protected static final RMILog tcpTransportLog = RMILog.getTcpTransportLog();
 
     /*
-     * The time used as an idle timeout for incomping connections (in ms).
+     * The time used as an idle timeout for incoming connections (in ms).
      * Default value is 2 * 3600 * 1000 ms (2 hours).
      */
     private static int readTimeout = ((Long) AccessController.doPrivileged(
@@ -64,7 +64,7 @@ public class TcpServerConnection extends ServerConnection {
      * @param s Socket connected to the client
      * @param mgr ConnectionManager managing this connection
      *
-     * @throws IOException if an I/O error occured during getting
+     * @throws IOException if an I/O error occurred during getting
      *         input/output streams from specified socket
      */
     public TcpServerConnection(Socket s, ServerConnectionManager mgr)

@@ -161,7 +161,7 @@ public class MarshalledObjectTest extends TestCase {
 
 
     /**
-     * Auxilary empty class.
+     * Auxiliary empty class.
      */
     static class TestClass implements Serializable {
     }

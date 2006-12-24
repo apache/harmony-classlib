@@ -68,10 +68,10 @@ public class ActivationID implements Serializable {
             rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.03")); //$NON-NLS-1$
             return deserialized_stub;
         } catch (IOException ioe) {
-            // rmi.0E=An IOException occured while deserializing the object from its internal representation.
+            // rmi.0E=An IOException occurred while deserializing the object from its internal representation.
             throw new RemoteException(Messages.getString("rmi.0E")); //$NON-NLS-1$
         } catch (ClassNotFoundException cnfe) {
-            // rmi.0F=A ClassNotFoundException occured while deserializing the object from its internal representation.
+            // rmi.0F=A ClassNotFoundException occurred while deserializing the object from its internal representation.
             throw new RemoteException(Messages.getString("rmi.0F")); //$NON-NLS-1$
         }
     }

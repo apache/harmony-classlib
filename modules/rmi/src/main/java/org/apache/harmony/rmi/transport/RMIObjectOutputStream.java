@@ -69,7 +69,7 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
      *
      * @param out underlying OutputStream
      *
-     * @throws IOException if an I/O error occured during stream initialization
+     * @throws IOException if an I/O error occurred during stream initialization
      */
     public RMIObjectOutputStream(OutputStream out) throws IOException {
         this(out, false);
@@ -83,7 +83,7 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
      * @param isResultStream true if this stream was created
      *        in RemoteCall.getResultStream() method
      *
-     * @throws IOException if an I/O error occured during stream initialization
+     * @throws IOException if an I/O error occurred during stream initialization
      */
     public RMIObjectOutputStream(OutputStream out, boolean isResultStream)
             throws IOException {
@@ -173,7 +173,7 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
      * @param obj object (possibly primitive) to be written to the stream
      * @param cl type of object to be written to the stream
      *
-     * @throws IOException if an I/O error occured during serialization
+     * @throws IOException if an I/O error occurred during serialization
      */
     public void writeRMIObject(Object obj, Class cl) throws IOException {
         if (cl.isPrimitive()) {
@@ -217,7 +217,7 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
     /**
      * Writes DGC ack UID to this stream.
      *
-     * @throws IOException if any I/O error occured while writing
+     * @throws IOException if any I/O error occurred while writing
      */
     public void writeUID() throws IOException {
         uid.write(this);

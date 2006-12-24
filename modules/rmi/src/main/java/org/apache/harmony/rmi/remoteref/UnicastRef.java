@@ -144,7 +144,7 @@ public class UnicastRef extends RemoteRefBase {
                     }
                 }
             } catch (IOException ioe) {
-                // rmi.6F=I/O error occured while marshalling arguments
+                // rmi.6F=I/O error occurred while marshalling arguments
                 throw new MarshalException(Messages.getString("rmi.6F"), ioe); //$NON-NLS-1$
             }
 
@@ -160,10 +160,10 @@ public class UnicastRef extends RemoteRefBase {
                 try {
                     toReturn = oin.readRMIObject(m.getReturnType());
                 } catch (IOException ioe) {
-                    // rmi.70=IOException occured while unmarshalling return value
+                    // rmi.70=IOException occurred while unmarshalling return value
                     throw new UnmarshalException(Messages.getString("rmi.70"), ioe); //$NON-NLS-1$
                 } catch (ClassNotFoundException cnfe) {
-                    // rmi.71=ClassNotFoundException occured while unmarshalling return value
+                    // rmi.71=ClassNotFoundException occurred while unmarshalling return value
                     throw new UnmarshalException(Messages.getString("rmi.71"), cnfe); //$NON-NLS-1$
                 }
             }
@@ -187,7 +187,7 @@ public class UnicastRef extends RemoteRefBase {
      *
      * @param out the stream to write the object to
      *
-     * @throws IOException if any I/O error occured or class is not serializable
+     * @throws IOException if any I/O error occurred or class is not serializable
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         ep.writeExternal(out, false);
@@ -199,7 +199,7 @@ public class UnicastRef extends RemoteRefBase {
      *
      * @param in the stream to read data from
      *
-     * @throws IOException if any I/O error occured
+     * @throws IOException if any I/O error occurred
      * @throws ClassNotFoundException if class could not be loaded by current
      *         class loader
      */

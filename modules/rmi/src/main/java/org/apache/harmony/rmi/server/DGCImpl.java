@@ -203,7 +203,7 @@ class DGCImpl implements DGC {
 
 
     /*
-     * Auxiliary class checking expiration times and removind expired entries
+     * Auxiliary class checking expiration times and removing expired entries
      * from the list of active objects.
      */
     private class ExpirationTracker implements Runnable {

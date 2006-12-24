@@ -212,7 +212,7 @@ public final class ClassList {
     public void add(Class cls) {
         boolean exist = false;
 
-        // Do not pre-caclculate size, it will change.
+        // Do not pre-calculate size, it will change.
         for (int i = 0; i < vector.size(); i++) {
             Class element = (Class) vector.elementAt(i);
 
@@ -286,7 +286,7 @@ public final class ClassList {
     public void remove(Class cls) {
         boolean changed = false;
 
-        // Do not pre-caclculate size, it will change.
+        // Do not pre-calculate size, it will change.
         for (int i = 0; i < vector.size(); i++) {
             Class element = (Class) vector.elementAt(i);
 

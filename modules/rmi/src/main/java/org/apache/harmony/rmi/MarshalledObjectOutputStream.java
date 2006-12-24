@@ -52,7 +52,7 @@ public class MarshalledObjectOutputStream extends RMIObjectOutputStream {
      *
      * @param out underlying OutputStream
      *
-     * @throws IOException if an I/O error occured during stream initialization
+     * @throws IOException if an I/O error occurred during stream initialization
      */
     public MarshalledObjectOutputStream(OutputStream out) throws IOException {
         super(out);

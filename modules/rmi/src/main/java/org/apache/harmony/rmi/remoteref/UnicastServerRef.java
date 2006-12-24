@@ -98,7 +98,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
      */
     protected ServerConnectionManager mgr;
 
-    // The name of Remote class for loggin purposes.
+    // The name of Remote class for login purposes.
     private String implClassName = null;
 
     // Log where to write server-side log of remote calls.
@@ -200,7 +200,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
         String host = ServerConnectionManager.getClientHost();
 
         if (host == null) {
-            // rmi.5B=There are no in-progress RMI calls in the current thead.
+            // rmi.5B=There are no in-progress RMI calls in the current thread.
             throw new ServerNotActiveException(Messages.getString("rmi.5B")); //$NON-NLS-1$
         }
         return host;
@@ -244,7 +244,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
      * @param isSystem if true then existence of this object will not prevent
      *        VM from exiting (for example, for rmiregistry)
      *
-     * @throws RemoteException if any exception occured while trying to export
+     * @throws RemoteException if any exception occurred while trying to export
      *         the object
      */
     public Remote exportObject(Remote obj,
@@ -360,7 +360,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
     /**
      * Returns true if force parameter is false and there are no in-progress
      * calls to the object handled by this ref and false otherwise. This method
-     * could be overriden by subclasses to "really" unexport handled object.
+     * could be overridden by subclasses to "really" unexport handled object.
      *
      * @param force if true then we may not care about active calls
      *
@@ -385,7 +385,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
      *
      * @param call RemoteCall
      *
-     * @throws IOException if any I/O error occured during remote method call
+     * @throws IOException if any I/O error occurred during remote method call
      */
     public void processCall(RemoteCall call) throws IOException {
         // read method and parameters
@@ -455,7 +455,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
             }
             oout.flush();
         } catch (Error er) {
-            // rmi.67=Error occured while marshalling return value
+            // rmi.67=Error occurred while marshalling return value
             throw new ServerError(Messages.getString("rmi.67"), er); //$NON-NLS-1$
         }
     }
@@ -468,10 +468,10 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
      *        failure or silently return null
      *
      * @return loaded stub or null if throwException is false and any failure
-     *         occured during stub loading
+     *         occurred during stub loading
      *
      * @throws StubNotFoundException if throwException parameter is true and any
-     *         failure occured during stub loading
+     *         failure occurred during stub loading
      */
     protected Class loadStubClass(Class c, boolean throwException)
             throws StubNotFoundException {
@@ -498,7 +498,7 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
      *
      * @param c Class whose skel should be loaded and instantiated
      *
-     * @return created skel class or null if any Exception occured during
+     * @return created skel class or null if any Exception occurred during
      *         skel loading or instantiating
      */
     protected Skeleton getSkelInstance(Class c) {
@@ -546,16 +546,16 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
                 params[i] = oin.readRMIObject(paramTypes[i]);
             }
         } catch (RemoteException re) {
-            // rmi.69=RemoteException occured while unmarshalling arguments
+            // rmi.69=RemoteException occurred while unmarshalling arguments
             throw new ServerException(Messages.getString("rmi.69"), re); //$NON-NLS-1$
         } catch (IOException ioe) {
-            // rmi.6A=IOException occured while unmarshalling arguments
+            // rmi.6A=IOException occurred while unmarshalling arguments
             throw new UnmarshalException(Messages.getString("rmi.6A"), ioe); //$NON-NLS-1$
         } catch (ClassNotFoundException cnfe) {
-            // rmi.6B=ClassNotFoundException occured while unmarshalling arguments
+            // rmi.6B=ClassNotFoundException occurred while unmarshalling arguments
             throw new UnmarshalException(Messages.getString("rmi.6B"), cnfe); //$NON-NLS-1$
         } catch (Error er) {
-            // rmi.6C=Error occured while unmarshalling arguments
+            // rmi.6C=Error occurred while unmarshalling arguments
             throw new ServerError(Messages.getString("rmi.6C"), er); //$NON-NLS-1$
         }
         return params;
@@ -575,10 +575,10 @@ public class UnicastServerRef extends UnicastRef implements ServerRef {
         logServerException(m, t);
 
         if (t instanceof Error) {
-            // rmi.6D=Error occured while remote method invocation
+            // rmi.6D=Error occurred while remote method invocation
             preparedEx = new ServerError(Messages.getString("rmi.6D"), (Error) t); //$NON-NLS-1$
         } else if (t instanceof RemoteException) {
-            // rmi.6E=RemoteException occured while remote method invocation
+            // rmi.6E=RemoteException occurred while remote method invocation
             preparedEx = new ServerException(Messages.getString("rmi.6E"), //$NON-NLS-1$
                     (RemoteException) t);
         } else {

@@ -161,7 +161,7 @@ public final class Proxy implements ProxyConstants {
 
     /**
      * Accesses {@link #PROXY_HOST_PROP} system property
-     * and retrives the proxy host name.
+     * and retrieves the proxy host name.
      *
      * @return  Proxy host name or <code>null</code> if proxy host is not set.
      */
@@ -180,7 +180,7 @@ public final class Proxy implements ProxyConstants {
 
     /**
      * Accesses {@link #PROXY_PORT_PROP} system property
-     * and retrives the proxy port number.
+     * and retrieves the proxy port number.
      *
      * @return  Proxy port number or {@link #HTTP_DEFAULT_PORT}
      *          if proxy port is not set.

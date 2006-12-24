@@ -70,7 +70,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
      *
      * @param in underlying InputStream
      *
-     * @throws IOException if an I/O error occured during stream initialization
+     * @throws IOException if an I/O error occurred during stream initialization
      */
     public RMIObjectInputStream(InputStream in) throws IOException {
         this (in, false);
@@ -84,7 +84,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
      * @param isRCallStream true if this stream was created for handling
      *        a RemoteCall and false otherwise
      *
-     * @throws IOException if an I/O error occured during stream initialization
+     * @throws IOException if an I/O error occurred during stream initialization
      */
     public RMIObjectInputStream(InputStream in, boolean isRCallStream)
             throws IOException {
@@ -106,7 +106,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
      *
      * @param streamCl annotated class
      *
-     * @throws IOException if an I/O exception occured
+     * @throws IOException if an I/O exception occurred
      * @throws ClassNotFoundException if class of a serialized object
      *         could not be found
      */
@@ -128,7 +128,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
      *
      * @param interf array of interfaces which proxy class should implement
      *
-     * @throws IOException if an I/O exception occured
+     * @throws IOException if an I/O exception occurred
      * @throws ClassNotFoundException if class of a serialized object
      *         could not be found
      */
@@ -165,7 +165,7 @@ public class RMIObjectInputStream extends ObjectInputStream {
      *
      * @return object read from the stream
      *
-     * @throws IOException if an I/O error occured during deserialization
+     * @throws IOException if an I/O error occurred during deserialization
      * @throws ClassNotFoundException if class of a serialized object
      *         could not be found
      */

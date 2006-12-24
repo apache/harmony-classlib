@@ -45,7 +45,7 @@ public abstract class RemoteRefBase implements RemoteRef {
 
     private static final long serialVersionUID = 358378173612121423L;
 
-    /** Endpoind this handle refers to. */
+    /** Endpoint this handle refers to. */
     protected Endpoint ep;
 
     /** Object ID of remote object. */
@@ -104,7 +104,7 @@ public abstract class RemoteRefBase implements RemoteRef {
      *
      * @param in the stream to read data from
      *
-     * @throws IOException if any I/O error occured
+     * @throws IOException if any I/O error occurred
      * @throws ClassNotFoundException if class could not be loaded by current
      *         class loader
      */
@@ -136,7 +136,7 @@ public abstract class RemoteRefBase implements RemoteRef {
      *
      * @param out the stream to write the object to
      *
-     * @throws IOException if any I/O error occured or class is not serializable
+     * @throws IOException if any I/O error occurred or class is not serializable
      */
     protected void writeCommon(ObjectOutput out) throws IOException {
         objId.write(out);

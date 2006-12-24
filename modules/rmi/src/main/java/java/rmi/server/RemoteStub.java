@@ -49,7 +49,7 @@ public abstract class RemoteStub extends RemoteObject {
 
     /**
      * @com.intel.drl.spec_ref
-     * @deprecated This method is depreacted since Java v1.2. The constructor
+     * @deprecated This method is deprecated since Java v1.2. The constructor
      *  {@link #RemoteStub(java.rmi.server.RemoteRef)} should be used instead.
      */
     @Deprecated

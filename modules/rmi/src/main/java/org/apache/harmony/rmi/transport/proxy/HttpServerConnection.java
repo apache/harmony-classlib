@@ -54,7 +54,7 @@ public class HttpServerConnection extends ServerConnection
      * @param s Socket connected to the client
      * @param mgr ConnectionManager managing this connection
      *
-     * @throws IOException if an I/O error occured during getting
+     * @throws IOException if an I/O error occurred during getting
      *         input/output streams from specified socket
      */
     public HttpServerConnection(Socket s, ServerConnectionManager mgr)

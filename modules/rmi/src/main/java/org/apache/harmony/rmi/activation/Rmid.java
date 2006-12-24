@@ -97,7 +97,7 @@ import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
  * files: snapshot.rmid and delta.rmid. snapshot.rmid contains the
  * snapshot of the structure that contains information about Activation
  * Groups and Activatable Objects registered in this RMID and delta.rmid
- * reflects the changes occured since last snapshot.
+ * reflects the changes occurred since last snapshot.
  *
  * The objects that are saved in Snapshot:
  * <UL>

@@ -76,7 +76,7 @@ public class ActivationGroupImpl extends ActivationGroup {
      * ActivationGroupID <br>
      * ActivationGroupDesc <br>
      * incarnation The parameters needed to create ActivationGroup correctly are
-     * passed through the stardard input stream in the following order: <br>
+     * passed through the standard input stream in the following order: <br>
      * ActivationGroupID -> ActivationGroupDesc -> incarnation
      */
     public static void main(String args[]) {

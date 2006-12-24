@@ -47,7 +47,7 @@ public class ActivatableServerRef extends UnicastServerRef2 {
     /**
      * Constructor intended to create ActivatableServerRef on the given port.
      *
-     * @param aid Activation identificator of this ActivatableRef
+     * @param aid Activation identifier of this ActivatableRef
      * @param port Port on which ActivatableServerRef will be exported.
      * @param csf Client socket factory.
      * @param ssf Server socket factory.
@@ -62,7 +62,7 @@ public class ActivatableServerRef extends UnicastServerRef2 {
 
     /**
      * Constructor intended to create ActivatableServerRef on the given port.
-     * @param aid Activation identificator of this ActivatableRef
+     * @param aid Activation identifier of this ActivatableRef
      * @param port Port on which ActivatableServerRef will be exported.
      */
     public ActivatableServerRef(ActivationID aid, int port) {

@@ -113,7 +113,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
     private final boolean verbose;
 
     /**
-     * Option: recompile dependend classes.
+     * Option: recompile dependent classes.
      * (<code>-depend</code>).
      */
     private final boolean depend;
@@ -144,7 +144,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
      *
      * We use {@link Object} array to store either {@link String}
      * or {@link Class} objects because we don't want to resolve all the class
-     * names in the beginning - to avoid one incorrecly spelled class name
+     * names in the beginning - to avoid one incorrectly spelled class name
      * preventing generation of stubs for other specified classes.
      */
     private Object[] classes;
@@ -349,7 +349,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
         javacOptionsList.add(optionNoWarnings);
 
         // Parse arguments, adjust values of option fields,
-        // add neccessary options to javacOptionsList.
+        // add necessary options to javacOptionsList.
         for (int i = 0; i < numArgs; i++) {
             String arg = args[i].intern();
 
@@ -676,7 +676,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
             }
         } finally {
 
-            // Remove generated stub and skeleton files even if exception arised
+            // Remove generated stub and skeleton files even if exception arose
             if (!keepSources) {
                 for (int i = 0; i < filesNum; i++) {
                     stubFiles[i].delete();
@@ -764,7 +764,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
      *              by <code>%s</code> substrings.
      *
      * @param       arg
-     *              Argument. Each occurence of <code>%s</code>
+     *              Argument. Each occurrence of <code>%s</code>
      *              in <code>message</code> is replaced with this string.
      *
      * @throws      RMICompilerException
@@ -780,7 +780,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
      * Produces warning message.
      *
      * @param       tag
-     *              Warning tag. Used to track warnings. Also, each occurence
+     *              Warning tag. Used to track warnings. Also, each occurrence
      *              of <code>%s</code> in <code>message</code> is replaced
      *              with this string.
      *

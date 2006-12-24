@@ -82,7 +82,7 @@ public class ServerRemoteCall implements RemoteCall, RMIProtocolConstants {
      *
      * @return ObjectInputStream to read objects from
      *
-     * @throws IOException if an I/O error occured during stream construction
+     * @throws IOException if an I/O error occurred during stream construction
      */
     public ObjectInput getInputStream() throws IOException {
         if (oin == null) {
@@ -97,7 +97,7 @@ public class ServerRemoteCall implements RemoteCall, RMIProtocolConstants {
      *
      * @return ObjectOutputStream to write objects to
      *
-     * @throws IOException if an I/O error occured during stream construction
+     * @throws IOException if an I/O error occurred during stream construction
      */
 
     public ObjectOutput getOutputStream() throws IOException {
@@ -113,11 +113,11 @@ public class ServerRemoteCall implements RemoteCall, RMIProtocolConstants {
      * writes UID of the object (for DGC) and flushes the output stream.
      * This method could be called only once.
      *
-     * @param success if true - means that method call was successfull (i.e.
+     * @param success if true - means that method call was successful (i.e.
      *        with no exception) - return data description will be written to
      *        the output stream
      *
-     * @throws IOexception if an I/O error occured while writing to the stream
+     * @throws IOException if an I/O error occurred while writing to the stream
      * @throws StreamCorruptedException if this method has already been called
      */
     public ObjectOutput getResultStream(boolean success)

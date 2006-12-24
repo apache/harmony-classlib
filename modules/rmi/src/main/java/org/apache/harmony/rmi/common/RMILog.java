@@ -245,7 +245,7 @@ public class RMILog implements RMIProperties {
      * @param levelStr String to be parsed
      *
      * @return parsed Level or Level.OFF if the given string is null or an
-     *         error occured while it's parsing
+     *         error occurred while it's parsing
      */
     public static Level parseLevelString(String levelStr) {
         if (levelStr == null) {
@@ -279,7 +279,7 @@ public class RMILog implements RMIProperties {
     }
 
     /**
-     * Checks if underlying logger whould log a message with the specified
+     * Checks if underlying logger would log a message with the specified
      * level.
      *
      * @param l Logging level to be checked

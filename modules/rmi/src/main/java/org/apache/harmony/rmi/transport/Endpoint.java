@@ -267,7 +267,7 @@ public class Endpoint {
      * @param out ObjectOutput to write this Endpoint to
      * @param writeCsf do we need to write client-side factory or not
      *
-     * @throws IOException if any I/O error occured during writing
+     * @throws IOException if any I/O error occurred during writing
      */
     public void writeExternal(ObjectOutput out, boolean writeCsf)
             throws IOException {
@@ -294,7 +294,7 @@ public class Endpoint {
      *
      * @return created Endpoint
      *
-     * @throws IOException if any I/O error occured
+     * @throws IOException if any I/O error occurred
      * @throws ClassNotFoundException if class could not be loaded by current
      *         class loader
      */

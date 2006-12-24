@@ -311,7 +311,7 @@ class ClientDGC {
         // Base time for calculating renew time in case of failed dirty calls
         private long failedRenewBaseDuration = 0;
 
-        // Lease duration returned by the latest successfull DGC.dirty call.
+        // Lease duration returned by the latest successful DGC.dirty call.
         private long latestLeaseDuration = 0;
 
         /*
@@ -461,7 +461,7 @@ class ClientDGC {
 
     /*
      * Auxiliary thread detecting remote objects which where garbage-collected
-     * and spawning the thread callling DGC.clean() method.
+     * and spawning the thread calling DGC.clean() method.
      */
     private static class RemovedObjectsDetector implements Runnable {
 

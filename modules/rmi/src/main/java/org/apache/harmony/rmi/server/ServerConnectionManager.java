@@ -94,7 +94,7 @@ public class ServerConnectionManager implements Runnable {
      *
      * @param sref server-side handle for exported remote object
      *
-     * @throws IOException if any I/O error occured during opening ServerSocket
+     * @throws IOException if any I/O error occurred during opening ServerSocket
      */
     private ServerConnectionManager(Endpoint localEp)
             throws IOException {
@@ -110,7 +110,7 @@ public class ServerConnectionManager implements Runnable {
      *
      * @return found (created) ServerConnectionManager
      *
-     * @throws IOException and and I/O error occured during manager creation
+     * @throws IOException and and I/O error occurred during manager creation
      */
     public static synchronized ServerConnectionManager getMgr(Endpoint ep)
             throws IOException {
@@ -196,7 +196,7 @@ public class ServerConnectionManager implements Runnable {
                     }
                 } else {
                     // We will try to immediately accept another client again,
-                    // but if we have a bad client wich fails our accept tries
+                    // but if we have a bad client which fails our accept tries
                     // for a number of times, we should sleep for a while.
                     if (failedAcceptsNum >= 5) {
                         try {
@@ -234,7 +234,7 @@ public class ServerConnectionManager implements Runnable {
     }
 
     /**
-     * Decrease the number of active callse by one.
+     * Decrease the number of active calls by one.
      */
     protected void removeActiveCall() {
         synchronized (callsLock) {
@@ -251,7 +251,7 @@ public class ServerConnectionManager implements Runnable {
      *
      * @return connection to the remote client
      *
-     * @throws IOException if any I/O error occured while starting connection
+     * @throws IOException if any I/O error occurred while starting connection
      */
     private ServerConnection startConnection(Socket s)
             throws IOException {

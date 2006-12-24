@@ -99,7 +99,7 @@ public class UnicastRef2 extends UnicastRef {
      *
      * @param out the stream to write the object to
      *
-     * @throws IOException if any I/O error occured or class is not serializable
+     * @throws IOException if any I/O error occurred or class is not serializable
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         ep.writeExternal(out, true);
@@ -111,7 +111,7 @@ public class UnicastRef2 extends UnicastRef {
      *
      * @param in the stream to read data from
      *
-     * @throws IOException if any I/O error occured
+     * @throws IOException if any I/O error occurred
      * @throws ClassNotFoundException if class could not be loaded by current
      *         class loader
      */
