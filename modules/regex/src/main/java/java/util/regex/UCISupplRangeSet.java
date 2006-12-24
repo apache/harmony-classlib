@@ -16,11 +16,11 @@
 
 /*
  *
- *  Portions, Copyright © 1991-2005 Unicode, Inc. The following applies to Unicode. 
+ *  Portions, Copyright Â© 1991-2005 Unicode, Inc. The following applies to Unicode. 
  *
  *  COPYRIGHT AND PERMISSION NOTICE
  *
- *  Copyright © 1991-2005 Unicode, Inc. All rights reserved. Distributed under 
+ *  Copyright Â© 1991-2005 Unicode, Inc. All rights reserved. Distributed under 
  *  the Terms of Use in http://www.unicode.org/copyright.html. Permission is
  *  hereby granted, free of charge, to any person obtaining a copy of the
  *  Unicode data files and any associated documentation (the "Data Files")
@@ -53,7 +53,7 @@
  *
  *  2. Additional terms from the Database:
  *
- *  Copyright © 1995-1999 Unicode, Inc. All Rights reserved.
+ *  Copyright Â© 1995-1999 Unicode, Inc. All Rights reserved.
  *
  *  Disclaimer 
  *
