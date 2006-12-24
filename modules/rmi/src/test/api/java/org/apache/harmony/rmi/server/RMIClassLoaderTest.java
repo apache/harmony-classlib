@@ -18,6 +18,7 @@
 
 package org.apache.harmony.rmi.server;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.server.RMIClassLoader;
@@ -76,5 +77,62 @@ public class RMIClassLoaderTest extends TestCase {
             // reset the security manager back to null state
             System.setSecurityManager(previous);
         }
+    }
+
+    /**
+      * Test for java.rmi.server.RMIClassLoader.loadProxyClass(String, String[], ClassLoader)
+      * testing invalid url as a codebase.
+      */
+    public void testLoadProxyClassInvalidCodebase() throws Exception {
+        //Regression for HARMONY-1133
+        SecurityManager previous = System.getSecurityManager();
+        System.setSecurityManager(null);
+        
+        try {
+            RMIClassLoader.loadProxyClass("zzz", new String[] {}, null);
+            fail("MalformedURLException expected");
+        } catch (MalformedURLException e) { 
+            //expected 
+        } finally {
+            System.setSecurityManager(previous);            
+        }
+    }
+
+    /**
+     * Test for java.rmi.server.RMIClassLoader.loadClass(String, String)
+     * testing invalid url as a codebase.
+     */
+    public void testLoadClassInvalidCodebase() throws Exception {
+        //Regression for HARMONY-1133
+        SecurityManager previous = System.getSecurityManager();
+        System.setSecurityManager(null);
+        
+        try { 
+            RMIClassLoader.loadClass("zzz", "a123");
+            fail("MalformedURLException expected");
+        } catch (MalformedURLException e) { 
+            //expected 
+        } finally {
+            System.setSecurityManager(previous);            
+        } 
+    }
+
+    /**
+     * Test for java.rmi.server.RMIClassLoader.getClassLoader(String)
+     * testing invalid url as a codebase.
+     */
+    public void testGetClassLoaderInvalidCodebase() throws Exception {
+        //Regression for HARMONY-1134
+        SecurityManager previous = System.getSecurityManager();
+        System.setSecurityManager(null);
+
+        try { 
+            RMIClassLoader.getClassLoader("zzz");
+            fail("MalformedURLException expected");
+        } catch (MalformedURLException e) { 
+            //expected 
+        } finally {
+            System.setSecurityManager(previous);            
+        } 
     }
 }

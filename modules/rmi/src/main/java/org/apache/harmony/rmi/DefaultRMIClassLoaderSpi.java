@@ -103,6 +103,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         Class[] interfCl = new Class[interf.length];
         ClassLoader codebaseLoader = null;
         Exception ex = null;
+        stringToURLs(codebase);
 
         try {
             codebaseLoader = getClassLoader1(codebase);
@@ -263,6 +264,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                     new Object[]{name, ((codebase == null) ? "" : codebase), //$NON-NLS-1$
                     defaultLoader}));
         }
+        stringToURLs(codebase);
 
         try {
             if (defaultLoader != null) {
@@ -382,6 +384,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
      */
     public ClassLoader getClassLoader(String codebase)
             throws MalformedURLException {
+        stringToURLs(codebase);
         SecurityManager mgr = System.getSecurityManager();
 
         if (mgr == null) {
