@@ -1005,7 +1005,8 @@ public class AbstractPreferencesTest extends TestCase {
 		try {
 			pref.exportNode(null);
 			fail();
-		} catch (AssertionError e) {
+		} catch (NullPointerException e) {
+			// Expected
 		}
 
 		pref.putBoolean("key", false);
@@ -1069,7 +1070,8 @@ public class AbstractPreferencesTest extends TestCase {
 		try {
 			pref.exportSubtree(null);
 			fail();
-		} catch (AssertionError e) {
+		} catch (NullPointerException e) {
+			// Expected
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		pref.putBoolean("key", false);

@@ -373,7 +373,7 @@ public abstract class AbstractPreferences extends Preferences {
             BackingStoreException {
         if(ostream == null) {
             // prefs.5=Stream is null
-            throw new AssertionError(Messages.getString("prefs.5"));  //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("prefs.5"));  //$NON-NLS-1$
         }
         checkState();
         XMLParser.exportPrefs(this, ostream, false);
@@ -388,9 +388,8 @@ public abstract class AbstractPreferences extends Preferences {
             BackingStoreException {
         if(ostream == null) {
             // prefs.5=Stream is null
-            throw new AssertionError(Messages.getString("prefs.5"));  //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("prefs.5"));  //$NON-NLS-1$
         }
-
         checkState();
         XMLParser.exportPrefs(this, ostream, true);
     }
