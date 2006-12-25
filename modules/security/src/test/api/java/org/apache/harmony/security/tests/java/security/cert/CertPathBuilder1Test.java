@@ -32,10 +32,12 @@ import java.security.cert.CertPathBuilderException;
 import java.security.cert.CertPathBuilderSpi;
 import java.security.cert.CertificateException;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.security.tests.support.SpiEngUtils;
 import org.apache.harmony.security.tests.support.cert.MyCertPathBuilderSpi;
 
-import junit.framework.TestCase;
+import tests.support.Support_Exec;
 
 /**
  * Tests for <code>CertPathBuilder</code> class constructors and
@@ -67,6 +69,8 @@ public class CertPathBuilder1Test extends TestCase {
     
     private static String NotSupportMsg = "";
 
+    public static final String DEFAULT_TYPE_PROPERTY = "certpathbuilder.type";
+
     static {
         defaultProvider = SpiEngUtils.isSupport(defaultType,
                 srvCertPathBuilder);
@@ -93,32 +97,30 @@ public class CertPathBuilder1Test extends TestCase {
     }    
     
     /**
-     * Test for <code>getDefaultType()</code> method
-	 * Assertion: 
-	 * returns security property "certpathbuild.type" or "PKIX"
-     */    
-    public void testCertPathBuilder01() {
-        if (!PKIXSupport) {
-            return;
-        }
-        String propName = "certpathbuild.type";
-        String defCPB = Security.getProperty(propName);
-        
-        String dt = CertPathBuilder.getDefaultType();
-        String resType = defCPB; 
-        if (resType == null) {
-            resType = defaultType;
-        }
-        assertNotNull("Default type have not be null", dt);
-        assertEquals("Incorrect default type", dt, resType);
-        
-        if (defCPB == null) {
-            Security.setProperty(propName, defaultType);
-            dt = CertPathBuilder.getDefaultType();
-            resType = Security.getProperty(propName);
-            assertNotNull("Incorrect default type", resType);
-            assertNotNull("Default type have not be null", dt);
-            assertEquals("Incorrect default type", dt, resType);            
+     * @tests java.security.cert.CertPathBuilder#getDefaultType()
+     */
+    public void test_getDefaultType() throws Exception {
+
+        // Regression for HARMONY-2785
+
+        // test: default value  
+        assertNull(Security.getProperty(DEFAULT_TYPE_PROPERTY));
+        assertEquals("PKIX", CertPathBuilder.getDefaultType());
+
+        // test: security property. fork new VM to keep testing env. clean
+        Support_Exec.execJava(new String[] { DefaultType.class.getName() },
+                null, true);
+    }
+
+    public static class DefaultType {
+
+        public static void main(String[] args) {
+
+            Security.setProperty(DEFAULT_TYPE_PROPERTY, "MyType");
+            assertEquals("MyType", CertPathBuilder.getDefaultType());
+
+            Security.setProperty(DEFAULT_TYPE_PROPERTY, "AnotherType");
+            assertEquals("AnotherType", CertPathBuilder.getDefaultType());
         }
     }
     

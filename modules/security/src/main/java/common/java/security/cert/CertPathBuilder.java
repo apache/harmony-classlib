@@ -47,7 +47,7 @@ public class CertPathBuilder {
     private static Engine engine = new Engine(SERVICE);
 
     // Store default property name
-    private static final String PROPERTYNAME = "certpathbuild.type"; //$NON-NLS-1$
+    private static final String PROPERTYNAME = "certpathbuilder.type"; //$NON-NLS-1$
 
     // Default value of CertPathBuilder type. It returns if certpathbuild.type
     // property is not defined in java.security file

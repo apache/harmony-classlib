@@ -33,7 +33,6 @@ import java.security.cert.CertPathBuilderResult;
 
 import org.apache.harmony.security.tests.java.security.cert.CertPathBuilder1Test;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
-import org.apache.harmony.security.tests.support.SpiEngUtils.MyProvider;
 
 import junit.framework.TestCase;
 
@@ -90,7 +89,7 @@ public class CertPathBuilder2Test extends TestCase {
             throws InvalidAlgorithmParameterException,
             CertPathBuilderException {
         String dt = CertPathBuilder.getDefaultType();
-        String propName = "certpathbuild.type";
+        String propName = CertPathBuilder1Test.DEFAULT_TYPE_PROPERTY;
         String dtN;
         for (int i = 0; i <invalidValues.length; i++) {
             Security.setProperty(propName, invalidValues[i]);
