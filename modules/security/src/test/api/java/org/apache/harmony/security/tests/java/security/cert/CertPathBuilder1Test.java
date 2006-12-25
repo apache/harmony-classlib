@@ -131,12 +131,11 @@ public class CertPathBuilder1Test extends TestCase {
 	 * throws NoSuchAlgorithmException when algorithm  is not correct
 	 * or it is not available
      */
-    public void testCertPathBuilder02() {
+    public void testCertPathBuilder02() throws NoSuchAlgorithmException {
         try {
             CertPathBuilder.getInstance(null);
-            fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
+            fail("No expected NullPointerException");
         } catch (NullPointerException e) {
-        } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
@@ -223,9 +222,8 @@ public class CertPathBuilder1Test extends TestCase {
         }
         try {
             CertPathBuilder.getInstance(null, defaultProviderName);
-            fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
+            fail("No expected NullPointerException");
         } catch (NullPointerException e) {
-        } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
@@ -288,9 +286,8 @@ public class CertPathBuilder1Test extends TestCase {
         }
         try {
             CertPathBuilder.getInstance(null, defaultProvider);
-            fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
+            fail("No expected NullPointerException");
         } catch (NullPointerException e) {
-        } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
