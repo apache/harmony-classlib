@@ -33,6 +33,7 @@ import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -63,6 +64,8 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     URL[] urls, orgUrls;
+
+    HashSet invalidUrls = new HashSet();
 
     private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(32);
 
@@ -245,12 +248,10 @@ public class URLClassLoader extends SecureClassLoader {
     Vector<URL> findResources(URL[] searchURLs, String name, Vector<URL> result) {
         boolean findInExtensions = searchURLs == urls;
         for (int i = 0; i < searchURLs.length; i++) {
-            if (searchURLs[i] != null) {
+            if (!invalidUrls.contains(searchURLs[i])) {
                 URL[] search = new URL[] { searchURLs[i] };
                 URL res = findResourceImpl(search, name);
-                if (search[0] == null) {
-                    searchURLs[i] = null;
-                } else {
+                if (!invalidUrls.contains(search[0])) {
                     if (res != null && !result.contains(res)) {
                         result.addElement(res);
                     }
@@ -360,9 +361,7 @@ public class URLClassLoader extends SecureClassLoader {
                     URL[] search = new URL[] { newExtensions[k] };
                     if (resources != null) {
                         URL res = findResourceImpl(search, name);
-                        if (search[0] == null) { // the URL does not exist
-                            newExtensions[k] = null;
-                        } else {
+                        if (!invalidUrls.contains(search[0])) { // the URL does not exist
                             if (res != null && !resources.contains(res)) {
                                 resources.addElement(res);
                             }
@@ -379,9 +378,7 @@ public class URLClassLoader extends SecureClassLoader {
                         if (result != null) {
                             return result;
                         }
-                        if (search[0] == null) { // the URL does not exist
-                            newExtensions[k] = null;
-                        } else {
+                        if (!invalidUrls.contains(search[0])) { // the URL exists
                             result = findInExtensions(explore(newExtensions[k],
                                     i), name, i, null, url);
                             if (result != null) {
@@ -694,7 +691,9 @@ public class URLClassLoader extends SecureClassLoader {
         boolean findInExtensions = searchList == urls;
         int i = 0;
         while (i < searchList.length) {
-            if (searchList[i] != null) {
+            if (searchList[i] == null) {
+                throw new NullPointerException("One of urls is null");
+            } else if(!invalidUrls.contains(searchList[i])) {
                 JarFile jf = null;
                 try {
                     URL currentUrl = searchList[i];
@@ -717,7 +716,7 @@ public class URLClassLoader extends SecureClassLoader {
                                 resCache.put(currentUrl, jf);
                             } catch (IOException e) {
                                 // Don't look for this jar file again
-                                searchList[i] = null;
+                                invalidUrls.add(searchList[i]);
                                 throw e;
                             }
                         }
@@ -729,7 +728,7 @@ public class URLClassLoader extends SecureClassLoader {
                             int sepIdx = file.lastIndexOf("!/");
                             if (sepIdx == -1) {
                                 // Invalid URL, don't look here again
-                                searchList[i] = null;
+                                invalidUrls.add(searchList[i]);
                                 continue;
                             }
                             sepIdx += 2;
@@ -989,6 +988,9 @@ public class URLClassLoader extends SecureClassLoader {
         final String name = new StringBuffer(clsName.replace('.', '/')).append(
                 ".class").toString(); //$NON-NLS-1$
         for (int i = 0; i < searchURLs.length; i++) {
+            if (searchURLs[i] == null) {
+                throw new NullPointerException("One of urls is null");
+            } else if(!invalidUrls.contains(searchURLs[i])) {
             Manifest manifest = null;
             InputStream is = null;
             JarEntry entry = null;
@@ -1013,7 +1015,7 @@ public class URLClassLoader extends SecureClassLoader {
                             resCache.put(thisURL, jf);
                         } catch (IOException e) {
                             // Don't look for this jar file again
-                            searchURLs[i] = null;
+                            invalidUrls.add(searchURLs[i]);
                             throw e;
                         }
                     }
@@ -1024,7 +1026,7 @@ public class URLClassLoader extends SecureClassLoader {
                         int sepIdx = file.lastIndexOf("!/");
                         if (sepIdx == -1) {
                             // Invalid URL, don't look here again
-                            searchURLs[i] = null;
+                            invalidUrls.add(searchURLs[i]);
                             continue;
                         }
                         sepIdx += 2;
@@ -1152,6 +1154,7 @@ public class URLClassLoader extends SecureClassLoader {
                         return c;
                     }
                 }
+            }
             }
         }
         return null;

@@ -311,6 +311,22 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         } catch (NullPointerException npe) {
             // Expected
         }
+
+        // Regression test for HARMONY-2871.
+        URLClassLoader cl = new URLClassLoader(new URL[] { new URL("file:/foo.jar") });
+
+        try {
+            Class.forName("foo.Foo", false, cl);
+        } catch (Exception ex) {
+            // Don't care
+        }
+
+        try {
+            Class.forName("foo.Foo", false, cl);
+            fail("NullPointerException should be thrown");
+        } catch (ClassNotFoundException cnfe) {
+            // Expected
+        }
     }
 
     /**
