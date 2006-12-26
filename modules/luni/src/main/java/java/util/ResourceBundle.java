@@ -269,9 +269,7 @@ public abstract class ResourceBundle {
 			bundle = (ResourceBundle) bundleClass.newInstance();
 			bundle.setLocale(locale);
 		} catch (LinkageError e) {
-		} catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+		} catch (Exception e) {
         }
 
 		if (bundle == null) {
