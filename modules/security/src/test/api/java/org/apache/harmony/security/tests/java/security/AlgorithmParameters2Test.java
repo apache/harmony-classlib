@@ -106,15 +106,4 @@ public class AlgorithmParameters2Test extends junit.framework.TestCase {
         params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
                 BigInteger.ONE));
 	}
-
-	/**
-	 * @tests java.security.AlgorithmParameters#toString()
-	 */
-	public void test_toString() throws Exception {
-		// Test for method java.lang.String
-		// java.security.AlgorithmParameters.toString()
-        String str = AlgorithmParameters.getInstance("DSA").toString();
-        assertNull("toString should be null", str);
-
-	}
 }

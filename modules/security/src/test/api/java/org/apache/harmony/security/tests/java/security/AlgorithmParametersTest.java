@@ -489,6 +489,29 @@ public class AlgorithmParametersTest extends TestCase {
         assertTrue(paramSpi.runEngineInitB$String);
     }
 
+    /**
+     * @tests java.security.AlgorithmParameters#toString()
+     */
+    public void test_toString() throws Exception {
+
+        final String str = "AlgorithmParameters";
+
+        MyAlgorithmParameters paramSpi = new MyAlgorithmParameters() {
+            protected String engineToString() {
+                return str;
+            }
+        };
+
+        AlgorithmParameters params = new DummyAlgorithmParameters(paramSpi, p,
+                "algorithm");
+
+        assertNull("unititialized", params.toString());
+
+        params.init(new byte[0]);
+
+        assertSame(str, params.toString());
+    }
+
 	private void checkUnititialized(AlgorithmParameters ap) {
         assertNull("Unititialized: toString() failed", ap.toString());
 	}
