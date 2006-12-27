@@ -109,7 +109,7 @@
     <!-- ================================= 
           target: layout              
          ================================= -->
-    <target name="layout" depends="layout.windows"
+    <target name="layout"
         description="Construct the correct directory structure for native binaries">
 
     	<!-- Create the target directory structure -->
@@ -129,11 +129,6 @@
             <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
         </copy>
 
-    </target>
-
-    <target name="layout.windows" if="is.windows">
-        <!-- workaround until msdll is moved. -->
-        <copy file="${msvcr71.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
     </target>
 
     <!-- ================================= 

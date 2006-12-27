@@ -54,7 +54,6 @@
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
     <target name="-really-check-win" if="is.windows">
-        <check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
         <check-one-file src="${awtdeps.url}" dest="${awtdeps.tar}" />
         <uptodate property="awtdeps.uptodate"
                   srcfile="${awtdeps.tar}"
@@ -276,10 +275,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     <target name="-download-win" if="is.windows">
         
-    <mkdir dir="${msvcr71.dir}" />
-    <download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
-                           md5="${msvcr71.md5}" />
-
     <mkdir dir="${awtdeps.dir}" />
     <download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
                            md5="${awtdeps.md5}" />
