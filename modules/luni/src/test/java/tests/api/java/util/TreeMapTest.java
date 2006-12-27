@@ -322,8 +322,11 @@ public class TreeMapTest extends junit.framework.TestCase {
         };
 
         TreeMap<String, String> treemap = new TreeMap<String, String>(c);
-        treemap.put("key", "value"); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(0, treemap.headMap(null).size());
+        
+        treemap = new TreeMap();
+		SortedMap<String, String> headMap =  treemap.headMap("100");
+		headMap.headMap("100");
     }
 
     /**

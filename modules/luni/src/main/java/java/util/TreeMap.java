@@ -335,7 +335,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                     if (hasStart && object.compareTo(startKey) < 0) {
                         throw new IllegalArgumentException();
                     }
-                    if (hasEnd && object.compareTo(endKey) >= 0) {
+                    if (hasEnd && object.compareTo(endKey) > 0) {
                         throw new IllegalArgumentException();
                     }
                 } else {
@@ -343,7 +343,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                             && backingMap.comparator().compare(key, startKey) < 0) {
                         throw new IllegalArgumentException();
                     }
-                    if (hasEnd && backingMap.comparator().compare(key, endKey) >= 0) {
+                    if (hasEnd && backingMap.comparator().compare(key, endKey) > 0) {
                         throw new IllegalArgumentException();
                     }
                 }
