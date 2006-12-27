@@ -387,7 +387,7 @@ public class CertificateFactory1Test extends TestCase {
             try {
                 colCer = certFs[i].generateCertificates(is);
                 if (colCer != null) {
-                    assertTrue("Not empy certificate collection", colCer.isEmpty());
+                    assertTrue("Not empty certificate collection", colCer.isEmpty());
                 }
             } catch (CertificateException e) {
             }
@@ -430,7 +430,7 @@ public class CertificateFactory1Test extends TestCase {
      * generateCRLs(InputStream inStream) </code> 
      * methods 
      * Assertion: throw CertificateException and CRLException when inStream 
-     * contains incompatibale datas
+     * contains incompatible datas
      */
     public void testCertificateFactory11() throws CertificateException,
             NoSuchProviderException, IOException {

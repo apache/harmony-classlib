@@ -272,7 +272,7 @@ public class PolicyUtilsTest extends TestCase {
         }
     }
 
-    /** Tests convertion of null, empty and non-empty heterogenious collections. */
+    /** Tests conversion of null, empty and non-empty heterogeneous collections. */
     public void testToPermissionCollection() {
         Permission p1 = new SecurityPermission("abc");
         Permission p2 = new AllPermission();

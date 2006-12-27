@@ -111,7 +111,7 @@ public class IdentityTest extends TestCase {
     }
 
     /*
-     * Cverify Identity(String) creates instance with given name
+     * verify Identity(String) creates instance with given name
      */
     public void testIdentityString() {
         Identity i = new IdentityStub("iii");
@@ -198,7 +198,7 @@ public class IdentityTest extends TestCase {
 //
 //  Commented out since there will no be fix for the test failure    
 //    /**
-//     * verify removeCertificate(Certificate certificate) removes cetrificate
+//     * verify removeCertificate(Certificate certificate) removes certificate
 //     */
 //    public void testRemoveCertificate1() throws Exception{
 //        Identity i = new IdentityStub("iii");

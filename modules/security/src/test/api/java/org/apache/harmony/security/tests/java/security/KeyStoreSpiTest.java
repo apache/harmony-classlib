@@ -141,7 +141,7 @@ public class KeyStoreSpiTest extends TestCase {
         } catch (KeyStoreException e) {
         }
         assertNull("engineAliases() must return null", ksSpi.engineAliases());
-        assertFalse("engineConatinsAlias(..) must return false", ksSpi
+        assertFalse("engineContainsAlias(..) must return false", ksSpi
                 .engineContainsAlias(""));
         assertEquals("engineSize() must return 0", 0, ksSpi.engineSize());
         try {

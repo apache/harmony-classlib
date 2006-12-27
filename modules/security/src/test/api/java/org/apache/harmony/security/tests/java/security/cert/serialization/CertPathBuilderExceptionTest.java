@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertPathBuilderException seialization 
+ * Test for CertPathBuilderException serialization 
  *  
  */
 

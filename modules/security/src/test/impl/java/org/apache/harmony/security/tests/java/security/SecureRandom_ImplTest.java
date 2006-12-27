@@ -46,7 +46,7 @@ public class SecureRandom_ImplTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		// remove all registerd providers
+		// remove all registered providers
 		for (int i = 0; i < providers.length; i++) {
 			Security.removeProvider(providers[i].getName());
 		}
@@ -57,7 +57,7 @@ public class SecureRandom_ImplTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		// restore all registerd providers
+		// restore all registered providers
 		for (int i = 0; i < providers.length; i++) {
 			Security.addProvider(providers[i]);
 		}

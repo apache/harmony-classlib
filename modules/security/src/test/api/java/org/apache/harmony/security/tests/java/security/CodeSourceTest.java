@@ -62,7 +62,7 @@ public class CodeSourceTest extends TestCase {
 
     private static URL urlDir_port80, urlDir_port81;
 
-    /* must be exatly the same as urlDir, but with slash added */
+    /* must be exactly the same as urlDir, but with slash added */
     private static URL urlDirWithSlash;
 
     //private static URL urlDirFtp;
@@ -174,7 +174,7 @@ public class CodeSourceTest extends TestCase {
 
     /**
      * Test for equals(Object)<br>
-     * The signer certificate chain must contain the same set of cerificates, but 
+     * The signer certificate chain must contain the same set of certificates, but 
      * the order of the certificates is not taken into account.
      */
     public void testEqualsObject_02() {
@@ -203,7 +203,7 @@ public class CodeSourceTest extends TestCase {
     }
 
     /**
-     * Tests CodeSource.getCeritficates().
+     * Tests CodeSource.getCertificates().
      */
     public void testGetCertificates_00() {
         assertNull(new CodeSource(null, (Certificate[]) null).getCertificates());
@@ -369,7 +369,7 @@ public class CodeSourceTest extends TestCase {
     /**
      * Tests whether we are running with the 1.5 features.<br>
      * The test is preformed by looking for (via reflection) the CodeSource's 
-     * costructor  {@link CodeSource#CodeSource(URL, CodeSigner[])}.
+     * constructor  {@link CodeSource#CodeSource(URL, CodeSigner[])}.
      * @return <code>true</code> if 1.5 feature is presented, <code>false</code> 
      * otherwise.
      */
@@ -597,7 +597,7 @@ public class CodeSourceTest extends TestCase {
 
     /**
      * Testing with special URLs like 'localhost', 'file://' scheme ...
-     * These cpesial URLs have a special processing in implies(), 
+     * These special URLs have a special processing in implies(), 
      * so they need to be covered and performance need to be checked 
      */
     public void testImplies_0C() throws Exception {
@@ -612,7 +612,7 @@ public class CodeSourceTest extends TestCase {
 
     /**
      * Testing with special URLs like 'localhost', 'file://' scheme ...
-     * These cpesial URLs have a special processing in implies(), 
+     * These special URLs have a special processing in implies(), 
      * so they need to be covered and performance need to be checked 
      */
     public void testImplies_0D() throws Exception {

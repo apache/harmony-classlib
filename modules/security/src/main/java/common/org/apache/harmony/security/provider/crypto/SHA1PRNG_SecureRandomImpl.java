@@ -34,8 +34,8 @@ import java.io.IOException;
  * This class extends the SecureRandomSpi class implementing all its abstract methods. <BR>
  * <BR>
  * To generate pseudo-random bits, the implementation uses technique described in
- * the "Random Number Generator (RNG) algoritms" section, Appendix A,
- * JavaTM Cryptography Architecure, API Specification&Reference <BR>
+ * the "Random Number Generator (RNG) algorithms" section, Appendix A,
+ * JavaTM Cryptography Architecture, API Specification&Reference <BR>
  * <BR>
  * The class implements the Serializable interface.
  */
@@ -73,7 +73,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
     // value of 16 defined in the "SECURE HASH STANDARD", FIPS PUB 180-2
     private static final int FRAME_LENGTH = 16;
 
-    // miscellanous constans defined in this implementation:
+    // miscellaneous constants defined in this implementation:
     // COUNTER_BASE - initial value to set to "counter" before computing "nextBytes(..)";
     //                note, that the exact value is not defined in STANDARD
     // HASHCOPY_OFFSET   - offset for copy of current hash in "copies" array
@@ -138,7 +138,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
 
     // The "seed" array is used to compute both "current seed hash" and "next bytes".
     //
-    // As the "SHA1" algorithm computes a hash of entire seed by spletting it into
+    // As the "SHA1" algorithm computes a hash of entire seed by splitting it into
     // a number of the 512-bit length frames (512 bits = 64 bytes = 16 words),
     // "current seed hash" is a hash (5 words, 20 bytes) for all previous full frames;
     // remaining bytes are stored in the 0-15 word frame of the "seed" array.
@@ -194,7 +194,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
     /**
      * Changes current seed by supplementing a seed argument to the current seed,
      * if this already set;
-     * the argument is used as first seed othewise. <BR>
+     * the argument is used as first seed otherwise. <BR>
      *
      * The method overrides "engineSetSeed(byte[])" in class SecureRandomSpi.
      *
@@ -257,7 +257,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
     }
 
     /**
-     * Writes random bytes into an array suppied.
+     * Writes random bytes into an array supplied.
      * Bits in a byte are from left to right. <BR>
      *
      * To generate random bytes, the "expansion of source bits" method is used,

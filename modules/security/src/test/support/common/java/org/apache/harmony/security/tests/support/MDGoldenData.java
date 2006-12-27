@@ -25,13 +25,13 @@ import java.util.HashMap;
 
 /**
  * Golden data for Message Digest related tests.<br>
- * Incapsulates the following data:<br>
+ * Encapsulates the following data:<br>
  * - reference message<br>
  * - reference message digests calculated using
  *   BEA JRockit j2sdk1.4.2_04 (http://www.bea.com)
  *   for various MD algorithms: 
  *   SHA-1, SHA-256, SHA-384, SHA-512, MD-5.
- * Standart algorithm names are defined in 
+ * Standard algorithm names are defined in 
  * "JavaTM Cryptography Architecture API Specification & Reference"
  *   
  */

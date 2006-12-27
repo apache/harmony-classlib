@@ -57,7 +57,7 @@ public class CodeSource implements Serializable {
     // Array of CodeSigners
     private transient CodeSigner[] signers;
 
-    // SocketPermission() in implies() method takes tooooooooo many time.
+    // SocketPermission() in implies() method takes to many time.
     // Need to cache it for better performance.
     private transient SocketPermission sp;
 
@@ -198,12 +198,12 @@ public class CodeSource implements Serializable {
         //
         // So the following loop scans trough the certs and checks
         // that every next certificate is an Issuer of the previous one. 
-        // Any certificate that is not an Issuer of the previos one starts a 
+        // Any certificate that is not an Issuer of the previous one starts a 
         // new chain (== a new CertPath) 
 
         for (int i = 0; i < certs.length; i++) {
             if (!(certs[i] instanceof X509Certificate)) {
-                // Only X509CErtificate-s are taken into account - see API spec.
+                // Only X509Certificate-s are taken into account - see API spec.
                 continue;
             }
             X509Certificate x509 = (X509Certificate) certs[i];
@@ -368,7 +368,7 @@ public class CodeSource implements Serializable {
                         .length() == 0 || "localhost".equals(thatHost))) //$NON-NLS-1$
                         && !thisHost.equals(thatHost)) {
 
-                    // Obvious, but veeery slooooow waaaaaaay....
+                    // Obvious, but very slow way....
                     // 
                     // SocketPermission thisPerm = new SocketPermission(
                     //          this.location.getHost(), "resolve");

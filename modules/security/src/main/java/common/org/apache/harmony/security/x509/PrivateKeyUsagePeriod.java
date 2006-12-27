@@ -31,7 +31,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the following certificate extension (OID: 2.5.29.16)
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

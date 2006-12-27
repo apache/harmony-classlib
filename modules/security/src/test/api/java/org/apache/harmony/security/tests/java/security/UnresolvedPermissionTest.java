@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 public class UnresolvedPermissionTest extends TestCase {
     
     /**
-     * Creates an Object with given name, type, action, certificaties. 
+     * Creates an Object with given name, type, action, certificates. 
      * Empty or null type is not allowed - exception should be thrown.
      */
     public void testCtor()

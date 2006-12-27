@@ -162,7 +162,7 @@ public class X509CRLTest extends TestCase {
     }
 
     /**
-     * equals(Object other) method testing. Tests the correctnel of equal
+     * equals(Object other) method testing. Tests the correctness of equal
      * operation: it should be reflexive, symmetric, transitive, consistent
      * and should be false on null object.
      */

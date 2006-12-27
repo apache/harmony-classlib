@@ -170,7 +170,7 @@ public class AttributeValue {
     // Escapes:
     // 1) chars ",", "+", """, "\", "<", ">", ";" (RFC 2253) 
     // 2) chars "#", "=" (required by RFC 1779)
-    // 3) a space char at the beggining or end
+    // 3) a space char at the beginning or end
     // 4) according to the requirement to be RFC 1779 compatible:
     //    '#' char is escaped in any position
     //

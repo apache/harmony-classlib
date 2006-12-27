@@ -50,7 +50,7 @@ public final class ObjectIdentifier {
     private String soid;
 
     /**
-     * Creats ObjectIdentifier(OID) from array of integers.
+     * Creates ObjectIdentifier(OID) from array of integers.
      * 
      * @param oid - array of integers
      * @throws IllegalArgumentException - if oid is invalid or null
@@ -61,7 +61,7 @@ public final class ObjectIdentifier {
     }
 
     /**
-     * Creats ObjectIdentifier(OID) from string representation.
+     * Creates ObjectIdentifier(OID) from string representation.
      * 
      * @param strOid - oid string
      * @throws IllegalArgumentException - if oid string is invalid or null

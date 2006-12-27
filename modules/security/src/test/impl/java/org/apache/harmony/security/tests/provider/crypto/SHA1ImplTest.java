@@ -97,7 +97,7 @@ public class SHA1ImplTest extends TestCase {
 
     /*
      * The test checks out that SHA1Impl computes correct value
-     * if data supplied takes exactly fourteen words of sexteen word buffer.
+     * if data supplied takes exactly fourteen words of sixteen word buffer.
      */
     public final void testMultiBlockMessage() {
 
@@ -163,7 +163,7 @@ public class SHA1ImplTest extends TestCase {
      */
     private void alternateHash(int[] bufW, int[] hash) {
 
-        // constants defned in Secure Hash Standard
+        // constants defined in Secure Hash Standard
         final int[] K = { 
 
             0x5A827999, 0x5A827999, 0x5A827999, 0x5A827999,

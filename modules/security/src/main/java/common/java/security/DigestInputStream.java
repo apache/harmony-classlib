@@ -37,7 +37,7 @@ public class DigestInputStream extends FilterInputStream {
      */
     protected MessageDigest digest;
 
-    // Indicates wether digest functionality is on or off
+    // Indicates whether digest functionality is on or off
     private boolean isOn = true;
 
     /**
@@ -78,7 +78,7 @@ public class DigestInputStream extends FilterInputStream {
 
 	/**
 	 * Reads the next byte and answers it as an int. Updates the digest for the
-	 * byte if this fuction is enabled.
+	 * byte if this function is enabled.
 	 * 
 	 * 
 	 * @return int the byte which was read or -1 at end of stream.

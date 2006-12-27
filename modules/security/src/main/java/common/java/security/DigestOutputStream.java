@@ -37,7 +37,7 @@ public class DigestOutputStream extends FilterOutputStream {
      */
     protected MessageDigest digest;
 
-    // Indicates wether digest functionality is on or off
+    // Indicates whether digest functionality is on or off
     private boolean isOn = true;
 
     /**

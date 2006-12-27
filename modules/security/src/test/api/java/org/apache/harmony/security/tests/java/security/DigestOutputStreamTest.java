@@ -400,7 +400,7 @@ public class DigestOutputStreamTest extends TestCase {
     /**
      * Test for <code>getMessageDigest()</code> method<br>
      * 
-     * Assertion: reutns associated message digest<br>
+     * Assertion: returns associated message digest<br>
      */
     public final void testGetMessageDigest() {
         for (int k=0; k<algorithmName.length; k++) {

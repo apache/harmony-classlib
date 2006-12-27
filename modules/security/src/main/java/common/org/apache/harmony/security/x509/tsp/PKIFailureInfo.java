@@ -48,7 +48,7 @@ import java.security.InvalidParameterException;
       -- the request cannot be handled due to system failure  }
 
     The value of PKIFailureInfo can take only one of the values,
-    so it is represenred by an integer here.
+    so it is represented by an integer here.
  */
 public enum PKIFailureInfo {
     /**

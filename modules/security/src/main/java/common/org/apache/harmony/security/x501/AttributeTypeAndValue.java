@@ -48,7 +48,7 @@ public class AttributeTypeAndValue {
     // Country code attribute (name from RFC 1779)
     private static final ObjectIdentifier C;
 
-    // Common name attributem (name from RFC 1779)
+    // Common name attribute (name from RFC 1779)
     private static final ObjectIdentifier CN;
 
     // Domain component attribute (name from RFC 2253)
@@ -97,7 +97,7 @@ public class AttributeTypeAndValue {
     // (name from API spec)
     private static final ObjectIdentifier SURNAME;
 
-    // Title attribute (object in an organzation)(name from API spec)
+    // Title attribute (object in an organization)(name from API spec)
     private static final ObjectIdentifier T;
 
     // User identifier attribute (name from RFC 2253)

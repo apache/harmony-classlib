@@ -34,7 +34,7 @@ import org.apache.harmony.security.x501.Name;
  *   certificateIssuer ::=     GeneralNames
  * </pre>
  * (as specified in RFC 3280)
- * In java implementation it is presumed that GeneralNames cansist of
+ * In java implementation it is presumed that GeneralNames consist of
  * one element and its type is directoryName.
  */
 public class CertificateIssuer extends ExtensionValue {

@@ -36,7 +36,7 @@ import org.apache.harmony.security.asn1.BitString;
 import org.apache.harmony.security.x501.Name;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with TBSCertificate structure which is the part of X.509 certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

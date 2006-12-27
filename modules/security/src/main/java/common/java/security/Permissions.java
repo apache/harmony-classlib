@@ -182,7 +182,7 @@ public final class Permissions extends PermissionCollection implements
 	 */
     public boolean implies(Permission permission) {
         if (permission == null) {
-            // RI compartible
+            // RI compatible
             throw new NullPointerException(Messages.getString("security.21")); //$NON-NLS-1$
         }
         if (allEnabled) {

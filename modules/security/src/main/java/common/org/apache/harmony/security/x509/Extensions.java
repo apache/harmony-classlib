@@ -39,7 +39,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the Extensions part of X.509 certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
@@ -175,7 +175,7 @@ public class Extensions {
 
     /**
      * Returns the value of Key Usage extension (OID == 2.5.29.15).
-     * The ASN.1 definitionn of Key Usage Extension is:
+     * The ASN.1 definition of Key Usage Extension is:
      *
      * <pre> 
      * id-ce-keyUsage OBJECT IDENTIFIER ::=  { id-ce 15 }
@@ -196,7 +196,7 @@ public class Extensions {
      *
      * @return the value of Key Usage Extension if it is in the list,
      * and null if there is no such extension or its value can not be decoded
-     * otherwithe. Note, that the length of returned array can be greater
+     * otherwise. Note, that the length of returned array can be greater
      * than 9.
      */
     public boolean[] valueOfKeyUsage() {
@@ -210,7 +210,7 @@ public class Extensions {
    
     /**
      * Returns the value of Extended Key Usage extension (OID == 2.5.29.37).
-     * The ASN.1 definitionn of Extended Key Usage Extension is:
+     * The ASN.1 definition of Extended Key Usage Extension is:
      *
      * <pre> 
      *  id-ce-extKeyUsage OBJECT IDENTIFIER ::= { id-ce 37 }
@@ -236,7 +236,7 @@ public class Extensions {
     
     /**
      * Returns the value of Basic Constraints Extension (OID = 2.5.29.19).
-     * The ASN.1 definitionn of Basic Constraints Extension is:
+     * The ASN.1 definition of Basic Constraints Extension is:
      *
      * <pre> 
      *   id-ce-basicConstraints OBJECT IDENTIFIER ::=  { id-ce 19 }
@@ -263,7 +263,7 @@ public class Extensions {
     
     /**
      * Returns the value of Subject Alternative Name (OID = 2.5.29.17).
-     * The ASN.1 definitionn for Subject Alternative Name is:
+     * The ASN.1 definition for Subject Alternative Name is:
      *
      * <pre> 
      *  id-ce-subjectAltName OBJECT IDENTIFIER ::=  { id-ce 17 }
@@ -287,7 +287,7 @@ public class Extensions {
     
     /**
      * Returns the value of Issuer Alternative Name Extension (OID = 2.5.29.18).
-     * The ASN.1 definitionn for Issuer Alternative Name is:
+     * The ASN.1 definition for Issuer Alternative Name is:
      *
      * <pre> 
      *   id-ce-issuerAltName OBJECT IDENTIFIER ::=  { id-ce 18 }

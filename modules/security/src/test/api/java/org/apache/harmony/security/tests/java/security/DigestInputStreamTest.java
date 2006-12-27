@@ -114,7 +114,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #1 for <code>read()</code> method<br>
      * 
-     * Assertion: reutns the byte read<br>
+     * Assertion: returns the byte read<br>
      * Assertion: updates associated digest<br>
      */
     public final void testRead01()
@@ -144,7 +144,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #2 for <code>read()</code> method<br>
      * 
-     * Assertion: reutns -1 if EOS had been
+     * Assertion: returns -1 if EOS had been
      * reached but not read before method call<br>
      * 
      * Assertion: must not update digest if EOS had been
@@ -322,7 +322,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #2 for <code>read(byte[],int,int)</code> method<br>
      * 
-     * Assertion: reutns the number of bytes read<br>
+     * Assertion: returns the number of bytes read<br>
      * 
      * Assertion: put bytes read into specified array at specified offset<br>
      * 
@@ -362,7 +362,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #3 for <code>read(byte[],int,int)</code> method<br>
      * 
-     * Assertion: reutns the number of bytes read<br>
+     * Assertion: returns the number of bytes read<br>
      * 
      * Assertion: put bytes read into specified array at specified offset<br>
      * 
@@ -411,7 +411,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #4 for <code>read(byte[],int,int)</code> method<br>
      * 
-     * Assertion: reutns the number of bytes read<br>
+     * Assertion: returns the number of bytes read<br>
      * 
      * Assertion: updates associated digest<br>
      */
@@ -444,7 +444,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test #5 for <code>read(byte[],int,int)</code> method<br>
      * 
-     * Assertion: reutns the number of bytes read<br>
+     * Assertion: returns the number of bytes read<br>
      * 
      * Assertion: put bytes read into specified array at specified offset<br>
      * 
@@ -483,7 +483,7 @@ public class DigestInputStreamTest extends TestCase {
     /**
      * Test for <code>getMessageDigest()</code> method<br>
      * 
-     * Assertion: reutns associated message digest<br>
+     * Assertion: returns associated message digest<br>
      */
     public final void testGetMessageDigest() {
         for (int ii=0; ii<algorithmName.length; ii++) {

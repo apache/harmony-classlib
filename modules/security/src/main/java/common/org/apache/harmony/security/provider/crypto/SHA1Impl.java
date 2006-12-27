@@ -82,7 +82,7 @@ public class SHA1Impl implements SHA1_Data {
         int temp;
 
         // In this implementation the "d. For t = 0 to 79 do" loop
-        // is splet into four loops. The following constans:
+        // is split into four loops. The following constants:
         //     K = 5A827999   0 <= t <= 19
         //     K = 6ED9EBA1  20 <= t <= 39
         //     K = 8F1BBCDC  40 <= t <= 59

@@ -30,7 +30,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertPathValidatorException seialization
+ * Test for CertPathValidatorException serialization
  * 
  */
 

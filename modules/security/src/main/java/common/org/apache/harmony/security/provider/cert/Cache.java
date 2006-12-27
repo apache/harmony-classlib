@@ -66,7 +66,7 @@ import java.util.Arrays;
  * if not - new object should be generated and saved in the cache.<br>
  *
  * Note: The length of the prefixes of the encoded forms should not be
- * less than correspondance (default value is 28).
+ * less than correspondence (default value is 28).
  */
 public class Cache {
 
@@ -125,7 +125,7 @@ public class Cache {
 
     /**
      * Creates the Cache object.
-     * @param pref_size specifyes how many leading/trailing bytes of object's
+     * @param pref_size specifies how many leading/trailing bytes of object's
      * encoded form will be used for hash computation
      * @param size capacity of the cache to be created.
      */
@@ -140,7 +140,7 @@ public class Cache {
 
     /**
      * Creates the Cache object of size of 900.
-     * @param pref_size specifyes how many leading/trailing bytes of object's
+     * @param pref_size specifies how many leading/trailing bytes of object's
      * encoded form will be used for hash computation
      */
     public Cache(int pref_size) {

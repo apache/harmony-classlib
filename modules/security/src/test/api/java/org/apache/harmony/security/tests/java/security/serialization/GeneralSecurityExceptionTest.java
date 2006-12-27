@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for GeneralSecurityException seialization 
+ * Test for GeneralSecurityException serialization 
  *  
  */
 

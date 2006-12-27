@@ -132,7 +132,7 @@ public final class DerInputStream extends BerInputStream {
     public void readSetOf(ASN1SetOf setOf) throws IOException {
         //
         // According to ASN.1 DER spec. set of MUST appear in
-        // ascending order (short component are padded for comparision)
+        // ascending order (short component are padded for comparison)
         //
         // Verification of this assertion is not implemented
         //

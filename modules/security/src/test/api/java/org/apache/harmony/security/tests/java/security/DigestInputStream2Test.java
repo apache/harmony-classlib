@@ -185,7 +185,7 @@ public class DigestInputStream2Test extends junit.framework.TestCase {
 		try {
 			digest = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
-			fail("Unable to find SHA-1 algorithim");
+			fail("Unable to find SHA-1 algorithm");
 		}
 	}
 }

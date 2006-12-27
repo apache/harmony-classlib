@@ -145,7 +145,7 @@ public class UnresolvedPermissionCollection_ImplTest extends TestCase {
         resolved = upc.resolveCollection(ap, null);
         assertNotNull(resolved);
         assertTrue(ap.equals(resolved.elements().nextElement()));
-        assertFalse("resolved permission should be removed from unresolevd collection", upc.elements().hasMoreElements());
+        assertFalse("resolved permission should be removed from unresolved collection", upc.elements().hasMoreElements());
     }
     
     /**
@@ -191,7 +191,7 @@ public class UnresolvedPermissionCollection_ImplTest extends TestCase {
         assertTrue(sp.equals(els.nextElement()));
         assertFalse(els.hasMoreElements());
         els = upc.elements();
-        assertTrue("resolved permission should be removed from unresolevd collection", 
+        assertTrue("resolved permission should be removed from unresolved collection", 
                 up1.equals(els.nextElement()));
         assertFalse(els.hasMoreElements());
     }    

@@ -47,7 +47,7 @@ public class PKIXParameters implements CertPathParameters {
     private Set<String> initialPolicies;
     // List of cert stores that used to find certificates and CRLs
     private List<CertStore> certStores;
-    // Time for which the valididty of the certification
+    // Time for which the validity of the certification
     // patch should be determined
     private Date date;
     // List of certification patch checkers (PKIXCertPathChecker)
@@ -56,15 +56,15 @@ public class PKIXParameters implements CertPathParameters {
     private String sigProvider;
     // Required constraints on the target certificate
     private CertSelector targetCertConstraints;
-    // Indicates wether cert revocation is enabled or not
+    // Indicates whether cert revocation is enabled or not
     private boolean revocationEnabled = true;
-    // Indicates wether explicit policy required or not
+    // Indicates whether explicit policy required or not
     private boolean explicitPolicyRequired = false;
-    // Indicates wether policy mapping inhibited or not
+    // Indicates whether policy mapping inhibited or not
     private boolean policyMappingInhibited = false;
-    // Indicates wether any policy inhibited or not
+    // Indicates whether any policy inhibited or not
     private boolean anyPolicyInhibited = false;
-    // Indicates wether certificates that include policy
+    // Indicates whether certificates that include policy
     // qualifiers in a certificate policies extension that
     // is marked critical must be rejected or not
     private boolean policyQualifiersRejected = true;

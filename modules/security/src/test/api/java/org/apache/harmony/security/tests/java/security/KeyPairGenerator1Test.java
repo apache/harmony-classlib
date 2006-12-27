@@ -382,7 +382,7 @@ public class KeyPairGenerator1Test extends TestCase {
      * Assertion: throws InvalidParameterException or
      * InvalidAlgorithmParameterException when parameters keysize or param are
      * incorrect Assertion: generateKeyPair() and genKeyPair() return null
-     * KeyPair Addtional class MyKeyPairGenerator1 is used
+     * KeyPair Additional class MyKeyPairGenerator1 is used
      */
     public void testKeyPairGenerator12() {
         int[] keys = { -1, -250, 1, 64, 512, 1024 };
@@ -455,9 +455,9 @@ public class KeyPairGenerator1Test extends TestCase {
      * <code>generateKeyPair()</code>
      * <code>genKeyPair()</code>
      * Assertion: initialize(int ...) throws InvalidParameterException when
-     * keysize in incorrect Aserrtion: initialiaze(AlgorithmParameterSpec
+     * keysize in incorrect Assertion: initialize(AlgorithmParameterSpec
      * ...)throws UnsupportedOperationException Assertion: generateKeyPair() and
-     * genKeyPair() return not null KeyPair Addtional class MyKeyPairGenerator2
+     * genKeyPair() return not null KeyPair Additional class MyKeyPairGenerator2
      * is used
      */
     public void testKeyPairGenerator13() {

@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for InvalidKeyException seialization 
+ * Test for InvalidKeyException serialization 
  *  
  */
 

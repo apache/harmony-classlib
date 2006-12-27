@@ -33,7 +33,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the CRL Distribution Points which is the part of X.509 Certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

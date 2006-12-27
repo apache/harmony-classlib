@@ -70,7 +70,7 @@ public class X509CertFactoryPerfTest extends TestCase {
     static String      algName         = "SHA1withDSA";
 
     // DER boolean false encoding (http://asn1.elibel.tm.fr)
-    // Makes no sence. For testing purposes we need just provide 
+    // Makes no sense. For testing purposes we need just provide 
     // some ASN.1 structure:
     static byte[]      algParams       = {1, 1, 0};
     static String      issuerName      = "O=Certificate Issuer";
@@ -844,7 +844,7 @@ public class X509CertFactoryPerfTest extends TestCase {
     public void testVerify3() throws Exception {
         try {
             certificate.verify(publicKey);
-            fail("Incorrect signature succesfully verified.");
+            fail("Incorrect signature successfully verified.");
         } catch (Exception e) {
         }
     }

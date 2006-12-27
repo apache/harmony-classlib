@@ -24,7 +24,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work
+ * The class encapsulates the ASN.1 DER encoding/decoding work
  * with the AccessDescription which is a part of X.509 framework
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

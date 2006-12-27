@@ -48,7 +48,7 @@ public class X509CRLEntryImplTest extends TestCase {
         // revoked certificate issuer
         X500Principal issuer = 
             new X500Principal("O=Certificate Issuer");
-        // revoked sertificate serial number
+        // revoked certificate serial number
         BigInteger serialNumber = BigInteger.valueOf(555);
         // crl entry extensions
         Extensions crlEntryExtensions = new Extensions();

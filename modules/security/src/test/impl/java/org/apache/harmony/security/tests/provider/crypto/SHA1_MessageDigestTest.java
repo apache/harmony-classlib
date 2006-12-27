@@ -17,10 +17,10 @@
 
 /*
  * TODO 
- * Two tescases, one in testDigestbyteArrayintint01() and one in testUpdatebyteArrayintint01(),
+ * Two testcases, one in testDigestbyteArrayintint01() and one in testUpdatebyteArrayintint01(),
  * and testUpdatebyteArrayintint03() test are commented out because 
  * current implementations of the MessageDigest and MessageDigestSpi classes
- * are not compatibile with RI; see JIRA ## 1120 and 1148.
+ * are not compatible with RI; see JIRA ## 1120 and 1148.
  */
 
 
@@ -403,7 +403,7 @@ public class SHA1_MessageDigestTest extends TestCase {
 
     /**
      * test against the "void engineReset()" method;
-     * it checks out that digests returned after preceeding "engineReset()"
+     * it checks out that digests returned after proceeding "engineReset()"
      * is the same as in case of initial digest
      */
     public final void testReset() {

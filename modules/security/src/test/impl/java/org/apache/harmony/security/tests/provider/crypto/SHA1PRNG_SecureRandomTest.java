@@ -234,11 +234,11 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
      * byte array of zero length to "nextBytes(byte[])" method.
      * The test contains two testcases:
      * - first testcase checks out that if for two newly created SecureRandom objects
-     * invokation of "nextBytes(new byte[0])" method are first ones
+     * invocation of "nextBytes(new byte[0])" method are first ones
      * then further calls to nextBytes(..) methods return different byte arrays,
      * that is, first "nextBytes(new byte[0])" aslo randomizes internal state;
      * - second testcase checks out that if for two newly created SecureRandom objects
-     * invokation of "setSeed(..)" methods are first ones
+     * invocation of "setSeed(..)" methods are first ones
      * then further calls to "nextBytes(new byte[0])" methods has no effect
      */
     public final void testNextBytesbyteArray04() throws NoSuchAlgorithmException,
@@ -365,8 +365,8 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
     /**
      * test against the "void setSeed(byte[])" method;
      * it checks out that the "byte[0]" argument has no effect; there are two testcases:
-     * - if one of two SecureRandom objects sipplied with the same seed is additionally
-     *   sipplied with such array, "nextBytes(..)" of both objects return the same bytes;
+     * - if one of two SecureRandom objects supplied with the same seed is additionally
+     *   supplied with such array, "nextBytes(..)" of both objects return the same bytes;
      * - two byte arrays returned by "nextBytes(..)" in following sequence
      *   nextBytes(..); setSeed(new byte[0]); nextBytes(..);
      *   don't contain the same byte sequencies.

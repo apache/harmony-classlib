@@ -239,8 +239,8 @@ public class DefaultPolicyParser {
 
     /**
      * Translates PermissionEntry token to Permission object.
-     * First, it performs general expantion for non-null <code>name</code> and
-     * properties expantion for non-null <code>name</code>, <code>action</code> 
+     * First, it performs general expansion for non-null <code>name</code> and
+     * properties expansion for non-null <code>name</code>, <code>action</code> 
      * and <code>signers</code>.
      * Then, it obtains signing Certificates(if any), tries to find a class specified by 
      * <code>klass</code> name and instantiate a corresponding permission object.

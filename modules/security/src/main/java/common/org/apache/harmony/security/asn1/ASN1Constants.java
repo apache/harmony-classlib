@@ -37,7 +37,7 @@ public interface ASN1Constants {
     int CLASS_PRIVATE = 192;
 
     /**
-     * Tag Primitive/Conctructed (P/C) flag
+     * Tag Primitive/Constructed (P/C) flag
      */
     int PC_PRIMITIVE = 0;
     int PC_CONSTRUCTED = 32;

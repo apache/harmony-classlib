@@ -128,7 +128,7 @@ public class KeyRep implements Serializable {
         throw new NotSerializableException(Messages.getString("security.0E", type)); //$NON-NLS-1$
     }
 
-    // Makes deffensive copy of key encoding
+    // Makes defensive copy of key encoding
     private void readObject(ObjectInputStream is)
         throws IOException, ClassNotFoundException {
         is.defaultReadObject();

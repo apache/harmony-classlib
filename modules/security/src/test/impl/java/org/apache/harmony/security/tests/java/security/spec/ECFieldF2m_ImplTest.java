@@ -35,7 +35,7 @@ public class ECFieldF2m_ImplTest extends TestCase {
 
     /**
      * Support class for this test.
-     * Incapsulates <code>ECFieldF2m</code> testing
+     * Encapsulates <code>ECFieldF2m</code> testing
      * domain parameters. 
      * 
      */

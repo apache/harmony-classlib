@@ -43,7 +43,7 @@ public class KeyPairGenerator4Test extends junit.framework.TestCase {
      */
     public void test_getAlgorithm() throws Exception {
         String alg = KeyPairGenerator.getInstance("DSA").getAlgorithm();
-        assertEquals("getAlgorithm returned enexpected value", "DSA", alg);
+        assertEquals("getAlgorithm returned unexpected value", "DSA", alg);
     }
 
     /**

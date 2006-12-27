@@ -1784,7 +1784,7 @@ public class X509CertSelectorTest extends TestCase {
             Name nameSubject = new Name(subject);
             for (int i=0; i<name_constraints.length; i++) {
                 // make the subtrees (part of name constraints)
-                // this subrtees will be used as permited and as excluded
+                // this subtrees will be used as permited and as excluded
                 GeneralSubtree subtree = 
                     new GeneralSubtree(name_constraints[i]);
                 GeneralSubtrees subtrees = new GeneralSubtrees();
@@ -1936,7 +1936,7 @@ public class X509CertSelectorTest extends TestCase {
             Name nameSubject = new Name(subject);
             for (int i=0; i<name_constraints.length; i++) {
                 // make the subtrees (part of name constraints)
-                // this subrtees will be used as permited and as excluded
+                // this subtrees will be used as permited and as excluded
                 GeneralSubtree subtree = 
                     new GeneralSubtree(name_constraints[i]);
                 GeneralSubtrees subtrees = new GeneralSubtrees();
@@ -2039,7 +2039,7 @@ public class X509CertSelectorTest extends TestCase {
                 certificate.setEncoding(getCertEncoding(subject_name, 
                                                  alt_names_extension));
                 // make the subtrees (part of name constraints)
-                // this subrtees will be used as permited and as excluded
+                // this subtrees will be used as permited and as excluded
                 // name which is presented in certificate:
                 GeneralSubtrees pos_subtrees = new GeneralSubtrees();
                 pos_subtrees.addSubtree(
@@ -2111,7 +2111,7 @@ public class X509CertSelectorTest extends TestCase {
     }
 
     /**
-     * Constructs the encoded form of certificate with specified subjet field
+     * Constructs the encoded form of certificate with specified subject field
      * of TBSCertificate and specified alternative names.
      */
     private byte[] getCertEncoding(Name subject, GeneralNames subjectAltNames)
@@ -2415,7 +2415,7 @@ public class X509CertSelectorTest extends TestCase {
 
                 pathToNames.clear();
                 assertFalse("The modification of initialization parameter "
-                            + "sould not cause the modification of "
+                            + "should not cause the modification of "
                             + "internal object ", selector.match(cert));
             }
         } catch (IOException e) {

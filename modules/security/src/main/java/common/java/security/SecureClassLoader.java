@@ -83,7 +83,7 @@ public class SecureClassLoader extends ClassLoader {
 
     // Constructs and caches ProtectionDomain for the given CodeSource 
     // object.<br>
-    // It calls {@link getPermssions()} to get a set of permissions.
+    // It calls {@link getPermissions()} to get a set of permissions.
     //
     // @param cs CodeSource object
     // @return ProtectionDomain for the passed CodeSource object

@@ -113,7 +113,7 @@ public class CertificateFactory3Test extends TestCase {
                     TestUtils.getEncodedX509Certificate()));
             Iterator it = col.iterator();
             assertEquals("Incorrect Collection size", col.size(), 1);
-            assertEquals("Incorect Certificate in Collection", cert, it.next());
+            assertEquals("Incorrect Certificate in Collection", cert, it.next());
         }
     }
 

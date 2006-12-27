@@ -47,7 +47,7 @@ public class KeyTest extends TestCase {
      */
     public void testField() {
         checkKey mk = new checkKey();
-        assertEquals("Incorrect seralVersionUID", mk.getSerVerUID(), //Key.serialVersionUID,
+        assertEquals("Incorrect serialVersionUID", mk.getSerVerUID(), //Key.serialVersionUID,
                 6603384152749567654L);
     }
     

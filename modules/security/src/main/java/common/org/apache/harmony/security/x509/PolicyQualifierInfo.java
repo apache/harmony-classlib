@@ -30,7 +30,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
 
 /**
 /**
- * The class incapsulates the ASN.1 DER decoding work 
+ * The class encapsulates the ASN.1 DER decoding work 
  * with PolicyQualifierInfo structure
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

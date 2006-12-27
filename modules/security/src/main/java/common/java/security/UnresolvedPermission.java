@@ -269,7 +269,7 @@ public final class UnresolvedPermission extends Permission
      * signers. If it does, a zero, one, and/or two-argument constructor is
      * tried to instantiate a new permission, which is then returned. <br>
      * If an appropriate constructor is not available or the class is
-     * improperrly signed, <code>null</code> is returned.
+     * improperly signed, <code>null</code> is returned.
      * 
      * @param targetType - a target class instance, must not be
      *        <code>null</code>

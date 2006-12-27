@@ -497,7 +497,7 @@ public class X509CertImpl extends X509Certificate {
                                 SignatureException {
         Signature signature = Signature.getInstance(getSigAlgName());
         signature.initVerify(key);
-        // retrieve the ecnoding of the TBSCertificate structure
+        // retrieve the encoding of the TBSCertificate structure
         if (tbsCertificate == null) {
             tbsCertificate = tbsCert.getEncoded();
         }
@@ -520,7 +520,7 @@ public class X509CertImpl extends X509Certificate {
         Signature signature =
             Signature.getInstance(getSigAlgName(), sigProvider);
         signature.initVerify(key);
-        // retrieve the ecnoding of the TBSCertificate structure
+        // retrieve the encoding of the TBSCertificate structure
         if (tbsCertificate == null) {
             tbsCertificate = tbsCert.getEncoded();
         }

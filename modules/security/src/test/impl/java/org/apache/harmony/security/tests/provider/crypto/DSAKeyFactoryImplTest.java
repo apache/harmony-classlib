@@ -506,7 +506,7 @@ public class DSAKeyFactoryImplTest extends TestCase {
      * A test against the "getKeySpec(Key, Class)" method.
      * The test checks out that the method throws up InvalidKeySpecException if
      * a "Class" argument is not appropriate for a "Key" argument
-     * regradless of whether a correct value or null is passed to a Key argument.
+     * regardless of whether a correct value or null is passed to a Key argument.
      */
     public final void testGetKeySpec01() throws Exception {
 
@@ -594,7 +594,7 @@ public class DSAKeyFactoryImplTest extends TestCase {
     /**
      * A test against the "getKeySpec(Key, Class)" method.
      * The test checks out that 
-     * 1) a KeySpec returned by the methodis being casted to 
+     * 1) a KeySpec returned by the method is being casted to 
           expected "DSAPrivateKeySpec" or "PKCS8EncodedKeySpec", and 
      * 2) DSAPublickey object generated from KeySpec is equal a "privateKey" argument.
      */

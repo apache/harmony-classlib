@@ -443,7 +443,7 @@ public class X509CRLSelectorTest extends TestCase {
         selector.addIssuerName(iss_name_3);
             
         Collection result = selector.getIssuers();
-        assertEquals("Size does not correspond to expacted",
+        assertEquals("Size does not correspond to expected",
                 5, result.size());
         try {
             result.add(iss3);

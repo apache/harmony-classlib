@@ -49,7 +49,7 @@ public class DSAPrivateKeyTest extends TestCase {
      */
     public void testField() {
         checkDSAPrivateKey k = new checkDSAPrivateKey();
-        assertEquals("Incorrect serialVerstionUID",
+        assertEquals("Incorrect serialVersionUID",
                 k.getSerVerUID(), //DSAPrivateKey.serialVersionUID 
                 7776497482533790279L);
     }

@@ -48,7 +48,7 @@ public class KSCallbackHandlerProtectionTest extends TestCase {
     /**
      * Test for <code>KeyStore.CallbackHandlerProtection(CallbackHandler handler)</code>
      * constructor
-     * Assertion: throws NullPointerException when hendler is null
+     * Assertion: throws NullPointerException when handler is null
      */
     public void testCallbackHandlerProtection() {
         try {

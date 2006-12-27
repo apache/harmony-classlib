@@ -160,7 +160,7 @@ public class ECFieldF2m implements ECField {
                         return true;
                     }
                 } else {
-                    // at least this field with polinomial basis
+                    // at least this field with polynomial basis
                     // check that rp match
                     // return this.rp.equals(o.rp);
                     return Arrays.equals(this.ks, o.ks);

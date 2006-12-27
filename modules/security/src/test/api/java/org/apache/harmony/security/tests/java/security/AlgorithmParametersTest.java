@@ -513,7 +513,7 @@ public class AlgorithmParametersTest extends TestCase {
     }
 
 	private void checkUnititialized(AlgorithmParameters ap) {
-        assertNull("Unititialized: toString() failed", ap.toString());
+        assertNull("Uninitialized: toString() failed", ap.toString());
 	}
 	
 	private void checkAP(AlgorithmParameters ap, Provider p) throws Exception {

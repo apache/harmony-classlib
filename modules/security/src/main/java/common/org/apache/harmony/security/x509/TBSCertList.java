@@ -41,7 +41,7 @@ import org.apache.harmony.security.x501.Name;
 
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with TBSCertList structure which is the part of X.509 CRL
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
@@ -159,7 +159,7 @@ public class TBSCertList {
          * into the StringBuffer object.
          */
         public void dumpValue(StringBuffer buffer, String prefix) {
-            buffer.append(prefix).append("Certificae Serial Number: ") //$NON-NLS-1$
+            buffer.append(prefix).append("Certificate Serial Number: ") //$NON-NLS-1$
                 .append(userCertificate).append('\n');
             buffer.append(prefix).append("Revocation Date: ") //$NON-NLS-1$
                 .append(revocationDate);

@@ -63,7 +63,7 @@ public class IdentityStub extends Identity {
     }
 
     /**
-     * Auxilary constructor 
+     * Auxiliary constructor 
      * @param name
      * @param key
      * @throws KeyManagementException

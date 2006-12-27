@@ -25,7 +25,7 @@ import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
- * The static class providing access on Windows paltform
+ * The static class providing access on Windows platform
  * to system means for generating true random bits. <BR>
  *
  * It uses a native method to get the random bits from CryptGenRandom.

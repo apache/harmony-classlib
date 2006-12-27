@@ -59,7 +59,7 @@ public final class TestCertUtils {
     /**
      * Returns new instance of test certificate each time the method is called.
      * 
-     * @return test ceritifcate
+     * @return test certificate
      */
     public static Certificate getCert() {
         return new TestCertificate();
@@ -67,7 +67,7 @@ public final class TestCertUtils {
 
     /**
      * Returns an array of 3 test certificates. IMP: The array returned is not
-     * reall chain of certificates, it's just an array of 3 certs. The method
+     * real chain of certificates, it's just an array of 3 certs. The method
      * returns new array each time it's called. The number of 3 was chosen
      * arbitrarily and is subject to change.
      * 
@@ -92,9 +92,9 @@ public final class TestCertUtils {
     /**
      * Generates and returns an instance of TestCertPath.<br>
      * TestCertificate-s included in the CertPath will be uniq (will have 
-     * diffrent numbers passed to their ctor-s).<br> 
+     * different numbers passed to their ctor-s).<br> 
      * The second arguments shows which number will have the first Certificate
-     * in the CertPath. The second sertificate will have (startID+1) nubmber 
+     * in the CertPath. The second certificate will have (startID+1) number 
      * and so on.
      * 
      * @param howMany - shows how many TestCerts must contain the CertPath generated
@@ -322,7 +322,7 @@ public final class TestCertUtils {
         }
 
         /**
-         * A special purpose ctor. Pass different String-s to hava different TestCertificates.
+         * A special purpose ctor. Pass different String-s to have different TestCertificates.
          * TestCertificate-s with the same String passed to this ctor are considered equal. 
          */
         public TestCertificate(String diff) {
@@ -609,7 +609,7 @@ public final class TestCertUtils {
          * Tries to create an instance of TestX509Certificate, basing 
          * on the presumption that its {@link TestX509Certificate#getEncoded() 
          * encoded} form is stored.<br>
-         * @throws CertificateException is the presumtion is not met or if 
+         * @throws CertificateException is the presumption is not met or if 
          * any IO problem occurs.
          */
         public Certificate engineGenerateCertificate(InputStream is)
@@ -705,7 +705,7 @@ public final class TestCertUtils {
                 { "John Doe", null, null, null },
                 // 'organisation unit'-s
                 { null, "SSG", null, null }, { null, "SSG/DRL", null, null },
-                // organisations
+                // organizations
                 { null, null, "Intel ZAO", null },
                 { null, null, "Intel Inc", null },
                 // countries

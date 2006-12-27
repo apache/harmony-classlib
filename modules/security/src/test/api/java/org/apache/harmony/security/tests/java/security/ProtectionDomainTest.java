@@ -162,7 +162,7 @@ public class ProtectionDomainTest extends TestCase {
 
     /**
      * ProtectionDomain with PermissionCollection which contains AllPermission
-     * must imply() AllPemrssion.
+     * must imply() AllPermission.
      */
     public void testImplies_01() {
         assertTrue(new ProtectionDomain(null, perms).implies(allperm));

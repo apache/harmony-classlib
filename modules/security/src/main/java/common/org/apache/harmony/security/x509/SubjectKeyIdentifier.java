@@ -25,7 +25,7 @@ import org.apache.harmony.security.utils.Array;
 /**
  * Subject Key Identifier Extension (OID = 2.5.29.14).
  *
- * The ASN.1 definitionn for extension is:
+ * The ASN.1 definition for extension is:
  *
  * <pre>
  *  id-ce-subjectKeyIdentifier OBJECT IDENTIFIER ::=  { id-ce 14 }

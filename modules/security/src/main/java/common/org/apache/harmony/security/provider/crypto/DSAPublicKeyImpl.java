@@ -19,7 +19,7 @@
   * TODO
   * 1. The class extends the PublicKeyImpl class in "org.apache.harmony.security" package.
   *
-  * 2. The class uses methods in the auxilliary non-public "ThreeIntegerSequence" class 
+  * 2. The class uses methods in the auxiliary non-public "ThreeIntegerSequence" class 
   *    defined along with the "DSAPrivateKeyImpl" class.
   *
   * 3. See a compatibility with RI comments

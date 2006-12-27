@@ -62,9 +62,9 @@ public class TestUtils {
             + ".ks";
     //
     // The file name suffixes to load keystore from
-    //  *.ks1 - keystore containing untrusted cerificates only
-    //  *.ks2 - keystore containing trusted cerificates only
-    //  *.ks3 - keystore containing both trusted and untrusted cerificates
+    //  *.ks1 - keystore containing untrusted certificates only
+    //  *.ks2 - keystore containing trusted certificates only
+    //  *.ks3 - keystore containing both trusted and untrusted certificates
     //
     public static final int UNTRUSTED = 1;
     public static final int TRUSTED = 2;
@@ -140,7 +140,7 @@ public class TestUtils {
      *  The following types supported:<br>
      *  1 - <code>KeyStore</code> with untrusted certificates only<br>
      *  2 - <code>KeyStore</code> with trusted certificates only<br>
-     *  3 - <code>KeyStore</code> with botht trusted and untrusted certificates
+     *  3 - <code>KeyStore</code> with both trusted and untrusted certificates
      * 
      * @return Returns test <code>KeyStore</code> instance
      */
@@ -286,7 +286,7 @@ public class TestUtils {
             }
         };
     }
-    // X.509 encoded sertificate
+    // X.509 encoded certificate
     private static final String ENCODED_X509_CERTIFICATE = "-----BEGIN CERTIFICATE-----\n"
             + "MIIDHTCCAtsCBEFT72swCwYHKoZIzjgEAwUAMHQxCzAJBgNVBAYTAlJVMQwwCgYDVQQIEwNOU08x\n"
             + "FDASBgNVBAcTC05vdm9zaWJpcnNrMQ4wDAYDVQQKEwVJbnRlbDEVMBMGA1UECxMMRFJMIFNlY3Vy\n"

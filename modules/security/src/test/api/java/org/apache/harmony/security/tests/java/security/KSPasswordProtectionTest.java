@@ -56,14 +56,14 @@ public class KSPasswordProtectionTest extends TestCase {
         char [] pass = {'a', 'b', 'c'};
         KeyStore.PasswordProtection ksPWP = new KeyStore.PasswordProtection(pass);
         char [] rPass = ksPWP.getPassword();
-        assertFalse("PasswordProtection Should not be descroyed", ksPWP.isDestroyed());        
+        assertFalse("PasswordProtection Should not be destroyed", ksPWP.isDestroyed());        
         assertEquals("Incorrect password length", pass.length, rPass.length);
         for (int i = 0; i < pass.length; i++) {
             assertEquals("Incorrect password (item: ".concat(Integer.toString(i))
                     .concat(")"), pass[i], rPass[i]);
         }
         ksPWP.destroy();
-        assertTrue("PasswordProtection must be descroyed", ksPWP.isDestroyed());
+        assertTrue("PasswordProtection must be destroyed", ksPWP.isDestroyed());
         try {
             ksPWP.getPassword();
             fail("IllegalStateException must be thrown because PasswordProtection is destroyed");

@@ -125,7 +125,7 @@ public class KeyStoreTest extends TestCase {
             kss[i].load(null, null);
             try {
                 kss[i].store(null);
-                fail("IOException or IllegalArgumentException should be thrown for nill parameter");
+                fail("IOException or IllegalArgumentException should be thrown for null parameter");
             } catch (IOException e) {
             } catch (IllegalArgumentException e) {
             }
@@ -141,7 +141,7 @@ public class KeyStoreTest extends TestCase {
 
     
     /**
-     * Test for <code>setKeyEntry(String alias, bute[] key, Certificate[] chain)</code> 
+     * Test for <code>setKeyEntry(String alias, byte[] key, Certificate[] chain)</code> 
      * method 
      * Assertion: stores KeyEntry.
      */
@@ -231,7 +231,7 @@ public class KeyStoreTest extends TestCase {
     }
 
     /**
-     * @test java.security.KeyStore.PasswordProtectionn.getPassword()
+     * @test java.security.KeyStore.PasswordProtection.getPassword()
      */
     public void testKeyStorePPGetPassword() {
         // Regression for HARMONY-1539
@@ -250,7 +250,7 @@ public class KeyStoreTest extends TestCase {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null, "pwd".toCharArray());
 
-        // genarate a key 
+        // generate a key 
         KeyGenerator keyGen = KeyGenerator.getInstance("DES");
         keyGen.init(56);
         SecretKey secretKey = keyGen.generateKey();

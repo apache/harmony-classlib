@@ -25,8 +25,8 @@ import org.apache.harmony.security.asn1.BerInputStream;
 
 
 /**
- * The auxilliary class providing means to process ASN1Sequence of three Integers.
- * Such sequenies are parts of ASN1 encoded formats for DSA private and public keys. 
+ * The auxiliary class providing means to process ASN1Sequence of three Integers.
+ * Such sequences are parts of ASN1 encoded formats for DSA private and public keys. 
  */
 class ThreeIntegerSequence {
 

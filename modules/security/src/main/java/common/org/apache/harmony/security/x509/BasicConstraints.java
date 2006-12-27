@@ -28,7 +28,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 /**
  * Basic Constraints Extension (OID == 2.5.29.19).
  *
- * The ASN.1 definitionn for Basic Constraints Extension is:
+ * The ASN.1 definition for Basic Constraints Extension is:
  *
  * <pre>
  *   id-ce-basicConstraints OBJECT IDENTIFIER ::=  { id-ce 19 }

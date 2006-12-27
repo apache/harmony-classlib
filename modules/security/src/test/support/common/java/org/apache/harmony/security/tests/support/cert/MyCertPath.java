@@ -49,7 +49,7 @@ public class MyCertPath extends CertPath {
     private final byte[] encoding;
 
     /**
-     * Constucts new instance of <code>MyCertPath</code>
+     * Constructs new instance of <code>MyCertPath</code>
      * 
      * @param type
      * @param encoding

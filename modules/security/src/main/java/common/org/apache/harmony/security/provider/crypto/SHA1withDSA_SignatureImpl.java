@@ -306,7 +306,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
      * Updates data to sign or to verify.
      *
      * @params
-     *    b byte array containg bytes to update
+     *    b byte array containing bytes to update
      * @params
      *    off offset in byte array to start from
      * @params
@@ -421,7 +421,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
      * @params
      *    offset index in sigBytes to start from
      * @params
-     *    length number of bytes alotted for signature
+     *    length number of bytes allotted for signature
      * @return
      *    true if signature bytes were verified, false otherwise
      * @throws

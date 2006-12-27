@@ -29,7 +29,7 @@ import org.apache.harmony.security.asn1.ObjectIdentifier;
 /**
  * Extended Key Usage Extension (OID == 2.5.29.37).
  *
- * The ASN.1 definitionn for Extended Key Usage Extension is:
+ * The ASN.1 definition for Extended Key Usage Extension is:
  *
  * <pre>
  *  id-ce-extKeyUsage OBJECT IDENTIFIER ::= { id-ce 37 }

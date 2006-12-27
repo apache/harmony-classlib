@@ -118,7 +118,7 @@ public class CodeSource_ImplTest extends TestCase {
         boolean noMoreFactories = false;
         try {
             // remove all providers for x509
-            // 'for' loop here for the sake of avoding endless loop - well, just 
+            // 'for' loop here for the sake of avoiding endless loop - well, just 
             // in case if something is wrong with add/remove machinery.
             // '100' seems reasonable big to remove all necessary providers
             // ...

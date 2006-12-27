@@ -573,7 +573,7 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends TestCase {
     }
 
     //
-    // immutabelity tests
+    // immutability tests
     //
     
     /**

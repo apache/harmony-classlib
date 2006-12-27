@@ -24,7 +24,7 @@ import org.apache.harmony.security.asn1.ASN1BitString;
 /**
  * Key Usage Extension (OID = 2.5.29.15).
  *
- * The ASN.1 definitionn for Key Usage Extension is:
+ * The ASN.1 definition for Key Usage Extension is:
  *
  * <pre>
  * id-ce-keyUsage OBJECT IDENTIFIER ::=  { id-ce 15 }

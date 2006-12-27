@@ -105,7 +105,7 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
 
 
     /**
-     * Compareing sequencies of bytes 
+     * Comparing sequencies of bytes 
      * returned by "nextBytes(..)" of referenced and tested objects
      */
     private void testingSame(SecureRandom ref, SecureRandom test) {
@@ -137,7 +137,7 @@ public class SHA1PRNG_SecureRandomTest extends TestCase {
 
 
     /**
-     * Compareing sequencies of bytes 
+     * Comparing sequencies of bytes 
      * returned by "nextBytes(..)" of referenced and tested objects
      */
     private void testingNotSame(SecureRandom ref, SecureRandom test) {

@@ -49,7 +49,7 @@ public class DSAPublicKeyTest extends TestCase {
      */
     public void testField() {
         checkDSAPublicKey k = new checkDSAPublicKey();
-        assertEquals("Incorrect serialVerstionUID",
+        assertEquals("Incorrect serialVersionUID",
                 k.getSerVerUID(), //DSAPublicKey.serialVersionUID 
                 1234526332779022332L);
     }

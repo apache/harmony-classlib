@@ -489,7 +489,7 @@ public class KeyStore_Impl1Test extends TestCase {
                         .isCertificateEntry(aliases[j]));
 
                 en = kss[i].getEntry(aliases[j], pPath);
-                assertTrue("Incorect Entry",
+                assertTrue("Incorrect Entry",
                         en instanceof KeyStore.PrivateKeyEntry);
                 Key key = pKey.getPrivateKey();
                 Key key1  = ((KeyStore.PrivateKeyEntry) en).getPrivateKey();
@@ -550,7 +550,7 @@ public class KeyStore_Impl1Test extends TestCase {
 
                 try {
                     kss[i].getEntry(aliases[j], pPar);
-                    fail("UnrecoverableEntryExceptionn should be thrown");
+                    fail("UnrecoverableEntryException should be thrown");
                 } catch (UnrecoverableEntryException e) {
                 }
             }
@@ -572,7 +572,7 @@ public class KeyStore_Impl1Test extends TestCase {
      * setEntry(..) throws KeyStoreException when incorrect Entry is used.
      * 
      * FIXME: this test should be changed to verify SecretKeyEntry.
-     * It is not supoorted.  
+     * It is not supported.  
      */    
     public void testEntry03() throws Exception {
         assertTrue(NotSupportMsg, JKSSupported);
@@ -634,7 +634,7 @@ public class KeyStore_Impl1Test extends TestCase {
                 }
                 try {
                     kss[i].getEntry(aliases[j], pPar);                 
-                    fail("UnrecoverableEntryExceptionn should be thrown");
+                    fail("UnrecoverableEntryException should be thrown");
                 } catch (UnrecoverableEntryException e) {                
                 }
             }
@@ -720,7 +720,7 @@ public class KeyStore_Impl1Test extends TestCase {
      * setKeyEntry(...) throws KeyStoreException when key or password
      * is null
      * 
-     * setCertificateEntry(..) throws KeyStoreException when KeyEntry was overwriten
+     * setCertificateEntry(..) throws KeyStoreException when KeyEntry was overwritten
      * 
      * setKeyEntry(..) stores used entry, getKey(..) returns it and getCertificateChain(...)
      * returns cert 
@@ -971,7 +971,7 @@ public class KeyStore_Impl1Test extends TestCase {
         } catch (KeyStoreException e) {
         }
         keySt = new tmpKeyStore(null, null, null);
-        assertNull("Aalgorithm must be null", keySt.getType());
+        assertNull("Algorithm must be null", keySt.getType());
         assertNull("Provider must be null", keySt.getProvider());
         try {
             keySt.load(null, pwd);

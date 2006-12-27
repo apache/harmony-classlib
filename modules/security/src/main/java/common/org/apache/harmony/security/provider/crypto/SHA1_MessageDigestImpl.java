@@ -282,7 +282,7 @@ public class SHA1_MessageDigestImpl extends MessageDigestSpi
     /**
      * Updates current message. <BR>
      *
-     * The method overrides "engineUpdate(byte[],intint)" in class MessageDigestSpi. <BR>
+     * The method overrides "engineUpdate(byte[],int,int)" in class MessageDigestSpi. <BR>
      *
      * The method silently returns if "len" <= 0.
      *

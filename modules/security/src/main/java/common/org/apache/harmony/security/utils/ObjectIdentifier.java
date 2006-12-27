@@ -60,7 +60,7 @@ public final class ObjectIdentifier {
     private Object group;
 
     /**
-     * Creats ObjectIdentifier(OID) from array of integers.
+     * Creates ObjectIdentifier(OID) from array of integers.
      * 
      * @param oid - array of integers
      * @return - OID object
@@ -75,7 +75,7 @@ public final class ObjectIdentifier {
     }
 
     /**
-     * Creats ObjectIdentifier(OID) from array of integers.
+     * Creates ObjectIdentifier(OID) from array of integers.
      * 
      * @param oid - array of integers
      * @param name - name of OID

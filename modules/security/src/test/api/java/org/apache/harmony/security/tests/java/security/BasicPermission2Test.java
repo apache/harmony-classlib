@@ -99,7 +99,7 @@ public class BasicPermission2Test extends junit.framework.TestCase {
 	public void test_impliesLjava_security_Permission() {
 		// Test for method boolean
 		// java.security.BasicPermission.implies(java.security.Permission)
-		assertTrue("Equal objects should imply eachother", bp.implies(bp2));
+		assertTrue("Equal objects should imply each other", bp.implies(bp2));
 		assertTrue("a) should not imply", !bp.implies(bp3));
 		assertTrue("b) should not imply", !bp4.implies(bp5));
 		assertTrue("a) should imply", bp3.implies(bp5));

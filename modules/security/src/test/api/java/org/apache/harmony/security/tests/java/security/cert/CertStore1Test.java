@@ -234,7 +234,7 @@ public class CertStore1Test extends TestCase {
      * <code>getInstance(String type, CertStoreParameters params, String provider)</code>
 	 * Assertion: throws IllegalArgumentException when provider is null or empty
 	 * 
-	 * FIXME: verify IllegalArgumentException when privider is empty
+	 * FIXME: verify IllegalArgumentException when provider is empty
      */
     public void testCertStore06() 
             throws InvalidAlgorithmParameterException, NoSuchAlgorithmException,
@@ -410,7 +410,7 @@ public class CertStore1Test extends TestCase {
     }
 }
 /**
- * Addifional class to verify CertStore constructor
+ * Additional class to verify CertStore constructor
  */
 class myCertStore extends CertStore {
     public myCertStore(CertStoreSpi spi, Provider prov, String type, CertStoreParameters params) {

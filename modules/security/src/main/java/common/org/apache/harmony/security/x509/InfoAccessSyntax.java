@@ -29,7 +29,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work
+ * The class encapsulates the ASN.1 DER encoding/decoding work
  * with the SubjectInfoAccessSyntax and AuthorityInfoAccessSyntax 
  * which are a part of X.509 framework
  * (as specified in RFC 3280 -

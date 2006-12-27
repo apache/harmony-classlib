@@ -36,7 +36,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the following structure which is a part of X.509 certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
@@ -184,7 +184,7 @@ public class NameConstraints extends ExtensionValue {
      * names of specified X509Certificate. Restrictions apply only
      * if specified name form is present in the certificate.
      * The restrictions are applied according the RFC 3280 
-     * (see 4.2.1.11 Name Constraints), exepting that restricions are applied
+     * (see 4.2.1.11 Name Constraints), excepting that restrictions are applied
      * and to CA certificates, and to certificates which issuer and subject 
      * names the same (i.e. method does not check if it CA's certificate or not,
      * or if the names differ or not. This check if it is needed should be done 
@@ -250,7 +250,7 @@ public class NameConstraints extends ExtensionValue {
                     }
                 }
             }
-            // Search the name in permitred names
+            // Search the name in permitted names
             // (if we already found the name of such type between the alt
             // names - we do not need to check others)
             if ((permitted_names[type] != null) && (!permitted_found[type])) {

@@ -80,7 +80,7 @@ public class AllPermissionTest extends TestCase {
         assertTrue(a1.implies(new UnresolvedPermission("2323", "", "", null)));
     }
     
-    /** newPermissionCollection() returns a new AllPermissionCollection on every invokation. */
+    /** newPermissionCollection() returns a new AllPermissionCollection on every invocation. */
     public void testCollection()
     {
         AllPermission a1 = new AllPermission();

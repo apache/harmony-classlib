@@ -24,7 +24,7 @@ package org.apache.harmony.security.asn1;
 
 
 /**
- * This abstract class is the super class for all constructured ASN.1 types
+ * This abstract class is the super class for all constructed ASN.1 types
  * 
  * @see http://asn1.elibel.tm.fr/en/standards/index.htm
  */

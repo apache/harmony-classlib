@@ -62,7 +62,7 @@ public class AlgorithmParameters {
     private String algorithm;
 
     /**
-     * The initialisation state
+     * The initialization state
      */
     private boolean initialized; // = false;
 

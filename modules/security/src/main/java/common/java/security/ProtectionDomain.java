@@ -48,7 +48,7 @@ public class ProtectionDomain {
     private boolean dynamicPerms;
 
 	/**
-	 * Contructs a protection domain from the given code source and the
+	 * Constructs a protection domain from the given code source and the
 	 * permissions that that should be granted to the classes which are
 	 * encapsulated in it.
 	 * @param cs 
@@ -66,7 +66,7 @@ public class ProtectionDomain {
     }
 
 	/**
-	 * Contructs a protection domain from the given code source and the
+	 * Constructs a protection domain from the given code source and the
 	 * permissions that that should be granted to the classes which are
 	 * encapsulated in it. 
 	 * 
@@ -162,7 +162,7 @@ public class ProtectionDomain {
         }
 
         // ... and we get here if 
-        // either the permissiona are static
+        // either the permissions are static
         // or Policy.implies() did not check for static permissions
         // or the permission is not implied
         return permissions == null ? false : permissions.implies(permission);

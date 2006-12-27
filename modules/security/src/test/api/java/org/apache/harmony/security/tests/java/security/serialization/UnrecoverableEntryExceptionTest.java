@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for UnrecoverableEntryException seialization
+ * Test for UnrecoverableEntryException serialization
  * 
  */
 

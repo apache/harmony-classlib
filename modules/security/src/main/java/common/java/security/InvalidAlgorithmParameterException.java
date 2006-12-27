@@ -23,7 +23,7 @@
 package java.security;
 
 /**
- * This class represents invalid algorithm parameters to cryprographic services.
+ * This class represents invalid algorithm parameters to cryptographic services.
  * 
  */
 public class InvalidAlgorithmParameterException extends

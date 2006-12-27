@@ -55,7 +55,7 @@ public final class UnresolvedPrincipal implements Principal {
     /**
      * Constructs a a new definition of a Principal with specified
      * parameters. 
-     * @param klass fully qualified class name, may be wilcard
+     * @param klass fully qualified class name, may be wildcard
      * @param name name of principal, may be wildcard
      * @throws IllegalArgumentException if <code>klass</code> value 
      * is <code>null </code> or is empty string 
@@ -70,7 +70,7 @@ public final class UnresolvedPrincipal implements Principal {
     }
 
     /**
-     * Returns name of a modelled Principal, or wildcard 
+     * Returns name of a modeled Principal, or wildcard 
      * if any name is acceptable.
      */
     public String getName() {
@@ -78,7 +78,7 @@ public final class UnresolvedPrincipal implements Principal {
     }
 
     /** 
-     * Returns fully qualified class name of a modelled Principal,
+     * Returns fully qualified class name of a modeled Principal,
      * or wildcard if any class is acceptable. 
      */
     public String getClassName() {

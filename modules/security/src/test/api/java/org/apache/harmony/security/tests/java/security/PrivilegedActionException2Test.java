@@ -41,9 +41,9 @@ public class PrivilegedActionException2Test extends junit.framework.TestCase {
 	 * @tests java.security.PrivilegedActionException#getException()
 	 */
 	public void test_getException() {
-		Exception e = new IOException("test IOexception");
+		Exception e = new IOException("test IOException");
 		PrivilegedActionException pe = new PrivilegedActionException(e);
-		assertEquals("Did not encapsulate test IOexception!", e, pe
+		assertEquals("Did not encapsulate test IOException!", e, pe
 				.getException());
 	}
 }

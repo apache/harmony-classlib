@@ -56,7 +56,7 @@ import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
  */
 public class X509CertSelector implements CertSelector {
 
-    // match criterias
+    // match criteria
     private X509Certificate certificateEquals;
     private BigInteger serialNumber;
     private X500Principal issuer;

@@ -30,7 +30,7 @@ import org.apache.harmony.security.asn1.BitString;
 import org.apache.harmony.security.utils.Array;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the X.509 certificate. Its ASN notation is as follows
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.

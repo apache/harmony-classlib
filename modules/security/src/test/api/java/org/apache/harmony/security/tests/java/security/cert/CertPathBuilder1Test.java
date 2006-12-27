@@ -373,7 +373,7 @@ public class CertPathBuilder1Test extends TestCase {
     
 }
 /**
- * Addifional class to verify CertPathBuilder constructor
+ * Additional class to verify CertPathBuilder constructor
  */
 class myCertPathBuilder extends CertPathBuilder {
 

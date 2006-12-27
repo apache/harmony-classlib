@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertificateEncodingException seialization
+ * Test for CertificateEncodingException serialization
  * 
  */
 

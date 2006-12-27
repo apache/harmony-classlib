@@ -83,7 +83,7 @@ public class BerInputStream {
      * @param offset -
      *            the encoding offset
      * @param expectedLength -
-     *            expeced length of full encoding, this includes identifier,
+     *            expected length of full encoding, this includes identifier,
      *            length an content octets
      * @throws IOException -
      *             if an error occurs
@@ -131,7 +131,7 @@ public class BerInputStream {
 
         if (length != INDEFINIT_LENGTH) {
             // input stream has definite length encoding
-            // check allocated length to avoid futher reallocations
+            // check allocated length to avoid further reallocations
             if (buffer.length < length) {
                 byte[] newBuffer = new byte[length];
                 System.arraycopy(buffer, 0, newBuffer, 0, offset);
@@ -443,7 +443,7 @@ public class BerInputStream {
             // FIXME: any other optimizations?
             readContent();
 
-            // FIXME store string somewhare to allow a custom time type perform
+            // FIXME store string somewhere to allow a custom time type perform
             // additional checks
 
             // check syntax: the last char MUST be Z
@@ -869,7 +869,7 @@ public class BerInputStream {
     }
 
     /**
-     * Indicates defined or indefined reading mode for assosiated InputStream.
+     * Indicates defined or indefined reading mode for associated InputStream.
      * 
      * This mode is defined by reading a length
      * for a first ASN.1 type from InputStream.

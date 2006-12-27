@@ -36,7 +36,7 @@ public class ECFieldF2mTest extends TestCase {
 
     /**
      * Support class for this test.
-     * Incapsulates <code>ECFieldF2m</code> testing
+     * Encapsulates <code>ECFieldF2m</code> testing
      * domain parameters. 
      * 
      */
@@ -452,7 +452,7 @@ public class ECFieldF2mTest extends TestCase {
     /**
      * Test #1 for <code>getMidTermsOfReductionPolynomial()</code> method.<br>
      *
-     * Assertion: returns mid terms of reduction polinomial
+     * Assertion: returns mid terms of reduction polynomial
      */
     public final void testGetMidTermsOfReductionPolynomial01() {
         int[] a = new int[] {981,2,1};
@@ -475,7 +475,7 @@ public class ECFieldF2mTest extends TestCase {
     /**
      * Test #3 for <code>getMidTermsOfReductionPolynomial()</code> method.<br>
      *
-     * Assertion: returns mid terms of reduction polinomial
+     * Assertion: returns mid terms of reduction polynomial
      */
     public final void testGetMidTermsOfReductionPolynomial03() {
         int[] a = new int[] {367};
@@ -486,7 +486,7 @@ public class ECFieldF2mTest extends TestCase {
     /**
      * Test #1 for <code>getReductionPolynomial()</code> method.<br>
      *
-     * Assertion: returns reduction polinomial
+     * Assertion: returns reduction polynomial
      */
     public final void testGetReductionPolynomial01() {
         BigInteger rp = BigInteger.valueOf(0L).setBit(0).setBit(1).setBit(2).

@@ -44,7 +44,7 @@ import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
 
 /**
- * The class incapsulates the ASN.1 DER encoding/decoding work 
+ * The class encapsulates the ASN.1 DER encoding/decoding work 
  * with the GeneralName structure which is a part of X.509 certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
@@ -333,7 +333,7 @@ public class GeneralName {
      * The name is acceptable if it has the same type name and its
      * name value is equal to name value of this object. Also the name
      * is acceptable if this general name object is a part of name 
-     * constrants and the specified name is satisfied the restriction
+     * constraints and the specified name is satisfied the restriction
      * provided by this object (for more detail see section 4.2.1.11
      * of rfc 3280).
      * Note that for X400Address [3] check procedure is unclear so method
@@ -428,7 +428,7 @@ public class GeneralName {
     
     /**
      * Gets a list representation of this GeneralName object.
-     * The first entry of the list is an Iteger object representing
+     * The first entry of the list is an Integer object representing
      * the type of mane (0-8), and the second entry is a value of the name:
      * string or ASN.1 DER encoded form depending on the type as follows:
      * rfc822Name, dNSName, uniformResourceIdentifier names are returned 
@@ -820,7 +820,7 @@ public class GeneralName {
      *  pieces of the address.
      *  If the length is 8 or 32 then it represents an address range (RFC 1519)
      *  and the output String will contain 2 IP address divided by "/"
-     * @return  Stringe representation of ip address
+     * @return  String representation of ip address
      */
     public static String ipBytesToStr(byte[] ip) {
         String result = ""; //$NON-NLS-1$

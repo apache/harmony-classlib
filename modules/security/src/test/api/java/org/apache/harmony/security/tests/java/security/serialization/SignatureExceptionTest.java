@@ -28,7 +28,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for SignatureException seialization 
+ * Test for SignatureException serialization 
  *  
  */
 

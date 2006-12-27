@@ -49,7 +49,7 @@ public class ECPrivateKeyTest extends TestCase {
      */
     public void testField() {
         checkECPrivateKey k = new checkECPrivateKey();
-        assertEquals("Incorrect serialVerstionUID",
+        assertEquals("Incorrect serialVersionUID",
                 k.getSerVerUID(), //ECPrivateKey.serialVersionUID
                 -7896394956925609184L);
     }

@@ -127,7 +127,7 @@ public class CollectionCertStoreParametersTest extends TestCase {
         // modify our collection
         certificates.add(new MyCertificate("TEST", new byte[] {(byte)1}));
         certificates.add(new MyCertificate("TEST", new byte[] {(byte)2}));
-        // check that internal state has been chenged accordingly
+        // check that internal state has been changed accordingly
         assertTrue("isRefUsed_2", certificates.equals(cp.getCollection()));
     }
 

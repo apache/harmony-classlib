@@ -265,7 +265,7 @@ public class KeyStore {
     /**
      * 
      * 
-     * 1.4.2 and 1.5 releases throw unspecified NullPointerExcedption
+     * 1.4.2 and 1.5 releases throw unspecified NullPointerException
      * when alias is null
      */
     public final void setCertificateEntry(String alias, Certificate cert)
@@ -282,7 +282,7 @@ public class KeyStore {
     /**
      * 
      * 
-     * 1.4.2 and 1.5 releases throw NullPointerExcedption when alias is null
+     * 1.4.2 and 1.5 releases throw NullPointerException when alias is null
      */
     public final void deleteEntry(String alias) throws KeyStoreException {
         if (!isInit) {
@@ -453,7 +453,7 @@ public class KeyStore {
     /**
      * 
      * 
-     * 1.5 release throws unspecified NullPointerExcedption when alias or
+     * 1.5 release throws unspecified NullPointerException when alias or
      * entry is null
      */
     public final void setEntry(String alias, Entry entry,

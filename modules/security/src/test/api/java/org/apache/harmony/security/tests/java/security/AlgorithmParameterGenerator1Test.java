@@ -324,7 +324,7 @@ public class AlgorithmParameterGenerator1Test extends TestCase {
      * Test for <code>init(AlgorithmParameterSpec param)</code> and 
      * <code>init(AlgorithmParameterSpec param, SecureRandom random<code> 
      * methods
-     * Assertion: throws InvalidAlgorithmParameterExceptiom when param is null
+     * Assertion: throws InvalidAlgorithmParameterException when param is null
      */
     public void testAlgorithmParameterGenerator12() {
         if (!DSASupported) {
@@ -380,7 +380,7 @@ public class AlgorithmParameterGenerator1Test extends TestCase {
     }
 }
 /**
- * Addifional class to verify AlgorithmParameterGenerator constructor
+ * Additional class to verify AlgorithmParameterGenerator constructor
  */
 class myAlgPG extends AlgorithmParameterGenerator {
     public myAlgPG(AlgorithmParameterGeneratorSpi spi, Provider prov, String alg) {

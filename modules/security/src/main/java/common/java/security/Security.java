@@ -50,9 +50,9 @@ public final class Security {
     // Security properties
     private static Properties secprops = new Properties();
 
-    // static inicialization
+    // static initialization
     // - load security properties files
-    // - load staticaly registered providers
+    // - load statically registered providers
     // - if no provider description file found then load default providers
     static {
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
@@ -74,7 +74,7 @@ public final class Security {
                     }
                 }
 
-                if ("true".equalsIgnoreCase(secprops.getProperty("security.allowCustomePropertiesFile", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                if ("true".equalsIgnoreCase(secprops.getProperty("security.allowCustomPropertiesFile", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String securityFile = System.getProperty("java.security.properties"); //$NON-NLS-1$
                     if (securityFile != null) {
                         if (securityFile.startsWith("=")) { // overwrite //$NON-NLS-1$
@@ -164,7 +164,7 @@ public final class Security {
             int position) {
         // check security access; check that provider is not already
         // installed, else return -1; if (position <1) or (position > max
-        // position) position = max position + 1; insert provider, shifte up
+        // position) position = max position + 1; insert provider, shift up
         // one position for next providers; Note: The position is 1-based
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -198,7 +198,7 @@ public final class Security {
     public static synchronized void removeProvider(String name) {
         // It is not clear from spec.:
     	// 1. if name is null, should we checkSecurityAccess or not? 
-    	//    throw SecurityExeption or not?
+    	//    throw SecurityException or not?
         // 2. as 1 but provider is not installed
         // 3. behavior if name is empty string?
 

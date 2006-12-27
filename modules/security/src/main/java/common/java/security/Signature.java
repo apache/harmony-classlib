@@ -437,7 +437,7 @@ public abstract class Signature extends SignatureSpi {
 
         private SignatureSpi spiImpl;
 
-        // Consructor
+        // Constructor
         public SignatureImpl(SignatureSpi signatureSpi, Provider provider,
                 String algorithm) {
             super(algorithm);

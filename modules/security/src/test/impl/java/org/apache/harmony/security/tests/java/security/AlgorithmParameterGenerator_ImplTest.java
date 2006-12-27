@@ -74,7 +74,7 @@ public class AlgorithmParameterGenerator_ImplTest extends TestCase {
     /**
      * Test for <code>init(int size)</code> and
      * <code>init(int size, SecureRandom random<code> methods
-     * Assertion: throws InvalidParameterExceptiom when size is incorrect
+     * Assertion: throws InvalidParameterException when size is incorrect
      */
     public void testAlgorithmParameterGenerator11() throws Exception {        
         if (!DSASupported) {

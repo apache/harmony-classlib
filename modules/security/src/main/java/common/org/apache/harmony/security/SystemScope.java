@@ -128,7 +128,7 @@ public class SystemScope extends IdentityScope {
     public synchronized void removeIdentity(Identity identity)
             throws KeyManagementException {
 
-        //Exception catched = null;
+        //Exception caught = null;
         if (identity == null) {
             throw new NullPointerException(Messages.getString("security.92")); //$NON-NLS-1$
         }

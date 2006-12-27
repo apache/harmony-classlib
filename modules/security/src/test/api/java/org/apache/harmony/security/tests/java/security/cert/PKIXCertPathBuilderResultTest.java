@@ -101,7 +101,7 @@ public class PKIXCertPathBuilderResultTest extends TestCase {
     /**
      * Test #2 for <code>PKIXCertPathBuilderResult(CertPath, TrustAnchor,
      *   PolicyNode, PublicKey)</code> constructor<br>
-     * Assertion: plicy tree parameter may be <code>null</code>
+     * Assertion: policy tree parameter may be <code>null</code>
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */

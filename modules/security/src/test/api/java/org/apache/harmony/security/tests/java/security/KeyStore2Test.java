@@ -268,7 +268,7 @@ public class KeyStore2Test extends junit.framework.TestCase {
 		assertTrue("key entry - the alias returned for this "
 				+ "certificate was wrong", alias.equals("alias2"));
 
-		// testing case with a nonexistant certificate
+		// testing case with a nonexistent certificate
 		X509Certificate cert2 = (X509Certificate) cf
 				.generateCertificate(certArray3);
 		String aliasNull = keyTest.getCertificateAlias(cert2);

@@ -33,13 +33,13 @@ import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
- *  The static class providing access on Linux paltform
+ *  The static class providing access on Linux platform
  *  to system means for generating true random bits. <BR>
  *
  *  The source for true random bits is one of Linux's devices "/dev/urandom/" or
- *  "/dev/random" depends on which one is avalable; if both the first is used. <BR>
+ *  "/dev/random" depends on which one is available; if both the first is used. <BR>
  *
- *  If no device available the service is not avilable,
+ *  If no device available the service is not available,
  *  that is, provider shouldn't register the algorithm. <BR>
  */
 

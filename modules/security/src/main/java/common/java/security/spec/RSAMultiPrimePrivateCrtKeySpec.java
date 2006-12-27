@@ -93,7 +93,7 @@ public class RSAMultiPrimePrivateCrtKeySpec extends RSAPrivateKeySpec {
                 throw new IllegalArgumentException(
                 Messages.getString("security.85")); //$NON-NLS-1$
             }
-            // Clone array to prevent subsecuent modification
+            // Clone array to prevent subsequent modification
             this.otherPrimeInfo = new RSAOtherPrimeInfo[otherPrimeInfo.length];
             System.arraycopy(otherPrimeInfo, 0,
                     this.otherPrimeInfo, 0, this.otherPrimeInfo.length);
@@ -119,7 +119,7 @@ public class RSAMultiPrimePrivateCrtKeySpec extends RSAPrivateKeySpec {
      * @com.intel.drl.spec_ref
      */
     public RSAOtherPrimeInfo[] getOtherPrimeInfo() {
-        // Clone array (if not null) to prevent subsecuent modification
+        // Clone array (if not null) to prevent subsequent modification
         if (otherPrimeInfo == null) {
             return null;
         } else {

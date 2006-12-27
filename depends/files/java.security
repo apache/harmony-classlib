@@ -41,7 +41,7 @@ login.configuration.provider=org.apache.harmony.auth.login.DefaultConfiguration
 # -Djava.security.properties=<file|url> or -Djava.security.properties==<file|url>
 # Possible values: true/false.
 #
-security.allowCustomePropertiesFile=true
+security.allowCustomPropertiesFile=true
 
 
 # Class to instantiate as the default system Policy.

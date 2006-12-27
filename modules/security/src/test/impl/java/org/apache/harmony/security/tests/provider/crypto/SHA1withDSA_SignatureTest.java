@@ -367,7 +367,7 @@ public class SHA1withDSA_SignatureTest extends TestCase {
      * 1. In RI, negating effect of previous call includes 
      *    discarding updates done before calling the method.
      * 2.
-     * The specification for the method contains the folowing clause:
+     * The specification for the method contains the following clause:
      *     "If this method is called again with a different argument,
      *     it negates the effect of this call."
      * which meaning requires certainty in case of sequence
@@ -573,7 +573,7 @@ public class SHA1withDSA_SignatureTest extends TestCase {
 
             try {
                 signingSigns[i].sign(sig, 0, 44);
-                fail("case1 : no SignatureExcepton : i=" + i);
+                fail("case1 : no SignatureException : i=" + i);
             } catch (SignatureException e) {}
         }
     }
@@ -679,7 +679,7 @@ public class SHA1withDSA_SignatureTest extends TestCase {
      * The compatibility with RI test.
      * It checks out that 
      * for the predefined message and signature signed with PrivateKey from RI
-     * the method invoked on a Signature object initiazed with corresponding PublicKey from RI 
+     * the method invoked on a Signature object initialized with corresponding PublicKey from RI 
      * returns "true".
      */
     public final void testVerifybyteArray03() throws Exception {
@@ -865,7 +865,7 @@ public class SHA1withDSA_SignatureTest extends TestCase {
         assertTrue("case1: test failure", verifyingSign.verify(sigBytes, 0, n));
         assertFalse("case2: test failure", verifyingSign.verify(sigBytes, 0, n));
 
-        // tastcase2: first call returns false (incorrect signature), 
+        // testcase2: first call returns false (incorrect signature), 
         // second returns false too, in spite of correct signature (!),
         // because Signature object was reset in first call
 

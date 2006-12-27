@@ -120,7 +120,7 @@ public class CertificateFactory {
      * Answers a new CertificateFactory of the given type.
      * 
      * @param type
-     *            java.lang.String Type of certificatem desired
+     *            java.lang.String Type of certificate desired
      * @param provider
      *            java.security.Provider Provider which has to implement the
      *            algorithm

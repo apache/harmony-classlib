@@ -44,7 +44,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
     // Store SecureRandom
     private static SecureRandom random = new SecureRandom();
 
-    // Store used ptovider
+    // Store used provider
     private Provider provider;
 
     // Store used algorithm

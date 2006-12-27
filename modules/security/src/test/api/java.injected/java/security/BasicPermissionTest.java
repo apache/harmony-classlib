@@ -129,7 +129,7 @@ public class BasicPermissionTest extends TestCase {
     }
     
     /**
-     * newPermissionCollection() should return new BasicPermissionCollection on every invokation
+     * newPermissionCollection() should return new BasicPermissionCollection on every invocation
      */
     public void testCollection()
     {
