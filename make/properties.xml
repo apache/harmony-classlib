@@ -190,6 +190,7 @@
 
     <!-- default property for call-modules macro - i.e. all modules -->
     <property name="build.module" value="*" />
+    <property name="exclude.module" value="nothing" />
 
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
@@ -307,7 +308,7 @@ properties in preference to these:
         <attribute name="target" />
         <sequential>
             <subant target="@{target}">
-                <dirset dir="modules" includes="${build.module}" />
+                <dirset dir="modules" includes="${build.module}" excludes="${exclude.module}" />
             </subant>
         </sequential>
     </macrodef>
