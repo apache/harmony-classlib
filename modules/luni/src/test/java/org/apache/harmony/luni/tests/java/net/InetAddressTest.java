@@ -486,6 +486,15 @@ public class InetAddressTest extends junit.framework.TestCase {
         ia = Inet4Address.getByName("1.1.1.1");
         assertFalse(ia.isReachable(1000));
         assertFalse(ia.isReachable(null, 0, 1000));
+
+        // Regression test for HARMONY-1842.
+        ia = InetAddress.getByName("localhost"); //$NON-NLS-1$
+        Enumeration<NetworkInterface> nif = NetworkInterface.getNetworkInterfaces();
+        NetworkInterface netif;
+        while(nif.hasMoreElements()) {
+            netif = nif.nextElement();
+            ia.isReachable(netif, 10, 1000);
+        }
     } 
 
     // comparator for InetAddress objects

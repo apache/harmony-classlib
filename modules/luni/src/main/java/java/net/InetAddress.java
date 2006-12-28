@@ -814,6 +814,9 @@ public class InetAddress extends Object implements Serializable {
     private boolean isReachableByMultiThread(NetworkInterface netif,
             final int ttl, final int timeout, final boolean isICMP)
             throws IOException {
+        if (null == netif.addresses) {
+            return false;
+        }
         Enumeration<InetAddress> addresses = netif.getInetAddresses();
         reached = false;
         addrCount = netif.addresses.length;
