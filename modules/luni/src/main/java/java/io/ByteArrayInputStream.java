@@ -71,10 +71,10 @@ public class ByteArrayInputStream extends InputStream {
 	 */
 	public ByteArrayInputStream(byte buf[], int offset, int length) {
 		this.buf = buf;
-		pos = offset >= buf.length ? buf.length : offset;
-		mark = pos;
-		count = length + pos > buf.length ? buf.length : length + pos;
-	}
+		pos = offset;
+		mark = offset;
+		count = offset + length > buf.length ? buf.length : offset + length;
+		}
 
 	/**
 	 * Answers a int representing then number of bytes that are available before

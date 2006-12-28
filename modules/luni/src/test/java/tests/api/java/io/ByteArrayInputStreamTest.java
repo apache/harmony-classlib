@@ -17,6 +17,9 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 
 	private java.io.InputStream is;
@@ -41,10 +44,11 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.io.ByteArrayInputStream#ByteArrayInputStream(byte[], int,
 	 *        int)
 	 */
-	public void test_Constructor$BII() {
+	public void test_Constructor$BII() throws IOException {
 		// Test for method java.io.ByteArrayInputStream(byte [], int, int)
 
 		byte[] zz = fileString.getBytes();
@@ -55,6 +59,27 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 					100, bis.available());
 		} catch (Exception e) {
 			fail("Exception during Constructor test");
+		}
+		
+		// Regression test for Harmony-2405
+		new SubByteArrayInputStream(new byte[] { 1, 2 }, 444, 13);
+		assertEquals(444, SubByteArrayInputStream.pos);
+		assertEquals(444, SubByteArrayInputStream.mark);
+		assertEquals(2, SubByteArrayInputStream.count);
+	}
+	
+	static class SubByteArrayInputStream extends ByteArrayInputStream {
+		public static byte[] buf;
+
+		public static int mark, pos, count;
+
+		SubByteArrayInputStream(byte[] buf, int offset, int length)
+				throws IOException {
+			super(buf, offset, length);
+			buf = super.buf;
+			mark = super.mark;
+			pos = super.pos;
+			count = super.count;
 		}
 	}
 
