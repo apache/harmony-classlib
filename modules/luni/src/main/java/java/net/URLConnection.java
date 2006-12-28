@@ -872,7 +872,7 @@ public abstract class URLConnection {
 	 */
 	public void setDoInput(boolean newValue) {
 		if (connected) {
-			throw new IllegalAccessError(Msg.getString("K0037"));
+			throw new IllegalStateException(Msg.getString("K0037"));
 		}
 		this.doInput = newValue;
 	}
@@ -895,7 +895,7 @@ public abstract class URLConnection {
 	 */
 	public void setDoOutput(boolean newValue) {
 		if (connected) {
-			throw new IllegalAccessError(Msg.getString("K0037"));
+			throw new IllegalStateException(Msg.getString("K0037"));
 		}
 		this.doOutput = newValue;
 	}

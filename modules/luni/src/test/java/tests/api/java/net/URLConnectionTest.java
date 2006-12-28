@@ -940,17 +940,39 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 * @tests java.net.URLConnection#setDoInput(boolean)
 	 */
-	public void test_setDoInputZ() {
+	public void test_setDoInputZ() throws MalformedURLException, IOException {
 		assertTrue("Used to test", true);
+        HttpURLConnection u = null;
+
+        u = (HttpURLConnection) (new URL("http://intel.com").openConnection());
+        u.connect();
+
+        try {
+            u.setDoInput(true);
+        } catch (IllegalStateException e) { // expected
+        }
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 * @tests java.net.URLConnection#setDoOutput(boolean)
 	 */
-	public void test_setDoOutputZ() {
+	public void test_setDoOutputZ() throws MalformedURLException, IOException {
 		assertTrue("Used to test", true);
+        HttpURLConnection u = null;
+
+        u = (HttpURLConnection) (new URL("http://intel.com").openConnection());
+        u.connect();
+
+        try {
+            u.setDoOutput(true);
+        } catch (IllegalStateException e) { // expected
+        }
 	}
 
 	/**
