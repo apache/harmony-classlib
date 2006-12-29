@@ -756,7 +756,22 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		ois.close();
 		assertEquals(desc.getClass(), obj.getClass());
 	}
-   
+
+    // Regression Test for Harmony-2402
+    public void test_registerValidation() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new ObjectOutputStream(baos);
+        ObjectInputStream ois = new ObjectInputStream(
+                new ByteArrayInputStream(baos.toByteArray()));
+
+        try {
+            ois.registerValidation(null, 256);
+            fail("NotActiveException should be thrown");
+        } catch (NotActiveException nae) {
+            // expected
+        }
+    }
+
 
     /**
      * Sets up the fixture, for example, open a network connection. This method

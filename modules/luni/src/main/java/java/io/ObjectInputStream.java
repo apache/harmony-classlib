@@ -2292,44 +2292,42 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     public synchronized void registerValidation(ObjectInputValidation object,
             int priority) throws NotActiveException, InvalidObjectException {
-        if (object != null) {
-            // Validation can only be registered when inside readObject calls
-            Object instanceBeingRead = this.currentObject;
-            // We can't be called from just anywhere. There are rules.
-            if (instanceBeingRead != null) {
-                // From now on it is just insertion in a SortedCollection. Since
-                // the Java class libraries don't provide that, we have to
-                // implement it from scratch here.
-                InputValidationDesc desc = new InputValidationDesc();
-                desc.validator = object;
-                desc.priority = priority;
-                // No need for this, validateObject does not take a parameter
-                // desc.toValidate = instanceBeingRead;
-                if (validations == null) {
-                    validations = new InputValidationDesc[1];
-                    validations[0] = desc;
-                } else {
-                    int i = 0;
-                    for (; i < validations.length; i++) {
-                        InputValidationDesc validation = validations[i];
-                        // Sorted, higher priority first.
-                        if (priority >= validation.priority) {
-                            break; // Found the index where to insert
-                        }
-                    }
-                    InputValidationDesc[] oldValidations = validations;
-                    int currentSize = oldValidations.length;
-                    validations = new InputValidationDesc[currentSize + 1];
-                    System.arraycopy(oldValidations, 0, validations, 0, i);
-                    System.arraycopy(oldValidations, i, validations, i + 1,
-                            currentSize - i);
-                    validations[i] = desc;
-                }
-            } else {
-                throw new NotActiveException();
-            }
-        } else {
+        // Validation can only be registered when inside readObject calls
+        Object instanceBeingRead = this.currentObject;
+
+        // We can't be called from just anywhere. There are rules.
+        if (instanceBeingRead == null) {
+            throw new NotActiveException();
+        }
+        if (object == null) {
             throw new InvalidObjectException(Msg.getString("K00d9")); //$NON-NLS-1$
+        }
+        // From now on it is just insertion in a SortedCollection. Since
+        // the Java class libraries don't provide that, we have to
+        // implement it from scratch here.
+        InputValidationDesc desc = new InputValidationDesc();
+        desc.validator = object;
+        desc.priority = priority;
+        // No need for this, validateObject does not take a parameter
+        // desc.toValidate = instanceBeingRead;
+        if (validations == null) {
+            validations = new InputValidationDesc[1];
+            validations[0] = desc;
+        } else {
+            int i = 0;
+            for (; i < validations.length; i++) {
+                InputValidationDesc validation = validations[i];
+                // Sorted, higher priority first.
+                if (priority >= validation.priority) {
+                    break; // Found the index where to insert
+                }
+            }
+            InputValidationDesc[] oldValidations = validations;
+            int currentSize = oldValidations.length;
+            validations = new InputValidationDesc[currentSize + 1];
+            System.arraycopy(oldValidations, 0, validations, 0, i);
+            System.arraycopy(oldValidations, i, validations, i + 1, currentSize - i);
+            validations[i] = desc;
         }
     }
 
