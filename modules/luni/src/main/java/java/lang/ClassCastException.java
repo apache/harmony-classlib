@@ -25,39 +25,39 @@ import org.apache.harmony.luni.util.Msg;
  * 
  */
 public class ClassCastException extends RuntimeException {
-	private static final long serialVersionUID = -9223365651070458532L;
+    private static final long serialVersionUID = -9223365651070458532L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public ClassCastException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     * 
+     */
+    public ClassCastException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ClassCastException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ClassCastException(String detailMessage) {
+        super(detailMessage);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param instanceClass
-	 *            Class The class being cast from.
-	 * 
-	 * @param castClass
-	 *            Class The class being cast to.
-	 */
-	ClassCastException(Class<?> instanceClass, Class<?> castClass) {
-        super(Msg.getString("K0340", instanceClass.getName(), castClass
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param instanceClass
+     *            Class The class being cast from.
+     * 
+     * @param castClass
+     *            Class The class being cast to.
+     */
+    ClassCastException(Class<?> instanceClass, Class<?> castClass) {
+        super(Msg.getString("K0340", instanceClass.getName(), castClass //$NON-NLS-1$
                 .getName()));
     }
 }

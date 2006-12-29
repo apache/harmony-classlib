@@ -17,7 +17,6 @@
 
 package java.lang;
 
-
 import org.apache.harmony.luni.util.Msg;
 
 /**
@@ -29,32 +28,32 @@ public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
     private static final long serialVersionUID = -5116101128118950844L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ArrayIndexOutOfBoundsException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public ArrayIndexOutOfBoundsException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * (which is based on the argument which is the index which failed) filled
-	 * in.
-	 * 
-	 * @param index
-	 *            int the offending index.
-	 */
-	public ArrayIndexOutOfBoundsException(int index) {
-		super(Msg.getString("K0052", index));
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * (which is based on the argument which is the index which failed) filled
+     * in.
+     * 
+     * @param index
+     *            int the offending index.
+     */
+    public ArrayIndexOutOfBoundsException(int index) {
+        super(Msg.getString("K0052", index)); //$NON-NLS-1$
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ArrayIndexOutOfBoundsException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ArrayIndexOutOfBoundsException(String detailMessage) {
+        super(detailMessage);
+    }
 }

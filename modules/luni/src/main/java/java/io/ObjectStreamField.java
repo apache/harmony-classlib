@@ -163,7 +163,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 */
 	private Class<?> getTypeInternal() {
 		if (type instanceof WeakReference) {
-			return (Class<?>)((WeakReference) type).get();
+			return (Class<?>)((WeakReference<?>) type).get();
 		}
 		return (Class<?>) type;
 	}

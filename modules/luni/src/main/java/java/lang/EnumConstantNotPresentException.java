@@ -16,6 +16,8 @@
 
 package java.lang;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * <p>
  * Indicates that an <code>enum</code> constant does not exist for a
@@ -45,8 +47,8 @@ public class EnumConstantNotPresentException extends RuntimeException {
     @SuppressWarnings("unchecked")
     public EnumConstantNotPresentException(Class<? extends Enum> enumType,
             String constantName) {
-        super("The enum constant " + enumType.getName() + "." + constantName
-                + " is missing.");
+        // luni.03=The enum constant {0}.{1} is missing
+        super(Msg.getString("luni.03", enumType.getName(), constantName)); //$NON-NLS-1$
         this.enumType = enumType;
         this.constantName = constantName;
     }

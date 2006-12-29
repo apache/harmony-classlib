@@ -366,7 +366,7 @@ public final class String implements Serializable, Comparable<String>,
             } catch (Exception e) {
             	// do nothing. according to spec: 
             	// behavior is unspecified for invalid array
-            	cb = CharBuffer.wrap("\u003f".toCharArray());
+            	cb = CharBuffer.wrap("\u003f".toCharArray()); //$NON-NLS-1$
             }
             if ((result = cb.length()) > 0) {
                 value = cb.array();

@@ -111,7 +111,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         // KA004=Enums may not be cloned
-        throw new CloneNotSupportedException(Msg.getString("KA004"));
+        throw new CloneNotSupportedException(Msg.getString("KA004")); //$NON-NLS-1$
     }
 
     /**
@@ -164,12 +164,12 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
     public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
         if ((enumType == null) || (name == null)) {
             // KA001=Argument must not be null
-            throw new NullPointerException(Msg.getString("KA001"));
+            throw new NullPointerException(Msg.getString("KA001")); //$NON-NLS-1$
         }
         T[] values = getValues(enumType);
         if (values == null) {
             // KA005={0} is not an enum type
-            throw new IllegalArgumentException(Msg.getString("KA005", enumType));
+            throw new IllegalArgumentException(Msg.getString("KA005", enumType)); //$NON-NLS-1$
         }
         for (T enumConst : values) {
             if (enumConst.name.equals(name)) {
@@ -177,7 +177,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
             }
         }
         // KA006={0} is not a constant in the enum type {1}
-        throw new IllegalArgumentException(Msg.getString("KA006", name,
+        throw new IllegalArgumentException(Msg.getString("KA006", name, //$NON-NLS-1$
                 enumType));
     }
 
@@ -191,7 +191,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
             Method values = AccessController
                     .doPrivileged(new PrivilegedExceptionAction<Method>() {
                         public Method run() throws Exception {
-                            Method valsMethod = enumType.getMethod("values",
+                            Method valsMethod = enumType.getMethod("values", //$NON-NLS-1$
                                     (Class[]) null);
                             valsMethod.setAccessible(true);
                             return valsMethod;

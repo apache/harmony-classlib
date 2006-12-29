@@ -1846,7 +1846,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			if (!(enableReplace && computeStreamReplacement)) {
 				// Is it a Class ?
 				if (objClass == ObjectStreamClass.CLASSCLASS) {
-					return writeNewClass((Class) object, unshared);
+					return writeNewClass((Class<?>) object, unshared);
 				}
 				// Is it an ObjectStreamClass ?
 				if (objClass == ObjectStreamClass.OBJECTSTREAMCLASSCLASS) {

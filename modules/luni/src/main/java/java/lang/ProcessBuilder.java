@@ -44,7 +44,8 @@ public final class ProcessBuilder {
      * Constructs an instance with the given command.
      * </p>
      * 
-     * @param command The program and arguments.
+     * @param command
+     *            The program and arguments.
      */
     public ProcessBuilder(String... command) {
         this(toList(command));
@@ -55,9 +56,10 @@ public final class ProcessBuilder {
      * Constructs an instance with the given command.
      * </p>
      * 
-     * @param command The program and arguments.
-     * @throws NullPointerException if <code>command</code> is
-     *         <code>null</code>.
+     * @param command
+     *            The program and arguments.
+     * @throws NullPointerException
+     *             if <code>command</code> is <code>null</code>.
      */
     public ProcessBuilder(List<String> command) {
         super();
@@ -65,7 +67,8 @@ public final class ProcessBuilder {
             throw new NullPointerException();
         }
         this.command = command;
-        this.environment = new org.apache.harmony.luni.platform.Environment.EnvironmentMap(System.getenv());
+        this.environment = new org.apache.harmony.luni.platform.Environment.EnvironmentMap(
+                System.getenv());
     }
 
     /**
@@ -86,7 +89,8 @@ public final class ProcessBuilder {
      * Changes the program and arguments to the command given.
      * </p>
      * 
-     * @param command The program and arguments.
+     * @param command
+     *            The program and arguments.
      * @return A reference to this instance.
      */
     public ProcessBuilder command(String... command) {
@@ -100,10 +104,11 @@ public final class ProcessBuilder {
      * instance's state.
      * </p>
      * 
-     * @param command The program and arguments.
+     * @param command
+     *            The program and arguments.
      * @return A reference to this instance.
-     * @throws NullPointerException if <code>command</code> is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if <code>command</code> is <code>null</code>.
      */
     public ProcessBuilder command(List<String> command) {
         if (command == null) {
@@ -133,7 +138,8 @@ public final class ProcessBuilder {
      * process is used when a process is started.
      * </p>
      * 
-     * @param directory The working directory to set.
+     * @param directory
+     *            The working directory to set.
      * @return A reference to this instance.
      */
     public ProcessBuilder directory(File directory) {
@@ -174,8 +180,9 @@ public final class ProcessBuilder {
      * Changes the state of whether or not standard error is redirected.
      * </p>
      * 
-     * @param redirectErrorStream <code>true</code> to redirect standard
-     *        error, <code>false</code> if not.
+     * @param redirectErrorStream
+     *            <code>true</code> to redirect standard error,
+     *            <code>false</code> if not.
      * @return A reference to this instance.
      */
     public ProcessBuilder redirectErrorStream(boolean redirectErrorStream) {
@@ -189,12 +196,16 @@ public final class ProcessBuilder {
      * </p>
      * 
      * @return The new process that was started.
-     * @throws NullPointerException if any of the elements of {@link #command()}
-     *         are <code>null</code>.
-     * @throws IndexOutOfBoundsException if {@link #command()} is empty.
-     * @throws SecurityException if {@link SecurityManager#checkExec(String)}
-     *         doesn't allow process creation.
-     * @throws IOException if an I/O error happens.
+     * @throws NullPointerException
+     *             if any of the elements of {@link #command()} are
+     *             <code>null</code>.
+     * @throws IndexOutOfBoundsException
+     *             if {@link #command()} is empty.
+     * @throws SecurityException
+     *             if {@link SecurityManager#checkExec(String)} doesn't allow
+     *             process creation.
+     * @throws IOException
+     *             if an I/O error happens.
      */
     public Process start() throws IOException {
         if (command.isEmpty()) {
@@ -209,13 +220,14 @@ public final class ProcessBuilder {
         String[] envArray = new String[environment.size()];
         int i = 0;
         for (Map.Entry<String, String> entry : environment.entrySet()) {
-            envArray[i++] = entry.getKey() + "=" + entry.getValue();
+            envArray[i++] = entry.getKey() + "=" + entry.getValue(); //$NON-NLS-1$
         }
-        Process process = Runtime.getRuntime().exec(cmdArray, envArray, directory);
+        Process process = Runtime.getRuntime().exec(cmdArray, envArray,
+                directory);
         // TODO implement support for redirectErrorStream
         return process;
     }
-    
+
     private static List<String> toList(String[] strings) {
         ArrayList<String> arrayList = new ArrayList<String>(strings.length);
         for (String string : strings) {
@@ -224,4 +236,3 @@ public final class ProcessBuilder {
         return arrayList;
     }
 }
-
