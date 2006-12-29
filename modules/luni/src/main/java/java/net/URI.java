@@ -104,6 +104,7 @@ public final class URI implements Comparable<URI>, Serializable {
 
         if (scheme == null && userinfo == null && host == null && path == null
                 && query == null && fragment == null) {
+            this.path = ""; //$NON-NLS-1$
             return;
         }
 

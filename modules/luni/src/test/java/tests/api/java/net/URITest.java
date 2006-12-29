@@ -411,6 +411,9 @@ public class URITest extends junit.framework.TestCase {
 			// equivalent to = uri = new URI("http", "host", "/apath", "\u0080frag");
 			uri = new URI("http", "host", "/apath", "\u20ACfrag"); 
 
+                  // Regression test for Harmony-1693
+                  new URI(null, null, null, null);
+
 		} catch (URISyntaxException e) {
 			fail("Unexpected URISyntaxException:" + e);
 		}
@@ -1768,11 +1771,5 @@ public class URITest extends junit.framework.TestCase {
 				fail("Expected IllegalArgumentException not thrown");
 			} catch (IllegalArgumentException e) {
 			}
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }
