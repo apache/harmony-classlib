@@ -161,6 +161,7 @@ public abstract class Authenticator {
 		thisAuthenticator.protocol = rProtocol;
 		thisAuthenticator.prompt = rPrompt;
 		thisAuthenticator.scheme = rScheme;
+		thisAuthenticator.rt = RequestorType.SERVER;
 
 		// returns the authentication info obtained by the registered
 		// Authenticator
@@ -232,6 +233,7 @@ public abstract class Authenticator {
 		thisAuthenticator.protocol = rProtocol;
 		thisAuthenticator.prompt = rPrompt;
 		thisAuthenticator.scheme = rScheme;
+		thisAuthenticator.rt = RequestorType.SERVER;
 
 		// returns the authentication info obtained by the registered
 		// Authenticator

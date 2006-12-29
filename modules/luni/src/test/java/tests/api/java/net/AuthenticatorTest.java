@@ -61,7 +61,31 @@ public class AuthenticatorTest extends TestCase {
         assertEquals(RequestorType.PROXY, rt[0]);
         assertEquals(RequestorType.SERVER, rt[1]);
     }
-    
+
+    /**
+     * @tests java.net.Authenticator#requestPasswordAuthentication(java.net.InetAddress, int, String, String, String)
+     */
+    public void test_requestPasswordAuthentication_InetAddress_int_String_String_String() throws Exception {
+        // Regression test for Harmony-2413
+        MockAuthenticator mock = new MockAuthenticator();
+        InetAddress addr = InetAddress.getLocalHost();
+        Authenticator.setDefault(mock);
+        Authenticator.requestPasswordAuthentication(addr, -1, "http", "promt", "HTTP");
+        assertEquals(mock.getRequestorType(), RequestorType.SERVER);
+    }
+
+    /**
+     * @tests java.net.Authenticator#requestPasswordAuthentication(String, java.net.InetAddress, int, String, String, String)
+     */
+    public void test_requestPasswordAuthentication_String_InetAddress_int_String_String_String() throws Exception {
+        // Regression test for Harmony-2413
+        MockAuthenticator mock = new MockAuthenticator();
+        InetAddress addr = InetAddress.getLocalHost();
+        Authenticator.setDefault(mock);
+        Authenticator.requestPasswordAuthentication("test_host", addr, -1, "http", "promt", "HTTP");
+        assertEquals(mock.getRequestorType(), RequestorType.SERVER);
+    }
+
     /**
      * 
      * @tests java.net.Authenticator#
