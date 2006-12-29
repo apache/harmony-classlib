@@ -16,6 +16,10 @@
 
 package java.lang;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * <p>
  * An annotation for marking an element as deprecated.
@@ -23,8 +27,7 @@ package java.lang;
  * 
  * @since 1.5
  */
-// TODO Enable annotations when Java 5 class files are available.
-// @Documented
-// @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Deprecated {
 }

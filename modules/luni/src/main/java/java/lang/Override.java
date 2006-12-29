@@ -16,6 +16,11 @@
 
 package java.lang;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * <p>
  * An annotation to indicate that a method is intended to override a superclass
@@ -25,8 +30,7 @@ package java.lang;
  * 
  * @since 1.5
  */
-// TODO Enable annotations when Java 5 class files are available.
-// @Target(ElementType.METHOD)
-// @Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.SOURCE)
 public @interface Override {
 }

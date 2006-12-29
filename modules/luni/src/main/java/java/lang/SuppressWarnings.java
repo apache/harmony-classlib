@@ -16,6 +16,11 @@
 
 package java.lang;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * <p>
  * An annotation that indicates a compiler should suppress any warnings of the
@@ -24,11 +29,10 @@ package java.lang;
  * 
  * @since 1.5
  */
-// TODO Enable annotations when Java 5 class files are available.
-// @Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
-// ElementType.PARAMETER, ElementType.CONSTRUCTOR,
-// ElementType.LOCAL_VARIABLE })
-// @Retention(RetentionPolicy.SOURCE)
+@Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
+ElementType.PARAMETER, ElementType.CONSTRUCTOR,
+ElementType.LOCAL_VARIABLE })
+@Retention(RetentionPolicy.SOURCE)
 public @interface SuppressWarnings {
     public String[] value();
 }
