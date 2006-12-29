@@ -28,7 +28,6 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * This is the handler that manages all transactions between the client and a
  * HTTP remote server.
- * 
  */
 public class Handler extends URLStreamHandler {
 
@@ -36,10 +35,12 @@ public class Handler extends URLStreamHandler {
      * Answers a connection to the HTTP server specified by this
      * <code>URL</code>.
      * 
-     * @param u the URL to which the connection is pointing to
+     * @param u
+     *            the URL to which the connection is pointing to
      * @return a connection to the resource pointed by this url.
      * 
-     * @throws IOException if this handler fails to establish a connection
+     * @throws IOException
+     *             if this handler fails to establish a connection
      */
     @Override
     protected URLConnection openConnection(URL u) throws IOException {
@@ -52,20 +53,24 @@ public class Handler extends URLStreamHandler {
      * <code>proxy</code> is DIRECT type, the connection is made in normal
      * way.
      * 
-     * @param u the URL which the connection is pointing to
-     * @param proxy the proxy which is used to make the connection
+     * @param u
+     *            the URL which the connection is pointing to
+     * @param proxy
+     *            the proxy which is used to make the connection
      * @return a connection to the resource pointed by this url.
      * 
-     * @throws IOException if this handler fails to establish a connection.
-     * @throws IllegalArgumentException if any argument is null or the type of
-     *         proxy is wrong.
-     * @throws UnsupportedOperationException if the protocol handler doesn't
-     *         support this method.
+     * @throws IOException
+     *             if this handler fails to establish a connection.
+     * @throws IllegalArgumentException
+     *             if any argument is null or the type of proxy is wrong.
+     * @throws UnsupportedOperationException
+     *             if the protocol handler doesn't support this method.
      */
     @Override
-    protected URLConnection openConnection(URL u, Proxy proxy) throws IOException {
+    protected URLConnection openConnection(URL u, Proxy proxy)
+            throws IOException {
         if (null == u || null == proxy) {
-            throw new IllegalArgumentException(Msg.getString("K034b"));
+            throw new IllegalArgumentException(Msg.getString("K034b")); //$NON-NLS-1$
         }
         return new HttpURLConnection(u, getDefaultPort(), proxy);
     }

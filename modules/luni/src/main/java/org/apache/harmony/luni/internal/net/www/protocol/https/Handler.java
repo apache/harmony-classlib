@@ -23,6 +23,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * Handler for HttpsURLConnection implementation.
  */
@@ -34,9 +36,11 @@ public class Handler extends URLStreamHandler {
     }
 
     @Override
-    protected URLConnection openConnection(URL url, Proxy proxy) throws IOException {
+    protected URLConnection openConnection(URL url, Proxy proxy)
+            throws IOException {
         if ((url == null) || (proxy == null)) {
-            throw new IllegalArgumentException("Some of the parameters is null");
+            // K034b=url and proxy can not be null
+            throw new IllegalArgumentException(Msg.getString("K034b")); //$NON-NLS-1$
         }
         return new HttpsURLConnection(url, getDefaultPort(), proxy);
     }

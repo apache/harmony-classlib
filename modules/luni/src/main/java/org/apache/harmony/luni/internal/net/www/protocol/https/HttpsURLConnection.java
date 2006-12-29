@@ -74,7 +74,8 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     }
 
     @Override
-    public Certificate[] getServerCertificates() throws SSLPeerUnverifiedException {
+    public Certificate[] getServerCertificates()
+            throws SSLPeerUnverifiedException {
         if (sslSocket == null) {
             throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
@@ -145,7 +146,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public void connect() throws IOException {
         httpsEngine.connect();
-    };
+    }
 
     @Override
     public boolean getAllowUserInteraction() {
@@ -157,6 +158,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
         return httpsEngine.getContent();
     }
 
+    @SuppressWarnings("unchecked") // Spec does not generify
     @Override
     public Object getContent(Class[] types) throws IOException {
         return httpsEngine.getContent(types);
@@ -399,36 +401,34 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
             }
         }
 
+        @Override
         protected String requestString() {
             if (usingProxy()) {
                 if (makingSSLTunnel) {
                     // we are making the SSL Tunneling, return remotehost:port
                     int port = url.getPort();
-                    return (port > 0)
-                        ? url.getHost()+":"+port //$NON-NLS-1$
-                        : url.getHost();
-                } else {
-                    // we has made SSL Tunneling, return /requested.data
-                    String file = url.getFile();
-                    if (file == null || file.length() == 0) {
-                        file = "/"; //$NON-NLS-1$
-                    }
-                    return file;
+                    return (port > 0) ? url.getHost() + ":" + port //$NON-NLS-1$
+                    : url.getHost();
                 }
-            } else {
-                return super.requestString();
+                // we has made SSL Tunneling, return /requested.data
+                String file = url.getFile();
+                if (file == null || file.length() == 0) {
+                    file = "/"; //$NON-NLS-1$
+                }
+                return file;
             }
+            return super.requestString();
         }
 
         /**
-         * Create the secure socket over the connected socket and
-         * verify remote hostname.
+         * Create the secure socket over the connected socket and verify remote
+         * hostname.
          */
         private Socket wrapConnection(Socket socket) throws IOException {
             String hostname = url.getHost();
             // create the wrapper over connected socket
-            sslSocket = (SSLSocket) getSSLSocketFactory().createSocket(socket, hostname,
-                    url.getPort(), true);
+            sslSocket = (SSLSocket) getSSLSocketFactory().createSocket(socket,
+                    hostname, url.getPort(), true);
             sslSocket.setUseClientMode(true);
             sslSocket.startHandshake();
             if (!getHostnameVerifier().verify(hostname, sslSocket.getSession())) {

@@ -58,16 +58,16 @@ public class FileURLConnection extends URLConnection {
      */
     public FileURLConnection(URL url) {
         super(url);
-        fileName = url.getFile(); 
-        if (url.getRef() != null) { 
-            fileName += "#" + url.getRef(); 
-        } 
-        if (fileName == null) { 
-            fileName = ""; 
+        fileName = url.getFile();
+        if (url.getRef() != null) {
+            fileName += "#" + url.getRef(); //$NON-NLS-1$
+        }
+        if (fileName == null) {
+            fileName = ""; //$NON-NLS-1$
         }
         String host = url.getHost();
         if (host != null && host.length() > 0) {
-            fileName = "//" + host + fileName;
+            fileName = "//" + host + fileName; //$NON-NLS-1$
         }
         fileName = Util.decode(fileName, false);
     }
@@ -77,7 +77,8 @@ public class FileURLConnection extends URLConnection {
      * by this <code>URL</code>. If the file is a directory, it will return
      * that directory listing as an input stream.
      * 
-     * @throws IOException if an IO error occurs while connecting
+     * @throws IOException
+     *             if an IO error occurs while connecting
      */
     @Override
     public void connect() throws IOException {
@@ -128,7 +129,7 @@ public class FileURLConnection extends URLConnection {
             return MimeTable.UNKNOWN;
         }
         if (isDir) {
-            return "text/html";
+            return "text/html"; //$NON-NLS-1$
         }
         String result = guessContentTypeFromName(url.getFile());
         if (result == null) {
@@ -146,12 +147,13 @@ public class FileURLConnection extends URLConnection {
         String fileList[] = f.list();
         ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytes);
-        out.print("<title>Directory Listing</title>\n");
-        out.print("<base href=\"file:");
-        out.print(f.getPath().replace('\\', '/') + "/\"><h1>" + f.getPath() + "</h1>\n<hr>\n");
+        out.print("<title>Directory Listing</title>\n"); //$NON-NLS-1$
+        out.print("<base href=\"file:"); //$NON-NLS-1$
+        out.print(f.getPath().replace('\\', '/') + "/\"><h1>" + f.getPath() //$NON-NLS-1$
+                + "</h1>\n<hr>\n"); //$NON-NLS-1$
         int i;
         for (i = 0; i < fileList.length; i++) {
-            out.print(fileList[i] + "<br>\n");
+            out.print(fileList[i] + "<br>\n"); //$NON-NLS-1$
         }
         out.close();
         return new ByteArrayInputStream(bytes.toByteArray());
@@ -168,7 +170,8 @@ public class FileURLConnection extends URLConnection {
      * 
      * @return input stream of the object
      * 
-     * @throws IOException if an IO error occurs
+     * @throws IOException
+     *             if an IO error occurs
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -185,8 +188,8 @@ public class FileURLConnection extends URLConnection {
      * 
      * @return the permission required for this URLConnection.
      * 
-     * @throws IOException if an IO exception occurs while creating the
-     *         permission.
+     * @throws IOException
+     *             if an IO exception occurs while creating the permission.
      */
     @Override
     public java.security.Permission getPermission() throws IOException {
@@ -195,7 +198,7 @@ public class FileURLConnection extends URLConnection {
             if (File.separatorChar != '/') {
                 path = path.replace('/', File.separatorChar);
             }
-            permission = new FilePermission(path, "read");
+            permission = new FilePermission(path, "read"); //$NON-NLS-1$
         }
         return permission;
     }

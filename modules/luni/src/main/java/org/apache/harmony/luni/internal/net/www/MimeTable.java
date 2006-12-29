@@ -17,7 +17,6 @@
 
 package org.apache.harmony.luni.internal.net.www;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
@@ -35,63 +34,69 @@ import java.util.Properties;
 
 public class MimeTable implements FileNameMap {
 
-	public static final String UNKNOWN = "content/unknown"; //$NON-NLS-1$
+    public static final String UNKNOWN = "content/unknown"; //$NON-NLS-1$
 
-	/**
-	 * A hash table containing the mapping between extensions and mime types.
-	 */
-	public static final Properties types = new Properties();
+    /**
+     * A hash table containing the mapping between extensions and mime types.
+     */
+    public static final Properties types = new Properties();
 
-	// Default mapping.
-	static {
-		types.put("text", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
-		types.put("txt", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
-		types.put("htm", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
-		types.put("html", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+    // Default mapping.
+    static {
+        types.put("text", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.put("txt", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.put("htm", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.put("html", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-	/**
-	 * Contructs a MIME table using the default values defined in this class.
-	 * <p>
-	 * It then augments this table by reading pairs of extensions and matching
-	 * content types from the file "types.properties", which is represented in
-	 * standard java.util.Properties.load(...) format.
-	 */
-	public MimeTable() {
-		InputStream str = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
-					public InputStream run() {
-						return MimeTable.this.getClass().getResourceAsStream(
-								"types.properties"); //$NON-NLS-1$
-					}
-				});
+    /**
+     * Contructs a MIME table using the default values defined in this class.
+     * <p>
+     * It then augments this table by reading pairs of extensions and matching
+     * content types from the file "types.properties", which is represented in
+     * standard java.util.Properties.load(...) format.
+     */
+    public MimeTable() {
+        InputStream str = AccessController
+                .doPrivileged(new PrivilegedAction<InputStream>() {
+                    public InputStream run() {
+                        return MimeTable.this.getClass().getResourceAsStream(
+                                "types.properties"); //$NON-NLS-1$
+                    }
+                });
 
-		try {
-			if (str != null)
-				types.load(str);
-		} catch (IOException ex) {
-		}
-	}
+        try {
+            if (str != null) {
+                types.load(str);
+            }
+        } catch (IOException ex) {
+            // Ignored
+        }
+    }
 
-	/**
-	 * Determines the MIME type for the given filename.
-	 * 
-	 * @return java.lang.String The mime type associated with the file's
-	 *         extension or null if no mapping is known.
-	 * @param filename
-	 *            java.lang.String The file whose extension will be mapped.
-	 */
-	public String getContentTypeFor(String filename) {
-		if (filename.endsWith("/")) //$NON-NLS-1$
-			// a directory, return html
-			return (String) types.get("html"); //$NON-NLS-1$
-		int lastCharInExtension = filename.lastIndexOf('#');
-		if (lastCharInExtension < 0)
-			lastCharInExtension = filename.length();
-		int firstCharInExtension = filename.lastIndexOf('.') + 1;
-		String ext = ""; //$NON-NLS-1$
-		if (firstCharInExtension > filename.lastIndexOf('/'))
-			ext = filename.substring(firstCharInExtension, lastCharInExtension);
-		return (String) types.get(ext.toLowerCase());
-	}
+    /**
+     * Determines the MIME type for the given filename.
+     * 
+     * @return java.lang.String The mime type associated with the file's
+     *         extension or null if no mapping is known.
+     * @param filename
+     *            java.lang.String The file whose extension will be mapped.
+     */
+    public String getContentTypeFor(String filename) {
+        if (filename.endsWith("/")) { //$NON-NLS-1$
+            // a directory, return html
+            return (String) types.get("html"); //$NON-NLS-1$
+        }
+        int lastCharInExtension = filename.lastIndexOf('#');
+        if (lastCharInExtension < 0) {
+            lastCharInExtension = filename.length();
+        }
+        int firstCharInExtension = filename.lastIndexOf('.') + 1;
+        String ext = ""; //$NON-NLS-1$
+        if (firstCharInExtension > filename.lastIndexOf('/')) {
+            ext = filename.substring(firstCharInExtension, lastCharInExtension);
+        }
+        return (String) types.get(ext.toLowerCase());
+    }
 
 }

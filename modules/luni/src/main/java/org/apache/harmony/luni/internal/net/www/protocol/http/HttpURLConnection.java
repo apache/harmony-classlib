@@ -61,13 +61,13 @@ import org.apache.harmony.luni.util.PriviAction;
  * server.
  */
 public class HttpURLConnection extends java.net.HttpURLConnection {
-    private static final String POST = "POST";
+    private static final String POST = "POST"; //$NON-NLS-1$
 
-    private static final String GET = "GET";
+    private static final String GET = "GET"; //$NON-NLS-1$
 
-    private static final String PUT = "PUT";
+    private static final String PUT = "PUT"; //$NON-NLS-1$
 
-    private static final String HEAD = "HEAD";
+    private static final String HEAD = "HEAD"; //$NON-NLS-1$
 
     private final int defaultPort;
 
@@ -155,7 +155,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 return -1;
             }
             int result = is.read();
-            //if user has set useCache to true and cache exists, writes to cache
+            // if user has set useCache to true and cache exists, writes to
+            // cache
             if (useCaches && null != cacheOut) {
                 cacheOut.write(result);
             }
@@ -169,7 +170,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 throw new NullPointerException();
             }
             // avoid int overflow
-            if (offset < 0 || length < 0 || offset > buf.length || buf.length - offset < length) {
+            if (offset < 0 || length < 0 || offset > buf.length
+                    || buf.length - offset < length) {
                 throw new ArrayIndexOutOfBoundsException();
             }
             if (bytesRemaining <= 0) {
@@ -181,7 +183,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             int result = is.read(buf, offset, length);
             if (result > 0) {
                 bytesRemaining -= result;
-                // if user has set useCache to true and cache exists, writes to it
+                // if user has set useCache to true and cache exists, writes to
+                // it
                 if (useCaches && null != cacheOut) {
                     cacheOut.write(buf, offset, result);
                 }
@@ -240,7 +243,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 readln(); // read CR/LF
             }
             String size = readln();
-            int index = size.indexOf(";");
+            int index = size.indexOf(";"); //$NON-NLS-1$
             if (index >= 0) {
                 size = size.substring(0, index);
             }
@@ -274,7 +277,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 throw new NullPointerException();
             }
             // avoid int overflow
-            if (offset < 0 || length < 0 || offset > buf.length || buf.length - offset < length) {
+            if (offset < 0 || length < 0 || offset > buf.length
+                    || buf.length - offset < length) {
                 throw new ArrayIndexOutOfBoundsException();
             }
             if (bytesRemaining <= 0) {
@@ -289,7 +293,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             int result = is.read(buf, offset, length);
             if (result > 0) {
                 bytesRemaining -= result;
-                // if user has set useCache to true and cache exists, write to it
+                // if user has set useCache to true and cache exists, write to
+                // it
                 if (useCaches && null != cacheOut) {
                     cacheOut.write(buf, offset, result);
                 }
@@ -373,12 +378,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
              * here is the calculated head size, not real size (for 19, it
              * counts 3, not real size 4)
              */
-            int headSize = (Integer.toHexString(defaultCacheSize - bitSize - 2).length()) + 2;
+            int headSize = (Integer.toHexString(defaultCacheSize - bitSize - 2)
+                    .length()) + 2;
             return defaultCacheSize - headSize;
         }
 
         private void output(String output) throws IOException {
-            socketOut.write(output.getBytes("ISO8859_1"));
+            socketOut.write(output.getBytes("ISO8859_1")); //$NON-NLS-1$
         }
 
         private void sendCache(boolean close) throws IOException {
@@ -386,13 +392,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (size > 0 || close) {
                 if (limit < 0) {
                     if (size > 0) {
-                        output(Integer.toHexString(size) + "\r\n");
+                        output(Integer.toHexString(size) + "\r\n"); //$NON-NLS-1$
                         socketOut.write(cache.toByteArray());
                         cache.reset();
-                        output("\r\n");
+                        output("\r\n"); //$NON-NLS-1$
                     }
                     if (close) {
-                        output("0\r\n\r\n");
+                        output("0\r\n\r\n"); //$NON-NLS-1$
                     }
                 }
             }
@@ -401,7 +407,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         @Override
         public synchronized void flush() throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059"));
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
             if (writeToSocket) {
                 sendCache(false);
@@ -417,7 +423,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             closed = true;
             if (writeToSocket) {
                 if (limit > 0) {
-                    throw new IOException(Msg.getString("K00a4"));
+                    throw new IOException(Msg.getString("K00a4")); //$NON-NLS-1$
                 }
                 sendCache(closed);
             }
@@ -426,11 +432,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         @Override
         public synchronized void write(int data) throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059"));
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
             if (limit >= 0) {
                 if (limit == 0) {
-                    throw new IOException(Msg.getString("K00b2"));
+                    throw new IOException(Msg.getString("K00b2")); //$NON-NLS-1$
                 }
                 limit--;
             }
@@ -441,9 +447,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         @Override
-        public synchronized void write(byte[] buffer, int offset, int count) throws IOException {
+        public synchronized void write(byte[] buffer, int offset, int count)
+                throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059"));
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
             if (buffer == null) {
                 throw new NullPointerException();
@@ -451,12 +458,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             // avoid int overflow
             if (offset < 0 || count < 0 || offset > buffer.length
                     || buffer.length - offset < count) {
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
             }
 
             if (limit >= 0) {
                 if (count > limit) {
-                    throw new IOException(Msg.getString("K00b2"));
+                    throw new IOException(Msg.getString("K00b2")); //$NON-NLS-1$
                 }
                 limit -= count;
                 cache.write(buffer, offset, count);
@@ -467,18 +474,18 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 if (!writeToSocket || cache.size() + count < cacheLength) {
                     cache.write(buffer, offset, count);
                 } else {
-                    output(Integer.toHexString(cacheLength) + "\r\n");
+                    output(Integer.toHexString(cacheLength) + "\r\n"); //$NON-NLS-1$
                     int writeNum = cacheLength - cache.size();
                     cache.write(buffer, offset, writeNum);
                     socketOut.write(cache.toByteArray());
-                    output("\r\n");
+                    output("\r\n"); //$NON-NLS-1$
                     cache.reset();
                     int left = count - writeNum;
                     int position = offset + writeNum;
                     while (left > cacheLength) {
-                        output(Integer.toHexString(cacheLength) + "\r\n");
+                        output(Integer.toHexString(cacheLength) + "\r\n"); //$NON-NLS-1$
                         socketOut.write(buffer, position, cacheLength);
-                        output("\r\n");
+                        output("\r\n"); //$NON-NLS-1$
                         left = left - cacheLength;
                         position = position + cacheLength;
                     }
@@ -507,7 +514,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Creates an instance of the <code>HttpURLConnection</code> using default
      * port 80.
-     *
+     * 
      * @param url
      *            URL The URL this connection is connecting
      */
@@ -517,7 +524,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Creates an instance of the <code>HttpURLConnection</code>
-     *
+     * 
      * @param url
      *            URL The URL this connection is connecting
      * @param port
@@ -533,16 +540,17 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         } catch (URISyntaxException e) {
             // do nothing.
         }
-        responseCache = AccessController.doPrivileged(new PrivilegedAction<ResponseCache>() {
-            public ResponseCache run() {
-                return ResponseCache.getDefault();
-            }
-        });
+        responseCache = AccessController
+                .doPrivileged(new PrivilegedAction<ResponseCache>() {
+                    public ResponseCache run() {
+                        return ResponseCache.getDefault();
+                    }
+                });
     }
 
     /**
      * Creates an instance of the <code>HttpURLConnection</code>
-     *
+     * 
      * @param url
      *            URL The URL this connection is connecting
      * @param port
@@ -557,12 +565,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Establishes the connection to the remote HTTP server
-     *
+     * 
      * Any methods that requires a valid connection to the resource will call
      * this method implicitly. After the connection is established,
      * <code>connected</code> is set to true.
-     *
-     *
+     * 
+     * 
      * @see #connected
      * @see java.io.IOException
      * @see URLStreamHandler
@@ -615,8 +623,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     }
 
     /**
-     * Returns connected socket to be used for this HTTP connection.
-     * TODO: implement persistent connections.
+     * Returns connected socket to be used for this HTTP connection. TODO:
+     * implement persistent connections.
      */
     protected Socket getHTTPConnection(Proxy proxy) throws IOException {
         Socket socket;
@@ -639,7 +647,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Sets up the data streams used to send request[s] and read response[s].
-     * @param socket socket to be used for connection
+     * 
+     * @param socket
+     *            socket to be used for connection
      */
     protected void setUpTransportIO(Socket socket) throws IOException {
         this.socket = socket;
@@ -647,7 +657,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         is = new BufferedInputStream(socket.getInputStream());
     }
 
-    // Tries to get head and body from cache, return true if has got this time or
+    // Tries to get head and body from cache, return true if has got this time
+    // or
     // already got before
     private boolean getFromCache() throws IOException {
         if (useCaches && null != responseCache && !hasTriedCache) {
@@ -655,7 +666,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (null == resHeader) {
                 resHeader = new Header();
             }
-            cacheResponse = responseCache.get(uri, method, resHeader.getFieldMap());
+            cacheResponse = responseCache.get(uri, method, resHeader
+                    .getFieldMap());
             if (null != cacheResponse) {
                 Map<String, List<String>> headMap = cacheResponse.getHeaders();
                 if (null != headMap) {
@@ -686,8 +698,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Closes the connection with the HTTP server
-     *
-     *
+     * 
+     * 
      * @see URLConnection#connect()
      */
     @Override
@@ -725,9 +737,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * <p>
      * If the content type is not what stated above,
      * <code>FileNotFoundException</code> is thrown.
-     *
-     * @return InputStream the error input stream returned by the
-     *         server.
+     * 
+     * @return InputStream the error input stream returned by the server.
      */
     @Override
     public InputStream getErrorStream() {
@@ -764,14 +775,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Answers the value of the field corresponding to the <code>key</code>
      * Answers <code>null</code> if there is no such field.
-     *
+     * 
      * If there are multiple fields with that key, the last field value is
      * returned.
-     *
+     * 
      * @return java.lang.String The value of the header field
      * @param key
      *            java.lang.String the name of the header field
-     *
+     * 
      * @see #getHeaderField(int)
      * @see #getHeaderFieldKey
      */
@@ -805,9 +816,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Provides an unmodifiable map of the connection header values. The map
      * keys are the String header field names. Each map value is a list of the
      * header field values associated with that key name.
-     *
+     * 
      * @return the mapping of header field names to values
-     *
+     * 
      * @since 1.4
      */
     @Override
@@ -835,7 +846,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     @Override
     public InputStream getInputStream() throws IOException {
         if (!doInput) {
-            throw new ProtocolException(Msg.getString("K008d"));
+            throw new ProtocolException(Msg.getString("K008d")); //$NON-NLS-1$
         }
 
         doRequest();
@@ -858,12 +869,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             return uis;
         }
 
-        String encoding = resHeader.get("Transfer-Encoding");
-        if (encoding != null && encoding.toLowerCase().equals("chunked")) {
+        String encoding = resHeader.get("Transfer-Encoding"); //$NON-NLS-1$
+        if (encoding != null && encoding.toLowerCase().equals("chunked")) { //$NON-NLS-1$
             return uis = new ChunkedInputStream();
         }
 
-        String sLength = resHeader.get("Content-Length");
+        String sLength = resHeader.get("Content-Length"); //$NON-NLS-1$
         if (sLength != null) {
             try {
                 int length = Integer.parseInt(sLength);
@@ -877,12 +888,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     @Override
     public OutputStream getOutputStream() throws IOException {
         if (!doOutput) {
-            throw new ProtocolException(Msg.getString("K008e"));
+            throw new ProtocolException(Msg.getString("K008e")); //$NON-NLS-1$
         }
 
         // you can't write after you read
         if (sentRequest) {
-            throw new ProtocolException(Msg.getString("K0090"));
+            throw new ProtocolException(Msg.getString("K0090")); //$NON-NLS-1$
         }
 
         if (os != null) {
@@ -896,19 +907,19 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         // If the request method is neither PUT or POST, then you're not writing
         if (method != PUT && method != POST) {
-            throw new ProtocolException(Msg.getString("K008f", method));
+            throw new ProtocolException(Msg.getString("K008f", method)); //$NON-NLS-1$
         }
 
         int limit = -1;
-        String contentLength = reqHeader.get("Content-Length");
+        String contentLength = reqHeader.get("Content-Length"); //$NON-NLS-1$
         if (contentLength != null) {
             limit = Integer.parseInt(contentLength);
         }
 
-        String encoding = reqHeader.get("Transfer-Encoding");
+        String encoding = reqHeader.get("Transfer-Encoding"); //$NON-NLS-1$
         if (httpVersion > 0 && encoding != null) {
             encoding = encoding.toLowerCase();
-            if ("chunked".equals(encoding)) {
+            if ("chunked".equals(encoding)) { //$NON-NLS-1$
                 sendChunked = true;
                 limit = -1;
             }
@@ -936,7 +947,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     @Override
     public Permission getPermission() throws IOException {
-        return new SocketPermission(getHostName() + ":" + getHostPort(), "connect, resolve");
+        return new SocketPermission(getHostName() + ":" + getHostPort(), //$NON-NLS-1$
+                "connect, resolve"); //$NON-NLS-1$
     }
 
     @Override
@@ -949,7 +961,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answers a line read from the input stream. Does not include the \n
-     *
+     * 
      * @return The line that was read.
      */
     String readln() throws IOException {
@@ -983,7 +995,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
         String file = url.getFile();
         if (file == null || file.length() == 0) {
-            file = "/";
+            file = "/"; //$NON-NLS-1$
         }
         return file;
     }
@@ -992,7 +1004,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Sends the request header to the remote HTTP server Not all of them are
      * guaranteed to have any effect on the content the server will return,
      * depending on if the server supports that field.
-     *
+     * 
      * Examples : Accept: text/*, text/html, text/html;level=1, Accept-Charset:
      * iso-8859-5, unicode-1-1;q=0.8
      */
@@ -1036,7 +1048,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         } while (getResponseCode() == 100);
 
         if (method == HEAD || (responseCode >= 100 && responseCode < 200)
-                || responseCode == HTTP_NO_CONTENT || responseCode == HTTP_NOT_MODIFIED) {
+                || responseCode == HTTP_NO_CONTENT
+                || responseCode == HTTP_NOT_MODIFIED) {
             closeSocket();
             uis = new LimitedInputStream(0);
         }
@@ -1053,11 +1066,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             return responseCode;
         }
         String response = resHeader.getStatusLine();
-        if (response == null || !response.startsWith("HTTP/")) {
+        if (response == null || !response.startsWith("HTTP/")) { //$NON-NLS-1$
             return -1;
         }
         response = response.trim();
-        int mark = response.indexOf(" ") + 1;
+        int mark = response.indexOf(" ") + 1; //$NON-NLS-1$
         if (mark == 0) {
             return -1;
         }
@@ -1081,10 +1094,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         while (((line = readln()) != null) && (line.length() > 1)) {
             // Header parsing
             int idx;
-            if ((idx = line.indexOf(":")) < 0) {
-                resHeader.add("", line.trim());
+            if ((idx = line.indexOf(":")) < 0) { //$NON-NLS-1$
+                resHeader.add("", line.trim()); //$NON-NLS-1$
             } else {
-                resHeader.add(line.substring(0, idx), line.substring(idx + 1).trim());
+                resHeader.add(line.substring(0, idx), line.substring(idx + 1)
+                        .trim());
             }
         }
     }
@@ -1095,50 +1109,51 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         output.append(' ');
         output.append(requestString());
         output.append(' ');
-        output.append("HTTP/1.");
+        output.append("HTTP/1."); //$NON-NLS-1$
         if (httpVersion == 0) {
-            output.append("0\r\n");
+            output.append("0\r\n"); //$NON-NLS-1$
         } else {
-            output.append("1\r\n");
+            output.append("1\r\n"); //$NON-NLS-1$
         }
-        if (reqHeader.get("User-Agent") == null) {
-            output.append("User-Agent: ");
-            String agent = getSystemProperty("http.agent");
+        if (reqHeader.get("User-Agent") == null) { //$NON-NLS-1$
+            output.append("User-Agent: "); //$NON-NLS-1$
+            String agent = getSystemProperty("http.agent"); //$NON-NLS-1$
             if (agent == null) {
-                output.append("Java");
-                output.append(getSystemProperty("java.version"));
+                output.append("Java"); //$NON-NLS-1$
+                output.append(getSystemProperty("java.version")); //$NON-NLS-1$
             } else {
                 output.append(agent);
             }
-            output.append("\r\n");
+            output.append("\r\n"); //$NON-NLS-1$
         }
-        if (reqHeader.get("Host") == null) {
-            output.append("Host: ");
+        if (reqHeader.get("Host") == null) { //$NON-NLS-1$
+            output.append("Host: "); //$NON-NLS-1$
             output.append(url.getHost());
             int port = url.getPort();
             if (port > 0 && port != defaultPort) {
                 output.append(':');
                 output.append(Integer.toString(port));
             }
-            output.append("\r\n");
+            output.append("\r\n"); //$NON-NLS-1$
         }
-        if (httpVersion > 0 && reqHeader.get("Connection") == null) {
-            output.append("Connection: Keep-Alive\r\n");
+        if (httpVersion > 0 && reqHeader.get("Connection") == null) { //$NON-NLS-1$
+            output.append("Connection: Keep-Alive\r\n"); //$NON-NLS-1$
         }
 
         // if we are doing output make sure the appropriate headers are sent
         if (os != null) {
-            if (reqHeader.get("Content-Type") == null) {
-                output.append("Content-Type: application/x-www-form-urlencoded\r\n");
+            if (reqHeader.get("Content-Type") == null) { //$NON-NLS-1$
+                output
+                        .append("Content-Type: application/x-www-form-urlencoded\r\n"); //$NON-NLS-1$
             }
             if (os.isCached()) {
-                if (reqHeader.get("Content-Length") == null) {
-                    output.append("Content-Length: ");
+                if (reqHeader.get("Content-Length") == null) { //$NON-NLS-1$
+                    output.append("Content-Length: "); //$NON-NLS-1$
                     output.append(Integer.toString(os.size()));
-                    output.append("\r\n");
+                    output.append("\r\n"); //$NON-NLS-1$
                 }
             } else if (os.isChunked()) {
-                output.append("Transfer-Encoding: chunked\r\n");
+                output.append("Transfer-Encoding: chunked\r\n"); //$NON-NLS-1$
             }
         }
 
@@ -1149,42 +1164,45 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (key != null) {
                 String lKey = key.toLowerCase();
                 if ((os != null && !os.isChunked())
-                        || (!lKey.equals("transfer-encoding") && !lKey.equals("content-length"))) {
+                        || (!lKey.equals("transfer-encoding") && !lKey //$NON-NLS-1$
+                                .equals("content-length"))) { //$NON-NLS-1$
                     output.append(key);
-                    output.append(": ");
+                    output.append(": "); //$NON-NLS-1$
                     /*
                      * duplicates are allowed under certain conditions see
                      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
                      */
-                    if (lKey.equals("content-length")) {
+                    if (lKey.equals("content-length")) { //$NON-NLS-1$
                         hasContentLength = true;
                         /*
                          * if both setFixedLengthStreamingMode and
                          * content-length are set, use fixedContentLength first
                          */
-                        output.append((fixedContentLength >= 0) ? String
-                                .valueOf(fixedContentLength) : reqHeader.get(i));
+                        output
+                                .append((fixedContentLength >= 0) ? String
+                                        .valueOf(fixedContentLength)
+                                        : reqHeader.get(i));
                     } else {
                         output.append(reqHeader.get(i));
                     }
-                    output.append("\r\n");
+                    output.append("\r\n"); //$NON-NLS-1$
                 }
             }
         }
         if (fixedContentLength >= 0 && !hasContentLength) {
-            output.append("content-length: ");
+            output.append("content-length: "); //$NON-NLS-1$
             output.append(String.valueOf(fixedContentLength));
-            output.append("\r\n");
+            output.append("\r\n"); //$NON-NLS-1$
         }
         // end the headers
-        output.append("\r\n");
-        return output.toString().getBytes("ISO8859_1");
+        output.append("\r\n"); //$NON-NLS-1$
+        return output.toString().getBytes("ISO8859_1"); //$NON-NLS-1$
     }
 
     /**
      * Sets the default request header fields to be sent to the remote server.
      * This does not affect the current URL Connection, only newly created ones.
-     *
+     * 
      * @param field
      *            java.lang.String The name of the field to be changed
      * @param value
@@ -1201,24 +1219,27 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * with the new value.
      * 
      * 
-     * @param newValue the number of millisecond since epoch
+     * @param newValue
+     *            the number of millisecond since epoch
      * 
-     * @throws IllegalStateException if already connected.
+     * @throws IllegalStateException
+     *             if already connected.
      */
     @Override
     public void setIfModifiedSince(long newValue) {
         super.setIfModifiedSince(newValue);
         // convert from millisecond since epoch to date string
-        SimpleDateFormat sdf = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "E, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US); //$NON-NLS-1$
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
         String date = sdf.format(new Date(newValue));
-        reqHeader.add("If-Modified-Since", date);
+        reqHeader.add("If-Modified-Since", date); //$NON-NLS-1$
     }
 
     @Override
     public void setRequestProperty(String field, String newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0092"));
+            throw new IllegalStateException(Msg.getString("K0092")); //$NON-NLS-1$
         }
         if (field == null) {
             throw new NullPointerException();
@@ -1229,7 +1250,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     @Override
     public void addRequestProperty(String field, String value) {
         if (connected) {
-            throw new IllegalAccessError(Msg.getString("K0092"));
+            throw new IllegalAccessError(Msg.getString("K0092")); //$NON-NLS-1$
         }
         if (field == null) {
             throw new NullPointerException();
@@ -1264,7 +1285,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (hostAddress == null) {
             // the value was not set yet
             if (proxy != null && proxy.type() != Proxy.Type.DIRECT) {
-                hostAddress = ((InetSocketAddress) proxy.address()).getAddress();
+                hostAddress = ((InetSocketAddress) proxy.address())
+                        .getAddress();
             } else {
                 hostAddress = InetAddress.getByName(url.getHost());
             }
@@ -1325,14 +1347,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             // proxy authorization failed ?
             if (responseCode == HTTP_PROXY_AUTH) {
                 if (!usingProxy()) {
-                    throw new IOException("Received HTTP_PROXY_AUTH (407) "
-                            + "code while not using proxy");
+                    // KA017=Received HTTP_PROXY_AUTH (407) code while not using
+                    // proxy
+                    throw new IOException(Msg.getString("KA017")); //$NON-NLS-1$
                 }
                 // username/password
                 // until authorized
-                String challenge = resHeader.get("Proxy-Authenticate");
+                String challenge = resHeader.get("Proxy-Authenticate"); //$NON-NLS-1$
                 if (challenge == null) {
-                    throw new IOException("Received authentication challenge is null.");
+                    // KA016=Received authentication challenge is null.
+                    throw new IOException(Msg.getString("KA016")); //$NON-NLS-1$
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
@@ -1345,16 +1369,17 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                     break;
                 }
                 // set up the authorization credentials
-                setRequestProperty("Proxy-Authorization", credentials);
+                setRequestProperty("Proxy-Authorization", credentials); //$NON-NLS-1$
                 // continue to send request
                 continue;
             }
             // HTTP authorization failed ?
-            if (responseCode == HTTP_UNAUTHORIZED) { 
+            if (responseCode == HTTP_UNAUTHORIZED) {
                 // keep asking for username/password until authorized
-                String challenge = resHeader.get("WWW-Authenticate");
+                String challenge = resHeader.get("WWW-Authenticate"); //$NON-NLS-1$
                 if (challenge == null) {
-                    throw new IOException("Received authentication challenge is null.");
+                    // KA018=Received authentication challenge is null
+                    throw new IOException(Msg.getString("KA018")); //$NON-NLS-1$
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
@@ -1367,7 +1392,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                     break;
                 }
                 // set up the authorization credentials
-                setRequestProperty("Authorization", credentials);
+                setRequestProperty("Authorization", credentials); //$NON-NLS-1$
                 // continue to send request
                 continue;
             }
@@ -1377,14 +1402,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
              * an infinite loop
              */
             if (getInstanceFollowRedirects()) {
-                if ((responseCode == HTTP_MULT_CHOICE || responseCode == HTTP_MOVED_PERM
-                        || responseCode == HTTP_MOVED_TEMP || responseCode == HTTP_SEE_OTHER || responseCode == HTTP_USE_PROXY)
+                if ((responseCode == HTTP_MULT_CHOICE
+                        || responseCode == HTTP_MOVED_PERM
+                        || responseCode == HTTP_MOVED_TEMP
+                        || responseCode == HTTP_SEE_OTHER || responseCode == HTTP_USE_PROXY)
                         && os == null) {
 
                     if (++redirect > 4) {
-                        throw new ProtocolException(Msg.getString("K0093"));
+                        throw new ProtocolException(Msg.getString("K0093")); //$NON-NLS-1$
                     }
-                    String location = getHeaderField("Location");
+                    String location = getHeaderField("Location"); //$NON-NLS-1$
                     if (location != null) {
                         // start over
                         if (responseCode == HTTP_USE_PROXY) {
@@ -1392,7 +1419,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                             if (location.startsWith(url.getProtocol() + ':')) {
                                 start = url.getProtocol().length() + 1;
                             }
-                            if (location.startsWith("//", start)) {
+                            if (location.startsWith("//", start)) { //$NON-NLS-1$
                                 start += 2;
                             }
                             setProxy(location.substring(start));
@@ -1423,11 +1450,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @return
      * @throws IOException
      */
-    private String getAuthorizationCredentials(String challenge) throws IOException {
+    private String getAuthorizationCredentials(String challenge)
+            throws IOException {
 
-        int idx = challenge.indexOf(" ");
+        int idx = challenge.indexOf(" "); //$NON-NLS-1$
         String scheme = challenge.substring(0, idx);
-        int realm = challenge.indexOf("realm=\"") + 7;
+        int realm = challenge.indexOf("realm=\"") + 7; //$NON-NLS-1$
         String prompt = null;
         if (realm != -1) {
             int end = challenge.indexOf('"', realm);
@@ -1437,17 +1465,18 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
         // The following will use the user-defined authenticator to get
         // the password
-        PasswordAuthentication pa = Authenticator.requestPasswordAuthentication(
-                getHostAddress(), getHostPort(), url.getProtocol(), prompt, scheme);
+        PasswordAuthentication pa = Authenticator
+                .requestPasswordAuthentication(getHostAddress(), getHostPort(),
+                        url.getProtocol(), prompt, scheme);
         if (pa == null) {
             // could not retrieve the credentials
             return null;
         }
         // base64 encode the username and password
-        byte[] bytes = (pa.getUserName() + ":" + new String(pa.getPassword()))
-                .getBytes("ISO8859_1");
-        String encoded = Base64.encode(bytes, "ISO8859_1");
-        return scheme + " " + encoded;
+        byte[] bytes = (pa.getUserName() + ":" + new String(pa.getPassword())) //$NON-NLS-1$
+                .getBytes("ISO8859_1"); //$NON-NLS-1$
+        String encoded = Base64.encode(bytes, "ISO8859_1"); //$NON-NLS-1$
+        return scheme + " " + encoded; //$NON-NLS-1$
     }
 
     private void setProxy(String proxy) {
@@ -1461,10 +1490,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             try {
                 hostPort = Integer.parseInt(port);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(Msg.getString("K00af", port));
+                throw new IllegalArgumentException(Msg.getString("K00af", port)); //$NON-NLS-1$
             }
             if (hostPort < 0 || hostPort > 65535) {
-                throw new IllegalArgumentException(Msg.getString("K00b0"));
+                throw new IllegalArgumentException(Msg.getString("K00b0")); //$NON-NLS-1$
             }
         }
     }

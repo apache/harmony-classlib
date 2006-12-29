@@ -36,7 +36,8 @@ public class Handler extends URLStreamHandler {
      * the file system
      * 
      * @return A connection to the resource pointed by this url.
-     * @param url URL The URL to which the connection is pointing to
+     * @param url
+     *            URL The URL to which the connection is pointing to
      * 
      */
     @Override
@@ -48,20 +49,25 @@ public class Handler extends URLStreamHandler {
      * The behaviour of this method is the same as openConnection(URL).
      * <code>proxy</code> is not used in FileURLConnection.
      * 
-     * @param u the URL which the connection is pointing to
-     * @param proxy Proxy
+     * @param u
+     *            the URL which the connection is pointing to
+     * @param proxy
+     *            Proxy
      * @return a connection to the resource pointed by this url.
      * 
-     * @throws IOException if this handler fails to establish a connection.
-     * @throws IllegalArgumentException if any argument is null or of an invalid
-     *         type.
-     * @throws UnsupportedOperationException if the protocol handler doesn't
-     *         support this method.
+     * @throws IOException
+     *             if this handler fails to establish a connection.
+     * @throws IllegalArgumentException
+     *             if any argument is null or of an invalid type.
+     * @throws UnsupportedOperationException
+     *             if the protocol handler doesn't support this method.
      */
     @Override
-    public URLConnection openConnection(URL url, Proxy proxy) throws IOException {
+    public URLConnection openConnection(URL url, Proxy proxy)
+            throws IOException {
         if (null == url || null == proxy) {
-            throw new IllegalArgumentException(Msg.getString("K034b"));
+            // K034b=url and proxy can not be null
+            throw new IllegalArgumentException(Msg.getString("K034b")); //$NON-NLS-1$
         }
         return new FileURLConnection(url);
     }
@@ -71,10 +77,14 @@ public class Handler extends URLStreamHandler {
      * already have the context properties. The string generally have the
      * following format: <code><center>/c:/windows/win.ini</center></code>.
      * 
-     * @param u The URL object that's parsed into
-     * @param str The string equivalent of the specification URL
-     * @param start The index in the spec string from which to begin parsing
-     * @param end The index to stop parsing
+     * @param u
+     *            The URL object that's parsed into
+     * @param str
+     *            The string equivalent of the specification URL
+     * @param start
+     *            The index in the spec string from which to begin parsing
+     * @param end
+     *            The index to stop parsing
      * 
      * @see java.net.URLStreamHandler#toExternalForm(URL)
      * @see java.net.URL
@@ -84,7 +94,7 @@ public class Handler extends URLStreamHandler {
         if (end < start) {
             return;
         }
-        String parseString = "";
+        String parseString = ""; //$NON-NLS-1$
         if (start < end) {
             parseString = str.substring(start, end).replace('\\', '/');
         }

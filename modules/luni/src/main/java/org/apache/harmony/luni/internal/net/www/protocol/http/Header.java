@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 /**
  * The general structure for request / response header. It is essentially
  * constructed by hashtable with key indexed in a vector for position lookup.
- * 
  */
 public class Header implements Cloneable {
     /*
@@ -56,10 +55,11 @@ public class Header implements Cloneable {
      * The alternative constructor which sets the input map as its initial
      * keyTable.
      * 
-     * @param map the initial keyTable as a map
+     * @param map
+     *            the initial keyTable as a map
      */
     public Header(Map<String, List<String>> map) {
-        this(); //initialize fields
+        this(); // initialize fields
         for (Entry<String, List<String>> next : map.entrySet()) {
             String key = next.getKey();
             props.add(key);
@@ -80,8 +80,10 @@ public class Header implements Cloneable {
             Header clone = (Header) super.clone();
             clone.props = (ArrayList<String>) props.clone();
             clone.keyTable = new HashMap<String, LinkedList<String>>(20);
-            for (Map.Entry<String, LinkedList<String>> next : this.keyTable.entrySet()) {
-                LinkedList<String> v = (LinkedList<String>) next.getValue().clone();
+            for (Map.Entry<String, LinkedList<String>> next : this.keyTable
+                    .entrySet()) {
+                LinkedList<String> v = (LinkedList<String>) next.getValue()
+                        .clone();
                 clone.keyTable.put(next.getKey(), v);
             }
             return clone;
@@ -94,9 +96,7 @@ public class Header implements Cloneable {
      * Add a field with the specified value.
      * 
      * @param key
-     * 
      * @param value
-     * 
      */
     public void add(String key, String value) {
         if (key == null) {
@@ -116,10 +116,8 @@ public class Header implements Cloneable {
      * Set a field with the specified value. If the field is not found, it is
      * added. If the field is found, the existing value(s) are overwritten.
      * 
-     * 
      * @param key
      * @param value
-     * 
      */
     public void set(String key, String value) {
         if (key == null) {
@@ -150,7 +148,8 @@ public class Header implements Cloneable {
      * @since 1.4
      */
     public Map<String, List<String>> getFieldMap() {
-        Map<String, List<String>> result = new HashMap<String, List<String>>(keyTable.size());
+        Map<String, List<String>> result = new HashMap<String, List<String>>(
+                keyTable.size());
         for (Map.Entry<String, LinkedList<String>> next : keyTable.entrySet()) {
             List<String> v = next.getValue();
             result.put(next.getKey(), Collections.unmodifiableList(v));
@@ -163,7 +162,8 @@ public class Header implements Cloneable {
      * exist.
      * 
      * @return java.lang.String the value of the key
-     * @param pos int the position to look for
+     * @param pos
+     *            int the position to look for
      */
     public String get(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
@@ -178,7 +178,8 @@ public class Header implements Cloneable {
      * 
      * 
      * @return the key the desired position
-     * @param pos the position to look for
+     * @param pos
+     *            the position to look for
      */
     public String getKey(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
@@ -191,10 +192,8 @@ public class Header implements Cloneable {
      * Answers the value corresponding to the specified key, null if no such key
      * exists.
      * 
-     * 
-     * @return
      * @param key
-     * 
+     * @return
      */
     public String get(String key) {
         LinkedList<String> result = keyTable.get(key.toLowerCase());
@@ -206,7 +205,6 @@ public class Header implements Cloneable {
 
     /**
      * Answers the number of keys stored in this header
-     * 
      * 
      * @return
      */
@@ -242,5 +240,4 @@ public class Header implements Cloneable {
     public String getStatusLine() {
         return statusLine;
     }
-
 }
