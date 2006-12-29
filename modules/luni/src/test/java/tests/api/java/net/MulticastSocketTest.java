@@ -782,6 +782,19 @@ public class MulticastSocketTest extends SocketTestCase {
 		} catch (UnknownHostException e) {
 			fail("Exception during setInterface test: " + e.toString());
 		}
+
+		// Regression test for Harmony-2410
+		try {
+			mss = new MulticastSocket();
+			mss.setInterface(InetAddress.getByName("224.0.0.5"));
+		} catch (UnknownHostException uhe) {
+			fail("Unable to get InetAddress by name from '224.0.0.5' addr: " + uhe.toString());
+		} catch (SocketException se) {
+			// expected
+		} catch (IOException ioe) {
+			handleException(ioe, SO_MULTICAST_INTERFACE);
+			return;
+		}
 	}
 
 	/**
