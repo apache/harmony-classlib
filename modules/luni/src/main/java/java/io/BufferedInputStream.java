@@ -67,7 +67,7 @@ public class BufferedInputStream extends FilterInputStream {
      */
     public BufferedInputStream(InputStream in) {
         super(in);
-        buf = (in == null) ? null : new byte[8192];
+        buf = new byte[8192];
     }
 
     /**
@@ -86,7 +86,7 @@ public class BufferedInputStream extends FilterInputStream {
             // K0058=size must be > 0
             throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
         }
-        buf = (in == null) ? null : new byte[size];
+        buf = new byte[size];
     }
 
     /**
@@ -200,7 +200,7 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized int read() throws IOException {
-        if (buf == null) {
+        if (in == null) {
             // K0059=Stream is closed
             throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
