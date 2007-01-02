@@ -307,6 +307,10 @@ public class SerialBlobTest extends TestCase {
             } catch (SerialException e) {
                 // expected
             }
+            
+            // Non bug difference from RI, Harmony-2937
+            assertEquals(3L, serialBlob.length());
+            
             try {
                 serialBlob.truncate(10);
                 fail("should throw SerialException");
