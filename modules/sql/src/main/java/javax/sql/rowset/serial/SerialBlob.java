@@ -219,9 +219,12 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
         return length;
     }
 
-    public void truncate(long len) throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public void truncate(long length) throws SerialException {
+        if (length > this.len) {
+            throw new SerialException(Messages.getString("sql.17")); //$NON-NLS-1$
+        }
+        buf = getBytes(1, (int) length);
+        len = length;
     }
 
 }

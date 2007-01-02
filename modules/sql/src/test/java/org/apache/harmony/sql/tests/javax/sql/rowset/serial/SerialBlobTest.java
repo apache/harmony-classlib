@@ -286,6 +286,37 @@ public class SerialBlobTest extends TestCase {
         assertBlobPosition_BlobPattern(serialBlob);
     }
 
+    public void testTruncateJ() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        SerialBlob serialBlob1 = new SerialBlob(buf);
+        MockSerialBlob mockBlob = new MockSerialBlob();
+        mockBlob.buf = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        SerialBlob serialBlob2 = new SerialBlob(mockBlob);
+        SerialBlob[] serialBlobs = { serialBlob1, serialBlob2 };
+
+        for (SerialBlob serialBlob : serialBlobs) {
+
+            serialBlob.truncate(3);
+            assertEquals(3L, serialBlob.length());
+            byte[] truncatedBytes = serialBlob.getBytes(1, 3);
+            assertTrue(Arrays.equals(new byte[] { 1, 2, 3 }, truncatedBytes));
+
+            try {
+                serialBlob.truncate(-1);
+                fail("should throw SerialException");
+            } catch (SerialException e) {
+                // expected
+            }
+            try {
+                serialBlob.truncate(10);
+                fail("should throw SerialException");
+            } catch (SerialException e) {
+                // expected
+            }
+
+        }
+    }
+    
     private void assertBlobPosition_BytePattern(Blob blob)
             throws SerialException, SQLException {
         byte[] pattern;
