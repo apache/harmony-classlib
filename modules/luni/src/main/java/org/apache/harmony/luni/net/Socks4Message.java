@@ -19,6 +19,8 @@ package org.apache.harmony.luni.net;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.harmony.luni.util.Msg;
+
 class Socks4Message {
     static final int COMMAND_CONNECT = 1;
 
@@ -160,13 +162,13 @@ class Socks4Message {
     public String getErrorString(int error) {
         switch (error) {
             case RETURN_FAILURE:
-                return org.apache.harmony.luni.util.Msg.getString("K00cd");
+                return Msg.getString("K00cd"); //$NON-NLS-1$
             case RETURN_CANNOT_CONNECT_TO_IDENTD:
-                return org.apache.harmony.luni.util.Msg.getString("K00ce");
+                return Msg.getString("K00ce"); //$NON-NLS-1$
             case RETURN_DIFFERENT_USER_IDS:
-                return org.apache.harmony.luni.util.Msg.getString("K00cf");
+                return Msg.getString("K00cf"); //$NON-NLS-1$
             default:
-                return org.apache.harmony.luni.util.Msg.getString("K00d0");
+                return Msg.getString("K00d0"); //$NON-NLS-1$
         }
     }
 
@@ -188,7 +190,8 @@ class Socks4Message {
      * Get a 32 bit integer from the buffer at the offset given.
      */
     private int getInt32(int offset) {
-        return ((buffer[offset + 3] & 0xFF) + ((buffer[offset + 2] & 0xFF) << 8)
+        return ((buffer[offset + 3] & 0xFF)
+                + ((buffer[offset + 2] & 0xFF) << 8)
                 + ((buffer[offset + 1] & 0xFF) << 16) + ((buffer[offset + 0] & 0xFF) << 24));
     }
 
@@ -205,7 +208,7 @@ class Socks4Message {
             index++;
         }
         try {
-            result = new String(buffer, offset, index - offset, "ISO8859_1");
+            result = new String(buffer, offset, index - offset, "ISO8859_1"); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.toString());
         }
@@ -233,7 +236,7 @@ class Socks4Message {
     private void setString(int offset, int maxLength, String theString) {
         byte[] stringBytes;
         try {
-            stringBytes = theString.getBytes("ISO8859_1");
+            stringBytes = theString.getBytes("ISO8859_1"); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.toString());
         }

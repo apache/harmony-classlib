@@ -29,41 +29,43 @@ import java.io.IOException;
  * @see URLConnection#getContent()
  */
 public abstract class ContentHandler {
-	/**
-	 * Answers the object pointed by the specified URL Connection
-	 * <code>uConn</code>.
-	 * 
-	 * @return java.lang.Object the object referred by <code>uConn</code>
-	 * @param uConn
-	 *            URLConnection the URL connection that points to the
-	 *            desired object
-	 * @throws IOException
-	 *                thrown if an IO error occurs during the retrieval of the
-	 *                object
-	 */
-	public abstract Object getContent(URLConnection uConn) throws IOException;
+    /**
+     * Answers the object pointed by the specified URL Connection
+     * <code>uConn</code>.
+     * 
+     * @return java.lang.Object the object referred by <code>uConn</code>
+     * @param uConn
+     *            URLConnection the URL connection that points to the desired
+     *            object
+     * @throws IOException
+     *             thrown if an IO error occurs during the retrieval of the
+     *             object
+     */
+    public abstract Object getContent(URLConnection uConn) throws IOException;
 
-	/**
-	 * Answers the object pointed by the specified URL Connection
-	 * <code>uConn</code>.
-	 * 
-	 * @param uConn
-	 *            java.net.URLConnection the URL connection that points to the
-	 *            desired object
-	 * @param types
-	 *            The list of acceptable content types
-	 * @return Object The object of the resource pointed by this URL, or null if
-	 *         the content does not match a specified content type.
-	 * 
-	 * @throws IOException
-	 *                If an error occurred obtaining the content.
-	 */
-	public Object getContent(URLConnection uConn, Class[] types)
+    /**
+     * Answers the object pointed by the specified URL Connection
+     * <code>uConn</code>.
+     * 
+     * @param uConn
+     *            java.net.URLConnection the URL connection that points to the
+     *            desired object
+     * @param types
+     *            The list of acceptable content types
+     * @return Object The object of the resource pointed by this URL, or null if
+     *         the content does not match a specified content type.
+     * 
+     * @throws IOException
+     *             If an error occurred obtaining the content.
+     */
+    @SuppressWarnings("unchecked")
+    // Class arg not generified in the spec.
+    public Object getContent(URLConnection uConn, Class[] types)
             throws IOException {
         Object content = getContent(uConn);
         Class<?> cl = content.getClass();
         for (int i = 0; i < types.length; i++) {
-            if (cl == types[i]) {
+            if (cl.isInstance(types[i])) {
                 return content;
             }
         }

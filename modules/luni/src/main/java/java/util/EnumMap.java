@@ -72,8 +72,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
         @Override
         public int hashCode() {
-            return (enumMap.keys[ordinal] == null ? 0
-                    : enumMap.keys[ordinal].hashCode())
+            return (enumMap.keys[ordinal] == null ? 0 : enumMap.keys[ordinal]
+                    .hashCode())
                     ^ (enumMap.values[ordinal] == null ? 0
                             : enumMap.values[ordinal].hashCode());
         }
@@ -218,8 +218,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
-    private static class EnumMapValueCollection<KT extends Enum<KT>, VT> extends
-            AbstractCollection<VT> {
+    private static class EnumMapValueCollection<KT extends Enum<KT>, VT>
+            extends AbstractCollection<VT> {
         private final EnumMap<KT, VT> enumMap;
 
         EnumMapValueCollection(EnumMap<KT, VT> em) {
@@ -355,14 +355,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             int index = 0;
             Object[] entryArray = array;
             if (size > array.length) {
-                Class clazz = array.getClass().getComponentType();
+                Class<?> clazz = array.getClass().getComponentType();
                 entryArray = (Object[]) Array.newInstance(clazz, size);
             }
-            Iterator iter = iterator();
+            Iterator<Map.Entry<KT, VT>> iter = iterator();
             for (; index < size; index++) {
-                Map.Entry<KT, VT> entry = (Map.Entry<KT, VT>) iter.next();
-                entryArray[index] = new MapEntry<KT, VT>((KT) entry.getKey(),
-                        (VT) entry.getValue());
+                Map.Entry<KT, VT> entry = iter.next();
+                entryArray[index] = new MapEntry<KT, VT>(entry.getKey(), entry
+                        .getValue());
             }
             if (index < array.length) {
                 entryArray[index] = null;
@@ -419,10 +419,10 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             }
             Iterator<K> iter = map.keySet().iterator();
             K enumKey = iter.next();
-            Class clazz=enumKey.getClass();
-            if(clazz.isEnum()){
+            Class clazz = enumKey.getClass();
+            if (clazz.isEnum()) {
                 initialization(clazz);
-            }else{
+            } else {
                 initialization(clazz.getSuperclass());
             }
             putAllImpl(map);
@@ -533,8 +533,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         if (keyType != enumMap.keyType || size() != enumMap.size()) {
             return false;
         }
-        return Arrays.equals(hasMapping, enumMap.hasMapping) &&
-            Arrays.equals(values, enumMap.values);
+        return Arrays.equals(hasMapping, enumMap.hasMapping)
+                && Arrays.equals(values, enumMap.values);
     }
 
     /**
@@ -588,7 +588,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     @Override
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {
-        return putImpl(key,value);
+        return putImpl(key, value);
     }
 
     /**
@@ -676,9 +676,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         stream.writeInt(mappingsCount);
-        Iterator iterator = entrySet().iterator();
+        Iterator<Map.Entry<K, V>> iterator = entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<K, V> entry = (Map.Entry<K, V>) iterator.next();
+            Map.Entry<K, V> entry = iterator.next();
             stream.writeObject(entry.getKey());
             stream.writeObject(entry.getValue());
         }
@@ -692,7 +692,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     @SuppressWarnings("unchecked")
-    private void initialization(EnumMap enumMap){
+    private void initialization(EnumMap enumMap) {
         keyType = enumMap.keyType;
         keys = enumMap.keys;
         enumSize = enumMap.enumSize;
@@ -700,7 +700,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         hasMapping = enumMap.hasMapping.clone();
         mappingsCount = enumMap.mappingsCount;
     }
-    
+
     private void initialization(Class<K> type) {
         keyType = type;
         keys = keyType.getEnumConstants();
@@ -708,16 +708,16 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         values = new Object[enumSize];
         hasMapping = new boolean[enumSize];
     }
-    
+
     @SuppressWarnings("unchecked")
-    private void putAllImpl(Map map){
+    private void putAllImpl(Map map) {
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             putImpl((K) entry.getKey(), (V) entry.getValue());
         }
     }
-  
+
     @SuppressWarnings("unchecked")
     private V putImpl(K key, V value) {
         if (null == key) {

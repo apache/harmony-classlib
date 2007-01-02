@@ -21,7 +21,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 4782406773684236311L;
-    
+
     final Class<E> elementClass;
 
     EnumSet(Class<E> cls) {
@@ -127,7 +127,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         set.complement();
         return set;
     }
-    
+
     abstract void complement();
 
     /**
@@ -283,7 +283,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         set.setRange(start, end);
         return set;
     }
-    
+
     abstract void setRange(E start, E end);
 
     /**
@@ -293,6 +293,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      * @return a new enum set with the same elements as those contained in this
      *         enum set
      */
+    @SuppressWarnings("unchecked")
     @Override
     public EnumSet<E> clone() {
         try {
@@ -302,14 +303,14 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     boolean isValidType(Class cls) {
         return cls == elementClass || cls.getSuperclass() == elementClass;
     }
-    
+
     private static class SerializationProxy<E extends Enum<E>> implements
-        Serializable {
+            Serializable {
 
         private static final long serialVersionUID = 362491234563181265L;
 
@@ -325,7 +326,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
             return set;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     Object writeReplace() {
         SerializationProxy proxy = new SerializationProxy();

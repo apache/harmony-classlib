@@ -100,20 +100,20 @@ class PlainSocketImpl extends SocketImpl {
         try {
             if (newImpl instanceof PlainSocketImpl) {
                 PlainSocketImpl newPlainSocketImpl = (PlainSocketImpl) newImpl;
-                netImpl.acceptStreamSocket(fd, newImpl, newPlainSocketImpl.getFileDescriptor(),
-                        receiveTimeout);
+                netImpl.acceptStreamSocket(fd, newImpl, newPlainSocketImpl
+                        .getFileDescriptor(), receiveTimeout);
                 newPlainSocketImpl.setLocalport(getLocalPort());
             } else {
                 // if newImpl is not an instance of PlainSocketImpl, use
                 // reflection to get/set protected fields.
                 if (null == fdField) {
-                    fdField = getSocketImplField("fd"); // $NON-NLS-1$
+                    fdField = getSocketImplField("fd"); //$NON-NLS-1$
                 }
                 FileDescriptor newFd = (FileDescriptor) fdField.get(newImpl);
                 netImpl.acceptStreamSocket(fd, newImpl, newFd, receiveTimeout);
 
                 if (null == localportField) {
-                    localportField = getSocketImplField("localport"); // $NON-NLS-1$
+                    localportField = getSocketImplField("localport"); //$NON-NLS-1$
                 }
                 localportField.setInt(newImpl, getLocalPort());
             }
@@ -164,7 +164,8 @@ class PlainSocketImpl extends SocketImpl {
         if (0 != aPort) {
             localport = aPort;
         } else {
-            localport = netImpl.getSocketLocalPort(fd, NetUtil.preferIPv6Addresses());
+            localport = netImpl.getSocketLocalPort(fd, NetUtil
+                    .preferIPv6Addresses());
         }
     }
 
@@ -186,7 +187,8 @@ class PlainSocketImpl extends SocketImpl {
 
     @Override
     protected void connect(String aHost, int aPort) throws IOException {
-        InetAddress anAddr = netImpl.getHostByName(aHost, NetUtil.preferIPv6Addresses());
+        InetAddress anAddr = netImpl.getHostByName(aHost, NetUtil
+                .preferIPv6Addresses());
         connect(anAddr, aPort);
     }
 
@@ -198,13 +200,19 @@ class PlainSocketImpl extends SocketImpl {
     /**
      * Connects this socket to the specified remote host address/port.
      * 
-     * @param anAddr the remote host address to connect to
-     * @param aPort the remote port to connect to
-     * @param timeout a timeout where supported. 0 means no timeout
-     * @throws IOException if an error occurs while connecting
+     * @param anAddr
+     *            the remote host address to connect to
+     * @param aPort
+     *            the remote port to connect to
+     * @param timeout
+     *            a timeout where supported. 0 means no timeout
+     * @throws IOException
+     *             if an error occurs while connecting
      */
-    private void connect(InetAddress anAddr, int aPort, int timeout) throws IOException {
-        InetAddress address = anAddr.isAnyLocalAddress() ? InetAddress.getByName("localhost")
+    private void connect(InetAddress anAddr, int aPort, int timeout)
+            throws IOException {
+        InetAddress address = anAddr.isAnyLocalAddress() ? InetAddress
+                .getByName("localhost") //$NON-NLS-1$
                 : anAddr;
 
         try {
@@ -215,13 +223,14 @@ class PlainSocketImpl extends SocketImpl {
                     if (timeout == 0) {
                         netImpl.connect(fd, trafficClass, address, aPort);
                     } else {
-                        netImpl.connectStreamWithTimeoutSocket(fd, aPort, timeout,
-                                trafficClass, address);
+                        netImpl.connectStreamWithTimeoutSocket(fd, aPort,
+                                timeout, trafficClass, address);
                     }
                 }
             }
         } catch (ConnectException e) {
-            throw new ConnectException(anAddr + ":" + aPort + " - " + e.getMessage());
+            throw new ConnectException(anAddr + ":" + aPort + " - "
+                    + e.getMessage());
         }
         super.address = anAddr;
         super.port = aPort;
@@ -272,7 +281,7 @@ class PlainSocketImpl extends SocketImpl {
     @Override
     protected synchronized OutputStream getOutputStream() throws IOException {
         if (!fd.valid()) {
-            throw new SocketException(Msg.getString("K003d"));
+            throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
         }
         return new SocketOutputStream(this);
     }
@@ -347,27 +356,28 @@ class PlainSocketImpl extends SocketImpl {
             proxyName = addr.getAddress().getHostAddress();
         }
 
-        InetAddress anAddr = netImpl.getHostByName(proxyName, NetUtil.preferIPv6Addresses());
+        InetAddress anAddr = netImpl.getHostByName(proxyName, NetUtil
+                .preferIPv6Addresses());
         return anAddr;
     }
 
     /**
      * Connect using a SOCKS server.
      */
-    private void socksConnect(InetAddress applicationServerAddress, int applicationServerPort,
-            int timeout) throws IOException {
+    private void socksConnect(InetAddress applicationServerAddress,
+            int applicationServerPort, int timeout) throws IOException {
         try {
             if (timeout == 0) {
-                netImpl
-                        .connect(fd, trafficClass, socksGetServerAddress(),
-                                socksGetServerPort());
+                netImpl.connect(fd, trafficClass, socksGetServerAddress(),
+                        socksGetServerPort());
             } else {
-                netImpl.connectStreamWithTimeoutSocket(fd, socksGetServerPort(), timeout,
-                        trafficClass, socksGetServerAddress());
+                netImpl.connectStreamWithTimeoutSocket(fd,
+                        socksGetServerPort(), timeout, trafficClass,
+                        socksGetServerAddress());
             }
 
         } catch (Exception e) {
-            throw new SocketException(Msg.getString("K003e", e));
+            throw new SocketException(Msg.getString("K003e", e)); //$NON-NLS-1$
         }
 
         socksRequestConnection(applicationServerAddress, applicationServerPort);
@@ -382,11 +392,12 @@ class PlainSocketImpl extends SocketImpl {
      */
     private void socksRequestConnection(InetAddress applicationServerAddress,
             int applicationServerPort) throws IOException {
-        socksSendRequest(Socks4Message.COMMAND_CONNECT, applicationServerAddress,
-                applicationServerPort);
+        socksSendRequest(Socks4Message.COMMAND_CONNECT,
+                applicationServerAddress, applicationServerPort);
         Socks4Message reply = socksReadReply();
         if (reply.getCommandOrResult() != Socks4Message.RETURN_SUCCESS) {
-            throw new IOException(reply.getErrorString(reply.getCommandOrResult()));
+            throw new IOException(reply.getErrorString(reply
+                    .getCommandOrResult()));
         }
     }
 
@@ -396,7 +407,8 @@ class PlainSocketImpl extends SocketImpl {
     public void socksAccept() throws IOException {
         Socks4Message reply = socksReadReply();
         if (reply.getCommandOrResult() != Socks4Message.RETURN_SUCCESS) {
-            throw new IOException(reply.getErrorString(reply.getCommandOrResult()));
+            throw new IOException(reply.getErrorString(reply
+                    .getCommandOrResult()));
         }
     }
 
@@ -422,23 +434,26 @@ class PlainSocketImpl extends SocketImpl {
      */
     private void socksBind() throws IOException {
         try {
-            netImpl.connect(fd, trafficClass, socksGetServerAddress(), socksGetServerPort());
+            netImpl.connect(fd, trafficClass, socksGetServerAddress(),
+                    socksGetServerPort());
         } catch (Exception e) {
-            throw new IOException(Msg.getString("K003f", e));
+            throw new IOException(Msg.getString("K003f", e)); //$NON-NLS-1$
         }
 
         // There must be a connection to an application host for the bind to
         // work.
         if (lastConnectedAddress == null) {
-            throw new SocketException(Msg.getString("K0040"));
+            throw new SocketException(Msg.getString("K0040")); //$NON-NLS-1$
         }
 
         // Use the last connected address and port in the bind request.
-        socksSendRequest(Socks4Message.COMMAND_BIND, lastConnectedAddress, lastConnectedPort);
+        socksSendRequest(Socks4Message.COMMAND_BIND, lastConnectedAddress,
+                lastConnectedPort);
         Socks4Message reply = socksReadReply();
 
         if (reply.getCommandOrResult() != Socks4Message.RETURN_SUCCESS) {
-            throw new IOException(reply.getErrorString(reply.getCommandOrResult()));
+            throw new IOException(reply.getErrorString(reply
+                    .getCommandOrResult()));
         }
 
         // A peculiarity of socks 4 - if the address returned is 0, use the
@@ -465,7 +480,7 @@ class PlainSocketImpl extends SocketImpl {
         request.setCommandOrResult(command);
         request.setPort(port);
         request.setIP(address.getAddress());
-        request.setUserId("default");
+        request.setUserId("default"); //$NON-NLS-1$
 
         getOutputStream().write(request.getBytes(), 0, request.getLength());
     }
@@ -485,13 +500,14 @@ class PlainSocketImpl extends SocketImpl {
             bytesRead += count;
         }
         if (Socks4Message.REPLY_LENGTH != bytesRead) {
-            throw new SocketException(Msg.getString("KA011"));
+            throw new SocketException(Msg.getString("KA011")); //$NON-NLS-1$
         }
         return reply;
     }
 
     @Override
-    protected void connect(SocketAddress remoteAddr, int timeout) throws IOException {
+    protected void connect(SocketAddress remoteAddr, int timeout)
+            throws IOException {
         InetSocketAddress inetAddr = (InetSocketAddress) remoteAddr;
         connect(inetAddr.getAddress(), inetAddr.getPort(), timeout);
     }
@@ -522,7 +538,8 @@ class PlainSocketImpl extends SocketImpl {
             return -1;
         }
         try {
-            int read = netImpl.receiveStream(fd, buffer, offset, count, receiveTimeout);
+            int read = netImpl.receiveStream(fd, buffer, offset, count,
+                    receiveTimeout);
             if (read == -1) {
                 shutdownInput = true;
             }
@@ -534,7 +551,8 @@ class PlainSocketImpl extends SocketImpl {
 
     int write(byte[] buffer, int offset, int count) throws IOException {
         if (!streaming) {
-            return netImpl.sendDatagram2(fd, buffer, offset, count, port, address);
+            return netImpl.sendDatagram2(fd, buffer, offset, count, port,
+                    address);
         }
         return netImpl.sendStream(fd, buffer, offset, count);
     }

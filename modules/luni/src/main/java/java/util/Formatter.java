@@ -47,13 +47,14 @@ import java.text.NumberFormat;
  * 
  * The class is not multi-threaded safe. The responsibility to maintain thread
  * safety is the user's job.
+ * 
  * @since 1.5
  */
 public final class Formatter implements Closeable, Flushable {
 
     public enum BigDecimalLayoutForm {
         SCIENTIFIC, DECIMAL_FLOAT
-    };
+    }
 
     private Appendable out;
 
@@ -70,7 +71,6 @@ public final class Formatter implements Closeable, Flushable {
      * method and whose contents can be attained by calling the toString method.
      * 
      * The locale for the formatter is the default locale of the JVM.
-     * 
      */
     public Formatter() {
         this(new StringBuilder(), Locale.getDefault());
@@ -426,8 +426,8 @@ public final class Formatter implements Closeable, Flushable {
     }
 
     /**
-     * Flushes the formatter. If the output destination is {@link Flushable}, then the
-     * method flush() will be called on that destination.
+     * Flushes the formatter. If the output destination is {@link Flushable},
+     * then the method flush() will be called on that destination.
      * 
      * @throws FormatterClosedException
      *             If the formatter has been closed.
@@ -444,8 +444,8 @@ public final class Formatter implements Closeable, Flushable {
     }
 
     /**
-     * Closes the formatter. If the output destination is {@link Closeable}, then the
-     * method close() will be called on that destination.
+     * Closes the formatter. If the output destination is {@link Closeable},
+     * then the method close() will be called on that destination.
      * 
      * If the formatter has been closed, then calling the close will have no
      * effect.
@@ -503,8 +503,8 @@ public final class Formatter implements Closeable, Flushable {
      * 
      * @param l
      *            The locale used in the method. If locale is null, then no
-     *            localization will be applied. This parameter does not influence
-     *            the locale specified during construction.
+     *            localization will be applied. This parameter does not
+     *            influence the locale specified during construction.
      * @param format
      *            A format string.
      * @param args
@@ -606,7 +606,7 @@ public final class Formatter implements Closeable, Flushable {
         static final int LAST_ARGUMENT_INDEX = -2;
 
         static final int UNSET = -1;
-        
+
         static final int FLAGS_UNSET = 0;
 
         static final int DEFAULT_PRECISION = 6;
@@ -648,10 +648,11 @@ public final class Formatter implements Closeable, Flushable {
         boolean isPrecisionSet() {
             return precision != UNSET;
         }
-        
+
         boolean isWidthSet() {
             return width != UNSET;
         }
+
         boolean isFlagSet(int flag) {
             return 0 != (flags & flag);
         }
@@ -707,36 +708,36 @@ public final class Formatter implements Closeable, Flushable {
         boolean setFlag(char c) {
             int newFlag;
             switch (c) {
-            case '-': {
-                newFlag = FLAG_MINUS;
-                break;
-            }
-            case '#': {
-                newFlag = FLAG_SHARP;
-                break;
-            }
-            case '+': {
-                newFlag = FLAG_ADD;
-                break;
-            }
-            case ' ': {
-                newFlag = FLAG_SPACE;
-                break;
-            }
-            case '0': {
-                newFlag = FLAG_ZERO;
-                break;
-            }
-            case ',': {
-                newFlag = FLAG_COMMA;
-                break;
-            }
-            case '(': {
-                newFlag = FLAG_PARENTHESIS;
-                break;
-            }
-            default:
-                return false;
+                case '-': {
+                    newFlag = FLAG_MINUS;
+                    break;
+                }
+                case '#': {
+                    newFlag = FLAG_SHARP;
+                    break;
+                }
+                case '+': {
+                    newFlag = FLAG_ADD;
+                    break;
+                }
+                case ' ': {
+                    newFlag = FLAG_SPACE;
+                    break;
+                }
+                case '0': {
+                    newFlag = FLAG_ZERO;
+                    break;
+                }
+                case ',': {
+                    newFlag = FLAG_COMMA;
+                    break;
+                }
+                case '(': {
+                    newFlag = FLAG_PARENTHESIS;
+                    break;
+                }
+                default:
+                    return false;
             }
             if (0 != (flags & newFlag)) {
                 throw new DuplicateFormatFlagsException(String.valueOf(c));
@@ -821,8 +822,7 @@ public final class Formatter implements Closeable, Flushable {
          * Gets the formatted string according to the format token and the
          * argument.
          */
-        String transform(FormatToken token,
-                Object argument) {
+        String transform(FormatToken token, Object argument) {
 
             /* init data member to print */
             this.formatToken = token;
@@ -830,64 +830,64 @@ public final class Formatter implements Closeable, Flushable {
 
             String result;
             switch (token.getConversionType()) {
-            case 'B':
-            case 'b': {
-                result = transformFromBoolean();
-                break;
-            }
-            case 'H':
-            case 'h': {
-                result = transformFromHashCode();
-                break;
-            }
-            case 'S':
-            case 's': {
-                result = transformFromString();
-                break;
-            }
-            case 'C':
-            case 'c': {
-                result = transformFromCharacter();
-                break;
-            }
-            case 'd':
-            case 'o':
-            case 'x':
-            case 'X': {
-                if (null == arg || arg instanceof BigInteger) {
-                    result = transformFromBigInteger();
-                } else {
-                    result = transformFromInteger();
+                case 'B':
+                case 'b': {
+                    result = transformFromBoolean();
+                    break;
                 }
-                break;
-            }
-            case 'e':
-            case 'E':
-            case 'g':
-            case 'G':
-            case 'f':
-            case 'a':
-            case 'A': {
-                result = transformFromFloat();
-                break;
-            }
-            case '%': {
-                result = transformFromPercent();
-                break;
-            }
-            case 'n': {
-                result = transfromFromLineSeparator();
-                break;
-            }
-            case 't':
-            case 'T': {
-                result = transformFromDateTime();
-                break;
-            }
-            default: {
-                throw new UnknownFormatConversionException(String
-                        .valueOf(token.getConversionType()));
-            }
+                case 'H':
+                case 'h': {
+                    result = transformFromHashCode();
+                    break;
+                }
+                case 'S':
+                case 's': {
+                    result = transformFromString();
+                    break;
+                }
+                case 'C':
+                case 'c': {
+                    result = transformFromCharacter();
+                    break;
+                }
+                case 'd':
+                case 'o':
+                case 'x':
+                case 'X': {
+                    if (null == arg || arg instanceof BigInteger) {
+                        result = transformFromBigInteger();
+                    } else {
+                        result = transformFromInteger();
+                    }
+                    break;
+                }
+                case 'e':
+                case 'E':
+                case 'g':
+                case 'G':
+                case 'f':
+                case 'a':
+                case 'A': {
+                    result = transformFromFloat();
+                    break;
+                }
+                case '%': {
+                    result = transformFromPercent();
+                    break;
+                }
+                case 'n': {
+                    result = transfromFromLineSeparator();
+                    break;
+                }
+                case 't':
+                case 'T': {
+                    result = transformFromDateTime();
+                    break;
+                }
+                default: {
+                    throw new UnknownFormatConversionException(String
+                            .valueOf(token.getConversionType()));
+                }
             }
 
             if (Character.isUpperCase(token.getConversionType())) {
@@ -913,7 +913,8 @@ public final class Formatter implements Closeable, Flushable {
             }
 
             // only '-' is valid for flags
-            if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
+            if (FormatToken.FLAGS_UNSET != flags
+                    && FormatToken.FLAG_MINUS != flags) {
                 throw new FormatFlagsConversionMismatchException(formatToken
                         .getStrFlags(), formatToken.getConversionType());
             }
@@ -944,7 +945,8 @@ public final class Formatter implements Closeable, Flushable {
             }
 
             // only '-' is valid for flags
-            if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
+            if (FormatToken.FLAGS_UNSET != flags
+                    && FormatToken.FLAG_MINUS != flags) {
                 throw new FormatFlagsConversionMismatchException(formatToken
                         .getStrFlags(), formatToken.getConversionType());
             }
@@ -994,13 +996,13 @@ public final class Formatter implements Closeable, Flushable {
                 // returns null, which tells the Parser to add nothing to the
                 // output.
                 return null;
-            } 
+            }
             // only '-' is valid for flags if the argument is not an
             // instance of Formattable
-            if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
-                throw new FormatFlagsConversionMismatchException(
-                        formatToken.getStrFlags(), formatToken
-                                .getConversionType());
+            if (FormatToken.FLAGS_UNSET != flags
+                    && FormatToken.FLAG_MINUS != flags) {
+                throw new FormatFlagsConversionMismatchException(formatToken
+                        .getStrFlags(), formatToken.getConversionType());
             }
 
             result.append(arg);
@@ -1023,10 +1025,10 @@ public final class Formatter implements Closeable, Flushable {
             }
 
             // only '-' is valid for flags
-            if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
+            if (FormatToken.FLAGS_UNSET != flags
+                    && FormatToken.FLAG_MINUS != flags) {
                 throw new FormatFlagsConversionMismatchException(formatToken
-                        .getStrFlags(), formatToken
-                        .getConversionType());
+                        .getStrFlags(), formatToken.getConversionType());
             }
 
             if (formatToken.isPrecisionSet()) {
@@ -1041,7 +1043,7 @@ public final class Formatter implements Closeable, Flushable {
                     result.append(arg);
                 } else if (arg instanceof Byte) {
                     byte b = ((Byte) arg).byteValue();
-                    if(!Character.isValidCodePoint(b)){
+                    if (!Character.isValidCodePoint(b)) {
                         throw new IllegalFormatCodePointException(b);
                     }
                     result.append((char) b);
@@ -1056,8 +1058,7 @@ public final class Formatter implements Closeable, Flushable {
                     if (!Character.isValidCodePoint(codePoint)) {
                         throw new IllegalFormatCodePointException(codePoint);
                     }
-                        result.append(String.valueOf(Character
-                                .toChars(codePoint)));
+                    result.append(String.valueOf(Character.toChars(codePoint)));
                 } else {
                     // argument of other class is not acceptable.
                     throw new IllegalFormatConversionException(formatToken
@@ -1083,7 +1084,8 @@ public final class Formatter implements Closeable, Flushable {
                         + formatToken.getConversionType());
             }
 
-            if (FormatToken.FLAGS_UNSET != flags && FormatToken.FLAG_MINUS != flags) {
+            if (FormatToken.FLAGS_UNSET != flags
+                    && FormatToken.FLAG_MINUS != flags) {
                 throw new FormatFlagsConversionMismatchException(formatToken
                         .getStrFlags(), formatToken.getConversionType());
             }
@@ -1239,7 +1241,6 @@ public final class Formatter implements Closeable, Flushable {
                 throw new IllegalFormatFlagsException(formatToken.getStrFlags());
             }
 
-
             if (value < 0) {
                 isNegative = true;
             }
@@ -1253,9 +1254,9 @@ public final class Formatter implements Closeable, Flushable {
                 }
                 result.append(numberFormat.format(arg));
             } else {
-                long BYTE_MASK  = 0x00000000000000FFL;
+                long BYTE_MASK = 0x00000000000000FFL;
                 long SHORT_MASK = 0x000000000000FFFFL;
-                long INT_MASK   = 0x00000000FFFFFFFFL;
+                long INT_MASK = 0x00000000FFFFFFFFL;
                 if (isNegative) {
                     if (arg instanceof Byte) {
                         value &= BYTE_MASK;
@@ -1299,12 +1300,12 @@ public final class Formatter implements Closeable, Flushable {
 
         /*
          * add () to the output,if the value is negative and
-         * formatToken.FLAG_PARENTHESIS is set. 'result' is used as an
-         * in-out parameter. 
+         * formatToken.FLAG_PARENTHESIS is set. 'result' is used as an in-out
+         * parameter.
          */
         private StringBuilder wrapParentheses(StringBuilder result) {
             // delete the '-'
-            result.deleteCharAt(0); 
+            result.deleteCharAt(0);
             result.insert(0, '(');
             if (formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
                 formatToken.setWidth(formatToken.getWidth() - 1);
@@ -1384,9 +1385,9 @@ public final class Formatter implements Closeable, Flushable {
                     && formatToken.isFlagSet(FormatToken.FLAG_SPACE)) {
                 throw new IllegalFormatFlagsException(formatToken.getStrFlags());
             }
-            
+
             // Combination of '-' & '0' is illegal.
-            if(formatToken.isFlagSet(FormatToken.FLAG_ZERO)
+            if (formatToken.isFlagSet(FormatToken.FLAG_ZERO)
                     && formatToken.isFlagSet(FormatToken.FLAG_MINUS)) {
                 throw new IllegalFormatFlagsException(formatToken.getStrFlags());
             }
@@ -1416,7 +1417,8 @@ public final class Formatter implements Closeable, Flushable {
 
             if ('d' == currentConversionType) {
                 NumberFormat numberFormat = getNumberFormat();
-                boolean readableName = formatToken.isFlagSet(FormatToken.FLAG_COMMA); 
+                boolean readableName = formatToken
+                        .isFlagSet(FormatToken.FLAG_COMMA);
                 numberFormat.setGroupingUsed(readableName);
                 result.append(numberFormat.format(bigInt));
             } else if ('o' == currentConversionType) {
@@ -1431,8 +1433,8 @@ public final class Formatter implements Closeable, Flushable {
                 if ('o' == currentConversionType) {
                     result.insert(startIndex, "0"); //$NON-NLS-1$
                     startIndex += 1;
-                } else if( 'x' == currentConversionType ||
-                        'X' == currentConversionType){
+                } else if ('x' == currentConversionType
+                        || 'X' == currentConversionType) {
                     result.insert(startIndex, "0x"); //$NON-NLS-1$
                     startIndex += 2;
                 }
@@ -1470,7 +1472,8 @@ public final class Formatter implements Closeable, Flushable {
             int startIndex = 0;
             char currentConversionType = formatToken.getConversionType();
 
-            if (formatToken.isFlagSet(FormatToken.FLAG_MINUS | FormatToken.FLAG_ZERO)) {
+            if (formatToken.isFlagSet(FormatToken.FLAG_MINUS
+                    | FormatToken.FLAG_ZERO)) {
                 if (!formatToken.isWidthSet()) {
                     throw new MissingFormatWidthException(formatToken
                             .getStrFlags());
@@ -1598,11 +1601,12 @@ public final class Formatter implements Closeable, Flushable {
             } else {
                 Date date = null;
                 if (arg instanceof Long) {
-                    date = new Date(((Long)arg).longValue());
+                    date = new Date(((Long) arg).longValue());
                 } else if (arg instanceof Date) {
                     date = (Date) arg;
                 } else {
-                    throw new IllegalFormatConversionException(currentConversionType, arg.getClass());
+                    throw new IllegalFormatConversionException(
+                            currentConversionType, arg.getClass());
                 }
                 calendar = Calendar.getInstance(locale);
                 calendar.setTime(date);
@@ -1617,7 +1621,7 @@ public final class Formatter implements Closeable, Flushable {
             return padding(result, startIndex);
         }
     }
-    
+
     private static class FloatUtil {
         private StringBuilder result;
 
@@ -1638,34 +1642,34 @@ public final class Formatter implements Closeable, Flushable {
             this.minusSign = decimalFormat.getDecimalFormatSymbols()
                     .getMinusSign();
         }
-        
+
         void transform(FormatToken aFormatToken, StringBuilder aResult) {
             this.result = aResult;
             this.formatToken = aFormatToken;
             switch (formatToken.getConversionType()) {
-            case 'e':
-            case 'E': {
-                transform_e();
-                break;
-            }
-            case 'f': {
-                transform_f();
-                break;
-            }
-            case 'g':
-            case 'G': {
-                transform_g();
-                break;
-            }
-            case 'a':
-            case 'A': {
-                transform_a();
-                break;
-            }
-            default: {
-                throw new UnknownFormatConversionException(String
-                        .valueOf(formatToken.getConversionType()));
-            }
+                case 'e':
+                case 'E': {
+                    transform_e();
+                    break;
+                }
+                case 'f': {
+                    transform_f();
+                    break;
+                }
+                case 'g':
+                case 'G': {
+                    transform_g();
+                    break;
+                }
+                case 'a':
+                case 'A': {
+                    transform_a();
+                    break;
+                }
+                default: {
+                    throw new UnknownFormatConversionException(String
+                            .valueOf(formatToken.getConversionType()));
+                }
             }
         }
 
@@ -1807,7 +1811,8 @@ public final class Formatter implements Closeable, Flushable {
                 result.append(Double.toHexString(D.doubleValue()));
             } else {
                 // BigInteger is not supported.
-                throw new IllegalFormatConversionException(currentConversionType, argument.getClass());
+                throw new IllegalFormatConversionException(
+                        currentConversionType, argument.getClass());
             }
 
             if (!formatToken.isPrecisionSet()) {
@@ -1830,9 +1835,7 @@ public final class Formatter implements Closeable, Flushable {
                 result.insert(indexOfP, zeros);
                 return;
             }
-            result
-                    .delete(indexOfFirstFracitoanlDigit + precision,
-                            indexOfP);
+            result.delete(indexOfFirstFracitoanlDigit + precision, indexOfP);
         }
     }
 
@@ -1856,133 +1859,133 @@ public final class Formatter implements Closeable, Flushable {
             char suffix = formatToken.getDateSuffix();
 
             switch (suffix) {
-            case 'H': {
-                transform_H();
-                break;
-            }
-            case 'I': {
-                transform_I();
-                break;
-            }
-            case 'M': {
-                transform_M();
-                break;
-            }
-            case 'S': {
-                transform_S();
-                break;
-            }
-            case 'L': {
-                transform_L();
-                break;
-            }
-            case 'N': {
-                transform_N();
-                break;
-            }
-            case 'k': {
-                transform_k();
-                break;
-            }
-            case 'l': {
-                transform_l();
-                break;
-            }
-            case 'p': {
-                transform_p(true);
-                break;
-            }
-            case 's': {
-                transform_s();
-                break;
-            }
-            case 'z': {
-                transform_z();
-                break;
-            }
-            case 'Z': {
-                transform_Z();
-                break;
-            }
-            case 'Q': {
-                transform_Q();
-                break;
-            }
-            case 'B': {
-                transform_B();
-                break;
-            }
-            case 'b':
-            case 'h': {
-                transform_b();
-                break;
-            }
-            case 'A': {
-                transform_A();
-                break;
-            }
-            case 'a': {
-                transform_a();
-                break;
-            }
-            case 'C': {
-                transform_C();
-                break;
-            }
-            case 'Y': {
-                transform_Y();
-                break;
-            }
-            case 'y': {
-                transform_y();
-                break;
-            }
-            case 'j': {
-                transform_j();
-                break;
-            }
-            case 'm': {
-                transform_m();
-                break;
-            }
-            case 'd': {
-                transform_d();
-                break;
-            }
-            case 'e': {
-                transform_e();
-                break;
-            }
-            case 'R': {
-                transform_R();
-                break;
-            }
+                case 'H': {
+                    transform_H();
+                    break;
+                }
+                case 'I': {
+                    transform_I();
+                    break;
+                }
+                case 'M': {
+                    transform_M();
+                    break;
+                }
+                case 'S': {
+                    transform_S();
+                    break;
+                }
+                case 'L': {
+                    transform_L();
+                    break;
+                }
+                case 'N': {
+                    transform_N();
+                    break;
+                }
+                case 'k': {
+                    transform_k();
+                    break;
+                }
+                case 'l': {
+                    transform_l();
+                    break;
+                }
+                case 'p': {
+                    transform_p(true);
+                    break;
+                }
+                case 's': {
+                    transform_s();
+                    break;
+                }
+                case 'z': {
+                    transform_z();
+                    break;
+                }
+                case 'Z': {
+                    transform_Z();
+                    break;
+                }
+                case 'Q': {
+                    transform_Q();
+                    break;
+                }
+                case 'B': {
+                    transform_B();
+                    break;
+                }
+                case 'b':
+                case 'h': {
+                    transform_b();
+                    break;
+                }
+                case 'A': {
+                    transform_A();
+                    break;
+                }
+                case 'a': {
+                    transform_a();
+                    break;
+                }
+                case 'C': {
+                    transform_C();
+                    break;
+                }
+                case 'Y': {
+                    transform_Y();
+                    break;
+                }
+                case 'y': {
+                    transform_y();
+                    break;
+                }
+                case 'j': {
+                    transform_j();
+                    break;
+                }
+                case 'm': {
+                    transform_m();
+                    break;
+                }
+                case 'd': {
+                    transform_d();
+                    break;
+                }
+                case 'e': {
+                    transform_e();
+                    break;
+                }
+                case 'R': {
+                    transform_R();
+                    break;
+                }
 
-            case 'T': {
-                transform_T();
-                break;
-            }
-            case 'r': {
-                transform_r();
-                break;
-            }
-            case 'D': {
-                transform_D();
-                break;
-            }
-            case 'F': {
-                transform_F();
-                break;
-            }
-            case 'c': {
-                transform_c();
-                break;
-            }
-            default: {
-                throw new UnknownFormatConversionException(String
-                        .valueOf(formatToken.getConversionType())
-                        + formatToken.getDateSuffix());
-            }
+                case 'T': {
+                    transform_T();
+                    break;
+                }
+                case 'r': {
+                    transform_r();
+                    break;
+                }
+                case 'D': {
+                    transform_D();
+                    break;
+                }
+                case 'F': {
+                    transform_F();
+                    break;
+                }
+                case 'c': {
+                    transform_c();
+                    break;
+                }
+                default: {
+                    throw new UnknownFormatConversionException(String
+                            .valueOf(formatToken.getConversionType())
+                            + formatToken.getDateSuffix());
+                }
             }
         }
 
@@ -2271,41 +2274,41 @@ public final class Formatter implements Closeable, Flushable {
                 }
 
                 switch (state) {
-                // exit state
-                case ParserStateMachine.EXIT_STATE: {
-                    process_EXIT_STATE();
-                    return token;
-                }
-                    // plain text state, not yet applied converter
-                case ParserStateMachine.ENTRY_STATE: {
-                    process_ENTRY_STATE();
-                    break;
-                }
-                    // begins converted string
-                case ParserStateMachine.START_CONVERSION_STATE: {
-                    process_START_CONVERSION_STATE();
-                    break;
-                }
-                case ParserStateMachine.FLAGS_STATE: {
-                    process_FlAGS_STATE();
-                    break;
-                }
-                case ParserStateMachine.WIDTH_STATE: {
-                    process_WIDTH_STATE();
-                    break;
-                }
-                case ParserStateMachine.PRECISION_STATE: {
-                    process_PRECISION_STATE();
-                    break;
-                }
-                case ParserStateMachine.CONVERSION_TYPE_STATE: {
-                    process_CONVERSION_TYPE_STATE();
-                    break;
-                }
-                case ParserStateMachine.SUFFIX_STATE: {
-                    process_SUFFIX_STATE();
-                    break;
-                }
+                    // exit state
+                    case ParserStateMachine.EXIT_STATE: {
+                        process_EXIT_STATE();
+                        return token;
+                    }
+                        // plain text state, not yet applied converter
+                    case ParserStateMachine.ENTRY_STATE: {
+                        process_ENTRY_STATE();
+                        break;
+                    }
+                        // begins converted string
+                    case ParserStateMachine.START_CONVERSION_STATE: {
+                        process_START_CONVERSION_STATE();
+                        break;
+                    }
+                    case ParserStateMachine.FLAGS_STATE: {
+                        process_FlAGS_STATE();
+                        break;
+                    }
+                    case ParserStateMachine.WIDTH_STATE: {
+                        process_WIDTH_STATE();
+                        break;
+                    }
+                    case ParserStateMachine.PRECISION_STATE: {
+                        process_PRECISION_STATE();
+                        break;
+                    }
+                    case ParserStateMachine.CONVERSION_TYPE_STATE: {
+                        process_CONVERSION_TYPE_STATE();
+                        break;
+                    }
+                    case ParserStateMachine.SUFFIX_STATE: {
+                        process_SUFFIX_STATE();
+                        break;
+                    }
                 }
             }
         }

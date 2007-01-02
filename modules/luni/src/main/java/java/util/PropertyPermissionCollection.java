@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,12 +28,13 @@ import java.security.PermissionCollection;
  * A PermissionCollection for holding PropertyPermissions.
  */
 class PropertyPermissionCollection extends PermissionCollection {
-	
-	private static final long serialVersionUID = 7015263904581634791L;
 
-	Hashtable<String, Permission> permissions = new Hashtable<String, Permission>(30);
+    private static final long serialVersionUID = 7015263904581634791L;
 
-	@Override
+    Hashtable<String, Permission> permissions = new Hashtable<String, Permission>(
+            30);
+
+    @Override
     public void add(Permission perm) {
         if (!isReadOnly()) {
             Permission prev = permissions.put(perm.getName(), perm);
@@ -44,52 +44,53 @@ class PropertyPermissionCollection extends PermissionCollection {
              */
             if (prev != null && !prev.getActions().equals(perm.getActions())) {
                 Permission np = new PropertyPermission(perm.getName(),
-                        "read,write");
-                permissions.put(perm.getName(), np); 
+                        "read,write"); //$NON-NLS-1$
+                permissions.put(perm.getName(), np);
             }
         } else {
             throw new IllegalStateException();
         }
     }
 
-	@Override
+    @Override
     public Enumeration<Permission> elements() {
-		return permissions.elements();
-	}
+        return permissions.elements();
+    }
 
-	@Override
+    @Override
     public boolean implies(Permission perm) {
-		Enumeration<Permission> elemEnum = elements();
-		while (elemEnum.hasMoreElements()) {
+        Enumeration<Permission> elemEnum = elements();
+        while (elemEnum.hasMoreElements()) {
             if ((elemEnum.nextElement()).implies(perm)) {
                 return true;
             }
         }
-		/*
+        /*
          * At this point, the only way it can succeed is if both read and write
          * are set, and these are separately granted by two different
          * permissions with one representing a parent directory.
          */
-		return perm.getActions().equals("read,write") //$NON-NLS-1$
-				&& implies(new PropertyPermission(perm.getName(), "read")) //$NON-NLS-1$
-				&& implies(new PropertyPermission(perm.getName(), "write")); //$NON-NLS-1$
-	}
+        return perm.getActions().equals("read,write") //$NON-NLS-1$
+                && implies(new PropertyPermission(perm.getName(), "read")) //$NON-NLS-1$
+                && implies(new PropertyPermission(perm.getName(), "write")); //$NON-NLS-1$
+    }
 
-	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("permissions", Hashtable.class), //$NON-NLS-1$
-			new ObjectStreamField("all_allowed", Boolean.TYPE) }; //$NON-NLS-1$
+    private static final ObjectStreamField[] serialPersistentFields = {
+            new ObjectStreamField("permissions", Hashtable.class), //$NON-NLS-1$
+            new ObjectStreamField("all_allowed", Boolean.TYPE) }; //$NON-NLS-1$
 
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		ObjectOutputStream.PutField fields = stream.putFields();
-		fields.put("permissions", permissions); //$NON-NLS-1$
-		fields.put("all_allowed", false); //$NON-NLS-1$
-		stream.writeFields();
-	}
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("permissions", permissions); //$NON-NLS-1$
+        fields.put("all_allowed", false); //$NON-NLS-1$
+        stream.writeFields();
+    }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException,
-			ClassNotFoundException {
-		ObjectInputStream.GetField fields = stream.readFields();
-		permissions = (Hashtable<String, Permission>) fields.get("permissions", null); //$NON-NLS-1$
-	}
+            ClassNotFoundException {
+        ObjectInputStream.GetField fields = stream.readFields();
+        permissions = (Hashtable<String, Permission>) fields.get(
+                "permissions", null); //$NON-NLS-1$
+    }
 }

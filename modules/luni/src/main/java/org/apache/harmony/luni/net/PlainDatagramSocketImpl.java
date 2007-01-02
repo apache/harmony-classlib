@@ -114,8 +114,8 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     @Override
     public void bind(int port, InetAddress addr) throws SocketException {
-        String prop = AccessController.doPrivileged(new PriviAction<String>("bindToDevice"));
-        boolean useBindToDevice = prop != null && prop.toLowerCase().equals("true");
+        String prop = AccessController.doPrivileged(new PriviAction<String>("bindToDevice")); //$NON-NLS-1$
+        boolean useBindToDevice = prop != null && prop.toLowerCase().equals("true"); //$NON-NLS-1$
         bindToDevice = netImpl.bind2(fd, port, useBindToDevice, addr);
         if (0 != port) {
             localPort = port;

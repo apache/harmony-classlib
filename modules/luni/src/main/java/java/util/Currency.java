@@ -17,8 +17,9 @@
 
 package java.util;
 
-
 import java.io.Serializable;
+
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class represents a currency as identified in the ISO 4217 currency
@@ -26,101 +27,102 @@ import java.io.Serializable;
  */
 public final class Currency implements Serializable {
 
-	private static final long serialVersionUID = -158308464356906721L;
+    private static final long serialVersionUID = -158308464356906721L;
 
-	private static Hashtable<String,Currency> codesToCurrencies = new Hashtable<String,Currency>();
+    private static Hashtable<String, Currency> codesToCurrencies = new Hashtable<String, Currency>();
 
-	private String currencyCode;
+    private String currencyCode;
 
-	private static String currencyVars = "EURO, HK, PREEURO"; //$NON-NLS-1$
+    private static String currencyVars = "EURO, HK, PREEURO"; //$NON-NLS-1$
 
-	private transient int defaultFractionDigits;
+    private transient int defaultFractionDigits;
 
-	/**
-	 * @param currencyCode
-	 */
-	private Currency(String currencyCode) {
-		this.currencyCode = currencyCode;
-	}
+    /**
+     * @param currencyCode
+     */
+    private Currency(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
 
-	/**
-	 * Answers the currency instance for this currency code.
-	 * <p>
-	 * 
-	 * @param currencyCode
-	 *            java.lang.String
-	 * @return currency java.util.Currency
-	 * 
-	 * @throws java.lang.IllegalArgumentException
-	 *             if the currency code is not a supported ISO 4217 currency
-	 *             code
-	 */
-	public static Currency getInstance(String currencyCode) {
-		Currency currency = codesToCurrencies.get(currencyCode);
+    /**
+     * Answers the currency instance for this currency code.
+     * <p>
+     * 
+     * @param currencyCode
+     *            java.lang.String
+     * @return currency java.util.Currency
+     * 
+     * @throws java.lang.IllegalArgumentException
+     *             if the currency code is not a supported ISO 4217 currency
+     *             code
+     */
+    public static Currency getInstance(String currencyCode) {
+        Currency currency = codesToCurrencies.get(currencyCode);
 
-		if (currency == null) {
-			ResourceBundle bundle = Locale.getBundle(
-					"ISO4CurrenciesToDigits", Locale.getDefault()); //$NON-NLS-1$
-			currency = new Currency(currencyCode);
+        if (currency == null) {
+            ResourceBundle bundle = Locale.getBundle(
+                    "ISO4CurrenciesToDigits", Locale.getDefault()); //$NON-NLS-1$
+            currency = new Currency(currencyCode);
 
-			String defaultFractionDigits = null;
-			try {
-				defaultFractionDigits = bundle.getString(currencyCode);
-			} catch (MissingResourceException e) {
-				throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-						.getString("K0322", currencyCode)); //$NON-NLS-1$
-			}
-			currency.defaultFractionDigits = Integer
-					.parseInt(defaultFractionDigits);
-			codesToCurrencies.put(currencyCode, currency);
-		}
+            String defaultFractionDigits = null;
+            try {
+                defaultFractionDigits = bundle.getString(currencyCode);
+            } catch (MissingResourceException e) {
+                throw new IllegalArgumentException(
+                        org.apache.harmony.luni.util.Msg.getString(
+                                "K0322", currencyCode)); //$NON-NLS-1$
+            }
+            currency.defaultFractionDigits = Integer
+                    .parseInt(defaultFractionDigits);
+            codesToCurrencies.put(currencyCode, currency);
+        }
 
-		return currency;
-	}
+        return currency;
+    }
 
-	/***************************************************************************
-	 * Answers the currency instance for this locale.
-	 * 
-	 * @param locale
-	 *            java.util.Locale
-	 * @return currency java.util.Currency
-	 * 
-	 * @throws java.lang.IllegalArgumentException
-	 *             if the locale's country is not a supported ISO 3166 Country
-	 */
-	public static Currency getInstance(Locale locale) {
-		String country = locale.getCountry();
-		String variant = locale.getVariant();
-		if (!variant.equals("") && currencyVars.indexOf(variant) > -1) {
+    /***************************************************************************
+     * Answers the currency instance for this locale.
+     * 
+     * @param locale
+     *            java.util.Locale
+     * @return currency java.util.Currency
+     * 
+     * @throws java.lang.IllegalArgumentException
+     *             if the locale's country is not a supported ISO 3166 Country
+     */
+    public static Currency getInstance(Locale locale) {
+        String country = locale.getCountry();
+        String variant = locale.getVariant();
+        if (!variant.equals("") && currencyVars.indexOf(variant) > -1) { //$NON-NLS-1$
             country = country + "_" + variant; //$NON-NLS-1$
         }
 
-		ResourceBundle bundle = Locale.getBundle(
-				"ISO4Currencies", Locale.getDefault()); //$NON-NLS-1$
-		String currencyCode = null;
-		try {
-			currencyCode = bundle.getString(country);
-		} catch (MissingResourceException e) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K0323", locale.toString())); //$NON-NLS-1$
-		}
+        ResourceBundle bundle = Locale.getBundle(
+                "ISO4Currencies", Locale.getDefault()); //$NON-NLS-1$
+        String currencyCode = null;
+        try {
+            currencyCode = bundle.getString(country);
+        } catch (MissingResourceException e) {
+            throw new IllegalArgumentException(Msg.getString(
+                    "K0323", locale.toString())); //$NON-NLS-1$
+        }
 
-		if (currencyCode.equals("None")) {
+        if (currencyCode.equals("None")) { //$NON-NLS-1$
             return null;
         }
 
-		return getInstance(currencyCode);
-	}
+        return getInstance(currencyCode);
+    }
 
     /**
      * Answers this currency's ISO 4217 currency code.
      * 
      * @return this currency's ISO 4217 currency code
      */
-	public String getCurrencyCode() {
-		return currencyCode;
-	}
-    
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
     /**
      * Answers the symbol for this currency in the default locale. For instance,
      * if the default locale is the US, the symbol of the US dollar is "$". For
@@ -129,66 +131,67 @@ public final class Currency implements Serializable {
      * 
      * @return the symbol for this currency in the default locale
      */
-	public String getSymbol() {
-		return getSymbol(Locale.getDefault());
-	}
+    public String getSymbol() {
+        return getSymbol(Locale.getDefault());
+    }
 
-	/***************************************************************************
-	 * Return the symbol for this currency in the given locale.
-	 * <p>
-	 * 
-	 * If the locale doesn't have any countries (e.g.
-	 * <code>Locale.JAPANESE, new Locale("en","")</code>), currencyCode is
-	 * returned.
-	 * <p>
-	 * First the locale bundle is checked, if the locale has the same currency,
-	 * the CurrencySymbol in this locale bundle is returned.
-	 * <p>
-	 * Then a currency bundle for this locale is searched.
-	 * <p>
-	 * If a currency bundle for this locale does not exist, or there is no
-	 * symbol for this currency in this bundle, than <code>currencyCode</code>
-	 * is returned.
-	 * <p>
-	 * 
-	 * @param locale
-	 *            java.lang.String locale
-	 * @return symbol java.lang.String the representation of this Currency's
-	 *         symbol in this locale
-	 */
-	public String getSymbol(Locale locale) {
-		if (locale.getCountry().equals("")) {
+    /**
+     * Return the symbol for this currency in the given locale.
+     * <p>
+     * 
+     * If the locale doesn't have any countries (e.g.
+     * <code>Locale.JAPANESE, new Locale("en","")</code>), currencyCode is
+     * returned.
+     * <p>
+     * First the locale bundle is checked, if the locale has the same currency,
+     * the CurrencySymbol in this locale bundle is returned.
+     * <p>
+     * Then a currency bundle for this locale is searched.
+     * <p>
+     * If a currency bundle for this locale does not exist, or there is no
+     * symbol for this currency in this bundle, than <code>currencyCode</code>
+     * is returned.
+     * <p>
+     * 
+     * @param locale
+     *            java.lang.String locale
+     * @return symbol java.lang.String the representation of this Currency's
+     *         symbol in this locale
+     */
+    public String getSymbol(Locale locale) {
+        if (locale.getCountry().equals("")) { //$NON-NLS-1$
             return currencyCode;
         }
 
-		// check in the Locale bundle first, if the local has the same currency
-		ResourceBundle bundle = Locale.getBundle("Locale", locale); //$NON-NLS-1$
-		if (((String) bundle.getObject("IntCurrencySymbol")).equals(currencyCode)) {
+        // check in the Locale bundle first, if the local has the same currency
+        ResourceBundle bundle = Locale.getBundle("Locale", locale); //$NON-NLS-1$
+        if (((String) bundle.getObject("IntCurrencySymbol")) //$NON-NLS-1$
+                .equals(currencyCode)) {
             return (String) bundle.getObject("CurrencySymbol"); //$NON-NLS-1$
         }
 
-		// search for a Currency bundle
-		bundle = null;
-		try {
-			bundle = Locale.getBundle("Currency", locale); //$NON-NLS-1$
-		} catch (MissingResourceException e) {
-			return currencyCode;
-		}
-
-		// is the bundle found for a different country? (for instance the
-		// default locale's currency bundle)
-		if (!bundle.getLocale().getCountry().equals(locale.getCountry())) {
+        // search for a Currency bundle
+        bundle = null;
+        try {
+            bundle = Locale.getBundle("Currency", locale); //$NON-NLS-1$
+        } catch (MissingResourceException e) {
             return currencyCode;
         }
 
-		// check if the currency bundle for this locale
-		// has an entry for this currency
-		String result = (String) bundle.handleGetObject(currencyCode);
-		if (result != null) {
+        // is the bundle found for a different country? (for instance the
+        // default locale's currency bundle)
+        if (!bundle.getLocale().getCountry().equals(locale.getCountry())) {
+            return currencyCode;
+        }
+
+        // check if the currency bundle for this locale
+        // has an entry for this currency
+        String result = (String) bundle.handleGetObject(currencyCode);
+        if (result != null) {
             return result;
         }
         return currencyCode;
-	}
+    }
 
     /**
      * Answers the default number of fraction digits for this currency. For
@@ -198,21 +201,21 @@ public final class Currency implements Serializable {
      * 
      * @return the default number of fraction digits for this currency
      */
-	public int getDefaultFractionDigits() {
-		return defaultFractionDigits;
-	}
+    public int getDefaultFractionDigits() {
+        return defaultFractionDigits;
+    }
 
     /**
      * Answers this currency's ISO 4217 currency code.
      * 
      * @return this currency's ISO 4217 currency code
      */
-	@Override
+    @Override
     public String toString() {
-		return currencyCode;
-	}
+        return currencyCode;
+    }
 
-	private Object readResolve() {
-		return getInstance(currencyCode);
-	}
+    private Object readResolve() {
+        return getInstance(currencyCode);
+    }
 }

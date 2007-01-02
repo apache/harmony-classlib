@@ -172,7 +172,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
 
         byte[] hash;
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
             hash = md.digest(name);
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError(e);

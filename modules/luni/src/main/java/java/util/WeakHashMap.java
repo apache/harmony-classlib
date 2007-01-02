@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference;
  * The key/value mapping is removed when the key is no longer referenced. All
  * optional operations are supported, adding and removing. Keys and values can
  * be any objects.
+ * 
  * @since 1.2
  * @see HashMap
  * @see WeakReference
@@ -32,7 +33,7 @@ import java.lang.ref.WeakReference;
 public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_SIZE = 16;
-    
+
     private final ReferenceQueue<K> referenceQueue;
 
     int elementCount;
@@ -44,8 +45,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     private int threshold;
 
     volatile int modCount;
-    
-    //Simple utility method to isolate unchecked cast for array creation
+
+    // Simple utility method to isolate unchecked cast for array creation
     @SuppressWarnings("unchecked")
     private static <K, V> Entry<K, V>[] newEntryArray(int size) {
         return new Entry[size];
@@ -106,7 +107,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
         @Override
         public String toString() {
-            return super.get() + "=" + value;
+            return super.get() + "=" + value; //$NON-NLS-1$
         }
     }
 
@@ -245,11 +246,11 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     }
 
     /**
-	 * Removes all mappings from this WeakHashMap, leaving it empty.
-	 * 
-	 * @see #isEmpty
-	 * @see #size
-	 */
+     * Removes all mappings from this WeakHashMap, leaving it empty.
+     * 
+     * @see #isEmpty
+     * @see #size
+     */
     @Override
     public void clear() {
         if (elementCount > 0) {
@@ -304,7 +305,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
             @Override
             public boolean remove(Object object) {
                 if (contains(object)) {
-                    WeakHashMap.this.remove(((Map.Entry) object).getKey());
+                    WeakHashMap.this
+                            .remove(((Map.Entry<?, ?>) object).getKey());
                     return true;
                 }
                 return false;
@@ -313,7 +315,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
             @Override
             public boolean contains(Object object) {
                 if (object instanceof Map.Entry) {
-                    Entry<?, ?> entry = getEntry(((Map.Entry) object).getKey());
+                    Entry<?, ?> entry = getEntry(((Map.Entry<?, ?>) object)
+                            .getKey());
                     if (entry != null) {
                         Object key = entry.get();
                         if (key != null || entry.isNull) {
@@ -326,11 +329,12 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
             @Override
             public Iterator<Map.Entry<K, V>> iterator() {
-                return new HashIterator<Map.Entry<K, V>>(new Entry.Type<Map.Entry<K, V>, K, V>() {
-                    public Map.Entry<K, V> get(Map.Entry<K, V> entry) {
-                        return entry;
-                    }
-                });
+                return new HashIterator<Map.Entry<K, V>>(
+                        new Entry.Type<Map.Entry<K, V>, K, V>() {
+                            public Map.Entry<K, V> get(Map.Entry<K, V> entry) {
+                                return entry;
+                            }
+                        });
             }
         };
     }
@@ -532,8 +536,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @SuppressWarnings("unchecked")
     void poll() {
         Entry<K, V> toRemove;
-        while ((toRemove = (Entry<K, V>)referenceQueue.poll()) != null) {
-                removeEntry(toRemove);
+        while ((toRemove = (Entry<K, V>) referenceQueue.poll()) != null) {
+            removeEntry(toRemove);
         }
     }
 
@@ -573,7 +577,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         poll();
         int index = 0;
-        Entry<K,V> entry;
+        Entry<K, V> entry;
         if (key != null) {
             index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
             entry = elementData[index];
@@ -623,7 +627,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         elementData = newData;
         computeMaxSize();
     }
-    
+
     /**
      * Copies all the mappings in the given map to this map. These mappings will
      * replace all mappings that this map had for any of the keys currently in
@@ -689,7 +693,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         poll();
         return elementCount;
     }
-    
+
     private void putAllImpl(Map<? extends K, ? extends V> map) {
         if (map.entrySet() != null) {
             super.putAll(map);

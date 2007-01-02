@@ -19,8 +19,9 @@ package java.util;
 
 /**
  * AbstractMap is an abstract implementation of the Map interface. This
- * Implementation does not support adding. A subclass must implement the abstract
- * method entrySet().
+ * Implementation does not support adding. A subclass must implement the
+ * abstract method entrySet().
+ * 
  * @since 1.2
  */
 public abstract class AbstractMap<K, V> implements Map<K, V> {
@@ -29,7 +30,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     Set<K> keySet;
 
     Collection<V> valuesCollection;
-    
+
     /**
      * Constructs a new instance of this AbstractMap.
      */
@@ -131,7 +132,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             return true;
         }
         if (object instanceof Map) {
-            Map<?, ?> map = (Map) object;
+            Map<?, ?> map = (Map<?, ?>) object;
             if (size() != map.size()) {
                 return false;
             }
@@ -367,7 +368,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             } else {
                 buffer.append("(this Map)"); //$NON-NLS-1$
             }
-            if(it.hasNext()) {
+            if (it.hasNext()) {
                 buffer.append(", "); //$NON-NLS-1$
             }
         }
@@ -411,7 +412,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                 @Override
                 public Iterator<V> iterator() {
                     return new Iterator<V>() {
-                        Iterator<Map.Entry<K, V>> setIterator = entrySet().iterator();
+                        Iterator<Map.Entry<K, V>> setIterator = entrySet()
+                                .iterator();
 
                         public boolean hasNext() {
                             return setIterator.hasNext();

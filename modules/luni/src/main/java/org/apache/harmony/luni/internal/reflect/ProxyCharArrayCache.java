@@ -97,7 +97,8 @@ class ProxyCharArrayCache {
     }
 
     private void rehash() {
-        ProxyCharArrayCache newHashtable = new ProxyCharArrayCache(keyTable.length * 2);
+        ProxyCharArrayCache newHashtable = new ProxyCharArrayCache(
+                keyTable.length * 2);
         for (int i = keyTable.length; --i >= 0;) {
             if (keyTable[i] != null) {
                 newHashtable.put(keyTable[i], valueTable[i]);
@@ -117,16 +118,16 @@ class ProxyCharArrayCache {
     public String toString() {
         int max = size();
         StringBuilder buf = new StringBuilder();
-        buf.append("{");
+        buf.append("{"); //$NON-NLS-1$
         for (int i = 0; i < max; ++i) {
             if (keyTable[i] != null) {
-                buf.append(keyTable[i]).append("->").append(valueTable[i]);
+                buf.append(keyTable[i]).append("->").append(valueTable[i]); //$NON-NLS-1$
             }
             if (i < max) {
-                buf.append(", ");
+                buf.append(", "); //$NON-NLS-1$
             }
         }
-        buf.append("}");
+        buf.append("}"); //$NON-NLS-1$
         return buf.toString();
     }
 }
