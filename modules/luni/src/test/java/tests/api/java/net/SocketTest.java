@@ -241,7 +241,6 @@ public class SocketTest extends SocketTestCase {
 		assertTrue("Failed to create socket", s.getPort() == sport);
 
 		s = new Socket(InetAddress.getLocalHost().getHostName(), sport, false);
-
 	}
 
 	/**
@@ -520,6 +519,10 @@ public class SocketTest extends SocketTestCase {
 		out.close();
 		assertTrue("write to closed socket did not cause exception", exception);
 
+        // Regression test for harmony-2934
+        s = new Socket("127.0.0.1", 0, false);
+        OutputStream o = s.getOutputStream();
+        o.write(1);
 	}
 
 	/**

@@ -534,7 +534,7 @@ class PlainSocketImpl extends SocketImpl {
 
     int write(byte[] buffer, int offset, int count) throws IOException {
         if (!streaming) {
-            netImpl.sendDatagram2(fd, buffer, offset, count, port, address);
+            return netImpl.sendDatagram2(fd, buffer, offset, count, port, address);
         }
         return netImpl.sendStream(fd, buffer, offset, count);
     }
