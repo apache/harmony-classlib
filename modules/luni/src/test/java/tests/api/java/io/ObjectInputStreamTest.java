@@ -734,9 +734,43 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		public ObjectStreamClass readClassDescriptor() throws IOException,
 				ClassNotFoundException {
 			return super.readClassDescriptor();
-
 		}
 	}
+    
+    // Regression test for Harmony-1921
+    public static class ObjectInputStreamWithResolve extends ObjectInputStream {
+        public ObjectInputStreamWithResolve(InputStream in) throws IOException {
+            super(in);
+        }
+
+        protected Class resolveClass(ObjectStreamClass desc)
+                throws IOException, ClassNotFoundException {
+            if (desc.getName().equals(
+                    "org.apache.harmony.luni.tests.pkg1.TestClass")) {
+                return org.apache.harmony.luni.tests.pkg2.TestClass.class;
+            }
+            return super.resolveClass(desc);
+        }
+    }
+
+    public void test_resolveClass() throws Exception {
+        org.apache.harmony.luni.tests.pkg1.TestClass to1 = new org.apache.harmony.luni.tests.pkg1.TestClass();
+        to1.i = 555;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(to1);
+        oos.flush();
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStreamWithResolve(bais);
+        org.apache.harmony.luni.tests.pkg2.TestClass to2 = (org.apache.harmony.luni.tests.pkg2.TestClass) ois
+                .readObject();
+
+        if (to2.i != to1.i) {
+            fail("Wrong object read. Expected val: " + to1.i + ", got: "
+                    + to2.i);
+        }
+    }
 	
 	public void test_readClassDescriptor() throws IOException,
 			ClassNotFoundException {

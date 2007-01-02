@@ -1305,9 +1305,22 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
     private int findStreamSuperclass(Class<?> cl,
             ArrayList<ObjectStreamClass> classList, int lastIndex) {
+        ObjectStreamClass objCl;
+        String forName;
+
         for (int i = lastIndex; i < classList.size(); i++) {
-            if (cl.getName().equals(classList.get(i).getName())) {
-                return i;
+            objCl = classList.get(i);
+            forName = objCl.forClass().getName();
+
+            if (objCl.getName().equals(forName)) {
+                if (cl.getName().equals(objCl.getName())) {
+                    return i;
+                }
+            } else {
+                // there was a class replacement
+                if (cl.getName().equals(forName)) {
+                    return i;
+                }
             }
         }
         return -1;
