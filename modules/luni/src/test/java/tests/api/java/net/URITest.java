@@ -1517,6 +1517,9 @@ public class URITest extends TestCase {
         } catch (URISyntaxException e) {
             // Expected
         }
+        
+        // regression test for HARMONY-1126
+        assertNotNull(URI.create("file://C:/1.txt").parseServerAuthority());
     }
 
     /**

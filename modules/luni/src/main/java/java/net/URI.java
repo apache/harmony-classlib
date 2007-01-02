@@ -415,21 +415,24 @@ public final class URI implements Comparable<URI>, Serializable {
             if (index != -1 && endindex < index) {
                 // determine port and host
                 tempHost = temp.substring(0, index);
-                try {
-                    tempPort = Integer.parseInt(temp.substring(index + 1));
-                    if (tempPort < 0) {
+
+                if (index < (temp.length() - 1)) { // port part is not empty
+                    try {
+                        tempPort = Integer.parseInt(temp.substring(index + 1));
+                        if (tempPort < 0) {
+                            if (forceServer) {
+                                throw new URISyntaxException(authority, Msg
+                                        .getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
+                            }
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
                         if (forceServer) {
                             throw new URISyntaxException(authority, Msg
                                     .getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
                         }
                         return;
                     }
-                } catch (NumberFormatException e) {
-                    if (forceServer) {
-                        throw new URISyntaxException(authority, Msg
-                                .getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
-                    }
-                    return;
                 }
             } else {
                 tempHost = temp;
