@@ -11,7 +11,8 @@ Bundle-SymbolicName: org.apache.harmony.nio_char
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.io,
+Import-Package: com.ibm.icu4jni.charset,
+ java.io,
  java.lang,
  java.lang.ref,
  java.net,
@@ -20,6 +21,6 @@ Import-Package: java.io,
  java.util,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
- tests.util;resolution:=optional;hy_usage=test
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.nio.charset,
  java.nio.charset.spi
