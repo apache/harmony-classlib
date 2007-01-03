@@ -275,9 +275,9 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#valueOf(long)
 	 */
 	public void test_valueOfJ() {
-		assertTrue("Incorred number returned for 2", BigInteger.valueOf(2L)
+		assertTrue("Incurred number returned for 2", BigInteger.valueOf(2L)
 				.equals(two));
-		assertTrue("Incorred number returned for 200", BigInteger.valueOf(200L)
+		assertTrue("Incurred number returned for 200", BigInteger.valueOf(200L)
 				.equals(BigInteger.valueOf(139).add(BigInteger.valueOf(61))));
 	}
 

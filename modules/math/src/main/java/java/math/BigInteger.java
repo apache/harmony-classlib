@@ -209,7 +209,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** 
      * Constructs a number without to create new space.
-     * This constrcut should be used only if the three fields 
+     * This construct should be used only if the three fields 
      * of representation are known. 
      * @param sign the sign of the number
      * @param numberLength the length of the internal array

@@ -234,7 +234,7 @@ class Conversion {
         // +7 - For "special case 2" (see below) we have 7 free chars for
         // inserting necessary scaled digits.
         result = new char[resLengthInChars + 1];
-        // alocated [resLengthInChars+1] charactes.
+        // allocated [resLengthInChars+1] characters.
         // a free latest character may be used for "special case 1" (see
         // below)
         currentChar = resLengthInChars;

@@ -273,7 +273,7 @@ class Logical {
         return result;
     }
     
-    /** @return sign = 1, magniutde = positive.magnitude & ~(-negative.magnitude)*/
+    /** @return sign = 1, magnitude = positive.magnitude & ~(-negative.magnitude)*/
     static BigInteger andNotPositiveNegative(BigInteger positive, BigInteger negative) {
         // PRE: positive > 0 && negative < 0
         int iNeg = negative.getFirstNonzeroDigit();
@@ -528,7 +528,7 @@ class Logical {
     
     /** @return sign = -1, magnitude = -(positive.magnitude | -negative.magnitude) */
     static BigInteger orDiffSigns(BigInteger positive, BigInteger negative){
-        // Jumping over the least significative zero bits
+        // Jumping over the least significant zero bits
         int iNeg = negative.getFirstNonzeroDigit();
         int iPos = positive.getFirstNonzeroDigit();
         int i;
@@ -748,7 +748,7 @@ class Logical {
                     resDigits[i] = -1;
                 }
                 for ( ; i < negative.numberLength; i++) {
-                    //resDigits[i] = ~(~negative.digts[i] ^ 0)
+                    //resDigits[i] = ~(~negative.digits[i] ^ 0)
                     resDigits[i] = negative.digits[i];
                 }
             }
@@ -791,7 +791,7 @@ class Logical {
             resDigits[i] = positive.digits[i];
         }
         for ( ; i < negative.numberLength; i++) { 
-            // resDidigts[i] = ~(0 ^ ~negative.digits[i])
+            // resDigits[i] = ~(0 ^ ~negative.digits[i])
             resDigits[i] = negative.digits[i];
         }
         

@@ -245,7 +245,7 @@ class Elementary {
      * the result (i.e. {@code op1.bitLength() >= op2.bitLength()}). Both
      * should be positive (i.e. {@code op1 >= op2}).
      * 
-     * @param op1 the input minuend, and the ouput result.
+     * @param op1 the input minuend, and the output result.
      * @param op2 the addend
      */
     static void inplaceAdd(BigInteger op1, BigInteger op2) {
@@ -293,7 +293,7 @@ class Elementary {
 	 * should be positive (what implies that {@code op1 >= op2}).
 	 * 
 	 * @param op1
-	 *            the input minuend, and the ouput result.
+	 *            the input minuend, and the output result.
 	 * @param op2
 	 *            the subtrahend
 	 */

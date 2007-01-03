@@ -52,7 +52,7 @@ public enum RoundingMode {
     /** The old constant of <code>BigDecimal</code>. */
     protected final int bigDecimalRM;
 
-    /** It sets the old contant. */
+    /** It sets the old constant. */
     RoundingMode(int rm) {
         bigDecimalRM = rm;
     }

@@ -83,7 +83,7 @@ class Primality {
 
     /**
      * It uses the sieve of Eratosthenes to discard several composite numbers in
-     * some appropiate range (at the moment {@code [this, this + 1024]}). After
+     * some appropriate range (at the moment {@code [this, this + 1024]}). After
      * this process it applies the Miller-Rabin test to the numbers that were
      * not discarded in the sieve.
      * 
@@ -108,7 +108,7 @@ class Primality {
             return BIprimes[i];
         }
         /*
-         * Creates a "N" enough big to hold the next probale prime Note that: N <
+         * Creates a "N" enough big to hold the next probable prime Note that: N <
          * "next prime" < 2*N
          */
         startPoint = new BigInteger(1, n.numberLength,
@@ -130,7 +130,7 @@ class Primality {
             modules[i] = Division.remainder(startPoint, primes[i]) - gapSize;
         }
         while (true) {
-            // At this point, all numbers in the gap are initializated as
+            // At this point, all numbers in the gap are initialized as
             // probably primes
             Arrays.fill(isDivisible, false);
             // To discard multiples of first primes
@@ -234,7 +234,7 @@ class Primality {
      * 
      * @param n the input number to be tested.
      * @param t the number of trials.
-     * @return {@code false} if the number is definitily compose, otherwise
+     * @return {@code false} if the number is definitely compose, otherwise
      *         {@code true} with probability {@code 1 - 4<sup>(-t)</sup>}.
      * @ar.org.fitc.ref "D. Knuth, The Art of Computer Programming Vo.2, Section
      *                  4.5.4., Algorithm P"

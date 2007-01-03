@@ -591,7 +591,7 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		BigDecimal setScale2 = setScale1.setScale(4);
 		assertTrue("the number 2.323E102 after setting scale is wrong",
 				setScale2.scale() == 4);
-		assertTrue("the resentation of the number 2.323E102 is wrong",
+		assertTrue("the representation of the number 2.323E102 is wrong",
 				setScale2.doubleValue() == 2.323E102);
 		setScale1 = new BigDecimal("-1.253E-12");
 		setScale2 = setScale1.setScale(17, BigDecimal.ROUND_CEILING);

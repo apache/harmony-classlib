@@ -84,7 +84,7 @@ public class BigIntegerDivideTest extends TestCase {
     }
 
     /**
-     * Divide two equal in absolute value numbers of different signes.
+     * Divide two equal in absolute value numbers of different signs.
      */
     public void testCase4() {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};

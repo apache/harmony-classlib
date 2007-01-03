@@ -182,7 +182,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             LONG_TEN_POW_BIT_LENGTH[j] = bitLength(LONG_TEN_POW[j]);
         }
         
-        // Taking the references of usefull powers.
+        // Taking the references of useful powers.
         TEN_POW = Multiplication.bigTenPows;
         FIVE_POW = Multiplication.bigFivePows;
     }
@@ -247,7 +247,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             offset++;
             begin++;
         }
-        // Acumulating all digits until a possible decimal point
+        // Accumulating all digits until a possible decimal point
         for (; (offset <= last) && (in[offset] != '.')
         && (in[offset] != 'e') && (in[offset] != 'E'); offset++) {
             ;
@@ -256,7 +256,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         // A decimal point was found
         if ((offset <= last) && (in[offset] == '.')) {
             offset++;
-            // Acumulating all digits until a possible exponent
+            // Accumulating all digits until a possible exponent
             begin = offset;
             for (; (offset <= last) && (in[offset] != 'e')
             && (in[offset] != 'E'); offset++) {
@@ -270,7 +270,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         // An exponent was found
         if ((offset <= last) && ((in[offset] == 'e') || (in[offset] == 'E'))) {
             offset++;
-            // Checking for a posible sign of scale
+            // Checking for a possible sign of scale
             begin = offset;
             if ((offset <= last) && (in[offset] == '+')) {
                 offset++;
@@ -278,7 +278,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
                     begin++;
                 }
             }
-            // Acumulating all reminaining digits
+            // Accumulating all remaining digits
             scaleString = String.valueOf(in, begin, last + 1 - begin);
             // Checking if the scale is defined            
             newScale = (long)scale - Integer.parseInt(scaleString);
@@ -601,7 +601,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
                     tempBI = Multiplication.multiplyByPositiveInt(tempBI, 10)
                     .add(BigInteger.valueOf(thisSignum * 9));
                 }
-                // Rounding the improved substracting
+                // Rounding the improved subtracting
                 leftOperand = new BigDecimal(tempBI, this.scale + 1);
                 return leftOperand.round(mc);
             }
@@ -887,7 +887,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         if ((divisor.aproxPrecision() + newScale > this.aproxPrecision() + 1L)
         || (this.isZero())) {
             /* If the divisor's integer part is greater than this's integer part,
-             * the result must be zero with the apropriate scale */
+             * the result must be zero with the appropriate scale */
             integralValue = BigInteger.ZERO;
         } else if (newScale == 0) {
             integralValue = getUnscaledValue().divide( divisor.getUnscaledValue() );
@@ -898,7 +898,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         } else {// (newScale < 0)
             powerOfTen = Multiplication.powerOf10(-newScale);
             integralValue = getUnscaledValue().multiply(powerOfTen).divide( divisor.getUnscaledValue() );
-            // To strip trailing zeros aproximating to the preferred scale
+            // To strip trailing zeros approximating to the preferred scale
             while (!integralValue.testBit(0)) {
                 quotAndRem = integralValue.divideAndRemainder(TEN_POW[i]);
                 if ((quotAndRem[1].signum() == 0)
@@ -950,7 +950,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             // To calculate: (u1 / (u2 * 10^(s1-s2)) * 10^newScale
             quotAndRem[0] = quotAndRem[0].multiply(Multiplication.powerOf10(newScale));
         } else {// CASE s2 > s1:   
-            /* To calculate the minimus power of ten, such that the quotient 
+            /* To calculate the minimum power of ten, such that the quotient 
              *   (u1 * 10^exp) / u2   has at least 'mc.precision()' digits. */
             long exp = Math.min(-diffScale, Math.max((long)mcPrecision - diffPrecision, 0));
             long compRemDiv;
@@ -1215,7 +1215,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             return new BigDecimal(Multiplication.multiplyByTenPow(getUnscaledValue(),(int)diffScale), newScale);
         }
         // diffScale < 0
-        // return  [u,s] / [1,newScale]  with the apropiate scale and rounding
+        // return  [u,s] / [1,newScale]  with the appropriate scale and rounding
         if(this.bitLength < 64 && -diffScale < LONG_TEN_POW.length) {
             return dividePrimitiveLongs(this.smallValue, LONG_TEN_POW[(int)-diffScale], newScale,roundingMode);
         }
@@ -1724,7 +1724,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
     private void inplaceRound(MathContext mc) {
         int mcPrecision = mc.getPrecision();
         int discardedPrecision = precision() - mcPrecision;
-        // If no rounding is necessary it returns inmediatly
+        // If no rounding is necessary it returns immediately
         if ((discardedPrecision <= 0) || (mcPrecision == 0)) {
             return;
         }
@@ -1733,7 +1733,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             smallRound(mc, discardedPrecision);
             return;
         }
-        // Getting the interger part and the discarded fraction
+        // Getting the integer part and the discarded fraction
         BigInteger sizeOfFraction = Multiplication.powerOf10(discardedPrecision);
         BigInteger[] integerAndFraction = getUnscaledValue().divideAndRemainder(sizeOfFraction);
         long newScale = (long)scale - discardedPrecision;
@@ -1757,7 +1757,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
                 newScale--;
             }
         }
-        // To update all inernal fields
+        // To update all internal fields
         scale = toIntScale(newScale);
         precision = mcPrecision;
         setUnscaledValue(integerAndFraction[0]);
@@ -1777,7 +1777,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         long sizeOfFraction = LONG_TEN_POW[discardedPrecision];
         long newScale = (long)scale - discardedPrecision;
         long unscaledVal = smallValue;
-        // Getting the interger part and the discarded fraction
+        // Getting the integer part and the discarded fraction
         long integer = unscaledVal / sizeOfFraction;
         long fraction = unscaledVal % sizeOfFraction;
         int compRem;
@@ -1795,7 +1795,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
                 newScale--;
             }
         }
-        // To update all inernal fields
+        // To update all internal fields
         scale = toIntScale(newScale);
         precision = mc.getPrecision();
         smallValue = integer;
@@ -1806,7 +1806,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
     /**
      * Return an increment that can be -1,0 or 1, depending of <code>roundingMode</code>.
      * @param parityBit can be 0 or 1, it's only used in the case <code>HALF_EVEN</code>.  
-     * @param fraction the mantisa to be analized.
+     * @param fraction the mantisa to be analyzed.
      * @param roundingMode the type of rounding.
      * @return the carry propagated after rounding.
      */
@@ -1876,11 +1876,11 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
     }
 
     /**
-     * If the precion already was calculated it returns that value, otherwise
-     * it calculates a very good aproximization efficiently . Note that this 
+     * If the precision already was calculated it returns that value, otherwise
+     * it calculates a very good approximation efficiently . Note that this 
      * value will be <code>precision()</code> or <code>precision()-1</code>
      * in the worst case.
-     * @return an aproximization of <code>precision()</code> value
+     * @return an approximation of <code>precision()</code> value
      */
     private int aproxPrecision() {
         return ((precision > 0)
@@ -1911,7 +1911,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
     }
 
     /**
-     * It returns the value 0 with the most aproximated scale of type 
+     * It returns the value 0 with the most approximated scale of type 
      * <code>int</code>. if <code>longScale > Integer.MAX_VALUE</code> 
      * the scale will be <code>Integer.MAX_VALUE</code>; if 
      * <code>longScale < Integer.MIN_VALUE</code> the scale will be

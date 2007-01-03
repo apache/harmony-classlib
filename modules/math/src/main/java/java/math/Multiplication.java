@@ -54,7 +54,7 @@ class Multiplication {
     };
 
     /**
-     * An array with the fisrt powers of ten in {@code BigInteger} version.
+     * An array with the first powers of ten in {@code BigInteger} version.
      * ({@code 10^0,10^1,...,10^31})
      */
     static final BigInteger[] bigTenPows = new BigInteger[32];
