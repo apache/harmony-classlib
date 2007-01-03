@@ -107,7 +107,7 @@ public interface Attributes extends Cloneable, Serializable {
     Attribute put(Attribute attribute);
 
     /**
-     * Places a new attribuet with the supplied ID and value into the attribute 
+     * Places a new attribute with the supplied ID and value into the attribute 
      * collection. 
      * If there is already an attribute with the same ID, the old one is removed
      * from the collection and is returned by this method. If there was no 

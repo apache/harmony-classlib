@@ -57,7 +57,7 @@ public class InitialLdapContext
         "java.naming.ldap.control.connect"; //$NON-NLS-1$
 
     /*
-     * The version of this LDAP context implementaton. 
+     * The version of this LDAP context implementation. 
      */
     private static final String THIS_LDAP_VERSION = "3"; //$NON-NLS-1$
 
@@ -108,7 +108,7 @@ public class InitialLdapContext
             newEnvironment.put(CONNECT_CONTROL, cloneOfCs);
         }
 
-        // Set the enviroment property java.naming.ldap.version to be 3
+        // Set the environment property java.naming.ldap.version to be 3
         newEnvironment.put(LDAP_VERSION, THIS_LDAP_VERSION);
 
         // Initialize the initial context

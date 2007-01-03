@@ -276,7 +276,7 @@ public class BasicAttributeTest extends TestCase {
 		unorderedAttribute.add(0, value);
 		try {
 			unorderedAttribute.add(0, value);
-			fail("An value already exsit, throw IllegalStateException.");
+			fail("An value already exist, throw IllegalStateException.");
 		} catch (IllegalStateException e) {
 		}
 
@@ -295,7 +295,7 @@ public class BasicAttributeTest extends TestCase {
 		unorderedAttribute.add(0, persons);
 		try {
 			unorderedAttribute.add(0, newPersons);
-			fail("An value already exsit, should throw IllegalStateException.");
+			fail("An value already exist, should throw IllegalStateException.");
 		} catch (IllegalStateException e) {
 		}
 	}
@@ -304,7 +304,7 @@ public class BasicAttributeTest extends TestCase {
 		unorderedAttribute.add(0, null);
 		try {
 			unorderedAttribute.add(0, null);
-			fail("An value already exsit, should throw IllegalStateException.");
+			fail("An value already exist, should throw IllegalStateException.");
 		} catch (IllegalStateException e) {
 		}
 
@@ -725,7 +725,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testRemove2_DuplicateValue() throws NamingException {
 		Person person = Person.getInstance();
 		orderedAttribute.add(0, person);
-		orderedAttribute.add(1, "singal");
+		orderedAttribute.add(1, "signal");
 		orderedAttribute.add(2, person);
 		assertTrue(orderedAttribute.remove(person));
 		assertEquals(2, orderedAttribute.size());

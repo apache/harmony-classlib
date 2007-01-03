@@ -241,7 +241,7 @@ public class NamingEvent extends EventObject {
      * Gets the binding after this event.
      * <p>
      * If it exists and is inside the scope that was specified when the listener 
-     * was registered using <code>EventContext.addNamimgListener</code>. 
+     * was registered using <code>EventContext.addNamingListener</code>. 
      * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code> 
      * event, the return value will be non-null if the new name places the 
      * binding within the scope for the listener.</p>
@@ -256,7 +256,7 @@ public class NamingEvent extends EventObject {
      * Gets the binding before this event. 
      * <p>
      * If it existed and was inside the scope that was specified when the 
-     * listener was registered using <code>EventContext.addNamimgListener</code>. 
+     * listener was registered using <code>EventContext.addNamingListener</code>. 
      * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code> 
      * event, the return value will be non-null if the old name placed the 
      * binding within the scope for the listener.</p>

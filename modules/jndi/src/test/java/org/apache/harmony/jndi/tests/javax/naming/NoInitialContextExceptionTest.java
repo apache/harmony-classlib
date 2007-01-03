@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 public class NoInitialContextExceptionTest extends TestCase {
 
 	/**
-	 * Test seriallize NoInitialContextException: write a
+	 * Test serialize NoInitialContextException: write a
 	 * NoInitialContextException object into a byte array, and read from it. The
 	 * two objects should be equal.
 	 */

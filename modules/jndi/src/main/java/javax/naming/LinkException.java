@@ -117,7 +117,7 @@ public class LinkException extends NamingException {
      * If boolean b is set to false then the behavior is the same 
      * as <code>toString()</code>.
      * 
-     * @param b Indicates if the resolved object need to be outputed.
+     * @param b Indicates if the resolved object need to be outputted.
      * @return  the string representation of this <code>NamingException</code> 
      * together with the details of the remaining name.
      */

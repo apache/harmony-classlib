@@ -69,14 +69,14 @@ public class SearchControls implements Serializable {
      * context.
      * <p>
      * The search will take place over the object, or if the object is a 
-     * context then the object and all objects that are reachable fromt he 
+     * context then the object and all objects that are reachable from he 
      * given context.</p>
      * <p>
      * The names that are returned in the enumeration are defined to be 
      * either relative names to the given root, or full URIs of the matching 
      * objects.</p>
      * <p>
-     * The seach is defined to no cross naming system boundaries.</p> 
+     * The search is defined to no cross naming system boundaries.</p> 
      */
     public static final int SUBTREE_SCOPE = 2;
 
@@ -102,7 +102,7 @@ public class SearchControls implements Serializable {
     private int searchScope;
 
     /**
-     * Seach time limitation.
+     * search time limitation.
      * <p>
      * Maximum number of milliseconds to wait for the search to complete.</p>
      * 

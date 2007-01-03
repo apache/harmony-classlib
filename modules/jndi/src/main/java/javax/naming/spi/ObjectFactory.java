@@ -42,7 +42,7 @@ public interface ObjectFactory {
 
     /**
      * Creates an object of the type specified by parameter <code>o</code>, 
-     * including any reference or location details, customised by the specified
+     * including any reference or location details, customized by the specified
      * <code>envmt</code> parameter. 
      * <p>
      * Object factories are specified via environment properties from several

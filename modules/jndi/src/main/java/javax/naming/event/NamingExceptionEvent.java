@@ -61,7 +61,7 @@ public class NamingExceptionEvent extends EventObject {
      * @param eventContext	context that generated this event. It is the 
      * 						originator of this event and cannot be null.
      * @param namingException
-     * 						the associated exception and cannnot be null.
+     * 						the associated exception and cannot be null.
      */
     public NamingExceptionEvent(
         EventContext eventContext,

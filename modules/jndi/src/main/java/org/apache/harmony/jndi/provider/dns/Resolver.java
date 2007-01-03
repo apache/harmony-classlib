@@ -246,7 +246,7 @@ public class Resolver implements Runnable {
         //  1. Set workZone to the parent of qName; clear queriedServers. 
         //  2. Try to get a complete answer for the workZone from the servers
         //   currently available in SLIST exclude servers from queriedServers.
-        //  3. update queiriedServers with "visited servers" info.
+        //  3. update queriedServers with "visited servers" info.
         //  4. If the complete answer was received - return it to the user;exit.
         //  5. If the delegation was received:
         //    a) If we already have this server & zone pair in SLIST - skip it.

@@ -23,7 +23,7 @@ import javax.naming.NamingException;
  * Thrown when the <code>SearchControls</code> for a given search are
  * invalid.
  * <p>
- * For example, the search controls would be invlaid if the scope is not
+ * For example, the search controls would be invalid if the scope is not
  * one of the defined class constants.</p> 
  * 
  * 

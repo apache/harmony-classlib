@@ -57,7 +57,7 @@ public class NamingExceptionEventTest extends TestCase {
 
 		try {
 			event = new NamingExceptionEvent(null, ex);
-			fail("IllegalArugmentException expected");
+			fail("IllegalArgumentException expected");
 		} catch (IllegalArgumentException e) {
 		}
 

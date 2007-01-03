@@ -73,7 +73,7 @@ public class ModificationItem implements Serializable {
      */
 
     /**
-     * Constructs a <code>ModificaitionItem</code> instance with all parameters.
+     * Constructs a <code>ModificationItem</code> instance with all parameters.
      * 
      * @param operation     an operation code chosen from <code>DirContext.ADD_ATTRIBUTE</code>,
      *                      <code>DirContext.REPLACE_ATTRIBUTE</code>, 

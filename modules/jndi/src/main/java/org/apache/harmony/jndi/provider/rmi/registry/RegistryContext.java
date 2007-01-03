@@ -620,7 +620,7 @@ public class RegistryContext implements Context, Referenceable {
 
     /**
      * Processes object returned from {@linkplain Registry RMI registry}.
-     * It unwraps {@link RemoteReference} if neccessary and calls
+     * It unwraps {@link RemoteReference} if necessary and calls
      * {@link NamingManager#getObjectInstance(Object, Name, Context, Hashtable)}.
      *
      * @param   name

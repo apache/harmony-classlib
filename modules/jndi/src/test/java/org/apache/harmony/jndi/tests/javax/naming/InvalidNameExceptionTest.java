@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 public class InvalidNameExceptionTest extends TestCase {
 
 	/**
-	 * Test seriallize InvalidNameException: write a InvalidNameException object
+	 * Test serialize InvalidNameException: write a InvalidNameException object
 	 * into a byte array, and read from it. the two object should be equals.
 	 */
 	public void testSerializable_Simple() throws ClassNotFoundException,
@@ -74,7 +74,7 @@ public class InvalidNameExceptionTest extends TestCase {
 	}
 
 	/**
-	 * Test InvalidNameException seriallization compatibility
+	 * Test InvalidNameException serialization compatibility
 	 */
 	public void testSerializable_compatibility() throws InvalidNameException,
 			ClassNotFoundException, IOException {

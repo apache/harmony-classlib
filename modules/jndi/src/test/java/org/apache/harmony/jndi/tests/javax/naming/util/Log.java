@@ -174,7 +174,7 @@ public class Log {
 
 	public static void main(String args[]) throws Exception {
 
-		// NamingException ex = new NamingException("test purpsoe");
+		// NamingException ex = new NamingException("test purpose");
 		// ex.setRemainingName(new CompositeName("RemainingName"));
 		// ex.setResolvedName(new CompositeName("RemainingName"));
 		// ex.setResolvedObj(new Integer(1));

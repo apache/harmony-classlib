@@ -620,7 +620,7 @@ public class NamingManager {
      * </p>
      * <p>
      * Once a first factory is created, it is used to create the context, and NO
-     * further attemptions will be made on other pkg prefixes.
+     * further attempts will be made on other pkg prefixes.
      * </p>
      * 
      * @param schema

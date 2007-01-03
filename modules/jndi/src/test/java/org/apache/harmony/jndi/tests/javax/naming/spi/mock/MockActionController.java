@@ -50,7 +50,7 @@ public class MockActionController implements DazzleActionController {
 		}
 
 		if (actions.get(THROW_NAMINGEXCEPTION) != null) {
-			throw new NamingException("Mock NamingExcepton");
+			throw new NamingException("Mock NamingException");
 		}
 
 		if (actions.get(THROW_NULLPOINTEREXCEPTION) != null) {

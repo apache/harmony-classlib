@@ -291,7 +291,7 @@ public class DirectoryManagerTest extends TestCase {
      * factory, and a third one corresponding to a factory that returns null.
      * The types of these StringRefAddr is "URL". Before all these
      * StringRefAddr, there is a StringRefAddr whose type is neither "URL" nor
-     * "url" but contains a vaild URL. Should return an object corresponding to
+     * "url" but contains a valid URL. Should return an object corresponding to
      * the URL mentioned in the beginning successfully.
      * 
      * Try the same when the fed object is Referenceable. Replace the address
@@ -541,8 +541,8 @@ public class DirectoryManagerTest extends TestCase {
     /**
      * When no factory builder is set and the fed object is neither Reference
      * nor Referenceable (e.g., String), and the environment properties contains
-     * a vaild factory name, while the fed context's provider resource file also
-     * contains a vaild factory name. Should return an object created by the
+     * a valid factory name, while the fed context's provider resource file also
+     * contains a valid factory name. Should return an object created by the
      * factory specified by the fed environment properties.
      */
     public void testGetObjectInstance_NoBuilder_NotRef_ValidFactory()
@@ -583,8 +583,8 @@ public class DirectoryManagerTest extends TestCase {
      * Before all these StringRefAddr, there is is a MockRefAddr whose type is
      * also "url" and contains a valid URL which can be used to create an object
      * successfully, and a StringRefAddr whose type is neither "URL" nor "url"
-     * but contains a vaild URL. And fed context's provider resource file does
-     * contain a vaild factory name following another factory that returns null.
+     * but contains a valid URL. And fed context's provider resource file does
+     * contain a valid factory name following another factory that returns null.
      * Should return an object created by the factory specified by the fed
      * context's environment properties.
      * 

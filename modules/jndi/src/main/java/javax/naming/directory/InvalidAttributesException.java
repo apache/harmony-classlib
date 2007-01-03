@@ -21,7 +21,7 @@ import javax.naming.NamingException;
 
 /**
  * Thrown when an attempt is made to set attributes that are invalid for
- * the entry they are being targetted.
+ * the entry they are being targeted.
  * <p>
  * Examples include schema restrictions for attributes such as specific values
  * required, attributes that must be set exclusively of others, and so on.</p>

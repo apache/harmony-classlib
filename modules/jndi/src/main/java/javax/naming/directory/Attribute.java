@@ -55,7 +55,7 @@ import javax.naming.directory.DirContext;
  * and <code>getAttributeSyntaxDefinition</code> return the schema definitions
  * if they exist.</p>
  * <p>
- * Note that updates to the attribute via ths interface do not affect the
+ * Note that updates to the attribute via this interface do not affect the
  * directory directly. The only mechanism for modifying the directory is
  * through the {@link DirContext}.</p>
  * <p>
@@ -141,7 +141,7 @@ public interface Attribute extends Cloneable, Serializable {
     Object clone();
 
     /**
-     * Inidicates whether the specified value is one of the attribute's values.
+     * Indicates whether the specified value is one of the attribute's values.
      * 
      * @param val               the value which may be null
      * @return                  true if this attribute contains the value, 

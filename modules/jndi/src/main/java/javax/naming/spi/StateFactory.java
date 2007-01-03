@@ -51,7 +51,7 @@ public interface StateFactory {
 
     /**
      * Returns a new instance of the specified object <code>o</code> 
-     * containing the state of the object to be bound, customised by the 
+     * containing the state of the object to be bound, customized by the 
      * specified <code>envmt</code> parameter. The name and context 
      * parameters optionally specify the name of the object being created. 
      * 
@@ -64,7 +64,7 @@ public interface StateFactory {
      * <code>Context.STATE_FACTORIES</code>. Each state factory in the
      * resulting list is used by <code>NamingManager.getStateToBind()</code> 
      * which invokes this method on each of them until a non-null result is 
-     * achieved or until the list is exhausted. If a <code>StatetFactory</code>
+     * achieved or until the list is exhausted. If a <code>StateFactory</code>
      * throws an exception, it should be passed back to the code that 
      * invoked <code>NamingManager.getStateToBind()</code> and no further 
      * state factories in the list are examined. An exception should only be 
@@ -86,7 +86,7 @@ public interface StateFactory {
      *              object, but will not modify the original.
      * @return      either a new instance of the specified object 
      *              <code>o</code> containing the state of the object to be 
-     *              bound, customised by the specified 
+     *              bound, customized by the specified 
      *              <code>envmt</code> parameter. Or null if no object could 
      *              be created.
      * @throws NamingException if it is intended that no other state 

@@ -42,7 +42,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * It can also refer to the object that is associated with the resolved name.
  * </p>
  * <p>
- * Additionaly it can refer to another exception, which may be the root cause of
+ * Additionally it can refer to another exception, which may be the root cause of
  * this exception.
  * </p>
  * <p>

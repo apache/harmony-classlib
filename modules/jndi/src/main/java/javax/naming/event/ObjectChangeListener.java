@@ -43,7 +43,7 @@ public interface ObjectChangeListener extends NamingListener{
 	 * <p>
 	 * The changes can be deduced by querying <code>namingEvent</code>, especially 
 	 * <code>NamingEvent.getNewBinding()</code> and 
-	 * <code>NamingEvent.getOldBindng()</code>.</p>
+	 * <code>NamingEvent.getOldBinding()</code>.</p>
 	 * 
 	 * @param namingEvent	the event notification 
 	 */ 

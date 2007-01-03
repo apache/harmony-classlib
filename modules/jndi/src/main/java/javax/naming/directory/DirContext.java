@@ -61,14 +61,14 @@ import javax.naming.directory.SearchResult;
  * </ul></p>
  * <p>
  * The directory service provider can implement either of these logical models, and the client
- * is expeced to know which model it is dealing with.</p>
+ * is expected to know which model it is dealing with.</p>
  * 
  * <em>Attribute Name aliasing</em>
  * <p>
- * Directory service providers are free to implement attribute name alising.  If the service
- * employs alising then the list of attribute names that are returned as a result of API
+ * Directory service providers are free to implement attribute name aliasing. If the service
+ * employs aliasing then the list of attribute names that are returned as a result of API
  * calls to get a named attribute, or search for a set of attributes may include attributes
- * whose name was not in the search list.  Implmentations should not rely on the preservation
+ * whose name was not in the search list.  Implementations should not rely on the preservation
  * of attribute names.</p>
  * 
  * <em>Searching and operational attributes</em>
@@ -208,7 +208,7 @@ public interface DirContext extends Context {
      * Binds a string name to an <code>Object</code> in this directory 
      * to produce a binding. 
      * 
-     * @param s					the string representive of name to be bound
+     * @param s					the string representative of name to be bound
      * @param obj				the object to be bound
      * @param attributes		the attributes of this binding, can be null 
      * @throws NamingException	thrown if any occurs
@@ -242,7 +242,7 @@ public interface DirContext extends Context {
     /**
      * Creates and binds a new subcontext.
      * 
-     * @param s  				the string representive of name bound to the new subcontext
+     * @param s  				the string representative of name bound to the new subcontext
      * @param attributes		the attributes of the new subcontxt, can be null
      * @return 					the new subcontext
      * @throws NamingException  If any occurs.
@@ -278,7 +278,7 @@ public interface DirContext extends Context {
      * This method throws any <code>NamingException</code> that occurs.</p>
      * 
      * @param name				name to be searched for attributes		
-     * @param as				the array of strings to match atrrbiutes
+     * @param as				the array of strings to match attributes
      * @return					all attributes for <code>name</code> that match 
      * 							the strings in array <code>as</code>. 
      * @throws NamingException  If any occurs.
@@ -288,7 +288,7 @@ public interface DirContext extends Context {
     /**
      * Gets all attributes of name represented by <code>s</code>.
      * 
-     * @param s					representive of name to be searched for attributes
+     * @param s					representative of name to be searched for attributes
      * @return					all attributes of name represented by <code>s</code>
      * @throws NamingException  If any occurs.	
      * @see #getAttributes(Name name)
@@ -299,8 +299,8 @@ public interface DirContext extends Context {
      * Gets the attributes for name represented by <code>s</code> that match the strings in 
      * array <code>as</code>. 
      * 
-     * @param s					representive of name to be searched for attributes
-     * @param as				the array of strings to match atrrbiutes
+     * @param s					representative of name to be searched for attributes
+     * @param as				the array of strings to match attributes
      * @return					all attributes for name represented by 
      * 							<code>s</code> that match the strings in array 
      * 							<code>as</code>. 
@@ -326,7 +326,7 @@ public interface DirContext extends Context {
     /**
      * Gets the top level of the schema for name represented by <code>s</code>.
      * 
-     * @param s					representive of name to be searched for schema 
+     * @param s					representative of name to be searched for schema 
      * @return					the top level of the schema for object <code>name</code>
      * @throws NamingException  If any occurs.
      * @see #getSchema(Name name)
@@ -356,7 +356,7 @@ public interface DirContext extends Context {
     /**
      * Gets the class definition for name represented by <code>s</code> from its schema. 
      * 
-     * @param s					the string representive of name to searched for 
+     * @param s					the string representative of name to searched for 
      * 							the class definition from its schema
      * @return					the class definition for <code>name</code> from 
      * 							its schema.
@@ -457,7 +457,7 @@ public interface DirContext extends Context {
     /**
      * Rebinds name represented by <code>s</code> to <code>obj</code>. 
      * 
-     * @param s					the string representive of name to be bound
+     * @param s					the string representative of name to be bound
      * @param obj				the object to be bound
      * @param attributes		the attributes of the binding
      * @throws NamingException  If any occurs.
@@ -480,7 +480,7 @@ public interface DirContext extends Context {
      * 
      * @param name				the name specifies the context to be searched
      * @param attributes		the attributes to be matched when search 
-     * @return					<code>NamngEnumeration</code> of <code>SearchResult</code>
+     * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
      * @see #search(Name name, Attributes attributes, String[] as)
      */
@@ -529,8 +529,8 @@ public interface DirContext extends Context {
      * 
      * @param name				the name specifies the context to be searched
      * @param attributes		the attributes to be matched when search 
-     * @param as				the array of string representive of attributes to be returned
-     * @return					<code>NamngEnumeration</code> of <code>SearchResult</code>
+     * @param as				the array of string representative of attributes to be returned
+     * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
      */
     NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
@@ -539,7 +539,7 @@ public interface DirContext extends Context {
 
     /**
      * This method searches in the context specified by <code>name</code> only, 
-     * using the fileter specifed by parameter <code>filter</code> and controlled by
+     * using the filter specified by parameter <code>filter</code> and controlled by
      * <code>searchControls</code>.
      * 
      * <p>
@@ -580,7 +580,7 @@ public interface DirContext extends Context {
      * 
      * @param name				the name specifies the context to be searched
      * @param filter			the search filter
-     * @param objs				array of objects refered by search filter
+     * @param objs				array of objects referred by search filter
      * @param searchControls 	the search controls
      * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
@@ -595,7 +595,7 @@ public interface DirContext extends Context {
 
     /**
      * This method searches in the context specified by <code>name</code> only, 
-     * using the fileter specifed by parameter <code>filter</code> and controlled by
+     * using the filter specified by parameter <code>filter</code> and controlled by
      * <code>searchControls</code>.
      * <p>
      * This method can throw <code>InvalidSearchFilterException<c/ode>,
@@ -619,7 +619,7 @@ public interface DirContext extends Context {
      * only, for any objects that have attributes that match the 
      * <code>attributes</code> parameter. 
      * 
-     * @param name				the string representive of name which specifies 
+     * @param name				the string representative of name which specifies 
      * 							the context to be searched
      * @param attributes		the attributes to be matched when search 
      * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
@@ -634,10 +634,10 @@ public interface DirContext extends Context {
      * <code>name</code> only, for any objects that have attributes that match
      * the <code>attributes</code> parameter. 
      * 
-     * @param name				the string representive of name which specifies 
+     * @param name				the string representative of name which specifies 
      * 							the context to be searched
      * @param attributes		the attributes to be matched when search 
-     * @param as				the array of string representive of attributes to be returned
+     * @param as				the array of string representative of attributes to be returned
      * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
      * @see #search(Name, Attributes, String[])
@@ -648,15 +648,15 @@ public interface DirContext extends Context {
 
     /**
      * This method searches in the context specified by name represented by 
-     * <code>name</code> only,  using the fileter specifed by parameter 
+     * <code>name</code> only,  using the filter specified by parameter 
      * <code>filter</code> and controlled by <code>searchControls</code>.
      * 
-     * @param name				the string representive of name which specifies 
+     * @param name				the string representative of name which specifies 
      * 							the context to be searched
      * @param filter			the search filter
-     * @param objs				array of objects refered by search filter
+     * @param objs				array of objects referred by search filter
      * @param searchControls 	the search controls
-     * @return					<code>NamngEnumeration</code> of <code>SearchResult</code>
+     * @return					<code>NamingEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
      * @see #search(Name, String, Object[], SearchControls)
      */
@@ -669,10 +669,10 @@ public interface DirContext extends Context {
 
     /**
      * This method searches in the context specified by name represented by 
-     * <code>name</code> only,  using the fileter specifed by parameter 
+     * <code>name</code> only,  using the filter specified by parameter 
      * <code>filter</code> and controlled by <code>searchControls</code>.
      * 
-     * @param name				the string representive of name which specifies 
+     * @param name				the string representative of name which specifies 
      * 							the context to be searched
      * @param filter			the search filter
      * @param searchControls 	the search controls

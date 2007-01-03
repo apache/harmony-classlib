@@ -21,7 +21,7 @@ import javax.naming.Binding;
 
 /**
  * <code>SearchResult</code> returned from a search on a directory context
- * and is provided by a <code>NaminEnumeration</code>.
+ * and is provided by a <code>NamingEnumeration</code>.
  * <p>
  * This class is not thread-safe.</p>
  * 

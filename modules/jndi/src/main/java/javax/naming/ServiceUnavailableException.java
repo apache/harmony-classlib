@@ -36,7 +36,7 @@ public class ServiceUnavailableException extends NamingException {
 
     /**
      * Constructs a <code>ServiceUnavailableException</code> instance 
-     * with all data initialised to null.
+     * with all data initialized to null.
      */
     public ServiceUnavailableException() {
         super();

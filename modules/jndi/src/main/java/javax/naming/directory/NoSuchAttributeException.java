@@ -21,7 +21,7 @@ package javax.naming.directory;
 import javax.naming.NamingException;
 
 /**
- * Thrown when an attempt is made to access a non-existant attribute.
+ * Thrown when an attempt is made to access a non-existent attribute.
  */
 public class NoSuchAttributeException extends NamingException {
 

@@ -97,7 +97,7 @@ public class BasicAttributes implements Attributes {
      * Constructs a <code>BasicAttributes</code> instance which is 
      * case-sensitive if <code>flag</code> is false.
      * 
-     * @param flag          Inidicates whether this instance is 
+     * @param flag          Indicates whether this instance is 
      *                      case-insensitive.
      */
     public BasicAttributes(boolean flag) {
@@ -121,7 +121,7 @@ public class BasicAttributes implements Attributes {
      * 
      * @param attrId        the ID of the first attribute
      * @param attrObj       the value of the first attribute
-     * @param flag          Inidicates whether this instance is 
+     * @param flag          Indicates whether this instance is 
      *                      case-insensitive.
      */
     public BasicAttributes(String attrId, Object attrObj, boolean flag) {

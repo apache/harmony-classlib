@@ -145,7 +145,7 @@ public interface EventContext extends Context{
 	 * Checks if the implementation supports registration for names that are
 	 * not (yet) bound in this context.
 	 * 
-	 * @return	 				false if implemention supports this, otherwise
+	 * @return	 				false if implementation supports this, otherwise
      *                          true if the implementation does not support this.
 	 * @throws NamingException  If the support is not known.
 	 */

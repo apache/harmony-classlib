@@ -1077,7 +1077,7 @@ public class DNSContext implements DirContext, Cloneable {
     }
 
     /**
-     * Removes the property with given name from the contex's environment.
+     * Removes the property with given name from the context's environment.
      * @param name the name of the property to remove
      * @see javax.naming.Context#removeFromEnvironment(java.lang.String)
      */

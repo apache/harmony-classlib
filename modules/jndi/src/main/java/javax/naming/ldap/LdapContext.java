@@ -28,7 +28,7 @@ import javax.naming.directory.DirContext;
  * Extended operations are dealt with by the <code>extendedOperation</code> 
  * method. All other methods relate to the use of controls. Controls are extra 
  * information provided to or from an LDAP v3 server. Controls are either of the
- * type <code>Request</code> or <code>Reponse</code>. There is a special type of
+ * type <code>Request</code> or <code>Response</code>. There is a special type of
  * request controls known as connection controls.</p>
  * <p>
  * Connection controls are used by a service provider when connecting or

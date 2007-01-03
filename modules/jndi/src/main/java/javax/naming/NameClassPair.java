@@ -231,7 +231,7 @@ public class NameClassPair implements Serializable {
         }
         buf.append(getName());
         buf.append(": "); //$NON-NLS-1$
-        buf.append(getClassName()); // getClassName() is overrided by subclass
+        buf.append(getClassName()); // getClassName() is overridden by subclass
         return buf.toString();
     }
 

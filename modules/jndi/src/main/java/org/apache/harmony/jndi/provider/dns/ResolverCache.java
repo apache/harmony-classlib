@@ -122,7 +122,7 @@ class ResolverCache {
         // skip records with wildcards in names or with zero TTL 
         if (record.getTtl() > 0 && (record.getName().indexOf('*') == -1)) {
             entry = new CacheEntry(record, curTime + record.getTtl());
-            // remove old occurence if any
+            // remove old occurrence if any
             for (int i = 0; i < vect.size(); i++) {
                 CacheEntry exEntry = vect.elementAt(i);
                 ResourceRecord exRec = exEntry.rr;

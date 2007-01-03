@@ -41,13 +41,13 @@ public interface ObjectFactoryBuilder {
      */
 
     /**
-     * Returns an <code>ObjectFactory</code> customised by the 
+     * Returns an <code>ObjectFactory</code> customized by the 
      * <code>envmt</code> parameter that is capable of creating instances
      * of the object <code>o</code>. 
      * 
      * @param o     may be null
      * @param envmt may be null
-     * @return      an <code>ObjectFactory</code> customised by the 
+     * @return      an <code>ObjectFactory</code> customized by the 
      *              <code>envmt</code> parameter that is capable of creating
      *              instances of the object <code>o</code>. 
      * @throws NamingException if an object factory could not be created.

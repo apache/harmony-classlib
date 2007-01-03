@@ -341,7 +341,7 @@ class SList {
     }
 
     /**
-     * Returns all occurences of server with specified
+     * Returns all occurrences of server with specified
      * @param name hostname
      * @return found server object or <code>null</code> if not found
      */

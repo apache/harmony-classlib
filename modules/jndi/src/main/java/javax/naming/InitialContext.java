@@ -158,7 +158,7 @@ public class InitialContext implements Context {
      * used in an <code>InitialContext</code> subclass constructor in which 
      * later action will set up a <code>Hashtable</code> object with appropriate
      * environment properties and pass that to the <code>init</code> method to
-     * complete initalization of the <code>InitialContext</code> object.</p>
+     * complete initialization of the <code>InitialContext</code> object.</p>
      *
      * @param doNotInit         Specifies whether to initialize the new instance.
      * @throws NamingException  If failed to create an <code>InitialContext</code>.
@@ -328,7 +328,7 @@ public class InitialContext implements Context {
         String scheme = UrlParser.getScheme(name);
         Context ctx = null;
         if (null != scheme) {
-            // So the first componet is a valid URL
+            // So the first component is a valid URL
             ctx = NamingManager.getURLContext(scheme, myProps);
         }
         return null == ctx ? getDefaultInitCtx() : ctx;

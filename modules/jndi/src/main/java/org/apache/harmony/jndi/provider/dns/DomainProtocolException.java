@@ -26,7 +26,7 @@ package org.apache.harmony.jndi.provider.dns;
 import javax.naming.NamingException;
 
 /**
- * The exception that can be thrown from the DNS Resovler classes. 
+ * The exception that can be thrown from the DNS Resolver classes. 
  * 
  * @author Alexei Zakharov
  * @version $Revision: 1.1.2.4 $

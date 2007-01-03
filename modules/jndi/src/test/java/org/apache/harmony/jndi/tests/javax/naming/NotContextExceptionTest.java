@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 public class NotContextExceptionTest extends TestCase {
 
 	/**
-	 * Test seriallize NotContextException: write a NotContextException object
+	 * Test serialize NotContextException: write a NotContextException object
 	 * into a byte array, and read from it. the two object should be equals.
 	 */
 	public void testSerializable_Simple() throws ClassNotFoundException,

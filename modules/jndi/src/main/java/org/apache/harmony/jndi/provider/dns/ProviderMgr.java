@@ -302,7 +302,7 @@ public class ProviderMgr {
      * @param buffer buffer to write to
      * @param startIdx index in buffer to start from
      * @return updated index
-     * @throws NullPointerExcetpion if some argument is null
+     * @throws NullPointerException if some argument is null
      * @throws DomainProtocolException if string is too long
      */
     public static int writeCharString(String value, byte[] buffer, int startIdx)

@@ -55,7 +55,7 @@ public abstract class ReferralException extends NamingException {
 
     /**
      * Constructs a <code>ReferralException</code> instance
-     * with the specified message. All other fields are initialised to null.
+     * with the specified message. All other fields are initialized to null.
      * 
      * @param s The detail message for this exception. It may be null.
      */

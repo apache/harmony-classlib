@@ -128,8 +128,8 @@ import java.util.Hashtable;
  * "java.naming.ldap.".</p>
  * <p>
  * Feature-specific JNDI properties may be used by all service providers
- * offering implementations using a particular flavour of a feature and would
- * include the feature name and the particular flavour name in the property
+ * offering implementations using a particular flavor of a feature and would
+ * include the feature name and the particular flavor name in the property
  * name prefix. A common example is SASL used by several service providers for
  * security; appropriate SASL feature-specific properties would use prefix
  * "java.naming.security.sasl.".</p>

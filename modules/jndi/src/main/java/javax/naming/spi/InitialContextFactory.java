@@ -40,7 +40,7 @@ public interface InitialContextFactory {
     /**
      * Returns a non-null initial context object on which naming operations can be
      * invoked. The specified <code>envmt</code> parameter may be null or may be 
-     * used to customise the requested <code>Context</code> object.  The 
+     * used to customize the requested <code>Context</code> object.  The 
      * implementation may clone or copy the <code>envmt</code> object, 
      * but will not modify the original object.
      * 

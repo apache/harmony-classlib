@@ -101,7 +101,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * Element 3 is "b".</p>
  * <p>
  * Interestingly the name "a/a'a/b/b" is valid and has 4 elements. This is 
- * beacuse the single quote char ' is not a leading quote and is embedded in 
+ * because the single quote char ' is not a leading quote and is embedded in 
  * an element so is treated as a character.
  * Element 0 is "a".
  * Element 1 is "a'a".

@@ -28,9 +28,9 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(DirectoryManagerTest.class);
 		suite.addTestSuite(DirStateFactoryResultTest.class);
-		// suite.addTestSuite(NamingManagerExploreTest.class); // run in seperate vm
-		// suite.addTestSuite(DirectoryManagerBuilderTest.class); // run in seperate vm
-		// suite.addTestSuite(NamingManagerBuilderTest.class); // run in seperate vm
+		// suite.addTestSuite(NamingManagerExploreTest.class); // run in separate vm
+		// suite.addTestSuite(DirectoryManagerBuilderTest.class); // run in separate vm
+		// suite.addTestSuite(NamingManagerBuilderTest.class); // run in separate vm
 		suite.addTestSuite(NamingManagerTest.class);
 		suite.addTestSuite(ResolveResultTest.class);
 		suite.addTestSuite(DirectoryManagerJCKTest.class);

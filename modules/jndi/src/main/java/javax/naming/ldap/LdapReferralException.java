@@ -72,7 +72,7 @@ public abstract class LdapReferralException extends ReferralException {
      */
 
     /**
-     * Gets referal context without environment properties.
+     * Gets referral context without environment properties.
      * 
      * @return 				referral context
      * @throws NamingException
@@ -82,7 +82,7 @@ public abstract class LdapReferralException extends ReferralException {
     public abstract Context getReferralContext() throws NamingException;
 
     /**
-     * Gets referal context with environment properties.
+     * Gets referral context with environment properties.
      * 
      * @param h				environment properties			
      * @return 				referral context
@@ -94,7 +94,7 @@ public abstract class LdapReferralException extends ReferralException {
         throws NamingException;
 
     /**
-     * Gets referal context with environment properties and an array of LDAPv3
+     * Gets referral context with environment properties and an array of LDAPv3
      * controls.
      * 
      * @param h				environment properties

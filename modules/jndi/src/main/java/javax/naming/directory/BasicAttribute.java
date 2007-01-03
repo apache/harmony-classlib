@@ -185,7 +185,7 @@ public class BasicAttribute implements Attribute {
     }
 
     /*
-     * Determine whether the two valuess are equal with each other, considering
+     * Determine whether the two values are equal with each other, considering
      * the possibility that they might be both arrays so that each element of 
      * them has to be compared. 
      */

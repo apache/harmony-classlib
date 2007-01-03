@@ -81,7 +81,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
      * Constructs a new <code>InitialDirContext</code> instance with 
      * environment properties.
      * 
-     * @param hashtable     Contains the enironment parameters. This constructor 
+     * @param hashtable     Contains the environment parameters. This constructor 
      *                      will not change the hashtable or keep a reference to 
      *                      it. The hashtable parameter may be null.
      * @throws NamingException

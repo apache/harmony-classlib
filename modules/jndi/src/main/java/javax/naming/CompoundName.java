@@ -159,7 +159,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * An empty <code>CompoundName</code> is the name "" and has no elements.
  * 
  * When jndi.syntax.beginquote is set to " and beginquote2 is set to '
- * the behaviour is simliar to CompositeName - 
+ * the behaviour is similar to CompositeName - 
  * The name "\"abcd" gives an InvalidNameException as there is no closing quote.
  * The name "'\"abcd'" gives one element of value "abcd.
  * The name "\\abcd" gives one element of value \abcd. 
@@ -358,7 +358,7 @@ public class CompoundName implements Name {
         // direction's default value is FLAT
         direction = null == (property = props.getProperty(DIRECTION)) ? FLAT
                 : property;
-        //if direction value must equals to one of FLAT, LEFT_TO_RIGHT and RIGHT_TO_LEFT, exception throwed 
+        //if direction value must equals to one of FLAT, LEFT_TO_RIGHT and RIGHT_TO_LEFT, exception threw 
         if (!LEFT_TO_RIGHT.equals(direction)
                 && !RIGHT_TO_LEFT.equals(direction) && !FLAT.equals(direction)) {
             // jndi.04=Illegal direction property value, which must be one of right_to_left, left_to_right or flat

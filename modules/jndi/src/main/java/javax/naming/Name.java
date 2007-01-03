@@ -44,7 +44,7 @@ import java.util.Enumeration;
 public interface Name extends Cloneable, Serializable, Comparable<Object> {
 
     /*
-     * SUID declared publically in the spec.
+     * SUID declared publicly in the spec.
      */
     public static final long serialVersionUID = -3617482732056931635L;
     

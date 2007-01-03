@@ -217,7 +217,7 @@ public class BinaryRefAddrTest extends TestCase {
 		BinaryRefAddr addr1 = new BinaryRefAddr(null, address1);
 		try {
 			addr0.equals(addr1);
-			fail("Should throw NullPoinerException.");
+			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
 	}

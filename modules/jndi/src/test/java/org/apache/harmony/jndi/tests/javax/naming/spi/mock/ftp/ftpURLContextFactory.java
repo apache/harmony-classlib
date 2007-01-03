@@ -27,7 +27,7 @@ import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
 // import util.Log;
 
 /**
- * Allways succeed.
+ * Always succeed.
  */
 public class ftpURLContextFactory implements ObjectFactory {
 	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
