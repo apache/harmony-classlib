@@ -88,10 +88,6 @@ class Compiler {
      * Initialize our local variables. Called during type construction.
      */
     protected void initialize() {
-        if (!new File(ECJ_JAR_FILE).exists()) {
-            System.err.println("javac requires the compiler jar \""
-                    + ECJ_JAR_FILE + "\" to run");
-        }
         try {
             initializeMainClass();
             initializeInstance();
@@ -139,9 +135,35 @@ class Compiler {
             IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
 
+        URLClassLoader loader;
+
+        // Find the ECJ JAR file
+        if (new File(ECJ_JAR_FILE).exists()) {
+            // It is in the working directory
+            URL ecjURL = new URL("file:" + ECJ_JAR_FILE);
+            loader = new URLClassLoader(new URL[] { ecjURL });
+        } else {
+            // Assume it is next to the tools.jar
+            URLClassLoader bogusLoader = new URLClassLoader(new URL[] {});
+            URLClassLoader parentLoader = (URLClassLoader) bogusLoader
+                    .getParent();
+            URL[] uls = parentLoader.getURLs();
+            URL ecjURL = null;
+            for (int i = 0; i < uls.length; i++) {
+                URL l = uls[i];
+                String filename = new File(l.getFile()).getName();
+                if (filename.equals("tools.jar")) {
+                    ecjURL = new URL(l, ECJ_JAR_FILE);
+                    break;
+                }
+            }
+            if (ecjURL == null) {
+                throw new RuntimeException("Cannot find file " + ECJ_JAR_FILE);
+            }
+            loader = new URLClassLoader(new URL[] { ecjURL });
+        }
+
         // Load the ECJ main class
-        URL ecjURL = new URL("file:" + ECJ_JAR_FILE);
-        URLClassLoader loader = new URLClassLoader(new URL[] { ecjURL });
         ecjCompilerClass = loader.loadClass(MAIN_CLASS_NAME);
     }
 
@@ -153,7 +175,8 @@ class Compiler {
             NoSuchMethodException {
         staticMainMth = ecjCompilerClass.getMethod("main",
                 new Class[] { String[].class });
-        printUsageMth = ecjCompilerClass.getMethod("printUsage", (Class[])null);
+        printUsageMth = ecjCompilerClass
+                .getMethod("printUsage", (Class[]) null);
     }
 
     /**
