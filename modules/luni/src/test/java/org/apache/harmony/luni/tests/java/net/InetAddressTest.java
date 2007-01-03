@@ -218,6 +218,15 @@ public class InetAddressTest extends junit.framework.TestCase {
 //	        ia2.getHostName().startsWith(Support_Configuration.InetTestAddress));
 
         // TODO : Test to ensure all the address formats are recognized
+        InetAddress i = InetAddress.getByName("1.2.3");
+        assertEquals("1.2.0.3",i.getHostAddress());
+        i = InetAddress.getByName("1.2");
+        assertEquals("1.0.0.2",i.getHostAddress());
+        i = InetAddress.getByName(String.valueOf(0xffffffffL));
+        assertEquals("255.255.255.255",i.getHostAddress());
+        String s = "222.222.222.222....";
+        i = InetAddress.getByName(s);
+        assertEquals("222.222.222.222",i.getHostAddress());
     }
 
 	/**

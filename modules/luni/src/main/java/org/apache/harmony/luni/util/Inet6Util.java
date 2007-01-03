@@ -465,47 +465,29 @@ public class Inet6Util {
 	 *         notation, false otherwise
 	 */
 	public static boolean isValidIPV4Address(String value) {
-
-		int periods = 0;
-		int i = 0;
-		int length = value.length();
-
-		if (length > 15) {
+        // general test
+        if (!value.matches("[\\p{Digit}\\.]*")) {
             return false;
         }
-		char c = 0;
-		String word = "";
-		for (i = 0; i < length; i++) {
-			c = value.charAt(i);
-			if (c == '.') {
-				periods++;
-				if (periods > 3) {
-                    return false;
-                }
-				if (word == "") {
-                    return false;
-                }
-				if (Integer.parseInt(word) > 255) {
-                    return false;
-                }
-				word = "";
-			} else if (!(Character.isDigit(c))) {
+
+        String[] parts = value.split("\\.");
+        int length = parts.length;
+        if (length > 4) {
+            return false;
+        }
+
+        // for one part
+        if (parts.length == 1) {
+            long longValue = Long.parseLong(parts[0]);
+            return longValue >= 0 && longValue <= 0xFFFFFFFFL;
+        }
+        // test every parts
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].length() > 3 || Integer.parseInt(parts[i]) > 255) {
                 return false;
-            } else {
-				if (word.length() > 2) {
-                    return false;
-                }
-				word += c;
-			}
-		}
-
-		if (word == "" || Integer.parseInt(word) > 255) {
-            return false;
+            }
         }
-		if (periods != 3) {
-            return false;
-        }
-		return true;
+        return true;
 	}
 
 }

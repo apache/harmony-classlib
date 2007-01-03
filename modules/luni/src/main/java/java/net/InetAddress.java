@@ -1137,20 +1137,31 @@ public class InetAddress extends Object implements Serializable {
 		InetAddress address = null;
 
 		if (Inet6Util.isValidIPV4Address(ipAddressString)) {
-
-			StringTokenizer tokenizer = new StringTokenizer(ipAddressString,
-					".");
-			String token = "";
-			int tempInt = 0;
-			byte[] byteAddress = new byte[4];
-			for (int i = 0; i < 4; i++) {
-				token = tokenizer.nextToken();
-				tempInt = Integer.parseInt(token);
-				byteAddress[i] = (byte) tempInt;
-			}
-
-			address = new Inet4Address(byteAddress);
-
+            byte[] byteAddress = new byte[4];
+            String[] parts = ipAddressString.split("\\.");
+            int length = parts.length;
+            if (length == 1) {
+                Long value = Long.parseLong(parts[0]);
+                for (int i = 0; i < 4; i++) {
+                    byteAddress[i] = (byte) (value>>((3-i)*8));
+                }
+            } else {
+                for (int i = 0; i < length; i++) {
+                    byteAddress[i]=(byte)Integer.parseInt(parts[i]);
+                }
+            }
+            
+            // adjust for 2/3 parts address
+            if(length == 2){
+                byteAddress[3]=byteAddress[1];
+                byteAddress[1]=0;
+            }
+            if(length == 3){
+                byteAddress[3]=byteAddress[2];
+                byteAddress[2]=0;
+            }
+            
+            address = new Inet4Address(byteAddress);
 		} else { // otherwise it must be ipv6
 
 			if (ipAddressString.charAt(0) == '[') {
