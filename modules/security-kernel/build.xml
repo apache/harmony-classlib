@@ -56,6 +56,8 @@ the top-level build.
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
     </target>
 

@@ -38,6 +38,12 @@
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
+    <!-- During packaging, these files must be copied into the meta-inf dir -->
+    <fileset id="hy.required.metainf-files" dir="${hy.hdk}">
+        <include name="NOTICE" />
+        <include name="LICENSE" />
+    </fileset>
+
     <!-- Test run property -->
     <property name="hy.test.forkmode" value="once" />
     <property name="hy.test.timeout" value="900000" />

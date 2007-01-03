@@ -157,8 +157,7 @@
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
 
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar">
@@ -168,8 +167,7 @@
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
 
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
     </target>
 
