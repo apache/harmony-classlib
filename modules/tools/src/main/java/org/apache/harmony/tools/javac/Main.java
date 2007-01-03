@@ -17,25 +17,16 @@
 
 package org.apache.harmony.tools.javac;
 
-
 /**
  * This is the entry point for the javac tool.
  */
 public final class Main {
 
+    /*
+     * Command-line tool invokes this method.
+     */
     public static void main(String[] args) {
-
-        /* Give me something to do */
-        if (args.length == 0) {
-            new Compiler().printUsage();
-            return;
-        }
-
-        /* Add in the base class library code to compile against */
-        String[] newArgs = addBootclasspath(args);
-
-        /* Invoke the compiler */
-        Compiler.main(newArgs);
+        new Main().compile(args);
     }
 
     /**
@@ -45,16 +36,38 @@ public final class Main {
         super();
     }
 
+    /**
+     * Invokes the ECJ compiler with the given arguments.
+     * 
+     * @param args
+     *            the arguments passed through to the compiler
+     * @return true on compilation success, false on failure
+     */
+    public boolean compile(String[] args) {
+
+        /* Give me something to do */
+        if (args == null || args.length == 0) {
+            new Compiler().printUsage();
+            return false;
+        }
+
+        /* Add in the base class library code to compile against */
+        String[] newArgs = addBootclasspath(args);
+
+        /* Invoke the compiler */
+        return Compiler.main(newArgs);
+    }
+
     /*
      * Set up the compiler option to compile against the running JRE class
      * libraries.
      */
-    public static String[] addBootclasspath(String[] args) {
+    private String[] addBootclasspath(String[] args) {
         String[] result = new String[args.length + 2];
         System.arraycopy(args, 0, result, 0, args.length);
-        result[args.length] = "-classpath";
+        result[args.length] = "-classpath"; //$NON-NLS-1$
         result[args.length + 1] = System.getProperty(
-                "org.apache.harmony.boot.class.path", ".");
+                "org.apache.harmony.boot.class.path", "."); //$NON-NLS-1$ //$NON-NLS-2$
         return result;
     }
 }

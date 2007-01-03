@@ -34,26 +34,33 @@ import java.net.URLClassLoader;
 class Compiler {
 
     /* A default encoding for console messages */
-    static String CONSOLE_ENCODING = System.getProperty("console.encoding",
-            "ISO8859_1");
+    static String CONSOLE_ENCODING = System.getProperty("console.encoding", //$NON-NLS-1$
+            "ISO8859_1"); //$NON-NLS-1$
 
     /* FIXME: Hard-coded for now, the name of the ECJ JAR file */
-    static final String ECJ_JAR_FILE = "ecj_3.2.jar";
+    static final String ECJ_JAR_FILE = "ecj_3.2.jar"; //$NON-NLS-1$
+
+    static final String TOOLS_JAR_FILE = "tools.jar"; //$NON-NLS-1$
 
     /* The name of the ECJ compiler class */
-    static final String MAIN_CLASS_NAME = "org.eclipse.jdt.internal.compiler.batch.Main";
+    static final String MAIN_CLASS_NAME = "org.eclipse.jdt.internal.compiler.batch.Main"; //$NON-NLS-1$
 
     /*
      * Invokes the compiler with the given command-line arguments. The supported
      * arguments can be determined form the usage message.
+     * 
+     * Answers the result of the compilation from ECJ; i.e. true if the compile
+     * succeeded, and false otherwise.
      */
-    public static void main(String[] args) {
+    public static boolean main(String[] args) {
         Compiler myself = new Compiler();
         myself.initialize();
         // If there is a problem invoking the method, simply dump the trace for
         // now
         try {
-            myself.staticMainMth.invoke(myself.mainInst, new Object[] { args });
+            Object result = myself.staticMainMth.invoke(myself.mainInst,
+                    new Object[] { args });
+            return (Boolean) result;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -61,6 +68,7 @@ class Compiler {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // Reference to ECJ 'Main' compiler class.
@@ -135,36 +143,77 @@ class Compiler {
             IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
 
-        URLClassLoader loader;
-
-        // Find the ECJ JAR file
-        if (new File(ECJ_JAR_FILE).exists()) {
-            // It is in the working directory
-            URL ecjURL = new URL("file:" + ECJ_JAR_FILE);
-            loader = new URLClassLoader(new URL[] { ecjURL });
-        } else {
-            // Assume it is next to the tools.jar
-            URLClassLoader bogusLoader = new URLClassLoader(new URL[] {});
-            URLClassLoader parentLoader = (URLClassLoader) bogusLoader
-                    .getParent();
-            URL[] uls = parentLoader.getURLs();
-            URL ecjURL = null;
-            for (int i = 0; i < uls.length; i++) {
-                URL l = uls[i];
-                String filename = new File(l.getFile()).getName();
-                if (filename.equals("tools.jar")) {
-                    ecjURL = new URL(l, ECJ_JAR_FILE);
-                    break;
-                }
-            }
-            if (ecjURL == null) {
-                throw new RuntimeException("Cannot find file " + ECJ_JAR_FILE);
-            }
-            loader = new URLClassLoader(new URL[] { ecjURL });
+        // Find the ECJ JAR file, prefer those found near loaders
+        URL ecjURL = searchLoaders();
+        if (ecjURL == null) {
+            ecjURL = searchPaths();
+        }
+        if (ecjURL == null) {
+            throw new RuntimeException("Cannot find file " + ECJ_JAR_FILE);
         }
 
         // Load the ECJ main class
+        URLClassLoader loader = new URLClassLoader(new URL[] { ecjURL });
         ecjCompilerClass = loader.loadClass(MAIN_CLASS_NAME);
+    }
+
+    /*
+     * Looks for the ECJ JAR file in the current working directory, and in the
+     * jdk/lib of the current runtime. Answers with a URL of the JAR file if
+     * found, or null if not found.
+     */
+    private URL searchPaths() throws MalformedURLException {
+        // Search in current working directory
+        File cwdFile = new File(ECJ_JAR_FILE);
+        if (cwdFile.exists()) {
+            return cwdFile.toURL();
+        }
+
+        // Look for it via the java.home
+        File javaHomeFile = new File(System.getProperty("java.home")); //$NON-NLS-1$
+        String pathFromJDK = "lib" + File.separator + ECJ_JAR_FILE; //$NON-NLS-1$
+
+        // Is java.home pointing at a JDK?
+        File jdkBasedFile = new File(javaHomeFile, pathFromJDK);
+        if (jdkBasedFile.exists()) {
+            return jdkBasedFile.toURL();
+        }
+        // Maybe it is pointing at a JRE.
+        File jdkHomeFile = javaHomeFile.getParentFile();
+        if (jdkHomeFile == null) {
+            return null;
+        }
+        File jreBasedFile = new File(jdkHomeFile, pathFromJDK);
+        if (jreBasedFile.exists()) {
+            return jreBasedFile.toURL();
+        }
+
+        // We didn't find it
+        return null;
+    }
+
+    /*
+     * Find the ECJ jar by searching for the tools.jar location and figuring
+     * that it is alongside that.
+     */
+    private URL searchLoaders() throws MalformedURLException {
+        URLClassLoader bogusLoader = new URLClassLoader(new URL[] {});
+        ClassLoader parentLoader = bogusLoader.getParent();
+        while (parentLoader instanceof URLClassLoader) {
+            URLClassLoader parentURLLoader = (URLClassLoader) parentLoader;
+            URL[] uls = parentURLLoader.getURLs();
+            for (int i = 0; i < uls.length; i++) {
+                URL l = uls[i];
+                String filename = new File(l.getFile()).getName();
+                if (filename.equals(TOOLS_JAR_FILE)) {
+                    return new URL(l, ECJ_JAR_FILE);
+                }
+            }
+            // Not found here, move up a level
+            parentLoader = parentLoader.getParent();
+        }
+        // We didn't find it
+        return null;
     }
 
     /*
@@ -173,10 +222,10 @@ class Compiler {
      */
     protected void initializeMethods() throws SecurityException,
             NoSuchMethodException {
-        staticMainMth = ecjCompilerClass.getMethod("main",
+        staticMainMth = ecjCompilerClass.getMethod("main", //$NON-NLS-1$
                 new Class[] { String[].class });
         printUsageMth = ecjCompilerClass
-                .getMethod("printUsage", (Class[]) null);
+                .getMethod("printUsage", (Class[]) null); //$NON-NLS-1$
     }
 
     /**
