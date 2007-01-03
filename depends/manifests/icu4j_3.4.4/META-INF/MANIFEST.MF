@@ -1,12 +1,25 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Harmony ICU4J
-Bundle-SymbolicName: org.apache.harmony.icu4j
-Bundle-Version: 3.4.4
-Bundle-ClassPath: icu4j_3_4_4.jar
+Bundle-Name: ICU4J
+Bundle-SymbolicName: com.ibm.icu4j;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Export-Package: com.ibm.icu,
- com.ibm.icu.util,
- com.ibm.icu.text,
+Import-Package: java.io,
+ java.lang,
+ java.lang.ref,
+ java.lang.reflect,
+ java.math,
+ java.net,
+ java.nio,
+ java.nio.charset,
+ java.security,
+ java.text,
+ java.util,
+ java.util.jar,
+ java.util.regex,
+ java.util.zip
+Export-Package: com.ibm.icu.lang,
  com.ibm.icu.math,
- com.ibm.icu.lang
+ com.ibm.icu.text,
+ com.ibm.icu.util
