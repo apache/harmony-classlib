@@ -418,12 +418,9 @@ public class DirectoryManager extends NamingManager {
         if (nextContext instanceof DirContext) {
             // return as DirContext
             return (DirContext) nextContext;
-        } else if (nextContext != null) {
+        } else {
             // in case it's Context but not DirContext, wrap it as DirContext and return
             return new Context2DirContextWrapper(nextContext, cpe);
-        } else {
-            // return a dummy DirContext, even if no context is obtained
-            return new Context2DirContextWrapper(null, cpe);
         }
     }
 
