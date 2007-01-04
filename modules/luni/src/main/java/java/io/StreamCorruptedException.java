@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * When readObject() cannot read an object from the input stream due to missing
  * information (cyclic reference that doesn't match previous instance or missing
@@ -29,24 +28,23 @@ package java.io;
  */
 public class StreamCorruptedException extends ObjectStreamException {
 
-	private static final long serialVersionUID = 8983558202217591746L;
+    private static final long serialVersionUID = 8983558202217591746L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public StreamCorruptedException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public StreamCorruptedException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            the detail message for the exception.
-	 */
-	public StreamCorruptedException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            the detail message for the exception.
+     */
+    public StreamCorruptedException(String detailMessage) {
+        super(detailMessage);
+    }
 }

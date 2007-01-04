@@ -15,8 +15,7 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 /**
  * FileDescriptor is the lowest level representation of a File, Device, or
@@ -35,56 +34,55 @@ package java.io;
  * @see RandomAccessFile#getFD()
  */
 public final class FileDescriptor {
-	/** FileDescriptor representing Standard In */
-	public static final FileDescriptor in = new FileDescriptor();
 
-	/** FileDescriptor representing Standard Out */
-	public static final FileDescriptor out = new FileDescriptor();
+    /** FileDescriptor representing Standard In */
+    public static final FileDescriptor in = new FileDescriptor();
 
-	/** FileDescriptor representing Standard Error */
-	public static final FileDescriptor err = new FileDescriptor();
+    /** FileDescriptor representing Standard Out */
+    public static final FileDescriptor out = new FileDescriptor();
 
-	/**
-	 * Represents a link to any underlying OS resources for this FileDescriptor.
-	 * A value of -1 indicates that this FileDescriptor is invalid.
-	 */
-	long descriptor = -1;
+    /** FileDescriptor representing Standard Error */
+    public static final FileDescriptor err = new FileDescriptor();
 
-	private static native void oneTimeInitialization();
+    /**
+     * Represents a link to any underlying OS resources for this FileDescriptor.
+     * A value of -1 indicates that this FileDescriptor is invalid.
+     */
+    long descriptor = -1;
 
-	static {
-		in.descriptor = 0;
-		out.descriptor = 1;
-		err.descriptor = 2;
+    private static native void oneTimeInitialization();
 
-		oneTimeInitialization();
-	}
+    static {
+        in.descriptor = 0;
+        out.descriptor = 1;
+        err.descriptor = 2;
 
-	/**
-	 * Constructs a new FileDescriptor containing an invalid handle. This
-	 * constructor does nothing interesting. Provided for signature
-	 * compatibility.
-	 * 
-	 */
-	public FileDescriptor() {
-		super();
-	}
+        oneTimeInitialization();
+    }
 
-	/**
-	 * Ensures that data which is buffered within the underlying implementation
-	 * is written out to the appropriate device before returning.
-	 * 
-	 * @throws SyncFailedException
-	 *             when the operation fails
-	 */
-	public native void sync() throws SyncFailedException;
+    /**
+     * Constructs a new FileDescriptor containing an invalid handle. This
+     * constructor does nothing interesting. Provided for signature
+     * compatibility.
+     */
+    public FileDescriptor() {
+        super();
+    }
 
-	/**
-	 * Answers a boolean indicating whether or not this FileDescriptor is valid.
-	 * 
-	 * @return <code>true</code> if this FileDescriptor is valid,
-	 *         <code>false</code> otherwise
-	 */
-	public native boolean valid();
+    /**
+     * Ensures that data which is buffered within the underlying implementation
+     * is written out to the appropriate device before returning.
+     * 
+     * @throws SyncFailedException
+     *             when the operation fails
+     */
+    public native void sync() throws SyncFailedException;
 
+    /**
+     * Answers a boolean indicating whether or not this FileDescriptor is valid.
+     * 
+     * @return <code>true</code> if this FileDescriptor is valid,
+     *         <code>false</code> otherwise
+     */
+    public native boolean valid();
 }

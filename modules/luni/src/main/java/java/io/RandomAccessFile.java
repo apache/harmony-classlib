@@ -91,7 +91,6 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
                 // Sync file, but not necessarily metadata
                 options = IFileSystem.O_RDWRSYNC;
             }
-
         } else {
             throw new IllegalArgumentException(Msg.getString("K0081")); //$NON-NLS-1$
         }
@@ -114,6 +113,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
             try {
                 fd.sync();
             } catch (IOException e) {
+                // Ignored
             }
         }
     }
@@ -125,7 +125,6 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      * <code>"user.dir"</code>. The access mode may be one of
      * <code>"r"</code> for read access only, or <code>"rw"</code> for
      * read/write access.
-     * 
      * 
      * @param fileName
      *            the filename of the file to open.
@@ -208,6 +207,13 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
         return fileSystem.seek(fd.descriptor, 0L, IFileSystem.SEEK_CUR);
     }
 
+    /**
+     * Checks to see if the file is currently open. Returns silently if it is,
+     * and throws an exception if it is not.
+     * 
+     * @throws IOException
+     *             the receiver is closed.
+     */
     private synchronized void openCheck() throws IOException {
         if (fd.descriptor < 0) {
             throw new IOException();
@@ -328,10 +334,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final boolean readBoolean() throws IOException {
         int temp = this.read();
-        if (temp >= 0) {
-            return temp != 0;
+        if (temp < 0) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return temp != 0;
     }
 
     /**
@@ -346,10 +352,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final byte readByte() throws IOException {
         int temp = this.read();
-        if (temp >= 0) {
-            return (byte) temp;
+        if (temp < 0) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return (byte) temp;
     }
 
     /**
@@ -364,10 +370,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final char readChar() throws IOException {
         byte[] buffer = new byte[2];
-        if (read(buffer, 0, buffer.length) == buffer.length) {
-            return (char) (((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff));
+        if (read(buffer, 0, buffer.length) != buffer.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return (char) (((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff));
     }
 
     /**
@@ -437,24 +443,21 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final void readFully(byte[] buffer, int offset, int count)
             throws IOException {
-        if (buffer != null) {
-            // avoid int overflow
-            if (0 <= offset && offset <= buffer.length && 0 <= count
-                    && count <= buffer.length - offset) {
-                while (count > 0) {
-                    int result = read(buffer, offset, count);
-                    if (result >= 0) {
-                        offset += result;
-                        count -= result;
-                    } else {
-                        throw new EOFException();
-                    }
-                }
-            } else {
-                throw new IndexOutOfBoundsException();
-            }
-        } else {
+        if (buffer == null) {
             throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+        }
+        // avoid int overflow
+        if (offset < 0 || offset > buffer.length || count < 0
+                || count > buffer.length - offset) {
+            throw new IndexOutOfBoundsException();
+        }
+        while (count > 0) {
+            int result = read(buffer, offset, count);
+            if (result < 0) {
+                throw new EOFException();
+            }
+            offset += result;
+            count -= result;
         }
     }
 
@@ -470,11 +473,11 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final int readInt() throws IOException {
         byte[] buffer = new byte[4];
-        if (read(buffer, 0, buffer.length) == buffer.length) {
-            return ((buffer[0] & 0xff) << 24) + ((buffer[1] & 0xff) << 16)
-                    + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
+        if (read(buffer, 0, buffer.length) != buffer.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return ((buffer[0] & 0xff) << 24) + ((buffer[1] & 0xff) << 16)
+                + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);
     }
 
     /**
@@ -533,15 +536,15 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final long readLong() throws IOException {
         byte[] buffer = new byte[8];
-        if (read(buffer, 0, buffer.length) == buffer.length) {
-            return ((long) (((buffer[0] & 0xff) << 24)
-                    + ((buffer[1] & 0xff) << 16) + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff)) << 32)
-                    + ((long) (buffer[4] & 0xff) << 24)
-                    + ((buffer[5] & 0xff) << 16)
-                    + ((buffer[6] & 0xff) << 8)
-                    + (buffer[7] & 0xff);
+        if (read(buffer, 0, buffer.length) != buffer.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return ((long) (((buffer[0] & 0xff) << 24) + ((buffer[1] & 0xff) << 16)
+                + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff)) << 32)
+                + ((long) (buffer[4] & 0xff) << 24)
+                + ((buffer[5] & 0xff) << 16)
+                + ((buffer[6] & 0xff) << 8)
+                + (buffer[7] & 0xff);
     }
 
     /**
@@ -556,10 +559,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final short readShort() throws IOException {
         byte[] buffer = new byte[2];
-        if (read(buffer, 0, buffer.length) == buffer.length) {
-            return (short) (((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff));
+        if (read(buffer, 0, buffer.length) != buffer.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return (short) (((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff));
     }
 
     /**
@@ -575,10 +578,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final int readUnsignedByte() throws IOException {
         int temp = this.read();
-        if (temp >= 0) {
-            return temp;
+        if (temp < 0) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return temp;
     }
 
     /**
@@ -595,10 +598,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public final int readUnsignedShort() throws IOException {
         byte[] buffer = new byte[2];
-        if (read(buffer, 0, buffer.length) == buffer.length) {
-            return ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
+        if (read(buffer, 0, buffer.length) != buffer.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);
     }
 
     /**
@@ -617,10 +620,10 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
             return ""; //$NON-NLS-1$
         }
         byte[] buf = new byte[utfSize];
-        if (read(buf, 0, buf.length) == buf.length) {
-            return Util.convertFromUTF8(buf, 0, utfSize);
+        if (read(buf, 0, buf.length) != buf.length) {
+            throw new EOFException();
         }
-        throw new EOFException();
+        return Util.convertFromUTF8(buf, 0, utfSize);
     }
 
     /**
@@ -1014,27 +1017,26 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
                 utfCount += 3;
             }
         }
-        if (utfCount <= 65535) {
-            byte utfBytes[] = new byte[utfCount + 2];
-            int utfIndex = 2;
-            for (int i = 0; i < length; i++) {
-                int charValue = str.charAt(i);
-                if (charValue > 0 && charValue <= 127) {
-                    utfBytes[utfIndex++] = (byte) charValue;
-                } else if (charValue <= 2047) {
-                    utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                } else {
-                    utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                }
-            }
-            utfBytes[0] = (byte) (utfCount >> 8);
-            utfBytes[1] = (byte) utfCount;
-            write(utfBytes);
-        } else {
+        if (utfCount > 65535) {
             throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
         }
+        byte utfBytes[] = new byte[utfCount + 2];
+        int utfIndex = 2;
+        for (int i = 0; i < length; i++) {
+            int charValue = str.charAt(i);
+            if (charValue > 0 && charValue <= 127) {
+                utfBytes[utfIndex++] = (byte) charValue;
+            } else if (charValue <= 2047) {
+                utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+            } else {
+                utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+            }
+        }
+        utfBytes[0] = (byte) (utfCount >> 8);
+        utfBytes[1] = (byte) utfCount;
+        write(utfBytes);
     }
 }

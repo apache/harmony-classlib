@@ -17,33 +17,30 @@
 
 package java.io;
 
-
 /**
  * This End Of File (EOF) exception is thrown when a program encounters the end
  * of a file or stream during an operation.
- * 
  */
 public class EOFException extends IOException {
-    
+
     private static final long serialVersionUID = 6433858223774886977L;
-    
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public EOFException() {
-		super();
-	}
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public EOFException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     * 
+     */
+    public EOFException() {
+        super();
+    }
 
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public EOFException(String detailMessage) {
+        super(detailMessage);
+    }
 }

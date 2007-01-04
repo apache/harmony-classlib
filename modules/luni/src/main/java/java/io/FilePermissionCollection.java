@@ -15,8 +15,7 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -27,56 +26,55 @@ import java.util.Vector;
  * FilePermissionCollection is a class which holds a collection of
  * FilePermission objects and can answer a boolean indicating whether or not a
  * specific permissions is implied by a FilePermissionCollection.
- * 
  */
-final class FilePermissionCollection extends PermissionCollection
-		implements Serializable {
-	private static final long serialVersionUID = 2202956749081564585L;
+final class FilePermissionCollection extends PermissionCollection implements
+        Serializable {
 
-	Vector<Permission> permissions = new Vector<Permission>();
+    private static final long serialVersionUID = 2202956749081564585L;
 
-	/**
-	 * Construct a new FilePermissionCollection.
-	 */
-	public FilePermissionCollection() {
-		super();
-	}
+    Vector<Permission> permissions = new Vector<Permission>();
 
-	/**
-	 * Add a permission Object to the permission collection.
-	 * 
-	 * @see java.security.PermissionCollection#add(java.security.Permission)
-	 */
-	@Override
+    /**
+     * Construct a new FilePermissionCollection.
+     */
+    public FilePermissionCollection() {
+        super();
+    }
+
+    /**
+     * Add a permission Object to the permission collection.
+     * 
+     * @see java.security.PermissionCollection#add(java.security.Permission)
+     */
+    @Override
     public void add(Permission permission) {
-        if (!isReadOnly()) {
-            if (permission instanceof FilePermission) {
-                permissions.addElement(permission);
-            } else {
-                throw new IllegalArgumentException(permission.toString());
-            }
-        } else {
+        if (isReadOnly()) {
             throw new IllegalStateException();
+        }
+        if (permission instanceof FilePermission) {
+            permissions.addElement(permission);
+        } else {
+            throw new IllegalArgumentException(permission.toString());
         }
     }
 
-	/**
+    /**
      * Answers an enumeration for the collection of permissions.
      * 
      * @see java.security.PermissionCollection#elements()
      */
-	@Override
+    @Override
     public Enumeration<Permission> elements() {
-		return permissions.elements();
-	}
+        return permissions.elements();
+    }
 
-	/**
-	 * Answers a boolean indicating whether or not this permissions collection
-	 * implies a specific <code>permission</code>.
-	 * 
-	 * @see java.security.PermissionCollection#implies(java.security.Permission)
-	 */
-	@Override
+    /**
+     * Answers a boolean indicating whether or not this permissions collection
+     * implies a specific <code>permission</code>.
+     * 
+     * @see java.security.PermissionCollection#implies(java.security.Permission)
+     */
+    @Override
     public boolean implies(Permission permission) {
         if (permission instanceof FilePermission) {
             FilePermission fp = (FilePermission) permission;

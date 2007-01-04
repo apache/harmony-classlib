@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * This IO exception is thrown when a program attempts to read a UTF-8 String
  * and the encoding is incorrect.
@@ -27,23 +26,22 @@ package java.io;
 public class UTFDataFormatException extends IOException {
 
     private static final long serialVersionUID = 420743449228280612L;
-    
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public UTFDataFormatException() {
-		super();
-	}
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            the detail message for the exception.
-	 */
-	public UTFDataFormatException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public UTFDataFormatException() {
+        super();
+    }
 
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            the detail message for the exception.
+     */
+    public UTFDataFormatException(String detailMessage) {
+        super(detailMessage);
+    }
 }

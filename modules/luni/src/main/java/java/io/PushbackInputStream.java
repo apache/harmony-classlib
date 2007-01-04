@@ -25,7 +25,6 @@ import org.apache.harmony.luni.util.Msg;
  * useful. There is a progammable limit to the number of bytes which may be
  * pushed back. If the buffer of pushed back bytes is empty, bytes are read from
  * the source input stream.
- * 
  */
 public class PushbackInputStream extends FilterInputStream {
     /**
@@ -46,7 +45,6 @@ public class PushbackInputStream extends FilterInputStream {
      * 
      * @param in
      *            the InputStream to allow pushback operations on.
-     * 
      */
     public PushbackInputStream(InputStream in) {
         super(in);
@@ -65,12 +63,11 @@ public class PushbackInputStream extends FilterInputStream {
      */
     public PushbackInputStream(InputStream in, int size) {
         super(in);
-        if (size > 0) {
-            buf = (in == null) ? null : new byte[size];
-            pos = size;
-        } else {
+        if (size <= 0) {
             throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
         }
+        buf = (in == null) ? null : new byte[size];
+        pos = size;
     }
 
     /**
@@ -86,10 +83,10 @@ public class PushbackInputStream extends FilterInputStream {
      */
     @Override
     public int available() throws IOException {
-        if (buf != null) {
-            return buf.length - pos + in.available();
+        if (buf == null) {
+            throw new IOException();
         }
-        throw new IOException();
+        return buf.length - pos + in.available();
     }
 
     /**
@@ -134,16 +131,16 @@ public class PushbackInputStream extends FilterInputStream {
      */
     @Override
     public int read() throws IOException {
-        if (buf != null) {
-            // Is there a pushback byte available?
-            if (pos < buf.length) {
-                return (buf[pos++] & 0xFF);
-            }
-            // Assume read() in the InputStream will return low-order byte or -1
-            // if end of stream.
-            return in.read();
+        if (buf == null) {
+            throw new IOException();
         }
-        throw new IOException();
+        // Is there a pushback byte available?
+        if (pos < buf.length) {
+            return (buf[pos++] & 0xFF);
+        }
+        // Assume read() in the InputStream will return low-order byte or -1
+        // if end of stream.
+        return in.read();
     }
 
     /**
@@ -167,39 +164,41 @@ public class PushbackInputStream extends FilterInputStream {
      */
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
-        if (buf != null && buffer != null) {
-            // avoid int overflow
-            if (0 <= offset && offset <= buffer.length && 0 <= length
-                    && length <= buffer.length - offset) {
-                int copiedBytes = 0, copyLength = 0, newOffset = offset;
-                // Are there pushback bytes available?
-                if (pos < buf.length) {
-                    copyLength = (buf.length - pos >= length) ? length
-                            : buf.length - pos;
-                    System.arraycopy(buf, pos, buffer, newOffset, copyLength);
-                    newOffset += copyLength;
-                    copiedBytes += copyLength;
-                    // Use up the bytes in the local buffer
-                    pos += copyLength;
-                }
-                // Have we copied enough?
-                if (copyLength == length) {
-                    return length;
-                }
-                int inCopied = in.read(buffer, newOffset, length - copiedBytes);
-                if (inCopied > 0) {
-                    return inCopied + copiedBytes;
-                }
-                if (copiedBytes == 0) {
-                    return inCopied;
-                }
-                return copiedBytes;
-            }
-            throw new ArrayIndexOutOfBoundsException();
-        } else if (buf == null) {
+        if (buf == null) {
             throw new IOException();
         }
-        throw new NullPointerException();
+        if (buffer == null) {
+            throw new NullPointerException();
+        }
+        // avoid int overflow
+        if (offset < 0 || offset > buffer.length || length < 0
+                || length > buffer.length - offset) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        int copiedBytes = 0, copyLength = 0, newOffset = offset;
+        // Are there pushback bytes available?
+        if (pos < buf.length) {
+            copyLength = (buf.length - pos >= length) ? length : buf.length
+                    - pos;
+            System.arraycopy(buf, pos, buffer, newOffset, copyLength);
+            newOffset += copyLength;
+            copiedBytes += copyLength;
+            // Use up the bytes in the local buffer
+            pos += copyLength;
+        }
+        // Have we copied enough?
+        if (copyLength == length) {
+            return length;
+        }
+        int inCopied = in.read(buffer, newOffset, length - copiedBytes);
+        if (inCopied > 0) {
+            return inCopied + copiedBytes;
+        }
+        if (copiedBytes == 0) {
+            return inCopied;
+        }
+        return copiedBytes;
     }
 
     /**
@@ -219,22 +218,21 @@ public class PushbackInputStream extends FilterInputStream {
      */
     @Override
     public long skip(long count) throws IOException {
-        if (in != null) {
-            if (count <= 0) {
-                return 0;
-            }
-            int numSkipped = 0;
-            if (pos < buf.length) {
-                numSkipped += (count < buf.length - pos) ?
-                    count : buf.length - pos;
-                pos += numSkipped;
-            }
-            if (numSkipped < count) {
-                numSkipped += in.skip(count - numSkipped);
-            }
-            return numSkipped;
+        if (in == null) {
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
-        throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+        if (count <= 0) {
+            return 0;
+        }
+        int numSkipped = 0;
+        if (pos < buf.length) {
+            numSkipped += (count < buf.length - pos) ? count : buf.length - pos;
+            pos += numSkipped;
+        }
+        if (numSkipped < count) {
+            numSkipped += in.skip(count - numSkipped);
+        }
+        return numSkipped;
     }
 
     /**
@@ -279,13 +277,13 @@ public class PushbackInputStream extends FilterInputStream {
             throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
         }
         // avoid int overflow
-        if (0 <= offset && offset <= buffer.length && 0 <= length
-                && length <= buffer.length - offset) {
-            for (int i = offset + length - 1; i >= offset; i--) {
-                unread(buffer[i]);
-            }
-        } else {
+        if (offset < 0 || offset > buffer.length || length < 0
+                || length > buffer.length - offset) {
             throw new ArrayIndexOutOfBoundsException();
+        }
+
+        for (int i = offset + length - 1; i >= offset; i--) {
+            unread(buffer[i]);
         }
     }
 
@@ -301,15 +299,13 @@ public class PushbackInputStream extends FilterInputStream {
      *             If the pushback buffer is already full.
      */
     public void unread(int oneByte) throws IOException {
-        if (buf != null) {
-            if (pos != 0) {
-                buf[--pos] = (byte) oneByte;
-            } else {
-                throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
-            }
-        } else {
+        if (buf == null) {
             throw new IOException();
         }
+        if (pos == 0) {
+            throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+        }
+        buf[--pos] = (byte) oneByte;
     }
 
     /**
@@ -334,7 +330,6 @@ public class PushbackInputStream extends FilterInputStream {
      * @throws IOException
      *             If the method is called
      */
-
     @Override
     public void reset() throws IOException {
         throw new IOException();

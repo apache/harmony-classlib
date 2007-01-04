@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * When an implementation of ObjectOutput.writeObject() is passed an object that
  * is not serializable, it will throw this type of exception. This can happen if
@@ -31,25 +30,24 @@ package java.io;
  */
 public class NotSerializableException extends ObjectStreamException {
 
-	private static final long serialVersionUID = 2906642554793891381L;
+    private static final long serialVersionUID = 2906642554793891381L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public NotSerializableException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     * 
+     */
+    public NotSerializableException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public NotSerializableException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public NotSerializableException(String detailMessage) {
+        super(detailMessage);
+    }
 }

@@ -19,7 +19,6 @@ package java.io;
 
 import java.security.BasicPermission;
 
-
 /**
  * SerializablePermission objects represent permission to access unsafe
  * serialization operations. The name of the permission should be one of:
@@ -33,32 +32,32 @@ import java.security.BasicPermission;
  * @see ObjectStreamConstants
  */
 public final class SerializablePermission extends BasicPermission {
-	private static final long serialVersionUID = 8537212141160296410L;
+    private static final long serialVersionUID = 8537212141160296410L;
 
-    //Serializable field
-	@SuppressWarnings("unused")
+    // Serializable field
+    @SuppressWarnings("unused")
     private String actions;
 
-	/**
-	 * Creates an instance of this class with the given name.
-	 * 
-	 * @param permissionName
-	 *            the name of the new permission.
-	 */
-	public SerializablePermission(String permissionName) {
-		super(permissionName);
-	}
+    /**
+     * Creates an instance of this class with the given name.
+     * 
+     * @param permissionName
+     *            the name of the new permission.
+     */
+    public SerializablePermission(String permissionName) {
+        super(permissionName);
+    }
 
-	/**
-	 * Creates an instance of this class with the given name and action list.
-	 * The action list is ignored.
-	 * 
-	 * @param name
-	 *            the name of the new permission.
-	 * @param actions
-	 *            ignored.
-	 */
-	public SerializablePermission(String name, String actions) {
-		super(name, actions);
-	}
+    /**
+     * Creates an instance of this class with the given name and action list.
+     * The action list is ignored.
+     * 
+     * @param name
+     *            the name of the new permission.
+     * @param actions
+     *            ignored.
+     */
+    public SerializablePermission(String name, String actions) {
+        super(name, actions);
+    }
 }

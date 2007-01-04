@@ -83,5 +83,4 @@ public class InvalidClassException extends ObjectStreamException {
         }
         return msg;
     }
-
 }

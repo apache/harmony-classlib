@@ -15,8 +15,7 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 /**
  * Objects to perform validations on other objects read with serialization
@@ -27,11 +26,11 @@ package java.io;
  * @see ObjectInputStream
  */
 public interface ObjectInputValidation {
-	/**
-	 * Validates an object read with serialization.
-	 * 
-	 * @throws InvalidObjectException
-	 *             if the receiver fails to validate the object read
-	 */
-	public void validateObject() throws InvalidObjectException;
+    /**
+     * Validates an object read with serialization.
+     * 
+     * @throws InvalidObjectException
+     *             if the receiver fails to validate the object read
+     */
+    public void validateObject() throws InvalidObjectException;
 }

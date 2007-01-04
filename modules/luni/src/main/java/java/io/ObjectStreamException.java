@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * This is the superclass of all exceptions that can happen when serializing or
  * deserialing objects. The state of the stream is unknown when one of these
@@ -29,29 +28,26 @@ package java.io;
  * @see OptionalDataException
  * @see StreamCorruptedException
  * @see WriteAbortedException
- * 
  */
 public abstract class ObjectStreamException extends IOException {
 
-	private static final long serialVersionUID = 7260898174833392607L;
+    private static final long serialVersionUID = 7260898174833392607L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	protected ObjectStreamException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    protected ObjectStreamException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	protected ObjectStreamException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    protected ObjectStreamException(String detailMessage) {
+        super(detailMessage);
+    }
 }

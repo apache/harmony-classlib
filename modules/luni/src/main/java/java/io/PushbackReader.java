@@ -68,12 +68,11 @@ public class PushbackReader extends FilterReader {
      */
     public PushbackReader(Reader in, int size) {
         super(in);
-        if (size > 0) {
-            buf = new char[size];
-            pos = size;
-        } else {
+        if (size <= 0) {
             throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
         }
+        buf = new char[size];
+        pos = size;
     }
 
     /**
@@ -134,18 +133,18 @@ public class PushbackReader extends FilterReader {
     @Override
     public int read() throws IOException {
         synchronized (lock) {
-            if (buf != null) {
-                /* Is there a pushback character available? */
-                if (pos < buf.length) {
-                    return buf[pos++];
-                }
-                /**
-                 * Assume read() in the InputStream will return 2 lowest-order
-                 * bytes or -1 if end of stream.
-                 */
-                return in.read();
+            if (buf == null) {
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            /* Is there a pushback character available? */
+            if (pos < buf.length) {
+                return buf[pos++];
+            }
+            /**
+             * Assume read() in the InputStream will return 2 lowest-order bytes
+             * or -1 if end of stream.
+             */
+            return in.read();
         }
     }
 
@@ -170,41 +169,42 @@ public class PushbackReader extends FilterReader {
      */
     @Override
     public int read(char[] buffer, int offset, int count) throws IOException {
-		synchronized (lock) {
-			if (null == buf) {
-				throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-			}
-			// avoid int overflow
-			if (offset < 0 || count < 0 || offset > buffer.length - count) {
-				throw new IndexOutOfBoundsException();
-			}
-			int copiedChars = 0;
-			int copyLength = 0;
-			int newOffset = offset;
-			/* Are there pushback chars available? */
-			if (pos < buf.length) {
-				copyLength = (buf.length - pos >= count) ? count : buf.length
-						- pos;
-				System.arraycopy(buf, pos, buffer, newOffset, copyLength);
-				newOffset += copyLength;
-				copiedChars += copyLength;
-				/* Use up the chars in the local buffer */
-				pos += copyLength;
-			}
-			/* Have we copied enough? */
-			if (copyLength == count) {
-				return count;
-			}
-			int inCopied = in.read(buffer, newOffset, count - copiedChars);
-			if (inCopied > 0) {
-				return inCopied + copiedChars;
-			}
-			if (copiedChars == 0) {
-				return inCopied;
-			}
-			return copiedChars;
-		}
-	}
+        synchronized (lock) {
+            if (null == buf) {
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            }
+            // avoid int overflow
+            if (offset < 0 || count < 0 || offset > buffer.length - count) {
+                throw new IndexOutOfBoundsException();
+            }
+
+            int copiedChars = 0;
+            int copyLength = 0;
+            int newOffset = offset;
+            /* Are there pushback chars available? */
+            if (pos < buf.length) {
+                copyLength = (buf.length - pos >= count) ? count : buf.length
+                        - pos;
+                System.arraycopy(buf, pos, buffer, newOffset, copyLength);
+                newOffset += copyLength;
+                copiedChars += copyLength;
+                /* Use up the chars in the local buffer */
+                pos += copyLength;
+            }
+            /* Have we copied enough? */
+            if (copyLength == count) {
+                return count;
+            }
+            int inCopied = in.read(buffer, newOffset, count - copiedChars);
+            if (inCopied > 0) {
+                return inCopied + copiedChars;
+            }
+            if (copiedChars == 0) {
+                return inCopied;
+            }
+            return copiedChars;
+        }
+    }
 
     /**
      * Answers a <code>boolean</code> indicating whether or not this
@@ -224,10 +224,10 @@ public class PushbackReader extends FilterReader {
     @Override
     public boolean ready() throws IOException {
         synchronized (lock) {
-            if (buf != null) {
-                return (buf.length - pos > 0 || in.ready());
+            if (buf == null) {
+                throw new IOException(Msg.getString("K0080")); //$NON-NLS-1$
             }
-            throw new IOException(Msg.getString("K0080")); //$NON-NLS-1$
+            return (buf.length - pos > 0 || in.ready());
         }
     }
 
@@ -279,26 +279,26 @@ public class PushbackReader extends FilterReader {
      *             If the pushback buffer becomes, or is, full.
      */
     public void unread(char[] buffer, int offset, int count) throws IOException {
-		synchronized (lock) {
-			if (buf == null) {
-				throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-			}
-			if (count > pos) {
-				// Pushback buffer full
-				throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
-			}
-			if (buffer == null) {
-				throw new NullPointerException();
-			}
-			// avoid int overflow
-			if (offset < 0 || count < 0 || offset > buffer.length - count) {
-				throw new ArrayIndexOutOfBoundsException();
-			}
-			for (int i = offset + count - 1; i >= offset; i--) {
-				unread(buffer[i]);
-			}
-		}
-	}
+        synchronized (lock) {
+            if (buf == null) {
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            }
+            if (count > pos) {
+                // Pushback buffer full
+                throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+            }
+            if (buffer == null) {
+                throw new NullPointerException();
+            }
+            // avoid int overflow
+            if (offset < 0 || count < 0 || offset > buffer.length - count) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+            for (int i = offset + count - 1; i >= offset; i--) {
+                unread(buffer[i]);
+            }
+        }
+    }
 
     /**
      * Push back one <code>char</code>. Takes the char <code>oneChar</code>
@@ -313,15 +313,13 @@ public class PushbackReader extends FilterReader {
      */
     public void unread(int oneChar) throws IOException {
         synchronized (lock) {
-            if (buf != null) {
-                if (pos != 0) {
-                    buf[--pos] = (char) oneChar;
-                } else {
-                    throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
-                }
-            } else {
-            	throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            if (buf == null) {
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
+            if (pos == 0) {
+                throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+            }
+            buf[--pos] = (char) oneChar;
         }
     }
 
@@ -346,26 +344,26 @@ public class PushbackReader extends FilterReader {
             throw new IllegalArgumentException();
         }
         synchronized (lock) {
-            if (buf != null) {
-                if (count == 0) {
-                    return 0;
-                }
-                long inSkipped;
-                int availableFromBuffer = buf.length - pos;
-                if (availableFromBuffer > 0) {
-                    long requiredFromIn = count - availableFromBuffer;
-                    if (requiredFromIn <= 0) {
-                        pos += count;
-                        return count;
-                    }
-                    pos += availableFromBuffer;
-                    inSkipped = in.skip(requiredFromIn);
-                } else {
-                    inSkipped = in.skip(count);
-                }
-                return inSkipped + availableFromBuffer;
+            if (buf == null) {
+                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            if (count == 0) {
+                return 0;
+            }
+            long inSkipped;
+            int availableFromBuffer = buf.length - pos;
+            if (availableFromBuffer > 0) {
+                long requiredFromIn = count - availableFromBuffer;
+                if (requiredFromIn <= 0) {
+                    pos += count;
+                    return count;
+                }
+                pos += availableFromBuffer;
+                inSkipped = in.skip(requiredFromIn);
+            } else {
+                inSkipped = in.skip(count);
+            }
+            return inSkipped + availableFromBuffer;
         }
     }
 }

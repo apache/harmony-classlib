@@ -53,7 +53,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             new byte[0]);
 
     // To put into objectsRead when reading unsharedObject
-    private static final Object UNSHARED_OBJ = new Object();  //$NON-LOCK-1$
+    private static final Object UNSHARED_OBJ = new Object(); // $NON-LOCK-1$
 
     // If the receiver has already read & not consumed a TC code
     private boolean hasPushbackTC;
@@ -107,19 +107,19 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
     // cache for readResolve methods
     private IdentityHashMap<Class<?>, Object> readResolveCache;
-    
-    private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String,Class<?>>();
-    
+
+    private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>();
+
     static {
-		PRIMITIVE_CLASSES.put("byte", byte.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("short", short.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("int", int.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("long", long.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("boolean", boolean.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("char", char.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("float", float.class); //$NON-NLS-1$
-		PRIMITIVE_CLASSES.put("double", double.class); //$NON-NLS-1$
-	}
+        PRIMITIVE_CLASSES.put("byte", byte.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("short", short.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("int", int.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("long", long.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("boolean", boolean.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("char", char.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("float", float.class); //$NON-NLS-1$
+        PRIMITIVE_CLASSES.put("double", double.class); //$NON-NLS-1$
+    }
 
     // Internal type used to keep track of validators & corresponding priority
     static class InputValidationDesc {
@@ -585,19 +585,19 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
-        if (buffer != null) {
-            // avoid int overflow
-            if (0 <= offset && offset <= buffer.length && 0 <= length
-                    && length <= buffer.length - offset) {
-                if (length == 0) {
-                    return 0;
-                }
-                checkReadPrimitiveTypes();
-                return primitiveData.read(buffer, offset, length);
-            }
+        if (buffer == null) {
+            throw new NullPointerException();
+        }
+        // avoid int overflow
+        if (offset < 0 || offset > buffer.length || length < 0
+                || length > buffer.length - offset) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        throw new NullPointerException();
+        if (length == 0) {
+            return 0;
+        }
+        checkReadPrimitiveTypes();
+        return primitiveData.read(buffer, offset, length);
     }
 
     /**
@@ -721,7 +721,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 streamClass.setLoadFields(new ObjectStreamField[0]);
                 registerObjectRead(streamClass, Integer.valueOf(nextHandle()),
                         false);
-                checkedSetSuperClassDesc(streamClass, readClassDesc());                
+                checkedSetSuperClassDesc(streamClass, readClassDesc());
                 return streamClass;
             case TC_REFERENCE:
                 return (ObjectStreamClass) readCyclicReference();
@@ -957,20 +957,20 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             if (isPrimType) {
                 classSig = String.valueOf(typecode);
             } else {
-				// The spec says it is a UTF, but experience shows they dump
-				// this String using writeObject (unlike the field name, which
-				// is saved with writeUTF).
-                // And if resolveObject is enabled, the classSig may be modified 
-                // so that the original class descriptor cannot be read properly,
-                // so it is disabled.
-				boolean old = enableResolve;
-				try {
-					enableResolve = false;
-					classSig = (String) readObject();
-				} finally {
-					enableResolve = old;
-				}
-			}
+                // The spec says it is a UTF, but experience shows they dump
+                // this String using writeObject (unlike the field name, which
+                // is saved with writeUTF).
+                // And if resolveObject is enabled, the classSig may be modified
+                // so that the original class descriptor cannot be read
+                // properly, so it is disabled.
+                boolean old = enableResolve;
+                try {
+                    enableResolve = false;
+                    classSig = (String) readObject();
+                } finally {
+                    enableResolve = old;
+                }
+            }
             ObjectStreamField f = new ObjectStreamField(classSig, fieldName);
             fields[i] = f;
         }
@@ -995,13 +995,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     public GetField readFields() throws IOException, ClassNotFoundException,
             NotActiveException {
         // We can't be called from just anywhere. There are rules.
-        if (currentObject != null) {
-            EmulatedFieldsForLoading result = new EmulatedFieldsForLoading(
-                    currentClass);
-            readFieldValues(result);
-            return result;
+        if (currentObject == null) {
+            throw new NotActiveException();
         }
-        throw new NotActiveException();
+        EmulatedFieldsForLoading result = new EmulatedFieldsForLoading(
+                currentClass);
+        readFieldValues(result);
+        return result;
     }
 
     /**
@@ -1091,8 +1091,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     private void readFieldValues(Object obj, ObjectStreamClass classDesc)
             throws OptionalDataException, ClassNotFoundException, IOException {
         // Now we must read all fields and assign them to the receiver
-    	ObjectStreamField[] fields = classDesc.getLoadFields();
-    	fields = (null == fields ? new ObjectStreamField[] {} : fields);
+        ObjectStreamField[] fields = classDesc.getLoadFields();
+        fields = (null == fields ? new ObjectStreamField[] {} : fields);
         Class<?> declaringClass = classDesc.forClass();
         if (declaringClass == null && mustResolve) {
             throw new ClassNotFoundException(classDesc.getName());
@@ -1174,6 +1174,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                             objSetField(obj, declaringClass, fieldName, field
                                     .getTypeString(), toSet);
                         } catch (NoSuchFieldError e) {
+                            // Ignored
                         }
                     }
                 }
@@ -1577,19 +1578,20 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ClassNotFoundException {
         byte tc = nextTC();
         switch (tc) {
-        case TC_CLASSDESC:
-            return readEnumDescInternal();            
-        case TC_REFERENCE:
-            return (ObjectStreamClass) readCyclicReference();
-        case TC_NULL:
-            return null;
-        default:
-            throw new StreamCorruptedException(Msg.getString(
-                    "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
-        }        
+            case TC_CLASSDESC:
+                return readEnumDescInternal();
+            case TC_REFERENCE:
+                return (ObjectStreamClass) readCyclicReference();
+            case TC_NULL:
+                return null;
+            default:
+                throw new StreamCorruptedException(Msg.getString(
+                        "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+        }
     }
-    
-    private ObjectStreamClass readEnumDescInternal() throws IOException, ClassNotFoundException{
+
+    private ObjectStreamClass readEnumDescInternal() throws IOException,
+            ClassNotFoundException {
         ObjectStreamClass classDesc;
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
@@ -1604,7 +1606,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // Consume unread class annotation data and TC_ENDBLOCKDATA
         discardData();
         ObjectStreamClass superClass = readClassDesc();
-        checkedSetSuperClassDesc(classDesc, superClass);         
+        checkedSetSuperClassDesc(classDesc, superClass);
         // Check SUIDs, note all SUID for Enum is 0L
         if (0L != classDesc.getSerialVersionUID()
                 || 0L != superClass.getSerialVersionUID()) {
@@ -1623,8 +1625,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
         return classDesc;
     }
-    
-    @SuppressWarnings("unchecked") //For the Enum.valueOf call
+
+    @SuppressWarnings("unchecked")// For the Enum.valueOf call
     private Object readEnum(boolean unshared) throws OptionalDataException,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first
@@ -1689,7 +1691,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             // Check SUIDs
             verifySUID(newClassDesc);
             // Check base name of the class
-            verifyBaseName(newClassDesc);           
+            verifyBaseName(newClassDesc);
         } catch (ClassNotFoundException e) {
             if (mustResolve) {
                 throw e;
@@ -1709,7 +1711,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         // Consume unread class annotation data and TC_ENDBLOCKDATA
         discardData();
-        checkedSetSuperClassDesc(newClassDesc, readClassDesc());      
+        checkedSetSuperClassDesc(newClassDesc, readClassDesc());
         return newClassDesc;
     }
 
@@ -1761,8 +1763,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         // We must register the class descriptor before reading field
         // descriptors.
-        //if called outside of readObject, the descriptorHandle might be null
-        descriptorHandle = (null == descriptorHandle? Integer.valueOf(nextHandle()):descriptorHandle);
+        // if called outside of readObject, the descriptorHandle might be null
+        descriptorHandle = (null == descriptorHandle ? Integer
+                .valueOf(nextHandle()) : descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
         descriptorHandle = null;
 
@@ -1978,7 +1981,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 }
                 if (readResolveMethod != null) {
                     try {
-                        result = ((Method) readResolveMethod).invoke(result, (Object[]) null);
+                        result = ((Method) readResolveMethod).invoke(result,
+                                (Object[]) null);
                     } catch (IllegalAccessException iae) {
                     } catch (InvocationTargetException ite) {
                         Throwable target = ite.getTargetException();
@@ -2171,7 +2175,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     protected Object readObjectOverride() throws OptionalDataException,
             ClassNotFoundException, IOException {
         if (input == null) {
-        	return null;
+            return null;
         }
         // Subclasses must override.
         throw new IOException();
@@ -2339,7 +2343,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             int currentSize = oldValidations.length;
             validations = new InputValidationDesc[currentSize + 1];
             System.arraycopy(oldValidations, 0, validations, 0, i);
-            System.arraycopy(oldValidations, i, validations, i + 1, currentSize - i);
+            System.arraycopy(oldValidations, i, validations, i + 1, currentSize
+                    - i);
             validations[i] = desc;
         }
     }
@@ -2379,18 +2384,18 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      *             If the corresponding class cannot be found.
      */
     protected Class<?> resolveClass(ObjectStreamClass osClass)
-			throws IOException, ClassNotFoundException {		
-		String className = osClass.getName();
-		//if it is primitive class, for example, long.class
-		Class<?> cls = PRIMITIVE_CLASSES.get(className);
-		if (null == cls) {
-			//not primitive class
-            //Use the first non-null ClassLoader on the stack. If null, use the
-			// system class loader
-			return Class.forName(className, true, callerClassLoader);
-		}
-		return cls;
-	}
+            throws IOException, ClassNotFoundException {
+        String className = osClass.getName();
+        // if it is primitive class, for example, long.class
+        Class<?> cls = PRIMITIVE_CLASSES.get(className);
+        if (null == cls) {
+            // not primitive class
+            // Use the first non-null ClassLoader on the stack. If null, use the
+            // system class loader
+            return Class.forName(className, true, callerClassLoader);
+        }
+        return cls;
+    }
 
     /**
      * If <code>enableResolveObject()</code> was activated, computes the
@@ -2725,7 +2730,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      *            An ObjectStreamClass that was loaded from the stream.
      * 
      * @throws InvalidClassException
-     *          If the base name of the stream class does not match the VM class
+     *             If the base name of the stream class does not match the VM
+     *             class
      */
     private void verifyBaseName(ObjectStreamClass loadedStreamClass)
             throws InvalidClassException {
@@ -2748,15 +2754,15 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (k == -1 || k == (fullName.length() - 1)) {
             return fullName;
         }
-        return fullName.substring(k + 1);        
+        return fullName.substring(k + 1);
     }
-    
-    //Avoid recursive defining.
+
+    // Avoid recursive defining.
     private static void checkedSetSuperClassDesc(ObjectStreamClass desc,
-			ObjectStreamClass superDesc) throws StreamCorruptedException {
-		if (desc.equals(superDesc)) {
-			throw new StreamCorruptedException();
-		}
-		desc.setSuperclass(superDesc);
-	}
+            ObjectStreamClass superDesc) throws StreamCorruptedException {
+        if (desc.equals(superDesc)) {
+            throw new StreamCorruptedException();
+        }
+        desc.setSuperclass(superDesc);
+    }
 }

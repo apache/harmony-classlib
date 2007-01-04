@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * This type of exception is thrown by readObject() when it detects an exception
  * marker in the input stream. This marker indicates that when the object was
@@ -30,53 +29,53 @@ package java.io;
  */
 public class WriteAbortedException extends ObjectStreamException {
 
-	private static final long serialVersionUID = -3326426625597282442L;
+    private static final long serialVersionUID = -3326426625597282442L;
 
-	/**
-	 * The exception that was caused when writeObject() was attempting to
-	 * serialize the object
-	 */
-	public Exception detail;
+    /**
+     * The exception that was caused when writeObject() was attempting to
+     * serialize the object
+     */
+    public Exception detail;
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * the exception which caused the underlying problem when serializing the
-	 * object filled in.
-	 * 
-	 * @param detailMessage
-	 *            the detail message for the exception.
-	 * @param rootCause
-	 *            exception that caused the problem when serializing the object.
-	 */
-	public WriteAbortedException(String detailMessage, Exception rootCause) {
-		super(detailMessage);
-		detail = rootCause;
-		initCause(rootCause);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback, message and
+     * the exception which caused the underlying problem when serializing the
+     * object filled in.
+     * 
+     * @param detailMessage
+     *            the detail message for the exception.
+     * @param rootCause
+     *            exception that caused the problem when serializing the object.
+     */
+    public WriteAbortedException(String detailMessage, Exception rootCause) {
+        super(detailMessage);
+        detail = rootCause;
+        initCause(rootCause);
+    }
 
-	/**
-	 * Answers the extra information message which was provided when the
-	 * throwable was created. If no message was provided at creation time, then
-	 * answer null.
-	 * 
-	 * @return the receiver's message.
-	 */
-	@Override
+    /**
+     * Answers the extra information message which was provided when the
+     * throwable was created. If no message was provided at creation time, then
+     * answer null.
+     * 
+     * @return the receiver's message.
+     */
+    @Override
     public String getMessage() {
-		String msg = super.getMessage();
-		if (detail != null) {
-			msg = msg + "; " + detail.toString(); //$NON-NLS-1$
-		}
-		return msg;
-	}
+        String msg = super.getMessage();
+        if (detail != null) {
+            msg = msg + "; " + detail.toString(); //$NON-NLS-1$
+        }
+        return msg;
+    }
 
-	/**
-	 * Answers the cause of this Throwable, or null if there is no cause.
-	 * 
-	 * @return the receiver's cause.
-	 */
-	@Override
+    /**
+     * Answers the cause of this Throwable, or null if there is no cause.
+     * 
+     * @return the receiver's cause.
+     */
+    @Override
     public Throwable getCause() {
-		return detail;
-	}
+        return detail;
+    }
 }

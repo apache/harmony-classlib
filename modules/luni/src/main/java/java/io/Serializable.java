@@ -22,5 +22,5 @@ package java.io;
  * ObjectOutputStream/ObjectInputStream should implement this interface.
  */
 public interface Serializable {
-	/* empty */
+    /* empty */
 }

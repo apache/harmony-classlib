@@ -45,7 +45,9 @@ public class FileInputStream extends InputStream implements Closeable {
 
     private IFileSystem fileSystem = Platform.getFileSystem();
 
-    private static class RepositioningLock {}
+    private static class RepositioningLock {
+    }
+
     private Object repositioningLock = new RepositioningLock();
 
     /**
@@ -72,7 +74,7 @@ public class FileInputStream extends InputStream implements Closeable {
         fd = new FileDescriptor();
         fd.descriptor = fileSystem.open(file.properPath(true),
                 IFileSystem.O_RDONLY);
-		innerFD = true;
+        innerFD = true;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_RDONLY);
     }
@@ -169,7 +171,7 @@ public class FileInputStream extends InputStream implements Closeable {
                 }
             }
         }
-	synchronized (this) {
+        synchronized (this) {
             if (fd.descriptor >= 0 && innerFD) {
                 fileSystem.close(fd.descriptor);
                 fd.descriptor = -1;

@@ -30,6 +30,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * @see BufferedReader
  */
 public class BufferedWriter extends Writer {
+
     private Writer out;
 
     private char buf[];
@@ -65,12 +66,11 @@ public class BufferedWriter extends Writer {
      */
     public BufferedWriter(Writer out, int size) {
         super(out);
-        if (size > 0) {
-            this.out = out;
-            this.buf = new char[size];
-        } else {
+        if (size <= 0) {
             throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
         }
+        this.out = out;
+        this.buf = new char[size];
     }
 
     /**
@@ -84,7 +84,7 @@ public class BufferedWriter extends Writer {
     @Override
     public void close() throws IOException {
         synchronized (lock) {
-            if (isOpen()) {
+            if (!isClosed()) {
                 flush();
                 out.close();
                 buf = null;
@@ -103,26 +103,25 @@ public class BufferedWriter extends Writer {
     @Override
     public void flush() throws IOException {
         synchronized (lock) {
-            if (isOpen()) {
-                if (pos > 0) {
-                    out.write(buf, 0, pos);
-                }
-                pos = 0;
-                out.flush();
-            } else {
+            if (isClosed()) {
                 throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
             }
+            if (pos > 0) {
+                out.write(buf, 0, pos);
+            }
+            pos = 0;
+            out.flush();
         }
     }
 
     /**
-     * Answer a boolean indicating whether or not this BufferedWriter is open.
+     * Answer a boolean indicating whether or not this BufferedWriter is closed.
      * 
-     * @return <code>true</code> if this reader is open, <code>false</code>
+     * @return <code>true</code> if this reader is closed, <code>false</code>
      *         otherwise
      */
-    private boolean isOpen() {
-        return out != null;
+    private boolean isClosed() {
+        return out == null;
     }
 
     /**
@@ -159,7 +158,7 @@ public class BufferedWriter extends Writer {
     @Override
     public void write(char[] cbuf, int offset, int count) throws IOException {
         synchronized (lock) {
-            if (!isOpen()) {
+            if (isClosed()) {
                 throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
             }
             if (offset < 0 || offset > cbuf.length - count || count < 0) {
@@ -210,15 +209,14 @@ public class BufferedWriter extends Writer {
     @Override
     public void write(int oneChar) throws IOException {
         synchronized (lock) {
-            if (isOpen()) {
-                if (pos >= buf.length) {
-                    out.write(buf, 0, buf.length);
-                    pos = 0;
-                }
-                buf[pos++] = (char) oneChar;
-            } else {
+            if (isClosed()) {
                 throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
             }
+            if (pos >= buf.length) {
+                out.write(buf, 0, buf.length);
+                pos = 0;
+            }
+            buf[pos++] = (char) oneChar;
         }
     }
 
@@ -244,9 +242,8 @@ public class BufferedWriter extends Writer {
     @Override
     public void write(String str, int offset, int count) throws IOException {
         synchronized (lock) {
-            if (!isOpen()) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K005d")); //$NON-NLS-1$
+            if (isClosed()) {
+                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
             }
             if (count <= 0) {
                 return;

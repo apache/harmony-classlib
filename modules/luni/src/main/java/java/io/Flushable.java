@@ -30,7 +30,8 @@ public interface Flushable {
      * output.
      * </p>
      * 
-     * @throws IOException if there are any issues writing the data.
+     * @throws IOException
+     *             if there are any issues writing the data.
      */
     void flush() throws IOException;
 }

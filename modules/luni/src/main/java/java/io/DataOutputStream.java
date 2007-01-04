@@ -28,6 +28,7 @@ import org.apache.harmony.luni.util.Msg;
  * @see DataInputStream
  */
 public class DataOutputStream extends FilterOutputStream implements DataOutput {
+
     /** The number of bytes written out so far */
     protected int written;
 
@@ -368,8 +369,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
                 writeShort((int) utfCount);
                 writeUTFBytes(str, utfCount);
             } else {
-                throw new UTFDataFormatException(
-                        org.apache.harmony.luni.util.Msg.getString("K0068")); //$NON-NLS-1$
+                throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
             }
         }
     }

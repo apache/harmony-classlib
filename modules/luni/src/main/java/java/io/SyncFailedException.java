@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * This IO exception is thrown when the method <code>sync()</code> in
  * FileDescriptor failed to complete.
@@ -27,16 +26,15 @@ package java.io;
 public class SyncFailedException extends IOException {
 
     private static final long serialVersionUID = -2353342684412443330L;
-    
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            the detail message for the exception.
-	 */
-	public SyncFailedException(String detailMessage) {
-		super(detailMessage);
-	}
 
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            the detail message for the exception.
+     */
+    public SyncFailedException(String detailMessage) {
+        super(detailMessage);
+    }
 }

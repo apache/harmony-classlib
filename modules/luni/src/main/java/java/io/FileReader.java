@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * FileReader is class for turning a file into a character Stream. Data read
  * from the source is converted into characters. The encoding is assumed to
@@ -28,46 +27,45 @@ package java.io;
  */
 public class FileReader extends InputStreamReader {
 
-	/**
-	 * Construct a new FileReader on the given File <code>file</code>. If the
-	 * <code>file</code> specified cannot be found, throw a
-	 * FileNotFoundException.
-	 * 
-	 * @param file
-	 *            a File to be opened for reading characters from.
-	 * 
-	 * @throws FileNotFoundException
-	 *             if the file cannot be opened for reading.
-	 */
-	public FileReader(File file) throws FileNotFoundException {
-		super(new FileInputStream(file));
-	}
+    /**
+     * Construct a new FileReader on the given File <code>file</code>. If the
+     * <code>file</code> specified cannot be found, throw a
+     * FileNotFoundException.
+     * 
+     * @param file
+     *            a File to be opened for reading characters from.
+     * 
+     * @throws FileNotFoundException
+     *             if the file cannot be opened for reading.
+     */
+    public FileReader(File file) throws FileNotFoundException {
+        super(new FileInputStream(file));
+    }
 
-	/**
-	 * Construct a new FileReader on the given FileDescriptor <code>fd</code>.
-	 * Since a previously opened FileDescriptor is passed as an argument, no
-	 * FileNotFoundException is thrown.
-	 * 
-	 * @param fd
-	 *            the previously opened file descriptor.
-	 */
-	public FileReader(FileDescriptor fd) {
-		super(new FileInputStream(fd));
-	}
+    /**
+     * Construct a new FileReader on the given FileDescriptor <code>fd</code>.
+     * Since a previously opened FileDescriptor is passed as an argument, no
+     * FileNotFoundException is thrown.
+     * 
+     * @param fd
+     *            the previously opened file descriptor.
+     */
+    public FileReader(FileDescriptor fd) {
+        super(new FileInputStream(fd));
+    }
 
-	/**
-	 * Construct a new FileReader on the given file named <code>filename</code>.
-	 * If the <code>filename</code> specified cannot be found, throw a
-	 * FileNotFoundException.
-	 * 
-	 * @param filename
-	 *            an absolute or relative path specifying the file to open.
-	 * 
-	 * @throws FileNotFoundException
-	 *             if the filename cannot be opened for reading.
-	 */
-	public FileReader(String filename) throws FileNotFoundException {
-		super(new FileInputStream(filename));
-	}
-
+    /**
+     * Construct a new FileReader on the given file named <code>filename</code>.
+     * If the <code>filename</code> specified cannot be found, throw a
+     * FileNotFoundException.
+     * 
+     * @param filename
+     *            an absolute or relative path specifying the file to open.
+     * 
+     * @throws FileNotFoundException
+     *             if the filename cannot be opened for reading.
+     */
+    public FileReader(String filename) throws FileNotFoundException {
+        super(new FileInputStream(filename));
+    }
 }

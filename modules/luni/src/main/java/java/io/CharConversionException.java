@@ -17,32 +17,29 @@
 
 package java.io;
 
-
 /**
  * This is the top level class for character conversion exceptions.
- * 
  */
 public class CharConversionException extends IOException {
 
     private static final long serialVersionUID = -8680016352018427031L;
-    
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public CharConversionException() {
-		super();
-	}
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public CharConversionException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     * 
+     */
+    public CharConversionException() {
+        super();
+    }
 
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public CharConversionException(String detailMessage) {
+        super(detailMessage);
+    }
 }

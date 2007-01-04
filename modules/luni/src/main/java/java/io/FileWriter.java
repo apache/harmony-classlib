@@ -15,8 +15,7 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 /**
  * FileWriter is a class for writing characters out to a file. The default
@@ -27,76 +26,75 @@ package java.io;
  */
 public class FileWriter extends OutputStreamWriter {
 
-	/**
-	 * Creates a FileWriter using the File <code>file</code>.
-	 * 
-	 * @param file
-	 *            the non-null File to write bytes to.
-	 * 
-	 * @throws IOException
-	 *             If the given file is not found
-	 */
-	public FileWriter(File file) throws IOException {
-		super(new FileOutputStream(file));
-	}
+    /**
+     * Creates a FileWriter using the File <code>file</code>.
+     * 
+     * @param file
+     *            the non-null File to write bytes to.
+     * 
+     * @throws IOException
+     *             If the given file is not found
+     */
+    public FileWriter(File file) throws IOException {
+        super(new FileOutputStream(file));
+    }
 
-	/**
-	 * Creates a FileWriter using the File <code>file</code>. The parameter
-	 * <code>append</code> determines whether or not the file is opened and
-	 * appended to or just opened empty.
-	 * 
-	 * @param file
-	 *            the non-null File to write bytes to.
-	 * @param append
-	 *            should the file be appened to or opened empty.
-	 * 
-	 * @throws IOException
-	 *             If the given file is not found
-	 */
-	public FileWriter(File file, boolean append) throws IOException {
-		super(new FileOutputStream(file, append));
-	}
+    /**
+     * Creates a FileWriter using the File <code>file</code>. The parameter
+     * <code>append</code> determines whether or not the file is opened and
+     * appended to or just opened empty.
+     * 
+     * @param file
+     *            the non-null File to write bytes to.
+     * @param append
+     *            should the file be appened to or opened empty.
+     * 
+     * @throws IOException
+     *             If the given file is not found
+     */
+    public FileWriter(File file, boolean append) throws IOException {
+        super(new FileOutputStream(file, append));
+    }
 
-	/**
-	 * Creates a FileWriter using the existing FileDescriptor <code>fd</code>.
-	 * 
-	 * @param fd
-	 *            the non-null FileDescriptor to write bytes to.
-	 */
-	public FileWriter(FileDescriptor fd) {
-		super(new FileOutputStream(fd));
-	}
+    /**
+     * Creates a FileWriter using the existing FileDescriptor <code>fd</code>.
+     * 
+     * @param fd
+     *            the non-null FileDescriptor to write bytes to.
+     */
+    public FileWriter(FileDescriptor fd) {
+        super(new FileOutputStream(fd));
+    }
 
-	/**
-	 * Creates a FileWriter using the platform dependent <code>filename</code>.
-	 * See the class description for how characters are converted to bytes.
-	 * 
-	 * @param filename
-	 *            the non-null name of the file to write bytes to.
-	 * 
-	 * @throws IOException
-	 *             If the given file is not found
-	 */
-	public FileWriter(String filename) throws IOException {
-		super(new FileOutputStream(new File(filename)));
-	}
+    /**
+     * Creates a FileWriter using the platform dependent <code>filename</code>.
+     * See the class description for how characters are converted to bytes.
+     * 
+     * @param filename
+     *            the non-null name of the file to write bytes to.
+     * 
+     * @throws IOException
+     *             If the given file is not found
+     */
+    public FileWriter(String filename) throws IOException {
+        super(new FileOutputStream(new File(filename)));
+    }
 
-	/**
-	 * Creates a FileWriter using the platform dependent <code>filename</code>.
-	 * See the class description for how characters are converted to bytes. The
-	 * parameter <code>append</code> determines whether or not the file is
-	 * opened and appended to or just opened empty.
-	 * 
-	 * @param filename
-	 *            the non-null name of the file to write bytes to.
-	 * @param append
-	 *            should the file be appened to or opened empty.
-	 * 
-	 * @throws IOException
-	 *             If the given file is not found
-	 */
-	public FileWriter(String filename, boolean append) throws IOException {
-		super(new FileOutputStream(filename, append));
-	}
-
+    /**
+     * Creates a FileWriter using the platform dependent <code>filename</code>.
+     * See the class description for how characters are converted to bytes. The
+     * parameter <code>append</code> determines whether or not the file is
+     * opened and appended to or just opened empty.
+     * 
+     * @param filename
+     *            the non-null name of the file to write bytes to.
+     * @param append
+     *            should the file be appened to or opened empty.
+     * 
+     * @throws IOException
+     *             If the given file is not found
+     */
+    public FileWriter(String filename, boolean append) throws IOException {
+        super(new FileOutputStream(filename, append));
+    }
 }

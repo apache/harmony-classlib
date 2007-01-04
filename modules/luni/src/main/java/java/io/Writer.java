@@ -28,13 +28,14 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
 
     static final String TOKEN_NULL = "null"; //$NON-NLS-1$
 
-    /** The object used to synchronize access to the writer. */
+    /**
+     * The object used to synchronize access to the writer.
+     */
     protected Object lock;
 
     /**
      * Constructs a new character stream Writer using <code>this</code> as the
      * Object to synchronize critical regions around.
-     * 
      */
     protected Writer() {
         super();
@@ -49,11 +50,10 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      *            the Object to synchronize critical regions around.
      */
     protected Writer(Object lock) {
-        if (lock != null) {
-            this.lock = lock;
-        } else {
+        if (lock == null) {
             throw new NullPointerException();
         }
+        this.lock = lock;
     }
 
     /**
@@ -159,15 +159,14 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      *             If offset or count are outside of bounds.
      */
     public void write(String str, int offset, int count) throws IOException {
-        if (count >= 0) { // other cases tested by getChars()
-            char buf[] = new char[count];
-            str.getChars(offset, offset + count, buf, 0);
-
-            synchronized (lock) {
-                write(buf);
-            }
-        } else {
+        if (count < 0) { // other cases tested by getChars()
             throw new StringIndexOutOfBoundsException();
+        }
+        char buf[] = new char[count];
+        str.getChars(offset, offset + count, buf, 0);
+
+        synchronized (lock) {
+            write(buf);
         }
     }
 
@@ -239,5 +238,4 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
         }
         return this;
     }
-
 }

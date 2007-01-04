@@ -68,7 +68,8 @@ public class PipedOutputStream extends OutputStream {
      */
     @Override
     public void close() throws IOException {
-        if (dest != null) { // Is the pipe connected?
+        // Is the pipe connected?
+        if (dest != null) {
             dest.done();
             dest = null;
         }
@@ -88,18 +89,16 @@ public class PipedOutputStream extends OutputStream {
         if (null == stream) {
             throw new NullPointerException();
         }
-        if (this.dest == null) {
-            synchronized (stream) {
-                if (!stream.isConnected) {
-                    stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
-                    stream.isConnected = true;
-                    this.dest = stream;
-                } else {
-                    throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
-                }
-            }
-        } else {
+        if (this.dest != null) {
             throw new IOException(Msg.getString("K0079")); //$NON-NLS-1$
+        }
+        synchronized (stream) {
+            if (stream.isConnected) {
+                throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+            }
+            stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
+            stream.isConnected = true;
+            this.dest = stream;
         }
     }
 
@@ -178,10 +177,9 @@ public class PipedOutputStream extends OutputStream {
      */
     @Override
     public void write(int oneByte) throws IOException {
-        if (dest != null) {
-            dest.receive(oneByte);
-        } else {
+        if (dest == null) {
             throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
         }
+        dest.receive(oneByte);
     }
 }

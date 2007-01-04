@@ -17,7 +17,6 @@
 
 package java.io;
 
-
 /**
  * Some methods in ObjectInputStream and ObjectOutputStream can only be called
  * from a nested call to readObject() or writeObject(). Any attempt to call them
@@ -35,24 +34,23 @@ package java.io;
  */
 public class NotActiveException extends ObjectStreamException {
 
-	private static final long serialVersionUID = -3893467273049808895L;
+    private static final long serialVersionUID = -3893467273049808895L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public NotActiveException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public NotActiveException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public NotActiveException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public NotActiveException(String detailMessage) {
+        super(detailMessage);
+    }
 }

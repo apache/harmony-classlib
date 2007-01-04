@@ -35,9 +35,9 @@ import org.apache.harmony.luni.util.Msg;
  * files and directories contained in that directory. If the pathname ends in
  * "/-", it indicates all the files and directories in that directory
  * <b>recursively</b>.
- * 
  */
 public final class FilePermission extends Permission implements Serializable {
+    
     private static final long serialVersionUID = 7930732926638008763L;
 
     // canonical path of this permission
@@ -64,7 +64,6 @@ public final class FilePermission extends Permission implements Serializable {
     /**
      * Constructs a new FilePermission with the path and actions specified.
      * 
-     * 
      * @param path
      *            the path to apply the actions to.
      * @param actions
@@ -81,7 +80,7 @@ public final class FilePermission extends Permission implements Serializable {
             throw new IllegalArgumentException(Msg.getString("K006d")); //$NON-NLS-1$
         }
         this.actions = toCanonicalActionString(pathActions);
-        
+
         if (path == null) {
             throw new NullPointerException(Msg.getString("K006e")); //$NON-NLS-1$
         }
@@ -348,8 +347,8 @@ public final class FilePermission extends Permission implements Serializable {
      */
     @Override
     public int hashCode() {
-        return (canonPath == null ?
-            getName().hashCode() : canonPath.hashCode()) + mask;
+        return (canonPath == null ? getName().hashCode() : canonPath.hashCode())
+                + mask;
     }
 
     private void writeObject(ObjectOutputStream stream) throws IOException {

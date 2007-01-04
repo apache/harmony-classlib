@@ -17,35 +17,34 @@
 
 package java.io;
 
-
 /**
  * Objects that want to be serialized/deserialized using
  * ObjectOutputStream/ObjectInputStream but defining their own byte
  * representation should implement this interface.
  */
 public interface Externalizable extends Serializable {
-	/**
-	 * Reads the next object from the ObjectInput <code>input</code>
-	 * 
-	 * @param input
-	 *            the ObjectInput from which the next object is read
-	 * 
-	 * @throws IOException
-	 *             If an error occurs attempting to read from this ObjectInput.
-	 * @throws ClassNotFoundException
-	 *             If the class of the instance being loaded cannot be found
-	 */
-	public void readExternal(ObjectInput input) throws IOException,
-			java.lang.ClassNotFoundException;
+    /**
+     * Reads the next object from the ObjectInput <code>input</code>
+     * 
+     * @param input
+     *            the ObjectInput from which the next object is read
+     * 
+     * @throws IOException
+     *             If an error occurs attempting to read from this ObjectInput.
+     * @throws ClassNotFoundException
+     *             If the class of the instance being loaded cannot be found
+     */
+    public void readExternal(ObjectInput input) throws IOException,
+            ClassNotFoundException;
 
-	/**
-	 * Writes the receiver to the ObjectOutput <code>output</code>.
-	 * 
-	 * @param output
-	 *            an ObjectOutput where to write the object
-	 * 
-	 * @throws IOException
-	 *             If an error occurs attempting to write to the ObjectOutput.
-	 */
-	public void writeExternal(ObjectOutput output) throws IOException;
+    /**
+     * Writes the receiver to the ObjectOutput <code>output</code>.
+     * 
+     * @param output
+     *            an ObjectOutput where to write the object
+     * 
+     * @throws IOException
+     *             If an error occurs attempting to write to the ObjectOutput.
+     */
+    public void writeExternal(ObjectOutput output) throws IOException;
 }

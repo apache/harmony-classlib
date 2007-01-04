@@ -15,34 +15,31 @@
  *  limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 /**
  * This IO exception is thrown when a file specified by a program cannot be
  * found.
- * 
  */
 public class FileNotFoundException extends IOException {
 
     private static final long serialVersionUID = -897856973823710492L;
-    
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public FileNotFoundException() {
-		super();
-	}
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            The detail message for the exception.
-	 */
-	public FileNotFoundException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public FileNotFoundException() {
+        super();
+    }
 
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            The detail message for the exception.
+     */
+    public FileNotFoundException(String detailMessage) {
+        super(detailMessage);
+    }
 }

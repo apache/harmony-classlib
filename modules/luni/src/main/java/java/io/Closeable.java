@@ -21,13 +21,13 @@ package java.io;
  * called its close method to release resources it holds.
  */
 public interface Closeable {
-	
-	/**
-	 * Close the object and release any system resources it holds. If the object
-	 * has been close, then invoke this method has no effect.
-	 * 
-	 * @throws IOException
-	 *             if any error raises when closing the object.
-	 */
-	public void close() throws IOException;
+
+    /**
+     * Close the object and release any system resources it holds. If the object
+     * has been close, then invoke this method has no effect.
+     * 
+     * @throws IOException
+     *             if any error raises when closing the object.
+     */
+    public void close() throws IOException;
 }
