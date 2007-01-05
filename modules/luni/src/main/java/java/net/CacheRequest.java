@@ -20,37 +20,41 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * CacheRequest provides channels for storing resource data in the <code>ResponseCache</code>.
- * Protocol handler calls the <code>OutputStream</code> which is supplied by CachedRequest 
- * object, to store the resource data into the cache. It also allows the user to interrupt 
- * and abort the current store operation by calling method <code>abort</code>. 
- * If IOException occurs while reading the response or writing data to the cache, 
- * the current cache store operation will be abandoned.
- *
+ * CacheRequest provides channels for storing resource data in the
+ * <code>ResponseCache</code>. Protocol handler calls the
+ * <code>OutputStream</code> which is supplied by CachedRequest object, to
+ * store the resource data into the cache. It also allows the user to interrupt
+ * and abort the current store operation by calling method <code>abort</code>.
+ * If IOException occurs while reading the response or writing data to the
+ * cache, the current cache store operation will be abandoned.
  */
 public abstract class CacheRequest {
-	
-	/**
-	 * Constructor method. 
-	 */
-	public CacheRequest() {
-		super();
-	}
 
-	/**
-	 * Aborts the current cache operation.
-	 * If an IOException occurs while reading the response or writing resource data to the cache,
-	 * the current cache store operation will be aborted. 
-	 */
-	public abstract void abort();
-	
-	/**
-	 * <p>
-	 * Returns an <code>OutputStream</code>, which is used to write the response body.
-	 * </p>
-	 * @return an <code>OutputStream</code> which is used to write the response body. 
-	 * @throws IOException
-	 *             if an I/O error is encountered during writing response body operation.
-	 */
-	public abstract OutputStream getBody() throws IOException;
+    /**
+     * Constructor method.
+     */
+    public CacheRequest() {
+        super();
+    }
+
+    /**
+     * Aborts the current cache operation. If an IOException occurs while
+     * reading the response or writing resource data to the cache, the current
+     * cache store operation will be aborted.
+     */
+    public abstract void abort();
+
+    /**
+     * <p>
+     * Returns an <code>OutputStream</code>, which is used to write the
+     * response body.
+     * </p>
+     * 
+     * @return an <code>OutputStream</code> which is used to write the
+     *         response body.
+     * @throws IOException
+     *             if an I/O error is encountered during writing response body
+     *             operation.
+     */
+    public abstract OutputStream getBody() throws IOException;
 }

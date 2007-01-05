@@ -17,19 +17,17 @@
 
 package java.net;
 
-
 /**
  * Defines a factory which creates URL Stream (protocol) Handler It is used by
  * the classes <code>URL</code>
  */
-
 public interface URLStreamHandlerFactory {
-	/**
-	 * Creates a new <code>URL Stream Handler</code> instance.
-	 * 
-	 * @return java.net.URLStreamHandler
-	 * @param protocol
-	 *            java.lang.String
-	 */
-	URLStreamHandler createURLStreamHandler(String protocol);
+    /**
+     * Creates a new <code>URL Stream Handler</code> instance.
+     * 
+     * @return java.net.URLStreamHandler
+     * @param protocol
+     *            java.lang.String
+     */
+    URLStreamHandler createURLStreamHandler(String protocol);
 }

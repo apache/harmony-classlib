@@ -22,46 +22,45 @@ import java.util.Map;
 
 /**
  * This class is ready for managing a stateful cookie with HTTP protocol
- * 
  */
 public abstract class CookieHandler {
 
-	private static CookieHandler systemWideCookieHandler;
+    private static CookieHandler systemWideCookieHandler;
 
-	private final static NetPermission getCookieHandlerPermission = new NetPermission(
-			"getCookieHandler"); //$NON-NLS-1$
+    private final static NetPermission getCookieHandlerPermission = new NetPermission(
+            "getCookieHandler"); //$NON-NLS-1$
 
-	private final static NetPermission setCookieHandlerPermission = new NetPermission(
-			"setCookieHandler"); //$NON-NLS-1$
+    private final static NetPermission setCookieHandlerPermission = new NetPermission(
+            "setCookieHandler"); //$NON-NLS-1$
 
-	/**
-	 * returns a system-wide cookie handler, or null if not set
-	 * 
-	 * @return a cookie handler
-	 */
-	public static CookieHandler getDefault() {
-		SecurityManager sm = System.getSecurityManager();
-		if (null != sm) {
-			sm.checkPermission(getCookieHandlerPermission);
-		}
-		return systemWideCookieHandler;
-	}
+    /**
+     * Returns a system-wide cookie handler, or null if not set
+     * 
+     * @return a cookie handler
+     */
+    public static CookieHandler getDefault() {
+        SecurityManager sm = System.getSecurityManager();
+        if (null != sm) {
+            sm.checkPermission(getCookieHandlerPermission);
+        }
+        return systemWideCookieHandler;
+    }
 
-	/**
-	 * sets a system-wide cookie handler
-	 * 
-	 * @param cHandler
-	 *            the cookie handler to set
-	 */
-	public static void setDefault(CookieHandler cHandler) {
-		SecurityManager sm = System.getSecurityManager();
-		if (null != sm) {
-			sm.checkPermission(setCookieHandlerPermission);
-		}
-		systemWideCookieHandler = cHandler;
-	}
+    /**
+     * sets a system-wide cookie handler
+     * 
+     * @param cHandler
+     *            the cookie handler to set
+     */
+    public static void setDefault(CookieHandler cHandler) {
+        SecurityManager sm = System.getSecurityManager();
+        if (null != sm) {
+            sm.checkPermission(setCookieHandlerPermission);
+        }
+        systemWideCookieHandler = cHandler;
+    }
 
-	/**
+    /**
      * Searchs and gets all cookies in the cache by the specified uri in the
      * request header.
      * 
@@ -76,7 +75,7 @@ public abstract class CookieHandler {
     public abstract Map<String, List<String>> get(URI uri,
             Map<String, List<String>> requestHeaders) throws IOException;
 
-	/**
+    /**
      * Sets cookies according to uri and responseHeaders
      * 
      * @param uri

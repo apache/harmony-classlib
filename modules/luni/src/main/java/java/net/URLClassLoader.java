@@ -47,6 +47,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import org.apache.harmony.luni.util.InvalidJarIndexException;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class loader is responsible for loading classes and resources from a
@@ -57,7 +58,7 @@ import org.apache.harmony.luni.util.InvalidJarIndexException;
 public class URLClassLoader extends SecureClassLoader {
 
     private static URL[] NO_PATH = new URL[0];
-    
+
     @SuppressWarnings("unchecked")
     private static <K, V> Hashtable<K, V>[] newHashtableArray(int size) {
         return new Hashtable[size];
@@ -65,9 +66,10 @@ public class URLClassLoader extends SecureClassLoader {
 
     URL[] urls, orgUrls;
 
-    HashSet invalidUrls = new HashSet();
+    HashSet<URL> invalidUrls = new HashSet<URL>();
 
-    private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(32);
+    private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(
+            32);
 
     private URLStreamHandlerFactory factory;
 
@@ -94,14 +96,14 @@ public class URLClassLoader extends SecureClassLoader {
          * the security manager's <code>checkPackageAccess()</code> before
          * attempting to load the class.
          * 
-         * @return java.lang.Class the Class object.
+         * @return the Class object.
          * @param className
          *            String the name of the class to search for.
          * @param resolveClass
          *            boolean indicates if class should be resolved after
          *            loading.
-         * @exception ClassNotFoundException
-         *                If the class could not be found.
+         * @throws ClassNotFoundException
+         *             If the class could not be found.
          */
         @Override
         protected synchronized Class<?> loadClass(String className,
@@ -128,12 +130,11 @@ public class URLClassLoader extends SecureClassLoader {
      * assumed to be directories, otherwise they are assumed to be Jar files.
      * 
      * @param urls
-     *            java.net.URL[] the URLs to search
+     *            the URLs to search
      * 
-     * @exception SecurityException
-     *                if a security manager exists and its
-     *                checkCreateClassLoader method doesn't allow creation of
-     *                new ClassLoaders
+     * @throws SecurityException
+     *             if a security manager exists and its checkCreateClassLoader
+     *             method doesn't allow creation of new ClassLoaders
      */
     public URLClassLoader(URL[] urls) {
         this(urls, ClassLoader.getSystemClassLoader(), null);
@@ -145,15 +146,14 @@ public class URLClassLoader extends SecureClassLoader {
      * assumed to be directories, otherwise they are assumed to be Jar files.
      * 
      * @param urls
-     *            java.net.URL[] the URLs to search
+     *            the URLs to search
      * 
      * @param parent
-     *            ClassLoader the ClassLoader to assign as this loader's parent.
+     *            the ClassLoader to assign as this loader's parent.
      * 
-     * @exception SecurityException
-     *                if a security manager exists and its
-     *                checkCreateClassLoader method doesn't allow creation of
-     *                new ClassLoaders
+     * @throws SecurityException
+     *             if a security manager exists and its checkCreateClassLoader
+     *             method doesn't allow creation of new ClassLoaders
      */
     public URLClassLoader(URL[] urls, ClassLoader parent) {
         this(urls, parent, null);
@@ -202,8 +202,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @param name
      *            java.lang.String the name of the requested resource
      * @throws IOException
-     *                thrown if an IO Exception occurs while attempting to
-     *                connect
+     *             thrown if an IO Exception occurs while attempting to connect
      */
     @Override
     public Enumeration<URL> findResources(final String name) throws IOException {
@@ -288,7 +287,7 @@ public class URLClassLoader extends SecureClassLoader {
     Object findInIndex(int i, String name, Vector<URL> resources, boolean url) {
         Hashtable<String, URL[]> index = indexes[i];
         if (index != null) {
-            int pos = name.lastIndexOf("/");
+            int pos = name.lastIndexOf("/"); //$NON-NLS-1$
             // only keep the directory part of the resource
             // as index.list only keeps track of directories and root files
             String indexedName = (pos > 0) ? name.substring(0, pos) : name;
@@ -313,14 +312,14 @@ public class URLClassLoader extends SecureClassLoader {
                 } else {
                     String className = partialName.substring(0, partialName
                             .length())
-                            + ".class";
+                            + ".class"; //$NON-NLS-1$
                     jarURLs = index.get(className);
                 }
                 if (jarURLs != null) {
                     Class<?> c = findClassImpl(jarURLs, clsName);
                     // InvalidJarException is thrown when a mapping for a class
-                    // is not valid, i.e. we can't find the class by following the
-                    // mapping.
+                    // is not valid, i.e. we can't find the class by following
+                    // the mapping.
                     if (c == null) {
                         throw new InvalidJarIndexException();
                     }
@@ -361,7 +360,8 @@ public class URLClassLoader extends SecureClassLoader {
                     URL[] search = new URL[] { newExtensions[k] };
                     if (resources != null) {
                         URL res = findResourceImpl(search, name);
-                        if (!invalidUrls.contains(search[0])) { // the URL does not exist
+                        if (!invalidUrls.contains(search[0])) { // the URL does
+                            // not exist
                             if (res != null && !resources.contains(res)) {
                                 resources.addElement(res);
                             }
@@ -378,7 +378,8 @@ public class URLClassLoader extends SecureClassLoader {
                         if (result != null) {
                             return result;
                         }
-                        if (!invalidUrls.contains(search[0])) { // the URL exists
+                        if (!invalidUrls.contains(search[0])) { // the URL
+                            // exists
                             result = findInExtensions(explore(newExtensions[k],
                                     i), name, i, null, url);
                             if (result != null) {
@@ -403,7 +404,8 @@ public class URLClassLoader extends SecureClassLoader {
      * Converts an input stream into a byte array.
      * 
      * @return byte[] the byte array
-     * @param is the input stream
+     * @param is
+     *            the input stream
      */
     private static byte[] getBytes(InputStream is, boolean readAvailable)
             throws IOException {
@@ -442,7 +444,7 @@ public class URLClassLoader extends SecureClassLoader {
     protected PermissionCollection getPermissions(final CodeSource codesource) {
         PermissionCollection pc = super.getPermissions(codesource);
         URL u = codesource.getLocation();
-        if (u.getProtocol().equals("jar")) {
+        if (u.getProtocol().equals("jar")) { //$NON-NLS-1$
             try {
                 // Create a URL for the resource the jar refers to
                 u = ((JarURLConnection) u.openConnection()).getJarFileURL();
@@ -451,27 +453,27 @@ public class URLClassLoader extends SecureClassLoader {
                 // URL
             }
         }
-        if (u.getProtocol().equals("file")) {
+        if (u.getProtocol().equals("file")) { //$NON-NLS-1$
             String path = u.getFile();
             String host = u.getHost();
             if (host != null && host.length() > 0) {
-                path = "//" + host + path;
+                path = "//" + host + path; //$NON-NLS-1$
             }
 
             if (File.separatorChar != '/') {
                 path = path.replace('/', File.separatorChar);
             }
             if (isDirectory(u)) {
-                pc.add(new FilePermission(path + "-", "read"));
+                pc.add(new FilePermission(path + "-", "read")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                pc.add(new FilePermission(path, "read"));
+                pc.add(new FilePermission(path, "read")); //$NON-NLS-1$
             }
         } else {
             String host = u.getHost();
             if (host.length() == 0) {
-                host = "localhost";
+                host = "localhost"; //$NON-NLS-1$
             }
-            pc.add(new SocketPermission(host, "connect, accept"));
+            pc.add(new SocketPermission(host, "connect, accept")); //$NON-NLS-1$
         }
         return pc;
     }
@@ -562,10 +564,9 @@ public class URLClassLoader extends SecureClassLoader {
      * @param factory
      *            java.net.URLStreamHandlerFactory the factory that will used to
      *            create stream (protocol) handlers
-     * @exception SecurityException
-     *                if a security manager exists and its
-     *                checkCreateClassLoader method doesn't allow creation of
-     *                new ClassLoaders
+     * @throws SecurityException
+     *             if a security manager exists and its checkCreateClassLoader
+     *             method doesn't allow creation of new ClassLoaders
      */
     public URLClassLoader(URL[] searchUrls, ClassLoader parent,
             URLStreamHandlerFactory factory) {
@@ -604,8 +605,8 @@ public class URLClassLoader extends SecureClassLoader {
      * @param clsName
      *            String the name of the class.
      * 
-     * @exception java.lang.ClassNotFoundException
-     *                if the class cannot be loaded
+     * @throws java.lang.ClassNotFoundException
+     *             if the class cannot be loaded
      */
     @Override
     protected Class<?> findClass(final String clsName)
@@ -636,14 +637,16 @@ public class URLClassLoader extends SecureClassLoader {
 
         String protocol = url.getProtocol();
 
-        if (isDirectory(url) || protocol.equals("jar")) {
+        if (isDirectory(url) || protocol.equals("jar")) { //$NON-NLS-1$
             return url;
         }
         if (factory == null) {
-            return new URL("jar", "", -1, url.toString() + "!/");
+            return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
+                    -1, url.toString() + "!/"); //$NON-NLS-1$
         }
-        return new URL("jar", "", -1, url.toString() + "!/", factory
-                .createURLStreamHandler(protocol));
+        return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
+                -1, url.toString() + "!/", //$NON-NLS-1$
+                factory.createURLStreamHandler(protocol));
     }
 
     /**
@@ -692,13 +695,14 @@ public class URLClassLoader extends SecureClassLoader {
         int i = 0;
         while (i < searchList.length) {
             if (searchList[i] == null) {
-                throw new NullPointerException("One of urls is null");
-            } else if(!invalidUrls.contains(searchList[i])) {
+                // KA024=One of urls is null
+                throw new NullPointerException(Msg.getString("KA024")); //$NON-NLS-1$
+            } else if (!invalidUrls.contains(searchList[i])) {
                 JarFile jf = null;
                 try {
                     URL currentUrl = searchList[i];
                     String protocol = currentUrl.getProtocol();
-                    if (protocol.equals("jar")) {
+                    if (protocol.equals("jar")) { //$NON-NLS-1$
                         jf = resCache.get(currentUrl);
                         if (jf == null) {
                             /*
@@ -710,8 +714,8 @@ public class URLClassLoader extends SecureClassLoader {
                                     .openConnection()).getJarFileURL();
                             try {
                                 JarURLConnection juc = (JarURLConnection) new URL(
-                                        "jar", "", jarURL.toExternalForm()
-                                                + "!/").openConnection();
+                                        "jar", "", //$NON-NLS-1$ //$NON-NLS-2$
+                                        jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
                                 jf = juc.getJarFile();
                                 resCache.put(currentUrl, jf);
                             } catch (IOException e) {
@@ -721,11 +725,11 @@ public class URLClassLoader extends SecureClassLoader {
                             }
                         }
                         String entryName;
-                        if (currentUrl.getFile().endsWith("!/")) {
+                        if (currentUrl.getFile().endsWith("!/")) { //$NON-NLS-1$
                             entryName = resName;
                         } else {
                             String file = currentUrl.getFile();
-                            int sepIdx = file.lastIndexOf("!/");
+                            int sepIdx = file.lastIndexOf("!/"); //$NON-NLS-1$
                             if (sepIdx == -1) {
                                 // Invalid URL, don't look here again
                                 invalidUrls.add(searchList[i]);
@@ -740,7 +744,7 @@ public class URLClassLoader extends SecureClassLoader {
                         if (jf.getEntry(entryName) != null) {
                             return targetURL(currentUrl, resName);
                         }
-                    } else if (protocol.equals("file")) {
+                    } else if (protocol.equals("file")) { //$NON-NLS-1$
                         String baseFile = currentUrl.getFile();
                         String host = currentUrl.getHost();
                         int hostLength = 0;
@@ -750,14 +754,14 @@ public class URLClassLoader extends SecureClassLoader {
                         StringBuffer buf = new StringBuffer(2 + hostLength
                                 + baseFile.length() + resName.length());
                         if (hostLength > 0) {
-                            buf.append("//").append(host);
+                            buf.append("//").append(host); //$NON-NLS-1$
                         }
                         // baseFile always ends with '/'
                         buf.append(baseFile);
                         String fixedResName = resName;
                         // Do not create a UNC path, i.e. \\host
-                        while (fixedResName.startsWith("/")
-                                || fixedResName.startsWith("\\")) {
+                        while (fixedResName.startsWith("/") //$NON-NLS-1$
+                                || fixedResName.startsWith("\\")) { //$NON-NLS-1$
                             fixedResName = fixedResName.substring(1);
                         }
                         buf.append(fixedResName);
@@ -775,7 +779,7 @@ public class URLClassLoader extends SecureClassLoader {
                         }
                         // HTTP can return a stream on a non-existent file
                         // So check for the return code;
-                        if (!resURL.getProtocol().equals("http")) {
+                        if (!resURL.getProtocol().equals("http")) { //$NON-NLS-1$
                             return resURL;
                         }
                         int code;
@@ -826,13 +830,13 @@ public class URLClassLoader extends SecureClassLoader {
      *            The code source for the Package
      * @return The Package created
      * 
-     * @exception IllegalArgumentException
-     *                if the Package already exists
+     * @throws IllegalArgumentException
+     *             if the Package already exists
      */
     protected Package definePackage(String packageName, Manifest manifest,
             URL url) throws IllegalArgumentException {
         Attributes mainAttributes = manifest.getMainAttributes();
-        String dirName = packageName.replace('.', '/') + "/";
+        String dirName = packageName.replace('.', '/') + "/"; //$NON-NLS-1$
         Attributes packageAttributes = manifest.getAttributes(dirName);
         boolean noEntry = false;
         if (packageAttributes == null) {
@@ -885,12 +889,12 @@ public class URLClassLoader extends SecureClassLoader {
     private boolean isSealed(Manifest manifest, String dirName) {
         Attributes mainAttributes = manifest.getMainAttributes();
         String value = mainAttributes.getValue(Attributes.Name.SEALED);
-        boolean sealed = value != null && value.toLowerCase().equals("true");
+        boolean sealed = value != null && value.toLowerCase().equals("true"); //$NON-NLS-1$
         Attributes attributes = manifest.getAttributes(dirName);
         if (attributes != null) {
             value = attributes.getValue(Attributes.Name.SEALED);
             if (value != null) {
-                sealed = value.toLowerCase().equals("true");
+                sealed = value.toLowerCase().equals("true"); //$NON-NLS-1$
             }
         }
         return sealed;
@@ -911,17 +915,17 @@ public class URLClassLoader extends SecureClassLoader {
         StringTokenizer tokenizer = new java.util.StringTokenizer(classpath);
         Vector<URL> addedURLs = new Vector<URL>();
         String file = root.getFile();
-        file = file.substring(0, file.lastIndexOf("/",
-                file.lastIndexOf("!/") - 1) + 1);
+        file = file.substring(0, file.lastIndexOf("/", //$NON-NLS-1$
+                file.lastIndexOf("!/") - 1) + 1); //$NON-NLS-1$
         String protocol = root.getProtocol();
         String host = root.getHost();
         int port = root.getPort();
         while (tokenizer.hasMoreElements()) {
             String element = tokenizer.nextToken();
-            if (!element.equals("")) {
+            if (!element.equals("")) { //$NON-NLS-1$
                 try {
                     URL newURL = new URL(protocol, host, port, file + element
-                            + "!/");
+                            + "!/"); //$NON-NLS-1$
                     if (!extensions.containsKey(newURL)) {
                         extensions.put(newURL, null);
                         addedURLs.add(newURL);
@@ -936,7 +940,8 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     /**
-     * @param in InputStream the stream to read lines from 
+     * @param in
+     *            InputStream the stream to read lines from
      * @return List a list of String lines
      */
     private List<String> readLines(InputStream in) throws IOException {
@@ -946,12 +951,12 @@ public class URLClassLoader extends SecureClassLoader {
         int next;
         while ((next = in.read()) != -1) {
             if (next == '\n') {
-                lines.add(new String(buff, 0, pos, "UTF8"));
+                lines.add(new String(buff, 0, pos, "UTF8")); //$NON-NLS-1$
                 pos = 0;
                 continue;
             }
             if (next == '\r') {
-                lines.add(new String(buff, 0, pos, "UTF8"));
+                lines.add(new String(buff, 0, pos, "UTF8")); //$NON-NLS-1$
                 pos = 0;
                 if ((next = in.read()) == '\n') {
                     continue;
@@ -965,7 +970,7 @@ public class URLClassLoader extends SecureClassLoader {
             buff[pos++] = (byte) next;
         }
         if (pos > 0) {
-            lines.add(new String(buff, 0, pos, "UTF8"));
+            lines.add(new String(buff, 0, pos, "UTF8")); //$NON-NLS-1$
         }
         return lines;
     }
@@ -978,8 +983,10 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     /**
-     * @param searchURLs java.net.URL[] the URLs to search in
-     * @param clsName java.lang.String the class name to be found
+     * @param searchURLs
+     *            java.net.URL[] the URLs to search in
+     * @param clsName
+     *            java.lang.String the class name to be found
      * @return Class the class found or null if not found
      */
     Class<?> findClassImpl(URL[] searchURLs, String clsName) {
@@ -989,172 +996,174 @@ public class URLClassLoader extends SecureClassLoader {
                 ".class").toString(); //$NON-NLS-1$
         for (int i = 0; i < searchURLs.length; i++) {
             if (searchURLs[i] == null) {
-                throw new NullPointerException("One of urls is null");
-            } else if(!invalidUrls.contains(searchURLs[i])) {
-            Manifest manifest = null;
-            InputStream is = null;
-            JarEntry entry = null;
-            JarFile jf = null;
-            byte[] clBuf = null;
-            try {
-                URL thisURL = searchURLs[i];
-                String protocol = thisURL.getProtocol();
-                if (protocol.equals("jar")) { //$NON-NLS-1$
-                    jf = resCache.get(thisURL);
-                    if (jf == null) {
-                        // If the connection for testURL or thisURL is used,
-                        // getJarFile() will throw an exception if the entry
-                        // doesn't exist.
-                        URL jarURL = ((JarURLConnection) thisURL
-                                .openConnection()).getJarFileURL();
-                        try {
-                            JarURLConnection juc = (JarURLConnection) new URL(
-                                    "jar", "", jarURL.toExternalForm() + "!/") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                                    .openConnection();
-                            jf = juc.getJarFile();
-                            resCache.put(thisURL, jf);
-                        } catch (IOException e) {
-                            // Don't look for this jar file again
-                            invalidUrls.add(searchURLs[i]);
-                            throw e;
+                // KA024=One of urls is null
+                throw new NullPointerException(Msg.getString("KA024")); //$NON-NLS-1$
+            } else if (!invalidUrls.contains(searchURLs[i])) {
+                Manifest manifest = null;
+                InputStream is = null;
+                JarEntry entry = null;
+                JarFile jf = null;
+                byte[] clBuf = null;
+                try {
+                    URL thisURL = searchURLs[i];
+                    String protocol = thisURL.getProtocol();
+                    if (protocol.equals("jar")) { //$NON-NLS-1$
+                        jf = resCache.get(thisURL);
+                        if (jf == null) {
+                            // If the connection for testURL or thisURL is used,
+                            // getJarFile() will throw an exception if the entry
+                            // doesn't exist.
+                            URL jarURL = ((JarURLConnection) thisURL
+                                    .openConnection()).getJarFileURL();
+                            try {
+                                JarURLConnection juc = (JarURLConnection) new URL(
+                                        "jar", "", jarURL.toExternalForm() + "!/") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                        .openConnection();
+                                jf = juc.getJarFile();
+                                resCache.put(thisURL, jf);
+                            } catch (IOException e) {
+                                // Don't look for this jar file again
+                                invalidUrls.add(searchURLs[i]);
+                                throw e;
+                            }
                         }
-                    }
-                    if (thisURL.getFile().endsWith("!/")) {
-                        entry = jf.getJarEntry(name);
-                    } else {
-                        String file = thisURL.getFile();
-                        int sepIdx = file.lastIndexOf("!/");
-                        if (sepIdx == -1) {
-                            // Invalid URL, don't look here again
-                            invalidUrls.add(searchURLs[i]);
+                        if (thisURL.getFile().endsWith("!/")) { //$NON-NLS-1$
+                            entry = jf.getJarEntry(name);
+                        } else {
+                            String file = thisURL.getFile();
+                            int sepIdx = file.lastIndexOf("!/"); //$NON-NLS-1$
+                            if (sepIdx == -1) {
+                                // Invalid URL, don't look here again
+                                invalidUrls.add(searchURLs[i]);
+                                continue;
+                            }
+                            sepIdx += 2;
+                            String entryName = new StringBuffer(file.length()
+                                    - sepIdx + name.length()).append(
+                                    file.substring(sepIdx)).append(name)
+                                    .toString();
+                            entry = jf.getJarEntry(entryName);
+                        }
+                        if (entry != null) {
+                            readAvailable = true;
+                            is = jf.getInputStream(entry);
+                            manifest = jf.getManifest();
+                        }
+                    } else if (protocol.equals("file")) { //$NON-NLS-1$
+                        String filename = thisURL.getFile();
+                        String host = thisURL.getHost();
+                        if (host != null && host.length() > 0) {
+                            filename = new StringBuffer(host.length()
+                                    + filename.length() + name.length() + 2)
+                                    .append("//").append(host).append(filename) //$NON-NLS-1$
+                                    .append(name).toString();
+                        } else {
+                            filename = new StringBuffer(filename.length()
+                                    + name.length()).append(filename).append(
+                                    name).toString();
+                        }
+
+                        // Just return null for caller to throw
+                        // ClassNotFoundException.
+                        try {
+                            filename = URLDecoder.decode(filename, "UTF-8"); //$NON-NLS-1$
+                        } catch (IllegalArgumentException e) {
+                            return null;
+                        }
+
+                        File file = new File(filename);
+                        // Don't throw exceptions for speed
+                        if (file.exists()) {
+                            is = new FileInputStream(file);
+                            readAvailable = true;
+                        } else {
                             continue;
                         }
-                        sepIdx += 2;
-                        String entryName = new StringBuffer(file.length()
-                                - sepIdx + name.length()).append(
-                                file.substring(sepIdx)).append(name).toString();
-                        entry = jf.getJarEntry(entryName);
-                    }
-                    if (entry != null) {
-                        readAvailable = true;
-                        is = jf.getInputStream(entry);
-                        manifest = jf.getManifest();
-                    }
-                } else if (protocol.equals("file")) {
-                    String filename = thisURL.getFile();
-                    String host = thisURL.getHost();
-                    if (host != null && host.length() > 0) {
-                        filename = new StringBuffer(host.length()
-                                + filename.length() + name.length() + 2)
-                                .append("//").append(host).append(filename)
-                                .append(name).toString();
                     } else {
-                        filename = new StringBuffer(filename.length()
-                                + name.length()).append(filename).append(name)
-                                .toString();
+                        is = targetURL(thisURL, name).openStream();
                     }
-
-                    // Just return null for caller to throw
-                    // ClassNotFoundException.
-                    try {
-                        filename = URLDecoder.decode(filename, "UTF-8");
-                    } catch (IllegalArgumentException e) {
-                        return null;
-                    }
-
-                    File file = new File(filename);
-                    // Don't throw exceptions for speed
-                    if (file.exists()) {
-                        is = new FileInputStream(file);
-                        readAvailable = true;
-                    } else {
-                        continue;
-                    }
-                } else {
-                    is = targetURL(thisURL, name).openStream();
-                }
-            } catch (MalformedURLException e) {
-                // Keep iterating through the URL list
-            } catch (IOException e) {
-            }
-            if (is != null) {
-                URL codeSourceURL = null;
-                Certificate[] certificates = null;
-                CodeSource codeS = null;
-                try {
-                    codeSourceURL = findInExtensions ? orgUrls[i]
-                            : ((JarURLConnection) searchURLs[i]
-                                    .openConnection()).getJarFileURL();
+                } catch (MalformedURLException e) {
+                    // Keep iterating through the URL list
                 } catch (IOException e) {
-                    codeSourceURL = searchURLs[i];
                 }
                 if (is != null) {
+                    URL codeSourceURL = null;
+                    Certificate[] certificates = null;
+                    CodeSource codeS = null;
                     try {
-                        clBuf = getBytes(is, readAvailable);
-                        is.close();
+                        codeSourceURL = findInExtensions ? orgUrls[i]
+                                : ((JarURLConnection) searchURLs[i]
+                                        .openConnection()).getJarFileURL();
                     } catch (IOException e) {
-                        return null;
+                        codeSourceURL = searchURLs[i];
                     }
-                }
-                if (entry != null) {
-                    certificates = entry.getCertificates();
-                }
-                // Use the original URL, not the possible jar URL
-                codeS = new CodeSource(codeSourceURL, certificates);
-                int dotIndex = clsName.lastIndexOf(".");
-                if (dotIndex != -1) {
-                    String packageName = clsName.substring(0, dotIndex);
-                    synchronized (this) {
-                        Package packageObj = getPackage(packageName);
-                        if (packageObj == null) {
-                            if (manifest != null) {
-                                definePackage(packageName, manifest,
-                                        codeSourceURL);
-                            } else {
-                                definePackage(packageName, null, null, null,
-                                        null, null, null, null);
-                            }
-                        } else {
-                            boolean exception = false;
-                            if (manifest != null) {
-                                String dirName = packageName.replace('.', '/')
-                                        + "/";
-                                if (isSealed(manifest, dirName)) {
-                                    exception = !packageObj
-                                            .isSealed(codeSourceURL);
+                    if (is != null) {
+                        try {
+                            clBuf = getBytes(is, readAvailable);
+                            is.close();
+                        } catch (IOException e) {
+                            return null;
+                        }
+                    }
+                    if (entry != null) {
+                        certificates = entry.getCertificates();
+                    }
+                    // Use the original URL, not the possible jar URL
+                    codeS = new CodeSource(codeSourceURL, certificates);
+                    int dotIndex = clsName.lastIndexOf("."); //$NON-NLS-1$
+                    if (dotIndex != -1) {
+                        String packageName = clsName.substring(0, dotIndex);
+                        synchronized (this) {
+                            Package packageObj = getPackage(packageName);
+                            if (packageObj == null) {
+                                if (manifest != null) {
+                                    definePackage(packageName, manifest,
+                                            codeSourceURL);
+                                } else {
+                                    definePackage(packageName, null, null,
+                                            null, null, null, null, null);
                                 }
                             } else {
-                                exception = packageObj.isSealed();
-                            }
-                            if (exception) {
-                                throw new SecurityException(
-                                        org.apache.harmony.luni.util.Msg
-                                                .getString("K004c"));
+                                boolean exception = false;
+                                if (manifest != null) {
+                                    String dirName = packageName.replace('.',
+                                            '/')
+                                            + "/"; //$NON-NLS-1$
+                                    if (isSealed(manifest, dirName)) {
+                                        exception = !packageObj
+                                                .isSealed(codeSourceURL);
+                                    }
+                                } else {
+                                    exception = packageObj.isSealed();
+                                }
+                                if (exception) {
+                                    throw new SecurityException(Msg
+                                            .getString("K004c")); //$NON-NLS-1$
+                                }
                             }
                         }
                     }
+                    return defineClass(clsName, clBuf, 0, clBuf.length, codeS);
                 }
-                return defineClass(clsName, clBuf, 0, clBuf.length, codeS);
-            }
-            if ((jf != null) && findInExtensions) {
-                if (indexes[i] != null) {
-                    try {
-                        Class<?> c = (Class<?>) findInIndex(i, clsName, null,
-                                false);
+                if ((jf != null) && findInExtensions) {
+                    if (indexes[i] != null) {
+                        try {
+                            Class<?> c = (Class<?>) findInIndex(i, clsName,
+                                    null, false);
+                            if (c != null) {
+                                return c;
+                            }
+                        } catch (InvalidJarIndexException ex) {
+                            // Ignore misleading/wrong jar index
+                        }
+                    } else {
+                        Class<?> c = (Class<?>) findInExtensions(explore(
+                                searchURLs[i], i), clsName, i, null, false);
                         if (c != null) {
                             return c;
                         }
-                    } catch (InvalidJarIndexException ex) {
-                        // Ignore misleading/wrong jar index
-                    }
-                } else {
-                    Class<?> c = (Class<?>) findInExtensions(explore(
-                            searchURLs[i], i), clsName, i, null, false);
-                    if (c != null) {
-                        return c;
                     }
                 }
-            }
             }
         }
         return null;
@@ -1182,13 +1191,13 @@ public class URLClassLoader extends SecureClassLoader {
             return null;
         }
 
-        if (!url.getProtocol().equals("jar")) {
+        if (!url.getProtocol().equals("jar")) { //$NON-NLS-1$
             return null;
         }
 
         JarFile jf = resCache.get(url);
         // Add mappings from INDEX.LIST
-        ZipEntry ze = jf.getEntry("META-INF/INDEX.LIST");
+        ZipEntry ze = jf.getEntry("META-INF/INDEX.LIST"); //$NON-NLS-1$
         if (ze != null) {
             if (url.equals(urls[indexNumber])) {
                 try {
@@ -1208,17 +1217,17 @@ public class URLClassLoader extends SecureClassLoader {
                     String parentFile = new File(file).getParent();
                     parentFile = parentFile.replace(File.separatorChar, '/');
                     if (parentFile.charAt(0) != '/') {
-                        parentFile = "/" + parentFile;
+                        parentFile = "/" + parentFile; //$NON-NLS-1$
                     }
                     URL parentURL = new URL(fileURL.getProtocol(), fileURL
                             .getHost(), fileURL.getPort(), parentFile);
                     while (iterator.hasNext()) {
-                        URL jar = new URL("jar:" + parentURL.toExternalForm()
-                                + "/" + iterator.next() + "!/");
+                        URL jar = new URL("jar:" //$NON-NLS-1$
+                                + parentURL.toExternalForm() + "/" //$NON-NLS-1$
+                                + iterator.next() + "!/"); //$NON-NLS-1$
                         String resource = null;
                         while (iterator.hasNext()
-                                && !(resource = iterator.next())
-                                        .equals("")) {
+                                && !(resource = iterator.next()).equals("")) { //$NON-NLS-1$
                             if (index.containsKey(resource)) {
                                 URL[] jars = index.get(resource);
                                 URL[] newJars = new URL[jars.length + 1];

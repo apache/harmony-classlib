@@ -172,7 +172,8 @@ public final class NetworkInterface extends Object {
             }
         }
 
-        Enumeration<InetAddress> theAccessibleElements = accessibleAddresses.elements();
+        Enumeration<InetAddress> theAccessibleElements = accessibleAddresses
+                .elements();
         if (theAccessibleElements.hasMoreElements()) {
             return accessibleAddresses.elements();
         }
@@ -191,11 +192,10 @@ public final class NetworkInterface extends Object {
          * we should return the display name unless it is blank in this case
          * return the name so that something is displayed.
          */
-        if (!(displayName.equals(""))) {
+        if (!(displayName.equals(""))) { //$NON-NLS-1$
             return displayName;
         }
         return name;
-
     }
 
     /**
@@ -212,7 +212,7 @@ public final class NetworkInterface extends Object {
             throws SocketException {
 
         if (interfaceName == null) {
-            throw new NullPointerException(Msg.getString("K0330"));
+            throw new NullPointerException(Msg.getString("K0330")); //$NON-NLS-1$
         }
 
         /*
@@ -232,8 +232,8 @@ public final class NetworkInterface extends Object {
     }
 
     /**
-     * Answers the network interface which has the specified internet address bound
-     * to it, if one exists.
+     * Answers the network interface which has the specified internet address
+     * bound to it, if one exists.
      * 
      * @param address
      *            address of interest
@@ -249,13 +249,13 @@ public final class NetworkInterface extends Object {
             throws SocketException {
 
         if (address == null) {
-            throw new NullPointerException(Msg.getString("K0331"));
+            throw new NullPointerException(Msg.getString("K0331")); //$NON-NLS-1$
         }
 
         /*
          * get the list of interfaces, and then loop through the list. For each
-         * interface loop through the associated set of internet addresses and see
-         * if one matches. If so return that network interface
+         * interface loop through the associated set of internet addresses and
+         * see if one matches. If so return that network interface
          */
         Enumeration<NetworkInterface> interfaces = getNetworkInterfaces();
         if (interfaces != null) {
@@ -300,19 +300,20 @@ public final class NetworkInterface extends Object {
         }
 
         for (NetworkInterface netif : interfaces) {
-            // Ensure that current NetworkInterface is bound to at least 
+            // Ensure that current NetworkInterface is bound to at least
             // one InetAddress before processing
             if (netif.addresses != null) {
                 for (InetAddress addr : netif.addresses) {
                     if (16 == addr.ipaddress.length) {
-                        if (addr.isLinkLocalAddress() || addr.isSiteLocalAddress()) {
+                        if (addr.isLinkLocalAddress()
+                                || addr.isSiteLocalAddress()) {
                             ((Inet6Address) addr).scopedIf = netif;
                             ((Inet6Address) addr).ifname = netif.name;
                             ((Inet6Address) addr).scope_ifname_set = true;
                         }
                     }
                 }
-            }// end if 
+            }
         }
 
         return (new Vector<NetworkInterface>(Arrays.asList(interfaces)))
@@ -324,7 +325,8 @@ public final class NetworkInterface extends Object {
      * are equal. The object must be an instance of NetworkInterface with the
      * same name, displayName and list of network interfaces to be the same
      * 
-     * @param obj the object to compare
+     * @param obj
+     *            the object to compare
      * @return true if the specified object is equal to this NetworkInterfcae,
      *         false otherwise
      * 
@@ -349,11 +351,11 @@ public final class NetworkInterface extends Object {
                 return false;
             }
 
-            if (!(name.equals("")) && (!netif.getName().equals(name))) {
+            if (!(name.equals("")) && (!netif.getName().equals(name))) { //$NON-NLS-1$
                 return false;
             }
 
-            if ((name.equals("")) && (!netif.getName().equals(displayName))) {
+            if ((name.equals("")) && (!netif.getName().equals(displayName))) { //$NON-NLS-1$
                 return false;
             }
 
@@ -415,11 +417,11 @@ public final class NetworkInterface extends Object {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder(25);
-        string.append("[");
+        string.append("["); //$NON-NLS-1$
         string.append(name);
-        string.append("][");
+        string.append("]["); //$NON-NLS-1$
         string.append(displayName);
-        string.append("]");
+        string.append("]"); //$NON-NLS-1$
 
         /*
          * get the addresses through this call to make sure we only reveal those
@@ -429,12 +431,11 @@ public final class NetworkInterface extends Object {
         if (theAddresses != null) {
             while (theAddresses.hasMoreElements()) {
                 InetAddress nextAddress = theAddresses.nextElement();
-                string.append("[");
+                string.append("["); //$NON-NLS-1$
                 string.append(nextAddress.toString());
-                string.append("]");
+                string.append("]"); //$NON-NLS-1$
             }
         }
         return string.toString();
     }
-
 }

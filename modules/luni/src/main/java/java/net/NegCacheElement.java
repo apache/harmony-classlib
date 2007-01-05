@@ -16,41 +16,40 @@
 
 package java.net;
 
-
 /**
  * This class is used to hold information about failed name lookups
  */
 class NegCacheElement {
 
-	// we need the time to figure out when the entry is stale
-	long timeAdded = System.currentTimeMillis();
+    // we need the time to figure out when the entry is stale
+    long timeAdded = System.currentTimeMillis();
 
-	// holds the name of the host for which the lookup failed
-	String hostName;
+    // holds the name of the host for which the lookup failed
+    String hostName;
 
-	/**
-	 * default constructor
-	 */
-	public NegCacheElement() {
-		super();
-	}
+    /**
+     * default constructor
+     */
+    public NegCacheElement() {
+        super();
+    }
 
-	/**
-	 * Constructor used to set the hostname for the failed entry
-	 * 
-	 * @param hostName
-	 *            name of the host on which the lookup failed
-	 */
-	public NegCacheElement(String hostName) {
-		this.hostName = hostName;
-	}
+    /**
+     * Constructor used to set the hostname for the failed entry
+     * 
+     * @param hostName
+     *            name of the host on which the lookup failed
+     */
+    public NegCacheElement(String hostName) {
+        this.hostName = hostName;
+    }
 
-	/**
-	 * Answers the hostname for the cache element
-	 * 
-	 * @return hostName name of the host on which the lookup failed
-	 */
-	String hostName() {
-		return hostName;
-	}
+    /**
+     * Answers the hostname for the cache element
+     * 
+     * @return hostName name of the host on which the lookup failed
+     */
+    String hostName() {
+        return hostName;
+    }
 }

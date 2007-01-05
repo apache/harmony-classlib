@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 import java.io.IOException;
 
 /**
@@ -29,21 +28,20 @@ public class SocketException extends IOException {
     private static final long serialVersionUID = -5935874303556886934L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public SocketException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public SocketException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public SocketException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public SocketException(String detailMessage) {
+        super(detailMessage);
+    }
 }

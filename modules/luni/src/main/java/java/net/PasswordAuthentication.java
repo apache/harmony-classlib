@@ -17,45 +17,44 @@
 
 package java.net;
 
-
 /**
  * This class is a data structure that contains the username and password.
  */
 public final class PasswordAuthentication {
-	
-	private String userName;
 
-	private char[] password;
+    private String userName;
 
-	/**
-	 * Creates an instance of a password authentication with a username and
-	 * password.
-	 * 
-	 * @param userName
-	 *            java.lang.String the username
-	 * @param password
-	 *            char[] the password
-	 */
-	public PasswordAuthentication(String userName, char[] password) {
-		this.userName = userName;
-		this.password = password.clone();
-	}
+    private char[] password;
 
-	/**
-	 * Answers the reference of the password of this class.
-	 * 
-	 * @return char[] the reference of the password
-	 */
-	public char[] getPassword() {
-		return password.clone();
-	}
+    /**
+     * Creates an instance of a password authentication with a username and
+     * password.
+     * 
+     * @param userName
+     *            java.lang.String the username
+     * @param password
+     *            char[] the password
+     */
+    public PasswordAuthentication(String userName, char[] password) {
+        this.userName = userName;
+        this.password = password.clone();
+    }
 
-	/**
-	 * Answers the username of this class.
-	 * 
-	 * @return java.lang.String the username of this class
-	 */
-	public String getUserName() {
-		return userName;
-	}
+    /**
+     * Answers the reference of the password of this class.
+     * 
+     * @return char[] the reference of the password
+     */
+    public char[] getPassword() {
+        return password.clone();
+    }
+
+    /**
+     * Answers the username of this class.
+     * 
+     * @return java.lang.String the username of this class
+     */
+    public String getUserName() {
+        return userName;
+    }
 }

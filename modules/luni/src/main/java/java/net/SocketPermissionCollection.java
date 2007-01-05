@@ -28,70 +28,71 @@ import java.util.Vector;
  * specific permissions is implied by a SocketPermissionCollection.
  */
 final class SocketPermissionCollection extends PermissionCollection {
-	
-	private static final long serialVersionUID = 2787186408602843674L;
 
-	private Vector<Permission> permissions = new Vector<Permission>();
+    private static final long serialVersionUID = 2787186408602843674L;
 
-	// Constructs a new instance of this class.
-	public SocketPermissionCollection() {
-		super();
-	}
+    private Vector<Permission> permissions = new Vector<Permission>();
 
-	// Adds the argument to the collection.
-	@Override
+    // Constructs a new instance of this class.
+    public SocketPermissionCollection() {
+        super();
+    }
+
+    // Adds the argument to the collection.
+    @Override
     public void add(Permission permission) {
-		if (isReadOnly()) {
+        if (isReadOnly()) {
             throw new IllegalStateException();
         }
-		if (!(permission instanceof SocketPermission)) {
+        if (!(permission instanceof SocketPermission)) {
             throw new IllegalArgumentException(permission.toString());
         }
-		permissions.addElement(permission);
-	}
+        permissions.addElement(permission);
+    }
 
-	// Answers an enumeration of the permissions
-	@Override
+    // Answers an enumeration of the permissions
+    @Override
     public Enumeration<Permission> elements() {
-		return permissions.elements();
-	}
+        return permissions.elements();
+    }
 
-	/** Answers if this permission collection implies <code>permission</code>.
-	 * Basically it tests
-	 * if <code>permission</code> is the subset of this collection.
-	 * */
-	@Override
+    /**
+     * Answers if this permission collection implies <code>permission</code>.
+     * Basically it tests if <code>permission</code> is the subset of this
+     * collection.
+     */
+    @Override
     public boolean implies(Permission permission) {
-		if (!(permission instanceof SocketPermission)) {
+        if (!(permission instanceof SocketPermission)) {
             return false;
         }
-		SocketPermission sp, argPerm = (SocketPermission) permission;
-		int pmask = argPerm.actionsMask;
-		int allMask = 0;
-		int i = 0, count = permissions.size();
-		while ((i < count) && ((allMask & pmask) != pmask)) {
-			sp = (SocketPermission) permissions.elementAt(i);
-			if (sp.checkHost(argPerm)) {
-				if ((sp.actionsMask & SocketPermission.SP_RESOLVE) == SocketPermission.SP_RESOLVE) {
+        SocketPermission sp, argPerm = (SocketPermission) permission;
+        int pmask = argPerm.actionsMask;
+        int allMask = 0;
+        int i = 0, count = permissions.size();
+        while ((i < count) && ((allMask & pmask) != pmask)) {
+            sp = (SocketPermission) permissions.elementAt(i);
+            if (sp.checkHost(argPerm)) {
+                if ((sp.actionsMask & SocketPermission.SP_RESOLVE) == SocketPermission.SP_RESOLVE) {
                     allMask |= SocketPermission.SP_RESOLVE;
                 }
-				// Only set flags if the port range and host can be implied
-				if ((argPerm.portMin >= sp.portMin)
-						&& (argPerm.portMax <= sp.portMax)) {
-					if ((sp.actionsMask & SocketPermission.SP_CONNECT) == SocketPermission.SP_CONNECT) {
+                // Only set flags if the port range and host can be implied
+                if ((argPerm.portMin >= sp.portMin)
+                        && (argPerm.portMax <= sp.portMax)) {
+                    if ((sp.actionsMask & SocketPermission.SP_CONNECT) == SocketPermission.SP_CONNECT) {
                         allMask |= SocketPermission.SP_CONNECT;
                     }
-					if ((sp.actionsMask & SocketPermission.SP_ACCEPT) == SocketPermission.SP_ACCEPT) {
+                    if ((sp.actionsMask & SocketPermission.SP_ACCEPT) == SocketPermission.SP_ACCEPT) {
                         allMask |= SocketPermission.SP_ACCEPT;
                     }
-					if ((sp.actionsMask & SocketPermission.SP_LISTEN) == SocketPermission.SP_LISTEN) {
+                    if ((sp.actionsMask & SocketPermission.SP_LISTEN) == SocketPermission.SP_LISTEN) {
                         allMask |= SocketPermission.SP_LISTEN;
                     }
-				}
-			}
-			++i;
-		}
+                }
+            }
+            ++i;
+        }
 
-		return (allMask & pmask) == pmask;
-	}
+        return (allMask & pmask) == pmask;
+    }
 }

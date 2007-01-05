@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 import java.io.IOException;
 import java.security.cert.Certificate;
 import java.util.jar.Attributes;
@@ -31,147 +30,149 @@ import java.util.jar.Manifest;
  * where "!/" is called a seperator.
  */
 public abstract class JarURLConnection extends URLConnection {
-	// the location of the seperator
-	protected URLConnection jarFileURLConnection;
 
-	private String entryName;
+    // the location of the separator
+    protected URLConnection jarFileURLConnection;
 
-	private URL fileURL;
+    private String entryName;
 
-	// the file component of the URL
-	private String file;
+    private URL fileURL;
 
-	/**
-	 * Contructs an instance of <code>JarURLConnection</code>.
-	 * 
-	 * @param url
-	 *            java.net.URL the URL that contains the location to connect to
-	 */
-	protected JarURLConnection(URL url) throws MalformedURLException {
-		super(url);
-		file = url.getFile();
-		int sepIdx;
-		// Support embedded jar URLs by using lastIndexOf()
-		if ((sepIdx = file.lastIndexOf("!/")) < 0) {
-			throw new MalformedURLException();
-		}
-		if (file.length() == sepIdx + 2) {
-			return;
-		}
-		entryName = file.substring(sepIdx + 2, file.length());
-		if (null != url.getRef()) {
-			entryName += "#" + url.getRef();
-		}
-	}
+    // the file component of the URL
+    private String file;
 
-	/**
-	 * Answers the attributes of the JarEntry referenced by this
-	 * <code>JarURLConnection</code>.
-	 * 
-	 * @return java.util.jar.Attributes the attributes of the the JarEntry
-	 * @exception java.io.IOException
-	 *                thrown if an IO exception occurs while retrieving the
-	 *                JarEntry
-	 */
-	public Attributes getAttributes() throws java.io.IOException {
-		JarEntry jEntry = getJarEntry();
-		return (jEntry == null) ? null : jEntry.getAttributes();
-	}
+    /**
+     * Contructs an instance of <code>JarURLConnection</code>.
+     * 
+     * @param url
+     *            java.net.URL the URL that contains the location to connect to
+     */
+    protected JarURLConnection(URL url) throws MalformedURLException {
+        super(url);
+        file = url.getFile();
+        int sepIdx;
+        // Support embedded jar URLs by using lastIndexOf()
+        if ((sepIdx = file.lastIndexOf("!/")) < 0) { //$NON-NLS-1$
+            throw new MalformedURLException();
+        }
+        if (file.length() == sepIdx + 2) {
+            return;
+        }
+        entryName = file.substring(sepIdx + 2, file.length());
+        if (null != url.getRef()) {
+            entryName += "#" + url.getRef(); //$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * Answers the Certificates of the JarEntry referenced by this
-	 * <code>URLConnection</code>. This method will return null until the
-	 * InputStream has been completely verified
-	 * 
-	 * @return Certificate[] the Certificates of the JarEntry.
-	 * @exception java.io.IOException
-	 *                thrown if there is an IO exception occurs while getting
-	 *                the JarEntry.
-	 */
-	public Certificate[] getCertificates() throws java.io.IOException {
-		JarEntry jEntry = getJarEntry();
-		if (jEntry == null)
-			return null;
+    /**
+     * Answers the attributes of the JarEntry referenced by this
+     * <code>JarURLConnection</code>.
+     * 
+     * @return java.util.jar.Attributes the attributes of the the JarEntry
+     * @exception java.io.IOException
+     *                thrown if an IO exception occurs while retrieving the
+     *                JarEntry
+     */
+    public Attributes getAttributes() throws java.io.IOException {
+        JarEntry jEntry = getJarEntry();
+        return (jEntry == null) ? null : jEntry.getAttributes();
+    }
 
-		return jEntry.getCertificates();
+    /**
+     * Answers the Certificates of the JarEntry referenced by this
+     * <code>URLConnection</code>. This method will return null until the
+     * InputStream has been completely verified
+     * 
+     * @return Certificate[] the Certificates of the JarEntry.
+     * @exception java.io.IOException
+     *                thrown if there is an IO exception occurs while getting
+     *                the JarEntry.
+     */
+    public Certificate[] getCertificates() throws java.io.IOException {
+        JarEntry jEntry = getJarEntry();
+        if (jEntry == null) {
+            return null;
+        }
 
-	}
+        return jEntry.getCertificates();
+    }
 
-	/**
-	 * Answers the JarEntry name of the entry referenced by this
-	 * <code>URLConnection</code>.
-	 * 
-	 * @return java.lang.String the JarEntry name
-	 */
-	public String getEntryName() {
-		return entryName;
-	}
+    /**
+     * Answers the JarEntry name of the entry referenced by this
+     * <code>URLConnection</code>.
+     * 
+     * @return java.lang.String the JarEntry name
+     */
+    public String getEntryName() {
+        return entryName;
+    }
 
-	/**
-	 * Answers the JarEntry of the entry referenced by this
-	 * <code>URLConnection</code>.
-	 * 
-	 * @return java.util.jar.JarEntry the JarEntry referenced
-	 */
-	public JarEntry getJarEntry() throws IOException {
-		if (!connected) {
-			connect();
-		}
-		if (entryName == null) {
-			return null;
-		}
-		// The entry must exist since the connect succeeded
-		return getJarFile().getJarEntry(entryName);
-	}
+    /**
+     * Answers the JarEntry of the entry referenced by this
+     * <code>URLConnection</code>.
+     * 
+     * @return java.util.jar.JarEntry the JarEntry referenced
+     */
+    public JarEntry getJarEntry() throws IOException {
+        if (!connected) {
+            connect();
+        }
+        if (entryName == null) {
+            return null;
+        }
+        // The entry must exist since the connect succeeded
+        return getJarFile().getJarEntry(entryName);
+    }
 
-	/**
-	 * Answers the Manifest associated with the Jar URL
-	 * 
-	 * @return java.util.jar.Manifest The JarFile's Manifest
-	 */
-	public Manifest getManifest() throws java.io.IOException {
-		return getJarFile().getManifest();
-	}
+    /**
+     * Answers the Manifest associated with the Jar URL
+     * 
+     * @return java.util.jar.Manifest The JarFile's Manifest
+     */
+    public Manifest getManifest() throws java.io.IOException {
+        return getJarFile().getManifest();
+    }
 
-	/**
-	 * Answers the the JarFile referenced by this <code>URLConnection</code>.
-	 * 
-	 * @return java.util.jar.JarFile the JarFile
-	 * @exception java.io.IOException
-	 *                thrown if an IO exception occurs while retrieving the Jar
-	 *                file
-	 */
-	public abstract JarFile getJarFile() throws java.io.IOException;
+    /**
+     * Answers the the JarFile referenced by this <code>URLConnection</code>.
+     * 
+     * @return java.util.jar.JarFile the JarFile
+     * @exception java.io.IOException
+     *                thrown if an IO exception occurs while retrieving the Jar
+     *                file
+     */
+    public abstract JarFile getJarFile() throws java.io.IOException;
 
-	/**
-	 * Answers the URL of the JarFile referenced by this
-	 * <code>URLConnection</code>.
-	 * 
-	 * @return java.net.URL the URL of the JarFile.
-	 */
-	public URL getJarFileURL() {
-		if (fileURL != null)
-			return fileURL;
-		try {
-			// Support embedded jar URLs by using lastIndexOf()
-			return fileURL = new URL(url.getFile().substring(0,
-					url.getFile().lastIndexOf("!/")));
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
+    /**
+     * Answers the URL of the JarFile referenced by this
+     * <code>URLConnection</code>.
+     * 
+     * @return java.net.URL the URL of the JarFile.
+     */
+    public URL getJarFileURL() {
+        if (fileURL != null) {
+            return fileURL;
+        }
+        try {
+            // Support embedded jar URLs by using lastIndexOf()
+            return fileURL = new URL(url.getFile().substring(0,
+                    url.getFile().lastIndexOf("!/"))); //$NON-NLS-1$
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 
-	/**
-	 * Answers the main Attributes of the JarFile referenced by this
-	 * <code>URLConnection</code>.
-	 * 
-	 * @return java.util.jar.Attributes the Attributes of the the JarFile
-	 * @exception java.io.IOException
-	 *                thrown if an IO exception occurs while retrieving the
-	 *                JarFile
-	 */
-	public Attributes getMainAttributes() throws java.io.IOException {
-		Manifest m = getJarFile().getManifest();
-		return (m == null) ? null : m.getMainAttributes();
-	}
+    /**
+     * Answers the main Attributes of the JarFile referenced by this
+     * <code>URLConnection</code>.
+     * 
+     * @return java.util.jar.Attributes the Attributes of the the JarFile
+     * @exception java.io.IOException
+     *                thrown if an IO exception occurs while retrieving the
+     *                JarFile
+     */
+    public Attributes getMainAttributes() throws java.io.IOException {
+        Manifest m = getJarFile().getManifest();
+        return (m == null) ? null : m.getMainAttributes();
+    }
 }

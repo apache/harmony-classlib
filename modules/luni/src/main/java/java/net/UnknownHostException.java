@@ -17,33 +17,31 @@
 
 package java.net;
 
-
 import java.io.IOException;
 
 /**
- * This UnknownHostException is thrown when an IP address resolution is attempted
- * and no host or resolver may be found.
+ * This UnknownHostException is thrown when an IP address resolution is
+ * attempted and no host or resolver may be found.
  */
 public class UnknownHostException extends IOException {
 
     private static final long serialVersionUID = -4639126076052875403L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public UnknownHostException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public UnknownHostException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public UnknownHostException(String detailMessage) {
-		super(detailMessage);
-	}
-
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public UnknownHostException(String detailMessage) {
+        super(detailMessage);
+    }
 }

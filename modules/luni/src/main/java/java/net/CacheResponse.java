@@ -22,39 +22,43 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * CacheResponse is used for getting resource from the ResponseCache. 
- * An CacheResponse object provides an <code>InputStream</code> to access the response body,
- * and also a method <code>getHeaders()</code> to fetch the response headers.
- * 
+ * CacheResponse is used for getting resource from the ResponseCache. An
+ * CacheResponse object provides an <code>InputStream</code> to access the
+ * response body, and also a method <code>getHeaders()</code> to fetch the
+ * response headers.
  */
 public abstract class CacheResponse {
-	/**
-	 * Constructor method
-	 */
-	public CacheResponse() {
-		super();
-	}
+    /**
+     * Constructor method
+     */
+    public CacheResponse() {
+        super();
+    }
 
-	/**
-	 * <p>
-	 * Returns an <code>InputStream</code> for the respsonse body access.
-	 * </p>
-	 * @return an <code>InputStream</code>, which can be used to fetch the response body.
-	 * @throws IOException
-	 *             if an I/O error is encounted while retrieving the response body.
-	 */
-	public abstract InputStream getBody() throws IOException;
+    /**
+     * Returns an <code>InputStream</code> for the respsonse body access.
+     * 
+     * @return an <code>InputStream</code>, which can be used to fetch the
+     *         response body.
+     * @throws IOException
+     *             if an I/O error is encounted while retrieving the response
+     *             body.
+     */
+    public abstract InputStream getBody() throws IOException;
 
-	/**
-	 * <p>
-	 * Returns an immutable <code>Map</code>, which contains the response headers information.
-	 * @return an immutable <code>Map</code>, which contains the response headers. 
-	 * The map is from response header field names to lists of field values.
-	 * Field name is a <code>String</code>, and the field values list is a <code>List</code>
-	 * of <code>String</code>.The status line as its field name has null as its list of field values.
-	 * </p> 
-	 * @throws IOException
-	 *             if an I/O error is encounted while retrieving the response headers.
-	 */
-	public abstract Map<String,List<String>> getHeaders() throws IOException;
+    /**
+     * Returns an immutable <code>Map</code>, which contains the response
+     * headers information.
+     * 
+     * @return an immutable <code>Map</code>, which contains the response
+     *         headers. The map is from response header field names to lists of
+     *         field values. Field name is a <code>String</code>, and the
+     *         field values list is a <code>List</code> of <code>String</code>.The
+     *         status line as its field name has null as its list of field
+     *         values.
+     * @throws IOException
+     *             if an I/O error is encounted while retrieving the response
+     *             headers.
+     */
+    public abstract Map<String, List<String>> getHeaders() throws IOException;
 }

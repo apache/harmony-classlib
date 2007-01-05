@@ -58,8 +58,8 @@ public abstract class ContentHandler {
      * @throws IOException
      *             If an error occurred obtaining the content.
      */
-    @SuppressWarnings("unchecked")
     // Class arg not generified in the spec.
+    @SuppressWarnings("unchecked")
     public Object getContent(URLConnection uConn, Class[] types)
             throws IOException {
         Object content = getContent(uConn);

@@ -17,17 +17,16 @@
 
 package java.net;
 
-
 /**
  * Defines a factory which is reponsible for creating a ContentHandler
  */
 public interface ContentHandlerFactory {
-	/**
-	 * Creates a content handler to handle <code>contentType</code>
-	 * 
-	 * @return java.net.ContentHandler
-	 * @param contentType
-	 *            java.lang.String
-	 */
-	ContentHandler createContentHandler(String contentType);
+    /**
+     * Creates a content handler to handle <code>contentType</code>
+     * 
+     * @return java.net.ContentHandler
+     * @param contentType
+     *            java.lang.String
+     */
+    ContentHandler createContentHandler(String contentType);
 }

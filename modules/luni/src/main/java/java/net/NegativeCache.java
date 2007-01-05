@@ -16,7 +16,6 @@
 
 package java.net;
 
-
 import java.security.AccessController;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,95 +31,96 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 
     static NegativeCache<String, NegCacheElement> negCache;
 
-	// maximum number of entries in the cache
-	static final int MAX_NEGATIVE_ENTRIES = 5;
+    // maximum number of entries in the cache
+    static final int MAX_NEGATIVE_ENTRIES = 5;
 
-	// the loading for the cache
-	static final float LOADING = 0.75F;
+    // the loading for the cache
+    static final float LOADING = 0.75F;
 
-	/**
-	 * Answers the hostname for the cache element
-	 * 
-	 * @return hostName name of the host on which the lookup failed
-	 */
-	NegativeCache(int initialCapacity, float loadFactor, boolean accessOrder) {
-		super(initialCapacity, loadFactor, accessOrder);
-	}
+    /**
+     * Answers the hostname for the cache element
+     * 
+     * @return hostName name of the host on which the lookup failed
+     */
+    NegativeCache(int initialCapacity, float loadFactor, boolean accessOrder) {
+        super(initialCapacity, loadFactor, accessOrder);
+    }
 
-	/**
-	 * Answers if we should remove the Eldest entry. We remove the eldest entry
-	 * if the size has grown beyond the maximum size allowed for the cache. We
-	 * create the LinkedHashMap such that this deletes the least recently used
-	 * entry
-	 * 
-	 * @param eldest
-	 *            the map entry which will be deleted if we return true
-	 */
-	@Override
+    /**
+     * Answers if we should remove the Eldest entry. We remove the eldest entry
+     * if the size has grown beyond the maximum size allowed for the cache. We
+     * create the LinkedHashMap such that this deletes the least recently used
+     * entry
+     * 
+     * @param eldest
+     *            the map entry which will be deleted if we return true
+     */
+    @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-		return size() > MAX_NEGATIVE_ENTRIES;
-	}
+        return size() > MAX_NEGATIVE_ENTRIES;
+    }
 
-	/**
-	 * Adds the host name and the corresponding name lookup fail message to the
-	 * cache
-	 * 
-	 * @param hostName
-	 *            the name of the host for which the lookup failed
-	 * @param failedMessage
-	 *            the message returned when we failed the lookup
-	 */
-	static void put(String hostName, String failedMessage) {
-		checkCacheExists();
-		negCache.put(hostName, new NegCacheElement(failedMessage));
-	}
+    /**
+     * Adds the host name and the corresponding name lookup fail message to the
+     * cache
+     * 
+     * @param hostName
+     *            the name of the host for which the lookup failed
+     * @param failedMessage
+     *            the message returned when we failed the lookup
+     */
+    static void put(String hostName, String failedMessage) {
+        checkCacheExists();
+        negCache.put(hostName, new NegCacheElement(failedMessage));
+    }
 
-	/**
-	 * Answers the message that occurred when we failed to lookup the host if
-	 * such a failure is within the cache and the entry has not yet expired
-	 * 
-	 * @param hostName
-	 *            the name of the host for which we are looking for an entry
-	 * @return the message which was returned when the host failed to be looked
-	 *         up if there is still a valid entry within the cache
-	 */
-	static String getFailedMessage(String hostName) {
-		checkCacheExists();
-		NegCacheElement element = negCache.get(hostName);
-		if (element != null) {
-			// check if element is still valid
-			String ttlValue = AccessController.doPrivileged(
-                    new PriviAction<String>("networkaddress.cache.negative.ttl"));
-			int ttl = 10;
-			try {
-				if (ttlValue != null) {
+    /**
+     * Answers the message that occurred when we failed to lookup the host if
+     * such a failure is within the cache and the entry has not yet expired
+     * 
+     * @param hostName
+     *            the name of the host for which we are looking for an entry
+     * @return the message which was returned when the host failed to be looked
+     *         up if there is still a valid entry within the cache
+     */
+    static String getFailedMessage(String hostName) {
+        checkCacheExists();
+        NegCacheElement element = negCache.get(hostName);
+        if (element != null) {
+            // check if element is still valid
+            String ttlValue = AccessController
+                    .doPrivileged(new PriviAction<String>(
+                            "networkaddress.cache.negative.ttl")); //$NON-NLS-1$
+            int ttl = 10;
+            try {
+                if (ttlValue != null) {
                     ttl = Integer.decode(ttlValue).intValue();
                 }
-			} catch (NumberFormatException e) {
-			}
-			if (ttl == 0) {
-				negCache.clear();
-				element = null;
-			} else if (ttl != -1) {
-				if (element.timeAdded + (ttl * 1000) < System
-						.currentTimeMillis()) {
-					// remove the element from the cache and return null
-					negCache.remove(hostName);
-					element = null;
-				}
-			}
-		}
-		if (element != null) {
-			return element.hostName();
-		}
-		return null;
-	}
+            } catch (NumberFormatException e) {
+            }
+            if (ttl == 0) {
+                negCache.clear();
+                element = null;
+            } else if (ttl != -1) {
+                if (element.timeAdded + (ttl * 1000) < System
+                        .currentTimeMillis()) {
+                    // remove the element from the cache and return null
+                    negCache.remove(hostName);
+                    element = null;
+                }
+            }
+        }
+        if (element != null) {
+            return element.hostName();
+        }
+        return null;
+    }
 
-	/**
-	 * This method checks if we have created the cache and if not creates it
-	 */
-	static void checkCacheExists() {
-		if (negCache == null) {
+    /**
+     * This method checks if we have created the cache and if not creates it
+     */
+    static void checkCacheExists() {
+        if (negCache == null) {
             /*
              * Create with the access order set so ordering is based on when the
              * entries were last accessed. We make the default cache size one
@@ -130,5 +130,5 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
             negCache = new NegativeCache<String, NegCacheElement>(
                     MAX_NEGATIVE_ENTRIES + 1, LOADING, true);
         }
-	}
+    }
 }

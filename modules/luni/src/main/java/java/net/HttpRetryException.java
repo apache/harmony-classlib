@@ -20,7 +20,6 @@ import java.io.IOException;
 
 /**
  * The exception to be thrown when a request cannot be retried.
- * 
  */
 public class HttpRetryException extends IOException {
 

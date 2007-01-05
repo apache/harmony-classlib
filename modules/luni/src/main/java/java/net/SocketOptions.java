@@ -80,5 +80,5 @@ public interface SocketOptions {
 	 * @exception SocketException
 	 *                thrown if an error occurs setting the option
 	 */
-	public void setOption(int optID, Object val) throws SocketException;
+    public void setOption(int optID, Object val) throws SocketException;
 }

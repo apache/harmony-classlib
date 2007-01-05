@@ -421,8 +421,9 @@ public final class URI implements Comparable<URI>, Serializable {
                         tempPort = Integer.parseInt(temp.substring(index + 1));
                         if (tempPort < 0) {
                             if (forceServer) {
-                                throw new URISyntaxException(authority, Msg
-                                        .getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
+                                throw new URISyntaxException(
+                                        authority,
+                                        Msg.getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
                             }
                             return;
                         }
@@ -1257,9 +1258,9 @@ public final class URI implements Comparable<URI>, Serializable {
         if (path.equals(normalizedPath)) {
             return this;
         }
-        URI result = duplicate(); // get an exact copy of the URI
-        // re-calculate the scheme specific part since
-        // the path of the normalized URI is different from this URI.
+        // get an exact copy of the URI re-calculate the scheme specific part
+        // since the path of the normalized URI is different from this URI.
+        URI result = duplicate();
         result.path = normalizedPath;
         result.setSchemeSpecificPart();
         return result;

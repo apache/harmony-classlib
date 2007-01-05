@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 
-
 package java.net;
-
 
 import java.io.IOException;
 
@@ -32,20 +30,20 @@ public class MalformedURLException extends IOException {
     private static final long serialVersionUID = -182787522200415866L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public MalformedURLException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public MalformedURLException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public MalformedURLException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public MalformedURLException(String detailMessage) {
+        super(detailMessage);
+    }
 }

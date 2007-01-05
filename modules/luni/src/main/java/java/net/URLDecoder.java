@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -30,88 +29,88 @@ import org.apache.harmony.luni.util.Util;
  */
 public class URLDecoder {
 
-	/**
-	 * Decodes the string argument which is assumed to be encoded in the
-	 * <code>x-www-form-urlencoded</code> MIME content type.
-	 * <p>
-	 * '+' will be converted to space, '%' and two following hex digit
-	 * characters are converted to the equivalent byte value. All other
-	 * characters are passed through unmodified.
-	 * <p>
-	 * e.g. "A+B+C %24%25" -> "A B C $%"
-	 * 
-	 * @param s
-	 *            java.lang.String The encoded string.
-	 * @return java.lang.String The decoded version.
-	 * 
-	 * @deprecated use URLDecoder#decode(String, String) instead
-	 */
-	@Deprecated
+    /**
+     * Decodes the string argument which is assumed to be encoded in the
+     * <code>x-www-form-urlencoded</code> MIME content type.
+     * <p>
+     * '+' will be converted to space, '%' and two following hex digit
+     * characters are converted to the equivalent byte value. All other
+     * characters are passed through unmodified.
+     * <p>
+     * e.g. "A+B+C %24%25" -> "A B C $%"
+     * 
+     * @param s
+     *            java.lang.String The encoded string.
+     * @return java.lang.String The decoded version.
+     * 
+     * @deprecated use URLDecoder#decode(String, String) instead
+     */
+    @Deprecated
     public static String decode(String s) {
-		return Util.decode(s, true);
-	}
+        return Util.decode(s, true);
+    }
 
-	/**
-	 * Decodes the string argument which is assumed to be encoded in the
-	 * <code>x-www-form-urlencoded</code> MIME content type using the
-	 * specified encoding scheme.
-	 * <p>
-	 * '+' will be converted to space, '%' and two following hex digit
-	 * characters are converted to the equivalent byte value. All other
-	 * characters are passed through unmodified.
-	 * 
-	 * <p>
-	 * e.g. "A+B+C %24%25" -> "A B C $%"
-	 * 
-	 * @param s
-	 *            java.lang.String The encoded string.
-	 * @param enc
-	 *            java.lang.String The encoding scheme to use
-	 * @return java.lang.String The decoded version.
-	 */
-	public static String decode(String s, String enc)
-			throws UnsupportedEncodingException {
+    /**
+     * Decodes the string argument which is assumed to be encoded in the
+     * <code>x-www-form-urlencoded</code> MIME content type using the
+     * specified encoding scheme.
+     * <p>
+     * '+' will be converted to space, '%' and two following hex digit
+     * characters are converted to the equivalent byte value. All other
+     * characters are passed through unmodified.
+     * 
+     * <p>
+     * e.g. "A+B+C %24%25" -> "A B C $%"
+     * 
+     * @param s
+     *            java.lang.String The encoded string.
+     * @param enc
+     *            java.lang.String The encoding scheme to use
+     * @return java.lang.String The decoded version.
+     */
+    public static String decode(String s, String enc)
+            throws UnsupportedEncodingException {
 
-		if (enc == null) {
-			throw new NullPointerException();
-		}
-
-		// If the given encoding is an empty string throw an exception.
-        if (enc.length() == 0) {
-            throw new UnsupportedEncodingException(Msg
-                    .getString("K00a5", "enc")); //$NON-NLS-1$
+        if (enc == null) {
+            throw new NullPointerException();
         }
 
-		StringBuffer result = new StringBuffer(s.length());
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		for (int i = 0; i < s.length();) {
-			char c = s.charAt(i);
-			if (c == '+') {
+        // If the given encoding is an empty string throw an exception.
+        if (enc.length() == 0) {
+            throw new UnsupportedEncodingException(Msg
+                    .getString("K00a5", "enc")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        StringBuffer result = new StringBuffer(s.length());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        for (int i = 0; i < s.length();) {
+            char c = s.charAt(i);
+            if (c == '+') {
                 result.append(' ');
             } else if (c == '%') {
-				out.reset();
-				do {
-					if (i + 2 >= s.length()) {
+                out.reset();
+                do {
+                    if (i + 2 >= s.length()) {
                         throw new IllegalArgumentException(Msg.getString(
-								"K01fe", i));
+                                "K01fe", i)); //$NON-NLS-1$
                     }
-					int d1 = Character.digit(s.charAt(i + 1), 16);
-					int d2 = Character.digit(s.charAt(i + 2), 16);
-					if (d1 == -1 || d2 == -1) {
+                    int d1 = Character.digit(s.charAt(i + 1), 16);
+                    int d2 = Character.digit(s.charAt(i + 2), 16);
+                    if (d1 == -1 || d2 == -1) {
                         throw new IllegalArgumentException(Msg.getString(
-								"K01ff", s.substring(i, i + 3), String
-										.valueOf(i)));
+                                "K01ff", //$NON-NLS-1$
+                                s.substring(i, i + 3), String.valueOf(i)));
                     }
-					out.write((byte) ((d1 << 4) + d2));
-					i += 3;
-				} while (i < s.length() && s.charAt(i) == '%');
-				result.append(out.toString(enc));
-				continue;
-			} else {
+                    out.write((byte) ((d1 << 4) + d2));
+                    i += 3;
+                } while (i < s.length() && s.charAt(i) == '%');
+                result.append(out.toString(enc));
+                continue;
+            } else {
                 result.append(c);
             }
-			i++;
-		}
-		return result.toString();
-	}
+            i++;
+        }
+        return result.toString();
+    }
 }

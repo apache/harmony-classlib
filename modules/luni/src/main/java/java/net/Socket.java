@@ -51,7 +51,9 @@ public class Socket {
 
     private boolean isOutputShutdown = false;
 
-    private static class ConnectLock {}
+    private static class ConnectLock {
+    }
+
     private Object connectLock = new ConnectLock();
 
     private Proxy proxy;
@@ -101,7 +103,8 @@ public class Socket {
      */
     public Socket(Proxy proxy) {
         if (null == proxy || Proxy.Type.HTTP == proxy.type()) {
-            throw new IllegalArgumentException("proxy is null or invalid type");
+            // KA023=Proxy is null or invalid type
+            throw new IllegalArgumentException(Msg.getString("KA023")); //$NON-NLS-1$
         }
         InetSocketAddress address = (InetSocketAddress) proxy.address();
         if (null != address) {
@@ -496,52 +499,6 @@ public class Socket {
                 .booleanValue();
     }
 
-    // static native InetAddress getSocketLocalAddressImpl(FileDescriptor aFD,
-    // boolean preferIPv6Addresses);
-    //
-    // /**
-    // * Query the IP stack for the local port to which this socket is bound.
-    // *
-    // * @param aFD
-    // * the socket descriptor
-    // * @param preferIPv6Addresses
-    // * address preference for nodes that support both IPv4 and IPv6
-    // * @return int the local port to which the socket is bound
-    // */
-    // static native int getSocketLocalPortImpl(FileDescriptor aFD,
-    // boolean preferIPv6Addresses);
-    //
-    // /**
-    // * Query the IP stack for the nominated socket option.
-    // *
-    // * @param aFD
-    // * the socket descriptor
-    // * @param opt
-    // * the socket option type
-    // * @return the nominated socket option value
-    // *
-    // * @throws SocketException
-    // * if the option is invalid
-    // */
-    // static native Object getSocketOptionImpl(FileDescriptor aFD, int opt)
-    // throws SocketException;
-    //
-    // /**
-    // * Set the nominated socket option in the IP stack.
-    // *
-    // * @param aFD
-    // * the socket descriptor
-    // * @param opt
-    // * the option selector
-    // * @param optVal
-    // * the nominated option value
-    // *
-    // * @throws SocketException
-    // * if the option is invalid or cannot be set
-    // */
-    // static native void setSocketOptionImpl(FileDescriptor aFD, int opt,
-    // Object optVal) throws SocketException;
-
     /**
      * Set the SO_KEEPALIVE option for this socket.
      * 
@@ -574,11 +531,10 @@ public class Socket {
         if (security != null) {
             security.checkSetFactory();
         }
-        if (factory == null) {
-            factory = fac;
-        } else {
+        if (factory != null) {
             throw new SocketException(Msg.getString("K0044")); //$NON-NLS-1$
         }
+        factory = fac;
     }
 
     /**
@@ -593,11 +549,10 @@ public class Socket {
      */
     public synchronized void setSendBufferSize(int size) throws SocketException {
         checkClosedAndCreate(true);
-        if (size >= 1) {
-            impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
-        } else {
+        if (size < 1) {
             throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
         }
+        impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
     }
 
     /**
@@ -613,11 +568,10 @@ public class Socket {
     public synchronized void setReceiveBufferSize(int size)
             throws SocketException {
         checkClosedAndCreate(true);
-        if (size >= 1) {
-            impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
-        } else {
+        if (size < 1) {
             throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
         }
+        impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
     }
 
     /**
@@ -634,12 +588,11 @@ public class Socket {
      */
     public void setSoLinger(boolean on, int timeout) throws SocketException {
         checkClosedAndCreate(true);
-        if (!on || 0 <= timeout) {
-            int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
-            impl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
-        } else {
+        if (on && timeout < 0) {
             throw new IllegalArgumentException(Msg.getString("K0045")); //$NON-NLS-1$
         }
+        int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
+        impl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
     }
 
     /**
@@ -655,11 +608,10 @@ public class Socket {
      */
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         checkClosedAndCreate(true);
-        if (timeout >= 0) {
-            impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
-        } else {
+        if (timeout < 0) {
             throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
         }
+        impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
     }
 
     /**
@@ -697,6 +649,7 @@ public class Socket {
     void startupSocket(InetAddress dstAddress, int dstPort,
             InetAddress localAddress, int localPort, boolean streaming)
             throws IOException {
+
         if (localPort < 0 || localPort > 65535) {
             throw new IllegalArgumentException(Msg.getString("K0046")); //$NON-NLS-1$
         }
@@ -969,8 +922,8 @@ public class Socket {
             try {
                 if (!isBound()) {
                     // socket allready created at this point by earlier call or
-                    // checkClosedAndCreate
-                    // this caused us to lose socket options on create
+                    // checkClosedAndCreate this caused us to lose socket
+                    // options on create
                     // impl.create(true);
                     if (!NetUtil.usingSocks(proxy)) {
                         impl.bind(InetAddress.ANY, 0);
@@ -1125,10 +1078,7 @@ public class Socket {
     static boolean preferIPv4Stack() {
         String result = AccessController.doPrivileged(new PriviAction<String>(
                 "java.net.preferIPv4Stack")); //$NON-NLS-1$
-        if ("true".equals(result)) { //$NON-NLS-1$
-            return true;
-        }
-        return false;
+        return "true".equals(result); //$NON-NLS-1$
     }
 
     /**

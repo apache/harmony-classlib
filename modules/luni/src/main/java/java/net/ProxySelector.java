@@ -36,96 +36,95 @@ import java.util.List;
  */
 public abstract class ProxySelector {
 
-	private static ProxySelector defaultSelector = new ProxySelectorImpl();
+    private static ProxySelector defaultSelector = new ProxySelectorImpl();
 
-	/*
-	 * "getProxySelector" permission. getDefault method requires this
-	 * permission.
-	 */
-	private final static NetPermission getProxySelectorPermission = new NetPermission(
-			"getProxySelector");
+    /*
+     * "getProxySelector" permission. getDefault method requires this
+     * permission.
+     */
+    private final static NetPermission getProxySelectorPermission = new NetPermission(
+            "getProxySelector"); //$NON-NLS-1$
 
-	/*
-	 * "setProxySelector" permission. setDefault method requires this
-	 * permission.
-	 */
-	private final static NetPermission setProxySelectorPermission = new NetPermission(
-			"setProxySelector");
+    /*
+     * "setProxySelector" permission. setDefault method requires this
+     * permission.
+     */
+    private final static NetPermission setProxySelectorPermission = new NetPermission(
+            "setProxySelector"); //$NON-NLS-1$
 
-	/**
-	 * Constructor method.
-	 */
-	public ProxySelector() {
+    /**
+     * Constructor method.
+     */
+    public ProxySelector() {
+        super();
+    }
 
-	}
+    /**
+     * Gets system default <code>ProxySelector</code>.
+     * 
+     * @return system default <code>ProxySelector</code>.
+     * @throws SecurtiyException
+     *             If a security manager is installed and it doesn't have
+     *             <code>NetPermission("getProxySelector")</code>.
+     */
+    public static ProxySelector getDefault() {
+        SecurityManager sm = System.getSecurityManager();
+        if (null != sm) {
+            sm.checkPermission(getProxySelectorPermission);
+        }
+        return defaultSelector;
+    }
 
-	/**
-	 * Gets system default <code>ProxySelector</code>.
-	 * 
-	 * @return system default <code>ProxySelector</code>.
-	 * @throws SecurtiyException
-	 *             If a security manager is installed and it doesn't have
-	 *             <code>NetPermission("getProxySelector")</code>.
-	 */
-	public static ProxySelector getDefault() {
-		SecurityManager sm = System.getSecurityManager();
-		if (null != sm) {
-			sm.checkPermission(getProxySelectorPermission);
-		}
-		return defaultSelector;
-	}
+    /**
+     * Sets system default <code>ProxySelector</code>. Unsets system default
+     * <code>ProxySelector</code> if <code>selector</code> is null.
+     * 
+     * @throws SecurtiyException
+     *             If a security manager is installed and it doesn't have
+     *             <code>NetPermission("setProxySelector")</code>.
+     */
+    public static void setDefault(ProxySelector selector) {
+        SecurityManager sm = System.getSecurityManager();
+        if (null != sm) {
+            sm.checkPermission(setProxySelectorPermission);
+        }
+        defaultSelector = selector;
+    }
 
-	/**
-	 * Sets system default <code>ProxySelector</code>. Unsets system default
-	 * <code>ProxySelector</code> if <code>selector</code> is null.
-	 * 
-	 * @throws SecurtiyException
-	 *             If a security manager is installed and it doesn't have
-	 *             <code>NetPermission("setProxySelector")</code>.
-	 */
-	public static void setDefault(ProxySelector selector) {
-		SecurityManager sm = System.getSecurityManager();
-		if (null != sm) {
-			sm.checkPermission(setProxySelectorPermission);
-		}
-		defaultSelector = selector;
-	}
+    /**
+     * Gets applicable proxies based on the accessing protocol of
+     * <code>uri</code>. The format of URI is defined as below:
+     * <li>http URI stands for http connection.</li>
+     * <li>https URI stands for https connection.</li>
+     * <li>ftp URI stands for ftp connection.</li>
+     * <li>socket:://ip:port URI stands for tcp client sockets connection.</li>
+     * 
+     * @param uri
+     *            the destination <code>URI</code> object.
+     * @return a list contains all applicable proxies. If no proxy is available,
+     *         returns a list only contains one element
+     *         <code>Proxy.NO_PROXY</code>.
+     * @throws IllegalArgumentException
+     *             If any argument is null.
+     */
+    public abstract List<Proxy> select(URI uri);
 
-	/**
-	 * Gets applicable proxies based on the accessing protocol of
-	 * <code>uri</code>. The format of URI is defined as below:
-	 * <li>http URI stands for http connection.</li>
-	 * <li>https URI stands for https connection.</li>
-	 * <li>ftp URI stands for ftp connection.</li>
-	 * <li>socket:://ip:port URI stands for tcp client sockets connection.</li>
-	 * 
-	 * @param uri
-	 *            the destination <code>URI</code> object.
-	 * @return a list contains all applicable proxies. If no proxy is available,
-	 *         returns a list only contains one element
-	 *         <code>Proxy.NO_PROXY</code>.
-	 * @throws IllegalArgumentException
-	 *             If any argument is null.
-	 */
-	public abstract List<Proxy> select(URI uri);
-
-	/**
-	 * If the connection can not be established to the proxy server, this method
-	 * will be called. An implementation may adjust proxy the sequence of
-	 * proxies returned by <code>select(String, String)</code>.
-	 * 
-	 * @param uri
-	 *            the <code>URI</code> that the connection fails to connect
-	 *            to.
-	 * @param sa
-	 *            <code>SocketAddress</code> of the proxy.
-	 * @param ioe
-	 *            The <code>IOException</code> which is thrown during
-	 *            connection establishment.
-	 * @throws IllegalArgumentException
-	 *             If any argument is null.
-	 */
-	public abstract void connectFailed(URI uri, SocketAddress sa,
-			IOException ioe);
-
+    /**
+     * If the connection can not be established to the proxy server, this method
+     * will be called. An implementation may adjust proxy the sequence of
+     * proxies returned by <code>select(String, String)</code>.
+     * 
+     * @param uri
+     *            the <code>URI</code> that the connection fails to connect
+     *            to.
+     * @param sa
+     *            <code>SocketAddress</code> of the proxy.
+     * @param ioe
+     *            The <code>IOException</code> which is thrown during
+     *            connection establishment.
+     * @throws IllegalArgumentException
+     *             If any argument is null.
+     */
+    public abstract void connectFailed(URI uri, SocketAddress sa,
+            IOException ioe);
 }

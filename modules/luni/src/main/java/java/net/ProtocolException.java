@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 /**
  * An attempt to connect to a socket of the wrong type (stream or nonstream)
  * will trigger this exception. An invalid operation applied on the protocol
@@ -30,20 +29,20 @@ public class ProtocolException extends java.io.IOException {
     private static final long serialVersionUID = -6098449442062388080L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ProtocolException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public ProtocolException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ProtocolException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ProtocolException(String detailMessage) {
+        super(detailMessage);
+    }
 }

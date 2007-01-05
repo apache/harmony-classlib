@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 /**
  * This class represents permission to access network resources.
  * <p>
@@ -37,28 +36,28 @@ package java.net;
  */
 public final class NetPermission extends java.security.BasicPermission {
 
-	private static final long serialVersionUID = -8343910153355041693L;
+    private static final long serialVersionUID = -8343910153355041693L;
 
-	/**
-	 * Creates an instance of this class with the given name.
-	 * 
-	 * @param name
-	 *            String the name of the new permission.
-	 */
-	public NetPermission(String name) {
-		super(name);
-	}
+    /**
+     * Creates an instance of this class with the given name.
+     * 
+     * @param name
+     *            String the name of the new permission.
+     */
+    public NetPermission(String name) {
+        super(name);
+    }
 
-	/**
-	 * Creates an instance of this class with the given name and action list.
-	 * The action list is ignored.
-	 * 
-	 * @param name
-	 *            String the name of the new permission.
-	 * @param actions
-	 *            String ignored.
-	 */
-	public NetPermission(String name, String actions) {
-		super(name, actions);
-	}
+    /**
+     * Creates an instance of this class with the given name and action list.
+     * The action list is ignored.
+     * 
+     * @param name
+     *            String the name of the new permission.
+     * @param actions
+     *            String ignored.
+     */
+    public NetPermission(String name, String actions) {
+        super(name, actions);
+    }
 }

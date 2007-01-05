@@ -17,7 +17,6 @@
 
 package java.net;
 
-
 import java.io.InterruptedIOException;
 
 public class SocketTimeoutException extends InterruptedIOException {
@@ -25,20 +24,20 @@ public class SocketTimeoutException extends InterruptedIOException {
     private static final long serialVersionUID = -8846654841826352300L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public SocketTimeoutException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public SocketTimeoutException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public SocketTimeoutException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public SocketTimeoutException(String detailMessage) {
+        super(detailMessage);
+    }
 }
