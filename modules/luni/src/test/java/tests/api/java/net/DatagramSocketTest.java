@@ -964,7 +964,7 @@ public class DatagramSocketTest extends SocketTestCase {
         
         // Regression test for Harmony-2938
         InetAddress i = InetAddress.getByName("127.0.0.1");
-        DatagramSocket d = new DatagramSocket(80, i);
+        DatagramSocket d = new DatagramSocket(0, i);
         try {
             d.send(new DatagramPacket(new byte[] { 1 }, 1));
             fail("should throw NPE.");
