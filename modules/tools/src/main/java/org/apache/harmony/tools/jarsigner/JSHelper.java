@@ -55,7 +55,7 @@ class JSHelper {
         buf.append("\n-silent \t\t\t provide as few output as possible");
         
         buf.append("\n-certs \t\t\t\t display certificates ");
-        buf.append("(use with -veify and -verbose)");
+        buf.append("(use with -verify and -verbose)");
         
         buf.append("\n-tsa <TSA_URL>\t\t\t location of time-stamp authority");
         

@@ -327,7 +327,7 @@ public class KeyStoreCertPrinter {
         Iterator certIter = certCollection.iterator();
         int counter = 1;
 
-        // print the datailed info on all certificates
+        // print the detailed info on all certificates
         while (certIter.hasNext()) {
             X509Certificate cert = (X509Certificate) certIter.next();
             System.out.println("\nCertificate[" + counter + "]:");
@@ -340,7 +340,7 @@ public class KeyStoreCertPrinter {
     private static String formatBytes(byte[] bytes) {
         int i;
         // The method is expected to format mostly message digest results and
-        // the length of the String repesenting a SHA1 digest printed in
+        // the length of the String representing a SHA1 digest printed in
         // the way: "0A:1B:C3:D4:....:E5" is the biggest and is 59.
         StringBuffer buffer = new StringBuffer(59);
         int length;
@@ -366,4 +366,5 @@ public class KeyStoreCertPrinter {
         return new String(buffer);
     }
 }
+
 

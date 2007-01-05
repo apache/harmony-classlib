@@ -296,7 +296,7 @@ class ArgParser {
         if (param.getStorePass() == null) {
             param.setStorePass(UserInteractor
                     .getDataFromUser("Enter keystore password:  "));
-            // ckeck the password
+            // check the password
             param.getKeyStore();
         }
         

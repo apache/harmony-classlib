@@ -39,7 +39,7 @@ class UserInteractor {
     private static int newLineLength = 2;
 
     // Prints prompt and waits the user to enter the needed data,
-    // tha data is returned.
+    // the data is returned.
     static char[] getDataFromUser(String prompt) throws IOException {
         System.out.println(prompt);
         charsRead = in.read(readData);

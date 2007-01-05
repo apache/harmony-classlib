@@ -29,7 +29,7 @@ import java.security.cert.CertificateException;
 import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 
 /**
- * The class encapsulates paramaters for Keytool most of which are ususally given
+ * The class encapsulates paramaters for Keytool most of which are usually given
  * in command line.
  */
 public class KeytoolParameters {

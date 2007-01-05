@@ -38,7 +38,7 @@ public class CRLManager {
      * is stored in the file. If the file name is not given, stdin is used.
      * File with CRL and the checked certificate file are specified in param.
      * 
-     * @return true if found at least one revoked certifiacte
+     * @return true if found at least one revoked certificate
      * @param param
      * @throws IOException
      * @throws CRLException

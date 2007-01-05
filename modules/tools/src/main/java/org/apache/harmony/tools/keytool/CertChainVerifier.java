@@ -51,7 +51,7 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 /**
- * A class for checking X.509 certifcicates and building and verifying X.509
+ * A class for checking X.509 certificates and building and verifying X.509
  * certificate chains.
  */
 public class CertChainVerifier {
@@ -297,7 +297,7 @@ public class CertChainVerifier {
     }
 
     /**
-     * Build a certificte chain up to the trust anchor, based on trusted
+     * Build a certificate chain up to the trust anchor, based on trusted
      * certificates contained in the keystore and possibly cacerts file (if
      * param.isTrustCACerts() returns true).
      * 
@@ -326,7 +326,7 @@ public class CertChainVerifier {
         return buildCertPath(certProvider, newCert, selfSignedTAs, trustedCerts);
     }
 
-    // Build a certificte chain up to the self-signed trust anchor, based on
+    // Build a certificate chain up to the self-signed trust anchor, based on
     // trusted certificates given.
     // 
     // @param certProvider
@@ -336,7 +336,7 @@ public class CertChainVerifier {
     //            are used as trust anchors.
     // @param trustedCerts
     //            elements of trustedCerts are used as chain links It can be
-    //            null if no intermediate certifictaes allowed.
+    //            null if no intermediate certificates allowed.
     private static CertPathBuilderResult buildCertPath(String certProvider,
             X509Certificate newCert, Set selfSignedTAs, Collection trustedCerts)
             throws NoSuchAlgorithmException, CertificateException, IOException,
@@ -409,12 +409,12 @@ public class CertChainVerifier {
 
     // Separates the trusted certificates from keystore (and cacerts file if
     // "-trustcacerts" option is specified) into self-signed certificate
-    // authority certificates and non-self-signed certifcates.
+    // authority certificates and non-self-signed certificates.
     // @return - Returns an array of Collection-s.
     // The first element of the array is Set<TrustAnchors> - self-signed CAs.
-    // The second - ArrayList of non-self-signed trusted certifcates.
+    // The second - ArrayList of non-self-signed trusted certificates.
     // The third - ArrayList of self-signed certificates which correspond to
-    // TrustAnchors containied in the first element of the array.
+    // TrustAnchors contained in the first element of the array.
     private static Collection[] separateTrusted(KeytoolParameters param)
             throws KeyStoreException, FileNotFoundException, IOException,
             NoSuchAlgorithmException, CertificateException, KeytoolException,
@@ -440,7 +440,7 @@ public class CertChainVerifier {
         Set selfSignedTAs = null;
         // certificates of selfSignedTAs
         Collection selfSignedTAsCerts = null;
-        // trusted certiifcates which can be the chain links of the CertPath
+        // trusted certificates which can be the chain links of the CertPath
         Collection trustedCerts = null;
         try {
             keyStoreBuilderParam = new PKIXBuilderParameters(param
@@ -562,7 +562,7 @@ public class CertChainVerifier {
     static X509Certificate[] orderChain(Collection<X509Certificate> certs,
             PublicKey aliasPubKey) throws KeytoolException {
 
-        String strOrderFailed = "Failed to order the certiticate chain.";
+        String strOrderFailed = "Failed to order the certificate chain.";
 
         // add certificates to the certstore to ease the search
         CollectionCertStoreParameters chainCCSParams = new CollectionCertStoreParameters(
@@ -694,7 +694,7 @@ public class CertChainVerifier {
      * 
      * @param param
      * @param cert
-     * @return true if the certificate is trused, false - otherwise.
+     * @return true if the certificate is trusted, false - otherwise.
      * @throws FileNotFoundException
      * @throws NoSuchAlgorithmException
      * @throws CertificateException

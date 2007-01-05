@@ -43,7 +43,7 @@ public class CertReader {
     /**
      * Reads an X.509 certificate or a certificate chain from the file with the
      * given name or from stdin if the fileName is null and generates a
-     * collection of Certifices.
+     * collection of Certificates.
      * 
      * @param fileName
      * @param readOnlyFirst

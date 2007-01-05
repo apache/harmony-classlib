@@ -116,7 +116,7 @@ public class GenKeyTest extends TestCase {
                 assertTrue(errMsgPrefix + "alias " + curAlias
                         + " does not exist in keystore", keyStore
                         .containsAlias(curAlias));
-                assertTrue(errMsgPrefix + "alais " + curAlias
+                assertTrue(errMsgPrefix + "alias " + curAlias
                         + " is not a key entry", keyStore.isKeyEntry(curAlias));
                 Key key = keyStore.getKey(curAlias, TestUtils.keyPass
                         .toCharArray());

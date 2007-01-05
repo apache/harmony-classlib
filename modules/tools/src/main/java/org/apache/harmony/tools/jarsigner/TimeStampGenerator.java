@@ -148,7 +148,7 @@ class TimeStampGenerator {
                 msgImprint,     // message imprint
                 null,           // not asking for a particular policy
                 nonce,          // nonce
-                Boolean.FALSE,  // don't need the certificte inside the stamp
+                Boolean.FALSE,  // don't need the certificate inside the stamp
                 null);          // no extensions
         return req.getEncoded();
     }

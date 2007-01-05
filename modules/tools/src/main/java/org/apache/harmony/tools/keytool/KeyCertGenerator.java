@@ -183,7 +183,7 @@ public class KeyCertGenerator {
 
         int keySize = param.getKeySize();
         if (param.isVerbose()) {
-            StringBuffer strBuf = new StringBuffer("Genarating a " + keyAlg
+            StringBuffer strBuf = new StringBuffer("Generating a " + keyAlg
                     + " key pair, key length " + keySize + " bit \nand a ");
             if (selfSigned) {
                 strBuf.append("self-signed ");
@@ -298,7 +298,7 @@ public class KeyCertGenerator {
                     "Cannot find the algorithm to recover the key. ", e);
         }
 
-        // get the cersificate currently associated with the alias
+        // get the certificate currently associated with the alias
         X509Certificate existing = (X509Certificate) keyStore
                 .getCertificate(alias);
 

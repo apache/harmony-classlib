@@ -197,7 +197,7 @@ public class HelpPrinter {
             topicMsg
                     .append(" If \"-ca\" option is specified, generated certificate\n");
             topicMsg
-                    .append(" will can be used for signing another certifictes.\n");
+                    .append(" will can be used for signing another certificates.\n");
             topicMsg
                     .append(" If \"-secretkey\" option is specified, a secret key will.\n");
             topicMsg
@@ -274,7 +274,7 @@ public class HelpPrinter {
             topicMsg
                     .append(" If \"-ca\" option is specified, generated certificate\n");
             topicMsg
-                    .append(" will can be used for signing another certifictes.\n");
+                    .append(" will can be used for signing another certificates.\n");
             topicMsg
                     .append(" If \"-secretkey\" option is specified, a secret key will.\n");
             topicMsg

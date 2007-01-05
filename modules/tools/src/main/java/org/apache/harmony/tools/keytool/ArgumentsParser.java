@@ -85,7 +85,7 @@ class ArgumentsParser {
 
     final static String sHelp = "-help";
 
-    // addititanal options
+    // additional options
     final static String sKeystore = "-keystore";
 
     final static String sStoretype = "-storetype";
@@ -681,7 +681,7 @@ class ArgumentsParser {
         // the flag is set to true, when the user confirms that
         // the data he (or she) entered is correct.
         boolean isCorrect = false;
-        // X.500 Dinsinguished Name. It will look like:
+        // X.500 Distinguished Name. It will look like:
         // "CN=user_name, OU=org_unit, O=organization, L=city, ST=state,
         // C=com"
         StringBuffer dname = new StringBuffer(256);
@@ -905,7 +905,7 @@ class ArgumentsParser {
             System
                     .arraycopy(readData, 0, keyPass, 0, charsRead
                             - newLineLength);
-            // if the new password is incorrect an axception will be thrown
+            // if the new password is incorrect an exception will be thrown
             try {
                 keyStore.getKey(alias, keyPass);
             } catch (NoSuchAlgorithmException nsae) {

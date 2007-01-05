@@ -34,7 +34,7 @@ import java.util.Collection;
 
 /**
  * Class for importing certificates - adding to trusted certificates or
- * Certificate Signing Request (CSR) replies from certificate authorirties
+ * Certificate Signing Request (CSR) replies from certificate authorities
  * (CAs). CSR reply can be a single X.509 certificate or a PKCS#7-formatted
  * certificate chain containing X.509 certificates. X.509 v1, v2 and v3
  * certificates are supported. Certificates to import can be in binary (DER) or
@@ -257,7 +257,7 @@ public class CertImporter {
 
     /**
      * Imports a PKCS#7-formatted certificate chain as a CSR reply. The
-     * certificte chain is firstly ordered. After that top-level certificate of
+     * certificate chain is firstly ordered. After that top-level certificate of
      * the chain is checked to be a trusted one. If it is not a trusted
      * certificate, the user is asked if the certificate should be trusted. If
      * the certificate is considered to be trusted, old certificate chain,
@@ -283,7 +283,7 @@ public class CertImporter {
 
         String alias = param.getAlias();
         KeyStore keyStore = param.getKeyStore();
-        // get the public key of the certiciate, associated with alias,
+        // get the public key of the certificate, associated with alias,
         // to import reply to.
         PublicKey publicKey = keyStore.getCertificate(alias).getPublicKey();
         // order the certificate chain

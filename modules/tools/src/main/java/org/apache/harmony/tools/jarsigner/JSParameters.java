@@ -32,7 +32,7 @@ import org.apache.harmony.tools.keytool.KeytoolParameters;
 import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 
 /**
- * The class encapsulates paramaters for jarsigner most of which are ususally
+ * The class encapsulates paramaters for jarsigner most of which are usually
  * given in command line.
  */
 class JSParameters {
@@ -129,7 +129,7 @@ class JSParameters {
     // timestamp authority URL
     private URI tsaURI;
     
-    // the alias identifiing the TSA's certificate
+    // the alias identifying the TSA's certificate
     private String tsaCertAlias;
 
     // alternative signer class name
