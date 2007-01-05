@@ -406,10 +406,14 @@ public class DatagramSocket {
 				pack.setPort(port);
 			}
 		} else {
-			// not connected so the target address cannot be null
-			if (packAddr == null) {
-				return;
-			}
+			// not connected so the target address is not allowed to be null
+            if (packAddr == null) {
+                if (pack.port == -1) {
+                    // KA019 Destination address is null
+                    throw new NullPointerException(Msg.getString("KA019")); //$NON-NLS-1$
+                }
+                return;
+            }
 			SecurityManager security = System.getSecurityManager();
 			if (security != null) {
 				if (packAddr.isMulticastAddress())
