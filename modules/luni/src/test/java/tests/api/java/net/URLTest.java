@@ -35,7 +35,6 @@ import java.net.URLStreamHandlerFactory;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
-
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
 
@@ -1322,4 +1321,53 @@ public class URLTest extends junit.framework.TestCase {
 		}
 
 	}
+    static class MyURLStreamHandler extends URLStreamHandler {
+
+        @Override
+        protected URLConnection openConnection(URL arg0) throws IOException {
+            return null;
+        }
+
+        public void parse(URL url, String spec, int start, int end) {
+            parseURL(url, spec, start, end);
+        }
+    }
+
+    static class MyURLStreamHandlerFactory implements URLStreamHandlerFactory {
+
+        public static MyURLStreamHandler handler = new MyURLStreamHandler();
+
+        public URLStreamHandler createURLStreamHandler(String arg0) {
+            handler = new MyURLStreamHandler();
+            return handler;
+        }
+
+    }
+
+    // Regression test for harmony-2941
+    public void test_URLStreamHandler_parseURL() throws MalformedURLException {
+        URL.setURLStreamHandlerFactory(new MyURLStreamHandlerFactory());
+        URL url = new URL("null://localhost");
+        MyURLStreamHandler handler = MyURLStreamHandlerFactory.handler;
+        try {
+            handler.parse(url, "//", 0, Integer.MIN_VALUE);
+            fail("Should throw SIOOBE.");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        try {
+            handler.parse(url, "1234//", 4, Integer.MIN_VALUE);
+            fail("Should throw SIOOBE.");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        try {
+            handler.parse(url, "1", -1, 0);
+            fail("Should throw SIOOBE.");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        handler.parse(url, "1", 3, 2);
+        handler.parse(url, "11", 1, Integer.MIN_VALUE);
+    }
 }

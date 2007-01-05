@@ -85,7 +85,15 @@ public abstract class URLStreamHandler {
 	 * @see URL
 	 */
 	protected void parseURL(URL u, String str, int start, int end) {
-		if (end < start) {
+        // For compatibility, refer to Harmony-2941
+        if (str.startsWith("//", start) && str.indexOf('/', start + 2) == -1
+                && end <= Integer.MIN_VALUE + 1) {
+            throw new StringIndexOutOfBoundsException(end - 2 - start);
+        }
+        if (end < start) {
+            if (this != u.strmHandler) {
+                throw new SecurityException();
+            }
             return;
         }
 		String parseString = "";
