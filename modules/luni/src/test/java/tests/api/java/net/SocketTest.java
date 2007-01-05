@@ -458,7 +458,8 @@ public class SocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.Socket#getOutputStream()
 	 */
-	public void test_getOutputStream() throws IOException {
+	@SuppressWarnings("deprecation")
+    public void test_getOutputStream() throws IOException {
 		// Test for method java.io.OutputStream
 		// java.net.Socket.getOutputStream()
 		int sport = startServer("SServer getOutputStream");
@@ -522,6 +523,11 @@ public class SocketTest extends SocketTestCase {
         // Regression test for harmony-2934
         s = new Socket("127.0.0.1", 0, false);
         OutputStream o = s.getOutputStream();
+        o.write(1);
+
+        // Regression test for harmony-2942
+        s = new Socket("0.0.0.0", 0, false);
+        o = s.getOutputStream();
         o.write(1);
 	}
 

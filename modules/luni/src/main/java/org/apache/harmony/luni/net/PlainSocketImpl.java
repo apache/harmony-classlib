@@ -232,7 +232,7 @@ class PlainSocketImpl extends SocketImpl {
             throw new ConnectException(anAddr + ":" + aPort + " - "
                     + e.getMessage());
         }
-        super.address = anAddr;
+        super.address = address;
         super.port = aPort;
     }
 
