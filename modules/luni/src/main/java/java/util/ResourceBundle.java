@@ -287,9 +287,12 @@ public abstract class ResourceBundle {
                     });
             if (stream != null) {
                 try {
-                    bundle = new PropertyResourceBundle(stream);
+                    try {
+                        bundle = new PropertyResourceBundle(stream);
+                    } finally {
+                        stream.close();
+                    }
                     bundle.setLocale(locale);
-                    stream.close();
                 } catch (IOException e) {
                 }
             }
