@@ -17,9 +17,8 @@
 package java.lang.reflect;
 
 /**
- * <p>Represents a type variable.</p>
- *
- * @param <D>
+ * Represents a type variable.
+ * 
  * @since 1.5
  */
 public interface TypeVariable<D extends GenericDeclaration> extends Type {
@@ -28,10 +27,11 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type {
      * Answers the upper bounds of the type variable.
      * 
      * @return array of type variable's upper bounds.
-     * @throws TypeNotPresentException if the component type points to a missing
-     *         type.
-     * @throws MalformedParameterizedTypeException if the component type points
-     *         to a type that can't be instantiated for some reason.
+     * @throws TypeNotPresentException
+     *             if the component type points to a missing type.
+     * @throws MalformedParameterizedTypeException
+     *             if the component type points to a type that can't be
+     *             instantiated for some reason.
      */
     Type[] getBounds();
 

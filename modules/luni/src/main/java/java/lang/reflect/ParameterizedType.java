@@ -18,44 +18,39 @@
 package java.lang.reflect;
 
 /**
- * <p>
  * Represents a parameterized type.
- * </p>
  * 
  * @since 1.5
  */
 public interface ParameterizedType extends Type {
+
     /**
-     * <p>
      * Gets the type arguments for this type.
-     * </p>
      * 
      * @return An array of {@link Type}, which may be empty.
-     * @throws TypeNotPresentException if one of the type arguments can't be
-     *         found.
-     * @throws MalformedParameterizedTypeException if one of the type arguments
-     *         can't be instantiated for some reason.
+     * @throws TypeNotPresentException
+     *             if one of the type arguments can't be found.
+     * @throws MalformedParameterizedTypeException
+     *             if one of the type arguments can't be instantiated for some
+     *             reason.
      */
     Type[] getActualTypeArguments();
 
     /**
-     * <p>
      * Gets the parent/owner type, if this type is an inner type, otherwise
      * <code>null</code> is returned if this is a top-level type.
-     * </p>
      * 
      * @return An instance of {@link Type} or <code>null</code>.
-     * @throws TypeNotPresentException if one of the type arguments can't be
-     *         found.
-     * @throws MalformedParameterizedTypeException if one of the type arguments
-     *         can't be instantiated for some reason.
+     * @throws TypeNotPresentException
+     *             if one of the type arguments can't be found.
+     * @throws MalformedParameterizedTypeException
+     *             if one of the type arguments can't be instantiated for some
+     *             reason.
      */
     Type getOwnerType();
 
     /**
-     * <p>
      * Gets the raw type of this type.
-     * </p>
      * 
      * @return An instance of {@link Type}.
      */

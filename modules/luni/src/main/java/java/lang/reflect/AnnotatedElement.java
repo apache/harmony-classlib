@@ -20,32 +20,27 @@ package java.lang.reflect;
 import java.lang.annotation.Annotation;
 
 /**
- * <p>
  * An interface implemented an annotated element to enable reflective access to
  * annotation information.
- * </p>
  * 
  * @since 1.5
  */
 public interface AnnotatedElement {
 
     /**
-     * <p>
      * Gets the {@link Annotation} for this element for the annotation type
      * passed, if it exists.
-     * </p>
      * 
-     * @param annotationType The Class instance of the annotation to search for.
+     * @param annotationType
+     *            The Class instance of the annotation to search for.
      * @return The {@link Annotation} for this element or <code>null</code>.
-     * @throws NullPointerException if <code>annotationType</code> is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if <code>annotationType</code> is <code>null</code>.
      */
     <T extends Annotation> T getAnnotation(Class<T> annotationType);
 
     /**
-     * <p>
      * Gets all {@link Annotation}s for this element.
-     * </p>
      * 
      * @return An array of {@link Annotation}s, which may be empty, but never
      *         <code>null</code>.
@@ -53,10 +48,8 @@ public interface AnnotatedElement {
     Annotation[] getAnnotations();
 
     /**
-     * <p>
      * Gets all {@link Annotation}s that are explicitly declared by this
      * element (not inherited).
-     * </p>
      * 
      * @return An array of {@link Annotation}s, which may be empty, but never
      *         <code>null</code>.
@@ -64,16 +57,15 @@ public interface AnnotatedElement {
     Annotation[] getDeclaredAnnotations();
 
     /**
-     * <p>
      * Determines if this element has an annotation for the annotation type
      * passed.
-     * </p>
      * 
-     * @param annotationType The class instance of the annotation to search for.
+     * @param annotationType
+     *            The class instance of the annotation to search for.
      * @return <code>true</code> if the annotation exists, otherwise
      *         <code>false</code>.
-     * @throws NullPointerException if <code>annotationType</code> is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if <code>annotationType</code> is <code>null</code>.
      */
     boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
 }

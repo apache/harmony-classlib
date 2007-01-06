@@ -34,7 +34,7 @@ public final class ProxyClassFile implements ProxyConstants {
 
     private static final int INCREMENT_SIZE = 250;
 
-    private static Method ObjectEqualsMethod;;
+    private static Method ObjectEqualsMethod;
 
     private static Method ObjectHashCodeMethod;
 
@@ -164,14 +164,16 @@ public final class ProxyClassFile implements ProxyConstants {
         int classNameIndex = constantPool.typeIndex(typeName);
         contents[contentsOffset++] = (byte) (classNameIndex >> 8);
         contents[contentsOffset++] = (byte) classNameIndex;
-        int superclassNameIndex = constantPool.typeIndex("java/lang/reflect/Proxy");
+        int superclassNameIndex = constantPool
+                .typeIndex("java/lang/reflect/Proxy");
         contents[contentsOffset++] = (byte) (superclassNameIndex >> 8);
         contents[contentsOffset++] = (byte) superclassNameIndex;
         int interfacesCount = interfaces.length;
         contents[contentsOffset++] = (byte) (interfacesCount >> 8);
         contents[contentsOffset++] = (byte) interfacesCount;
         for (int i = 0; i < interfacesCount; i++) {
-            int interfaceIndex = constantPool.typeIndex(interfaces[i].getName());
+            int interfaceIndex = constantPool
+                    .typeIndex(interfaces[i].getName());
             contents[contentsOffset++] = (byte) (interfaceIndex >> 8);
             contents[contentsOffset++] = (byte) interfaceIndex;
         }
@@ -207,7 +209,8 @@ public final class ProxyClassFile implements ProxyConstants {
                 throw new InternalError();
             }
         }
-        writeUnsignedShort(constantPool.literalIndex(getConstantPoolName(ProxyConstructor)));
+        writeUnsignedShort(constantPool
+                .literalIndex(getConstantPoolName(ProxyConstructor)));
         writeUnsignedShort(1); // store just the code attribute
         writeUnsignedShort(constantPool.literalIndex(CodeName));
         // save attribute_length(4), max_stack(2), max_locals(2), code_length(4)
@@ -230,8 +233,10 @@ public final class ProxyClassFile implements ProxyConstants {
             ProxyMethod pMethod = proxyMethods[i];
             Method method = pMethod.method;
             writeUnsignedShort(AccPublic | AccFinal);
-            writeUnsignedShort(constantPool.literalIndex(method.getName().toCharArray()));
-            writeUnsignedShort(constantPool.literalIndex(getConstantPoolName(method)));
+            writeUnsignedShort(constantPool.literalIndex(method.getName()
+                    .toCharArray()));
+            writeUnsignedShort(constantPool
+                    .literalIndex(getConstantPoolName(method)));
             Class[] thrownsExceptions = pMethod.commonExceptions;
             int eLength = thrownsExceptions.length;
             if (eLength > 0) {
@@ -244,7 +249,8 @@ public final class ProxyClassFile implements ProxyConstants {
                 writeUnsignedWord(eLength * 2 + 2);
                 writeUnsignedShort(eLength);
                 for (int e = 0; e < eLength; e++) {
-                    writeUnsignedShort(constantPool.typeIndex(thrownsExceptions[e].getName()));
+                    writeUnsignedShort(constantPool
+                            .typeIndex(thrownsExceptions[e].getName()));
                 }
             } else {
                 writeUnsignedShort(1); // store just the code attribute
@@ -264,8 +270,10 @@ public final class ProxyClassFile implements ProxyConstants {
             try {
                 ObjectEqualsMethod = Object.class.getMethod("equals",
                         new Class[] { Object.class });
-                ObjectHashCodeMethod = Object.class.getMethod("hashCode", new Class[0]);
-                ObjectToStringMethod = Object.class.getMethod("toString", new Class[0]);
+                ObjectHashCodeMethod = Object.class.getMethod("hashCode",
+                        new Class[0]);
+                ObjectToStringMethod = Object.class.getMethod("toString",
+                        new Class[0]);
             } catch (NoSuchMethodException ex) {
                 throw new InternalError();
             }
@@ -285,8 +293,8 @@ public final class ProxyClassFile implements ProxyConstants {
         allMethods.toArray(proxyMethods);
     }
 
-    private void findMethods(Class<?> nextInterface, ArrayList<ProxyMethod> allMethods,
-            HashSet<Class<?>> interfacesSeen) {
+    private void findMethods(Class<?> nextInterface,
+            ArrayList<ProxyMethod> allMethods, HashSet<Class<?>> interfacesSeen) {
         /*
          * add the nextInterface's methods to allMethods if an equivalent method
          * already exists then return types must be identical... don't replace
@@ -319,8 +327,8 @@ public final class ProxyClassFile implements ProxyConstants {
         int codeAttributeOffset = contentsOffset;
         int contentsLength = contents.length;
         if (contentsOffset + 20 + 100 >= contentsLength) {
-            System.arraycopy(contents, 0,
-                    (contents = new byte[contentsLength + INCREMENT_SIZE]), 0, contentsLength);
+            System.arraycopy(contents, 0, (contents = new byte[contentsLength
+                    + INCREMENT_SIZE]), 0, contentsLength);
         }
         writeUnsignedShort(constantPool.literalIndex(CodeName));
         // leave space for attribute_length(4), max_stack(2), max_locals(2),
@@ -356,8 +364,9 @@ public final class ProxyClassFile implements ProxyConstants {
         writeUnsignedByte(OPC_invokeinterface);
         if (HandlerInvokeMethod == null) {
             try {
-                HandlerInvokeMethod = InvocationHandler.class.getMethod("invoke", new Class[] {
-                        Object.class, Method.class, Object[].class });
+                HandlerInvokeMethod = InvocationHandler.class.getMethod(
+                        "invoke", new Class[] { Object.class, Method.class,
+                                Object[].class });
             } catch (NoSuchMethodException e) {
                 throw new InternalError();
             }
@@ -402,7 +411,8 @@ public final class ProxyClassFile implements ProxyConstants {
                 writeUnsignedShort(0);
                 writeUnsignedShort(codeEndIndex);
                 writeUnsignedShort(codeEndIndex);
-                writeUnsignedShort(constantPool.typeIndex(checkedExceptions[i].getName()));
+                writeUnsignedShort(constantPool.typeIndex(checkedExceptions[i]
+                        .getName()));
             }
             writeUnsignedShort(0);
             writeUnsignedShort(codeEndIndex);
@@ -455,7 +465,8 @@ public final class ProxyClassFile implements ProxyConstants {
      * aastore then 78 invokevirtual 59
      * java.lang.Class.getMethod(Ljava.lang.String;[Ljava.lang.Class;)Ljava.lang.reflect.Method;
      */
-    private void genCallGetMethod(Class<?> receiverType, String selector, Class[] argTypes) {
+    private void genCallGetMethod(Class<?> receiverType, String selector,
+            Class[] argTypes) {
         genCallClassForName(receiverType.getName());
         writeLdc(selector);
         int length = argTypes.length;
@@ -477,8 +488,8 @@ public final class ProxyClassFile implements ProxyConstants {
         writeUnsignedByte(OPC_invokevirtual);
         if (ClassGetMethod == null) {
             try {
-                ClassGetMethod = Class.class.getMethod("getMethod", new Class[] { String.class,
-                        Class[].class });
+                ClassGetMethod = Class.class.getMethod("getMethod",
+                        new Class[] { String.class, Class[].class });
             } catch (NoSuchMethodException e) {
                 throw new InternalError();
             }
@@ -638,9 +649,11 @@ public final class ProxyClassFile implements ProxyConstants {
                 writeUnsignedByte(OPC_return);
             } else {
                 writeUnsignedByte(OPC_checkcast);
-                writeUnsignedShort(constantPool.typeIndex(typeWrapperName(type)));
+                writeUnsignedShort(constantPool
+                        .typeIndex(typeWrapperName(type)));
                 writeUnsignedByte(OPC_invokevirtual);
-                writeUnsignedShort(constantPool.literalIndex(typeAccessMethod(type)));
+                writeUnsignedShort(constantPool
+                        .literalIndex(typeAccessMethod(type)));
                 if (type == long.class) {
                     writeUnsignedByte(OPC_lreturn);
                 } else if (type == float.class) {
@@ -727,7 +740,8 @@ public final class ProxyClassFile implements ProxyConstants {
     private byte[] getBytes() {
         byte[] fullContents = new byte[headerOffset + contentsOffset];
         System.arraycopy(header, 0, fullContents, 0, headerOffset);
-        System.arraycopy(contents, 0, fullContents, headerOffset, contentsOffset);
+        System.arraycopy(contents, 0, fullContents, headerOffset,
+                contentsOffset);
         return fullContents;
     }
 
@@ -807,10 +821,12 @@ public final class ProxyClassFile implements ProxyConstants {
                 return Byte.class.getConstructor(new Class[] { byte.class });
             }
             if (baseType == boolean.class) {
-                return Boolean.class.getConstructor(new Class[] { boolean.class });
+                return Boolean.class
+                        .getConstructor(new Class[] { boolean.class });
             }
             if (baseType == char.class) {
-                return Character.class.getConstructor(new Class[] { char.class });
+                return Character.class
+                        .getConstructor(new Class[] { char.class });
             }
             if (baseType == long.class) {
                 return Long.class.getConstructor(new Class[] { long.class });
@@ -819,7 +835,8 @@ public final class ProxyClassFile implements ProxyConstants {
                 return Float.class.getConstructor(new Class[] { float.class });
             }
             if (baseType == double.class) {
-                return Double.class.getConstructor(new Class[] { double.class });
+                return Double.class
+                        .getConstructor(new Class[] { double.class });
             }
         } catch (NoSuchMethodException e) {
             throw new InternalError();
@@ -900,8 +917,8 @@ public final class ProxyClassFile implements ProxyConstants {
             contents[contentsOffset++] = (byte) b;
         } catch (IndexOutOfBoundsException e) {
             int actualLength = contents.length;
-            System.arraycopy(contents, 0, (contents = new byte[actualLength + INCREMENT_SIZE]),
-                    0, actualLength);
+            System.arraycopy(contents, 0, (contents = new byte[actualLength
+                    + INCREMENT_SIZE]), 0, actualLength);
             contents[contentsOffset - 1] = (byte) b;
         }
     }

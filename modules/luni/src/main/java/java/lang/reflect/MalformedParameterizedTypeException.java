@@ -18,18 +18,17 @@
 package java.lang.reflect;
 
 /**
- * <p>
  * Indicates that a malformed parameterized type has been accessed by a
  * reflected method.
- * </p>
  * 
  * @since 1.5
  */
 public class MalformedParameterizedTypeException extends RuntimeException {
+
     private static final long serialVersionUID = -5696557788586220964L;
 
     /**
-     * <p>Constructs an instance.</p>
+     * Constructs an instance.
      */
     public MalformedParameterizedTypeException() {
         super();

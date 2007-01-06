@@ -18,14 +18,13 @@
 package java.lang.reflect;
 
 /**
- * <p>
  * Indicates that a malformed signature has been encountered via a reflective
  * method.
- * </p>
  * 
  * @since 1.5
  */
 public class GenericSignatureFormatError extends ClassFormatError {
+
     private static final long serialVersionUID = 6709919147137911034L;
 
     public GenericSignatureFormatError() {

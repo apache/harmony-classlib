@@ -17,7 +17,6 @@
 
 package java.lang.reflect;
 
-
 import java.security.BasicPermission;
 
 /**
@@ -29,25 +28,25 @@ public final class ReflectPermission extends BasicPermission {
     private static final long serialVersionUID = 7412737110241507485L;
 
     /**
-	 * Creates an instance of this class with given name.
-	 * 
-	 * @param permissionName
-	 *            String the name of the new permission.
-	 */
-	public ReflectPermission(String permissionName) {
-		super(permissionName);
-	}
+     * Creates an instance of this class with given name.
+     * 
+     * @param permissionName
+     *            String the name of the new permission.
+     */
+    public ReflectPermission(String permissionName) {
+        super(permissionName);
+    }
 
-	/**
-	 * Creates an instance of this class with the given name and action list.
-	 * The action list is ignored.
-	 * 
-	 * @param name
-	 *            String the name of the new permission.
-	 * @param actions
-	 *            String ignored.
-	 */
-	public ReflectPermission(String name, String actions) {
-		super(name, actions);
-	}
+    /**
+     * Creates an instance of this class with the given name and action list.
+     * The action list is ignored.
+     * 
+     * @param name
+     *            String the name of the new permission.
+     * @param actions
+     *            String ignored.
+     */
+    public ReflectPermission(String name, String actions) {
+        super(name, actions);
+    }
 }

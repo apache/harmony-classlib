@@ -17,64 +17,62 @@
 
 package java.lang.reflect;
 
-
 /**
  * This class provides a wrapper for an unexpected exception thrown by an
  * InvocationHandler
  * 
  * @see java.lang.reflect.InvocationHandler#invoke
  */
-
 public class UndeclaredThrowableException extends RuntimeException {
 
-	private static final long serialVersionUID = 330127114055056639L;
+    private static final long serialVersionUID = 330127114055056639L;
 
-	private Throwable undeclaredThrowable;
+    private Throwable undeclaredThrowable;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and target
-	 * exception filled in.
-	 * 
-	 * @param exception
-	 *            The exception which occurred while loading the class.
-	 */
-	public UndeclaredThrowableException(Throwable exception) {
-		super();
-		this.undeclaredThrowable = exception;
-		initCause(exception);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and target
+     * exception filled in.
+     * 
+     * @param exception
+     *            The exception which occurred while loading the class.
+     */
+    public UndeclaredThrowableException(Throwable exception) {
+        super();
+        this.undeclaredThrowable = exception;
+        initCause(exception);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, target
-	 * exception and message filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param exception
-	 *            Throwable The exception which occurred while loading the
-	 *            class.
-	 */
-	public UndeclaredThrowableException(Throwable exception,
-			String detailMessage) {
-		super(detailMessage);
-		this.undeclaredThrowable = exception;
-		initCause(exception);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback, target
+     * exception and message filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     * @param exception
+     *            Throwable The exception which occurred while loading the
+     *            class.
+     */
+    public UndeclaredThrowableException(Throwable exception,
+            String detailMessage) {
+        super(detailMessage);
+        this.undeclaredThrowable = exception;
+        initCause(exception);
+    }
 
-	/**
-	 * Answers the exception which caused the receiver to be thrown.
-	 */
-	public Throwable getUndeclaredThrowable() {
-		return undeclaredThrowable;
-	}
+    /**
+     * Answers the exception which caused the receiver to be thrown.
+     */
+    public Throwable getUndeclaredThrowable() {
+        return undeclaredThrowable;
+    }
 
-	/**
-	 * Answers the cause of this Throwable, or null if there is no cause.
-	 * 
-	 * @return Throwable The receiver's cause.
-	 */
-	@Override
+    /**
+     * Answers the cause of this Throwable, or null if there is no cause.
+     * 
+     * @return Throwable The receiver's cause.
+     */
+    @Override
     public Throwable getCause() {
-		return undeclaredThrowable;
-	}
+        return undeclaredThrowable;
+    }
 }

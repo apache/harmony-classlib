@@ -17,7 +17,6 @@
 
 package java.lang.reflect;
 
-
 /**
  * Implementors of this interface model a class member.
  * 
@@ -26,40 +25,42 @@ package java.lang.reflect;
  * @see Method
  */
 public interface Member {
-	
-	public static final int PUBLIC = 0;
 
-	public static final int DECLARED = 1;
+    public static final int PUBLIC = 0;
 
-	/**
-	 * Return the {@link Class} associated with the class that defined this
-	 * member.
-	 * 
-	 * @return the declaring class
-	 */
-	@SuppressWarnings("unchecked")
+    public static final int DECLARED = 1;
+
+    /**
+     * Return the {@link Class} associated with the class that defined this
+     * member.
+     * 
+     * @return the declaring class
+     */
+    @SuppressWarnings("unchecked")
     Class getDeclaringClass();
 
-	/**
-	 * Return the modifiers for the member. The Modifier class should be used to
-	 * decode the result.
-	 * 
-	 * @return the modifiers
-	 * @see java.lang.reflect.Modifier
-	 */
-	int getModifiers();
-
-	/**
-	 * Return the name of the member.
-	 * 
-	 * @return the name
-	 */
-	String getName();
-    
     /**
-     * <p>Indicates whether or not this member is synthetic (artificially introduced by
-     * the compiler).</p>
-     * @return A value of <code>true</code> if synthetic, otherwise <code>false</code>.
+     * Return the modifiers for the member. The Modifier class should be used to
+     * decode the result.
+     * 
+     * @return the modifiers
+     * @see java.lang.reflect.Modifier
+     */
+    int getModifiers();
+
+    /**
+     * Return the name of the member.
+     * 
+     * @return the name
+     */
+    String getName();
+
+    /**
+     * Indicates whether or not this member is synthetic (artificially
+     * introduced by the compiler).
+     * 
+     * @return A value of <code>true</code> if synthetic, otherwise
+     *         <code>false</code>.
      */
     boolean isSynthetic();
 }

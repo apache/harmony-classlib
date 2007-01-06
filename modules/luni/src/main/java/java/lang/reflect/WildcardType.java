@@ -18,40 +18,36 @@
 package java.lang.reflect;
 
 /**
- * <p>
  * Represents a wildcard type, such as <code>?</code> or
  * <code>? extends Comparable</code>.
- * </p>
  * 
  * @since 1.5
  */
 public interface WildcardType extends Type {
     /**
-     * <p>
      * Gets the array of types that represent the upper bounds of this type. The
      * default upper bound is {@link Object}.
-     * </p>
      * 
      * @return An array of {@link Type} instances.
-     * @throws TypeNotPresentException if the component type points to a missing
-     *         type.
-     * @throws MalformedParameterizedTypeException if the component type points
-     *         to a type that can't be instantiated for some reason.
+     * @throws TypeNotPresentException
+     *             if the component type points to a missing type.
+     * @throws MalformedParameterizedTypeException
+     *             if the component type points to a type that can't be
+     *             instantiated for some reason.
      */
     Type[] getUpperBounds();
 
     /**
-     * <p>
      * Gets the array of types that represent the lower bounds of this type. The
      * default lower bound is <code>null</code>, in which case a empty array
      * is returned.
-     * </p>
      * 
      * @return An array of {@link Type} instances.
-     * @throws TypeNotPresentException if the component type points to a missing
-     *         type.
-     * @throws MalformedParameterizedTypeException if the component type points
-     *         to a type that can't be instantiated for some reason.
+     * @throws TypeNotPresentException
+     *             if the component type points to a missing type.
+     * @throws MalformedParameterizedTypeException
+     *             if the component type points to a type that can't be
+     *             instantiated for some reason.
      */
     Type[] getLowerBounds();
 }
