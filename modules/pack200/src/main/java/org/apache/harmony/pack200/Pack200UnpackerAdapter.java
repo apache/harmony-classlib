@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.archive.internal.pack200;
+package org.apache.harmony.pack200;
 
 // NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
 // NOTE: Do not extract strings as messages; this code is still a

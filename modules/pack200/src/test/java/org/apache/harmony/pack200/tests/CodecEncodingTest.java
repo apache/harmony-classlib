@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.archive.tests.internal.pack200;
+package org.apache.harmony.pack200.tests;
 //NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
 //NOTE: Do not extract strings as messages; this code is still a work-in-progress
 //NOTE: Also, don't get rid of 'else' statements for the hell of it ...
@@ -25,10 +25,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.archive.internal.pack200.BHSDCodec;
-import org.apache.harmony.archive.internal.pack200.Codec;
-import org.apache.harmony.archive.internal.pack200.CodecEncoding;
-import org.apache.harmony.archive.internal.pack200.Pack200Exception;
+import org.apache.harmony.pack200.BHSDCodec;
+import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.CodecEncoding;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * @author Alex Blewitt

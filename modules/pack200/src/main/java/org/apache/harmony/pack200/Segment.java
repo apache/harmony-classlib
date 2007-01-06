@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.archive.internal.pack200;
+package org.apache.harmony.pack200;
 
 // NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
 // NOTE: Do not extract strings as messages; this code is still a
@@ -31,16 +31,16 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.harmony.archive.internal.pack200.bytecode.Attribute;
-import org.apache.harmony.archive.internal.pack200.bytecode.CPClass;
-import org.apache.harmony.archive.internal.pack200.bytecode.CPField;
-import org.apache.harmony.archive.internal.pack200.bytecode.CPMethod;
-import org.apache.harmony.archive.internal.pack200.bytecode.ClassConstantPool;
-import org.apache.harmony.archive.internal.pack200.bytecode.ClassFile;
-import org.apache.harmony.archive.internal.pack200.bytecode.ClassFileEntry;
-import org.apache.harmony.archive.internal.pack200.bytecode.ConstantValueAttribute;
-import org.apache.harmony.archive.internal.pack200.bytecode.ExceptionsAttribute;
-import org.apache.harmony.archive.internal.pack200.bytecode.SourceFileAttribute;
+import org.apache.harmony.pack200.bytecode.Attribute;
+import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.CPField;
+import org.apache.harmony.pack200.bytecode.CPMethod;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.pack200.bytecode.ClassFile;
+import org.apache.harmony.pack200.bytecode.ClassFileEntry;
+import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
+import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
  * A Pack200 archive consists of one (or more) segments. Each segment is
