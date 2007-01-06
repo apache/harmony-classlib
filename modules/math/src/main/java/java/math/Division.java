@@ -303,7 +303,7 @@ class Division {
     }
 
     /**
-     * Computes the quotient and the remainder after a divison by an {@code int}
+     * Computes the quotient and the remainder after a division by an {@code int}
      * number.
      * 
      * @return an array of the form {@code [quotient, remainder]}.
@@ -343,7 +343,7 @@ class Division {
     }
 
     /**
-     * Multipies an array by int and subtracts it from a subarray of another
+     * Multiplies an array by int and subtracts it from a subarray of another
      * array.
      * 
      * @param a the array to subtract from
@@ -451,9 +451,9 @@ class Division {
      * type.
      * 
      * @param op1
-     *            a postive number
+     *            a positive number
      * @param op2
-     *            a postive number
+     *            a positive number
      * @see #gcdBinary(BigInteger, BigInteger)
      * @return <code>GCD(op1, op2)</code>
      */
@@ -486,7 +486,7 @@ class Division {
     
     /**
      * Calculates a.modInverse(p) Based on: Savas, E; Koc, C "The Montgomery Modular
-     * Inverse - Revisted"
+     * Inverse - Revised"
      */
     static BigInteger modInverseMontgomery(BigInteger a, BigInteger p) {
 
@@ -576,7 +576,7 @@ class Division {
 
         r.sign = 1;
         while (v.signum() > 0) {
-            // INV v >= 0, u >= 0, v odd, u odd (excepto last iteration when v is even (0))
+            // INV v >= 0, u >= 0, v odd, u odd (except last iteration when v is even (0))
     
             while (u.compareTo(v) > BigInteger.EQUALS) {
                 Elementary.inplaceSubtract(u, v);
@@ -681,7 +681,7 @@ class Division {
         int k;
         while (!isPowerOfTwo(u, coefU) && !isPowerOfTwo(v, coefV)) {
             
-            // modification of orignal algorithm: I calculate how many times the algorithm will enter in the same branch of if
+            // modification of original algorithm: I calculate how many times the algorithm will enter in the same branch of if
             k = howManyIterations(u, n);
             
             if (k != 0) {
@@ -815,7 +815,7 @@ class Division {
     
     /**
      * Performs modular exponentiation using the Montgomery Reduction. It
-     * requires that all parameters be postivive and the mudulus be odd. >
+     * requires that all parameters be positive and the modulus be odd. >
      * 
      * @see BigInteger#modPow(BigInteger, BigInteger)
      * @see #monPro(BigInteger, BigInteger, BigInteger, long)
@@ -858,7 +858,7 @@ class Division {
 
     /**
      * Performs modular exponentiation using the Montgomery Reduction. It
-     * requires that all parameters be postivive and the mudulus be even. Based
+     * requires that all parameters be positive and the modulus be even. Based
      * <i>The square and multiply algorithm and the Montgomery Reduction C. K.
      * Koc - Montgomery Reduction with Even Modulus</i>. The square and
      * multiply algorithm and the Montgomery Reduction.
@@ -891,7 +891,7 @@ class Division {
     }
 
     /**
-     * It requires that all parameters be postivive.
+     * It requires that all parameters be positive.
      * 
      * @return {@code base<sup>exponent</sup> mod (2<sup>j</sup>)}.
      * @see BigInteger#modPow(BigInteger, BigInteger)
@@ -997,12 +997,12 @@ class Division {
     
     /**
      * Implements the Montgomery Product of two integers represented by
-     * {@code int} arrays. The arrays are suposed in <i>little
+     * {@code int} arrays. The arrays are supposed in <i>little
      * endian</i> notation.
      * 
      * @param a The first factor of the product.
      * @param b The second factor of the product.
-     * @param modulus The modululus of the oprations. Z<sub>modulus</sub>.
+     * @param modulus The modulus of the operations. Z<sub>modulus</sub>.
      * @param n2 The digit modulus'[0].
      * @ar.org.fitc.ref "C. K. Koc - Analyzing and Comparing Montgomery
      *                  Multiplication Algorithms"
