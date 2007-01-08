@@ -1150,7 +1150,7 @@ public class InetAddress extends Object implements Serializable {
             String[] parts = ipAddressString.split("\\."); //$NON-NLS-1$
             int length = parts.length;
             if (length == 1) {
-                Long value = Long.parseLong(parts[0]);
+                long value = Long.parseLong(parts[0]);
                 for (int i = 0; i < 4; i++) {
                     byteAddress[i] = (byte) (value >> ((3 - i) * 8));
                 }
