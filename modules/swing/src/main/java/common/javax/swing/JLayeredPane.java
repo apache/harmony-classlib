@@ -306,9 +306,6 @@ public class JLayeredPane extends JComponent implements Accessible {
      * @return layer of component c
      */
     public int getLayer(final Component c) {
-        if (c == null) {
-            return -1;
-        }
         Object layer = getComponentToLayer().get(c);
         if (layer != null) {
             return ((Integer) layer).intValue();

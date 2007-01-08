@@ -324,6 +324,12 @@ public class JLayeredPaneTest extends SwingTestCase {
         // moveToBack() does nothing if the component is not from the containter
         layered.moveToBack(new JPanel());
         assertEquals(6, layered.getComponentCount());
+        try { // Regression test for HARMONY-2279
+            layered.moveToBack(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /*
