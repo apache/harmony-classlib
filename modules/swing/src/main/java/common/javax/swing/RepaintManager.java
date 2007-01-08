@@ -23,6 +23,7 @@ package javax.swing;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -269,12 +270,19 @@ public class RepaintManager {
     }
 
     private Component getValidationRoot(final Component c) {
+        if (c == null) {
+            return null;
+        }
         Component root = c;
-        while ((!(root instanceof JComponent) || !((JComponent)root)
-            .isValidateRoot())
-            && root.getParent() != null) {
+        while (!(root instanceof JComponent)
+                || !((JComponent) root).isValidateRoot()) {
+            Container parent = root.getParent();
 
-            root = root.getParent();
+            if (parent == null) {
+                break;
+            } else {
+                root = parent;
+            }
         }
         return root;
     }

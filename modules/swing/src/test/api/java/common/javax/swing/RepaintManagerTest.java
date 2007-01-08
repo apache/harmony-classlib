@@ -101,6 +101,11 @@ public class RepaintManagerTest extends BasicSwingTestCase {
         RepaintManager.currentManager(null).addInvalidComponent(inner);
         waitForIdle();
         assertTrue(marker.isOccurred());
+        try { // Regression test for HARMONY-1725
+            RepaintManager.currentManager(null).addInvalidComponent(null);
+        } catch (NullPointerException e) {
+            fail("Unexpected NullPointerException is thrown");
+        }
     }
 
     public void testValidateInvalidComponents() throws Exception {
