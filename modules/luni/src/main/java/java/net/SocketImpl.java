@@ -25,6 +25,7 @@ import java.io.OutputStream;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * The abstract superclass of all classes that implement streaming sockets.
@@ -311,17 +312,30 @@ public abstract class SocketImpl implements SocketOptions {
 
     /**
      * Shutdown the input portion of the socket.
+     * 
+     * The default implementation always throws an {@link IOException}
+     * to indicate that the subclass should have overridden this
+     * method.
+     * 
+     * @throws IOException Always.  Designed to be subclassed.
      */
     protected void shutdownInput() throws IOException {
-        shutdownInput = true;
-        this.netImpl.shutdownInput(fd);
+        // KA025=Method has not been implemented
+        throw new IOException(Msg.getString("KA025"));//$NON-NLS-1$
     }
 
     /**
      * Shutdown the output portion of the socket.
+     * 
+     * The default implementation always throws an {@link IOException}
+     * to indicate that the subclass should have overridden this
+     * method.
+     * 
+     * @throws IOException Always.  Designed to be subclassed.
      */
     protected void shutdownOutput() throws IOException {
-        this.netImpl.shutdownOutput(fd);
+        // KA025=Method has not been implemented
+        throw new IOException(Msg.getString("KA025"));//$NON-NLS-1$
     }
 
     /**

@@ -84,8 +84,20 @@ public class SocketImplTest extends junit.framework.TestCase {
 		MockSocketImpl theSocket = new MockSocketImpl();
 		theSocket.setPerformancePreference(1,1,1);
 	}
-	
-	
+
+    /*
+     * @tests java.net.SocketImpl#shutdownOutput()
+     */
+    public void test_shutdownOutput() {
+        MockSocketImpl s = new MockSocketImpl();
+        try {
+            s.shutdownOutput();
+            fail("This method is still not implemented yet,It should throw IOException.");
+        } catch (IOException e) {
+            // expected
+        }
+    }
+
 	// the mock class for test, leave all method empty
 	class MockSocketImpl extends SocketImpl{
 		
@@ -143,6 +155,10 @@ public class SocketImplTest extends junit.framework.TestCase {
 
         public FileDescriptor getFileDescriptor() {
             return super.getFileDescriptor();
+        }
+        
+        public void shutdownOutput() throws IOException {
+            super.shutdownOutput();
         }
 	}
 
