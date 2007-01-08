@@ -189,7 +189,7 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
     protected boolean processKeyBinding(KeyStroke ks, KeyEvent event, int condition,
             boolean pressed) {
         MenuSelectionManager.defaultManager().processKeyEvent(event);
-        if (event.isConsumed()) {
+        if ((event != null) && event.isConsumed()) {
             return true;
         }
         if (super.processKeyBinding(ks, event, condition, pressed)) {

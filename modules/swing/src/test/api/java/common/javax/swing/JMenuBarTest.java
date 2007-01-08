@@ -21,6 +21,7 @@
 package javax.swing;
 
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.MenuBarUI;
 import javax.swing.plaf.basic.BasicMenuBarUI;
@@ -84,7 +85,24 @@ public class JMenuBarTest extends SwingTestCase {
      * Test method for 'javax.swing.JMenuBar.processKeyBinding(KeyStroke, KeyEvent, int, boolean)'
      */
     public void testProcessKeyBinding() {
-        // TODO implement
+        JMenuBar jm = new JMenuBar() {
+            public boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+                    int condition, boolean pressed) {
+                return super.processKeyBinding(ks, e, condition, pressed);
+            }
+        };
+        KeyStroke ks = KeyStroke.getKeyStroke('x');
+
+        try { // Regression test for HARMONY-2622
+            jm.processKeyBinding(ks, null, -1, true);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        } catch (NullPointerException e) {
+            fail("NullPointerException is thrown instead of IllegalArgumentException");
+        }
+
+        // TODO implement other checkings
     }
 
     /*
