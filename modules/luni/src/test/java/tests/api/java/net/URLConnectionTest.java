@@ -224,14 +224,28 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 * @tests java.net.URLConnection#getFileNameMap()
 	 */
 	public void test_getFileNameMap() {
+        // Tests for the standard MIME types -- users may override these
+        // in their JRE
+        FileNameMap map = URLConnection.getFileNameMap();
+        
+        // These types are defaulted
+        assertEquals("text/html", map.getContentTypeFor("htm"));
+        assertEquals("text/html", map.getContentTypeFor("html"));
+        assertEquals("text/plain", map.getContentTypeFor("text"));
+        assertEquals("text/plain", map.getContentTypeFor("txt"));
+        
+        // These types come from the properties file
+        assertEquals("application/pdf", map.getContentTypeFor("pdf"));
+        assertEquals("application/zip", map.getContentTypeFor("zip"));
+        
 		URLConnection.setFileNameMap(new FileNameMap() {
 			public String getContentTypeFor(String fileName) {
 				return "Spam!";
 			}
 		});
 		try {
-			assertEquals("Incorrect FileNameMap returned", "Spam!", URLConnection.getFileNameMap()
-					.getContentTypeFor(null));
+			assertEquals("Incorrect FileNameMap returned", "Spam!",
+                    URLConnection.getFileNameMap().getContentTypeFor(null));
 		} finally {
 			// unset the map so other tests don't fail
 			URLConnection.setFileNameMap(null);

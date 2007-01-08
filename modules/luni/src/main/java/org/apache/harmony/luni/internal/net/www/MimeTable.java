@@ -17,6 +17,8 @@
 
 package org.apache.harmony.luni.internal.net.www;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
@@ -27,11 +29,10 @@ import java.util.Properties;
 /**
  * Instances of this class map file extensions to MIME content types based on a
  * default MIME table.
- * <p>
+ * 
  * The default values can be overridden by modifying the contents of the file
- * "types.properties".
+ * "content-types.properties".
  */
-
 public class MimeTable implements FileNameMap {
 
     public static final String UNKNOWN = "content/unknown"; //$NON-NLS-1$
@@ -43,44 +44,81 @@ public class MimeTable implements FileNameMap {
 
     // Default mapping.
     static {
-        types.put("text", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
-        types.put("txt", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
-        types.put("htm", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
-        types.put("html", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.setProperty("text", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.setProperty("txt", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.setProperty("htm", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
+        types.setProperty("html", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
      * Contructs a MIME table using the default values defined in this class.
-     * <p>
-     * It then augments this table by reading pairs of extensions and matching
-     * content types from the file "types.properties", which is represented in
-     * standard java.util.Properties.load(...) format.
+     * 
+     * It then augments this table by reading pairs of extensions and
+     * corresponding content types from the file "content-types.properties",
+     * which is represented in standard java.util.Properties.load(...) format.
      */
     public MimeTable() {
         InputStream str = AccessController
                 .doPrivileged(new PrivilegedAction<InputStream>() {
                     public InputStream run() {
-                        return MimeTable.this.getClass().getResourceAsStream(
-                                "types.properties"); //$NON-NLS-1$
+                        return getContentTypes();
                     }
                 });
 
-        try {
-            if (str != null) {
-                types.load(str);
+        if (str != null) {
+            try {
+                try {
+                    types.load(str);
+                } finally {
+                    str.close();
+                }
+            } catch (IOException ex) {
+                // Ignore
             }
-        } catch (IOException ex) {
-            // Ignored
         }
+    }
+
+    /**
+     * Answer an InputStream over an external properties file containing the
+     * MIME types.
+     * 
+     * Looks in the location specified in the user property, and then in the
+     * expected location.
+     * 
+     * @return the InputStream, or null if none.
+     */
+    private InputStream getContentTypes() {
+        // User override?
+        String userTable = System.getProperty("content.types.user.table"); //$NON-NLS-1$
+        if (userTable != null) {
+            try {
+                return new FileInputStream(userTable);
+            } catch (IOException e) {
+                // Ignore invalid values
+            }
+        }
+
+        // Standard location?
+        String javahome = System.getProperty("java.home"); //$NON-NLS-1$
+        File contentFile = new File(javahome, "lib" //$NON-NLS-1$
+                + File.separator + "content-types.properties"); //$NON-NLS-1$
+        try {
+            return new FileInputStream(contentFile);
+        } catch (IOException e) {
+            // Not found or can't read
+        }
+
+        return null;
     }
 
     /**
      * Determines the MIME type for the given filename.
      * 
-     * @return java.lang.String The mime type associated with the file's
-     *         extension or null if no mapping is known.
      * @param filename
-     *            java.lang.String The file whose extension will be mapped.
+     *            The file whose extension will be mapped.
+     * 
+     * @return The mime type associated with the file's extension or null if no
+     *         mapping is known.
      */
     public String getContentTypeFor(String filename) {
         if (filename.endsWith("/")) { //$NON-NLS-1$
@@ -96,7 +134,6 @@ public class MimeTable implements FileNameMap {
         if (firstCharInExtension > filename.lastIndexOf('/')) {
             ext = filename.substring(firstCharInExtension, lastCharInExtension);
         }
-        return (String) types.get(ext.toLowerCase());
+        return types.getProperty(ext.toLowerCase());
     }
-
 }

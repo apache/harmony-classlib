@@ -234,6 +234,12 @@ ${built.files.list}
         </copy>
 
         <!-- Copy across the support files -->
+        <copy todir="${hy.jdk}/jre/lib">
+            <fileset dir="${depends.files}">
+                <include name="content-types.properties" />
+            </fileset>
+        </copy>
+
         <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.files}">
                 <include name="bootclasspath.properties" />
