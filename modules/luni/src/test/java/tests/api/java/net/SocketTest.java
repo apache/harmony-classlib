@@ -2493,10 +2493,7 @@ public class SocketTest extends SocketTestCase {
 		}
 
 		public void checkPermission(Permission permission) {
-			if ("setSecurityManager".equals(permission.getName())) {
-				return;
-			}
-			super.checkPermission(permission);
+			return;
 		}
 
 	}
