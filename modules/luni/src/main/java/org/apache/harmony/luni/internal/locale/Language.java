@@ -21,12 +21,14 @@ package org.apache.harmony.luni.internal.locale;
 
 public class Language extends java.util.ListResourceBundle {
 
+@SuppressWarnings("nls")
 protected Object[][] getContents() {
 	Object [][] contents = {
 		{"aa", "Afar"},
 		{"ab", "Abkhazian"},
         {"ae", "Avestan"},
 		{"af", "Afrikaans"},
+        {"ak", "Akan"},
 		{"am", "Amharic"},
 		{"ar", "Arabic"},
 		{"as", "Assamese"},

@@ -21,14 +21,16 @@ package org.apache.harmony.luni.internal.locale;
 
 public class ISO3Languages extends java.util.ListResourceBundle {
 
+@SuppressWarnings("nls")
 protected Object[][] getContents() {
 	Object [][] contents = {
 		{"aa", "aar"},
 		{"ab", "abk"},
         {"ae", "ave"},
 		{"af", "afr"},
-        {"ak", "aka"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"ak", "aka"},
 		{"am", "amh"},
+        {"an", "arg"},
 		{"ar", "ara"},
 		{"as", "asm"},
 		{"ay", "aym"},

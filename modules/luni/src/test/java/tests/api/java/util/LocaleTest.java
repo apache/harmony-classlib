@@ -19,6 +19,7 @@ package tests.api.java.util;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -357,6 +358,21 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("Wrong representation 8", "", l.toString());
 
 	}
+    
+    // Regression Test for HARMONY-2953
+    public void test_getISO() {
+        Locale locale = new Locale("an");
+        assertEquals("arg", locale.getISO3Language());
+
+        locale = new Locale("PS");
+        assertEquals("pus", locale.getISO3Language());
+
+        List<String> languages = Arrays.asList(Locale.getISOLanguages());
+        assertTrue(languages.contains("ak"));
+
+        List<String> countries = Arrays.asList(Locale.getISOCountries());
+        assertTrue(countries.contains("CS"));
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

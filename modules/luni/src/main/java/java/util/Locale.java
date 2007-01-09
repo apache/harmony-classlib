@@ -612,31 +612,19 @@ public final class Locale implements Cloneable, Serializable {
 	 * @return an array of String
 	 */
 	public static String[] getISOCountries() {
-		ListResourceBundle bundle = new Country();
+        ListResourceBundle bundle = new Country();
 
-		boolean hasCS = false;
-		try {
-			bundle.getString("CS"); //$NON-NLS-1$
-			hasCS = true;
-		} catch (MissingResourceException e) {
-            //Empty
-		}
-
-		Enumeration<String> keys = bundle.getKeys(); // to initialize the table
-		int size = bundle.table.size();
-		if (hasCS) {
-            size--;
+        // To initialize the table
+        Enumeration<String> keys = bundle.getKeys(); 
+        int size = bundle.table.size();
+        String[] result = new String[size];
+        int index = 0;
+        while (keys.hasMoreElements()) {
+            String element = keys.nextElement();
+            result[index++] = element;
         }
-		String[] result = new String[size];
-		int index = 0;
-		while (keys.hasMoreElements()) {
-			String element = keys.nextElement();
-			if (!element.equals("CS")) {//$NON-NLS-1$
-                result[index++] = element;
-            }
-		}
-		return result;
-	}
+        return result;
+    }
 
 	/**
 	 * Gets the list of two letter ISO language codes which can be used as the
