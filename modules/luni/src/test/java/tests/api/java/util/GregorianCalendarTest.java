@@ -296,6 +296,16 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				.getActualMaximum(Calendar.HOUR));
 		assertEquals("Wrong actual maximum value for DAY_OF_WEEK_IN_MONTH", 4, gc6
 				.getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH));
+        
+        
+        // Regression test for harmony 2954
+        Date date = new Date(Date.parse("Jan 15 00:00:01 GMT 2000"));
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis(Date.parse("Dec 15 00:00:01 GMT 1582"));
+        assertEquals(355, gc.getActualMaximum(Calendar.DAY_OF_YEAR)); 
+        gc.setGregorianChange(date);
+        gc.setTimeInMillis(Date.parse("Jan 16 00:00:01 GMT 2000"));
+        assertEquals(353, gc.getActualMaximum(Calendar.DAY_OF_YEAR)); 
 	}
 
 	/**

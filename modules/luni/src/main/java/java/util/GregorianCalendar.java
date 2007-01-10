@@ -74,6 +74,10 @@ public class GregorianCalendar extends Calendar {
 
     private long lastMidnightMillis = 0L;
 
+    private int currentYearSkew = 10;
+
+    private int lastYearSkew = 0;
+
     /**
      * Constructs a new GregorianCalendar initialized to the current date and
      * time.
@@ -796,7 +800,14 @@ public class GregorianCalendar extends Calendar {
     }
 
     private int daysInYear() {
-        return isLeapYear(fields[YEAR]) ? 366 : 365;
+        int daysInYear = isLeapYear(fields[YEAR]) ? 366 : 365;
+        if (fields[YEAR] == changeYear) {
+            daysInYear -= currentYearSkew;
+        }
+        if (fields[YEAR] == changeYear - 1) {
+            daysInYear -= lastYearSkew;
+        }
+        return daysInYear;
     }
 
     private int daysInYear(boolean leapYear, int month) {
@@ -1204,6 +1215,15 @@ public class GregorianCalendar extends Calendar {
         }
         julianSkew = ((changeYear - 2000) / 400) + julianError()
                 - ((changeYear - 2000) / 100);
+        isCached = false;
+        int dayOfYear = cal.get(DAY_OF_YEAR);
+        if (dayOfYear < julianSkew) {
+            currentYearSkew = dayOfYear;
+            lastYearSkew = julianSkew - dayOfYear;
+        } else {
+            lastYearSkew = 0;
+            currentYearSkew = julianSkew;
+        }
         isCached = false;
     }
 
