@@ -30,7 +30,7 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) $(SYSLIBFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
-	-lc -lm $(OSLIBS) $(LDFLAGS)
+	-lc -lm $(OSLIBS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(CC) $(VMLINK) $(LDFLAGS) \
