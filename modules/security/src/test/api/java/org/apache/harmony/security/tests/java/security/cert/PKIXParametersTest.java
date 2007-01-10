@@ -972,57 +972,30 @@ public class PKIXParametersTest extends TestCase {
     }
 
     /**
-     * Test #1 for <code>setDate(Date)</code> method<br>
-     * Assertion: sets the time for which the validity of
-     * the certification path should be determined 
-     * @throws InvalidAlgorithmParameterException
+     * @tests java.security.cert.PKIXParameters#setDate(Date)
      */
-    public final void testSetDate01() throws Exception {
+    public final void test_setDateLjava_util_Date() throws Exception {
         Set taSet = TestUtils.getTrustAnchorSet();
-        if (taSet == null) {
-            fail(getName() + ": not performed (could not create test TrustAnchor set)");
-        }
+        assertNotNull("could not create test TrustAnchor set", taSet);
 
-        PKIXParameters p = new PKIXParameters(taSet);
-        p.setDate(new Date(555L));
-        assertEquals(555L, p.getDate().getTime());
-    }
-
-    /**
-     * Test #2 for <code>setDate(Date)</code> method<br>
-     * Assertion: <code>Date</code> may be <code>null</code> 
-     * @throws InvalidAlgorithmParameterException
-     */
-    public final void testSetDate02() throws Exception {
-        Set taSet = TestUtils.getTrustAnchorSet();
-        if (taSet == null) {
-            fail(getName() + ": not performed (could not create test TrustAnchor set)");
-        }
-
+        // test: 'date' is unset and param is null 
         PKIXParameters p = new PKIXParameters(taSet);
         p.setDate(null);
         assertNull(p.getDate());
-    }
 
-    /**
-     * Test #3 for <code>setDate(Date)</code> method<br>
-     * Assertion: <code>Date</code> supplied here is copied to protect
-     * against subsequent modifications
-     */
-    public final void testSetDate03() throws Exception {
-        Set taSet = TestUtils.getTrustAnchorSet();
-        if (taSet == null) {
-            fail(getName() + ": not performed (could not create test TrustAnchor set)");
-        }
-
-        PKIXParameters p = new PKIXParameters(taSet);
+        // test: 'date' is not null 
+        p = new PKIXParameters(taSet);
         Date toBeSet = new Date(555L);
         p.setDate(toBeSet);
-        // modify date set
+        assertEquals(555L, p.getDate().getTime());
+        // modify initial 'date' - it should be copied by constructor
         toBeSet.setTime(0L);
-        // check that internal Date has not been
+        // check that internal 'date' has not been
         // changed by the above modification
         assertEquals(555L, p.getDate().getTime());
+        // set another 'date'
+        p.setDate(new Date(333L));
+        assertEquals(333L, p.getDate().getTime());
     }
 
     /**
