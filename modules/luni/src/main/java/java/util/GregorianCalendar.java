@@ -317,10 +317,11 @@ public class GregorianCalendar extends Calendar {
         }
         // Cannot add ZONE_OFFSET to time as it might overflow
         millis += zoneOffset;
-        if (millis < 0) {
+        while (millis < 0) {
             millis += 86400000;
             days--;
-        } else if (millis >= 86400000) {
+        }
+        while (millis >= 86400000) {
             millis -= 86400000;
             days++;
         }

@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.Vector;
 
@@ -139,6 +140,11 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		// value
 		assertTrue("Incorrect calendar returned",
 				gc1.get(Calendar.HOUR) == ((gc2.get(Calendar.HOUR) + 1) % 12));
+        
+        // Regression test for Haromny-2961
+        SimpleTimeZone timezone = new SimpleTimeZone(-3600 * 24 * 1000 * 2,
+                "GMT");
+        GregorianCalendar gc = new GregorianCalendar(timezone);
 	}
 
 	/**
