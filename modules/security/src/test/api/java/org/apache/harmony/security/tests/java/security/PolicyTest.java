@@ -21,7 +21,12 @@
 */
 
 package org.apache.harmony.security.tests.java.security;
-import java.security.*;
+
+import java.security.CodeSource;
+import java.security.PermissionCollection;
+import java.security.Policy;
+import java.security.ProtectionDomain;
+import java.security.SecurityPermission;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -30,12 +35,9 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.security.tests.support.SecurityChecker;
 
-
 /**
  * Tests for <code>Policy</code>
- * 
  */
-
 public class PolicyTest extends TestCase {
 
     public static void main(String[] args) {
@@ -43,9 +45,9 @@ public class PolicyTest extends TestCase {
     }
 
     /**
-     * Tests that setPolicy() is properly secured via SecurityManager.
+     * @tests java.security.Policy#setPolicy(java.security.Policy)
      */
-    public void testSetPolicy() {
+    public void test_setPolicyLjava_security_Policy() {
         SecurityManager old = System.getSecurityManager();
         Policy oldPolicy = Policy.getPolicy();
         try {
@@ -71,11 +73,14 @@ public class PolicyTest extends TestCase {
     }
 
     /**
-     * Tests that getPolicy() is properly secured via SecurityManager.
+     * @tests java.security.Policy#getPolicy()
      */
-    public void testGetPolicy_CheckPermission() {
+    public void test_getPolicy() {
         SecurityManager old = System.getSecurityManager();
         Policy oldPolicy = Policy.getPolicy();
+
+        assertNotNull("Got a null system security policy", oldPolicy);
+
         try {
             Policy.setPolicy(new TestProvider());
             SecurityChecker checker = new SecurityChecker(
