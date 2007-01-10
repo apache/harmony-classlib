@@ -696,6 +696,9 @@ public class Socket {
      *             if the socket is closed
      */
     public void shutdownInput() throws IOException {
+        if (isInputShutdown()) {
+            throw new SocketException(Msg.getString("K0321")); //$NON-NLS-1$
+        }
         checkClosedAndCreate(false);
         impl.shutdownInput();
         isInputShutdown = true;
@@ -710,6 +713,9 @@ public class Socket {
      *             if the socket is closed
      */
     public void shutdownOutput() throws IOException {
+        if (isOutputShutdown()) {
+            throw new SocketException(Msg.getString("KA00f")); //$NON-NLS-1$
+        }
         checkClosedAndCreate(false);
         impl.shutdownOutput();
         isOutputShutdown = true;

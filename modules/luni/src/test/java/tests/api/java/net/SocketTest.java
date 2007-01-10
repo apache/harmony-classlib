@@ -2451,7 +2451,32 @@ public class SocketTest extends SocketTestCase {
             // expected
         }
     }
-    
+
+    /**
+     * @tests Socket#shutdownInput()
+     * @tests Socket#shutdownOutput()
+     */
+    public void test_shutdownInputOutput_twice() throws Exception {
+        // regression test for Harmony-2944
+        Socket s = new Socket("0.0.0.0", 0, false);
+        s.shutdownInput();
+
+        try {
+            s.shutdownInput();
+            fail("should throw SocketException");
+        } catch (SocketException se) {
+            // expected
+        }
+        s.shutdownOutput();
+
+        try {
+            s.shutdownOutput();
+            fail("should throw SocketException");
+        } catch (SocketException se) {
+            // expected
+        }
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
