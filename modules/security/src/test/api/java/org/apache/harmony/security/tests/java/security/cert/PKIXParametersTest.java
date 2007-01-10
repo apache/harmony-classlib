@@ -996,6 +996,12 @@ public class PKIXParametersTest extends TestCase {
         // set another 'date'
         p.setDate(new Date(333L));
         assertEquals(333L, p.getDate().getTime());
+        
+        // Regression for HARMONY-2882 (non-bug difference from RI)
+        p = new PKIXParameters(taSet);
+        p.setDate(new Date(555L));
+        p.setDate(null); // reset 'date' back to current time
+        assertNull(p.getDate());
     }
 
     /**
