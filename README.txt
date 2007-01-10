@@ -196,10 +196,11 @@ By default, the Java compiler is set to use the ECJ compiler. This value is
 set in the HARMONY_TRUNK/make/properties.xml and looks like the following XML
 element.
 
-<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+<property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 The compiler can be set to "modern", as per the Ant manual, which will cause Ant
-to use the JDK's 'javac' tool.
+to use the JDK's 'javac' tool. You may also need to change the 'build.compilerarg'
+to '-nowarn' instead of the JDT '-warn:none'.
 
 
 Options for ECJ compiler
