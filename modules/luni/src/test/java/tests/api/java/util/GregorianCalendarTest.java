@@ -631,6 +631,18 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         assertEquals(2, g1.get(Calendar.HOUR_OF_DAY));
         // End of regression test
     }
+    
+    /**
+     * @tests java.util.GregorianCalendar#get(int)
+     */
+    public void test_getI() { 
+        // Regression test for Hamrony-2959
+        Date date = new Date(Date.parse("Jan 15 00:00:01 GMT 2000")); 
+        GregorianCalendar gc = new GregorianCalendar(); 
+        gc.setGregorianChange(date); 
+        gc.setTimeInMillis(Date.parse("Dec 24 00:00:01 GMT 2000")); 
+        assertEquals(346, gc.get(Calendar.DAY_OF_YEAR)); 
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

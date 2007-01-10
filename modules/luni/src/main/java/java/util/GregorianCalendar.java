@@ -760,10 +760,7 @@ public class GregorianCalendar extends Calendar {
         }
         if (days < 0) {
             year = year - 1;
-            days = days + 365 + (isLeapYear(year) ? 1 : 0);
-            if (year == changeYear && localTime < gregorianCutover) {
-                days -= julianError();
-            }
+            days = days + daysInYear(year);
         }
         fields[YEAR] = year;
         return (int) days + 1;
@@ -800,12 +797,12 @@ public class GregorianCalendar extends Calendar {
         return DaysInMonth[month];
     }
 
-    private int daysInYear() {
-        int daysInYear = isLeapYear(fields[YEAR]) ? 366 : 365;
-        if (fields[YEAR] == changeYear) {
+    private int daysInYear(int year) {
+        int daysInYear = isLeapYear(year) ? 366 : 365;
+        if (year == changeYear) {
             daysInYear -= currentYearSkew;
         }
-        if (fields[YEAR] == changeYear - 1) {
+        if (year == changeYear - 1) {
             daysInYear -= lastYearSkew;
         }
         return daysInYear;
@@ -885,7 +882,7 @@ public class GregorianCalendar extends Calendar {
             case DATE:
                 return daysInMonth();
             case DAY_OF_YEAR:
-                return daysInYear();
+                return daysInYear(fields[YEAR]);
             case DAY_OF_WEEK_IN_MONTH:
                 result = get(DAY_OF_WEEK_IN_MONTH)
                         + ((daysInMonth() - get(DATE)) / 7);
@@ -1117,7 +1114,7 @@ public class GregorianCalendar extends Calendar {
                 int days,
                 day;
                 if (field == WEEK_OF_YEAR) {
-                    days = daysInYear();
+                    days = daysInYear(fields[YEAR]);
                     day = DAY_OF_YEAR;
                 } else {
                     days = daysInMonth();
@@ -1148,7 +1145,7 @@ public class GregorianCalendar extends Calendar {
                 max = daysInMonth();
                 break;
             case DAY_OF_YEAR:
-                max = daysInYear();
+                max = daysInYear(fields[YEAR]);
                 break;
             case DAY_OF_WEEK:
                 max = maximums[field];
