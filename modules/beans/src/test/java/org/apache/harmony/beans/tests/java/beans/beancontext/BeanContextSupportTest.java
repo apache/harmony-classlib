@@ -555,6 +555,7 @@ public class BeanContextSupportTest extends TestCase {
         support.records.assertRecord("initialize", null);
 
         try {
+            //Regression for HARMONY-2350
             support.addAll(Collections.EMPTY_LIST);
             fail();
         } catch (UnsupportedOperationException e) {

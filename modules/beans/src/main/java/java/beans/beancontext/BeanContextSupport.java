@@ -250,33 +250,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     }
 
     public boolean addAll(Collection c) {
-
-        Collection<Object> col = new ArrayList<Object>();
-
-        // Add children one by one
-        for (Iterator i = c.iterator(); i.hasNext();) {
-            try {
-                Object next = i.next();
-
-                if (add(next)) {
-                    col.add(next);
-                }
-            } catch (Exception e) {
-
-                // Roll back changes but first check if it's already rolling
-                // back to avoid infinitive action
-                if (!this.rollingBack) {
-                    this.rollingBack = true;
-                    removeAll(col);
-                } else {
-                    this.rollingBack = false;
-                }
-
-                return false;
-            }
-        }
-
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     public void addBeanContextMembershipListener(
