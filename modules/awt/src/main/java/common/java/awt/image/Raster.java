@@ -534,6 +534,11 @@ public class Raster {
             throw new NullPointerException(Messages.getString("awt.27F")); //$NON-NLS-1$
         }
 
+        if (sm.dataType != db.dataType) {
+            // awt.293=SampleModel and DataBuffer have different data types
+            throw new RasterFormatException(Messages.getString("awt.293")); //$NON-NLS-1$
+        }
+        
         if (location == null) {
             location = new Point(0, 0);
         }
@@ -835,4 +840,5 @@ public class Raster {
     }
 
 }
+
 

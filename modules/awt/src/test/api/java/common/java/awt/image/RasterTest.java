@@ -19,9 +19,10 @@
 package java.awt.image;
 
 import junit.framework.TestCase;
+import java.awt.Point;
 
 public class RasterTest extends TestCase {
-    // A regression test for harmony-2717
+    // Regression test for harmony-2717
     public void test_createPackedRaster()
     {
         try {
@@ -31,6 +32,20 @@ public class RasterTest extends TestCase {
             System.out.println(expectedException +" was thrown");
         } catch (RasterFormatException expectedException) {
             fail(expectedException +" was thrown");
+        }
+    }
+    
+    // Regression test for harmony-2885
+    public void testDataTypes() {
+        SinglePixelPackedSampleModel sm = new SinglePixelPackedSampleModel(
+                DataBuffer.TYPE_USHORT, 2, 26, new int[798]);
+
+        try {
+            Raster localRaster = Raster.createRaster(sm, new DataBufferShort(1,
+                    1), new Point());
+            fail("RasterFormatException expected!");
+        } catch (RasterFormatException expectedException) {
+            // Expected
         }
     }
 }
