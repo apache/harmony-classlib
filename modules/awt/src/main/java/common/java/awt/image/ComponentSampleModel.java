@@ -331,7 +331,8 @@ public class ComponentSampleModel extends SampleModel {
     @Override
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
+        if (x < 0 || y < 0 || x > this.width || x + w > this.width
+                || y > this.height || y + h > this.height) {
             // awt.63=Coordinates are not in bounds
             throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
@@ -571,4 +572,5 @@ public class ComponentSampleModel extends SampleModel {
     }
 
 }
+
 
