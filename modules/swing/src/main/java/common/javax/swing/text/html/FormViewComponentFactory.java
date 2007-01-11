@@ -73,7 +73,7 @@ import org.apache.harmony.x.swing.text.html.form.FormTextModel;
 import org.apache.harmony.x.swing.text.html.form.FormToggleButtonModel;
 
 final class FormViewComponentFactory {
-    public static class InputImageIcon implements Icon {
+    static class InputImageIcon implements Icon {
         private BackgroundImageLoader loader;
         private Icon icon;
 

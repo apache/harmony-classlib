@@ -38,7 +38,7 @@ abstract class TextInterval implements Cloneable {
     /**
      * Defines how text is actually painted.
      */
-    public interface TextIntervalPainter {
+    interface TextIntervalPainter {
         /**
          * Paints selected range of text.
          *
