@@ -102,15 +102,19 @@ main (int argc, char **argv, char **envp)
       options.envp = envp;
       options.portLibrary = &hyportLibrary;
 
-      if (hyportLibrary.sig_protect (&hyportLibrary,
-                                     signalProtectedMain, &options,
-                                     genericSignalHandler, NULL,
-                                     HYPORT_SIG_FLAG_SIGALLSYNC,
-                                     &result) == 0)
-        {
-          rc = result;
-        }
-
+      if (hyportLibrary.sysinfo_get_env(&hyportLibrary, "HARMONY_INSTALL_SIG_HANDLER", NULL, 0) == -1) {
+         rc = gpProtectedMain (&options);
+      } else {
+         if (hyportLibrary.sig_protect (&hyportLibrary,
+                                        signalProtectedMain,
+                                        &options,
+                                        genericSignalHandler,
+                                        NULL,
+                                        HYPORT_SIG_FLAG_SIGALLSYNC,
+                                        &result) == 0) {
+            rc = result;
+          }
+      }
       hyportLibrary.port_shutdown_library (&hyportLibrary);
     }
 
