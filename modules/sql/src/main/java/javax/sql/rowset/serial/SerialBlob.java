@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SerialBlob implements Blob, Serializable, Cloneable {
@@ -198,8 +197,15 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
     }
 
     public OutputStream setBinaryStream(long pos) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        if (blob == null) {
+            throw new SerialException(Messages.getString("sql.18")); //$NON-NLS-1$
+        }
+        OutputStream os = blob.setBinaryStream(pos);
+        if (os == null) {
+            throw new SerialException(Messages.getString("sql.18")); //$NON-NLS-1$
+        }
+        return os;
     }
 
     public int setBytes(long pos, byte[] theBytes) throws SerialException,

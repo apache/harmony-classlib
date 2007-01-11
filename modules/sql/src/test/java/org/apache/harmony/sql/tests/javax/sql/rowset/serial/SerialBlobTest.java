@@ -17,6 +17,7 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
@@ -198,7 +199,7 @@ public class SerialBlobTest extends TestCase {
         byte[] expected = { 9, 10, 11, 4, 5, 6, 7, 8 };
         assertTrue(Arrays.equals(expected, res));
         assertEquals(3, count);
-        
+
         count = serialBlob.setBytes(3, theBytes, 1, 2);
         res = serialBlob.getBytes(1, buf.length);
         expected = new byte[] { 9, 10, 10, 11, 5, 6, 7, 8 };
@@ -307,10 +308,10 @@ public class SerialBlobTest extends TestCase {
             } catch (SerialException e) {
                 // expected
             }
-            
+
             // Non bug difference from RI, Harmony-2937
             assertEquals(3L, serialBlob.length());
-            
+
             try {
                 serialBlob.truncate(10);
                 fail("should throw SerialException");
@@ -320,7 +321,35 @@ public class SerialBlobTest extends TestCase {
 
         }
     }
-    
+
+    public void testSetBinaryStreamJ() throws Exception {
+        MockSerialBlob mockBlob = new MockSerialBlob();
+        mockBlob.binaryStream = new ByteArrayOutputStream();
+        SerialBlob serialBlob = new SerialBlob(mockBlob);
+        OutputStream os = serialBlob.setBinaryStream(1);
+        assertTrue(mockBlob.isSetBinaryStreamInvoked);
+        assertEquals(1L, mockBlob.pos);
+        assertSame(mockBlob.binaryStream, os);
+
+        mockBlob.binaryStream = null;
+        try {
+            serialBlob.setBinaryStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        byte[] buf = new byte[1];
+        serialBlob = new SerialBlob(buf);
+        try {
+            // Non bug difference from RI, Harmony-2971
+            serialBlob.setBinaryStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+    }
+
     private void assertBlobPosition_BytePattern(Blob blob)
             throws SerialException, SQLException {
         byte[] pattern;
@@ -441,7 +470,13 @@ public class SerialBlobTest extends TestCase {
 
         public boolean isGetBytesInvoked;
 
+        public boolean isSetBinaryStreamInvoked;
+
         public boolean isAbnormal;
+
+        public OutputStream binaryStream;
+
+        public long pos;
 
         public MockSerialBlob() {
 
@@ -476,7 +511,9 @@ public class SerialBlobTest extends TestCase {
         }
 
         public OutputStream setBinaryStream(long pos) throws SQLException {
-            return null;
+            isSetBinaryStreamInvoked = true;
+            this.pos = pos;
+            return binaryStream;
         }
 
         public int setBytes(long pos, byte[] theBytes) throws SQLException {
