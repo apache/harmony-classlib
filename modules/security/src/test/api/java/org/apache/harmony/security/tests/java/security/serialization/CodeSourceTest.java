@@ -26,17 +26,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.ObjectStreamField;
 import java.net.URL;
-import java.security.CodeSource;
 import java.security.CodeSigner;
+import java.security.CodeSource;
 import java.security.Timestamp;
 import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.Date;
 
-import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.security.tests.support.TestCertUtils;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
@@ -182,5 +184,15 @@ public class CodeSourceTest extends SerializationTest {
                 new CodeSource(null, x509chain),
         };
         return data;
+    }
+
+    public void testSerilizationDescriptor() throws Exception {
+
+        // Regression for HARMONY-2787
+        ObjectStreamClass objectStreamClass = ObjectStreamClass
+                .lookup(CodeSource.class);
+        ObjectStreamField objectStreamField = objectStreamClass
+                .getField("location");
+        assertEquals("Ljava/net/URL;", objectStreamField.getTypeString());
     }
 }

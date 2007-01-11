@@ -49,7 +49,7 @@ public class CodeSource implements Serializable {
     private static final long serialVersionUID = 4977541819976013951L;
 
     // Location of this CodeSource object
-    private transient URL location;
+    private URL location;
 
     // Array of certificates assigned to this CodeSource object
     private transient java.security.cert.Certificate[] certs;
@@ -479,7 +479,9 @@ public class CodeSource implements Serializable {
     }
 
     private void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.writeObject(location);
+
+        oos.defaultWriteObject();
+
         if (certs == null || certs.length == 0) {
             oos.writeInt(0);
         } else {
@@ -504,7 +506,9 @@ public class CodeSource implements Serializable {
 
     private void readObject(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
-        location = (URL) ois.readObject();
+        
+        ois.defaultReadObject();
+        
         int certsCount = ois.readInt();
         certs = null;
         if (certsCount != 0) {
