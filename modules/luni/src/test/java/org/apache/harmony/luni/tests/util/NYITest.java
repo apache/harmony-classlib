@@ -17,6 +17,10 @@
 
 package org.apache.harmony.luni.tests.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
 import junit.framework.TestCase;
 
 import org.apache.harmony.luni.util.NotImplementedException;
@@ -26,14 +30,11 @@ import org.apache.harmony.luni.util.NotImplementedException;
  */
 public class NYITest extends TestCase {
 
-    public void testNYI() {
-        System.err.println("Test suite -> expect a not implemented output >>>");
-        try {
-            throw new NotImplementedException();
-        } catch (NotImplementedException exception) {
-            // Expected
-        }
-        System.err.println("Test suite finished not implemented output <<<");
+    public void testNYI() throws UnsupportedEncodingException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(400);
+        PrintStream stream = new PrintStream(bos, true, "UTF-8");
+        new NotImplementedException(stream);
+        String message = new String(bos.toByteArray(), "UTF-8");
+        assertFalse(message.indexOf("NYITest") == -1);
     }
-
 }

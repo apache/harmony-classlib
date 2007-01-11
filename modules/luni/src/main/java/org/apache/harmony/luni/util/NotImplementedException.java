@@ -16,6 +16,8 @@
 
 package org.apache.harmony.luni.util;
 
+import java.io.PrintStream;
+
 
 /**
  * This exception is thrown by methods that are not currently implemented, so
@@ -33,31 +35,37 @@ public class NotImplementedException extends RuntimeException {
 	 * Default constructor.
 	 */
 	public NotImplementedException() {
-		super();
-		System.err.println("*** NOT IMPLEMENTED EXCEPTION ***"); //$NON-NLS-1$
-		StackTraceElement thrower = getStackTrace()[0];
-		System.err
-				.println("*** thrown from class  -> " + thrower.getClassName()); //$NON-NLS-1$
-		System.err
-				.println("***             method -> " + thrower.getMethodName()); //$NON-NLS-1$
-
-		System.err.print("*** defined in         -> "); //$NON-NLS-1$
-		if (thrower.isNativeMethod()) {
-			System.err.println("a native method"); //$NON-NLS-1$
-		} else {
-			String fileName = thrower.getFileName();
-			if (fileName == null) {
-				System.err.println("an unknown source"); //$NON-NLS-1$
-			} else {
-				int lineNumber = thrower.getLineNumber();
-				System.err.print("the file \"" + fileName + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-				if (lineNumber >= 0) {
-					System.err.print(" on line #" + lineNumber); //$NON-NLS-1$
-				}
-				System.err.println();
-			}
-		}
+		this(System.err);
 	}
+
+    /*
+     * Constructor that prints the message of the exception on the given stream
+     */
+    @SuppressWarnings("nls")
+    public NotImplementedException(PrintStream stream) {
+        super();
+        stream.println("*** NOT IMPLEMENTED EXCEPTION ***");
+        StackTraceElement thrower = getStackTrace()[0];
+        stream.println("*** thrown from class  -> " + thrower.getClassName());
+        stream.println("***             method -> " + thrower.getMethodName());
+
+        stream.print("*** defined in         -> ");
+        if (thrower.isNativeMethod()) {
+            stream.println("a native method");
+        } else {
+            String fileName = thrower.getFileName();
+            if (fileName == null) {
+                stream.println("an unknown source");
+            } else {
+                int lineNumber = thrower.getLineNumber();
+                stream.print("the file \"" + fileName + "\"");
+                if (lineNumber >= 0) {
+                    stream.print(" on line #" + lineNumber);
+                }
+                stream.println();
+            }
+        }
+    }
 
 	/**
 	 * Constructor that takes a reason message.
