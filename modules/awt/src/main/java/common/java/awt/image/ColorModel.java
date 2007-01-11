@@ -264,18 +264,8 @@ public abstract class ColorModel implements Transparency {
             throw new UnsupportedOperationException(Messages.getString("awt.26C")); //$NON-NLS-1$
         }
 
-        if (components.length - offset < numComponents) {
-            // awt.272=The length of components minus offset is less than numComponents
-            throw new IllegalArgumentException(Messages.getString("awt.272")); //$NON-NLS-1$
-        }
-
         if (normComponents == null) {
             normComponents = new float[numComponents + offset];
-        } else {
-            if (normComponents.length - normOffset < numComponents) {
-                // awt.273=The length of normComponents minus normOffset is less than numComponents
-                throw new IllegalArgumentException(Messages.getString("awt.273")); //$NON-NLS-1$
-            }
         }
 
         if (hasAlpha && isAlphaPremultiplied) {
