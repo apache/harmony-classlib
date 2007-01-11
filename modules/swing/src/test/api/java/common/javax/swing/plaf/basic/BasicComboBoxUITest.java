@@ -473,6 +473,25 @@ public class BasicComboBoxUITest extends SwingTestCase {
         BasicComboBoxUI cb = new BasicComboBoxUI();
         cb.removeEditor();
     }
+
+    public void testComboBoxLayoutManager() throws Exception {
+        BasicComboBoxUI ui = new BasicComboBoxUI();
+        BasicComboBoxUI.ComboBoxLayoutManager b = ui.new ComboBoxLayoutManager();
+
+        // Regression test for HARMONY-2886
+        try {
+            b.minimumLayoutSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            b.preferredLayoutSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
     
     @SuppressWarnings("deprecation")
     private void createVisibleCombo() {

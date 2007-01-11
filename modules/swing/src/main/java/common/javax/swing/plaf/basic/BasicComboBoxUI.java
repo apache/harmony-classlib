@@ -79,10 +79,16 @@ public class BasicComboBoxUI extends ComboBoxUI {
         }
 
         public Dimension preferredLayoutSize(final Container parent) {
+            if (parent == null) {
+                throw new NullPointerException("parent is null");
+            }
             return new Dimension(0, 0);
         }
 
         public Dimension minimumLayoutSize(final Container parent) {
+            if (parent == null) {
+                throw new NullPointerException("parent is null");
+            }
             return new Dimension(0, 0);
         }
 
