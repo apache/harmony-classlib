@@ -334,7 +334,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
         return arePathsContiguous(hashSetToTreePathArray(rows));
     }
 
-    protected void notifyPathChange(final Vector changedPaths,
+    protected void notifyPathChange(final Vector<PathPlaceHolder> changedPaths,
                                     final TreePath oldLeadSelection) {
 
         if (changedPaths == null || changedPaths.size() == 0 ){
@@ -401,7 +401,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
         }
     }
 
-    private Vector createPlaceHolders(final TreePath[] oldSelection,
+    private Vector<PathPlaceHolder> createPlaceHolders(final TreePath[] oldSelection,
                                       final TreePath[] newSelection) {
 
         final HashSet addedElements = arrayToHashSet(newSelection);
@@ -409,7 +409,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
         addedElements.removeAll(removedElements);
         removedElements.removeAll(arrayToHashSet(newSelection));
 
-        Vector result = PathPlaceHolder.createPathsPlaceHolders(hashSetToTreePathArray(addedElements), true);
+        Vector<PathPlaceHolder> result = PathPlaceHolder.createPathsPlaceHolders(hashSetToTreePathArray(addedElements), true);
         result.addAll(PathPlaceHolder.createPathsPlaceHolders(hashSetToTreePathArray(removedElements), false));
 
         return result;

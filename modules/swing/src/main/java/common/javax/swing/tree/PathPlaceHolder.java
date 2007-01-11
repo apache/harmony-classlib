@@ -34,31 +34,31 @@ class PathPlaceHolder {
         this.isNew = isNew;
     }
 
-    static TreePath[] getPathsArray(final Vector pathPlaceHolders) {
+    static TreePath[] getPathsArray(final Vector<PathPlaceHolder> pathPlaceHolders) {
         if (pathPlaceHolders == null) {
             return new TreePath[0];
         }
 
         TreePath[] result = new TreePath[pathPlaceHolders.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = ((PathPlaceHolder)pathPlaceHolders.get(i)).path;
+            result[i] = pathPlaceHolders.get(i).path;
         }
         return result;
     }
 
-    static boolean[] getAreNewArray(final Vector pathPlaceHolders) {
+    static boolean[] getAreNewArray(final Vector<PathPlaceHolder> pathPlaceHolders) {
         if (pathPlaceHolders == null) {
             return new boolean[0];
         }
 
         boolean[] result = new boolean[pathPlaceHolders.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = ((PathPlaceHolder)pathPlaceHolders.get(i)).isNew;
+            result[i] = pathPlaceHolders.get(i).isNew;
         }
         return result;
     }
 
-    static Vector createPathsPlaceHolders(final TreePath[] paths, final boolean areNew) {
+    static Vector<PathPlaceHolder> createPathsPlaceHolders(final TreePath[] paths, final boolean areNew) {
         if (paths == null) {
             return new Vector();
         }
