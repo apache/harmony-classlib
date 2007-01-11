@@ -156,6 +156,12 @@ public class DefaultBoundedRangeModel2Test extends SwingTestCase {
                 new DefaultBoundedRangeModel(1, -1, 1, 2);
             }
         });
+        testExceptionalCase(new IllegalArgumentCase() {
+            @Override // Regression test for HARMONY-2621
+            public void exceptionalAction() throws Exception {
+                new DefaultBoundedRangeModel(Integer.MAX_VALUE,1,2,4);
+            }
+        });
     }
 
     public void testFireStateChanged() {

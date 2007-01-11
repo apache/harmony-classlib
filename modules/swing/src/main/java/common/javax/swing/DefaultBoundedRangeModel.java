@@ -56,7 +56,7 @@ public class DefaultBoundedRangeModel implements BoundedRangeModel, Serializable
     }
 
     public DefaultBoundedRangeModel(int value, int extent, int min, int max) {
-        if (extent < 0 || min > value || value + extent > max) {
+        if (min > value || value > value + extent || value + extent > max) {
             throw new IllegalArgumentException("invalid range properties");
         }
         this.min = min;
