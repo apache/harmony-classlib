@@ -47,7 +47,7 @@ public class IncompleteAnnotationException extends RuntimeException {
      */
     public IncompleteAnnotationException(
             Class<? extends Annotation> annotationType, String elementName) {
-        super(Messages.getString("annotation.0", elementName, annotationType)); //$NON-NLS-1$
+        super(Messages.getString("annotation.0", elementName, annotationType.getName())); //$NON-NLS-1$
         this.annotationType = annotationType;
         this.elementName = elementName;
     }
