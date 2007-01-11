@@ -65,7 +65,7 @@ public abstract class ContentHandler {
         Object content = getContent(uConn);
         Class<?> cl = content.getClass();
         for (int i = 0; i < types.length; i++) {
-            if (cl.isInstance(types[i])) {
+            if (types[i].isInstance(cl)) {
                 return content;
             }
         }
