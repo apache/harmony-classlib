@@ -1172,6 +1172,27 @@ public class SocketTest extends SocketTestCase {
 		theSocket.close();
 	}
 
+    /**
+     * @tests java.net.Socket#bind(java.net.SocketAddress)
+     */
+    public void test_bindLjava_net_SocketAddress_Proxy() throws IOException {
+        //The Proxy will not impact on the bind operation.It can be assigned with any address.
+        Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 0));
+        Socket socket = new Socket(proxy);
+
+        try {
+            InetAddress address = InetAddress.getByName("localhost");
+            int port = 0;
+            socket.bind(new InetSocketAddress(address, port));
+            
+            assertEquals(address, socket.getLocalAddress());
+            assertTrue(port!=socket.getLocalPort());
+
+        } finally {
+            socket.close();
+        }
+    }
+
 	/**
 	 * @tests java.net.Socket#connect(java.net.SocketAddress)
 	 */

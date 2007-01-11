@@ -154,10 +154,6 @@ class PlainSocketImpl extends SocketImpl {
 
     @Override
     protected void bind(InetAddress anAddr, int aPort) throws IOException {
-        if (NetUtil.usingSocks(proxy)) {
-            socksBind();
-            return;
-        }
         netImpl.bind(fd, aPort, anAddr);
         // PlainSocketImpl2.socketBindImpl2(fd, aPort, anAddr);
         address = anAddr;

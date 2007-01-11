@@ -855,9 +855,7 @@ public class Socket {
 
         synchronized (this) {
             try {
-                if (!NetUtil.usingSocks(proxy)) {
-                    impl.bind(addr, port);
-                }
+                impl.bind(addr, port);
                 isBound = true;
             } catch (IOException e) {
                 impl.close();
