@@ -433,4 +433,11 @@ public class DataFlavorTest extends TestCase {
             fail("Regression test failed");
         }
     }
+    
+    public void testCloneNullMimeInfo()
+            throws CloneNotSupportedException,NullPointerException {
+        // Regression for HARMONY-2069
+        DataFlavor df = new DataFlavor();
+        df.clone(); 
+    }
 }

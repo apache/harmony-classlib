@@ -357,7 +357,8 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         clone.humanPresentableName = humanPresentableName;
         clone.representationClass = representationClass;
-        clone.mimeInfo = (MimeTypeProcessor.MimeType) mimeInfo.clone();
+        clone.mimeInfo = (mimeInfo != null) ? (MimeTypeProcessor.MimeType)
+                mimeInfo.clone() : null;
 
         return clone;
     }
