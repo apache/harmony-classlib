@@ -68,6 +68,9 @@ public final class DisplayMode {
     }
 
     public boolean equals(DisplayMode dm) {
+        if (dm == null) {
+            return false;
+        }
         if (dm.bitDepth != bitDepth) {
             return false;
         }
