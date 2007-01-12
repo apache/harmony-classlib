@@ -105,6 +105,14 @@ public class Book implements Pageable {
     public void setPage(int pageIndex, Printable painter, PageFormat page)
             throws IndexOutOfBoundsException {
 
+        if(painter == null) {
+            throw new NullPointerException(Messages.getString("awt.01", "painter")); //$NON-NLS-1$
+        }
+        
+        if(page == null) {
+            throw new NullPointerException(Messages.getString("awt.01", "page")); //$NON-NLS-1$
+        }
+        
         if (pageIndex >= getNumberOfPages()) {
             // awt.5E=pageIndex is more than book size
             throw new IndexOutOfBoundsException(Messages.getString("awt.5E")); //$NON-NLS-1$
