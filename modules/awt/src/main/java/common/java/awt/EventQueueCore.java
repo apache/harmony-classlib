@@ -124,13 +124,21 @@ final class EventQueueCore {
     
     synchronized void dispatchEvent(AWTEvent event) {
         updateCurrentEventAndTime(event);
-        activeQueue.dispatchEvent(event);
-        currentEvent = null;
+        try {
+            activeQueue.dispatchEvent(event);
+        } finally {
+            currentEvent = null;
+        }
     }
     
     void dispatchEventImpl(AWTEvent event) {
         if (event instanceof ActiveEvent) {
-            ((ActiveEvent) event).dispatch();
+            updateCurrentEventAndTime(event);
+            try {
+                ((ActiveEvent) event).dispatch();
+            } finally {
+                currentEvent = null;
+            }
             return;
         }
 
