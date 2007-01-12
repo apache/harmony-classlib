@@ -94,9 +94,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             // math.1B=numBits must be non-negative
             throw new IllegalArgumentException(Messages.getString("math.1B")); //$NON-NLS-1$
         }
-        if (rnd == null) {
-            throw new NullPointerException();
-        }
         if (numBits == 0) {
             sign = 0;
             numberLength = 1;
