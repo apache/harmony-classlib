@@ -322,6 +322,9 @@ public class BasicTableUI extends TableUI {
     }
 
     public void paint(final Graphics g, final JComponent c) {
+        if (g == null) {
+            throw new NullPointerException("context is null");
+        }
         if (table.getColumnCount() == 0 || table.getRowCount() == 0) {
             return;
         }

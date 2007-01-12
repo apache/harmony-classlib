@@ -124,7 +124,6 @@ public class BasicTableUITest extends BasicSwingTestCase {
 
     public void testPaint() throws Exception {
         ui.table = new JTable();
-        ui.paint(null, null);
         DefaultTableModel model = (DefaultTableModel) ui.table.getModel();
         model.addColumn("column1");
         model.addRow(new Object[] { "1" });
@@ -132,6 +131,16 @@ public class BasicTableUITest extends BasicSwingTestCase {
         Graphics g = createTestGraphics();
         g.setClip(0, 0, 100, 100);
         ui.paint(g, null);
+    }
+
+    // Regression test for HARMONY-1776
+    public void testPaint_Null() throws Exception {
+        try {
+            ui.paint(null, null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     public void testInstallDefaults() throws Exception {
