@@ -213,6 +213,14 @@ public class ChoiceTest extends TestCase {
         choice.insert(item = "end", choice.getItemCount() + 100);
         assertSame(item, choice.getItem(choice.getItemCount() - 1));
         assertEquals(2, choice.getSelectedIndex());
+        
+        // Regression test for HARMONY-2468
+        try {
+            new Choice().insert(null, 0);
+            fail("NullPointerException expected"); //$NON-NLS-1$
+        } catch (NullPointerException ex) {
+            // expected
+        }
     }
 
     public final void testGetSelectedObjects() {

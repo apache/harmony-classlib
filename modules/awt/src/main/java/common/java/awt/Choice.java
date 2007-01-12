@@ -342,12 +342,18 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
     public void insert(String item, int index) {
+        if (index < 0) {
+            // awt.105=index less than zero
+            throw new IllegalArgumentException(Messages.getString("awt.105")); //$NON-NLS-1$
+        }
+        
+        if (item == null) {
+            // awt.105='item' parameter is null
+            throw new NullPointerException(Messages.getString("awt.01", "item")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
         toolkit.lockAWT();
         try {
-            if (index < 0) {
-                // awt.105=index less than zero
-                throw new IllegalArgumentException(Messages.getString("awt.105")); //$NON-NLS-1$
-            }
             int idx = Math.min(items.size(), index);
             if (items.size() == 0) {
                 selectedIndex = 0;
