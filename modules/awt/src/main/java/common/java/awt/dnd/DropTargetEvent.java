@@ -36,7 +36,7 @@ public class DropTargetEvent extends EventObject {
     private Point location;
 
     public DropTargetEvent(DropTargetContext dtc) {
-        super(dtc);
+        super(dtc.getDropTarget());
 
         context = dtc;
     }
