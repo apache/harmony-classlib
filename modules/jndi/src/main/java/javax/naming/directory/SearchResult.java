@@ -19,6 +19,8 @@ package javax.naming.directory;
 
 import javax.naming.Binding;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * <code>SearchResult</code> returned from a search on a directory context
  * and is provided by a <code>NamingEnumeration</code>.
@@ -176,7 +178,13 @@ public class SearchResult extends Binding {
         Attributes attributes,
         boolean flag) {
         super(s, s1, o, flag);
-        this.attrs = attributes;
+
+        if (attributes == null) {
+            // jndi.8B=attrs must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.8B")); //$NON-NLS-1$
+        } else {
+            this.attrs = attributes;
+        }
     }
 
     /*
@@ -200,7 +208,12 @@ public class SearchResult extends Binding {
      * @param attributes	an attributes. It should not be null.	
      */
     public void setAttributes(Attributes attributes) {
-        attrs = attributes;
+        if (attributes == null) {
+            // jndi.8B=attrs must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.8B")); //$NON-NLS-1$
+        } else {
+            this.attrs = attributes;
+        }
     }
 
     /*
@@ -223,7 +236,5 @@ public class SearchResult extends Binding {
             .append(attrs.toString())
             .toString();
     }
-
 }
-
 

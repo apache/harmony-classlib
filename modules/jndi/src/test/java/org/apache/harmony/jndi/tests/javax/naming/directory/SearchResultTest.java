@@ -26,6 +26,7 @@ public class SearchResultTest extends TestCase {
 
 	static Log log = new Log(SearchResultTest.class);
 
+	BasicAttributes emptyAttrs = new BasicAttributes();
 	BasicAttributes attrs = new BasicAttributes("id_sample", "value_sample");
 
 	/*
@@ -36,9 +37,16 @@ public class SearchResultTest extends TestCase {
 		SearchResult r;
 
 		r = new SearchResult("name", "obj", attrs);
-		assertEquals("java.lang.String", r.getClassName());
 		assertEquals("name", r.getName());
+		assertEquals("java.lang.String", r.getClassName());
 		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertTrue(r.isRelative());
+
+		r = new SearchResult("name", null, attrs);
+		assertEquals("name", r.getName());
+		assertEquals(null, r.getClassName());
+		assertEquals(null, r.getObject());
 		assertEquals(attrs, r.getAttributes());
 		assertTrue(r.isRelative());
 	}
@@ -51,9 +59,16 @@ public class SearchResultTest extends TestCase {
 		SearchResult r;
 
 		r = new SearchResult("name", "obj", attrs, false);
-		assertEquals("java.lang.String", r.getClassName());
 		assertEquals("name", r.getName());
+		assertEquals("java.lang.String", r.getClassName());
 		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertFalse(r.isRelative());
+
+		r = new SearchResult("name", null, attrs, false);
+		assertEquals("name", r.getName());
+		assertEquals(null, r.getClassName());
+		assertEquals(null, r.getObject());
 		assertEquals(attrs, r.getAttributes());
 		assertFalse(r.isRelative());
 	}
@@ -66,9 +81,30 @@ public class SearchResultTest extends TestCase {
 		SearchResult r;
 
 		r = new SearchResult("name", "classname", "obj", attrs);
-		assertEquals("classname", r.getClassName());
 		assertEquals("name", r.getName());
+		assertEquals("classname", r.getClassName());
 		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertTrue(r.isRelative());
+
+		r = new SearchResult("name", null, "obj", attrs);
+		assertEquals("name", r.getName());
+		assertEquals("java.lang.String", r.getClassName());
+		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertTrue(r.isRelative());
+
+		r = new SearchResult("name", "classname", null, attrs);
+		assertEquals("name", r.getName());
+		assertEquals("classname", r.getClassName());
+		assertEquals(null, r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertTrue(r.isRelative());
+
+		r = new SearchResult("name", null, null, attrs);
+		assertEquals("name", r.getName());
+		assertEquals(null, r.getClassName());
+		assertEquals(null, r.getObject());
 		assertEquals(attrs, r.getAttributes());
 		assertTrue(r.isRelative());
 	}
@@ -81,21 +117,118 @@ public class SearchResultTest extends TestCase {
 		SearchResult r;
 
 		r = new SearchResult("name", "classname", "obj", attrs, false);
-		assertEquals("classname", r.getClassName());
 		assertEquals("name", r.getName());
+		assertEquals("classname", r.getClassName());
 		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertFalse(r.isRelative());
+
+		r = new SearchResult("name", null, "obj", attrs, false);
+		assertEquals("name", r.getName());
+		assertEquals("java.lang.String", r.getClassName());
+		assertEquals("obj", r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertFalse(r.isRelative());
+
+		r = new SearchResult("name", "classname", null, attrs, false);
+		assertEquals("name", r.getName());
+		assertEquals("classname", r.getClassName());
+		assertEquals(null, r.getObject());
+		assertEquals(attrs, r.getAttributes());
+		assertFalse(r.isRelative());
+
+		r = new SearchResult("name", null, null, attrs, false);
+		assertEquals("name", r.getName());
+		assertEquals(null, r.getClassName());
+		assertEquals(null, r.getObject());
 		assertEquals(attrs, r.getAttributes());
 		assertFalse(r.isRelative());
 	}
 
-	public void testSearchResult_NullAttributes() {
-		log.setMethod("testSearchResult_NullAttributes()");
+	public void testSearchResult_NullParameters() {
+		log.setMethod("testSearchResult_NullParameters()");
 
 		try {
-			 new SearchResult(null, null, null);
-             fail("no illegal argument exception");
-		} 
-		catch (IllegalArgumentException e) {
+			new SearchResult(null, "obj", attrs);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult("name", "obj", null);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "obj", null);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "obj", attrs, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult("name", "obj", null, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "obj", null, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "classname", "obj", attrs);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult("name", "classname", "obj", null);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "classname", "obj", null);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "classname", "obj", attrs, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult("name", "classname", "obj", null, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
+
+		try {
+			new SearchResult(null, "classname", "obj", null, false);
+			fail("no illegal argument exception");
+		} catch (IllegalArgumentException e) {
 			// Expected, name cannot be null
 		}
 	}
@@ -104,8 +237,8 @@ public class SearchResultTest extends TestCase {
 		log.setMethod("testGetterAndSetter()");
 		SearchResult r;
 
-		r = new SearchResult("name", "obj", null);
-		assertNull(r.getAttributes());
+		r = new SearchResult("name", "obj", emptyAttrs);
+		assertEquals(emptyAttrs, r.getAttributes());
 		r.setAttributes(attrs);
 		assertEquals(attrs, r.getAttributes());
 	}
