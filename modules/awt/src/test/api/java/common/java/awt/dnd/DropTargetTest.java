@@ -164,6 +164,8 @@ public class DropTargetTest extends TestCase {
     }
     
     public void testAddNotify() {
+        // Regression for HARMONY-2492
+        new DropTarget().addNotify(null);
     }
 
     public void testAddRemoveNotify() {

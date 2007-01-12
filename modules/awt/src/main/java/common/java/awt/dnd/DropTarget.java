@@ -118,6 +118,10 @@ public class DropTarget implements DropTargetListener, Serializable {
     }
 
     public void addNotify(ComponentPeer peer) {
+        if(component == null) {
+            return;
+        }
+        
         DTK dtk = DTK.getDTK();
         DropTargetContextPeer dtp = dtk.createDropTargetContextPeer(context);
         context.addNotify(dtp);

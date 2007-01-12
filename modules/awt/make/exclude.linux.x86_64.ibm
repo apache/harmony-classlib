@@ -28,7 +28,6 @@ java/awt/ScrollPaneAdjustableTest.java
 java/awt/TextAreaTest.java
 java/awt/TextComponentTest.java
 java/awt/TextFieldTest.java
-java/awt/dnd/DropTargetTest.java
 java/awt/event/ContainerEventTest.java
 java/awt/WinWindowRTest.java
 org/apache/harmony/awt/gl/render/JavaBlitterTest.java
