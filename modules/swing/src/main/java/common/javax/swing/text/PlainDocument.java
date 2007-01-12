@@ -150,7 +150,9 @@ public class PlainDocument extends AbstractDocument {
 
         try {
             text = getText(offset, length);
-        } catch (final BadLocationException e) { }
+        } catch (final BadLocationException e) {
+            return;
+        }
 
         boolean hasLineBreak = text.indexOf('\n') != -1;
 

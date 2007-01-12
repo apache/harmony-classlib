@@ -22,6 +22,7 @@ package javax.swing.text;
 
 import javax.swing.BasicSwingTestCase;
 import javax.swing.event.DocumentEvent.ElementChange;
+import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.text.AbstractDocument.AbstractElement;
 import javax.swing.text.AbstractDocument.BranchElement;
 import javax.swing.text.AbstractDocument.Content;
@@ -363,6 +364,14 @@ public class PlainDocumentTest extends TestCase {
         checkOffsets(root.getElement(0), 0, 12);
         checkOffsets(root.getElement(1), 12, 18);
         checkOffsets(root.getElement(2), 18, 19);
+    }
+
+    // Regression for HARMONY-1797
+    public void testRemoveUpdate06() throws Exception {
+        doc = new PlainDocument();
+        insert = doc.new DefaultDocumentEvent(3, 13, EventType.INSERT);
+
+        doc.removeUpdate(insert); // No exception should be thrown 
     }
 
     /**
