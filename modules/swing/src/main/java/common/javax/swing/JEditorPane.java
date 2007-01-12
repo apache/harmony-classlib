@@ -552,6 +552,10 @@ public class JEditorPane extends JTextComponent {
      }
      */
     public final void setContentType(final String type) {
+        if (type == null) {
+            throw new NullPointerException("Content type is null");
+        }
+
         if (type == "text/html" || type == "text/rtf") {
             System.err
                     .println("WARNING: HTML/RTF is not supported yet. Plain text will be shown");
@@ -655,6 +659,10 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void setPage(final URL page) throws IOException {
+        if (page == null) {
+            throw new IOException("Page is null");
+        } 
+
         //temporarily commented-out: HTMLDocument not implemented
         /*
          String url = page.toString();
@@ -722,9 +730,11 @@ public class JEditorPane extends JTextComponent {
     //        }
     //        return -1;
     //    }
+
     @Override
     public synchronized void setText(final String content) {
-        StringReader reader = new StringReader(content);
+        StringReader reader = new StringReader(content == null ? "" : content);
+
         try {
             read(reader, contentType);
         } catch (IOException e) {

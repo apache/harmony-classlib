@@ -324,6 +324,14 @@ public class JEditorPaneTest extends SwingTestCase {
         jep.setContentType("text/html");
         jep.setText(htmlString);
         assertEquals(removeMeta(htmlString), removeMeta(jep.getText().replaceAll("\n", "")));
+
+        JEditorPane e = new JEditorPane();
+        
+        try {               
+            e.setText((String) null);  
+        } catch (NullPointerException npe) {            
+            fail("NullPointerException thrown");
+        }
     }
 
     // commented due to unimplemented functionality
@@ -541,6 +549,15 @@ public class JEditorPaneTest extends SwingTestCase {
             assertTrue("Unexpected exception :" + e.getMessage(), false);
         }
         //assertEquals(TEST_URL, jep.getPage());
+
+        JEditorPane e = new JEditorPane();
+        
+        try {               
+            e.setPage((java.net.URL) null);
+            fail("IOException must be thrown");
+        } catch (java.io.IOException ioe) {
+            // PASSED
+        }
     }
 
     public void testSetGetPage2() {
@@ -676,6 +693,15 @@ public class JEditorPaneTest extends SwingTestCase {
                 .getName());
         assertEquals("javax.swing.text.PlainDocument", getClassName(jep.getDocument()));
         JEditorPane.registerEditorKitForContentType("text/test", "");
+
+        JEditorPane e = new JEditorPane();
+        
+        try {   
+            e.setContentType((String) null);
+            fail("NPE must be thrown");
+        } catch (NullPointerException npe) { 
+            // PASSED           
+        }
     }
 
     private String getClassName(final Object obj) {
