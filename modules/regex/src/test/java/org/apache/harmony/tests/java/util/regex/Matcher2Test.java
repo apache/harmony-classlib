@@ -71,6 +71,14 @@ public class Matcher2Test extends TestCase {
 			fail("IllegalStateException expected");
 		} catch (IllegalStateException e) {
 		}
+		
+               // regression test for HARMONY-2418
+		try {
+			m.usePattern(null);
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
+                 // PASSED
+		}
     }
 
     public void testErrorConditions2() throws PatternSyntaxException {

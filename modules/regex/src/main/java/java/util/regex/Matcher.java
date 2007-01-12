@@ -508,6 +508,9 @@ public final class Matcher implements MatchResult {
      * @com.intel.drl.spec_ref
      */
     public Matcher usePattern(Pattern pat) {
+    	if (pat == null) {
+    		throw new IllegalArgumentException(Messages.getString("regex.1B"));
+    	}
         int startIndex = matchResult.getPreviousMatchEnd();
         int mode = matchResult.mode();
         this.pat = pat;
