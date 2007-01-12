@@ -63,11 +63,11 @@ public class BufferCapabilities implements Cloneable {
     }
 
     public boolean isFullScreenRequired() {
-        return true;
+        return false;
     }
 
     public boolean isMultiBufferAvailable() {
-        return true;
+        return false;
     }
 
     public static final class FlipContents {
