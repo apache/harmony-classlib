@@ -174,5 +174,11 @@ public class ClipboardTest extends TestCase {
         assertTrue(string);
         assertTrue(unsupported);
     }
+    
+    public final void testNullContent() throws NullPointerException {
+        // Regression for HARMONY-2067
+        Clipboard c = new Clipboard(""); 
+        c.setContents(null, null); 
+    }
 
 }

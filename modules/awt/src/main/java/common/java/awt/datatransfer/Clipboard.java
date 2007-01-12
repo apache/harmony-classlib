@@ -66,12 +66,17 @@ public class Clipboard {
             boolean ownershipLost = (this.owner != owner);
             boolean flavorsChanged;
             HashSet<DataFlavor> newFlavorsSet = new HashSet<DataFlavor>();
-            DataFlavor[] newFlavorsArray = contents.getTransferDataFlavors();
+            
+            if (contents != null) {
+                DataFlavor[] newFlavorsArray = contents.getTransferDataFlavors();
 
-            for (DataFlavor element : newFlavorsArray) {
-                newFlavorsSet.add(element);
+                for (DataFlavor element : newFlavorsArray) {
+                    newFlavorsSet.add(element);
+                }
+                flavorsChanged = !flavors.equals(newFlavorsSet);
+            } else {
+                flavorsChanged = (flavors == null) ? false : true;
             }
-            flavorsChanged = !flavors.equals(newFlavorsSet);
 
             if (flavorsChanged || ownershipLost) {
                 processor.setProcessingParams(ownershipLost ? this.owner : null,
