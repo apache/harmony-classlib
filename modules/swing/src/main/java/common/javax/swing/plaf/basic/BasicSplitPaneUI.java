@@ -750,15 +750,21 @@ public class BasicSplitPaneUI extends SplitPaneUI {
     }
 
     public Dimension getPreferredSize(final JComponent jc) {
-        return layoutManager.preferredLayoutSize(jc);
+        return ((layoutManager != null)
+                ? layoutManager.preferredLayoutSize(jc)
+                : new Dimension(0, 0));
     }
 
     public Dimension getMinimumSize(final JComponent jc) {
-        return layoutManager.minimumLayoutSize(jc);
+        return ((layoutManager != null)
+                ? layoutManager.minimumLayoutSize(jc)
+                : new Dimension(0, 0));
     }
 
     public Dimension getMaximumSize(final JComponent jc) {
-        return layoutManager.maximumLayoutSize(jc);
+        return ((layoutManager != null)
+                ? layoutManager.maximumLayoutSize(jc)
+                : new Dimension(0, 0));
     }
 
     public Insets getInsets(final JComponent jc) {

@@ -27,6 +27,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.SwingTestCase;
@@ -326,5 +327,16 @@ public class BasicSplitPaneUITest extends SwingTestCase {
         assertEquals(
                 new Rectangle(insets.left, location, cW - insets.left - insets.right, size), b
                         .getBounds());
+    }
+
+    public void testGetSizes() { // Regression test for HARMONY-2767
+        ui = new BasicSplitPaneUI();
+        JComponent component = new JComponent() {};
+        assertEquals(new Dimension(0, 0), ui.getPreferredSize(component));
+        assertEquals(new Dimension(0, 0), ui.getPreferredSize(null));
+        assertEquals(new Dimension(0, 0), ui.getMinimumSize(component));
+        assertEquals(new Dimension(0, 0), ui.getMinimumSize(null));
+        assertEquals(new Dimension(0, 0), ui.getMaximumSize(component));
+        assertEquals(new Dimension(0, 0), ui.getMaximumSize(null));
     }
 }
