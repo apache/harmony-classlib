@@ -668,17 +668,9 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         TreePath[] paths4 = new TreePath[] { path2, path1, path3, path5 };
         TreePath[] paths5 = new TreePath[] { path6, path4, path2 };
         TreePath[] paths6 = new TreePath[] { path6 };
-        if (!isHarmony()) {
-            assertNull(model.getSelectionRows());
-        } else {
-            assertEquals(0, model.getSelectionRows().length);
-        }
+        assertNull(model.getSelectionRows());
         model.setSelectionPaths(paths1);
-        if (!isHarmony()) {
-            assertNull(model.getSelectionRows());
-        } else {
-            assertEquals(0, model.getSelectionRows().length);
-        }
+        assertNull(model.getSelectionRows());
         model.setRowMapper(new MyRowMapper());
         assertEquals(5, model.getSelectionRows().length);
         model.setSelectionPaths(paths3);
@@ -688,17 +680,9 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
         model.setSelectionPaths(paths5);
         assertEquals(2, model.getSelectionRows().length);
         model.setSelectionPaths(paths6);
-        if (!isHarmony()) {
-            assertNull(model.getSelectionRows());
-        } else {
-            assertEquals(0, model.getSelectionRows().length);
-        }
+        assertNull(model.getSelectionRows());
         model.setSelectionPaths(new TreePath[0]);
-        if (!isHarmony()) {
-            assertNull(model.getSelectionRows());
-        } else {
-            assertEquals(0, model.getSelectionRows().length);
-        }
+        assertNull(model.getSelectionRows());
     }
 
     /*

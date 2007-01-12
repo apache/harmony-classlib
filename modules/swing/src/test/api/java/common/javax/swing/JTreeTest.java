@@ -442,11 +442,7 @@ public class JTreeTest extends BasicSwingTestCase {
         tree.removeSelectionInterval(0, 2);
         assertEqualsIgnoreOrder(new TreePath[] { path2 }, tree.getSelectionPaths());
         tree.removeSelectionInterval(-1, 10);
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionPaths().length);
-        } else {
-            assertNull(tree.getSelectionPaths());
-        }
+        assertNull(tree.getSelectionPaths());
         tree.setSelectionInterval(3, 1);
         assertEqualsIgnoreOrder(new TreePath[] { path1, path11, path2 }, tree
                 .getSelectionPaths());
@@ -1679,11 +1675,7 @@ public class JTreeTest extends BasicSwingTestCase {
         tree.removeDescendantSelectedPaths(rootPath, false);
         assertEqualsIgnoreOrder(new TreePath[] { rootPath }, tree.getSelectionPaths());
         tree.removeDescendantSelectedPaths(rootPath, true);
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionPaths().length);
-        } else {
-            assertNull(tree.getSelectionPaths());
-        }
+        assertNull(tree.getSelectionPaths());
     }
 
     public void testRemoveDescendantToggledPaths() {
@@ -1712,9 +1704,8 @@ public class JTreeTest extends BasicSwingTestCase {
         assertTrue(tree.isExpanded(path1));
         assertFalse(tree.isExpanded(path11));
         assertTrue(tree.isExpanded(path2));
-        tree
-                .removeDescendantToggledPaths(createTestEnumeration(new TreePath[] { path2,
-                        path1 }));
+        tree.removeDescendantToggledPaths(createTestEnumeration(
+                new TreePath[] { path2, path1 }));
         assertTrue(tree.isExpanded(rootPath));
         assertFalse(tree.isExpanded(path1));
         assertFalse(tree.isExpanded(path11));
@@ -1959,11 +1950,7 @@ public class JTreeTest extends BasicSwingTestCase {
         assertSame(path, tree.getSelectionPath());
         assertSame(path, tree.getSelectionModel().getSelectionPath());
         assertEquals(1, tree.getSelectionCount());
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-        }
+        assertNull(tree.getSelectionRows());
         Object root = tree.getModel().getRoot();
         Object child = tree.getModel().getChild(root, 0);
         path = new TreePath(root).pathByAddingChild(child);
@@ -1975,21 +1962,13 @@ public class JTreeTest extends BasicSwingTestCase {
     }
 
     public void testGetSetSelectionRow() {
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-        }
+        assertNull(tree.getSelectionRows());
         tree.setSelectionRow(2);
         assertEquals(1, tree.getSelectionRows().length);
         assertEquals(2, tree.getSelectionRows()[0]);
         assertEquals(2, tree.getSelectionModel().getSelectionRows()[0]);
         tree.setSelectionRow(10000);
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-        }
+        assertNull(tree.getSelectionRows());
         TreePath path = new TreePath(tree.getModel().getRoot());
         tree.getSelectionModel().setSelectionPath(path);
         assertEquals(path, tree.getSelectionPath());
@@ -1999,28 +1978,15 @@ public class JTreeTest extends BasicSwingTestCase {
     }
 
     public void testGetSetSelectionRows() {
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-        }
+        assertNull(tree.getSelectionRows());
         tree.setSelectionRows(null);
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-        }
+        assertNull(tree.getSelectionRows());
         tree.setSelectionRows(new int[] { 0, 1 });
         assertEquals(2, tree.getSelectionRows().length);
         assertEquals(2, tree.getSelectionModel().getSelectionRows().length);
         tree.setSelectionRows(new int[] { 100 });
-        if (isHarmony()) {
-            assertEquals(0, tree.getSelectionRows().length);
-            assertEquals(0, tree.getSelectionPaths().length);
-        } else {
-            assertNull(tree.getSelectionRows());
-            assertNull(tree.getSelectionPaths());
-        }
+        assertNull(tree.getSelectionRows());
+        assertNull(tree.getSelectionPaths());
     }
 
     public void testSetUITreeUI() {

@@ -146,7 +146,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
     }
 
     public TreePath[] getSelectionPaths() {
-        return selection;
+        return (((selection != null) && (selection.length > 0)) ? selection : null) ;
     }
 
     public void removeSelectionPaths(final TreePath[] paths) {
@@ -202,10 +202,10 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
 
     public int[] getSelectionRows() {
         if (rowMapper == null || isSelectionEmpty()) {
-            return new int[0];
+            return null;
         }
-
-        return getCleanedSortedRowsArray(rowMapper.getRowsForPaths(getSelectionPaths()));
+        int[] ret = getCleanedSortedRowsArray(rowMapper.getRowsForPaths(getSelectionPaths()));
+        return (ret.length == 0 ? null : ret);
     }
 
     public boolean isRowSelected(final int i) {
