@@ -446,11 +446,7 @@ Image implements WritableRenderedImage, Transparency{
     }
 
     public WritableRaster getWritableTile(int tileX, int tileY) {
-        if (tileX == 0 && tileY == 0) {
-            return raster;
-        }
-        // awt.226=Both tileX and tileY are not equal to 0
-        throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.226")); //$NON-NLS-1$
+        return raster;
     }
 
     public WritableRaster getRaster() {
