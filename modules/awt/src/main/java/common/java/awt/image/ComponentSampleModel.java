@@ -106,6 +106,10 @@ public class ComponentSampleModel extends SampleModel {
 
     @Override
     public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
+        }
         switch (dataType) {
         case DataBuffer.TYPE_BYTE:
             byte bdata[];
@@ -189,6 +193,10 @@ public class ComponentSampleModel extends SampleModel {
 
     @Override
     public void setDataElements(int x, int y, Object obj, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
+        }
         switch (dataType) {
         case DataBuffer.TYPE_BYTE:
             byte barr[] = (byte[]) obj;

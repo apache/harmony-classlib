@@ -16,12 +16,55 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
+
 package java.awt.image;
 
 import junit.framework.TestCase;
 
 public class ComponentSampleModelTest extends TestCase {
-  
+    
+    public ComponentSampleModelTest(String name) {
+        super(name);
+    }
+    
+    public final void testSetDataElements(){
+        // Checking ArrayIndexOutOfBoundsException when passes wrong x or y
+        int[] offsets = new int[4];
+        ComponentSampleModel csm = new
+            ComponentSampleModel(DataBuffer.TYPE_USHORT,238,4,7,14,offsets);
+        ComponentSampleModel obj = new
+            ComponentSampleModel(DataBuffer.TYPE_USHORT,1,2,3,15, offsets);
+               
+        DataBufferFloat db = new DataBufferFloat(4);
+        try{
+            csm.setDataElements(-1399, 2, obj, db);
+            fail("Expected ArrayIndexOutOfBoundsException didn't throw");
+        }catch (ClassCastException e) {
+            fail("Unexpected ClassCastException was thrown");
+        }catch (ArrayIndexOutOfBoundsException e) {
+            assertTrue(true);
+        }
+    }
+    
+    public final void testGetDataElements(){
+        // Checking ArrayIndexOutOfBoundsException when passes wrong x or y
+        int[] offsets = new int[4];
+        ComponentSampleModel csm = new
+            ComponentSampleModel(DataBuffer.TYPE_USHORT,238,4,7,14,offsets);
+        ComponentSampleModel obj = new
+            ComponentSampleModel(DataBuffer.TYPE_USHORT,1,2,3,15, offsets);
+               
+        DataBufferFloat db = new DataBufferFloat(4);
+        try{
+            csm.getDataElements(-1399, 2, obj, db);
+            fail("Expected ArrayIndexOutOfBoundsException didn't throw");
+        }catch (ClassCastException e) {
+            fail("Unexpected ClassCastException was thrown");
+        }catch (ArrayIndexOutOfBoundsException e) {
+            assertTrue(true);
+        }
+    }
+
     public void testGetPixelsMaxValue()  throws Exception {
         ComponentSampleModel csm = new ComponentSampleModel(0, 10, 10, 1, 10, new int[]{0}); 
         DataBufferInt dbi = new DataBufferInt(100); 
@@ -33,4 +76,5 @@ public class ComponentSampleModelTest extends TestCase {
             // expected
         } 
     }
+
 }
