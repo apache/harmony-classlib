@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -72,35 +73,95 @@ public class RepaintManagerTest extends BasicSwingTestCase {
         assertNotNull(RepaintManager.currentManager(null));
     }
 
-    public void testAddInvalidComponent() throws Exception {
-        if (!isHarmony()) {
-            return;
-        }
-        JPanel root = new JPanel() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public boolean isValidateRoot() {
-                return true;
-            }
-        };
-        final Marker marker = new Marker();
-        JPanel inner = new JPanel() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void validate() {
-                super.validate();
-                marker.setOccurred();
-            }
-        };
-        JFrame f = new JFrame();
-        f.getContentPane().add(root);
-        root.add(inner);
+    public void testAddRemoveInvalidComponent() throws Exception {
+        Frame f = new Frame();
+        final JPanel rootPanel = new JPanel(new BorderLayout()) {
+                private static final long serialVersionUID = 1L;
+                
+                @Override
+                    public boolean isValidateRoot() {
+                    return true;
+                }
+            };
+        final JPanel controlled = new JPanel();
+        f.add(rootPanel);
+        rootPanel.add(controlled);
+        
+        assertFalse(controlled.isValid());
+        assertFalse(rootPanel.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                }
+            });
+        
+        final Marker isValid = new Marker();
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    isValid.setOccurred(controlled.isValid());
+                }
+            });
+        assertFalse(isValid.isOccurred());
+        
         f.setVisible(true);
-        RepaintManager.currentManager(null).addInvalidComponent(inner);
         waitForIdle();
-        assertTrue(marker.isOccurred());
+        assertTrue(controlled.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                }
+            });
+        assertTrue(controlled.isValid());
+        assertTrue(rootPanel.isValid());
+        
+        isValid.reset();
+        controlled.invalidate();
+        waitForIdle();
+        assertFalse(controlled.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                }
+            });
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    isValid.setOccurred(controlled.isValid());
+                }
+            });
+        assertTrue(isValid.isOccurred());
+        
+        isValid.reset();
+        controlled.invalidate();
+        assertFalse(controlled.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                    RepaintManager.currentManager(null).removeInvalidComponent(controlled);
+                }
+            });
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    isValid.setOccurred(controlled.isValid());
+                }
+            });
+        assertTrue(isValid.isOccurred());
+        
+        isValid.reset();
+        controlled.invalidate();
+        assertFalse(controlled.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                    RepaintManager.currentManager(null).removeInvalidComponent(rootPanel);
+                }
+            });
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    isValid.setOccurred(controlled.isValid());
+                }
+            });
+        assertFalse(isValid.isOccurred());
+        
         try { // Regression test for HARMONY-1725
             RepaintManager.currentManager(null).addInvalidComponent(null);
         } catch (NullPointerException e) {
@@ -109,10 +170,8 @@ public class RepaintManagerTest extends BasicSwingTestCase {
     }
 
     public void testValidateInvalidComponents() throws Exception {
-        if (!isHarmony()) {
-            return;
-        }
-        JPanel root = new JPanel() {
+        Frame f = new Frame();
+        final JPanel rootPanel = new JPanel(new BorderLayout()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -120,24 +179,38 @@ public class RepaintManagerTest extends BasicSwingTestCase {
                 return true;
             }
         };
-        final Marker marker = new Marker();
-        JPanel inner = new JPanel() {
-            private static final long serialVersionUID = 1L;
+        final JPanel controlled = new JPanel();
+        f.add(rootPanel);
+        rootPanel.add(controlled);
 
-            @Override
-            public void validate() {
-                super.validate();
-                marker.setOccurred();
-            }
-        };
-        JFrame f = new JFrame();
-        f.getContentPane().add(root);
-        root.add(inner);
         f.setVisible(true);
-        RepaintManager.currentManager(null).addInvalidComponent(inner);
-        RepaintManager.currentManager(null).validateInvalidComponents();
-        assertTrue(marker.isOccurred());
+        waitForIdle();
+        assertTrue(controlled.isValid());
+        controlled.invalidate();
+        assertFalse(controlled.isValid());
+        final Marker isValid = new Marker();
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                RepaintManager.currentManager(null).validateInvalidComponents();
+                isValid.setOccurred(controlled.isValid());
+            }
+        });
+        assertTrue(isValid.isOccurred());
+
         f.dispose();
+        isValid.reset();
+        controlled.invalidate();
+        assertFalse(controlled.isValid());
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                RepaintManager.currentManager(null).addInvalidComponent(controlled);
+                RepaintManager.currentManager(null).removeInvalidComponent(rootPanel);
+                RepaintManager.currentManager(null).validateInvalidComponents();
+                isValid.setOccurred(controlled.isValid());
+            }
+        });
+        assertFalse(isValid.isOccurred());
     }
 
     public void testAddDirtyRegion() throws Exception {

@@ -2316,6 +2316,20 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(button.isValid());
         button.revalidate();
         assertFalse(button.isValid());
+
+        frame.getRootPane().validate();
+        assertTrue(button.isValid());
+
+        final Marker rm = new Marker();
+        RepaintManager.setCurrentManager(new RepaintManager() {
+            public void addInvalidComponent(final JComponent invalidComponent) {
+                rm.setAuxiliary(invalidComponent);
+            }
+        });
+        button.revalidate();
+        assertFalse(button.isValid());
+        assertSame(button, rm.getAuxiliary());
+
         frame.dispose();
     }
 
