@@ -79,6 +79,7 @@ public class CellRendererPane extends Container implements Accessible {
 
     public void paintComponent(Graphics g, Component c, Container p, int x, int y, int w,
             int h, boolean shouldValidate) {
+        if(g == null || c == null) return;
         add(c);
         c.setBounds(x, y, w, h);
         if (shouldValidate) {

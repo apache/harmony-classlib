@@ -148,4 +148,14 @@ public class CellRendererPaneTest extends SwingTestCase {
         pane.paintComponent(g, component, new JPanel(), 20, 30, 40, 50, true);
         assertTrue(validationMarker.isOccurred());
     }
+
+    public void testPaintComponent1() {
+        CellRendererPane c = new CellRendererPane();
+        try {
+            c.paintComponent(null, null, null, 0, 0, 0, 0, false);
+            assertTrue(true);
+        } catch (NullPointerException e) {
+            fail(e + " - was thrown");
+        }
+    }
 }

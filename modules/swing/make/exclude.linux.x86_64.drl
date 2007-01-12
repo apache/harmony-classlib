@@ -47,7 +47,6 @@ javax/swing/plaf/metal/MetalComboBoxUITest.java
 javax/swing/text/GlyphView_AttributesTest.java
 org/apache/harmony/x/swing/plaf/resources/basic/BasicResourceBundleTest.java
 javax/swing/BoxLayoutTest.java
-javax/swing/CellRendererPaneTest.java
 javax/swing/DefaultDesktopManagerTest.java
 javax/swing/ImageIcon_MultithreadedTest.java
 javax/swing/JComponent_AddRemoveNotifyTest.java
