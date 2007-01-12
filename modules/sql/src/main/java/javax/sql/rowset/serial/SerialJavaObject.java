@@ -35,9 +35,9 @@ public class SerialJavaObject implements Serializable, Cloneable {
 
 	private transient Field[] fields;
 
-	public SerialJavaObject(Object obj) {
-		this.obj = obj;
-	}
+	public SerialJavaObject(Object obj) throws SerialException {
+        this.obj = obj;
+    }
 
 	public Field[] getFields() throws SerialException {
 		if (fields == null) {
@@ -46,7 +46,7 @@ public class SerialJavaObject implements Serializable, Cloneable {
 		return fields;
 	}
 
-	public Object getObject() {
+	public Object getObject() throws SerialException {
 		return obj;
 	}
 }

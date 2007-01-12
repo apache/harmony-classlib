@@ -54,7 +54,7 @@ public class SerialRef implements Ref, Serializable, Cloneable {
 		}
 	}
 
-	public String getBaseTypeName() throws SQLException {
+	public String getBaseTypeName() throws SerialException {
 		return baseTypeName;
 	}
 
