@@ -26,13 +26,16 @@ import junit.framework.TestCase;
 
 public class KeyEventTest extends TestCase {
 
-    public final void testGetKeyText() {
+    public final void testGetKeyText() throws StringIndexOutOfBoundsException {
         assertEquals(KeyEvent.getKeyText(KeyEvent.VK_1), "1");
         assertEquals(KeyEvent.getKeyText(KeyEvent.VK_SHIFT), "Shift");
         assertEquals(KeyEvent.getKeyText(KeyEvent.VK_INVERTED_EXCLAMATION_MARK),
                 "Inverted Exclamation Mark");
 //        assertTrue(KeyEvent.getKeyText(KeyEvent.VK_SEPARATOR).startsWith("NumPad ,"));
         assertEquals(KeyEvent.getKeyText(-16), "Unknown keyCode: -0x10");
+        
+        // Regression test for HARMONY-2406
+        KeyEvent.getKeyText(4);
     }
 
     public final void testGetKeyModifiersText() {

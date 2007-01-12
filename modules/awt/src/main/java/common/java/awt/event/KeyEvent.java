@@ -466,7 +466,7 @@ public class KeyEvent extends InputEvent {
     }
 
     public static String getKeyText(int keyCode) {
-        String[] rawName = getPublicStaticFinalIntFieldName(keyCode, "VK_".length()); //$NON-NLS-1$
+        String[] rawName = getPublicStaticFinalIntFieldName(keyCode); //$NON-NLS-1$
 
         if ((rawName == null) || (rawName.length == 0)) {
             return ("Unknown keyCode: " + (keyCode >= 0 ? "0x" : "-0x") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -510,7 +510,7 @@ public class KeyEvent extends InputEvent {
         return ("AWT." + name); //$NON-NLS-1$
     }
 
-    private static String[] getPublicStaticFinalIntFieldName(int value, int prefixLength) {
+    private static String[] getPublicStaticFinalIntFieldName(int value) {
         Field[] allFields = KeyEvent.class.getDeclaredFields();
 
         try {
@@ -523,7 +523,9 @@ public class KeyEvent extends InputEvent {
                         Modifier.isStatic(modifiers))
                 {
                     if (field.getInt(null) == value){
-                        return field.getName().substring(prefixLength).split("_"); //$NON-NLS-1$
+                        final String name = field.getName();
+                        final int prefixLength = name.indexOf("_") + 1;
+                        return name.substring(prefixLength).split("_"); //$NON-NLS-1$
                     }
                 }
             }
