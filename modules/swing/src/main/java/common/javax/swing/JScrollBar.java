@@ -121,7 +121,7 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
         model = new DefaultBoundedRangeModel(value, extent, min, max);
 
         if (orientation != HORIZONTAL && orientation != VERTICAL) {
-            throw new IllegalArgumentException("Orientation is not HORIZONTAL or VERTICAL");
+            throw new IllegalArgumentException("orientation must be HORIZONTAL or VERTICAL");
         } 
 
         this.orientation = orientation;
@@ -161,7 +161,7 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
 
     public void setOrientation(final int orientation) {
         if (orientation != VERTICAL && orientation != HORIZONTAL) {
-            throw new IllegalArgumentException("argument must be VERTICAL or HORIZONTAL");
+            throw new IllegalArgumentException("orientation must be HORIZONTAL or VERTICAL");
         }
         if (orientation != this.orientation) {
             int oldValue = this.orientation;
