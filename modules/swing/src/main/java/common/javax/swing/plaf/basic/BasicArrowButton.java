@@ -47,8 +47,8 @@ public class BasicArrowButton extends JButton implements SwingConstants {
                             final Color darkShadow, final Color highlight) {
         BasicArrowButton.shadow = shadow;
         BasicArrowButton.darkShadow = darkShadow;
-
         this.direction = direction;
+        setBackground(background);
     }
 
     public int getDirection() {

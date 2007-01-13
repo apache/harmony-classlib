@@ -20,6 +20,7 @@
  */
 package javax.swing.plaf.basic;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
@@ -54,4 +55,16 @@ public class BasicArrowButtonTest extends SwingTestCase {
     public void testFocusTraversable() throws Exception {
         assertFalse(button.isFocusTraversable());
     }
+    
+    /**
+     * Regression test for HARMONY-2629 
+     * */
+    public void testGetBackground() {
+        final Color c = Color.red;
+        BasicArrowButton b = new BasicArrowButton(240, c, c, c, c);
+
+        System.out.println("parameter background == " + c);
+        System.out.println("getBackground()==" + b.getBackground());
+        assertSame(c, b.getBackground());
+    } 
 }
