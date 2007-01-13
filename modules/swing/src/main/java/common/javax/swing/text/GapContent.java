@@ -143,7 +143,7 @@ public class GapContent
             throw new BadLocationException("Length must be non-negative",
                                            length);
         }
-        if (offset < 0 || offset + length > length()) {
+        if (offset < 0 || length > length() - offset) {
             throw new BadLocationException("Invalid start position", offset);
         }
 

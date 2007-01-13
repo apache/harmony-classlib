@@ -221,6 +221,23 @@ public class GapContentTest extends AbstractDocument_ContentTest {
         isContentArraySame(false);
     }
 
+    // Regression for HARMONY-2566
+    public void testGetCharsMaxInterger() {
+        try {
+            content.getChars(1, Integer.MAX_VALUE, null);
+            fail("BadLocationException is expected");
+        } catch (BadLocationException e) {
+        }
+    }
+
+    public void testGetCharsNullSegment() throws BadLocationException {
+        try {
+            content.getChars(1, 1, null);
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testCreatePositionBeforeUndo() throws BadLocationException {
         UndoableEdit ue = content.remove(3, 8);
         Position pos = content.createPosition(3);
