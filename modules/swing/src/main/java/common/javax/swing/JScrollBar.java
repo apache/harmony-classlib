@@ -119,6 +119,11 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
 
     public JScrollBar(final int orientation, final int value, final int extent, final int min, final int max) {
         model = new DefaultBoundedRangeModel(value, extent, min, max);
+
+        if (orientation != HORIZONTAL && orientation != VERTICAL) {
+            throw new IllegalArgumentException("Orientation is not HORIZONTAL or VERTICAL");
+        } 
+
         this.orientation = orientation;
         blockIncrement = extent;
 

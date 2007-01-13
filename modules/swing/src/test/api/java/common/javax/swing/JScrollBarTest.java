@@ -52,6 +52,17 @@ public class JScrollBarTest extends SwingTestCase {
         testList = null;
     }
 
+    public void testConstructor() throws Exception {
+        try {         
+            new JScrollBar(2000, 512, 128, 16, 10001); 
+            fail("IllegalArgumentException should be thrown");
+        } catch (NullPointerException npe) {    
+            fail("NPE should not be thrown");            
+        } catch (IllegalArgumentException iae) {
+            // PASSED
+        }
+    }
+
     public void testGetAccessibleContext() throws Exception {
         JScrollBar.AccessibleJScrollBar accJScrollBar = (JScrollBar.AccessibleJScrollBar) bar
                 .getAccessibleContext();
