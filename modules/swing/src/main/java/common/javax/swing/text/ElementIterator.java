@@ -31,7 +31,7 @@ public class ElementIterator implements Cloneable {
     }
 
     public ElementIterator(final Document doc) {
-        this((doc != null) ? doc.getRootElements()[0] : null);
+        this(doc.getRootElements()[0]);
     }
 
     public Element first() {

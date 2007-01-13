@@ -84,6 +84,13 @@ public class ElementIteratorTest extends BasicSwingTestCase {
         assertSame(root, iterator.first());
         assertNull(iterator.previous());
         assertSame(root, iterator.current());
+
+        try { // Regression test for HARMONY-1811
+            new ElementIterator((Document) null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /*
