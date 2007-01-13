@@ -121,6 +121,8 @@ public class Box extends JComponent implements Accessible {
     }
 
     public static Component createRigidArea(Dimension size) {
+        size = (size == null ? new Dimension(0, 0) : size);
+        
         return new Filler(new Dimension(size), new Dimension(size), new Dimension(size));
     }
 

@@ -53,13 +53,15 @@ public class BoxTest extends SwingTestCase {
         assertTrue("Exception is thrown ", thrown);
     }
 
-    public void testCreateRigidArea() {
+    public void testCreateRigidArea() throws NullPointerException {
         Dimension size = new Dimension(100, 100);
         Component box = Box.createRigidArea(size);
         assertEquals("Minimum size initialized ", size, box.getMinimumSize());
         assertEquals("Preferred size initialized ", size, box.getPreferredSize());
         assertEquals("Maximum size initialized ", size, box.getMaximumSize());
         assertFalse("Opaqueness initialized ", box.isOpaque());
+
+        Box.createRigidArea(null);             
     }
 
     public void testCreateVerticalBox() {
