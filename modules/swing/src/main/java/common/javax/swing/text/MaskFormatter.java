@@ -191,6 +191,9 @@ public class MaskFormatter extends DefaultFormatter {
     }
 
     public String valueToString(final Object value) throws ParseException {
+        if ((mask == null) && (escapeMask == null) && (literalMask == null)) {
+            return "";
+        }
         String result = super.valueToString(value);
         result = fillAll(result);
         result = fillByPlaceholder(result);

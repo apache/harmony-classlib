@@ -22,6 +22,7 @@ package javax.swing.text;
 
 import java.text.ParseException;
 import javax.swing.SwingTestCase;
+import javax.swing.JFormattedTextField;
 
 public class MaskFormatterTest extends SwingTestCase {
     MaskFormatter formatter;
@@ -294,5 +295,16 @@ public class MaskFormatterTest extends SwingTestCase {
         } catch (ParseException e) {
             assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
+    }
+   
+    public void testValueToString_Object() throws ParseException{
+    	// Regression for HARMONY-1742 
+    	MaskFormatter obj = new MaskFormatter();
+        obj.valueToString(new Object());
+    } 
+    public void testInstall_JFormattedTextField() {
+    	// Regression for HARMONY-1742 
+        MaskFormatter obj = new MaskFormatter();
+        obj.install(new JFormattedTextField());
     }
 }
