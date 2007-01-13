@@ -170,9 +170,13 @@ public class JInternalFrame extends JComponent implements Accessible, WindowCons
             // so, we cannot write here just
             // return getInternalFrame().getDesktopPane();
             Container result = SwingUtilities.getAncestorOfClass(JDesktopPane.class, this);
+
             if (result == null) {
-                return getInternalFrame().getDesktopPane();
+                if(getInternalFrame() != null) {
+                    result = getInternalFrame().getDesktopPane();
+                }
             }
+
             return (JDesktopPane) result;
         }
 

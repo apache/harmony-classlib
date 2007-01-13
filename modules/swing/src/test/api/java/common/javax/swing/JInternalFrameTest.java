@@ -1129,7 +1129,7 @@ public class JInternalFrameTest extends SwingTestCase {
     /*
      * Class under test for JDesktopPane getDesktopPane()
      */
-    public void testGetDesktopPane() {
+    public void testGetDesktopPane() throws NullPointerException {
         // no desktopPane
         assertNull("desktopPane is null by default", frame.getDesktopPane());
         //JInternalFrame.JDesktopIcon icon = new JInternalFrame.JDesktopIcon(frame);
@@ -1149,6 +1149,11 @@ public class JInternalFrameTest extends SwingTestCase {
         //desktop.remove(frame.getDesktopIcon());
         //frame.setDesktopIcon(null);
         //assertNull("desktopPane is null", frame.getDesktopPane());
+
+        JInternalFrame jf = new JInternalFrame();
+        JInternalFrame.JDesktopIcon fc = new JInternalFrame.JDesktopIcon(jf);
+        fc.setInternalFrame(null);
+        assertNull(fc.getDesktopPane());              
     }
 
     /*
