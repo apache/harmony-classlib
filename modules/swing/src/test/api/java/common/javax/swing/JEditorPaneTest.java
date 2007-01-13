@@ -382,6 +382,13 @@ public class JEditorPaneTest extends SwingTestCase {
                 "javax.swing.JEditorPaneTest$SimpleEditorKit");
         assertEquals("javax.swing.JEditorPaneTest$SimpleEditorKit", JEditorPane
                 .getEditorKitClassNameForContentType("text/test1"));
+
+        try {         
+            JEditorPane.registerEditorKitForContentType(null, null);
+            fail("NPE should be thrown");               
+        } catch (NullPointerException npe) {               
+            // PASSED            
+        }
     }
 
     public void testRegisterEditorKitForContentTypeStringStringClassLoader() {
