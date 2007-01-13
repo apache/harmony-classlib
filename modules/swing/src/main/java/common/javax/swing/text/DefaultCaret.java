@@ -674,6 +674,9 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      * selectionColor.
      */
     public void install(final JTextComponent c) {
+        if (c == null) { // Fix for HARMONY-1750, for compatiblity with RI
+            throw new NullPointerException("component is null");
+        }
         if (!setComponent(c)) {
             return;
         }

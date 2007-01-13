@@ -226,6 +226,13 @@ public class DefaultCaretTest extends SwingTestCase {
                 + jta.getListeners(FocusListener.class).length
                 + jta.getPropertyChangeListeners().length;
         assertEquals(tCompListenersCount, tCompListenersCountCurrent - 4);
+
+        try { // Regression test for HARMONY-1750
+            new DefaultCaret().install(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /*
