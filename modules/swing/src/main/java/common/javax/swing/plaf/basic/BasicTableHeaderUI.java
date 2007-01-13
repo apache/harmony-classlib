@@ -206,7 +206,7 @@ public class BasicTableHeaderUI extends TableHeaderUI {
         }
 
         private void updateCursor(final MouseEvent e) {
-            if (e.getButton() > 0 || e.getModifiersEx() > 0) {
+            if (e == null || e.getButton() > 0 || e.getModifiersEx() > 0) {
                 return;
             }
 

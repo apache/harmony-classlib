@@ -150,4 +150,9 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
         assertEquals(new Dimension(70, renderingComponent.getPreferredSize().height), ui
                 .getPreferredSize(null));
     }
+
+    public void testMouseInputListener() throws Exception {
+        // Regression test for HARMONY-1777
+        new BasicTableHeaderUI().new MouseInputHandler().mouseEntered(null);
+    }
 }
