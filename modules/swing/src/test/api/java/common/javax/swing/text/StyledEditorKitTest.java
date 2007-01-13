@@ -20,9 +20,12 @@
  */
 package javax.swing.text;
 
+import java.util.Enumeration;
+
 import javax.swing.Action;
 import javax.swing.JEditorPane;
 import javax.swing.SwingTestCase;
+import javax.swing.event.ChangeListener;
 
 public class StyledEditorKitTest extends SwingTestCase {
     StyledEditorKit kit;
@@ -280,4 +283,99 @@ public class StyledEditorKitTest extends SwingTestCase {
 
     public void testInstallJEditorPane() {
     }
+    
+    
+    
+    /**
+     * Regression test for HARMONY-2594
+     * */
+    public void testcreateInputAttributes() {
+        MyStyledEditorKit msek = new MyStyledEditorKit();
+        MutableAttributeSet set = new Style() {
+            public void removeChangeListener(ChangeListener p0) {
+                return;
+            }
+            public void addChangeListener(ChangeListener p0) {
+                return;
+            }
+            public String getName() {
+                return "AA";
+            }
+            public void setResolveParent(AttributeSet p0) {
+                return;
+            }
+            public void removeAttributes(AttributeSet p0) {
+                return;
+            }
+            public void removeAttributes(Enumeration p0) {
+                return;
+            }
+            public void removeAttribute(Object p0) {
+                return;
+            }
+            public void addAttributes(AttributeSet p0) {
+                return;
+            }
+            public void addAttribute(Object p0, Object p1) {
+                return;
+            }
+            public AttributeSet getResolveParent() {
+                return null;
+            }
+            public boolean containsAttributes(AttributeSet p0) {
+                return false;
+            }
+            public boolean containsAttribute(Object p0, Object p1) {
+                return false;
+            }
+            public Enumeration getAttributeNames() {
+                return null;
+            }
+            public Object getAttribute(Object p0) {
+                return null;
+            }
+            public AttributeSet copyAttributes() {
+                return null;
+            }
+            public boolean isEqual(AttributeSet p0) {
+                return false;
+            }
+            public boolean isDefined(Object p0) {
+                return false;
+            }
+            public int getAttributeCount() {
+                return 0;
+            }
+        };
+        try {
+            msek.createInputAttributes(null, set);
+            fail("NPE not thrown when Element is null!");
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+
+    /**
+     * Regression test for HARMONY-2594
+     * */
+    public void testCreateInputAttributes2() {
+        MyStyledEditorKit msek = new MyStyledEditorKit();
+        try {
+            msek.createInputAttributes(new SimpleElement(""), null);
+            fail("NPE not thrown when MutableAttributeSet is null!");
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+    
+    class MyStyledEditorKit extends StyledEditorKit {
+        public MyStyledEditorKit() {
+            super();
+        }
+
+        public void createInputAttributes(Element element, MutableAttributeSet set) {
+            super.createInputAttributes(element, set);
+        }
+    }
+    
 }

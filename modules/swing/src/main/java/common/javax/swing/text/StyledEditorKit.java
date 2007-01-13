@@ -358,9 +358,6 @@ public class StyledEditorKit extends DefaultEditorKit {
 
     protected void createInputAttributes(final Element element,
                                          final MutableAttributeSet set) {
-        if (element == null || set == null) {
-            return;
-        }
         AttributeSet as = element.getAttributes();
         set.removeAttributes(set);
         for (Enumeration keys = as.getAttributeNames();
