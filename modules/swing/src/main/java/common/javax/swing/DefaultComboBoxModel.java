@@ -42,7 +42,7 @@ public class DefaultComboBoxModel extends AbstractListModel implements MutableCo
         }
     }
 
-    public DefaultComboBoxModel(Vector items) {
+    public DefaultComboBoxModel(Vector<?> items) {
         listData = items;
         if (items.size() > 0) {
             selection = items.get(0);
