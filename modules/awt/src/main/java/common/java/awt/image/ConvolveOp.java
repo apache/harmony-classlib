@@ -141,103 +141,106 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
         return dst;
     }
 
-    private final int slowFilter(Raster src, WritableRaster dst) {
-        SampleModel sm = src.getSampleModel();
+    private int slowFilter(Raster src, WritableRaster dst) {
+        try {
+            SampleModel sm = src.getSampleModel();
 
-        int numBands = src.getNumBands();
-        int srcHeight = src.getHeight();
-        int srcWidth = src.getWidth();
+            int numBands = src.getNumBands();
+            int srcHeight = src.getHeight();
+            int srcWidth = src.getWidth();
 
-        int xOrigin = kernel.getXOrigin();
-        int yOrigin = kernel.getYOrigin();
-        int kWidth = kernel.getWidth();
-        int kHeight = kernel.getHeight();
-        float[] data = kernel.getKernelData(null);
+            int xOrigin = kernel.getXOrigin();
+            int yOrigin = kernel.getYOrigin();
+            int kWidth = kernel.getWidth();
+            int kHeight = kernel.getHeight();
+            float[] data = kernel.getKernelData(null);
 
-        int srcMinX = src.getMinX();
-        int srcMinY = src.getMinY();
-        int dstMinX = dst.getMinX();
-        int dstMinY = dst.getMinY();
+            int srcMinX = src.getMinX();
+            int srcMinY = src.getMinY();
+            int dstMinX = dst.getMinX();
+            int dstMinY = dst.getMinY();
 
-        int srcConvMaxX = srcWidth - (kWidth - xOrigin - 1);
-        int srcConvMaxY = srcHeight - (kHeight - yOrigin - 1);
+            int srcConvMaxX = srcWidth - (kWidth - xOrigin - 1);
+            int srcConvMaxY = srcHeight - (kHeight - yOrigin - 1);
 
-        int[] maxValues = new int[numBands];
-        int[] masks = new int[numBands];
-        int[] sampleSizes = sm.getSampleSize();
+            int[] maxValues = new int[numBands];
+            int[] masks = new int[numBands];
+            int[] sampleSizes = sm.getSampleSize();
 
-        for (int i=0; i < numBands; i++){
-            maxValues[i] = (1 << sampleSizes[i]) - 1;
-            masks[i] = ~(maxValues[i]);
-        }
-
-        // Processing bounds
-        float[] pixels = null;
-        pixels = src.getPixels(srcMinX, srcMinY, srcWidth, srcHeight, pixels);
-        float[] newPixels = new float[pixels.length];
-        int rowLength = srcWidth*numBands;
-        if (this.edgeCond == ConvolveOp.EDGE_NO_OP){
-            // top
-            int start = 0;
-            int length = yOrigin*rowLength;
-            System.arraycopy(pixels, start, newPixels, start, length);
-            // bottom
-            start = (srcHeight - (kHeight - yOrigin - 1))*rowLength;
-            length = (kHeight - yOrigin - 1)*rowLength;
-            System.arraycopy(pixels, start, newPixels, start, length);
-            // middle
-            length = xOrigin*numBands;
-            int length1 = (kWidth - xOrigin - 1)*numBands;
-            start = yOrigin*rowLength;
-            int start1 = (yOrigin+1)*rowLength - length1;
-            for (int i = yOrigin; i < (srcHeight - (kHeight - yOrigin - 1)); i ++) {
-                   System.arraycopy(pixels, start, newPixels, start, length);
-                   System.arraycopy(pixels, start1, newPixels, start1, length1);
-                   start +=rowLength;
-                   start1 +=rowLength;
+            for (int i=0; i < numBands; i++){
+                maxValues[i] = (1 << sampleSizes[i]) - 1;
+                masks[i] = ~(maxValues[i]);
             }
 
-        }
-
-        // Cycle over pixels to be calculated
-        for (int i = yOrigin; i < srcConvMaxY; i++){
-            for (int j = xOrigin; j < srcConvMaxX; j++){
-
-                // Take kernel data in backward direction, convolution
-                int kernelIdx = data.length - 1;
-
-                int pixelIndex = i * rowLength + j * numBands;
-                for (int hIdx = 0, rasterHIdx = i - yOrigin;
-                     hIdx < kHeight;
-                     hIdx++, rasterHIdx++
-                    ){
-                    for (int wIdx = 0, rasterWIdx = j - xOrigin;
-                         wIdx < kWidth;
-                         wIdx++, rasterWIdx++
-                    ){
-                        int curIndex = rasterHIdx * rowLength + rasterWIdx * numBands;
-                        for (int idx=0; idx < numBands; idx++){
-                            newPixels[pixelIndex+idx] += data[kernelIdx] * pixels[curIndex+idx];
-                        }
-                        kernelIdx--;
-                    }
+            // Processing bounds
+            float[] pixels = null;
+            pixels = src.getPixels(srcMinX, srcMinY, srcWidth, srcHeight, pixels);
+            float[] newPixels = new float[pixels.length];
+            int rowLength = srcWidth*numBands;
+            if (this.edgeCond == ConvolveOp.EDGE_NO_OP){
+                // top
+                int start = 0;
+                int length = yOrigin*rowLength;
+                System.arraycopy(pixels, start, newPixels, start, length);
+                // bottom
+                start = (srcHeight - (kHeight - yOrigin - 1))*rowLength;
+                length = (kHeight - yOrigin - 1)*rowLength;
+                System.arraycopy(pixels, start, newPixels, start, length);
+                // middle
+                length = xOrigin*numBands;
+                int length1 = (kWidth - xOrigin - 1)*numBands;
+                start = yOrigin*rowLength;
+                int start1 = (yOrigin+1)*rowLength - length1;
+                for (int i = yOrigin; i < (srcHeight - (kHeight - yOrigin - 1)); i ++) {
+                    System.arraycopy(pixels, start, newPixels, start, length);
+                    System.arraycopy(pixels, start1, newPixels, start1, length1);
+                    start +=rowLength;
+                    start1 +=rowLength;
                 }
 
-                // Check for overflow now
-                for (int idx=0; idx < numBands; idx++){
-                    if (((int)newPixels[pixelIndex+idx] & masks[idx]) != 0) {
-                        if (newPixels[pixelIndex+idx] < 0) {
-                            newPixels[pixelIndex+idx] = 0;
-                        } else {
-                            newPixels[pixelIndex+idx] = maxValues[idx];
+            }
+
+            // Cycle over pixels to be calculated
+            for (int i = yOrigin; i < srcConvMaxY; i++){
+                for (int j = xOrigin; j < srcConvMaxX; j++){
+
+                    // Take kernel data in backward direction, convolution
+                    int kernelIdx = data.length - 1;
+
+                    int pixelIndex = i * rowLength + j * numBands;
+                    for (int hIdx = 0, rasterHIdx = i - yOrigin;
+                         hIdx < kHeight;
+                         hIdx++, rasterHIdx++
+                            ){
+                        for (int wIdx = 0, rasterWIdx = j - xOrigin;
+                             wIdx < kWidth;
+                             wIdx++, rasterWIdx++
+                                ){
+                            int curIndex = rasterHIdx * rowLength + rasterWIdx * numBands;
+                            for (int idx=0; idx < numBands; idx++){
+                                newPixels[pixelIndex+idx] += data[kernelIdx] * pixels[curIndex+idx];
+                            }
+                            kernelIdx--;
+                        }
+                    }
+
+                    // Check for overflow now
+                    for (int idx=0; idx < numBands; idx++){
+                        if (((int)newPixels[pixelIndex+idx] & masks[idx]) != 0) {
+                            if (newPixels[pixelIndex+idx] < 0) {
+                                newPixels[pixelIndex+idx] = 0;
+                            } else {
+                                newPixels[pixelIndex+idx] = maxValues[idx];
+                            }
                         }
                     }
                 }
             }
+
+            dst.setPixels(dstMinX, dstMinY, srcWidth, srcHeight, newPixels);
+        } catch (Exception e) { // Something goes wrong, signal error
+            return 1;
         }
-
-        dst.setPixels(dstMinX, dstMinY, srcWidth, srcHeight, newPixels);
-
         return 0;
     }
 
