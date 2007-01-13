@@ -41,12 +41,9 @@ public class StateEdit extends AbstractUndoableEdit {
         init(anObject, name);
     }
 
-
     public StateEdit(final StateEditable anObject) {
         this(anObject, null);
     }
-
-
 
     public void end() {
         postState = initHashtable(postState);
@@ -54,14 +51,12 @@ public class StateEdit extends AbstractUndoableEdit {
         removeRedundantState();
     }
 
-
     public String getPresentationName() {
         return undoRedoName;
     }
 
     private Hashtable<Object, Object>
                     initHashtable(final Hashtable<Object, Object> ht) {
-
         if (ht == null) {
             return new Hashtable<Object, Object>();
         }
@@ -73,18 +68,13 @@ public class StateEdit extends AbstractUndoableEdit {
         object = anObject;
         undoRedoName = name;
         preState = initHashtable(preState);
-        if (object != null) {
-            object.storeState(preState);
-        }
+        object.storeState(preState);
     }
-
 
     public void redo() {
         super.redo();
         object.restoreState(postState);
     }
-
-
 
     protected void removeRedundantState() {
         if (preState == null || postState == null) {
@@ -105,10 +95,8 @@ public class StateEdit extends AbstractUndoableEdit {
         }
     }
 
-
     public void undo() {
         super.undo();
         object.restoreState(preState);
     }
-
 }

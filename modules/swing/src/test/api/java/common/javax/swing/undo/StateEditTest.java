@@ -217,6 +217,19 @@ public class StateEditTest extends SwingTestCase {
         assertNull(se1.postState);
         assertEquals(getState(newObj), se1.preState);
         assertEquals("name", se1.undoRedoName);
+
+        try { // Regression test for HARMONY-2536
+            new StateEdit(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try { // Regression test for HARMONY-2536
+            new StateEdit(null, "str");
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     public void testConstants() {
