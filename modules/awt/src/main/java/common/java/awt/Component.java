@@ -3170,10 +3170,15 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         toolkit.lockAWT();
         try {
             KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-            Container root = kfm.getCurrentFocusCycleRoot(), newRoot = null;
+            Container root = kfm.getCurrentFocusCycleRoot();
+            
+            if(root == null) {
+                return;
+            }
+            
             boolean success = false;
             Component nextComp = null;
-            newRoot = root;
+            Container newRoot = root;
             do {
                 nextComp = newRoot instanceof Window ? newRoot.getFocusTraversalPolicy()
                         .getDefaultComponent(newRoot) : newRoot;

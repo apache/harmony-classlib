@@ -73,6 +73,11 @@ public class ComponentRTest extends TestCase {
         comp.removeNotify();
         assertEquals(size, comp.getMinimumSize());
     }
+    
+    public void testTransferFocusUpCycle() {
+        // Regression test for HARMONY-2456
+        new Button().transferFocusUpCycle();
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ComponentRTest.class);
