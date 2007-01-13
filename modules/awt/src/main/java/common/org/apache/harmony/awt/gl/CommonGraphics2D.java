@@ -130,9 +130,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
     // Clipping things
     protected MultiRectArea clip = null;
 
-    protected Paint paint = Color.BLACK;
-    protected Color fgColor = Color.BLACK;
-    protected Color bgColor = Color.WHITE;
+    protected Paint paint = Color.WHITE;
+    protected Color fgColor = Color.WHITE;
+    protected Color bgColor = Color.BLACK;
 
     protected Composite composite = AlphaComposite.SrcOver;
 
@@ -978,8 +978,10 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     @Override
     public void setColor(Color color) {
-        fgColor = color;
-        paint = color;
+        if (color != null) {
+            fgColor = color;
+            paint = color;
+        }
     }
 
     @Override
