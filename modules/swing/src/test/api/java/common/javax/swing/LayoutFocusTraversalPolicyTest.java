@@ -116,6 +116,31 @@ public class LayoutFocusTraversalPolicyTest extends BasicSwingTestCase {
         assertEquals(button4, policy.getComponentBefore(cycleRoot, button1));
     }
 
+    public void testGetComponentBefore_Null() throws Exception {
+        JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
+
+        try {
+            policy.getComponentBefore(cycleRoot, null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            policy.getComponentBefore(null, button1);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            policy.getComponentBefore(null, null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
     public void testGetComponentAfter() throws Exception {
         JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
         assertEquals(button1, policy.getComponentAfter(cycleRoot, button4));
@@ -129,6 +154,31 @@ public class LayoutFocusTraversalPolicyTest extends BasicSwingTestCase {
         assertEquals(button4, policy.getComponentAfter(cycleRoot, button3));
     }
 
+    public void testGetComponentAfter_Null() throws Exception {
+        JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
+
+        try {
+            policy.getComponentAfter(cycleRoot, null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            policy.getComponentAfter(null, button1);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            policy.getComponentAfter(null, null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
     public void testGetLastComponent() throws Exception {
         JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
         assertEquals(button1, policy.getLastComponent(cycleRoot));
@@ -136,11 +186,33 @@ public class LayoutFocusTraversalPolicyTest extends BasicSwingTestCase {
         assertEquals(button1, policy.getLastComponent(cycleRoot));
     }
 
+    public void testGetLastComponent_Null() throws Exception {
+        JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
+
+        try {
+            policy.getLastComponent(null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
     public void testGetFirstComponent() throws Exception {
         JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
         assertEquals(button2, policy.getFirstComponent(cycleRoot));
         cycleRoot = createTestPanel(ComponentOrientation.RIGHT_TO_LEFT);
         assertEquals(button2, policy.getFirstComponent(cycleRoot));
+    }
+
+    public void testGetFirstComponent_Null() throws Exception {
+        JPanel cycleRoot = createTestPanel(ComponentOrientation.LEFT_TO_RIGHT);
+
+        try {
+            policy.getFirstComponent(null);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
     }
 
     private JPanel createTestPanel(final ComponentOrientation co) throws Exception {

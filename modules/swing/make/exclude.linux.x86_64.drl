@@ -68,7 +68,6 @@ javax/swing/JTextArea_MultithreadedTest.java
 javax/swing/JTextFieldTest.java
 javax/swing/JViewportTest.java
 javax/swing/JWindowTest.java
-javax/swing/LayoutFocusTraversalPolicyTest.java
 javax/swing/OverlayLayoutTest.java
 javax/swing/PopupFactoryRTest.java
 javax/swing/PopupFactoryTest.java

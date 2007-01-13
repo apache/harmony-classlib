@@ -40,21 +40,39 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
     }
 
     public Component getComponentBefore(final Container focusCycleRoot, final Component component) {
+        if (focusCycleRoot == null) {
+            throw new IllegalArgumentException("focusCycleRoot must not be null");
+        }
+        if (component == null) {
+            throw new IllegalArgumentException("component must not be null");
+        }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getComponentBefore(focusCycleRoot, component);
     }
 
     public Component getComponentAfter(final Container focusCycleRoot, final Component component) {
+        if (focusCycleRoot == null) {
+            throw new IllegalArgumentException("focusCycleRoot must not be null");
+        }
+        if (component == null) {
+            throw new IllegalArgumentException("component must not be null");
+        }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getComponentAfter(focusCycleRoot, component);
     }
 
     public Component getLastComponent(final Container focusCycleRoot) {
+        if (focusCycleRoot == null) {
+            throw new IllegalArgumentException("focusCycleRoot must not be null");
+        }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getLastComponent(focusCycleRoot);
     }
 
     public Component getFirstComponent(final Container focusCycleRoot) {
+        if (focusCycleRoot == null) {
+            throw new IllegalArgumentException("focusCycleRoot must not be null");
+        }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getFirstComponent(focusCycleRoot);
     }
