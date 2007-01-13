@@ -81,7 +81,7 @@ public class GridBagConstraints implements Cloneable, Serializable {
         this.weighty = weighty;
         this.anchor = anchor;
         this.fill = fill;
-        this.insets = (Insets) insets.clone();
+        this.insets = (insets == null) ? null:(Insets) insets.clone();
         this.ipadx = ipadx;
         this.ipady = ipady;
     }
