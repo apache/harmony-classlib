@@ -32,6 +32,8 @@ import javax.swing.JTextField;
 
 public class BasicComboBoxEditor implements ComboBoxEditor, FocusListener {
 
+    private Object item = "";
+    
     public static class UIResource extends BasicComboBoxEditor implements javax.swing.plaf.UIResource {
     }
 
@@ -57,11 +59,16 @@ public class BasicComboBoxEditor implements ComboBoxEditor, FocusListener {
     }
 
     public Object getItem() {
-        return editor.getText();
+        String text = editor.getText();
+        if (!text.equals(item.toString())) {
+            item = text;
+        }
+        return item;
     }
 
     public void setItem(final Object item) {
-        editor.setText(item != null ? item.toString() : null);
+        this.item = item != null ? item : "";
+        editor.setText(this.item.toString());
     }
 
     public void selectAll() {

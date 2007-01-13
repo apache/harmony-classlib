@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTextField;
 import javax.swing.SwingTestCase;
+import javax.swing.text.JTextComponent;
 
 public class BasicComboBoxEditorTest extends SwingTestCase {
     private BasicComboBoxEditor editor;
@@ -88,4 +89,37 @@ public class BasicComboBoxEditorTest extends SwingTestCase {
         public void actionPerformed(final ActionEvent e) {
         }
     }
+    
+    /**
+     * Regression test for HARMONY-2651 
+     * */
+    public void testRGetSetItem() {
+        editor.selectAll();
+        assertEquals("", editor.getItem());
+
+        Object obj1 = new java.util.jar.Attributes.Name("AAAAAAAAAAAAAAA");
+        String obj2 = "BBBBBBBBBBBBB";
+        JTextComponent editorComponent = (JTextComponent)editor.getEditorComponent();
+        editorComponent.setText(obj2);
+        editor.setItem(obj1);
+        assertSame(obj1, editor.getItem());
+        assertEquals(obj1.toString(), editorComponent.getText());
+        editor.setItem(null);
+        assertEquals("", editor.getItem());
+    }
+
+    /**
+     * Regression test for HARMONY-2651 
+     * */
+    public void testGetItem() {
+        editor.selectAll();
+        Object obj1 = new java.util.jar.Attributes.Name("AAAAAAAAAAAAAAA");
+        Object obj2 = "BBBBBBBBBBBBBB";
+        editor.setItem(obj1);
+        JTextComponent editorComponent = (JTextComponent)editor.getEditorComponent();
+        editorComponent.setText((String)obj2);
+        assertNotSame(obj2, editor.getItem());
+        assertEquals(obj2, editor.getItem());
+    }
+
 }
