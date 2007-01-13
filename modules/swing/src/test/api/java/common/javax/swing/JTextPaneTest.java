@@ -429,11 +429,7 @@ public class JTextPaneTest extends SwingTestCase {
         attrs = textPane.getInputAttributes();
         assertAttrubutes(attrs, false, false, true, false, false, true);
         textPane.insertComponent(new JButton("Format C:\\>"));
-        if (isHarmony()) {
-            assertAttrubutes(attrs, false, false, true, false, false, true);
-        } else {
-            assertAttrubutes(attrs, false, false, false, false, false, false);
-        }
+        assertAttrubutes(attrs, false, false, false, false, false, false);
         assertNull(StyleConstants.getComponent(attrs));
         attributes = textPane.getStyledDocument().getCharacterElement(1).getAttributes();
         assertAttrubutes(attributes, false, false, false, false, false, false);
@@ -472,11 +468,7 @@ public class JTextPaneTest extends SwingTestCase {
                 return 40;
             }
         });
-        if (isHarmony()) {
-            assertAttrubutes(attrs, false, false, true, false, false, true);
-        } else {
-            assertAttrubutes(attrs, false, false, false, false, false, false);
-        }
+        assertAttrubutes(attrs, false, false, false, false, false, false);
         Element iconElement = textPane.getStyledDocument().getDefaultRootElement()
                 .getElement(0).getElement(1);
         AttributeSet attributes = iconElement.getAttributes();

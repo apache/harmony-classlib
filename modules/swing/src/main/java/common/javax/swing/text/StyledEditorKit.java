@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
-
 package javax.swing.text;
 
 import java.awt.Color;
@@ -32,15 +26,27 @@ import javax.swing.event.CaretListener;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+/**
+ * <p>
+ * <i>StyledEditorKit</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.
+ * <em>This applies to nested classes as well</em>.</li>
+ * </ul>
+ */
 public class StyledEditorKit extends DefaultEditorKit {
 
-    public static class AlignmentAction extends
-            StyledEditorKit.StyledTextAction {
-        MutableAttributeSet set;
-        Object defaultValue;
-        public AlignmentAction(final String name, final int allignment) {
+    public static class AlignmentAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
+        private final Object defaultValue;
+
+        public AlignmentAction(final String name, final int alignment) {
             super(name);
-            defaultValue = new Integer(allignment);
+            defaultValue = new Integer(alignment);
         }
 
         public void actionPerformed(final ActionEvent event) {
@@ -48,8 +54,7 @@ public class StyledEditorKit extends DefaultEditorKit {
             if (pane == null) {
                 return;
             }
-            MutableAttributeSet attr = (set == null) ? new SimpleAttributeSet()
-                    : set;
+            MutableAttributeSet attr = new SimpleAttributeSet();
             Object newValue = null;
             if (event != null) {
                 try {
@@ -63,21 +68,23 @@ public class StyledEditorKit extends DefaultEditorKit {
         }
     }
 
-    public static class BoldAction extends StyledEditorKit.StyledTextAction {
-        MutableAttributeSet set;
+    public static class BoldAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
         public BoldAction() {
             super("font-bold");
         }
 
         public void actionPerformed(final ActionEvent event) {
-            performAction(event, StyleConstants.Bold, set, null, null, true);
+            performAction(event, StyleConstants.Bold, null, null, null, true);
         }
     }
 
-    public static class FontFamilyAction extends
-            StyledEditorKit.StyledTextAction {
-        MutableAttributeSet set;
-        Object defaultValue;
+    public static class FontFamilyAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
+        private final Object defaultValue;
+
         public FontFamilyAction(final String name, final String family) {
             super(name);
             defaultValue = family;
@@ -91,15 +98,16 @@ public class StyledEditorKit extends DefaultEditorKit {
                 } catch (NumberFormatException e) {
                 }
             }
-            performAction(event, StyleConstants.FontFamily, set, defaultValue,
+            performAction(event, StyleConstants.FontFamily, null, defaultValue,
                           newValue, false);
         }
     }
 
-    public static class FontSizeAction extends StyledEditorKit
-                                                 .StyledTextAction {
-        MutableAttributeSet set;
-        Object defaultValue;
+    public static class FontSizeAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
+        private final Object defaultValue;
+
         public FontSizeAction(final String name, final int size) {
             super(name);
             defaultValue = new Integer(size);
@@ -113,16 +121,17 @@ public class StyledEditorKit extends DefaultEditorKit {
                 } catch (NumberFormatException e) {
                 }
             }
-            performAction(event, StyleConstants.FontSize, set, defaultValue,
+            performAction(event, StyleConstants.FontSize, null, defaultValue,
                           newValue, false);
         }
 
     }
 
-    public static class ForegroundAction extends
-            StyledEditorKit.StyledTextAction {
-        MutableAttributeSet set;
-        Object defaultValue;
+    public static class ForegroundAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
+
+        private final Object defaultValue;
+
         public ForegroundAction(final String name, final Color color) {
             super(name);
             defaultValue = color;
@@ -136,20 +145,20 @@ public class StyledEditorKit extends DefaultEditorKit {
                 } catch (NumberFormatException e) {
                 }
             }
-            performAction(event, StyleConstants.Foreground, set, defaultValue,
+            performAction(event, StyleConstants.Foreground, null, defaultValue,
                           newValue, false);
         }
     }
 
-    public static class ItalicAction extends StyledEditorKit.StyledTextAction {
-        private MutableAttributeSet set;
+    public static class ItalicAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
 
         public ItalicAction() {
             super("font-italic");
         }
 
         public void actionPerformed(final ActionEvent event) {
-            performAction(event, StyleConstants.Italic, set, null, null, true);
+            performAction(event, StyleConstants.Italic, null, null, null, true);
         }
     }
 
@@ -196,10 +205,10 @@ public class StyledEditorKit extends DefaultEditorKit {
                                        selectionEnd - selectionStart,
                                        set, replace);
 
-            MutableAttributeSet atts = getStyledEditorKit(c).inputAttributes;
+            MutableAttributeSet atts = getStyledEditorKit(c).getInputAttributes();
             if (replace) {
-                  atts.removeAttributes(atts.getAttributeNames());
-                }
+                atts.removeAttributes(atts.getAttributeNames());
+            }
             atts.addAttributes(set);
         }
 
@@ -269,16 +278,15 @@ public class StyledEditorKit extends DefaultEditorKit {
 
     }
 
-    public static class UnderlineAction extends
-            StyledEditorKit.StyledTextAction {
-        private MutableAttributeSet set;
+    public static class UnderlineAction extends StyledTextAction {
+        private static final long serialVersionUID = 1L;
 
         public UnderlineAction() {
             super("font-underline");
         }
 
         public void actionPerformed(final ActionEvent event) {
-            performAction(event, StyleConstants.Underline, set, null, null,
+            performAction(event, StyleConstants.Underline, null, null, null,
                           true);
         }
     }
@@ -321,26 +329,29 @@ public class StyledEditorKit extends DefaultEditorKit {
         }
     }
 
+    private static final long serialVersionUID = 1L;
+
     private static final ViewFactory factory = new ViewFactoryImpl();
 
-    private static Action[]          actions;
+    private static Action[] actions;
 
-    JEditorPane                      editorPane;
+    private JEditorPane editorPane;
 
-    CaretListenerImpl caretListener;
+    private CaretListenerImpl caretListener;
 
-    //  TODO Perhaps, inputAttributes = new ... a lot. I'll think about this one.
-    MutableAttributeSet inputAttributes;
+    private final MutableAttributeSet inputAttributes = new SimpleAttributeSet();
 
 
     public StyledEditorKit() {
         createStaticActions();
     }
 
+    @Override
     public Action[] getActions() {
-        return (Action[])actions.clone();
+        return actions.clone();
     }
 
+    @Override
     public Document createDefaultDocument() {
         return new DefaultStyledDocument();
     }
@@ -363,6 +374,7 @@ public class StyledEditorKit extends DefaultEditorKit {
         }
     }
 
+    @Override
     public void deinstall(final JEditorPane component) {
         if (component == editorPane) {
             if (editorPane != null && caretListener != null) {
@@ -425,9 +437,6 @@ public class StyledEditorKit extends DefaultEditorKit {
     }
 
     public MutableAttributeSet getInputAttributes() {
-        if (editorPane == null) {
-            return null;
-        }
         return inputAttributes;
     }
 
@@ -451,10 +460,12 @@ public class StyledEditorKit extends DefaultEditorKit {
         return elem;
     }
 
+    @Override
     public ViewFactory getViewFactory() {
         return factory;
     }
 
+    @Override
     public void install(final JEditorPane component) {
         editorPane = component;
         if (caretListener == null) {
@@ -467,7 +478,7 @@ public class StyledEditorKit extends DefaultEditorKit {
     }
 
     private void updateInputAttributes(final int dot) {
-        inputAttributes = new SimpleAttributeSet();
+        inputAttributes.removeAttributes(inputAttributes);
         Element element = getElementByOffset(editorPane.getDocument(), dot);
         createInputAttributes(element, inputAttributes);
     }

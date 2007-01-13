@@ -240,6 +240,12 @@ public class StyledEditorKitTest extends SwingTestCase {
             }
         }
     }
+    
+    public void testGetInputAttributesNoComponent() throws Exception {
+        final AttributeSet as = kit.getInputAttributes();
+        assertNotNull(as);
+        assertEquals(0, as.getAttributeCount());
+    }
 
     static final Element getElementByOffset(final Document doc, final int offset) {
         int pos = (offset == 0) ? 0 : offset - 1;
