@@ -56,6 +56,9 @@ public class BasicPopupMenuUI extends PopupMenuUI {
     }
 
     protected void installKeyboardActions() {
+        if (popupMenu == null) {
+            return;
+        }
         Utilities.installKeyboardActions(popupMenu, JComponent.WHEN_FOCUSED,
                                          PROPERTY_PREFIX + ".selectedWindowInputMapBindings",
                                          PROPERTY_PREFIX + ".selectedWindowInputMapBindings.RightToLeft");

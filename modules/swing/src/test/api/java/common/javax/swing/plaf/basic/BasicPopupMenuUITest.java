@@ -176,4 +176,19 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
             assertEquals(0, menu.getPopupMenuListeners().length);
         }
     }
+    
+    /**
+     * Regression test for HARMONY-2654 
+     * */
+    public void testInstallKeyboardActions() throws NullPointerException { 
+        BasicPopupMenuUIForTest localBasicPopupMenuUI = new BasicPopupMenuUIForTest(); 
+        localBasicPopupMenuUI.installKeyboardActions(); 
+    } 
+
+
+    class BasicPopupMenuUIForTest extends BasicPopupMenuUI { 
+        public void installKeyboardActions () { 
+            super.installKeyboardActions(); 
+        } 
+    }
 }
