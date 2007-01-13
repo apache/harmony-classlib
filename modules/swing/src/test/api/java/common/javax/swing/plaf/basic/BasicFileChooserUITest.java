@@ -164,4 +164,14 @@ public class BasicFileChooserUITest extends SwingTestCase {
         ui.installUI(fc);
         assertNull(ui.getPreferredSize(fc));
     }
+
+    public void testEnsureFileIsVisible() {
+        try {   
+            BasicFileChooserUI fc = new BasicFileChooserUI(null);  
+            fc.ensureFileIsVisible(new JFileChooser(), new File("a")); 
+            // PASSED
+        } catch (NullPointerException npe) {     
+            fail("NPE should not be thrown");            
+        }
+    }
 }
