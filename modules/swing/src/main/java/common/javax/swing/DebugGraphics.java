@@ -168,7 +168,7 @@ public class DebugGraphics extends Graphics {
     }
 
     public DebugGraphics(Graphics g, JComponent c) {
-        originalGraphics = g.create();
+        originalGraphics = (g == null ? null : g.create());
         component = c;
         thisNumber = debugGraphicsCount++;
     }

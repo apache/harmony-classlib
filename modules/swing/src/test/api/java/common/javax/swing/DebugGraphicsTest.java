@@ -47,4 +47,8 @@ public class DebugGraphicsTest extends BasicSwingTestCase {
         DebugGraphics result = (DebugGraphics) debugGraphics.create();
         assertEquals(debugGraphics.getDebugOptions(), result.getDebugOptions());
     }
+
+    public void testConstructor() throws NullPointerException {
+        new DebugGraphics();              
+    }
 }
