@@ -71,7 +71,14 @@ public class BasicButtonListenerTest extends SwingTestCase {
     }
 
     public void testPropertyChange() {
-        //TODO Implement propertyChange().
+        try {         
+            javax.swing.plaf.basic.BasicButtonListener l = 
+            new javax.swing.plaf.basic.BasicButtonListener(new JButton()); 
+            l.propertyChange(null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {    
+            // PASSED          
+        }
     }
 
     public void testMouseReleased() {

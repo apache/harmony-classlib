@@ -101,9 +101,10 @@ public class BasicButtonListener implements MouseListener, MouseMotionListener, 
     }
 
     public void propertyChange(final PropertyChangeEvent event) {
-        if (event != null && AbstractButton.CONTENT_AREA_FILLED_CHANGED_PROPERTY.equals(event.getPropertyName())) {
+        if (AbstractButton.CONTENT_AREA_FILLED_CHANGED_PROPERTY.equals(event.getPropertyName())) {
             LookAndFeel.installProperty(button, StringConstants.OPAQUE_PROPERTY, event.getNewValue());
         }
+
         button.revalidate();
         button.repaint();
     }
