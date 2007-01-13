@@ -481,6 +481,9 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
 
     public int getAccessibleChildrenCount(final JComponent c) {
+        if (comboBox == null) {
+            throw new NullPointerException("comboBox is null");
+        }
         return 0;
     }
 

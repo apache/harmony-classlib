@@ -29,6 +29,7 @@ import javax.swing.CellRendererPane;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -257,6 +258,23 @@ public class BasicComboBoxUITest extends SwingTestCase {
         assertEquals(new Rectangle(0, 0, 0, 0), r1);
         Rectangle r2 = ui.rectangleForCurrentValue();
         assertFalse(r1 == r2);
+    }
+
+    // Regression test for HARMONY-2896
+    public void testGetAccessibleChildrenCount() throws Exception {
+        ui.comboBox = null;
+        try {
+            ui.getAccessibleChildrenCount(new JComponent() {});
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            ui.getAccessibleChildrenCount(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     public void testGetInsets() throws Exception {
