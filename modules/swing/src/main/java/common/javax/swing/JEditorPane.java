@@ -628,6 +628,10 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void setEditorKitForContentType(final String type, final EditorKit kit) {
+        if (type == null || kit == null) {
+            throw new NullPointerException();
+        }
+  
         int index = localContentTypes.indexOf(contentType);
         if (index >= 0) {
             localContentTypes.remove(index);

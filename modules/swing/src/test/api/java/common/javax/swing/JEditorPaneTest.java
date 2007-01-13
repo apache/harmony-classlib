@@ -820,4 +820,30 @@ public class JEditorPaneTest extends SwingTestCase {
                 .getEditorKitClassNameForContentType("text/rtf"));
         assertNull(JEditorPane.getEditorKitClassNameForContentType("..."));
     }
+
+    public void testSetEditorKitForContentType() throws Exception {
+        try {          
+            JEditorPane ep = new JEditorPane();
+            ep.setEditorKitForContentType("abc", null);
+            fail("NPE expected"); 
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }   
+        
+        try {          
+            JEditorPane ep = new JEditorPane();
+            ep.setEditorKitForContentType(null, new DefaultEditorKit());
+            fail("NPE expected");             
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }  
+        
+        try {          
+            JEditorPane ep = new JEditorPane();             
+            ep.setEditorKitForContentType(null, null);
+            fail("NPE expected"); 
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }  
+    }
 }
