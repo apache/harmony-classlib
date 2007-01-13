@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.text.CharacterIterator;
@@ -46,6 +42,12 @@ public class SegmentTest extends TestCase {
 
     public void testToString() {
         assertEquals("cdefgh", s.toString());
+    }
+
+    public void testToStringEmpty() {
+        s = new Segment();
+        assertNull(s.array);
+        assertEquals("", s.toString());
     }
 
     public void testCurrent() {

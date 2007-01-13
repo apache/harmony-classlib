@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.text.CharacterIterator;
@@ -47,6 +43,7 @@ public class Segment implements Cloneable, CharacterIterator {
         this.isPartial = false;
     }
 
+    @Override
     public Object clone() {
         Object clone;
 
@@ -141,8 +138,9 @@ public class Segment implements Cloneable, CharacterIterator {
         return;
     }
 
+    @Override
     public String toString() {
-        return new String(array, offset, count);
+        return array != null ? new String(array, offset, count) : "";
     }
 
     private boolean isEmpty() {
