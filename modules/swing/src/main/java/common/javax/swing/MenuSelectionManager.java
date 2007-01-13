@@ -179,14 +179,16 @@ public class MenuSelectionManager {
         }
     }
 
-    public void processMouseEvent(final MouseEvent event) {
+    public void processMouseEvent(final MouseEvent event) {   
+        Component c = componentForPoint((Component) event.getSource(), event.getPoint());
+
         if (isPathEmpty()) {
             return;
         }
 
-        Component c = componentForPoint((Component)event.getSource(), event.getPoint());
         if ((event.getID() == MouseEvent.MOUSE_DRAGGED)
-            || (event.getID() == MouseEvent.MOUSE_RELEASED)) {
+                || (event.getID() == MouseEvent.MOUSE_RELEASED)) {
+
             if (c instanceof JMenuItem) {
                 ((JMenuItem)c).processMouseEvent(event, selectedPath, this);
             }

@@ -364,6 +364,14 @@ public class MenuSelectionManagerTest extends SwingTestCase {
         //
         //        manager.processMouseEvent(event4);
         //        assertEquals("released", listener1.event);
+
+        try {   
+            MenuSelectionManager m = new MenuSelectionManager(); 
+            m.processMouseEvent(null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }
     }
 
     /*
