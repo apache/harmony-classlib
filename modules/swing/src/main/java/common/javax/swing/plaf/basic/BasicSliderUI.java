@@ -70,7 +70,7 @@ public class BasicSliderUI extends SliderUI {
         }
 
         public boolean isEnabled() {
-            return false;
+            return true;
         }
     }
 

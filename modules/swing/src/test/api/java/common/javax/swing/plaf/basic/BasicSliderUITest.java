@@ -224,4 +224,14 @@ public class BasicSliderUITest extends SwingTestCase {
         sliderUI.setThumbLocation(-200, 500);
         assertEquals(new Point(-200, 500), sliderUI.thumbRect.getLocation());
     }
+    
+    /**
+     * Regression test for HARMONY-2591
+     * */
+    public void testActionScrollerEnabled() {
+        BasicSliderUI.ActionScroller m = sliderUI.new ActionScroller(new JSlider(),
+                3, true);
+        assertTrue(m.isEnabled());
+    } 
+    
 }
