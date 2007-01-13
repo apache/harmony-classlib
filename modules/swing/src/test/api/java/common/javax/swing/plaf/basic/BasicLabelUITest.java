@@ -102,4 +102,22 @@ public class BasicLabelUITest extends SwingTestCase {
         ui.installComponents(label);
         assertEquals(0, label.getComponentCount());
     }
+    
+    private class BasicLabelUIForTest extends BasicLabelUI { 
+        public BasicLabelUIForTest(){ 
+            super(); 
+        } 
+
+        public void uninstallDefaults(JLabel l) { 
+            super.uninstallDefaults(l); 
+        } 
+    } 
+    
+    /**
+     * Regression test for HARMONY-2637
+     * */
+    public void testUninstallDefaults() throws NullPointerException { 
+       BasicLabelUIForTest bu = new BasicLabelUIForTest(); 
+       bu.uninstallDefaults(null); 
+    } 
 }

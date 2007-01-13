@@ -151,6 +151,9 @@ public class BasicLabelUI extends LabelUI implements PropertyChangeListener {
     }
 
     protected void uninstallDefaults(final JLabel label) {
+        if (label == null) {
+            return;
+        }
         Utilities.uninstallColorsAndFont(label);
         LookAndFeel.uninstallBorder(label);
     }
