@@ -56,8 +56,9 @@ public class BasicTextAreaUI extends BasicTextUI {
 
     public View create(final Element element) {
         if (element == null) {
-            return null;
+            throw new NullPointerException();
         }
+
         Document doc = element.getDocument();
         Boolean i18n = (Boolean)doc.getProperty(StringConstants.BIDI_PROPERTY);
         if (i18n.booleanValue()) {

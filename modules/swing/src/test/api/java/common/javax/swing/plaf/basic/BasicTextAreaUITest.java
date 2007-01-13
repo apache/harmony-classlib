@@ -96,6 +96,13 @@ public class BasicTextAreaUITest extends SwingTestCase {
         assertTrue(ui.create(elem) instanceof PlainView);
         jta.setLineWrap(true);
         assertTrue(ui.create(elem) instanceof WrappedPlainView);
+
+        try {      
+            new BasicTextAreaUI().create(null);  
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        } 
     }
 
     public void testGetPropertyPrefix() {
