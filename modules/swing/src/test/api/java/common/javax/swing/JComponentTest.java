@@ -1071,6 +1071,14 @@ public class JComponentTest extends SwingTestCase {
         changeListener.checkLastPropertyFired(panel, key1, value2, null);
         assertNull(panel.getClientProperty(key1));
         changeListener.reset();
+
+        try {         
+            JComponent jc = new JComponent() {}; 
+            jc.putClientProperty(null, new Object());
+            fail("NPE should be thrown");               
+        } catch (NullPointerException npe) {               
+            // PASSED            
+        }
     }
 
     /*

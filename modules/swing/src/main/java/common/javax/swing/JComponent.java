@@ -481,6 +481,10 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public final void putClientProperty(Object key, Object value) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+
         Object oldValue = (value != null) ? clientProperties.put(key, value) : clientProperties
                 .remove(key);
         if (oldValue != value) {
