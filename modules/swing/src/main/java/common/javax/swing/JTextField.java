@@ -75,8 +75,6 @@ public class JTextField extends JTextComponent implements SwingConstants {
     private static final TextAction AcceptAction = new NotifyAction(
             notifyAction);
 
-    private transient AccessibleContext accessibleContext;
-
     private transient String actionCommand;
 
     private transient int horizontalAlignment;
