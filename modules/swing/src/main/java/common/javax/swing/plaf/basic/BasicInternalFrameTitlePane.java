@@ -140,14 +140,33 @@ public class BasicInternalFrameTitlePane extends JComponent {
     }
 
     public class MoveAction extends AbstractAction {
+        private static final String MOVE_ACTION_NAME = "Move";
+        
+        public MoveAction() {
+            putValue(Action.NAME, MOVE_ACTION_NAME);
+        }
+        
         public void actionPerformed(final ActionEvent e) {
+            if (e == null) {
+                return;
+            }
+            
             ((BasicDesktopPaneUI)frame.getDesktopPane().getUI()).
                 frameOperation = BasicDesktopPaneUI.DRAGGING;
         }
     }
 
     public class SizeAction extends AbstractAction {
+        private static final String SIZE_ACTION_NAME = "Size";
+        
+        public SizeAction() {
+            putValue(Action.NAME, SIZE_ACTION_NAME);
+        }
+        
         public void actionPerformed(final ActionEvent e) {
+            if (e == null) {
+                return;
+            }
             ((BasicDesktopPaneUI)frame.getDesktopPane().getUI()).
                 frameOperation = BasicDesktopPaneUI.RESIZING;
         }

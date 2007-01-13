@@ -27,6 +27,8 @@ import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+
+import javax.swing.Action;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -37,6 +39,7 @@ import javax.swing.SwingTestCase;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.plaf.metal.MetalInternalFrameTitlePane;
 
 public class BasicInternalFrameTitlePaneTest extends SwingTestCase {
     private BasicInternalFrameTitlePane pane;
@@ -540,4 +543,56 @@ public class BasicInternalFrameTitlePaneTest extends SwingTestCase {
     public void testPaintComponent() {
         // Note: painting code, cannot test
     }
+    
+    /**
+     * Regression test for HARMONY-2608
+     * */
+    public void testMoveActionKey() {
+        BasicInternalFrameTitlePane.MoveAction m = pane.new MoveAction();
+        assertEquals(1, m.getKeys().length);
+        String key = (String)m.getKeys()[0];
+        assertEquals(Action.NAME, key);
+        assertEquals("Move", m.getValue(key));
+    }
+    
+    /**
+     * Regression test for HARMONY-2608
+     * */
+    public void testMoveActionPerformed() {
+        BasicInternalFrameTitlePane.MoveAction m = pane.new MoveAction();
+        try {
+            m.actionPerformed(null);
+        } catch ( NullPointerException e) { 
+            fail("NPE shouldn't be thrown");
+        }
+    }
+    
+    /**
+     * Regression test for HARMONY-2604
+     * */
+    public void testSizeActionPerformed() {
+        String str = "test string";
+        JInternalFrame jf = new JInternalFrame(str);
+        MetalInternalFrameTitlePane jp = new MetalInternalFrameTitlePane(jf);
+        BasicInternalFrameTitlePane.SizeAction m = jp.new SizeAction();
+        try {
+            m.actionPerformed(null);
+        } catch (NullPointerException e) {
+            fail("NPE shouldn't be thrown");
+        }
+    }
+    
+    /**
+     * Regression test for HARMONY-2588
+     * */
+    public void testSizeActionKey() {
+        String str = "test string";
+        JInternalFrame jf = new JInternalFrame(str);
+        MetalInternalFrameTitlePane jp = new MetalInternalFrameTitlePane(jf);
+        BasicInternalFrameTitlePane.SizeAction m = jp.new SizeAction();
+        assertEquals(1, m.getKeys().length);
+        String key = (String)m.getKeys()[0];
+        assertEquals(Action.NAME, key);
+        assertEquals("Size", m.getValue(key));
+   } 
 }
