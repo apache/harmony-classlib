@@ -62,8 +62,6 @@ public class JTextArea extends JTextComponent {
 
     private int columnsWidth;
 
-    private AccessibleContext accessibleContext;
-
     private Integer tabSize;
 
     public JTextArea(final Document doc, final String s, final int r,
