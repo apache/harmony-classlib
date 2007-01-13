@@ -164,11 +164,11 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     public JFileChooser(final String currentDirectoryPath) {
-        this(currentDirectoryPath, FileSystemView.getFileSystemView());
+        this(currentDirectoryPath, null);
     }
 
     public JFileChooser(final File currentDirectory) {
-        this(currentDirectory, FileSystemView.getFileSystemView());
+        this(currentDirectory, null);
     }
 
     public JFileChooser(final FileSystemView fsv) {
@@ -596,7 +596,7 @@ public class JFileChooser extends JComponent implements Accessible {
     }
 
     protected void setup(final FileSystemView view) {
-        setFileSystemView(view);
+        setFileSystemView(view != null ? view : FileSystemView.getFileSystemView());
         updateUI();
         if (isAcceptAllFileFilterUsed()) {
             addChoosableFileFilter(getAcceptAllFileFilter());

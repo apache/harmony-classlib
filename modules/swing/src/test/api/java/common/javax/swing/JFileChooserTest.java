@@ -102,9 +102,52 @@ public class JFileChooserTest extends SwingTestCase {
         }
     }
 
+    public void testJFileChooser_FSV() throws Exception {
+        File testDir = new File("testDir");
+        testDir.deleteOnExit();
+        testDir.mkdir();
+        chooser = new JFileChooser();
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((File) null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir.getAbsolutePath());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((String) null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((FileSystemView) null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir, FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir, null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((File) null, FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((File) null, null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir.getAbsolutePath(), FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser(testDir.getAbsolutePath(), null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((String) null, FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser = new JFileChooser((String) null, null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        testDir.delete();
+    }
+
     //TODO
     public void testSetup() throws Exception {
+        chooser = new JFileChooser();
         assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser.setup(FileSystemView.getFileSystemView());
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+        chooser.setup(null);
+        assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+
         final File defaultDir = new File("testDir");
         defaultDir.deleteOnExit();
         try {
@@ -124,6 +167,12 @@ public class JFileChooserTest extends SwingTestCase {
             assertEquals(view, chooser.getFileSystemView());
             assertEquals(FileSystemView.getFileSystemView().getDefaultDirectory(), chooser
                     .getCurrentDirectory());
+            chooser.setup(FileSystemView.getFileSystemView());
+            assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
+            chooser.setup(view);
+            assertEquals(view, chooser.getFileSystemView());
+            chooser.setup(null);
+            assertEquals(FileSystemView.getFileSystemView(), chooser.getFileSystemView());
         } catch (Throwable t) {
             defaultDir.delete();
             fail("Detected problem " + t.getMessage());
