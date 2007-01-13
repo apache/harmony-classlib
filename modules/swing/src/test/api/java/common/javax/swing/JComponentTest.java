@@ -2352,7 +2352,12 @@ public class JComponentTest extends SwingTestCase {
      * Class under test for void paintImmediately(Rectangle)
      */
     public void testPaintImmediatelyRectangle() {
-        // TODO
+        try {    
+            new JComponent(){}.paintImmediately(null);    
+            fail("NPE should be thrown"); 
+        } catch (NullPointerException npe) {      
+            // PASSED            
+        }
     }
 
     /*

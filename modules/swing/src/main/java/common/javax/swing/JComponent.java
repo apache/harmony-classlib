@@ -1008,6 +1008,10 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public void paintImmediately(Rectangle rect) {
+        if (rect == null) {
+            throw new NullPointerException();
+        }
+ 
         if (!isShowing()) {
             return;
         }
