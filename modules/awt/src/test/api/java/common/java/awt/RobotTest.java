@@ -159,7 +159,7 @@ public class RobotTest extends TestCase {
     /*
      * Class under test for void Robot(java.awt.GraphicsDevice)
      */
-    public final void testRobotGraphicsDevice() {
+    public final void testRobotGraphicsDevice() throws AWTException {
         try {
             robot = new Robot(new PrintDevice());
         } catch (IllegalArgumentException iae) {
@@ -178,6 +178,14 @@ public class RobotTest extends TestCase {
             exceptionCaught = true;
         }
         assertFalse(exceptionCaught);
+        
+        // Regression test for HARMONY-2442
+        try {
+            new Robot(null);
+            fail("IllegalArgumentException was not thrown"); //$NON-NLS-1$
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
     }
 
     public final void testCreateScreenCapture() {

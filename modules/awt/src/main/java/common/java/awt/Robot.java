@@ -41,7 +41,8 @@ public class Robot {
 
     public Robot(GraphicsDevice screen) throws AWTException {
         Toolkit.checkHeadless();
-        if (screen.getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
+        if ((screen == null)
+                || (screen.getType() != GraphicsDevice.TYPE_RASTER_SCREEN)) {
             // awt.129=Not a screen device
             throw new IllegalArgumentException(Messages.getString("awt.129")); //$NON-NLS-1$
         }
