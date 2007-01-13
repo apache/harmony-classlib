@@ -489,8 +489,6 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
     private char focusAccelerator = '\0';
     // current keymap
     private transient Keymap currentKeyMap;
-    // current accessible of text component
-    private transient AccessibleJTextComponent accessibleContext;
     // current component Orientation
     private boolean componentOrientation;
     // ChangeCaretListener, which was added to current caret (an removed from
