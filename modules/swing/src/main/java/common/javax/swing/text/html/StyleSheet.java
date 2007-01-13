@@ -819,7 +819,7 @@ public class StyleSheet extends StyleContext {
     }
 
     public AttributeSet removeAttributes(final AttributeSet old,
-                                         final Enumeration names) {
+                                         final Enumeration<?> names) {
         return removeAttributes(old, new NameConverterEnumeration(names));
     }
 
