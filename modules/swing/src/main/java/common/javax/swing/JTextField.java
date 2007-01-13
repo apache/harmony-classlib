@@ -342,7 +342,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
     }
 
     public int getScrollOffset() {
-        return (scrollOffsetWasSet) ? scrollOffset : getMaxScrollOffset();
+        return scrollOffset;
     }
 
     public String getUIClassID() {

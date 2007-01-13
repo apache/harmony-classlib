@@ -45,6 +45,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+import javax.swing.text.View;
 
 public class JTextFieldTest extends SwingTestCase {
     String sLTR = "abcd";
@@ -718,6 +719,17 @@ public class JTextFieldTest extends SwingTestCase {
             brmTest(brmBidi, brmBidi_min, jtfBidi.getScrollOffset(), brmBidi_extent,
                     brmBidi_max);
         }
+    }
+
+    // Regression for HARMONY-2627
+    public void testGetScrollOffset() {
+        jtf = new ExtJTextField("abc");
+        final int viewWidth = (int)jtf.getUI().getRootView(jtf)
+                                   .getPreferredSpan(View.X_AXIS);
+
+        assertEquals(viewWidth + 4, jtf.getPreferredSize().width);
+        assertEquals(0, jtf.getScrollOffset());
+        assertEquals(viewWidth + 4 + 1, getInitialScrollOffest(jtf));
     }
 
     public void testSerialization() {
