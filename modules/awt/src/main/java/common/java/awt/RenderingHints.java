@@ -124,12 +124,14 @@ public class RenderingHints implements Map<Object, Object>, Cloneable {
         } else {
             Set<?> entries = m.entrySet();
 
-            Iterator<?> it = entries.iterator();
-            while (it.hasNext()) {
-                Map.Entry<?, ?> entry = (Map.Entry<?, ?>) it.next();
-                Key key = (Key) entry.getKey();
-                Object val = entry.getValue();
-                put(key, val);
+            if (entries != null){
+                Iterator<?> it = entries.iterator();
+                while (it.hasNext()) {
+                    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) it.next();
+                    Key key = (Key) entry.getKey();
+                    Object val = entry.getValue();
+                    put(key, val);
+                }
             }
         }
     }
