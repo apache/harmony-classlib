@@ -48,7 +48,6 @@ public class JPasswordField extends JTextField {
     private static final String uiClassID = "PasswordFieldUI";
     private static final char zeroEcho = '\0';
     private char echoChar = '*';
-    private AccessibleContext accessibleContext;
 
     public JPasswordField() {
         this(null, null, 0);
