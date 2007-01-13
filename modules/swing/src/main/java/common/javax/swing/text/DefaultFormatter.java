@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.io.Serializable;
@@ -30,8 +26,20 @@ import javax.swing.JFormattedTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DocumentFilter.FilterBypass;
 
+/**
+ * <p>
+ * <i>DefaultFormatter</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
+ */
 public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
     implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = 4759164676455607130L;
 
     private boolean commitsOnValidEdit;
     private boolean allowsInvalid = true;
@@ -41,6 +49,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
 
     private class DocumentFilterImpl extends DocumentFilter {
 
+        @Override
         public void insertString(final FilterBypass filterBypass,
                                  final int offset,
                                  final String string,
@@ -55,12 +64,14 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
             }
         }
 
+        @Override
         public void remove(final FilterBypass filterBypass,
                            final int offset, final int length)
                 throws BadLocationException {
             removeImpl(filterBypass, offset, length);
         }
 
+        @Override
         public void replace(final FilterBypass filterBypass,
                             final int offset, final int length,
                             final String text,
@@ -68,7 +79,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
             throws BadLocationException {
             if (overwriteMode) {
                 int strLength = getMaxLengthToRemove(filterBypass, offset,
-                                           Math.max(length, text.length()));
+                        Math.max(length, text != null ? text.length() : 0));
                 replaceImpl(filterBypass, offset, strLength, text, attrs);
             } else {
                 replaceImpl(filterBypass, offset, length, text, attrs);
@@ -181,6 +192,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
 
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
@@ -193,6 +205,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         return commitsOnValidEdit;
     }
 
+    @Override
     protected DocumentFilter getDocumentFilter() {
         if (documentFilter == null) {
             documentFilter = new DocumentFilterImpl();
@@ -216,6 +229,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         this.commitsOnValidEdit = commitsOnValidEdit;
     }
 
+    @Override
     protected void setEditValid(final boolean isEditValid) {
         super.setEditValid(isEditValid);
         SwingUtilities.invokeLater(new Runnable() {
@@ -235,7 +249,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
     }
 
     private Object stringToValue(final String string, final Class valueClass) {
-        return AccessController.doPrivileged(new PrivilegedAction() {
+        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 Constructor constructor = null;
                 try {
@@ -257,6 +271,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
          });
     }
 
+    @Override
     public Object stringToValue(final String string) throws ParseException {
         final Class valueClass = (this.valueClass != null) ? this.valueClass
                 : getTextFieldValueClass();
@@ -270,6 +285,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
        return result;
     }
 
+    @Override
     public String valueToString(final Object value) throws ParseException {
         return value != null ? value.toString() : "";
     }

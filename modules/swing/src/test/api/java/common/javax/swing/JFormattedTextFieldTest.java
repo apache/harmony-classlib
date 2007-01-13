@@ -192,6 +192,17 @@ public class JFormattedTextFieldTest extends SwingTestCase {
         assertNull(factory.getNullFormatter());
     }
 
+    public void testJFormattedTextFieldObject_NullToString() {
+        final Object value = new Object() {
+            @Override
+            public String toString() {
+                return null;
+            }
+        };
+        final JFormattedTextField ftf = new JFormattedTextField(value);
+        assertEquals("", ftf.getText());
+    }
+
     public void testJFormattedTextFieldAbstractFormatter() {
         InternationalFormatter formatter = new InternationalFormatter();
         JFormattedTextField tf1 = new JFormattedTextField(formatter);
