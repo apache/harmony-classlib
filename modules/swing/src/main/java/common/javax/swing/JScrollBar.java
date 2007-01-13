@@ -104,7 +104,6 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
     private static final String classUIID = "ScrollBarUI";
 
     private ChangeListener modelChangeHandler;
-    private EventListenerList listenerList;
     private static final String BLOCK_INCREMENT = "blockIncrement";
     private static final String UNIT_INCREMENT = "unitIncrement";
     private static final String ORIENTATION_PROPERTY = "orientation";
