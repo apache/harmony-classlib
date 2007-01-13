@@ -93,6 +93,9 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
         protected class AccessibleJTreeNode extends AccessibleContext implements Accessible,
                 AccessibleComponent, AccessibleSelection, AccessibleAction {
+                
+            private Accessible accessibleParent;
+            
             public AccessibleJTreeNode(JTree t, TreePath p, Accessible ap)
                     throws NotImplementedException {
                 throw new NotImplementedException();

@@ -49,6 +49,10 @@ public class MetalScrollBarUI extends BasicScrollBarUI {
     protected MetalScrollButton decreaseButton;
     protected int scrollBarWidth;
     protected boolean isFreeStanding;
+    
+    // We need to hide these fields
+    private Color thumbColor;
+    private Color thumbHighlightColor;
 
     protected void paintTrack(final Graphics g, final JComponent c, final Rectangle r) {
         Color old = g.getColor();
