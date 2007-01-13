@@ -117,10 +117,7 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
                 : accessibleContext;
     }
 
-    public JMenu getMenu(int index) {
-        if (index < 0 || index >= getMenuCount()) {
-            return null;
-        }
+    public JMenu getMenu(int index) {        
         Component c = getComponent(index);
         return (c instanceof JMenu) ? (JMenu) c : null;
     }

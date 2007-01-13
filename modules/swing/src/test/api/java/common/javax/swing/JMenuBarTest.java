@@ -149,6 +149,14 @@ public class JMenuBarTest extends SwingTestCase {
         assertEquals(menu1, menuBar.getMenu(0));
         assertEquals(menu2, menuBar.getMenu(1));
         assertNull(menuBar.getMenu(2));
+
+        try {         
+            JMenuBar jm = new JMenuBar();
+            jm.getMenu(0);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {    
+            // PASSED            
+        }
     }
 
     /*
