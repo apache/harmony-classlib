@@ -26,6 +26,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
 public class BasicComboBoxRendererTest extends SwingTestCase {
@@ -53,6 +54,10 @@ public class BasicComboBoxRendererTest extends SwingTestCase {
         assertEquals(BasicComboBoxRenderer.noFocusBorder, new BasicComboBoxRenderer()
                 .getBorder());
         assertEquals("", renderer.getText());
+        // Regression test for HARMONY-2646 
+        assertEquals(SwingConstants.LEADING, new BasicComboBoxRenderer()
+                .getHorizontalAlignment()); 
+        
     }
 
     public void testGetListCellRendererComponent() throws Exception {
