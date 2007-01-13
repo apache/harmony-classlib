@@ -24,6 +24,8 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import org.apache.harmony.x.swing.Utilities;
+
 public class CompoundEdit extends AbstractUndoableEdit {
 
     protected Vector<UndoableEdit> edits = new Vector<UndoableEdit>();
@@ -108,7 +110,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
 
         if (last != null) {
             String name = last.getPresentationName();
-            if (name.length() != 0) {
+            if (!Utilities.isEmptyString(name)) {
                 return name;
             }
         }

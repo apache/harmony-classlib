@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing.undo;
 
 import javax.swing.BasicSwingTestCase;
@@ -364,6 +360,24 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         ce.addEdit(new TestUndoableEdit(TestUndoableEdit.NAME));
         assertEquals(String.valueOf(1), ce.getPresentationName());
         ce.addEdit(new TestUndoableEdit());
+        assertEquals("", ce.getPresentationName());
+    }
+
+    /**
+     * Tests that if <code>getPresentationName</code> of the last edit returns
+     * <code>null</code>, the result is empty string.
+     * 
+     */
+    // Regression for HARMONY-2603
+    public void testGetPresentationName03() {
+        ce.addEdit(new TestUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return null;
+            }
+        });
         assertEquals("", ce.getPresentationName());
     }
 
