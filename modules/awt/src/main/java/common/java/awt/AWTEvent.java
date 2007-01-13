@@ -292,7 +292,8 @@ public abstract class AWTEvent extends EventObject {
         }
 
         long getEventMask(AWTEvent event) {
-            return getEventDescriptor(event).eventMask;
+            final EventDescriptor ed = getEventDescriptor(event);
+            return ed == null ? -1 : ed.eventMask;
         }
     }
 

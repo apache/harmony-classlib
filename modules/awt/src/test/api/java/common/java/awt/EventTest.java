@@ -173,4 +173,18 @@ public class EventTest extends TestCase {
         assertTrue(evt.shiftDown());
     }
 
+    public void testDispatchEvent() {
+        // Regression test for HARMONY-2460
+        new MenuItem().dispatchEvent(new AWTEventImpl(new Button(), 1));
+    }
+
+    class AWTEventImpl extends AWTEvent {
+        public AWTEventImpl(Object source, int id) {
+            super(source, id);
+        }
+    }
+    
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(EventTest.class);
+    }
 }
