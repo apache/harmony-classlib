@@ -16,6 +16,7 @@ Import-Package: java.io,
  java.lang.reflect,
  java.security,
  java.util,
+ java.util.logging,
  javax.management,
  javax.management.modelmbean,
  javax.management.openmbean
