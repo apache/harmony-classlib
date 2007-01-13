@@ -61,6 +61,9 @@ public class BasicSeparatorUI extends SeparatorUI {
     }
 
     protected void uninstallDefaults(final JSeparator s) {
+        if (s == null) {
+            return;
+        }
         Utilities.uninstallColorsAndFont(s);
     }
 

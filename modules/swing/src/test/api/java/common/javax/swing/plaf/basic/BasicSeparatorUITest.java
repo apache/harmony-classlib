@@ -92,4 +92,22 @@ public class BasicSeparatorUITest extends SwingTestCase {
      */
     public void testInstallUninstallListeners() {
     }
+    
+    /**
+     * Auxiliary class for testUninstallDefaults()
+     * */
+    class BasicSeparatorUIForTest extends BasicSeparatorUI
+    {
+        public void uninstallDefaults(JSeparator s){
+            super.uninstallDefaults(s);
+        }
+    }
+
+    /**
+     * Regression test for HARMONY-2636
+     * */
+    public void testUninstallDefaults() throws NullPointerException {
+        BasicSeparatorUIForTest localBasicSeparatorUI = new BasicSeparatorUIForTest();
+        localBasicSeparatorUI.uninstallDefaults(null);
+    }
 }
