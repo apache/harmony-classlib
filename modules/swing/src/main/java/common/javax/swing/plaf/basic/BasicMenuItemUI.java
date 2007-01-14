@@ -303,6 +303,9 @@ public class BasicMenuItemUI extends MenuItemUI {
     }
 
     public Dimension getMinimumSize(final JComponent c) {
+        if (c == null) {
+            throw new NullPointerException("component is null");
+        }
         return null;
     }
 
@@ -311,6 +314,9 @@ public class BasicMenuItemUI extends MenuItemUI {
     }
 
     public Dimension getMaximumSize(final JComponent c) {
+        if (c == null) {
+            throw new NullPointerException("component is null");
+        }
         return null;
     }
 

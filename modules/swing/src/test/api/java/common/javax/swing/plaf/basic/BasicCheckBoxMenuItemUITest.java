@@ -64,4 +64,22 @@ public class BasicCheckBoxMenuItemUITest extends BasicMenuItemUITest {
      */
     public void testProcessMouseEvent() {
     }
+
+    /*
+     * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.getMinimumSize(null)/getMaximumSize(null)'
+     */
+    public void testGetSizes() {
+        try { //Regression test for HARMONY-2695
+            checkBoxUI.getMinimumSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try { //Regression test for HARMONY-2695
+            checkBoxUI.getMaximumSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 }

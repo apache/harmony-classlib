@@ -122,6 +122,18 @@ public class BasicMenuItemUITest extends SwingTestCase {
         assertEquals(menuItemUI.getPreferredMenuItemSize(item, menuItemUI.checkIcon,
                 menuItemUI.arrowIcon, menuItemUI.defaultTextIconGap), menuItemUI
                 .getPreferredSize(item));
+        try { //Regression test for HARMONY-2695
+            menuItemUI.getMinimumSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try { //Regression test for HARMONY-2695
+            menuItemUI.getMaximumSize(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /*

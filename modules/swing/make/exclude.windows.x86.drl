@@ -76,7 +76,6 @@ javax/swing/ProgressMonitorInputStreamTest.java
 javax/swing/SortingFocusTraversalPolicyRTest.java
 javax/swing/SwingUtilitiesRTest.java
 javax/swing/SwingUtilitiesTest.java
-javax/swing/plaf/basic/BasicCheckBoxMenuItemUITest.java
 javax/swing/plaf/basic/BasicComboPopupTest.java
 javax/swing/plaf/basic/BasicEditorPaneUITest.java
 javax/swing/plaf/basic/BasicGraphicsUtilsTest.java
