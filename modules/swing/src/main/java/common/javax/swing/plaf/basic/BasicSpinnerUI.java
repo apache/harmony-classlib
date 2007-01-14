@@ -264,6 +264,9 @@ public class BasicSpinnerUI extends SpinnerUI {
     }
 
     protected void installNextButtonListeners(final Component c) {
+        if (!(c instanceof JButton)) {
+            return;
+        }
         JButton next = (JButton)c;
         next.addMouseListener(buttonHandler);
         next.addActionListener(buttonHandler);
@@ -271,6 +274,9 @@ public class BasicSpinnerUI extends SpinnerUI {
     }
 
     protected void installPreviousButtonListeners(final Component c) {
+        if (!(c instanceof JButton)) {
+            return;
+        }
         JButton previous = (JButton)c;
         previous.addMouseListener(buttonHandler);
         previous.addActionListener(buttonHandler);

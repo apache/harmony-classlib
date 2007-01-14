@@ -23,6 +23,7 @@ package javax.swing.plaf.basic;
 import java.awt.Component;
 import java.util.Arrays;
 import javax.swing.BasicSwingTestCase;
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SwingConstants;
 
@@ -76,5 +77,31 @@ public class BasicSpinnerUITest extends BasicSwingTestCase {
         ui.spinner = spinner;
         Component editor = ui.createEditor();
         assertSame(editor, spinner.getEditor());
+    }
+    
+    /**
+     * Regression test for HARMONY-2716 
+     * */
+    public void testInstallNextButtonListeners() throws ClassCastException {
+        BasicSpinnerUIForTest localBasicSpinnerUI = new BasicSpinnerUIForTest(); 
+        localBasicSpinnerUI.installNextButtonListeners(new JLabel()); 
+    } 
+
+    /**
+     * Regression test for HARMONY-2716 
+     * */
+    public void testInstallPreviousButtonListeners() throws ClassCastException {
+        BasicSpinnerUIForTest localBasicSpinnerUI = new BasicSpinnerUIForTest(); 
+        localBasicSpinnerUI.installPreviousButtonListeners(new JLabel()); 
+    } 
+
+    class BasicSpinnerUIForTest extends BasicSpinnerUI { 
+        public void installNextButtonListeners(Component c){ 
+            super.installNextButtonListeners(c); 
+        } 
+            
+        public void installPreviousButtonListeners(Component c){ 
+            super.installPreviousButtonListeners(c); 
+        } 
     }
 }
