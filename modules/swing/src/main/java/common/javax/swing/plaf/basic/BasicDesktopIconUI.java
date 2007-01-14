@@ -127,7 +127,10 @@ public class BasicDesktopIconUI extends DesktopIconUI {
     }
 
     public Insets getInsets(final JComponent c) {
-//        return desktopIcon.getInsets();
+        if (c == null) {
+            throw new NullPointerException("component is null");
+        }
+        //return desktopIcon.getInsets();
         return new Insets(INSETS_WIDTH, INSETS_WIDTH,
                 INSETS_WIDTH, INSETS_WIDTH);
     }

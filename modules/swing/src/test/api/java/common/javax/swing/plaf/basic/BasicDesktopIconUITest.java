@@ -128,6 +128,12 @@ public class BasicDesktopIconUITest extends SwingTestCase {
         Insets insets = ui.getInsets(icon);
         assertTrue("not null", insets != null);
         assertEquals("ok", validInsets, insets);
+        try { //Regression test for HARMONY-2664
+            ui.getInsets(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /*
