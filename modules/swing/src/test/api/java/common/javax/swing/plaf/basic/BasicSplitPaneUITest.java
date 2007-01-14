@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.Canvas;
@@ -154,6 +150,11 @@ public class BasicSplitPaneUITest extends SwingTestCase {
         assertEquals(-1, ui.getLastDragLocation());
         ui.setLastDragLocation(40);
         assertEquals(40, ui.getLastDragLocation());
+    }
+
+    // Regression for HARMONY-2771
+    public void testGetLastDragLocation() throws Exception {
+        assertEquals(0, new BasicSplitPaneUI().getLastDragLocation());
     }
 
     public void testGetDivider() throws Exception {

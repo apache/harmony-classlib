@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Canvas;
@@ -47,7 +41,6 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.SplitPaneUI;
 
 import org.apache.harmony.x.swing.Utilities;
-
 
 public class BasicSplitPaneUI extends SplitPaneUI {
 
@@ -391,10 +384,12 @@ public class BasicSplitPaneUI extends SplitPaneUI {
     }
 
     public class FocusHandler extends FocusAdapter {
+        @Override
         public void focusGained(final FocusEvent ev) {
             divider.repaint();
         }
 
+        @Override
         public void focusLost(final FocusEvent ev) {
             divider.repaint();
         }
@@ -502,7 +497,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
     private boolean isContinuousLayout;
     private int orientation;
-    private int lastDragLocation = -1;
+    private int lastDragLocation;
     private int dividerLocation;
     private boolean isDisplayed;
 
@@ -510,6 +505,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         return new BasicSplitPaneUI();
     }
 
+    @Override
     public void installUI(final JComponent c) {
         splitPane = (JSplitPane)c;
 
@@ -524,6 +520,8 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
         divider.oneTouchExpandableChanged();
         resetToPreferredSizes(getSplitPane());
+
+        setLastDragLocation(-1);
     }
 
     protected void installDefaults() {
@@ -564,6 +562,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         BasicSplitPaneKeyboardActions.installKeyboardActions(splitPane);
     }
 
+    @Override
     public void uninstallUI(final JComponent c) {
         splitPane = (JSplitPane)c;
 
@@ -657,6 +656,11 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
     protected Component createDefaultNonContinuousLayoutDivider() {
         return new Canvas() {
+            // Note: this is not a guaratee for correct serialization/deserialization
+            // but rather a performace optimization
+            private static final long serialVersionUID = 1L;
+
+            @Override
             public void paint(final Graphics g) {
                 Color oldColor = g.getColor();
                 g.setColor(Color.DARK_GRAY);
@@ -704,15 +708,18 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         return new BasicSplitPaneDivider(this);
     }
 
+    @Override
     public void resetToPreferredSizes(final JSplitPane jc) {
         layoutManager.resetToPreferredSizes();
         splitPane.repaint();
     }
 
+    @Override
     public void setDividerLocation(final JSplitPane jc, final int location) {
         splitPane.revalidate();
     }
 
+    @Override
     public int getDividerLocation(final JSplitPane jc) {
         if (jc == null) { // Fix for HARMONY-2661, for compatibility with RI
             throw new NullPointerException("jc is null");
@@ -720,6 +727,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         return dividerLocation;
     }
 
+    @Override
     public int getMinimumDividerLocation(final JSplitPane jc) {
         if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
             return jc.getLeftComponent() == null ? 0 : jc.getLeftComponent().getMinimumSize().width + jc.getInsets().left;
@@ -728,6 +736,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         }
     }
 
+    @Override
     public int getMaximumDividerLocation(final JSplitPane jc) {
         Insets insets = jc.getInsets();
         if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
@@ -741,6 +750,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         }
     }
 
+    @Override
     public void finishedPaintingChildren(final JSplitPane jc, final Graphics g) {
         g.setClip(0, 0, jc.getWidth(), jc.getHeight());
         if (!isContinuousLayout() && lastDragLocation != -1) {
@@ -748,22 +758,26 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         }
     }
 
+    @Override
     public void paint(final Graphics g, final JComponent jc) {
         isDisplayed = true;
     }
 
+    @Override
     public Dimension getPreferredSize(final JComponent jc) {
         return ((layoutManager != null)
                 ? layoutManager.preferredLayoutSize(jc)
                 : new Dimension(0, 0));
     }
 
+    @Override
     public Dimension getMinimumSize(final JComponent jc) {
         return ((layoutManager != null)
                 ? layoutManager.minimumLayoutSize(jc)
                 : new Dimension(0, 0));
     }
 
+    @Override
     public Dimension getMaximumSize(final JComponent jc) {
         return ((layoutManager != null)
                 ? layoutManager.maximumLayoutSize(jc)
