@@ -157,7 +157,7 @@ public abstract class LookAndFeel {
     }
 
     public static void uninstallBorder(final JComponent comp) {
-        if (Utilities.isUIResource(comp.getBorder())) {
+        if (comp != null && Utilities.isUIResource(comp.getBorder())) {
             comp.setBorder(null);
         }
     }

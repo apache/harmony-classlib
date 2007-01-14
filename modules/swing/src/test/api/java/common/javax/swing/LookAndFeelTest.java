@@ -156,7 +156,7 @@ public class LookAndFeelTest extends SwingTestCase {
         assertEquals(UIManager.get("CheckBox.font"), label.getFont());
     }
 
-    public void testInstallUninstallBorder() {
+    public void testInstallUninstallBorder() throws NullPointerException {
         lf = new MetalLookAndFeel();
         JPanel p = new JPanel();
         UIDefaults defaults = lf.getDefaults();
@@ -170,6 +170,16 @@ public class LookAndFeelTest extends SwingTestCase {
         assertEquals(UIManager.get("Menu.border"), p.getBorder());
         LookAndFeel.uninstallBorder(p);
         assertNull(p.getBorder());
+
+        BasicMenuBarUIExt m = 
+            new BasicMenuBarUIExt();
+        m.uninstallDefaults(); 
+    }
+
+    class BasicMenuBarUIExt extends javax.swing.plaf.basic.BasicMenuBarUI {
+        public void uninstallDefaults() {
+            super.uninstallDefaults();
+        }
     }
 
     public void testLoadKeyBindings() {
