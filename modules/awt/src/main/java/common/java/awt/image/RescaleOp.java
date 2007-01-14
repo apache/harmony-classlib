@@ -45,11 +45,6 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
     public RescaleOp(float[] scaleFactors, float[] offsets, RenderingHints hints) {
         int numFactors = Math.min(scaleFactors.length, offsets.length);
 
-        if (numFactors == 0) {
-            // awt.21C=The number of scale factors should not be zero 
-            throw new IllegalArgumentException(Messages.getString("awt.21C")); //$NON-NLS-1$
-        }
-
         this.scaleFactors = new float[numFactors];
         this.offsets = new float[numFactors];
 

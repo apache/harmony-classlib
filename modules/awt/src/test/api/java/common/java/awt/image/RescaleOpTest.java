@@ -21,6 +21,15 @@ package java.awt.image;
 import junit.framework.TestCase;
 
 public class RescaleOpTest extends TestCase {
+    // Regression test for HARMONY-2691
+    public void testRescaleOp() throws IllegalArgumentException {
+        new RescaleOp(new float[] {}, new float[] {0.75F}, null);
+    }
+    // Regression test for HARMONY-2691
+    public void testRescaleOp2() throws IllegalArgumentException {
+        new RescaleOp(new float[] {0.75F}, new float[] {}, null);
+    }
+
     // A regression test for harmony-2689
     public void test_getOffsetsNullLength()
     {
