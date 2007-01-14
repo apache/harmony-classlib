@@ -136,11 +136,11 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
 
     //used by mouseClicked method
     private static final transient AWTTextAction SELECT_WORD_ACTION =
-        (AWTTextAction)ActionSet.actionMap.get(ActionNames.selectWordAction);
+        ActionSet.actionMap.get(ActionNames.selectWordAction);
 
     //used by mouseClicked method
     private static final transient AWTTextAction SELECT_LINE_ACTION =
-        (AWTTextAction)ActionSet.actionMap.get(ActionNames.selectLineAction);
+        ActionSet.actionMap.get(ActionNames.selectLineAction);
 
     Point magicCaretPosition;
 
@@ -361,14 +361,17 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
             caret = dc;
         }
 
+        @Override
         public Caret getCaret() {
             return caret;
         }
 
+        @Override
         public void setDot(final int i, final Bias b) {
             caret.internalSetDot(i, b);
         }
 
+        @Override
         public void moveDot(final int i, final Bias b) {
             caret.internalMoveDot(i, b);
         }
@@ -412,9 +415,9 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
     }
 
     protected void adjustVisibility(final Rectangle r) {
-        textKit.scrollRectToVisible(new Rectangle(r.x, r.y,
-                                                    r.width + 1,
-                                                    r.height));
+        if (r != null) {
+            textKit.scrollRectToVisible(new Rectangle(r.x, r.y, r.width + 1, r.height));
+        }
     }
 
     /**
@@ -517,6 +520,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         textKit = null;
     }
 
+    @Override
     public boolean equals(final Object obj) {
         return this == obj;
     }
@@ -580,8 +584,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
     }
 
     public ChangeListener[] getChangeListeners() {
-        return (ChangeListener[])listenerList
-                .getListeners(ChangeListener.class);
+        return listenerList.getListeners(ChangeListener.class);
 
     }
 
@@ -936,8 +939,8 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
             }
         }
 
-        blinkTimer = (Timer)createTimer(false, 0);
-        magicTimer = (Timer)createTimer(true, 0);
+        blinkTimer = createTimer(false, 0);
+        magicTimer = createTimer(true, 0);
 
         triangleX = new int[APEX_NUMBER];
         triangleY = new int[APEX_NUMBER];
@@ -1072,6 +1075,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      *     System.out.println(textArea.getCaret());
      *     System.out.println(textArea.getCaret().getClass().getName());
      */
+    @Override
     public String toString() {
         return "Dot=(" + dot + ", " + dotBias.toString() + ") " + "Mark=("
                + mark + ", " + markBias.toString() + ")";

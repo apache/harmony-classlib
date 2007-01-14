@@ -459,6 +459,12 @@ public class DefaultCaretTest extends SwingTestCase {
         assertEquals(1, ((ExtJTextArea) jta).flag);
     }
 
+    // Regression for HARMONY-2780
+    public void testAdjustVisibilityNull() {
+        new DefaultCaret().adjustVisibility(null);
+        // No exception is expected
+    }
+
     public void testFireStateChanged() {
         SimpleChangeListenerForFire CHL1 = new SimpleChangeListenerForFire("L1");
         SimpleChangeListenerForFire CHL2 = new SimpleChangeListenerForFire("L2");
