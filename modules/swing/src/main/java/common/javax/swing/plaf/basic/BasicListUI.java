@@ -432,6 +432,10 @@ public class BasicListUI extends ListUI {
     }
 
     public int locationToIndex(final JList list, final Point location) {
+        if (location == null) {
+            throw new NullPointerException();
+        }
+
         layouter.setList(list);
         maybeUpdateLayoutState();
 

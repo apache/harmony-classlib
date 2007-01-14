@@ -372,6 +372,15 @@ public class BasicListUITest extends SwingTestCase {
         assertEquals(0, ui.locationToIndex(list, new Point(3, 25)));
         assertEquals(1, ui.locationToIndex(list, new Point(50, 3)));
         assertEquals(1, ui.locationToIndex(list, new Point(50, 25)));
+
+        try {     
+            BasicListUI localBasicListUI = new BasicListUI();
+            javax.swing.JList localJList = new javax.swing.JList();
+            localBasicListUI.locationToIndex(localJList, null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {    
+            // PASSED          
+        }
     }
 
     public void testMaybeUpdateLayoutState() throws Exception {
