@@ -82,7 +82,8 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
             scaleFactors = new float[this.scaleFactors.length];
         }
 
-        System.arraycopy(this.scaleFactors, 0, scaleFactors, 0, this.scaleFactors.length);
+        int minLength = Math.min(scaleFactors.length, this.scaleFactors.length);
+        System.arraycopy(this.scaleFactors, 0, scaleFactors, 0, minLength);
         return scaleFactors;
     }
 
@@ -91,7 +92,8 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
             offsets = new float[this.offsets.length];
         }
 
-        System.arraycopy(this.offsets, 0, offsets, 0, this.offsets.length);
+        int minLength = Math.min(offsets.length, this.offsets.length);
+        System.arraycopy(this.offsets, 0, offsets, 0, minLength);
         return offsets;
     }
 
