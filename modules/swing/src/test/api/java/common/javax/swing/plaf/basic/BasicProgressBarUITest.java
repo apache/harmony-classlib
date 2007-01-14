@@ -128,10 +128,19 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         assertEquals(ui.getPreferredInnerHorizontal().height, inner.height);
     }
 
-    public void testAnimation() {
+    public void testAnimation() throws ArithmeticException {
         ui.installUI(progressBar);
         progressBar.setIndeterminate(true);
         assertEquals(0, ui.getAnimationIndex());
+        ui.setAnimationIndex(5);
+        assertEquals(5, ui.getAnimationIndex());
+
+        try { //Regression test for HARMONY-2699
+            new BasicProgressBarUI().setAnimationIndex(5);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
     
     /**

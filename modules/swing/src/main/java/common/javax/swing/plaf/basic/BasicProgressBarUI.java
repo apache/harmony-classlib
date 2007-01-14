@@ -337,6 +337,9 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected void setAnimationIndex(final int newValue) {
+        if (progressBar == null) {
+            throw new NullPointerException("progressBar is null");
+        }
         animationIndex = newValue % maxAnimationIndex;
     }
 
