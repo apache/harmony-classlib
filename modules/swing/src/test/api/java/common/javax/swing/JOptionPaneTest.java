@@ -695,6 +695,8 @@ public class JOptionPaneTest extends SwingTestCase {
 
     public void testGetOptions() {
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
+
+        assertNull(new JOptionPane().getOptions());
     }
 
     public void testSetInitialValue() {

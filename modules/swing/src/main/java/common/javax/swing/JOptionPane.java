@@ -487,7 +487,7 @@ public class JOptionPane extends JComponent implements Accessible {
     }
 
     public Object[] getOptions() {
-        return (options != null) ? (Object[])options.clone() : new Object[0];
+        return ((options != null) ? ((Object[]) options.clone()) : null);
     }
 
     public void setInitialValue(final Object newValue) {
