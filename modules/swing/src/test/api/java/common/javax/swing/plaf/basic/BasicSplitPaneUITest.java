@@ -290,6 +290,15 @@ public class BasicSplitPaneUITest extends SwingTestCase {
         assertEquals(20, ui.getDividerLocation(splitPane));
     }
 
+    public void testGetDividerLocation() throws Exception {
+        try { // Regression test for HARMONY-2661
+            ui.getDividerLocation(null);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
     public void testInitialLocation() throws Exception {
         splitPane.setSize(1000, 2000);
         splitPane.setBorder(BorderFactory.createEmptyBorder(5, 10, 15, 20));

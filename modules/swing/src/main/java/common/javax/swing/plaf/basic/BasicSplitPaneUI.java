@@ -714,6 +714,9 @@ public class BasicSplitPaneUI extends SplitPaneUI {
     }
 
     public int getDividerLocation(final JSplitPane jc) {
+        if (jc == null) { // Fix for HARMONY-2661, for compatibility with RI
+            throw new NullPointerException("jc is null");
+        }
         return dividerLocation;
     }
 
