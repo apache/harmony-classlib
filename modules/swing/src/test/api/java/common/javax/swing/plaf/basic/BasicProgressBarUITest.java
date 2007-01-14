@@ -133,4 +133,22 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         progressBar.setIndeterminate(true);
         assertEquals(0, ui.getAnimationIndex());
     }
+
+    public void testStartStop() throws NullPointerException {
+        BasicProgressBarUIExt pb = new BasicProgressBarUIExt();
+        pb.startAnimationTimer(); 
+
+        pb = new BasicProgressBarUIExt();
+        pb.stopAnimationTimer(); 
+    }
+    
+    class BasicProgressBarUIExt extends BasicProgressBarUI {
+        public void startAnimationTimer() {
+            super.startAnimationTimer();
+        }
+        
+        public void stopAnimationTimer() {
+            super.stopAnimationTimer();
+        }
+    }
 }

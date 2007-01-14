@@ -208,11 +208,15 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected void startAnimationTimer() {
-        animationTimer.start();
+        if (animationTimer != null) {
+            animationTimer.start();
+        }
     }
 
     protected void stopAnimationTimer() {
-        animationTimer.stop();
+        if (animationTimer != null) {
+            animationTimer.stop();
+        }
     }
 
     protected Dimension getPreferredInnerHorizontal() {
