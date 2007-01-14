@@ -26,8 +26,8 @@ import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class SpringLayout implements LayoutManager2 {
     public static class Constraints {
@@ -270,25 +270,28 @@ public class SpringLayout implements LayoutManager2 {
             this.component = component;
         }
 
+        @Override
         public int getMinimumValue() {
             return getSpring().getMinimumValue();
         }
 
+        @Override
         public int getPreferredValue() {
             return getSpring().getPreferredValue();
         }
 
+        @Override
         public int getMaximumValue() {
             return getSpring().getMaximumValue();
         }
 
+        @Override
         public int getValue() {
             final Spring s = getSpring();
             if (layout.calculatedSprings.containsKey(s)) {
-                return ((Integer)layout.calculatedSprings.get(s)).intValue();
+                return layout.calculatedSprings.get(s).intValue();
             }
             if (layout.markedSprings.contains(s)) {
-                printCycles();
                 return 0;
             }
             layout.markedSprings.add(s);
@@ -297,16 +300,17 @@ public class SpringLayout implements LayoutManager2 {
             return value;
         }
 
+        @Override
         public void setValue(final int value) {
             final Spring s = getSpring();
             if (layout.markedSprings.contains(s)) {
-                printCycles();
                 return;
             }
             layout.markedSprings.add(s);
             s.setValue(value);
         }
 
+        @Override
         public String toString() {
             String edgeName;
             switch (edgeType) {
@@ -347,13 +351,6 @@ public class SpringLayout implements LayoutManager2 {
                 return null;
             }
         }
-
-        private void printCycles() {
-            final Iterator iterator = layout.markedSprings.iterator();
-            while (iterator.hasNext()) {
-                System.err.println(iterator.next() + " is cyclic.");
-            }
-        }
     }
 
     public static final String WEST = "West";
@@ -369,9 +366,9 @@ public class SpringLayout implements LayoutManager2 {
     private static final byte WIDTH = 4;
     private static final byte HEIGHT = 5;
 
-    private Map calculatedSprings = new HashMap();
-    private Map constraintsMap = new HashMap();
-    private HashSet markedSprings = new HashSet();
+    private Map<Spring, Integer> calculatedSprings = new HashMap<Spring, Integer>();
+    private Map<Component, Constraints> constraintsMap = new HashMap<Component, Constraints>();
+    private Set<Spring> markedSprings = new HashSet<Spring>();
 
     public SpringLayout() {
     }
@@ -431,7 +428,7 @@ public class SpringLayout implements LayoutManager2 {
     public void addLayoutComponent(final Component component,
                                    final Object constraints) {
         if (constraints != null && constraints instanceof Constraints) {
-            constraintsMap.put(component, constraints);
+            constraintsMap.put(component, (Constraints)constraints);
         }
     }
 
@@ -482,9 +479,9 @@ public class SpringLayout implements LayoutManager2 {
     }
 
     public Constraints getConstraints(final Component component) {
-        Constraints constraints = (Constraints)constraintsMap.get(component);
+        Constraints constraints = constraintsMap.get(component);
         if (constraints != null) {
-            return (Constraints) constraints;
+            return constraints;
         }
 
         constraints = new Constraints(Spring.constant(0),
@@ -554,7 +551,7 @@ public class SpringLayout implements LayoutManager2 {
             calculatedSprings.put(s, new Integer(value));
             return value;
         }
-        return ((Integer)calculatedSprings.get(s)).intValue();
+        return calculatedSprings.get(s).intValue();
     }
 
     private void initTargetConstrains(final Container target,

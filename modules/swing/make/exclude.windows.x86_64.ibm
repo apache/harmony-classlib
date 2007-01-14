@@ -8,7 +8,6 @@ javax/swing/JFormattedTextField_CommitActionRTest.java
 javax/swing/JInternalFrame_MultithreadedTest.java
 javax/swing/JTextField_NotifyActionRTest.java
 javax/swing/ProgressMonitorTest.java
-javax/swing/SpringTest.java
 javax/swing/plaf/basic/BasicDesktopPaneUIActionsTest.java
 javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java
 javax/swing/plaf/basic/BasicOptionPaneUITest.java
