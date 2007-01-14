@@ -14,15 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.BasicSwingTestCase;
@@ -186,6 +183,36 @@ public class BoxView_WithChildrenTest extends BasicSwingTestCase implements Docu
         assertEquals(new Rectangle(getChildX(1), getChildY(1), getWidth(1), getHeight(1)),
                 alloc);
     }
+
+    // Regression test for HARMONY-2776
+    public void testChildAllocationNull() throws Exception {
+        final Marker marker = new Marker();
+        view = new BoxView(root, Y_AXIS) {
+            @Override
+            protected void childAllocation(int index, Rectangle alloc) {
+                marker.setOccurred();
+                super.childAllocation(index, alloc);
+            }
+
+            @Override
+            protected Rectangle getInsideAllocation(Shape shape) {
+                return null;
+            }
+        };
+        view.loadChildren(factory);
+        view.layout(shape.width, shape.height);
+        assertTrue(view.isLayoutValid(X_AXIS) && view.isLayoutValid(Y_AXIS));
+        assertNull(view.getChildAllocation(0, null));
+        assertFalse(marker.isOccurred());
+        try {
+            view.getChildAllocation(0, shape);
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        assertTrue(marker.isOccurred());
+    }
+    
 
     public void testFlipEastAndWestAtEnds() {
         assertEquals(Y_AXIS, view.getAxis());

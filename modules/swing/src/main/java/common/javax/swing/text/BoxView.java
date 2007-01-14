@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.awt.Component;
@@ -32,7 +28,6 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.x.swing.SizeRequirementsHelper;
 import org.apache.harmony.x.swing.Utilities;
-
 
 public class BoxView extends CompositeView {
     private static final int[] EMPTY_INT_ARRAY = new int[0];
@@ -67,6 +62,7 @@ public class BoxView extends CompositeView {
         majorAxis = axis;
     }
 
+    @Override
     public float getAlignment(final int axis) {
         isAxisValid(axis);
 
@@ -77,25 +73,29 @@ public class BoxView extends CompositeView {
         return majorAxis;
     }
 
+    @Override
     public Shape getChildAllocation(final int index, final Shape shape) {
-        if (isLayoutValid()) {
-            return super.getChildAllocation(index, shape);
+        if (shape == null || !isLayoutValid()) {
+            return null;
         }
-        return null;
+        return super.getChildAllocation(index, shape);
     }
 
+    @Override
     public float getMinimumSpan(final int axis) {
         isAxisValid(axis);
 
         return getTotalRequirements(axis).minimum + getSideInset(axis);
     }
 
+    @Override
     public float getPreferredSpan(final int axis)  {
         isAxisValid(axis);
 
         return getTotalRequirements(axis).preferred + getSideInset(axis);
     }
 
+    @Override
     public float getMaximumSpan(final int axis) {
         isAxisValid(axis);
 
@@ -103,6 +103,7 @@ public class BoxView extends CompositeView {
                                     getSideInset(axis));
     }
 
+    @Override
     public int getResizeWeight(final int axis) {
         isAxisValid(axis);
 
@@ -118,6 +119,7 @@ public class BoxView extends CompositeView {
         }
     }
 
+    @Override
     public void paint(final Graphics g, final Shape shape) {
         final Rectangle insideAlloc = getInsideAllocation(shape);
         final Rectangle allocation = new Rectangle();
@@ -132,6 +134,7 @@ public class BoxView extends CompositeView {
         }
     }
 
+    @Override
     public void preferenceChanged(final View child,
                                   final boolean width,
                                   final boolean height) {
@@ -140,6 +143,7 @@ public class BoxView extends CompositeView {
         super.preferenceChanged(child, width, height);
     }
 
+    @Override
     public void replace(final int index, final int length, final View[] elems) {
         super.replace(index, length, elems);
 
@@ -162,6 +166,7 @@ public class BoxView extends CompositeView {
         invalidateLayout(true, true);
     }
 
+    @Override
     public void setSize(final float width, final float height) {
         layout((int)(width - getSideInset(X_AXIS)),
                (int)(height - getSideInset(Y_AXIS)));
@@ -175,6 +180,7 @@ public class BoxView extends CompositeView {
         return boxHeight;
     }
 
+    @Override
     public Shape modelToView(final int pos, final Shape shape,
                              final Bias bias) throws BadLocationException {
         final Rectangle bounds = shape.getBounds();
@@ -182,6 +188,7 @@ public class BoxView extends CompositeView {
         return super.modelToView(pos, shape, bias);
     }
 
+    @Override
     public int viewToModel(final float x, final float y,
                            final Shape shape, final Bias[] bias) {
         final Rectangle bounds = shape.getBounds();
@@ -232,11 +239,8 @@ public class BoxView extends CompositeView {
         return result;
     }
 
+    @Override
     protected void childAllocation(final int index, final Rectangle alloc) {
-        if (alloc == null) {
-            return;
-        }
-
         if (isLayoutValid()) {
             alloc.x += getOffset(X_AXIS, index);
             alloc.y += getOffset(Y_AXIS, index);
@@ -248,6 +252,7 @@ public class BoxView extends CompositeView {
         }
     }
 
+    @Override
     protected boolean flipEastAndWestAtEnds(final int position,
                                             final Bias bias) {
         if (isMajor(X_AXIS)) {
@@ -261,6 +266,7 @@ public class BoxView extends CompositeView {
                && ((CompositeView)child).flipEastAndWestAtEnds(position, bias);
     }
 
+    @Override
     protected void forwardUpdate(final ElementChange change,
                                  final DocumentEvent event,
                                  final Shape shape,
@@ -298,6 +304,7 @@ public class BoxView extends CompositeView {
                              : minorSpans[childIndex];
     }
 
+    @Override
     protected View getViewAtPoint(final int x, final int y,
                                   final Rectangle alloc) {
         final int location = isMajor(Y_AXIS) ? y - alloc.y : x - alloc.x;
@@ -321,11 +328,13 @@ public class BoxView extends CompositeView {
         return null;
     }
 
+    @Override
     protected boolean isBefore(final int x, final int y,
                                final Rectangle innerAlloc) {
         return isMajor(X_AXIS) ? x < innerAlloc.x : y < innerAlloc.y;
     }
 
+    @Override
     protected boolean isAfter(final int x, final int y,
                               final Rectangle innerAlloc) {
         return isMajor(X_AXIS) ? x > (innerAlloc.x + innerAlloc.width)
