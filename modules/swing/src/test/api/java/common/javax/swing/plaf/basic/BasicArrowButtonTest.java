@@ -22,6 +22,9 @@ package javax.swing.plaf.basic;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 
@@ -55,6 +58,17 @@ public class BasicArrowButtonTest extends SwingTestCase {
     public void testFocusTraversable() throws Exception {
         assertFalse(button.isFocusTraversable());
     }
+    
+    /**
+     * Regression test for HARMONY-2707
+     * */
+    private static final int INCORRECT_DIRECTION = 10; 
+
+    public void testPaintTriangle() throws NullPointerException { 
+        Graphics2D g2D = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB).createGraphics(); 
+        BasicArrowButton ab = new BasicArrowButton(0); 
+        ab.paintTriangle(g2D, 0, 0, 0, INCORRECT_DIRECTION, true); 
+    } 
     
     /**
      * Regression test for HARMONY-2629 

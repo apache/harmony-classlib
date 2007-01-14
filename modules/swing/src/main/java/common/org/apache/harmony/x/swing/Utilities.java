@@ -1102,6 +1102,7 @@ public class Utilities implements SwingConstants {
             break;
         default:
             assert false : "incorrect direction";
+            return;
         }
 
         final Color oldColor = g.getColor();
