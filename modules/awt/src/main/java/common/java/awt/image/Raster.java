@@ -686,6 +686,11 @@ public class Raster {
     }
 
     public WritableRaster createCompatibleWritableRaster(int w, int h) {
+        if (w <= 0 || h <= 0) {
+            // awt.22E=w or h is less than or equal to zero
+            throw new RasterFormatException(Messages.getString("awt.22E")); //$NON-NLS-1$
+        }
+
         SampleModel sm = sampleModel.createCompatibleSampleModel(w, h);
 
         return new OrdinaryWritableRaster(sm, new Point(0, 0));

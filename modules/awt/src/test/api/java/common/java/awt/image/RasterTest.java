@@ -21,6 +21,8 @@ package java.awt.image;
 import junit.framework.TestCase;
 import java.awt.Point;
 
+import java.awt.*;
+
 public class RasterTest extends TestCase {
     // Regression test for harmony-2717
     public void test_createPackedRaster()
@@ -46,6 +48,22 @@ public class RasterTest extends TestCase {
             fail("RasterFormatException expected!");
         } catch (RasterFormatException expectedException) {
             // Expected
+        }
+    }
+
+    // Regression test for Harmony-2743
+    public void test_createCompatibleWritableRaster() {
+        MultiPixelPackedSampleModel localMultiPixelPackedSampleModel =
+                new MultiPixelPackedSampleModel(0, 5, 22, -1, -25, 40825);
+        Point localPoint = new Point();
+        Raster localRaster = Raster.createWritableRaster(localMultiPixelPackedSampleModel,localPoint);
+        try {
+            localRaster.createCompatibleWritableRaster(-32,8);
+            fail("Exception expected");
+        } catch (RasterFormatException expectedException) {
+            System.out.println(expectedException +" was thrown");
+        } catch (IllegalArgumentException expectedException) {
+            fail(expectedException +" was thrown");
         }
     }
 }
