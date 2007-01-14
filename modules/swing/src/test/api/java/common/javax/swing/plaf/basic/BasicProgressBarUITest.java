@@ -133,6 +133,28 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
         progressBar.setIndeterminate(true);
         assertEquals(0, ui.getAnimationIndex());
     }
+    
+    /**
+     * Regression test for HARMONY-2701 
+     * */
+    public void testGetBoxLength() { 
+        testBasicProgressBarUI pb = new testBasicProgressBarUI(); 
+        assertEquals(0, pb.getBoxLength(0, 1)); 
+    } 
+
+    /**
+     * Regression test for HARMONY-2701 
+     * */
+    public void testGetBoxLength2() { 
+        testBasicProgressBarUI pb = new testBasicProgressBarUI(); 
+        assertEquals(8, pb.getBoxLength(50, 1)); 
+    }  
+
+    class testBasicProgressBarUI extends BasicProgressBarUI { 
+        public int getBoxLength(int a, int b) { 
+            return super.getBoxLength(a, b); 
+        } 
+    }
 
     public void testStartStop() throws NullPointerException {
         BasicProgressBarUIExt pb = new BasicProgressBarUIExt();

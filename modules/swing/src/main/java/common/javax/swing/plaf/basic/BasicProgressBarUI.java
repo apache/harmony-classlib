@@ -262,7 +262,7 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected int getBoxLength(final int length, final int otherDimension) {
-        return length / 6 + 1;
+        return length / 6;
     }
 
     protected void paintIndeterminate(final Graphics g, final JComponent c) {
