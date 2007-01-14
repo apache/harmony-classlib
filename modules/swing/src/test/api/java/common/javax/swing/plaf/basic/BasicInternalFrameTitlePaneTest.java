@@ -540,6 +540,15 @@ public class BasicInternalFrameTitlePaneTest extends SwingTestCase {
         // Note: painting code, cannot test
     }
 
+    
+    public void testConstructor() {
+        try {     
+            new BasicInternalFrameTitlePane((JInternalFrame) null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {    
+            // PASSED          
+        }
+    }
     public void testPaintComponent() {
         // Note: painting code, cannot test
     }

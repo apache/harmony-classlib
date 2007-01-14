@@ -419,13 +419,14 @@ public class BasicInternalFrameTitlePane extends JComponent {
     private TitlePaneInternals internals;
 
     public BasicInternalFrameTitlePane(final JInternalFrame frame) {
+        if (frame == null) {
+            throw new NullPointerException();  
+        } 
+
         this.frame = frame;
         setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
         installInternals();
-
-        if (frame != null) {
-            installTitlePane();
-        }
+        installTitlePane(); 
     }
 
     protected JMenuBar createSystemMenuBar() {
