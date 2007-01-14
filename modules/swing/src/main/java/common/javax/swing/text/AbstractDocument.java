@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.awt.font.TextAttribute;
@@ -385,7 +381,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         @Override
         public int getElementIndex(final int offset) {
-            if (offset < 0 && elements.length > 0) {
+            if (elements.length <= 1) {
                 return 0;
             }
 
@@ -425,21 +421,10 @@ public abstract class AbstractDocument implements Document, Serializable {
         }
 
         public Element positionToElement(final int offset) {
-            if (offset < 0) {
+            if (offset < getStartOffset() || offset > getEndOffset() - 1) {
                 return null;
             }
-
-            Element result = null;
-            for (int i = 0; i < elements.length; i++) {
-                Element child = elements[i];
-                if (child.getStartOffset() <= offset
-                    && offset < child.getEndOffset()) {
-
-                    result = child;
-                    break;
-                }
-            }
-            return result;
+            return elements[getElementIndex(offset)];
         }
 
         public void replace(final int index, final int length,

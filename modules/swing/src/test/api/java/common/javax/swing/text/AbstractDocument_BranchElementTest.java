@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Ivanov
- * @version $Revision$
- */
 package javax.swing.text;
 
 import java.util.Enumeration;
@@ -27,7 +23,6 @@ import javax.swing.text.AbstractDocument.LeafElement;
 
 /**
  * Tests AbstractDocument.BranchElement class.
- *
  */
 public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
     protected AbstractDocument doc;
@@ -131,14 +126,14 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
     public void testGetElementIndex03() {
         BranchElement root = doc.new BranchElement(null, null);
         try {
-            assertEquals(-1, root.getElementIndex(-1));
+            assertEquals(0, root.getElementIndex(-1));
             if (!BasicSwingTestCase.isHarmony()) {
                 fail("NullPointerException should be thrown");
             }
         } catch (NullPointerException e) {
         }
         try {
-            assertEquals(-1, root.getElementIndex(0));
+            assertEquals(0, root.getElementIndex(0));
             if (!BasicSwingTestCase.isHarmony()) {
                 fail("NullPointerException should be thrown");
             }
@@ -185,6 +180,52 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
             assertEquals("offset = " + offset + ", i = " + i, indexes[i], par
                     .getElementIndex(offset));
         }
+    }
+
+    /**
+     * Tests getElementIndex behavior when there are no child elements, but
+     * <code>getStartOffset</code> and <code>getEndOffset</code> are overridden
+     * to prevent <code>{@link NullPointerException}</code>.
+     */
+    // Regression for HARMONY-2756
+    public void testGetElementIndex06() {
+        par = doc.new BranchElement(null, null) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public int getStartOffset() {
+                return 10;
+            }
+
+            @Override
+            public int getEndOffset() {
+                return 20;
+            }
+        };
+        assertEquals(0, par.getElementIndex(-1));
+        assertEquals(0, par.getElementIndex(0));
+        assertEquals(0, par.getElementIndex(10));
+        assertEquals(0, par.getElementIndex(15));
+        assertEquals(0, par.getElementIndex(20));
+        assertEquals(0, par.getElementIndex(25));
+    }
+
+    /**
+     * Tests getElementIndex behavior when this BranchElement doesn't span
+     * all the document, it has child elements.
+     */
+    // Regression for HARMONY-2756
+    public void testGetElementIndex07() throws BadLocationException {
+        par = createBranchElement();
+
+        assertEquals(0, par.getElementIndex(-1));
+        assertEquals(0, par.getElementIndex(0));
+        assertEquals(0, par.getElementIndex(7));
+        assertEquals(1, par.getElementIndex(10));
+        assertEquals(2, par.getElementIndex(13));
+        assertEquals(3, par.getElementIndex(18));
+        assertEquals(3, par.getElementIndex(19));
+        assertEquals(3, par.getElementIndex(20));
     }
 
     public void testIsLeaf() {
@@ -280,6 +321,21 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
         assertNull(par.positionToElement(20));
     }
 
+    /**
+     * Tests <code>positionToElement</code> where the <code>BranchElement</code>
+     * tested doesn't span over the whole document. 
+     */
+    public void testPositionToElement_PartialBranch() throws BadLocationException {
+        par = createBranchElement();
+
+        assertNull(par.positionToElement(6));
+        assertSame(par.getElement(0), par.positionToElement(7));
+        assertSame(par.getElement(1), par.positionToElement(10));
+        assertSame(par.getElement(2), par.positionToElement(13));
+        assertSame(par.getElement(3), par.positionToElement(18));
+        assertNull(par.positionToElement(19));
+    }
+
     public void testToString() {
         assertEquals("BranchElement(bidi root) 0,15\n", bidi.toString());
         assertEquals("BranchElement(paragraph) 0,15\n", par.toString());
@@ -287,5 +343,21 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
 
     private Element createLeaf(final int start, final int end) {
         return doc.new LeafElement(par, null, start, end);
+    }
+
+    /**
+     * Creates <code>BranchElement</code> which doesn't span over the whole document.
+     * <code>DefaultStyledDocument</code> is used to prepare the structure.
+     */
+    private BranchElement createBranchElement() throws BadLocationException {
+        final DefaultStyledDocument styledDoc = new DefaultStyledDocument(); 
+        doc = styledDoc;
+        doc.insertString(doc.getLength(), "1 line\nonetwothree\n3 line", null);
+        //                                 0123456 789012345678 901234
+        //                                 0          1          2
+        styledDoc.setCharacterAttributes(7, 3, SimpleAttributeSet.EMPTY, false);
+        styledDoc.setCharacterAttributes(10, 3, SimpleAttributeSet.EMPTY, false);
+        styledDoc.setCharacterAttributes(13, 5, SimpleAttributeSet.EMPTY, false);
+        return (BranchElement)doc.getDefaultRootElement().getElement(1);
     }
 }
