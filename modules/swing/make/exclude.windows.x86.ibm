@@ -88,7 +88,6 @@ javax/swing/plaf/basic/BasicComboPopupTest.java
 javax/swing/plaf/basic/BasicEditorPaneUITest.java
 javax/swing/plaf/basic/BasicGraphicsUtilsTest.java
 javax/swing/plaf/basic/BasicInternalFrameTitlePaneTest.java
-javax/swing/plaf/basic/BasicMenuItemUITest.java
 javax/swing/plaf/basic/BasicOptionPaneUI_ButtonAreaLayoutTest.java
 javax/swing/plaf/basic/BasicRadioButtonMenuItemUITest.java
 javax/swing/plaf/basic/BasicRootPaneUITest.java

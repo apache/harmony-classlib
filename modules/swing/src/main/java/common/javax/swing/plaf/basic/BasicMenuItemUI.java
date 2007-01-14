@@ -192,6 +192,9 @@ public class BasicMenuItemUI extends MenuItemUI {
     }
 
     public void uninstallUI(final JComponent c) {
+        // Fix for HARMONY-2704, for compatibility with RI
+        JMenuItem jMenuItem = (JMenuItem) c;
+
         uninstallKeyboardActions();
         uninstallListeners();
         uninstallComponents(menuItem);

@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
@@ -138,6 +139,13 @@ public class BasicMenuItemUITest extends SwingTestCase {
         assertNull(SwingUtilities.getUIActionMap(item));
         assertNull(menuItemUI.mouseInputListener);
         assertEquals(0, item.getComponentCount());
+
+        try { //Regression test for HARMONY-2704
+            menuItemUI.uninstallUI(new JOptionPane());
+            fail("ClassCastException should have been thrown");
+        } catch (ClassCastException e) {
+            // Expected
+        }
     }
 
     /*
