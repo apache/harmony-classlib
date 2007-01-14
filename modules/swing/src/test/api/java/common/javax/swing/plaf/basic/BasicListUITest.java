@@ -190,6 +190,21 @@ public class BasicListUITest extends SwingTestCase {
         assertEquals(new Rectangle(5, 10, 100 - 5 - 7, 20), ui.getCellBounds(list, 0, 1));
     }
 
+    public void testGetCellBounds_Null() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getCellBounds(null, -1, 9);
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getCellBounds(null, 1, 9);
+            }
+        });
+    }
+
     public void testGetMaximumSize() throws Exception {
         ui.installUI(list);
         assertEquals(ui.getPreferredSize(list), ui.getMaximumSize(list));

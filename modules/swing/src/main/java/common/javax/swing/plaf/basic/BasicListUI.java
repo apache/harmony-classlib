@@ -373,6 +373,9 @@ public class BasicListUI extends ListUI {
     }
 
     public Rectangle getCellBounds(final JList list, final int index1, final int index2) {
+        layouter.setList(list);
+        maybeUpdateLayoutState();
+
         Rectangle result = null;
         if (index1 < 0 || index1 >= list.getModel().getSize()
             || index2 < 0 || index2 >= list.getModel().getSize()) {
@@ -380,8 +383,6 @@ public class BasicListUI extends ListUI {
             return result;
         }
 
-        layouter.setList(list);
-        maybeUpdateLayoutState();
         if (index1 <= index2) {
             for (int i = index1; i <= index2; i++) {
                 if (result == null) {
