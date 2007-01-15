@@ -895,6 +895,10 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
     }
 
     protected JButton createScrollButton(final int direction) {
+        if (direction != NORTH && direction != SOUTH && direction != EAST && direction != WEST) {
+            throw new IllegalArgumentException();
+        }
+
         return new ScrollButton(direction);
     }
 

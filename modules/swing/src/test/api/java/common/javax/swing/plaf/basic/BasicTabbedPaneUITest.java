@@ -192,6 +192,18 @@ public class BasicTabbedPaneUITest extends SwingTestCase {
         assertFalse(b.isFocusable());
         assertTrue(b.getWidth() > 5);
         assertTrue(b.getHeight() > 5);
+
+        try {     
+            new BasicTabbedPaneUI() {
+                public JButton createScrollButton(int direction) {
+                    return super.createScrollButton(direction);
+                }
+            }.createScrollButton(80);
+            
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {    
+            // PASSED          
+        }
     }
 
     public void testExpandTabRunsArray() {
