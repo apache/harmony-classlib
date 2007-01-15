@@ -77,4 +77,18 @@ public class ComponentSampleModelTest extends TestCase {
         } 
     }
 
+
+    public void testGetSamples() {
+        // regression for HARMONY-2801
+        ComponentSampleModel csm = new ComponentSampleModel(3, 10, 10, 1, 10, new int[]{0});
+
+        try {
+            int[] returnValue =
+                    csm.getSamples(Integer.MAX_VALUE,4,1,1,0,new int[]{0},(DataBuffer) null);
+            fail("No exception");
+        } catch(NullPointerException expectedException) {
+            // expected
+        }
+    } 
 }
+

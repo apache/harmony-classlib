@@ -407,6 +407,11 @@ public class ComponentSampleModel extends SampleModel {
         } else {
             samples = iArray;
         }
+        
+        if (data == null) {
+            // awt.295=data is null
+            throw new NullPointerException(Messages.getString("awt.295")); //$NON-NLS-1$
+        }
 
         for (int i = y; i < y + h; i++) {
             for (int j = x; j < x + w; j++) {
@@ -580,5 +585,6 @@ public class ComponentSampleModel extends SampleModel {
     }
 
 }
+
 
 
