@@ -39,6 +39,12 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="crypto.common.exclude.file" location="./make/exclude.common" />
+    <property name="crypto.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="crypto.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <property name="exclude.file" location="${hy.hdk}/build/crypto.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -53,7 +59,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}.jar" />
@@ -163,6 +169,30 @@
         </compile-tests>
     </target>
 
+
+    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    </target>
+
+    <target name="-init-exclude" >
+        <echo message="" file="${exclude.file}" />
+        <loadfile property="crypto.common.exclude.exist" srcFile="${crypto.common.exclude.file}" failonerror="false" />
+        <loadfile property="crypto.platform.exclude.exist" srcFile="${crypto.platform.exclude.file}" failonerror="false" />
+        <loadfile property="crypto.interm.exclude.exist" srcFile="${crypto.interm.exclude.file}" failonerror="false"/>
+    </target>
+
+    <target name="-add-common" if="crypto.common.exclude.exist" >
+        <echo message="${crypto.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-platform" if="crypto.platform.exclude.exist" >
+        <echo message="${crypto.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-intermittent" if="crypto.interm.exclude.exist" >
+        <echo message="${crypto.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+
     <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
     <target name="run-tests-api">
@@ -179,6 +209,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/api/java">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -193,6 +224,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/api/java.injected">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -214,6 +246,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/impl/java">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -228,6 +261,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/impl/java.injected">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -310,8 +344,7 @@
 
                 <formatter type="xml" />
 
-                <test name="${test.case}" todir="${hy.tests.reports}" if="test.c
-ase" />
+                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
             </junit>
         </sequential>
     </macrodef>
