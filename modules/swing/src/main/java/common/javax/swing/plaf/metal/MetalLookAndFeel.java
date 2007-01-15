@@ -1168,7 +1168,7 @@ public class MetalLookAndFeel extends BasicLookAndFeel {
     public static ColorUIResource getControl() {
         return metalTheme.getControl();
     }
-
+    
     /**
      * Return black color
      * @return ColorUIResource color
@@ -1193,6 +1193,10 @@ public class MetalLookAndFeel extends BasicLookAndFeel {
         return metalTheme.getAcceleratorForeground();
     }
 
+    public static MetalTheme getCurrentTheme() {
+        return metalTheme;
+    }
+    
     /**
      * Return system text font active value
      * @return ActiveValue font
