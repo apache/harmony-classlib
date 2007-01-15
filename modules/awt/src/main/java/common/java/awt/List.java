@@ -48,6 +48,8 @@ public class List extends Component implements ItemSelectable, Accessible {
     private static final long serialVersionUID = -3304312411574666869L;
 
     private final static int BORDER_SIZE = 2;
+    
+    private final static Font DEFAULT_FONT = new Font("dialog", Font.PLAIN, 12); //$NON-NLS-1$
 
     private final AWTListenerList<ActionListener> actionListeners = new AWTListenerList<ActionListener>(
             this);
@@ -1409,8 +1411,13 @@ public class List extends Component implements ItemSelectable, Accessible {
     }
 
     private Dimension getMaxCharSize(Graphics g) {
-        FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
-        return getFont().getStringBounds("W", frc).getBounds().getSize(); //$NON-NLS-1$
+        final FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
+        return getListFont().getStringBounds("W", frc).getBounds().getSize(); //$NON-NLS-1$
+    }
+    
+    private Font getListFont() {
+        final Font f = getFont();
+        return f == null ? DEFAULT_FONT : f;
     }
 
     private void doRepaint(Rectangle r) {
@@ -1446,7 +1453,7 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     @SuppressWarnings("deprecation")
     private Dimension getItemSize() {
-        FontMetrics fm = toolkit.getFontMetrics(getFont());
+        FontMetrics fm = toolkit.getFontMetrics(getListFont());
         int itemHeight = fm.getHeight() + 2;
         return new Dimension(prefWidth - 2 * BORDER_SIZE, itemHeight);
     }
