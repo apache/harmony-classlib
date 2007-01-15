@@ -528,14 +528,15 @@ public class IndexColorModel extends ColorModel {
 
     @Override
     public int getDataElement(int components[], int offset) {
-        int rgb = (components[0] << 16) | (components[1] << 8) | components[2];
-
+        int rgb = (components[offset] << 16) | (components[offset + 1]) << 8
+                | components[offset + 2];
+        
         if (hasAlpha) {
-            rgb |= (components[3] << 24);
+            rgb |= components[offset + 3] << 24;
         } else {
             rgb |= 0xff000000;
         }
-
+ 
         int pixel;
 
         switch (transferType) {
@@ -806,4 +807,5 @@ public class IndexColorModel extends ColorModel {
     }
 
 }
+
 

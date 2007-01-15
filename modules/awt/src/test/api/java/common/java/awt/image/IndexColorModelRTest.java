@@ -101,4 +101,22 @@ public class IndexColorModelRTest extends TestCase {
         assertEquals(1, icm6.getTransparentPixel());
         
     }
+    
+    public void testGetDataElementOffset() {
+        // Regression test for harmony-2799
+        int bits = 4;
+        int size = 166;
+        IndexColorModel localIndexColorModel = new IndexColorModel(bits, size,
+                new byte[size], new byte[size], new byte[size]);
+        int[] components = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+        int offset = 6;
+
+        try {
+            localIndexColorModel.getDataElement(components, offset);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // valid
+        }
+
+    }
 }
