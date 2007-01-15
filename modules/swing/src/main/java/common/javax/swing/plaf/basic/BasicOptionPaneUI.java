@@ -465,7 +465,9 @@ public class BasicOptionPaneUI extends OptionPaneUI {
     }
 
     protected void uninstallListeners() {
-        optionPane.removePropertyChangeListener(propertyChangeListener);
+        if (optionPane != null) {
+            optionPane.removePropertyChangeListener(propertyChangeListener);
+        }
         propertyChangeListener = null;
     }
 
@@ -632,6 +634,10 @@ public class BasicOptionPaneUI extends OptionPaneUI {
     }
 
     protected Object[] getButtons() {
+        if (optionPane == null) {
+            return null;
+        }
+
         Object[] result = optionPane.getOptions();
         if (!Utilities.isEmptyArray(result)) {
             return result;
@@ -661,6 +667,10 @@ public class BasicOptionPaneUI extends OptionPaneUI {
     }
 
     protected int getInitialValueIndex() {
+        if (optionPane == null) {
+            return -1;
+        }
+
         Object[] options = optionPane.getOptions();
         if (Utilities.isEmptyArray(options)) {
             return 0;

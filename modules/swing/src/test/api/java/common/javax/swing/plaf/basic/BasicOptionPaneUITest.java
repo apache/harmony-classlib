@@ -292,6 +292,12 @@ public class BasicOptionPaneUITest extends SwingTestCase {
         assertNull(paneUI.propertyChangeListener);
     }
 
+    // Regression for HARMONY-2901
+    public void testUninstallListenersNull() {
+        assertNull(paneUI.optionPane);
+        paneUI.uninstallListeners(); // no exception is expected
+    }
+
     public void testCreatePropertyChangeListener() {
         assertNotNull(paneUI.createPropertyChangeListener());
     }
@@ -779,6 +785,12 @@ public class BasicOptionPaneUITest extends SwingTestCase {
         assertEquals("button ", option3, buttons[2]);
     }
 
+    // Regression for HARMONY-2901
+    public void testGetButtonsNull() {
+        assertNull(paneUI.optionPane);
+        assertNull(paneUI.getButtons());
+    }
+
     public void testGetSizeButtonsToSameWidth() {
         assertTrue(paneUI.getSizeButtonsToSameWidth());
     }
@@ -808,6 +820,12 @@ public class BasicOptionPaneUITest extends SwingTestCase {
                 JOptionPane.CLOSED_OPTION, null, null, null);
         paneUI = (BasicOptionPaneUI) optionPane.getUI();
         assertEquals(0, paneUI.getInitialValueIndex());
+    }
+
+    // Regression for HARMONY-2901
+    public void testGetInitialValueIndexNull() throws Exception {
+        assertNull(paneUI.optionPane);
+        assertEquals(-1, paneUI.getInitialValueIndex());
     }
 
     public void testResetInputValue() {
