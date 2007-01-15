@@ -1040,7 +1040,9 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].caretUpdate(ce);
         }
-        handleComposedText(ce.getDot());
+        if (ce != null) {
+            handleComposedText(ce.getDot());
+        }
     }
 
     private void handleComposedText(final int dot) {

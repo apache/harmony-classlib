@@ -401,6 +401,12 @@ public class JTextComponentTest extends SwingTestCase {
         assertEquals("1321", strOrderFireCaretUpdate);
     }
 
+    // Regression for HARMONY-2819
+    public void testFireCaretUpdateNull() throws Exception {
+        new JTextArea().fireCaretUpdate(null);
+        // no exception is expected
+    }
+
     public void testSetGetText() throws Exception {
         assertTrue(jtc.getText().equals(""));
         jtc.setText("JTextComponent");
