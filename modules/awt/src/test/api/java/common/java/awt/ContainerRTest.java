@@ -54,6 +54,16 @@ public class ContainerRTest extends TestCase {
         assertTrue(c2.isDisplayable());
     }
 
+    public void testAddComponent() {
+        try {         
+            Container s = new Container(); 
+            s.add((Component) null); 
+            fail("NPE should be thrown"); 
+        } catch (NullPointerException npe) {    
+            // PASSED            
+        }
+    }
+
 //    public final void testRemoveComponent() {
 //        Button b = new Button();
 //        boolean npeThrown = false;
