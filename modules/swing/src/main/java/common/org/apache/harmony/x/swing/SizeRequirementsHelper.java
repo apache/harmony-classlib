@@ -168,25 +168,45 @@ public final class SizeRequirementsHelper {
                               final int[] offsets,
                               final int[] spans) {
 
-        calculateTiledSpans(allocated, total, children, spans);
-
-        final int aligningAxis = (int)((allocated - total.preferred) / 2
-                + total.alignment * total.preferred);
+        int baseLineOffset = (int)(allocated * total.alignment);
+        int childMinRequirement;
 
         for (int iChild = 0; iChild < children.length; iChild++) {
-            offsets[iChild] = (int)(aligningAxis - children[iChild].alignment * spans[iChild]);
-            if (offsets[iChild] < 0) {
-                if (spans[iChild] + offsets[iChild] > children[iChild].minimum) {
-                    spans[iChild] = spans[iChild] + offsets[iChild];
-                    offsets[iChild] = 0;
+            childMinRequirement = children[iChild].minimum;
+
+            if (children[iChild].alignment == 0) {
+                offsets[iChild] = baseLineOffset;
+                if (allocated - baseLineOffset > childMinRequirement) {
+                    spans[iChild] = Math.min(children[iChild].maximum,
+                                             allocated - baseLineOffset);
                 } else {
-                    offsets[iChild] += spans[iChild] - children[iChild].minimum;
-                    spans[iChild] = children[iChild].minimum;
+                    spans[iChild] = childMinRequirement;
                 }
+                continue;
             }
-            if (offsets[iChild] + spans[iChild] > allocated) {
-                spans[iChild] = Math.max(children[iChild].minimum, allocated - offsets[iChild]);
+
+            if (children[iChild].alignment == 1) {
+                if (baseLineOffset < childMinRequirement) {
+                    spans[iChild] = childMinRequirement;
+                } else {
+                    spans[iChild] = Math.min(children[iChild].maximum,
+                                             baseLineOffset);
+                }
+                offsets[iChild] = baseLineOffset - spans[iChild];
+                continue;
             }
+
+            int upperSpan = (int)(baseLineOffset / children[iChild].alignment);
+            int bottomSpan = (int)((allocated - baseLineOffset) / (1 - children[iChild].alignment));
+
+            spans[iChild] = childMinRequirement;
+            if (childMinRequirement <= upperSpan
+                && childMinRequirement <= bottomSpan) {
+                spans[iChild] = Math.min(children[iChild].maximum, Math
+                    .min(upperSpan, bottomSpan));
+            }
+            offsets[iChild] = baseLineOffset
+                              - (int)(spans[iChild] * children[iChild].alignment);
         }
     }
 

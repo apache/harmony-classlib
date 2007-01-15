@@ -444,7 +444,7 @@ public class BoxView_WithChildrenTest extends BasicSwingTestCase implements Docu
             View child = view.getView(i);
             float span = child.getPreferredSpan(axis);
             float offset = leftInset - span * child.getAlignment(axis);
-            if (i == 1 && !isHarmony()) {
+            if (i == 1) {
                 // The cause is rounding errors
                 offset += 1;
             }

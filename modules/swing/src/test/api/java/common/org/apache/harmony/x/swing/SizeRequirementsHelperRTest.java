@@ -41,7 +41,7 @@ public class SizeRequirementsHelperRTest extends BasicSwingTestCase {
         int[] offsets = new int[children.length];
         int[] spans = new int[children.length];
         SizeRequirementsHelper.calculateAlignedPositions(100, total, children, offsets, spans);
-        assertEquals(37, offsets[0]);
+        assertEquals(38, offsets[0]);
         assertEquals(25, offsets[1]);
         assertEquals(25, spans[0]);
         assertEquals(50, spans[1]);
@@ -51,9 +51,9 @@ public class SizeRequirementsHelperRTest extends BasicSwingTestCase {
         offsets = new int[children.length];
         spans = new int[children.length];
         SizeRequirementsHelper.calculateAlignedPositions(200, total, children, offsets, spans);
-        assertEquals(75, offsets[0]);
-        assertEquals(50, offsets[1]);
-        assertEquals(50, spans[0]);
-        assertEquals(100, spans[1]);
+        assertEquals(0, offsets[0]);
+        assertEquals(0, offsets[1]);
+        assertEquals(200, spans[0]);
+        assertEquals(200, spans[1]);
     }
 }
