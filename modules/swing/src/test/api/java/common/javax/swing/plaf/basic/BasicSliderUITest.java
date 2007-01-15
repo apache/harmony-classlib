@@ -111,6 +111,11 @@ public class BasicSliderUITest extends SwingTestCase {
                 .createScrollListener(slider));
     }
 
+    // Regression for HARMONY-2878
+    public void testCreateScrollListenerNull() throws Exception {
+        assertNotNull(sliderUI.createScrollListener(null)); // no exception expected
+    }
+
     public void testCreatePropertyChangeListener() throws Exception {
         assertNotNull(sliderUI.createPropertyChangeListener(slider));
         assertFalse(sliderUI.createPropertyChangeListener(slider) == sliderUI

@@ -466,8 +466,9 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected ScrollListener createScrollListener(final JSlider slider) {
-        this.slider = slider;
-        return new ScrollListener(slider.getOrientation(), slider.getSnapToTicks());
+        return slider != null
+               ? new ScrollListener(slider.getOrientation(), slider.getSnapToTicks())
+               : new ScrollListener();
     }
 
     protected PropertyChangeListener createPropertyChangeListener(final JSlider slider) {
