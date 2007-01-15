@@ -20,8 +20,11 @@
  */
 package javax.swing.plaf.basic;
 
+import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 import java.util.Hashtable;
+
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.SwingTestCase;
@@ -223,6 +226,64 @@ public class BasicSliderUITest extends SwingTestCase {
         assertEquals(new Point(200, -500), sliderUI.thumbRect.getLocation());
         sliderUI.setThumbLocation(-200, 500);
         assertEquals(new Point(-200, 500), sliderUI.thumbRect.getLocation());
+    }
+
+    // Regression test for HARMONY-2855
+    public void testBasicSliderUI() throws Exception {
+        assertNull(sliderUI.slider);
+    }
+
+    /**
+     * <code>uninstallUI</code> is called with the same instance of
+     * <code>JSlider</code> to which this UI was installed.
+     */
+    // Regression test for HARMONY-2855
+    public void testUninstallUI01() {
+        sliderUI.installUI(slider);
+        sliderUI.uninstallUI(slider);
+        // No exception is expected
+    }
+
+    /**
+     * <code>uninstallUI</code> is called before <code>installUI</code>
+     * was called.
+     */
+    // Regression test for HARMONY-2855
+    public void testUninstallUI02() {
+        try {
+            sliderUI.uninstallUI(slider);
+            fail("IllegalComponentStateException is expected");
+        } catch (IllegalComponentStateException e) {
+            // expected
+        }
+    }
+
+    /**
+     * <code>uninstallUI</code> is called with another instance of
+     * <code>JSlider</code>.
+     */
+    // Regression test for HARMONY-2855
+    public void testUninstallUI03() {
+        try {
+            sliderUI.uninstallUI(new JSlider());
+            fail("IllegalComponentStateException is expected");
+        } catch (IllegalComponentStateException e) {
+            // expected
+        }
+    }
+
+    /**
+     * <code>uninstallUI</code> is called with instance of another class, i.e.
+     * not <code>JSlider</code> instance.
+     */
+    // Regression test for HARMONY-2855
+    public void testUninstallUI04() {
+        try {
+            sliderUI.uninstallUI(new JButton());
+            fail("IllegalComponentStateException is expected");
+        } catch (IllegalComponentStateException e) {
+            // expected
+        }
     }
     
     /**

@@ -14,18 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.IllegalComponentStateException;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -59,16 +54,23 @@ import javax.swing.plaf.SliderUI;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
-
+/**
+ * <b>Note:</b> <code>serialVersionUID</code> fields are added as
+ * a performance optimization only but not as a guarantee of correct
+ * deserialization.
+ */
 public class BasicSliderUI extends SliderUI {
 
     public class ActionScroller extends AbstractAction {
+        private static final long serialVersionUID = -3454576988589353120L;
+
         public ActionScroller(final JSlider slider, final int dir, final boolean block) {
         }
 
         public void actionPerformed(final ActionEvent e) {
         }
 
+        @Override
         public boolean isEnabled() {
             return true;
         }
@@ -88,7 +90,9 @@ public class BasicSliderUI extends SliderUI {
         }
     }
 
+
     public class ComponentHandler extends ComponentAdapter {
+        @Override
         public void componentResized(final ComponentEvent e) {
             calculateGeometry();
             slider.repaint();
@@ -175,6 +179,7 @@ public class BasicSliderUI extends SliderUI {
             });
         }
 
+        @Override
         public void mouseReleased(final MouseEvent e) {
             if (trackTimer.isRunning()) {
                 trackTimer.stop();
@@ -200,6 +205,7 @@ public class BasicSliderUI extends SliderUI {
             slider.repaint();
         }
 
+        @Override
         public void mousePressed(final MouseEvent e) {
             if (!slider.isFocusOwner()) {
                 slider.requestFocus();
@@ -239,6 +245,7 @@ public class BasicSliderUI extends SliderUI {
             return false;
         }
 
+        @Override
         public void mouseDragged(final MouseEvent e) {
             mousePoint = e.getPoint();
             if (inThumb && SwingUtilities.isLeftMouseButton(e)) {
@@ -272,6 +279,7 @@ public class BasicSliderUI extends SliderUI {
             }
         }
 
+        @Override
         public void mouseMoved(final MouseEvent e) {
         }
 
@@ -378,8 +386,6 @@ public class BasicSliderUI extends SliderUI {
     private static final int UNIT_INCREMENT = 1;
 
     public BasicSliderUI(final JSlider slider) {
-        this.slider = slider;
-
         focusRect = new Rectangle();
         contentRect = new Rectangle();
         labelRect = new Rectangle();
@@ -408,6 +414,7 @@ public class BasicSliderUI extends SliderUI {
         return new BasicSliderUI((JSlider)c);
     }
 
+    @Override
     public void installUI(final JComponent c) {
         slider = (JSlider)c;
 
@@ -418,9 +425,12 @@ public class BasicSliderUI extends SliderUI {
         calculateGeometry();
     }
 
+    @Override
     public void uninstallUI(final JComponent c) {
-        slider = (JSlider)c;
-
+        if (c != slider) {
+            // TODO Perform i18n after HARMONY-1320 is applied
+            throw new IllegalComponentStateException(this + " was asked to deinstall() " + c + " when it only knows about " + slider);
+        }
         uninstallListeners(slider);
         uninstallKeyboardActions(slider);
     }
@@ -558,6 +568,7 @@ public class BasicSliderUI extends SliderUI {
         return new Dimension(width, DEFAULT_SLIDER_MIN_SIZE);
     }
 
+    @Override
     public Dimension getPreferredSize(final JComponent c) {
         if (slider.getOrientation() == JSlider.HORIZONTAL) {
             return getPreferredHorizontalSize();
@@ -566,6 +577,7 @@ public class BasicSliderUI extends SliderUI {
         }
     }
 
+    @Override
     public Dimension getMinimumSize(final JComponent c) {
         if (slider.getOrientation() == JSlider.HORIZONTAL) {
             return getMinimumHorizontalSize();
@@ -574,6 +586,7 @@ public class BasicSliderUI extends SliderUI {
         }
     }
 
+    @Override
     public Dimension getMaximumSize(final JComponent c) {
         if (slider.getOrientation() == JSlider.HORIZONTAL) {
             return new Dimension(Short.MAX_VALUE, getPreferredHorizontalSize().height);
@@ -811,6 +824,7 @@ public class BasicSliderUI extends SliderUI {
         return result;
     }
 
+    @Override
     public void paint(final Graphics g, final JComponent c) {
         Color oldColor = g.getColor();
 
@@ -1063,6 +1077,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newMaxScrollAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = -3822301141065864044L;
+
             public void actionPerformed(final ActionEvent e) {
                 if (drawInverted()) {
                     slider.setValue(slider.getMinimum());
@@ -1076,6 +1092,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newMinScrollAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = 703565386507416752L;
+
             public void actionPerformed(final ActionEvent e) {
                 if (drawInverted()) {
                     slider.setValue(slider.getMaximum());
@@ -1089,6 +1107,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newNegativeBlockIncrementAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = 7818668169396841520L;
+
             public void actionPerformed(final ActionEvent e) {
                 scrollByBlock(NEGATIVE_SCROLL);
             }
@@ -1097,6 +1117,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newNegativeUnitIncrementAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = -4366059737366026435L;
+
             public void actionPerformed(final ActionEvent e) {
                 scrollByUnit(NEGATIVE_SCROLL);
             }
@@ -1105,6 +1127,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newPositiveBlockIncrementAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = -5999323396935662487L;
+
             public void actionPerformed(final ActionEvent e) {
                 scrollByBlock(POSITIVE_SCROLL);
             }
@@ -1113,6 +1137,8 @@ public class BasicSliderUI extends SliderUI {
 
     private Action newPositiveUnitIncrementAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = 5166413389559469128L;
+
             public void actionPerformed(final ActionEvent e) {
                 scrollByUnit(POSITIVE_SCROLL);
             }
