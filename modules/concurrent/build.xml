@@ -43,6 +43,12 @@
         </or>
     </fileset>
 
+    <property name="concurrent.common.exclude.file" location="./make/exclude.common" />
+    <property name="concurrent.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="concurrent.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <property name="exclude.file" location="${hy.hdk}/build/concurrent.exclude" />
+
     <target name="build" depends="compile-java, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -57,7 +63,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" />
+    <target name="-test-module" depends="prepare-exclude" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar" />
@@ -143,6 +149,28 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    </target>
+
+    <target name="-init-exclude" >
+        <echo message="" file="${exclude.file}" />
+        <loadfile property="concurrent.common.exclude.exist" srcFile="${concurrent.common.exclude.file}" failonerror="false" />
+        <loadfile property="concurrent.platform.exclude.exist" srcFile="${concurrent.platform.exclude.file}" failonerror="false" />
+        <loadfile property="concurrent.interm.exclude.exist" srcFile="${concurrent.interm.exclude.file}" failonerror="false"/>
+    </target>
+
+    <target name="-add-common" if="concurrent.common.exclude.exist" >
+        <echo message="${concurrent.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-platform" if="concurrent.platform.exclude.exist" >
+        <echo message="${concurrent.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-intermittent" if="concurrent.interm.exclude.exist" >
+        <echo message="${concurrent.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -173,7 +201,10 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.concurrent.src.test.java}"/>
+                <fileset dir="${hy.concurrent.src.test.java}">
+                    <excludesfile name="${exclude.file}" />
+                </fileset>
+
             </batchtest>
         </junit>
         <antcall target="touch-failures-file" />
