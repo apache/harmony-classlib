@@ -44,4 +44,17 @@ public class ColorModelTest extends TestCase {
         obj.getNormalizedComponents(new int[] { 1, -23, 5, 67, 89, 0 }, 1,
                 null, 1002);
     }
+    
+    // Regression test for JIRA HARMONY-2796
+    public void testGetNormalizedComponentsNullPixel() {
+        IndexColorModel cm = new IndexColorModel(4, 2, new byte[2],
+                new byte[2], new byte[2]);
+
+        try {
+            cm.getNormalizedComponents((Object) null, new float[] {}, 5);
+            fail("NullPointerException expected");
+        } catch (NullPointerException npe) {
+            // valid
+        }
+    }
 }

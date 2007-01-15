@@ -189,6 +189,12 @@ public abstract class ColorModel implements Transparency {
 
     public float[] getNormalizedComponents(Object pixel,
             float[] normComponents, int normOffset) {
+
+        if (pixel == null) {
+            // awt.294=pixel is null
+            throw new NullPointerException(Messages.getString("awt.294")); //$NON-NLS-1$
+        }
+
         int unnormComponents[] = getComponents(pixel, null, 0);
         return getNormalizedComponents(unnormComponents, 0, normComponents,
                 normOffset);
