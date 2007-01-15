@@ -265,7 +265,7 @@ public abstract class ColorModel implements Transparency {
         }
 
         if (normComponents == null) {
-            normComponents = new float[numComponents + offset];
+            normComponents = new float[numComponents + normOffset];
         }
 
         if (hasAlpha && isAlphaPremultiplied) {

@@ -36,4 +36,12 @@ public class ColorModelTest extends TestCase {
             // expected
         }
     }
+
+    // Regression test for JIRA HARMONY-2794
+    public void testNormOffset() {
+        IndexColorModel obj = new IndexColorModel(1, 1, new byte[] { 1, 1, 1 },
+                0, false);
+        obj.getNormalizedComponents(new int[] { 1, -23, 5, 67, 89, 0 }, 1,
+                null, 1002);
+    }
 }
