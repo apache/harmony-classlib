@@ -672,6 +672,10 @@ public class BasicFileChooserUI extends FileChooserUI {
     }
 
     public String getApproveButtonToolTipText(final JFileChooser fc) {
+	if (fc == null) {
+            throw new NullPointerException();
+        }
+
         return approveButtonToolTipText;
     }
 

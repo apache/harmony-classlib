@@ -75,6 +75,17 @@ public class BasicFileChooserUITest extends SwingTestCase {
         assertEquals(0, ui.getApproveButtonMnemonic(fc));
     }
 
+    public void testGetApproveButtonToolTipText() throws Exception {
+        try {     
+            javax.swing.plaf.basic.BasicFileChooserUI b = 
+                new javax.swing.plaf.basic.BasicFileChooserUI(new JFileChooser("")); 
+            b.getApproveButtonToolTipText(null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {    
+            // PASSED          
+        }
+    }
+
     public void testGetModel() throws Exception {
         ui.installUI(fc);
         assertNotNull(ui.getModel());
