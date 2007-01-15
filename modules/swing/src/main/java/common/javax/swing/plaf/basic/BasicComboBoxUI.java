@@ -426,6 +426,9 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     public void paintCurrentValueBackground(final Graphics g, final Rectangle bounds, final boolean hasFocus) {
         Color oldColor = g.getColor();
+        if (comboBox == null) {
+            throw new NullPointerException("comboBox is null");
+        }
         if (hasFocus) {
             g.setColor(UIManager.getColor("ComboBox.selectionBackground"));
         } else {

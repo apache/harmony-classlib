@@ -417,6 +417,17 @@ public class BasicComboBoxUITest extends SwingTestCase {
         ui.paintCurrentValueBackground(createTestGraphics(), new Rectangle(0, 0, 10, 10), true);
     }
 
+    // Regression test for HARMONY-2898
+    public void testPaintCurrentValueBackground_Null() throws Exception {
+        ui.comboBox = null;
+        try {
+            ui.paintCurrentValueBackground(createTestGraphics(), new Rectangle(0, 0, 10, 10), true);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
     public void testPaintCurrentValue() throws Exception {
         ui.comboBox = comboBox;
         ui.popup = new BasicComboPopup(comboBox);
