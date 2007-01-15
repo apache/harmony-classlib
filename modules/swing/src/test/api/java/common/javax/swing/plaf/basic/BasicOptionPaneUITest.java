@@ -584,6 +584,35 @@ public class BasicOptionPaneUITest extends SwingTestCase {
         assertEquals(Integer.MAX_VALUE, paneUI.getMaxCharactersPerLineCount());
     }
 
+    // Regression for HARMONY-2902
+    public void testGetMaxCharactersPerLineCount_OptionPane() {
+        final Marker marker = new Marker();
+        paneUI.optionPane = new JOptionPane() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public int getMaxCharactersPerLineCount() {
+                marker.setOccurred();
+                return super.getMaxCharactersPerLineCount();
+            }
+        };
+        paneUI.optionPane.setUI(paneUI);
+        marker.reset();
+        assertEquals(Integer.MAX_VALUE, paneUI.getMaxCharactersPerLineCount());
+        assertTrue(marker.isOccurred());
+    }
+
+    // Regression for HARMONY-2902
+    public void testGetMaxCharactersPerLineCount_Null() {
+        assertNull(paneUI.optionPane);
+        testExceptionalCase(new NullPointerCase() {
+            @Override
+            public void exceptionalAction() throws Exception {
+                paneUI.getMaxCharactersPerLineCount();
+            }
+        });
+    }
+
     public void testBurstStringInto() {
         String message = "message ";
         JPanel panel = new JPanel();

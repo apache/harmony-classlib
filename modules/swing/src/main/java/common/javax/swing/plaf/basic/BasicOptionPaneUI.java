@@ -575,7 +575,7 @@ public class BasicOptionPaneUI extends OptionPaneUI {
     }
 
     protected int getMaxCharactersPerLineCount() {
-        return Integer.MAX_VALUE;
+        return optionPane.getMaxCharactersPerLineCount();
     }
 
     protected void burstStringInto(final Container c, final String d,
