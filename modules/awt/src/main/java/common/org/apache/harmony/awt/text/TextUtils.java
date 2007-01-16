@@ -132,7 +132,7 @@ public class TextUtils {
 
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = doc.getLength();
-        if (pos < 0 || pos > length) {
+        if (pos < 0 || pos >= length) {
             // awt.2F=No more words
             throwException(Messages.getString("awt.2F"), pos); //$NON-NLS-1$
         }
@@ -143,13 +143,12 @@ public class TextUtils {
 
         int iteratorNextWord = bi.following(pos);
         while (iteratorNextWord < length
-             && ((content.charAt(iteratorNextWord) == ' '
-             || content.charAt(iteratorNextWord) == '\n')
-             || content.charAt(iteratorNextWord) == '\t')) {
-             iteratorNextWord = bi.following(iteratorNextWord);
+               && Character.isWhitespace(content.charAt(iteratorNextWord))) {
+            iteratorNextWord = bi.following(iteratorNextWord);
         }
         if (iteratorNextWord == length) {
-             iteratorNextWord = 0;
+            // awt.2F=No more words
+            throwException(Messages.getString("awt.2F"), pos); //$NON-NLS-1$
         }
         return iteratorNextWord;
     }

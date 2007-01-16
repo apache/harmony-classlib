@@ -26,6 +26,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.text.BreakIterator;
 import java.text.CharacterIterator;
+
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -929,5 +930,47 @@ public class UtilitiesTest extends SwingTestCase {
         getNextWordTest(jta);
         getNextWordTest(jtf);
         //getNextWordTest(jtp);
+    }
+
+    // HARMONY-2744
+    public void testGetNextWord02() {
+        jta = new JTextArea("");
+        try {
+            Utilities.getNextWord(jta, 0);
+            fail("BadLocationException expected");
+        } catch (BadLocationException e) {
+            // "No more words"
+        }
+    }
+
+    // HARMONY-2744
+    public void testGetNextWord03() {
+        jta = new JTextArea("a");
+        try {
+            Utilities.getNextWord(jta, 0);
+            fail("BadLocationException expected");
+        } catch (BadLocationException e) {
+            // "No more words"
+        }
+
+        try {
+            Utilities.getNextWord(jta, 1);
+            fail("BadLocationException expected");
+        } catch (BadLocationException e) {
+            // "No more words"
+        }
+    }
+
+    // HARMONY-2744
+    public void testGetNextWord04() throws Exception {
+        jta = new JTextArea("a b");
+        assertEquals(2, Utilities.getNextWord(jta, 0));
+        assertEquals(2, Utilities.getNextWord(jta, 1));
+        try {
+            Utilities.getNextWord(jta, 2);
+            fail("BadLocationException expected");
+        } catch (BadLocationException e) {
+            // "No more words"
+        }
     }
 }
