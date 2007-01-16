@@ -328,6 +328,9 @@ public class GregorianCalendar extends Calendar {
 
         int dayOfYear = computeYearAndDay(days, timeVal + zoneOffset);
         fields[DAY_OF_YEAR] = dayOfYear;
+        if(fields[YEAR] == changeYear && gregorianCutover < timeVal + zoneOffset){
+            dayOfYear += currentYearSkew;
+        }
         int month = dayOfYear / 32;
         boolean leapYear = isLeapYear(fields[YEAR]);
         int date = dayOfYear - daysInYear(leapYear, month);
@@ -356,6 +359,9 @@ public class GregorianCalendar extends Calendar {
                 dayOfYear = computeYearAndDay(days, timeVal - zoneOffset
                         + dstOffset);
                 fields[DAY_OF_YEAR] = dayOfYear;
+                if(fields[YEAR] == changeYear && gregorianCutover < timeVal - zoneOffset + dstOffset){
+                    dayOfYear += currentYearSkew;
+                }
                 month = dayOfYear / 32;
                 leapYear = isLeapYear(fields[YEAR]);
                 date = dayOfYear - daysInYear(leapYear, month);
@@ -774,7 +780,13 @@ public class GregorianCalendar extends Calendar {
             if (year > changeYear) {
                 days -= ((year - 1901) / 100) - ((year - 1601) / 400);
             } else {
-                days += julianSkew;
+                if(year == changeYear){
+                    days += currentYearSkew;
+                }else if(year == changeYear -1){
+                    days += lastYearSkew;
+                }else{
+                    days += julianSkew;
+                }
             }
             return days;
         } else if (year <= changeYear) {
@@ -782,9 +794,8 @@ public class GregorianCalendar extends Calendar {
         }
         return (year - 1970) * 365 + ((year - 1972) / 4)
                 - ((year - 2000) / 100) + ((year - 2000) / 400);
-
     }
-
+    
     private int daysInMonth() {
         return daysInMonth(isLeapYear(fields[YEAR]), fields[MONTH]);
     }
@@ -1216,8 +1227,8 @@ public class GregorianCalendar extends Calendar {
         isCached = false;
         int dayOfYear = cal.get(DAY_OF_YEAR);
         if (dayOfYear < julianSkew) {
-            currentYearSkew = dayOfYear;
-            lastYearSkew = julianSkew - dayOfYear;
+            currentYearSkew = dayOfYear-1;
+            lastYearSkew = julianSkew - dayOfYear + 1;
         } else {
             lastYearSkew = 0;
             currentYearSkew = julianSkew;
