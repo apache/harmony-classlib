@@ -38,7 +38,12 @@
     </fileset>
     
     <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="instrument.common.exclude.file" location="./make/exclude.common" />
+    <property name="instrument.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="instrument.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <property name="exclude.file" location="${hy.hdk}/build/instrument.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -54,8 +59,8 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
-    
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+
     <target name="overlay-oss">
         <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
         <unzip src="${iculib.zip}" dest="${hy.instrument.src.main.native}/icu4c/unicode" />
@@ -171,6 +176,28 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    </target>
+
+    <target name="-init-exclude" >
+        <echo message="" file="${exclude.file}" />
+        <loadfile property="instrument.common.exclude.exist" srcFile="${instrument.common.exclude.file}" failonerror="false" />
+        <loadfile property="instrument.platform.exclude.exist" srcFile="${instrument.platform.exclude.file}" failonerror="false" />
+        <loadfile property="instrument.interm.exclude.exist" srcFile="${instrument.interm.exclude.file}" failonerror="false"/>
+    </target>
+
+    <target name="-add-common" if="instrument.common.exclude.exist" >
+        <echo message="${instrument.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-platform" if="instrument.platform.exclude.exist" >
+        <echo message="${instrument.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-intermittent" if="instrument.interm.exclude.exist" >
+        <echo message="${instrument.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+    
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
