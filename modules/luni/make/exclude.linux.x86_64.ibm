@@ -1,10 +1,1 @@
-tests/api/java/io/OutputStreamWriterTest.java
-tests/api/java/lang/ProcessTest.java
-tests/api/java/net/HttpURLConnectionTest.java
-tests/api/java/net/MulticastSocketTest.java
-tests/api/java/net/SocketImplTest.java
 tests/api/java/net/SocketTest.java
-tests/api/java/net/URLClassLoaderTest.java
-tests/api/java/net/URLConnectionTest.java
-tests/api/java/net/URLTest.java
-tests/api/java/net/SocketPermissionTest.java

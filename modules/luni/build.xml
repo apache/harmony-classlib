@@ -39,7 +39,12 @@
 
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="luni.common.exclude.file" location="./make/exclude.common" />
+    <property name="luni.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="luni.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <property name="exclude.file" location="${hy.hdk}/build/luni.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -176,7 +181,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
@@ -266,6 +271,28 @@
                 <include name="**/*.java" />
             </javac-elements>
         </compile-tests>
+    </target>
+
+    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    </target>
+
+    <target name="-init-exclude" >
+        <echo message="" file="${exclude.file}" />
+        <loadfile property="luni.common.exclude.exist" srcFile="${luni.common.exclude.file}" failonerror="false" />
+        <loadfile property="luni.platform.exclude.exist" srcFile="${luni.platform.exclude.file}" failonerror="false" />
+        <loadfile property="luni.interm.exclude.exist" srcFile="${luni.interm.exclude.file}" failonerror="false"/>
+    </target>
+
+    <target name="-add-common" if="luni.common.exclude.exist" >
+        <echo message="${luni.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-platform" if="luni.platform.exclude.exist" >
+        <echo message="${luni.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-intermittent" if="luni.interm.exclude.exist" >
+        <echo message="${luni.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
     </target>
 
     <target name="run-tests">

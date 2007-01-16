@@ -39,6 +39,12 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="misc.common.exclude.file" location="./make/exclude.common" />
+    <property name="misc.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="misc.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <property name="exclude.file" location="${hy.hdk}/build/misc.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -53,7 +59,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.misc.packaging.jarname}.jar" />
@@ -160,6 +166,28 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    </target>
+
+    <target name="-init-exclude" >
+        <echo message="" file="${exclude.file}" />
+        <loadfile property="misc.common.exclude.exist" srcFile="${misc.common.exclude.file}" failonerror="false" />
+        <loadfile property="misc.platform.exclude.exist" srcFile="${misc.platform.exclude.file}" failonerror="false" />
+        <loadfile property="misc.interm.exclude.exist" srcFile="${misc.interm.exclude.file}" failonerror="false"/>
+    </target>
+
+    <target name="-add-common" if="misc.common.exclude.exist" >
+        <echo message="${misc.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-platform" if="misc.platform.exclude.exist" >
+        <echo message="${misc.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
+    <target name="-add-intermittent" if="misc.interm.exclude.exist" >
+        <echo message="${misc.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    </target>
+
     <target name="run-tests">
         <mkdir dir="${hy.tests.reports}" />
 
@@ -191,6 +219,7 @@
 
                 <fileset dir="${hy.misc.src.test.java}">
                     <include name="**/*Test.java" />
+                    <excludesfile name="${exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

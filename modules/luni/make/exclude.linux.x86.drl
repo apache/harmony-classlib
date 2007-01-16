@@ -1,12 +1,3 @@
 org/apache/harmony/luni/tests/java/lang/ThreadTest.java
 org/apache/harmony/tests/internal/net/www/protocol/http/HttpURLConnectionTest.java
-tests/api/java/io/OutputStreamWriterTest.java
-tests/api/java/lang/ProcessTest.java
-tests/api/java/net/HttpURLConnectionTest.java
-tests/api/java/net/MulticastSocketTest.java
-tests/api/java/net/SocketImplTest.java
 tests/api/java/net/SocketTest.java
-tests/api/java/net/URLClassLoaderTest.java
-tests/api/java/net/URLConnectionTest.java
-tests/api/java/net/URLTest.java
-tests/api/java/net/SocketPermissionTest.java
