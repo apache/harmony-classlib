@@ -185,4 +185,17 @@ public class BasicFileChooserUITest extends SwingTestCase {
             fail("NPE should not be thrown");            
         }
     }
+
+    public void testInstallDefaults() {
+        try {
+            new BasicFileChooserUI(null) {
+                public void installDefaults(JFileChooser fc) {
+                    super.installDefaults(fc);
+                }
+            }.installDefaults(null);
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {
+            // Passed
+        }
+    }
 }

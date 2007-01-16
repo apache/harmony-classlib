@@ -524,6 +524,10 @@ public class BasicFileChooserUI extends FileChooserUI {
     }
 
     protected void installDefaults(final JFileChooser fc) {
+        if (fc == null) {
+            throw new NullPointerException();
+        }
+ 
         helpButtonMnemonic = UIManager.getInt("FileChooser.helpButtonMnemonic");
         directoryOpenButtonMnemonic = UIManager.getInt("FileChooser.directoryOpenButtonMnemonic");
 
