@@ -68,7 +68,14 @@ public class ScrollPaneLayoutTest extends SwingTestCase {
             fail("Class cast exception shall be thrown");
         } catch (ClassCastException e) {
         }
-    }
+        //regression for HARMONY-1735
+        try {
+        	layout.preferredLayoutSize(null);
+        	fail("No expected exception");
+        }catch (NullPointerException e) {
+        //expected
+        }
+      }
 
     public void testDefaultLayout() throws Exception {
         ScrollPaneLayout l = new ScrollPaneLayout();

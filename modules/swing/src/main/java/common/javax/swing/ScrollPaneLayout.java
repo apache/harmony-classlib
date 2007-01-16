@@ -170,9 +170,6 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
     public Dimension preferredLayoutSize(final Container parent) {
         JScrollPane pane = (JScrollPane)parent;
 
-        if (pane == null) {
-            return new Dimension(0, 0);
-        }
         int rowHeadWidth = (rowHead == null) ? 0 : rowHead.getPreferredSize().width;
         int viewportWidth = (viewport == null) ? 0 : viewport.getPreferredSize().width;
         int viewportBorderLeft = (pane.getViewportBorder() == null) ? 0 : pane.getViewportBorder().getBorderInsets(pane).left;
