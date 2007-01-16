@@ -334,7 +334,25 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         JComponent comp2 = ui.createNorthPane(frame);
         assertTrue("new object", comp != comp2);
         assertTrue("northPane", ui.getNorthPane() != comp2);
+        
+        try { 
+            BasicInternalFrameUIExt f = new BasicInternalFrameUIExt(null);
+            f.createNorthPane(null);
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }
     }
+
+    class BasicInternalFrameUIExt extends BasicInternalFrameUI {
+        BasicInternalFrameUIExt (JInternalFrame c) {
+            super(c);
+        }
+        
+        public JComponent createNorthPane(JInternalFrame c) {
+            return super.createNorthPane(c);
+        }
+    } 
 
     /*
      * Class under test for JComponent createEastPane(JInternalFrame)
