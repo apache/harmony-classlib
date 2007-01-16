@@ -33,6 +33,8 @@ import org.apache.harmony.security.provider.crypto.RandomBitsSupplier;
 
 public final class CryptoProvider extends Provider {
 
+    private static final long serialVersionUID = 7991202868423459598L;
+
     /**
      * Creates a Provider and puts parameters
      */
@@ -53,9 +55,9 @@ public final class CryptoProvider extends Provider {
         final String KEYF_NAME = 
                  "org.apache.harmony.security.provider.crypto.DSAKeyFactoryImpl"; //$NON-NLS-1$
 
-        AccessController.doPrivileged(new java.security.PrivilegedAction() {
+        AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
 
-            public Object run() {
+            public Void run() {
 
                 put("MessageDigest.SHA-1", MD_NAME); //$NON-NLS-1$
                 put("MessageDigest.SHA-1 ImplementedIn", "Software"); //$NON-NLS-1$ //$NON-NLS-2$

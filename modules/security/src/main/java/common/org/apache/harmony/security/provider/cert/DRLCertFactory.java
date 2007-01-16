@@ -47,8 +47,8 @@ public final class DRLCertFactory extends Provider {
         // security.151=Certificate Factory supports CRLs and Certificates in (PEM) ASN.1 DER encoded form, and Certification Paths in PkiPath and PKCS7 formats.
         super("DRLCertFactory", 1.0, Messages.getString("security.151")); //$NON-NLS-1$ //$NON-NLS-2$
                 
-        AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            public Object run() {
+        AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+            public Void run() {
                 // register the service
                 put("CertificateFactory.X509", //$NON-NLS-1$
                     "org.apache.harmony.security.provider.cert.X509CertFactoryImpl"); //$NON-NLS-1$
