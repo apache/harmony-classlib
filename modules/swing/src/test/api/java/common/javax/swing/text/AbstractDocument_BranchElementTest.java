@@ -243,9 +243,31 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
         assertEquals(0, par.getStartOffset());
     }
 
+    // Regression for HARMONY-2777
+    public void testGetStartOffsetNoChildren() {
+        par = doc.new BranchElement(null, null);
+        try {
+            par.getStartOffset();
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
     public void testGetEndOffset() {
         assertEquals(15, bidi.getEndOffset());
         assertEquals(15, par.getEndOffset());
+    }
+
+    // Regression for HARMONY-2777
+    public void testGetEndOffsetNoChildren() {
+        par = doc.new BranchElement(null, null);
+        try {
+            par.getEndOffset();
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     public void testGetElementCount() {

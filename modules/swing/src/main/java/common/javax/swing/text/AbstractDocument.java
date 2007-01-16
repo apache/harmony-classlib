@@ -401,6 +401,9 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         @Override
         public int getEndOffset() {
+            if (elements.length == 0) {
+                throw new NullPointerException();
+            }
             return elements[elements.length - 1].getEndOffset();
         }
 
@@ -412,6 +415,9 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         @Override
         public int getStartOffset() {
+            if (elements.length == 0) {
+                throw new NullPointerException();
+            }
             return elements[0].getStartOffset();
         }
 
