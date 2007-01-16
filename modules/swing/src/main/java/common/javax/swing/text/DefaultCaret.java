@@ -989,6 +989,9 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      *
      */
     public void setBlinkRate(final int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("Invalid delay: " + i);
+        }
         blinkRate = i;
         stopTimer(blinkTimer);
         if (blinkRate > 0) {

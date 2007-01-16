@@ -333,6 +333,13 @@ public class DefaultCaretTest extends SwingTestCase {
         assertEquals(0, dc.getBlinkRate());
         dc.setBlinkRate(100);
         assertEquals(100, dc.getBlinkRate());
+
+        try { // Regression test for HARMONY-1795
+            dc.setBlinkRate(-1);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
     }
 
     public void testSetDot() throws Exception {
