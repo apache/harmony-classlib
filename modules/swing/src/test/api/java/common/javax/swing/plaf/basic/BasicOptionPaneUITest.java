@@ -545,6 +545,8 @@ public class BasicOptionPaneUITest extends SwingTestCase {
     }
 
     public void testGetIconForType() throws InterruptedException {
+        paneUI.optionPane = new JOptionPane();
+        paneUI.optionPane.setUI(paneUI);
         Icon icon11 = new IconUIResource(new ImageIcon(new BufferedImage(10, 20,
                 BufferedImage.TYPE_INT_RGB)));
         Icon icon21 = new IconUIResource(new ImageIcon(new BufferedImage(30, 40,
@@ -576,6 +578,15 @@ public class BasicOptionPaneUITest extends SwingTestCase {
                 .getIconForType(JOptionPane.QUESTION_MESSAGE));
         assertSame("icons are shared", icon42, paneUI
                 .getIconForType(JOptionPane.WARNING_MESSAGE));
+    }
+
+    public void testGetIconForType_Null() throws InterruptedException {
+        try { // Regression test for HARMONY-2903
+            new BasicOptionPaneUI().getIconForType(0);
+            fail("NullPointerException should have been thrown");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     public void testGetMaxCharactersPerLineCount() {

@@ -563,6 +563,10 @@ public class BasicOptionPaneUI extends OptionPaneUI {
     }
 
     protected Icon getIconForType(final int messageType) {
+        if (optionPane == null) {
+            throw new NullPointerException("optionPane is null");
+        }
+
         if (defaultIcons == null) {
             installIcons();
         }
