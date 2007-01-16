@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.crypto.utils;
+package org.apache.harmony.security.tests.utils;
 
 import org.apache.harmony.security.utils.AlgNameMapper;
 
@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 public class AlgNameMapperTest extends TestCase {
 
     /**
-     * @tests org.apache.harmony.crypto.utils.AlgNameMapper#getStandardName(String)
+     * @tests org.apache.harmony.security.utils.AlgNameMapper#getStandardName(String)
      */
     public void testGetStandardName() {
         //Regression for HARMONY-962
@@ -35,7 +35,7 @@ public class AlgNameMapperTest extends TestCase {
     }
 
     /**
-     * @tests org.apache.harmony.crypto.utils.AlgNameMapper#isOID(String)
+     * @tests org.apache.harmony.security.utils.AlgNameMapper#isOID(String)
      */
     public void testIsOID() {
         //Regression for HARMONY-962
@@ -50,7 +50,7 @@ public class AlgNameMapperTest extends TestCase {
     }
 
     /**
-     * @tests org.apache.harmony.crypto.utils.AlgNameMapper.selectEntries(Provider)
+     * @tests org.apache.harmony.security.utils.AlgNameMapper.selectEntries(Provider)
      */
     public void testSelectEntries() {
         // Regression for HARMONY-1185
