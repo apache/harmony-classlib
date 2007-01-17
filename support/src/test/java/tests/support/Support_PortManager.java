@@ -17,29 +17,47 @@
 
 package tests.support;
 
+import java.net.ServerSocket;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class Support_PortManager extends java.lang.Object {
+public class Support_PortManager {
 
-	private static int lastAssignedPort = somewhatRandomPort();
+    private static int lastAssignedPort = somewhatRandomPort();
+    private static boolean failedOnce = false;
 
-	public static synchronized int getNextPort() {
-		if (++lastAssignedPort > 65534) {
+    public static synchronized int getNextPort() {
+        if (!failedOnce) {
+            try {
+                ServerSocket ss = new ServerSocket(0);
+                int port = ss.getLocalPort();
+
+                ss.close();
+                return port;
+            } catch (Exception ex) {
+                failedOnce = true;
+            }
+        }
+        return getNextPort_unsafe();
+    }
+
+    public static synchronized int getNextPort_unsafe() {
+        if (++lastAssignedPort > 65534) {
             lastAssignedPort = 6000;
         }
-		return lastAssignedPort;
-	}
+        return lastAssignedPort;
+    }
 
-	/*
-	 * Returns a different port number every 6 seconds or so. The port number
-	 * should be about += 100 at each 6 second interval
-	 */
-	private static int somewhatRandomPort() {
+    /*
+      * Returns a different port number every 6 seconds or so. The port number
+      * should be about += 100 at each 6 second interval
+      */
+    private static int somewhatRandomPort() {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		int minutes = c.get(Calendar.MINUTE);
-		int seconds = c.get(Calendar.SECOND);
-		return 6000 + (1000 * minutes) + ((seconds / 6) * 100);
-	}
+        int minutes = c.get(Calendar.MINUTE);
+        int seconds = c.get(Calendar.SECOND);
+
+        return 6000 + (1000 * minutes) + ((seconds / 6) * 100);
+    }
 
 }
