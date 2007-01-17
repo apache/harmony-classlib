@@ -159,33 +159,20 @@ public class AbstractDocumentTest extends TestCase {
         assertNull(branch.getElement(0));
         assertNull(branch.getElement(1));
         assertEquals(0, branch.getElementCount());
+
         // Since this branch element has no children yet, it has no start and
         // end offsets. Thus calling get{Start,End}Offset on an empty branch
         // element causes the exception being thrown.
-        if (BasicSwingTestCase.isHarmony()) {
-            // Our implementation
-            try {
-                assertEquals(0, branch.getStartOffset());
-                fail("getStartOffset on an empty BranchElement " + "causes exception");
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            try {
-                assertEquals(1, branch.getEndOffset());
-                fail("getEndOffset on an empty BranchElement causes exception");
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-        } else {
-            // Reference implementation
-            try {
-                assertEquals(0, branch.getStartOffset());
-                fail("getStartOffset on an empty BranchElement " + "causes exception");
-            } catch (NullPointerException e) {
-            }
-            try {
-                assertEquals(1, branch.getEndOffset());
-                fail("getEndOffset on an empty BranchElement causes exception");
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
+        try {
+            assertEquals(0, branch.getStartOffset());
+            fail("getStartOffset is expected to throw NullPointerException");
+        } catch (NullPointerException e) {
+        }
+
+        try {
+            assertEquals(1, branch.getEndOffset());
+            fail("getEndOffset is expected to throw NullPointerException");
+        } catch (NullPointerException e) {
         }
     }
 
