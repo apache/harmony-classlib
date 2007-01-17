@@ -30,6 +30,8 @@ MDLLIBFILES = \
 
 DLLNAME=../libjpegencoder.so
 
+CLEANFILES=jconfig.h
+
 include $(HY_HDK)/build/make/rules.mk
 
 $(SHAREDSUB)JpegEncoder.o: jconfig.h

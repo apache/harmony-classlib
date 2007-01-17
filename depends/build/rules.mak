@@ -56,4 +56,5 @@ clean:
     -del $(BUILDFILES) *.res *.pdb \
              $(LIBNAME) $(LIBNAME:.lib=.exp) \
              $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
-             $(EXENAME) $(EXENAME:.exe=.pdb) >nul 2>&1
+             $(EXENAME) $(EXENAME:.exe=.pdb) \
+             $(CLEANFILES) >nul 2>&1

@@ -30,6 +30,8 @@ MDLLIBFILES = \
 
 DLLNAME=../libjpegdecoder.so
 
+CLEANFILES=jconfig.h
+
 include $(HY_HDK)/build/make/rules.mk
 
 $(SHAREDSUB)JpegDecoder.o: jconfig.h

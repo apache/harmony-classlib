@@ -36,6 +36,8 @@ MDLLIBFILES = \
 DLLBASE=0x13300000
 COMMENT=/comment:"JPEGDECODER native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
 
+CLEANFILES=jconfig.h
+
 !include <$(HY_HDK)\build\make\rules.mak>
 
 $(SHAREDSUB)JpegDecoder.obj: jconfig.h

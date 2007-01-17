@@ -42,4 +42,4 @@ $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
 
 clean:
-	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME)
+	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME) $(CLEANFILES)
