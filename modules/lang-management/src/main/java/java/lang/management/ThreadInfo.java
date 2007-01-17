@@ -19,7 +19,8 @@ package java.lang.management;
 
 import javax.management.openmbean.CompositeData;
 
-import com.ibm.lang.management.ManagementUtils;
+import org.apache.harmony.lang.management.ManagementUtils;
+
 
 /**
  * <p>

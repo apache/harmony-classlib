@@ -25,7 +25,7 @@ native libraries. The majority of these are for the getting and setting of VM
 properties and map to public API methods. For example, the operation 
 getLoadedClassCount() declared in the interface
 java.lang.management.ClassLoadingMXBean has a Java implementation in the class
-com.ibm.lang.management.ClassLoadingMXBeanImpl that just calls a private native
+org.apache.harmony.lang.management.ClassLoadingMXBeanImpl that just calls a private native
 method getLoadedClassCountImpl() that returns the requested information from 
 the monitored VM. A basic pattern has been adopted where the name of the native
 method is the same as the public API method (as exposed in the
@@ -37,7 +37,7 @@ java.lang.management *MXBean API as a number of methods could be realised in
 pure Java. 
 
 
-com.ibm.lang.management.ClassLoadingMXBeanImpl
+org.apache.harmony.lang.management.ClassLoadingMXBeanImpl
 ----------------------------------------------------------------
 int getLoadedClassCountImpl()
 long getTotalLoadedClassCountImpl()
@@ -46,24 +46,24 @@ boolean isVerboseImpl
 void setVerboseImpl(boolean value)
 
 
-com.ibm.lang.management.CompilationMXBeanImpl
+org.apache.harmony.lang.management.CompilationMXBeanImpl
 --------------------------------------------------------------
 long getTotalCompilationTimeImpl()
 boolean isCompilationTimeMonitoringSupportedImpl()
 
 
-com.ibm.lang.management.GarbageCollectorMXBeanImpl
+org.apache.harmony.lang.management.GarbageCollectorMXBeanImpl
 --------------------------------------------------------------------
 long getCollectionCountImpl()
 long getCollectionTimeImpl()
 
 
-com.ibm.lang.management.MemoryManagerMXBeanImpl
+org.apache.harmony.lang.management.MemoryManagerMXBeanImpl
 --------------------------------------------------------------------
 boolean isValidImpl()
 
 
-com.ibm.lang.management.MemoryMXBeanImpl
+org.apache.harmony.lang.management.MemoryMXBeanImpl
 ----------------------------------------------------------
 MemoryUsage getHeapMemoryUsageImpl()
 MemoryUsage getNonHeapMemoryUsageImpl()
@@ -72,7 +72,7 @@ boolean isVerboseImpl()
 void setVerboseImpl(boolean value)
 
 
-com.ibm.lang.management.MemoryPoolMXBeanImpl
+org.apache.harmony.lang.management.MemoryPoolMXBeanImpl
 --------------------------------------------------------------
 MemoryUsage getCollectionUsageImpl()
 long getCollectionUsageThresholdImpl()
@@ -91,7 +91,7 @@ void setCollectionUsageThresholdImpl(long threshold)
 void setUsageThresholdImpl(long threshold)
 
 
-com.ibm.lang.management.RuntimeMXBeanImpl
+org.apache.harmony.lang.management.RuntimeMXBeanImpl
 ----------------------------------------------------------
 String getNameImpl()
 long getStartTimeImpl()
@@ -99,7 +99,7 @@ long getUptimeImpl()
 boolean isBootClassPathSupportedImpl()
 
 
-com.ibm.lang.management.ThreadMXBeanImpl
+org.apache.harmony.lang.management.ThreadMXBeanImpl
 ---------------------------------------------------------
 long[] findMonitorDeadlockedThreadsImpl()
 long[] getAllThreadIdsImpl()
@@ -126,7 +126,7 @@ void setThreadCpuTimeEnabledImpl(boolean enable)
 Below is a list of native calls used for internal support purposes; they do not have
 any basis in the public API. Calls are grouped by implementation class.
 
-com.ibm.lang.management.CompilationMXBeanImpl
+org.apache.harmony.lang.management.CompilationMXBeanImpl
 --------------------------------------------------------------
 	/**
 	 * Query whether the VM is running with a JIT compiler enabled.
@@ -136,7 +136,7 @@ com.ibm.lang.management.CompilationMXBeanImpl
 	private static native boolean isJITEnabled();
 	
 	
-com.ibm.lang.management.MemoryManagerMXBeanImpl
+org.apache.harmony.lang.management.MemoryManagerMXBeanImpl
 --------------------------------------------------------------------
     /**
      * IMPORTANT : VM is the sole caller of this method.
@@ -151,7 +151,7 @@ com.ibm.lang.management.MemoryManagerMXBeanImpl
             MemoryMXBeanImpl memBean);
 
 
-com.ibm.lang.management.MemoryMXBeanImpl
+org.apache.harmony.lang.management.MemoryMXBeanImpl
 ----------------------------------------------------------
     /**
      * IMPORTANT : VM is the sole caller of this method.
@@ -163,7 +163,7 @@ com.ibm.lang.management.MemoryMXBeanImpl
     private native void createMemoryManagers();
 
 
-com.ibm.lang.management.MemoryNotificationThread
+org.apache.harmony.lang.management.MemoryNotificationThread
 -----------------------------------------------------------------
     /**
      * Process notifications on an internal VM queue until a shutdown request is
@@ -175,7 +175,7 @@ com.ibm.lang.management.MemoryNotificationThread
     private native void processNotificationLoop(int internalID);
 
 
-com.ibm.lang.management.MemoryNotificationThreadShutdown
+org.apache.harmony.lang.management.MemoryNotificationThreadShutdown
 -----------------------------------------------------------------------------
     /**
      * Wipes any pending notifications and puts a shutdown request notification
@@ -187,7 +187,7 @@ com.ibm.lang.management.MemoryNotificationThreadShutdown
     private native void sendShutdownNotification(int id);
 
 
-com.ibm.lang.management.ThreadMXBeanImpl
+org.apache.harmony.lang.management.ThreadMXBeanImpl
 ---------------------------------------------------------
 All of the support native methods below are called from within the
 getThreadInfoImpl(long, int) method. If the implementation of this method changes
@@ -300,7 +300,7 @@ Java Fields Used by Native Code
 The following private instance field is included in the Java source for use
 by the native code layer. Care must be taken not to remove this field.
 
-com.ibm.lang.management.MemoryPoolMXBeanImpl
+org.apache.harmony.lang.management.MemoryPoolMXBeanImpl
 --------------------------------------------------------------
     /**
      * IMPORTANT: bean identifier for use by VM
@@ -320,7 +320,7 @@ Java Calls Used by Native Code
 The following private methods are included in the Java source for use by the native
 layer. Care must be taken not to remove these methods.
 
-com.ibm.lang.management.MemoryNotificationThread
+org.apache.harmony.lang.management.MemoryNotificationThread
 -----------------------------------------------------------------
     /**
      * A helper method called from within the native
@@ -355,7 +355,7 @@ com.ibm.lang.management.MemoryNotificationThread
             boolean isCollectionUsageNotification)
                         
 
-com.ibm.lang.management.MemoryManagerMXBeanImpl
+org.apache.harmony.lang.management.MemoryManagerMXBeanImpl
 --------------------------------------------------------------------
     /**
      * A helper method called from within the native
@@ -382,7 +382,7 @@ com.ibm.lang.management.MemoryManagerMXBeanImpl
             int internalID, MemoryMXBeanImpl memBean)
 
 
-com.ibm.lang.management.MemoryMXBeanImpl
+org.apache.harmony.lang.management.MemoryMXBeanImpl
 ----------------------------------------------------------
     /**
      * A helper method called from within the native

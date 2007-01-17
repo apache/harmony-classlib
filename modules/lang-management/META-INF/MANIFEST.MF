@@ -20,5 +20,4 @@ Import-Package: java.io,
  javax.management,
  javax.management.modelmbean,
  javax.management.openmbean
-Export-Package: java.lang.management,
- org.apache.harmony.langmanagement.tests.java.lang.management
+Export-Package: java.lang.management

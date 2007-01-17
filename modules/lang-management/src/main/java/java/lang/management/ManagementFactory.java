@@ -40,9 +40,10 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.NotificationEmitter;
 import javax.management.ObjectName;
 
-import com.ibm.lang.management.ManagementUtils;
-import com.ibm.lang.management.MemoryManagerMXBeanImpl;
-import com.ibm.lang.management.OpenTypeMappingIHandler;
+import org.apache.harmony.lang.management.ManagementUtils;
+import org.apache.harmony.lang.management.MemoryManagerMXBeanImpl;
+import org.apache.harmony.lang.management.OpenTypeMappingIHandler;
+
 
 /**
  * <p>
