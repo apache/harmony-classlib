@@ -26,6 +26,7 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
+import java.security.Security;
 import java.security.SecurityPermission;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -78,9 +79,6 @@ public class PolicyTest extends TestCase {
     public void test_getPolicy() {
         SecurityManager old = System.getSecurityManager();
         Policy oldPolicy = Policy.getPolicy();
-
-        assertNotNull("Got a null system security policy", oldPolicy);
-
         try {
             Policy.setPolicy(new TestProvider());
             SecurityChecker checker = new SecurityChecker(
@@ -157,5 +155,30 @@ public class PolicyTest extends TestCase {
 
         assertTrue(c.contains(sp));
         //no check for static permissions
+    }
+    
+    /**
+     * @tests java.security.Policy#getPolicy()
+     * @tests java.security.Policy#setPolicy()
+     */
+    public void testResetingPolicyToDefault() {
+
+        Policy oldPolicy = Policy.getPolicy();
+        assertNotNull("Got a null system security policy", oldPolicy);
+
+        try {
+
+            Policy.setPolicy(null); // passing null resets policy
+            Policy newPolicy = Policy.getPolicy();
+
+            assertNotNull(newPolicy);
+            assertNotSame(oldPolicy, newPolicy);
+
+            assertEquals("Policy class name", Security
+                    .getProperty("policy.provider"), newPolicy.getClass()
+                    .getName());
+        } finally {
+            Policy.setPolicy(oldPolicy);
+        }
     }
 }
