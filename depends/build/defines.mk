@@ -23,7 +23,7 @@ AS = as
 AR = ar
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
-OSLIBS =
+OSLIBS = -lc -lm
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 

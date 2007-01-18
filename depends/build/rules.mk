@@ -30,13 +30,13 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) $(SYSLIBFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
-	-lc -lm $(OSLIBS)
+	$(OSLIBS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(CC) $(VMLINK) $(LDFLAGS) \
 	$(BUILDFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
-	-o $@ -lm -lpthread -lc $(OSLIBS) \
+	-o $@ $(OSLIBS) \
 	-Xlinker -z -Xlinker origin \
 	-Xlinker -rpath -Xlinker \$$ORIGIN/ \
 	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
