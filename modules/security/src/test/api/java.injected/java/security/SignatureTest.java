@@ -46,100 +46,66 @@ public class SignatureTest extends TestCase {
 
 	public void testGetProvider() {
 		MySignature1 s = new MySignature1("ABC");
-		if (s.getState() != Signature.UNINITIALIZED) {
-			fail("Incorrect state");
-		}
-		if (s.getProvider() != null) {
-			fail("getProvider() failed");
-		}
+		
+        assertEquals("state", Signature.UNINITIALIZED, s.getState());
+        assertNull("provider", s.getProvider());
 	}
 
 	public void testGetAlgorithm() {
 		MySignature1 s = new MySignature1("ABC");
-		if (s.getState() != Signature.UNINITIALIZED) {
-			fail("Incorrect state");
-		}
-		if (!"ABC".equals(s.getAlgorithm())) {
-			fail("getAlgorithm() failed");
-		}
+
+        assertEquals("state", Signature.UNINITIALIZED, s.getState());
+        assertEquals("algorithm", "ABC", s.getAlgorithm());
 	}
 
 	/*
 	 * Class under test for void initVerify(PublicKey)
 	 */
-	public void testInitVerifyPublicKey() {
+	public void testInitVerifyPublicKey() throws InvalidKeyException {
 		MySignature1 s = new MySignature1("ABC");
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.VERIFY) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineInitVerify) {
-			fail("initVerify() failed");
-		}
+
+        s.initVerify(new MyPublicKey());
+        assertEquals("state", Signature.VERIFY, s.getState());
+        assertTrue("initVerify() failed", s.runEngineInitVerify);
 	}
 
 	/*
 	 * Class under test for void initVerify(Certificate)
 	 */
-	public void testInitVerifyCertificate() {
+	public void testInitVerifyCertificate() throws InvalidKeyException {
 		MySignature1 s = new MySignature1("ABC");
-		try {
-			s.initVerify(new MyCertificate());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.VERIFY) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineInitVerify) {
-			fail("initVerify() failed");
-		}
+
+        s.initVerify(new MyCertificate());
+        assertEquals("state", Signature.VERIFY, s.getState());
+        assertTrue("initVerify() failed", s.runEngineInitVerify);
 	}
 
 	/*
 	 * Class under test for void initSign(PrivateKey)
 	 */
-	public void testInitSignPrivateKey() {
+	public void testInitSignPrivateKey() throws InvalidKeyException {
 		MySignature1 s = new MySignature1("ABC");
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineInitSign) {
-			fail("initSign() failed");
-		}
+
+        s.initSign(new MyPrivateKey());
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("initSign() failed", s.runEngineInitSign);
 	}
 
 	/*
 	 * Class under test for void initSign(PrivateKey, SecureRandom)
 	 */
-	public void testInitSignPrivateKeySecureRandom() {
+	public void testInitSignPrivateKeySecureRandom() throws InvalidKeyException {
 		MySignature1 s = new MySignature1("ABC");
-		try {
-			s.initSign(new MyPrivateKey(), new SecureRandom());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineInitSign) {
-			fail("initSign() failed");
-		}
+
+        s.initSign(new MyPrivateKey(), new SecureRandom());
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("initSign() failed", s.runEngineInitSign);
 	}
 
 	/*
 	 * Class under test for byte[] sign()
 	 */
-	public void testSign() {
+	public void testSign() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		try {
 			s.sign();
@@ -147,11 +113,7 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
+		s.initVerify(new MyPublicKey());
 		
 		try {
 			s.sign();
@@ -159,28 +121,16 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 		
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		try {
-			s.sign();
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineSign) {
-			fail("sign() failed");
-		}
+		s.initSign(new MyPrivateKey());
+        s.sign();
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("sign() failed", s.runEngineSign);
 	}
 
 	/*
 	 * Class under test for boolean verify(byte[])
 	 */
-	public void testVerifybyteArray() {
+	public void testVerifybyteArray() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		byte[] b = {1, 2, 3, 4};
 		try {
@@ -189,41 +139,23 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
+		s.initSign(new MyPrivateKey());
 		try {
 			s.verify(b);
 			fail("No expected SignatureException");
 		} catch (SignatureException e) {		
 		}
 		
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.verify(b);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		
-		if (s.getState() != Signature.VERIFY) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineVerify) {
-			fail("verify() failed");
-		}
+		s.initVerify(new MyPublicKey());
+        s.verify(b);
+        assertEquals("state", Signature.VERIFY, s.getState());
+        assertTrue("verify() failed", s.runEngineVerify);
 	}
 
 	/*
 	 * Class under test for boolean verify(byte[], int, int)
 	 */
-	public void testVerifybyteArrayintint() {
+	public void testVerifybyteArrayintint() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		byte[] b = {1, 2, 3, 4};
 		try {
@@ -232,49 +164,31 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		try {
+		s.initSign(new MyPrivateKey());
+
+        try {
 			s.verify(b, 0, 3);
 			fail("No expected SignatureException");
 		} catch (SignatureException e) {		
 		}
 		
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
+		s.initVerify(new MyPublicKey());
 		
 		try {
 			s.verify(b, 0, 5);
 			fail("No expected IllegalArgumentException");
 		} catch (IllegalArgumentException e) {		
-		} catch (SignatureException e) {
-			fail(e.toString());
 		}
 		
-		try {
-			s.verify(b, 0, 3);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		
-		if (s.getState() != Signature.VERIFY) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineVerify) {
-			fail("verify() failed");
-		}
+		s.verify(b, 0, 3);
+        assertEquals("state", Signature.VERIFY, s.getState());
+        assertTrue("verify() failed", s.runEngineVerify);
 	}
 
 	/*
 	 * Class under test for void update(byte)
 	 */
-	public void testUpdatebyte() {
+	public void testUpdatebyte() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		try {
 			s.update((byte)1);
@@ -282,40 +196,19 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.update((byte)1);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		try {
-			s.update((byte)1);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineUpdate1) {
-			fail("update() failed");
-		}
+		s.initVerify(new MyPublicKey());
+        s.update((byte) 1);
+        s.initSign(new MyPrivateKey());
+        s.update((byte) 1);
+
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("update() failed", s.runEngineUpdate1);
 	}
 
 	/*
 	 * Class under test for void update(byte[])
 	 */
-	public void testUpdatebyteArray() {
+	public void testUpdatebyteArray() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		byte[] b = {1, 2, 3, 4};
 		try {
@@ -324,40 +217,19 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.update(b);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		try {
-			s.update(b);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineUpdate2) {
-			fail("update() failed");
-		}
+		s.initVerify(new MyPublicKey());
+        s.update(b);
+        s.initSign(new MyPrivateKey());
+        s.update(b);
+
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("update() failed", s.runEngineUpdate2);
 	}
 
 	/*
 	 * Class under test for void update(byte[], int, int)
 	 */
-	public void testUpdatebyteArrayintint() {
+	public void testUpdatebyteArrayintint() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		byte[] b = {1, 2, 3, 4};
 		try {
@@ -366,34 +238,13 @@ public class SignatureTest extends TestCase {
 		} catch (SignatureException e) {		
 		}
 
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.update(b, 0, 3);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-			
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		try {
-			s.update(b, 0, 3);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineUpdate2) {
-			fail("update() failed");
-		}
+		s.initVerify(new MyPublicKey());
+        s.update(b, 0, 3);
+        s.initSign(new MyPrivateKey());
+        s.update(b, 0, 3);
+
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("update() failed", s.runEngineUpdate2);
 	}
 
 	/*
@@ -407,24 +258,18 @@ public class SignatureTest extends TestCase {
 	/*
 	 * Class under test for void setParameter(AlgorithmParameterSpec)
 	 */
-	public void testSetParameterAlgorithmParameterSpec() {
+	public void testSetParameterAlgorithmParameterSpec() throws InvalidAlgorithmParameterException {
 		MySignature1 s = new MySignature1("ABC");
 		try {
 			s.setParameter((java.security.spec.AlgorithmParameterSpec)null);
 			fail("No expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e){	
-		} catch (Exception e){
-			fail(e.toString());
 		}
 	}
 
 	public void testGetParameter() {
 		MySignature1 s = new MySignature1("ABC");
-		try {
-			s.getParameter("aaa");
-		} catch (InvalidParameterException e){
-			fail(e.toString());
-		}
+        s.getParameter("aaa");
 	}
 	
 	private class MyKey implements Key {
