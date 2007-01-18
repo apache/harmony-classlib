@@ -35,7 +35,7 @@ public class Signature_Impl1Test extends TestCase {
 	/*
 	 * Class under test for int sign(byte[], int, int)
 	 */
-	public void testSignbyteArrayintint() {
+	public void testSignbyteArrayintint() throws Exception {
 		MySignature1 s = new MySignature1("ABC");
 		byte[] b = new byte[8];
 		try {
@@ -44,11 +44,7 @@ public class Signature_Impl1Test extends TestCase {
 		} catch (SignatureException e) {		
 		}
 		
-		try {
-			s.initVerify(new MyPublicKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
+        s.initVerify(new MyPublicKey());
 		
 		try {
 			s.sign(b, 0, 5);
@@ -56,23 +52,10 @@ public class Signature_Impl1Test extends TestCase {
 		} catch (SignatureException e) {		
 		}
 		
-		try {
-			s.initSign(new MyPrivateKey());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
-		
-		try {
-			s.sign(b, 0, 5);
-		} catch (SignatureException e) {
-			fail(e.toString());
-		}
-		if (s.getState() != Signature.SIGN) {
-			fail("Incorrect state");
-		}
-		if (!s.runEngineSign) {
-			fail("sign() failed");
-		}
+        s.initSign(new MyPrivateKey());
+        s.sign(b, 0, 5);
+        assertEquals("state", Signature.SIGN, s.getState());
+        assertTrue("sign() failed", s.runEngineSign);
 	}
 
 	/*
