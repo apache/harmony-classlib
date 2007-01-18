@@ -196,8 +196,11 @@ public class DefaultPolicyParser {
                     system) : ge.codebase);
             //Fix HARMONY-1963
             if ("file".equals(codebase.getProtocol())) { //$NON-NLS-1$
-                codebase = new URL("file:/" +  //$NON-NLS-1$
-                        new File(codebase.getFile()).getCanonicalPath());
+            	File codeFile = new File(codebase.getFile());
+            	if (codeFile.isAbsolute()) {
+            		codebase = new URL("file://" +  //$NON-NLS-1$
+                            codeFile.getAbsolutePath());            		
+            	}
             }
         }
         if (ge.signers != null) {

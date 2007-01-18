@@ -22,7 +22,9 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import java.net.URL;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
@@ -35,11 +37,16 @@ import java.util.HashSet;
 import junit.framework.TestCase;
 
 import org.apache.harmony.security.tests.support.SecurityChecker;
+import org.apache.harmony.security.tests.support.TestUtils;
+
+import tests.support.resource.Support_Resources;
 
 /**
  * Tests for <code>Policy</code>
  */
 public class PolicyTest extends TestCase {
+
+    public static final String JAVA_SECURITY_POLICY = "java.security.policy";
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PolicyTest.class);
@@ -180,5 +187,68 @@ public class PolicyTest extends TestCase {
         } finally {
             Policy.setPolicy(oldPolicy);
         }
+    }
+    
+    /**
+     * Test property expansion in policy files 
+     */
+    public void testPropertyExpansion() throws Exception {
+
+        // Regression for HARMONY-1963 and HARMONY-2910
+        String policyFile = Support_Resources
+                .getAbsoluteResourcePath("PolicyTest.txt");
+        String oldSysProp = System.getProperty(JAVA_SECURITY_POLICY);
+        Policy oldPolicy = Policy.getPolicy();
+
+        try {
+            System.setProperty(JAVA_SECURITY_POLICY, policyFile);
+
+            // test: absolute paths
+            assertCodeBasePropertyExpansion("/11111/*", "/11111/-");
+            assertCodeBasePropertyExpansion("/22222/../22222/*", "/22222/-");
+            //FIXME assertCodeBasePropertyExpansion("/33333/*", "/33333/../33333/-");
+
+            // test: relative paths
+            assertCodeBasePropertyExpansion("44444/*", "44444/-");
+            assertCodeBasePropertyExpansion("55555/../55555/*", "55555/-");
+            //FIXME assertCodeBasePropertyExpansion("66666/*", "66666/../66666/-");
+        } finally {
+            TestUtils.setSystemProperty(JAVA_SECURITY_POLICY, oldSysProp);
+            Policy.setPolicy(oldPolicy);
+        }
+    }
+
+    /**
+     * Asserts codeBase property expansion in policy file
+     * 
+     * @param codeSourceURL -
+     *            code source for policy object
+     * @param codeBaseURL -
+     *            system propery value for expansion in policy file
+     */
+    private void assertCodeBasePropertyExpansion(String codeSourceURL,
+            String codeBaseURL) throws Exception {
+
+        Policy.setPolicy(null); //reset policy
+        System.setProperty("test.bin.dir", codeBaseURL);
+
+        Policy p = Policy.getPolicy();
+        CodeSource codeSource = new CodeSource(
+                new URL("file:" + codeSourceURL),
+                (java.security.cert.Certificate[]) null);
+        
+        PermissionCollection pCollection = p.getPermissions(codeSource);
+        Enumeration<Permission> elements = pCollection.elements();
+
+        SecurityPermission perm = new SecurityPermission(
+                "codeBaseForPolicyTest");
+
+        while (elements.hasMoreElements()) {
+            if (elements.nextElement().equals(perm)) {
+                return; // passed
+            }
+        }
+        fail("Failed to find SecurityPermission for codeSource="
+                + codeSourceURL + ", codeBase=" + codeBaseURL);
     }
 }
