@@ -31,13 +31,19 @@
 
     <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
 
-    <target name="-test-module" >
-        <!--
-             This target exists to match the API of other module
-             build.xml files.  However, we should probably write some
-             (native) portlib tests to aid porting.
-          -->
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
     </target>
+
+    <target name="-test-module"
+            unless="is.windows"
+            depends="-compile-native-tests,-run-native-tests" />
 
     <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
@@ -124,4 +130,65 @@
             </fileset>
         </delete>
     </target>
+
+    <target name="-compile-native-tests" >
+        <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
+    </target>
+
+    <target name="-run-native-tests" >
+        <mkdir dir="${hy.tests.reports}" />
+        <property environment="env"/>
+        <exec-native test="init" />
+        <exec-native test="hyerror" />
+        <exec-native test="hytime" />
+
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true">portlib${line.separator}</echo>
+    </target>
+
+    <macrodef name="exec-native">
+        <attribute name="test" />
+        <sequential>
+            <property name="@{test}.name"
+                      value="native.portlib.@{test}" />
+            <exec executable="${hy.portlib.src.test.native}/@{test}/@{test}${exe.suffix}"
+                  failonerror="false"
+                  outputproperty="@{test}.output"
+                  resultproperty="@{test}.resultcode" >
+                <env key="PATH"
+                     path="${env.Path}:${env.PATH}:${hy.jdk}/jre/bin" />
+                <env key="Path"
+                     path="${env.Path}:${env.PATH}:${hy.jdk}/jre/bin" />
+                <env key="LD_LIBRARY_PATH"
+                     path="${env.LD_LIBRARY_PATH}:${hy.jdk}/jre/bin" />
+            </exec>
+            <condition property="@{test}.result" value="passed" else="FAILED">
+                <equals arg1="${@{test}.resultcode}" arg2="0" />
+            </condition>
+            <condition property="@{test}.errorcount" value="0" else="1">
+                <equals arg1="${@{test}.resultcode}" arg2="0" />
+            </condition>
+            <condition property="test.errors" value="1">
+                <not>
+                    <equals arg1="${@{test}.resultcode}" arg2="0" />
+                </not>
+            </condition>
+            <echo>@{test}: ${@{test}.result}${line.separator}</echo>
+            <echo file="${hy.tests.reports}/TEST-${@{test}.name}.xml"
+                 >&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;testsuite tests="1" errors='${@{test}.errorcount}' failures='0'
+    name='${@{test}.name}' time='0'&gt;
+  &lt;testcase classname='${@{test}.name}' name='${@{test}.name}'
+       time='0.0' /&gt;
+  &lt;system-out&gt;&lt;![CDATA[${@{test}.output}]]&gt;&lt;/system-out&gt;
+&lt;/testsuite&gt;${line.separator}</echo>
+        </sequential>
+    </macrodef>
+
 </project>
