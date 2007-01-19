@@ -34,8 +34,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingTestCase;
 import javax.swing.text.Element;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.ListView;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.PlainView;
 
 
 public class ComponentViewTest extends SwingTestCase {
@@ -655,10 +655,10 @@ public class ComponentViewTest extends SwingTestCase {
 
     public void testSetParent_View() {
         // Regression test for HARMONY-1767 
-        HTMLDocument doc = new HTMLDocument();
+        PlainDocument doc = new PlainDocument();
         Element e = doc.getDefaultRootElement();
         ComponentView obj = new ComponentView(new TestElement());
-        obj.setParent(new ListView(e));        
+        obj.setParent(new PlainView(e));
     }  
 
     private class TestElement implements Element {
