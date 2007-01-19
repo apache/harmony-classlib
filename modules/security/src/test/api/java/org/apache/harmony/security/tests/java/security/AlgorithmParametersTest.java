@@ -561,6 +561,15 @@ public class AlgorithmParametersTest extends TestCase {
             // expected
         }
     }
+
+    /**
+     * Tests OAEP AlgorithmParameters provider
+     */
+    public void testOAEPProvider() throws Exception {
+        AlgorithmParameters params = AlgorithmParameters.getInstance("OAEP");
+
+        assertEquals("Algorithm", "OAEP", params.getAlgorithm());
+    }
     
 	private void checkUnititialized(AlgorithmParameters ap) {
         assertNull("Uninitialized: toString() failed", ap.toString());
