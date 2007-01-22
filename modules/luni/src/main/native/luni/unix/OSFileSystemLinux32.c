@@ -234,6 +234,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;
-  return sendfile(socket,(size_t)fd,(off_t *)&offset,(size_t)count);	
+  return sendfile(socket,(int)fd,(off_t *)&offset,(size_t)count);	
 }
 
