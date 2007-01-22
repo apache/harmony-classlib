@@ -23,7 +23,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#if defined(FREEBSD)
+#include <sys/types.h>
+#include <sys/socket.h>
+#else
 #include <sys/sendfile.h>
+#endif
 #include "vmi.h"
 #include "iohelp.h"
 
@@ -234,6 +239,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;
+#if !defined(FREEBSD)
   return sendfile(socket,(int)fd,(off_t *)&offset,(size_t)count);	
+#else
+  return sendfile(fd, socket, offset, (size_t)count, NULL, NULL, 0);
+#endif
 }
-
