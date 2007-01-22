@@ -39,11 +39,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <property name="crypto.common.exclude.file" location="./make/exclude.common" />
-    <property name="crypto.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="crypto.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/crypto.exclude" />
+    <property name="crypto.exclude.file" location="${hy.hdk}/build/crypto.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -169,29 +165,10 @@
         </compile-tests>
     </target>
 
-
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="crypto" dir="./make"
+                             result="${crypto.exclude.file}"/>
     </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="crypto.common.exclude.exist" srcFile="${crypto.common.exclude.file}" failonerror="false" />
-        <loadfile property="crypto.platform.exclude.exist" srcFile="${crypto.platform.exclude.file}" failonerror="false" />
-        <loadfile property="crypto.interm.exclude.exist" srcFile="${crypto.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="crypto.common.exclude.exist" >
-        <echo message="${crypto.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="crypto.platform.exclude.exist" >
-        <echo message="${crypto.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="crypto.interm.exclude.exist" >
-        <echo message="${crypto.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
 
     <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
@@ -209,7 +186,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/api/java">
                         <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
+                        <excludesfile name="${crypto.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -224,7 +201,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/api/java.injected">
                         <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
+                        <excludesfile name="${crypto.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -246,7 +223,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/impl/java">
                         <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
+                        <excludesfile name="${crypto.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -261,7 +238,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/impl/java.injected">
                         <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
+                        <excludesfile name="${crypto.exclude.file}" />
                     </fileset>
                 </batchtest>
 

@@ -198,6 +198,13 @@
     <property name="build.module" value="*" />
     <property name="exclude.module" value="nothing" />
 
+    <!-- names of exclude lists, used by prepare-exclude-list macro -->
+    <property name="common.exclude.file" location="exclude.common" />
+    <property name="platform.exclude.file"
+              location="exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="interm.exclude.file"
+              location="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
         <echo>
@@ -339,4 +346,56 @@ properties in preference to these:
             </exec>
         </sequential>
     </macrodef>
+
+    <!-- Concatenate several exclude lists into single list -->
+    <macrodef name="prepare-exclude-list">
+       <attribute name="moduleName"/>
+       <!-- directory with exclude lists for the module -->
+       <attribute name="dir"/>
+       <!-- name of concatenated list, should be an absolute pathname -->
+       <attribute name="result"/>
+       <sequential>
+           <condition property="@{moduleName}.fname1"
+                      value="${common.exclude.file}">
+               <and>
+                   <available file="@{dir}${file.separator}${common.exclude.file}"/>
+                   <length file="@{dir}${file.separator}${common.exclude.file}"
+                           when="greater" length="0"/>
+               </and>
+           </condition>
+           <property name="@{moduleName}.fname1" value=""/>
+
+           <condition property="@{moduleName}.fname2"
+                      value="${platform.exclude.file}">
+               <and>
+                   <available file="@{dir}${file.separator}${platform.exclude.file}"/>
+                   <length file="@{dir}${file.separator}${platform.exclude.file}"
+                           when="greater" length="0"/>
+               </and>
+           </condition>
+           <property name="@{moduleName}.fname2" value=""/>
+
+           <condition property="@{moduleName}.fname3"
+                      value="${interm.exclude.file}">
+               <and>
+                   <available file="@{dir}${file.separator}${interm.exclude.file}"/>
+                   <length file="@{dir}${file.separator}${interm.exclude.file}"
+                           when="greater" length="0"/>
+               </and>
+           </condition>
+           <property name="@{moduleName}.fname3" value=""/>
+
+           <tempfile property="@{moduleName}.tmpFile" destdir="@{dir}"/>
+           <echo message="" file="${@{moduleName}.tmpFile}"/>
+           <basename file="${@{moduleName}.tmpFile}"
+                     property="@{moduleName}.tmpFileName" />
+           <concat destfile="@{result}" force="yes">
+               <filelist dir="@{dir}"
+                   files="${@{moduleName}.fname1} ${@{moduleName}.fname2} ${@{moduleName}.fname3} ${@{moduleName}.tmpFileName}"/>
+           </concat>
+           <delete file="${@{moduleName}.tmpFile}" failonerror="false"
+                   quiet="true"/>
+       </sequential>
+   </macrodef>
+
 </project>
