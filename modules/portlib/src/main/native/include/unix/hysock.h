@@ -51,7 +51,11 @@
 /* GLIBC_R: uses the GLIBC versions */
 #define GLIBC_R (defined(LINUX))
 /* ORIGINAL_R: the original gethostby* call is thread safe */
-#define ORIGINAL_R defined(false)
+#define ORIGINAL_R defined(FREEBSD)
+/* TOFIX: FreeBSD man page says:
+ *   Though these functions are thread-safe, still it is recommended to use
+ *   the getaddrinfo(3) family of functions, instead.
+ */
 /* NO_R: gethostby*_r calls do not exist and the normal gethostby* calls are not threadsafe */
 #define NO_R (defined(false))
 /* OTHER_R: everything else */
@@ -108,8 +112,13 @@ typedef struct ip_mreq OSIPMREQ;
 #define OS_MCAST_LOOP IP_MULTICAST_LOOP
 #if defined(IPv6_FUNCTION_SUPPORT)
 #define OS_MCAST_INTERFACE_2 IPV6_MULTICAST_IF
+#if !defined(FREEBSD)
 #define OS_IPV6_ADD_MEMBERSHIP IPV6_ADD_MEMBERSHIP
 #define OS_IPV6_DROP_MEMBERSHIP IPV6_DROP_MEMBERSHIP
+#else
+#define OS_IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+#define OS_IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+#endif
 #endif
 /* defines for the unix error constants.  These may be overriden for specific platforms. */
 #define HYPORT_ERROR_SOCKET_UNIX_CONNRESET 		ECONNRESET
