@@ -310,6 +310,13 @@ hyvmem_reserve_memory (struct HyPortLibrary *portLibrary, void *address,
    */
   key_t addressKey;
   void *baseAddress;
+#if defined(FREEBSD)
+/*
+ * TODO: This does not work but it does compile.  Need a real fix.  Anyone
+ * know how to reserve memory on FreeBSD?
+ */
+#define SHM_HUGETLB 0
+#endif
   int shmgetFlags = SHM_HUGETLB | IPC_CREAT;
   UDATA largePageSize;
   void *ptr = NULL;
