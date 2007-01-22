@@ -1031,6 +1031,19 @@ public class CompoundNameTest extends TestCase {
 		}
 	}
 
+	public void testAddAll_Flat() throws InvalidNameException {
+		log.setMethod("testAddAll_Flat()");
+		CompoundName name;
+
+		name = new CompoundName("aaa", new Properties());
+		try {
+			name.addAll(new CompoundName("bbb", new Properties()));
+			fail("should throw InvalidNameException");
+		} catch (InvalidNameException e) {
+			// Expected
+		}
+	}
+
 	public void testAddAll_Indexed() throws InvalidNameException {
 		log.setMethod("testAddAll_Indexed()");
 		CompoundName name;

@@ -627,9 +627,17 @@ public class CompoundName implements Name {
     }
 
     public Name addAll(int index, Name name) throws InvalidNameException {
+        if (name == null) {
+            // jndi.00=name must not be null
+            throw new NullPointerException(Messages.getString("jndi.00")); //$NON-NLS-1$
+        }
         if (!(name instanceof CompoundName)) {
             // jndi.09={0} is not a compound name.
             throw new InvalidNameException(Messages.getString("jndi.09", name.toString()));  //$NON-NLS-1$
+        }
+        if (FLAT.equals(direction) && (this.size() + name.size() > 1)) {
+            // jndi.0A=A flat name can only have a single component
+            throw new InvalidNameException(Messages.getString("jndi.0A")); //$NON-NLS-1$
         }
         validateIndex(index, true);
         Enumeration<String> enumeration = name.getAll();
