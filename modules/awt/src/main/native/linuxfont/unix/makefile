@@ -28,11 +28,7 @@ MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-ifeq ($(HY_ARCH),x86_64)
- SYSLIBFILES = -L/usr/X11R6/lib64 -lX11 -lXft
-else
- SYSLIBFILES = -L/usr/X11R6/lib -lX11 -lXft
-endif
+OSLIBS += $(XLIBS)
 
 DLLNAME=../liblinuxfont.so
 

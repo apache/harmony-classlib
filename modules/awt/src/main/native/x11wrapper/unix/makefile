@@ -28,11 +28,7 @@ MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-ifeq ($(HY_ARCH),x86_64)
- SYSLIBFILES = -lstdc++ -L/usr/X11R6/lib64 -lX11
-else
- SYSLIBFILES = -lstdc++ -L/usr/X11R6/lib -lX11
-endif
+OSLIBS += -lstdc++ $(XLIBS)
 
 DLLNAME=../libX11Wrapper.so
 

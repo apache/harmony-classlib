@@ -15,3 +15,4 @@
 
 DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_64
 OPT += -fpic
+XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft

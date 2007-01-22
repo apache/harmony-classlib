@@ -24,6 +24,7 @@ AR = ar
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
 OSLIBS = -lc -lm
+XLIBS = -L/usr/X11R6/lib -lX11 -lXft
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 
