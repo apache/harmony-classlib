@@ -38,6 +38,10 @@
 #if defined(LINUX)
 #include <sys/sysinfo.h>
 #endif
+#if defined(FREEBSD)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
 
 #include <unistd.h>
 
@@ -644,7 +648,7 @@ searchSystemPath (struct HyPortLibrary *portLibrary, char *filename,
 UDATA VMCALL
 hysysinfo_get_number_CPUs (struct HyPortLibrary * portLibrary)
 {
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
   /* returns number of online(_SC_NPROCESSORS_ONLN) processors, number configured(_SC_NPROCESSORS_CONF) may  be more than online */
   return sysconf (_SC_NPROCESSORS_ONLN);
 #else
@@ -667,6 +671,18 @@ U_64 VMCALL
 hysysinfo_get_physical_memory (struct HyPortLibrary * portLibrary)
 {
 
+#if defined(FREEBSD)
+  /* derived from examples in sysctl(3) man page */
+  int mib[2], mem;
+  size_t len;
+
+  mib[0] = CTL_HW;
+  mib[1] = HW_PHYSMEM;
+  len = sizeof(mem);
+  sysctl(mib, 2, &mem, &len, NULL, 0);
+  return (U_64)mem;
+
+#else
   IDATA pagesize, num_pages;
 
   pagesize = sysconf (_SC_PAGESIZE);
@@ -680,6 +696,7 @@ hysysinfo_get_physical_memory (struct HyPortLibrary * portLibrary)
     {
       return (U_64) pagesize *num_pages;
     }
+#endif
 
 }
 
