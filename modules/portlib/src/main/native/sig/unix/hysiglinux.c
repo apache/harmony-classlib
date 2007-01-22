@@ -158,8 +158,11 @@ __sysv_signal (int sig, sig_handler_t disp)
 /*                                                                   */
 /* Returns:                                                          */
 /*********************************************************************/
-int
-sigvec (int sig, const struct sigvec *invec, struct sigvec *outvec)
+#if defined(FREEBSD)
+int sigvec (int sig, struct sigvec *invec, struct sigvec *outvec)
+#else
+int sigvec (int sig, const struct sigvec *invec, struct sigvec *outvec)
+#endif
 {
   int i;
   int status;
