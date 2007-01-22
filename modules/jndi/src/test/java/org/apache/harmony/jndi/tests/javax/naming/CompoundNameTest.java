@@ -1108,17 +1108,35 @@ public class CompoundNameTest extends TestCase {
 		assertNameEquals(name, "a", "'<b>/'");
 		name.add("'c");
 		assertNameEquals(name, "a", "'<b>/'", "'c");
+
+        // regression for HARMONY-2525
+        name = new CompoundName("a", new Properties());
+		try {
+			name.add("b");
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
 	}
 
+    // regression for HARMONY-2525
 	public void testAdd_Null() throws InvalidNameException {
 		log.setMethod("testAdd_Null()");
 		CompoundName name;
 
-		name = new CompoundName("", props);
+        name = new CompoundName("", props);
 		try {
 			name.add(null);
-			fail("InvalidNameException expected");
-		} catch (InvalidNameException e) {
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
+
+		name = new CompoundName("", new Properties());
+		try {
+			name.add(null);
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
 			//expected
 		}
 	}
@@ -1139,23 +1157,47 @@ public class CompoundNameTest extends TestCase {
 			name.addAll(-1, new CompoundName("d", props));
 			fail();
 		} catch (ArrayIndexOutOfBoundsException e) {
+			//expected
 		}
 		try {
 			name.addAll(5, new CompoundName("d", props));
 			fail();
 		} catch (ArrayIndexOutOfBoundsException e) {
+			//expected
+		}
+
+        // regression for HARMONY-2525
+		name = new CompoundName("a", new Properties());
+		try {
+			name.add(0, "b");
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
+		try {
+			name.add(1, "b");
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
+		try {
+			name.add(-1, "b");
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
 		}
 	}
 
-	public void testAdd_Indexed_Null() throws InvalidNameException {
+    // regression for HARMONY-2525
+    public void testAdd_Indexed_Null() throws InvalidNameException {
 		log.setMethod("testAdd_Indexed_Null()");
 		CompoundName name;
 
 		name = new CompoundName("", props);
 		try {
 			name.add(0, null);
-			fail("InvalidNameException expected");
-		} catch (InvalidNameException e) {
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
 			//expected
 		}
 
@@ -1163,8 +1205,16 @@ public class CompoundNameTest extends TestCase {
 		name = new CompoundName("", props);
 		try {
 			name.add(11, null);
-			fail("InvalidNameException expected");
-		} catch (InvalidNameException e) {
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
+
+		name = new CompoundName("", new Properties());
+		try {
+			name.add(0, null);
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
 			//expected
 		}
 	}

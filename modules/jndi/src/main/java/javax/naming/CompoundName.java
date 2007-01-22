@@ -649,6 +649,10 @@ public class CompoundName implements Name {
 
     public Name add(String element) throws InvalidNameException {
         if (element == null) {
+            // jndi.8C=component must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.8C")); //$NON-NLS-1$
+        }
+        if (FLAT.equals(direction) && (size() > 0)) {
             // jndi.0A=A flat name can only have a single component
             throw new InvalidNameException(Messages.getString("jndi.0A")); //$NON-NLS-1$
         }
@@ -670,8 +674,12 @@ public class CompoundName implements Name {
      */
     public Name add(int index, String element) throws InvalidNameException {
         if (element == null) {
-            // jndi.0B=A flat name can only zero or one component
-            throw new InvalidNameException(Messages.getString("jndi.0B")); //$NON-NLS-1$
+            // jndi.8C=component must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.8C")); //$NON-NLS-1$
+        }
+        if (FLAT.equals(direction) && (size() > 0)) {
+            // jndi.0A=A flat name can only have a single component
+            throw new InvalidNameException(Messages.getString("jndi.0A")); //$NON-NLS-1$
         }
         validateIndex(index, true);
         elem.add(index, element);
