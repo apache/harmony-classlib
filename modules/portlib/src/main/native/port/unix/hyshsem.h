@@ -19,9 +19,7 @@
 #define hyshsem_h
 #include <sys/types.h>
 #include <errno.h>
-#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
-/* union semun is defined by including <sys/sem.h> */
-#else
+#if defined(_SEM_SEMUN_UNDEFINED)
 /* according to X/OPEN we have to define it ourselves */
 union semun
 {

@@ -40,6 +40,7 @@
 #include <errno.h>
 #include "hyport.h"
 
+#if defined(_SEM_SEMUN_UNDEFINED)
 /* arg for semctl semaphore system calls. */
 union semun
 {
@@ -47,6 +48,7 @@ union semun
   struct semid_ds *buf;
   U_16 *array;
 };
+#endif
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 
