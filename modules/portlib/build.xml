@@ -42,7 +42,7 @@
     </target>
 
     <target name="-test-module"
-            unless="is.windows"
+            unless="is.windows" if="is.32bit"
             depends="-compile-native-tests,-run-native-tests" />
 
     <target name="copy-native-includes">
