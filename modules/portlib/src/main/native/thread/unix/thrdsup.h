@@ -38,7 +38,7 @@ typedef pthread_cond_t COND;
 #define WRAPPER_TYPE void*
 typedef void *WRAPPER_ARG;
 #define WRAPPER_RETURN() return NULL
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #include <semaphore.h>
 typedef sem_t OSSEMAPHORE;
 #else
@@ -73,7 +73,7 @@ extern int priority_map[];
 #define HYDIV div
 /* do we really need nanosecond clock accuracy even on platforms which support gettime? */
 
-#define TIMEOUT_CLOCK
+#define TIMEOUT_CLOCK CLOCK_REALTIME
 
 #if (defined(LINUX))
 #define SETUP_TIMEOUT(ts_, millis, nanos) {								\
@@ -142,7 +142,7 @@ extern int priority_map[];
 #define THREAD_SELF() (pthread_self())
 
 /* THREAD_YIELD */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define THREAD_YIELD() (sched_yield())
 #endif
 
@@ -202,54 +202,54 @@ extern int priority_map[];
 #define THREAD_SET_PRIORITY(thread, priority) set_pthread_priority((thread), (priority))
 
 /* SEM_CREATE */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_CREATE(initValue) thread_malloc(NULL, sizeof(OSSEMAPHORE))
 #else
 #define SEM_CREATE(initValue)
 #endif
 
 /* SEM_INIT */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_INIT(sm, pshrd, inval)	(sem_init((sem_t*)sm, pshrd, inval))
 #else
 #define SEM_INIT(sm,pshrd,inval)
 #endif
 
 /* SEM_DESTROY */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_DESTROY(sm)	(sem_destroy((sem_t*)sm))
 #else
 #define SEM_DESTROY(sm)
 #endif
 
 /* SEM_FREE */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define	SEM_FREE(s)  	thread_free(NULL, (sem_t*)s);
 #endif
 
 /* SEM_POST */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_POST(smP)	(sem_post((sem_t*)smP))
 #else
 #define SEM_POST(sm)
 #endif
 
 /* SEM_WAIT */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_WAIT(smP)	(sem_wait((sem_t*)smP))
 #else
 #define SEM_WAIT(sm)
 #endif
 
 /* SEM_TRYWAIT */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_TRYWAIT(smP)	(sem_trywait(smP))
 #else
 #define SEM_TRYWAIT(sm)
 #endif
 
 /* SEM_GETVALUE */
-#if defined(LINUX)
+#if defined(LINUX) || defined(FREEBSD)
 #define SEM_GETVALUE(smP, intP)	(sem_getvalue(smP, intP))
 #else
 #define SEM_GETVALUE(sm)
