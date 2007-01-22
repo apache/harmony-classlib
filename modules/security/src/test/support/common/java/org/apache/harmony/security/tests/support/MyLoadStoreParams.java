@@ -26,18 +26,13 @@ import java.security.KeyStore;
 
 /**
  * Additional class extends KeyStore.LoadStoreParameter
- * 
  */
-
 public class MyLoadStoreParams implements 
         KeyStore.LoadStoreParameter {
     
     KeyStore.ProtectionParameter protPar;
 
     public MyLoadStoreParams(KeyStore.ProtectionParameter p) {
-        if (p == null) {
-            throw new NullPointerException("null parameter");
-        }
         this.protPar = p;
     }
 
