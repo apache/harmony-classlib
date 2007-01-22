@@ -29,6 +29,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#if defined(FREEBSD)
+#include <sys/signalvar.h>
+#endif
 #if defined(LINUX)
 #include <bits/signum.h>
 #endif
