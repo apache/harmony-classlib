@@ -549,15 +549,22 @@ initNLSCatalog (HyPortLibrary * portLib)
   char *launcherName = NULL;
 
   hysysinfo_get_executable_name (portLib, NULL, &launcherName);
-  endPathPtr = strrchr (launcherName, DIR_SEPARATOR);
-  endPathPtr[1] = '\0';
-  // launcherName now holds the name of the launcher's home directory
-  
-  portLib->nls_set_catalog (portLib, (const char **) &launcherName, 1, "harmony", "properties");
 
-  // Free memory for launcherName -- necessary ??
-  if (launcherName)
-    {
-      portLib->mem_free_memory (portLib, launcherName);
-    }
+  if (launcherName == NULL) { 
+    /* TOFIX: This is really a hack to work around the fact that the
+     * hysysinfo_get_executable_name function currently only works
+     * when argv[0] is passed (not NULL as above) and/or when running
+     * on Linux (with /proc mounted).
+     */
+    portLib->nls_set_catalog (portLib, (const char **) NULL, 0, "harmony", "properties");
+  } else {
+    endPathPtr = strrchr (launcherName, DIR_SEPARATOR);
+    endPathPtr[1] = '\0';
+    // launcherName now holds the name of the launcher's home directory
+  
+    portLib->nls_set_catalog (portLib, (const char **) &launcherName, 1, "harmony", "properties");
+
+    // Free memory for launcherName -- necessary ??
+    portLib->mem_free_memory (portLib, launcherName);
+  }
 }
