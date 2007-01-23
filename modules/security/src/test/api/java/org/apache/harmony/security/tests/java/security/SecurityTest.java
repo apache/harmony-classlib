@@ -28,10 +28,8 @@ import org.apache.harmony.security.tests.support.TestKeyPair;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for <code>Security</code> constructor and methods
- * 
  */
 public class SecurityTest extends TestCase {
 
@@ -69,49 +67,41 @@ public class SecurityTest extends TestCase {
             // Insert at position -1
             position = -1;
             newposition = Security.insertProviderAt(p, position);
-            if (newposition != (providersNumber + 1)) {
-                fail("Case 1. Newposition is " + newposition + ", should be " + (providersNumber + 1));
-            }
+            assertEquals(providersNumber + 1, newposition);
+
             providers = Security.getProviders();
-            if (providers[newposition-1] != p) {
-                fail("Case 1. Provider not inserted at position " + newposition);
-            }
+            assertSame("Provider not inserted at position " + newposition, p,
+                    providers[newposition - 1]);
         
             // A provider cannot be added if it is already installed
             newposition = Security.insertProviderAt(p, 1);
-            if (newposition != -1) {
-                fail("Case 2. Newposition is " + newposition + ", should be -1");
-            }
+            assertEquals(-1, newposition);
         
             Security.removeProvider(p.getName());
         
             // insert at the end
             position = providersNumber + 100;
             newposition = Security.insertProviderAt(p, position);
-            if (newposition != (providersNumber + 1)) {
-                fail("Case 3. Newposition is " + newposition + ", should be " + (providersNumber + 1));
-            }
+            assertEquals(providersNumber + 1, newposition);
+
             providers = Security.getProviders();
-            if (providers[newposition-1] != p) {
-                fail("Case 3. Provider not inserted at position " + newposition);
-            }
+            assertSame("Provider not inserted at position " + newposition, p,
+                    providers[newposition - 1]);
             
             Security.removeProvider(p.getName());
             
             // insert at the first position
             position = 1;
             newposition = Security.insertProviderAt(p, position);
-            if (newposition != position) {
-                fail("Case 4. Newposition is " + newposition + ", should be " + position);
-            }
+            assertEquals(position, newposition);
+
             providers = Security.getProviders();
-            if (providers[newposition-1] != p) {
-                fail("Case 4. Provider not inserted at position " + newposition);
-            }
+            assertSame("Provider not inserted at position " + newposition, p,
+                    providers[newposition - 1]);
         
             try {
                 Security.insertProviderAt(null, position);
-                fail("Case 5. No expected NullPointerException.");
+                fail("No expected NullPointerException.");
             } catch (NullPointerException e) {
             }
         } finally { //clean up
@@ -129,23 +119,19 @@ public class SecurityTest extends TestCase {
         try {
             // add
             newposition = Security.addProvider(p);
-            if (newposition != (providersNumber + 1)) {
-                fail("Case 1. Newposition is " + newposition + ", should be " + (providersNumber + 1));
-            }
+            assertEquals(providersNumber + 1, newposition);
+
             providers = Security.getProviders();
-            if (providers[newposition-1] != p) {
-                fail("Case 1. Provider not inserted at position " + newposition);
-            }
+            assertSame("Provider not inserted at position " + newposition, p,
+                    providers[newposition - 1]);
         
             // A provider cannot be added if it is already installed
             newposition = Security.addProvider(p);
-            if (newposition != -1) {
-                fail("Case 2. Newposition is " + newposition + ", should be -1");
-            }
+            assertEquals(-1, newposition);
         
             try {
                 Security.addProvider(null);
-                fail("Case 3. No expected NullPointerException.");
+                fail("No expected NullPointerException.");
             } catch (NullPointerException e) {
             }
         } finally { //clean up
@@ -164,9 +150,8 @@ public class SecurityTest extends TestCase {
             for (int i = 0; i < providers.length; i++) {
                 Security.removeProvider(providers[i].getName());
             }
-            if (Security.getProviders().length != 0) {
-                fail("Providers not removed");
-            }
+            assertEquals("Providers not removed", 0,
+                    Security.getProviders().length);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {    // restore providers
@@ -175,9 +160,8 @@ public class SecurityTest extends TestCase {
             }
             providers1 = Security.getProviders();
             for (int i = 0; i < providers1.length; i++) {
-                if (providers[i] != providers1[i]) {
-                    fail("Providers not restored correctly");
-                }
+                assertEquals("Providers not restored correctly", providers[i],
+                        providers1[i]);
             }
         }
     }
@@ -193,21 +177,15 @@ public class SecurityTest extends TestCase {
             Security.addProvider(p);
             
             p1 = Security.getProvider(p.getName());
-            if (p1 != p) {
-                fail("Case 1. Incorrect provider is returned");
-            }
+            assertSame(p, p1);
         
             // Returns null if no provider with the specified name is installed 
             p1 = Security.getProvider("SOMEINCORRECTPROVIDERNAME");
-            if (p1 != null) {
-                fail("Case 2. Incorrect provider is returned");
-            }
+            assertNull(p1);
         
             // Returns null if name is null
             p1 = Security.getProvider(null);
-            if (p1 != null) {
-                fail("Case 2. Incorrect provider is returned");
-            }
+            assertNull(p1);
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
@@ -233,15 +211,11 @@ public class SecurityTest extends TestCase {
         }
         
         Security.setProperty("", "");
-        if (!"".equals(Security.getProperty("")) ) {
-            fail("Case 4. Empty property test failed");            
-        }
+        assertEquals("Empty property test failed", "", Security.getProperty(""));
         
         Security.setProperty("My Test Property", "My property value");
-        if (!"My property value".equals(Security.getProperty("My Test Property")) ) {
-            fail("Case 5. Not empty property test failed");            
-        }
-    
+        assertEquals("My property value", Security
+                .getProperty("My Test Property"));
     }
     
     class MyProvider extends Provider {
