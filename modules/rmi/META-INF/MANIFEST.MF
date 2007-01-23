@@ -21,6 +21,8 @@ Import-Package: java.io,
  java.security.cert,
  java.util,
  java.util.logging,
+ javax.net,
+ javax.net.ssl,
  org.apache.harmony.kernel.vm
 Export-Package: java.rmi,
  java.rmi.activation,
