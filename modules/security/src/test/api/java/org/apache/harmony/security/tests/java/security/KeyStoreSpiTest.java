@@ -21,16 +21,23 @@
 */
 
 package org.apache.harmony.security.tests.java.security;
-import java.security.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.KeyStoreSpi;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Date;
 
-import org.apache.harmony.security.tests.support.MyKeyStoreSpi;
-import org.apache.harmony.security.tests.support.cert.MyCertificate;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.MyKeyStoreSpi;
+import org.apache.harmony.security.tests.support.MyLoadStoreParams;
+import org.apache.harmony.security.tests.support.cert.MyCertificate;
 
 
 /**
@@ -69,10 +76,6 @@ public class KeyStoreSpiTest extends TestCase {
 
         tmpEntry entry = new tmpEntry();
         tmpProtection pPar = new tmpProtection();
-        try {
-            ksSpi.engineLoad(null);
-        } catch (UnsupportedOperationException e) {
-        }
 
         try {
             ksSpi.engineStore(null);
@@ -148,6 +151,44 @@ public class KeyStoreSpiTest extends TestCase {
             ksSpi.engineStore(null, null);
             fail("IOException must be thrown");
         } catch (IOException e) {
+        }
+    }
+    
+    /**
+     * @tests java.security.KeyStoreSpi#engineLoad(KeyStore.LoadStoreParameter)
+     */
+    public void test_engineLoadLjava_security_KeyStore_LoadStoreParameter()
+            throws Exception {
+
+        final String msg = "error";
+
+        KeyStoreSpi ksSpi = new MyKeyStoreSpi() {
+            public void engineLoad(InputStream stream, char[] password) {
+                assertNull(stream);
+                assertNull(password);
+                throw new RuntimeException(msg);
+            }
+        };
+        try {
+            ksSpi.engineLoad(null);
+            fail("Should throw exception");
+        } catch (RuntimeException e) {
+            assertSame(msg, e.getMessage());
+        }
+
+        // test: protection parameter is null  
+        try {
+            ksSpi.engineLoad(new MyLoadStoreParams(null));
+            fail("No expected UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+        }
+
+        // test: protection parameter is not instanceof 
+        // PasswordProtection or CallbackHandlerProtection
+        try {
+            ksSpi.engineLoad(new MyLoadStoreParams(new tmpProtection()));
+            fail("No expected UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
         }
     }
     

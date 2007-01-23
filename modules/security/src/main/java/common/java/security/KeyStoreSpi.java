@@ -84,10 +84,6 @@ public abstract class KeyStoreSpi {
         }
         char[] pwd;
         KeyStore.ProtectionParameter pp = param.getProtectionParameter();
-        if (pp == null) {
-            throw new IllegalArgumentException(
-                    Messages.getString("security.34")); //$NON-NLS-1$
-        }
         if (pp instanceof KeyStore.PasswordProtection) {
             try {
                 pwd = ((KeyStore.PasswordProtection) pp).getPassword();
