@@ -59,7 +59,13 @@ public class PreferencesTest extends TestCase {
 	}
 
 	public void testSystemNodeForPackage() throws BackingStoreException {
-		Preferences p = Preferences.systemNodeForPackage(Object.class);
+		Preferences p = null;
+        try {
+            p = Preferences.systemNodeForPackage(Object.class);
+        } catch (SecurityException e) {
+            // may be caused by absence of privileges on the underlying OS 
+            return;
+        }
 		assertEquals("/java/lang", p.absolutePath());
 		assertTrue(p instanceof AbstractPreferences);
 		Preferences root = Preferences.systemRoot();
@@ -69,14 +75,27 @@ public class PreferencesTest extends TestCase {
 		assertEquals("lang", p.name());
 		assertEquals("System Preference Node: " + p.absolutePath(), p
 				.toString());
-		assertEquals(0, p.childrenNames().length);
-		assertEquals(0, p.keys().length);
-		parent.removeNode();
-		try {
-			p = Preferences.userNodeForPackage(null);
-			fail();
-		} catch (NullPointerException e) {
-		}
+        try {
+            assertEquals(0, p.childrenNames().length);
+        } catch (BackingStoreException e) {
+            // could be thrown according to specification
+        }
+        try {
+            assertEquals(0, p.keys().length);
+        } catch (BackingStoreException e) {
+            // could be thrown according to specification
+        }
+        try {
+            parent.removeNode();
+        } catch (BackingStoreException e) {
+            // could be thrown according to specification
+        }
+        try {
+            p = Preferences.userNodeForPackage(null);
+            fail("NullPointerException has not been thrown");
+        } catch (NullPointerException e) {
+            // expected
+        }
 	}
 
 	public void testSystemRoot() throws BackingStoreException {
