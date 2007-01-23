@@ -89,7 +89,7 @@ public abstract class KeyStoreSpi {
                 pwd = ((KeyStore.PasswordProtection) pp).getPassword();
                 engineLoad(null, pwd);
                 return;
-            } catch (Exception e) {
+            } catch (IllegalStateException e) {
                 throw new IllegalArgumentException(e);
             }
         }
@@ -98,7 +98,7 @@ public abstract class KeyStoreSpi {
                 pwd = getPasswordFromCallBack(pp);
                 engineLoad(null, pwd);
                 return;
-            } catch (Exception e) {
+            } catch (UnrecoverableEntryException e) {
                 throw new IllegalArgumentException(e);
             }
         }
