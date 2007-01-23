@@ -135,6 +135,7 @@
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
     </target>
 
     <target name="-run-native-tests" >
@@ -143,6 +144,7 @@
         <exec-native test="init" />
         <exec-native test="hyerror" />
         <exec-native test="hytime" />
+        <exec-native test="hyfile" />
 
         <antcall target="touch-errors-file" />
     </target>
