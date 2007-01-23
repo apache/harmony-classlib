@@ -20,9 +20,11 @@
 * @version $Revision$
 */
 
-package java.security;
+package org.apache.harmony.security.tests.java.security;
 
 import java.nio.ByteBuffer;
+import java.security.DigestException;
+import java.security.MessageDigestSpi;
 
 import junit.framework.TestCase;
 
@@ -92,5 +94,21 @@ public class MessageDigestSpiTest extends TestCase {
 		public Object clone() throws CloneNotSupportedException {
 			throw new CloneNotSupportedException();
 		}
+
+        @Override
+        protected int engineDigest(byte[] buf, int offset, int len)
+                throws DigestException {
+            return super.engineDigest(buf, offset, len);
+        }
+
+        @Override
+        protected int engineGetDigestLength() {
+            return super.engineGetDigestLength();
+        }
+
+        @Override
+        protected void engineUpdate(ByteBuffer input) {
+            super.engineUpdate(input);
+        }
 	}
 }
