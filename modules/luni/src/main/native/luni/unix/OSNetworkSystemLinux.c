@@ -15,9 +15,13 @@
  *  limitations under the License.
  */
 
+#if defined(FREEBSD)
+#include <sys/types.h>
+#include <netinet/in.h>
+#endif
+#include <netinet/in_systm.h>
 #include<netinet/ip.h>
 #include<netinet/ip_icmp.h>
-#include<netinet/in_systm.h>
 #include "nethelp.h"
 #include "jclglob.h"
 #include "hysock.h"
