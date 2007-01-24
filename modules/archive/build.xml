@@ -39,11 +39,7 @@
 
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
-    <property name="archive.common.exclude.file" location="./make/exclude.common" />
-    <property name="archive.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="archive.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/archive.exclude" />
+    <property name="archive.exclude.file" location="${hy.hdk}/build/archive.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
@@ -208,26 +204,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="archive.common.exclude.exist" srcFile="${archive.common.exclude.file}" failonerror="false" />
-        <loadfile property="archive.platform.exclude.exist" srcFile="${archive.platform.exclude.file}" failonerror="false" />
-        <loadfile property="archive.interm.exclude.exist" srcFile="${archive.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="archive.common.exclude.exist" >
-        <echo message="${archive.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true"/>
-    </target>
-
-    <target name="-add-platform" if="archive.platform.exclude.exist" >
-        <echo message="${archive.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true"/>
-    </target>
-
-    <target name="-add-intermittent" if="archive.interm.exclude.exist" >
-        <echo message="${archive.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true"/>
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="archive" dir="./make"
+                             result="${archive.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -264,7 +243,7 @@
 
                 <fileset dir="${hy.archive.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${archive.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

@@ -199,11 +199,11 @@
     <property name="exclude.module" value="nothing" />
 
     <!-- names of exclude lists, used by prepare-exclude-list macro -->
-    <property name="common.exclude.file" location="exclude.common" />
+    <property name="common.exclude.file" value="exclude.common" />
     <property name="platform.exclude.file"
-              location="exclude.${hy.platform}.${hy.test.vm.name}" />
+              value="exclude.${hy.platform}.${hy.test.vm.name}" />
     <property name="interm.exclude.file"
-              location="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+              value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
 
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >

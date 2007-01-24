@@ -51,7 +51,8 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="auth.exclude.file" location="${hy.hdk}/build/auth.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -67,7 +68,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
     
     <!-- Build native code -->
     <target name="build-native" >
@@ -184,6 +185,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="auth" dir="./make"
+                             result="${auth.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -223,7 +229,7 @@
                 </fileset>
                 <fileset dir="${hy.auth.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${auth.exclude.file}" />
 
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>

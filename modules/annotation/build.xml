@@ -39,6 +39,8 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
+    <property name="annotation.exclude.file" location="${hy.hdk}/build/annotation.exclude" />
+
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
             <condition>
@@ -51,7 +53,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.annotation.packaging.jarname}.jar" />
@@ -137,6 +139,11 @@
             <classpath location="../../build/tests" />
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
+    </target>
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="annotation" dir="./make"
+                             result="${annotation.exclude.file}"/>
     </target>
 
     <target name="run-tests">

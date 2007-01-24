@@ -41,6 +41,8 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="accessibility.exclude.file" location="${hy.hdk}/build/accessibility.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -55,7 +57,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, test-jar, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, test-jar, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar" />
@@ -157,6 +159,11 @@
             <classpath location="../../build/tests" />
             <classpath location="${hy.hdk}/build/test/support.jar" /> 
         </javac>
+    </target>
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="accessibility" dir="./make"
+                             result="${accessibility.exclude.file}"/>
     </target>
 
     <target name="run-tests">
