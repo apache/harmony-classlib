@@ -28,12 +28,46 @@ import java.security.MessageDigestSpi;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for <code>MessageDigestSpi</code> constructor and methods
- * 
  */
 public class MessageDigestSpiTest extends TestCase {
+
+    /**
+     * java.security.MessageDigestSpi#engineDigest(byte[], int, int)
+     */
+    public void test_engineDigestLB$LILI() throws Exception {
+
+        final int DIGEST_LENGHT = 2;
+
+        MyMessageDigest md = new MyMessageDigest() {
+
+            public int engineGetDigestLength() {
+                return DIGEST_LENGHT;
+            }
+
+            public byte[] engineDigest() {
+                return new byte[DIGEST_LENGHT]; // return non-null value
+            }
+        };
+
+        byte[] b = new byte[5];
+        try {
+            // test: null output buffer
+            md.engineDigest(null, 1, DIGEST_LENGHT);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+        try {
+            //test: len param < digest length
+            md.engineDigest(b, 1, DIGEST_LENGHT - 1);
+            fail("No expected DigestException");
+        } catch (DigestException e) {
+        }
+
+        assertEquals("incorrect result", DIGEST_LENGHT, md
+                .engineDigest(b, 1, 3));
+    }
 
 	public void testEngineGetDigestLength() {
 		MyMessageDigest md = new MyMessageDigest();
