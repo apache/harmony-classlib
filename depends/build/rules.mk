@@ -28,7 +28,7 @@ $(LIBNAME): $(BUILDFILES)
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) $(LDFLAGS) \
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
-	$(BUILDFILES) $(SYSLIBFILES) \
+	$(BUILDFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
 	$(OSLIBS)
 
