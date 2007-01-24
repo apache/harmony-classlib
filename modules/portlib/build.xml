@@ -28,6 +28,12 @@
 
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+    <condition property="test.portlib">
+        <and>
+            <isset property="is.32bit" />
+            <not><isset property="is.windows" /></not>
+        </and>
+    </condition>
 
     <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
 
@@ -41,8 +47,7 @@
         </fail>
     </target>
 
-    <target name="-test-module"
-            unless="is.windows" if="is.32bit"
+    <target name="-test-module" unless="test.portlib"
             depends="-compile-native-tests,-run-native-tests" />
 
     <target name="copy-native-includes">
