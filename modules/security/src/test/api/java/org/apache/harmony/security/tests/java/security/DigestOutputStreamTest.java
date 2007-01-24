@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import org.apache.harmony.security.tests.support.MDGoldenData;
+import org.apache.harmony.security.tests.support.MyMessageDigest1;
 
 import junit.framework.TestCase;
 
@@ -76,35 +77,23 @@ public class DigestOutputStreamTest extends TestCase {
     //
 
     /**
-     * Test #1 for <code>DigestOutputStream</code> constructor<br>
-     * 
-     * Assertion: creates new <code>DigestOutputStream</code> instance
-     * using valid parameters (both non <code>null</code>)
+     * @tests java.security.DigestOutputStream#DigestOutputStream(java.io.OutputStream,
+     *        java.security.MessageDigest)
      */
-    public final void testDigestOutputStream01() {
-        for (int k=0; k<algorithmName.length; k++) {
-            try {
-                MessageDigest md = MessageDigest.getInstance(algorithmName[k]);
-                OutputStream bos = new ByteArrayOutputStream(MY_MESSAGE_LEN);
-                OutputStream dos = new DigestOutputStream(bos, md);
-                assertTrue(dos instanceof DigestOutputStream);
-                return;
-            } catch (NoSuchAlgorithmException e) {
-                // allowed failure
-            }
-        }
-        fail(getName() + ": no MessageDigest algorithms available - test not performed");
-    }
+    public void test_CtorLjava_io_OutputStreamLjava_security_MessageDigest() {
 
-    /**
-     * Test #2 for <code>DigestOutputStream</code> constructor<br>
-     * 
-     * Assertion: creates new <code>DigestOutputStream</code> instance
-     * using valid parameters (both <code>null</code>)
-     */
-    public final void testDigestOutputStream02() {
-        OutputStream dos = new DigestOutputStream(null, null);
-        assertTrue(dos instanceof DigestOutputStream);
+        // non-null parameters
+        MessageDigest md = new MyMessageDigest1();
+        MyOutputStream out = new MyOutputStream();
+
+        MyDigestOutputStream dos = new MyDigestOutputStream(out, md);
+        assertSame(out, dos.myOutputStream());
+        assertSame(md, dos.myMessageDigest());
+
+        // null parameters
+        dos = new MyDigestOutputStream(null, null);
+        assertNull(dos.myOutputStream());
+        assertNull(dos.myMessageDigest());
     }
 
     /**
@@ -498,4 +487,23 @@ public class DigestOutputStreamTest extends TestCase {
         fail(getName() + ": no MessageDigest algorithms available - test not performed");
     }
 
+    private class MyOutputStream extends OutputStream {
+        @Override
+        public void write(int arg0) throws IOException {
+        }
+    }
+    
+    private class MyDigestOutputStream extends DigestOutputStream {
+        public MyDigestOutputStream(OutputStream out, MessageDigest digest) {
+            super(out, digest);
+        }
+
+        public MessageDigest myMessageDigest() {
+            return digest;
+        }
+
+        public OutputStream myOutputStream() {
+            return out;
+        }
+    }
 }

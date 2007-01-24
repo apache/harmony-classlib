@@ -29,18 +29,6 @@ public class DigestOutputStream2Test extends junit.framework.TestCase {
 	MessageDigest digest;
 
 	/**
-	 * @tests java.security.DigestOutputStream#DigestOutputStream(java.io.OutputStream,
-	 *        java.security.MessageDigest)
-	 */
-	public void test_ConstructorLjava_io_OutputStreamLjava_security_MessageDigest() {
-		// Test for method
-		// java.security.DigestOutputStream(java.io.OutputStream,
-		// java.security.MessageDigest)
-		assertNotNull("Constructor returned null instance",
-				new DigestOutputStream(output1, digest));
-	}
-
-	/**
 	 * @tests java.security.DigestOutputStream#getMessageDigest()
 	 */
 	public void test_getMessageDigest() {
