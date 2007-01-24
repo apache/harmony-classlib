@@ -49,7 +49,8 @@ int main (int argc, char **argv, char **envp)
                                0600);
   printf("  fd = %d\n", fd);
   if (!fd) {
-    fprintf(stderr, "Failed to open hytest.tmp for write\n");
+    fprintf(stderr, "Failed to open hytest.tmp for write %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
@@ -62,26 +63,30 @@ int main (int argc, char **argv, char **envp)
 
   rc = hyportLibrary.file_write_text(&hyportLibrary, fd, "testing", 7);
   if (rc != 0) {
-    fprintf(stderr, "hyfile_write_text write failed\n");
+    fprintf(stderr, "hyfile_write_text write failed: %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
   hyportLibrary.file_printf(&hyportLibrary, fd, "%d%c%s\n", 1, '2', "3");
   rc = hyportLibrary.file_sync(&hyportLibrary, fd);
   if (rc != 0) {
-    fprintf(stderr, "hyfile_sync failed\n");
+    fprintf(stderr, "hyfile_sync failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
   rc = hyportLibrary.file_close(&hyportLibrary, fd);
   if (rc != 0) {
-    fprintf(stderr, "hyfile_close failed\n");
+    fprintf(stderr, "hyfile_close failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
   rc = hyportLibrary.file_move(&hyportLibrary, "hytest.tmp", "hytest.tmp2");
   if (rc != 0) {
-    fprintf(stderr, "hyfile_move failed\n");
+    fprintf(stderr, "hyfile_move failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
@@ -89,7 +94,8 @@ int main (int argc, char **argv, char **envp)
                                HyOpenRead, 0000);
   printf("  fd = %d\n", fd);
   if (!fd) {
-    fprintf(stderr, "Failed to open hytest.tmp2 for read\n");
+    fprintf(stderr, "Failed to open hytest.tmp2 for read %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
@@ -116,7 +122,8 @@ int main (int argc, char **argv, char **envp)
 
   rc = hyportLibrary.file_close(&hyportLibrary, fd);
   if (rc != 0) {
-    fprintf(stderr, "hyfile_close failed\n");
+    fprintf(stderr, "hyfile_close failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
@@ -134,13 +141,15 @@ int main (int argc, char **argv, char **envp)
 
   rc = hyportLibrary.file_unlink(&hyportLibrary, "hytest.tmp2");
   if (rc != 0) {
-    fprintf(stderr, "hyfile_unlink failed\n");
+    fprintf(stderr, "hyfile_unlink failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
   rc = hyportLibrary.file_mkdir(&hyportLibrary, "hytest.dir.tmp");
   if (rc != 0) {
-    fprintf(stderr, "hyfile_mkdir failed\n");
+    fprintf(stderr, "hyfile_mkdir failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
@@ -151,7 +160,8 @@ int main (int argc, char **argv, char **envp)
 
   rc = hyportLibrary.file_unlinkdir(&hyportLibrary, "hytest.dir.tmp");
   if (rc != 0) {
-    fprintf(stderr, "hyfile_unlinkdir failed\n");
+    fprintf(stderr, "hyfile_unlinkdir failed %s\n",
+            hyportLibrary.error_last_error_message(&hyportLibrary));
     exit(1);
   }
 
