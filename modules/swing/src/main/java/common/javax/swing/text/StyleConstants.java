@@ -200,7 +200,7 @@ public class StyleConstants {
     }
 
     public static Component getComponent(final AttributeSet a) {
-        return (a == null ? null : (Component) a.getAttribute(ComponentAttribute));
+        return (Component)a.getAttribute(ComponentAttribute);
     }
 
     public static void setForeground(final MutableAttributeSet a,

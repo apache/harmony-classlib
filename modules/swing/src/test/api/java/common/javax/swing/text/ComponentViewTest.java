@@ -33,10 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingTestCase;
-import javax.swing.text.Element;
-import javax.swing.text.PlainDocument;
-import javax.swing.text.PlainView;
-
 
 public class ComponentViewTest extends SwingTestCase {
     StyledDocument document;
@@ -650,47 +646,6 @@ public class ComponentViewTest extends SwingTestCase {
             assertNotSame(textPane, view.getComponent().getParent());
             assertFalse(textPane.equals(view.getComponent().getParent()));
             assertSame(textPane, view.getComponent().getParent().getParent());
-        }
-    }
-
-    public void testSetParent_View() {
-        // Regression test for HARMONY-1767 
-        PlainDocument doc = new PlainDocument();
-        Element e = doc.getDefaultRootElement();
-        ComponentView obj = new ComponentView(new TestElement());
-        obj.setParent(new PlainView(e));
-    }  
-
-    private class TestElement implements Element {
-        public boolean isLeaf() {
-            return false;
-        }
-        public Element getElement(int index) {
-            return null;
-        }
-        public int getElementCount() {
-            return 0;
-        }
-        public int getElementIndex(int offset) {
-            return 0;
-        }
-        public int getEndOffset() {
-            return 0;
-        }       
-        public int getStartOffset() {
-            return 0;
-        }       
-        public AttributeSet getAttributes() {
-            return null;
-        }
-        public String getName() {
-            return "AA";
-        }
-        public Element getParentElement() {
-            return null;
-        }
-        public Document getDocument() {
-            return null;
         }
     }
 
