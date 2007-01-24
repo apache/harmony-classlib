@@ -97,6 +97,45 @@ public class DigestOutputStreamTest extends TestCase {
     }
 
     /**
+     * @tests java.security.DigestOutputStream#getMessageDigest()
+     */
+    public void test_getMessageDigest() {
+
+        MessageDigest digest = new MyMessageDigest1();
+        OutputStream out = new MyOutputStream();
+
+        // non-null parameter
+        DigestOutputStream dos = new DigestOutputStream(out, digest);
+        assertSame(digest, dos.getMessageDigest());
+
+        // null parameter
+        dos = new DigestOutputStream(out, null);
+        assertNull("getMessageDigest should have returned null", dos
+                .getMessageDigest());
+    }
+
+    /**
+     * @tests java.security.DigestOutputStream#setMessageDigest(MessageDigest)
+     */
+    public void test_setMessageDigestLjava_security_MessageDigest() {
+
+        MessageDigest digest = new MyMessageDigest1();
+        OutputStream out = new MyOutputStream();
+
+        DigestOutputStream dos = new DigestOutputStream(out, null);
+
+        // non-null parameter
+        dos.setMessageDigest(digest);
+        assertSame(digest, dos.getMessageDigest());
+
+        // null parameter
+        dos.setMessageDigest(null);
+        assertNull("getMessageDigest should have returned null", dos
+                .getMessageDigest());
+    }
+
+
+    /**
      * Test #1 for <code>write(int)</code> method<br>
      * 
      * Assertion: writes the byte to the output stream<br>
@@ -378,48 +417,6 @@ public class DigestOutputStreamTest extends TestCase {
                 // check that associated digest has not been updated
                 assertTrue("update", Arrays.equals(dos.getMessageDigest().digest(),
                         MDGoldenData.getDigest(algorithmName[k]+"_NU")));
-                return;
-            } catch (NoSuchAlgorithmException e) {
-                // allowed failure
-            }
-        }
-        fail(getName() + ": no MessageDigest algorithms available - test not performed");
-    }
-
-    /**
-     * Test for <code>getMessageDigest()</code> method<br>
-     * 
-     * Assertion: returns associated message digest<br>
-     */
-    public final void testGetMessageDigest() {
-        for (int k=0; k<algorithmName.length; k++) {
-            try {
-                MessageDigest md = MessageDigest.getInstance(algorithmName[k]);
-                DigestOutputStream dos = new DigestOutputStream(null, md);
-                
-                assertTrue(dos.getMessageDigest() == md);
-                return;
-            } catch (NoSuchAlgorithmException e) {
-                // allowed failure
-            }
-        }
-        fail(getName() + ": no MessageDigest algorithms available - test not performed");
-    }
-
-
-    /**
-     * Test for <code>setMessageDigest()</code> method<br>
-     * 
-     * Assertion: set associated message digest<br>
-     */
-    public final void testSetMessageDigest() {
-        for (int k=0; k<algorithmName.length; k++) {
-            try {
-                DigestOutputStream dos = new DigestOutputStream(null, null);
-                MessageDigest md = MessageDigest.getInstance(algorithmName[k]);
-                dos.setMessageDigest(md);
-                
-                assertTrue(dos.getMessageDigest() == md);
                 return;
             } catch (NoSuchAlgorithmException e) {
                 // allowed failure

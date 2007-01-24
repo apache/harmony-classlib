@@ -29,20 +29,6 @@ public class DigestOutputStream2Test extends junit.framework.TestCase {
 	MessageDigest digest;
 
 	/**
-	 * @tests java.security.DigestOutputStream#getMessageDigest()
-	 */
-	public void test_getMessageDigest() {
-		// Test for method java.security.MessageDigest
-		// java.security.DigestOutputStream.getMessageDigest()
-		DigestOutputStream dos = new DigestOutputStream(output1, digest);
-		assertEquals("getMessageDigest did not return expected result", 
-				digest, dos.getMessageDigest());
-		dos = new DigestOutputStream(output1, null);
-		assertNull("getMessageDigest should have returned null", dos
-				.getMessageDigest());
-	}
-
-	/**
 	 * @tests java.security.DigestOutputStream#on(boolean)
 	 */
 	public void test_onZ() {
@@ -69,21 +55,6 @@ public class DigestOutputStream2Test extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Caught exception : " + e);
 		}
-	}
-
-	/**
-	 * @tests java.security.DigestOutputStream#setMessageDigest(java.security.MessageDigest)
-	 */
-	public void test_setMessageDigestLjava_security_MessageDigest() {
-		// Test for method void
-		// java.security.DigestOutputStream.setMessageDigest(java.security.MessageDigest)
-		DigestOutputStream dos = new DigestOutputStream(output1, null);
-		dos.setMessageDigest(digest);
-		assertEquals("getMessageDigest did not return expected result", digest,
-				dos.getMessageDigest());
-		dos.setMessageDigest(null);
-		assertNull("getMessageDigest should have returned null", dos
-				.getMessageDigest());
 	}
 
 	/**
