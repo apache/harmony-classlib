@@ -30,10 +30,13 @@
 
 #undef CDEV_CURRENT_FUNCTION
 
-#include <string.h>
 #include <errno.h>
 #include "portpriv.h"
 #include "hyportptb.h"
+
+/* Ensure we get the recommended XSI-compliant strerror_r() */
+#define _XOPEN_SOURCE 600
+#include <string.h>
 
 #define CDEV_CURRENT_FUNCTION errorMessage
 /**
@@ -70,9 +73,8 @@ errorMessage (struct HyPortLibrary *portLibrary, I_32 errorCode)
     }
 
   /* Copy from OS to ptBuffers */
-  portLibrary->str_printf (portLibrary, ptBuffers->errorMessageBuffer,
-                           ptBuffers->errorMessageBufferSize,
-                           strerror (errorCode));
+  strerror_r(errorCode,
+             ptBuffers->errorMessageBuffer, ptBuffers->errorMessageBufferSize);
   ptBuffers->errorMessageBuffer[ptBuffers->errorMessageBufferSize - 1] = '\0';
   return ptBuffers->errorMessageBuffer;
 }
