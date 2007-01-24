@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.FocusEvent;
@@ -75,6 +72,8 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         } else if (e instanceof WindowEvent) {
             WindowEvent we = (WindowEvent) e;
             return dispatchWindowEvent(we);
+        } else if (e == null) {
+            throw new NullPointerException();
         }
         return false;
     }
