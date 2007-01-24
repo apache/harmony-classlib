@@ -28,7 +28,7 @@ int main (int argc, char **argv, char **envp)
   IDATA fd;
   IDATA bytes;
   IDATA rc;
-  IDATA offset;
+  I_64 offset;
   char buf[20];
   I_64 length;
 
