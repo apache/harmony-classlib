@@ -15,11 +15,11 @@
 * limitations under the License.
 */
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
 #include "hycomp.h"
 #include "hyport.h"
-#include "hythread.h"
 
 int main (int argc, char **argv, char **envp)
 {
