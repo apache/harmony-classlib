@@ -47,7 +47,7 @@
         </fail>
     </target>
 
-    <target name="-test-module" unless="test.portlib"
+    <target name="-test-module"
             depends="-compile-native-tests,-run-native-tests" />
 
     <target name="copy-native-includes">
@@ -136,14 +136,14 @@
         </delete>
     </target>
 
-    <target name="-compile-native-tests" >
+    <target name="-compile-native-tests" if="test.portlib" >
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
     </target>
 
-    <target name="-run-native-tests" >
+    <target name="-run-native-tests" if="test.portlib" >
         <mkdir dir="${hy.tests.reports}" />
         <property environment="env"/>
         <exec-native test="init" />
