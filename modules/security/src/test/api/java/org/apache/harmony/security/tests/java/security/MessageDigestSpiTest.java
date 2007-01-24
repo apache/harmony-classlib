@@ -67,17 +67,20 @@ public class MessageDigestSpiTest extends TestCase {
 		}
 	}
 
-	/*
-	 * Class under test for Object clone()
-	 */
-	public void testClone() {
-		MyMessageDigest md = new MyMessageDigest();
-		try {
-			md.clone();
-			fail("No expected CloneNotSupportedException");
-		} catch (CloneNotSupportedException e) {			
-		}
-	}
+    /**
+     * @tests java.security.MessageDigestSpi#clone()
+     */
+    public void test_clone() throws CloneNotSupportedException {
+        MyMessageDigest md = new MyMessageDigest();
+        try {
+            md.clone();
+            fail("No expected CloneNotSupportedException");
+        } catch (CloneNotSupportedException e) {
+        }
+
+        MyMessageDigestCloneable mdc = new MyMessageDigestCloneable();
+        assertNotSame(mdc, mdc.clone());
+    }
 
 	private class MyMessageDigest extends MessageDigestSpi {
 		
@@ -90,10 +93,6 @@ public class MessageDigestSpiTest extends TestCase {
 		public void engineUpdate(byte arg0) {}
 
 		public void engineUpdate(byte[] arg0, int arg1, int arg2) {}
-
-		public Object clone() throws CloneNotSupportedException {
-			throw new CloneNotSupportedException();
-		}
 
         @Override
         protected int engineDigest(byte[] buf, int offset, int len)
@@ -111,4 +110,8 @@ public class MessageDigestSpiTest extends TestCase {
             super.engineUpdate(input);
         }
 	}
+    
+    private class MyMessageDigestCloneable extends MyMessageDigest implements
+            Cloneable {
+    }
 }
