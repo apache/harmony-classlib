@@ -16,9 +16,9 @@
  */
 
 /**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
+ * @author Boris V. Kuznetsov
+ * @version $Revision$
+ */
 
 package org.apache.harmony.security.tests.java.security;
 
@@ -72,33 +72,33 @@ public class MessageDigestSpiTest extends TestCase {
     /**
      * java.security.MessageDigestSpi#engineGetDigestLength()
      */
-	public void test_engineGetDigestLength() {
-		MyMessageDigest md = new MyMessageDigest();
+    public void test_engineGetDigestLength() {
+        MyMessageDigest md = new MyMessageDigest();
         assertEquals(0, md.engineGetDigestLength());
-	}
+    }
 
     /**
      * java.security.MessageDigestSpi#engineUpdate(ByteBuffer)
      */
     public void test_engineUpdateLjava_nio_ByteBuffer() {
-		MyMessageDigest md = new MyMessageDigest();
-		byte[] b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        MyMessageDigest md = new MyMessageDigest();
+        byte[] b = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-		ByteBuffer buf = ByteBuffer.wrap(b,0,b.length);
-		buf.get(b);
+        ByteBuffer buf = ByteBuffer.wrap(b, 0, b.length);
+        buf.get(b);
         int limit = buf.limit();
-		md.engineUpdate(buf);
-        assertEquals(limit,buf.limit());
-        assertEquals(limit,buf.position());
-		
-		buf = ByteBuffer.wrap(b,0,b.length);
-		buf.get();
-		buf.get();
-		buf.get();
-		md.engineUpdate(buf);
-        assertEquals(limit,buf.limit());
-        assertEquals(limit,buf.position());
-	}
+        md.engineUpdate(buf);
+        assertEquals(limit, buf.limit());
+        assertEquals(limit, buf.position());
+
+        buf = ByteBuffer.wrap(b, 0, b.length);
+        buf.get();
+        buf.get();
+        buf.get();
+        md.engineUpdate(buf);
+        assertEquals(limit, buf.limit());
+        assertEquals(limit, buf.position());
+    }
 
     /**
      * @tests java.security.MessageDigestSpi#clone()
@@ -115,17 +115,24 @@ public class MessageDigestSpiTest extends TestCase {
         assertNotSame(mdc, mdc.clone());
     }
 
-	private class MyMessageDigest extends MessageDigestSpi {
-		
-		public void engineReset() {}
+    private class MyMessageDigest extends MessageDigestSpi {
 
-		public byte[] engineDigest() {
-			return null;
-		}
+        @Override
+        public void engineReset() {
+        }
 
-		public void engineUpdate(byte arg0) {}
+        @Override
+        public byte[] engineDigest() {
+            return null;
+        }
 
-		public void engineUpdate(byte[] arg0, int arg1, int arg2) {}
+        @Override
+        public void engineUpdate(byte arg0) {
+        }
+
+        @Override
+        public void engineUpdate(byte[] arg0, int arg1, int arg2) {
+        }
 
         @Override
         protected int engineDigest(byte[] buf, int offset, int len)
@@ -142,8 +149,8 @@ public class MessageDigestSpiTest extends TestCase {
         protected void engineUpdate(ByteBuffer input) {
             super.engineUpdate(input);
         }
-	}
-    
+    }
+
     private class MyMessageDigestCloneable extends MyMessageDigest implements
             Cloneable {
     }
