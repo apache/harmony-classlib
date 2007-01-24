@@ -481,6 +481,13 @@ public class Raster {
 
     public static WritableRaster createPackedRaster(int dataType, int w, int h,
             int bandMasks[], Point location) {
+        
+        if (dataType != DataBuffer.TYPE_BYTE
+                && dataType != DataBuffer.TYPE_USHORT
+                && dataType != DataBuffer.TYPE_INT) {
+            // awt.230=dataType is not one of the supported data types
+            throw new IllegalArgumentException(Messages.getString("awt.230")); //$NON-NLS-1$
+        }
 
         if (w <= 0 || h <= 0) {
             // awt.22E=w or h is less than or equal to zero
@@ -499,14 +506,7 @@ public class Raster {
 
         if (bandMasks == null) {
             // awt.27C=bandMasks is null
-            throw new RasterFormatException(Messages.getString("awt.27C")); //$NON-NLS-1$
-        }
-
-        if (dataType != DataBuffer.TYPE_BYTE
-                && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT) {
-            // awt.230=dataType is not one of the supported data types
-            throw new IllegalArgumentException(Messages.getString("awt.230")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("awt.27C")); //$NON-NLS-1$
         }
 
         DataBuffer data = null;

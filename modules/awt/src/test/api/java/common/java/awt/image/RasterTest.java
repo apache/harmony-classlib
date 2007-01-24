@@ -22,6 +22,29 @@ import junit.framework.TestCase;
 import java.awt.Point;
 
 public class RasterTest extends TestCase {
+
+    /**
+     * Test method for
+     * {@link java.awt.image.Raster#createPackedRaster(int, int, int, int[], java.awt.Point)}.
+     */
+    public void testCreatePackedRasterIntIntIntIntArrayPoint() {
+        // Regression test for HARMONY-2435
+        try {
+            Raster.createPackedRaster(-1, -1, -1, new int[1], null);
+            fail("IllegalArgumentException was not thrown"); //$NON-NLS-1$
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
+
+        // Regression test for HARMONY-2435
+        try {
+            Raster.createPackedRaster(DataBuffer.TYPE_BYTE, 1, 1, null, null);
+            fail("NullPointerException was not thrown"); //$NON-NLS-1$
+        } catch (NullPointerException ex) {
+            // expected
+        }
+    }
+    
     // Regression test for harmony-2717
     public void test_createPackedRaster() throws RasterFormatException {
         try {
