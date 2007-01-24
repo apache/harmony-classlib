@@ -36,6 +36,9 @@
 
 /* Ensure we get the recommended XSI-compliant strerror_r() */
 #define _XOPEN_SOURCE 600
+#undef _GNU_SOURCE
+#define __USE_XOPEN2K
+#undef __USE_GNU
 #include <string.h>
 
 #define CDEV_CURRENT_FUNCTION errorMessage
