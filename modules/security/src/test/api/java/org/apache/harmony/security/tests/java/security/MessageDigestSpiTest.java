@@ -69,36 +69,35 @@ public class MessageDigestSpiTest extends TestCase {
                 .engineDigest(b, 1, 3));
     }
 
-	public void testEngineGetDigestLength() {
+    /**
+     * java.security.MessageDigestSpi#engineGetDigestLength()
+     */
+	public void test_engineGetDigestLength() {
 		MyMessageDigest md = new MyMessageDigest();
-		if (md.engineGetDigestLength() != 0) {
-			fail("engineGetDigestLength failed");
-		}
+        assertEquals(0, md.engineGetDigestLength());
 	}
 
-	/*
-	 * Class under test for void engineUpdate(ByteBuffer)
-	 */
-	public void testEngineUpdateByteBuffer() {
+    /**
+     * java.security.MessageDigestSpi#engineUpdate(ByteBuffer)
+     */
+    public void test_engineUpdateLjava_nio_ByteBuffer() {
 		MyMessageDigest md = new MyMessageDigest();
 		byte[] b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 		ByteBuffer buf = ByteBuffer.wrap(b,0,b.length);
 		buf.get(b);
-		int l = buf.limit();
+        int limit = buf.limit();
 		md.engineUpdate(buf);
-		if (buf.limit() !=l || buf.position() != l) {
-			fail("Case 1. Incorrect position");
-		}
+        assertEquals(limit,buf.limit());
+        assertEquals(limit,buf.position());
 		
 		buf = ByteBuffer.wrap(b,0,b.length);
 		buf.get();
 		buf.get();
 		buf.get();
 		md.engineUpdate(buf);
-		if (buf.limit() !=l || buf.position() != l) {
-			fail("Case 2. Incorrect position");
-		}
+        assertEquals(limit,buf.limit());
+        assertEquals(limit,buf.position());
 	}
 
     /**
