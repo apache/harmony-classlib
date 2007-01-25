@@ -17,8 +17,11 @@
 package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -158,8 +161,35 @@ public class InflaterInputStreamTest extends TestCase {
 	/**
 	 * @tests java.util.zip.InflaterInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
-		// TODO
+	public void test_read$BII() throws IOException{
+        byte[] test = new byte[507];
+        for (int i = 0; i < 256; i++) {
+            test[i] = (byte) i;
+        }
+        for (int i = 256; i < test.length; i++) {
+            test[i] = (byte) (256 - i);
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DeflaterOutputStream dos = new DeflaterOutputStream(baos);
+        dos.write(test);
+        dos.close();
+        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+        InflaterInputStream iis = new InflaterInputStream(is);
+        byte[] outBuf = new byte[530];
+        int result = 0;
+        while (true) {
+            result = iis.read(outBuf, 0, 5);
+            if (result == -1) {
+                //"EOF was reached";
+                break;
+            }
+        }
+        try {
+            iis.read(outBuf, -1, 10);
+            fail("should throw IOOBE.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected;
+        }
 	}
 
     /**

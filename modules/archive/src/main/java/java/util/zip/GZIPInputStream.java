@@ -133,6 +133,12 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 	 */
 	@Override
     public int read(byte[] buffer, int off, int nbytes) throws IOException {
+        if (closed) {
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
+        }
+        if(eof){
+            return -1;
+        }
 		// avoid int overflow, check null buffer
 		if (off <= buffer.length && nbytes >= 0 && off >= 0
 				&& buffer.length - off >= nbytes) {

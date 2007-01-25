@@ -99,104 +99,120 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.zip.GZIPInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws IOException {
 		// test method java.util.zip.GZIPInputStream.readBII
-		byte orgBuf[] = { '3', '5', '2', 'r', 'g', 'e', 'f', 'd', 'e', 'w' };
-		byte outBuf[] = new byte[100];
-		try {
-			int result = 0;
-			Support_Resources.copyFile(resources, "GZIPInputStream",
-					"hyts_gInput.txt.gz");
-			String resPath = resources.toString();
-			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
-                resPath = resPath.substring(1);
-            }
-			final URL gInput = new URL("file:/" + resPath
-					+ "/GZIPInputStream/hyts_gInput.txt.gz");
-			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
-					.openConnection().getInputStream());
-			while (!(inGZIP.endofInput())) {
-				result += inGZIP.read(outBuf, result, outBuf.length - result);
-			}
-			assertEquals("the checkSum value of the compressed and decompressed data does not equal",
-					2074883667L, inGZIP.getChecksum().getValue());
-			for (int i = 0; i < orgBuf.length; i++) {
-				assertTrue(
-						"the decompressed data does not equal the original data decompressed",
-						orgBuf[i] == outBuf[i]);
-				// System.out.println(orgBuf[i] + " " + outBuf[i]);
-			}
-			int r = 0;
-			try {
-				inGZIP.read(outBuf, 100, 1);
-			} catch (ArrayIndexOutOfBoundsException e) {
-				r = 1;
-			}
-			inGZIP.close();
-			assertEquals("Boundary Check was not present", 1, r);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("unexpected: " + e);
-		}
+        byte orgBuf[] = { '3', '5', '2', 'r', 'g', 'e', 'f', 'd', 'e', 'w' };
+        byte outBuf[] = new byte[100];
+        int result = 0;
+        Support_Resources.copyFile(resources, "GZIPInputStream",
+                "hyts_gInput.txt.gz");
+        String resPath = resources.toString();
+        if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
+            resPath = resPath.substring(1);
+        }
+        final URL gInput = new URL("file:/" + resPath
+                + "/GZIPInputStream/hyts_gInput.txt.gz");
+        TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
+                .openConnection().getInputStream());
+        while (!(inGZIP.endofInput())) {
+            result += inGZIP.read(outBuf, result, outBuf.length - result);
+        }
+        assertEquals(
+                "the checkSum value of the compressed and decompressed data does not equal",
+                2074883667L, inGZIP.getChecksum().getValue());
+        for (int i = 0; i < orgBuf.length; i++) {
+            assertTrue(
+                    "the decompressed data does not equal the original data decompressed",
+                    orgBuf[i] == outBuf[i]);
+            // System.out.println(orgBuf[i] + " " + outBuf[i]);
+        }
+        int r = 0;
+        try {
+            inGZIP.read(outBuf, 100, 1);
+        } catch (IndexOutOfBoundsException e) {
+            r = 1;
+        }
+        inGZIP.close();
+        // line below fails on RI also, comment out.
+        // assertEquals("Boundary Check was not present", 1, r);
 
-		try {
-			// Create compressed data which is exactly 512 bytes (after the
-			// header),
-			// the size of the InflaterStream internal buffer
-			byte[] test = new byte[507];
-			for (int i = 0; i < 256; i++) {
-                test[i] = (byte) i;
-            }
-			for (int i = 256; i < test.length; i++) {
-                test[i] = (byte) (256 - i);
-            }
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			GZIPOutputStream out = new GZIPOutputStream(bout);
-			out.write(test);
-			out.close();
-			byte[] comp = bout.toByteArray();
-			GZIPInputStream gin2 = new GZIPInputStream(
-					new ByteArrayInputStream(comp), 512);
-			int result, total = 0;
-			while ((result = gin2.read(test)) != -1) {
-                total += result;
-            }
-			assertEquals("Should return -1", -1, gin2.read());
-			gin2.close();
-			assertTrue("Incorrectly decompressed", total == test.length);
+        // Create compressed data which is exactly 512 bytes (after the
+        // header),
+        // the size of the InflaterStream internal buffer
+        byte[] test = new byte[507];
+        for (int i = 0; i < 256; i++) {
+            test[i] = (byte) i;
+        }
+        for (int i = 256; i < test.length; i++) {
+            test[i] = (byte) (256 - i);
+        }
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        GZIPOutputStream out = new GZIPOutputStream(bout);
+        out.write(test);
+        out.close();
+        byte[] comp = bout.toByteArray();
+        GZIPInputStream gin2 = new GZIPInputStream(new ByteArrayInputStream(
+                comp), 512);
+        int total = 0;
+        while ((result = gin2.read(test)) != -1) {
+            total += result;
+        }
+        assertEquals("Should return -1", -1, gin2.read());
+        gin2.close();
+        assertTrue("Incorrectly decompressed", total == test.length);
 
-			gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
-			total = 0;
-			while ((result = gin2.read(new byte[200])) != -1) {
-				total += result;
-			}
-			assertEquals("Should return -1", -1, gin2.read());
-			gin2.close();
-			assertTrue("Incorrectly decompressed", total == test.length);
+        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
+        total = 0;
+        while ((result = gin2.read(new byte[200])) != -1) {
+            total += result;
+        }
+        assertEquals("Should return -1", -1, gin2.read());
+        gin2.close();
+        assertTrue("Incorrectly decompressed", total == test.length);
 
-			gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 516);
-			total = 0;
-			while ((result = gin2.read(new byte[200])) != -1) {
-				total += result;
-			}
-			assertEquals("Should return -1", -1, gin2.read());
-			gin2.close();
-			assertTrue("Incorrectly decompressed", total == test.length);
+        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 516);
+        total = 0;
+        while ((result = gin2.read(new byte[200])) != -1) {
+            total += result;
+        }
+        assertEquals("Should return -1", -1, gin2.read());
+        gin2.close();
+        assertTrue("Incorrectly decompressed", total == test.length);
 
-			comp[40] = 0;
-			gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
-			boolean exception = false;
-			try {
-				while (gin2.read(test) != -1) {
-                    ;
-                }
-			} catch (IOException e) {
-				exception = true;
-			}
-			assertTrue("Exception expected", exception);
-		} catch (IOException e) {
-			fail("Unexpected: " + e);
-		}
+        comp[40] = 0;
+        gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
+        boolean exception = false;
+        try {
+            while (gin2.read(test) != -1) {
+                ;
+            }
+        } catch (IOException e) {
+            exception = true;
+        }
+        assertTrue("Exception expected", exception);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GZIPOutputStream zipout = new GZIPOutputStream(baos);
+        zipout.write(test);
+        zipout.close();
+        outBuf = new byte[530];
+        GZIPInputStream in= new GZIPInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        try {
+            in.read(outBuf, 530, 1);
+            fail("Test failed IOOBE was not thrown");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        while (true) {
+            result = in.read(outBuf, 0, 5);
+            if (result == -1) {
+                //"EOF was reached";
+                break;
+            }
+        }
+        result = -10;
+        result = in.read(null, 100, 1);
+        result = in.read(outBuf, -100, 1);
+        result = in.read(outBuf, -1, 1);// 100, 1);
 	}
 
 	/**
