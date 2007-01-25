@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Vladimir Ivanov
- * @version $Revision$
- */
 package java.awt;
 
 
@@ -26,6 +22,15 @@ import junit.framework.TestCase;
 
 public class ContainerRTest extends TestCase {
 
+    public final void testRemoveComponent() {
+        // Regression test for HARMONY-1476
+        try {
+            new Container().remove((Component) null);
+            fail("NPE was not thrown");
+        } catch (NullPointerException ex) {
+            // passed
+        }
+    }
 
     public final void testSetFocusTraversalKeys() {
         try {
@@ -63,17 +68,4 @@ public class ContainerRTest extends TestCase {
             // PASSED            
         }
     }
-
-//    public final void testRemoveComponent() {
-//        Button b = new Button();
-//        boolean npeThrown = false;
-//        Container c = new Container();
-//        c.remove(b); // no exception is thrown
-//        try {
-//            c.remove(b = null);
-//        } catch (NullPointerException npe) {
-//            npeThrown = true;
-//        }        
-//        assertTrue("remove(null) throws NPE", npeThrown);
-//    }
 }

@@ -308,7 +308,10 @@ public class BasicSpinnerUI extends SpinnerUI {
     }
 
     protected void replaceEditor(final JComponent oldEditor, final JComponent newEditor) {
-        spinner.remove(oldEditor);
+        if (oldEditor != null) {
+            spinner.remove(oldEditor);
+        }
+
         editor = newEditor;
 
         if (!paintEditorBorder && editor instanceof DefaultEditor) {

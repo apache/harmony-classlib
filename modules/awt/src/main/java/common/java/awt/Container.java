@@ -277,6 +277,10 @@ public class Container extends Component {
     public void remove(Component comp) {
         toolkit.lockAWT();
         try {
+            if (comp == null) {
+                throw new NullPointerException();
+            }
+
             try {
                 remove(children.indexOf(comp));
             } catch (ArrayIndexOutOfBoundsException e) {

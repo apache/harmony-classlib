@@ -849,7 +849,12 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
                         fileNameField.setText(fileToText(getFileChooser().getCurrentDirectory()));
                     }
                 } else if (JFileChooser.ACCESSORY_CHANGED_PROPERTY.equals(changedProperty)) {
-                    getAccessoryPanel().remove((JComponent)event.getOldValue());
+		    final JComponent old = (JComponent) event.getOldValue();
+                    		    
+                    if (old != null) {
+                        getAccessoryPanel().remove(old);
+                    }
+
                     getAccessoryPanel().add((JComponent)event.getNewValue());
                 } else if (StringConstants.TRANSFER_HANDLER_PROPERTY_NAME.equals(changedProperty)) {
                     list.setTransferHandler((TransferHandler)event.getNewValue());
