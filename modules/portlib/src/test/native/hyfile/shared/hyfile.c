@@ -51,7 +51,7 @@ int main (int argc, char **argv, char **envp)
   if (!fd) {
     fprintf(stderr, "Failed to open hytest.tmp for write %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -59,7 +59,7 @@ int main (int argc, char **argv, char **envp)
   printf("  hyfile_write wrote %d bytes\n", bytes);
   if (bytes != 7) {
     fprintf(stderr, "hyfile_write wrote %d bytes not %d\n", bytes, 7);
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -67,7 +67,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_write_text write failed: %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -76,7 +76,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_sync failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -84,7 +84,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_close failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -92,7 +92,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_move failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -102,7 +102,7 @@ int main (int argc, char **argv, char **envp)
   if (!fd) {
     fprintf(stderr, "Failed to open hytest.tmp2 for read %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -110,7 +110,7 @@ int main (int argc, char **argv, char **envp)
   printf("  offset = %d\n", offset);
   if (offset != 7) {
     fprintf(stderr, "Failed to seek hytest.tmp2\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -120,13 +120,13 @@ int main (int argc, char **argv, char **envp)
   printf("  buf = %s\n", buf);
   if (bytes != 10) {
     fprintf(stderr, "Failed to read hytest.tmp2\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
   if (strcmp(buf, "testing123") != 0) {
     fprintf(stderr, "Failed to read correct content from hytest.tmp2\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -134,7 +134,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_close failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -142,13 +142,13 @@ int main (int argc, char **argv, char **envp)
   printf("  length = %d\n", length);
   if (length != 18) {
     fprintf(stderr, "hytest.tmp2 has incorrect length\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
   if (hyportLibrary.file_attr(&hyportLibrary, "hytest.tmp2") != HyIsFile) {
     fprintf(stderr, "hytest.tmp2 has incorrect type\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -156,7 +156,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_unlink failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -164,13 +164,13 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_mkdir failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
   if (hyportLibrary.file_attr(&hyportLibrary, "hytest.dir.tmp") != HyIsDir) {
     fprintf(stderr, "hytest.dir.tmp has incorrect type\n");
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -178,7 +178,7 @@ int main (int argc, char **argv, char **envp)
   if (rc != 0) {
     fprintf(stderr, "hyfile_unlinkdir failed %s\n",
             hyportLibrary.error_last_error_message(&hyportLibrary));
-    cleanup(hyportLibrary);
+    hycleanup(hyportLibrary);
     exit(1);
   }
 
@@ -191,11 +191,9 @@ int main (int argc, char **argv, char **envp)
   return 0;
 }
 
-void cleanup(HyPortLibrary hyportLibrary)
+void hycleanup(HyPortLibrary hyportLibrary)
 {
   hyportLibrary.file_unlink(&hyportLibrary, "hytest.tmp");
   hyportLibrary.file_unlink(&hyportLibrary, "hytest.tmp2");
   hyportLibrary.file_unlinkdir(&hyportLibrary, "hytest.dir.tmp");
 }
-
-
