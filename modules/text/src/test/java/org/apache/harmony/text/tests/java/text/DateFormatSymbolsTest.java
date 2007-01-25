@@ -193,10 +193,12 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      */
     public void test_hashCode() {
         // Test for method int java.text.DateFormatSymbols.hashCode()
-        int hc1 = hashCode();
-        int hc2 = hashCode();
-        assertTrue("hashCode() returned negative number", hc1 >= 0);
-        assertTrue("hashCode() returned inconsistent number", hc1 == hc2);
+        int hc1 = dfs.hashCode();
+        int hc2 = dfs.hashCode();
+        assertTrue("hashCode() returned inconsistent number : " + hc1 + " - " + hc2, hc1 == hc2);
+
+        assertTrue("hashCode() returns different values for equal() objects", 
+                            dfs.hashCode() == dfs.clone().hashCode());
     }
 
     /**
