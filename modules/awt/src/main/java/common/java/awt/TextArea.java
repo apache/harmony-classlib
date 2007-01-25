@@ -804,7 +804,9 @@ public class TextArea extends TextComponent {
             return mRect;
         }
         int xSpan = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS);
-        mRect.width = xSpan;
+        
+        mRect.width = Math.max(xSpan, mRect.width);
+        
         return mRect;
     }
 
