@@ -80,9 +80,7 @@ public class MessageDigest1Test extends TestCase {
 	 */
 	public void testDigest() {
 		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		if (md.digest() != null) {
-			fail("incorrect result");
-		}
+        assertEquals("incorrect result", 0,md.digest().length);
 		if (!md.runEngineDigest) {
 			fail("update failed");
 		}
@@ -94,9 +92,7 @@ public class MessageDigest1Test extends TestCase {
 	public void testDigestbyteArray() {
 		MyMessageDigest1 md = new MyMessageDigest1("ABC");
 		byte[] b = {1, 2, 3, 4, 5};
-		if (md.digest(b) != null) {
-			fail("incorrect result");
-		}
+        assertEquals("incorrect result", 0, md.digest(b).length);
 		if (!md.runEngineDigest) {
 			fail("update failed");
 		}

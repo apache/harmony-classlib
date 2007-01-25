@@ -67,6 +67,15 @@ public class MessageDigestSpiTest extends TestCase {
 
         assertEquals("incorrect result", DIGEST_LENGHT, md
                 .engineDigest(b, 1, 3));
+        
+        // Regression for HARMONY-3045
+        md = new MyMessageDigest();
+        try {
+            md.engineDigest(b, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**

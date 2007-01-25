@@ -106,14 +106,11 @@ public abstract class MessageDigestSpi {
             throw new DigestException(Messages.getString("security.1D")); //$NON-NLS-1$
         }
         byte tmp[] = engineDigest();
-        if (tmp != null) {
-            if (len < tmp.length ) {
-                throw new DigestException(Messages.getString("security.1B")); //$NON-NLS-1$
-            }
-            System.arraycopy(tmp, 0, buf, offset, tmp.length);
-            return tmp.length;            
+        if (len < tmp.length) {
+            throw new DigestException(Messages.getString("security.1B")); //$NON-NLS-1$
         }
-        return 0;
+        System.arraycopy(tmp, 0, buf, offset, tmp.length);
+        return tmp.length;            
     }
     
     /**

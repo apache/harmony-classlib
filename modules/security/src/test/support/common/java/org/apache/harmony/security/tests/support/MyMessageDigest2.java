@@ -47,7 +47,7 @@ public class MyMessageDigest2 extends MessageDigestSpi {
 	 */
 	public byte[] engineDigest() {
 		runEngineDigest = true;
-		return null;
+		return new byte[0];
 	}
 
 	/**

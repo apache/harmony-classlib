@@ -120,7 +120,7 @@ public class MessageDigest_Impl2Test extends TestCase {
         assertTrue("update failed", ((MyMessageDigest1) md1).runEngineUpdate1);
         assertTrue("update failed", ((MyMessageDigest1) md1).runEngineUpdate2);
 
-        assertNull("incorrect digest result", md1.digest());
+        assertEquals("incorrect digest result", 0, md1.digest().length);
         assertEquals("getProvider() failed", 0, md1.digest(b, 2, 3));
         assertTrue("digest failed", ((MyMessageDigest1) md1).runEngineDigest);
 
@@ -145,7 +145,7 @@ public class MessageDigest_Impl2Test extends TestCase {
         assertTrue("update failed", MyMessageDigest2.runEngineUpdate1);
         assertTrue("update failed", MyMessageDigest2.runEngineUpdate2);
 
-        assertNull("incorrect digest result", md2.digest());
+        assertEquals("incorrect digest result", 0, md2.digest().length);
         assertEquals("getProvider() failed", 0, md2.digest(b, 2, 3));
         assertTrue("digest failed", MyMessageDigest2.runEngineDigest);
 

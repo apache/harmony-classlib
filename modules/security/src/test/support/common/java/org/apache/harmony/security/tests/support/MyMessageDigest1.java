@@ -59,7 +59,7 @@ public class MyMessageDigest1 extends MessageDigest {
 	 */
 	public byte[] engineDigest() {
 		runEngineDigest = true;
-		return null;
+		return new byte[0];
 	}
 
 	/**
