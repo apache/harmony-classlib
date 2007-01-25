@@ -38,6 +38,8 @@
         </or>
     </fileset>
 
+    <property name="regex.exclude.file" location="${hy.hdk}/build/regex.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -52,7 +54,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/regex.jar" />
@@ -143,6 +145,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="regex" dir="./make"
+                             result="${regex.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -177,6 +184,7 @@
 
                 <fileset dir="${hy.regex.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <excludesfile name="${regex.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

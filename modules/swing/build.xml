@@ -50,7 +50,8 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="swing.exclude.file" location="${hy.hdk}/build/swing.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -66,7 +67,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, run-tests" />
+    <target name="-test-module" depends="build, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar" />
@@ -161,6 +162,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="swing" dir="./make"
+                             result="${swing.exclude.file}"/>
+    </target>
+
     <target name="run-tests" depends="compile-tests,copy-test-resources">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -190,7 +196,7 @@
 
                 <fileset dir="${hy.swing.src.test.api}/java/common">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${swing.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

@@ -37,6 +37,8 @@
         </or>
     </fileset>
 
+    <property name="sql.exclude.file" location="${hy.hdk}/build/sql.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -51,7 +53,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/sql.jar" />
@@ -139,6 +141,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="sql" dir="./make"
+                             result="${sql.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -173,6 +180,7 @@
 
                 <fileset dir="${hy.sql.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <excludesfile name="${sql.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

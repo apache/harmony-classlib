@@ -37,6 +37,8 @@
         </or>
     </fileset>
 
+    <property name="suncompat.exclude.file" location="${hy.hdk}/build/suncompat.exclude" />
+
     <target name="build" depends="compile-java, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -51,7 +53,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/suncompat.jar" />
@@ -139,6 +141,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="suncompat" dir="./make"
+                             result="${suncompat.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -171,6 +178,7 @@
 
                 <fileset dir="${hy.suncompat.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <excludesfile name="${suncompat.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

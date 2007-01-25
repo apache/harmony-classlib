@@ -28,8 +28,8 @@
 
     <property name="hy.nio.src.test.java.platform"
               value="${hy.nio.src.test.java}/../${hy.os.family}" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
 
+    <property name="nio.exclude.file" location="${hy.hdk}/build/nio.exclude" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -62,7 +62,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <!-- Build natives.-->
     <target name="build-native">
@@ -175,6 +175,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="nio" dir="./make"
+                             result="${nio.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
         <mkdir dir="${hy.tests.reports}" />
 
@@ -203,7 +208,7 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                 <fileset dir="${hy.nio.src.test.java}">
                     <include name="**/*Test.java" />
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${nio.exclude.file}" />
                 </fileset>
                 <fileset dir="${hy.nio.src.test.java.platform}">
                     <include name="**/*Test.java" />

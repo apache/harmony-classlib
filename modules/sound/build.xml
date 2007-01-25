@@ -37,7 +37,7 @@
         </or>
     </fileset>
 
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="sound.exclude.file" location="${hy.hdk}/build/sound.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -53,7 +53,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar" />
@@ -140,6 +140,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="sound" dir="./make"
+                             result="${sound.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -172,7 +177,7 @@
 
                 <fileset dir="${hy.sound.src.test.java}">
                     <!--include name="**/*Test.java"/-->
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${sound.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

@@ -35,7 +35,7 @@
         </or>
     </fileset>
 
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="lang-management.exclude.file" location="${hy.hdk}/build/lang-management.exclude" />
 
     <target name="build" depends="compile-java, build-jar" />
 
@@ -51,7 +51,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}.jar" />
@@ -162,6 +162,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="lang-management" dir="./make"
+                             result="${lang-management.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
         <antcall target="run-tests-api" />
         <antcall target="run-tests-impl" />
@@ -196,7 +201,7 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                 <fileset dir="${hy.lang-management.src.test.api.java}" >
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${lang-management.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>
@@ -233,7 +238,7 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                 <fileset dir="${hy.lang-management.src.test.impl.java}">
                     <include name="**/*Test.java" />
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${lang-management.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

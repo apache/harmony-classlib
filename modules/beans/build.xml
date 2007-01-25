@@ -39,11 +39,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <property name="beans.common.exclude.file" location="./make/exclude.common" />
-    <property name="beans.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="beans.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/beans.exclude" />
+    <property name="beans.exclude.file" location="${hy.hdk}/build/beans.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -194,26 +190,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="beans.common.exclude.exist" srcFile="${beans.common.exclude.file}" failonerror="false" />
-        <loadfile property="beans.platform.exclude.exist" srcFile="${beans.platform.exclude.file}" failonerror="false" />
-        <loadfile property="beans.interm.exclude.exist" srcFile="${beans.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="beans.common.exclude.exist" >
-        <echo message="${beans.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="beans.platform.exclude.exist" >
-        <echo message="${beans.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="beans.interm.exclude.exist" >
-        <echo message="${beans.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="beans" dir="./make"
+                             result="${beans.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -291,7 +270,7 @@
 
                 <fileset dir="${hy.beans.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${beans.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

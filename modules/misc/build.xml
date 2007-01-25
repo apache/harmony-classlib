@@ -39,11 +39,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <property name="misc.common.exclude.file" location="./make/exclude.common" />
-    <property name="misc.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="misc.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/misc.exclude" />
+    <property name="misc.exclude.file" location="${hy.hdk}/build/misc.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -166,26 +162,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="misc.common.exclude.exist" srcFile="${misc.common.exclude.file}" failonerror="false" />
-        <loadfile property="misc.platform.exclude.exist" srcFile="${misc.platform.exclude.file}" failonerror="false" />
-        <loadfile property="misc.interm.exclude.exist" srcFile="${misc.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="misc.common.exclude.exist" >
-        <echo message="${misc.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="misc.platform.exclude.exist" >
-        <echo message="${misc.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="misc.interm.exclude.exist" >
-        <echo message="${misc.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="misc" dir="./make"
+                             result="${misc.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -219,7 +198,7 @@
 
                 <fileset dir="${hy.misc.src.test.java}">
                     <include name="**/*Test.java" />
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${misc.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

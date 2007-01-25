@@ -39,6 +39,8 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="x-net.exclude.file" location="${hy.hdk}/build/x-net.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -53,7 +55,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.x-net.packaging.jarname}.jar" />
@@ -154,6 +156,11 @@
         </compile-tests>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="x-net" dir="./make"
+                             result="${x-net.exclude.file}"/>
+    </target>
+
     <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
     <target name="run-tests-api">
@@ -170,6 +177,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.x-net.src.test}/api/java">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${x-net.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -191,6 +199,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.x-net.src.test}/impl/java">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${x-net.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -204,6 +213,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.x-net.src.test}/impl/java.injected">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${x-net.exclude.file}" />
                     </fileset>
                 </batchtest>
 

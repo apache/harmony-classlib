@@ -37,11 +37,7 @@
         </or>
     </fileset>
 
-    <property name="math.common.exclude.file" location="./make/exclude.common" />
-    <property name="math.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="math.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/math.exclude" />
+    <property name="math.exclude.file" location="${hy.hdk}/build/math.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -147,26 +143,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="math.common.exclude.exist" srcFile="${math.common.exclude.file}" failonerror="false" />
-        <loadfile property="math.platform.exclude.exist" srcFile="${math.platform.exclude.file}" failonerror="false" />
-        <loadfile property="math.interm.exclude.exist" srcFile="${math.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="math.common.exclude.exist" >
-        <echo message="${math.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="math.platform.exclude.exist" >
-        <echo message="${math.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="math.interm.exclude.exist" >
-        <echo message="${math.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="math" dir="./make"
+                             result="${math.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -201,7 +180,7 @@
 
                 <fileset dir="${hy.math.src.test.java}">
                     <include name="**/*Test.java" />
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${math.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

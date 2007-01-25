@@ -38,8 +38,8 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
-    <property name="exclude.file"
-              location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="pack200.exclude.file" location="${hy.hdk}/build/pack200.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -55,7 +55,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/pack200.jar" />
@@ -144,6 +144,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="pack200" dir="./make"
+                             result="${pack200.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -180,7 +185,7 @@
 
                 <fileset dir="${hy.pack200.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${pack200.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

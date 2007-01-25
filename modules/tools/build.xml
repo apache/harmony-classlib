@@ -37,6 +37,8 @@
         </or>
     </fileset>
 
+    <property name="tools.exclude.file" location="${hy.hdk}/build/tools.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -51,7 +53,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/lib/tools.jar" />
@@ -150,6 +152,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="tools" dir="./make"
+                             result="${tools.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -183,6 +190,7 @@
 
                 <fileset dir="${hy.tools.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <excludesfile name="${tools.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

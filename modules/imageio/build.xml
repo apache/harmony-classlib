@@ -37,11 +37,7 @@
         </or>
     </fileset>
 
-    <property name="imageio.common.exclude.file" location="./make/exclude.common" />
-    <property name="imageio.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="imageio.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/imageio.exclude" />
+    <property name="imageio.exclude.file" location="${hy.hdk}/build/imageio.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -59,26 +55,9 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="imageio.common.exclude.exist" srcFile="${imageio.common.exclude.file}" failonerror="false" />
-        <loadfile property="imageio.platform.exclude.exist" srcFile="${imageio.platform.exclude.file}" failonerror="false" />
-        <loadfile property="imageio.interm.exclude.exist" srcFile="${imageio.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="imageio.common.exclude.exist" >
-        <echo message="${imageio.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="imageio.platform.exclude.exist" >
-        <echo message="${imageio.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="imageio.interm.exclude.exist" >
-        <echo message="${imageio.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="imageio" dir="./make"
+                             result="${imageio.exclude.file}"/>
     </target>
 
     <target name="clean">
@@ -217,7 +196,7 @@
                 unless="test.case">
 
                 <fileset dir="${hy.imageio.src.test.java}" >
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${imageio.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

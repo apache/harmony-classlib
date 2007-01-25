@@ -58,6 +58,8 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="security.exclude.file" location="${hy.hdk}/build/security.exclude" />
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -72,7 +74,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, test-jar, copy-tests-resources, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, test-jar, copy-tests-resources, prepare-exclude, run-tests" />
 
     <!-- Build native code -->
     <available file="${hy.security.src.main.native}/security/${hy.os.family}" property="native.present" />
@@ -262,6 +264,12 @@
         </compile-tests>
     </target>
 
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="security" dir="./make"
+                             result="${security.exclude.file}"/>
+    </target>
+
     <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
     <target name="run-tests-api">
@@ -278,11 +286,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.security.src.test}/api/java">
                         <include name="**/*Test.java"/>
-
-    <exclude name="org/apache/harmony/security/tests/java/security/KeyStore2Test.java" />
-    <exclude name="org/apache/harmony/security/tests/java/security/SecureRandom2Test.java" />
-    <exclude name="tests/api/java/security/PermissionCollectionTest.java"/>
-
+                        <excludesfile name="${security.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -297,6 +301,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.security.src.test}/api/java.injected">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${security.exclude.file}" />
                     </fileset>
                 </batchtest>
 
@@ -319,6 +324,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.security.src.test}/impl/java">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${security.exclude.file}" />
                         <exclude name="${hy.security.x-list}" />
                     </fileset>
                 </batchtest>
@@ -334,6 +340,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.security.src.test}/impl/java.injected">
                         <include name="**/*Test.java"/>
+                        <excludesfile name="${security.exclude.file}" />
 
                         <exclude name="${hy.security.x-list}" />
 

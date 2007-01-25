@@ -37,11 +37,7 @@
         </or>
     </fileset>
 
-    <property name="logging.common.exclude.file" location="./make/exclude.common" />
-    <property name="logging.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="logging.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/logging.exclude" />
+    <property name="logging.exclude.file" location="${hy.hdk}/build/logging.exclude" />
 
     <target name="build" depends="compile-java, copy-jar-resources, build-jar, copy-resources" />
 
@@ -58,28 +54,6 @@
 
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
-
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="logging.common.exclude.exist" srcFile="${logging.common.exclude.file}" failonerror="false" />
-        <loadfile property="logging.platform.exclude.exist" srcFile="${logging.platform.exclude.file}" failonerror="false" />
-        <loadfile property="logging.interm.exclude.exist" srcFile="${logging.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="logging.common.exclude.exist" >
-        <echo message="${logging.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="logging.platform.exclude.exist" >
-        <echo message="${logging.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="logging.interm.exclude.exist" >
-        <echo message="${logging.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/logging.jar" />
@@ -182,6 +156,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="logging" dir="./make"
+                             result="${logging.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -230,7 +209,7 @@
 
                 <fileset dir="${hy.logging.src.test.java}">
                     <include name="org/apache/harmony/logging/tests/java/util/logging/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${logging.exclude.file}" />
 
                     <exclude name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java" />
                 </fileset>

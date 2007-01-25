@@ -38,7 +38,8 @@
     </fileset>
     
     <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="text.exclude.file" location="${hy.hdk}/build/text.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -54,7 +55,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
     
     <target name="overlay-oss">
         <mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
@@ -171,6 +172,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="text" dir="./make"
+                             result="${text.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -203,7 +209,7 @@
 
                 <fileset dir="${hy.text.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${text.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>

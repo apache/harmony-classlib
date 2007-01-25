@@ -37,11 +37,7 @@
         </or>
     </fileset>
 
-    <property name="jndi.common.exclude.file" location="./make/exclude.common" />
-    <property name="jndi.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="jndi.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
-    <property name="exclude.file" location="${hy.hdk}/build/jndi.exclude" />
+    <property name="jndi.exclude.file" location="${hy.hdk}/build/jndi.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -147,26 +143,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="jndi.common.exclude.exist" srcFile="${jndi.common.exclude.file}" failonerror="false" />
-        <loadfile property="jndi.platform.exclude.exist" srcFile="${jndi.platform.exclude.file}" failonerror="false" />
-        <loadfile property="jndi.interm.exclude.exist" srcFile="${jndi.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="jndi.common.exclude.exist" >
-        <echo message="${jndi.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="jndi.platform.exclude.exist" >
-        <echo message="${jndi.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="jndi.interm.exclude.exist" >
-        <echo message="${jndi.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="jndi" dir="./make"
+                             result="${jndi.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -202,7 +181,7 @@
 
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${jndi.exclude.file}" />
 
                     <!--  These tests run in a separate jvm below -->
                     <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />

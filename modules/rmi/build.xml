@@ -38,7 +38,8 @@
     </fileset>
 
     <property file="../../make/depends.properties" />
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+
+    <property name="rmi.exclude.file" location="${hy.hdk}/build/rmi.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -54,7 +55,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.rmi.packaging.jarname}.jar" />
@@ -133,6 +134,11 @@
 
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="rmi" dir="./make"
+                             result="${rmi.exclude.file}"/>
+    </target>
+
     <target name="run-tests" depends="run-tests-api" />
 
     <target name="run-tests-api">
@@ -148,7 +154,7 @@
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.rmi.src.test}/api/java">
                         <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
+                        <excludesfile name="${rmi.exclude.file}" />
                     </fileset>
                 </batchtest>
 

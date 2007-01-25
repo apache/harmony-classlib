@@ -43,9 +43,7 @@
         </or>
     </fileset>
 
-    <property name="concurrent.common.exclude.file" location="./make/exclude.common" />
-    <property name="concurrent.platform.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="concurrent.interm.exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+    <property name="concurrent.exclude.file" location="${hy.hdk}/build/concurrent.exclude" />
 
     <property name="exclude.file" location="${hy.hdk}/build/concurrent.exclude" />
 
@@ -149,26 +147,9 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude" depends="-init-exclude, -add-common, -add-platform, -add-intermittent">
-    </target>
-
-    <target name="-init-exclude" >
-        <echo message="" file="${exclude.file}" />
-        <loadfile property="concurrent.common.exclude.exist" srcFile="${concurrent.common.exclude.file}" failonerror="false" />
-        <loadfile property="concurrent.platform.exclude.exist" srcFile="${concurrent.platform.exclude.file}" failonerror="false" />
-        <loadfile property="concurrent.interm.exclude.exist" srcFile="${concurrent.interm.exclude.file}" failonerror="false"/>
-    </target>
-
-    <target name="-add-common" if="concurrent.common.exclude.exist" >
-        <echo message="${concurrent.common.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-platform" if="concurrent.platform.exclude.exist" >
-        <echo message="${concurrent.platform.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
-    </target>
-
-    <target name="-add-intermittent" if="concurrent.interm.exclude.exist" >
-        <echo message="${concurrent.interm.exclude.exist}${line.separator}" file="${exclude.file}" append="true" />
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="concurrent" dir="./make"
+                             result="${concurrent.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -202,7 +183,7 @@
                 unless="test.case">
 
                 <fileset dir="${hy.concurrent.src.test.java}">
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${concurrent.exclude.file}" />
                 </fileset>
 
             </batchtest>

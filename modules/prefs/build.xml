@@ -39,7 +39,7 @@
         </or>
     </fileset>
 
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="prefs.exclude.file" location="${hy.hdk}/build/prefs.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -55,7 +55,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <!-- Build natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
@@ -166,6 +166,11 @@
         </javac>
     </target>
 
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="prefs" dir="./make"
+                             result="${prefs.exclude.file}"/>
+    </target>
+
     <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -199,7 +204,7 @@
 
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <excludesfile name="${exclude.file}" />
+                    <excludesfile name="${prefs.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>
