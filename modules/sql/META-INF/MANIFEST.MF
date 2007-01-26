@@ -16,6 +16,7 @@ Import-Package: java.io,
  java.lang.reflect,
  java.math,
  java.net,
+ java.nio;resolution:=optional,
  java.rmi,
  java.security,
  java.text,
@@ -33,3 +34,4 @@ Export-Package: java.sql,
  javax.sql.rowset.spi,
  javax.transaction,
  javax.transaction.xa
+

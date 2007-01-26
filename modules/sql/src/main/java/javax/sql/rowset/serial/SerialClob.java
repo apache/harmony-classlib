@@ -17,6 +17,8 @@
 
 package javax.sql.rowset.serial;
 
+import java.io.CharArrayReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -26,6 +28,7 @@ import java.sql.Clob;
 import java.sql.SQLException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SerialClob implements Clob, Serializable, Cloneable {
 
@@ -49,18 +52,44 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     @SuppressWarnings("unused")
     private long origLen;
 
-    public SerialClob(char[] ch) throws SerialException, SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public SerialClob(char[] ch) throws SerialException, SQLException {
+        buf = new char[ch.length];
+        origLen = ch.length;
+        len = origLen;
+        System.arraycopy(ch, 0, buf, 0, (int) len);
     }
 
-    public SerialClob(Clob clob) throws SerialException, SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public SerialClob(Clob clob) throws SerialException, SQLException {
+        Reader characterStream;
+        InputStream asciiStream;
+
+        if (clob == null) {
+            throw new SQLException(Messages.getString("sql.19"));//$NON-NLS-1$
+        }
+
+        characterStream = clob.getCharacterStream();
+        asciiStream = clob.getAsciiStream();
+        if (characterStream == null || asciiStream == null) {
+            throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
+        }
+
+        this.clob = clob;
+        origLen = clob.length();
+        len = origLen;
+        buf = new char[(int) len];
+        try {
+            characterStream.read(buf);
+        } catch (IOException e) {
+            SerialException se = new SerialException(
+                    "SerialClob: " + e.getMessage());
+
+            se.initCause(e);
+            throw se;
+        }
     }
 
-    public long length() throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+    public long length() throws SerialException {
+        return len;
     }
 
     public InputStream getAsciiStream() throws SerialException,
@@ -70,7 +99,7 @@ public class SerialClob implements Clob, Serializable, Cloneable {
 
     public Reader getCharacterStream() throws SerialException,
             NotImplementedException {
-        throw new NotImplementedException();
+        return new CharArrayReader(buf);
     }
 
     public String getSubString(long pos, int length) throws SerialException,

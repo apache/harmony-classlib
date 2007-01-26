@@ -17,16 +17,80 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
 
+import java.io.ByteArrayInputStream;
+import java.io.CharArrayReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.sql.Clob;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialException;
+
 import junit.framework.TestCase;
 
 public class SerialClobTest extends TestCase {
 
-    public void testSerialClob$C() {
-        // TODO: Not yet implemented
+    public void testSerialClob$C() throws Exception {
+        char[] buf = new char[8];
+        SerialClob serialClob = new SerialClob(buf);
+
+        assertEquals(8, serialClob.length());
+
+        try {
+            new SerialClob((char[]) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
-    public void testSerialClobLClob() {
-        // TODO: Not yet implemented
+    public void testSerialClobLClob() throws Exception {
+        SerialClob serialClob;
+        MockSerialClob mockClob = new MockSerialClob();
+
+        mockClob.characterStream = new CharArrayReader(mockClob.buf);
+        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        serialClob = new SerialClob(mockClob);
+        assertEquals(mockClob.buf.length, serialClob.length());
+
+        mockClob.characterStream = null;
+        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        try {
+            new SerialClob(mockClob);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        mockClob.characterStream = new CharArrayReader(new char[] { 1 });
+        mockClob.asciiStream = null;
+        try {
+            new SerialClob(mockClob);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        mockClob.characterStream = new MockAbnormalReader();
+        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        try {
+            new SerialClob(mockClob);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }        
+        
+        try {
+            new SerialClob((Clob) null);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
     }
 
     public void testLength() {
@@ -73,4 +137,70 @@ public class SerialClobTest extends TestCase {
         // TODO: Not yet implemented
     }
 
+    static class MockSerialClob implements Clob {
+
+        char[] buf = { 1, 2, 3 };
+
+        public Reader characterStream;
+
+        public InputStream asciiStream;
+
+        public MockSerialClob() {
+        }
+
+        public InputStream getAsciiStream() throws SQLException {
+            return asciiStream;
+        }
+
+        public Reader getCharacterStream() throws SQLException {
+            return characterStream;
+        }
+
+        public String getSubString(long pos, int length) throws SQLException {
+            return null;
+        }
+
+        public long length() throws SQLException {
+            return buf.length;
+        }
+
+        public long position(Clob searchstr, long start) throws SQLException {
+            return 0;
+        }
+
+        public long position(String searchstr, long start) throws SQLException {
+            return 0;
+        }
+
+        public OutputStream setAsciiStream(long pos) throws SQLException {
+            return null;
+        }
+
+        public Writer setCharacterStream(long pos) throws SQLException {
+            return null;
+        }
+
+        public int setString(long pos, String str) throws SQLException {
+            return 0;
+        }
+
+        public int setString(long pos, String str, int offset, int len)
+                throws SQLException {
+            return 0;
+        }
+
+        public void truncate(long len) throws SQLException {
+
+        }
+    }
+
+    static class MockAbnormalReader extends java.io.Reader {
+        public int read(char[] cbuf, int off, int len) throws IOException {
+            throw new IOException();
+        }
+
+        public void close() throws IOException {
+
+        }
+    }
 }

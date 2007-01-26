@@ -64,7 +64,7 @@ public class SerialBlobTest extends TestCase {
 
         try {
             new SerialBlob((byte[]) null);
-            fail("should throw SQLException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
