@@ -484,6 +484,72 @@ public class DigestOutputStreamTest extends TestCase {
         fail(getName() + ": no MessageDigest algorithms available - test not performed");
     }
 
+    /**
+     * @tests java.security.DigestOutputStream#on(boolean)
+     */
+    public void test_onZ() {
+        // Test for method void java.security.DigestOutputStream.on(boolean)
+        try {
+            DigestOutputStream dos = new DigestOutputStream(
+                    new ByteArrayOutputStream(), MessageDigest
+                            .getInstance("SHA"));
+            dos.on(false);
+            byte digestArray[] = { 23, 43, 44 };
+            dos.write(digestArray, 1, 1);
+            byte digestResult[] = dos.getMessageDigest().digest();
+            byte expected[] = { -38, 57, -93, -18, 94, 107, 75, 13, 50, 85,
+                    -65, -17, -107, 96, 24, -112, -81, -40, 7, 9 };
+            assertTrue("Digest did not return expected result.",
+                    java.util.Arrays.equals(digestResult, expected));
+            // now turn on processing and re-run
+            dos.on(true);
+            dos.write(digestArray, 1, 1);
+            digestResult = dos.getMessageDigest().digest();
+            byte expected1[] = { -87, 121, -17, 16, -52, 111, 106, 54, -33,
+                    107, -118, 50, 51, 7, -18, 59, -78, -30, -37, -100 };
+
+            assertTrue("Digest did not return expected result.",
+                    java.util.Arrays.equals(digestResult, expected1));
+        } catch (Exception e) {
+            fail("Caught exception : " + e);
+        }
+    }
+
+    /**
+     * @tests java.security.DigestOutputStream#write(byte[], int, int)
+     */
+    public void test_write$BII() throws Exception {
+        // Test for method void java.security.DigestOutputStream.write(byte [],
+        // int, int)
+            DigestOutputStream dos = new DigestOutputStream(
+                new ByteArrayOutputStream(), MessageDigest.getInstance("SHA"));
+            byte digestArray[] = { 23, 43, 44 };
+            dos.write(digestArray, 1, 1);
+            byte digestResult[] = dos.getMessageDigest().digest();
+            byte expected[] = { -87, 121, -17, 16, -52, 111, 106, 54, -33, 107,
+                    -118, 50, 51, 7, -18, 59, -78, -30, -37, -100 };
+
+            assertTrue("Digest did not return expected result.",
+                    java.util.Arrays.equals(digestResult, expected));
+    }
+
+    /**
+     * @tests java.security.DigestOutputStream#write(int)
+     */
+    public void test_writeI() throws Exception {
+        // Test for method void java.security.DigestOutputStream.write(int)
+            DigestOutputStream dos = new DigestOutputStream(
+                new ByteArrayOutputStream(), MessageDigest.getInstance("SHA"));
+            dos.write((byte) 43);
+            byte digestResult[] = dos.getMessageDigest().digest();
+            byte expected[] = { -87, 121, -17, 16, -52, 111, 106, 54, -33, 107,
+                    -118, 50, 51, 7, -18, 59, -78, -30, -37, -100 };
+
+            assertTrue("Digest did not return expected result.",
+                    java.util.Arrays.equals(digestResult, expected));
+    }
+
+
     private class MyOutputStream extends OutputStream {
         @Override
         public void write(int arg0) throws IOException {
