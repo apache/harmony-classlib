@@ -177,7 +177,9 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.annotation.src.test.java}"/>
+                <fileset dir="${hy.annotation.src.test.java}">
+                    <excludesfile name="${annotation.exclude.file}" />
+                </fileset>  
             </batchtest>
         </junit>
         <antcall target="touch-failures-file" />

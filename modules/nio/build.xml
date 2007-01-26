@@ -212,6 +212,7 @@
                 </fileset>
                 <fileset dir="${hy.nio.src.test.java.platform}">
                     <include name="**/*Test.java" />
+                    <excludesfile name="${nio.exclude.file}" />
                 </fileset>
             </batchtest>
         </junit>
