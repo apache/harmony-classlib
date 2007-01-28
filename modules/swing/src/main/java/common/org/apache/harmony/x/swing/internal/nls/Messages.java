@@ -235,7 +235,7 @@ public class Messages {
         // Attempt to load the messages.
         try {
             bundle = setLocale(Locale.getDefault(),
-                    "org.apache.harmony.swing.internal.nls.messages"); //$NON-NLS-1$
+                    "org.apache.harmony.x.swing.internal.nls.messages"); //$NON-NLS-1$
         } catch (Throwable e) {
             e.printStackTrace();
         }
