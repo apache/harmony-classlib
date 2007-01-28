@@ -47,6 +47,7 @@ import org.apache.harmony.x.swing.text.html.form.FormSelectComboBoxModel;
 import org.apache.harmony.x.swing.text.html.form.FormSelectListModel;
 import org.apache.harmony.x.swing.text.html.form.FormTextModel;
 import org.apache.harmony.x.swing.text.html.form.FormToggleButtonModel;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class FormView extends ComponentView implements ActionListener {
     private static final int EMPTY_SPAN = 0;
@@ -74,6 +75,9 @@ public class FormView extends ComponentView implements ActionListener {
     }
 
     public float getMaximumSpan(final int axis) {
+        if (axis != View.X_AXIS && axis != View.Y_AXIS) {
+            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$
+        }
         if (getComponent() == null || getParent() == null) {
             return EMPTY_SPAN;
         }
