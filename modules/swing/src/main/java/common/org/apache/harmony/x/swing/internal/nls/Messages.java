@@ -21,7 +21,7 @@
  * if this tool runs again. Better make changes in the template file.
  */
 
-package org.apache.harmony.swing.internal.nls;
+package org.apache.harmony.x.swing.internal.nls;
 
 
 import java.security.AccessController;
