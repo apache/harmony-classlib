@@ -66,6 +66,9 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         u = new URL("jar:" + BASE.toString()+"/lf.jar!/");
         juc = (JarURLConnection) u.openConnection();
         assertNull("Returned incorrect entryName", juc.getEntryName());
+//      Regression test for harmony-3053
+        URL url = new URL("jar:file:///bar.jar!/foo.jar!/Bugs/HelloWorld.class");
+		assertEquals("foo.jar!/Bugs/HelloWorld.class",((JarURLConnection)url.openConnection()).getEntryName());
     }
 
 	/**
@@ -156,6 +159,9 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         juc = (JarURLConnection) u.openConnection();
         assertTrue("Returned incorrect file URL", juc.getJarFileURL().equals(
                 fileURL));
+        // Regression test for harmony-3053
+        URL url = new URL("jar:file:///bar.jar!/foo.jar!/Bugs/HelloWorld.class");
+        assertEquals("file:/bar.jar",((JarURLConnection)url.openConnection()).getJarFileURL().toString());
     }
 
 	/**

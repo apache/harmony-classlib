@@ -51,8 +51,7 @@ public abstract class JarURLConnection extends URLConnection {
         super(url);
         file = url.getFile();
         int sepIdx;
-        // Support embedded jar URLs by using lastIndexOf()
-        if ((sepIdx = file.lastIndexOf("!/")) < 0) { //$NON-NLS-1$
+        if ((sepIdx = file.indexOf("!/")) < 0) { //$NON-NLS-1$
             throw new MalformedURLException();
         }
         if (file.length() == sepIdx + 2) {
@@ -154,9 +153,8 @@ public abstract class JarURLConnection extends URLConnection {
             return fileURL;
         }
         try {
-            // Support embedded jar URLs by using lastIndexOf()
             return fileURL = new URL(url.getFile().substring(0,
-                    url.getFile().lastIndexOf("!/"))); //$NON-NLS-1$
+                    url.getFile().indexOf("!/"))); //$NON-NLS-1$
         } catch (MalformedURLException e) {
             return null;
         }
