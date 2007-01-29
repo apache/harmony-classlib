@@ -25,12 +25,12 @@ public class CPInteger extends CPConstantNumber {
 		super(ConstantPoolEntry.CP_Integer,value);
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeInt(getNumber().intValue());
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Integer: " + getValue();
 	}

@@ -16,10 +16,6 @@
  */
 package org.apache.harmony.pack200;
 
-// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-// NOTE: Do not extract strings as messages; this code is still a
-// work-in-progress
-// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Unpacker;
+
+import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.pack200.Segment;
 
 /**
  * This class provides the binding between the standard Pack200 interface and

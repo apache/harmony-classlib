@@ -11,21 +11,12 @@ Bundle-SymbolicName: org.apache.harmony.pack200
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.beans,
- java.io,
- java.lang,
- java.lang.ref,
- java.lang.reflect,
- java.net,
- java.nio,
- java.nio.charset,
- java.security,
- java.security.cert,
- java.util,
- javax.security.auth.x500,
- org.apache.harmony.luni.util,
- org.apache.harmony.security.utils,
- org.apache.harmony.kernel.vm
+Import-Package: java.io;resolution:=optional,
+ java.lang;resolution:=optional,
+ java.util;resolution:=optional,
+ java.util.jar;resolution:=optional
 Export-Package: org.apache.harmony.pack200,
  org.apache.harmony.pack200.bytecode
+Bundle-RequiredExecutionEnvironment: J2SE-1.4,
+ J2SE-1.5
 

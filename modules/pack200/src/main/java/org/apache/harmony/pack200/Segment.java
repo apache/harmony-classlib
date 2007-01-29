@@ -392,7 +392,6 @@ public class Segment {
 	 * @param message
 	 * @deprecated this should be removed from production code
 	 */
-	@Deprecated
 	private void debug(String message) {
 		if (System.getProperty("debug.pack200") != null) {
 			System.err.println(message);

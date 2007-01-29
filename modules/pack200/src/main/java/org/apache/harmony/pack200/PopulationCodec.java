@@ -41,18 +41,18 @@ public class PopulationCodec extends Codec {
 		this.unvafouredCodec = unvafouredCodec;
 	}
 
-	@Override
+	
 	public long decode(InputStream in) throws IOException, Pack200Exception {
 		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
-	@Override
+	
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
 		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
-	@Override
+	
 	public long[] decode(int n, InputStream in) throws IOException, Pack200Exception {
 		long favoured[] =new long[n]; // there must be <= n  values, but probably a lot less
 		long result[];

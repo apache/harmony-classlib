@@ -21,6 +21,7 @@
       <src>
          <main>
             <java location="src/main/java" />
+            <java5 location="src/main/java5" />
          </main>
          <test>
             <java location="src/test/java" />
@@ -34,8 +35,8 @@
       <packaging>
       </packaging>
       <javac>
-        <source>1.5</source>
-        <target>1.5</target>
+        <source>1.4</source>
+        <target>1.4</target>
       </javac>
    </pack200>
 

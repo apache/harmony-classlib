@@ -40,7 +40,7 @@ public class AttributeLayout {
 
 		private String name;
 
-		@Override
+		
 		public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
@@ -49,7 +49,7 @@ public class AttributeLayout {
 			return result;
 		}
 
-		@Override
+		
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
@@ -238,7 +238,7 @@ public class AttributeLayout {
 		return (value & mask) != 0;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

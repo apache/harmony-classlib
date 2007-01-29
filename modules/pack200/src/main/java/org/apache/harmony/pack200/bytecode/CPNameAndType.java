@@ -37,7 +37,7 @@ public class CPNameAndType extends ConstantPoolEntry {
 		this.descriptor = new CPUTF8(descriptor.substring(colon+1));
 	}
 
-	@Override
+	
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
 		descriptorIndex = pool.indexOf(descriptor);
@@ -48,18 +48,18 @@ public class CPNameAndType extends ConstantPoolEntry {
 	 * field_info { u2 access_flags; u2 name_index; u2 descriptor_index; u2
 	 * attributes_count; attribute_info attributes[attributes_count]; }
 	 */
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(nameIndex);
 		dos.writeShort(descriptorIndex);
 	}
 
-	@Override
+	
 	public String toString() {
 		return "NameAndType: " + name + "(" + descriptor + ")";
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -68,7 +68,7 @@ public class CPNameAndType extends ConstantPoolEntry {
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

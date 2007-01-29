@@ -34,6 +34,12 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
+            <present targetdir="${hy.pack200.src.main.java5}" />
+            <present targetdir="${hy.pack200.src.main.java5}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
         </or>
     </fileset>
 
@@ -71,6 +77,7 @@
 
         <mkdir dir="${hy.build}" />
 
+    	<!-- Ordinary classes -->
         <javac sourcepath=""
                srcdir="${hy.pack200.src.main.java}"
                destdir="${hy.build}"
@@ -78,6 +85,24 @@
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.pack200.javac.source}"
                target="${hy.pack200.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    	<!-- Java5 classes, with generics -->
+        <javac sourcepath=""
+               srcdir="${hy.pack200.src.main.java5}"
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
@@ -112,6 +137,7 @@
 
         <jar destfile="${hy.jdk}/jre/lib/boot/pack200-src.jar">
             <fileset dir="${hy.pack200.src.main.java}" />
+            <fileset dir="${hy.pack200.src.main.java}/../java5" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

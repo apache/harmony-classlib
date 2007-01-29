@@ -29,7 +29,6 @@ public abstract class Attribute extends ClassFileEntry {
 		this.attributeName = new CPUTF8(attributeName);
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -52,7 +51,7 @@ public abstract class Attribute extends ClassFileEntry {
 
 	protected abstract int getLength();
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

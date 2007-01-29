@@ -30,7 +30,6 @@ public class SourceFileAttribute extends Attribute {
 		this.name = new CPUTF8(name);
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -47,7 +46,6 @@ public class SourceFileAttribute extends Attribute {
 		return true;
 	}
 
-	@Override
 	protected int getLength() {
 		return 2;
 	}
@@ -56,7 +54,6 @@ public class SourceFileAttribute extends Attribute {
 		return new ClassFileEntry[] { getAttributeName(), name };
 	}
 
-	@Override
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();

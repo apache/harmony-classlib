@@ -25,12 +25,12 @@ public class CPLong extends CPConstantNumber {
 		super(ConstantPoolEntry.CP_Long,value);
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeLong(getNumber().longValue());
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Long: " + getValue();
 	}

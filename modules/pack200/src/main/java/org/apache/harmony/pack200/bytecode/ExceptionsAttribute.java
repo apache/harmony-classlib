@@ -22,6 +22,19 @@ import java.util.Arrays;
 
 public class ExceptionsAttribute extends Attribute {
 
+	private static int hashCode(Object[] array) {
+		final int prime = 31;
+		if (array == null)
+			return 0;
+		int result = 1;
+		for (int index = 0; index < array.length; index++) {
+			result = prime * result
+					+ (array[index] == null ? 0 : array[index].hashCode());
+		}
+		return result;
+	}
+
+
 	private transient int[] exceptionIndexes;
 
 	private CPClass[] exceptions;
@@ -31,7 +44,7 @@ public class ExceptionsAttribute extends Attribute {
 		this.exceptions = exceptions;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -45,7 +58,7 @@ public class ExceptionsAttribute extends Attribute {
 		return true;
 	}
 
-	@Override
+	
 	protected int getLength() {
 		return 2 + 2 * exceptions.length;
 	}
@@ -59,11 +72,11 @@ public class ExceptionsAttribute extends Attribute {
 		return result;
 	}
 
-	@Override
+	
 	public int hashCode() {
-		final int PRIME = 31;
+		final int prime = 31;
 		int result = super.hashCode();
-		result = PRIME * result + Arrays.hashCode(exceptions);
+		result = prime * result + ExceptionsAttribute.hashCode(exceptions);
 		return result;
 	}
 
@@ -80,7 +93,7 @@ public class ExceptionsAttribute extends Attribute {
 		return "Exceptions:" + exceptions;
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(exceptionIndexes.length);
 		for (int i = 0; i < exceptionIndexes.length; i++) {

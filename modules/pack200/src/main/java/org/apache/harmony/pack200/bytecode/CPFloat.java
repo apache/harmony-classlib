@@ -24,12 +24,12 @@ public class CPFloat extends CPConstantNumber {
 		super(ConstantPoolEntry.CP_Float,value);
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeFloat(getNumber().floatValue());
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Float: " + getValue();
 	}

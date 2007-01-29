@@ -28,7 +28,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 		this.utf8 = utf8;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -45,7 +45,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

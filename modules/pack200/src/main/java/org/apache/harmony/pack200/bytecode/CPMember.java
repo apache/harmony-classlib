@@ -45,7 +45,7 @@ public class CPMember extends ClassFileEntry {
 	}
 
 
-	@Override
+	
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		int attributeCount = attributes.size();
 		ClassFileEntry[] entries = new ClassFileEntry[attributeCount+2];
@@ -58,7 +58,7 @@ public class CPMember extends ClassFileEntry {
 	}
 
 
-	@Override
+	
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
 		nameIndex = pool.indexOf(name);
@@ -69,12 +69,12 @@ public class CPMember extends ClassFileEntry {
 		}
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Field: " + name + "(" + descriptor + ")";
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -86,7 +86,7 @@ public class CPMember extends ClassFileEntry {
 	}
 
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -116,7 +116,7 @@ public class CPMember extends ClassFileEntry {
 	}
 
 
-	@Override
+	
 	protected void doWrite(DataOutputStream dos) throws IOException {
 		dos.writeShort(flags);
 		dos.writeShort(nameIndex);

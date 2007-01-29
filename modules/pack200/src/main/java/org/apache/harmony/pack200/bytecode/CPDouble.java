@@ -24,12 +24,12 @@ public class CPDouble extends CPConstantNumber {
 		super(ConstantPoolEntry.CP_Double,value);
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeDouble(getNumber().doubleValue());
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Double: " + getValue();
 	}

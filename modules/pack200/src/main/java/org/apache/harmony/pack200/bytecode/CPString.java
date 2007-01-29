@@ -29,12 +29,12 @@ public class CPString extends CPConstant {
 
 	}
 
-	@Override
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(nameIndex);
 	}
 
-	@Override
+	
 	public String toString() {
 		return "String: " + getValue();
 	}

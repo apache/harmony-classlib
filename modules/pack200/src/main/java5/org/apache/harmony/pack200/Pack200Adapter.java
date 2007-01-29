@@ -21,10 +21,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-// NOTE: Do not extract strings as messages; this code is still a
-// work-in-progress
-// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 /**
  * Provides generic JavaBeans support for the Pack/UnpackAdapters
  */

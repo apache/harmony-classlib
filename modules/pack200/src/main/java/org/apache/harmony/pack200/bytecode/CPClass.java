@@ -33,7 +33,7 @@ public class CPClass extends ConstantPoolEntry {
 		this.utf8 = new CPUTF8(name);
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -59,7 +59,7 @@ public class CPClass extends ConstantPoolEntry {
 		return new ClassFileEntry[] { utf8, };
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

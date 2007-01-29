@@ -35,7 +35,7 @@ public class CPFieldRef extends ConstantPoolEntry {
 	}
 
 
-	@Override
+	
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		ClassFileEntry[] entries = new ClassFileEntry[2];
 		entries[0] = className;
@@ -44,7 +44,7 @@ public class CPFieldRef extends ConstantPoolEntry {
 	}
 
 
-	@Override
+	
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
 		nameAndTypeIndex = pool.indexOf(nameAndType);
@@ -56,13 +56,13 @@ public class CPFieldRef extends ConstantPoolEntry {
 		dos.writeShort(nameAndTypeIndex);
 	}
 
-	@Override
+	
 	public String toString() {
 		return "FieldRef: " + className + "#" + nameAndType;
 	}
 
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -72,7 +72,7 @@ public class CPFieldRef extends ConstantPoolEntry {
 	}
 
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

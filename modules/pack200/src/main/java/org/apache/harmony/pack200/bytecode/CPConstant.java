@@ -26,7 +26,7 @@ public abstract class CPConstant extends ConstantPoolEntry {
 		this.value = value;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -43,7 +43,7 @@ public abstract class CPConstant extends ConstantPoolEntry {
 		return true;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

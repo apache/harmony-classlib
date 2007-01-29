@@ -35,7 +35,7 @@ public class SegmentTest extends TestCase {
 // Will be uncommented later     
 //	public void testHelloWorld() throws Exception {
 //		assertNotNull(Segment.parse(Segment.class
-//				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/HelloWorld.pack")));
+//				.getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack")));
 //	}
 	/**
 	 * @param args
@@ -43,7 +43,7 @@ public class SegmentTest extends TestCase {
 	 */
 	public void testJustResources() throws Exception {
 		assertNotNull(Segment.parse(Segment.class
-				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/JustResources.pack")));
+				.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack")));
 	}
 
 }

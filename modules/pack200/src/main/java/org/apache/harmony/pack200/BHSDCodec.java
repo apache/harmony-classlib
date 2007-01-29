@@ -134,7 +134,7 @@ public final class BHSDCodec extends Codec {
 		}
 	}
 
-	@Override
+	
 	public long decode(InputStream in) throws IOException, Pack200Exception {
 		if (d != 0)
 			throw new Pack200Exception(
@@ -142,7 +142,7 @@ public final class BHSDCodec extends Codec {
 		return decode(in, 0);
 	}
 
-	@Override
+	
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
 		int n = 0;
