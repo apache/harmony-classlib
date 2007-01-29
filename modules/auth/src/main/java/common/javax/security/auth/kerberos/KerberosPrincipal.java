@@ -21,12 +21,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.security.AccessController;
 import java.security.Principal;
-import java.security.PrivilegedAction;
 import java.util.StringTokenizer;
 
-import org.apache.harmony.auth.internal.kerberos.v5.KrbConfig;
+import org.apache.harmony.auth.internal.kerberos.v5.KerberosException;
+import org.apache.harmony.auth.internal.kerberos.v5.KrbClient;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1StringType;
@@ -47,9 +46,6 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
     public static final int KRB_NT_UID = 5;
 
-    // default realm 
-    private static String defaultRealm;
-    
     // the full name of principal
     private transient String name;
 
@@ -82,36 +78,14 @@ public final class KerberosPrincipal implements Principal, Serializable {
             this.name = name;
         } else {
             // look for default realm name
-            // TODO sync defaultRealm update
-            if (defaultRealm == null) {
-                defaultRealm = AccessController
-                        .doPrivileged(new PrivilegedAction<String>() {
-                            public String run() {
-
-                                String v = System
-                                        .getProperty("java.security.krb5.realm"); //$NON-NLS-1$
-                                if (v == null) {
-                                    // look in config files 
-                                    KrbConfig config = null;
-                                    try {
-                                        config = KrbConfig.getSystemConfig();
-                                    } catch (IOException e) {
-                                        // ignore
-                                    }
-                                    if (config != null) {
-                                        v = config.getValue("libdefaults", //$NON-NLS-1$
-                                                "default_realm"); //$NON-NLS-1$
-                                    }
-                                }
-                                return v;
-                            }
-                        });
-
+            try {
+                realm = KrbClient.getRealm();
+            } catch (KerberosException e) {
+                throw new IllegalArgumentException(e);
             }
 
-            realm = defaultRealm;
             if (realm != null) {
-                this.name = name + '@' + defaultRealm;
+                this.name = name + '@' + realm;
             } else {
                 this.name = name;
             }

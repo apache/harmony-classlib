@@ -170,6 +170,27 @@ public class KerberosPrincipalTest extends TestCase {
     public static class DefaultRealm_SystemProperty {
         public static void main(String[] av) {
 
+            // case 1: unset 'kdc' and set 'realm'
+            TestUtils.setSystemProperty(KRB5_REALM_SYS_PROP, "some_value");
+            TestUtils.setSystemProperty(KRB5_KDC_SYS_PROP, null);
+            try {
+                new KerberosPrincipal("name");
+                fail("No expected IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+            } finally {
+                TestUtils.setSystemProperty(KRB5_REALM_SYS_PROP, null);
+            }
+
+            // case 2: set 'kdc' and unset 'realm' sys.props
+            TestUtils.setSystemProperty(KRB5_KDC_SYS_PROP, "some_value");
+            try {
+                new KerberosPrincipal("name");
+                fail("No expected IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+            } finally {
+                TestUtils.setSystemProperty(KRB5_KDC_SYS_PROP, null);
+            }
+            
             String testRealm = "This_is_test_realm";
 
             System.setProperty(KRB5_REALM_SYS_PROP, testRealm);

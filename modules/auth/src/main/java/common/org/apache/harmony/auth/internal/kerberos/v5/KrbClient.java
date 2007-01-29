@@ -48,12 +48,21 @@ public class KrbClient {
 
     private static final int BUF_SIZE = 1024;
 
+    private static boolean isInitialized = false;
+    
     private KrbClient() {
         // no objects
     }
 
+    public static synchronized String getRealm() throws KerberosException {
+        if (!isInitialized) {
+            setEnv();
+        }
+        return realm;
+    }
+
     private static void setEnv() throws KerberosException {
-        if (kdc != null && realm != null) {
+        if (isInitialized) {
             return;
         }
 
@@ -64,8 +73,24 @@ public class KrbClient {
             // both properties should be set or unset together
             throw new KerberosException();//FIXME message
         } else if (kdc == null && realm == null) {
+
             // reading config from configuration file 'krb5.conf'
-            throw new KerberosException();//FIXME not yet implemented
+            KrbConfig config = null;
+            try {
+                config = KrbConfig.getSystemConfig();
+            } catch (IOException e) {
+                throw new KerberosException(e.getMessage());
+            }
+
+            if (config == null) {
+                // no config file was found
+                throw new KerberosException();//FIXME err msg
+            }
+            realm = config.getValue("libdefaults", //$NON-NLS-1$
+                    "default_realm"); //$NON-NLS-1$
+            
+            //TODO set KDC
+            return;
         }
 
         int pos = kdc.indexOf(':');
@@ -73,6 +98,8 @@ public class KrbClient {
             port = Integer.parseInt(kdc.substring(pos + 1));
             kdc = kdc.substring(0, pos);
         }
+        
+        isInitialized = true;
     }
 
     /**
