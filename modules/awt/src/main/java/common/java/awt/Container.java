@@ -987,7 +987,13 @@ public class Container extends Component {
     }
 
     private void paintComponentsImpl(Graphics g) {
-        Shape clip = g.getClip();
+        Shape clip;
+        
+        if (g == null) {
+            return;
+        }
+        
+        clip = g.getClip();
 
         for (int i = children.size() - 1; i >= 0; i--) {
             Component comp = children.get(i);

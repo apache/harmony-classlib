@@ -58,6 +58,12 @@ public class ContainerRTest extends TestCase {
         assertTrue(c1.isDisplayable());
         assertTrue(c2.isDisplayable());
     }
+    
+    public final void testPaint() {
+        // Regression test for HARMONY-2527
+        final Component c = new Frame();
+        c.paint(c.getGraphics());
+    }
 
     public void testAddComponent() {
         try {         
