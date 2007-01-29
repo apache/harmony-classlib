@@ -90,6 +90,16 @@ void throw_exception(JNIEnv * env,jvmtiError err){
         }
 }
 
+void cleanup(JNIEnv* env, jvmtiClassDefinition *class_definitions, int filled_class_definitions){
+   PORT_ACCESS_FROM_ENV (env);
+   int i;
+   for(i = 0;i<filled_class_definitions;i++){
+       hymem_free_memory((jbyte *)class_definitions[i].class_bytes);
+   }   
+   hymem_free_memory(class_definitions);
+   return;
+}
+
 /*
  * This file contains native methods implementation for org/apache/harmony/instrument/internal/InstrumentationImpl
  */
@@ -225,25 +235,21 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 		  int class_byte_count; 
 		  jobject obj_ClassDefinition=(*env)->GetObjectArrayElement(env, javaClassDefArr, index); 		  
 		  jbyteArray jclass_bytes;
-		  jboolean copy;
 		  jbyte* class_bytes;
 		  jclass klass=(jclass)(*env)->CallObjectMethod(env, obj_ClassDefinition, method_get_class);
 		  if (NULL == klass){
-		    hymem_free_memory(class_definitions);
+		    cleanup(env, class_definitions, index);
 		  	return;
 		  }
 		  jclass_bytes =(jbyteArray)(*env)->CallObjectMethod(env, obj_ClassDefinition, method_get_data);
-		  copy = JNI_TRUE;
-		  class_bytes = (*env)->GetByteArrayElements(env, jclass_bytes, &copy);
+		  class_byte_count = (*env)->GetArrayLength(env, jclass_bytes);
+		  class_bytes = (jbyte *)hymem_allocate_memory(sizeof(jbyte)*class_byte_count);
 		  if(NULL == class_bytes){
-			hymem_free_memory(class_definitions);
+			cleanup(env, class_definitions, index);
 			return;
 		  }
-		  class_byte_count = (*env)->GetArrayLength(env, jclass_bytes);
-          if(copy == JNI_TRUE){
-		    (*env)->ReleaseByteArrayElements(env,jclass_bytes, class_bytes, JNI_ABORT);
-          }
-	  
+		  (*env)->GetByteArrayRegion(env,jclass_bytes,0,class_byte_count,class_bytes); 		  
+            
 		  //construct a jvmtiClassDefinition element		  
 		  class_definitions[index].klass=klass;
 		  class_definitions[index].class_bytes=class_bytes;
@@ -260,7 +266,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 	      throw_exception(env,err);
 	  }
 	  //free memory
-	  hymem_free_memory(class_definitions);
+	  cleanup(env, class_definitions, length);
 	  return;
 }
 
