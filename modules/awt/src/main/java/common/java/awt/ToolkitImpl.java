@@ -410,7 +410,8 @@ class ToolkitImpl extends Toolkit {
 
     static Image getImage(String filename, Toolkit toolkit) {
         synchronized (imageCache) {
-            Image im = imageCache.get(filename);
+            Image im = (filename == null ? null : imageCache.get(filename));
+
             if (im == null) {
                 try {
                     im = toolkit.createImage(filename);
@@ -418,6 +419,7 @@ class ToolkitImpl extends Toolkit {
                 } catch (Exception e) {
                 }
             }
+
             return im;
         }
     }
