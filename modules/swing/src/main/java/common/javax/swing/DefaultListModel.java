@@ -20,6 +20,8 @@ package javax.swing;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>DefaultListModel</i>
@@ -146,6 +148,9 @@ public class DefaultListModel extends AbstractListModel {
     }
 
     public void removeRange(int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException(Messages.getString("swing.01")); //$NON-NLS-1$
+        }
         for (int i = 0; i < toIndex - fromIndex + 1; i++) {
             internalStorage.remove(fromIndex);
         }

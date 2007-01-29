@@ -430,6 +430,14 @@ public class DefaultListModelTest extends SwingTestCase {
         });
     }
 
+    public void testRemoveRange_1(){
+        try {
+            model.removeRange(0, -1);
+            fail("IllegalArgumentException have to throw");
+        } catch (IllegalArgumentException iae) {
+        }
+    }
+    
     public void testSet() throws Exception {
         model.addElement("1");
         model.addElement("2");
