@@ -28,19 +28,28 @@ static libHandler libX11;
 static libHandler libXmu;
 static libHandler libXtst;
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_init (JNIEnv * env, jclass cls) {
-    LOAD_LIB(libX11, X11);
+    LOAD_LIB_VER(libX11, X11, 6);
     if (libX11 == NULL) {
-        throwNewExceptionByName(env, LINK_EXCEPTION, "Cannot load libX11.so library");
+        LOAD_LIB(libX11, X11);
+    }
+    if (libX11 == NULL) {
+        throwNewExceptionByName(env, LINK_EXCEPTION, "Cannot load libX11 library");
         return;
     }
 
-    LOAD_LIB(libXmu, Xmu);
+    LOAD_LIB_VER(libXmu, Xmu, 6);
     if (libXmu == NULL) {
-        throwNewExceptionByName(env, LINK_EXCEPTION, "Cannot load libXmu.so library");
+        LOAD_LIB(libXmu, Xmu);
+    }
+    if (libXmu == NULL) {
+        throwNewExceptionByName(env, LINK_EXCEPTION, "Cannot load libXmu library");
         return;
     }
 
-    LOAD_LIB(libXtst, Xtst);
+    LOAD_LIB_VER(libXtst, Xtst, 6);
+    if (libXtst == NULL) {
+        LOAD_LIB(libXtst, Xtst);
+    }
     if (libXtst == NULL) {
         throwNewExceptionByName(env, LINK_EXCEPTION, "Cannot load libXtst.so library");
         return;

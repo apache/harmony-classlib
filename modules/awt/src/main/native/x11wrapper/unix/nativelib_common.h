@@ -28,8 +28,8 @@
 
 #define mkstr(x) #x
 
-
 #define LOAD_LIB(res, name) res = dlopen(mkstr(lib##name.so), RTLD_LAZY)
+#define LOAD_LIB_VER(res, name, ver) res = dlopen(mkstr(lib##name.so.##ver), RTLD_LAZY)
 
 #define FindFunction(lib, name) (void *)dlsym(lib, name)
 
