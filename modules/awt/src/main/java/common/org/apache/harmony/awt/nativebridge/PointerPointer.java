@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey V. Kuksenko
- * @version $Revision$
- */
 package org.apache.harmony.awt.nativebridge;
 
 public class PointerPointer extends VoidPointer {
@@ -36,7 +32,7 @@ public class PointerPointer extends VoidPointer {
      * Creates Pointer based on native pointer to pointer
      */
     PointerPointer(long ptrPtr) {
-    super(ptrPtr);
+        super(ptrPtr);
     }
     
     /**
@@ -60,24 +56,24 @@ public class PointerPointer extends VoidPointer {
 
     /** returns the element at the specified position. */
     public VoidPointer get(int index) {
-        long addr = byteBase.getAddress(index);
+        long addr = byteBase.getAddress(index * PP_SIZE_FACTOR);
         return (addr != 0) ? new Int8Pointer(addr) : null;
     }
 
     /** returns the element at the specified position. */
     public long getAddress(int index) {
-        return byteBase.getAddress(index);
+        return byteBase.getAddress(index * PP_SIZE_FACTOR);
     }
 
     /** sets the element at the specified position. */
     public void set(int index, VoidPointer value) {
-        byteBase.setAddress(index, value.lock());
+        byteBase.setAddress(index * PP_SIZE_FACTOR, value.lock());
         value.release();
     }
 
     /** sets the element at the specified position. */
     public void setAddress(int index, long value) {
-        byteBase.setAddress(index, value);
+        byteBase.setAddress(index * PP_SIZE_FACTOR, value);
     }
 
     /**
