@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 
 import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.platform.Platform;
 
 import org.apache.harmony.luni.util.Msg;
 
@@ -48,6 +49,10 @@ public class DatagramSocket {
     private static class Lock {
     }
 
+    static {
+        Platform.getNetworkSystem().oneTimeInitialization(true);
+    }
+    
     private Object lock = new Lock();
 
     /**

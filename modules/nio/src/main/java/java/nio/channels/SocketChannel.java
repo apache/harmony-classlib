@@ -24,6 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
 
+import org.apache.harmony.luni.platform.Platform;
+
 /**
  * A SocketChannel is a selectable channel for part abstraction of stream
  * connecting socket. The <code>socket</code> method of this class can return
@@ -59,6 +61,10 @@ import java.nio.channels.spi.SelectorProvider;
 public abstract class SocketChannel extends AbstractSelectableChannel implements
 		ByteChannel, ScatteringByteChannel, GatheringByteChannel {
 
+    static {
+        Platform.getNetworkSystem().oneTimeInitialization(true);
+    }
+    
 	/**
 	 * Constructor for this class.
 	 * 

@@ -24,6 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
 
+import org.apache.harmony.luni.platform.Platform;
+
 /**
  * A DatagramChannel is a selectable channel for part abstraction of datagram
  * socket. The <code>socket</code> method of this class can return the related
@@ -45,6 +47,10 @@ import java.nio.channels.spi.SelectorProvider;
 public abstract class DatagramChannel extends AbstractSelectableChannel
 		implements ByteChannel, ScatteringByteChannel, GatheringByteChannel {
 
+    static {
+        Platform.getNetworkSystem().oneTimeInitialization(true);
+    }
+    
 	/**
 	 * Constructor for this class.
 	 * 

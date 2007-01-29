@@ -204,4 +204,6 @@ public interface INetworkSystem {
 	public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);
 	
 	public Channel inheritedChannel();
+    
+    public void oneTimeInitialization(boolean jcl_supports_ipv6);
 }

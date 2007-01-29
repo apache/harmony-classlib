@@ -65,15 +65,10 @@ public class Socket {
     static final int TCP_NODELAY = 4;
 
     static final int FLAG_SHUTDOWN = 8;
-
-    // This is used in cache get/set
-    //
-    // private static native void oneTimeInitialization(boolean
-    // jcl_supports_ipv6);
-    //
-    // static {
-    // oneTimeInitialization(true);
-    // }
+   
+    static {
+        Platform.getNetworkSystem().oneTimeInitialization(true);
+    }
 
     /**
      * Construct a connection-oriented Socket. The Socket is created in the

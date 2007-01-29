@@ -44,6 +44,9 @@ final class OSNetworkSystem implements INetworkSystem {
 	private static OSNetworkSystem ref = new OSNetworkSystem();
     
     private static final int INETADDR_REACHABLE = 0;
+    
+    private static boolean isNetworkInited = false;
+    
 
 	// ----------------------------------------------------
 	// Class Constructor
@@ -679,4 +682,14 @@ final class OSNetworkSystem implements INetworkSystem {
 	public Channel inheritedChannel() {
 		return inheritedChannelImpl();
 	}
+    
+    public void oneTimeInitialization(boolean jcl_supports_ipv6){
+        if (!isNetworkInited){
+            oneTimeInitializationImpl(jcl_supports_ipv6);
+        } else {
+            isNetworkInited = true;
+        }
+    }
+    
+    native void oneTimeInitializationImpl (boolean jcl_supports_ipv6);
 }

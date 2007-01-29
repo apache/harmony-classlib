@@ -57,10 +57,8 @@ void
 setDatagramPacketAddress (JNIEnv * env,	jobject	datagramPacket,	
 	jobject	anInetAddress)
 {
-  /*----------------------former cache get/set ----------------------------
-  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_address);
-  */
-  jfieldID fid = getJavaNetDatagramPacketAddress(env);
+  jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_address);
+  //jfieldID fid = getJavaNetDatagramPacketAddress(env);
   (*env)->SetObjectField (env, datagramPacket, fid, anInetAddress);
 }
 
@@ -75,10 +73,8 @@ setDatagramPacketAddress (JNIEnv * env,	jobject	datagramPacket,
 void
 setDatagramPacketPort (JNIEnv *	env, jobject datagramPacket, U_16 hPort)
 {
-  /*----------------------former cache get/set ----------------------------
-  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_port);
-  */
-  jfieldID fid = getJavaNetDatagramPacketPort(env);
+  jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_port);  
+  //jfieldID fid = getJavaNetDatagramPacketPort(env);
   (*env)->SetIntField (env, datagramPacket, fid, hPort);
 }
 
@@ -93,10 +89,8 @@ setDatagramPacketPort (JNIEnv *	env, jobject datagramPacket, U_16 hPort)
 void
 setDatagramPacketLength	(JNIEnv	* env, jobject datagramPacket, I_32 length)
 {
-  /*----------------------former cache get/set ----------------------------
-  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_length);
-  */
-  jfieldID fid = getJavaNetDatagramPacketLength(env);
+  jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_length);
+  //jfieldID fid = getJavaNetDatagramPacketLength(env);
   (*env)->SetIntField (env, datagramPacket, fid, length);
 }
 
@@ -148,16 +142,15 @@ updateAddress (JNIEnv *	env, hysockaddr_t sockaddrP, jobject senderAddress)
   U_32 length;
   U_32 scope_id	= 0;
   hysock_sockaddr_address6 (sockaddrP, (U_8 *) ipv4Addr, &length, &scope_id);
-  /*-------------- Here is the cache get/set,remain for next change  ---------------
-  
-  //(*env)->SetObjectField (env, senderAddress,	
-  //	  JCL_CACHE_GET	(env,
-  //	     FID_java_net_InetAddress_address),	
-  //	  newJavaByteArray (env, ipv4Addr, length));
-  */
-  (*env)->SetObjectField (env, senderAddress,
+  (*env)->SetObjectField (env, senderAddress,	
+  	  JCL_CACHE_GET	(env,
+  	     FID_java_net_InetAddress_address),	
+  	  newJavaByteArray (env, ipv4Addr, length));
+  /* 
+    (*env)->SetObjectField (env, senderAddress,
 	getJavaNetInetAddressIpaddress(env),
 	newJavaByteArray (env, ipv4Addr, length));
+  */
   if (jcl_supports_ipv6	(env) && (scope_id != 0))
     {
       jclass tempClass = getJavaNetInetAddressClass(env);
@@ -216,10 +209,8 @@ getConnectContext(JNIEnv *env,jobject longclass){
 void
 setSocketImplAddress (JNIEnv * env, jobject socketImpl,	jobject	anInetAddress)
 {
-  /*-------------- Here is the cache get/set,remain for next change  ---------------
-  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_address);
-  */
-  jfieldID fid = getJavaNetSocketImplAddress(env);
+  jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_address);  
+  //jfieldID fid = getJavaNetSocketImplAddress(env);
   (*env)->SetObjectField (env, socketImpl, fid,	anInetAddress);	
 }
 
@@ -234,10 +225,8 @@ setSocketImplAddress (JNIEnv * env, jobject socketImpl,	jobject	anInetAddress)
 void
 setSocketImplPort (JNIEnv * env, jobject socketImpl, U_16 hPort)
 {
-  /*----------------------former cache get/set ---------------
-  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_port);
-  */
-  jfieldID fid = getJavaNetSocketImplPort( env);
+  jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_port);  
+  //jfieldID fid = getJavaNetSocketImplPort( env);
   (*env)->SetIntField (env, socketImpl,	fid, hPort);
 }
 
@@ -276,13 +265,11 @@ updateSocket (JNIEnv * env,
   setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
 }
 
-/*----------------------former cache get/set ------------------------------------*/
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationDatagram
  * Signature: (Z)V
  */
- /*
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationDatagram(JNIEnv * env,
 		   jclass clazz,
 		   jboolean
@@ -314,19 +301,18 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_one
     return;
   JCL_CACHE_SET	(env, FID_java_net_DatagramPacket_port,	fid);
 }
-*/
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    oneTimeInitializationSocket
+ * Method:    oneTimeInitializationImpl
  * Signature: (Z)V
  */
- /*
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationSocket(JNIEnv	* env, jclass clazz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationImpl(JNIEnv	* env, jclass clazz,
 	    jboolean jcl_supports_ipv6)	
 {
   jfieldID fid;	
   jclass lookupClass;
-  //netInitializeIDCaches (env,	jcl_supports_ipv6);
+  netInitializeIDCaches (env,	jcl_supports_ipv6);
 
   lookupClass =	(*env)->FindClass (env,	"java/net/SocketImpl");	
   if (!lookupClass)
@@ -335,14 +321,34 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_one
   fid =	(*env)->GetFieldID (env, lookupClass, "address", "Ljava/net/InetAddress;");
   if (!fid)
     return;
-  //JCL_CACHE_SET (env,	FID_java_net_SocketImpl_address, fid);
+  JCL_CACHE_SET (env,	FID_java_net_SocketImpl_address, fid);
 
   fid =	(*env)->GetFieldID (env, lookupClass, "port", "I");
   if (!fid)
     return;
-  //JCL_CACHE_SET (env,	FID_java_net_SocketImpl_port, fid);
+  JCL_CACHE_SET (env,	FID_java_net_SocketImpl_port, fid);
+  
+    lookupClass =	(*env)->FindClass (env,	"java/net/DatagramPacket");
+  if (!lookupClass)
+    return;
+
+  fid =	
+    (*env)->GetFieldID (env, lookupClass, "address",
+      "Ljava/net/InetAddress;");
+  if (!fid)
+    return;
+  JCL_CACHE_SET	(env, FID_java_net_DatagramPacket_address, fid);
+
+  fid =	(*env)->GetFieldID (env, lookupClass, "length",	"I");
+  if (!fid)
+    return;
+  JCL_CACHE_SET	(env, FID_java_net_DatagramPacket_length, fid);	
+
+  fid =	(*env)->GetFieldID (env, lookupClass, "port", "I");
+  if (!fid)
+    return;
+  JCL_CACHE_SET	(env, FID_java_net_DatagramPacket_port,	fid);
 }
-*/
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -548,7 +554,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
 	socketP	=getJavaIoFileDescriptorContentsAsAPointer (env, afd);
 	if (!hysock_socketIsValid (socketP))
     	{
-                // return silently, leave validation in real I/O operation
+            // return silently, leave validation in real I/O operation
       		return ;
     	}
 	result = hysock_set_nonblocking(socketP,nonblocking);
