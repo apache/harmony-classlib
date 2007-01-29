@@ -126,10 +126,13 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			t = new Timer();
 			testTask = new TimerTestTask();
 			t.schedule(testTask, 50);
-			try {
-				Thread.sleep(150);
-			} catch (InterruptedException e) {
-			}
+            while (testTask.wasRun <= 0) {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                }
+            }
+            
 			assertTrue(
 					"TimerTask.cancel() should return false if task has run",
 					!testTask.cancel());
@@ -294,13 +297,12 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			t = new Timer();
 			testTask = new TimerTestTask();
 			t.schedule(testTask, 50, 50);
+            
+            while(testTask.wasRun() <= 4)
 			try {
 				Thread.sleep(400);
 			} catch (InterruptedException e) {
-			}
-			assertTrue(
-					"TimerTask.run() method should have been called at least 4 times",
-					testTask.wasRun() >= 4);
+			}			
 			t.cancel();
 		} finally {
 			if (t != null)
