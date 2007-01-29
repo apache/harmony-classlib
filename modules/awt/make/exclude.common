@@ -39,5 +39,6 @@ java/awt/event/WindowEventTest.java
 java/awt/font/LineBreakMeasurerTest.java
 java/awt/font/TextLayoutTest.java
 java/awt/font/TextMeasurerTest.java
+java/awt/image/RasterTest.java
 org/apache/harmony/awt/gl/MultiRectAreaLineCashTest.java
 org/apache/harmony/awt/gl/MultiRectAreaRectCashTest.java
