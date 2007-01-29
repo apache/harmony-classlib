@@ -31,6 +31,8 @@ import java.awt.image.SampleModel;
 import java.util.Arrays;
 import java.util.Random;
 
+import javax.swing.JSplitPane;
+
 import junit.framework.TestCase;
 
 public class MultiPixelPackedSampleModelTest extends TestCase {
@@ -1755,6 +1757,25 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
 
             }
         }
+        
+        // Regression for HARMONY-2779
+        try {
+            new MultiPixelPackedSampleModel(0, 52, 4, 8).setDataElements(6, 2,
+                    (Object) null, new DataBufferFloat(4, 1));
+            fail("ArrayIndexOutOfBoundsException was not thrown"); //$NON-NLS-1$
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // expected
+        }
+        
+        // Regression for HARMONY-2779
+        try {
+            new MultiPixelPackedSampleModel(0, 14907, 18936, 2)
+                    .setDataElements(14, 14, new JSplitPane(),
+                            (DataBuffer) null);
+            fail("NullPointerException was not thrown"); //$NON-NLS-1$
+        } catch (NullPointerException  ex) {
+            // expected
+        }
     }
 
     public final void testSetPixel() {
@@ -2731,4 +2752,6 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
             int bank) {
         return createPixelsFromIntData(x, y, width, height);
     }
+    
+    
 }

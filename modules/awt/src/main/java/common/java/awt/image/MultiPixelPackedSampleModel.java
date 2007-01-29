@@ -126,17 +126,28 @@ public class MultiPixelPackedSampleModel extends SampleModel {
             // awt.63=Coordinates are not in bounds
             throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
+        
+        int bitnum = dataBitOffset + x * pixelBitStride;
+        int idx = y * scanlineStride + bitnum / dataElementSize;
+        int elem = data.getElem(idx);
+        int shift = dataElementSize - (bitnum & (dataElementSize - 1)) -
+                pixelBitStride;
+        int mask = ~(bitMask << shift);
+        elem &= mask;
+        
         switch (getTransferType()) {
         case DataBuffer.TYPE_BYTE:
-            setSample(x, y, 0, ((byte[]) obj)[0] & 0xff, data);
+            elem |= (((byte[]) obj)[0] & 0xff & bitMask) << shift;
             break;
         case DataBuffer.TYPE_USHORT:
-            setSample(x, y, 0, ((short[]) obj)[0] & 0xffff, data);
+            elem |= (((short[]) obj)[0] & 0xffff & bitMask) << shift;
             break;
         case DataBuffer.TYPE_INT:
-            setSample(x, y, 0, ((int[]) obj)[0], data);
+            elem |= (((int[]) obj)[0] & bitMask) << shift;
             break;
         }
+        
+        data.setElem(idx, elem);
     }
 
     @Override
