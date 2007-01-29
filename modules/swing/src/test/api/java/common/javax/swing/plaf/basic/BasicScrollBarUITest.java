@@ -55,6 +55,30 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         super.tearDown();
     }
 
+    /**
+     * Auxiliary class for testGetTrackThumbNewUI()
+     */
+    private static class BasicScrollBarUIForTest extends BasicScrollBarUI {
+        @Override
+        public Rectangle getTrackBounds() {
+            return super.getTrackBounds();
+        }
+
+        @Override
+        public Rectangle getThumbBounds() {
+            return super.getThumbBounds();
+        }
+    }
+
+    /**
+     * Regression test for HARMONY-2854
+     */
+    public void testGetTrackThumbNewUI() {
+        BasicScrollBarUIForTest sbr = new BasicScrollBarUIForTest();
+        assertNull(sbr.getTrackBounds());
+        assertNull(sbr.getThumbBounds());
+    }
+    
     public void testSetThumbBounds() throws Exception {
         Rectangle bounds = barUI.getThumbBounds();
         barUI.setThumbBounds(2, 3, 4, 5);
