@@ -145,7 +145,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
         s.defaultReadObject();
 
-        PrincipalName principalName = (PrincipalName) PrincipalName.ASN1.decode((byte[]) s
+        PrincipalName principalName = PrincipalName.instanceOf((byte[]) s
                 .readObject());
         realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s.readObject());
 
@@ -189,10 +189,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
             }
         }
 
-        byte[] enc = PrincipalName.ASN1.encode(new PrincipalName(type, nameString));
-        s.writeObject(enc);
-
-        enc = ASN1StringType.GENERALSTRING.encode(realm);
-        s.writeObject(enc);
+        s.writeObject(new PrincipalName(type, nameString).getEncoded());
+        s.writeObject(ASN1StringType.GENERALSTRING.encode(realm));
     }
 }

@@ -72,6 +72,10 @@ public class PrincipalName {
         return name;
     }
 
+    public byte[] getEncoded() {
+        return ASN1.encode(this);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -87,6 +91,10 @@ public class PrincipalName {
         return type == that.type && Arrays.equals(that.name, name);
     }
 
+    public static PrincipalName instanceOf(byte[] enc) throws IOException {
+        return (PrincipalName) ASN1.decode(enc);
+    }
+    
     @Override
     public int hashCode() {
         return type + Arrays.hashCode(name);
@@ -107,11 +115,11 @@ public class PrincipalName {
         return buf.toString();
     }
 
-    /**
-     * PrincipalName ::= SEQUENCE { name-type [0] Int32, name-string [1]
-     * SEQUENCE OF KerberosString }
-     */
-    public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
+    // PrincipalName ::= SEQUENCE {
+    //     name-type   [0] Int32,
+    //     name-string [1] SEQUENCE OF KerberosString
+    // }
+    static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()),
             new ASN1Explicit(1, new ASN1SequenceOf(ASN1StringType.GENERALSTRING)), }) {
 
