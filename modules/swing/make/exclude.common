@@ -71,7 +71,6 @@ javax/swing/plaf/basic/BasicTableUITest.java
 javax/swing/plaf/basic/BasicTextAreaUITest.java
 javax/swing/plaf/basic/BasicTextFieldUITest.java
 javax/swing/plaf/basic/BasicTextPaneUITest.java
-javax/swing/plaf/basic/BasicTextUITest.java
 javax/swing/plaf/basic/BasicToolBarUI$DragWindowTest.java
 javax/swing/plaf/basic/BasicToolBarUITest.java
 javax/swing/plaf/basic/BasicTreeUITest.java

@@ -436,6 +436,9 @@ public class BasicTextUITest extends SwingTestCase {
         tmp = findAndRemoveSubstring(tmp, "uninstallKeyboardActions::");
         tmp = findAndRemoveSubstring(tmp, "uninstallListeners::");
         assertEquals("", tmp);
+
+        // regression for HARMONY-2521          
+        new javax.swing.JTextPane().updateUI();            
     }
 
     public void testInstallUI() throws Exception {

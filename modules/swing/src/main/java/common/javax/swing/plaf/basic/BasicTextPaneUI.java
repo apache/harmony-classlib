@@ -46,8 +46,12 @@ public class BasicTextPaneUI extends BasicEditorPaneUI implements ViewFactory {
 
         final String propName = e.getPropertyName();
 
+        if (e.getNewValue() == null) {
+            return;
+        }
+
         if (StringConstants.FONT_PROPERTY_CHANGED.equals(propName)) {
-            updateFontAttributes(getDefaultStyle(e), (Font)e.getNewValue());
+            updateFontAttributes(getDefaultStyle(e), (Font) e.getNewValue());
         } else if (StringConstants.FOREGROUND_PROPERTY_CHANGED.equals(propName)) {
             getDefaultStyle(e).addAttribute(StyleConstants.Foreground,
                                             e.getNewValue());
@@ -55,8 +59,9 @@ public class BasicTextPaneUI extends BasicEditorPaneUI implements ViewFactory {
             setDefaultStyle(e);
         }
     }
+
     private Style getDefaultStyle(final EventObject e) {
-        return ((JTextPane)e.getSource()).getStyledDocument()
+        return ((JTextPane) e.getSource()).getStyledDocument()
                .getStyle(StyleContext.DEFAULT_STYLE);
     }
 
