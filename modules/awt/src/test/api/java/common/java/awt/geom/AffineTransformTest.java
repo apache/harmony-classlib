@@ -615,7 +615,7 @@ public class AffineTransformTest extends GeomTestCase {
         }
     }
 
-    public void testTransform1() {
+    public void testTransformPoint() {
         for (float[][] element : points) {
             AffineTransform at = new AffineTransform(element[0]);
             for(int j = 1; j < element.length; j++) {
@@ -684,7 +684,7 @@ public class AffineTransformTest extends GeomTestCase {
         }        
     }
     
-    public void testTransform3() {
+    public void testTransformArray2() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         double[] src = new double[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
         double[] dst = new double[6];
@@ -692,8 +692,8 @@ public class AffineTransformTest extends GeomTestCase {
         at.transform(src, 4, dst, 2, 2);
         assertEquals(expected, dst, 6, 0.0);
     }
-
-    public void testTransform4() {
+    
+    public void testTransformArray3() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         float[] src = new float[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
         float[] dst = new float[6];
@@ -702,7 +702,7 @@ public class AffineTransformTest extends GeomTestCase {
         assertEquals(expected, dst, 6, 0.0f);
     }
 
-    public void testTransform5() {
+    public void testTransformArray4() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         float[] src = new float[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
         double[] dst = new double[6];
@@ -711,13 +711,31 @@ public class AffineTransformTest extends GeomTestCase {
         assertEquals(expected, dst, 6, 0.0);
     }
 
-    public void testTransform6() {
+    public void testTransformArray5() {
         AffineTransform at = new AffineTransform(0, 1, -2, 0, 3, 4);
         double[] src = new double[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
         float[] dst = new float[6];
         float[] expected = new float[]{0, 0, 3, 4, 1, 5};
         at.transform(src, 4, dst, 2, 2);
         assertEquals(expected, dst, 6, 0.0f);
+    }
+    
+    public void testTransformArrayOverlap1() {
+        // Regresion test HARMONY-1603
+        AffineTransform at = AffineTransform.getTranslateInstance(2, 3);
+        float[] src = new float[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+        float[] expected = new float[]{1, 2, 3, 4, 3, 5, 5, 7, 7, 9, 9, 11, 13, 14};
+        at.transform(src, 0, src, 4, 4);
+        assertEquals(expected, src, src.length, 0);
+    }
+
+    public void testTransformArrayOverlap2() {
+        // Regresion test HARMONY-1603
+        AffineTransform at = AffineTransform.getTranslateInstance(2, 3);
+        double[] src = new double[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+        double[] expected = new double[]{1, 2, 3, 4, 3, 5, 5, 7, 7, 9, 9, 11, 13, 14};
+        at.transform(src, 0, src, 4, 4);
+        assertEquals(expected, src, src.length, 0);
     }
 
     public void testDeltaTransform1() {

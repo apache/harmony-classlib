@@ -22,6 +22,7 @@ package java.awt.geom;
 
 import java.awt.SerializeTestCase;
 import java.awt.Tools;
+import java.util.Arrays;
 
 public class GeomTestCase extends SerializeTestCase {
 
@@ -142,7 +143,9 @@ public class GeomTestCase extends SerializeTestCase {
             fail(concat(msg, "Wrong array length " + a2.length + ", needed at least " + length));
         }
         for(int i = 0; i < length; i++) {
-            assertEquals(concat(msg, "Element " + i), a1[i], a2[i], delta);
+            if (a1[i] != a2[i]) {
+                fail(msg, Arrays.toString(a1), Arrays.toString(a2));
+            }
         }
     }
 
@@ -158,7 +161,9 @@ public class GeomTestCase extends SerializeTestCase {
             fail(concat(msg, "Wrong array length " + a2.length + ", needed at least " + length));
         }
         for(int i = 0; i < length; i++) {
-            assertEquals(concat(msg, "Element " + i), a1[i], a2[i], delta);
+            if (a1[i] != a2[i]) {
+                fail(msg, Arrays.toString(a1), Arrays.toString(a2));
+            }
         }
     }
 
@@ -174,7 +179,9 @@ public class GeomTestCase extends SerializeTestCase {
             fail(concat(msg, "Wrong array length " + a2.length + ", needed at least " + length));
         }
         for(int i = 0; i < length; i++) {
-            assertEquals(concat(msg, "Element " + i), a1[i], a2[i]);
+            if (a1[i] != a2[i]) {
+                fail(msg, Arrays.toString(a1), Arrays.toString(a2));
+            }
         }
     }
 

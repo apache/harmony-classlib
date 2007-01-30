@@ -439,24 +439,40 @@ public class AffineTransform implements Cloneable, Serializable {
         }
     }
     
-    public void transform(double[] src, int srcOff, double[] dst, int dstOff, int length) {
+     public void transform(double[] src, int srcOff, double[] dst, int dstOff, int length) {
+        int step = 2;
+        if (src == dst && srcOff < dstOff && dstOff < srcOff + length * 2) {
+            srcOff = srcOff + length * 2 - 2;
+            dstOff = dstOff + length * 2 - 2;
+            step = -2;
+        }
         while (--length >= 0) {
-            double x = src[srcOff++];
-            double y = src[srcOff++];
-            dst[dstOff++] = x * m00 + y * m01 + m02;
-            dst[dstOff++] = x * m10 + y * m11 + m12;
+            double x = src[srcOff + 0];
+            double y = src[srcOff + 1];
+            dst[dstOff + 0] = x * m00 + y * m01 + m02;
+            dst[dstOff + 1] = x * m10 + y * m11 + m12;
+            srcOff += step;
+            dstOff += step;
         }
     }
 
     public void transform(float[] src, int srcOff, float[] dst, int dstOff, int length) {
+        int step = 2;
+        if (src == dst && srcOff < dstOff && dstOff < srcOff + length * 2) {
+            srcOff = srcOff + length * 2 - 2;
+            dstOff = dstOff + length * 2 - 2;
+            step = -2;
+        }
         while (--length >= 0) {
-            float x = src[srcOff++];
-            float y = src[srcOff++];
-            dst[dstOff++] = (float)(x * m00 + y * m01 + m02);
-            dst[dstOff++] = (float)(x * m10 + y * m11 + m12);
+            float x = src[srcOff + 0];
+            float y = src[srcOff + 1];
+            dst[dstOff + 0] = (float)(x * m00 + y * m01 + m02);
+            dst[dstOff + 1] = (float)(x * m10 + y * m11 + m12);
+            srcOff += step;
+            dstOff += step;
         }
     }
-
+    
     public void transform(float[] src, int srcOff, double[] dst, int dstOff, int length) {
         while (--length >= 0) {
             float x = src[srcOff++];
