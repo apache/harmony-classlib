@@ -240,7 +240,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
+        if ((x < 0) || (y < 0) || ((long) x + (long) w > this.width)
+                || ((long) y + (long) h > this.height)) {
             // awt.63=Coordinates are not in bounds
             throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
@@ -268,9 +269,11 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public void setPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
+        if ((x < 0) || (y < 0) || ((long) x + (long) w > this.width)
+                || ((long) y + (long) h > this.height)) {
             // awt.63=Coordinates are not in bounds
-            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages
+                    .getString("awt.63")); //$NON-NLS-1$
         }
 
         int idx = 0;
@@ -299,9 +302,11 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public int[] getSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
+        if ((x < 0) || (y < 0) || ((long) x + (long) w > this.width)
+                || ((long) y + (long) h > this.height)) {
             // awt.63=Coordinates are not in bounds
-            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages
+                    .getString("awt.63")); //$NON-NLS-1$
         }
 
         int samples[];
@@ -325,7 +330,8 @@ public class SinglePixelPackedSampleModel extends SampleModel {
     @Override
     public void setSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
+        if ((x < 0) || (y < 0) || ((long) x + (long) w > this.width)
+                || ((long) y + (long) h > this.height)) {
             // awt.63=Coordinates are not in bounds
             throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }

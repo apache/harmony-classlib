@@ -840,6 +840,15 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
             assertTrue(Arrays.equals(rsamples, tsamples));
         }
 
+        // Regression for HARMONY-2431
+        try {
+            new SinglePixelPackedSampleModel(3, 216, 1, new int[851])
+                    .getSamples(6, 7, 14, Integer.MAX_VALUE, 0, new int[] { 0,
+                            0, 0 }, new DataBufferDouble(7, 5));
+            fail("ArrayIndexOutOfBoundsException was not thrown"); //$NON-NLS-1$
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // expected
+        }
     }
 
     public final void testGetDataElements(){
@@ -1426,6 +1435,16 @@ public class SinglePixelPackedSampleModelTest extends TestCase {
             for(int x = 0; x < w; x++){
                 assertEquals(idata[y * sppsmi2.getScanlineStride() + x], intTestData[idx++]);
             }
+        }
+        
+        // Regression for HARMONY-2431
+        try {
+            new SinglePixelPackedSampleModel(1, 127, 3, 0, new int[970])
+                    .setPixels(Integer.MAX_VALUE, 1, 13, 1, new int[] {},
+                            new DataBufferDouble(7, 5));
+            fail("ArrayIndexOutOfBoundsException was not thrown"); //$NON-NLS-1$
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // expected
         }
     }
 
