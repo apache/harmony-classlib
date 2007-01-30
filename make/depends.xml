@@ -34,7 +34,8 @@
     <target name="-check">
         <check-one-file src="${yoko.url}" dest="${yoko.jar}" />
         <check-one-file src="${yoko-core.url}" dest="${yoko-core.jar}" />
-        <check-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}" />
+        <check-one-file src="${yoko-rmi-impl.url}" dest="${yoko-rmi-impl.jar}" />
+        <check-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}" />
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
         <check-one-file src="${resolver.url}" dest="${resolver.jar}" />
@@ -218,9 +219,13 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${yoko-core.url}" dest="${yoko-core.jar}"
                            md5="${yoko-core.md5}" />
 
-    <mkdir dir="${yoko-rmi.dir}" />
-    <download-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}"
-                           md5="${yoko-rmi.md5}" />
+    <mkdir dir="${yoko-rmi-impl.dir}" />
+    <download-one-file src="${yoko-rmi-impl.url}" dest="${yoko-rmi-impl.jar}"
+                           md5="${yoko-rmi-impl.md5}" />
+
+    <mkdir dir="${yoko-rmi-spec.dir}" />
+    <download-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}"
+                           md5="${yoko-rmi-spec.md5}" />
 
     <mkdir dir="${bcel.dir}" />
     <download-one-file src="${bcel.url}" dest="${bcel.jar}"

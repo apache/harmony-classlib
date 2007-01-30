@@ -215,9 +215,10 @@ ${built.files.list}
                 <patternset includes="mx4j_3.0.1/*.jar" />
                 <patternset includes="xalan-j_2.7.0/*.jar" />
                 <patternset includes="xerces_2.8.0/*.jar" />
-                <patternset includes="yoko_M1-20061027/yoko-rmi.jar" />
-                <patternset includes="yoko_M2-20061115/yoko.jar" />
-                <patternset includes="yoko_M2-20061115/yoko-core.jar" />
+                <patternset includes="yoko_M2-20070130/yoko-rmi-spec.jar" />
+                <patternset includes="yoko_M2-20070130/yoko-rmi-impl.jar" />
+                <patternset includes="yoko_M2-20070130/yoko.jar" />
+                <patternset includes="yoko_M2-20070130/yoko-core.jar" />
             </fileset>
             <fileset dir="${depends.manifests}"/>
         </copy>
