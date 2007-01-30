@@ -74,4 +74,12 @@ public class ContainerRTest extends TestCase {
             // PASSED            
         }
     }
+
+    // regression for HARMONY-2443
+    public void testPaintComponentsImpl() {
+        ScrollPane scp = new ScrollPane();
+
+        scp.printComponents((Graphics) null);
+    }
+
 }
