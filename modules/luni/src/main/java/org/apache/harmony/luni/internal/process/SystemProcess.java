@@ -17,6 +17,8 @@
 
 package org.apache.harmony.luni.internal.process;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,9 +91,9 @@ public class SystemProcess extends Process {
                     return;
                 }
                 p.handle = procVals[0];
-                p.in = new ProcessOutputStream(procVals[1]);
-                p.out = new ProcessInputStream(procVals[2]);
-                p.err = new ProcessInputStream(procVals[3]);
+                p.in = new BufferedOutputStream(new ProcessOutputStream(procVals[1]));
+                p.out = new BufferedInputStream(new ProcessInputStream(procVals[2]));
+                p.err = new BufferedInputStream(new ProcessInputStream(procVals[3]));
 
                 synchronized (p.lock) {
                     p.waiterStarted = true;
