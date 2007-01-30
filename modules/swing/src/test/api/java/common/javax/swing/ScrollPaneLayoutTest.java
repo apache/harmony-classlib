@@ -98,6 +98,13 @@ public class ScrollPaneLayoutTest extends SwingTestCase {
         layout.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         assertEquals(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER, layout
                 .getHorizontalScrollBarPolicy());
+        // regression 1 for HARMONY-1737
+        try{
+            layout.setHorizontalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            fail("No expected IllegalArgumentException");
+        }catch(IllegalArgumentException e){
+         //expected 
+        }
     }
 
     public void testSetVerticalPolicy() throws Exception {
@@ -110,6 +117,13 @@ public class ScrollPaneLayoutTest extends SwingTestCase {
         layout.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         assertEquals(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, layout
                 .getVerticalScrollBarPolicy());
+        // regression 2 for HARMONY-1737
+        try{
+            layout.setVerticalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            fail("No expected IllegalArgumentException");
+        }catch(IllegalArgumentException e){
+        //expected 
+        } 
     }
 
     public void testGetViewport() throws Exception {

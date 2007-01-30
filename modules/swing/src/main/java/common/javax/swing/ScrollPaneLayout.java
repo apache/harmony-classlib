@@ -30,6 +30,7 @@ import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
 public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPaneConstants {
@@ -119,6 +120,13 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
     }
 
     public void setVerticalScrollBarPolicy(final int x) {
+        boolean isVertical = ((x == ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED)
+                | (x == ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS) 
+                | (x == ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER));
+        if (!isVertical) {
+            throw new IllegalArgumentException(
+                    "invalid verticalScrollBarPolicy");
+        }
         vsbPolicy = x;
     }
 
@@ -127,6 +135,13 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
     }
 
     public void setHorizontalScrollBarPolicy(final int x) {
+        boolean isHorisontal = ((x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED)
+                | (x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) 
+                | (x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS));
+        if (!isHorisontal) {
+            throw new IllegalArgumentException(
+                    "invalid horizontalScrollBarPolicy");
+        }
         hsbPolicy = x;
     }
 
