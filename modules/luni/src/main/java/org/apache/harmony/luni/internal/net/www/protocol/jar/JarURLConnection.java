@@ -188,6 +188,11 @@ public class JarURLConnection extends java.net.JarURLConnection {
         URL jarFileURL = getJarFileURL();
         if (jarFileURL.getProtocol().equals("file")) { //$NON-NLS-1$
             String fileName = jarFileURL.getFile();
+            if(!new File(Util.decode(fileName,false)).exists()){
+                // KA026=JAR entry {0} not found in {1}
+                throw new FileNotFoundException(Msg.getString("KA026", //$NON-NLS-1$
+                        getEntryName(), fileName));
+            }
             String host = jarFileURL.getHost();
             if (host != null && host.length() > 0) {
                 fileName = "//" + host + fileName; //$NON-NLS-1$

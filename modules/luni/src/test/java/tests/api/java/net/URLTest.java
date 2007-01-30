@@ -35,6 +35,7 @@ import java.net.URLStreamHandlerFactory;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
 
@@ -831,9 +832,23 @@ public class URLTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws MalformedURLException 
 	 * @tests java.net.URL#openStream()
 	 */
-	public void test_openStream() {
+	public void test_openStream() throws MalformedURLException {
+        // Regression test for Harmony-1700
+        URL BASE = URLTest.class.getClassLoader().getResource(
+                URLTest.class.getPackage().getName().replace('.',
+                        File.separatorChar)
+                        + "/hello.jar");
+        URL url = new URL("jar:" + BASE + "!/foo.jar!/Bugs/HelloWorld.class");
+        try {
+            url.openStream();
+            fail("should throw FNFE.");
+        } catch (Exception e){
+            assertEquals("java.io.FileNotFoundException", e.getClass().getName());
+        }
+        
 		// Test for method java.io.InputStream java.net.URL.openStream()
 		File resources = Support_Resources.createTempFolder();
 		try {

@@ -143,7 +143,7 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         out.closeEntry();
         out.close();
 
-        JarURLConnection conn = (JarURLConnection) new URL("jar:file:/"
+        JarURLConnection conn = (JarURLConnection) new URL("jar:file://"
                 + jarFile.getAbsolutePath().replaceAll(" ", "%20") + "!/")
                 .openConnection();
         conn.getJarFile().entries();
