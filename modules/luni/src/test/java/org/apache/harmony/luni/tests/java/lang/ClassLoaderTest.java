@@ -53,6 +53,106 @@ public class ClassLoaderTest extends TestCase {
             Policy.setPolicy(back);
         }
     }
+    
+    static class SyncTestClassLoader extends ClassLoader {
+        Object lock;
+        volatile int numFindClassCalled;
+        
+        SyncTestClassLoader(Object o) {
+            this.lock = o;
+            numFindClassCalled = 0;
+        }
+
+        /*
+         * Byte array of bytecode equivalent to the following source code:
+         * public class TestClass {
+         * }
+         */
+        private byte[] classData = new byte[] {
+            -54, -2, -70, -66, 0, 0, 0, 49, 0, 13,
+            10, 0, 3, 0, 10, 7, 0, 11, 7, 0,
+            12, 1, 0, 6, 60, 105, 110, 105, 116, 62,
+            1, 0, 3, 40, 41, 86, 1, 0, 4, 67,
+            111, 100, 101, 1, 0, 15, 76, 105, 110, 101,
+            78, 117, 109, 98, 101, 114, 84, 97, 98, 108,
+            101, 1, 0, 10, 83, 111, 117, 114, 99, 101,
+            70, 105, 108, 101, 1, 0, 14, 84, 101, 115,
+            116, 67, 108, 97, 115, 115, 46, 106, 97, 118,
+            97, 12, 0, 4, 0, 5, 1, 0, 9, 84,
+            101, 115, 116, 67, 108, 97, 115, 115, 1, 0,
+            16, 106, 97, 118, 97, 47, 108, 97, 110, 103,
+            47, 79, 98, 106, 101, 99, 116, 0, 33, 0,
+            2, 0, 3, 0, 0, 0, 0, 0, 1, 0,
+            1, 0, 4, 0, 5, 0, 1, 0, 6, 0,
+            0, 0, 29, 0, 1, 0, 1, 0, 0, 0,
+            5, 42, -73, 0, 1, -79, 0, 0, 0, 1,
+            0, 7, 0, 0, 0, 6, 0, 1, 0, 0,
+            0, 1, 0, 1, 0, 8, 0, 0, 0, 2,
+            0, 9 };
+
+        protected Class findClass(String name) throws ClassNotFoundException {
+            try {
+                synchronized (lock) {
+                    lock.wait();
+                }
+            } catch (InterruptedException ie) {}
+
+            if (name.equals("TestClass")) {
+                numFindClassCalled++;
+                return defineClass(null, classData, 0, classData.length);
+            } else {
+                throw new ClassNotFoundException("Class " + name + " not found.");
+            }
+        }
+    }
+    
+    static class SyncLoadTestThread extends Thread {
+        volatile boolean started;
+        ClassLoader cl;
+        Class cls;
+        
+        SyncLoadTestThread(ClassLoader cl) {
+            this.cl = cl;
+        }
+        
+        public void run() {
+            try {
+                started = true;
+                cls = Class.forName("TestClass", false, cl);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * Regression test for HARMONY-1939:
+     * 2 threads simultaneously run Class.forName() method for the same classname 
+     * and the same classloader. It is expected that both threads succeed but
+     * class must be defined just once.  
+     */
+    public void test_loadClass_concurrentLoad() throws Exception 
+    {    
+        Object lock = new Object();
+        SyncTestClassLoader cl = new SyncTestClassLoader(lock);
+        SyncLoadTestThread tt1 = new SyncLoadTestThread(cl);
+        SyncLoadTestThread tt2 = new SyncLoadTestThread(cl);
+        tt1.start();
+        tt2.start();
+
+        while (!tt1.started && !tt2.started) {
+            Thread.sleep(100);
+        }
+
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+        tt1.join();
+        tt2.join();
+        
+        assertSame("Bad or redefined class", tt1.cls, tt2.cls);
+        assertEquals("Both threads tried to define class", 1, cl.numFindClassCalled);
+    }
 
     /**
      * @tests java.lang.ClassLoader#getResource(java.lang.String)
