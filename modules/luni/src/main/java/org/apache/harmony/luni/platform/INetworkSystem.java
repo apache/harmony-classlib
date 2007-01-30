@@ -67,9 +67,15 @@ public interface INetworkSystem {
 
 	public int read(FileDescriptor aFD, byte[] data, int offset, int count,
 			int timeout) throws IOException;
+    
+    public int readDirect(FileDescriptor aFD, long address, int offset, int count,
+            int timeout) throws IOException;
 
 	public int write(FileDescriptor fd, byte[] data, int offset, int count)
 			throws IOException;
+    
+    public int writeDirect(FileDescriptor fd, long address, int offset, int count)
+            throws IOException;
 
 	public void setNonBlocking(FileDescriptor aFD, boolean block)
 			throws IOException;
@@ -84,20 +90,34 @@ public interface INetworkSystem {
 	public int sendDatagram(FileDescriptor fd, byte[] data, int offset,
 			int length, int port, boolean bindToDevice, int trafficClass,
 			InetAddress inetAddress) throws IOException;
+    
+    public int sendDatagramDirect(FileDescriptor fd, long address, int offset,
+            int length, int port, boolean bindToDevice, int trafficClass,
+            InetAddress inetAddress) throws IOException;
 
 	public int receiveDatagram(FileDescriptor aFD, DatagramPacket packet,
 			byte[] data, int offset, int length, int receiveTimeout,
 			boolean peek) throws IOException;
+    
+    public int receiveDatagramDirect(FileDescriptor aFD, long address, int offset,
+            int length, int receiveTimeout, boolean peek) throws IOException;
 
 	public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
 			byte[] data, int offset, int length, int receiveTimeout,
 			boolean peek) throws IOException;
-
+    
+    public int recvConnectedDatagramDirect(FileDescriptor aFD, long address,
+            int offset, int length, int receiveTimeout, boolean peek)
+            throws IOException;
+    
 	public int peekDatagram(FileDescriptor aFD, InetAddress sender,
 			int receiveTimeout) throws IOException;
 
 	public int sendConnectedDatagram(FileDescriptor fd, byte[] data,
 			int offset, int length, boolean bindToDevice) throws IOException;
+    
+    public int sendConnectedDatagramDirect(FileDescriptor fd, long address,
+            int offset, int length, boolean bindToDevice) throws IOException;
 
 	public void disconnectDatagram(FileDescriptor aFD) throws SocketException;
 

@@ -47,8 +47,8 @@ import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
+import org.apache.harmony.nio.AddressUtil;
 import org.apache.harmony.nio.internal.nls.Messages;
-
 
 /*
  * 
@@ -123,12 +123,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // whether the socket is bound
     boolean isBound = false;
 
-    // lock for read and write
-    private class ReadLock {}
-    private final Object readLock = new ReadLock();
+    private final Object readLock = new Object();
 
-    private class WriteLock {}
-    private final Object writeLock = new WriteLock();
+    private final Object writeLock = new Object();
 
     // this content is a point used to set in connect_withtimeout() in pending
     // mode
@@ -157,13 +154,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * for native call
      */
-    private SocketChannelImpl() throws IOException {
-		super(SelectorProvider.provider());
-		fd = new FileDescriptor();
-		connectAddress = new InetSocketAddress(0);
-		status = SOCKET_STATUS_CONNECTED;
-	}
-    
+    private SocketChannelImpl(){
+        super(SelectorProvider.provider());
+        fd = new FileDescriptor();
+        connectAddress = new InetSocketAddress(0);
+        status = SOCKET_STATUS_CONNECTED;
+    }
+
     // Keep this to see if need next version
     // SocketChannelImpl(SelectorProvider selectorProvider, FileDescriptor fd,
     // SocketImpl si) {
@@ -192,6 +189,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      * Getting the internal Socket If we have not the socket, we create a new
      * one.
      */
+    @Override
     synchronized public Socket socket() {
         if (null == socket) {
             try {
@@ -217,6 +215,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.SocketChannel#isConnected()
      */
+    @Override
     synchronized public boolean isConnected() {
         return status == SOCKET_STATUS_CONNECTED;
     }
@@ -231,6 +230,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.SocketChannel#isConnectionPending()
      */
+    @Override
     synchronized public boolean isConnectionPending() {
         return status == SOCKET_STATUS_PENDING;
     }
@@ -238,6 +238,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.SocketChannel#connect(java.net.SocketAddress)
      */
+    @Override
     public boolean connect(SocketAddress socketAddress) throws IOException {
         // status must be open and unconnected
         checkUnconnected();
@@ -257,7 +258,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         int result = EOF;
         boolean finished = false;
 
-        try {           
+        try {
             if (!isBound) {
                 // bind
                 networkSystem.bind2(fd, 0, true, InetAddress
@@ -276,7 +277,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                         inetSocketAddress.getAddress(), inetSocketAddress
                                 .getPort(), HY_SOCK_STEP_START, connectContext);
                 // set back to nonblocking to work around with a bug in portlib
-                if (!this.isBlocking()){
+                if (!this.isBlocking()) {
                     networkSystem.setNonBlocking(fd, true);
                 }
             }
@@ -286,11 +287,11 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             if (e instanceof ConnectException && !isBlocking()) {
                 status = SOCKET_STATUS_PENDING;
             } else {
-                if (isOpen()){
+                if (isOpen()) {
                     close();
                     finished = true;
-                }                
-                throw e;                
+                }
+                throw e;
             }
         } finally {
             if (isBlocking()) {
@@ -301,7 +302,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         // set local port
         localPort = networkSystem.getSocketLocalPort(fd, false);
         localAddress = networkSystem.getSocketLocalAddress(fd, false);
-        
+
         // set the connected address.
         connectAddress = inetSocketAddress;
         synchronized (this) {
@@ -318,6 +319,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.SocketChannel#finishConnect()
      */
+    @Override
     public boolean finishConnect() throws IOException {
         // status check
         synchronized (this) {
@@ -351,10 +353,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             isBound = finished;
             localAddress = networkSystem.getSocketLocalAddress(fd, false);
         } catch (ConnectException e) {
-            if (isOpen()){
+            if (isOpen()) {
                 close();
                 finished = true;
-            }     
+            }
             throw e;
         } finally {
             end(finished);
@@ -373,6 +375,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.SocketChannel#read(java.nio.ByteBuffer)
      */
+    @Override
     public int read(ByteBuffer target) throws IOException {
         if (null == target) {
             throw new NullPointerException();
@@ -381,13 +384,22 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         if (!target.hasRemaining()) {
             return 0;
         }
-        byte[] readArray = new byte[target.remaining()];
+        
         int readCount;
-        synchronized (readLock) {
-            readCount = readImpl(readArray);
-        }
-        if (EOF != readCount) {
-            target.put(readArray, 0, readCount);
+        if (target.isDirect() || target.hasArray()) {
+            readCount = readImpl(target);
+            if (readCount > 0) {
+                target.position(target.position() + readCount);
+            }
+        } else {
+            ByteBuffer readBuffer = null;
+            byte[] readArray = null;
+            readArray = new byte[target.remaining()];
+            readBuffer = ByteBuffer.wrap(readArray);
+            readCount = readImpl(readBuffer);
+            if (readCount > 0) {
+                target.put(readArray, 0, readCount);
+            }
         }
         return readCount;
     }
@@ -396,31 +408,31 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      * @see java.nio.channels.SocketChannel#read(java.nio.ByteBuffer[], int,
      *      int)
      */
+    @Override
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
         if (!isIndexValid(targets, offset, length)) {
             throw new IndexOutOfBoundsException();
         }
-        checkOpenConnected();
 
+        checkOpenConnected();
         int totalCount = calculateByteBufferArray(targets, offset, length);
         if (0 == totalCount) {
             return 0;
         }
-        byte[] readBuffer = new byte[totalCount];
+        byte[] readArray = new byte[totalCount];
+        ByteBuffer readBuffer = ByteBuffer.wrap(readArray);
         int readCount;
         // read data to readBuffer, and then transfer data from readBuffer to
         // targets.
-        synchronized (readLock) {
-            readCount = readImpl(readBuffer);
-        }
+        readCount = readImpl(readBuffer);
         if (readCount > 0) {
             int left = readCount;
             int index = offset;
-            // transfer data from readBuffer to targets
+            // transfer data from readArray to targets
             while (left > 0) {
                 int putLength = Math.min(targets[index].remaining(), left);
-                targets[index].put(readBuffer, readCount - left, putLength);
+                targets[index].put(readArray, readCount - left, putLength);
                 index++;
                 left -= putLength;
             }
@@ -430,26 +442,40 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     private boolean isIndexValid(ByteBuffer[] targets, int offset, int length) {
         return (length >= 0) && (offset >= 0)
-                && (length + offset <= targets.length);
+                && ((long)length + (long)offset <= targets.length);
     }
 
     /*
      * read from channel, and store the result in the target.
-     *
-     * @param target    output parameter
+     * 
+     * @param target output parameter
      */
-    private int readImpl(byte[] target) throws IOException {
-        int readCount = 0;
-        try {
-            if (isBlocking()){
-                begin();
-            }
-            readCount = networkSystem.read(fd, target, 0, target.length,
-                    (isBlocking() ? TIMEOUT_BLOCK : TIMEOUT_NONBLOCK));
-            return readCount;
-        } finally {
-            if (isBlocking()){
-                end(readCount > 0);
+    private int readImpl(ByteBuffer target) throws IOException {
+        synchronized(readLock){
+            int readCount = 0;
+            try {
+                if (isBlocking()) {
+                    begin();
+                }
+                int offset = target.position();
+                int length = target.remaining();
+                if (target.isDirect()) {
+                    long address = AddressUtil.getDirectBufferAddress(target);
+                    readCount = networkSystem.readDirect(fd, address, offset,
+                            length, (isBlocking() ? TIMEOUT_BLOCK
+                                    : TIMEOUT_NONBLOCK));
+                } else {
+                    // target is assured to have array.
+                    byte[] array = target.array();
+                    offset += target.arrayOffset();
+                    readCount = networkSystem.read(fd, array, offset, length,
+                            (isBlocking() ? TIMEOUT_BLOCK : TIMEOUT_NONBLOCK));
+                }
+                return readCount;
+            } finally {
+                if (isBlocking()) {
+                    end(readCount > 0);
+                }
             }
         }
     }
@@ -458,6 +484,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      * 
      * @see java.nio.channels.SocketChannel#write(java.nio.ByteBuffer)
      */
+    @Override
     public int write(ByteBuffer source) throws IOException {
         if (null == source) {
             throw new NullPointerException();
@@ -466,77 +493,99 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         if (!source.hasRemaining()) {
             return 0;
         }
-        synchronized (writeLock) {
-            return writeImpl(source);
-        }
+        return writeImpl(source);
     }
 
     /*
      * @see java.nio.channels.SocketChannel#write(java.nio.ByteBuffer[], int,
      *      int)
      */
+    @Override
     public long write(ByteBuffer[] sources, int offset, int length)
             throws IOException {
         if (!isIndexValid(sources, offset, length)) {
             throw new IndexOutOfBoundsException();
         }
+
         checkOpenConnected();
-        if (0 == calculateByteBufferArray(sources, offset, length)) {
+        int count = calculateByteBufferArray(sources, offset, length);
+        if (0 == count) {
             return 0;
         }
-        synchronized (writeLock) {
-            long writeCount = 0;
-            for (int val = offset; val < offset + length; val++) {
-                writeCount = writeCount + writeImpl(sources[val]);
-            }
-            return writeCount;
+        ByteBuffer writeBuf = ByteBuffer.allocate(count);
+        for (int val = offset; val < length+offset; val++) {
+            ByteBuffer source = sources[val];
+            int oldPosition = source.position();
+            writeBuf.put(source);
+            source.position(oldPosition);
         }
+        writeBuf.flip();
+        int result = writeImpl(writeBuf);
+        int val = offset;
+        int written = result;
+        while (result > 0) {
+            ByteBuffer source = sources[val];
+            int gap = Math.min(result, source.remaining());
+            source.position(source.position() + gap);
+            val++;
+            result -= gap;
+        }
+        return written;
     }
 
-    private int calculateByteBufferArray(ByteBuffer[] sources, int offset, int length){
+    private int calculateByteBufferArray(ByteBuffer[] sources, int offset,
+            int length) {
         int sum = 0;
         for (int val = offset; val < offset + length; val++) {
             sum = sum + sources[val].remaining();
         }
         return sum;
     }
+
     /*
      * write the source. return the count of bytes written.
      */
     private int writeImpl(ByteBuffer source) throws IOException {
-        if (!source.hasRemaining()) {
-            return 0;
-        }
-        int writeCount = 0;
-        try {
-            int pos = source.position();
-            int length = source.remaining();
-            if (isBlocking()){
-                begin();
+        synchronized(writeLock){
+            if (!source.hasRemaining()) {
+                return 0;
             }
-            if (source.hasArray()) {
-                writeCount = networkSystem.write(fd, source.array(), pos,
-                        length);
-            } else {
-                byte[] array = new byte[length];
-                source.get(array);
-                writeCount = networkSystem.write(fd, array, 0, length);
-            }
-            source.position(pos + writeCount);
-        } catch (SocketException e) {
-            if (e.getCause() instanceof ErrorCodeException) {
-                if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
-                        .getCause()).getErrorCode()) {
-                    return writeCount;
+            int writeCount = 0;
+            try {
+                int pos = source.position();
+                int length = source.remaining();
+                if (isBlocking()) {
+                    begin();
+                }
+                if (source.isDirect()) {
+                    long address = AddressUtil.getDirectBufferAddress(source);
+                    writeCount = networkSystem
+                            .writeDirect(fd, address, pos, length);
+                } else if (source.hasArray()) {
+                    pos += source.arrayOffset();
+                    writeCount = networkSystem.write(fd, source.array(), pos,
+                            length);
+                } else {
+                    byte[] array = new byte[length];
+                    source.get(array);
+                    writeCount = networkSystem.write(fd, array, 0, length);
+                }
+                source.position(pos + writeCount);
+            } catch (SocketException e) {
+                if (e.getCause() instanceof ErrorCodeException) {
+                    if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
+                            .getCause()).getErrorCode()) {
+                        return writeCount;
+                    }
+                }
+                throw e;
+            } finally {
+                if (isBlocking()) {
+                    end(writeCount >= 0);
                 }
             }
-            throw e;
-        } finally {
-            if (isBlocking()){
-                end(writeCount >= 0);
-            }
+            return writeCount;
         }
-        return writeCount;
     }
 
     // -------------------------------------------------------------------
@@ -606,6 +655,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * do really closing action here
      */
+    @Override
     synchronized protected void implCloseSelectableChannel() throws IOException {
         if (SOCKET_STATUS_CLOSED != status) {
             status = SOCKET_STATUS_CLOSED;
@@ -620,6 +670,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * @see java.nio.channels.spi.AbstractSelectableChannel#implConfigureBlocking(boolean)
      */
+    @Override
     protected void implConfigureBlocking(boolean blockMode) throws IOException {
         synchronized (blockingLock()) {
             networkSystem.setNonBlocking(fd, !blockMode);
@@ -636,7 +687,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // -------------------------------------------------------------------
     // Adapter classes for internal socket.
     // -------------------------------------------------------------------
-    
+
     private static class SocketAdapter extends Socket {
 
         // ----------------------------------------------------
@@ -662,6 +713,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#getChannel()
          */
+        @Override
         public SocketChannel getChannel() {
             return channel;
         }
@@ -670,6 +722,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#isBound()
          */
+        @Override
         public boolean isBound() {
             return channel.isBound;
         }
@@ -678,6 +731,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#isConnected()
          */
+        @Override
         public boolean isConnected() {
             return channel.isConnected();
         }
@@ -686,6 +740,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#getLocalAddress()
          */
+        @Override
         public InetAddress getLocalAddress() {
             try {
                 return channel.getLocalAddress();
@@ -698,6 +753,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#connect(java.net.SocketAddress, int)
          */
+        @Override
         public void connect(SocketAddress remoteAddr, int timeout)
                 throws IOException {
             if (!channel.isBlocking()) {
@@ -719,6 +775,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#bind(java.net.SocketAddress)
          */
+        @Override
         public void bind(SocketAddress localAddr) throws IOException {
             if (channel.isConnected()) {
                 throw new AlreadyConnectedException();
@@ -738,6 +795,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#close()
          */
+        @Override
         public void close() throws IOException {
             synchronized (channel) {
                 if (channel.isOpen()) {
@@ -749,36 +807,46 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
         }
 
-        
+        @Override
         public boolean getReuseAddress() throws SocketException {
             checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.SO_REUSEADDR))
                     .booleanValue();
         }
-        
+
+        @Override
         public synchronized int getReceiveBufferSize() throws SocketException {
             checkOpen();
-            return ((Integer) socketImpl.getOption(SocketOptions.SO_RCVBUF)).intValue();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_RCVBUF))
+                    .intValue();
         }
-        
+
+        @Override
         public synchronized int getSendBufferSize() throws SocketException {
             checkOpen();
-            return ((Integer) socketImpl.getOption(SocketOptions.SO_SNDBUF)).intValue();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_SNDBUF))
+                    .intValue();
         }
-        
+
+        @Override
         public synchronized int getSoTimeout() throws SocketException {
             checkOpen();
-            return ((Integer) socketImpl.getOption(SocketOptions.SO_TIMEOUT)).intValue();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_TIMEOUT))
+                    .intValue();
         }
-        
+
+        @Override
         public int getTrafficClass() throws SocketException {
             checkOpen();
-            return ((Number) socketImpl.getOption(SocketOptions.IP_TOS)).intValue();
+            return ((Number) socketImpl.getOption(SocketOptions.IP_TOS))
+                    .intValue();
         }
+
         /*
          * 
          * @see java.net.Socket#getKeepAlive()
          */
+        @Override
         public boolean getKeepAlive() throws SocketException {
             checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.SO_KEEPALIVE))
@@ -789,6 +857,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#getOOBInline()
          */
+        @Override
         public boolean getOOBInline() throws SocketException {
             checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.SO_OOBINLINE))
@@ -799,6 +868,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#getSoLinger()
          */
+        @Override
         public int getSoLinger() throws SocketException {
             checkOpen();
             return ((Integer) socketImpl.getOption(SocketOptions.SO_LINGER))
@@ -808,15 +878,17 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         /*
          * @see java.net.Socket#getTcpNoDelay()
          */
+        @Override
         public boolean getTcpNoDelay() throws SocketException {
             checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.TCP_NODELAY))
                     .booleanValue();
         }
 
-        /* 
+        /*
          * @see java.net.Socket#getOutputStream()
          */
+        @Override
         public OutputStream getOutputStream() throws IOException {
             if (!channel.isOpen()) {
                 // nio.00=Socket is closed
@@ -825,7 +897,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             if (!channel.isConnected()) {
                 // nio.01=Socket is not connected
                 throw new SocketException(Messages.getString("nio.01")); //$NON-NLS-1$
-            }             
+            }
             if (isOutputShutdown()) {
                 // nio.02=Socket output is shutdown
                 throw new SocketException(Messages.getString("nio.02")); //$NON-NLS-1$
@@ -837,6 +909,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * 
          * @see java.net.Socket#getInputStream()
          */
+        @Override
         public InputStream getInputStream() throws IOException {
             if (!channel.isOpen()) {
                 // nio.00=Socket is closed
@@ -845,7 +918,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             if (!channel.isConnected()) {
                 // nio.01=Socket is not connected
                 throw new SocketException(Messages.getString("nio.01")); //$NON-NLS-1$
-            }             
+            }
             if (isInputShutdown()) {
                 // nio.03=Socket input is shutdown
                 throw new SocketException(Messages.getString("nio.03")); //$NON-NLS-1$
@@ -871,7 +944,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
     }
 
-    
     /*
      * This output stream delegates all operations to the associated channel.
      * Throws an IllegalBlockingModeException if the channel is in non-blocking
@@ -887,16 +959,17 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         /*
          * Closes this stream and channel
          * 
-         * @exception IOException
-         *                thrown if an error occurs during the close
+         * @exception IOException thrown if an error occurs during the close
          */
+        @Override
         public void close() throws IOException {
             channel.close();
         }
-        
-        /* 
+
+        /*
          * @see java.io.OutputStream#write(byte[], int, int)
          */
+        @Override
         public void write(byte[] buffer, int offset, int count)
                 throws IOException {
             if (0 > offset || 0 > count || count + offset > buffer.length) {
@@ -905,19 +978,20 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             ByteBuffer buf = ByteBuffer.wrap(buffer, offset, count);
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
-            }            
+            }
             channel.write(buf);
         }
 
-        /* 
+        /*
          * @see java.io.OutputStream#write(int)
          */
+        @Override
         public void write(int oneByte) throws IOException {
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
             }
             ByteBuffer buffer = ByteBuffer.allocate(1);
-            buffer.put((byte)(oneByte & 0xFF));
+            buffer.put((byte) (oneByte & 0xFF));
             channel.write(buffer);
         }
     }
@@ -933,17 +1007,19 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         public SocketChannelInputStream(SocketChannel channel) {
             this.channel = channel;
         }
-        
+
         /*
          * Closes this stream and channel.
          */
+        @Override
         public void close() throws IOException {
             channel.close();
         }
 
-        /* 
+        /*
          * @see java.io.InputStream#read()
          */
+        @Override
         public int read() throws IOException {
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
@@ -953,9 +1029,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             return (-1 == result) ? result : buf.get() & 0xFF;
         }
 
-        /* 
+        /*
          * @see java.io.InputStream#read(byte[], int, int)
          */
+        @Override
         public int read(byte[] buffer, int offset, int count)
                 throws IOException {
             if (0 > offset || 0 > count || count + offset > buffer.length) {

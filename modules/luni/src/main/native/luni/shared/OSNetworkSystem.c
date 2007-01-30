@@ -44,6 +44,10 @@ void setDatagramPacketLength (JNIEnv * env, jobject datagramPacket,
 int 
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept);
 
+int receiveDatagram(JNIEnv * env, jclass thisClz, jobject fileDescriptor, 
+    jobject datagramPacket, jbyte* message, jint offset, jint msgLength, jint timeout, jboolean peek);
+
+
 /**
  * A helper method, to set the remote address into the DatagramPacket.
  *
@@ -265,6 +269,62 @@ updateSocket (JNIEnv * env,
   setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
 }
 
+int receiveDatagram(JNIEnv * env,
+		  jclass thisClz,  jobject  fileDescriptor, jobject datagramPacket, jbyte* message,
+		  jint offset, jint msgLength, jint timeout,  jboolean peek)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hysocket_t hysocketP;	
+  hysockaddr_struct sockaddrP;  
+  I_32 result, localCount;
+  I_32 flags = HYSOCK_NOFLAGS;
+  jbyte	nlocalAddrBytes[HYSOCK_INADDR6_LEN];
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
+  result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
+  //result = selectRead (env,hysocketP, timeout, FALSE);
+  if (0	> result)
+    return (jint) 0;
+
+  if (!hysock_socketIsValid (hysocketP))
+    {
+      throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
+      return (jint) 0;
+    }
+
+  hysock_sockaddr_init6	(&sockaddrP, (U_8 *) nlocalAddrBytes,
+       HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4, 0, 0, 0,
+       hysocketP);
+
+  localCount = (msgLength < 65536) ? msgLength : 65536;	
+ 
+  if (peek)
+    {
+      result = hysock_setflag (HYSOCK_MSG_PEEK,	&flags);
+      if (result)
+	{
+	  throwJavaNetSocketException (env, result);
+	  return (jint)	0;
+	}
+    }
+  result =
+    hysock_readfrom (hysocketP,	(U_8 *)message, localCount, flags, &sockaddrP);  
+  
+  if (result < 0)
+    {
+      throwJavaNetSocketException (env,	result);
+      return (jint) 0;
+    }
+  else
+    {
+      if(datagramPacket != NULL)
+      {
+      	updatePacket (env, &sockaddrP, datagramPacket, result);
+      }
+      return (jint) result;
+    }
+}
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationDatagram
@@ -391,13 +451,59 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
 	      jint count, jint timeout)	
 {
   PORT_ACCESS_FROM_ENV (env);
-  hysocket_t hysocketP;	
   jbyte	*message;
-  I_32 result, localCount;
+  I_32 localCount;
+  jint result;
 
 /* TODO: ARRAY PINNING */
 #define	INTERNAL_RECEIVE_BUFFER_MAX 2048
   U_8 internalBuffer[INTERNAL_RECEIVE_BUFFER_MAX];
+
+  localCount = (count <	65536) ? count : 65536;	
+
+  if (localCount > INTERNAL_RECEIVE_BUFFER_MAX)	
+    {
+      message =	hymem_allocate_memory (localCount);
+      if (message == NULL)
+        {
+          throwNewOutOfMemoryError (env, "");
+          return 0;	
+        }
+    }
+  else
+    {
+      message =	(jbyte *)internalBuffer;	
+    }
+
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl(env, thisClz, fileDescriptor,
+      (jlong)message, offset, count, timeout);  
+
+  if (result > 0)
+    (*env)->SetByteArrayRegion (env, data, offset, result, (jbyte *)message);
+
+  if (((U_8 *)message) != internalBuffer)
+    {
+      hymem_free_memory	((U_8 *)message);
+    }
+#undef INTERNAL_MAX
+   return result;
+}
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    readSocketDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JIII)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl(JNIEnv * env, 
+          jclass thisClz,
+	      jobject fileDescriptor,
+	      jlong address, jint offset,
+	      jint count, jint timeout)	
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hysocket_t hysocketP;	
+  jbyte	*message = (jbyte *)address;
+  I_32 result, localCount;
 
   hysocketP =getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
 
@@ -417,32 +523,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
 
   localCount = (count <	65536) ? count : 65536;	
 
-  if (localCount > INTERNAL_RECEIVE_BUFFER_MAX)	
-    {
-      message =	hymem_allocate_memory (localCount);
-      if (message == NULL)
-        {
-          throwNewOutOfMemoryError (env, "");
-          return 0;	
-        }
-    }
-  else
-    {
-      message =	(jbyte *)internalBuffer;	
-    }
-
-
   result = hysock_read (hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
-
-  if (result > 0)
-    (*env)->SetByteArrayRegion (env, data, offset, result, (jbyte *)message);
-
-  if (((U_8 *)message) != internalBuffer)
-    {
-      hymem_free_memory	((U_8 *)message);
-    }
-#undef INTERNAL_MAX
-
+  
   /* If	no bytes are read, return -1 to	signal 'endOfFile' to the Java input stream */
   if (0	< result)
     {
@@ -470,9 +552,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
 	   jint	count)
 {
   PORT_ACCESS_FROM_ENV (env);
-  hysocket_t socketP;
   jbyte	*message;
-  I_32 result =	0, sent	= 0;
+  I_32 sent	= 0;
+  jint result = 0;
 
 /* TODO: ARRAY PINNING */
 #define	INTERNAL_SEND_BUFFER_MAX 512
@@ -492,25 +574,52 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
       message =	(jbyte *)internalBuffer;	
     }
 
-
   (*env)->GetByteArrayRegion (env, data, offset, count,	message);
-  while	(sent <	count)
+  
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl(env, thisClz,
+	   fileDescriptor, (jlong) message, offset, count);
+    
+  if ((U_8 *)message != internalBuffer)
     {
-      socketP =	
-	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
-      if (!hysock_socketIsValid	(socketP))
-	{
-	  if (((U_8 *)message) != internalBuffer)
-	    {
-	      hymem_free_memory	(message);
-	    }
+      hymem_free_memory	(message);
+    }
+#undef INTERNAL_SEND_BUFFER_MAX
+   return result;
+}
 
-	  throwJavaNetSocketException (env,
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    writeSocketDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JII)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl(JNIEnv * env,
+       jclass thisClz,
+	   jobject fileDescriptor,
+	   jlong address, jint offset,
+	   jint	count)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hysocket_t socketP;
+  jbyte	*message = (jbyte *)address;
+  I_32 result =	0, sent	= 0;
+
+  if(sent < count)
+  {
+  	socketP =	
+	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
+    if (!hysock_socketIsValid(socketP))
+	{
+	   throwJavaNetSocketException (env,
 	    sent ==
 	    0 ?	HYPORT_ERROR_SOCKET_BADSOCKET :	
 	  HYPORT_ERROR_SOCKET_INTERRUPTED);
 	  return (jint)	0;
 	}
+  }
+  
+  while	(sent <	count)
+    {
+      
       result =
 	hysock_write (socketP, (U_8 *) message + sent, (I_32) count - sent,
 	HYSOCK_NOFLAGS);
@@ -518,12 +627,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
 	break;
       sent += result;
     }
-  if ((U_8 *)message != internalBuffer)
-    {
-      hymem_free_memory	(message);
-    }
-#undef INTERNAL_SEND_BUFFER_MAX
-
+    
   /**
    * We	should always throw an exception if all	the data cannot	be sent	because	Java methods
    * assume all	the data will be sent or an error occurs.
@@ -1180,6 +1284,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_pee
       return hport;
     }
 }
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    receiveDatagramImpl
@@ -1198,29 +1303,10 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 		  jboolean peek)
 {
   PORT_ACCESS_FROM_ENV (env);
-  hysocket_t hysocketP;	
-  hysockaddr_struct sockaddrP;
   jbyte	*message;
-  I_32 result, localCount;
-  I_32 flags = HYSOCK_NOFLAGS;
-  jbyte	nlocalAddrBytes[HYSOCK_INADDR6_LEN];
-
-  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
-  result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
-  //result = selectRead (env,hysocketP, timeout, FALSE);
-  if (0	> result)
-    return (jint) 0;
-
-  if (!hysock_socketIsValid (hysocketP))
-    {
-      throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
-      return (jint) 0;
-    }
-
-  hysock_sockaddr_init6	(&sockaddrP, (U_8 *) nlocalAddrBytes,
-       HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4, 0, 0, 0,
-       hysocketP);
-
+  jint result; 
+  I_32 localCount;
+  
   localCount = (msgLength < 65536) ? msgLength : 65536;	
   message = hymem_allocate_memory (localCount);	
   if (message == NULL)
@@ -1228,32 +1314,34 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
       throwNewOutOfMemoryError (env, "");
       return 0;	
     }
-  if (peek)
-    {
-      result = hysock_setflag (HYSOCK_MSG_PEEK,	&flags);
-      if (result)
-	{
-	  hymem_free_memory (message);
-	  throwJavaNetSocketException (env, result);
-	  return (jint)	0;
-	}
-    }
-  result =
-    hysock_readfrom (hysocketP,	(U_8 *)message, localCount, flags, &sockaddrP);
+  
+  result = receiveDatagram(env, thisClz, fileDescriptor, datagramPacket, message, offset, localCount , timeout, peek);
+    
   if (result > 0)
-    (*env)->SetByteArrayRegion (env, data, offset, result, message);
+    {
+      (*env)->SetByteArrayRegion (env, data, offset, result, message);
+    }
   hymem_free_memory (message);
-  if (result < 0)
-    {
-      throwJavaNetSocketException (env,	result);
-      return (jint) 0;
-    }
-  else
-    {
-      updatePacket (env, &sockaddrP, datagramPacket, result);
-      return (jint) result;
-    }
+  return result;
 }
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    receiveDatagramDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JIIIZ)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl(JNIEnv *env,
+		jclass thisClz, 
+		jobject fileDescriptor, 
+		jlong address, 
+		jint offset, 
+		jint msgLength, 
+		jint timeout, 
+		jboolean peek)
+{
+  return receiveDatagram(env, thisClz, fileDescriptor, NULL, (jbyte*) address, offset, msgLength, timeout, peek);
+}
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    recvConnectedDatagramImpl	
@@ -1275,13 +1363,61 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 		 jboolean
 		 peek)
 {
+
   PORT_ACCESS_FROM_ENV (env);
-  hysocket_t hysocketP;	
   jbyte	*message;
+  jint result;
+  I_32 localCount;
+  
+  /* allocate the buffer into which data will be read */
+  localCount = (msgLength < 65536) ? msgLength : 65536;	
+  message = hymem_allocate_memory (localCount);	
+  if (message == NULL)
+    {
+      throwNewOutOfMemoryError (env, "");
+      return 0;	
+    }
+    
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl(env, thisClz, fileDescriptor, (jlong)message, offset, localCount, timeout, peek);  
+  if (result > 0)
+    {
+      (*env)->SetByteArrayRegion (env, data, offset, result, message);
+      /* update	the packet with	the legth of data received.
+	 Since we are connected	we did not get back an address.	 This
+	 address is cached within the PlainDatagramSocket  java	object and is filled in	at
+	 the java level	*/
+      if(datagramPacket != NULL)
+      {
+      	setDatagramPacketLength (env, datagramPacket, result);
+      }
+    }
+  hymem_free_memory ( message);  
+  return result; 
+}
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    recvConnectedDatagramDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JIIIZ)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl(JNIEnv *env, 
+		jclass thisClz, 
+		jobject fileDescriptor, 
+		jlong address, 
+		jint offset, 
+		jint msgLength, 
+		jint timeout, 
+		jboolean peek)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hysocket_t hysocketP;
+  jbyte * message = (jbyte *)address;	  
   I_32 result;
   I_32 localCount;
   I_32 flags = HYSOCK_NOFLAGS;
 
+  localCount = (msgLength < 65536) ? msgLength : 65536;
   /* check if there is any data	to be read before we go	ahead and do the read */
   result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
   if (0	> result)
@@ -1297,22 +1433,12 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
       return (jint) 0;
     }
 
-  /* allocate the buffer into which data will be read */
-  localCount = (msgLength < 65536) ? msgLength : 65536;	
-  message = hymem_allocate_memory (localCount);	
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
-
   /* check for peek option, if so set the appropriate flag */
   if (peek)
     {
       result = hysock_setflag (HYSOCK_MSG_PEEK,	&flags);
       if (result)
 	{
-	  hymem_free_memory ( message);	
 	  throwJavaNetSocketException (env, result);
 	  return (jint)	0;
 	}
@@ -1321,11 +1447,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
   /* read the data and copy it to the return array, then free the buffer as we
      no	longer need it */
   result = hysock_read (hysocketP, (U_8 *)message, localCount,	flags);	
-  if (result > 0)
-    {
-      (*env)->SetByteArrayRegion (env, data, offset, result, message);
-    }
-  hymem_free_memory ( message);	
+  	
   if (result < 0)
     {
       if ((HYPORT_ERROR_SOCKET_CONNRESET == result)
@@ -1342,11 +1464,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     }
   else
     {
-      /* update	the packet with	the legth of data received.
-	 Since we are connected	we did not get back an address.	 This
-	 address is cached within the PlainDatagramSocket  java	object and is filled in	at
-	 the java level	*/
-      setDatagramPacketLength (env, datagramPacket, result);
       return (jint) result;
     }
 }
@@ -1370,7 +1487,42 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 	       jobject inetAddress)
 {
   PORT_ACCESS_FROM_ENV (env);
-  jbyte	*message;
+  jbyte	*message; 
+  jint result =	0;
+
+  message = hymem_allocate_memory(msgLength);	
+  if (message == NULL)
+    {
+      throwNewOutOfMemoryError (env, "");
+      return 0;	
+    }
+  (*env)->GetByteArrayRegion (env, data, offset, msgLength, message);
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirectImpl(env, thisClz, 
+      fileDescriptor,(jlong)message, offset, msgLength, targetPort, bindToDevice, trafficClass, inetAddress);
+  hymem_free_memory(message);    
+  return result;
+}
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    sendDatagramDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JIIIZILjava/net/InetAddress;)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirectImpl(JNIEnv * env,
+	       jclass thisClz,
+	       jobject
+	       fileDescriptor,
+	       jlong address,	
+	       jint offset,
+	       jint msgLength,
+	       jint targetPort,	
+	       jboolean	
+	       bindToDevice,
+	       jint trafficClass,
+	       jobject inetAddress)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  jbyte	*message = (jbyte *)address;
   jbyte	nhostAddrBytes[HYSOCK_INADDR6_LEN];
   int length;
 
@@ -1401,27 +1553,19 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 
   flags	= HYSOCK_NOFLAGS;
 
-  message = hymem_allocate_memory ( msgLength);	
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
-  (*env)->GetByteArrayRegion (env, data, offset, msgLength, message);
-
-  do
-    {
-      socketP =	
+  socketP =	
 	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
-      if (!hysock_socketIsValid	(socketP))
+    if (!hysock_socketIsValid	(socketP))
 	{
-	  hymem_free_memory ( message);	
 	  throwJavaNetSocketException (env,
 	    sent ==
 	    0 ?	HYPORT_ERROR_SOCKET_BADSOCKET :	
 	  HYPORT_ERROR_SOCKET_INTERRUPTED);
 	  return (jint)	0;
 	}
+		
+  do
+    {
       result =
 	hysock_writeto (socketP, (U_8 *)message + sent, (I_32)	msgLength - sent,
 	flags, &sockaddrP);
@@ -1431,7 +1575,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
     }
   while	(sent <	msgLength);
 
-  hymem_free_memory ( message);	
   if (result < 0)
     {
       throwJavaNetSocketException (env,	result);
@@ -1461,22 +1604,50 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 		 jboolean
 		 bindToDevice)
 {
-  PORT_ACCESS_FROM_ENV (env);
-  jbyte	*message;
-  I_32 result =	0;
-  I_32 sent = 0;
-  hysocket_t socketP;
-  int flags = HYSOCK_NOFLAGS;
-
-  /* allocate a	local buffer into which	we will	copy the data to be sent and which we will use	
+	PORT_ACCESS_FROM_ENV (env);
+	jbyte	*message;
+	jint result;
+	/* allocate a local buffer into which	we will	copy the data to be sent and which we will use	
      for the write call	*/
-  message = hymem_allocate_memory ( msgLength);	
-  if (message == NULL)
+	message = hymem_allocate_memory ( msgLength);	
+    if (message == NULL)
     {
       throwNewOutOfMemoryError (env, "");
       return 0;	
     }
-  (*env)->GetByteArrayRegion (env, data, offset, msgLength, message);
+    (*env)->GetByteArrayRegion (env, data, offset, msgLength, message);
+    result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirectImpl(env, thisClz, fileDescriptor, (jlong)message, offset, msgLength, bindToDevice);
+    /* ok	free the buffer	and return the length sent  */
+    hymem_free_memory ( message);
+    return result;    
+}		 
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    sendConnectedDatagramDirectImpl
+ * Signature: (Ljava/io/FileDescriptor;JIIZ)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirectImpl(JNIEnv 
+		*env, 
+		jclass 
+		thisClz, 
+		jobject 
+		fileDescriptor, 
+		jlong 
+		address, 
+		jint 
+		offset, 
+		jint 
+		msgLength, 
+		jboolean 
+		bindToDevice)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  jbyte	*message = (jbyte *)address;
+  I_32 result =	0;
+  I_32 sent = 0;
+  hysocket_t socketP;
+  int flags = HYSOCK_NOFLAGS;  
 
   do
     {
@@ -1504,9 +1675,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
       sent += result;
     }
   while	(sent <	msgLength);
-
-  /* ok	free the buffer	and return the length sent or an exception as appropriate  */
-  hymem_free_memory ( message);	
 
 #if defined(LINUX)
   if (result < 0)

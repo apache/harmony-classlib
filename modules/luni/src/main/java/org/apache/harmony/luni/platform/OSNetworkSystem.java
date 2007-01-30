@@ -89,11 +89,21 @@ final class OSNetworkSystem implements INetworkSystem {
 			int timeout) throws IOException {
 		return readSocketImpl(aFD, data, offset, count, timeout);
 	}
+    
+    public int readDirect(FileDescriptor aFD, long address, int offset, int count,
+            int timeout) throws IOException {
+        return readSocketDirectImpl(aFD, address, offset, count, timeout);
+    }
 
 	public int write(FileDescriptor aFD, byte[] data, int offset, int count)
 			throws IOException {
 		return writeSocketImpl(aFD, data, offset, count);
 	}
+    
+    public int writeDirect(FileDescriptor aFD, long address, int offset,
+            int count) throws IOException {
+        return writeSocketDirectImpl(aFD, address, offset, count);
+    }
 
 	public void setNonBlocking(FileDescriptor aFD, boolean block)
 			throws IOException {
@@ -145,6 +155,13 @@ final class OSNetworkSystem implements INetworkSystem {
 		return sendDatagramImpl(fd, data, offset, length, port, bindToDevice,
 				trafficClass, inetAddress);
 	}
+    
+    public int sendDatagramDirect(FileDescriptor fd, long address, int offset,
+            int length, int port, boolean bindToDevice, int trafficClass,
+            InetAddress inetAddress) throws IOException {
+        return sendDatagramDirectImpl(fd, address, offset, length, port, bindToDevice,
+                trafficClass, inetAddress);
+    }
 
 	public int sendDatagram2(FileDescriptor fd, byte[] data, int offset,
 			int length, int port, InetAddress inetAddress) throws IOException {
@@ -152,11 +169,18 @@ final class OSNetworkSystem implements INetworkSystem {
 	}
 
 	public int receiveDatagram(FileDescriptor aFD, DatagramPacket packet,
-			byte[] data, int offset, int length, int receiveTimeout,
-			boolean peek) throws IOException {
-		return receiveDatagramImpl(aFD, packet, data, offset, length,
-				receiveTimeout, peek);
-	}
+            byte[] data, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException {
+        return receiveDatagramImpl(aFD, packet, data, offset, length,
+                receiveTimeout, peek);
+    }
+    
+    public int receiveDatagramDirect(FileDescriptor aFD, long address,
+            int offset, int length, int receiveTimeout, boolean peek)
+            throws IOException {
+        return receiveDatagramDirectImpl(aFD, address, offset, length,
+                receiveTimeout, peek);
+    }
 
 	public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
 			byte[] data, int offset, int length, int receiveTimeout,
@@ -164,6 +188,13 @@ final class OSNetworkSystem implements INetworkSystem {
 		return recvConnectedDatagramImpl(aFD, packet, data, offset, length,
 				receiveTimeout, peek);
 	}
+    
+    public int recvConnectedDatagramDirect(FileDescriptor aFD, long address,
+            int offset, int length, int receiveTimeout, boolean peek)
+            throws IOException {
+        return recvConnectedDatagramDirectImpl(aFD, address, offset, length,
+                receiveTimeout, peek);
+    }
 
 	public int peekDatagram(FileDescriptor aFD, InetAddress sender,
 			int receiveTimeout) throws IOException {
@@ -174,6 +205,11 @@ final class OSNetworkSystem implements INetworkSystem {
 			int offset, int length, boolean bindToDevice) throws IOException {
 		return sendConnectedDatagramImpl(fd, data, offset, length, bindToDevice);
 	}
+    
+    public int sendConnectedDatagramDirect(FileDescriptor fd, long address,
+            int offset, int length, boolean bindToDevice) throws IOException {
+        return sendConnectedDatagramDirectImpl(fd, address, offset, length, bindToDevice);
+    }
 
 	public void disconnectDatagram(FileDescriptor aFD) throws SocketException {
 		disconnectDatagramImpl(aFD);
@@ -390,9 +426,15 @@ final class OSNetworkSystem implements INetworkSystem {
 
 	static native int readSocketImpl(FileDescriptor aFD, byte[] data,
 			int offset, int count, int timeout) throws IOException;
+    
+    static native int readSocketDirectImpl(FileDescriptor aFD, long address,
+            int offset, int count, int timeout) throws IOException;
 
 	static native int writeSocketImpl(FileDescriptor fd, byte[] data,
 			int offset, int count) throws IOException;
+    
+    static native int writeSocketDirectImpl(FileDescriptor fd, long address,
+            int offset, int count) throws IOException;
 
 	static native void setNonBlockingImpl(FileDescriptor aFD,
 			boolean block);
@@ -499,6 +541,10 @@ final class OSNetworkSystem implements INetworkSystem {
 	static native int receiveDatagramImpl(FileDescriptor aFD,
 			DatagramPacket packet, byte[] data, int offset, int length,
 			int receiveTimeout, boolean peek) throws IOException;
+    
+    static native int receiveDatagramDirectImpl(FileDescriptor aFD,
+            long address, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException;
 
 	/*
 	 * Recieve data on the connected socket into the specified buffer. The
@@ -517,6 +563,10 @@ final class OSNetworkSystem implements INetworkSystem {
 	static native int recvConnectedDatagramImpl(FileDescriptor aFD,
 			DatagramPacket packet, byte[] data, int offset, int length,
 			int receiveTimeout, boolean peek) throws IOException;
+    
+    static native int recvConnectedDatagramDirectImpl(FileDescriptor aFD,
+            long address, int offset, int length,
+            int receiveTimeout, boolean peek) throws IOException;
 
 	/*
 	 * Send the <code>data</code> to the nominated target <code>address</code>
@@ -536,6 +586,11 @@ final class OSNetworkSystem implements INetworkSystem {
 			byte[] data, int offset, int length, int port,
 			boolean bindToDevice, int trafficClass, InetAddress inetAddress)
 			throws IOException;
+    
+    static native int sendDatagramDirectImpl(FileDescriptor fd,
+            long address, int offset, int length, int port,
+            boolean bindToDevice, int trafficClass, InetAddress inetAddress)
+            throws IOException;
 
 	/*
 	 * Send the <code>data</code> to the address and port to which the was
@@ -550,6 +605,10 @@ final class OSNetworkSystem implements INetworkSystem {
 	static native int sendConnectedDatagramImpl(FileDescriptor fd,
 			byte[] data, int offset, int length, boolean bindToDevice)
 			throws IOException;
+    
+    static native int sendConnectedDatagramDirectImpl(FileDescriptor fd,
+            long address, int offset, int length, boolean bindToDevice)
+            throws IOException;
 
 	/*
 	 * Answer the result of attempting to create a server stream socket in the

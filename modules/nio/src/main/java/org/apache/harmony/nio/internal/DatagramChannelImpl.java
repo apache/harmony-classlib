@@ -42,14 +42,14 @@ import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
-
-
+import org.apache.harmony.nio.AddressUtil;
 
 /*
  * The default implementation class of java.nio.channels.DatagramChannel.
  * 
  */
-class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandler{
+class DatagramChannelImpl extends DatagramChannel implements
+        FileDescriptorHandler {
 
     // -------------------------------------------------------------------
     // Class variables
@@ -61,7 +61,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
 
     // default timeout used to nonblocking mode.
     private static final int DEFAULT_TIMEOUT = 1;
-    
+
     private static final int ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK = -211;
 
     // -------------------------------------------------------------------
@@ -86,13 +86,9 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     // whether the socket is bound
     boolean isBound = false;
 
-    // lock for read and receive
-    private class ReadLock {}
-    private final Object readLock = new ReadLock();
+    private final Object readLock = new Object();
 
-    // lock for write and send
-    private class WriteLock {}
-    private final Object writeLock = new WriteLock();
+    private final Object writeLock = new Object();
 
     // used to store the trafficClass value which is simply returned
     // as the value that was set. We also need it to pass it to methods
@@ -112,11 +108,11 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         fd = new FileDescriptor();
         networkSystem.createDatagramSocket(fd, true);
     }
-    
+
     /*
      * for native call
      */
-    private DatagramChannelImpl() throws IOException {
+    private DatagramChannelImpl(){
         super(SelectorProvider.provider());
         fd = new FileDescriptor();
         connectAddress = new InetSocketAddress(0);
@@ -130,6 +126,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * Getting the internal DatagramSocket If we have not the socket, we create
      * a new one.
      */
+    @Override
     synchronized public DatagramSocket socket() {
         if (null == socket) {
             socket = new DatagramSocketAdapter(SocketImplProvider
@@ -137,7 +134,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         }
         return socket;
     }
-    
+
     /**
      * Answer the local address from the IP stack. This method should not be
      * called directly as it does not check the security policy.
@@ -146,7 +143,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * @see DatagramSocket
      */
     InetAddress getLocalAddress() {
-        return networkSystem.getSocketLocalAddress(fd, NetUtil.preferIPv6Addresses());
+        return networkSystem.getSocketLocalAddress(fd, NetUtil
+                .preferIPv6Addresses());
     }
 
     // -------------------------------------------------------------------
@@ -157,6 +155,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.DatagramChannel#isConnected()
      */
+    @Override
     synchronized public boolean isConnected() {
         return connected;
     }
@@ -165,6 +164,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.DatagramChannel#connect(java.net.SocketAddress)
      */
+    @Override
     synchronized public DatagramChannel connect(SocketAddress address)
             throws IOException {
         // must open
@@ -210,6 +210,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.DatagramChannel#disconnect()
      */
+    @Override
     synchronized public DatagramChannel disconnect() throws IOException {
         if (!isConnected() || !isOpen()) {
             return this;
@@ -231,9 +232,10 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.DatagramChannel#receive(java.nio.ByteBuffer)
      */
+    @Override
     public SocketAddress receive(ByteBuffer target) throws IOException {
         // must not null and not readonly
-        checkNotNullNotReadOnly(target);
+        checkWritable(target);
         // must open
         checkOpen();
 
@@ -256,12 +258,14 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
                         networkSystem.recvConnectedDatagram(fd, receivePacket,
                                 receivePacket.getData(), receivePacket
                                         .getOffset(),
-                                receivePacket.getLength(), isBlocking()?0:DEFAULT_TIMEOUT, false);
+                                receivePacket.getLength(), isBlocking() ? 0
+                                        : DEFAULT_TIMEOUT, false);
                     } else {
                         networkSystem.receiveDatagram(fd, receivePacket,
                                 receivePacket.getData(), receivePacket
                                         .getOffset(),
-                                receivePacket.getLength(), isBlocking()?0:DEFAULT_TIMEOUT, false);
+                                receivePacket.getLength(), isBlocking() ? 0
+                                        : DEFAULT_TIMEOUT, false);
                     }
 
                     // security check
@@ -297,15 +301,16 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * @see java.nio.channels.DatagramChannel#send(java.nio.ByteBuffer,
      *      java.net.SocketAddress)
      */
-    public int send(ByteBuffer source, SocketAddress address)
+    @Override
+    public int send(ByteBuffer source, SocketAddress socketAddress)
             throws IOException {
         // must not null
         checkNotNull(source);
         // must open
         checkOpen();
 
-        // transfer address
-        InetSocketAddress isa = (InetSocketAddress) address;
+        // transfer socketAddress
+        InetSocketAddress isa = (InetSocketAddress) socketAddress;
         if (null == isa.getAddress()) {
             throw new IOException();
         }
@@ -329,27 +334,36 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
 
         // the return value.
         int sendCount = 0;
-
         try {
             begin();
-            byte[] array;
+            byte[] array = null;
             int length = source.remaining();
             int oldposition = source.position();
-            int start;
-            if (source.hasArray()) {
-                array = source.array();
-                start = oldposition;
+            int start = oldposition;
+            if (source.isDirect()) {
+                synchronized (writeLock) {
+                    long data_address = AddressUtil
+                            .getDirectBufferAddress(source);
+                    sendCount = networkSystem.sendDatagramDirect(fd,
+                            data_address, start, length, isa.getPort(), false,
+                            trafficClass, isa.getAddress());
+                }
             } else {
-                array = new byte[length];
-                source.get(array);
-                start = 0;
-            }            
-            synchronized (writeLock) {
-                sendCount = networkSystem.sendDatagram(fd, array, start,
-                        length, isa.getPort(), false, trafficClass, isa
-                                .getAddress());
+                if (source.hasArray()) {
+                    array = source.array();
+                    start += source.arrayOffset();
+                } else {
+                    array = new byte[length];
+                    source.get(array);
+                    start = 0;
+                }
+                synchronized (writeLock) {
+                    sendCount = networkSystem.sendDatagram(fd, array, start,
+                            length, isa.getPort(), false, trafficClass, isa
+                                    .getAddress());
+                }
             }
-            source.position(oldposition + sendCount);            
+            source.position(oldposition + sendCount);
             return sendCount;
         } finally {
             end(sendCount >= 0);
@@ -364,25 +378,34 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.DatagramChannel#read(java.nio.ByteBuffer)
      */
+    @Override
     public int read(ByteBuffer target) throws IOException {
-        if (null == target){
+        if (null == target) {
             throw new NullPointerException();
         }
         // status must be open and connected
         checkOpenConnected();
         // target buffer must be not null and not readonly
-        checkNotNullNotReadOnly(target);
+        checkWritable(target);
 
-        if (!target.hasRemaining()){
+        if (!target.hasRemaining()) {
             return 0;
-        }        
-        byte[] readArray = new byte[target.remaining()];
-        int readCount;
-        synchronized (readLock) {
-            readCount = readImpl(readArray);
         }
-        if (0 != readCount) {
-            target.put(readArray, 0, readCount);
+
+        int readCount  = 0;
+        if (target.isDirect() || target.hasArray()) {
+            readCount = readImpl(target);
+            if(readCount > 0){
+                target.position(target.position() + readCount);
+            }
+
+        } else {
+            byte[] readArray = new byte[target.remaining()];
+            ByteBuffer readBuffer = ByteBuffer.wrap(readArray);
+            readCount = readImpl(readBuffer);
+            if(readCount > 0){
+                target.put(readArray, 0, readCount);
+            }
         }
         return readCount;
     }
@@ -392,37 +415,38 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * @see java.nio.channels.DatagramChannel#read(java.nio.ByteBuffer[], int,
      *      int)
      */
+    @Override
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
-        if (length < 0 || offset < 0 || (long)length + (long)offset > targets.length) {
+        if (length < 0 || offset < 0
+                || (long) length + (long) offset > targets.length) {
             throw new IndexOutOfBoundsException();
-        }        
+        }
+
         // status must be open and connected
         checkOpenConnected();
-        
+
         int totalCount = 0;
         for (int val = offset; val < length; val++) {
             // target buffer must be not null and not readonly
-            checkNotNullNotReadOnly(targets[val]);
+            checkWritable(targets[val]);
             totalCount += targets[val].remaining();
         }
+
         // read data to readBuffer, and then transfer data from readBuffer to
         // targets.
-        byte[] readBuffer = new byte[totalCount];
-        int readCount ;
-        synchronized (readLock) {
-            readCount = readImpl(readBuffer);
-        }
-        if (readCount > 0) {
-            int left = readCount;
-            int index = offset;
-            // transfer data from readBuffer to targets
-            while (left > 0) {
-                int putLength = Math.min(targets[index].remaining(), left);                
-                targets[index].put(readBuffer, readCount - left, putLength);
-                index++;
-                left -= putLength;
-            }
+        ByteBuffer readBuffer = ByteBuffer.allocate(totalCount);
+        int readCount;
+        readCount = readImpl(readBuffer);
+        int left = readCount;
+        int index = offset;
+        // transfer data from readBuffer to targets
+        byte[] readArray = readBuffer.array();
+        while (left > 0) {
+            int putLength = Math.min(targets[index].remaining(), left);
+            targets[index].put(readArray, readCount - left, putLength);
+            index++;
+            left -= putLength;
         }
         return readCount;
     }
@@ -430,110 +454,151 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     /*
      * read from channel, and store the result in the target.
      */
-    private int readImpl(byte[] target) throws IOException {
-        // the return value
-        int readCount = 0;
-
-        try {
-            begin();
-            // timeout == 0 means block read.
-            // DEFAULT_TIMEOUT is used in non-block mode.
-            int timeout = isBlocking() ? 0 : DEFAULT_TIMEOUT;
-            DatagramPacket pack;
-            pack = new DatagramPacket(target, target.length);
-            if (isConnected()) {
-                readCount = networkSystem.recvConnectedDatagram(fd, pack, pack
-                        .getData(), 0, pack.getLength(), timeout, false);
-            } else {
-                readCount = networkSystem.receiveDatagram(fd, pack, pack
-                        .getData(), 0, pack.getLength(), timeout, false);
+    private int readImpl(ByteBuffer readBuffer) throws IOException {
+        synchronized(readLock){
+            int readCount = 0;
+            try {
+                begin();
+                // timeout == 0 means block read.
+                // DEFAULT_TIMEOUT is used in non-block mode.
+                int timeout = isBlocking() ? 0 : DEFAULT_TIMEOUT;
+                int start = readBuffer.position();
+                int length = readBuffer.remaining();
+                if (readBuffer.isDirect()) {
+                    long address = AddressUtil.getDirectBufferAddress(readBuffer);
+                    if (isConnected()) {
+                        readCount = networkSystem.recvConnectedDatagramDirect(fd,
+                                address, start, length, timeout, false);
+                    } else {
+                        readCount = networkSystem.receiveDatagramDirect(fd,
+                                address, start, length, timeout, false);
+                    }
+                } else {
+                    // the target is assured to have array.
+                    byte[] target = readBuffer.array();
+                    start += readBuffer.arrayOffset();
+                    if (isConnected()) {
+                        readCount = networkSystem.recvConnectedDatagram(fd, null,
+                                target, start, length, timeout, false);
+                    } else {
+                        readCount = networkSystem.receiveDatagram(fd, null, target,
+                                start, length, timeout, false);
+                    }
+                }
+                return readCount;
+            } catch (InterruptedIOException e) {
+                // InterruptedIOException will be thrown when timeout.
+                return 0;
+            } finally {
+                end(readCount > 0);
             }
-            return readCount;
-        } catch (InterruptedIOException e) {
-            // InterruptedIOException will be thrown when timeout.
-            return 0;
-        } finally {
-            end(readCount > 0);
         }
     }
 
     /*
      * @see java.nio.channels.DatagramChannel#write(java.nio.ByteBuffer)
      */
+    @Override
     public int write(ByteBuffer source) throws IOException {
         // source buffer must be not null
         checkNotNull(source);
         // status must be open and connected
         checkOpenConnected();
         // return immediately if source is full
-        if (!source.hasRemaining()){
+        if (!source.hasRemaining()) {
             return 0;
         }
 
-        synchronized (writeLock) {
-            return writeImpl(source);
+        ByteBuffer writeBuffer = null;
+        byte[] writeArray = null;
+        int oldposition = source.position();
+        int result;
+        if (source.isDirect() || source.hasArray()) {
+            writeBuffer = source;
+        } else {
+            writeArray = new byte[source.remaining()];
+            source.get(writeArray);
+            writeBuffer = ByteBuffer.wrap(writeArray);
         }
+        result = writeImpl(writeBuffer);
+        if (result > 0) {
+            source.position(oldposition + result);
+        }
+        return result;
     }
 
     /*
      * @see java.nio.channels.DatagramChannel#write(java.nio.ByteBuffer[], int,
      *      int)
      */
+    @Override
     public long write(ByteBuffer[] sources, int offset, int length)
             throws IOException {
-        if (length < 0 || offset < 0 || (long)length + (long)offset > sources.length) {
+        if (length < 0 || offset < 0
+                || (long) length + (long) offset > sources.length) {
             throw new IndexOutOfBoundsException();
         }
+
         // status must be open and connected
         checkOpenConnected();
-        synchronized (writeLock) {
-            int count = 0;
-            for (int val = offset; val < length; val++) {
-                count = count + sources[val].remaining();
-            }
-            ByteBuffer writeBuf = ByteBuffer.allocate(count);
-            for (int val = offset; val < length; val++) {
-                writeBuf.put(sources[val]);
-            }
-            writeBuf.flip();
-            return writeImpl(writeBuf);
+        int count = calculateByteBufferArray(sources, offset, length);
+        if (0 == count) {
+            return 0;
         }
+        ByteBuffer writeBuf = ByteBuffer.allocate(count);
+        for (int val = offset; val < length+offset; val++) {
+            ByteBuffer source = sources[val];
+            int oldPosition = source.position();
+            writeBuf.put(source);
+            source.position(oldPosition);
+        }
+        writeBuf.flip();
+        int result = writeImpl(writeBuf);
+        int val = offset;
+        int written = result;
+        while (result > 0) {
+            ByteBuffer source = sources[val];
+            int gap = Math.min(result, source.remaining());
+            source.position(source.position() + gap);
+            val++;
+            result -= gap;
+        }
+        return written;
     }
 
     /*
      * write the source. return the count of bytes written.
      */
     private int writeImpl(ByteBuffer buf) throws IOException {
-        // the return value
-        int result = 0;
-        try {
-            begin();            
-            byte[] array;
-            int length = buf.remaining();
-            int oldposition = buf.position();
-            int start;
-            if (buf.hasArray()) {
-                array = buf.array();  
-                start = oldposition;
-            } else {
-                array = new byte[length];
-                buf.get(array);
-                start = 0;
-            }
-            result = networkSystem.sendConnectedDatagram(fd, array, start,
-                    length, isBound);
-            buf.position(oldposition + result);
-            return result;
-        } catch (SocketException e){
-            if (e.getCause() instanceof ErrorCodeException) {
-                if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
-                        .getCause()).getErrorCode()) {
-                    return result;
+        synchronized(writeLock){
+            int result = 0;
+            try {
+                begin();
+                int length = buf.remaining();
+                int start = buf.position();
+    
+                if (buf.isDirect()) {
+                    long address = AddressUtil.getDirectBufferAddress(buf);
+                    result = networkSystem.sendConnectedDatagramDirect(fd, address,
+                            start, length, isBound);
+                } else {
+                    // buf is assured to have array.
+                    start += buf.arrayOffset();
+                    result = networkSystem.sendConnectedDatagram(fd, buf.array(),
+                            start, length, isBound);
                 }
+                return result;
+            } catch (SocketException e) {
+                if (e.getCause() instanceof ErrorCodeException) {
+                    if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
+                            .getCause()).getErrorCode()) {
+                        return result;
+                    }
+                }
+                throw e;
+            } finally {
+                end(result > 0);
             }
-            throw e;   
-        } finally {
-            end(result > 0);
         }
     }
 
@@ -544,6 +609,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     /*
      * do really closing action here
      */
+    @Override
     synchronized protected void implCloseSelectableChannel() throws IOException {
         connected = false;
         if (null != socket && !socket.isClosed()) {
@@ -557,6 +623,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * 
      * @see java.nio.channels.spi.AbstractSelectableChannel#implConfigureBlocking(boolean)
      */
+    @Override
+    @SuppressWarnings("unused")
     protected void implConfigureBlocking(boolean blockingMode)
             throws IOException {
         // Do nothing here. For real read/write operation in nonblocking mode,
@@ -600,7 +668,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * buffer check, must not null and not read only buffer, for read and
      * receive.
      */
-    private void checkNotNullNotReadOnly(ByteBuffer target) {
+    private void checkWritable(ByteBuffer target) {
         // including checking of NPE.
         if (target.isReadOnly()) {
             throw new IllegalArgumentException();
@@ -618,6 +686,15 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         return fd;
     }
 
+    private int calculateByteBufferArray(ByteBuffer[] sources, int offset,
+            int length) {
+        int sum = 0;
+        for (int val = offset; val < offset + length; val++) {
+            sum += sources[val].remaining();
+        }
+        return sum;
+    }
+
     /*
      * The adapter class of DatagramSocket
      */
@@ -627,19 +704,20 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
          * The internal datagramChannelImpl.
          */
         private DatagramChannelImpl channelImpl;
-        
+
         /*
          * init the datagramSocketImpl and datagramChannelImpl
          */
         DatagramSocketAdapter(DatagramSocketImpl socketimpl,
                 DatagramChannelImpl channelImpl) {
             super(socketimpl);
-            this.channelImpl = channelImpl;            
+            this.channelImpl = channelImpl;
         }
 
         /*
          * get the internal datagramChannelImpl
          */
+        @Override
         public DatagramChannel getChannel() {
             return channelImpl;
         }
@@ -647,6 +725,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#isBound()
          */
+        @Override
         public boolean isBound() {
             return channelImpl.isBound;
         }
@@ -654,6 +733,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#isConnected()
          */
+        @Override
         public boolean isConnected() {
             return channelImpl.isConnected();
         }
@@ -661,23 +741,26 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#getInetAddress()
          */
+        @Override
         public InetAddress getInetAddress() {
             if (null == channelImpl.connectAddress) {
                 return null;
             }
             return channelImpl.connectAddress.getAddress();
         }
-        
+
         /*
          * @see java.net.DatagramSocket#getLocalAddress()
          */
-        public InetAddress getLocalAddress(){
+        @Override
+        public InetAddress getLocalAddress() {
             return channelImpl.getLocalAddress();
         }
 
         /*
          * @see java.net.DatagramSocket#getPort()
          */
+        @Override
         public int getPort() {
             if (null == channelImpl.connectAddress) {
                 return -1;
@@ -688,6 +771,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#bind(java.net.SocketAddress)
          */
+        @Override
         public void bind(SocketAddress localAddr) throws SocketException {
             if (channelImpl.isConnected()) {
                 throw new AlreadyConnectedException();
@@ -699,6 +783,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#receive(java.net.DatagramPacket)
          */
+        @Override
         public void receive(DatagramPacket packet) throws IOException {
             if (!channelImpl.isBlocking()) {
                 throw new IllegalBlockingModeException();
@@ -709,16 +794,18 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#send(java.net.DatagramPacket)
          */
+        @Override
         public void send(DatagramPacket packet) throws IOException {
             if (!channelImpl.isBlocking()) {
                 throw new IllegalBlockingModeException();
             }
             super.send(packet);
         }
-        
+
         /*
          * @see java.net.DatagramSocket#close()
          */
+        @Override
         public void close() {
             synchronized (channelImpl) {
                 if (channelImpl.isOpen()) {
@@ -735,6 +822,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         /*
          * @see java.net.DatagramSocket#disconnect()
          */
+        @Override
         public void disconnect() {
             try {
                 channelImpl.disconnect();
