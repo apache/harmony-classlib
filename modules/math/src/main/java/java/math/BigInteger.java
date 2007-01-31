@@ -85,6 +85,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** @ar.org.fitc.spec_ref */
     private byte[] magnitude;
+    
+    private transient int hashCode = 0;
 
     /* Public Constructors */
 
@@ -541,7 +543,15 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     @Override
     public int hashCode() {
-        return intValue();
+    	if (hashCode != 0) {
+    	    return hashCode;	
+    	}    	  
+    	System.out.println(digits.length);
+    	for (int i = 0; i < digits.length; i ++) {
+    		hashCode = (int)(hashCode * 33 + (digits[i] & 0xffffffff));    		
+    	}  
+    	hashCode = hashCode * sign;
+        return hashCode;
     }
 
     /** @ar.org.fitc.spec_ref */

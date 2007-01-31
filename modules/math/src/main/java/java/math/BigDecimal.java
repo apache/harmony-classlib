@@ -74,6 +74,8 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
 
     /** The <code>String</code> representation is cached. */
     private transient String toStringImage = null;
+    
+    private transient int hashCode = 0;
 
     /**
      * An array with powers of five that fit in the type <code>long</code>
@@ -1368,10 +1370,18 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
 
     /** @ar.org.fitc.spec_ref */
     @Override
-    public int hashCode() {
-        /* Take the 24 trailing bits of BigInteger hashcode
-         * and the 8 trailing bits of scale. */
-        return ((getUnscaledValue().hashCode() << 24) | (0xFF & scale));
+    public int hashCode() {        
+    	if (hashCode != 0) {
+    		return hashCode;
+    	}
+    	if (bitLength < 64) {
+    		hashCode = (int)(smallValue & 0xffffffff);
+    		hashCode = 33 * hashCode +  (int)((smallValue >> 32) & 0xffffffff);
+    		hashCode = 17 * hashCode + scale;   		
+    		return hashCode;
+    	}
+    	hashCode = 17 * intVal.hashCode() + scale;    	
+    	return hashCode;    	
     }
 
     /** @ar.org.fitc.spec_ref */
