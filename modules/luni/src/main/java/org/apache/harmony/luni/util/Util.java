@@ -267,4 +267,30 @@ public final class Util {
 		}
 		return result.toString();
 	}
+	
+	public static String toASCIILowerCase(String s) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if ('A' <= c && c <= 'Z') {
+				buffer.append((char) (c + ('a' - 'A')));
+			} else {
+				buffer.append(c);
+			}
+		}
+		return buffer.toString();
+	}
+	
+	public static String toASCIIUpperCase(String s) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+	        if ('a' <= c && c <= 'z') {
+	        	buffer.append((char) (c - ('a' - 'A')));
+	        } else {
+				buffer.append(c);
+			}
+		}
+		return buffer.toString();
+	}
 }
