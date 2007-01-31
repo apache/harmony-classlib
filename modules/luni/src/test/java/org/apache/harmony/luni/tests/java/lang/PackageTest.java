@@ -19,399 +19,265 @@ package org.apache.harmony.luni.tests.java.lang;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 import tests.support.resource.Support_Resources;
 
 public class PackageTest extends junit.framework.TestCase {
 
-	private File resources;
+    private File resources;
 
-	private String resPath;
+    private String resPath;
 
-	/**
-	 * There is a newer version of this class with some actual tests but since
-	 * the class is not implemented they all fail. For now use the stub test
-	 * methods.
-	 */
+    Package getTestPackage(String resourceJar, String className)
+            throws Exception {
+        Support_Resources.copyFile(resources, "Package", resourceJar);
+        URL resourceURL = new URL("file:/" + resPath + "/Package/"
+                + resourceJar);
 
-	/**
-	 * @tests java.lang.Package#getImplementationVendor()
-	 * @tests java.lang.Package#getImplementationVersion()
-	 * @tests java.lang.Package#getSpecificationTitle()
-	 * @tests java.lang.Package#getSpecificationVendor()
-	 * @tests java.lang.Package#getSpecificationVersion()
-	 * @tests java.lang.Package#getImplementationTitle()
-	 */
-	public void test_helper_Attributes() {
+        URLClassLoader ucl = new URLClassLoader(new URL[] { resourceURL }, null);
+        return Class.forName(className, true, ucl).getPackage();
+    }
 
-		// All attributes in the package entry
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package",
-				"hyts_all_attributes.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_all_attributes.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertEquals("Package getImplementationTitle returns a wrong string (1)",
-					
-							"p Implementation-Title", c.getPackage().getImplementationTitle());
-			assertEquals("Package getImplementationVendor returns a wrong string (1)",
-					
-							"p Implementation-Vendor", c.getPackage().getImplementationVendor());
-			assertEquals("Package getImplementationVersion returns a wrong string (1)",
-					"2.2.2", c.getPackage().getImplementationVersion());
-			assertEquals("Package getSpecificationTitle returns a wrong string (1)",
-					
-							"p Specification-Title", c.getPackage().getSpecificationTitle());
-			assertEquals("Package getSpecificationVendor returns a wrong string (1)",
-					
-							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
-			assertEquals("Package getSpecificationVersion returns a wrong string (1)",
-					"2.2.2", c.getPackage().getSpecificationVersion());
-		} catch (Exception e) {
-			fail("Exception during helperAttributes test : " + e.getMessage());
-		}
-
-		// No entry for the package
-		Support_Resources.copyFile(resources, "Package", "hyts_no_entry.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_no_entry.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertEquals("Package getImplementationTitle returns a wrong string (2)",
-					
-							"MF Implementation-Title", c.getPackage().getImplementationTitle());
-			assertEquals("Package getImplementationVendor returns a wrong string (2)",
-					
-							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
-			assertEquals("Package getImplementationVersion returns a wrong string (2)",
-					"5.3.b1", c.getPackage().getImplementationVersion());
-			assertEquals("Package getSpecificationTitle returns a wrong string (2)",
-					
-							"MF Specification-Title", c.getPackage().getSpecificationTitle());
-			assertEquals("Package getSpecificationVendor returns a wrong string (2)",
-					
-							"MF Specification-Vendor", c.getPackage().getSpecificationVendor());
-			assertEquals("Package getSpecificationVersion returns a wrong string (2)",
-					"1.2.3", c.getPackage().getSpecificationVersion());
-		} catch (Exception e) {
-			fail("Exception in helperAttributes test : " + e.getMessage());
-		}
-
-		// No attributes in the package entry
-		Support_Resources.copyFile(resources, "Package",
-				"hyts_no_attributes.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_no_attributes.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertEquals("Package getImplementationTitle returns a wrong string (3)",
-					
-							"MF Implementation-Title", c.getPackage().getImplementationTitle());
-			assertEquals("Package getImplementationVendor returns a wrong string (3)",
-					
-							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
-			assertEquals("Package getImplementationVersion returns a wrong string (3)",
-					"5.3.b1", c.getPackage().getImplementationVersion());
-			assertEquals("Package getSpecificationTitle returns a wrong string (3)",
-					
-							"MF Specification-Title", c.getPackage().getSpecificationTitle());
-			assertEquals("Package getSpecificationVendor returns a wrong string (3)",
-					
-							"MF Specification-Vendor", c.getPackage().getSpecificationVendor());
-			assertEquals("Package getSpecificationVersion returns a wrong string (3)",
-					"1.2.3", c.getPackage().getSpecificationVersion());
-		} catch (Exception e) {
-			fail("Exception during helperAttributes test : " + e.getMessage());
-		}
-
-		// Some attributes in the package entry
-		Support_Resources.copyFile(resources, "Package",
-				"hyts_some_attributes.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_some_attributes.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertEquals("Package getImplementationTitle returns a wrong string (4)",
-					
-							"p Implementation-Title", c.getPackage().getImplementationTitle());
-			assertEquals("Package getImplementationVendor returns a wrong string (4)",
-					
-							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
-			assertEquals("Package getImplementationVersion returns a wrong string (4)",
-					"2.2.2", c.getPackage().getImplementationVersion());
-			assertEquals("Package getSpecificationTitle returns a wrong string (4)",
-					
-							"MF Specification-Title", c.getPackage().getSpecificationTitle());
-			assertEquals("Package getSpecificationVendor returns a wrong string (4)",
-					
-							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
-			assertEquals("Package getSpecificationVersion returns a wrong string (4)",
-					"2.2.2", c.getPackage().getSpecificationVersion());
-		} catch (Exception e) {
-			fail("Exception during helperAttributes test : " + e.getMessage());
-		}
-
-		// subdirectory Package
-		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_pq.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.q.C", true, ucl);
-			assertEquals("Package getImplementationTitle returns a wrong string (5)",
-					
-							"p Implementation-Title", c.getPackage().getImplementationTitle());
-			assertEquals("Package getImplementationVendor returns a wrong string (5)",
-					
-							"p Implementation-Vendor", c.getPackage().getImplementationVendor());
-			assertEquals("Package getImplementationVersion returns a wrong string (5)",
-					"1.1.3", c.getPackage().getImplementationVersion());
-			assertEquals("Package getSpecificationTitle returns a wrong string (5)",
-					
-							"p Specification-Title", c.getPackage().getSpecificationTitle());
-			assertEquals("Package getSpecificationVendor returns a wrong string (5)",
-					
-							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
-			assertEquals("Package getSpecificationVersion returns a wrong string (5)",
-					
-							"2.2.0.0.0.0.0.0.0.0.0", c.getPackage().getSpecificationVersion());
-
-		} catch (Exception e) {
-			fail("Exception during helperAttributes test : " + e.getMessage());
-		}
-	}
-
-	private static Object invokeMethod(Object obj, String name,
-			Object[] parameters) {
-
-		Class[] types = new Class[parameters.length];
-		for (int i = 0; i < parameters.length; i++) {
-			types[i] = parameters[i].getClass();
-		}
-		Class<?> c = null;
-		if (obj instanceof Class)
-			c = (Class) obj;
-		else
-			c = obj.getClass();
-		while (c != null) {
-			try {
-				Method m = c.getDeclaredMethod(name, types);
-				m.setAccessible(true);
-				return m.invoke(obj, parameters);
-			} catch (NoSuchMethodException e) {
-				c = c.getSuperclass();
-			} catch (Exception e) {
-				break;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * @tests java.lang.Package#getName()
-	 */
-	public void test_getName() {
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_pq.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.q.C", true, ucl);
-			assertEquals("Package getName returns a wrong string", "p.q", c.getPackage()
-					.getName());
-
-		} catch (Exception e) {
-			fail("Exception during getName test : " + e.getMessage());
-		}
-
-	}
-
-	/**
-	 * @tests java.lang.Package#getPackage(java.lang.String)
-	 */
-	public void test_getPackageLjava_lang_String() {
-		// Test for method java.lang.Package
-		// java.lang.Package.getPackage(java.lang.String)
-		Package.getPackage("java.lang");
-		try {
-			assertTrue("Package getPackage failed for java.lang", Package
-					.getPackage("java.lang") == java.lang.Object.class
-					.getPackage());
-		} catch (Exception e) {
-			fail("Unexpected exception " + e
-					+ " in Package.getPackage(java.lang.String)");
-		}
-
-	}
-
-	/**
-	 * @tests java.lang.Package#getPackages()
-	 */
-	public void test_getPackages() {
-		// Test for method java.lang.Package [] java.lang.Package.getPackages()
-		java.net.URL[] urls = new java.net.URL[1];
-
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_pq.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			Class.forName("p.q.C", true, ucl);
-			Package[] pckgs = (Package[]) invokeMethod(ucl, "getPackages",
-					new Object[0]);
-			boolean found = false;
-			for (int i = 0; i < pckgs.length; i++)
-				if (pckgs[i].getName().equals("p.q")) {
-					found = true;
-					break;
-				}
-			assertTrue("Package getPackages failed to retrieve a package",
-					found);
-		} catch (Exception e) {
-			fail("Unexpected exception " + e
-					+ " in Package.getPackages()");
-		}
-	}
-
-	/**
-	 * @tests java.lang.Package#hashCode()
-	 */
-	public void test_hashCode() {
-		// Test for method int java.lang.Package.hashCode()
-		Package p1 = Package.getPackage("java.lang");
-		Package p2 = Package.getPackage("java.lang");
-		if (p1 != null)
-			assertTrue(
-					"Package hashCode does not return the same hashcode for 2 packages with the same name",
-					p1.hashCode() == p2.hashCode());
-	}
-
-	/**
-	 * @tests java.lang.Package#isCompatibleWith(java.lang.String)
-	 */
-	public void test_isCompatibleWithLjava_lang_String() {
-		// Test for method boolean
-		// java.lang.Package.isCompatibleWith(java.lang.String)
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_c.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			Package p = c.getPackage();
-			assertTrue("Package isCompatibleWith fails with lower version", p
-					.isCompatibleWith("2.1.9."));
-			assertTrue("Package isCompatibleWith fails with same version (1)",
-					p.isCompatibleWith("2.2.0"));
-			assertTrue("Package isCompatibleWith fails with same version (2)",
-					p.isCompatibleWith("2.2"));
-			assertFalse("Package isCompatibleWith fails with higher version",
-                                    p.isCompatibleWith("2.2.0.0.1"));
-		} catch (Exception e) {
-			fail("Exception during isCompatibleWith test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Package#isSealed()
-	 */
-	public void test_isSealed() {
-		// Test for method boolean java.lang.Package.isSealed()
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_pq.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.q.C", true, ucl);
-			assertTrue("Package isSealed returns wrong boolean", c.getPackage()
-					.isSealed());
-
-		} catch (Exception e) {
-			fail("Exception during isSealed test : " + e.getMessage());
-		}
-
-	}
-
-	/**
-	 * @tests java.lang.Package#isSealed(java.net.URL)
-	 */
-	public void test_isSealedLjava_net_URL() {
-		// Test for method boolean java.lang.Package.isSealed(java.net.URL)
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_c.jar");
-			urls[0] = resourceURL;
-			ucl = new java.net.URLClassLoader(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertFalse("Package isSealed returns wrong boolean (1)",
-                                    c.getPackage().isSealed(new URL("file:/" + resPath + "/")));
-			assertTrue("Package isSealed returns wrong boolean (2)",
-					c.getPackage()
-							.isSealed(
-									new URL("file:/" + resPath
-											+ "/Package/hyts_c.jar")));
-		} catch (Exception e) {
-			fail("Exception during isSealed test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Package#toString()
-	 */
-	public void test_toString() {
-		// Test for method java.lang.String java.lang.Package.toString()
-		java.net.URL[] urls = new java.net.URL[1];
-		Class<?> c = null;
-		java.net.URLClassLoader ucl = null;
-		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
-		try {
-			java.net.URL resourceURL = new URL("file:/" + resPath
-					+ "/Package/hyts_c.jar");
-			urls[0] = resourceURL;
-			ucl = java.net.URLClassLoader.newInstance(urls, null);
-			c = Class.forName("p.C", true, ucl);
-			assertTrue("Package toString returns wrong string", c.getPackage()
-					.toString().length() > 0);
-		} catch (Exception e) {
-			fail("Exception during isSealed test : " + e.getMessage());
-		}
-	}
-
-	@Override
+    @Override
     protected void setUp() {
-		resources = Support_Resources.createTempFolder();
-		resPath = resources.toString();
-		if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
-			resPath = resPath.substring(1);
-	}
+        resources = Support_Resources.createTempFolder();
+        resPath = resources.toString();
+        if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
+            resPath = resPath.substring(1);
+    }
+
+    /**
+     * There is a newer version of this class with some actual tests but since
+     * the class is not implemented they all fail. For now use the stub test
+     * methods.
+     */
+
+    /**
+     * @tests java.lang.Package#getImplementationVendor()
+     * @tests java.lang.Package#getImplementationVersion()
+     * @tests java.lang.Package#getSpecificationTitle()
+     * @tests java.lang.Package#getSpecificationVendor()
+     * @tests java.lang.Package#getSpecificationVersion()
+     * @tests java.lang.Package#getImplementationTitle()
+     */
+    public void test_helper_Attributes() throws Exception {
+
+        Package p = getTestPackage("hyts_all_attributes.jar", "p.C");
+        assertEquals(
+                "Package getImplementationTitle returns a wrong string (1)",
+                "p Implementation-Title", p.getImplementationTitle());
+        assertEquals(
+                "Package getImplementationVendor returns a wrong string (1)",
+                "p Implementation-Vendor", p.getImplementationVendor());
+        assertEquals(
+                "Package getImplementationVersion returns a wrong string (1)",
+                "2.2.2", p.getImplementationVersion());
+        assertEquals(
+                "Package getSpecificationTitle returns a wrong string (1)",
+                "p Specification-Title", p.getSpecificationTitle());
+        assertEquals(
+                "Package getSpecificationVendor returns a wrong string (1)",
+                "p Specification-Vendor", p.getSpecificationVendor());
+        assertEquals(
+                "Package getSpecificationVersion returns a wrong string (1)",
+                "2.2.2", p.getSpecificationVersion());
+
+        // No entry for the package
+        Package p2 = getTestPackage("hyts_no_entry.jar", "p.C");
+        assertEquals(
+                "Package getImplementationTitle returns a wrong string (2)",
+                "MF Implementation-Title", p2.getImplementationTitle());
+        assertEquals(
+                "Package getImplementationVendor returns a wrong string (2)",
+                "MF Implementation-Vendor", p2.getImplementationVendor());
+        assertEquals(
+                "Package getImplementationVersion returns a wrong string (2)",
+                "5.3.b1", p2.getImplementationVersion());
+        assertEquals(
+                "Package getSpecificationTitle returns a wrong string (2)",
+                "MF Specification-Title", p2.getSpecificationTitle());
+        assertEquals(
+                "Package getSpecificationVendor returns a wrong string (2)",
+                "MF Specification-Vendor", p2.getSpecificationVendor());
+        assertEquals(
+                "Package getSpecificationVersion returns a wrong string (2)",
+                "1.2.3", p2.getSpecificationVersion());
+
+        // No attributes in the package entry
+        Package p3 = getTestPackage("hyts_no_attributes.jar", "p.C");
+        assertEquals(
+                "Package getImplementationTitle returns a wrong string (3)",
+                "MF Implementation-Title", p3.getImplementationTitle());
+        assertEquals(
+                "Package getImplementationVendor returns a wrong string (3)",
+                "MF Implementation-Vendor", p3.getImplementationVendor());
+        assertEquals(
+                "Package getImplementationVersion returns a wrong string (3)",
+                "5.3.b1", p3.getImplementationVersion());
+        assertEquals(
+                "Package getSpecificationTitle returns a wrong string (3)",
+                "MF Specification-Title", p3.getSpecificationTitle());
+        assertEquals(
+                "Package getSpecificationVendor returns a wrong string (3)",
+                "MF Specification-Vendor", p3.getSpecificationVendor());
+        assertEquals(
+                "Package getSpecificationVersion returns a wrong string (3)",
+                "1.2.3", p3.getSpecificationVersion());
+
+        // Some attributes in the package entry
+        Package p4 = getTestPackage("hyts_some_attributes.jar", "p.C");
+        assertEquals(
+                "Package getImplementationTitle returns a wrong string (4)",
+                "p Implementation-Title", p4.getImplementationTitle());
+        assertEquals(
+                "Package getImplementationVendor returns a wrong string (4)",
+                "MF Implementation-Vendor", p4.getImplementationVendor());
+        assertEquals(
+                "Package getImplementationVersion returns a wrong string (4)",
+                "2.2.2", p4.getImplementationVersion());
+        assertEquals(
+                "Package getSpecificationTitle returns a wrong string (4)",
+                "MF Specification-Title", p4.getSpecificationTitle());
+        assertEquals(
+                "Package getSpecificationVendor returns a wrong string (4)",
+                "p Specification-Vendor", p4.getSpecificationVendor());
+        assertEquals(
+                "Package getSpecificationVersion returns a wrong string (4)",
+                "2.2.2", p4.getSpecificationVersion());
+
+        // subdirectory Package
+        Package p5 = getTestPackage("hyts_pq.jar", "p.q.C");
+        assertEquals(
+                "Package getImplementationTitle returns a wrong string (5)",
+                "p Implementation-Title", p5.getImplementationTitle());
+        assertEquals(
+                "Package getImplementationVendor returns a wrong string (5)",
+                "p Implementation-Vendor", p5.getImplementationVendor());
+        assertEquals(
+                "Package getImplementationVersion returns a wrong string (5)",
+                "1.1.3", p5.getImplementationVersion());
+        assertEquals(
+                "Package getSpecificationTitle returns a wrong string (5)",
+                "p Specification-Title", p5.getSpecificationTitle());
+        assertEquals(
+                "Package getSpecificationVendor returns a wrong string (5)",
+                "p Specification-Vendor", p5.getSpecificationVendor());
+        assertEquals(
+                "Package getSpecificationVersion returns a wrong string (5)",
+                "2.2.0.0.0.0.0.0.0.0.0", p5.getSpecificationVersion());
+    }
+
+    /**
+     * @tests java.lang.Package#getName()
+     */
+    public void test_getName() throws Exception {
+        Package p = getTestPackage("hyts_pq.jar", "p.q.C");
+        assertEquals("Package getName returns a wrong string", "p.q", p
+                .getName());
+    }
+
+    /**
+     * @tests java.lang.Package#getPackage(java.lang.String)
+     */
+    public void test_getPackageLjava_lang_String() {
+        assertSame("Package getPackage failed for java.lang", Package
+                .getPackage("java.lang"), Package.getPackage("java.lang"));
+
+        assertSame("Package getPackage failed for java.lang", Package
+                .getPackage("java.lang"), Object.class.getPackage());
+    }
+
+    /**
+     * @tests java.lang.Package#getPackages()
+     */
+    public void test_getPackages() throws Exception {
+        Package[] pckgs = Package.getPackages();
+        boolean found = false;
+        for (int i = 0; i < pckgs.length; i++) {
+            if (pckgs[i].getName().equals("java.util")) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue("Package getPackages failed to retrieve a package", found);
+    }
+
+    /**
+     * @tests java.lang.Package#hashCode()
+     */
+    public void test_hashCode() {
+        Package p1 = Package.getPackage("java.lang");
+        if (p1 != null) {
+            assertEquals(p1.hashCode(), "java.lang".hashCode());
+        }
+    }
+
+    /**
+     * @tests java.lang.Package#isCompatibleWith(java.lang.String)
+     */
+    public void test_isCompatibleWithLjava_lang_String() throws Exception {
+        Package p = getTestPackage("hyts_c.jar", "p.C");
+
+        assertTrue("Package isCompatibleWith fails with lower version", p
+                .isCompatibleWith("2.1.9.9"));
+        assertTrue("Package isCompatibleWith fails with same version (1)", p
+                .isCompatibleWith("2.2.0"));
+        assertTrue("Package isCompatibleWith fails with same version (2)", p
+                .isCompatibleWith("2.2"));
+        assertFalse("Package isCompatibleWith fails with higher version", p
+                .isCompatibleWith("2.2.0.0.1"));
+        /*
+         * RI throws NPE...
+         */ 
+        try {
+            p.isCompatibleWith(null);
+            fail("Null version is illegal");
+        } catch (NullPointerException ok) {}
+
+        try {
+            p.isCompatibleWith("");
+            fail("Empty version is illegal");
+        } catch (NumberFormatException ok) {}
+        try {
+            p.isCompatibleWith(".");
+            fail("'.' version is illegal");
+        } catch (NumberFormatException ok) {}
+        try {
+            p.isCompatibleWith("1.2.");
+            fail("'1.2.' version is illegal");
+        } catch (NumberFormatException ok) {}
+        try {
+            p.isCompatibleWith(".9");
+            fail("'.9' version is illegal");
+        } catch (NumberFormatException ok) {}
+    }
+
+    /**
+     * @tests java.lang.Package#isSealed()
+     */
+    public void test_isSealed() throws Exception {
+        Package p = getTestPackage("hyts_pq.jar", "p.q.C");
+        assertTrue("Package isSealed returns wrong boolean", p.isSealed());
+    }
+
+    /**
+     * @tests java.lang.Package#isSealed(java.net.URL)
+     */
+    public void test_isSealedLjava_net_URL() throws Exception {
+        Package p = getTestPackage("hyts_c.jar", "p.C");
+        assertFalse("Package isSealed returns wrong boolean (1)", p
+                .isSealed(new URL("file:/" + resPath + "/")));
+        assertTrue("Package isSealed returns wrong boolean (2)", p
+                .isSealed(new URL("file:/" + resPath + "/Package/hyts_c.jar")));
+    }
+
+    /**
+     * @tests java.lang.Package#toString()
+     */
+    public void test_toString() throws Exception {
+        Package p = getTestPackage("hyts_c.jar", "p.C");
+        assertTrue("Package toString returns wrong string", p.toString()
+                .length() > 0);
+    }
 }

@@ -1,3 +1,4 @@
 org/apache/harmony/tests/internal/net/www/protocol/http/HttpURLConnectionTest.java
 tests/api/java/net/SocketTest.java
 org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java
+org/apache/harmony/luni/tests/java/lang/PackageTest.java
