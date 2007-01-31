@@ -168,8 +168,14 @@ public class File implements Serializable, Comparable<File> {
         if (!name.equals("")) { //$NON-NLS-1$
             // Remove all the proceeding separator chars from name
             name = fixSlashes(name);
-            while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
-                name = name.substring(1, name.length());
+
+            int separatorIndex = 0;
+            while ((separatorIndex < name.length())
+                    && (name.charAt(separatorIndex) == separatorChar)) {
+                separatorIndex++;
+            }
+            if (separatorIndex > 0) {
+                name = name.substring(separatorIndex, name.length());
             }
 
             // Ensure there is a separator char between dirPath and name
