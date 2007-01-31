@@ -31,6 +31,7 @@ import java.util.zip.ZipFile;
 import org.apache.harmony.luni.internal.locale.Country;
 import org.apache.harmony.luni.internal.locale.Language;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * Locale represents a language/country/variant combination. It is an identifier
@@ -228,7 +229,8 @@ public final class Locale implements Cloneable, Serializable {
             languageCode = "ji"; //$NON-NLS-1$
         }
 
-        countryCode = country.toUpperCase();
+        // countryCode is defined in ASCII character set
+        countryCode = Util.toASCIIUpperCase(country);
 
         variantCode = variant;
     }
