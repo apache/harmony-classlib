@@ -22,10 +22,12 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.harmony.logging.internal.nls.Messages;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * <code>Level</code> objects are used to indicate the level of logging. There
@@ -204,7 +206,8 @@ public class Level implements Serializable {
         this.resourceBundleName = resourceBundleName;
         if (resourceBundleName != null) {
             try {
-                rb = ResourceBundle.getBundle(resourceBundleName);
+                rb = ResourceBundle.getBundle(resourceBundleName, 
+                		Locale.getDefault(), VM.callerClassLoader());
             } catch (MissingResourceException e) {
                 rb = null;
             }

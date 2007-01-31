@@ -335,6 +335,13 @@ public class LevelTest extends TestCase implements Serializable {
 		Level l = new MockLevel("level1", 120,
 				"bundles/java/util/logging/res");
 		assertEquals(rb.getString("level1"), l.getLocalizedName());
+		
+        // regression test for HARMONY-2415
+        rb = ResourceBundle.getBundle(
+                "org.apache.harmony.logging.tests.java.util.logging.LevelTestResource");
+        l = new MockLevel("Level_error", 120, 
+                "org.apache.harmony.logging.tests.java.util.logging.LevelTestResource");
+        assertEquals(rb.getString("Level_error"), l.getLocalizedName());
 
 		l = new MockLevel("bad name", 120, "res");
 		assertEquals("bad name", l.getLocalizedName());
