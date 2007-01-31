@@ -43,8 +43,10 @@ public class GregorianCalendar extends Calendar {
      * Value for the AD era.
      */
     public static final int AD = 1;
+    
+    private static final long defaultGregorianCutover = -12219292800000l;
 
-    private long gregorianCutover = -12219292800000l;
+    private long gregorianCutover = defaultGregorianCutover;
 
     private transient int changeYear = 1582;
 
@@ -860,7 +862,7 @@ public class GregorianCalendar extends Calendar {
     @Override
     public int getActualMaximum(int field) {
         int value;
-        if ((value = getMaximum(field)) == getLeastMaximum(field)) {
+        if ((value = maximums[field]) == leastMaximums[field]) {
             return value;
         }
 
@@ -963,6 +965,16 @@ public class GregorianCalendar extends Calendar {
      */
     @Override
     public int getLeastMaximum(int field) {
+        // return value for WEEK_OF_YEAR should make corresponding changes when
+        // the gregorian change date have been reset.
+        if (gregorianCutover != defaultGregorianCutover
+                && field == WEEK_OF_YEAR) {
+            long currentTimeInMillis = time;
+            setTimeInMillis(gregorianCutover);
+            int actual = getActualMaximum(field);
+            setTimeInMillis(currentTimeInMillis);
+            return actual;
+        }
         return leastMaximums[field];
     }
 
