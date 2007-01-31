@@ -20,8 +20,11 @@
  */
 package javax.swing.undo;
 
+import java.util.Hashtable;
+
 import javax.swing.UIManager;
 import javax.swing.event.UndoableEditEvent;
+
 
 public class UndoManagerTest extends CompoundEditTest {
     protected UndoManager um;
@@ -650,6 +653,28 @@ public class UndoManagerTest extends CompoundEditTest {
             bWasException = true;
         }
         assertTrue("CannotRedoException was expected", bWasException);
+    }
+
+    public void testUndoTo_AIOOB() { // Regression test for HARMONY-2612
+        UndoManager um = new UndoManager();
+        um.addEdit(new AbstractUndoableEdit());
+        try {
+            um.undoTo(null);
+            fail("CannotUndoException should have been thrown");
+        } catch (CannotUndoException e) {
+            // Expected
+        }
+    }
+
+    public void testRedoTo_AIOOB() { // Regression test for HARMONY-2612
+        UndoManager um = new UndoManager();
+        um.addEdit(new AbstractUndoableEdit());
+        try {
+            um.redoTo(null);
+            fail("CannotRedoException should have been thrown");
+        } catch (CannotRedoException e) {
+            // Expected
+        }
     }
 
     public void testUndoTo() {

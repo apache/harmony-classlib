@@ -64,6 +64,11 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
 
     protected void undoTo(final UndoableEdit edit) {
         int index = edits.indexOf(edit);
+
+        if (index < 0) { // Fix for HARMONY-2612
+            throw new CannotUndoException();
+        }
+
         for (int i = indexOfNextAdd - 1; i >= index; i--) {
             UndoableEdit e = edits.get(i);
             e.undo();
@@ -73,6 +78,11 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
 
     protected void redoTo(final UndoableEdit edit) {
         int index = edits.indexOf(edit);
+
+        if (index < 0) { // Fix for HARMONY-2612
+            throw new CannotRedoException();
+        }
+
         for (int i = indexOfNextAdd; i <= index; i++) {
             UndoableEdit e = edits.get(i);
             e.redo();
