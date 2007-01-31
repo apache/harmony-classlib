@@ -38,7 +38,7 @@ import org.apache.harmony.lang.management.ClassLoadingMXBeanImpl;
 
 
 public class ClassLoadingMXBeanImplTest extends
-        SingleInstanceDynamicMXBeanImplTest {
+        SingleInstanceDynamicMXBeanImplTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();

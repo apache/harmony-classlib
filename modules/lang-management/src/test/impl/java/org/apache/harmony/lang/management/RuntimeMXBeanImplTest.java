@@ -42,7 +42,7 @@ import javax.management.openmbean.TabularData;
 import org.apache.harmony.lang.management.RuntimeMXBeanImpl;
 
 
-public class RuntimeMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTest {
+public class RuntimeMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();

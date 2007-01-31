@@ -45,7 +45,7 @@ import org.apache.harmony.lang.management.MemoryPoolMXBeanImpl;
 
 
 public class MemoryPoolMXBeanImplTest extends
-        MultiInstanceDynamicMXBeanImplTest {
+        MultiInstanceDynamicMXBeanImplTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();

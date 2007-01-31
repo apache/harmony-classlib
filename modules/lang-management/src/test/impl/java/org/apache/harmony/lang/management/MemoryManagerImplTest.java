@@ -41,7 +41,7 @@ import org.apache.harmony.lang.management.GarbageCollectorMXBeanImpl;
 import org.apache.harmony.lang.management.MemoryManagerMXBeanImpl;
 
 
-public class MemoryManagerImplTest extends MultiInstanceDynamicMXBeanImplTest {
+public class MemoryManagerImplTest extends MultiInstanceDynamicMXBeanImplTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();

@@ -40,7 +40,7 @@ import org.apache.harmony.lang.management.ThreadMXBeanImpl;
 
 
 
-public class ThreadMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTest {
+public class ThreadMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTestBase {
 
     protected void setUp() throws Exception {
         super.setUp();

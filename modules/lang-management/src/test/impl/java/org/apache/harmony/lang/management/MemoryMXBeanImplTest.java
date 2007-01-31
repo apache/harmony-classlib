@@ -46,7 +46,7 @@ import org.apache.harmony.lang.management.ManagementUtils;
 import org.apache.harmony.lang.management.MemoryMXBeanImpl;
 
 
-public class MemoryMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTest {
+public class MemoryMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTestBase {
 
     private MemoryMXBeanImpl notifierBean;
 

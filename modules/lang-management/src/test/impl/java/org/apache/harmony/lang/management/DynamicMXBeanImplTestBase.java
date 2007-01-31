@@ -29,13 +29,13 @@ import junit.framework.TestCase;
 /**
  * 
  */
-public abstract class DynamicMXBeanImplTest extends TestCase {
+public abstract class DynamicMXBeanImplTestBase extends TestCase {
 
     protected Map<String, AttributeData> attribs;
 
     abstract protected void populateTestAttributes();
 
-    public DynamicMXBeanImplTest() {
+    public DynamicMXBeanImplTestBase() {
         populateTestAttributes();
     }
 

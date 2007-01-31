@@ -38,7 +38,7 @@ import org.apache.harmony.lang.management.OperatingSystemMXBeanImpl;
 
 
 public class OperatingSystemMXBeanImplTest extends
-        SingleInstanceDynamicMXBeanImplTest {
+        SingleInstanceDynamicMXBeanImplTestBase {
 
     private OperatingSystemMXBeanImpl notifierBean;
 

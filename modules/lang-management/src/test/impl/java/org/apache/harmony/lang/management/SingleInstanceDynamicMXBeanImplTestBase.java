@@ -26,8 +26,8 @@ import javax.management.ReflectionException;
 import org.apache.harmony.lang.management.DynamicMXBeanImpl;
 
 
-public abstract class SingleInstanceDynamicMXBeanImplTest extends
-        DynamicMXBeanImplTest {
+public abstract class SingleInstanceDynamicMXBeanImplTestBase extends
+        DynamicMXBeanImplTestBase {
 
     protected DynamicMXBeanImpl mb;
 

@@ -41,7 +41,7 @@ import org.apache.harmony.lang.management.LoggingMXBeanImpl;
 import org.apache.harmony.lang.management.ManagementUtils;
 
 
-public class LoggingMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTest {
+public class LoggingMXBeanImplTest extends SingleInstanceDynamicMXBeanImplTestBase {
 
     private Enumeration<String> loggerNames;
 

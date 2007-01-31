@@ -28,8 +28,8 @@ import javax.management.ReflectionException;
 import org.apache.harmony.lang.management.DynamicMXBeanImpl;
 
 
-public abstract class MultiInstanceDynamicMXBeanImplTest extends
-        DynamicMXBeanImplTest {
+public abstract class MultiInstanceDynamicMXBeanImplTestBase extends
+        DynamicMXBeanImplTestBase {
 
     protected List<DynamicMXBeanImpl> mbList;
 
