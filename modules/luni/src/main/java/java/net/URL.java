@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
 
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * An instance of class URL specifies the location of a resource on the world
@@ -264,7 +265,8 @@ public final class URL implements java.io.Serializable {
                     index = -1;
                 } else {
                     // Ignore case in protocol names.
-                    protocol = protocol.toLowerCase();
+                	// Scheme is defined by ASCII characters.
+                    protocol = Util.toASCIILowerCase(protocol);
                 }
             }
         }
