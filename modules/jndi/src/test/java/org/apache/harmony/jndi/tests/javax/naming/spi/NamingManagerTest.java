@@ -1861,7 +1861,8 @@ public class NamingManagerTest extends TestCase {
 			File f = new File(System.getProperty("harmony.tests.cp1"), pkg
 					.replace('.', '/')
 					+ "/jndiprovider.properties");
-			f.getParentFile().mkdirs();
+            f.createNewFile();
+            f.deleteOnExit();
 
 			PrintStream out = new PrintStream(new FileOutputStream(f));
 			for (Map.Entry<?, ?> e : res.entrySet()) {
