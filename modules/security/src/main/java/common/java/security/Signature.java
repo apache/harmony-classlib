@@ -260,15 +260,15 @@ public abstract class Signature extends SignatureSpi {
      *  
      */
     public final int sign(byte[] outbuf, int offset, int len)
-            throws SignatureException {
-        if (state != SIGN) {
-            throw new SignatureException(
-                    Messages.getString("security.27")); //$NON-NLS-1$
-        }
+            throws SignatureException {       
         if (outbuf == null || offset < 0 || len < 0 ||
                 offset + len > outbuf.length) {
             throw new IllegalArgumentException(
                     Messages.getString("security.05")); //$NON-NLS-1$
+        }
+        if (state != SIGN) {
+            throw new SignatureException(
+                    Messages.getString("security.27")); //$NON-NLS-1$
         }
         return engineSign(outbuf, offset, len);
     }

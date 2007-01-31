@@ -166,8 +166,8 @@ public class Signature_Impl2Test extends TestCase {
 
         try {
             s.sign(b, 0, 5);
-            fail("No expected SignatureException 1");
-        } catch (SignatureException e) {
+            fail("No expected IllegalArgumentException 1");
+        } catch (IllegalArgumentException e) {
         }
 
         s.initSign(new MyPrivateKey());
