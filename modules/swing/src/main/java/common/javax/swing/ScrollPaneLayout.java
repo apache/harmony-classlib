@@ -33,6 +33,8 @@ import java.io.Serializable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPaneConstants {
 
     public static class UIResource extends ScrollPaneLayout implements javax.swing.plaf.UIResource {
@@ -120,12 +122,10 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
     }
 
     public void setVerticalScrollBarPolicy(final int x) {
-        boolean isVertical = ((x == ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED)
-                | (x == ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS) 
-                | (x == ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER));
-        if (!isVertical) {
-            throw new IllegalArgumentException(
-                    "invalid verticalScrollBarPolicy");
+        if (x != ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED &&
+            x != ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS && 
+            x != ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER) {
+            throw new IllegalArgumentException(Messages.getString("swing.02"));
         }
         vsbPolicy = x;
     }
@@ -135,12 +135,10 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
     }
 
     public void setHorizontalScrollBarPolicy(final int x) {
-        boolean isHorisontal = ((x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED)
-                | (x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) 
-                | (x == ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS));
-        if (!isHorisontal) {
-            throw new IllegalArgumentException(
-                    "invalid horizontalScrollBarPolicy");
+        if (x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED &&
+            x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER && 
+            x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS) {
+            throw new IllegalArgumentException(Messages.getString("swing.03")); 
         }
         hsbPolicy = x;
     }
