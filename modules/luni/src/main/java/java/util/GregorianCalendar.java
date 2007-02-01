@@ -60,7 +60,7 @@ public class GregorianCalendar extends Calendar {
             212, 243, 273, 304, 334 };
 
     private static int[] maximums = new int[] { 1, 292278994, 11, 53, 6, 31,
-            366, 7, 6, 1, 11, 23, 59, 59, 999, 14 * 3600 * 1000, 3600000 };
+            366, 7, 6, 1, 11, 23, 59, 59, 999, 14 * 3600 * 1000, 7200000 };
 
     private static int[] minimums = new int[] { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0,
             0, 0, 0, 0, 0, -13 * 3600 * 1000, 0 };

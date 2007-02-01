@@ -436,7 +436,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		BitSet result = new BitSet();
 		Vector values = new Vector();
 		int[] max = { 1, 292278994, 11, 53, 6, 31, 366, 7, 6, 1, 11, 23, 59,
-				59, 999, 50400000, 3600000 };
+				59, 999, 50400000, 7200000 };
 		for (int i = 0; i < max.length; i++) {
 			if (gc.getMaximum(i) != max[i]) {
 				result.set(i);
