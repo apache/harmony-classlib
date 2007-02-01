@@ -61,7 +61,9 @@ public class ImageView extends View {
 
     public ImageView(final Element element) {
         super(element);
-        setPropertiesFromAttributes();
+        if (element != null) { // Fix for HARMONY-1747, for compatibility with RI
+            setPropertiesFromAttributes();
+        }
     }
 
     public Image getImage() {
