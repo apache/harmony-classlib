@@ -99,16 +99,17 @@ public interface INetworkSystem {
 			byte[] data, int offset, int length, int receiveTimeout,
 			boolean peek) throws IOException;
     
-    public int receiveDatagramDirect(FileDescriptor aFD, long address, int offset,
-            int length, int receiveTimeout, boolean peek) throws IOException;
+    public int receiveDatagramDirect(FileDescriptor aFD, DatagramPacket packet,
+            long address, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException;
 
 	public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
 			byte[] data, int offset, int length, int receiveTimeout,
 			boolean peek) throws IOException;
     
-    public int recvConnectedDatagramDirect(FileDescriptor aFD, long address,
-            int offset, int length, int receiveTimeout, boolean peek)
-            throws IOException;
+    public int recvConnectedDatagramDirect(FileDescriptor aFD,
+            DatagramPacket packet, long address, int offset, int length,
+            int receiveTimeout, boolean peek) throws IOException;
     
 	public int peekDatagram(FileDescriptor aFD, InetAddress sender,
 			int receiveTimeout) throws IOException;

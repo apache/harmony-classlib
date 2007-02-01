@@ -175,10 +175,10 @@ final class OSNetworkSystem implements INetworkSystem {
                 receiveTimeout, peek);
     }
     
-    public int receiveDatagramDirect(FileDescriptor aFD, long address,
-            int offset, int length, int receiveTimeout, boolean peek)
-            throws IOException {
-        return receiveDatagramDirectImpl(aFD, address, offset, length,
+    public int receiveDatagramDirect(FileDescriptor aFD, DatagramPacket packet,
+            long address, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException {
+        return receiveDatagramDirectImpl(aFD, packet, address, offset, length,
                 receiveTimeout, peek);
     }
 
@@ -189,11 +189,10 @@ final class OSNetworkSystem implements INetworkSystem {
 				receiveTimeout, peek);
 	}
     
-    public int recvConnectedDatagramDirect(FileDescriptor aFD, long address,
-            int offset, int length, int receiveTimeout, boolean peek)
+    public int recvConnectedDatagramDirect(FileDescriptor aFD, DatagramPacket packet, long address,
+             int offset, int length, int receiveTimeout, boolean peek)
             throws IOException {
-        return recvConnectedDatagramDirectImpl(aFD, address, offset, length,
-                receiveTimeout, peek);
+        return recvConnectedDatagramDirectImpl(aFD, packet, address, offset, length, receiveTimeout, peek);
     }
 
 	public int peekDatagram(FileDescriptor aFD, InetAddress sender,
@@ -543,8 +542,8 @@ final class OSNetworkSystem implements INetworkSystem {
 			int receiveTimeout, boolean peek) throws IOException;
     
     static native int receiveDatagramDirectImpl(FileDescriptor aFD,
-            long address, int offset, int length, int receiveTimeout,
-            boolean peek) throws IOException;
+            DatagramPacket packet, long address, int offset, int length,
+            int receiveTimeout, boolean peek) throws IOException;
 
 	/*
 	 * Recieve data on the connected socket into the specified buffer. The
@@ -565,7 +564,7 @@ final class OSNetworkSystem implements INetworkSystem {
 			int receiveTimeout, boolean peek) throws IOException;
     
     static native int recvConnectedDatagramDirectImpl(FileDescriptor aFD,
-            long address, int offset, int length,
+            DatagramPacket packet, long address, int offset, int length,
             int receiveTimeout, boolean peek) throws IOException;
 
 	/*

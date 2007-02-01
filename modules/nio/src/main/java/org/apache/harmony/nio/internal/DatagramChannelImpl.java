@@ -63,6 +63,8 @@ class DatagramChannelImpl extends DatagramChannel implements
     private static final int DEFAULT_TIMEOUT = 1;
 
     private static final int ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK = -211;
+    
+    private static final byte[] stubArray = new byte[0];
 
     // -------------------------------------------------------------------
     // Instance variables
@@ -250,43 +252,11 @@ class DatagramChannelImpl extends DatagramChannel implements
             // receive real data packet, (not peek)
             synchronized (readLock) {
                 boolean loop = isBlocking();
-                do {
-                    DatagramPacket receivePacket = new DatagramPacket(
-                            new byte[target.remaining()], target.remaining());
-
-                    if (isConnected()) {
-                        networkSystem.recvConnectedDatagram(fd, receivePacket,
-                                receivePacket.getData(), receivePacket
-                                        .getOffset(),
-                                receivePacket.getLength(), isBlocking() ? 0
-                                        : DEFAULT_TIMEOUT, false);
-                    } else {
-                        networkSystem.receiveDatagram(fd, receivePacket,
-                                receivePacket.getData(), receivePacket
-                                        .getOffset(),
-                                receivePacket.getLength(), isBlocking() ? 0
-                                        : DEFAULT_TIMEOUT, false);
-                    }
-
-                    // security check
-                    SecurityManager sm = System.getSecurityManager();
-                    if (!isConnected() && null != sm) {
-                        try {
-                            sm.checkAccept(receivePacket.getAddress()
-                                    .getHostAddress(), receivePacket.getPort());
-                        } catch (SecurityException e) {
-                            // do discard the datagram packet
-                            receivePacket = null;
-                        }
-                    }
-                    if (null != receivePacket
-                            && null != receivePacket.getAddress()) {
-                        // copy the data of received packet
-                        target.put(ByteBuffer.wrap(receivePacket.getData()));
-                        retAddr = receivePacket.getSocketAddress();
-                        break;
-                    }
-                } while (loop);
+                if (!target.isDirect()) {
+                    retAddr = receiveImpl(target, loop);
+                } else {
+                    retAddr = receiveDirectImpl(target, loop);
+                }
             }
         } catch (InterruptedIOException e) {
             // this line used in Linux
@@ -294,6 +264,105 @@ class DatagramChannelImpl extends DatagramChannel implements
         } finally {
             end(null != retAddr);
         }
+        return retAddr;
+    }
+    
+    private SocketAddress receiveImpl(ByteBuffer target, boolean loop)
+            throws IOException {
+        SocketAddress retAddr = null;
+        DatagramPacket receivePacket;
+        int oldposition = target.position();
+        int received = 0;
+        if (target.hasArray()) {
+            receivePacket = new DatagramPacket(target.array(), target
+                    .position()
+                    + target.arrayOffset(), target.remaining());
+        } else {        
+            receivePacket = new DatagramPacket(new byte[target.remaining()], target.remaining());
+        }
+        do {
+            if (isConnected()) {
+                received = networkSystem.recvConnectedDatagram(fd, receivePacket,
+                        receivePacket.getData(), receivePacket.getOffset(),
+                        receivePacket.getLength(), isBlocking() ? 0
+                                : DEFAULT_TIMEOUT, false);
+            } else {
+                received = networkSystem.receiveDatagram(fd, receivePacket,
+                        receivePacket.getData(), receivePacket.getOffset(),
+                        receivePacket.getLength(), isBlocking() ? 0
+                                : DEFAULT_TIMEOUT, false);
+            }
+
+            // security check
+            SecurityManager sm = System.getSecurityManager();
+            if (!isConnected() && null != sm) {
+                try {
+                    sm.checkAccept(receivePacket.getAddress().getHostAddress(),
+                            receivePacket.getPort());
+                } catch (SecurityException e) {
+                    // do discard the datagram packet
+                    receivePacket = null;
+                }
+            }
+            if (null != receivePacket && null != receivePacket.getAddress()) {
+                               
+                if (received > 0) {
+                    if (target.hasArray()) {
+                        target.position(oldposition + received);
+                    } else {
+                        // copy the data of received packet
+                        target.put(receivePacket.getData(), 0, received);
+                    }
+                }
+                retAddr = receivePacket.getSocketAddress();
+                break;
+            }
+        } while (loop);
+        return retAddr;
+    }
+    
+    private SocketAddress receiveDirectImpl(ByteBuffer target, boolean loop) throws IOException
+    {
+        SocketAddress retAddr = null;  
+        DatagramPacket receivePacket = new DatagramPacket(
+                stubArray, 0);
+        int oldposition = target.position();
+        int received = 0;
+        do {
+            long address = AddressUtil.getDirectBufferAddress(target);
+            if (isConnected()) {
+                received = networkSystem.recvConnectedDatagramDirect(fd, receivePacket,
+                        address, target.position(),
+                        target.remaining(), isBlocking() ? 0
+                                : DEFAULT_TIMEOUT, false);
+            } else {
+                received = networkSystem.receiveDatagramDirect(fd, receivePacket,
+                        address, target.position(),
+                        target.remaining(), isBlocking() ? 0
+                                : DEFAULT_TIMEOUT, false);
+            }
+
+            // security check
+            SecurityManager sm = System.getSecurityManager();
+            if (!isConnected() && null != sm) {
+                try {
+                    sm.checkAccept(receivePacket.getAddress()
+                            .getHostAddress(), receivePacket.getPort());
+                } catch (SecurityException e) {
+                    // do discard the datagram packet
+                    receivePacket = null;
+                }
+            }
+            if (null != receivePacket
+                    && null != receivePacket.getAddress()) {
+                // copy the data of received packet
+                if (received > 0) {
+                    target.position(oldposition + received);
+                }
+                retAddr = receivePacket.getSocketAddress();
+                break;
+            }
+        } while (loop);
         return retAddr;
     }
 
@@ -468,10 +537,10 @@ class DatagramChannelImpl extends DatagramChannel implements
                     long address = AddressUtil.getDirectBufferAddress(readBuffer);
                     if (isConnected()) {
                         readCount = networkSystem.recvConnectedDatagramDirect(fd,
-                                address, start, length, timeout, false);
+                                null, address, start, length, timeout, false);
                     } else {
                         readCount = networkSystem.receiveDatagramDirect(fd,
-                                address, start, length, timeout, false);
+                                null, address, start, length, timeout, false);
                     }
                 } else {
                     // the target is assured to have array.

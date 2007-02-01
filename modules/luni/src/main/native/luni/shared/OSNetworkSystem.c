@@ -44,10 +44,6 @@ void setDatagramPacketLength (JNIEnv * env, jobject datagramPacket,
 int 
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept);
 
-int receiveDatagram(JNIEnv * env, jclass thisClz, jobject fileDescriptor, 
-    jobject datagramPacket, jbyte* message, jint offset, jint msgLength, jint timeout, jboolean peek);
-
-
 /**
  * A helper method, to set the remote address into the DatagramPacket.
  *
@@ -267,62 +263,6 @@ updateSocket (JNIEnv * env,
 	      socketNew);
   setSocketImplAddress (env, socketImpl, anInetAddress);
   setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
-}
-
-int receiveDatagram(JNIEnv * env,
-		  jclass thisClz,  jobject  fileDescriptor, jobject datagramPacket, jbyte* message,
-		  jint offset, jint msgLength, jint timeout,  jboolean peek)
-{
-  PORT_ACCESS_FROM_ENV (env);
-  hysocket_t hysocketP;	
-  hysockaddr_struct sockaddrP;  
-  I_32 result, localCount;
-  I_32 flags = HYSOCK_NOFLAGS;
-  jbyte	nlocalAddrBytes[HYSOCK_INADDR6_LEN];
-
-  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
-  result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
-  //result = selectRead (env,hysocketP, timeout, FALSE);
-  if (0	> result)
-    return (jint) 0;
-
-  if (!hysock_socketIsValid (hysocketP))
-    {
-      throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
-      return (jint) 0;
-    }
-
-  hysock_sockaddr_init6	(&sockaddrP, (U_8 *) nlocalAddrBytes,
-       HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4, 0, 0, 0,
-       hysocketP);
-
-  localCount = (msgLength < 65536) ? msgLength : 65536;	
- 
-  if (peek)
-    {
-      result = hysock_setflag (HYSOCK_MSG_PEEK,	&flags);
-      if (result)
-	{
-	  throwJavaNetSocketException (env, result);
-	  return (jint)	0;
-	}
-    }
-  result =
-    hysock_readfrom (hysocketP,	(U_8 *)message, localCount, flags, &sockaddrP);  
-  
-  if (result < 0)
-    {
-      throwJavaNetSocketException (env,	result);
-      return (jint) 0;
-    }
-  else
-    {
-      if(datagramPacket != NULL)
-      {
-      	updatePacket (env, &sockaddrP, datagramPacket, result);
-      }
-      return (jint) result;
-    }
 }
 
 /*
@@ -1315,7 +1255,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
       return 0;	
     }
   
-  result = receiveDatagram(env, thisClz, fileDescriptor, datagramPacket, message, offset, localCount , timeout, peek);
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl(env, thisClz, fileDescriptor, 
+      datagramPacket, (jlong)message, offset, localCount , timeout, peek);
     
   if (result > 0)
     {
@@ -1328,18 +1269,69 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    receiveDatagramDirectImpl
- * Signature: (Ljava/io/FileDescriptor;JIIIZ)I
- */
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;JIIIZ)I
+ */ 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl(JNIEnv *env,
 		jclass thisClz, 
-		jobject fileDescriptor, 
+		jobject fileDescriptor,
+		jobject datagramPacket, 
 		jlong address, 
 		jint offset, 
 		jint msgLength, 
 		jint timeout, 
 		jboolean peek)
 {
-  return receiveDatagram(env, thisClz, fileDescriptor, NULL, (jbyte*) address, offset, msgLength, timeout, peek);
+  PORT_ACCESS_FROM_ENV (env);
+  jbyte *message = (jbyte *)address;
+  hysocket_t hysocketP;	
+  hysockaddr_struct sockaddrP;  
+  I_32 result, localCount;
+  I_32 flags = HYSOCK_NOFLAGS;
+  jbyte	nlocalAddrBytes[HYSOCK_INADDR6_LEN];
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
+  result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
+  //result = selectRead (env,hysocketP, timeout, FALSE);
+  if (0	> result)
+    return (jint) 0;
+
+  if (!hysock_socketIsValid (hysocketP))
+    {
+      throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
+      return (jint) 0;
+    }
+
+  hysock_sockaddr_init6	(&sockaddrP, (U_8 *) nlocalAddrBytes,
+       HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4, 0, 0, 0,
+       hysocketP);
+
+  localCount = (msgLength < 65536) ? msgLength : 65536;	
+ 
+  if (peek)
+    {
+      result = hysock_setflag (HYSOCK_MSG_PEEK,	&flags);
+      if (result)
+	{
+	  throwJavaNetSocketException (env, result);
+	  return (jint)	0;
+	}
+    }
+  result =
+    hysock_readfrom (hysocketP,	(U_8 *)message, localCount, flags, &sockaddrP);  
+  
+  if (result < 0)
+    {
+      throwJavaNetSocketException (env,	result);
+      return (jint) 0;
+    }
+  else
+    {
+      if(datagramPacket != NULL)
+      {
+      	updatePacket (env, &sockaddrP, datagramPacket, result);
+      }
+      return (jint) result;
+    }
 }
 
 /*
@@ -1378,18 +1370,12 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
       return 0;	
     }
     
-  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl(env, thisClz, fileDescriptor, (jlong)message, offset, localCount, timeout, peek);  
+  result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl(env, 
+  thisClz, fileDescriptor, datagramPacket, (jlong)message, offset, localCount, timeout, peek);  
   if (result > 0)
     {
       (*env)->SetByteArrayRegion (env, data, offset, result, message);
-      /* update	the packet with	the legth of data received.
-	 Since we are connected	we did not get back an address.	 This
-	 address is cached within the PlainDatagramSocket  java	object and is filled in	at
-	 the java level	*/
-      if(datagramPacket != NULL)
-      {
-      	setDatagramPacketLength (env, datagramPacket, result);
-      }
+      
     }
   hymem_free_memory ( message);  
   return result; 
@@ -1399,11 +1385,13 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    recvConnectedDatagramDirectImpl
- * Signature: (Ljava/io/FileDescriptor;JIIIZ)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;JIIIZ)I
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl(JNIEnv *env, 
 		jclass thisClz, 
-		jobject fileDescriptor, 
+		jobject fileDescriptor,
+		jobject
+		datagramPacket, 
 		jlong address, 
 		jint offset, 
 		jint msgLength, 
@@ -1464,6 +1452,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     }
   else
     {
+     /* update	the packet with	the legth of data received.
+	 Since we are connected	we did not get back an address.	 This
+	 address is cached within the PlainDatagramSocket  java	object and is filled in	at
+	 the java level	*/
+      if(datagramPacket != NULL)
+      {
+      	setDatagramPacketLength (env, datagramPacket, result);
+      }
       return (jint) result;
     }
 }
