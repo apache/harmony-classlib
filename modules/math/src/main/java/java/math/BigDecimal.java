@@ -234,7 +234,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         int begin = offset; // first index to be copied
         int last = offset + (len - 1); // last index to be copied
         String scaleString = null; // buffer for scale
-        StringBuffer unscaledBuffer; // buffer for unscaled value
+        StringBuilder unscaledBuffer; // buffer for unscaled value
         long newScale; // the new scale
 
         if (in == null) {
@@ -243,18 +243,29 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         if ((last >= in.length) || (offset < 0) || (len <= 0) || (last < 0)) {
             throw new NumberFormatException();
         }
-        unscaledBuffer = new StringBuffer(len);
+        unscaledBuffer = new StringBuilder(len);
+        int bufLength = 0;
         // To skip a possible '+' symbol
         if ((offset <= last) && (in[offset] == '+')) {
             offset++;
             begin++;
         }
+        int counter = 0;
+        boolean wasNonZero = false;
         // Accumulating all digits until a possible decimal point
         for (; (offset <= last) && (in[offset] != '.')
         && (in[offset] != 'e') && (in[offset] != 'E'); offset++) {
-            ;
+            if (!wasNonZero) {
+            	if (in[offset] == '0') {
+            		counter++;
+            	} else {
+            	    wasNonZero = true;	
+            	}            	
+            };
+
         }
         unscaledBuffer.append(in, begin, offset - begin);
+        bufLength += offset - begin;
         // A decimal point was found
         if ((offset <= last) && (in[offset] == '.')) {
             offset++;
@@ -262,9 +273,16 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             begin = offset;
             for (; (offset <= last) && (in[offset] != 'e')
             && (in[offset] != 'E'); offset++) {
-                ;
+            	if (!wasNonZero) {
+                	if (in[offset] == '0') {
+                		counter++;
+                	} else {
+                	    wasNonZero = true;	
+                	}            	
+                };
             }
             scale = offset - begin;
+            bufLength +=scale;
             unscaledBuffer.append(in, begin, scale);
         } else {
             scale = 0;
@@ -291,7 +309,16 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             }
         }
         // Parsing the unscaled value
-        setUnscaledValue(new BigInteger(unscaledBuffer.toString()));
+        if (bufLength < 19) {
+        	smallValue = Long.parseLong(unscaledBuffer.toString());
+        	bitLength = bitLength(smallValue);
+        } else {
+            setUnscaledValue(new BigInteger(unscaledBuffer.toString()));
+        }        
+        precision = unscaledBuffer.length() - counter;
+        if (unscaledBuffer.charAt(0) == '-') {
+            precision --;
+        }    
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -1732,10 +1759,13 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
      * @see #round(MathContext).
      */
     private void inplaceRound(MathContext mc) {
-        int mcPrecision = mc.getPrecision();
+    	int mcPrecision = mc.getPrecision();
+        if (aproxPrecision() - mcPrecision <= 0 || mcPrecision == 0) {
+        	return;
+        }
         int discardedPrecision = precision() - mcPrecision;
         // If no rounding is necessary it returns immediately
-        if ((discardedPrecision <= 0) || (mcPrecision == 0)) {
+        if ((discardedPrecision <= 0)) {
             return;
         }
         // When the number is small perform an efficient rounding

@@ -33,7 +33,7 @@ class Conversion {
      * Holds the maximal exponent for each radix, so that radix<sup>digitFitInInt[radix]</sup>
      * fit in an {@code int} (32 bits).
      */
-    private static final int[] digitFitInInt = { -1, -1, 31, 19, 15, 13, 11,
+    static final int[] digitFitInInt = { -1, -1, 31, 19, 15, 13, 11,
             11, 10, 9, 9, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 6,
             6, 6, 6, 6, 6, 6, 6, 5 };
 
@@ -43,7 +43,7 @@ class Conversion {
      * 2 ^ 31, bigRadices[8] = 10 ^ 9, etc.
      */
 
-    private static final int bigRadices[] = { -2147483648, 1162261467,
+    static final int bigRadices[] = { -2147483648, 1162261467,
             1073741824, 1220703125, 362797056, 1977326743, 1073741824,
             387420489, 1000000000, 214358881, 429981696, 815730721, 1475789056,
             170859375, 268435456, 410338673, 612220032, 893871739, 1280000000,
@@ -51,63 +51,7 @@ class Conversion {
             387420489, 481890304, 594823321, 729000000, 887503681, 1073741824,
             1291467969, 1544804416, 1838265625, 60466176 };
 
-    /** @see BigInteger#BigInteger(String, int) */
-    static BigInteger string2BigInteger(String val, int radix) {
-        int sign;
-        int[] digits;
-        int numberLength;
-        int stringLength = val.length();
-        int startChar;
-        int endChar = stringLength;
-
-        if (val.charAt(0) == '-') {
-            sign = -1;
-            startChar = 1;
-            stringLength--;
-        } else {
-            sign = 1;
-            startChar = 0;
-        }
-        /*
-         * We use the following algorithm: split a string into portions of n
-         * characters and convert each portion to an integer according to the
-         * radix. Then convert an exp(radix, n) based number to binary using the
-         * multiplication method. See D. Knuth, The Art of Computer Programming,
-         * vol. 2.
-         */
-
-        int charsPerInt = digitFitInInt[radix];
-        int bigRadixDigitsLength = stringLength / charsPerInt;
-        int topChars = stringLength % charsPerInt;
-
-        if (topChars != 0) {
-            bigRadixDigitsLength++;
-        }
-        digits = new int[bigRadixDigitsLength];
-        // Get the maximal power of radix that fits in int
-        int bigRadix = bigRadices[radix - 2];
-        // Parse an input string and accumulate the BigInteger's magnitude
-        int digitIndex = 0; // index of digits array
-        int substrEnd = startChar + ((topChars == 0) ? charsPerInt : topChars);
-        int newDigit;
-        BigInteger result;
-
-        for (int substrStart = startChar; substrStart < endChar; substrStart = substrEnd, substrEnd = substrStart
-                + charsPerInt) {
-            int bigRadixDigit = Integer.parseInt(val.substring(substrStart,
-                    substrEnd), radix);
-            newDigit = Multiplication.multiplyByInt(digits, digitIndex,
-                    bigRadix);
-            newDigit += Elementary
-                    .inplaceAdd(digits, digitIndex, bigRadixDigit);
-            digits[digitIndex++] = newDigit;
-        }
-        numberLength = digitIndex;
-        result = new BigInteger(sign, numberLength, digits);
-        result.cutOffLeadingZeroes();
-        return result;
-    }
-
+    
     /** @see BigInteger#toString(int) */
     static String bigInteger2String(BigInteger val, int radix) {
         int sign = val.sign;
