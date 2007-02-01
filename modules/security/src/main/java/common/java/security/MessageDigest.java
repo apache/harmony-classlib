@@ -203,9 +203,13 @@ public abstract class MessageDigest extends MessageDigestSpi {
      *  
      */
     public int digest(byte[] buf, int offset, int len) throws DigestException {
-        if (buf == null || offset < 0 || len < 0 ||
-                (long)offset + (long)len > buf.length) {
-            throw new IllegalArgumentException(Messages.getString("security.05")); //$NON-NLS-1$
+        if (buf == null ||
+                // offset < 0 || len < 0 ||
+                // checks for negative values are commented out intentionally
+                // see HARMONY-1148 for details
+                (long) offset + (long) len > buf.length) {
+            throw new IllegalArgumentException(Messages
+                    .getString("security.05")); //$NON-NLS-1$
         }
         return engineDigest(buf, offset, len);
     }

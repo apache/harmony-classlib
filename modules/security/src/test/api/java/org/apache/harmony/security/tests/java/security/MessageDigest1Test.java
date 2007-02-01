@@ -130,6 +130,48 @@ public class MessageDigest1Test extends TestCase {
 		}
 	}
 
+    /**
+     * @tests java.security.MessageDigest#digest(byte[], int, int)
+     */
+    public void test_digestLB$LILI() throws Exception {
+
+        // Regression for Harmony-1148
+        MessageDigest md = new MyMessageDigest1();
+        final byte[] bytes = new byte[] { 2, 4, 1 };
+        try {
+            // buf == null
+            md.digest(null, 0, 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            // offset + len > buf.length
+            md.digest(bytes, 0, bytes.length + 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            // offset + len > Integer.MAX_VALUE
+            md.digest(bytes, Integer.MAX_VALUE, 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        // offset<0 and len<0 are passed to provider
+        final int offset = -1;
+        final int len = -1;
+        final int status = 33;
+        md = new MyMessageDigest1("ABC") {
+            @Override
+            public int engineDigest(byte[] arg0, int arg1, int arg2) {
+                assertSame("buf", bytes, arg0);
+                assertEquals("offset", offset, arg1);
+                assertEquals("len", len, arg2);
+                return status;
+            }
+        };
+        assertEquals("returned status", status, md.digest(bytes, offset, len));
+    }
+
 	public void testIsEqual() {
 		byte[] b1 = {1, 2, 3, 4};
 		byte[] b2 = {1, 2, 3, 4, 5};
@@ -181,6 +223,22 @@ public class MessageDigest1Test extends TestCase {
         }
         // No exception for len < 0
         md.update(bytes, 1, -1);
+        
+        //Regression for Harmony-1148
+        md = MessageDigest.getInstance("SHA");
+        try {
+            // offset < 0
+            md.digest(bytes, 0, -1);
+            fail("No expected DigestException");
+        } catch (DigestException e) {
+        }
+        try {
+            // len < 0
+            md.digest(bytes, -1, 0);
+            fail("No expected DigestException");
+        } catch (DigestException e) {
+        }
+
     }
 }
 
