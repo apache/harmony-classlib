@@ -167,6 +167,10 @@ public class ReplicateScaleFilter extends ImageFilter {
      * Initialization of srccols and srcrows arrays
      */
     private void initArrays(){
+        if ((destWidth < 0) || (destHeight < 0)) {
+            throw new IndexOutOfBoundsException();
+        }
+        
         srccols = new int[destWidth];
         int ca = srcWidth >>> 1;
         for(int i = 0; i < destWidth; i++){
@@ -181,4 +185,5 @@ public class ReplicateScaleFilter extends ImageFilter {
     }
 
 }
+
 
