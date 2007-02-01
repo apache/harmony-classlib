@@ -546,7 +546,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     	if (hashCode != 0) {
     	    return hashCode;	
     	}    	  
-    	System.out.println(digits.length);
     	for (int i = 0; i < digits.length; i ++) {
     		hashCode = (int)(hashCode * 33 + (digits[i] & 0xffffffff));    		
     	}  
