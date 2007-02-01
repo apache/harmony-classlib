@@ -51,17 +51,49 @@ public class MessageDigest1Test extends TestCase {
 		}
 	}
 
-	/*
-	 * Class under test for void update(byte[], int, int)
-	 */
-	public void testUpdatebyteArrayintint() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		byte[] b = {1, 2, 3, 4, 5};
-		md.update(b, 1, 2);
-		if (!md.runEngineUpdate2) {
-			fail("update failed");
-		}
-	}
+	/**
+     * @tests java.security.MessageDigest#update(byte[], int, int)
+     */
+    public void test_updateLB$LILI() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        final byte[] bytes = { 1, 2, 3, 4, 5 };
+        md.update(bytes, 1, 2);
+        assertTrue(md.runEngineUpdate2);
+
+        // Regression for HARMONY-1120
+        try {
+            // buf == null
+            md.update(null, 0, 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            // offset + len > buf.length
+            md.update(bytes, 0, bytes.length + 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            // offset + len > Integer.MAX_VALUE
+            md.update(bytes, Integer.MAX_VALUE, 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        // offset<0 and len<0 are passed to provider
+        final int offset = -1;
+        final int len = -1;
+        md = new MyMessageDigest1("ABC") {
+            @Override
+            public void engineUpdate(byte[] arg0, int arg1, int arg2) {
+                assertSame("buf", bytes, arg0);
+                assertEquals("offset", offset, arg1);
+                assertEquals("len", len, arg2);
+                runEngineUpdate2 = true;
+            }
+        };
+        md.update(bytes, offset, len);
+        assertTrue(md.runEngineUpdate2);
+    }
 
 	/*
 	 * Class under test for void update(byte[])
@@ -131,5 +163,24 @@ public class MessageDigest1Test extends TestCase {
 			fail("getDigestLength failed");
 		}
 	}
+    
+    /**
+     * Tests SHA MessageDigest provider
+     */
+    public void testSHAProvider() throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        byte[] bytes = new byte[] { 1, 1, 1, 1, 1 };
+
+        // Regression for HARMONY-1120
+        // testing combination with provider
+        try {
+            // offset < 0
+            md.update(bytes, -1, 1);
+            fail("No expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        // No exception for len < 0
+        md.update(bytes, 1, -1);
+    }
 }
 
