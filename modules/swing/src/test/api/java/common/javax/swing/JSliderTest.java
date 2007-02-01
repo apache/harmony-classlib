@@ -42,6 +42,13 @@ public class JSliderTest extends SwingTestCase {
         m.setValueIsAdjusting(true);
         slider = new JSlider(m);
         assertTrue(m == slider.getModel());
+
+        try { // Regression test for HARMONY-2535
+            new JSlider(2);
+            fail("IllegalArgumentException should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
     }
 
     public void testCreateChangeListener() throws Exception {
