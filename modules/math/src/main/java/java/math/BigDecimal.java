@@ -1375,15 +1375,20 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
 
     /** @ar.org.fitc.spec_ref */
     @Override
-    public boolean equals(Object x) {
-        return ((x instanceof BigDecimal)
-        && (((BigDecimal)x).scale == scale)
-        && (((BigDecimal)x).bitLength == bitLength)
-        && (bitLength < 64 ?
-            (((BigDecimal)x).smallValue == smallValue)
-            : (((BigDecimal)x).getUnscaledValue().equals(getUnscaledValue())))
-            );
-    }
+    public boolean equals(Object x) {    	
+    	if (this == x) {
+    		return true;
+    	}
+    	if (x instanceof BigDecimal) {
+    	    BigDecimal x1 = (BigDecimal) x;    	    
+    	    return x1.scale == scale                   
+                   && (bitLength < 64 ? (x1.smallValue == smallValue)
+                    : intVal.equals(x1.intVal));
+                	    
+    	     
+    	} 
+    	return false;       
+    }   
 
     /** @ar.org.fitc.spec_ref */
     public BigDecimal min(BigDecimal val) {

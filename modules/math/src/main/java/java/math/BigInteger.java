@@ -612,7 +612,24 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     @Override
     public boolean equals(Object x) {
-        return ((x instanceof BigInteger) && (compareTo((BigInteger) x) == EQUALS));
+    	if (this == x) {
+		    return true;
+	    }
+	    if (x instanceof BigInteger) {
+		    BigInteger x1 = (BigInteger)x;            
+            return sign == x1.sign 
+                   && numberLength == x1.numberLength 
+                   && equalsArrays(x1.digits);    		
+	    }
+        return false;
+    } 
+
+    boolean equalsArrays(final int[] b) {
+        int i;        
+        for (i = numberLength - 1; (i >= 0) && (digits[i] == b[i]); i--) {
+            ;
+        }        
+        return i < 0;
     }
 
     /** @ar.org.fitc.spec_ref */
