@@ -426,6 +426,42 @@ public class DigestOutputStreamTest extends TestCase {
     }
 
     /**
+     * @tests java.security.DigestOutputStream#write(byte[], int, int)
+     */
+    public void test_writeLB$LILI() throws Exception {
+
+        // Regression form HARMONY-1091.
+        MessageDigest md = new MyMessageDigest1();
+        byte[] bytes = new byte[] { 1, 2 };
+        DigestOutputStream dig = new DigestOutputStream(
+                new ByteArrayOutputStream(), md);
+        // buf == null
+        try {
+            dig.write(null, -1, 0);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        // offset + len > buf.length
+        try {
+            dig.write(bytes, 0, bytes.length + 1);
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+        // offset < 0
+        try {
+            dig.write(bytes, -1, 1);
+            fail("No expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        // len < 0
+        try {
+            dig.write(bytes, 0, -1);
+            fail("No expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
+
+    /**
      * Test for <code>on()</code> method<br>
      * Assertion: turns digest functionality on or off
      */
