@@ -269,8 +269,9 @@ public final class Util {
 	}
 	
 	public static String toASCIILowerCase(String s) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < s.length(); i++) {
+        int len = s.length();
+		StringBuilder buffer = new StringBuilder(len);
+		for (int i = 0; i < len; i++) {
 			char c = s.charAt(i);
 			if ('A' <= c && c <= 'Z') {
 				buffer.append((char) (c + ('a' - 'A')));
@@ -282,8 +283,9 @@ public final class Util {
 	}
 	
 	public static String toASCIIUpperCase(String s) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < s.length(); i++) {
+        int len = s.length();
+        StringBuilder buffer = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
 			char c = s.charAt(i);
 	        if ('a' <= c && c <= 'z') {
 	        	buffer.append((char) (c - ('a' - 'A')));
