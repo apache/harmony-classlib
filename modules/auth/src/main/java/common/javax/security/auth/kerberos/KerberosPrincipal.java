@@ -22,7 +22,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.StringTokenizer;
 
 import org.apache.harmony.auth.internal.kerberos.v5.KerberosException;
 import org.apache.harmony.auth.internal.kerberos.v5.KrbClient;
@@ -47,15 +46,15 @@ public final class KerberosPrincipal implements Principal, Serializable {
     public static final int KRB_NT_UID = 5;
 
     // the full name of principal
-    private transient String name;
+    private transient PrincipalName name;
 
     // the realm
     private transient String realm;
 
-    // type of the principal
-    private transient int type;
+    // "principal" @ "realm"
+    private transient String strName;
 
-    private void init(String name) {
+    private void init(int type, String name) {
 
         // FIXME: correctly implement parsing name according to RFC 1964
         // http://www.ietf.org/rfc/rfc1964.txt
@@ -75,7 +74,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
                         .getString("auth.24")); //$NON-NLS-1$
             }
 
-            this.name = name;
+            name = name.substring(0, pos);
         } else {
             // look for default realm name
             try {
@@ -83,30 +82,30 @@ public final class KerberosPrincipal implements Principal, Serializable {
             } catch (KerberosException e) {
                 throw new IllegalArgumentException(e);
             }
-
-            if (realm != null) {
-                this.name = name + '@' + realm;
-            } else {
-                this.name = name;
-            }
         }
+        this.name = new PrincipalName(type, name);
     }
 
     public KerberosPrincipal(String name) {
-        init(name);
-        type = KRB_NT_PRINCIPAL;
+        init(KRB_NT_PRINCIPAL, name);
     }
 
     public KerberosPrincipal(String name, int type) {
-        init(name);
+        init(type, name);
         if (type < 0 || type > KRB_NT_UID) {
             throw new IllegalArgumentException(Messages.getString("auth.25")); //$NON-NLS-1$
         }
-        this.type = type;
     }
 
     public String getName() {
-        return name;
+        if (strName == null) {
+            if (realm == null) {
+                strName = name.getCanonicalName();
+            } else {
+                strName = name.getCanonicalName() + '@' + realm;
+            }
+        }
+        return strName;
     }
 
     public String getRealm() {
@@ -114,7 +113,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
     }
 
     public int getNameType() {
-        return type;
+        return name.getType();
     }
 
     @Override
@@ -133,38 +132,27 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
         KerberosPrincipal that = (KerberosPrincipal) obj;
 
-        return (that.name.equals(this.name) && that.type == this.type);
+        if (realm == null) {
+            return that.realm == null;
+        } else if (!realm.equals(that.realm)) {
+            return false;
+        }
+        return name.equals(that.name);
     }
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream s) throws IOException,
+            ClassNotFoundException {
 
         s.defaultReadObject();
 
-        PrincipalName principalName = PrincipalName.instanceOf((byte[]) s
+        name = PrincipalName.instanceOf((byte[]) s.readObject());
+        realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s
                 .readObject());
-        realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s.readObject());
-
-        String[] nameString = principalName.getName();
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < (nameString.length - 1); i++) {
-            buf.append(nameString[i]);
-            buf.append('/');
-        }
-        // append last name element
-        buf.append(nameString[nameString.length - 1]);
-
-        // append realm
-        buf.append('@');
-        buf.append(realm);
-
-        name = buf.toString();
-
-        type = principalName.getType();
 
         //FIXME: verify serialized values
     }
@@ -173,23 +161,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
         s.defaultWriteObject();
 
-        String[] nameString;
-
-        // FIXME: ignores escaped '/','@' chars
-        int pos = name.indexOf('@');
-        String str = name.substring(0, pos);
-        if (name.indexOf('/') == -1) {
-            //there is only one component in principal name
-            nameString = new String[] { str };
-        } else {
-            StringTokenizer strTknzr = new StringTokenizer(str, "/"); //$NON-NLS-1$
-            nameString = new String[strTknzr.countTokens()];
-            for (int i = 0; i < nameString.length; i++) {
-                nameString[i] = strTknzr.nextToken();
-            }
-        }
-
-        s.writeObject(new PrincipalName(type, nameString).getEncoded());
+        s.writeObject(name.getEncoded());
         s.writeObject(ASN1StringType.GENERALSTRING.encode(realm));
     }
 }

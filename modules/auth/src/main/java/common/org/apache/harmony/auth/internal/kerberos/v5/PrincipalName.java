@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
@@ -64,12 +65,40 @@ public class PrincipalName {
         this.name = name;
     }
 
+    public PrincipalName(int type, String str) {
+        this.type = type;
+        
+        // FIXME: ignores escaped '/','@' chars
+        if (str.indexOf('/') == -1) {
+            //there is only one component in principal name
+            name = new String[] { str };
+        } else {
+            StringTokenizer strTknzr = new StringTokenizer(str, "/"); //$NON-NLS-1$
+            name = new String[strTknzr.countTokens()];
+            for (int i = 0; i < name.length; i++) {
+                name[i] = strTknzr.nextToken();
+            }
+        }
+    }
+
     public int getType() {
         return type;
     }
 
     public String[] getName() {
         return name;
+    }
+
+    public String getCanonicalName() {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < (name.length - 1); i++) {
+            buf.append(name[i]);
+            buf.append('/');
+        }
+        // append last name element
+        buf.append(name[name.length - 1]);
+
+        return buf.toString();
     }
 
     public byte[] getEncoded() {

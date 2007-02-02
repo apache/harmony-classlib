@@ -77,6 +77,10 @@ public class KerberosPrincipalTest extends TestCase {
         assertEquals("apache.org", principal.getRealm());
         assertEquals(KerberosPrincipal.KRB_NT_PRINCIPAL, principal
                 .getNameType());
+        
+        // Regression for HARMONY-1182
+        principal = new KerberosPrincipal("file:C://@apache.org");
+        assertEquals("file:C:@apache.org", principal.getName());
     }
 
     /**
@@ -264,8 +268,17 @@ public class KerberosPrincipalTest extends TestCase {
      * @tests javax.security.auth.kerberos.KerberosPrincipal#equals(Object)
      */
     public void test_equals() {
+
+        KerberosPrincipal p = new KerberosPrincipal("A@B");
+
+        assertTrue(p.equals(new KerberosPrincipal("A@B")));
+        assertFalse(p.equals(new KerberosPrincipal("A@B.org")));
+        assertFalse(p.equals(new KerberosPrincipal("aaa@B")));
+        assertFalse(p.equals(new KerberosPrincipal("A@B",
+                KerberosPrincipal.KRB_NT_UID)));
+
         // Regression for HARMONY-744
-        assertFalse(new KerberosPrincipal("A@B").equals(null));
-        assertFalse(new KerberosPrincipal("A@B").equals(new Object()));
+        assertFalse(p.equals(null));
+        assertFalse(p.equals(new Object()));
     }
 }
