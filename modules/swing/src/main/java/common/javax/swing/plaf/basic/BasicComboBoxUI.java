@@ -487,7 +487,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     public int getAccessibleChildrenCount(final JComponent c) {
         if (comboBox == null) {
-            throw new NullPointerException(Messages.getString("swing.04"));
+            throw new NullPointerException(Messages.getString("swing.04")); //$NON-NLS-1$
         }
         return 0;
     }

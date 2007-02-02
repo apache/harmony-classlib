@@ -679,7 +679,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      */
     public void install(final JTextComponent c) {
         if (c == null) { // Fix for HARMONY-1750, for compatiblity with RI
-            throw new NullPointerException(Messages.getString("swing.05"));
+            throw new NullPointerException(Messages.getString("swing.05")); //$NON-NLS-1$
         }
         if (!setComponent(c)) {
             return;
