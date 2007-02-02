@@ -108,6 +108,14 @@ public class MessageDigest_Impl2Test extends TestCase {
         MessageDigest md2 = MessageDigest.getInstance("CBA", p);
         checkMD2(md2, p);
     }
+
+    /*
+     * Class under test for String toString()
+     */
+    public void testToString() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        assertEquals("incorrect result", "MESSAGE DIGEST ABC", md.toString());
+    }
 	
 	private void checkMD1(MessageDigest md1, Provider p) throws Exception {
         byte[] b = { 1, 2, 3, 4, 5 };

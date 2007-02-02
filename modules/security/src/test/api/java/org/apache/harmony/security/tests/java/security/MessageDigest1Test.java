@@ -134,9 +134,13 @@ public class MessageDigest1Test extends TestCase {
      * @tests java.security.MessageDigest#digest(byte[], int, int)
      */
     public void test_digestLB$LILI() throws Exception {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        byte[] b = {1, 2, 3, 4, 5};
+        assertEquals("incorrect result", 0, md.digest(b, 2, 3));
+        assertTrue("digest failed", md.runEngineDigest);
 
         // Regression for Harmony-1148
-        MessageDigest md = new MyMessageDigest1();
+        md = new MyMessageDigest1();
         final byte[] bytes = new byte[] { 2, 4, 1 };
         try {
             // buf == null
