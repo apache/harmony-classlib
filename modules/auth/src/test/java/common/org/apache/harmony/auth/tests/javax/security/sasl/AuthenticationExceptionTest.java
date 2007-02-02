@@ -47,11 +47,6 @@ public class AuthenticationExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    static String createErr(Exception tE, Exception eE) {
-        return "AuthenticationException: ".concat(tE.toString()).concat(
-                " is not equal to caught exception: ").concat(eE.toString());
-    }
-
     /**
      * Test for <code>AuthenticationException()</code> constructor 
      * Assertion: constructs AuthenticationException with null message and 
@@ -77,11 +72,6 @@ public class AuthenticationExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -94,11 +84,6 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException tE = new AuthenticationException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -110,11 +95,6 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException tE = new AuthenticationException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -129,11 +109,6 @@ public class AuthenticationExceptionTest extends TestCase {
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
 
@@ -152,11 +127,6 @@ public class AuthenticationExceptionTest extends TestCase {
         }
         assertEquals("getCause() must return ".concat(tCause.toString()),
                 tE.getCause(), tCause);
-        try {
-            throw tE;
-        } catch (Exception e) {
-            assertTrue(createErr(tE, e), tE.equals(e));
-        }
     }
 
     /**
@@ -180,11 +150,6 @@ public class AuthenticationExceptionTest extends TestCase {
             }
             assertEquals("getCause() must return "
                         .concat(tCause.toString()), tE.getCause(), tCause);
-            try {
-                throw tE;
-            } catch (Exception e) {
-                assertTrue(createErr(tE, e), tE.equals(e));
-            }
         }
     }
     
