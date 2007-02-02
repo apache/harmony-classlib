@@ -27,6 +27,8 @@ import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.harmony.luni.util.InvalidJarIndexException;
 
@@ -382,4 +384,38 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertTrue("too long. UNC path formed? UNC time: " + uncTime
                 + " regular time: " + time, uncTime <= (time * 4));
     }
+    
+    /**
+	 * Regression for Harmony-2237 
+	 */
+	public void test_getResource() throws Exception {		
+		URLClassLoader urlLoader = getURLClassLoader();
+		assertNull(urlLoader.findResource("XXX")); //$NON-NLS-1$
+	}
+
+	private static URLClassLoader getURLClassLoader() {
+		String classPath = System.getProperty("java.class.path");
+        StringTokenizer tok = new StringTokenizer(classPath, File.pathSeparator);
+        Vector<URL> urlVec = new Vector<URL>();
+        String resPackage = Support_Resources.RESOURCE_PACKAGE;
+        try {
+            while (tok.hasMoreTokens()) {
+                String path = tok.nextToken();
+                String url;
+                if (new File(path).isDirectory())
+                    url = "file:" + path + resPackage + "subfolder/";
+                else
+                    url = "jar:file:" + path + "!" + resPackage + "subfolder/";
+                urlVec.addElement(new URL(url));
+            }
+        } catch (MalformedURLException e) {
+        	// do nothing
+        }
+        URL[] urls = new URL[urlVec.size()];
+        for (int i = 0; i < urlVec.size(); i++) {
+        	urls[i] = urlVec.elementAt(i);
+        }            
+        URLClassLoader loader = new URLClassLoader(urls, null);
+		return loader;
+	}
 }

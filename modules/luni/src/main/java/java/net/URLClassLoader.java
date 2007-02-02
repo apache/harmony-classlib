@@ -914,9 +914,14 @@ public class URLClassLoader extends SecureClassLoader {
         // Class-path attribute is composed of space-separated values.
         StringTokenizer tokenizer = new java.util.StringTokenizer(classpath);
         Vector<URL> addedURLs = new Vector<URL>();
-        String file = root.getFile();
-        file = file.substring(0, file.lastIndexOf("/", //$NON-NLS-1$
-                file.lastIndexOf("!/") - 1) + 1); //$NON-NLS-1$
+        String file = root.getFile();        
+        int jarIndex = file.lastIndexOf("!/") - 1; //$NON-NLS-1$
+        int index = file.lastIndexOf("/", jarIndex) + 1; //$NON-NLS-1$
+        if (index == 0) {
+			index = file.lastIndexOf(
+					System.getProperty("file.separator"), jarIndex) + 1; //$NON-NLS-1$
+		}
+        file = file.substring(0, index);
         String protocol = root.getProtocol();
         String host = root.getHost();
         int port = root.getPort();
