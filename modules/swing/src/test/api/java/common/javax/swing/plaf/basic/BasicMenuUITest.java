@@ -30,6 +30,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.SwingTestCase;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -77,6 +78,18 @@ public class BasicMenuUITest extends SwingTestCase {
         menu1.setPreferredSize(new Dimension(1000, 1000));
         assertEquals(1000, menuUI.getMaximumSize(menu1).width);
         assertEquals(Short.MAX_VALUE, menuUI.getMaximumSize(menu1).height);
+        testExceptionalCase(new NullPointerCase() {
+            @Override
+            public void exceptionalAction() throws Exception {
+                new BasicMenuUI().getMaximumSize(null);
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            @Override // Regression for HARMONY-2663
+            public void exceptionalAction() throws Exception {
+                new BasicMenuUI().getMaximumSize(new JOptionPane());
+            }
+        });
     }
 
     /*
@@ -178,9 +191,7 @@ public class BasicMenuUITest extends SwingTestCase {
         menuUI.menuItem = menu;
         menuUI.installListeners();
         assertNull(menuUI.changeListener);
-        if (isHarmony()) {
-            assertNotNull(menuUI.menuListener);
-        }
+        assertNull(menuUI.menuListener);
         assertNotNull(menuUI.propertyChangeListener);
         assertNotNull(menuUI.mouseInputListener);
         if (!isHarmony()) {
@@ -284,8 +295,9 @@ public class BasicMenuUITest extends SwingTestCase {
         if (!isHarmony()) {
             return;
         }
-        assertNotNull(menuUI.createMenuListener(null));
-        assertNotNull(menuUI.createMenuListener(new JMenu()));
+        // Updated for regression of HARMONY-2663
+        assertNull(menuUI.createMenuListener(null));
+        assertNull(menuUI.createMenuListener(new JMenu()));
     }
 
     /*

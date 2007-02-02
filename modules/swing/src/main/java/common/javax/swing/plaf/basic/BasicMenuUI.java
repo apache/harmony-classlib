@@ -219,7 +219,7 @@ public class BasicMenuUI extends BasicMenuItemUI {
     }
 
     protected MenuListener createMenuListener(final JComponent c) {
-        return (menuHandler == null) ? new MenuHandler() : menuHandler;
+        return menuHandler;
     }
 
     protected PropertyChangeListener createPropertyChangeListener(final JComponent c) {
@@ -247,7 +247,7 @@ public class BasicMenuUI extends BasicMenuItemUI {
     }
 
     public Dimension getMaximumSize(final JComponent c) {
-        if (!((JMenu)c).isTopLevelMenu()) {
+        if (!((JMenu) menuItem).isTopLevelMenu()) {
             return super.getMaximumSize(c);
         }
         Dimension result = c.getPreferredSize();
