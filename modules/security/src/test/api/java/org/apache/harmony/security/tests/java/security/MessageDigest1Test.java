@@ -15,43 +15,39 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security;
-import java.security.*;
-import org.apache.harmony.security.tests.support.MyMessageDigest1;
+
+import java.security.DigestException;
+import java.security.MessageDigest;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.security.tests.support.MyMessageDigest1;
+
 /**
  * Tests for <code>MessageDigest</code> constructor and methods
- * 
  */
 public class MessageDigest1Test extends TestCase {
 
-	public void testReset() {	
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		md.reset();
-		if (!md.runEngineReset) {
-			fail("reset failed");
-		}
-	}
-	
-	/*
-	 * Class under test for void update(byte)
-	 */
-	public void testUpdatebyte() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		md.update((byte)1);
-		if (!md.runEngineUpdate1) {
-			fail("update failed");
-		}
-	}
+    /**
+     * @tests java.security.MessageDigest#reset()
+     */
+    public void test_reset() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        md.reset();
+        assertTrue(md.runEngineReset);
+    }
 
-	/**
+    /**
+     * @tests java.security.MessageDigest#update(byte)
+     */
+    public void test_updateLB() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        md.update((byte) 1);
+        assertTrue(md.runEngineUpdate1);
+    }
+
+    /**
      * @tests java.security.MessageDigest#update(byte[], int, int)
      */
     public void test_updateLB$LILI() {
@@ -95,47 +91,41 @@ public class MessageDigest1Test extends TestCase {
         assertTrue(md.runEngineUpdate2);
     }
 
-	/*
-	 * Class under test for void update(byte[])
-	 */
-	public void testUpdatebyteArray() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		byte[] b = {1, 2, 3, 4, 5};
-		md.update(b);
-		if (!md.runEngineUpdate2) {
-			fail("update failed");
-		}
-	}
+    /**
+     * @tests java.security.MessageDigest#update(byte[])
+     */
+    public void test_updateLB$() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        byte[] b = { 1, 2, 3, 4, 5 };
+        md.update(b);
+        assertTrue(md.runEngineUpdate2);
+    }
 
-	/*
-	 * Class under test for byte[] digest()
-	 */
-	public void testDigest() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-        assertEquals("incorrect result", 0,md.digest().length);
-		if (!md.runEngineDigest) {
-			fail("update failed");
-		}
-	}
+    /**
+     * @tests java.security.MessageDigest#digest()
+     */
+    public void test_digest() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        assertEquals("incorrect result", 0, md.digest().length);
+        assertTrue(md.runEngineDigest);
+    }
 
-	/*
-	 * Class under test for byte[] digest(byte[])
-	 */
-	public void testDigestbyteArray() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		byte[] b = {1, 2, 3, 4, 5};
+    /**
+     * @tests java.security.MessageDigest#digest(byte[])
+     */
+    public void test_digestLB$() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        byte[] b = { 1, 2, 3, 4, 5 };
         assertEquals("incorrect result", 0, md.digest(b).length);
-		if (!md.runEngineDigest) {
-			fail("update failed");
-		}
-	}
+        assertTrue(md.runEngineDigest);
+    }
 
     /**
      * @tests java.security.MessageDigest#digest(byte[], int, int)
      */
     public void test_digestLB$LILI() throws Exception {
         MyMessageDigest1 md = new MyMessageDigest1("ABC");
-        byte[] b = {1, 2, 3, 4, 5};
+        byte[] b = { 1, 2, 3, 4, 5 };
         assertEquals("incorrect result", 0, md.digest(b, 2, 3));
         assertTrue("digest failed", md.runEngineDigest);
 
@@ -176,40 +166,44 @@ public class MessageDigest1Test extends TestCase {
         assertEquals("returned status", status, md.digest(bytes, offset, len));
     }
 
-	public void testIsEqual() {
-		byte[] b1 = {1, 2, 3, 4};
-		byte[] b2 = {1, 2, 3, 4, 5};
-		byte[] b3 = {1, 3, 3, 4};
-		byte[] b4 = {1, 2, 3, 4};
-		
-		if (!MessageDigest.isEqual(b1, b4) || 
-				MessageDigest.isEqual(b1, b2) || 
-				MessageDigest.isEqual(b1, b3)) {
-			fail("isEqual failed");			
-		}
-	}
+    /**
+     * @tests java.security.MessageDigest#isEqual(byte[],byte[])
+     */
+    public void test_isEqualLB$LB$() {
+        byte[] b1 = { 1, 2, 3, 4 };
+        byte[] b2 = { 1, 2, 3, 4, 5 };
+        byte[] b3 = { 1, 3, 3, 4 };
+        byte[] b4 = { 1, 2, 3, 4 };
 
-	public void testGetAlgorithm() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		if (!"ABC".equals(md.getAlgorithm())) {
-			fail("getAlgorithm failed");
-		}
-	}
+        assertTrue(MessageDigest.isEqual(b1, b4));
+        assertFalse(MessageDigest.isEqual(b1, b2));
+        assertFalse(MessageDigest.isEqual(b1, b3));
+    }
 
-	public void testGetProvider() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		if (md.getProvider() != null) {
-			fail("getProvider failed");
-		}
-	}
+    /**
+     * @tests java.security.MessageDigest#getAlgorithm()
+     */
+    public void test_getAlgorithm() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        assertEquals("ABC", md.getAlgorithm());
+    }
 
-	public void testGetDigestLength() {
-		MyMessageDigest1 md = new MyMessageDigest1("ABC");
-		if (md.getDigestLength() != 0) {
-			fail("getDigestLength failed");
-		}
-	}
-    
+    /**
+     * @tests java.security.MessageDigest#getProvider()
+     */
+    public void test_getProvider() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        assertNull(md.getProvider());
+    }
+
+    /**
+     * @tests java.security.MessageDigest#getDigestLength()
+     */
+    public void test_getDigestLength() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        assertEquals(0, md.getDigestLength());
+    }
+
     /**
      * Tests SHA MessageDigest provider
      */
@@ -227,7 +221,7 @@ public class MessageDigest1Test extends TestCase {
         }
         // No exception for len < 0
         md.update(bytes, 1, -1);
-        
+
         //Regression for Harmony-1148
         md = MessageDigest.getInstance("SHA");
         try {
@@ -245,4 +239,3 @@ public class MessageDigest1Test extends TestCase {
 
     }
 }
-
