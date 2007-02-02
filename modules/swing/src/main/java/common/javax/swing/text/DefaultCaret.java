@@ -57,6 +57,7 @@ import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         MouseListener, MouseMotionListener {
@@ -678,7 +679,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      */
     public void install(final JTextComponent c) {
         if (c == null) { // Fix for HARMONY-1750, for compatiblity with RI
-            throw new NullPointerException("component is null");
+            throw new NullPointerException(Messages.getString("swing.05"));
         }
         if (!setComponent(c)) {
             return;
