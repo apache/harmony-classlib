@@ -67,6 +67,8 @@ import javax.swing.plaf.UIResource;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicComboBoxUI extends ComboBoxUI {
 
@@ -485,7 +487,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     public int getAccessibleChildrenCount(final JComponent c) {
         if (comboBox == null) {
-            throw new NullPointerException("comboBox is null");
+            throw new NullPointerException(Messages.getString("swing.04"));
         }
         return 0;
     }
