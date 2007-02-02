@@ -25,38 +25,42 @@ import junit.framework.TestCase;
 import org.apache.harmony.pack200.Segment;
 
 public class ClassVersionTest extends TestCase {
+	private static final int JAVA_15 = 49;
+
 	public void testCorrectVersionOfSegment() throws IOException {
-		InputStream in = Segment.class.getResourceAsStream(
-                "/org/apache/harmony/pack200/Segment.class");
+		InputStream in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/Segment.class");
 		DataInputStream din = new DataInputStream(in);
 
-        assertEquals(0xCAFEBABE,din.readInt());
+		assertEquals(0xCAFEBABE, din.readInt());
 		din.readShort(); // MINOR -- don't care
-		assertTrue("Class file has been compiled with Java 1.5 compatibility" +
-                " instead of 1.4 or lower",din.readShort() < 49); // 49 = Java 1.5 
+		assertTrue("Class file has been compiled with Java 1.5 compatibility"
+				+ " instead of 1.4 or lower", din.readShort() < JAVA_15);
 	}
 
-    public void testCorrectVersionOfTest() throws IOException {
-		InputStream in = Segment.class.getResourceAsStream(
-                "/org/apache/harmony/pack200/tests/ClassVersionTest.class");
+	public void testCorrectVersionOfTest() throws IOException {
+		InputStream in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/tests/ClassVersionTest.class");
 		DataInputStream din = new DataInputStream(in);
 
-        assertEquals(0xCAFEBABE,din.readInt());
+		assertEquals(0xCAFEBABE, din.readInt());
 		din.readShort(); // MINOR -- don't care
-		assertTrue("Class file has been compiled with Java 1.5 compatibility" +
-                " instead of 1.4 or lower",din.readShort() < 49); // 49 = Java 1.5 
+		assertTrue("Class file has been compiled with Java 1.5 compatibility"
+				+ " instead of 1.4 or lower", din.readShort() < JAVA_15);
 	}
 
-    public void testCorrectVersionOfAdapter() throws IOException {
+	public void testCorrectVersionOfAdapter() throws IOException {
 		// tests that both the file is on the classpath and that it's been
-        // compiled correctly, but without actually loading the class
-		InputStream in = Segment.class.getResourceAsStream(
-                "/org/apache/harmony/pack200/Pack200Adapter.class");
-		DataInputStream din = new DataInputStream(in);
+		// compiled correctly, but without actually loading the class
+		InputStream in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/Pack200Adapter.class");
+		if (in != null) { // If running in Eclipse and Java5 stuff not built/available
+			DataInputStream din = new DataInputStream(in);
 
-        assertEquals(0xCAFEBABE,din.readInt());
-		din.readShort(); // MINOR -- don't care
-		assertTrue("Class file needs 1.5 compatibility",
-                din.readShort() >= 49); // 49 = Java 1.5 
+			assertEquals(0xCAFEBABE, din.readInt());
+			din.readShort(); // MINOR -- don't care
+			assertTrue("Class file needs 1.5 compatibility",
+					din.readShort() >= JAVA_15);
+		}
 	}
 }
