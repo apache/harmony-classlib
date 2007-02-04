@@ -486,7 +486,7 @@ hyfile_findnext (struct HyPortLibrary * portLibrary, UDATA findhandle,
 
 #define CDEV_CURRENT_FUNCTION hyfile_lastmod
 /**
- *  Return the last modification time of the file path in seconds.
+ *  Return the last modification time of the file path in milliseconds.
  *
  * @param[in] portLibrary The port library
  * @param[in] path file/path name being queried.
@@ -505,7 +505,7 @@ hyfile_lastmod (struct HyPortLibrary * portLibrary, const char *path)
     {
       return -1;
     }
-  return st.st_mtime;
+  return (U_64)st.st_mtime * 1000;
 }
 
 #undef CDEV_CURRENT_FUNCTION

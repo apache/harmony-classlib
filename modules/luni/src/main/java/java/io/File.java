@@ -780,7 +780,7 @@ public class File implements Serializable, Comparable<File> {
         if (result == -1 || result == 0) {
             return 0;
         }
-        return (result * 1000);
+        return result;
     }
 
     private native long lastModifiedImpl(byte[] filePath);

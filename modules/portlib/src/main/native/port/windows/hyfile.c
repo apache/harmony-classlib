@@ -244,7 +244,7 @@ hyfile_findnext (struct HyPortLibrary * portLibrary, UDATA findhandle,
 
 #define CDEV_CURRENT_FUNCTION hyfile_lastmod
 /**
- *  Return the last modification time of the file path in seconds.
+ *  Return the last modification time of the file path in milliseconds.
  *
  * @param[in] portLibrary The port library
  * @param[in] path file/path name being queried.
@@ -276,7 +276,7 @@ hyfile_lastmod (struct HyPortLibrary * portLibrary, const char *path)
      dwHighDateTime << (I_64) 32) | (I_64) myStat.ftLastWriteTime.
     dwLowDateTime;
 
-  result = (tempResult - 116444736000000000) / 10000000;
+  result = (tempResult - 116444736000000000) / 10000;
 
   if (0 == FindClose (newHandle))
     {
