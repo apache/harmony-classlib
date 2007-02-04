@@ -30,7 +30,8 @@ Import-Package: java.io,
  org.apache.harmony.luni.util,
  org.apache.harmony.security.fortress,
  org.apache.harmony.security.tests.support;hy_usage=test;resolution:=optional,
- org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
+ tests.support.resource;hy_usage=test;resolution:=optional
 Export-Package: javax.net,
  javax.net.ssl,
  org.apache.harmony.xnet.provider.jsse;hy_usage="suncompat";mandatory:="hy_usage"

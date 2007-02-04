@@ -43,6 +43,15 @@ import javax.net.ssl.TrustManager;
  */
 public class SSLContextImpl extends SSLContextSpi {
 
+    // client session context contains the set of reusable
+    // client-side SSL sessions
+    private SSLSessionContextImpl clientSessionContext =
+        new SSLSessionContextImpl();
+    // server session context contains the set of reusable
+    // server-side SSL sessions
+    private SSLSessionContextImpl serverSessionContext =
+        new SSLSessionContextImpl();
+
     protected SSLParameters sslParameters;
 
     public SSLContextImpl() {
@@ -51,7 +60,8 @@ public class SSLContextImpl extends SSLContextSpi {
 
     public void engineInit(KeyManager[] kms, TrustManager[] tms,
             SecureRandom sr) throws KeyManagementException {
-        sslParameters = new SSLParameters(kms, tms, sr);
+        sslParameters = new SSLParameters(kms, tms, sr, clientSessionContext,
+                serverSessionContext);
     }
 
     public SSLSocketFactory engineGetSocketFactory() {
@@ -84,11 +94,11 @@ public class SSLContextImpl extends SSLContextSpi {
     }
 
     public SSLSessionContext engineGetServerSessionContext() {
-        return sslParameters.getServerSessionContext();
+        return serverSessionContext;
     }
 
     public SSLSessionContext engineGetClientSessionContext() {
-        return sslParameters.getClientSessionContext();
+        return clientSessionContext;
     }
 }
 

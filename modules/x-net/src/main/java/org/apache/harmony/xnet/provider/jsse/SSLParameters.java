@@ -58,12 +58,10 @@ public class SSLParameters {
 
     // client session context contains the set of reusable
     // client-side SSL sessions
-    private SSLSessionContextImpl clientSessionContext =
-        new SSLSessionContextImpl();
+    private SSLSessionContextImpl clientSessionContext;
     // server session context contains the set of reusable
     // server-side SSL sessions
-    private SSLSessionContextImpl serverSessionContext =
-        new SSLSessionContextImpl();
+    private SSLSessionContextImpl serverSessionContext;
     // source of authentication keys
     private X509KeyManager keyManager;
     // source of authentication trust decisions
@@ -104,8 +102,12 @@ public class SSLParameters {
      * for more information
      */
     protected SSLParameters(KeyManager[] kms, TrustManager[] tms,
-            SecureRandom sr) throws KeyManagementException {
+            SecureRandom sr, SSLSessionContextImpl clientSessionContext,
+            SSLSessionContextImpl serverSessionContext)
+            throws KeyManagementException {
         this();
+        this.serverSessionContext = serverSessionContext;
+        this.clientSessionContext = clientSessionContext;
     	try {
             // initialize key manager
             boolean initialize_default = false;
@@ -188,7 +190,8 @@ public class SSLParameters {
 
     protected static SSLParameters getDefault() throws KeyManagementException {
         if (defaultParameters == null) {
-            defaultParameters = new SSLParameters(null, null, null);
+            defaultParameters = new SSLParameters(null, null, null,
+                    new SSLSessionContextImpl(), new SSLSessionContextImpl());
         }
         return (SSLParameters) defaultParameters.clone();
     }
