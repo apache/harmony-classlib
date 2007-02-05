@@ -1,2 +1,3 @@
+
 #3046
-tests.api.java.net.DatagramSocketTest
+tests/api/java/net/DatagramSocketTest.java
