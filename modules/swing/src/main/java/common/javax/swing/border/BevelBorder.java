@@ -24,7 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
-import java.security.InvalidParameterException;
+
 
 public class BevelBorder extends AbstractBorder {
 
@@ -41,27 +41,20 @@ public class BevelBorder extends AbstractBorder {
     protected Color shadowOuter;
 
     public BevelBorder(final int bevelType) {
-        setBevelType(bevelType);
+        this.bevelType = bevelType;
     }
 
     public BevelBorder(final int bevelType, final Color highlightOuterColor, final Color highlightInnerColor, final Color shadowOuterColor, final Color shadowInnerColor) {
+        this(bevelType);
+
         if (highlightOuterColor == null || highlightInnerColor == null ||
                 shadowOuterColor == null || shadowInnerColor == null) {
             throw new NullPointerException("Color should not be null");
         }
-
-        setBevelType(bevelType);
         highlightOuter = highlightOuterColor;
         highlightInner = highlightInnerColor;
         shadowOuter = shadowOuterColor;
         shadowInner = shadowInnerColor;
-    }
-
-    private void setBevelType(final int bevelType) {
-        if (bevelType != RAISED && bevelType != LOWERED) {
-            throw new InvalidParameterException("Incorrect type of the bevel border");
-        }
-        this.bevelType = bevelType;
     }
 
     public BevelBorder(final int bevelType, final Color highlight, final Color shadow) {

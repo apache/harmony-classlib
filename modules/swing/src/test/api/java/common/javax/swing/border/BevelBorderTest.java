@@ -478,4 +478,11 @@ public class BevelBorderTest extends SwingTestCase {
         assertEquals("Deserialized values coinsides", resurrectedBorder
                 .getHighlightOuterColor(), border2.getHighlightOuterColor());
     }
+
+    public void testBevelType() throws Exception {
+        // Regression test for HARMONY-2590
+        for (int i = -10; i < 10; i++) {
+             new BevelBorder(i);
+        }
+    }
 }
