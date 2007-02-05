@@ -61,4 +61,25 @@ public class URLTest extends TestCase {
 		assertEquals("Assert 3: wrong file", "test.html", testURL.getFile());
 		assertEquals("Assert 4: wrong anchor", "anch", testURL.getRef());
 	}
+
+	/**
+	 * @tests java.net.URL#URL(String, String, String)
+	 *
+	 */
+	public void test_java_protocol_handler_pkgs_prop() throws MalformedURLException {
+		// Regression test for Harmony-3094
+        final String HANDLER_PKGS = "java.protocol.handler.pkgs";
+		String pkgs = System.getProperty(HANDLER_PKGS);
+		System.setProperty(HANDLER_PKGS, "fake|org.apache.harmony.tests.java.net");
+
+		try {
+			new URL("test_protocol", "", "fake.jar");
+		} finally {
+			if (pkgs == null) {
+				System.clearProperty(HANDLER_PKGS);
+			} else {
+				System.setProperty(HANDLER_PKGS, pkgs);
+			}
+		}
+	}
 }

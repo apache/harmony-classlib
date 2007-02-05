@@ -595,15 +595,14 @@ public final class URL implements java.io.Serializable {
                     strmHandler = (URLStreamHandler) Class.forName(className,
                             true, ClassLoader.getSystemClassLoader())
                             .newInstance();
+                    if (strmHandler != null) {
+                        streamHandlers.put(protocol, strmHandler);
+                    }
+                    return;
                 } catch (IllegalAccessException e) {
                 } catch (InstantiationException e) {
                 } catch (ClassNotFoundException e) {
                 }
-                if (strmHandler != null) {
-                    streamHandlers.put(protocol, strmHandler);
-                }
-                return;
-
             }
         }
 
