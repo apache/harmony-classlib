@@ -17,7 +17,7 @@
 
 #include "iohelp.h"
 #include "exceptions.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 JNIEXPORT jclass JNICALL
 Java_java_lang_reflect_Proxy_defineClassImpl (JNIEnv * env, jclass recvClass,

@@ -30,7 +30,7 @@
 
 #include "vmi.h"
 #include "jclprots.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 #include "hysock.h"
 

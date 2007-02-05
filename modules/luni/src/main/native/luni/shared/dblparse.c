@@ -19,7 +19,7 @@
 #include <math.h>
 #include "vmi.h"
 #include "cbigint.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "exceptions.h"
 
 #if defined(LINUX) || defined(FREEBSD)

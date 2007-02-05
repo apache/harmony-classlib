@@ -19,7 +19,7 @@
 #include "helpers.h"
 #include "jclprots.h"
 #include "socket.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "OSNetworkSystem.h"
 #include "nethelp.h"
 #include "hysock.h"

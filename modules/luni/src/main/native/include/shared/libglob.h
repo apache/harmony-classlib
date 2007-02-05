@@ -23,6 +23,10 @@
 	(((JniIDCache*) HY_VMLS_GET((env), JCL_ID_CACHE))->x)
 #define JCL_CACHE_SET(env,x,v) \
 	(((JniIDCache*) HY_VMLS_GET((env), JCL_ID_CACHE))->x = (v))
+#define HARMONY_CACHE_GET(env,x) \
+	(((JniIDCache*) HY_VMLS_GET((env), HARMONY_ID_CACHE))->x)
+#define HARMONY_CACHE_SET(env,x,v) \
+	(((JniIDCache*) HY_VMLS_GET((env), HARMONY_ID_CACHE))->x = (v))	
 #define jclmem_allocate_memory(env, byteAmount) \
 	hymem_allocate_memory(byteAmount)
 #define jclmem_free_memory(env, buf) \

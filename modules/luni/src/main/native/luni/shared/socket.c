@@ -18,7 +18,7 @@
 #include "nethelp.h"
 #include "jclprots.h"
 #include "helpers.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "hysock.h"
 
 #define BROKEN_MULTICAST_IF 1
@@ -76,7 +76,7 @@ createSocket (JNIEnv * env, jobject thisObjFD, int sockType,
   I_32 result;
   hysocket_t sockdesc;
   int family = HYADDR_FAMILY_AFINET4;
-  int supportsIPv6 = JCL_CACHE_GET (env, jcl_supports_ipv6);
+  int supportsIPv6 = HARMONY_CACHE_GET (env, harmony_supports_ipv6);
 
   if (supportsIPv6 && !(preferIPv4Stack))
     {

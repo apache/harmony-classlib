@@ -15,11 +15,11 @@
  *  limitations under the License.
  */
 
-#if !defined(jclglob_h)
-#define jclglob_h
+#if !defined(harmonyglob_h)
+#define harmonyglob_h
 #include "vmi.h"
-extern void *LUNI_JCL_ID_CACHE;
-#define JCL_ID_CACHE LUNI_JCL_ID_CACHE
+extern void *LUNI_HARMONY_ID_CACHE;
+#define HARMONY_ID_CACHE LUNI_HARMONY_ID_CACHE
 typedef struct LUNIJniIDCache
 {
 
@@ -70,8 +70,13 @@ typedef struct LUNIJniIDCache
   char **synthPortArray;
   int portListLen;
 
-  /* JCL support for IPv6 */
-  jboolean jcl_supports_ipv6;
+  /* HARMONY support for IPv6 */
+  jboolean harmony_supports_ipv6;
+  /* additional IDs for luni and nio */
+  jclass CLS_java_lang_Long;
+  jclass CLS_java_net_Inet6Address;
+  jfieldID FID_java_lang_Long_value;
+  jmethodID MID_java_net_InetAddress_init;
 } LUNIJniIDCache;
 #define JniIDCache LUNIJniIDCache
 /* Now that the module-specific defines are in place, include the shared file */
@@ -80,4 +85,4 @@ typedef struct LUNIJniIDCache
 #if defined(LINUX)
 #include "hysignal.h"
 #endif /* UNIX */
-#endif /* jclglob_h */
+#endif /* harmonyglob_h */

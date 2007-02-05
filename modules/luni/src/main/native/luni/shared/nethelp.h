@@ -60,7 +60,7 @@ jobjectArray createAliasArrayFromAddrinfo (JNIEnv * env,
              hyaddrinfo_t addresses,
              char *hName);
 BOOLEAN booleanValue (JNIEnv * env, jobject aBoolean);
-BOOLEAN jcl_supports_ipv6 (JNIEnv * env);
+BOOLEAN harmony_supports_ipv6 (JNIEnv * env);
 jobject newJavaLangInteger (JNIEnv * env, I_32 anInt);
 BOOLEAN preferIPv4Stack (JNIEnv * env);
 char *netLookupErrorString (JNIEnv * env, I_32 anErrorNum);

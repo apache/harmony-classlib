@@ -19,7 +19,7 @@
 #include "jclprots.h"
 #include "nethelp.h"
 #include "hysock.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 /**
  * Answer the aliases for the nominated host name.  Useful for multihomed hosts.

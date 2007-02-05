@@ -19,7 +19,7 @@
 #include <ctype.h>
 #include "iohelp.h"
 #include "exceptions.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "helpers.h"
 #include "jclprots.h"
 
@@ -96,16 +96,14 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
           if (numEntries > 0)
             {
               currentEntry->next =
-                (struct dirEntry *) jclmem_allocate_memory (env,
-                                                            sizeof (struct
+                (struct dirEntry *) hymem_allocate_memory (sizeof (struct
                                                                     dirEntry));
               currentEntry = currentEntry->next;
             }
           else
             {
               dirList =
-                (struct dirEntry *) jclmem_allocate_memory (env,
-                                                            sizeof (struct
+                (struct dirEntry *) hymem_allocate_memory (sizeof (struct
                                                                     dirEntry));
               currentEntry = dirList;
             }
@@ -125,7 +123,7 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   if (numEntries == 0)
     return NULL;
 
-  javaClass = JCL_CACHE_GET (env, CLS_array_of_byte);
+  javaClass = HARMONY_CACHE_GET (env, CLS_array_of_byte);
   javaClass = (*env)->NewLocalRef(env, javaClass);
   if (javaClass == NULL) {
       return NULL;
@@ -147,7 +145,7 @@ cleanup:
           (*env)->DeleteLocalRef (env, entrypath);
         }
       dirList = dirList->next;
-      jclmem_free_memory (env, currentEntry);
+      hymem_free_memory (currentEntry);
     }
   return answer;
 }
@@ -374,7 +372,7 @@ Java_java_io_File_rootsImpl (JNIEnv * env, jclass clazz)
 
   answer =
     (*env)->NewObjectArray (env, numRoots,
-                            JCL_CACHE_GET (env, CLS_array_of_byte), NULL);
+                            HARMONY_CACHE_GET (env, CLS_array_of_byte), NULL);
   if (!answer)
     {
       return NULL;
@@ -448,7 +446,7 @@ Java_java_io_File_oneTimeInitialization (JNIEnv * env, jclass clazz)
     {
       jobject globalRef = (*env)->NewWeakGlobalRef (env, arrayClass);
       if (globalRef)
-        JCL_CACHE_SET (env, CLS_array_of_byte, globalRef);
+        HARMONY_CACHE_SET (env, CLS_array_of_byte, globalRef);
     }
   return;
 }

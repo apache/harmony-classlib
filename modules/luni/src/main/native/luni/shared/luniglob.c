@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "vmi.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "hyport.h"
 #include "strhelp.h"
 #include "jsig.h"
@@ -33,7 +33,7 @@
 
 static UDATA keyInitCount = 0;
 
-void *JCL_ID_CACHE = NULL;
+void *HARMONY_ID_CACHE = NULL;
 
 static int props_compare(const void *arg1, const void *arg2);
 static jint readClassPathFromPropertiesFile (VMInterface *vmInterface);
@@ -49,7 +49,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   JniIDCache *idCache;
   JNIEnv *env;
   void *keyInitCountPtr = GLOBAL_DATA (keyInitCount);
-  void **jclIdCache = GLOBAL_DATA (JCL_ID_CACHE);
+  void **harmonyIdCache = GLOBAL_DATA (HARMONY_ID_CACHE);
   VMInterface *vmInterface;
   char *bootPath = NULL;
 
@@ -71,7 +71,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
       PORT_ACCESS_FROM_ENV (env);
 
       if (HY_VMLS_FNTBL (env)->
-          HYVMLSAllocKeys (env, keyInitCountPtr, jclIdCache, NULL))
+          HYVMLSAllocKeys (env, keyInitCountPtr, harmonyIdCache, NULL))
         {
           goto fail;
         }
@@ -81,11 +81,11 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
         goto fail2;
 
       memset (idCache, 0, sizeof (JniIDCache));
-      HY_VMLS_SET (env, *jclIdCache, idCache);
+      HY_VMLS_SET (env, *harmonyIdCache, idCache);
 
-      JCL_CACHE_SET (env, realPortArray, NULL);
-      JCL_CACHE_SET (env, synthPortArray, NULL);
-      JCL_CACHE_SET (env, portListLen, 0);
+      HARMONY_CACHE_SET (env, realPortArray, NULL);
+      HARMONY_CACHE_SET (env, synthPortArray, NULL);
+      HARMONY_CACHE_SET (env, portListLen, 0);
 
       /* Attach to the common library */
       if (JNI_OK != ClearLibAttach (env))
@@ -133,7 +133,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
     }
 
 fail2:
-  HY_VMLS_FNTBL (env)->HYVMLSFreeKeys (env, keyInitCountPtr, jclIdCache, NULL);
+  HY_VMLS_FNTBL (env)->HYVMLSFreeKeys (env, keyInitCountPtr, harmonyIdCache, NULL);
 fail:
   return 0;
 }
@@ -147,14 +147,14 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
 {
   JNIEnv *env;
   void *keyInitCountPtr = GLOBAL_DATA (keyInitCount);
-  void **jclIdCache = GLOBAL_DATA (JCL_ID_CACHE);
+  void **harmonyIdCache = GLOBAL_DATA (HARMONY_ID_CACHE);
 
   int i, listlen;
   char **portArray, **portArray2;
 
   if ((*vm)->GetEnv (vm, (void **) &env, JNI_VERSION_1_2) == JNI_OK)
     {
-      JniIDCache *idCache = (JniIDCache *) HY_VMLS_GET (env, *jclIdCache);
+      JniIDCache *idCache = (JniIDCache *) HY_VMLS_GET (env, *harmonyIdCache);
 
       if (idCache)
         {
@@ -164,11 +164,11 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
           ClearLibDetach (env);
 
           /*free the arrays of available portnames */
-          portArray = JCL_CACHE_GET (env, realPortArray);
+          portArray = HARMONY_CACHE_GET (env, realPortArray);
           if (portArray != NULL)
             {
-              portArray2 = JCL_CACHE_GET (env, synthPortArray);
-              listlen = JCL_CACHE_GET (env, portListLen);
+              portArray2 = HARMONY_CACHE_GET (env, synthPortArray);
+              listlen = HARMONY_CACHE_GET (env, portListLen);
               for (i = 0; i < listlen; i++)
                 {
                   if (portArray[i] != NULL)
@@ -178,18 +178,18 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
                 }
               hymem_free_memory (portArray);
               hymem_free_memory (portArray2);
-              JCL_CACHE_SET (env, realPortArray, NULL);
-              JCL_CACHE_SET (env, synthPortArray, NULL);
-              JCL_CACHE_SET (env, portListLen, 0);
+              HARMONY_CACHE_SET (env, realPortArray, NULL);
+              HARMONY_CACHE_SET (env, synthPortArray, NULL);
+              HARMONY_CACHE_SET (env, portListLen, 0);
             }
 
           /* Free any global references */
           freeReferences (env);
 
           /* Free VMLS keys */
-          idCache = (JniIDCache *) HY_VMLS_GET (env, *jclIdCache);
+          idCache = (JniIDCache *) HY_VMLS_GET (env, *harmonyIdCache);
           HY_VMLS_FNTBL (env)->HYVMLSFreeKeys (env, keyInitCountPtr,
-                                              jclIdCache, NULL);
+                                              harmonyIdCache, NULL);
           hymem_free_memory (idCache);
         }
     }
@@ -347,23 +347,23 @@ freeReferences (JNIEnv * env)
   jclass classRef;
 
   /* clean up class references */
-  classRef = JCL_CACHE_GET (env, CLS_java_lang_Boolean);
+  classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Boolean);
   if (classRef)
     (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
 
-  classRef = JCL_CACHE_GET (env, CLS_java_lang_Byte);
+  classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Byte);
   if (classRef)
     (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
 
-  classRef = JCL_CACHE_GET (env, CLS_java_lang_Integer);
+  classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Integer);
   if (classRef)
     (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
 
-  classRef = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+  classRef = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
   if (classRef)
     (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
 
-  classRef = JCL_CACHE_GET (env, CLS_array_of_byte);
+  classRef = HARMONY_CACHE_GET (env, CLS_array_of_byte);
   if (classRef)
     (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
 }

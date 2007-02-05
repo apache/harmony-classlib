@@ -19,7 +19,7 @@
 #include "exceptions.h"
 #include "procimpl.h"
 
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 /**
   * Create a System Process with the specified
@@ -177,7 +177,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_destroyImpl (JNIEnv 
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
-        JCL_CACHE_GET (env,
+        HARMONY_CACHE_GET (env,
            FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   termProc ((IDATA) pHandle);
 }
@@ -188,7 +188,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl (JNIE
                 jobject recv)
 {
   new_ioh_close (env, recv,
-     JCL_CACHE_GET (env,
+     HARMONY_CACHE_GET (env,
         FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd));
 }
 
@@ -197,7 +197,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl (JNI
                  jobject recv)
 {
   new_ioh_close (env, recv,
-     JCL_CACHE_GET (env,
+     HARMONY_CACHE_GET (env,
         FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd));
 }
 
@@ -224,7 +224,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl (
 
   sHandle =
     (*env)->GetLongField (env, recv,
-        JCL_CACHE_GET (env,
+        HARMONY_CACHE_GET (env,
            FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle));
   retVal = getAvailable ((jint)sHandle);
   if (retVal < 0)
@@ -273,7 +273,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_waitForCompletionImp
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
-        JCL_CACHE_GET (env,
+        HARMONY_CACHE_GET (env,
            FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   return (jint) waitForProc ((IDATA) pHandle);
 }
@@ -285,7 +285,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitializatio
   jfieldID fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_SystemProcess_handle, fid);
+  HARMONY_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_SystemProcess_handle, fid);
 }
 
 JNIEXPORT void JNICALL
@@ -297,12 +297,12 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_oneTimeInitial
   fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_handle, fid);
+  HARMONY_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_handle, fid);
 
   fid = (*env)->GetFieldID (env, clazz, "fd", "Ljava/io/FileDescriptor;");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd, fid);
+  HARMONY_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd, fid);
 }
 
 JNIEXPORT void JNICALL
@@ -314,12 +314,12 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_oneTimeInitiali
   fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle, fid);
+  HARMONY_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle, fid);
 
   fid = (*env)->GetFieldID (env, clazz, "fd", "Ljava/io/FileDescriptor;");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd, fid);
+  HARMONY_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd, fid);
 }
 
 /* Close the handle */
@@ -329,7 +329,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_closeImpl (JNIEnv * 
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
-        JCL_CACHE_GET (env,
+        HARMONY_CACHE_GET (env,
            FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   closeProc ((IDATA) pHandle);
 }

@@ -17,7 +17,7 @@
 
 #include "iohelp.h"
 #include "exceptions.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 JNIEXPORT jboolean JNICALL
 Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
@@ -65,5 +65,5 @@ Java_java_io_FileDescriptor_oneTimeInitialization (JNIEnv * env,
     (*env)->GetFieldID (env, fdClazz, "descriptor", "J");
   if (!descriptorFID)
     return;
-  JCL_CACHE_SET (env, FID_java_io_FileDescriptor_descriptor, descriptorFID);
+  HARMONY_CACHE_SET (env, FID_java_io_FileDescriptor_descriptor, descriptorFID);
 }

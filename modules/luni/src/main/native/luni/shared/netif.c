@@ -18,7 +18,7 @@
 #include "nethelp.h"
 #include "jclprots.h"
 #include "helpers.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "hysock.h"
 
 /**

@@ -18,7 +18,7 @@
 #include "nethelp.h"
 #include "hysock.h"
 #include "hyport.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "exceptions.h"
 
 /**
@@ -36,8 +36,8 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   jfieldID fid;
   jobject globalRef;
 
-  /* Set the JCL cache to use IPv6 address support */
-  JCL_CACHE_SET (env, jcl_supports_ipv6, ipv6_support);
+  /* Set the Harmony ID cache to use IPv6 address support */
+  HARMONY_CACHE_SET (env, harmony_supports_ipv6, ipv6_support);
 
   /* java/lang/Boolean class, constructors, and fids */
   lookupClass = (*env)->FindClass (env, "java/lang/Boolean");
@@ -52,9 +52,9 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   fid = (*env)->GetFieldID (env, lookupClass, "value", "Z");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, CLS_java_lang_Boolean, globalRef);
-  JCL_CACHE_SET (env, MID_java_lang_Boolean_init, mid);
-  JCL_CACHE_SET (env, FID_java_lang_Boolean_value, fid);
+  HARMONY_CACHE_SET (env, CLS_java_lang_Boolean, globalRef);
+  HARMONY_CACHE_SET (env, MID_java_lang_Boolean_init, mid);
+  HARMONY_CACHE_SET (env, FID_java_lang_Boolean_value, fid);
 
   /* java/lang/Byte class, constructors, and fids */
   lookupClass = (*env)->FindClass (env, "java/lang/Byte");
@@ -69,9 +69,9 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   fid = (*env)->GetFieldID (env, lookupClass, "value", "B");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, CLS_java_lang_Byte, globalRef);
-  JCL_CACHE_SET (env, MID_java_lang_Byte_init, mid);
-  JCL_CACHE_SET (env, FID_java_lang_Byte_value, fid);
+  HARMONY_CACHE_SET (env, CLS_java_lang_Byte, globalRef);
+  HARMONY_CACHE_SET (env, MID_java_lang_Byte_init, mid);
+  HARMONY_CACHE_SET (env, FID_java_lang_Byte_value, fid);
 
   /* java/lang/Integer class, constructors, and fids */
   lookupClass = (*env)->FindClass (env, "java/lang/Integer");
@@ -86,9 +86,9 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   fid = (*env)->GetFieldID (env, lookupClass, "value", "I");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, CLS_java_lang_Integer, globalRef);
-  JCL_CACHE_SET (env, MID_java_lang_Integer_init, mid);
-  JCL_CACHE_SET (env, FID_java_lang_Integer_value, fid);
+  HARMONY_CACHE_SET (env, CLS_java_lang_Integer, globalRef);
+  HARMONY_CACHE_SET (env, MID_java_lang_Integer_init, mid);
+  HARMONY_CACHE_SET (env, FID_java_lang_Integer_value, fid);
 
   /* InetAddress cache setup */
   lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
@@ -101,8 +101,8 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
 
   if (!fid)
     return;
-  JCL_CACHE_SET (env, CLS_java_net_InetAddress, globalRef);
-  JCL_CACHE_SET (env, FID_java_net_InetAddress_address, fid);
+  HARMONY_CACHE_SET (env, CLS_java_net_InetAddress, globalRef);
+  HARMONY_CACHE_SET (env, FID_java_net_InetAddress_address, fid);
 
   mid = NULL;
   mid =
@@ -110,7 +110,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
              "()Z");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, MID_java_net_InetAddress_preferIPv6Addresses, mid);
+  HARMONY_CACHE_SET (env, MID_java_net_InetAddress_preferIPv6Addresses, mid);
 
   if (ipv6_support)
     {
@@ -120,7 +120,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
         "(Ljava/lang/String;[B)Ljava/net/InetAddress;");
       if (!mid)
         return;
-      JCL_CACHE_SET (env,
+      HARMONY_CACHE_SET (env,
         MID_java_net_InetAddress_getByAddress_Ljava_lang_String_byteArray,
         mid);
 
@@ -130,7 +130,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
         "([B)Ljava/net/InetAddress;");
       if (!mid)
         return;
-      JCL_CACHE_SET (env, MID_java_net_InetAddress_getByAddress_byteArray,
+      HARMONY_CACHE_SET (env, MID_java_net_InetAddress_getByAddress_byteArray,
         mid);
     }
   else
@@ -139,7 +139,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
       mid = (*env)->GetMethodID (env, lookupClass, "<init>", "([B)V");
       if (!mid)
         return;
-      JCL_CACHE_SET (env, MID_java_net_InetAddress_init_byteArray, mid);
+      HARMONY_CACHE_SET (env, MID_java_net_InetAddress_init_byteArray, mid);
 
       /* InetAddress( byte[] addr, String address ) */
       mid =
@@ -147,7 +147,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
         "([BLjava/lang/String;)V");
       if (!mid)
         return;
-      JCL_CACHE_SET (env,
+      HARMONY_CACHE_SET (env,
         MID_java_net_InetAddress_init_byteArrayLjava_lang_String,
         mid);
     }
@@ -163,8 +163,8 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
     (*env)->GetStaticMethodID (env, lookupClass, "preferIPv4Stack", "()Z");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, CLS_java_net_Socket, globalRef);
-  JCL_CACHE_SET (env, MID_java_net_Socket_preferIPv4Stack, mid);
+  HARMONY_CACHE_SET (env, CLS_java_net_Socket, globalRef);
+  HARMONY_CACHE_SET (env, MID_java_net_Socket_preferIPv4Stack, mid);
 
   lookupClass = (*env)->FindClass (env, "java/lang/Thread");
   if (!lookupClass)
@@ -175,9 +175,35 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   mid = (*env)->GetStaticMethodID (env, lookupClass, "yield", "()V");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, CLS_java_lang_Thread, globalRef);
-  JCL_CACHE_SET (env, MID_java_lang_Thread_yield, mid);
-
+  HARMONY_CACHE_SET (env, CLS_java_lang_Thread, globalRef);
+  HARMONY_CACHE_SET (env, MID_java_lang_Thread_yield, mid);
+  
+  
+  /*Add additional cache*/
+  lookupClass = (*env)->FindClass (env, "java/lang/Long");
+  if (!lookupClass)
+    return;
+  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  if (!globalRef)
+    return;
+  HARMONY_CACHE_SET (env, CLS_java_lang_Long, globalRef);
+  fid = (*env)->GetFieldID (env, lookupClass, "value", "J");
+    if (!lookupClass)
+    return;
+  HARMONY_CACHE_SET (env, FID_java_lang_Long_value, fid);
+  lookupClass = (*env)->FindClass (env, "java/net/Inet6Address");
+  if (!lookupClass)
+    return;
+  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  if (!globalRef)
+    return;
+  HARMONY_CACHE_SET (env, CLS_java_net_Inet6Address, globalRef);
+  lookupClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
+  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "()V");
+  if (!mid)
+    return;
+  HARMONY_CACHE_SET (env, MID_java_net_InetAddress_init, mid);
+  
 }
 
 
@@ -440,9 +466,9 @@ newJavaLangBoolean (JNIEnv * env, BOOLEAN aBool)
   jclass tempClass;
   jmethodID tempMethod;
 
-  tempClass = JCL_CACHE_GET (env, CLS_java_lang_Boolean);
+  tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Boolean);
   //tempClass = getJavaLangBooleanClass(env);
-  tempMethod = JCL_CACHE_GET (env, MID_java_lang_Boolean_init);
+  tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Boolean_init);
   //tempMethod = getJavaLangBooleanInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jboolean) aBool);
 }
@@ -462,8 +488,8 @@ newJavaLangByte (JNIEnv * env, U_8 aByte)
   jclass tempClass;
   jmethodID tempMethod;
 
-  tempClass = JCL_CACHE_GET (env, CLS_java_lang_Byte);
-  tempMethod = JCL_CACHE_GET (env, MID_java_lang_Byte_init);
+  tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Byte);
+  tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Byte_init);
   //tempClass = getJavaLangByteClass(env);
   //tempMethod = getJavaLangByteInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jbyte) aByte);
@@ -484,8 +510,8 @@ newJavaLangInteger (JNIEnv * env, I_32 anInt)
   jclass tempClass;
   jmethodID tempMethod;
 
-  tempClass = JCL_CACHE_GET (env, CLS_java_lang_Integer);
-  tempMethod = JCL_CACHE_GET (env, MID_java_lang_Integer_init);
+  tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Integer);
+  tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Integer_init);
   //tempClass = getJavaLangIntegerClass(env);
   //tempMethod = getJavaLangIntegerInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jint) anInt);
@@ -551,7 +577,7 @@ booleanValue (JNIEnv * env, jobject aBoolean)
 {
   return (BOOLEAN) ((*env)->
         GetBooleanField (env, aBoolean,
-             JCL_CACHE_GET (env,
+             HARMONY_CACHE_GET (env,
                 FID_java_lang_Boolean_value)));
   /*return (BOOLEAN) ((*env)->
         GetBooleanField (env, aBoolean,
@@ -572,7 +598,7 @@ byteValue (JNIEnv * env, jobject aByte)
 {
   return (U_8) ((*env)->
     GetByteField (env, aByte,
-            JCL_CACHE_GET (env, FID_java_lang_Byte_value)));
+            HARMONY_CACHE_GET (env, FID_java_lang_Byte_value)));
   /*return (U_8) ((*env)->
     GetByteField (env, aByte,
             getJavaLangByteValue(env)));*/
@@ -592,7 +618,7 @@ intValue (JNIEnv * env, jobject anInteger)
 {
   return (I_32) ((*env)->
      GetIntField (env, anInteger,
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
                FID_java_lang_Integer_value)));
   /*return (I_32) ((*env)->
      GetIntField (env, anInteger,
@@ -737,7 +763,7 @@ netGetJavaNetInetAddressValue (JNIEnv * env, jobject anInetAddress,
 {
   jbyteArray byte_array =
     (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
                FID_java_net_InetAddress_address)));
   /*jbyteArray byte_array =
     (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
@@ -760,8 +786,8 @@ callThreadYield (JNIEnv * env)
   jclass tempClass;
   jobject globalRef;
 
-  tempClass = JCL_CACHE_GET (env, CLS_java_lang_Thread);
-  tempMethod = JCL_CACHE_GET (env, MID_java_lang_Thread_yield);
+  tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Thread);
+  tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Thread_yield);
   
   //tempClass = getJavaLangThreadClass(env);
   //tempMethod = getJavaLangThreadYield(env);
@@ -776,8 +802,8 @@ callThreadYield (JNIEnv * env)
       tempMethod = (*env)->GetStaticMethodID (env, tempClass, "yield", "()V");
       if (!tempMethod)
         return;
-      JCL_CACHE_SET (env, CLS_java_lang_Thread, globalRef);
-      JCL_CACHE_SET (env, MID_java_lang_Thread_yield, tempMethod);      
+      HARMONY_CACHE_SET (env, CLS_java_lang_Thread, globalRef);
+      HARMONY_CACHE_SET (env, MID_java_lang_Thread_yield, tempMethod);      
     }
   (*env)->CallStaticVoidMethod (env, tempClass, tempMethod);
 }
@@ -806,7 +832,7 @@ createAliasArray (JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
   U_32 i, length;
   jobjectArray aliases = NULL;
   jobject element;
-  jclass tempClass = (*env)->FindClass (env, "java/net/InetAddress");
+  jclass tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress); //(*env)->FindClass (env, "java/net/InetAddress");
 
   /* Number of structures */
   for (i = 0; i < count; i++)
@@ -924,9 +950,9 @@ createAliasArrayFromAddrinfo (JNIEnv * env, hyaddrinfo_t addresses,
  */
 
 BOOLEAN
-jcl_supports_ipv6 (JNIEnv * env)
+harmony_supports_ipv6 (JNIEnv * env)
 {
-  return (BOOLEAN) JCL_CACHE_GET (env, jcl_supports_ipv6);
+  return (BOOLEAN) HARMONY_CACHE_GET (env, harmony_supports_ipv6);
   //return (BOOLEAN) support;
 }
 
@@ -981,7 +1007,7 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
   /* check if the address being returned is the any address.  If so we need to check the prefer flags to see how it should be returned
   (either as IPv4 Any or IPv6 ANY) */
 
-  if (jcl_supports_ipv6 (env))
+  if (harmony_supports_ipv6 (env))
     {
       /* Figure out if it is the any address */
       for (i = 0; i < length; i++)
@@ -1028,14 +1054,14 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
         }
     }
 
-  if (jcl_supports_ipv6 (env))
+  if (harmony_supports_ipv6 (env))
     {
       tempMethodWithScope = NULL;
       if (scope_id != 0)
         {
           tempMethodWithScope =
             (*env)->GetStaticMethodID (env,
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
             CLS_java_net_InetAddress),
             "getByAddress",
             "([BI)Ljava/net/InetAddress;");
@@ -1055,7 +1081,7 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
       if (tempMethodWithScope != NULL)
         {
           /* create using the scope id */
-          tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+          tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
           //tempClass = getJavaNetInetAddressClass(env);
           return (*env)->CallStaticObjectMethod (env, tempClass,
             tempMethodWithScope,
@@ -1063,10 +1089,10 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
         }
       else
         {
-          tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+          tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
           //tempClass = getJavaNetInetAddressClass(env);
           tempMethod =
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_byteArray);
           //tempMethod = getJavaNetInetAddressGetByAddressByteArray(env);
           return (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
@@ -1075,9 +1101,9 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
     }
   else
     {
-      tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+      tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
       tempMethod =
-        JCL_CACHE_GET (env, MID_java_net_InetAddress_init_byteArray);
+        HARMONY_CACHE_GET (env, MID_java_net_InetAddress_init_byteArray);
       //tempClass = getJavaNetInetAddressClass(env);
       //tempMethod = getJavaNetInetAddressInitByteArray(env);
       return (*env)->NewObject (env, tempClass, tempMethod, byte_array);
@@ -1117,7 +1143,7 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
   /* check if the address being returned is the any address.  If so we need to check the prefer flags to see how it should be returned
      (either as IPv4 Any or IPv6 ANY) */
 
-  if (jcl_supports_ipv6 (env))
+  if (harmony_supports_ipv6 (env))
     {
       /* Figure out if it is the any address */
       for (i = 0; i < length; i++)
@@ -1164,14 +1190,14 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
         }
     }
 
-  if (jcl_supports_ipv6 (env))
+  if (harmony_supports_ipv6 (env))
     {
       tempMethodWithScope = NULL;
       if (scope_id != 0)
         {
           tempMethodWithScope =
             (*env)->GetStaticMethodID (env,
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
             CLS_java_net_InetAddress),
             "getByAddress",
             "(Ljava/lang/String;[BI)Ljava/net/InetAddress;");
@@ -1191,7 +1217,7 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
       if (tempMethodWithScope != NULL)
         {
           /* create using the scope id */
-          tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+          tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
           //tempClass = getJavaNetInetAddressClass(env);
           return (*env)->CallStaticObjectMethod (env, tempClass,
             tempMethodWithScope, aString,
@@ -1199,9 +1225,9 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
         }
       else
         {
-          tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+          tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
           tempMethod =
-            JCL_CACHE_GET (env,
+            HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_Ljava_lang_String_byteArray);
           
           //tempClass = getJavaNetInetAddressClass(env);
@@ -1212,9 +1238,9 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
       }
     else
       {
-        tempClass = JCL_CACHE_GET (env, CLS_java_net_InetAddress);
+        tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
         tempMethod =
-          JCL_CACHE_GET (env,
+          HARMONY_CACHE_GET (env,
           MID_java_net_InetAddress_init_byteArrayLjava_lang_String);
         
         //tempClass = getJavaNetInetAddressClass(env);
@@ -1275,15 +1301,15 @@ preferIPv4Stack (JNIEnv * env)
 
   /* if the jcl does not support IPV6 then just use the IPV4 stack without checking
      the values of the flags */
-  if (!jcl_supports_ipv6 (env))
+  if (!harmony_supports_ipv6 (env))
     {
       return TRUE;
     }
 
   result =
     (*env)->CallStaticBooleanMethod (env,
-             JCL_CACHE_GET (env, CLS_java_net_Socket),
-             JCL_CACHE_GET (env,
+             HARMONY_CACHE_GET (env, CLS_java_net_Socket),
+             HARMONY_CACHE_GET (env,
                 MID_java_net_Socket_preferIPv4Stack));
   
   /*result =
@@ -1317,16 +1343,16 @@ preferIPv6Addresses (JNIEnv * env)
 
   /* if the jcl does not support IPV6 then we don't prefer IPv6 addresses for any case so just return false 
      without checking the values of the flags */
-  if (!jcl_supports_ipv6 (env))
+  if (!harmony_supports_ipv6 (env))
     {
       return FALSE;
     }
 
   result =
     (*env)->CallStaticBooleanMethod (env,
-             JCL_CACHE_GET (env,
+             HARMONY_CACHE_GET (env,
                 CLS_java_net_InetAddress),
-             JCL_CACHE_GET (env,
+             HARMONY_CACHE_GET (env,
                 MID_java_net_InetAddress_preferIPv6Addresses));
   /*
   result =
@@ -1359,7 +1385,7 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
          U_32 * scope_id)
 {
   jfieldID scopeFid;
-  jclass inet6AddressClass = (*env)->FindClass (env, "java/net/Inet6Address");
+  jclass inet6AddressClass =  HARMONY_CACHE_GET (env,CLS_java_net_Inet6Address);
 
   /* only inet6 addresses have the scope id so only get the value for this type of InetAddress */
   if ((!((*env)->ExceptionCheck (env)))
@@ -1388,7 +1414,7 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
 
 jclass 
 getJavaLangBooleanClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Boolean");
+  jclass lookupClass = HARMONY_CACHE_GET(env,CLS_java_lang_Boolean);
   if (!lookupClass)
     return NULL;
   return lookupClass;
@@ -1397,10 +1423,7 @@ getJavaLangBooleanClass(JNIEnv * env){
 jmethodID
 getJavaLangBooleanInit(JNIEnv * env){
   jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Boolean");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(Z)V");
+  mid = HARMONY_CACHE_GET(env,MID_java_lang_Boolean_init);;
   if (!mid)
     return NULL;
   return mid;
@@ -1715,22 +1738,7 @@ getJavaNetSocketImplPort(JNIEnv * env){
 jfieldID
 getJavaIoFileDescriptorDescriptor (JNIEnv * env)
 {
-  jclass descriptorCLS;
-  jfieldID descriptorFID;
-
-  descriptorCLS = (*env)->FindClass (env, "java/io/FileDescriptor");
-  if (NULL == descriptorCLS)
-    {
-      return NULL;
-    }
-
-  descriptorFID = (*env)->GetFieldID (env, descriptorCLS, "descriptor", "J");
-  if (NULL == descriptorFID)
-    {
-      return NULL;
-    }
-
-  return descriptorFID;
+  return HARMONY_CACHE_GET (env, FID_java_io_FileDescriptor_descriptor);
 }
 
 void
@@ -1754,7 +1762,7 @@ getJavaIoFileDescriptorContentsAsAPointer (JNIEnv * env, jobject fd)
     }
   return (void *) ((IDATA)((*env)->GetLongField (env, fd, descriptorFID)));
 }
-
+		
 jobject getJavaNioChannelsSocketChannelImplObj(JNIEnv * env, jclass channel_class){
           jmethodID channel_new;
 	  jobject channel_object;
@@ -1778,11 +1786,7 @@ void setJavaNioChannelsLocalPort(JNIEnv * env,jclass channel_class,jobject chann
 
 void setFDContent(JNIEnv * env, jclass channel_class, jobject channel_object, void * sock){
 	jobject fd_object;
-	jfieldID fd_field = (*env)->GetFieldID(env,channel_class,"fd","Ljava/io/FileDescriptor;");
-	jclass fd_class = (*env)->FindClass(env,"java/io/FileDescriptor");
-	if(NULL == fd_class) {
-		return;
-        }
+	jfieldID fd_field = HARMONY_CACHE_GET (env, FID_java_io_FileDescriptor_descriptor);
 	fd_object = (*env)->GetObjectField(env,channel_object,fd_field);
 	if(NULL == fd_object) {
         	return;
@@ -1796,11 +1800,11 @@ void setSocketAddressContent(JNIEnv * env, jclass channel_class, jobject channel
 	jobject addr_object,socketaddr_object;
 	jclass addr_class,socketaddr_class ;
 	jbyteArray addr_array;
-	addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
+	addr_class = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
 	if(NULL == addr_class) {
 	        return;
         }
-	addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
+	addr_new = HARMONY_CACHE_GET (env, MID_java_net_InetAddress_init);
         addr_object = (*env)->NewObject(env,addr_class,addr_new);
 	if(NULL == addr_object) {
         	return;
@@ -1813,7 +1817,7 @@ void setSocketAddressContent(JNIEnv * env, jclass channel_class, jobject channel
 	}
 	addr_field = (*env)->GetFieldID(env,socketaddr_class,"addr","Ljava/net/InetAddress;");
 	(*env)->SetObjectField(env, socketaddr_object, addr_field, addr_object);
-	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	addrarray_field = HARMONY_CACHE_GET (env, FID_java_net_InetAddress_address);
 	addr_array = (*env)->NewByteArray(env,(jsize)4);		
         (*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,address);
 	(*env)->SetObjectField(env, addr_object, addrarray_field, addr_array);
@@ -1822,8 +1826,8 @@ void setSocketAddressContent(JNIEnv * env, jclass channel_class, jobject channel
 void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address){
 	jfieldID addrarray_field;
 	jfieldID localAddr_field = (*env)->GetFieldID(env,channel_class,"localAddress","Ljava/net/InetAddress;");
-	jclass addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
-	jmethodID addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
+	jclass addr_class = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
+	jmethodID addr_new = HARMONY_CACHE_GET (env, MID_java_net_InetAddress_init);
 	jobject localAddr_object = (*env)->NewObject(env,addr_class,addr_new);
 	jfieldID socketaddr_field = (*env)->GetFieldID(env,channel_class,"connectAddress","Ljava/net/InetSocketAddress;");
 	jobject socketaddr_object = (*env)->GetObjectField(env,channel_object,socketaddr_field);
@@ -1837,7 +1841,7 @@ void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject ch
         }
 	addr_array = (*env)->NewByteArray(env,(jsize)4);	
 	(*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,address);
-	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	addrarray_field = HARMONY_CACHE_GET (env, FID_java_net_InetAddress_address);
 	(*env)->SetObjectField(env, localAddr_object, addrarray_field, addr_array);
 }
 
@@ -1846,12 +1850,12 @@ void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, j
 	jfieldID localAddr_field,addrarray_field;
 	jobject localAddr_object;
 	jbyteArray addr_array;
-	jclass addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
+	jclass addr_class = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
 	if(NULL == addr_class) {
 	        return;
         }
 	addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
-	localAddr_field = (*env)->GetFieldID(env,socketImpl_class,"address","Ljava/net/InetAddress;");
+	localAddr_field = HARMONY_CACHE_GET (env, FID_java_net_InetAddress_address);
 	localAddr_object = (*env)->NewObject(env,addr_class,addr_new);
 	if(NULL == localAddr_object) {
         	return;
@@ -1859,6 +1863,6 @@ void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, j
 	(*env)->SetObjectField(env, socketImpl_object, localAddr_field, localAddr_object);
 	addr_array = (*env)->NewByteArray(env,(jsize)4);	
 	(*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,localAddr);
-	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	addrarray_field = HARMONY_CACHE_GET (env, FID_java_net_InetAddress_address);
 	(*env)->SetObjectField(env, localAddr_object, addrarray_field, addr_array);
 }

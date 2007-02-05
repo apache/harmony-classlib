@@ -19,7 +19,7 @@
 #include <string.h>
 #include "vmi.h"
 #include "procimpl.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 /*Kill the Process with ID procHandle */
 

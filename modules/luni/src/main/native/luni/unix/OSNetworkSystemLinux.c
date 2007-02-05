@@ -23,7 +23,7 @@
 #include<netinet/ip.h>
 #include<netinet/ip_icmp.h>
 #include "nethelp.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 #include "hysock.h"
 #include "hyport.h"
 #include "jni.h"

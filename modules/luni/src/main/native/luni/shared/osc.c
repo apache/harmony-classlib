@@ -16,7 +16,7 @@
  */
 
 #include "vmi.h"
-#include "jclglob.h"
+#include "harmonyglob.h"
 
 JNIEXPORT jobject JNICALL
 Java_java_io_ObjectStreamClass_getFieldSignature (JNIEnv * env, jclass clazz,
@@ -24,7 +24,7 @@ Java_java_io_ObjectStreamClass_getFieldSignature (JNIEnv * env, jclass clazz,
 {
   jclass fieldClass = (*env)->GetObjectClass (env, reflectField);
   return (*env)->CallNonvirtualObjectMethod (env, reflectField, fieldClass,
-                                             JCL_CACHE_GET (env,
+                                             HARMONY_CACHE_GET (env,
                                                             MID_java_lang_reflect_Field_getSignature));
 }
 
@@ -34,7 +34,7 @@ Java_java_io_ObjectStreamClass_getMethodSignature (JNIEnv * env, jclass clazz,
 {
   jclass methodClass = (*env)->GetObjectClass (env, reflectMethod);
   return (*env)->CallNonvirtualObjectMethod (env, reflectMethod, methodClass,
-                                             JCL_CACHE_GET (env,
+                                             HARMONY_CACHE_GET (env,
                                                             MID_java_lang_reflect_Method_getSignature));
 }
 
@@ -47,7 +47,7 @@ Java_java_io_ObjectStreamClass_getConstructorSignature (JNIEnv * env,
   jclass constructorClass = (*env)->GetObjectClass (env, reflectConstructor);
   return (*env)->CallNonvirtualObjectMethod (env, reflectConstructor,
                                              constructorClass,
-                                             JCL_CACHE_GET (env,
+                                             HARMONY_CACHE_GET (env,
                                                             MID_java_lang_reflect_Constructor_getSignature));
 }
 
@@ -86,7 +86,7 @@ Java_java_io_ObjectStreamClass_oneTimeInitialization (JNIEnv * env,
                          "()Ljava/lang/String;");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, MID_java_lang_reflect_Field_getSignature, mid);
+  HARMONY_CACHE_SET (env, MID_java_lang_reflect_Field_getSignature, mid);
 
   lookupClass = (*env)->FindClass (env, "java/lang/reflect/Method");
   if (!lookupClass)
@@ -96,7 +96,7 @@ Java_java_io_ObjectStreamClass_oneTimeInitialization (JNIEnv * env,
                          "()Ljava/lang/String;");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, MID_java_lang_reflect_Method_getSignature, mid);
+  HARMONY_CACHE_SET (env, MID_java_lang_reflect_Method_getSignature, mid);
 
   lookupClass = (*env)->FindClass (env, "java/lang/reflect/Constructor");
   if (!lookupClass)
@@ -106,5 +106,5 @@ Java_java_io_ObjectStreamClass_oneTimeInitialization (JNIEnv * env,
                          "()Ljava/lang/String;");
   if (!mid)
     return;
-  JCL_CACHE_SET (env, MID_java_lang_reflect_Constructor_getSignature, mid);
+  HARMONY_CACHE_SET (env, MID_java_lang_reflect_Constructor_getSignature, mid);
 }
