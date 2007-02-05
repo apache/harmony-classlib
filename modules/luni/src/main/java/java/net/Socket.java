@@ -912,7 +912,7 @@ public class Socket {
         InetSocketAddress inetAddr = (InetSocketAddress) remoteAddr;
         InetAddress addr;
         if ((addr = inetAddr.getAddress()) == null) {
-            throw new UnknownHostException(Msg.getString("K0317"));//$NON-NLS-1$
+            throw new UnknownHostException(Msg.getString("K0317", remoteAddr));//$NON-NLS-1$
         }
         int port = inetAddr.getPort();
 

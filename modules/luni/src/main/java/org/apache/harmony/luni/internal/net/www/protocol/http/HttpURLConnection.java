@@ -34,6 +34,7 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.ResponseCache;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketPermission;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -635,7 +636,23 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                     getConnectTimeout());
         } else if (proxy.type() == Proxy.Type.HTTP) {
             socket = new Socket();
-            socket.connect(proxy.address(), getConnectTimeout());
+
+            SocketAddress proxyAddr = proxy.address();
+
+            if (!(proxyAddr instanceof InetSocketAddress)) {
+                throw new IllegalArgumentException(Msg.getString(
+                        "K0316", proxyAddr.getClass())); //$NON-NLS-1$
+            }
+
+            InetSocketAddress iProxyAddr = (InetSocketAddress) proxyAddr;
+
+            if( iProxyAddr.getAddress() == null ) {
+                // Resolve proxy, see HARMONY-3113
+                socket.connect(new InetSocketAddress((iProxyAddr.getHostName()),
+                    iProxyAddr.getPort()), getConnectTimeout());
+            } else {
+                socket.connect(iProxyAddr, getConnectTimeout());
+            }
         } else {
             // using SOCKS proxy
             socket = new Socket(proxy);
