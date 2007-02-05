@@ -26,5 +26,8 @@ HYLINUXFONT_0.1 {
 		Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_RemoveFontResource;
 		Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_XftDrawSetClipRectangles;
 		Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_xftDrawSetSubwindowModeNative;
+                Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeFreeGlyphBitmap;
+                Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getPointsFromFTVector;
+                Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeGlyphOutline;
 	local : *;
 };

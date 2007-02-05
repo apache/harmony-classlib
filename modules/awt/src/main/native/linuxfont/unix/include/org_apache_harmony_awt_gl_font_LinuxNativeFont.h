@@ -241,6 +241,28 @@ JNIEXPORT jfloatArray JNICALL
 Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getExtraMetricsNative(JNIEnv *, jclass, 
     jlong, jint, jint);
 
+/*
+ * Method:     org.apache.harmony.awt.gl.font.LinuxNativeFont.NativeFreeGlyphBitmap(J)V
+ */
+JNIEXPORT void JNICALL 
+Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeFreeGlyphBitmap(JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_apache_harmony_awt_gl_font_LinuxNativeFont
+ * Method:    getPointsFromFTVector
+ * Signature: (JI)[F
+ */
+JNIEXPORT jfloatArray JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getPointsFromFTVector
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     org_apache_harmony_awt_gl_font_LinuxNativeFont
+ * Method:    freeGlyphOutline
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeGlyphOutline
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif
