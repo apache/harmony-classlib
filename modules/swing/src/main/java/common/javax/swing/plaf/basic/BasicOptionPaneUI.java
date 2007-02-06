@@ -156,6 +156,10 @@ public class BasicOptionPaneUI extends OptionPaneUI {
         }
 
         public Dimension preferredLayoutSize(final Container parent) {
+            if (parent == null) {
+                return new Dimension();
+            }
+
             int totalWidth = 0;
             int totalHeight = getMaxChildHeight(parent);
             int numChildren = parent.getComponentCount();

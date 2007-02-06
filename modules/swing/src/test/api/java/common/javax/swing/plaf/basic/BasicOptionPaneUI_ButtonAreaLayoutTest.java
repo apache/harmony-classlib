@@ -320,6 +320,13 @@ public class BasicOptionPaneUI_ButtonAreaLayoutTest extends SwingTestCase {
                 .preferredLayoutSize(container));
     }
 
+    // Regression for HARMONY-2900
+    public void testPreferedLayoutSize() {
+        layout = new BasicOptionPaneUI.ButtonAreaLayout(false, 20);
+        assertEquals(new Dimension(), layout.preferredLayoutSize(null));
+        // no exception expected
+    }
+
     public void testRemoveLayoutComponent() {
         Container container = new JPanel();
         JComponent component1 = new JPanel();
