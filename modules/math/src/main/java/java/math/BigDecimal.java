@@ -363,6 +363,10 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         // Extracting the 52 bits of the mantisa.
         mantisa = (scale == 1075) ? (bits & 0xFFFFFFFFFFFFFL) << 1
                 : (bits & 0xFFFFFFFFFFFFFL) | 0x10000000000000L;
+        if (mantisa == 0) {
+            scale = 0;
+            precision = 1;
+        }
         // To simplify all factors '2' in the mantisa 
         if (scale > 0) {
             trailingZeros = Math.min(scale, Long.numberOfTrailingZeros(mantisa));

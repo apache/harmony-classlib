@@ -78,7 +78,11 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		assertTrue(
 				"the double representation of 0.00345 bigDecimal is not correct",
 				big.doubleValue() == 0.00345);
-
+        // regression test for HARMONY-2429
+        big = new BigDecimal(-0.0);
+        assertTrue(
+        		"the double representation of -0.0 bigDecimal is not correct",
+        		big.scale() == 0);
 	}
 
 	/**
