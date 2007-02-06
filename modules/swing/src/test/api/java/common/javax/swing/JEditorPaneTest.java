@@ -846,4 +846,9 @@ public class JEditorPaneTest extends SwingTestCase {
             // PASSED            
         }  
     }
+
+    public void testIsFocusCycleRoot() throws Exception {
+        // Regression test for HARMONY-2573
+        assertTrue(new JEditorPane().isFocusCycleRoot());
+    }
 }

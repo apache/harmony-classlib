@@ -276,6 +276,7 @@ public class JEditorPane extends JTextComponent {
     }
 
     public JEditorPane() {
+        setFocusCycleRoot(true);
     }
 
     public JEditorPane(final String page) throws IOException {
