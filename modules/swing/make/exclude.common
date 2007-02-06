@@ -59,7 +59,6 @@ javax/swing/plaf/basic/BasicInternalFrameTitlePaneTest.java
 javax/swing/plaf/basic/BasicInternalFrameUITest.java
 javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java
 javax/swing/plaf/basic/BasicOptionPaneUITest.java
-javax/swing/plaf/basic/BasicOptionPaneUI_ButtonAreaLayoutTest.java
 javax/swing/plaf/basic/BasicProgressBarUITest.java
 javax/swing/plaf/basic/BasicRadioButtonMenuItemUITest.java
 javax/swing/plaf/basic/BasicRootPaneUITest.java
