@@ -21,6 +21,7 @@ CXX = $(CC)
 CPP = $(CC) -E
 AS = as
 AR = ar
+ARFLAGS = rcv
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
 OSLIBS = -lc -lm
