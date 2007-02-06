@@ -15,11 +15,7 @@
  *  limitations under the License.
  */
 
-/*
-	Define platform endianness
- */
- 
-#define HYVM_ENV_LITTLE_ENDIAN
+#include "hycomp.h"
 
 /* Insist that only the IEEE version is built. See also fdlibm.h */
 #define HY_FIXED_VERSION fdlibm_ieee
@@ -28,7 +24,7 @@
 	If this platform does not use the standard word order for doubles
 	then pretend we are the other endian.
 */
-#ifdef HYVM_ENV_LITTLE_ENDIAN
+#ifdef HY_LITTLE_ENDIAN
 #ifdef HY_PLATFORM_DOUBLE_ORDER
 #define HY_FDLIBM_LITTLE_ENDIAN
 #endif
