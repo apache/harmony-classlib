@@ -65,12 +65,10 @@ final class AWTCaret extends DefaultCaret implements TextCaret {
 
     }
 
-    public boolean setComponent(final Component c) {
-        if (super.setComponent(c)) {
-            highlighter.setComponent(c);
-        }
+    public void setComponent(final Component c) {
+        super.setComponent(c);
+        highlighter.setComponent(c);
         textKit.addCaretListeners(this);
-        return true;
     }
 
     Object createTimer(final boolean isMagicTimer, final int delay) {

@@ -681,9 +681,8 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         if (c == null) { // Fix for HARMONY-1750, for compatiblity with RI
             throw new NullPointerException(Messages.getString("swing.05")); //$NON-NLS-1$
         }
-        if (!setComponent(c)) {
-            return;
-        }
+        setComponent(c);
+
         component.addMouseListener(this);
         component.addMouseMotionListener(this);
         component.addFocusListener(this);
@@ -694,10 +693,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
                                         selectionColor);
     }
 
-    boolean setComponent(final Component c) {
-        if (c == null) {
-            return false;
-        }
+    void setComponent(final Component c) {
         component = c;
         textKit = TextUtils.getTextKit(component);
         document = textKit.getDocument();
@@ -707,7 +703,6 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         }
         selectionColor = getSelectionColor();
         caretColor = getCaretColor();
-        return true;
     }
 
     public boolean isActive() {

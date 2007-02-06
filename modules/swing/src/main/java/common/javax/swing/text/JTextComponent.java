@@ -718,8 +718,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
             public AWTHighlighter getHighlighter() {
                 return null;
             }
-            public boolean setComponent(final Component c) {
-                return false;
+            public void setComponent(final Component c) {
             }
             public void paint(final Graphics g) {
 

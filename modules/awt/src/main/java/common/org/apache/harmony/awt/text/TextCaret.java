@@ -46,7 +46,7 @@ public interface TextCaret {
 
     void paint(Graphics g);
 
-    boolean setComponent(final Component c);
+    void setComponent(final Component c);
 
     AWTHighlighter getHighlighter();
 }
