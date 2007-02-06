@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing.undo;
 
 import java.util.Hashtable;
@@ -92,11 +88,6 @@ public class StateEditTest extends SwingTestCase {
         obj = (SimpleEditable) se1.object;
         se2 = new StateEdit(new SimpleEditable(), "presentationName");
         super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     public void testGetPresentationName() {
@@ -229,6 +220,17 @@ public class StateEditTest extends SwingTestCase {
             fail("NullPointerException should have been thrown");
         } catch (NullPointerException e) {
             // Expected
+        }
+    }
+
+    // Regression test for HARMONY-2844
+    public void testInitNull() {
+        StateEdit se = new StateEdit(new SimpleEditable());
+        try {
+            se.init(null, "test");
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) {
+            // expected
         }
     }
 
