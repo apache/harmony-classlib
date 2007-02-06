@@ -170,9 +170,9 @@ public interface INetworkSystem {
 	public InetAddress getSocketLocalAddress(FileDescriptor aFD,
 			boolean preferIPv6Addresses);
 
-	public int[] select(SelectableChannel[] readChannels,
-			SelectableChannel[] writeChannels, long timeout)
-			throws SocketException;
+    public int[] select(FileDescriptor[] readFDs,
+            FileDescriptor[] writeFDs, long timeout)
+            throws SocketException;
 
 	/*
 	 * Query the IP stack for the local port to which this socket is bound.

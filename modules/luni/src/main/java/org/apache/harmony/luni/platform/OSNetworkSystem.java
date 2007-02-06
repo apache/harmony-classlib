@@ -288,41 +288,18 @@ final class OSNetworkSystem implements INetworkSystem {
      *      SocketException @return int array, each int approve one of the	 * channel if OK
 	 */
 
-	public int[] select(SelectableChannel[] readChannels,
-			SelectableChannel[] writeChannels, long timeout)
+	public int[] select(FileDescriptor[] readFDs,
+            FileDescriptor[] writeFDs, long timeout)
 			throws SocketException {
-
-		FileDescriptor fdHandler = null;
-		int countRead = readChannels.length;
-		int countWrite = writeChannels.length;
-		int result = 0, val;
-		FileDescriptor[] readFDs = new FileDescriptor[countRead];
+		int countRead = readFDs.length;
+		int countWrite = writeFDs.length;
+		int result = 0;
+        if (0 == countRead + countWrite) {
+            return (new int[0]);
+        }
 		int[] flags = new int[countRead + countWrite];
 
-		if ((0 == readChannels.length) && (0 == writeChannels.length)) {
-			return (new int[0]);
-		}
-		for (val = 0; val < countRead; val++, fdHandler = null) {
-			SelectableChannel element = readChannels[val];
-			if (element instanceof FileDescriptorHandler) {
-				fdHandler = ((FileDescriptorHandler) element).getFD();
-			}
-			if (null != fdHandler) {
-				readFDs[val] = fdHandler;
-			}
-		}
-		FileDescriptor[] writeFDs = new FileDescriptor[countWrite];
-		for (val = 0; val < countWrite; val++, fdHandler = null) {
-			SelectableChannel element = writeChannels[val];
-            if (element instanceof FileDescriptorHandler) {
-                fdHandler = ((FileDescriptorHandler) element).getFD();
-            }
-			if (null != fdHandler) {
-				writeFDs[val] = fdHandler;
-			}
-		}
-
-		// handle timeout in native
+        // handle timeout in native
 		result = selectImpl(readFDs, writeFDs, countRead, countWrite, flags,
 				timeout);
 

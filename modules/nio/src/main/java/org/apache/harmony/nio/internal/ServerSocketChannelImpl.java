@@ -141,8 +141,8 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                         // for non blocking mode, use select to see whether
                         // there are any pending connections.
                         int[] tryResult = Platform.getNetworkSystem().select(
-                                new SelectableChannel[] { this },
-                                new SelectableChannel[0], 0);
+                                new FileDescriptor[] { this.fd },
+                                new FileDescriptor[0], 0);
                         if (0 == tryResult.length || 0 == tryResult[0]) {
                             // no pending connections, returns immediately.
                             return null;

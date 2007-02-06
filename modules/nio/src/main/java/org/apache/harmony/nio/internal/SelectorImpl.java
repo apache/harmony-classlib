@@ -15,6 +15,7 @@
  */
 package org.apache.harmony.nio.internal;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedSelectorException;
@@ -36,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.harmony.luni.platform.INetworkSystem;
+import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.Platform;
 
 /*
@@ -77,14 +78,20 @@ final class SelectorImpl extends AbstractSelector {
     private Pipe.SinkChannel sink;
 
     private Pipe.SourceChannel source;
+    
+    private FileDescriptor sourcefd;
+    
+    private SelectionKey[] readableChannels;
 
-    private List<SelectableChannel> readableChannels = new ArrayList<SelectableChannel>();
+    private SelectionKey[] writableChannels;
 
-    private List<SelectableChannel> writableChannels = new ArrayList<SelectableChannel>();
+    private List<FileDescriptor> readableFDs = new ArrayList<FileDescriptor>();
 
-    private SelectableChannel[] readable;
+    private List<FileDescriptor> writableFDs = new ArrayList<FileDescriptor>();
 
-    private SelectableChannel[] writable;
+    private FileDescriptor[] readable;
+
+    private FileDescriptor[] writable;
 
     public SelectorImpl(SelectorProvider selectorProvider) {
         super(selectorProvider);
@@ -92,6 +99,7 @@ final class SelectorImpl extends AbstractSelector {
             Pipe mockSelector = selectorProvider.openPipe();
             sink = mockSelector.sink();
             source = mockSelector.source();
+            sourcefd = ((FileDescriptorHandler)source).getFD();
             source.configureBlocking(false);
         } catch (IOException e) {
             // do nothing
@@ -172,7 +180,26 @@ final class SelectorImpl extends AbstractSelector {
             synchronized (keys) {
                 synchronized (selectedKeys) {
                     doCancel();
-                    return selectImpl(timeout);
+                    int[] readyChannels = null;
+                    boolean isBlock = (SELECT_NOW != timeout);
+                    if (keys.size() == 0) {
+                        return 0;
+                    }
+                    prepareChannels();
+                    try {
+                        if (isBlock) {
+                            begin();
+                        }
+                        readyChannels = Platform.getNetworkSystem().select(readable, writable, timeout);
+                    } finally {
+                        // clear results for next select
+                        readableFDs.clear();
+                        writableFDs.clear();                        
+                        if (isBlock) {
+                            end();
+                        }
+                    }
+                    return processSelectResult(readyChannels);                    
                 }
             }
         }
@@ -188,25 +215,31 @@ final class SelectorImpl extends AbstractSelector {
 
     // Prepares and adds channels to list for selection
     private void prepareChannels() {
-        readableChannels.add(source);
+        readableFDs.add(sourcefd);        
+        List<SelectionKey> readChannelList = new ArrayList<SelectionKey>();
+        readChannelList.add(source.keyFor(this));
+        List<SelectionKey> writeChannelList = new ArrayList<SelectionKey>();
         synchronized (keysLock) {
             for (Iterator<SelectionKey> i = keys.iterator(); i.hasNext();) {
                 SelectionKeyImpl key = (SelectionKeyImpl) i.next();
                 key.oldInterestOps = key.interestOps();
                 boolean isReadableChannel = ((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & key.oldInterestOps) != 0;
                 boolean isWritableChannel = ((SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE) & key.oldInterestOps) != 0;
+                SelectableChannel channel = key.channel();                  
                 if (isReadableChannel) {
-                    readableChannels.add(key.channel());
+                    readChannelList.add(channel.keyFor(this));
+                    readableFDs.add(((FileDescriptorHandler)channel).getFD());
                 }
                 if (isWritableChannel) {
-                    writableChannels.add(key.channel());
+                    writeChannelList.add(channel.keyFor(this));
+                    writableFDs.add(((FileDescriptorHandler)channel).getFD());
                 }
             }
         }
-        readable = readableChannels.toArray(new SelectableChannel[0]);
-        writable = writableChannels.toArray(new SelectableChannel[0]);
-        readableChannels.clear();
-        writableChannels.clear();
+        readableChannels = readChannelList.toArray(new SelectionKey[0]);
+        writableChannels = writeChannelList.toArray(new SelectionKey[0]);
+        readable = readableFDs.toArray(new FileDescriptor[0]);
+        writable = writableFDs.toArray(new FileDescriptor[0]);
     }
 
     // Analyses selected channels and adds keys of ready channels to
@@ -223,10 +256,10 @@ final class SelectorImpl extends AbstractSelector {
             }
         }
         int selected = 0;
-        for (int i = 1; i < readyChannels.length; i++) {
-            SelectionKeyImpl key = (SelectionKeyImpl) (i >= readable.length ? writable[i
-                    - readable.length].keyFor(this)
-                    : readable[i].keyFor(this));
+        for (int i = 1; i < readyChannels.length; i++) {            
+            SelectionKeyImpl key = (SelectionKeyImpl) (i >= readable.length ? writableChannels[i
+                    - readable.length]
+                    : readableChannels[i]);
             if (null == key) {
                 continue;
             }
@@ -261,28 +294,9 @@ final class SelectorImpl extends AbstractSelector {
                 }
             }
         }
+        readableChannels = null;
+        writableChannels = null;
         return selected;
-    }
-
-    private int selectImpl(long timeout) throws IOException {
-        INetworkSystem os = Platform.getNetworkSystem();
-        int[] readyChannels = null;
-        boolean isBlock = (SELECT_NOW != timeout);
-        if (keys.size() == 0) {
-            return 0;
-        }
-        prepareChannels();
-        try {
-            if (isBlock) {
-                begin();
-            }
-            readyChannels = os.select(readable, writable, timeout);
-        } finally {
-            if (isBlock) {
-                end();
-            }
-        }
-        return processSelectResult(readyChannels);
     }
 
     /*
