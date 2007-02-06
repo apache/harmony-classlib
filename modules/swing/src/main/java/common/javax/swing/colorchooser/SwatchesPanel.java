@@ -26,6 +26,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
+import java.util.Arrays;
+
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -132,8 +134,8 @@ class SwatchesPanel extends AbstractColorChooserPanel {
         recentSwatchSize = UIManager.getDimension("ColorChooser.swatchesRecentSwatchSize");
 
         JPanel right = new JPanel(new BorderLayout());
-        recentPanel = new SwatchPanel(new Color[RECENT_SWATCH_WIDTH][RECENT_SWATCH_HEIGHT],
-                                                  null, recentSwatchSize);
+        recentPanel = new SwatchPanel(createRecentColors(), null, recentSwatchSize);
+        
         right.add(BorderLayout.CENTER, new JLabel(UIManager.getString("ColorChooser.swatchesRecentText")));
         right.add(BorderLayout.SOUTH, recentPanel);
 
@@ -173,6 +175,16 @@ class SwatchesPanel extends AbstractColorChooserPanel {
                                                  1.f, 1.5f * (colors[i].length - j + .3f) / (colors[i].length - 1));
             }
         }
+        return colors;
+    }
+
+    private static Color[][] createRecentColors() {
+        final Color[][] colors = new Color[RECENT_SWATCH_WIDTH][RECENT_SWATCH_HEIGHT];
+        final Object propertyValue = UIManager.get("ColorChooser.swatchesDefaultRecentColor");
+        final Color defaultColor = propertyValue instanceof Color ? (Color)propertyValue : Color.BLACK;
+        for (Color[] cols : colors)
+            Arrays.fill(cols, defaultColor);
+            
         return colors;
     }
 }
