@@ -31,7 +31,9 @@
 
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl(JNIEnv * env, jclass clazz)
 {
-  return JNI_TRUE;
+  long l = 0x01020304;
+  unsigned char* c = (unsigned char*)&l;
+  return (*c == 0x04) ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getPointerSizeImpl (JNIEnv * env, jclass clazz)
@@ -54,10 +56,10 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setAddress
 
 int getPageSize()
 {
-	static int PAGE_SIZE = 0;
-	if(PAGE_SIZE==0)
-		PAGE_SIZE=getpagesize();
-	return PAGE_SIZE;
+	static int page_size = 0;
+	if(page_size==0)
+		page_size=getpagesize();
+	return page_size;
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
@@ -79,13 +81,13 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
 	  PORT_ACCESS_FROM_ENV (env);
   	  jboolean result = 0;
   	  IDATA m_addr = (IDATA)addr;
-	  int PAGE_SIZE = getPageSize();
+	  int page_size = getPageSize();
 	  char* vec = NULL;
 	  int page_count = 0;
-	  int align_offset = m_addr%PAGE_SIZE;//addr should align with the boundary of a page.
+	  int align_offset = m_addr%page_size;//addr should align with the boundary of a page.
 	  m_addr -= align_offset;
 	  size   += align_offset;
-	  page_count = (size+PAGE_SIZE-1)/PAGE_SIZE;
+	  page_count = (size+page_size-1)/page_size;
 	  vec = (char *) hymem_allocate_memory(page_count*sizeof(char));
 	  if(mincore((void *)m_addr, size , (unsigned char *)vec)==0) //or else there is error about the mincore and return false;
 	  {
