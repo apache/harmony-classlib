@@ -144,6 +144,12 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         assertNull(listener.getEvent());
     }
 
+    public void testIsOpaque() throws Exception {
+        // Regression test for HARMONY-2572
+        assertTrue(new DefaultListCellRenderer().isOpaque());
+        assertTrue(new DefaultListCellRenderer.UIResource().isOpaque());
+    }
+
     private class TestListener implements PropertyChangeListener {
         private PropertyChangeEvent event;
 

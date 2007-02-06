@@ -44,6 +44,7 @@ public class DefaultListCellRenderer extends JLabel implements ListCellRenderer,
     public DefaultListCellRenderer() {
         setBorder(noFocusBorder);
         setHorizontalAlignment(SwingConstants.LEADING);
+        setOpaque(true);
     }
 
     public Component getListCellRendererComponent(JList list, Object value, int index,
