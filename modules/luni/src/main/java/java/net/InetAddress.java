@@ -841,6 +841,16 @@ public class InetAddress extends Object implements Serializable {
                         }
                     }
                 }
+
+                synchronized (waitReachable) {
+                    addrCount--;
+
+                    if (addrCount == 0) {
+                        // if count equals zero, all thread
+                        // expired,notifies main thread
+                        waitReachable.notifyAll();
+                    }
+                }
                 continue;
             }
 
@@ -884,8 +894,10 @@ public class InetAddress extends Object implements Serializable {
         if (needWait) {
             synchronized (waitReachable) {
                 try {
-                    // wait for notification
-                    waitReachable.wait();
+                    while (!reached && (addrCount != 0)) {
+                        // wait for notification
+                        waitReachable.wait(1000);
+                    }
                 } catch (InterruptedException e) {
                     // do nothing
                 }
