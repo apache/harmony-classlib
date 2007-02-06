@@ -23,7 +23,7 @@ CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS)
 all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
 $(LIBNAME): $(BUILDFILES)
-	$(AR) rcv $@ $(BUILDFILES)
+	$(AR) $(ARFLAGS) rcv $@ $(BUILDFILES)
 
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) $(LDFLAGS) \
