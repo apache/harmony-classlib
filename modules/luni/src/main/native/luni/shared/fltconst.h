@@ -33,11 +33,29 @@
 #define	MAX_U32_DOUBLE	(ESDOUBLE) (4294967296.0)	/* 2^32 */
 #define	MAX_U32_SINGLE		(ESSINGLE) (4294967296.0)	/* 2^32 */
 #define HY_POS_PI      (ESDOUBLE)(3.141592653589793)
+
+#ifdef HY_LITTLE_ENDIAN
+#ifdef HY_PLATFORM_DOUBLE_ORDER
 #define DOUBLE_LO_OFFSET		0
 #define DOUBLE_HI_OFFSET			1
-
+#else
+#define DOUBLE_LO_OFFSET                1
+#define DOUBLE_HI_OFFSET                0
+#endif
 #define LONG_LO_OFFSET			0
 #define LONG_HI_OFFSET			1
+#else
+#ifdef HY_PLATFORM_DOUBLE_ORDER
+#define DOUBLE_LO_OFFSET                1
+#define DOUBLE_HI_OFFSET                0
+#else
+#define DOUBLE_LO_OFFSET                0
+#define DOUBLE_HI_OFFSET                1
+#endif
+#define LONG_LO_OFFSET                  1
+#define LONG_HI_OFFSET                  0
+#endif
+
 #define RETURN_FINITE				0
 #define RETURN_NAN					1
 #define RETURN_POS_INF			2

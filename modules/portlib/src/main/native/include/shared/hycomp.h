@@ -47,8 +47,9 @@ EXE_EXTENSION_CHAR: the executable has a delimiter that we want to stop at as pa
 /* By default order doubles in the native (i.e. big/little endian) ordering. */
 #define HY_PLATFORM_DOUBLE_ORDER
 #if defined(LINUX) || defined(FREEBSD)
+
 /* NOTE: Linux supports different processors -- do not assume 386 */
-#if defined(HYX86_64) || defined(HYIA64)
+#if defined(HYX86_64) || defined(HYIA64) || defined(HYPPC64) || defined(HYS390X)
 #define DATA_TYPES_DEFINED
 typedef unsigned long int UDATA;        /* 64bits */
 typedef unsigned long int U_64;
@@ -63,10 +64,20 @@ typedef signed char I_8;
 typedef U_32 BOOLEAN;
 #define TOC_UNWRAP_ADDRESS(wrappedPointer) ((void *) (wrappedPointer)[0])
 #define TOC_STORE_TOC(dest,wrappedPointer) (dest = ((UDATA*)wrappedPointer)[1])
-#else
-typedef long long I_64;
-typedef unsigned long long U_64;
+
+#define HY_WORD64
 #endif
+
+#if defined(HYS390X) || defined(HYS390) || defined(HYPPC64) || defined(HYPPC32)
+#define HY_BIG_ENDIAN
+#else
+#define HY_LITTLE_ENDIAN
+#endif
+
+#if defined(HYPPC32)
+#define VA_PTR(valist) (&valist[0])
+#endif
+
 typedef double SYS_FLOAT;
 #define HYCONST64(x) x##LL
 #define NO_LVALUE_CASTING
@@ -79,9 +90,11 @@ typedef double SYS_FLOAT;
 /* no priorities on Linux */
 #define HY_PRIORITY_MAP {0,0,0,0,0,0,0,0,0,0,0,0}
 
-#if (defined(LINUXPPC) && !defined(LINUXPPC64))
-#define VA_PTR(valist) (&valist[0])
+#if !defined(DATA_TYPES_DEFINED)
+typedef long long I_64;
+typedef unsigned long long U_64;
 #endif
+
 #endif
 
 #define GLOBAL_DATA(symbol) ((void*)&(symbol))
@@ -89,6 +102,8 @@ typedef double SYS_FLOAT;
 
 /* Win32 - Windows 3.1 & NT using Win32 */
 #if defined(WIN32)
+
+#define HY_LITTLE_ENDIAN
 
 typedef __int64 I_64;
 typedef unsigned __int64 U_64;
@@ -150,6 +165,11 @@ typedef char I_8;
 /* don't typedef BOOLEAN since it's already def'ed on Win32 */
 
 #define BOOLEAN UDATA
+
+#ifndef HY_BIG_ENDIAN
+#define HY_LITTLE_ENDIAN
+#endif
+
 #endif
 
 #if !defined(HYCONST64)

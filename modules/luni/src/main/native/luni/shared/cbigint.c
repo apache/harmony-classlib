@@ -22,7 +22,14 @@
 #define USE_LL
 #endif
 
+#ifdef HY_LITTLE_ENDIAN
 #define at(i) (i)
+#else
+#define at(i) ((i)^1)
+/* the sequence for halfAt is -1, 2, 1, 4, 3, 6, 5, 8... */
+/* and it should correspond to 0, 1, 2, 3, 4, 5, 6, 7... */
+#define halfAt(i) (-((-(i)) ^ 1))
+#endif
 
 #define HIGH_IN_U64(u64) ((u64) >> 32)
 #if defined(USE_LL)

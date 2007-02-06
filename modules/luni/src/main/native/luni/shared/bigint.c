@@ -26,8 +26,14 @@
 			the 5th word in memory is skipped and the 5th word of the number is stored in the 6th memory word
 */
 
+#ifdef HY_LITTLE_ENDIAN
 #define at(i) (i)
 #define copysize(i) (i)
+#else
+#define at(i) ((i)^1)
+#define copysize(i) (((i)+1)&~1)
+#endif
+
 
 #define U64_ADD(addr1, addr2) (*(U_64*)(addr1) += *(U_64*)(addr2))
 #define U64_GREATER(addr1, addr2) (*(U_64*)(addr1) > *(U_64*)(addr2))

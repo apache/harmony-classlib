@@ -26,7 +26,11 @@
 #define USE_LL
 #endif
 
+#ifdef HY_LITTLE_ENDIAN
 #define LOW_I32_FROM_PTR(ptr64) (*(I_32 *) (ptr64))
+#else
+#define LOW_I32_FROM_PTR(ptr64) (*(((I_32 *) (ptr64)) + 1))
+#endif
 
 #define MAX_ACCURACY_WIDTH 8
 
