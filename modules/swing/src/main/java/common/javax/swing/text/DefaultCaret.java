@@ -33,20 +33,21 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.EventListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.Position.Bias;
 
@@ -56,8 +57,6 @@ import org.apache.harmony.awt.text.ActionSet;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
-
-import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         MouseListener, MouseMotionListener {
@@ -678,9 +677,6 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      * selectionColor.
      */
     public void install(final JTextComponent c) {
-        if (c == null) { // Fix for HARMONY-1750, for compatiblity with RI
-            throw new NullPointerException(Messages.getString("swing.05")); //$NON-NLS-1$
-        }
         setComponent(c);
 
         component.addMouseListener(this);
