@@ -227,13 +227,15 @@ public class PackageTest extends junit.framework.TestCase {
                 .isCompatibleWith("2.2"));
         assertFalse("Package isCompatibleWith fails with higher version", p
                 .isCompatibleWith("2.2.0.0.1"));
-        /*
-         * RI throws NPE...
-         */ 
         try {
             p.isCompatibleWith(null);
             fail("Null version is illegal");
-        } catch (NullPointerException ok) {}
+        } catch (NumberFormatException ok) {
+        } catch (NullPointerException compatible) {
+            /*
+             * RI throws NPE instead of NFE...
+             */ 
+        }
 
         try {
             p.isCompatibleWith("");
@@ -250,6 +252,14 @@ public class PackageTest extends junit.framework.TestCase {
         try {
             p.isCompatibleWith(".9");
             fail("'.9' version is illegal");
+        } catch (NumberFormatException ok) {}
+        try {
+            p.isCompatibleWith("2.4..5");
+            fail("'2.4..5' version is illegal");
+        } catch (NumberFormatException ok) {}
+        try {
+            p.isCompatibleWith("20.-4");
+            fail("'20.-4' version is illegal");
         } catch (NumberFormatException ok) {}
     }
 
