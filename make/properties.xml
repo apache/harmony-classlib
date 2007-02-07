@@ -389,7 +389,7 @@ properties in preference to these:
            <echo message="" file="${@{moduleName}.tmpFile}"/>
            <basename file="${@{moduleName}.tmpFile}"
                      property="@{moduleName}.tmpFileName" />
-           <concat destfile="@{result}" force="yes">
+           <concat destfile="@{result}" force="yes" fixlastline="yes" >
                <filelist dir="@{dir}"
                    files="${@{moduleName}.fname1} ${@{moduleName}.fname2} ${@{moduleName}.fname3} ${@{moduleName}.tmpFileName}"/>
            </concat>
