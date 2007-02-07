@@ -37,6 +37,13 @@ public class JTabbedPaneRTest extends SwingTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
+    
+    /**
+     * Regression test for HARMONY-2515
+     * */
+    public void testAddComponentToTail() {
+        pane.add(new JButton(), -1);
+    } 
 
     public void testAddNull() {
         final JComponent comp1 = new JLabel();

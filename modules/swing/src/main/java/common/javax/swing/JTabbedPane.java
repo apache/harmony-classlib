@@ -48,7 +48,9 @@ import org.apache.harmony.x.swing.StringConstants;
  */
 public class JTabbedPane extends JComponent implements Serializable, Accessible, SwingConstants {
     private static final long serialVersionUID = 1671634173365704280L;
-
+    
+    private static final int NOT_FOUND = -1;
+    
     // TODO: implement
     protected class AccessibleJTabbedPane extends AccessibleJComponent implements
             AccessibleSelection, ChangeListener {
@@ -301,7 +303,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
             return;
         }
         JTabInfo tabInfo = getTabAt(index);
-        if (oldIndex != -1) {
+        if (oldIndex != NOT_FOUND) {
             removeTabAt(oldIndex);
         }
         if (tabInfo.getComp() != comp) {
@@ -335,7 +337,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
     @Override
     public String getToolTipText(MouseEvent event) {
         int index = indexAtLocation(event.getX(), event.getY());
-        return index > -1 ? getToolTipTextAt(index) : super.getToolTipText(event);
+        return index > NOT_FOUND ? getToolTipTextAt(index) : super.getToolTipText(event);
     }
 
     public void setToolTipTextAt(int index, String toolTipText) {
@@ -347,7 +349,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
     }
 
     public int indexAtLocation(int x, int y) {
-        return getUI() != null ? getUI().tabForCoordinate(this, x, y) : -1;
+        return getUI() != null ? getUI().tabForCoordinate(this, x, y) : NOT_FOUND;
     }
 
     public int indexOfComponent(Component comp) {
@@ -356,7 +358,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
                 return i;
             }
         }
-        return -1;
+        return NOT_FOUND;
     }
 
     public int indexOfTab(Icon icon) {
@@ -378,20 +380,23 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
     }
 
     public void insertTab(String title, Icon icon, Component comp, String tip, int index) {
-        int oldIndex = comp != null ? indexOfComponent(comp) : -1;
-        if (oldIndex != -1) {
+        int oldIndex = comp != null ? indexOfComponent(comp) : NOT_FOUND;
+        if (oldIndex != NOT_FOUND) {
             tabInfos.remove(oldIndex);
         }
         String realTitle = title == null ? "" : title;
         JTabInfo tabInfo = new JTabInfo(realTitle, icon, comp, tip);
+        if (index == -1) {
+            index = tabInfos.size();
+        }
         tabInfos.add(index, tabInfo);
-        if (oldIndex == -1) {
+        if (oldIndex == NOT_FOUND) {
             addComponentToContainer(comp);
         }
         if (getTabCount() == 1) {
             setSelectedIndex(0);
         } else if (index <= getSelectedIndex()
-                && (oldIndex == -1 || oldIndex > getSelectedIndex())) {
+                && (oldIndex == NOT_FOUND || oldIndex > getSelectedIndex())) {
             setSelectedIndex(getSelectedIndex() + 1);
         }
         repaint();
@@ -413,7 +418,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
             return;
         }
         int index = indexOfComponent(comp);
-        if (index != -1) {
+        if (index != NOT_FOUND) {
             removeTabAt(index);
         }
     }
@@ -540,7 +545,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
 
     public void setSelectedComponent(Component comp) {
         int index = indexOfComponent(comp);
-        if (index == -1) {
+        if (index == NOT_FOUND) {
             throw new IllegalArgumentException("Component not found in the tabbed pane");
         }
         setSelectedIndex(index);
