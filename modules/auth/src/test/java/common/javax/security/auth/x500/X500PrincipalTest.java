@@ -206,6 +206,17 @@ public class X500PrincipalTest extends TestCase {
     }
 
     /**
+     * @tests javax.security.auth.x500.X500Principal#equals(Object)
+     */
+    public void test_equalsLjava_lang_Object() {
+        X500Principal xp1 = new X500Principal(
+                "C=US, ST=California, L=San Diego, O=Apache, OU=Project Harmony, CN=Test cert");
+        assertEquals(
+                "C=US,ST=California,L=San Diego,O=Apache,OU=Project Harmony,CN=Test cert",
+                xp1.getName());
+    }
+
+    /**
      * Inits X500Principal with byte array, where Oid does fall into any keyword, but not given as a keyword
      * Value is given as hex value
      * (extra spaces are given)
