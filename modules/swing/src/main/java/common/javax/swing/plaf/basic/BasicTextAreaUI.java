@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
@@ -40,7 +36,6 @@ import javax.swing.text.WrappedPlainView;
 
 import org.apache.harmony.x.swing.StringConstants;
 
-
 public class BasicTextAreaUI extends BasicTextUI {
     private static final String PLAIN_VIEW_I18N_CLASS =
         "javax.swing.text.PlainViewI18N";
@@ -54,18 +49,19 @@ public class BasicTextAreaUI extends BasicTextUI {
         return new BasicTextAreaUI();
     }
 
+    @Override
     public View create(final Element element) {
         Document doc = element.getDocument();
         Boolean i18n = (Boolean)doc.getProperty(StringConstants.BIDI_PROPERTY);
         if (i18n.booleanValue()) {
-            return (View)AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
+            return AccessController.doPrivileged(new PrivilegedAction<View>() {
+                public View run() {
                     try {
                         Class cls = Class.forName(PLAIN_VIEW_I18N_CLASS);
                         Constructor constructor =
                             cls.getConstructor(new Class[] {Element.class});
                         constructor.setAccessible(true);
-                        return constructor.newInstance(new Object[] {element});
+                        return (View)constructor.newInstance(new Object[] {element});
                     } catch (Exception e) {
                         return null;
                     }
@@ -89,6 +85,7 @@ public class BasicTextAreaUI extends BasicTextUI {
 
     }
 
+    @Override
     public Dimension getMinimumSize(final JComponent c) {
         if (!(c instanceof JTextComponent)) {
             throw new IllegalArgumentException("not text component");
@@ -101,6 +98,7 @@ public class BasicTextAreaUI extends BasicTextUI {
         return dim;
     }
 
+    @Override
     public Dimension getPreferredSize(final JComponent c) {
         if (!(c instanceof JTextComponent)) {
             throw new IllegalArgumentException("not text component");
@@ -114,11 +112,13 @@ public class BasicTextAreaUI extends BasicTextUI {
         return dim;
     }
 
+    @Override
     protected String getPropertyPrefix() {
         return propertyPrefix;
     }
 
 
+    @Override
     protected void propertyChange(final PropertyChangeEvent e) {
         String name = e.getPropertyName();
         if (StringConstants.TEXT_COMPONENT_LINE_WRAP_PROPERTY.equals(name)
