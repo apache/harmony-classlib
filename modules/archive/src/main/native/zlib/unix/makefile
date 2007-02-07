@@ -29,6 +29,7 @@ BUILDFILES = \
 	$(ZLIB_DIST)inflate.o $(ZLIB_DIST)inftrees.o $(ZLIB_DIST)trees.o $(ZLIB_DIST)uncompr.o $(ZLIB_DIST)zutil.o
 
 DLLNAME = ../libhyzlib.so
+EXPNAME = HYZLIB_0.1
 
 LDFLAGS += -Wl,-Bsymbolic
 

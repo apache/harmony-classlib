@@ -1,8 +1,0 @@
-HYNIO_0.1 {
-	global :
-		NewDirectByteBuffer;
-		GetDirectBufferAddress;
-		GetDirectBufferCapacity;
-		Java_org_apache_harmony_nio_AddressUtil_getFDAddress;
-	local : *;
-};

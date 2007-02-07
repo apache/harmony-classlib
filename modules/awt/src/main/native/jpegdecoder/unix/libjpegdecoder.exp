@@ -1,7 +1,0 @@
-HYJPEGDECODER_0.1 {
-    global :
-        Java_org_apache_harmony_awt_gl_image_JpegDecoder_decode;
-        Java_org_apache_harmony_awt_gl_image_JpegDecoder_initIDs;
-        Java_org_apache_harmony_awt_gl_image_JpegDecoder_releaseNativeDecoder;
-    local : *;
-};

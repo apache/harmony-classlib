@@ -35,6 +35,7 @@ MDLLIBFILES = \
 OSLIBS += -lstdc++
 
 DLLNAME=../libgl.so
+EXPNAME=HYGL_0.1
 
 include $(HY_HDK)/build/make/rules.mk
 

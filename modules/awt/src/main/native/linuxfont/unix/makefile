@@ -31,5 +31,6 @@ MDLLIBFILES = \
 OSLIBS += $(XLIBS)
 
 DLLNAME=../liblinuxfont.so
+EXPNAME=HYLINUXFONT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

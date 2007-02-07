@@ -36,6 +36,7 @@ BUILDFILES = \
 MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a $(DLLPATH)libhysig.so
 
 DLLNAME = ../libhyprt.so
+EXPNAME = HYPRT_0.1
 
 # temp by geir - please ignore
 #

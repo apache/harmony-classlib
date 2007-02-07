@@ -22,5 +22,6 @@ include $(HY_HDK)/build/make/defines.mk
 CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
 DLLNAME = ../libhysig.so
+EXPNAME = HYSIG_0.1
 
 include $(HY_HDK)/build/make/rules.mk

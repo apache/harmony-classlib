@@ -30,5 +30,6 @@ MDLLIBFILES = \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME = ../libhytext.so
+EXPNAME = HYTEXT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

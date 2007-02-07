@@ -1,0 +1,4 @@
+NewDirectByteBuffer
+GetDirectBufferAddress
+GetDirectBufferCapacity
+Java_org_apache_harmony_nio_AddressUtil_getFDAddress

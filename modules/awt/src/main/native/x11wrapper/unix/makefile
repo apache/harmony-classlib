@@ -31,5 +31,6 @@ MDLLIBFILES = \
 OSLIBS += -lstdc++ $(XLIBS)
 
 DLLNAME=../libX11Wrapper.so
+EXPNAME=HYX11WRAPPER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

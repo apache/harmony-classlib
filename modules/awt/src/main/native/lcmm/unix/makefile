@@ -33,6 +33,7 @@ MDLLIBFILES = \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME=../liblcmm.so
+EXPNAME=HYLCMM_0.1
 
 include $(HY_HDK)/build/make/rules.mk
 

@@ -24,5 +24,6 @@ BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o
 MDLLIBFILES = $(LIBPATH)libhypool.a
 
 DLLNAME = ../libvmi.so
+EXPNAME = VMI_0.1
 
 include $(HY_HDK)/build/make/rules.mk

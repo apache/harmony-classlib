@@ -29,5 +29,6 @@ BUILDFILES = \
 OSLIBS += -lpthread
 MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
 DLLNAME = ../libhythr.so
+EXPNAME = HYTHR_0.1
 
 include $(HY_HDK)/build/make/rules.mk

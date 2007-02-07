@@ -41,5 +41,6 @@ MDLLIBFILES = \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME = ../libhyluni.so
+EXPNAME = HYLUNI_0.1
 
 include $(HY_HDK)/build/make/rules.mk

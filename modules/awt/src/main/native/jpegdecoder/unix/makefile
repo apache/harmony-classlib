@@ -29,6 +29,7 @@ MDLLIBFILES = \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME=../libjpegdecoder.so
+EXPNAME=HYJPEGDECODER_0.1
 
 CLEANFILES=jconfig.h
 

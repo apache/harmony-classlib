@@ -19,14 +19,26 @@
 
 CFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CFLAGS)
 CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS)
+EXPFILE = $(notdir $(basename $(DLLNAME))).exp
 
 all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
 $(LIBNAME): $(BUILDFILES)
 	$(AR) $(ARFLAGS) $@ $(BUILDFILES)
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) $(LDFLAGS) \
+$(EXPFILE): exports.txt
+ifeq ($(HY_OS),aix)
+	cp $< $@
+else
+	echo "$(EXPNAME) {" >$@
+	echo "  global :" >>$@
+	sed -e's/^/    /;s/$$/;/' <$< >>$@
+	echo "  local : *;" >>$@
+	echo "};" >>$@
+endif
+
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) $(EXPFILE)
+	$(DLL_LD) -shared -Wl,--version-script,$(EXPFILE) $(LDFLAGS) \
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
@@ -42,4 +54,5 @@ $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
 
 clean:
-	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME) $(CLEANFILES)
+	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME) $(EXPFILE) \
+	       $(CLEANFILES)

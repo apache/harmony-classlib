@@ -28,5 +28,6 @@ MDLLIBFILES = \
 OSLIBS += -lstdc++
 
 DLLNAME=../liboglwrapper.so
+EXPNAME=HYOGLWRAPPER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

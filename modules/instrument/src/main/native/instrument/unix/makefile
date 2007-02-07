@@ -30,5 +30,6 @@ MDLLIBFILES = \
 	$(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME = ../libhyinstrument.so
+EXPNAME = HYINSTRUMENT_0.1
 
 include $(HY_HDK)/build/make/rules.mk
