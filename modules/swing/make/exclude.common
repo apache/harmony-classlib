@@ -22,7 +22,6 @@ javax/swing/JListTest.java
 javax/swing/JMenuTest.java
 javax/swing/JOptionPaneRTest.java
 javax/swing/JOptionPaneTest.java
-javax/swing/JPopupMenuTest.java
 javax/swing/JRootPaneRTest.java
 javax/swing/JRootPaneTest.java
 javax/swing/JSplitPaneTest.java

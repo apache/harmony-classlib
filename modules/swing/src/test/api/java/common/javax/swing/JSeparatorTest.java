@@ -116,4 +116,9 @@ public class JSeparatorTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
     }
+
+    public void testIsFocusable() {
+        // Regression test for HARMONY-2631
+        assertFalse(new JSeparator().isFocusable());
+    }
 }

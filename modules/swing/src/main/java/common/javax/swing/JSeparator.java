@@ -38,13 +38,13 @@ public class JSeparator extends JComponent implements SwingConstants, Accessible
     private int orientation;
 
     public JSeparator() {
-        orientation = SwingConstants.HORIZONTAL;
-        updateUI();
+        this(SwingConstants.HORIZONTAL);
     }
 
     public JSeparator(final int orientation) {
         checkOrientation(orientation);
         this.orientation = orientation;
+        setFocusable(false);
         updateUI();
     }
 

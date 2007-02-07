@@ -305,6 +305,9 @@ public class JPopupMenuTest extends SwingTestCase {
     public void testJPopupMenuSeparator() {
         JSeparator separator = new JPopupMenu.Separator();
         assertEquals("PopupMenuSeparatorUI", separator.getUIClassID());
+
+        // Regression test for HARMONY-2631
+        assertFalse(separator.isFocusable());
     }
 
     /*
