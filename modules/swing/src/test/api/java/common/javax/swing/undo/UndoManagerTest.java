@@ -431,6 +431,8 @@ public class UndoManagerTest extends CompoundEditTest {
                 assertTrue(edits[i].isDieCalled());
             }
         }
+        //Regression test for H2538
+        um.setLimit(-5);
     }
 
     public void testTrimEdits() {

@@ -242,7 +242,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
 
     protected void trimForLimit() {
         // check that we need to trim
-        if (limit < edits.size()) {
+        if ((limit > 0) && (getLimit() < edits.size())) {
             // indexOfNextAdd is a center for trimming
             int beginning = indexOfNextAdd - limit / 2;
             if (beginning < 0) {
