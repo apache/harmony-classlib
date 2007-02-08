@@ -129,28 +129,6 @@ public class Security2Test extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.security.Security#getProvider(java.lang.String)
-	 */
-	public void test_getProviderLjava_lang_String() {
-		// Test for method java.security.Provider
-		// java.security.Security.getProvider(java.lang.String)
-		Provider[] providers = Security.getProviders();
-		assertNotNull("getProviders returned null", providers);
-		assertTrue("getProviders returned zero length array",
-				providers.length > 0);
-		for (int i = 0; i < providers.length; i++) {
-			Provider provider = providers[i];
-			String providerName = provider.getName();
-			assertTrue("Getting provider " + providerName + " was not "
-					+ "successful even though it is already added", Security
-					.getProvider(providerName).getName().equals(providerName));
-		}// end for
-
-		// exception case
-		assertNull(Security.getProvider("IDontExist"));
-	}
-
-	/**
 	 * @tests java.security.Security#getProviders(java.lang.String)
 	 */
 	public void test_getProvidersLjava_lang_String() {

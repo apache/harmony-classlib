@@ -166,26 +166,32 @@ public class SecurityTest extends TestCase {
         }
     }
 
-    /*
-     * Class under test for Provider getProvider(String)
+    /**
+     * @tests java.security.Security#getProvider(String)
      */
-    public final void testGetProvider() {
+    public final void test_getProviderLjava_lang_String() {
+
+        // Returns null if no provider with the specified name is installed 
+        assertNull(Security.getProvider("SOMEINCORRECTPROVIDERNAME"));
+
+        // Returns null if name is null
+        assertNull(Security.getProvider(null));
+
+        // test for existing providers
+        Provider[] providers = Security.getProviders();
+        assertTrue("getProviders returned zero length array",
+                providers.length > 0);
+        for (Provider p : providers) {
+            String providerName = p.getName();
+            assertSame(p, Security.getProvider(providerName));
+        }
+
+        // test for newly installed provider
         Provider p = new MyProvider();
-        Provider p1;
-        
         try {
             Security.addProvider(p);
-            
-            p1 = Security.getProvider(p.getName());
-            assertSame(p, p1);
-        
-            // Returns null if no provider with the specified name is installed 
-            p1 = Security.getProvider("SOMEINCORRECTPROVIDERNAME");
-            assertNull(p1);
-        
-            // Returns null if name is null
-            p1 = Security.getProvider(null);
-            assertNull(p1);
+
+            assertSame(p, Security.getProvider(p.getName()));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
