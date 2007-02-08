@@ -333,7 +333,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				.getActualMinimum(Calendar.HOUR_OF_DAY));
 		assertEquals("Wrong actual minimum value for HOUR", 0, gc1
 				.getActualMinimum(Calendar.HOUR));
-		assertEquals("Wrong actual minimum value for DAY_OF_WEEK_IN_MONTH", -1, gc6
+		assertEquals("Wrong actual minimum value for DAY_OF_WEEK_IN_MONTH", 1, gc6
 				.getActualMinimum(Calendar.DAY_OF_WEEK_IN_MONTH));
 	}
 
@@ -354,7 +354,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				.getGreatestMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
-		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -46800000,
+		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, -46800000,
 				0 };
 		for (int i = 0; i < min.length; i++) {
 			if (gc.getGreatestMinimum(i) != min[i])
@@ -463,7 +463,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				0, gc.getMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
-		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -46800000,
+		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, -46800000,
 				0 };
 		for (int i = 0; i < min.length; i++) {
 			if (gc.getMinimum(i) != min[i])
