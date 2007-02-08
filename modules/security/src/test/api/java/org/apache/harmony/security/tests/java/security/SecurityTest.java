@@ -197,28 +197,38 @@ public class SecurityTest extends TestCase {
         }
     }
 
-    public final void testSetGetProperty() {
+    /**
+     * @tests java.security.Security#getProperty(String)
+     */
+    public void test_getPropertyLjava_lang_String() {
+
         try {
             Security.getProperty(null);
-            fail("Case 1. No expected NullPointerException.");
-        } catch (NullPointerException e) {        
+            fail("No expected NullPointerException.");
+        } catch (NullPointerException e) {
         }
-        
+    }
+
+    /**
+     * @tests java.security.Security#setProperty(String,String)
+     */
+    public void test_setPropertyLjava_lang_StringLjava_lang_String() {
+
         try {
             Security.setProperty(null, "");
-            fail("Case 2. No expected NullPointerException.");
-        } catch (NullPointerException e) {        
+            fail("No expected NullPointerException.");
+        } catch (NullPointerException e) {
         }
-        
+
         try {
             Security.setProperty("", null);
-            fail("Case 3. No expected NullPointerException.");
-        } catch (NullPointerException e) {        
+            fail("No expected NullPointerException.");
+        } catch (NullPointerException e) {
         }
-        
+
         Security.setProperty("", "");
-        assertEquals("Empty property test failed", "", Security.getProperty(""));
-        
+        assertEquals("Empty property", "", Security.getProperty(""));
+
         Security.setProperty("My Test Property", "My property value");
         assertEquals("My property value", Security
                 .getProperty("My Test Property"));

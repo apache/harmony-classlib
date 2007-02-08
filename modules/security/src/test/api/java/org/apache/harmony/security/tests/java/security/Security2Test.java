@@ -33,32 +33,6 @@ import tests.support.Support_TestProvider;
 public class Security2Test extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.security.Security#getProperty(java.lang.String)
-	 */
-	public void test_getPropertyLjava_lang_String() {
-		// Test for method java.lang.String
-		// java.security.Security.getProperty(java.lang.String)
-		Security.setProperty("keyTestAlternate", "testing a property set");
-		assertEquals("the property value returned for keyTestAlternate was incorrect",
-						"testing a property set", Security.getProperty("keyTestAlternate"));
-	}
-
-	/**
-	 * @tests java.security.Security#setProperty(java.lang.String,
-	 *        java.lang.String)
-	 */
-	public void test_setPropertyLjava_lang_StringLjava_lang_String() {
-		// Test for method void
-		// java.security.Security.setProperty(java.lang.String,
-		// java.lang.String)
-
-		Security.setProperty("keyTest", "permission to set property");
-		assertEquals("the property value returned for keyTest was not correct",
-						"permission to set property", Security.getProperty("keyTest"));
-
-	}
-
-	/**
 	 * @tests java.security.Security#addProvider(java.security.Provider)
 	 */
 	public void test_addProviderLjava_security_Provider() {
