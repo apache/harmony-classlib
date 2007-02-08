@@ -145,6 +145,7 @@ public class BasicLabelUI extends LabelUI implements PropertyChangeListener {
     }
 
     protected void installDefaults(final JLabel label) {
+        label.setInheritsPopupMenu(true);
         LookAndFeel.installColorsAndFont(label, "Label.background", "Label.foreground", "Label.font");
         LookAndFeel.installBorder(label, "Label.border");
         LookAndFeel.installProperty(label, "alignmentX", new Float(0));
@@ -178,4 +179,5 @@ public class BasicLabelUI extends LabelUI implements PropertyChangeListener {
     protected void uninstallKeyboardActions(final JLabel label) {
     }
 }
+
 

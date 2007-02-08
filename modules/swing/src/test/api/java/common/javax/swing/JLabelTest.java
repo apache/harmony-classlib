@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
 package javax.swing;
 
 import java.awt.Component;
@@ -365,6 +361,11 @@ public class JLabelTest extends BasicSwingTestCase {
             }
         });
         frame.dispose();
+    }
+
+    public void testGetInheritsPopupMenu() throws Exception {
+        // Regression test for HARMONY-2570
+        assertTrue(label.getInheritsPopupMenu());
     }
 
     private void checkHorizontalKey(final JLabel label, final int key) {

@@ -17,7 +17,6 @@ javax/swing/JFrameRTest.java
 javax/swing/JFrameTest.java
 javax/swing/JInternalFrameTest.java
 javax/swing/JInternalFrame_MultithreadedTest.java
-javax/swing/JLabelTest.java
 javax/swing/JListTest.java
 javax/swing/JMenuTest.java
 javax/swing/JOptionPaneRTest.java

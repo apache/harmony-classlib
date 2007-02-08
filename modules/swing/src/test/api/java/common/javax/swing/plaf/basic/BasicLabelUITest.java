@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
@@ -119,5 +115,12 @@ public class BasicLabelUITest extends SwingTestCase {
     public void testUninstallDefaults() throws NullPointerException { 
        BasicLabelUIForTest bu = new BasicLabelUIForTest(); 
        bu.uninstallDefaults(null); 
+    } 
+
+    public void testInstallUI_getInheritsPopupMenu() throws NullPointerException { 
+       // Regression test for HARMONY-2570
+       JLabel label = new JLabel();
+       ui.installUI(label);
+       assertTrue(label.getInheritsPopupMenu());
     } 
 }

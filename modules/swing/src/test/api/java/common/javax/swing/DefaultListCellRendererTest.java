@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
 package javax.swing;
 
 import java.awt.Color;
@@ -148,6 +144,12 @@ public class DefaultListCellRendererTest extends SwingTestCase {
         // Regression test for HARMONY-2572
         assertTrue(new DefaultListCellRenderer().isOpaque());
         assertTrue(new DefaultListCellRenderer.UIResource().isOpaque());
+    }
+
+    public void testGetInheritsPopupMenu() throws Exception {
+        // Regression test for HARMONY-2570
+        assertTrue(new DefaultListCellRenderer().getInheritsPopupMenu());
+        assertTrue(new DefaultListCellRenderer.UIResource().getInheritsPopupMenu());
     }
 
     private class TestListener implements PropertyChangeListener {
