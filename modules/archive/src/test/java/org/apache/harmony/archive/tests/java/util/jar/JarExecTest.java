@@ -196,13 +196,13 @@ public class JarExecTest extends junit.framework.TestCase {
 
 		JarOutputStream joutBoo = new JarOutputStream(new FileOutputStream(booJar));
 		joutBoo.putNextEntry(new JarEntry("foo/bar/execjartest/Foo.class"));
-		String booBody = new String(getResource(resources, "hyts_Foo.ser"));
+		String booBody = new String(getResource(resources, "hyts_Foo.ser"), "iso-8859-1");
 		booBody = booBody.replaceFirst("FOO", "BOO");
-		joutBoo.write(booBody.getBytes());
+		joutBoo.write(booBody.getBytes("iso-8859-1"));
 		joutBoo.putNextEntry(new JarEntry("foo/bar/execjartest/Bar.class"));
-		String farBody = new String(getResource(resources, "hyts_Bar.ser"));
+		String farBody = new String(getResource(resources, "hyts_Bar.ser"), "iso-8859-1");
 		farBody = farBody.replaceFirst("BAR", "FAR");
-		joutBoo.write(farBody.getBytes());
+		joutBoo.write(farBody.getBytes("iso-8859-1"));
 		joutBoo.close();
 
 		res = Support_Exec.execJava(args, new String[] {booJar.getAbsolutePath()}, new String[] { "CLASSPATH=" + fooJar.getAbsolutePath() }, false);
@@ -221,13 +221,13 @@ public class JarExecTest extends junit.framework.TestCase {
 
 		JarOutputStream joutZoo = new JarOutputStream(new FileOutputStream(zooJar), man);
 		joutZoo.putNextEntry(new JarEntry("foo/bar/execjartest/Foo.class"));
-		String zooBody = new String(getResource(resources, "hyts_Foo.ser"));
+		String zooBody = new String(getResource(resources, "hyts_Foo.ser"), "iso-8859-1");
 		zooBody = zooBody.replaceFirst("FOO", "ZOO");
-		joutZoo.write(zooBody.getBytes());
+		joutZoo.write(zooBody.getBytes("iso-8859-1"));
 		joutZoo.putNextEntry(new JarEntry("foo/bar/execjartest/Bar.class"));
-		String zarBody = new String(getResource(resources, "hyts_Bar.ser"));
+		String zarBody = new String(getResource(resources, "hyts_Bar.ser"), "iso-8859-1");
 		zarBody = zarBody.replaceFirst("BAR", "ZAR");
-		joutZoo.write(zarBody.getBytes());
+		joutZoo.write(zarBody.getBytes("iso-8859-1"));
 		joutZoo.close();
 
 		args = new String[] {"-jar", zooJar.getAbsolutePath()};
