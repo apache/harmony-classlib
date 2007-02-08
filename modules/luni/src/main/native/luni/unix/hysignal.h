@@ -152,11 +152,11 @@
 
 
 
-#if defined(LINUXPPC)
+#if defined(LINUX_PPC32) || defined(LINUX_PPC64)
 typedef void(*HySignalHandler)PROTOTYPE((int sig, struct sigcontext *context));
 #endif
 
-#if defined(LINUX) && !defined(LINUXPPC)
+#if defined(LINUX) && !defined(LINUX_PPC32) && !defined(LINUX_PPC64)
 typedef void(*HySignalHandler)PROTOTYPE((int sig));
 #endif
 
@@ -230,12 +230,12 @@ typedef HySignalHandler HySignalHandlerSet[HyMaxSignals];
 	- at index <aSig_es>
 	- passing it signal number <aSig_es> */
 
-#if (defined(LINUX) && !defined(LINUXPPC))
+#if (defined(LINUX) && !defined(LINUX_PPC32) && !defined(LINUX_PPC64))
 #define HyInvokePreviousHandlerIn(previousHandlerSet_es,aSig_es)\
 	if ((previousHandlerSet_es)[(aSig_es)] != NULL) (*(previousHandlerSet_es)[(aSig_es)])((aSig_es))
 #endif
 
-#if defined(LINUXPPC)
+#if defined(LINUX_PPC32) || defined(LINUX_PPC64)
 #define HyInvokePreviousHandlerIn(previousHandlerSet_es, aSig_es, aScp_es)\
 	if ((previousHandlerSet_es)[(aSig_es)] != NULL) (*(previousHandlerSet_es)[(aSig_es)])((aSig_es), (aScp_es))
 #endif

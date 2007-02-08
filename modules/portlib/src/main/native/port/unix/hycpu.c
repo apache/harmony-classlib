@@ -27,13 +27,13 @@
 #undef CDEV_CURRENT_FUNCTION
 
 #include <stdlib.h>
-#if defined(LINUXPPC) || defined(PPC)
+#if defined(HYPPC32) || defined(HYPPC64)
 #include <string.h>
 #endif
 
 
 #include "hyport.h"
-#if defined(LINUXPPC) || defined(PPC)
+#if defined(HYPPC32) || defined(HYPPC64)
 #include "portpriv.h"
 #include "hyportpg.h"
 #endif
@@ -77,7 +77,7 @@ I_32 VMCALL
 hycpu_startup (struct HyPortLibrary *portLibrary)
 {
   /* initialize the ppc level 1 cache line size */
-#if defined(LINUXPPC) || defined(PPC)
+#if defined(HYPPC32) || defined(HYPPC64)
   int ppcCacheLineSize;
   int i;
   int input1 = 20;
@@ -141,7 +141,7 @@ hycpu_flush_icache (struct HyPortLibrary *portLibrary, void *memoryPointer,
 #if defined(LINUX) && defined(ARMGNU)
   privateFlushICache (memoryPointer, byteAmount);
 
-#elif defined (LINUXPPC) || defined (PPC)
+#elif defined(HYPPC32) || defined(HYPPC64)
   int cacheLineSize = PPG_mem_ppcCacheLineSize;
   unsigned char *addr;
   unsigned char *limit;
@@ -181,7 +181,8 @@ hycpu_flush_icache (struct HyPortLibrary *portLibrary, void *memoryPointer,
 #elif defined(LINUX)
   __asm__ ("isync");
 #endif
-#endif
+
+#endif /* HYPPC32 || HYPPC64 */
 
 
 }

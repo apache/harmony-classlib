@@ -24,14 +24,14 @@
 #define HYPORT_VMEM_PAGESIZE_COUNT 3
 typedef struct HyPortPlatformGlobals
 {
-#if defined(LINUXPPC) || defined(PPC)
+#if defined(HYPPC32) || defined(HYPPC64)
   int mem_ppcCacheLineSize;
 #endif
   char *si_osType;
   char *si_osVersion;
   UDATA vmem_pageSize[HYPORT_VMEM_PAGESIZE_COUNT];       /** <0 terminated array of supported page sizes */
 } HyPortPlatformGlobals;
-#if defined(LINUXPPC) || defined(PPC)
+#if defined(HYPPC32) || defined(HYPPC64)
 #define PPG_mem_ppcCacheLineSize (portLibrary->portGlobals->platformGlobals.mem_ppcCacheLineSize)
 #endif
 #define PPG_si_osType (portLibrary->portGlobals->platformGlobals.si_osType)
