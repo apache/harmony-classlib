@@ -37,8 +37,6 @@
         </or>
     </fileset>
     
-    <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
-
     <property name="text.exclude.file" location="${hy.hdk}/build/text.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
@@ -56,16 +54,6 @@
 
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
-    
-    <target name="overlay-oss">
-        <mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
-        <unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
-        <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
-    </target>
-
-    <target name="clean-overlay-oss">
-        <delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
-    </target>
     
     <!-- Build native code -->
     <target name="build-native" >

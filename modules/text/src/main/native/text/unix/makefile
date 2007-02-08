@@ -20,7 +20,7 @@
 include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic
-INCLUDES += -I../../icu4c
+INCLUDES += -I$(HY_HDK)/include/icu4c
 
 BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
