@@ -59,7 +59,7 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.swing.tree.VariableHeightLayoutCache;
 
 @SuppressWarnings("serial")
-public class JTreeTest extends BasicSwingTestCase {
+public class JTreeTest extends SwingTestCase {
     protected JTree tree;
 
     @Override

@@ -58,7 +58,7 @@ public abstract class BasicSwingTestCase extends TestCase {
     private LookAndFeel previousLF;
 
     private static long defaultTimeoutDelay;
-    protected static long timeoutDelay = defaultTimeoutDelay;
+    protected static long timeoutDelay;
 
     static {
         String timeoutProp = System.getProperty("test.timeout");
