@@ -913,6 +913,9 @@ public class GregorianCalendar extends Calendar {
                     result--;
                 }
                 break;
+            case DST_OFFSET:
+                result = getMaximum(DST_OFFSET);
+                break;
         }
         time = orgTime;
         return result;

@@ -312,6 +312,18 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         gc.setGregorianChange(date);
         gc.setTimeInMillis(Date.parse("Jan 16 00:00:01 GMT 2000"));
         assertEquals(353, gc.getActualMaximum(Calendar.DAY_OF_YEAR)); 
+        
+        //Regression test for HARMONY-3004
+        gc = new GregorianCalendar(1900, 7, 1);
+        String[] ids = TimeZone.getAvailableIDs();
+        for (int i = 0; i < ids.length; i++) {
+            TimeZone tz = TimeZone.getTimeZone(ids[i]);
+            gc.setTimeZone(tz);
+            for (int j = 1900; j < 2000; j++) {
+                gc.set(Calendar.YEAR, j);
+                assertEquals(7200000, gc.getActualMaximum(Calendar.DST_OFFSET));
+            }
+        }
 	}
 
 	/**
