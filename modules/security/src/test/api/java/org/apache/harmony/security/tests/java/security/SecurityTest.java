@@ -22,11 +22,20 @@
 
 package org.apache.harmony.security.tests.java.security;
 
-import java.security.*;
-
-import org.apache.harmony.security.tests.support.TestKeyPair;
+import java.security.InvalidParameterException;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.Signature;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.TestKeyPair;
 
 /**
  * Tests for <code>Security</code> constructor and methods
@@ -176,6 +185,91 @@ public class SecurityTest extends TestCase {
             Security.addProvider(p);
 
             assertSame(p, Security.getProvider(p.getName()));
+        } finally { //clean up
+            Security.removeProvider(p.getName());
+        }
+    }
+
+    /**
+     * @tests java.security.Security#getProviders(String)
+     */
+    public void test_getProvidersLjava_lang_String() {
+
+        try {
+            Security.getProviders("");
+            fail("No expected InvalidParameterException");
+        } catch (InvalidParameterException e) {
+        }
+
+        try {
+            Security.getProviders((String) null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+
+        Provider p = new MyProvider();
+        try {
+            Security.addProvider(p);
+
+            String filter = "MyService.MyAlgorithm";
+            assertTrue(filter, Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(filter)));
+
+            filter = "MyService.MyAlgorithm KeySize:512";
+            assertTrue(filter, Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(filter)));
+
+            filter = "MyService.MyAlgorithm KeySize:1025";
+            assertNull(filter, Security.getProviders(filter));
+        } finally { //clean up
+            Security.removeProvider(p.getName());
+        }
+    }
+
+    /**
+     * @tests java.security.Security#getProviders(java.util.Map)
+     */
+    public void test_getProvidersLjava_util_Map() {
+
+        Map<String, String> m = new HashMap<String, String>();
+        Security.getProviders(m);
+
+        assertNull("Not null result on empty map", Security.getProviders(m));
+
+        try {
+            Security.getProviders((Map<String, String>) null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+
+        m.put("AAA.BBB.CCC", "aaaa"); // key has dot instead of space
+        try {
+            Security.getProviders(m);
+            fail("No expected InvalidParameterException");
+        } catch (InvalidParameterException e) {
+        }
+
+        Provider p = new MyProvider();
+        try {
+            Security.addProvider(p);
+
+            m.clear();
+            m.put("MyService.MyAlgorithm", "");
+            m.put("MessageDigest.SHA-1", "");
+            assertTrue("MyService.MyAlgorithm", Arrays.equals(
+                    new Provider[] { p }, Security.getProviders(m)));
+
+            m.clear();
+            m.put("MyService.MyAlgorithm KeySize", "512");
+            m.put("MessageDigest.SHA-1", "");
+            assertTrue("MyService.MyAlgorithm KeySize:512", Arrays.equals(
+                    new Provider[] { p }, Security.getProviders(m)));
+
+            m.clear();
+            m.put("MyService.MyAlgorithm KeySize", "1025");
+            m.put("MessageDigest.SHA-1", "");
+            assertNull("MyService.MyAlgorithm KeySize:1025", Security
+                    .getProviders(m));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }

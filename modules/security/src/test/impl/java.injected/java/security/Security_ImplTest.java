@@ -71,54 +71,10 @@ public class Security_ImplTest extends TestCase {
      * Class under test for Provider[] getProviders(String)
      */
     public final void testGetProvidersString() {
-        Provider[] providers;
-        try {
-            Security.getProviders("");
-            fail("No expected InvalidParameterException");
-        } catch (InvalidParameterException e) {
-        }
-
-        try {
-            Security.getProviders((String) null);
-            fail("No expected NullPointerException");
-        } catch (NullPointerException e) {
-        }
-
         try {
             Security.getProviders("AAA.BBB CCC");
             fail("AAA.BBB CCC: No expected InvalidParameterException");
         } catch (InvalidParameterException e) {
-        }
-
-        Provider p = new MyProvider();
-
-        try {
-            Security.addProvider(p);
-            providers = Security.getProviders("MyService.MyAlgorithm");
-            assertTrue("failed for MyService.MyAlgorithm", providers != null);
-            assertEquals("failed for MyService.MyAlgorithm", 1,
-                    providers.length);
-            assertEquals("failed for MyService.MyAlgorithm", p, providers[0]);
-            if (providers == null || providers.length != 1 || providers[0] != p) {
-                fail("fail for MyService.MyAlgorithm");
-            }
-
-            providers = Security
-                    .getProviders("MyService.MyAlgorithm KeySize:512");
-            assertTrue("failed for MyService.MyAlgorithm KeySize:512",
-                    providers != null);
-            assertEquals("failed for MyService.MyAlgorithm KeySize:512", 1,
-                    providers.length);
-            assertEquals("failed for MyService.MyAlgorithm KeySize:512", p,
-                    providers[0]);
-
-            providers = Security
-                    .getProviders("MyService.MyAlgorithm KeySize:1025");
-            assertNull("failed for MyService.MyAlgorithm KeySize:1025",
-                    providers);
-
-        } finally { //clean up
-            Security.removeProvider(p.getName());
         }
     }
 
@@ -126,66 +82,13 @@ public class Security_ImplTest extends TestCase {
      * Class under test for Provider[] getProviders(Map)
      */
     public final void testGetProvidersMap() {
-        Provider[] providers;
         Map m = new Properties();
-        Security.getProviders(m);
-        assertNull("Not null result on empty map", Security.getProviders(m));
-
-        try {
-            Security.getProviders((Map)null);
-            fail("No expected NullPointerException");
-        } catch (NullPointerException e) {    
-        }
-
-        m.clear();
         m.put("AAA.BBB CCC", "");
         m.put("AAA.BBB", "");
         try {
             Security.getProviders(m);
             fail("attribute value is empty string: No expected InvalidParameterException");
         } catch (InvalidParameterException  e) {    
-        }
-
-        m.clear();
-        m.put("AAA.BBB.CCC", "aaaa");
-        m.put("AAA.BBB", "");
-        try {
-            Security.getProviders(m);
-            fail("value associated with the key is not an empty string: No expected InvalidParameterException");
-        } catch (InvalidParameterException  e) {    
-        }
-
-        Provider p = new MyProvider();
-        try {
-            Security.addProvider(p);
-            m.clear();
-            m.put("MyService.MyAlgorithm", "");
-            m.put("MessageDigest.SHA-1", "");
-            providers = Security.getProviders(m);
-            assertNotNull("failed for MyService.MyAlgorithm", providers);
-            assertEquals("failed for MyService.MyAlgorithm", 1,
-                    providers.length);
-            assertEquals("failed for MyService.MyAlgorithm", p, providers[0]);
-            
-            m.clear();
-            m.put("MyService.MyAlgorithm KeySize", "512");
-            m.put("MessageDigest.SHA-1", "");
-            providers = Security.getProviders(m);
-            assertNotNull("failed for MyService.MyAlgorithm KeySize:512",
-                    providers);
-            assertEquals("failed for MyService.MyAlgorithm KeySize:512", 1,
-                    providers.length);
-            assertEquals("failed for MyService.MyAlgorithm KeySize:512", p,
-                    providers[0]);
-            
-            m.clear();
-            m.put("MyService.MyAlgorithm KeySize", "1025");
-            m.put("MessageDigest.SHA-1", "");
-            providers = Security.getProviders(m);
-            assertNull("failed for MyService.MyAlgorithm KeySize:1025",
-                    providers);
-        } finally { //clean up
-            Security.removeProvider(p.getName());
         }
     }
 
