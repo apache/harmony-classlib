@@ -201,6 +201,7 @@
 
                 <fileset dir="${hy.logging.src.test.java}">
                     <include name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java"/>
+                    <excludesfile name="${logging.exclude.file}" />
                 </fileset>
             </batchtest>
 
