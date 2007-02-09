@@ -206,13 +206,13 @@ ${built.files.list}
         <copy file="LICENSE" todir="${hy.hdk}" verbose="yes" />
         <copy file="NOTICE" todir="${hy.hdk}" verbose="yes" />
 
-        <!-- Copy across the boot dependency jars -->
+        <!-- Copy across the boot dependency jars --><!-- TOFIX clean these? -->
         <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.jars}">
                 <patternset includes="bcel-5.2/*.jar" />
                 <patternset includes="icu4j_3.4.4/*.jar" />
                 <patternset includes="icu4jni_3.4/*.jar" />
-                <patternset includes="mx4j_3.0.1/*.jar" />
+                <patternset includes="mx4j_3.0.2/*.jar" />
                 <patternset includes="xalan-j_2.7.0/*.jar" />
                 <patternset includes="xerces_2.8.0/*.jar" />
                 <patternset includes="yoko_M2-20070130/yoko-rmi-spec.jar" />

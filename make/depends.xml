@@ -29,7 +29,7 @@
     <import file="${basedir}/make/properties.xml" />
 
     <target name="check" description="Check whether dependencies are available"
-            depends="-check,-check-win,-check-unix" />
+            depends="-check,-check-win,-check-unix,-extract" />
 
     <target name="-check">
         <check-one-file src="${yoko.url}" dest="${yoko.jar}" />
@@ -44,8 +44,7 @@
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
-        <check-one-file src="${mx4j.url}" dest="${mx4j.jar}" />
-        <check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
+        <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${ecj.url}" dest="${ecj.jar}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
@@ -62,6 +61,35 @@
                   srcfile="${awtdeps.tar}"
                   targetfile="${awtdeps.testfile}" />
         <antcall target="-awt-tar-extract" />
+    </target>
+
+    <target name="-extract" depends="-extract-props,-really-extract-mx4j" />
+    <target name="-extract-props">
+        <uptodate property="mx4j.uptodate"
+                  srcfile="${mx4j.zip}"
+                  targetfile="${mx4j.jar}" />
+    </target>
+    <target name="-really-extract-mx4j" unless="mx4j.uptodate">
+        <!-- This doesn't work for me since my ant doesn't support
+             mapper in unzip.
+
+        <unzip src="${mx4j.zip}" dest="${mx4j.dir}">
+            <patternset>
+                <include name="**/mx4j.jar"/>
+                <include name="**/mx4j-remote.jar"/>
+            </patternset>
+            <mapper type="flatten" />
+        </unzip>
+          -->
+
+        <unzip src="${mx4j.zip}" dest="${mx4j.dir}.tmp" />
+        <copy todir="${mx4j.dir}" flatten="yes">
+            <fileset dir="${mx4j.dir}.tmp/mx4j-3.0.2/lib">
+                <include name="mx4j.jar"/>
+                <include name="mx4j-remote.jar"/>
+            </fileset>
+        </copy>
+        <delete dir="${mx4j.dir}.tmp" />
     </target>
 
     <!-- 
@@ -258,11 +286,8 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${icu4j.md5}" />
 
     <mkdir dir="${mx4j.dir}" />
-    <download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
+    <download-one-file src="${mx4j.url}" dest="${mx4j.zip}"
                            md5="${mx4j.md5}" />
-
-    <download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
-                           md5="${mx4j.remote.md5}" />
 
     <mkdir dir="${ecj.dir}" />
     <download-one-file src="${ecj.url}" dest="${ecj.jar}"
@@ -368,7 +393,7 @@ than the Apache License v2.
 
     <target name="-awt-tar-extract" unless="awtdeps.uptodate">
         <echo>Extracting awt dependencies</echo>
-    <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
+        <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
                compression="gzip" />
         <echo file="${awtdeps.testfile}"
               message="${awtdeps.tar} extracted${line.separator}" />
