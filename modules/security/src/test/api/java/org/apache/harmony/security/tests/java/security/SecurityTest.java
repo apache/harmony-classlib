@@ -98,35 +98,30 @@ public class SecurityTest extends TestCase {
         }
     }
 
-    public final void testAddProvider() {
+    /**
+     * @tests java.security.Security#addProvider(Provider)
+     */
+    public final void test_addProviderLjava_security_Provider() {
+
+        try {
+            Security.addProvider(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
 
         Provider p = new MyProvider();
-        int newposition;
-        Provider providers[] = Security.getProviders();
-        int providersNumber = providers.length;
-        
+        int initNum = Security.getProviders().length; // initial number of providers
+
         try {
             // add
-            newposition = Security.addProvider(p);
-            assertEquals(providersNumber + 1, newposition);
+            assertEquals(initNum + 1, Security.addProvider(p));
+            assertSame(p, Security.getProviders()[initNum]);
 
-            providers = Security.getProviders();
-            assertSame("Provider not inserted at position " + newposition, p,
-                    providers[newposition - 1]);
-        
             // A provider cannot be added if it is already installed
-            newposition = Security.addProvider(p);
-            assertEquals(-1, newposition);
-        
-            try {
-                Security.addProvider(null);
-                fail("No expected NullPointerException.");
-            } catch (NullPointerException e) {
-            }
+            assertEquals(-1, Security.addProvider(p));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
-        
     }
 
     public final void testRemoveProvider() {

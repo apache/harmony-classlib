@@ -25,82 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import tests.support.Support_ProviderJCE;
-import tests.support.Support_ProviderRSA;
 import tests.support.Support_ProviderTrust;
 import tests.support.Support_TestProvider;
 
 public class Security2Test extends junit.framework.TestCase {
-
-	/**
-	 * @tests java.security.Security#addProvider(java.security.Provider)
-	 */
-	public void test_addProviderLjava_security_Provider() {
-		// Test for method int
-		// java.security.Security.addProvider(java.security.Provider)
-
-		// adding the dummy RSA provider
-		Provider rsa = new Support_ProviderRSA();
-		String rsaName = rsa.getName();
-		try {
-			int prefPos = Security.addProvider(rsa);
-			Provider provTest[] = Security.getProviders();
-			Provider result = Security.getProvider(rsaName);
-			assertTrue("ERROR:the RSA provider was not added properly", result
-					.getName().equals(rsaName)
-					&& result.getInfo().equals(rsa.getInfo())
-					&& result.getVersion() == rsa.getVersion());
-			// Provider should have been added at the end of the sequence of
-			// providers.
-			assertTrue("provider is not found at the expected position",
-					provTest[prefPos - 1].getName().equals(rsaName));
-		} finally {
-			// Now remove it - does nothing if provider not actually installed
-			Security.removeProvider(rsaName);
-		}
-
-		// adding TestProvider provider
-		Provider test = new Support_TestProvider();
-		try {
-			int prefPosTest = Security.addProvider(test);
-			Provider provTest2[] = Security.getProviders();
-			Provider result2 = provTest2[prefPosTest - 1];
-			assertTrue(
-					"ERROR: the TestProvider provider was not added properly",
-					result2.getName().equals(test.getName())
-							&& result2.getInfo().equals(test.getInfo())
-							&& result2.getVersion() == test.getVersion());
-		} finally {
-			// Now remove it - does nothing if provider not actually installed
-			Security.removeProvider(test.getName());
-		}
-
-		// adding the dummy entrust provider
-		Provider entrust = new Support_ProviderTrust();
-		try {
-			int prefPosEnt = Security.addProvider(entrust);
-			Provider provTest3[] = Security.getProviders();
-			assertTrue(
-					"ERROR: the entrust provider was not added properly",
-					provTest3[prefPosEnt - 1].getName().equals(
-							entrust.getName())
-							&& provTest3[prefPosEnt - 1].getInfo().equals(
-									entrust.getInfo())
-							&& provTest3[prefPosEnt - 1].getVersion() == entrust
-									.getVersion());
-			assertTrue("provider should be added at the end of the array",
-					prefPosEnt == provTest3.length);
-
-			// trying to add the entrust provider again
-			int prefPosEntAdded = Security.addProvider(entrust);
-			Security.getProviders();
-			assertEquals("addProvider method did not return a -1 for "
-					+ "a provider already added", -1, prefPosEntAdded);
-		} finally {
-			// Now remove it - does nothing if provider not actually installed
-			Security.removeProvider(entrust.getName());
-		}
-	}
 
 	/**
 	 * @tests java.security.Security#getProviders(java.lang.String)
