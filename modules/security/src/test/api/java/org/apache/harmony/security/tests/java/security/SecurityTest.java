@@ -55,55 +55,44 @@ public class SecurityTest extends TestCase {
 
     }
   
-    public final void testInsertProviderAt() {
+    /**
+     * @tests java.security.Security#insertProviderAt(Provider, int)
+     */
+    public final void test_insertProviderAtLjava_security_ProviderLI() {
+
+        try {
+            Security.insertProviderAt(null, 1);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+
         Provider p = new MyProvider();
-        int position;
-        int newposition;
-        Provider providers[] = Security.getProviders();
-        int providersNumber = providers.length;
-        
+        int initNum = Security.getProviders().length; // initial number of providers
+        Provider initialSecondProviderName = Security.getProviders()[1];
+
         try {
 
-            // Insert at position -1
-            position = -1;
-            newposition = Security.insertProviderAt(p, position);
-            assertEquals(providersNumber + 1, newposition);
+            // Insert at position -1, the provider is inserted at the end 
+            assertEquals(initNum + 1, Security.insertProviderAt(p, -1));
+            assertSame(p, Security.getProviders()[initNum]);
 
-            providers = Security.getProviders();
-            assertSame("Provider not inserted at position " + newposition, p,
-                    providers[newposition - 1]);
-        
             // A provider cannot be added if it is already installed
-            newposition = Security.insertProviderAt(p, 1);
-            assertEquals(-1, newposition);
-        
+            assertEquals(-1, Security.insertProviderAt(p, 1));
+
             Security.removeProvider(p.getName());
-        
+
             // insert at the end
-            position = providersNumber + 100;
-            newposition = Security.insertProviderAt(p, position);
-            assertEquals(providersNumber + 1, newposition);
+            assertEquals(initNum + 1, Security.insertProviderAt(p,
+                    initNum + 100));
+            assertSame(p, Security.getProviders()[initNum]);
 
-            providers = Security.getProviders();
-            assertSame("Provider not inserted at position " + newposition, p,
-                    providers[newposition - 1]);
-            
             Security.removeProvider(p.getName());
-            
-            // insert at the first position
-            position = 1;
-            newposition = Security.insertProviderAt(p, position);
-            assertEquals(position, newposition);
 
-            providers = Security.getProviders();
-            assertSame("Provider not inserted at position " + newposition, p,
-                    providers[newposition - 1]);
-        
-            try {
-                Security.insertProviderAt(null, position);
-                fail("No expected NullPointerException.");
-            } catch (NullPointerException e) {
-            }
+            // insert at the first position
+            assertEquals(1, Security.insertProviderAt(p, 1));
+            assertSame(p, Security.getProviders()[0]);
+            assertSame(initialSecondProviderName, // provider shifted down 
+                    Security.getProviders()[2]);
         } finally { //clean up
             Security.removeProvider(p.getName());
         }

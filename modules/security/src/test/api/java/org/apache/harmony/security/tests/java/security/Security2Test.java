@@ -363,39 +363,6 @@ public class Security2Test extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.security.Security#insertProviderAt(java.security.Provider,
-	 *        int)
-	 */
-	public void test_insertProviderAtLjava_security_ProviderI() {
-		// Test for method int
-		// java.security.Security.insertProviderAt(java.security.Provider, int)
-
-		String initialSecondProviderName = (Security.getProviders()[1])
-				.getName();
-		Provider jceProvider = new Support_ProviderJCE();
-
-		try {
-			Security.insertProviderAt(jceProvider, 2);
-			Provider provTest[] = Security.getProviders();
-			assertTrue("the second provider should be jceProvider", provTest[1]
-					.getName().equals(jceProvider.getName())
-					&& provTest[1].getVersion() == jceProvider.getVersion()
-					&& provTest[1].getInfo().equals(jceProvider.getInfo()));
-			assertTrue("the third provider should be the previous second "
-					+ "provider shifted down", provTest[2].getName().equals(
-					initialSecondProviderName));
-
-			// trying to insert a provider that already exists
-			int referAdded = Security.insertProviderAt(jceProvider, 3);
-			assertEquals("the method insertProviderAt did not "
-					+ "return a -1 for providers already added", -1, referAdded);
-		} finally {
-			// Tidy up before we leave
-			Security.removeProvider(jceProvider.getName());
-		}
-	}
-
-	/**
 	 * @tests java.security.Security#removeProvider(java.lang.String)
 	 */
 	public void test_removeProviderLjava_lang_String() {
