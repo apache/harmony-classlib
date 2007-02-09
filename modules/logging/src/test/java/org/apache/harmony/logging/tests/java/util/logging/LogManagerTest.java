@@ -788,6 +788,11 @@ public class LogManagerTest extends TestCase {
             }
         }
     }
+
+    // regression for HARMONY-3075
+    public void testGetLoggingMXBean() throws Exception{
+        assertNotNull(LogManager.getLoggingMXBean());
+    }
     
 	/*
 	 * ---------------------------------------------------- 
