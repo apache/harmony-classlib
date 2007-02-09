@@ -254,37 +254,46 @@ hyfile_findnext (struct HyPortLibrary * portLibrary, UDATA findhandle,
 I_64 VMCALL
 hyfile_lastmod (struct HyPortLibrary * portLibrary, const char *path)
 {
-  WIN32_FIND_DATA myStat;
-  HANDLE newHandle;
-  I_64 result, tempResult;
-  I_32 error;
+    FILETIME lastWriteTime;
+    HANDLE newHandle;
+    I_64 result, tempResult;
+    I_32 error;
 
-  newHandle = FindFirstFile (path, &myStat);
-  if (newHandle == INVALID_HANDLE_VALUE)
+    newHandle = CreateFile(path, FILE_READ_ATTRIBUTES,  
+        FILE_SHARE_READ,  
+        NULL,  
+        OPEN_EXISTING,  
+        FILE_FLAG_BACKUP_SEMANTICS,  
+        NULL);
+    if (newHandle == INVALID_HANDLE_VALUE)
     {
-      error = GetLastError ();
-      portLibrary->error_set_last_error (portLibrary, error,
-					 findError (error));
-      return -1;
+        error = GetLastError ();
+        portLibrary->error_set_last_error (portLibrary, error,
+            findError (error));
+        return -1;
     }
 
-  /*
-   * Search MSDN for 'Converting a time_t Value to a File Time' for following implementation.
-   */
-  tempResult =
-    ((I_64) myStat.ftLastWriteTime.
-     dwHighDateTime << (I_64) 32) | (I_64) myStat.ftLastWriteTime.
-    dwLowDateTime;
+    if (0 == GetFileTime(newHandle, NULL, NULL, &lastWriteTime)) {
+        error = GetLastError ();          
+    	portLibrary->error_set_last_error (portLibrary, error,
+			findError (error));
+		return -1;
+	}
 
-  result = (tempResult - 116444736000000000) / 10000;
+    /*
+    * Search MSDN for 'Converting a time_t Value to a File Time' for following implementation.
+    */
+    tempResult =
+        ((I_64) lastWriteTime.dwHighDateTime << (I_64) 32) | (I_64) lastWriteTime.dwLowDateTime;
+	result = (tempResult - 116444736000000000) / 10000;
 
-  if (0 == FindClose (newHandle))
+    if (0 == CloseHandle (newHandle))
     {
-      error = GetLastError ();
-      portLibrary->error_set_last_error (portLibrary, error, findError (error));	/* continue */
+        error = GetLastError ();
+        portLibrary->error_set_last_error (portLibrary, error, findError (error));    /* continue */
     }
 
-  return result;
+    return result;
 }
 
 #undef CDEV_CURRENT_FUNCTION

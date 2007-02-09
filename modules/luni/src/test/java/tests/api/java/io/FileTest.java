@@ -1156,6 +1156,10 @@ public class FileTest extends junit.framework.TestCase {
 			assertTrue("LastModified Time Incorrect: " + lastModifiedTime,
 					lastModifiedTime == 315550800000L);
 			f.delete();
+            
+            // Regression for Harmony-2146
+            f = new File("/../");
+            assertTrue(f.lastModified() > 0);
 		} catch (IOException e) {
 			fail("Unexpected IOException during test : " + e.getMessage());
 		}
