@@ -340,15 +340,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
         try {
             begin();
-            if (isBlocking()) {
-                result = networkSystem.connect(fd, trafficClass, connectAddress
-                        .getAddress(), connectAddress.getPort());
-
-            } else {
-                result = networkSystem.connectWithTimeout(fd, 0, trafficClass,
-                        connectAddress.getAddress(), connectAddress.getPort(),
-                        HY_PORT_SOCKET_STEP_CHECK, connectContext);
-            }
+            result = networkSystem.connectWithTimeout(fd,
+                    isBlocking() ? -1 : 0, trafficClass, connectAddress
+                            .getAddress(), connectAddress.getPort(),
+                    HY_PORT_SOCKET_STEP_CHECK, connectContext);
             finished = (result == CONNECT_SUCCESS);
             isBound = finished;
             localAddress = networkSystem.getSocketLocalAddress(fd, false);

@@ -4863,7 +4863,7 @@ hysock_free_network_interface_struct (struct HyPortLibrary * portLibrary,
  * @param[in] portLibrary The port library.
  * @param[in] sock pointer to the unconnected local socket.
  * @param[in] addr	pointer to the sockaddr, specifying remote host/port.
- * @param[in] timeout  timeout in milliseconds 
+ * @param[in] timeout  timeout in milliseconds. If timeout is negative, perform a block operation. 
  * @param[in] step 
  * @param[in,out] context pointer to context pointer.  Filled in on first call and then to be passed into each subsequent call
  *
@@ -4962,8 +4962,10 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
 
       /* set the timeout value to be used.  Just use the full timeout as windows should return from select 
          error if the socket has been returned  */
-      passedTimeout.tv_sec = timeout / 1000;
-      passedTimeout.tv_usec = (timeout - passedTimeout.tv_sec * 1000) * 1000;
+      if ((I_32) timeout >= 0) {
+          passedTimeout.tv_sec = timeout / 1000;
+          passedTimeout.tv_usec = (timeout - passedTimeout.tv_sec * 1000) * 1000;
+      }      
 
       /* initialize the FD sets for the select */
       FD_ZERO (&(((struct selectFDSet_struct *) *context)->exceptionSet));
@@ -4982,7 +4984,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
 		   &(((struct selectFDSet_struct *) *context)->readSet),
 		   &(((struct selectFDSet_struct *) *context)->writeSet),
 		   &(((struct selectFDSet_struct *) *context)->exceptionSet),
-		   &passedTimeout);
+		   (I_32) timeout >= 0 ? &passedTimeout : NULL);
 
       /* if there is at least one descriptor ready to be checked */
       if (0 < rc)

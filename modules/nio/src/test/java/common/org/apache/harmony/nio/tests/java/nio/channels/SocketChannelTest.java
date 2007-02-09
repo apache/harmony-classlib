@@ -1706,6 +1706,43 @@ public class SocketChannelTest extends TestCase {
         tryFinish();
     }
 
+    /**
+     * Regression test for Harmony-1947.
+     */
+    public void test_finishConnect() throws Exception {
+        SocketAddress address = new InetSocketAddress("localhost", 2046);
+
+        ServerSocketChannel theServerChannel = ServerSocketChannel.open();
+        ServerSocket serversocket = theServerChannel.socket();
+        serversocket.setReuseAddress(true);
+        // Bind the socket
+        serversocket.bind(address);
+
+        boolean doneNonBlockingConnect = false;
+        // Loop so that we make sure we're definitely testing finishConnect()
+        while (!doneNonBlockingConnect) {
+            channel1 = SocketChannel.open();
+
+            // Set the SocketChannel to non-blocking so that connect(..) does
+            // not block
+            channel1.configureBlocking(false);
+            boolean connected = channel1.connect(address);
+            if (!connected) {
+                // Now set the SocketChannel back to blocking so that
+                // finishConnect() blocks.
+                channel1.configureBlocking(true);
+                doneNonBlockingConnect = channel1.finishConnect();
+            }
+            if (doneNonBlockingConnect) {
+                tryFinish();
+            }
+            channel1.close();
+        }
+        if (!serversocket.isClosed()) {
+            serversocket.close();
+        }
+    }
+    
     // -------------------------------------------------------------------
     // End of original tests. Test method for CFII with real data.
     // -------------------------------------------------------------------

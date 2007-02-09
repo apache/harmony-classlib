@@ -5117,7 +5117,7 @@ initNetlinkContext (struct HyPortLibrary * portLibrary,
  * @param[in] portLibrary The port library.
  * @param[in] sock pointer to the unconnected local socket.
  * @param[in] addr	pointer to the sockaddr, specifying remote host/port.
- * @param[in] timeout  timeout in milliseconds 
+ * @param[in] timeout  timeout in milliseconds. If timeout is negative, perform a block operation. 
  * @param[in,out] pointer to context pointer.  Filled in on first call and then to be passed into each subsequent call
  *
  * @return	0, if no errors occurred, otherwise the (negative) error code.
@@ -5202,7 +5202,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
         {
           passedTimeout.tv_usec = 100 * 1000;
         }
-      else
+      else if ((I_32)timeout >= 0)
         {
           passedTimeout.tv_usec = timeout * 1000;
         }
@@ -5222,7 +5222,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
                 &(((struct selectFDSet_struct *) *context)->readSet),
                 &(((struct selectFDSet_struct *) *context)->writeSet),
                 &(((struct selectFDSet_struct *) *context)->exceptionSet),
-                &passedTimeout);
+                (I_32)timeout >= 0 ? &passedTimeout : NULL);
 
       /* if there is at least one descriptor ready to be checked */
       if (0 < rc)
