@@ -435,8 +435,14 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         public void replace(final int index, final int length,
                             final Element[] newElements) {
-            Element[] newArray = new Element[elements.length
-                                             - length + newElements.length];
+            Element[] newArray;
+
+            if (index < 0 || length < 0 || elements.length < index + length) {
+                throw new ArrayIndexOutOfBoundsException(); 
+            }
+
+            newArray = new Element[
+                    elements.length - length + newElements.length];
 
             System.arraycopy(elements, 0, newArray, 0, index);
             System.arraycopy(newElements, 0, newArray, index,

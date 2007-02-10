@@ -333,6 +333,43 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
          */
     }
 
+    // Regression for HARMONY-2459
+    public void testReplace04() {
+        PlainDocument document = new PlainDocument();
+        Element elem = new DummyElement();
+        AbstractDocument.BranchElement branchElem =
+                document.new BranchElement(elem, (AttributeSet) null);
+        Element[] arr0 = new Element[] {null, null, null};
+
+        try {
+            branchElem.replace(Integer.MIN_VALUE, 5, arr0);
+            fail("ArrayIndexOutOfBoundsException is expected");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // valid
+        }
+
+        try {
+            branchElem.replace(0, -1, arr0);
+            fail("ArrayIndexOutOfBoundsException is expected");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // valid
+        }
+
+        try {
+            branchElem.replace(1, 5, arr0);
+            fail("ArrayIndexOutOfBoundsException is expected");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // valid
+        }
+
+        try {
+            branchElem.replace(0, 2, arr0);
+            fail("ArrayIndexOutOfBoundsException is expected");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // valid
+        }
+    }
+
     public void testPositionToElement() {
         assertNull(par.positionToElement(-1));
         assertSame(leaf2, par.positionToElement(7));
@@ -382,4 +419,50 @@ public class AbstractDocument_BranchElementTest extends BasicSwingTestCase {
         styledDoc.setCharacterAttributes(13, 5, SimpleAttributeSet.EMPTY, false);
         return (BranchElement)doc.getDefaultRootElement().getElement(1);
     }
+
+    /**
+     * This class is used by testReplace04
+     */
+    class DummyElement implements Element {
+        public AttributeSet getAttributes() {
+            return null;
+        }
+
+        public Document getDocument() {
+            return null;
+        }
+
+        public Element getElement(int p0) {
+            return null;
+        }
+
+        public int getElementCount() {
+            return 0;
+        }
+
+        public int getElementIndex(int p0) {
+            return 0;
+        }
+
+        public int getEndOffset() {
+            return 0;
+        }
+
+        public String getName() {
+            return "AA";
+        }
+
+        public Element getParentElement() {
+            return null;
+        }
+
+        public int getStartOffset() {
+            return 0;
+        }
+
+        public boolean isLeaf() {
+            return false;
+        }
+    }
+
 }
