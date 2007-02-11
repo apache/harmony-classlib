@@ -512,6 +512,14 @@ public class DefaultCaretTest extends SwingTestCase {
         assertEquals(h[0].getPainter(), dc.getSelectionPainter());
         assertEquals(4, h[0].getStartOffset());
         assertEquals(9, h[0].getEndOffset());
+        
+        // Regression for HARMONY-1768
+        DefaultCaret obj = new DefaultCaret() {
+            public  Highlighter.HighlightPainter getSelectionPainter(){
+                return super.getSelectionPainter();
+            }
+        };
+        assertNotNull(obj.getSelectionPainter());
     }
 
     public void testFocusGained() throws Exception {
@@ -900,3 +908,5 @@ public class DefaultCaretTest extends SwingTestCase {
         assertEquals(1, jta.getHighlighter().getHighlights().length);
     }
 }
+
+

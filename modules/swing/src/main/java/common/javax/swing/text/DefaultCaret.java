@@ -380,11 +380,12 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
 
     /**
      * Sets all fiels to default values
-     *
      */
     public DefaultCaret() {
         blinkTimer = createTimer(false, 0);
         magicTimer = createTimer(true, 0);       
+        painter = new DefaultHighlighter.DefaultHighlightPainter(
+                selectionColor);
     }
 
     public void addChangeListener(final ChangeListener changeListener) {
@@ -1002,10 +1003,10 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
     /**
      * If current JTextComponent has NavigationFilter then call
      * getComponent.getNavigationFilter.setDot. Otherwise, sets dot and mark to
-     * a0, sets dotBias and markBias to a1. Removes highlight, if any.
+     * i, sets dotBias and markBias to b. Removes highlight, if any.
      *
-     * @param a0 new dot
-     * @param a1 new dotBias
+     * @param i new dot
+     * @param b new dotBias
      */
 
     void setDot(final int i, final Position.Bias b) {
