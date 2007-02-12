@@ -15,9 +15,11 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200.tests;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
+// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
+// NOTE: Do not extract strings as messages; this code is still a
+// work-in-progress
+// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import org.apache.harmony.pack200.Segment;
 
 import junit.framework.TestCase;
@@ -27,10 +29,6 @@ import junit.framework.TestCase;
  * @version $Revision: $
  */
 public class SegmentTest extends TestCase {
-	/**
-	 * @param args
-	 * @throws Exception
-	 */
 // Commented on request in HARMONY-2246
 // Will be uncommented later     
 //	public void testHelloWorld() throws Exception {
@@ -38,12 +36,20 @@ public class SegmentTest extends TestCase {
 //				.getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack")));
 //	}
 	/**
-	 * @param args
 	 * @throws Exception
 	 */
 	public void testJustResources() throws Exception {
-		assertNotNull(Segment.parse(Segment.class
-				.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack")));
+		assertNotNull(Segment
+				.parse(Segment.class
+						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack")));
+	}
+	/**
+	 * @throws Exception
+	 */
+	public void testJustResourcesGZip() throws Exception {
+		assertNotNull(Segment
+				.parse(Segment.class
+						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz")));
 	}
 
 }

@@ -146,6 +146,17 @@ public class Segment {
 	public static Segment parse(InputStream in) throws IOException,
 			Pack200Exception {
 		Segment segment = new Segment();
+		// See if file is GZip compressed
+		if (in.markSupported()) {
+			in.mark(2);
+			if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
+				in.reset();
+				in = new GZIPInputStream(in);
+			} else {
+				in.reset();
+			}
+
+		}
 		segment.parseSegment(in);
 		return segment;
 	}
@@ -796,18 +807,19 @@ public class Segment {
 		// look through each method
 		int codeBands = 0;
 		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
-				AttributeLayout.ATTRIBUTE_CODE,
-				AttributeLayout.CONTEXT_METHOD);
+				AttributeLayout.ATTRIBUTE_CODE, AttributeLayout.CONTEXT_METHOD);
 
 		for (int i = 0; i < classCount; i++) {
 			for (int j = 0; j < methodFlags[i].length; j++) {
 				long flag = methodFlags[i][j];
-				if (layout.matches(flag)) 
+				if (layout.matches(flag))
 					codeBands++;
 			}
 		}
 		if (codeBands > 0)
-			throw new Error("Can't handle non-abstract, non-native methods/initializers at the moment (found " + codeBands + " code bands)");
+			throw new Error(
+					"Can't handle non-abstract, non-native methods/initializers at the moment (found "
+							+ codeBands + " code bands)");
 		debug("unimplemented code_headers");
 		debug("unimplemented code_max_stack");
 		debug("unimplemented code_max_na_locals");
