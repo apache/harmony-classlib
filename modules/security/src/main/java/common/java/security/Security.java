@@ -55,8 +55,8 @@ public final class Security {
     // - load statically registered providers
     // - if no provider description file found then load default providers
     static {
-        AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            public Object run() {
+        AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+            public Void run() {
                 boolean loaded = false;
                 File f = new File(System.getProperty("java.home") //$NON-NLS-1$
                         + File.separator + "lib" + File.separator //$NON-NLS-1$
@@ -256,7 +256,7 @@ public final class Security {
             throw new InvalidParameterException(
                     Messages.getString("security.2B")); //$NON-NLS-1$
         }
-        HashMap hm = new HashMap();
+        HashMap<String, String> hm = new HashMap<String, String>();
         int i = filter.indexOf(":"); //$NON-NLS-1$
         if ((i == filter.length() - 1) || (i == 0)) {
             throw new InvalidParameterException(
@@ -281,7 +281,7 @@ public final class Security {
         if (filter.isEmpty()) {
             return null;
         }
-        java.util.List result = Services.getProvidersList();
+        java.util.List<Provider> result = Services.getProvidersList();
         Set keys = filter.entrySet();
         Map.Entry entry;
         for (Iterator it = keys.iterator(); it.hasNext();) {
@@ -332,7 +332,7 @@ public final class Security {
             }
         }
         if (result.size() > 0) {
-            return (Provider[]) result.toArray(new Provider[result.size()]);
+            return result.toArray(new Provider[result.size()]);
         } else {
             return null;
         }
@@ -388,7 +388,7 @@ public final class Security {
      *  
      */
     public static Set<String> getAlgorithms(String serviceName) {
-        Set result = new HashSet();
+        Set<String> result = new HashSet<String>();
         Provider[] p = getProviders();
         for (int i = 0; i < p.length; i++) {
             for (Iterator it = p[i].getServices().iterator(); it.hasNext();) {
@@ -420,7 +420,7 @@ public final class Security {
         }
 
         //  Access to Security.getAliases()
-        public Iterator getAliases(Provider.Service s) {
+        public Iterator<String> getAliases(Provider.Service s) {
             return s.getAliases();
         }
         
