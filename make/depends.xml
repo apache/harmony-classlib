@@ -173,8 +173,22 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                         message="${jpeg.msg}" />
     </target>
 
-    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64">
-        
+    <target name="-check-unix-ia64" if="is.ia64" unless="is.windows" depends="-check-unix-common">
+        <check-one-link src="${lcms.home}/lib/liblcms.a"
+                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
+                        message="${lcms.msg}" />
+
+        <check-one-link src="${png.home}/lib/libpng.a"
+                        dest="depends/libs/build/png/libpng.${hy.platform}"
+                        message="${png.msg}" />
+
+        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
+                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
+                        message="${jpeg.msg}" />
+    </target>
+
+    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64, -check-unix-ia64">
+ 
 <!--        <property name="lcms.msg"
                   value="liblcms development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
