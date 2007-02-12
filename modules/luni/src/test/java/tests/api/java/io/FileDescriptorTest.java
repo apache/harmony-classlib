@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
 
 public class FileDescriptorTest extends junit.framework.TestCase {
 
@@ -49,23 +50,29 @@ public class FileDescriptorTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileDescriptor#sync()
 	 */
-	public void test_sync() {
+       public void test_sync() throws Exception {
 		// Test for method void java.io.FileDescriptor.sync()
-
-		try {
-			f = new File(System.getProperty("user.dir"), "fd" + platformId
-					+ ".tst");
-			f.delete();
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fis = new FileInputStream(f.getPath());
-			FileDescriptor fd = fos.getFD();
-			fd.sync();
-			assertTrue("Bytes were not written after sync",
-					fis.available() == "Test String".length());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+        f = new File(System.getProperty("user.dir"), "fd" + platformId + ".tst");
+        f.delete();
+        fos = new FileOutputStream(f.getPath());
+        fos.write("Test String".getBytes());
+        fis = new FileInputStream(f.getPath());
+        FileDescriptor fd = fos.getFD();
+        fd.sync();
+        int length = "Test String".length();
+        assertEquals("Bytes were not written after sync", length, fis
+                .available());
+        
+        // Regression test for Harmony-1494
+        fd = fis.getFD();
+        fd.sync();
+        assertEquals("Bytes were not written after sync", length, fis
+                .available());
+        
+        RandomAccessFile raf = new RandomAccessFile(f, "r");
+        fd = raf.getFD(); 
+        fd.sync();
+        raf.close();
 	}
 
 	/**

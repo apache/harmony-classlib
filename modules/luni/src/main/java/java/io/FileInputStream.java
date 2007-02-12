@@ -72,6 +72,7 @@ public class FileInputStream extends InputStream implements Closeable {
             security.checkRead(filePath);
         }
         fd = new FileDescriptor();
+        fd.readOnly = true;
         fd.descriptor = fileSystem.open(file.properPath(true),
                 IFileSystem.O_RDONLY);
         innerFD = true;

@@ -76,9 +76,12 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
         super();
 
         int options = 0;
-
+        
+        fd = new FileDescriptor();
+       
         if (mode.equals("r")) { //$NON-NLS-1$
             isReadOnly = true;
+            fd.readOnly = true;
             options = IFileSystem.O_RDONLY;
         } else if (mode.equals("rw") || mode.equals("rws") || mode.equals("rwd")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             isReadOnly = false;
@@ -102,8 +105,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
                 security.checkWrite(file.getPath());
             }
         }
-
-        fd = new FileDescriptor();
+        
         fd.descriptor = fileSystem.open(file.properPath(true), options);
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 options);

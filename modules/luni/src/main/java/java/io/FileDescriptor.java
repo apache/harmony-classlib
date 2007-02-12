@@ -49,6 +49,8 @@ public final class FileDescriptor {
      * A value of -1 indicates that this FileDescriptor is invalid.
      */
     long descriptor = -1;
+    
+    boolean readOnly = false; 
 
     private static native void oneTimeInitialization();
 
@@ -76,7 +78,14 @@ public final class FileDescriptor {
      * @throws SyncFailedException
      *             when the operation fails
      */
-    public native void sync() throws SyncFailedException;
+    public void sync() throws SyncFailedException {
+        // if the descriptor is a read-only one, do nothing
+        if (!readOnly) {
+            syncImpl();
+        }
+    }
+    
+    private native void syncImpl() throws SyncFailedException;
 
     /**
      * Answers a boolean indicating whether or not this FileDescriptor is valid.

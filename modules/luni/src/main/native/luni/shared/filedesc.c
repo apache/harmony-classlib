@@ -31,7 +31,7 @@ Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
 }
 
 JNIEXPORT void JNICALL
-Java_java_io_FileDescriptor_sync (JNIEnv * env, jobject recv)
+Java_java_io_FileDescriptor_syncImpl (JNIEnv * env, jobject recv)
 {
   /* Cause all unwritten data to be written out to the OS */
   IDATA descriptor;
