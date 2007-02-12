@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.Color;
@@ -87,6 +83,16 @@ public class BasicPopupMenuUITest extends PopupMenuUITest {
         assertFalse(popupUI.isPopupTrigger(event2));
         assertFalse(popupUI.isPopupTrigger(event3));
         assertFalse(popupUI.isPopupTrigger(event4));
+
+        // regression for HARMONY-2512
+        try {    
+            BasicPopupMenuUI m = new BasicPopupMenuUI();
+
+            m.isPopupTrigger(null);
+            fail("NPE should be thrown"); 
+        } catch (NullPointerException npe) {                
+            // PASSED            
+        }
     }
 
     /*

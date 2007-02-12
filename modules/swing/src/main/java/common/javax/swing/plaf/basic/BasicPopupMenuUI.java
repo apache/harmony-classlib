@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.event.MouseEvent;
@@ -95,6 +91,10 @@ public class BasicPopupMenuUI extends PopupMenuUI {
     }
 
     public boolean isPopupTrigger(final MouseEvent event) {
+        if (event == null) {
+            throw new NullPointerException();
+        }
+ 
         return false;
     }
 }
