@@ -24,6 +24,7 @@ AR = ar
 ARFLAGS = rcv
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
+STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
 XLIBS = -L/usr/X11R6/lib -lX11 -lXft
 

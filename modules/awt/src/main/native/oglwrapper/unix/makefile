@@ -25,7 +25,7 @@ MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-OSLIBS += -lstdc++
+OSLIBS += $(STDCLIBS)
 
 DLLNAME=../liboglwrapper.so
 EXPNAME=HYOGLWRAPPER_0.1
