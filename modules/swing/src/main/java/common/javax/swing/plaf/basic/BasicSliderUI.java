@@ -207,6 +207,10 @@ public class BasicSliderUI extends SliderUI {
 
         @Override
         public void mousePressed(final MouseEvent e) {
+            if (!slider.isEnabled()) {
+                return;
+            }
+ 
             if (!slider.isFocusOwner()) {
                 slider.requestFocus();
             }
