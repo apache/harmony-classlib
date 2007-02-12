@@ -15,45 +15,25 @@
  *  limitations under the License.
  */
 
-
 package org.apache.harmony.security.provider.crypto;
 
-import java.io.IOException;
-
 import java.math.BigInteger;
-
-import java.security.KeyFactorySpi;
+import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyFactorySpi;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.InvalidKeyException;
-
-import java.security.spec.KeySpec;
-import java.security.spec.DSAParameterSpec;
-import java.security.spec.DSAPrivateKeySpec;
-import java.security.spec.DSAPublicKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.DSAPublicKey;
-
-import org.apache.harmony.security.provider.crypto.DSAPrivateKeyImpl;
-import org.apache.harmony.security.provider.crypto.DSAPublicKeyImpl;
-import org.apache.harmony.security.utils.AlgNameMapper;
-
-import org.apache.harmony.security.asn1.ASN1Sequence;
-import org.apache.harmony.security.asn1.ASN1Integer;
-import org.apache.harmony.security.asn1.ASN1Type;
-import org.apache.harmony.security.asn1.BerInputStream;
-import org.apache.harmony.security.asn1.ASN1BitString;
-import org.apache.harmony.security.asn1.BitString;
-import org.apache.harmony.security.asn1.ASN1OctetString;
+import java.security.spec.DSAPrivateKeySpec;
+import java.security.spec.DSAPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.harmony.security.internal.nls.Messages;
-
 
 public class DSAKeyFactoryImpl extends KeyFactorySpi {
 
