@@ -310,32 +310,21 @@ public abstract class Provider extends Properties {
     // returns true if the implementation meets the constraint expressed by the
     // specified attribute name/value pair.
     private boolean checkAttribute(String servAlg, String attribute, String val) {
-        if (attribute.equalsIgnoreCase("KeySize")) { //$NON-NLS-1$
-
-            String attributeValue = getProperty(servAlg + " KeySize"); //$NON-NLS-1$
-            if (attributeValue == null) {
-                // provider doesn't provide KeySize attribute for the service
-                return false;
-            }
-
-            if (Integer.valueOf(attributeValue).compareTo(Integer.valueOf(val)) < 0) {
-                return false;
-            } else {
-                return true;
-            }
-        } else if (attribute.equalsIgnoreCase("ImplementedId")) { //$NON-NLS-1$
-            if (!getProperty(servAlg + " ImplementedId").equals(val)) { //$NON-NLS-1$
-                return false;
-            } else {
-                return true;
-            }
-        } else { // other attributes
-            if (!getProperty(servAlg + " " + attribute).equals(val)) { //$NON-NLS-1$
-                return false;
-            } else {
-                return true;
+        
+        String attributeValue = getPropertyIgnoreCase(servAlg + ' ' + attribute);
+        if (attributeValue != null) {
+            if (attribute.equalsIgnoreCase("KeySize")) { //$NON-NLS-1$
+                if (Integer.valueOf(attributeValue).compareTo(
+                        Integer.valueOf(val)) >= 0) {
+                    return true;
+                }
+            } else { // other attributes
+                if (attributeValue.equalsIgnoreCase(val)) {
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     /**

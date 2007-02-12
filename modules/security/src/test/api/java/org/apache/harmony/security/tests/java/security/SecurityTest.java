@@ -221,9 +221,23 @@ public class SecurityTest extends TestCase {
 
             filter = "MyService.MyAlgorithm KeySize:1025";
             assertNull(filter, Security.getProviders(filter));
-            
+
+            // attribute name and value are case insensitive 
+            filter = "MyService.MyAlgorithm imPLementedIn:softWARE";
+            assertTrue(filter, Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(filter)));
+            filter = "MyService.MyAlgorithm ATTribute:attributeVALUE";
+            assertTrue(filter, Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(filter)));
+
             // Regression for HARMONY-2761
-            filter = "MyService.MyAlgorithmNoKeySize KeySize:512";
+            filter = "MyService.NoKeySize KeySize:512";
+            assertNull(filter, Security.getProviders(filter));
+
+            filter = "MyService.NoImplementedIn ImplementedIn:Software";
+            assertNull(filter, Security.getProviders(filter));
+
+            filter = "ABCService.NoAttribute Attribute:ABC";
             assertNull(filter, Security.getProviders(filter));
         } finally { //clean up
             Security.removeProvider(p.getName());
@@ -274,11 +288,29 @@ public class SecurityTest extends TestCase {
             m.put("MessageDigest.SHA-1", "");
             assertNull("MyService.MyAlgorithm KeySize:1025", Security
                     .getProviders(m));
-            
+
+            // attribute name and value are case insensitive 
+            m.clear();
+            m.put("MyService.MyAlgorithm imPLementedIn", "softWARE");
+            assertTrue(Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(m)));
+            m.clear();
+            m.put("MyService.MyAlgorithm ATTribute", "attributeVALUE");
+            assertTrue(Arrays.equals(new Provider[] { p }, Security
+                    .getProviders(m)));
+
             // Regression for HARMONY-2761
             m.clear();
-            m.put("MyService.MyAlgorithmNoKeySize KeySize", "512");
+            m.put("MyService.NoKeySize KeySize", "512");
             assertNull("No KeySize attribute", Security.getProviders(m));
+            
+            m.clear();
+            m.put("MyService.NoImplementedIn ImplementedIn", "Software");
+            assertNull("No ImplementedIn attribute", Security.getProviders(m));
+            
+            m.clear();
+            m.put("ABCService.NoAttribute Attribute", "ABC");
+            assertNull(Security.getProviders(m));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
@@ -328,10 +360,17 @@ public class SecurityTest extends TestCase {
             put("MessageDigest.SHA-1", "SomeClassName");
             put("MyService.MyAlgorithm", "SomeClassName");
             put("MyService.MyAlgorithm KeySize", "1024");
+            put("MyService.MyAlgorithm ImplementedIn", "Software");
+            put("MyService.MyAlgorithm Attribute", "AttributeValue");
 
             // service has no KeySize attribute
-            put("MyService.MyAlgorithmNoKeySize", "SomeClassName");
+            put("MyService.NoKeySize", "SomeClassName");
+
+            // service has no ImplementedIn attribute
+            put("MyService.NoImplementedIn", "SomeClassName");
+
+            // service has no 'Attribute' attribute
+            put("ABCService.NoAttribute", "SomeClassName");
         }
     }
-
 }
