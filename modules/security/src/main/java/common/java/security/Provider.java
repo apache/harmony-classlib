@@ -311,8 +311,14 @@ public abstract class Provider extends Properties {
     // specified attribute name/value pair.
     private boolean checkAttribute(String servAlg, String attribute, String val) {
         if (attribute.equalsIgnoreCase("KeySize")) { //$NON-NLS-1$
-            if (Integer.valueOf(getProperty(servAlg + " KeySize")).compareTo( //$NON-NLS-1$
-                    Integer.valueOf(val)) < 0) {
+
+            String attributeValue = getProperty(servAlg + " KeySize"); //$NON-NLS-1$
+            if (attributeValue == null) {
+                // provider doesn't provide KeySize attribute for the service
+                return false;
+            }
+
+            if (Integer.valueOf(attributeValue).compareTo(Integer.valueOf(val)) < 0) {
                 return false;
             } else {
                 return true;

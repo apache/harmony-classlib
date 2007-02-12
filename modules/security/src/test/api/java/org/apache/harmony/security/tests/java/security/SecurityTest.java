@@ -221,6 +221,10 @@ public class SecurityTest extends TestCase {
 
             filter = "MyService.MyAlgorithm KeySize:1025";
             assertNull(filter, Security.getProviders(filter));
+            
+            // Regression for HARMONY-2761
+            filter = "MyService.MyAlgorithmNoKeySize KeySize:512";
+            assertNull(filter, Security.getProviders(filter));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
@@ -270,6 +274,11 @@ public class SecurityTest extends TestCase {
             m.put("MessageDigest.SHA-1", "");
             assertNull("MyService.MyAlgorithm KeySize:1025", Security
                     .getProviders(m));
+            
+            // Regression for HARMONY-2761
+            m.clear();
+            m.put("MyService.MyAlgorithmNoKeySize KeySize", "512");
+            assertNull("No KeySize attribute", Security.getProviders(m));
         } finally { //clean up
             Security.removeProvider(p.getName());
         }
@@ -312,12 +321,16 @@ public class SecurityTest extends TestCase {
                 .getProperty("My Test Property"));
     }
     
+    @SuppressWarnings("serial")
     class MyProvider extends Provider {
         MyProvider() {
             super("MyProvider", 1.0, "Provider for testing");
             put("MessageDigest.SHA-1", "SomeClassName");
             put("MyService.MyAlgorithm", "SomeClassName");
             put("MyService.MyAlgorithm KeySize", "1024");
+
+            // service has no KeySize attribute
+            put("MyService.MyAlgorithmNoKeySize", "SomeClassName");
         }
     }
 
