@@ -76,10 +76,8 @@ public class DatagramChannelTest extends TestCase {
                 Support_PortManager.getNextPort());
         this.localAddr2 = new InetSocketAddress("127.0.0.1",
                 Support_PortManager.getNextPort());
-        this.datagramSocket1 = new DatagramSocket(Support_PortManager
-                .getNextPort());
-        this.datagramSocket2 = new DatagramSocket(Support_PortManager
-                .getNextPort());
+        this.datagramSocket1 = new DatagramSocket(0);
+        this.datagramSocket2 = new DatagramSocket(0);
     }
 
     protected void tearDown() throws Exception {
@@ -1284,8 +1282,7 @@ public class DatagramChannelTest extends TestCase {
 
     public void testReceiveSend_Normal_S2S() throws Exception {
         String msg = "normal string in testReceiveSend_Normal_S2S";
-        this.datagramSocket1 = new DatagramSocket(Support_PortManager
-                .getNextPort());
+        this.datagramSocket1 = new DatagramSocket(0);
         DatagramPacket rdp = new DatagramPacket(msg.getBytes(), msg.length(),
                 localAddr2);
         datagramSocket2 = new DatagramSocket(localAddr2.getPort());
@@ -1341,8 +1338,7 @@ public class DatagramChannelTest extends TestCase {
 
     public void testReceiveSend_Empty_S2S() throws Exception {
         String msg = "";
-        this.datagramSocket1 = new DatagramSocket(Support_PortManager
-                .getNextPort());
+        this.datagramSocket1 = new DatagramSocket(0);
         DatagramPacket rdp = new DatagramPacket(msg.getBytes(), msg.length(),
                 localAddr2);
         datagramSocket2 = new DatagramSocket(localAddr2.getPort());
@@ -1418,8 +1414,7 @@ public class DatagramChannelTest extends TestCase {
 
     private void sendByDatagramSocket(String data, InetSocketAddress address)
             throws Exception {
-        this.datagramSocket1 = new DatagramSocket(Support_PortManager
-                .getNextPort());
+        this.datagramSocket1 = new DatagramSocket(0);
         DatagramPacket rdp = new DatagramPacket(data.getBytes(), data.length(),
                 address);
         this.datagramSocket1.send(rdp);
