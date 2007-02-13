@@ -82,6 +82,7 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
+            <fileset refid="hidden.classes"/>
             <fileset dir="${hy.swing.bin.test}" />
         </delete>
     </target>
