@@ -19,7 +19,6 @@ java/awt/BorderLayoutTest.java
 java/awt/ButtonRTest.java
 java/awt/CardLayoutTest.java
 java/awt/ChoiceTest.java
-java/awt/ComponentTest.java
 java/awt/ContainerOrderFocusTraversalPolicyTest.java
 java/awt/DialogRTest.java
 java/awt/ListTest.java

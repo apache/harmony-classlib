@@ -75,6 +75,8 @@ public class Font implements Serializable {
     public static final int LAYOUT_NO_START_CONTEXT = 2;
 
     public static final int LAYOUT_NO_LIMIT_CONTEXT = 4;
+    
+    static final Font DEFAULT_FONT = new Font("Dialog", Font.PLAIN, 12); //$NON-NLS-1$
 
     protected String name;
 
@@ -353,17 +355,17 @@ public class Font implements Serializable {
         // as the delimiter to avoid unexpected parse results of font face names 
         // with spaces.
         
+        if (str == null) {
+            return DEFAULT_FONT;
+        }
+        
         StringTokenizer strTokens;
         String delim = "-"; //$NON-NLS-1$
         String substr;
 
-        int fontSize = 12;
-        int fontStyle = Font.PLAIN;
-        String fontName = "dialog"; //$NON-NLS-1$
-
-        if (str == null) {
-            return new Font(fontName, fontStyle, fontSize);
-        }
+        int fontSize = DEFAULT_FONT.size;
+        int fontStyle = DEFAULT_FONT.style;
+        String fontName = DEFAULT_FONT.name;
 
         strTokens = new StringTokenizer(str.trim(), delim);
 

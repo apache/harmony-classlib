@@ -2960,17 +2960,12 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public Font getFont() {
         toolkit.lockAWT();
         try {
-            if (font == null && hasDefaultFont()) {
-                return toolkit.getDefaultFont();
-            }
-            if (font == null && parent != null) {
-                return parent.getFont();
-            }
-            return font;
+            return (font == null) && (parent != null) ? parent.getFont() : font;
         } finally {
             toolkit.unlockAWT();
         }
     }
+    
 
     public void setFont(Font f) {
         Font oldFont;
@@ -2992,9 +2987,6 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         }
     }
 
-    boolean hasDefaultFont() {
-        return false;
-    }
 
     /**
      * Invalidate the component if it inherits the font from the parent. This
