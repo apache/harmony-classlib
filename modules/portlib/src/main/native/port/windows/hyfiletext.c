@@ -30,6 +30,132 @@
 U_32 decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining);
 #undef CDEV_CURRENT_FUNCTION
 
+#define CDEV_CURRENT_FUNCTION hybuf_write_text
+/**
+* Output the buffer onto the another buffer as text. The in buffer is a UTF8-encoded array of chars.
+* It is converted to the appropriate platform encoding.
+*
+* @param[in] portLibrary The port library
+* @param[in] buf buffer of text to be converted.
+* @param[in] nbytes size of buffer of text to be converted.
+*
+* @return buffer of converted to the appropriate platform encoding text.
+*/
+char *VMCALL
+hybuf_write_text (struct HyPortLibrary * portLibrary,
+                  const char *buf, IDATA nbytes)
+{
+    IDATA i;
+    int newlines = 0, highchars = 0;
+    char *newBuf = NULL;
+    IDATA newLen;
+    char *outBuf = (char*)buf;
+
+    /* scan the buffer for any characters which need to be converted */
+    for (i = 0; i < nbytes; i++)
+    {
+        if (outBuf[i] == '\n')
+        {
+            newlines += 1;
+        }
+        else if ((U_8) outBuf[i] & 0x80)
+        {
+            highchars += 1;
+        }
+    }
+    newlines = 0;
+    /* if there are any non-ASCII chars, convert to Unicode and then to the local code page */
+    if (highchars)
+    {
+        U_16 *wBuf;
+        newLen = (nbytes + newlines) * 2;
+        wBuf = portLibrary->mem_allocate_memory (portLibrary, newLen);
+        if (wBuf)
+        {
+            U_8 *in = (U_8 *) outBuf;
+            U_8 *end = in + nbytes;
+            U_16 *out = wBuf;
+
+            while (in < end)
+            {
+                if (*in == '\n')
+                {
+                    *out++ = (U_16) '\r';
+                    *out++ = (U_16) '\n';
+                    in += 1;
+                }
+                else
+                {
+                    U_32 numberU8Consumed =
+                        decodeUTF8CharN (in, out++, end - in);
+                    if (numberU8Consumed == 0)
+                    {
+                        break;
+                    }
+                    in += numberU8Consumed;
+                }
+            }
+            /* in will be NULL if an error occurred */
+            if (in)
+            {
+                UINT codePage = GetConsoleOutputCP ();
+                IDATA wLen = out - wBuf;
+                IDATA mbLen =
+                    WideCharToMultiByte (codePage, 0, wBuf, wLen, NULL, 0, NULL,
+                    NULL);
+                if (mbLen > 0)
+                {
+                    newBuf = portLibrary->mem_allocate_memory (portLibrary, mbLen + 1);
+                    /* if we couldn't allocate the buffer, just output the data the way it was */
+                    if (newBuf)
+                    {
+                        WideCharToMultiByte (codePage, 0, wBuf, wLen, newBuf,
+                            mbLen, NULL, NULL);
+                        outBuf = newBuf;
+                        nbytes = mbLen;
+                        newBuf[nbytes] = '\0';
+                        newBuf = NULL;
+                    }
+                }
+            }
+                portLibrary->mem_free_memory (portLibrary, wBuf);
+        }
+    }
+    else if (newlines)
+    {
+        /* change any LFs to CRLFs */
+        newLen = nbytes + newlines;
+        newBuf = portLibrary->mem_allocate_memory (portLibrary, newLen + 1);
+        /* if we couldn't allocate the buffer, just output the data the way it was */
+        if (newBuf)
+        {
+            char *cursor = newBuf;
+            for (i = 0; i < nbytes; i++)
+            {
+                if (outBuf[i] == '\n')
+                    *cursor++ = '\r';
+                *cursor++ = outBuf[i];
+            }
+            if (outBuf != buf)
+            {
+                portLibrary->mem_free_memory (portLibrary, outBuf);
+            }
+            outBuf = newBuf;
+            nbytes = newLen;
+            outBuf[nbytes] = '\0';
+
+        }
+    }
+    if (outBuf == buf) {
+        outBuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+        memcpy((void*)outBuf, (const void*)buf, nbytes);
+        outBuf[nbytes] = '\0';
+    }
+    return outBuf;
+}
+
+#undef CDEV_CURRENT_FUNCTION
+
 #define CDEV_CURRENT_FUNCTION hyfile_read_text
 /**
  * Read a line of text from the file into buf.  Text is converted from the platform file encoding to UTF8.

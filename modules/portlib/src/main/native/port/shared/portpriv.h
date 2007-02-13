@@ -62,7 +62,7 @@ typedef struct HyNLSDataCache
   UDATA nPaths;
   char *baseCatalogName;
   char *baseCatalogExtension;
-  char *catalog;
+  char *catalogues[4];
   char language[4];
   char region[4];
   char variant[32];
@@ -240,6 +240,11 @@ extern HY_CFUNC IDATA VMCALL
   hyfile_write_text
 PROTOTYPE ((struct HyPortLibrary * portLibrary, IDATA fd, const char *buf,
             IDATA nbytes));
+struct HyPortLibrary;
+extern HY_CFUNC char *VMCALL
+  hybuf_write_text
+PROTOTYPE ((struct HyPortLibrary * portLibrary, const char *buf,
+           IDATA nbytes));
 struct HyPortLibrary;
 extern HY_CFUNC char *VMCALL
   hyfile_read_text
@@ -1394,6 +1399,7 @@ hytty_startup,                /* tty_startup */
   hyshmem_findclose,            /* shmem_findclose */
   hyshmem_stat,                 /* shmem_stat */
   hysysinfo_get_processing_capacity,    /* sysinfo_get_processing_capacity */
+  hybuf_write_text,            /* buf_write_text */
 };
 #endif
 

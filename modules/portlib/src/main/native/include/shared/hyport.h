@@ -998,6 +998,10 @@ typedef struct HyPortLibrary
   /** see @ref hysysinfo.c::hysysinfo_get_processing_capacity "hysysinfo_get_processing_capacity"*/
   UDATA (PVMCALL sysinfo_get_processing_capacity) (struct HyPortLibrary *
                                                   portLibrary);
+  /** see @ref hyfile.c::hybuf_write_text "hybuf_write_text"*/
+  char *(PVMCALL buf_write_text) (struct HyPortLibrary * portLibrary,
+                                 const char *buf, IDATA nbytes);
+
   char _hypadding039C[4];       /* 4 bytes of automatic padding */
 } HyPortLibrary;
 #define HYPORT_SL_FOUND  0
@@ -1213,6 +1217,7 @@ extern HY_CFUNC I_32 VMCALL hyport_isCompatible (struct HyPortLibraryVersion
 #define hyfile_shutdown() privatePortLibrary->file_shutdown(privatePortLibrary)
 #define hyfile_write(param1,param2,param3) privatePortLibrary->file_write(privatePortLibrary,param1,param2,param3)
 #define hyfile_write_text(param1,param2,param3) privatePortLibrary->file_write_text(privatePortLibrary,param1,param2,param3)
+#define hybuf_write_text(param1,param2) privatePortLibrary->buf_write_text(privatePortLibrary,param1,param2)
 #define hyfile_vprintf(param1,param2,param3) privatePortLibrary->file_vprintf(privatePortLibrary,param1,param2,param3)
 #define hyfile_printf privatePortLibrary->file_printf
 #define hyfile_open(param1,param2,param3) privatePortLibrary->file_open(privatePortLibrary,param1,param2,param3)

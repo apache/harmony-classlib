@@ -547,6 +547,8 @@ initNLSCatalog (HyPortLibrary * portLib)
 {
   char *endPathPtr = NULL;
   char *launcherName = NULL;
+  char **pathSet = portLib->mem_allocate_memory (portLib, sizeof(char*)*2);
+  char *vmPath = NULL;
 
   hysysinfo_get_executable_name (portLib, NULL, &launcherName);
 
@@ -561,10 +563,17 @@ initNLSCatalog (HyPortLibrary * portLib)
     endPathPtr = strrchr (launcherName, DIR_SEPARATOR);
     endPathPtr[1] = '\0';
     // launcherName now holds the name of the launcher's home directory
-  
-    portLib->nls_set_catalog (portLib, (const char **) &launcherName, 1, "harmony", "properties");
-
+    vmPath = portLib->mem_allocate_memory (portLib, strlen(launcherName) + 9);
+    strcpy(vmPath, launcherName);
+    strcat(vmPath, "default");
+    vmPath[strlen(vmPath)+1] = '\0';
+    vmPath[strlen(vmPath)] = DIR_SEPARATOR;
+    pathSet[0] = launcherName;
+    pathSet[1] = vmPath;
+    portLib->nls_set_catalog (portLib, pathSet, 2, "harmony", "properties");
     // Free memory for launcherName -- necessary ??
     portLib->mem_free_memory (portLib, launcherName);
+    portLib->mem_free_memory (portLib, pathSet);
+    portLib->mem_free_memory (portLib, vmPath);
   }
 }

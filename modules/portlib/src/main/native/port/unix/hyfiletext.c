@@ -56,6 +56,11 @@ static IDATA file_write_using_iconv (struct HyPortLibrary *portLibrary,
                                      IDATA fd, const char *buf, IDATA nbytes);
 #endif /* HYVM_USE_ICONV (autogen) */
 
+#if (defined(HYVM_USE_ICONV))
+static char* buf_write_using_iconv (struct HyPortLibrary *portLibrary,
+                                     const char *buf, IDATA nbytes);
+#endif /* HYVM_USE_ICONV (autogen) */
+
 #if (defined(HYVM_USE_WCTOMB))
 static IDATA walkUTF8String (const U_8 * buf, IDATA nbytes);
 #endif /* HYVM_USE_WCTOMB (autogen) */
@@ -69,6 +74,63 @@ static IDATA file_write_using_wctomb (struct HyPortLibrary *portLibrary,
                                       IDATA fd, const char *buf,
                                       IDATA nbytes);
 #endif /* HYVM_USE_WCTOMB (autogen) */
+
+#if (defined(HYVM_USE_WCTOMB))
+static char* buf_write_using_wctomb (struct HyPortLibrary *portLibrary,
+                                      const char *buf, IDATA nbytes);
+#endif /* HYVM_USE_WCTOMB (autogen) */
+
+#undef CDEV_CURRENT_FUNCTION
+
+
+#define CDEV_CURRENT_FUNCTION hybuf_write_text
+/**
+* Output the buffer onto the another buffer as text. The in buffer is a UTF8-encoded array of chars.
+* It is converted to the appropriate platform encoding.
+*
+* @param[in] portLibrary The port library
+* @param[in] buf buffer of text to be converted.
+* @param[in] nbytes size of buffer of text to be converted.
+*
+* @return buffer of converted to the appropriate platform encoding text.
+*/
+char *VMCALL
+hybuf_write_text (struct HyPortLibrary * portLibrary,
+                  const char *buf, IDATA nbytes)
+{
+  char* outBuf = NULL;
+  IDATA i;
+  int requiresTranslation = 0;
+
+  const char *utf8Encoding = "UTF-8";
+
+  /* we can short circuit if the string is all ASCII */
+  for (i = 0; i < nbytes; i++)
+  {
+      if ((U_8) buf[i] >= 0x80)
+      {
+          requiresTranslation = 1;
+          break;
+      }
+  }
+
+  if (!requiresTranslation
+      || strcmp (nl_langinfo (CODESET), utf8Encoding) == 0)
+  {
+      /* We're in luck! No transformations are necessary */
+      outBuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+      memcpy(outBuf, buf, nbytes);
+      outBuf[nbytes] = '\0';
+      return outBuf;
+  }
+
+#if defined(HYVM_USE_WCTOMB)
+  return buf_write_using_wctomb (portLibrary, buf, nbytes);
+#else
+  return buf_write_using_iconv (portLibrary, buf, nbytes);
+#endif
+
+}
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -257,6 +319,40 @@ file_write_using_wctomb (struct HyPortLibrary *portLibrary, IDATA fd,
 
 #undef CDEV_CURRENT_FUNCTION
 
+#define CDEV_CURRENT_FUNCTION buf_write_using_wctomb
+#if (defined(HYVM_USE_WCTOMB))
+static char*
+buf_write_using_wctomb (struct HyPortLibrary *portLibrary, const char *buf,
+                         IDATA nbytes)
+{
+    IDATA newLength = 0;
+    char *outBuf = (char*)buf;
+    newLength = walkUTF8String ((U_8 *) buf, nbytes);
+    if (newLength)
+    {
+        outBuf = portLibrary->mem_allocate_memory (portLibrary, newLength + 1);
+        if (outBuf)
+        {
+            translateUTF8String (buf, outBuf, nbytes);
+            nbytes = newLength;
+            outBuf[nbytes] = '\0';
+        } else
+        {
+            outBuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+            memcpy(outBuf, buf, nbytes);
+            outBuf[nbytes] = '\0';
+        }
+        return outBuf;
+    }
+    outBuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+    memcpy(outBuf, buf, nbytes);
+    outBuf[nbytes] = '\0';
+    return outBuf;
+}
+#endif /* HYVM_USE_WCTOMB (autogen) */
+
+#undef CDEV_CURRENT_FUNCTION
+
 #define CDEV_CURRENT_FUNCTION file_write_using_iconv
 #if (defined(HYVM_USE_ICONV))
 static IDATA
@@ -325,6 +421,73 @@ file_write_using_iconv (struct HyPortLibrary *portLibrary, IDATA fd,
       portLibrary->mem_free_memory (portLibrary, bufStart);
     }
   return (result == nbytes) ? 0 : result;
+}
+#endif /* HYVM_USE_ICONV (autogen) */
+
+#undef CDEV_CURRENT_FUNCTION
+
+#define CDEV_CURRENT_FUNCTION buf_write_using_iconv
+#if (defined(HYVM_USE_ICONV))
+static IDATA
+buf_write_using_iconv (struct HyPortLibrary *portLibrary,
+                        const char *buf, IDATA nbytes)
+{
+    UDATA outBufLen = 512;
+    iconv_t converter;
+    size_t inbytesleft, outbytesleft;
+    char *inbuf;
+    /* iconv_open is not an a2e function, so we need to pass it honest-to-goodness EBCDIC strings */
+    converter = iconv_open (nl_langinfo (CODESET), "UTF-8");
+    if (converter == (iconv_t) - 1)
+    {
+        /* no converter available for this code set. Just dump the UTF-8 chars */
+        outbuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+        memcpy(outbuf, buf, nbytes);
+        outBuf[nbytes] = '\0';
+        return  outbuf;
+    }
+    char *bufStart = portLibrary->mem_allocate_memory (portLibrary, 512);
+    char *outbuf = bufStart;
+    inbuf = (char *) buf;         /* for some reason this argument isn't const */
+    inbytesleft = nbytes;
+    outbytesleft = sizeof (stackBuf);
+    while ((size_t) - 1 ==
+        iconv (converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft))
+    {
+        if (errno == E2BIG)
+        {
+            /* grow the buffer by 512 more bytes */
+            char *newBuf =
+                portLibrary->mem_allocate_memory (portLibrary, outBufLen += 512);
+            if (newBuf == NULL)
+            {
+                break;            /* just output what we've got so far */
+            }
+            /* copy over the work we've already done */
+            memcpy (newBuf, bufStart, outbuf - bufStart);
+            /* set up the new buffer, and free the old one */
+            outbytesleft = outBufLen - (outbuf - bufStart);
+            outbuf = newBuf + (outbuf - bufStart);
+            portLibrary->mem_free_memory (portLibrary, bufStart);
+            bufStart = newBuf;
+        }
+        else
+        {
+            /* failure -- just output the unconverted data */
+            iconv_close (converter);
+            outbuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
+            memcpy(outbuf, buf, nbytes);
+            outBuf[nbytes] = '\0';
+            portLibrary->mem_free_memory (portLibrary, bufStart);
+            return  outbuf;
+        }
+    }
+    iconv_close (converter);
+    outbuf = portLibrary->mem_allocate_memory (portLibrary, outbuf - bufStart + 1);
+    memcpy(outbuf, buf, outbuf - bufStart);
+    outBuf[outbuf - bufStart] = '\0';
+    portLibrary->mem_free_memory (portLibrary, bufStart);
+    return outbuf;
 }
 #endif /* HYVM_USE_ICONV (autogen) */
 

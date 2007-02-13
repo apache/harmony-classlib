@@ -51,7 +51,7 @@ static HyNLSHashEntry *nls_allocateHashEntry (struct HyPortLibrary
                                               U_32 message_num,
                                               const char *message,
                                               U_32 sizeOfMessage);
-static const char *parse_catalog (struct HyPortLibrary *portLibrary,
+static const char *parse_catalogues (struct HyPortLibrary *portLibrary,
                                   UDATA flags, U_32 module_name,
                                   U_32 message_num,
                                   const char *default_string);
@@ -274,14 +274,14 @@ hynls_lookup_message (struct HyPortLibrary *portLibrary, UDATA flags,
 
   hythread_monitor_enter (nls->monitor);
 
-  if (!nls->catalog)
+  if (!nls->catalogues[0])
     open_catalog (portLibrary);
 
   message = nlsh_lookup (portLibrary, module_name, message_num);
   if (!message)
     {
       message =
-        parse_catalog (portLibrary, flags, module_name, message_num,
+        parse_catalogues (portLibrary, flags, module_name, message_num,
                        default_string);
       if (!message)
         message =
@@ -332,6 +332,9 @@ hynls_set_catalog (struct HyPortLibrary *portLibrary, const char **paths,
       if (nls->baseCatalogPaths[i])
         portLibrary->mem_free_memory (portLibrary, nls->baseCatalogPaths[i]);
       nls->baseCatalogPaths[i] = NULL;
+      if (nls->catalogues[i])
+          portLibrary->mem_free_memory (portLibrary, nls->catalogues[i]);
+      nls->catalogues[i] = NULL;
     }
   nls->nPaths = 0;
   if (nls->baseCatalogName)
@@ -484,7 +487,9 @@ open_catalog (struct HyPortLibrary *portLibrary)
 {
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
   char *catalog = NULL;
-  I_32 fd = -1, d, p;
+  char *add_catalog = NULL;
+  I_32 position = 0;
+  I_32 fd = -1, d, p, successfully_opened = 0;
 
 #if defined(NLS_DEBUG_TRACE)
   portLibrary->tty_printf (portLibrary, "NLS - open_catalog\n");
@@ -519,11 +524,21 @@ open_catalog (struct HyPortLibrary *portLibrary)
           if (fd != -1)
             break;
         }
-      if (fd != -1)
-        break;
+      if (fd != -1) 
+        {
+          add_catalog = portLibrary->mem_allocate_memory (portLibrary, strlen(catalog) +1);
+          strcpy(add_catalog, catalog);
+          portLibrary->portGlobals->nls_data.catalogues[position++] = add_catalog;
+          portLibrary->file_close (portLibrary, fd);
+#if defined(NLS_DEBUG)
+          portLibrary->tty_printf (portLibrary, "NLS - succesfully opened %s\n", catalog);
+#endif
+          successfully_opened = 1;
+          fd = -1;
+        }
     }
 
-  if (fd == -1)
+  if (!successfully_opened)
     {
 #if defined(NLS_DEBUG)
       portLibrary->tty_printf (portLibrary,
@@ -534,24 +549,15 @@ open_catalog (struct HyPortLibrary *portLibrary)
       return;
     }
 
-  portLibrary->portGlobals->nls_data.catalog = catalog;
 
-  portLibrary->file_close (portLibrary, fd);
-
-#if defined(NLS_DEBUG)
-  portLibrary->tty_printf (portLibrary, "NLS - succesfully opened %s\n",
-                           catalog);
-#endif
-
-
-  free_catalog (portLibrary);
+  free_catalog(portLibrary);
 }
 
 #undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION parse_catalog
+#define CDEV_CURRENT_FUNCTION parse_catalogues
 static const char *
-parse_catalog (struct HyPortLibrary *portLibrary, UDATA flags,
+parse_catalogues (struct HyPortLibrary *portLibrary, UDATA flags,
                U_32 module_name, U_32 message_num, const char *default_string)
 {
 
@@ -573,10 +579,12 @@ parse_catalog (struct HyPortLibrary *portLibrary, UDATA flags,
   char *buf, *newBuf;
   BOOLEAN firstChar = TRUE;
   IDATA fd = -1;
+  I_32 success_reading = 0;
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
   HyNLSHashEntry *entry = NULL;
   char *message = NULL;
   char convertedModuleEnum[5];
+  U_32 catalog_index;
   /* calculate a size which is larger than we could possibly need by putting together all of the prefixes and suffixes */
   char
     prefix[sizeof
@@ -633,35 +641,27 @@ parse_catalog (struct HyPortLibrary *portLibrary, UDATA flags,
 
   /* we do a lazy caching, populate the cache as we look up messages */
 
-  if (nls->catalog)
-    {
-      fd =
-        portLibrary->file_open (portLibrary, (char *) nls->catalog,
-                                HyOpenRead, 0);
-    }
-  if (fd == -1)
-    {
-      /* couldn't open the file, store the searchKey instead */
-      char *tmpStr = prefix;
-      if (default_string)
-        {
-          tmpStr = (char *) default_string;
-        }
-      entry =
-        nls_allocateHashEntry (portLibrary, module_name, message_num, tmpStr,
-                               strlen (tmpStr));
-      if (!entry)
-        {
-          return default_string;
-        }
-      nlsh_insert (portLibrary, entry);
-      return entry->message;
-    }
-
   if (!(buf = portLibrary->mem_allocate_memory (portLibrary, bufSize)))
-    {
+  {
       goto finished;
+  }
+  for(catalog_index = 0; catalog_index < nls->nPaths; catalog_index++)
+  {
+  if (nls->catalogues[catalog_index])
+    {
+      fd = -1;
+      fd = portLibrary->file_open (portLibrary, (char *) nls->catalogues[catalog_index], HyOpenRead, 0);
+      offset = 0;
+      maxOffset = 0;
+      keyLength = -1;
+      firstChar = TRUE;
+      mode = MSG_NONE;
+      count = 0;
+      unicode = 0;
     }
+  if (fd != -1)
+  {
+      success_reading = 1;
 
   while (read_from_catalog (portLibrary, fd, (char *) dataBuf, BUF_SIZE) !=
          NULL)
@@ -936,6 +936,26 @@ parse_catalog (struct HyPortLibrary *portLibrary, UDATA flags,
           buf[offset++] = nextChar;
         }
     }
+  }
+  }
+  if (!success_reading)
+  {
+      /* couldn't open the file, store the searchKey instead */
+      char *tmpStr = prefix;
+      if (default_string)
+      {
+          tmpStr = (char *) default_string;
+      }
+      entry =
+          nls_allocateHashEntry (portLibrary, module_name, message_num, tmpStr,
+          strlen (tmpStr));
+      if (!entry)
+      {
+          return default_string;
+      }
+      nlsh_insert (portLibrary, entry);
+      return entry->message;
+  }
   goto makeStrings;
 
 #undef MSG_NONE
@@ -1109,6 +1129,11 @@ hynls_shutdown (struct HyPortLibrary *portLibrary)
                                         nls->baseCatalogPaths[i]);
           nls->baseCatalogPaths[i] = NULL;
         }
+      if (nls->catalogues[i])
+        {
+            portLibrary->mem_free_memory (portLibrary, nls->catalogues[i]);
+            nls->catalogues[i] = NULL;
+        }
     }
 
   if (nls->baseCatalogExtension)
@@ -1128,8 +1153,6 @@ hynls_shutdown (struct HyPortLibrary *portLibrary)
 
   if (nls->baseCatalogName)
     portLibrary->mem_free_memory (portLibrary, nls->baseCatalogName);
-  if (nls->catalog)
-    portLibrary->mem_free_memory (portLibrary, nls->catalog);
 
   hythread_monitor_destroy (nls->monitor);
 }
