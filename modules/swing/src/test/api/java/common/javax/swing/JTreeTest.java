@@ -1184,16 +1184,8 @@ public class JTreeTest extends SwingTestCase {
         TreePath path11 = path1.pathByAddingChild(child11);
         assertNull(tree.getExpandedDescendants(null));
         checkInEnumeration(tree.getExpandedDescendants(rootPath), new Object[] { rootPath });
-        if (isHarmony()) {
-            assertFalse(tree.getExpandedDescendants(path1).hasMoreElements());
-        } else {
-            assertNull(tree.getExpandedDescendants(path1));
-        }
-        if (isHarmony()) {
-            assertFalse(tree.getExpandedDescendants(path11).hasMoreElements());
-        } else {
-            assertNull(tree.getExpandedDescendants(path11));
-        }
+        assertNull(tree.getExpandedDescendants(path1));
+        assertNull(tree.getExpandedDescendants(path11));        
         tree.expandPath(path11);
         checkInEnumeration(tree.getExpandedDescendants(rootPath), new Object[] { path1,
                 rootPath, path11 });
@@ -1201,11 +1193,7 @@ public class JTreeTest extends SwingTestCase {
         checkInEnumeration(tree.getExpandedDescendants(rootPath), new Object[] { path1,
                 rootPath });
         tree.collapsePath(rootPath);
-        if (isHarmony()) {
-            assertFalse(tree.getExpandedDescendants(rootPath).hasMoreElements());
-        } else {
-            assertNull(tree.getExpandedDescendants(rootPath));
-        }
+        assertNull(tree.getExpandedDescendants(rootPath));
     }
 
     public void testGetSetExpandsSelectedPaths() {

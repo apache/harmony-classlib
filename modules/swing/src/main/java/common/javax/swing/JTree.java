@@ -997,9 +997,11 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
     public Enumeration<TreePath> getExpandedDescendants(TreePath parent) {
         final Enumeration<TreePath> toggled = getDescendantToggledPaths(parent);
-        if (toggled == null) {
-            return null;
-        }
+        
+        if (toggled == null || !isExpanded(parent)) {
+             return null;
+        } 
+
         return new Enumeration<TreePath>() {
             private TreePath nextElement = getNextExpandedPath();
 
@@ -1018,7 +1020,8 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
             private TreePath getNextExpandedPath() {
                 while (toggled.hasMoreElements()) {
-                    TreePath nextPath = toggled.nextElement();
+                    TreePath nextPath = toggled.nextElement();                    
+
                     if (isExpanded(nextPath)) {
                         return nextPath;
                     }
