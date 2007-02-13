@@ -29,9 +29,9 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
@@ -49,14 +49,23 @@ import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.text.PropertyNames;
 import org.apache.harmony.awt.text.TextFieldKit;
 
-
+/**
+ * Note: <code>serialVersionUID</code> fields in this class and its inner
+ * classes are added as a performance optimization but not as a guarantee of
+ * correct deserialization of the classes. 
+ */
 public class JTextField extends JTextComponent implements SwingConstants {
+
     protected class AccessibleJTextField extends
             JTextComponent.AccessibleJTextComponent {
+
+        private static final long serialVersionUID = -3980593114771538955L;
+
         protected AccessibleJTextField() {
             super();
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet ass = super.getAccessibleStateSet();
             ass.add(AccessibleState.SINGLE_LINE);
@@ -65,6 +74,12 @@ public class JTextField extends JTextComponent implements SwingConstants {
     }
 
     public static final String notifyAction = "notify-field-accept";
+
+    /**
+     * This field is added as a performance optimization but not as
+     * a guarantee of correct deserialization of the class. 
+     */
+    private static final long serialVersionUID = 6111025777502333651L;
 
     private int columns;
 
@@ -107,6 +122,8 @@ public class JTextField extends JTextComponent implements SwingConstants {
     }
 
     static class NotifyAction extends TextAction {
+        private static final long serialVersionUID = 7892443630033381907L;
+
         public NotifyAction(final String name) {
             super(name);
         }
@@ -120,6 +137,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
             ((JTextField)focused).postActionEvent();
         }
 
+        @Override
         public boolean isEnabled() {
             final JTextComponent focused = getFocusedComponent();
             if (!(focused instanceof JTextField)) {
@@ -281,6 +299,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
 
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
             accessibleContext = new AccessibleJTextField();
@@ -293,10 +312,10 @@ public class JTextField extends JTextComponent implements SwingConstants {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[]) listenerList
-                .getListeners(ActionListener.class);
+        return listenerList.getListeners(ActionListener.class);
     }
 
+    @Override
     public Action[] getActions() {
         Action[] editorKitActions = ((TextUI) ui).getEditorKit(this)
                 .getActions();
@@ -334,6 +353,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
         return (diff >= 0) ? diff + 1 : 0;
     }
 
+    @Override
     public Dimension getPreferredSize() {
         int widthColumns = columns * columnWidth;
         Dimension dim = super.getPreferredSize();
@@ -345,10 +365,12 @@ public class JTextField extends JTextComponent implements SwingConstants {
         return scrollOffset;
     }
 
+    @Override
     public String getUIClassID() {
         return uiClassID;
     }
 
+    @Override
     public boolean isValidateRoot() {
         Container parent = getParent();
         return parent == null || !(parent instanceof JViewport);
@@ -361,6 +383,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
      *     Object obj = new JTextField();
      *     System.out.println(obj.toString());
      */
+    @Override
     protected String paramString() {
         return super.paramString() + "," + "columns=" + getColumns() + ","
                 + "columnWidth=" + getColumnWidth() + "," + "command="
@@ -376,6 +399,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
         listenerList.remove(ActionListener.class, actionListener);
     }
 
+    @Override
     public void scrollRectToVisible(final Rectangle r) {
         int x = r.x;
         Insets insets = getInsets();
@@ -438,6 +462,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
 
     }
 
+    @Override
     public void setDocument(final Document doc) {
         super.setDocument(doc);
         if (doc != null) {
@@ -445,6 +470,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
         }
     }
 
+    @Override
     public void setFont(final Font f) {
         super.setFont(f);
         evaluate(f);
