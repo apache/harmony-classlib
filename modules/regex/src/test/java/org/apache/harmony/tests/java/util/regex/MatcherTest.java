@@ -614,6 +614,41 @@ public class MatcherTest extends TestCase {
 		assertTrue(matcher.matches());
 	}
 
+        public void testAllCodePoints() {
+                // Regression for HARMONY-3145
+                int[] codePoint = new int[1];
+		Pattern p = Pattern.compile("(\\p{all})+");		
+		boolean res = true;
+		int cnt = 0;
+		String s;
+		for (int i =0; i < 0x110000; i ++) {
+			codePoint[0] = i;
+			s = new String(codePoint, 0, 1);
+			if (!s.matches(p.toString())) {
+				cnt++;
+				res = false;
+			}
+		}
+		assertTrue(res);
+                assertEquals(0, cnt);
+		
+		p = Pattern.compile("(\\P{all})+");		
+		res = true;
+		cnt = 0;
+		
+		for (int i =0; i < 0x110000; i ++) {
+			codePoint[0] = i;
+			s = new String(codePoint, 0, 1);			
+			if (!s.matches(p.toString())) {
+				cnt++;
+				res = false;
+			}
+		}		 
+		
+		assertFalse(res);
+                assertEquals(0x110000, cnt);
+        } 
+
 	/*
 	 * Verify if the Matcher behaves correct when region is changed
 	 */

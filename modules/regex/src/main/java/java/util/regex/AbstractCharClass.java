@@ -782,6 +782,7 @@ abstract class AbstractCharClass extends SpecialToken {
                 { "SmallFormVariants", new LazyRange(0xFE50, 0xFE6F) }, //$NON-NLS-1$
                 { "ArabicPresentationForms-B", new LazyRange(0xFE70, 0xFEFF) }, //$NON-NLS-1$
                 { "HalfwidthandFullwidthForms", new LazyRange(0xFF00, 0xFFEF) }, //$NON-NLS-1$
+                { "all", new LazyRange(0x00, 0x10FFFF) }, //$NON-NLS-1$ 
                 { "Specials", new LazySpecialsBlock() }, //$NON-NLS-1$
                 { "Cn", new LazyCategory(Character.UNASSIGNED, true) },
                 { "IsL", new LazyCategoryScope(0x3E, true) },
