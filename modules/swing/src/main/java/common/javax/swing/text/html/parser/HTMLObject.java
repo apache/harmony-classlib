@@ -17,12 +17,6 @@
 
 package javax.swing.text.html.parser;
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.4 $
- */
 abstract class HTMLObject {
 
 	private int offset;

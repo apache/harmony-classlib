@@ -18,11 +18,6 @@ package javax.swing.text.html.parser;
 
 /**
  * This class implements a generic pair.
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.11 $
  */
 final class Pair<E, T> {
     private E comp1;

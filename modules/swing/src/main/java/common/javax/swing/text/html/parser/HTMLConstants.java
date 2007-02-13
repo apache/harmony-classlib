@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision: 1.12 $
- */
 package javax.swing.text.html.parser;
 
 interface HTMLConstants {

@@ -14,21 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision: 1.6 $
- */
 package javax.swing.text.html.parser;
 
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTML.Tag;
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.6 $
- */
 public class TagElement {
     private HTML.Tag tag;
     private Element element;

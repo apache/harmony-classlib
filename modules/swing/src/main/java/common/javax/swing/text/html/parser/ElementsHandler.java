@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision: 1.4 $
- */
 package javax.swing.text.html.parser;
 import java.util.Hashtable;
 

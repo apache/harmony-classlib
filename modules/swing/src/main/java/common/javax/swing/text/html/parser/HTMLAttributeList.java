@@ -23,11 +23,6 @@ import java.util.List;
 /**
  * Represents an attribute of a html tag. Contains a reference to the 
  * next attribute. 
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen 
- * @version $Revision: 1.4 $
  */
 class HTMLAttributeList {
 

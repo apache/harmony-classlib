@@ -17,12 +17,6 @@
 
 package javax.swing.text.html.parser;
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.3 $
- */
 class HTMLMarkup extends HTMLObject{
 
 	private String declaration;

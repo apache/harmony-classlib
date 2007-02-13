@@ -174,10 +174,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * In fact, it serves as a wrapper for the codification and the
  * <code>ContentModel</code> itself.
  * 
- * @author Alejandro Sánchez
- * @author Diego Raúl Mercado
- * @author Alejandro Barturen
- * @version $Revision: 1.9 $
  */
 class Asn1ContentModel {
 

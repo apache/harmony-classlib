@@ -37,11 +37,6 @@ import javax.swing.text.html.HTMLEditorKit;
  * So, when the method
  * {@link ParserDelegator#parse(Reader, javax.swing.text.html.HTMLEditorKit.ParserCallback, boolean) parse(Reader, HTMLEditorKit.ParserCallback, boolean)}
  * is invoked, its <em>"delegates"</em> to a {@link DocumentParser}.
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.12 $
  */
 public class ParserDelegator extends HTMLEditorKit.Parser implements
         Serializable {

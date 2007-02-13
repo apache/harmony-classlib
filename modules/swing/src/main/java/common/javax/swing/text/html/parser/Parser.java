@@ -36,11 +36,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * ({@link DTD}), and calls various methods (such as handleError,
  * handleStartTag, etc.) when it finds tags or data. This methods should be
  * overriden in a subclass in order to use the parser.
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.112 $
  */
 public class Parser implements DTDConstants {
 

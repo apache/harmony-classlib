@@ -20,11 +20,6 @@ package javax.swing.text.html.parser;
 /**
  * This class is used by CUP in order to encapsulte a html comment 
  * in the stream 
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.5 $
  */
 class HTMLComment extends HTMLObject {
 

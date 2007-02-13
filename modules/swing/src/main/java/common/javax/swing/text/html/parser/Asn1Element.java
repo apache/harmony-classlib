@@ -58,11 +58,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * array (previously obtained codifying an <code>Element</code>). In fact, it
  * serves as a wrapper for the codification and the <code>Element</code>
  * itself.
- * 
- * @author Alejandro Sánchez
- * @author Diego Raúl Mercado
- * @author Alejandro Barturen
- * @version $Revision: 1.6 $
  */
 class Asn1Element {
 

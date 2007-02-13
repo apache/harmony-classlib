@@ -54,10 +54,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * In fact, it serves as a wrapper for the codification and the
  * <code>AttributeList</code> itself.
  * 
- * @author Alejandro Sánchez
- * @author Diego Raúl Mercado
- * @author Alejandro Barturen 
- * @version $Revision: 1.6 $
  */
 class Asn1Attributes {
 

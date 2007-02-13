@@ -19,11 +19,6 @@ package javax.swing.text.html.parser;
 /**
  * Represents the error types reported by the handle methods of 
  * the class {@link Parser}.  
- * 
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.6 $
  */
 enum HTMLErrorType {
     /*

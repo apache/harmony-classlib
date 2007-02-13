@@ -50,10 +50,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * serves as a wrapper for the codification and the <code>Entity</code>
  * itself.
  * 
- * @author Alejandro Sánchez
- * @author Diego Raúl Mercado
- * @author Alejandro Barturen 
- * @version $Revision: 1.5 $
  */
 class Asn1Entity {
 

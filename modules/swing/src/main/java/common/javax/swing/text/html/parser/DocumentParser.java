@@ -22,12 +22,6 @@ import javax.swing.text.ChangedCharSetException;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.14 $
- */
 public class DocumentParser extends Parser {
 
     private static final HTML.Attribute HTTP_EQUIV = 

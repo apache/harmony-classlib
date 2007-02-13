@@ -20,12 +20,6 @@ package javax.swing.text.html.parser;
 import javax.swing.text.SimpleAttributeSet;
 
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.14 $
- */
 class HTMLTag extends HTMLObject {
 
     private String name;

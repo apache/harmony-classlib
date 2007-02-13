@@ -47,10 +47,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * (previously obtained codifying a <code>DTD</code>). In fact, it serves as a
  * wrapper for the codification and the <code>DTD</code> itself.
  * 
- * @author Alejandro Sánchez
- * @author Diego Raúl Mercado
- * @author Alejandro Barturen 
- * @version $Revision: 1.11 $
  */
 class Asn1Dtd {
 

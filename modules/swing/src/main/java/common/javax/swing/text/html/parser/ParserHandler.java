@@ -22,12 +22,6 @@ import java.io.Reader;
 
 import javax.swing.text.ChangedCharSetException;
 
-/**
- * @author Diego Raúl Mercado
- * @author Alejandro Sánchez
- * @author Alejandro Barturen
- * @version $Revision: 1.23 $
- */
 interface ParserHandler {
     void parse(Reader in) throws IOException;
     
