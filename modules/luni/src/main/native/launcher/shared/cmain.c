@@ -102,8 +102,11 @@ main (int argc, char **argv, char **envp)
       options.envp = envp;
       options.portLibrary = &hyportLibrary;
 
+#if !defined(HY_NO_SIG)
       if (hyportLibrary.sysinfo_get_env(&hyportLibrary, "HARMONY_INSTALL_SIG_HANDLER", NULL, 0) == -1) {
+#endif /* HY_NO_SIG */
          rc = gpProtectedMain (&options);
+#if !defined(HY_NO_SIG)
       } else {
          if (hyportLibrary.sig_protect (&hyportLibrary,
                                         signalProtectedMain,
@@ -115,6 +118,7 @@ main (int argc, char **argv, char **envp)
             rc = result;
           }
       }
+#endif /* HY_NO_SIG */
       hyportLibrary.port_shutdown_library (&hyportLibrary);
     }
 

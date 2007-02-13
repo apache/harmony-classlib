@@ -23,7 +23,6 @@ EXENAME=../hyerror.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)hyerror.obj
-MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 

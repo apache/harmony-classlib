@@ -73,7 +73,9 @@ hyport_init_library (struct HyPortLibrary *portLibrary,
 I_32 VMCALL
 hyport_shutdown_library (struct HyPortLibrary * portLibrary)
 {
+#if !defined(HY_NO_SIG)
   portLibrary->sig_shutdown (portLibrary);
+#endif /* HY_NO_SIG */
   portLibrary->shmem_shutdown (portLibrary);
   portLibrary->shsem_shutdown (portLibrary);
 
@@ -328,11 +330,13 @@ hyport_startup_library (struct HyPortLibrary * portLibrary)
       goto cleanup;
     }
 
+#if !defined(HY_NO_SIG)
   rc = portLibrary->sig_startup (portLibrary);
   if (0 != rc)
     {
       goto cleanup;
     }
+#endif /* HY_NO_SIG */
 
   return rc;
 

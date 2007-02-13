@@ -26,6 +26,7 @@ BUILDFILES = \
 	$(SHAREDSUB)exceptions.obj $(SHAREDSUB)strhelp.obj \
 	locklbl.obj lock386.obj \
 	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
+MDLLIBFILES =
 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 

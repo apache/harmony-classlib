@@ -25,8 +25,8 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
         $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
 
 !include <$(HY_HDK)\build\make\rules.mak>

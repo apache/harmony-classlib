@@ -213,6 +213,14 @@
     <property name="interm.exclude.file"
               value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
 
+    <!-- flags -->
+    <property name="hy.no.sig" value="false" />
+    <condition property="hy.skip.sig" value="true">
+        <not>
+            <equals arg1="${hy.no.sig}" arg2="false" />
+        </not>
+    </condition>
+
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
         <echo>
@@ -351,6 +359,7 @@ properties in preference to these:
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
+                <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>

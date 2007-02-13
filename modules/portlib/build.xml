@@ -70,14 +70,17 @@
     </target>
 
     <!-- Build the portlib native components -->
-    <target name="build-native" >
-
+    <target name="build-native"
+        depends="-build-native,-build-native-sig,-build-native-thread,-build-native-port" />
+    <target name="-build-native">
        <!-- Build common lib -->
         <make dir="${hy.portlib.src.main.native}/common/${hy.os.family}" />
 
         <!-- Build pool lib -->
         <make dir="${hy.portlib.src.main.native}/pool/${hy.os.family}" />
+    </target>
 
+    <target name="-build-native-sig" unless="hy.skip.sig">
         <!-- Build sig dll -->
         <make dir="${hy.portlib.src.main.native}/sig/${hy.os.family}" />
 
@@ -86,7 +89,9 @@
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
+    </target>
 
+    <target name="-build-native-thread">
         <!-- Build thread dll -->
         <make dir="${hy.portlib.src.main.native}/thread/${hy.os.family}" />
 
@@ -95,7 +100,9 @@
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
+    </target>
 
+    <target name="-build-native-port">
         <!-- Build port dll -->
         <make dir="${hy.portlib.src.main.native}/port/${hy.os.family}" />
 
@@ -108,13 +115,16 @@
     </target>
 
     <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="${hy.portlib.src.main.native}/sig/${hy.os.family}" target="clean" />
+    <target name="clean-native" depends="-clean-native-sig">
         <make dir="${hy.portlib.src.main.native}/thread/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/port/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/common/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/pool/${hy.os.family}" target="clean" />
 
+    </target>
+
+    <target name="-clean-native-sig" unless="hy.skip.sig">
+        <make dir="${hy.portlib.src.main.native}/sig/${hy.os.family}" target="clean" />
     </target>
 
     <target name="clean">

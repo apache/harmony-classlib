@@ -42,9 +42,8 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib \
               Msimg32.lib gdiplus.lib User32.lib uxTheme.lib 
 
-MDLLIBFILES = \
-  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib \
-  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib \
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib \
   $(LIBPATH)hyzlib.lib $(PNG_DIR)libpng.lib
 
 DLLBASE=0x13300000

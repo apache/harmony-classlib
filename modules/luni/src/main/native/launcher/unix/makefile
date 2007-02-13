@@ -22,8 +22,7 @@ include $(HY_HDK)/build/make/defines.mk
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
 	$(SHAREDSUB)libhlp.o  
-MDLLIBFILES = $(LIBPATH)libhycommon.a $(DLLPATH)libhyprt.so \
-	$(DLLPATH)libhythr.so $(DLLPATH)libhysig.so
+MDLLIBFILES += $(DLLPATH)libhyprt.so
 EXENAME = $(EXEPATH)java
 
 include $(HY_HDK)/build/make/rules.mk

@@ -36,9 +36,8 @@ BUILDFILES = $(SHAREDSUB)JpegEncoder.obj
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = \
-  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib \
-  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
 
 DLLBASE=0x13300000
 COMMENT=/comment:"JPEGENCODER native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

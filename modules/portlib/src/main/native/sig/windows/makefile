@@ -24,6 +24,7 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)hysig_copyright.obj hysigwin.obj
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 VIRTFILES = $(LIBBASE).res
+MDLLIBFILES =
 DLLBASE=0x13100000
 COMMENT=/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 

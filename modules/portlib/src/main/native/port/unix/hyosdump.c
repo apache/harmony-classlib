@@ -87,7 +87,9 @@ hydump_create (struct HyPortLibrary *portLibrary, char *filename,
         }
 
       /* Ensure we get default action (core) - reset primary&app handlers */
+#if !defined(HY_NO_SIG)
       HYJSIG_SIGNAL (SIGABRT, SIG_DFL);
+#endif /* HY_NO_SIG */
       signal (SIGABRT, SIG_DFL);
 
 #if defined(LINUX)

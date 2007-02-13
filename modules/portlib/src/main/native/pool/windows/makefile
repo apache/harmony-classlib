@@ -21,5 +21,6 @@
 
 LIBNAME=$(LIBPATH)hypool.lib
 BUILDFILES = $(SHAREDSUB)pool.obj $(SHAREDSUB)pool_cap.obj
+MDLLIBFILES =
 
 !include <$(HY_HDK)\build\make\rules.mak>

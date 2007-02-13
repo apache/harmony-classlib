@@ -18,6 +18,8 @@
 #if !defined(jsig_h)
 #define jsig_h
 
+#if !defined(HY_NO_SIG)
+
 #if defined(__cplusplus)
 extern "C"
 {
@@ -44,5 +46,7 @@ extern "C"
 
 #define JSIG_RC_DEFAULT_ACTION_REQUIRED 0
 #define JSIG_RC_SIGNAL_HANDLED 1
+
+#endif /* HY_NO_SIG */
 
 #endif /* jsig_h */

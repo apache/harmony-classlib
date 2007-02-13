@@ -55,3 +55,11 @@ OPT += $(HYRELEASECFLAGS)
 else
 OPT += $(HYDEBUGCFLAGS)
 endif
+
+MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a
+
+ifeq ($(HY_NO_SIG),false)
+MDLLIBFILES += $(DLLPATH)libhysig.so
+else
+DEFINES += -DHY_NO_SIG
+endif

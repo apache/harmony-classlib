@@ -24,8 +24,10 @@
 
 #include "hyport.h"
 
+#if !defined(HY_NO_SIG)
 extern void VMCALL hysig_chain_at_shutdown_and_exit (struct HyPortLibrary
                                                      *portLibrary);
+#endif /* HY_NO_SIG */
 
 /**
  * Block until the portlibary has been exited and return the error code.
@@ -54,9 +56,11 @@ void VMCALL
 hyexit_shutdown_and_exit (struct HyPortLibrary *portLibrary, I_32 exitCode)
 {
 
+#if !defined(HY_NO_SIG)
 #if !defined(WIN32)
   hysig_chain_at_shutdown_and_exit (portLibrary);
 #endif
+#endif /* HY_NO_SIG */
 
 
   exit ((int) exitCode);

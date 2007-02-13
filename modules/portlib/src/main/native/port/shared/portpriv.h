@@ -577,6 +577,7 @@ extern HY_CFUNC IDATA VMCALL
   hysysinfo_get_env
 PROTOTYPE ((struct HyPortLibrary * portLibrary, char *envVar,
             char *infoString, UDATA bufSize));
+#if !defined(HY_NO_SIG)
 /* HySourceHySignal*/
 struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
@@ -615,6 +616,7 @@ extern HY_CFUNC U_32 VMCALL
   hysig_info
 PROTOTYPE ((struct HyPortLibrary * portLibrary, void *info, U_32 category,
             I_32 index, const char **name, void **value));
+#endif /* HY_NO_SIG */
 /* HySourceHySL*/
 struct HyPortLibrary;
 extern HY_CFUNC UDATA VMCALL
@@ -1294,6 +1296,7 @@ hytty_startup,                /* tty_startup */
   hyipcmutex_acquire,           /* ipcmutex_acquire */
   hyipcmutex_release,           /* ipcmutex_release */
   hyport_control,               /* port_control */
+#if !defined(HY_NO_SIG)
   hysig_startup,                /* sig_startup */
   hysig_shutdown,               /* sig_shutdown */
   hysig_protect,                /* sig_protect */
@@ -1303,6 +1306,17 @@ hytty_startup,                /* tty_startup */
   hysig_info_count,             /* sig_info_count */
   hysig_set_options,            /* sig_set_options */
   hysig_get_options,            /* sig_get_options */
+#else
+  NULL,                /* sig_startup */
+  NULL,               /* sig_shutdown */
+  NULL,                /* sig_protect */
+  NULL,            /* sig_can_protect */
+  NULL,       /* sig_set_async_signal_handler */
+  NULL,                   /* sig_info */
+  NULL,             /* sig_info_count */
+  NULL,            /* sig_set_options */
+  NULL,            /* sig_get_options */
+#endif /* HY_NO_SIG */
   NULL,                         /* attached_thread */
   hysysinfo_DLPAR_enabled,      /* sysinfo_DLPAR_enabled */
   hysysinfo_DLPAR_max_CPUs,     /* sysinfo_DLPAR_max_CPUs */

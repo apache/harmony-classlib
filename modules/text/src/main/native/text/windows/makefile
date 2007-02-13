@@ -28,9 +28,9 @@ BUILDFILES = $(SHAREDSUB)text_copyright.obj $(SHAREDSUB)BidiWrapper.obj
 VIRTFILES = hytext.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = \
-  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
-  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(LIBPATH)icuuc.lib
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+  $(LIBPATH)vmi.lib $(LIBPATH)icuuc.lib
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Text component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."

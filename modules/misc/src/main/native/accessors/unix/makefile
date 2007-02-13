@@ -26,9 +26,9 @@ BUILDFILES = \
   $(SHAREDSUB)org_apache_harmony_misc_accessors_StringAccessorImpl.o
 
 
-MDLLIBFILES = \
-	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+MDLLIBFILES += \
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
 
 DLLNAME=../libaccessors.so
 EXPNAME=HYMISC_0.1

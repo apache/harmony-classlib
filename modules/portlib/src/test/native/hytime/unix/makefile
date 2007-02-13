@@ -20,8 +20,7 @@
 include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)hytime.o
-MDLLIBFILES = $(LIBPATH)libhycommon.a $(DLLPATH)libhyprt.so \
-	$(DLLPATH)libhythr.so $(DLLPATH)libhysig.so
+MDLLIBFILES += $(DLLPATH)libhyprt.so
 EXENAME = ../hytime
 
 include $(HY_HDK)/build/make/rules.mk
