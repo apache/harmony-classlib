@@ -28,6 +28,12 @@ import org.apache.harmony.x.swing.Utilities;
 
 public class CompoundEdit extends AbstractUndoableEdit {
 
+    /**
+     * This field is added as performance optimization but not as
+     * a guarantee of correct deserialization.
+     */
+    private static final long serialVersionUID = -6512679249930119683L;
+
     protected Vector<UndoableEdit> edits = new Vector<UndoableEdit>();
 
     /**
@@ -36,6 +42,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
      */
     boolean inProgress = true;
 
+    @Override
     public boolean addEdit(final UndoableEdit anEdit) {
        if (!inProgress) {
            return false;
@@ -68,6 +75,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
      *  obj.addEdit(new CompoundEdit());
      *  System.out.println(obj.toString());
      */
+    @Override
     public String toString() {
         String str = super.toString();
         str += " inProgress: " + inProgress;
@@ -79,6 +87,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         return str;
     }
 
+    @Override
     public String getUndoPresentationName() {
         UndoableEdit last = lastEdit();
 
@@ -92,6 +101,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         return super.getUndoPresentationName();
     }
 
+    @Override
     public String getRedoPresentationName() {
         UndoableEdit last = lastEdit();
 
@@ -105,6 +115,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         return super.getRedoPresentationName();
     }
 
+    @Override
     public String getPresentationName() {
         UndoableEdit last = lastEdit();
 
@@ -118,6 +129,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         return super.getPresentationName();
     }
 
+    @Override
     public boolean isSignificant() {
         for (ListIterator li = edits.listIterator(); li.hasNext();) {
             if (((UndoableEdit)li.next()).isSignificant()) {
@@ -131,14 +143,17 @@ public class CompoundEdit extends AbstractUndoableEdit {
         return inProgress;
     }
 
+    @Override
     public boolean canUndo() {
         return !isInProgress() && super.canUndo();
     }
 
+    @Override
     public boolean canRedo() {
         return !isInProgress() && super.canRedo();
     }
 
+    @Override
     public void undo() {
         super.undo();
         for (ListIterator li = edits.listIterator(edits.size());
@@ -147,6 +162,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         }
     }
 
+    @Override
     public void redo() {
         super.redo();
         for (ListIterator li = edits.listIterator(); li.hasNext();) {
@@ -158,6 +174,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
         inProgress = false;
     }
 
+    @Override
     public void die() {
         super.die();
         for (ListIterator li = edits.listIterator(edits.size());
