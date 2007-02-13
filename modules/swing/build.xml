@@ -49,6 +49,14 @@
         </or>
     </fileset>
 
+    <!-- List of private classes that cannot be mapped by above mappers -->
+    <fileset id="hidden.classes" dir="${hy.build}">
+        <include name="javax/swing/text/html/parser/ModelElement.class"/>
+        <include name="javax/swing/text/html/parser/Asn1ModelElement.class"/>
+        <include name="javax/swing/text/html/parser/Asn1ModelElement$1.class"/>
+        <include name="javax/swing/text/html/parser/CUP$ParserCup$actions.class"/>
+    </fileset>
+
     <property file="../../make/depends.properties" />
 
     <property name="swing.exclude.file" location="${hy.hdk}/build/swing.exclude" />
@@ -119,6 +127,7 @@
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
              manifest="${hy.swing}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <fileset refid="hidden.classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

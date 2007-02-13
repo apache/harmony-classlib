@@ -16,13 +16,13 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.4 $
  */
 package javax.swing.text.html.parser;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -230,33 +230,24 @@ class DTDUtilities implements DTDConstants {
         }
         dtd.defElement("#PCDATA", EMPTY, false, false, null, null, null, null);
     }
-    //TODO Probably, don't suplicate information in elements vector
-    static void createBinaryDTD(final String fileName) {
+    
+    public static void createBinaryDTD(final String fileName, DTD dtd) {
         try {
-           ObjectOutputStream os = new ObjectOutputStream(
-                                   new FileOutputStream(fileName));
-           DTD dtd = new DTD("tmp");
-           initDTD(dtd);
-           os.writeObject(dtd.elementHash);
-           os.writeObject(dtd.elements);
-           int size = dtd.entityHash.size();
-           os.writeInt((size - 3)/2);
-           Iterator iter = dtd.entityHash.keySet().iterator();
-           while (iter.hasNext()) {
-               Object key = iter.next();
-               if (key instanceof String
-                   && !key.equals("#SPACE")
-                   && !key.equals("#RS")
-                   && !key.equals("#RE")) {
-                   Entity entity = (Entity)dtd.entityHash.get(key);
-                   os.writeObject(key);
-                   os.writeInt(entity.data[0]);
-               }
-           }
-           os.flush();
-           os.close();
+            FileOutputStream stream = new FileOutputStream(fileName);
+            Asn1Dtd asn1 = new Asn1Dtd(dtd);
+            byte[] enc = asn1.getEncoded();
+            stream.write(enc);
+            stream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void createBinaryDTD(final String fileName) {
+        DTD dtd = new DTD("tmp");
+        initDTD(dtd);
+        createBinaryDTD(fileName, dtd);
     }
 }

@@ -14,64 +14,98 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Evgeniya G. Maenkova
- * @version $Revision$
- */
 package javax.swing.text.html.parser;
 
 import java.io.IOException;
 import java.io.Reader;
 import javax.swing.text.ChangedCharSetException;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 
+/**
+ * @author Diego Raúl Mercado
+ * @author Alejandro Sánchez
+ * @author Alejandro Barturen
+ * @version $Revision: 1.14 $
+ */
 public class DocumentParser extends Parser {
 
-    public DocumentParser(final DTD a0) {
-        super(a0);
-        throw new UnsupportedOperationException("Not implemented");
+    private static final HTML.Attribute HTTP_EQUIV = 
+        HTML.getAttributeKey("http-equiv");
+
+    private static final String CONTENT_TYPE = "content-type";
+    
+    private static final HTML.Attribute CONTENT = 
+        HTML.getAttributeKey("content");
+    
+    private static final String CHARSET = "charset";
+    
+    private HTMLEditorKit.ParserCallback callback;
+
+    private boolean ignoreCharSet;
+
+    public DocumentParser(final DTD dtd) {
+        super(dtd);
     }
 
-
-    protected void handleError(final int a0, final String a1) {
-        throw new UnsupportedOperationException("Not implemented");
-
+    protected void handleError(final int ln, final String errorMsg) {
+        callback.handleError(errorMsg, ln);
     }
 
-
-    protected void handleText(final char[] a0) {
-        throw new UnsupportedOperationException("Not implemented");
-
+    protected void handleText(final char[] data) {
+        callback.handleText(data, getCurrentPos());
     }
 
-
-    protected void handleEndTag(final TagElement a0) {
-        throw new UnsupportedOperationException("Not implemented");
+    protected void handleEndTag(final TagElement tag) {
+        callback.handleEndTag(tag.getHTMLTag(), getCurrentPos());
     }
 
+    protected void handleEmptyTag(final TagElement tag)
+            throws ChangedCharSetException {
+        if (!ignoreCharSet && (tag.getHTMLTag() == HTML.Tag.META)) {
+            String httpEquivValue = (String) getAttributes().getAttribute(HTTP_EQUIV);
+            String contentValue = (String) getAttributes().getAttribute(CONTENT);
 
-    protected void handleEmptyTag(final TagElement a0) throws ChangedCharSetException {
-        throw new UnsupportedOperationException("Not implemented");
-
+            if (httpEquivValue != null && contentValue != null &&
+                    httpEquivValue.equalsIgnoreCase(CONTENT_TYPE) &&
+                    contentValue.toLowerCase().contains(CHARSET)) {
+                // notice that always here ignoreCharSet will be false 
+                throw new ChangedCharSetException(contentValue, ignoreCharSet); 
+            }
+        }
+        callback.handleSimpleTag(
+                tag.getHTMLTag(), getAttributes(), getCurrentPos());
     }
 
-
-    protected void handleComment(final char[] a0) {
-        throw new UnsupportedOperationException("Not implemented");
-
+    protected void handleComment(final char[] text) {
+        callback.handleComment(text, getCurrentPos());
     }
 
-
-    protected void handleStartTag(final TagElement a0) {
-        throw new UnsupportedOperationException("Not implemented");
-
+    protected void handleStartTag(final TagElement tag) {
+        callback.handleStartTag(
+                tag.getHTMLTag(), getAttributes(), getCurrentPos());
     }
+    
+    
 
+    public void parse(final Reader in,
+            final HTMLEditorKit.ParserCallback callback,
+            final boolean ignoreCharSet) throws IOException {
+        /*
+         * TODO
+         * when the Reader in is null handle implied methods are invoked
+         * and the handleError report a nullPointerException 
+         * 
+         * Should be handled in Parser class without calling cup class ?  
+         */
 
-    public void parse(final Reader a0, final HTMLEditorKit.ParserCallback a1, final boolean a2) throws IOException {
-        throw new UnsupportedOperationException("Not implemented");
+        this.callback = callback;
+        this.ignoreCharSet = ignoreCharSet;
+        super.parse(in);
 
+        callback.handleEndOfLineString(super.getEOLString());    
+
+        // a close invocation flush the remaining bytes
+        in.close();  
     }
-
 }
-

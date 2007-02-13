@@ -16,13 +16,12 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.11 $
  */
 package javax.swing.text.html.parser;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.BitSet;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -53,12 +52,13 @@ public class DTD implements DTDConstants {
 
     private static final String pattern = "(\\|)+";
 
+    private boolean readDTD;
+    
     /**
      * Created DTD will not be pushed to DTD hash.
      * @throws IllegalArgumentException if name equals to null
      */
     public static DTD getDTD(final String name) throws IOException {
-        checkName(name);
         String key = name.toLowerCase();
         Object dtd = dtdHash.get(key);
         return dtd == null ? new DTD(name.toLowerCase()) : (DTD)dtd;
@@ -70,23 +70,8 @@ public class DTD implements DTDConstants {
      */
     public static void putDTDHash(final String name,
                                   final DTD dtd) {
-        checkName(name);
-        checkValue(dtd);
         dtdHash.put(name.toLowerCase(), dtd);
     }
-
-    private static void checkName(final String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Name must be not null");
-        }
-    }
-
-    private static void checkValue(final DTD dtd) {
-        if (dtd == null) {
-            throw new IllegalArgumentException("DTD must be not null");
-        }
-    }
-
 
     protected DTD(final String name) {
         //TODO may be it need change the order
@@ -127,7 +112,9 @@ public class DTD implements DTDConstants {
 
         putElement(createDefaultElement(HTMLConstants.STYLE_ELEMENT_NAME, 11));
         putElement(createDefaultElement(HTMLConstants.LINK_ELEMENT_NAME, 12));
-        putElement(new Element(13, HTMLConstants.UNKNOWN_ELEMENT_NAME, false,
+        putElement(createDefaultElement(HTMLConstants.SCRIPT_ELEMENT_NAME, 13));
+        
+        putElement(new Element(14, HTMLConstants.UNKNOWN_ELEMENT_NAME, false,
                                true, null, null, EMPTY, null, null, null));
 
         entityHash.put(HTMLConstants.SPACE_ENTITY_NAME,
@@ -146,7 +133,6 @@ public class DTD implements DTDConstants {
         elementHash.put(element.getName(), element);
     }
 
-
     private Element createDefaultElement(final String name,
                                          final int index) {
         return new Element(index, name, false, false, null, null,
@@ -159,21 +145,16 @@ public class DTD implements DTDConstants {
     }
 
     public void read(final DataInputStream stream) throws IOException {
-        ObjectInputStream is = new ObjectInputStream(stream);
-        try {
-            elementHash = (Hashtable<String, Element>)is.readObject();
-            elements = (Vector<Element>)is.readObject();
-            int size = is.readInt();
-            for (int i = 0; i < size; i ++) {
-                String name = (String)is.readObject();
-                int data = is.readInt();
-                DTDUtilities.handleEntity(this, name, data);
-            }
-            is.close();
-            updateFields();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        // converts from DataInputStream into a byte array
+        byte[] enc = new byte[stream.available()];
+        stream.read(enc);
+
+        // decode the byte array
+        Asn1Dtd asn1 = new Asn1Dtd(enc);
+        
+        // sets attributes
+        asn1.getDTD(this);
+        setReading(true);
     }
 
     public String toString() {
@@ -242,7 +223,10 @@ public class DTD implements DTDConstants {
         BitSet result = new BitSet();
         for (int i = 0; i < names.length; i++) {
             Element elem = (Element)elementHash.get(names[i]);
-            if (elem != null) {
+            if (elem == null) {
+                elem = defineElement(names[i], DTDConstants.ANY, false, false, null, null, null, null);
+            }
+            if (!names[i].equals("")) {
                 result.set(elem.getIndex());
             }
         }
@@ -253,7 +237,8 @@ public class DTD implements DTDConstants {
     protected Entity defEntity(final String name,
                                final int type,
                                final String str) {
-        return defineEntity(name, type, str == null ? null : str.toCharArray());
+//        return defineEntity(name, type, str == null ? null : str.toCharArray());
+        return defineEntity(name, type, str.toCharArray());
     }
 
     public Entity defEntity(final String name,
@@ -319,14 +304,24 @@ public class DTD implements DTDConstants {
         if (obj == null) {
             result = new Entity(name, type, data);
             entityHash.put(name, result);
+            if (readDTD) {
+                for (int i=0; i<data.length; i++) {
+                    entityHash.put(Integer.valueOf(data[i]), result);
+                }
+            }
         } else {
             result = (Entity)obj;
         }
         return result;
     }
 
+    /**
+     *
+     * @return if index < 0 or elements.size() <= index returns null.
+     */
     public Element getElement(final int index) {
-        return elements.elementAt(index);
+        // same as RI
+        return (Element) elements.elementAt(index);
     }
 
     public Element getElement(final String name) {
@@ -340,7 +335,7 @@ public class DTD implements DTDConstants {
     }
 
     public Entity getEntity(final int index) {
-        return null;
+        return entityHash.get(Integer.valueOf(index));
     }
 
     public Entity getEntity(final String name) {
@@ -350,29 +345,12 @@ public class DTD implements DTDConstants {
     public String getName() {
         return name;
     }
-
-    private void replace(final Element elem) {
-        elementHash.put(elem.name, elem);
-        int index = elem.getIndex();
-        elements.setElementAt(elem, index);
+    
+    void setReading (boolean b) {
+        readDTD = b;
     }
-
-    private void updateField(final Element elem) {
-        elem.updateElement(getElement(elem.getName()));
-        replace(elem);
-    }
-
-    private void updateFields() {
-        updateField(pcdata);
-        updateField(html);
-        updateField(meta);
-        updateField(base);
-        updateField(isindex);
-        updateField(head);
-        updateField(body);
-        updateField(applet);
-        updateField(param);
-        updateField(p);
-        updateField(title);
+    
+    boolean isRead () {
+        return readDTD;
     }
 }

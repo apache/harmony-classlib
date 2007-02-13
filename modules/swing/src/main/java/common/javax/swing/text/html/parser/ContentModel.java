@@ -16,11 +16,14 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.27 $
  */
 package javax.swing.text.html.parser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -512,4 +515,93 @@ public final class ContentModel implements Serializable {
             throw new ClassCastException (content.getClass().getName());
         }
     }
+    
+    
+    /**
+     * Determines the sequence of {@link Element} needed to be implied to
+     * insert an {@link Element}.
+     * 
+     * @param e
+     *            the {@link Element} found in the document are for which the
+     *            implication is needed.
+     * @param parsed
+     *            the {@link ArrayList} of {@link Element}s found previosly to
+     *            the {@link Element} e.
+     * @param many
+     *            a value specifyng whether the given {@link Element} may appear
+     *            more than once in the {@link ContentModel}
+     * @param depth
+     *            the depth level been searched in the {@link ContentModel}
+     * @param path
+     *            a possible path of implied {@link Element}s that may leed to
+     *            the {@link Element} e.
+     * @return 
+     *          <ol>
+     *          <li> null, if an implication path to the element e could not be found.
+     *          <li> an empty {@link List} if the element may be inserted
+     *               in the actual position, with no implication of other elements needed.
+     *          <li> a non empty {@link List} if some {@link Element}s need to be implied.
+     *               In such case, the {@link List} is formed by a pair. The first
+     *               component defines the {@link Element} needed to be implied. The
+     *               second component defines if the {@link Element} must be opened and
+     *               closed (if true) or just opened (false). 
+     *          </ol>
+     */
+    List<Pair<Element,Boolean>> implication(
+            final Element e,
+            final List<Element> parsed,
+            final boolean many,
+            final int depth,
+            final LinkedList<Pair<Element, Boolean>> path) {
+        
+        ContentModel auxModel;
+        List <Pair<Element,Boolean>> implied = null;
+
+        if (content instanceof Element) {
+            Element currentElement =(Element)content;
+            if (e.equals(currentElement) && (!parsed.contains(e) || many)) {
+                implied = new LinkedList<Pair<Element,Boolean>>(path);
+            } else if (currentElement.inclusions != null
+                        && e.getIndex() > 0
+                        && currentElement.inclusions.get(e.getIndex())) {
+                implied = new LinkedList<Pair<Element,Boolean>>(path);
+                implied.add(new Pair<Element,Boolean>(currentElement, Boolean.FALSE));
+            } else if (depth > 1
+                    && !currentElement.hasRequiredAttributes()
+                    && !currentElement.isEmpty()
+                    && !currentElement.isScript()
+                    && !parsed.contains(currentElement)
+                    && currentElement.getContent() != null) {
+                LinkedList<Pair<Element, Boolean>> newPath = (LinkedList)path.clone();
+                newPath.add(new Pair<Element, Boolean>(currentElement, new Boolean(false)));
+                implied = currentElement.getContent().implication(e, parsed, many, depth-1, newPath);
+            }
+        } else if (type == STAR_TYPE || type == PLUS_TYPE) {
+            if (content != null) {
+                implied = ((ContentModel)content).implication(e, parsed, true, depth, path);
+            }
+        } else if (type == COMMA_TYPE) {
+            auxModel = (ContentModel) content;
+            while (auxModel != null && implied == null) {
+                implied = auxModel.implication(e, parsed, many, depth, path);                   
+                if (implied == null && !auxModel.empty()) {
+                    path.add(new Pair<Element, Boolean>(auxModel.first(),
+                            new Boolean(true)));
+                }
+                auxModel = auxModel.next;
+            }
+        } else if (type == LINE_TYPE || type == AMPER_TYPE) {
+            auxModel = (ContentModel) content;
+            while (auxModel != null && implied == null) {
+                implied = auxModel.implication(e, parsed, many, depth, path);
+                auxModel = auxModel.next;
+            }
+        } else {
+            if (content != null) {
+                implied = ((ContentModel)content).implication(e, parsed, many, depth, path);
+            }
+        }
+
+        return implied;
+    }      
 }

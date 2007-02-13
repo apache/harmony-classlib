@@ -16,7 +16,7 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.8 $
  */
 package javax.swing.text.html.parser;
 
@@ -29,19 +29,20 @@ public final class AttributeList implements DTDConstants, Serializable {
 
     public int type;
 
-    public Vector<?> values;
+    public Vector values;
 
     public int modifier;
 
     public String value;
 
     public AttributeList next;
+    
     //TODO It need check type FIXED, IMPLIED, REQUIRED?
     public AttributeList(final String name,
                          final int type,
                          final int modifier,
                          final String value,
-                         final Vector<?> values,
+                         final Vector values,
                          final AttributeList next) {
         this.name = name;
         this.type = type;
@@ -53,7 +54,7 @@ public final class AttributeList implements DTDConstants, Serializable {
 
     public static String type2name(final int type) {
         init();
-        return type < names.length ? names[type] : null;
+        return type >= 0 && type < names.length ? names[type] : null;
     }
 
     public static int name2type(final String name) {
@@ -131,7 +132,7 @@ public final class AttributeList implements DTDConstants, Serializable {
         return value;
     }
 
-    public Enumeration<?> getValues() {
+    public Enumeration getValues() {
         // avoids a NullPointerException if values is null (same as RI)
         return values == null ? null : values.elements();
     }

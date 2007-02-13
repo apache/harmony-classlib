@@ -16,12 +16,19 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.6 $
  */
 package javax.swing.text.html.parser;
 
 import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTML.Tag;
 
+/**
+ * @author Diego Raúl Mercado
+ * @author Alejandro Sánchez
+ * @author Alejandro Barturen
+ * @version $Revision: 1.6 $
+ */
 public class TagElement {
     private HTML.Tag tag;
     private Element element;
@@ -31,9 +38,19 @@ public class TagElement {
                       final boolean fictional) {
         this.element = element;
         isFictional = fictional;
-        tag = HTML.getTag(element.name.toLowerCase());
-        if (tag == null) {
-            tag = new HTML.UnknownTag(element.name.toLowerCase());
+        
+        // HTML.getTag() creates an element if it is not defined in 
+        // HTML.getAllTags(). Because of this we have to look up at Tag[] array 
+        Tag[] tags = HTML.getAllTags();
+        boolean found = false;
+        for (int i = 0; i < tags.length; i++) {
+            if (tags[i].toString().equals(element.name)) {
+                tag = HTML.getTag(element.name);
+                found = true;
+            }
+        }
+        if (!found) {
+            tag = new HTML.UnknownTag(element.name);
         }
     }
 

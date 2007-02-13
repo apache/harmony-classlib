@@ -16,7 +16,7 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.5 $
  */
 package javax.swing.text.html.parser;
 

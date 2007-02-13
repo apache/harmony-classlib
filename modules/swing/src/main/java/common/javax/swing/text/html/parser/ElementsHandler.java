@@ -14,9 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.4 $
  */
 package javax.swing.text.html.parser;
 import java.util.Hashtable;
@@ -36,7 +37,7 @@ class ElementsHandler {
     static void handleElement(final String name,
                               final String desc) {
         DTDUtilities.handleElement(dtd, name, desc, atts);
-    }
+    }    
     static void initElementsCreation(final Object dtd) {
         ElementsHandler.dtd = dtd;
         handleAllElements();

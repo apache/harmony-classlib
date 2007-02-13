@@ -16,12 +16,16 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
+ * @version $Revision: 1.11 $
  */
 package javax.swing.text.html.parser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
+
+import javax.swing.text.html.HTML;
 
 public final class Element implements DTDConstants, Serializable {
     public int index;
@@ -43,6 +47,8 @@ public final class Element implements DTDConstants, Serializable {
     public AttributeList atts;
 
     public Object data;
+    
+    private final String SCRIPT_TAG_NAME = "script";
 
     Element(final int index,
             final String name,
@@ -86,9 +92,6 @@ public final class Element implements DTDConstants, Serializable {
 
     public AttributeList getAttributeByValue(final String value) {
         AttributeList currentAtts = this.atts;
-        if (value == null) {
-            return null;
-        }
         while (currentAtts != null) {
             if (currentAtts.containsValue(value)) {
                 return currentAtts;
@@ -100,11 +103,10 @@ public final class Element implements DTDConstants, Serializable {
 
     public AttributeList getAttribute(final String name) {
         AttributeList currentAtts = this.atts;
-        if (name == null) {
-            return null;
-        }
         while (currentAtts != null) {
-            if (name.equals(currentAtts.getName())) {
+            // we change the order of the comparision to force a 
+            // NullPointerException if currentAtts.getName() is null (same as RI)
+            if (currentAtts.getName().equals(name)) {
                 return currentAtts;
             }
             currentAtts = currentAtts.next;
@@ -113,7 +115,7 @@ public final class Element implements DTDConstants, Serializable {
     }
 
     public String toString() {
-        return name;
+        return name; // (same as RI)
     }
 
     public boolean isEmpty() {
@@ -171,18 +173,41 @@ public final class Element implements DTDConstants, Serializable {
         this.atts = atts;
         this.data = data;
     }
-
-    final void updateElement(final Element element) {
-        this.index = element.index;
-        this.name = element.name;
-        this.oStart = element.oStart;
-        this.oEnd = element.oEnd;
-        this.inclusions = element.inclusions;
-        this.exclusions = element.exclusions;
-        this.type = element.type;
-        this.content = element.content;
-        this.atts = element.atts;
-        this.data = element.data;
+    
+    /**
+     * Returns a list of required attributes for the {@link Element}.
+     * 
+     * @return a {@link List} with all the required attributes for the
+     *            {@link Element}.
+     */
+    final List<Object> getRequiredAttributes() {            
+        List<Object> reqAtts = new ArrayList<Object>();
+        AttributeList attList = atts;
+        while (attList != null) {
+            if (attList.getModifier() == DTDConstants.REQUIRED) {
+                Object attr = HTML.getAttributeKey(attList.getName());
+                reqAtts.add(attr == null ? attList.getName() : attr);
+            }
+            attList = attList.getNext();
+        }
+        return reqAtts;
+    }
+    
+    final boolean hasRequiredAttributes() {
+        boolean flag = false;
+        AttributeList attList = atts;
+        while (attList != null) {
+            if (attList.getModifier() == DTDConstants.REQUIRED) {
+                flag = true;
+                break;
+            }
+            attList = attList.getNext();
+        }
+        return flag;
+    }
+    
+    final boolean isScript() {
+        return name.equalsIgnoreCase(SCRIPT_TAG_NAME);
     }
 }
 
