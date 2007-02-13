@@ -148,11 +148,11 @@ public abstract class Policy {
         }
 
         // TODO accurate classloading
-        return (Policy) AccessController.doPrivileged(new PrivilegedAction() {
+        return AccessController.doPrivileged(new PrivilegedAction<Policy>() {
 
-            public Object run() {
+            public Policy run() {
                 try {
-                    return Class.forName(defaultClass, true,
+                    return (Policy) Class.forName(defaultClass, true,
                             ClassLoader.getSystemClassLoader()).newInstance();
                 }
                 catch (Exception e) {
