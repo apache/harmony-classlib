@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 public class ClassLoaderTest extends TestCase {
 
+    public static volatile int flag;
+
     /**
      * Tests that Classloader.defineClass() assigns appropriate 
      * default domains to the defined classes.
@@ -92,8 +94,10 @@ public class ClassLoaderTest extends TestCase {
 
         protected Class findClass(String name) throws ClassNotFoundException {
             try {
-                synchronized (lock) {
-                    lock.wait();
+                while (flag != 2) {
+                    synchronized (lock) {
+                        lock.wait();
+                    }
                 }
             } catch (InterruptedException ie) {}
 
@@ -137,6 +141,7 @@ public class ClassLoaderTest extends TestCase {
         SyncTestClassLoader cl = new SyncTestClassLoader(lock);
         SyncLoadTestThread tt1 = new SyncLoadTestThread(cl);
         SyncLoadTestThread tt2 = new SyncLoadTestThread(cl);
+        flag = 1;
         tt1.start();
         tt2.start();
 
@@ -144,6 +149,7 @@ public class ClassLoaderTest extends TestCase {
             Thread.sleep(100);
         }
 
+        flag = 2;
         synchronized (lock) {
             lock.notifyAll();
         }
