@@ -14,12 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton Avtamonov
- * @version $Revision$
- */
-
 package javax.swing.plaf.basic;
 
 import java.awt.Component;
@@ -67,7 +61,6 @@ import javax.swing.text.Position;
 
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
-
 
 public class BasicListUI extends ListUI {
     protected int cellHeight = -1;
@@ -276,6 +269,7 @@ public class BasicListUI extends ListUI {
     }
 
     private class ComponentReshapeHandler extends ComponentAdapter {
+        @Override
         public void componentResized(final ComponentEvent e) {
             if (layouter.getLayoutStrategy().isSizeDependent()) {
                 layouter.reset();
@@ -287,11 +281,17 @@ public class BasicListUI extends ListUI {
     private class KeyHandler extends KeyAdapter {
         private StringBuffer searchPrefix = new StringBuffer();
         private Timer searchTimer = new Timer(1000, new AbstractAction() {
+            /**
+             * This class is not guaranteed to be correctly deserialized.
+             */
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(final ActionEvent e) {
                 resetSearch();
             }
         });
 
+        @Override
         public void keyTyped(final KeyEvent e) {
             if (list.getModel().getSize() == 0) {
                 return;
@@ -343,12 +343,19 @@ public class BasicListUI extends ListUI {
 
 
     private class ListTransferHandler extends TransferHandler {
+        /**
+         * This class is not guaranteed to be correctly deserialized.
+         */
+        private static final long serialVersionUID = -3865101058747175640L;
+
         private final String lineSeparator = System.getProperty("line.separator");
 
+        @Override
         public int getSourceActions(final JComponent c) {
             return COPY;
         }
 
+        @Override
         protected Transferable createTransferable(final JComponent c) {
             Object[] selectedValues = list.getSelectedValues();
             if (selectedValues == null || selectedValues.length == 0) {
@@ -372,6 +379,7 @@ public class BasicListUI extends ListUI {
         return new BasicListUI();
     }
 
+    @Override
     public Rectangle getCellBounds(final JList list, final int index1, final int index2) {
         layouter.setList(list);
         maybeUpdateLayoutState();
@@ -404,14 +412,17 @@ public class BasicListUI extends ListUI {
         return result;
     }
 
+    @Override
     public Dimension getMaximumSize(final JComponent c) {
         return getPreferredSize(c);
     }
 
+    @Override
     public Dimension getMinimumSize(final JComponent c) {
         return getPreferredSize(c);
     }
 
+    @Override
     public Dimension getPreferredSize(final JComponent c) {
         JList list = (JList)c;
         maybeUpdateLayoutState();
@@ -420,6 +431,7 @@ public class BasicListUI extends ListUI {
         return layouter.getLayoutStrategy().getSize();
     }
 
+    @Override
     public Point indexToLocation(final JList list, final int index) {
         if (index < 0 || index >= list.getModel().getSize()) {
             return null;
@@ -432,6 +444,7 @@ public class BasicListUI extends ListUI {
         return new Point(bounds.x, bounds.y);
     }
 
+    @Override
     public int locationToIndex(final JList list, final Point location) {
         if (location == null) {
             throw new NullPointerException();
@@ -443,6 +456,7 @@ public class BasicListUI extends ListUI {
         return layouter.getNearestIndex(location);
     }
 
+    @Override
     public void paint(final Graphics g, final JComponent c) {
         maybeUpdateLayoutState();
 
@@ -463,6 +477,7 @@ public class BasicListUI extends ListUI {
     }
 
 
+    @Override
     public void installUI(final JComponent c) {
         list = (JList)c;
         rendererPane = new CellRendererPane();
@@ -475,6 +490,7 @@ public class BasicListUI extends ListUI {
         installKeyboardActions();
     }
 
+    @Override
     public void uninstallUI(final JComponent c) {
         list = (JList)c;
         list.remove(rendererPane);
@@ -731,6 +747,7 @@ public class BasicListUI extends ListUI {
                 }
             }
 
+            @Override
             public Rectangle getBounds(final int index) {
                 int y = 0;
                 int height = cellHeight;
@@ -758,14 +775,17 @@ public class BasicListUI extends ListUI {
                 return row;
             }
 
+            @Override
             public int getRowCount() {
                 return list.getModel().getSize();
             }
 
+            @Override
             public int getColumnCount() {
                 return getNumberOfElements() > 0 ? 1 : 0;
             }
 
+            @Override
             public Dimension getSize() {
                 int height = 0;
                 if (cellHeight == -1) {
@@ -780,6 +800,7 @@ public class BasicListUI extends ListUI {
                 return Utilities.addInsets(result, list.getInsets(cachedInsets));
             }
 
+            @Override
             public boolean isSizeDependent() {
                 return false;
             }
@@ -798,10 +819,12 @@ public class BasicListUI extends ListUI {
                 return index / getRowCount();
             }
 
+            @Override
             public int getRowCount() {
                 return list.getVisibleRowCount();
             }
 
+            @Override
             public int getColumnCount() {
                 int modelSize = list.getModel().getSize();
                 return (modelSize == 0 ? 0 : modelSize - 1) / getRowCount() + 1;
@@ -830,10 +853,12 @@ public class BasicListUI extends ListUI {
                 return index / getRowCount();
             }
 
+            @Override
             public int getRowCount() {
                 return maximumNumOfRows;
             }
 
+            @Override
             public int getColumnCount() {
                 int modelSize = list.getModel().getSize();
                 return (modelSize == 0 ? 0 : modelSize - 1) / getRowCount() + 1;
@@ -853,10 +878,12 @@ public class BasicListUI extends ListUI {
                 return index % getColumnCount();
             }
 
+            @Override
             public int getRowCount() {
                 return list.getVisibleRowCount();
             }
 
+            @Override
             public int getColumnCount() {
                 int modelSize = list.getModel().getSize();
                 return (modelSize == 0 ? 0 : modelSize - 1) / getRowCount() + 1;
@@ -885,11 +912,13 @@ public class BasicListUI extends ListUI {
                 return index % getColumnCount();
             }
 
+            @Override
             public int getRowCount() {
                 int modelSize = list.getModel().getSize();
                 return (modelSize == 0 ? 0 : modelSize - 1) / getColumnCount() + 1;
             }
 
+            @Override
             public int getColumnCount() {
                 return maximumNumOfColumns;
             }
@@ -940,6 +969,7 @@ public class BasicListUI extends ListUI {
                 super(strategy);
             }
 
+            @Override
             public Rectangle getBounds(final int index) {
                 Rectangle bounds = strategy.getBounds(index);
                 int x = list.getWidth() - bounds.x - bounds.width;
