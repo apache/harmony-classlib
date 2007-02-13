@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleIcon;
 
 public class ImageIconTest extends SwingTestCase {
     private static final String FILE_NAME_1 = "images/Error.gif";
@@ -403,5 +404,28 @@ public class ImageIconTest extends SwingTestCase {
         MyImageIcon myIcon = new MyImageIcon();
         assertNotNull(myIcon.getTracker());
         assertNotNull(myIcon.getComponent());
+    }
+    
+    public void testAccessibleImageIcon() {
+        int width = 111;
+        int height = 235;
+        icon = new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
+        
+        AccessibleContext ac = icon.getAccessibleContext();
+        AccessibleIcon ai = (AccessibleIcon)ac;
+
+        assertEquals(ac.getAccessibleChildrenCount(), 0);
+        assertNull(ac.getAccessibleChild(0));
+        assertNull(ac.getAccessibleChild(10));
+        assertNull(ac.getAccessibleChild(-1));
+
+        assertNull(ac.getAccessibleParent());
+        
+        ac.setAccessibleParent(new ImageIcon());
+        assertNull(ac.getAccessibleParent());
+        assertNull(ac.getAccessibleStateSet());
+
+        assertEquals("width", width, ai.getAccessibleIconWidth());
+        assertEquals("height", height, ai.getAccessibleIconHeight());
     }
 }

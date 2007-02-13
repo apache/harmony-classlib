@@ -48,24 +48,31 @@ import org.apache.harmony.luni.util.NotImplementedException;
 public class ImageIcon implements Icon, Serializable, Accessible {
     private static final long serialVersionUID = -6101950798829449111L;
 
-    // TODO: implement
     protected class AccessibleImageIcon extends AccessibleContext implements AccessibleIcon,
             Serializable {
         private static final long serialVersionUID = -860693743697825660L;
-
-        @Override
-        public Accessible getAccessibleChild(int i) throws NotImplementedException {
-            throw new NotImplementedException();
+        
+        protected AccessibleImageIcon() {
         }
 
         @Override
-        public int getAccessibleChildrenCount() throws NotImplementedException {
-            throw new NotImplementedException();
+        public Accessible getAccessibleChild(int i) {
+            return null;
         }
 
         @Override
-        public int getAccessibleIndexInParent() throws NotImplementedException {
-            throw new NotImplementedException();
+        public int getAccessibleChildrenCount() {
+            return 0;
+        }
+        
+        @Override
+        public Accessible getAccessibleParent() {
+            return null;
+        }
+
+        @Override
+        public int getAccessibleIndexInParent() {
+            return -1;
         }
 
         @Override
@@ -74,31 +81,29 @@ public class ImageIcon implements Icon, Serializable, Accessible {
         }
 
         @Override
-        public AccessibleStateSet getAccessibleStateSet() throws NotImplementedException {
-            throw new NotImplementedException();
+        public AccessibleStateSet getAccessibleStateSet() {
+            return null;
         }
 
         @Override
-        public Locale getLocale() throws IllegalComponentStateException,
-                NotImplementedException {
-            throw new NotImplementedException();
+        public Locale getLocale() throws IllegalComponentStateException {
+            return null;
         }
 
-        public void setAccessibleIconDescription(String description)
-                throws NotImplementedException {
-            throw new NotImplementedException();
+        public void setAccessibleIconDescription(String description) {
+            setDescription(description);
         }
 
-        public String getAccessibleIconDescription() throws NotImplementedException {
-            throw new NotImplementedException();
+        public String getAccessibleIconDescription() {
+            return getDescription();
         }
 
-        public int getAccessibleIconWidth() throws NotImplementedException {
-            throw new NotImplementedException();
+        public int getAccessibleIconWidth() {
+            return getIconWidth();
         }
 
-        public int getAccessibleIconHeight() throws NotImplementedException {
-            throw new NotImplementedException();
+        public int getAccessibleIconHeight() {
+            return getIconHeight();
         }
     }
 
