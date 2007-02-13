@@ -57,6 +57,7 @@ public class AbstractUndoableEdit implements UndoableEdit, Serializable {
      *  Object obj = new AbstractUndoableEdit() {};
      *  System.out.println(obj.toString());
      */
+    @Override
     public String toString() {
         return super.toString() + " alive: " + alive
            +  " hasBeenDone: " + hasBeenDone;
