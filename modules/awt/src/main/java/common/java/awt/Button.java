@@ -186,6 +186,11 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
+    boolean hasDefaultFont() {
+        return true;
+    }
+
     public String getLabel() {
         toolkit.lockAWT();
         try {
