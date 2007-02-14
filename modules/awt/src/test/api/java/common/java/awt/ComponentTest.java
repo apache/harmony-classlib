@@ -338,6 +338,37 @@ public class ComponentTest extends TestCase {
         assertTrue(tc.areFocusTraversalKeysSet(id));
 
     }
+    
+    public void testGetFont() {
+        // Regression for HARMONY-1605
+        final Font defaultFont = new Font("Dialog", Font.PLAIN, 12); //$NON-NLS-1$
+        final Window w = new Window(new Frame());
+        final Component c = tc;
+        final Button b = new Button();
+
+        assertNull(w.getFont());
+        assertNull(c.getFont());
+        w.add(c);
+        assertNull(c.getFont());
+        w.setVisible(true);
+        assertEquals(defaultFont, w.getFont());
+        assertEquals(defaultFont, c.getFont());
+
+        assertNull(b.getFont());
+        b.setVisible(true);
+        assertNull(b.getFont());
+        b.setVisible(false);
+        b.setVisible(true);
+        assertNull(b.getFont());
+        new Frame().add(b);
+        assertNull(b.getFont());
+        w.add(b);
+        assertEquals(defaultFont, b.getFont());
+
+        w.setVisible(false);
+        w.dispose();
+        // End of regression for HARMONY-1605
+    }
 
     private void createRobot() {
         try {

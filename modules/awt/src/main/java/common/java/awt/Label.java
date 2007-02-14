@@ -273,11 +273,6 @@ public class Label extends Component implements Accessible {
     }
 
     @Override
-    boolean hasDefaultFont() {
-        return true;
-    }
-
-    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTLabel();
     }

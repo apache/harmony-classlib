@@ -539,6 +539,11 @@ public class Window extends Container implements Accessible {
             } else {
                 disposed = false;
             }
+            
+            if (getFont() == null) {
+                setFont(Font.DEFAULT_FONT);
+            }
+            
             super.show();
             toFront();
             if (!opened) {
