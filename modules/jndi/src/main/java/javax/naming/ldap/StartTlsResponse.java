@@ -14,69 +14,72 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  */ 
+
 package javax.naming.ldap;
 
-import javax.naming.ldap.Control;
+import java.io.IOException;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * 
  * @ar.org.fitc.spec_ref
+ * 
  * @version 0.0.1
+ * 
  * @author Osvaldo C. Demo
+ * 
  */
-public class BasicControl implements Control {
+public abstract class StartTlsResponse implements ExtendedResponse {
 
-    private static final long serialVersionUID = -4233907508771791687L;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    protected String id;
+    public static final String OID = "1.3.6.1.4.1.1466.20037";
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    protected boolean criticality = false;
+    protected StartTlsResponse() {
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    protected byte[] value;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public BasicControl(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public BasicControl(String id, boolean criticality, byte[] value) {
-        this.id = id;
-        this.criticality = criticality;
-        this.value = value;
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public byte[] getEncodedValue() {
-        return value;
+        return null;
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public boolean isCritical() {
-        return criticality;
-    }
+    public abstract SSLSession negotiate() throws IOException;
+
+    /**
+     * @ar.org.fitc.spec_ref
+     */
+    public abstract SSLSession negotiate(SSLSocketFactory factory)
+            throws IOException;
+
+    /**
+     * @ar.org.fitc.spec_ref
+     */
+    public abstract void setEnabledCipherSuites(String[] suites);
+
+    /**
+     * @ar.org.fitc.spec_ref
+     */
+    public abstract void setHostnameVerifier(HostnameVerifier verifier);
+
+    /**
+     * @ar.org.fitc.spec_ref
+     */
+    public abstract void close() throws IOException;
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public String getID() {
-        return id;
+        return OID;
     }
 }

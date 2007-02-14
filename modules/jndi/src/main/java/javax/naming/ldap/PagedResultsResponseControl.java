@@ -14,69 +14,58 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  */ 
+
 package javax.naming.ldap;
 
-import javax.naming.ldap.Control;
+import java.io.IOException;
+
+import org.apache.harmony.jndi.internal.PagedResultSearchControlValue;
 
 /**
  * 
  * @ar.org.fitc.spec_ref
+ * 
  * @version 0.0.1
  * @author Osvaldo C. Demo
+ * 
  */
-public class BasicControl implements Control {
+public final class PagedResultsResponseControl extends BasicControl {
 
-    private static final long serialVersionUID = -4233907508771791687L;
+    private PagedResultSearchControlValue pgscv;
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    protected String id;
+    private static final long serialVersionUID = -8819778744844514666L;
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    protected boolean criticality = false;
+    public static final String OID = "1.2.840.113556.1.4.319";
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    protected byte[] value;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public BasicControl(String id) {
-        this.id = id;
+    public PagedResultsResponseControl(String id, boolean criticality,
+            byte[] value) throws IOException {
+        super(id, criticality, value);
+        this.pgscv = (PagedResultSearchControlValue) PagedResultsControl.ASN1_ENCODER
+                .decode(value);
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public BasicControl(String id, boolean criticality, byte[] value) {
-        this.id = id;
-        this.criticality = criticality;
-        this.value = value;
+    public byte[] getCookie() {
+        if (pgscv.getCookie().length == 0) {
+            return null;
+        } else {
+            return pgscv.getCookie();
+        }
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public byte[] getEncodedValue() {
-        return value;
+    public int getResultSize() {
+        return pgscv.getSize();
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public boolean isCritical() {
-        return criticality;
-    }
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public String getID() {
-        return id;
-    }
 }

@@ -47,19 +47,21 @@ import org.apache.harmony.security.x501.AttributeValue;
 public class DNParser {
 
     // length of distinguished name string
-    private final int length;
+    protected final int length;
+
+    protected int pos, beg, end;
 
     // tmp vars to store positions of the currently parsed item
-    private int pos, beg, end, cur;
+    protected int cur;
 
     // distinguished name chars
-    private char[] chars;
+    protected char[] chars;
 
     // raw string contains '"' or '\'
-    private boolean hasQE;
+    protected boolean hasQE;
 
     // DER encoding of currently parsed item
-    private byte[] encoded;
+    protected byte[] encoded;
 
     /**
      * Constructs DN parser
@@ -72,7 +74,7 @@ public class DNParser {
     }
 
     // gets next attribute type: (ALPHA 1*keychar) / oid
-    private String nextAT() throws IOException {
+    protected String nextAT() throws IOException {
 
         hasQE = false; // reset
 
@@ -135,7 +137,7 @@ public class DNParser {
     }
 
     // gets quoted attribute value: QUOTATION *( quotechar / pair ) QUOTATION 
-    private String quotedAV() throws IOException {
+    protected String quotedAV() throws IOException {
 
         pos++;
         beg = pos;
@@ -224,7 +226,7 @@ public class DNParser {
     }
 
     // gets string attribute value: *( stringchar / pair )
-    private String escapedAV() throws IOException {
+    protected String escapedAV() throws IOException {
 
         beg = pos;
         end = pos;
@@ -302,7 +304,7 @@ public class DNParser {
 
     // decodes UTF-8 char
     // see http://www.unicode.org for UTF-8 bit distribution table
-    private char getUTF8() throws IOException {
+    protected char getUTF8() throws IOException {
 
         int res = getByte(pos);
         pos++; //FIXME tmp
@@ -351,7 +353,7 @@ public class DNParser {
     // According to BNF syntax:
     // hexchar    = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
     //                    / "a" / "b" / "c" / "d" / "e" / "f"
-    private int getByte(int position) throws IOException {
+    protected int getByte(int position) throws IOException {
 
         if ((position + 1) >= length) {
             // to avoid ArrayIndexOutOfBoundsException

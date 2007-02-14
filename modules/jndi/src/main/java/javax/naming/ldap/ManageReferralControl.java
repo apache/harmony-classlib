@@ -14,69 +14,37 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  */ 
-package javax.naming.ldap;
 
-import javax.naming.ldap.Control;
+package javax.naming.ldap;
 
 /**
  * 
  * @ar.org.fitc.spec_ref
+ * 
  * @version 0.0.1
  * @author Osvaldo C. Demo
  */
-public class BasicControl implements Control {
+public final class ManageReferralControl extends BasicControl {
 
-    private static final long serialVersionUID = -4233907508771791687L;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    protected String id;
+    private static final long serialVersionUID = 3017756160149982566L;
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    protected boolean criticality = false;
+    public static final String OID = "2.16.840.1.113730.3.4.2";
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    protected byte[] value;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public BasicControl(String id) {
-        this.id = id;
+    public ManageReferralControl() {
+        super(OID, Control.CRITICAL, null);
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public BasicControl(String id, boolean criticality, byte[] value) {
-        this.id = id;
-        this.criticality = criticality;
-        this.value = value;
+    public ManageReferralControl(boolean criticality) {
+        super(OID, criticality, null);
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public byte[] getEncodedValue() {
-        return value;
-    }
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public boolean isCritical() {
-        return criticality;
-    }
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public String getID() {
-        return id;
-    }
 }
