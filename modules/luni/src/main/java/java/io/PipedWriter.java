@@ -144,20 +144,21 @@ public class PipedWriter extends Writer {
      */
     @Override
     public void write(char buffer[], int offset, int count) throws IOException {
-        if (buffer == null) {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
-        }
-        // avoid int overflow
-        if (offset < 0 || offset > buffer.length || count < 0
-                || count > buffer.length - offset) {
-            throw new IndexOutOfBoundsException();
-        }
         synchronized (lock) {
             if (closed) {
                 throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
             }
             if (dest == null) {
                 throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+            }
+            if (buffer == null) {
+                throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            }
+
+            // avoid int overflow
+            if (offset < 0 || offset > buffer.length || count < 0
+                    || count > buffer.length - offset) {
+                throw new IndexOutOfBoundsException();
             }
             dest.receive(buffer, offset, count);
         }

@@ -239,6 +239,55 @@ public class PipedWriterTest extends junit.framework.TestCase {
             fail("NullPointerException expected");
         } catch (NullPointerException t) {}
     }
+
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     */
+    public void test_write$CII_notConnected() throws IOException {
+        // Regression test for Harmony-2404
+        // create not connected pipe
+        PipedWriter obj = new PipedWriter();
+
+        // char array is null
+        try {
+            obj.write((char[]) null, 0, 1);
+            fail("IOException expected");
+        } catch (IOException ioe) {
+            // expected
+        }
+
+        // negative offset
+        try {
+            obj.write( new char[] { 1 }, -10, 1);
+            fail("IOException expected");
+        } catch (IOException ioe) {
+            // expected
+        }
+
+        // wrong offset
+        try {
+            obj.write( new char[] { 1 }, 10, 1);
+            fail("IOException expected");
+        } catch (IOException ioe) {
+            // expected
+        }
+
+        // negative length
+        try {
+            obj.write( new char[] { 1 }, 0, -10);
+            fail("IOException expected");
+        } catch (IOException ioe) {
+            // expected
+        }
+
+        // all valid params
+        try {
+            obj.write( new char[] { 1, 1 }, 0, 1);
+            fail("IOException expected");
+        } catch (IOException ioe) {
+            // expected
+        }
+    }
     
     /**
      * @tests java.io.PipedWriter#write(int)
