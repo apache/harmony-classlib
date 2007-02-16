@@ -28,16 +28,29 @@ public class SortKeyTest extends TestCase {
         assertTrue(sk.isAscending());
         assertNull(sk.getMatchingRuleID());
         
-        sk = new SortKey(null);
-        assertNull(sk.getAttributeID());
+        try {
+            sk = new SortKey(null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            //expected
+        }
+        
+        
         
         sk = new SortKey("attributeId", false, "matchingRuleId");
         assertEquals("attributeId", sk.getAttributeID());
         assertFalse(sk.isAscending());
         assertEquals("matchingRuleId", sk.getMatchingRuleID());
         
-        sk = new SortKey(null, true, null);
-        assertNull(sk.getAttributeID());
+        try {
+            sk = new SortKey(null, true, null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            //expected
+        }
+        
+        sk = new SortKey("attributeId", true, null);
+        assertEquals("attributeId", sk.getAttributeID());
         assertTrue(sk.isAscending());
         assertNull(sk.getMatchingRuleID());
     }
