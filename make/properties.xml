@@ -374,46 +374,15 @@ properties in preference to these:
        <!-- name of concatenated list, should be an absolute pathname -->
        <attribute name="result"/>
        <sequential>
-           <condition property="@{moduleName}.fname1"
-                      value="${common.exclude.file}">
-               <and>
-                   <available file="@{dir}${file.separator}${common.exclude.file}"/>
-                   <length file="@{dir}${file.separator}${common.exclude.file}"
-                           when="greater" length="0"/>
-               </and>
-           </condition>
-           <property name="@{moduleName}.fname1" value=""/>
-
-           <condition property="@{moduleName}.fname2"
-                      value="${platform.exclude.file}">
-               <and>
-                   <available file="@{dir}${file.separator}${platform.exclude.file}"/>
-                   <length file="@{dir}${file.separator}${platform.exclude.file}"
-                           when="greater" length="0"/>
-               </and>
-           </condition>
-           <property name="@{moduleName}.fname2" value=""/>
-
-           <condition property="@{moduleName}.fname3"
-                      value="${interm.exclude.file}">
-               <and>
-                   <available file="@{dir}${file.separator}${interm.exclude.file}"/>
-                   <length file="@{dir}${file.separator}${interm.exclude.file}"
-                           when="greater" length="0"/>
-               </and>
-           </condition>
-           <property name="@{moduleName}.fname3" value=""/>
-
-           <tempfile property="@{moduleName}.tmpFile" destdir="@{dir}"/>
-           <echo message="" file="${@{moduleName}.tmpFile}"/>
-           <basename file="${@{moduleName}.tmpFile}"
-                     property="@{moduleName}.tmpFileName" />
-           <concat destfile="@{result}" force="yes" fixlastline="yes" >
-               <filelist dir="@{dir}"
-                   files="${@{moduleName}.fname1} ${@{moduleName}.fname2} ${@{moduleName}.fname3} ${@{moduleName}.tmpFileName}"/>
+           <echo message="" file="@{result}"/>
+           <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
+               <fileset dir="@{dir}">
+                   <include name="${common.exclude.file}"/> 
+                   <include name="${platform.exclude.file}"/>
+                   <include name="${interm.exclude.file}"/>
+		   <size value="0" when="more"/>
+               </fileset>
            </concat>
-           <delete file="${@{moduleName}.tmpFile}" failonerror="false"
-                   quiet="true"/>
        </sequential>
    </macrodef>
 
