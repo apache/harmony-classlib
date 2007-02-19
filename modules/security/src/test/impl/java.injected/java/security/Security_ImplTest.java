@@ -22,8 +22,8 @@
 
 package java.security;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -68,7 +68,7 @@ public class Security_ImplTest extends TestCase {
     }
 
     /**
-     * java.security.Security#getProviders(String)
+     * @tests java.security.Security#getProviders(String)
      */
     public final void test_getProvidersLjava_lang_String() {
         // Regression for Harmony-3154 (non-bug difference)
@@ -80,11 +80,11 @@ public class Security_ImplTest extends TestCase {
     }
 
     /**
-     * java.security.Security#getProviders(Map)
+     * @tests java.security.Security#getProviders(Map)
      */
     public final void test_getProvidersLjava_util_Map() {
         // Regression for Harmony-3154 (non-bug difference)
-        Map m = new Properties();
+        Map<String, String> m = new HashMap<String, String>();
         m.put("AAA.BBB CCC", "");
         m.put("AAA.BBB", "");
         try {
@@ -119,6 +119,7 @@ public class Security_ImplTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("serial")
     class MyProvider extends Provider {
         MyProvider() {
             super("MyProvider", 1.0, "Provider for testing");
