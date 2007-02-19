@@ -23,6 +23,7 @@ EXENAME=../init.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)init.obj
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 

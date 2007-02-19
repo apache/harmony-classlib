@@ -23,6 +23,7 @@ EXENAME=../hytime.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)hytime.obj
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 
