@@ -18,6 +18,7 @@ package javax.swing;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleHyperlink;
 import javax.accessibility.AccessibleHypertext;
@@ -35,6 +37,7 @@ import javax.accessibility.AccessibleStateSet;
 import javax.accessibility.AccessibleText;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.ChangedCharSetException;
@@ -47,6 +50,10 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.WrappedPlainView;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+
 import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
@@ -517,65 +524,52 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void scrollToReference(final String ref) {
-        // temporarily commented-out: HTMLDocument not implemented
-        /*
          Document doc = getDocument();
-         if (ref == null || !(doc instanceof HTMLDocument)) {
-         return;
-         }
-         HTMLDocument.Iterator it = ((HTMLDocument)doc).getIterator(HTML.Tag.A);
-         int offset = 0;
-         while (it.isValid()) {
-         AttributeSet set = it.getAttributes();
-         Object name =  set.getAttribute(HTML.Attribute.NAME);
-         if (ref.equals(name)) {
-         offset = it.getStartOffset();
-         break;
-         }
-         it.next();
-         }
-         Rectangle rect = null;
-         try {
-         rect = modelToView(offset);
-         } catch (BadLocationException e) {
-         }
-         Rectangle visibleRect = getVisibleRect();
-         if (visibleRect != null) {
-         rect.height = visibleRect.height;
-         }
-         scrollRectToVisible(rect);
-         */
+        if (ref == null || !(doc instanceof HTMLDocument)) {
+            return;
+        }
+        HTMLDocument.Iterator it = ((HTMLDocument)doc).getIterator(HTML.Tag.A);
+        int offset = 0;
+        while (it.isValid()) {
+            AttributeSet set = it.getAttributes();
+            Object name = set.getAttribute(HTML.Attribute.NAME);
+            if (ref.equals(name)) {
+                offset = it.getStartOffset();
+                break;
+            }
+            it.next();
+        }
+        Rectangle rect = null;
+        try {
+            rect = modelToView(offset);
+        } catch (BadLocationException e) {
+        }
+        Rectangle visibleRect = getVisibleRect();
+        if (visibleRect != null) {
+            rect.height = visibleRect.height;
+        }
+        scrollRectToVisible(rect);
     }
 
-    /*
-     private boolean changeEditoKit(final String contentType) {
-     return !((RTF_CONTENT_TYPE.equals(contentType)
-     && editorKit instanceof RTFEditorKit)
-     || (HTML_CONTENT_TYPE.equals(contentType)
-     && editorKit instanceof HTMLEditorKit)
-     || (PLAIN_CONTENT_TYPE.equals(contentType)
-     && editorKit instanceof PlainEditorKit));
-     }
-     */
+    private boolean changeEditoKit(final String contentType) {
+        return !(/*(RTF_CONTENT_TYPE.equals(contentType) && editorKit instanceof RTFEditorKit)
+                 ||*/ (HTML_CONTENT_TYPE.equals(contentType) && editorKit instanceof HTMLEditorKit)
+                 || (PLAIN_CONTENT_TYPE.equals(contentType) && editorKit instanceof PlainEditorKit));
+    }
+
     public final void setContentType(final String type) {
         if (type == null) {
             throw new NullPointerException("Content type is null");
         }
 
-        if (type == "text/html" || type == "text/rtf") {
-            System.err
-                    .println("WARNING: HTML/RTF is not supported yet. Plain text will be shown");
-        }
-        /*
-         int index = contentTypes.indexOf(type);
-         contentType = (index >= 0) ? (String)contentTypes.get(index)
-         : PLAIN_CONTENT_TYPE;
-         if (changeEditoKit(contentType)) {
-         EditorKit kit = getEditorKitForContentType(contentType);
-         updateEditorKit((kit != null) ? kit : new PlainEditorKit());
-         updateDocument(editorKit);
-         } 
-         */
+        int index = contentTypes.indexOf(type);
+        contentType = (index >= 0) ? (String)contentTypes.get(index)
+                                  : PLAIN_CONTENT_TYPE;
+        if (changeEditoKit(contentType)) {
+            EditorKit kit = getEditorKitForContentType(contentType);
+            updateEditorKit((kit != null) ? kit : new PlainEditorKit());
+            updateDocument(editorKit);
+        } 
     }
 
     private String getContentTypeByEditorKit(final EditorKit kit) {
@@ -613,19 +607,9 @@ public class JEditorPane extends JTextComponent {
 
     public void setEditorKit(final EditorKit kit) {
         String newContentType = getContentTypeByEditorKit(kit);
-        if (newContentType == "text/html" || newContentType == "text/rtf") {
-            System.err
-                    .println("WARNING: HTML/RTF is not supported yet. Plain text will be shown");
-        } else {
-            updateEditorKit(kit);
-            updateDocument(kit);
-        }
-        /*
-         String newContentType = getContentTypeByEditorKit(kit);
-         updateEditorKit(kit);
-         updateDocument(kit);
-         contentType = newContentType;
-         */
+        updateEditorKit(kit);
+        updateDocument(kit);
+        contentType = newContentType;
     }
 
     public void setEditorKitForContentType(final String type, final EditorKit kit) {
@@ -668,78 +652,97 @@ public class JEditorPane extends JTextComponent {
         }
     }
 
+    private class AsynchLoad extends Thread {
+        InputStream inputStream;
+        boolean successfulLoading = true;
+        URL url;
+
+        public AsynchLoad(final int priority, final InputStream stream,
+                          final URL url) {
+           super();
+           setPriority(priority);
+           inputStream = stream;
+           this.url = url;
+        }
+
+        @Override
+        public void run() {
+            try {
+                documentLoading(inputStream, getDocument(), url);
+            } catch (IOException e) {
+                successfulLoading = false;
+            }
+        }
+    }
+
     public void setPage(final URL page) throws IOException {
         if (page == null) {
             throw new IOException("Page is null");
         } 
 
-        //temporarily commented-out: HTMLDocument not implemented
-        /*
-         String url = page.toString();
-         String baseUrl = getBaseURL(url);
-         Document oldDoc = getDocument();
-         if (baseUrl != null
-         && oldDoc != null
-         && baseUrl.equals(oldDoc
-         .getProperty(Document.StreamDescriptionProperty))) {
+        String url = page.toString();
+        String baseUrl = getBaseURL(url);
+        Document oldDoc = getDocument();
+        if (baseUrl != null
+            && oldDoc != null
+            && baseUrl.equals(oldDoc
+                .getProperty(Document.StreamDescriptionProperty))) {
 
-         scrollToReference(page.getRef());
-         return;
-         }
-         InputStream stream = getStream(page);
-         if (stream == null) {
-         return;
-         }
-         Document newDoc = editorKit.createDefaultDocument();
-         //Perhaps, it is reasonable only for HTMLDocument...
-         if (newDoc instanceof HTMLDocument) {
-         newDoc.putProperty(Document.StreamDescriptionProperty, baseUrl);
-         newDoc.putProperty(StringConstants.IGNORE_CHARSET_DIRECTIVE,
-         new Boolean(false));
-         try {
-         ((HTMLDocument)newDoc).setBase(new URL(baseUrl));
-         } catch (IOException e) {
-         }
-         }
-         //TODO Asynch loading doesn't work with completely.
-         //Also page property change event is written incorrectly now
-         //(at the asynchrounous loading), because loading may not be
-         //completed.
-         //int asynchronousLoadPriority  = getAsynchronousLoadPriority(newDoc);
-         int asynchronousLoadPriority = -1;
-         if (asynchronousLoadPriority >= 0) {
-         setDocument(newDoc);
-         AsynchLoad newThread = new AsynchLoad(asynchronousLoadPriority,
-         stream, page);
-         newThread.start();
-         if (newThread.successfulLoading) {
-         changePage(page);
-         }
-         } else {
-         try {
-         documentLoading(stream, newDoc, page);
-         stream.close();
-         setDocument(newDoc);
-         changePage(page);
-         } catch (IOException e) {
-         }
-         }
-         */
+            scrollToReference(page.getRef());
+            return;
+        }
+        InputStream stream = getStream(page);
+        if (stream == null) {
+            return;
+        }
+        Document newDoc = editorKit.createDefaultDocument();
+        // Perhaps, it is reasonable only for HTMLDocument...
+        if (newDoc instanceof HTMLDocument) {
+            newDoc.putProperty(Document.StreamDescriptionProperty, baseUrl);
+            newDoc.putProperty(StringConstants.IGNORE_CHARSET_DIRECTIVE,
+                               new Boolean(false));
+            try {
+                ((HTMLDocument)newDoc).setBase(new URL(baseUrl));
+            } catch (IOException e) {
+            }
+        }
+        // TODO Asynch loading doesn't work with completely.
+        // Also page property change event is written incorrectly now
+        // (at the asynchrounous loading), because loading may not be
+        // completed.
+        // int asynchronousLoadPriority = getAsynchronousLoadPriority(newDoc);
+        int asynchronousLoadPriority = -1;
+        if (asynchronousLoadPriority >= 0) {
+            setDocument(newDoc);
+            AsynchLoad newThread = new AsynchLoad(asynchronousLoadPriority,
+                                                  stream, page);
+            newThread.start();
+            if (newThread.successfulLoading) {
+                changePage(page);
+            }
+        } else {
+            try {
+                documentLoading(stream, newDoc, page);
+                stream.close();
+                setDocument(newDoc);
+                changePage(page);
+            } catch (IOException e) {
+            }
+        }
     }
 
-    //TODO uncomment when the above method is uncommented
-    //    private void changePage(final URL newPage) {
-    //        URL oldPage = currentPage;
-    //        currentPage = newPage;
-    //        firePropertyChange("page", oldPage, currentPage);
-    //    }
-    //
-    //    private int getAsynchronousLoadPriority(final Document doc) {
-    //        if (doc instanceof AbstractDocument) {
-    //            return ((AbstractDocument)doc).getAsynchronousLoadPriority();
-    //        }
-    //        return -1;
-    //    }
+    private void changePage(final URL newPage) {
+        URL oldPage = currentPage;
+        currentPage = newPage;
+        firePropertyChange("page", oldPage, currentPage);
+    }
+
+    private int getAsynchronousLoadPriority(final Document doc) {
+        if (doc instanceof AbstractDocument) {
+            return ((AbstractDocument)doc).getAsynchronousLoadPriority();
+        }
+        return -1;
+    }
 
     @Override
     public synchronized void setText(final String content) {
