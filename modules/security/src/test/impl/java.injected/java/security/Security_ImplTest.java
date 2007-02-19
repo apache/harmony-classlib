@@ -67,10 +67,11 @@ public class Security_ImplTest extends TestCase {
         }
     }
 
-    /*
-     * Class under test for Provider[] getProviders(String)
+    /**
+     * java.security.Security#getProviders(String)
      */
-    public final void testGetProvidersString() {
+    public final void test_getProvidersLjava_lang_String() {
+        // Regression for Harmony-3154 (non-bug difference)
         try {
             Security.getProviders("AAA.BBB CCC");
             fail("AAA.BBB CCC: No expected InvalidParameterException");
@@ -78,10 +79,11 @@ public class Security_ImplTest extends TestCase {
         }
     }
 
-    /*
-     * Class under test for Provider[] getProviders(Map)
+    /**
+     * java.security.Security#getProviders(Map)
      */
-    public final void testGetProvidersMap() {
+    public final void test_getProvidersLjava_util_Map() {
+        // Regression for Harmony-3154 (non-bug difference)
         Map m = new Properties();
         m.put("AAA.BBB CCC", "");
         m.put("AAA.BBB", "");
