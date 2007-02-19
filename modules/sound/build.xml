@@ -37,6 +37,8 @@
         </or>
     </fileset>
 
+    <fileset id="resources" dir="${hy.sound}/src/test/resources"/>
+
     <property name="sound.exclude.file" location="${hy.hdk}/build/sound.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
@@ -53,7 +55,10 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, copy-tests-resources, run-tests" />
+
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test" />
+    <property name="tests.resources.dir" value="${tests.hdk.dir}/resources/${hy.sound.packaging.jarname}" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar" />
@@ -116,6 +121,13 @@
         </jar>
     </target>
 
+    <target name="copy-tests-resources">
+        <mkdir dir="${tests.resources.dir}" />
+        <copy todir="${tests.resources.dir}" includeemptydirs="false">
+            <fileset refid="resources" />
+        </copy>
+    </target>
+
     <target name="compile-tests">
         <echo message="Compiling SOUND tests" />
 
@@ -137,6 +149,7 @@
             </bootclasspath>
             <classpath location="../../build/tests" />
             <classpath location="${hy.hdk}/build/test/support.jar" />
+            <classpath location="${hy.hdk}/build/test/resources/sound/org/apache/harmony/sound/tests/javax/sound/sampled/soundProvider.jar" />
         </javac>
     </target>
 
@@ -166,7 +179,7 @@
                 <pathelement path="${hy.sound.bin.test}"/>
             </classpath>
             <classpath location="${hy.hdk}/build/test/support.jar" />
-
+            <classpath location="${hy.hdk}/build/test/resources/sound/org/apache/harmony/sound/tests/javax/sound/sampled/soundProvider.jar" />
             <formatter type="xml" />
 
             <test name="${test.case}" todir="${hy.tests.reports}"
