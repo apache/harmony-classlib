@@ -47,6 +47,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         Entry<K, V> next;
 
+        Entry(K theKey, int hash) {
+            super(theKey, null);
+            this.origKeyHash = hash;
+        }
+
         Entry(K theKey, V theValue) {
             super(theKey, theValue);
             origKeyHash = (theKey == null ? 0 : theKey.hashCode());
@@ -180,8 +185,15 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         @Override
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
-                Entry<KT, VT> entry = associatedMap
-                        .getEntry(((Map.Entry<?, ?>) object).getKey());
+                Object key = ((Map.Entry<?, ?>) object).getKey();
+                Entry entry;
+                if (key == null) {
+                    entry = associatedMap.findNullKeyEntry();
+                } else {
+                    int hash = key.hashCode();
+                    int index = (hash & 0x7FFFFFFF) % associatedMap.elementData.length;
+                    entry = associatedMap.findNonNullKeyEntry(key, index, hash);
+                }
                 return object.equals(entry);
             }
             return false;
@@ -328,29 +340,15 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     @Override
     public boolean containsKey(Object key) {
-        return getEntry(key) != null;
-    }
-
-    /**
-     * Tests two keys for equality. This method just calls key.equals but can be
-     * overridden.
-     * 
-     * @param k1
-     *            first key to compare
-     * @param k2
-     *            second key to compare
-     * @return true if the keys are considered equal
-     */
-    boolean keysEqual(Object k1, Entry<K, V> entry) {
-        int k1Hash = k1 == null ? 0 : k1.hashCode();
-        if (k1Hash != entry.origKeyHash) {
-            return false;
+        Entry<K, V> m;
+        if (key == null) {
+            m = findNullKeyEntry();
+        } else {
+            int hash = key.hashCode();
+            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            m = findNonNullKeyEntry(key, index, hash);
         }
-        if (k1 == null && entry.key == null) {
-            return true;
-        }
-        assert k1 != null;
-        return k1.equals(entry.key);
+        return m != null;
     }
 
     /**
@@ -408,37 +406,32 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     @Override
     public V get(Object key) {
-        Entry<K, V> m = getEntry(key);
+        Entry<K, V> m;
+        if (key == null) {
+            m = findNullKeyEntry();
+        } else {
+            int hash = key.hashCode();
+            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            m = findNonNullKeyEntry(key, index, hash);
+        }
         if (m != null) {
             return m.value;
         }
         return null;
     }
 
-    Entry<K, V> getEntry(Object key) {
-        int index = getModuloHash(key);
-        return findEntry(key, index);
-    }
-
-    int getModuloHash(Object key) {
-        if (key == null) {
-            return 0;
+    final Entry<K,V> findNonNullKeyEntry(Object key, int index, int keyHash) {
+        Entry<K,V> m = elementData[index];
+        while (m != null && (m.origKeyHash != keyHash || !key.equals(m.key))) {
+            m = m.next;
         }
-        return (key.hashCode() & 0x7FFFFFFF) % elementData.length;
+        return m;
     }
-
-    Entry<K, V> findEntry(Object key, int index) {
-        Entry<K, V> m;
-        m = elementData[index];
-        if (key != null) {
-            while (m != null && !keysEqual(key, m)) {
-                m = m.next;
-            }
-        } else {
-            while (m != null && m.key != null) {
-                m = m.next;
-            }
-        }
+  
+    final Entry<K,V> findNullKeyEntry() {
+        Entry<K,V> m = elementData[0];
+        while (m != null && m.key != null)
+            m = m.next;
         return m;
     }
 
@@ -482,11 +475,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
                 @Override
                 public boolean remove(Object key) {
-                    if (containsKey(key)) {
-                        HashMap.this.remove(key);
-                        return true;
-                    }
-                    return false;
+                    Entry<K, V> entry = HashMap.this.removeEntry(key);
+                    return entry != null;
                 }
 
                 @Override
@@ -519,18 +509,28 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     private V putImpl(K key, V value) {
-        int index = getModuloHash(key);
-        Entry<K, V> entry = findEntry(key, index);
-
-        if (entry == null) {
-            modCount++;
-            if (++elementCount > threshold) {
-                rehash();
-                index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
-                        % elementData.length;
+        Entry<K,V> entry;
+        if(key == null) {
+            entry = findNullKeyEntry();
+            if (entry == null) {
+                modCount++;
+                if (++elementCount > threshold) {
+                    rehash();
+                }
+                entry = createHashedEntry(key, 0, 0);
             }
-            createEntry(key, index, value);
-            return null;
+        } else {
+            int hash = key.hashCode();
+            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            entry = findNonNullKeyEntry(key, index, hash);
+            if (entry == null) {
+                modCount++;
+                if (++elementCount > threshold) {
+                    rehash();
+                    index = (hash & 0x7FFFFFFF) % elementData.length;
+                }
+                entry = createHashedEntry(key, index, hash);
+            }
         }
 
         V result = entry.value;
@@ -540,6 +540,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     Entry<K, V> createEntry(K key, int index, V value) {
         Entry<K, V> entry = new Entry<K, V>(key, value);
+        entry.next = elementData[index];
+        elementData[index] = entry;
+        return entry;
+    }
+
+    Entry<K,V> createHashedEntry(K key, int index, int hash) {
+        Entry<K,V> entry = new Entry<K,V>(key,hash);
         entry.next = elementData[index];
         elementData[index] = entry;
         return entry;
@@ -579,9 +586,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         for (int i = 0; i < elementData.length; i++) {
             Entry<K, V> entry = elementData[i];
             while (entry != null) {
-                Object key = entry.key;
-                int index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
-                        % length;
+                int index = (entry.origKeyHash & 0x7FFFFFFF) % length;
                 Entry<K, V> next = entry.next;
                 entry.next = newData[index];
                 newData[index] = entry;
@@ -618,9 +623,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Entry<K, V> entry;
         Entry<K, V> last = null;
         if (key != null) {
-            index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
+            int hash = key.hashCode();
+            index = (hash & 0x7FFFFFFF) % elementData.length;
             entry = elementData[index];
-            while (entry != null && !keysEqual(key, entry)) {
+            while (entry != null && !(entry.origKeyHash == hash && key.equals(entry.key))) {
                 last = entry;
                 entry = entry.next;
             }

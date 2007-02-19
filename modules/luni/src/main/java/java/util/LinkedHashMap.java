@@ -139,7 +139,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
             canRemove = false;
             associatedMap.modCount++;
 
-            int index = associatedMap.getModuloHash(lastEntry.key);
+            int index = (lastEntry.key == null)? 0 : (lastEntry.key.hashCode() & 0x7FFFFFFF) % associatedMap.elementData.length;
             LinkedHashMapEntry<KT, VT> m = (LinkedHashMapEntry<KT, VT>) associatedMap.elementData[index];
             if (m == lastEntry) {
                 associatedMap.elementData[index] = lastEntry.next;
@@ -201,6 +201,13 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
             chainBackward = null;
         }
 
+        LinkedHashMapEntry(K theKey, int hash) {
+            super(theKey, hash);
+            chainForward = null;
+            chainBackward = null;
+        }
+
+
         @Override
         @SuppressWarnings("unchecked")
         public Object clone() {
@@ -236,7 +243,14 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      */
     @Override
     public V get(Object key) {
-        LinkedHashMapEntry<K, V> m = (LinkedHashMapEntry<K, V>) getEntry(key);
+        LinkedHashMapEntry<K, V> m;
+        if (key == null) {
+            m = (LinkedHashMapEntry<K, V>)findNullKeyEntry();
+        } else {
+            int hash = key.hashCode();
+            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            m = (LinkedHashMapEntry<K, V>)findNonNullKeyEntry(key, index, hash);
+        }
         if (m == null) {
             return null;
         }
@@ -269,6 +283,14 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
         return m;
     }
 
+    Entry<K,V> createHashedEntry(K key, int index, int hash) {
+        LinkedHashMapEntry<K, V> m = new LinkedHashMapEntry<K, V>(key, hash);
+        m.next = elementData[index];
+        elementData[index] = m;
+        linkEntry(m);
+        return m;
+    }
+
     /**
      * Set the mapped value for the given key to the given value.
      * 
@@ -281,23 +303,36 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        int index = getModuloHash(key);
-        LinkedHashMapEntry<K, V> m = (LinkedHashMapEntry<K, V>) findEntry(key, index);
-
-        if (m == null) {
-            modCount++;
-            // Check if we need to remove the oldest entry
-            // The check includes accessOrder since an accessOrder LinkedHashMap
-            // does not record
-            // the oldest member in 'head'.
-            if (++elementCount > threshold) {
-                rehash();
-                index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
-                        % elementData.length;
+        LinkedHashMapEntry<K, V> m;
+        if (key == null) {
+            m = (LinkedHashMapEntry<K, V>)findNullKeyEntry();
+            if (m == null) {
+                modCount++;
+                // Check if we need to remove the oldest entry
+                // The check includes accessOrder since an accessOrder LinkedHashMap
+                // does not record
+                // the oldest member in 'head'.
+                if (++elementCount > threshold) {
+                    rehash();
+                }
+                    m = (LinkedHashMapEntry<K, V>) createHashedEntry(key, 0, 0);
+            } else {
+                linkEntry(m);
             }
-            m = (LinkedHashMapEntry<K, V>) createEntry(key, index, null);
         } else {
-            linkEntry(m);
+            int hash = key.hashCode();
+            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            m = (LinkedHashMapEntry<K, V>)findNonNullKeyEntry(key, index, hash);
+            if (m == null) {
+                modCount++;
+                if (++elementCount > threshold) {
+                    rehash();
+                    index = (hash & 0x7FFFFFFF) % elementData.length;
+                }
+                m = (LinkedHashMapEntry<K, V>) createHashedEntry(key, index, hash);
+            } else {
+                linkEntry(m);
+            }
         }
 
         V result = m.value;
