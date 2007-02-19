@@ -24,10 +24,10 @@ CFLAGS += -fpic
 BUILDFILES = \
 	../shared/instrument.o ../shared/inst_agt.o 
 
-MDLLIBFILES = \
-	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
+MDLLIBFILES += \
+	$(LIBPATH)libhyzip.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+	$(LIBPATH)libvmi.so
 
 DLLNAME = ../libhyinstrument.so
 EXPNAME = HYINSTRUMENT_0.1

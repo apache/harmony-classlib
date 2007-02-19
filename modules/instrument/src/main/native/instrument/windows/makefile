@@ -32,9 +32,9 @@ VIRTFILES = hyinstrument.res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = \
-  $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
-  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
+  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)vmi.lib
   
 DLLBASE=0x13200000
 COMMENT=/comment:"instrument component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
