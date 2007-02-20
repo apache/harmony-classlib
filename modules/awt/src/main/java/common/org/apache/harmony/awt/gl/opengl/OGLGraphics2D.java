@@ -35,6 +35,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
+import java.awt.font.GlyphVector;
 import java.util.Arrays;
 import java.math.BigInteger;
 
@@ -195,6 +196,8 @@ public final class OGLGraphics2D extends CommonGraphics2D {
         origPoint = new Point(tx, ty);
 
         blitter = OGLBlitter.getInstance();
+
+        jtr = new OGLTextRenderer();
     }
 
     public OGLGraphics2D(NativeWindow nwin, int tx, int ty, int width, int height) {
@@ -430,9 +433,37 @@ public final class OGLGraphics2D extends CommonGraphics2D {
     }
 
     @Override
-    public void drawString(String str, int x, int y) {
-        // XXX - todo
+    public void drawString(String str, float x, float y) {
+        makeCurrent();
+        
+        if (paint instanceof Color) {
+            AffineTransform at = (AffineTransform) glTransform.clone();
+            jtr.drawString(this, str, x, y);
+            setTransform(at);
+        } else {
+            this.fill(font.createGlyphVector(this.getFontRenderContext(), str).getOutline(x, y));            
+        }
+        
+        gl.glFlush();
+        getSurface().updateScene();
     }
+
+    @Override    
+    public void drawGlyphVector(GlyphVector gv, float x, float y) {
+        makeCurrent();
+        
+        if (paint instanceof Color) {
+            AffineTransform at = (AffineTransform) glTransform.clone();
+            jtr.drawGlyphVector(this, gv, x, y);
+            setTransform(at);
+        } else {
+            this.fill(gv.getOutline(x, y));            
+        }
+        
+        gl.glFlush();
+        getSurface().updateScene();
+     }
+
 
     @Override
     protected void setTransformedClip(MultiRectArea clip) {

@@ -579,3 +579,58 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glStencilOp( JN
     }
     (* p_nbridge_glStencilOp)((int) fail, (int) zfail, (int) zpass);
 }
+
+unsigned int  (__stdcall* p_nbridge_glGenLists) (int) = NULL;
+
+JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glGenLists( JNIEnv *env, jobject self, jint range) {
+    if (p_nbridge_glGenLists == NULL) {
+        p_nbridge_glGenLists = (unsigned int  (__stdcall*) (int)) FindFunction(libGL, "glGenLists");
+    }
+    return (jint) (* p_nbridge_glGenLists)((int) range);
+}
+
+unsigned char  (__stdcall* p_nbridge_glIsList) (int) = NULL;
+
+JNIEXPORT jbyte  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glIsList( JNIEnv *env, jobject self, jint list) {
+    if (p_nbridge_glIsList == NULL) {
+        p_nbridge_glIsList = (unsigned char  (__stdcall*) (int)) FindFunction(libGL, "glIsList");
+    }
+    return (jbyte) (* p_nbridge_glIsList)((int) list);
+}
+
+void (* p_nbridge_glDeleteLists) (int, int) = NULL;
+
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glDeleteLists( JNIEnv *env, jobject self, jint list, jint range) {
+    if (p_nbridge_glDeleteLists == NULL) {
+        p_nbridge_glDeleteLists = (void (*) (int, int)) FindFunction(libGL, "glDeleteLists");
+    }
+    (* p_nbridge_glDeleteLists)((int) list, (int) range);
+}
+
+void (__stdcall* p_nbridge_glNewList) (int, int) = NULL;
+
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glNewList( JNIEnv *env, jobject self, jint list, jint mode) {
+    if (p_nbridge_glNewList == NULL) {
+        p_nbridge_glNewList = (void (__stdcall*) (int, int)) FindFunction(libGL, "glNewList");
+    }
+    (* p_nbridge_glNewList)((int) list, (int) mode);
+}
+
+void (* p_nbridge_glCallList) (int) = NULL;
+
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glCallList( JNIEnv *env, jobject self, jint list) {
+    if (p_nbridge_glCallList == NULL) {
+        p_nbridge_glCallList = (void (*) (int)) FindFunction(libGL, "glCallList");
+    }
+    (* p_nbridge_glCallList)((int) list);
+}
+
+void (__stdcall* p_nbridge_glEndList) (void) = NULL;
+
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glEndList( JNIEnv *env, jobject self) {
+    if (p_nbridge_glEndList == NULL) {
+        p_nbridge_glEndList = (void (__stdcall*) (void)) FindFunction(libGL, "glEndList");
+    }
+    (* p_nbridge_glEndList)();
+}
+

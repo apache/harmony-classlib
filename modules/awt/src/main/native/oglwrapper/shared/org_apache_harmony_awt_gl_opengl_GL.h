@@ -154,6 +154,14 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glDrawBuffer(JN
 JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glReadBuffer(JNIEnv *, jobject, jint);
 
 JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glStencilOp(JNIEnv *, jobject, jint, jint, jint);
+
+JNIEXPORT jbyte  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glIsList(JNIEnv *, jobject, jint);
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glNewList(JNIEnv *, jobject, jint, jint);
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glCallList(JNIEnv *, jobject, jint);
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glEndList(JNIEnv *, jobject);
+JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glGenLists(JNIEnv *, jobject, jint);
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glDeleteLists(JNIEnv *, jobject, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

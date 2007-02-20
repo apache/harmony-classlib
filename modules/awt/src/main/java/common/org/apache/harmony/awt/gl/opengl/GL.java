@@ -303,5 +303,21 @@ public class GL extends BasicLibWrapper {
 
     public final native void glStencilOp(int fail, int zfail, int zpass);
 
+
+
+    public final native int glGenLists(int range);
+
+    public final native byte glIsList(int list);
+
+    public final native void glDeleteLists(int list, int range);
+
+    public final native void glNewList(int list, int mode);
+
+    public final native void glCallList(int list);
+
+    public final native void glEndList();
+
 }
+
+
 
