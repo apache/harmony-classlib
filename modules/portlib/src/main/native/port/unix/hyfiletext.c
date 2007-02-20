@@ -428,7 +428,7 @@ file_write_using_iconv (struct HyPortLibrary *portLibrary, IDATA fd,
 
 #define CDEV_CURRENT_FUNCTION buf_write_using_iconv
 #if (defined(HYVM_USE_ICONV))
-static IDATA
+static char*
 buf_write_using_iconv (struct HyPortLibrary *portLibrary,
                         const char *buf, IDATA nbytes)
 {
@@ -436,6 +436,8 @@ buf_write_using_iconv (struct HyPortLibrary *portLibrary,
     iconv_t converter;
     size_t inbytesleft, outbytesleft;
     char *inbuf;
+    char *outbuf;
+    char *bufStart;
     /* iconv_open is not an a2e function, so we need to pass it honest-to-goodness EBCDIC strings */
     converter = iconv_open (nl_langinfo (CODESET), "UTF-8");
     if (converter == (iconv_t) - 1)
@@ -443,14 +445,14 @@ buf_write_using_iconv (struct HyPortLibrary *portLibrary,
         /* no converter available for this code set. Just dump the UTF-8 chars */
         outbuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
         memcpy(outbuf, buf, nbytes);
-        outBuf[nbytes] = '\0';
+        outbuf[nbytes] = '\0';
         return  outbuf;
     }
-    char *bufStart = portLibrary->mem_allocate_memory (portLibrary, 512);
-    char *outbuf = bufStart;
+    bufStart = portLibrary->mem_allocate_memory (portLibrary, outBufLen);
+    outbuf = bufStart;
     inbuf = (char *) buf;         /* for some reason this argument isn't const */
     inbytesleft = nbytes;
-    outbytesleft = sizeof (stackBuf);
+    outbytesleft = outBufLen;
     while ((size_t) - 1 ==
         iconv (converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft))
     {
@@ -477,7 +479,7 @@ buf_write_using_iconv (struct HyPortLibrary *portLibrary,
             iconv_close (converter);
             outbuf = portLibrary->mem_allocate_memory (portLibrary, nbytes + 1);
             memcpy(outbuf, buf, nbytes);
-            outBuf[nbytes] = '\0';
+            outbuf[nbytes] = '\0';
             portLibrary->mem_free_memory (portLibrary, bufStart);
             return  outbuf;
         }
@@ -485,7 +487,7 @@ buf_write_using_iconv (struct HyPortLibrary *portLibrary,
     iconv_close (converter);
     outbuf = portLibrary->mem_allocate_memory (portLibrary, outbuf - bufStart + 1);
     memcpy(outbuf, buf, outbuf - bufStart);
-    outBuf[outbuf - bufStart] = '\0';
+    outbuf[outbuf - bufStart] = '\0';
     portLibrary->mem_free_memory (portLibrary, bufStart);
     return outbuf;
 }
