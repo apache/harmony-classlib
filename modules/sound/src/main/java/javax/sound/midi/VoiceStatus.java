@@ -17,8 +17,6 @@
 
 package javax.sound.midi;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public class VoiceStatus {
     public boolean active;
 
@@ -31,9 +29,4 @@ public class VoiceStatus {
     public int program;
 
     public int volume;
-
-    public VoiceStatus() throws NotImplementedException {
-        // TODO
-        throw new NotImplementedException("not yet implemented");
-    }
 }
