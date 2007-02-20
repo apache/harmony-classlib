@@ -88,8 +88,10 @@ public class Panel extends Container implements Accessible {
     }
 
     @Override
-    ComponentBehavior createBehavior() {
-        return new HWBehavior(this);
+    ComponentBehavior createBehavior() {        
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() ? 
+                new LWBehavior(this) : 
+                new HWBehavior(this) ;
     }
 
     @Override

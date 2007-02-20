@@ -27,6 +27,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -51,7 +52,7 @@ public class RepaintManager {
     private Image offscreenImage;
     private VolatileImage volatileOffscreenImage;
 
-    private Dimension maximumSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private Dimension maximumSize;
     private boolean doubleBufferingEnabled = true;
     private Map dirtyRegions = new Hashtable();
     private Map optimizedDirtyRegions = new HashMap();
@@ -60,6 +61,12 @@ public class RepaintManager {
     private static final Rectangle COMPLETELY_DIRTY_RECT = new Rectangle(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     private static RepaintManager instance;
+    
+    RepaintManager() {
+        maximumSize = GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() ? 
+                new Dimension(0,0)
+                : Toolkit.getDefaultToolkit().getScreenSize();
+    }
 
     private final Runnable paintEvent = new Runnable() {
         public void run() {

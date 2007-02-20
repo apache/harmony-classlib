@@ -322,15 +322,54 @@
                 <fileset dir="${hy.awt.src.test.api}/java/common">
                     <include name="**/*Test.java"/>
                     <excludesfile name="${awt.exclude.file}" />
+                    <exclude name="**/*Headless*Test.java"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
                     <include name="**/*Test*.java"/>
                     <excludesfile name="${awt.exclude.file}" />
+                    <exclude name="**/*Headless*Test*.java"/>
                 </fileset>
             </batchtest>  
         </junit>
+
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+
+            <jvmarg line="${hy.test.vmargs}" />
+
+            <jvmarg value="-DTEST_SRC_DIR=${hy.awt.bin.test}"/>
+            <jvmarg value="-Djava.awt.headless=true"/>
+            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test}${path.separator}${basedir}/../../${junit.jar}"/>
+
+            <formatter type="xml" />
+
+            <test name="${test.case}" todir="${hy.tests.reports}"
+                 if="test.case" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                unless="test.case">
+
+                <fileset dir="${hy.awt.src.test.api}/java/common">
+                    <include name="**/*Headless*Test.java"/>
+                    <excludesfile name="${awt.exclude.file}" />
+                </fileset>
+                <fileset dir="${hy.awt.src.test.api.java.platform}">
+                    <include name="**/*Headless*Test*.java"/>
+                    <excludesfile name="${awt.exclude.file}" />
+                </fileset>
+            </batchtest>  
+        </junit>
+
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
+
     </target>
 
     <target name="touch-failures-file" if="test.failures">

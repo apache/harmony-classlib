@@ -24,8 +24,8 @@ package java.awt;
 import java.awt.image.BufferedImage;
 import java.util.Locale;
 
-import org.apache.harmony.awt.*;
-import org.apache.harmony.awt.gl.*;
+import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 
 
 public abstract class GraphicsEnvironment {
@@ -34,11 +34,16 @@ public abstract class GraphicsEnvironment {
     public static GraphicsEnvironment getLocalGraphicsEnvironment() {
         synchronized(ContextStorage.getContextLock()) {
             if (ContextStorage.getGraphicsEnvironment() == null) {
-                CommonGraphics2DFactory g2df =
-                        (CommonGraphics2DFactory) Toolkit.getDefaultToolkit().getGraphicsFactory();
-                ContextStorage.setGraphicsEnvironment(
-                        g2df.createGraphicsEnvironment(ContextStorage.getWindowFactory())
-                );
+                if (isHeadless()) {                    
+                    ContextStorage.setGraphicsEnvironment(new HeadlessGraphicsEnvironment());                    
+                } else {
+                    CommonGraphics2DFactory g2df =
+                            (CommonGraphics2DFactory) Toolkit.getDefaultToolkit().getGraphicsFactory();
+                    
+                    ContextStorage.setGraphicsEnvironment( 
+                            g2df.createGraphicsEnvironment(ContextStorage.getWindowFactory())
+                    );
+                }
             }
 
             return ContextStorage.getGraphicsEnvironment();
@@ -46,18 +51,11 @@ public abstract class GraphicsEnvironment {
     }
 
     public boolean isHeadlessInstance() {
-        // At present headless mode not supported, HeadlessException will never be thrown
-        try {
-            getDefaultScreenDevice();
-        } catch (HeadlessException e) {
-            return true;
-        }
-
         return false;
     }
 
     public static boolean isHeadless() {
-        return getLocalGraphicsEnvironment().isHeadlessInstance();
+        return "true".equals(System.getProperty("java.awt.headless"));
     }
 
     public Rectangle getMaximumWindowBounds() throws HeadlessException {

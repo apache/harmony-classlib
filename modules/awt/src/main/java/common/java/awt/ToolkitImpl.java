@@ -48,10 +48,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected TextAreaPeer createTextArea(TextArea a0) throws HeadlessException {
+    protected TextAreaPeer createTextArea(TextArea a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -117,7 +116,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public ColorModel getColorModel() throws HeadlessException {
+    public ColorModel getColorModel() {
         lockAWT();
         try {
             return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
@@ -166,10 +165,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ButtonPeer createButton(Button a0) throws HeadlessException {
+    protected ButtonPeer createButton(Button a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -187,10 +185,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected CheckboxPeer createCheckbox(Checkbox a0) throws HeadlessException {
+    protected CheckboxPeer createCheckbox(Checkbox a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -202,7 +199,6 @@ class ToolkitImpl extends Toolkit {
             throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -210,10 +206,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ChoicePeer createChoice(Choice a0) throws HeadlessException {
+    protected ChoicePeer createChoice(Choice a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -221,10 +216,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected DialogPeer createDialog(Dialog a0) throws HeadlessException {
+    protected DialogPeer createDialog(Dialog a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -238,10 +232,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected FileDialogPeer createFileDialog(FileDialog a0) throws HeadlessException {
+    protected FileDialogPeer createFileDialog(FileDialog a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -249,10 +242,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected FramePeer createFrame(Frame a0) throws HeadlessException {
+    protected FramePeer createFrame(Frame a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -260,10 +252,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected LabelPeer createLabel(Label a0) throws HeadlessException {
+    protected LabelPeer createLabel(Label a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -271,10 +262,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ListPeer createList(List a0) throws HeadlessException {
+    protected ListPeer createList(List a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -282,10 +272,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected MenuPeer createMenu(Menu a0) throws HeadlessException {
+    protected MenuPeer createMenu(Menu a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -293,10 +282,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected MenuBarPeer createMenuBar(MenuBar a0) throws HeadlessException {
+    protected MenuBarPeer createMenuBar(MenuBar a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -304,10 +292,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected MenuItemPeer createMenuItem(MenuItem a0) throws HeadlessException {
+    protected MenuItemPeer createMenuItem(MenuItem a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -325,10 +312,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected PopupMenuPeer createPopupMenu(PopupMenu a0) throws HeadlessException {
+    protected PopupMenuPeer createPopupMenu(PopupMenu a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -336,10 +322,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ScrollPanePeer createScrollPane(ScrollPane a0) throws HeadlessException {
+    protected ScrollPanePeer createScrollPane(ScrollPane a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -347,10 +332,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ScrollbarPeer createScrollbar(Scrollbar a0) throws HeadlessException {
+    protected ScrollbarPeer createScrollbar(Scrollbar a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -358,10 +342,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected TextFieldPeer createTextField(TextField a0) throws HeadlessException {
+    protected TextFieldPeer createTextField(TextField a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -369,10 +352,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected WindowPeer createWindow(Window a0) throws HeadlessException {
+    protected WindowPeer createWindow(Window a0) {
         lockAWT();
         try {
-            checkHeadless();
             return null;
         } finally {
             unlockAWT();
@@ -465,7 +447,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public Dimension getScreenSize() throws HeadlessException {
+    public Dimension getScreenSize() {
         lockAWT();
         try {
             DisplayMode dm = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -477,10 +459,9 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public Clipboard getSystemClipboard() throws HeadlessException {
+    public Clipboard getSystemClipboard() {
         lockAWT();
         try {
-            checkHeadless();
             SecurityManager security = System.getSecurityManager();
             if (security != null) {
                 security.checkSystemClipboardAccess();

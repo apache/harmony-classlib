@@ -69,12 +69,14 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
+
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
@@ -4050,7 +4052,6 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     }
 
     public Point getMousePosition() throws HeadlessException {
-        Toolkit.checkHeadless();
         Point absPointerPos = MouseInfo.getPointerInfo().getLocation();
         Window winUnderPtr = toolkit.dispatcher.mouseDispatcher.findWindowAt(absPointerPos);
         Point pointerPos = MouseDispatcher.convertPoint(null, absPointerPos, winUnderPtr);

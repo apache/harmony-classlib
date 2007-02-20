@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
 import org.apache.harmony.awt.ChoiceStyle;
 import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.ContextStorage;
@@ -100,15 +101,15 @@ public abstract class Toolkit {
 
     private static final ResourceBundle properties = loadResources(RECOURCE_PATH);
 
-    final Dispatcher dispatcher;
+    Dispatcher dispatcher;
 
     private EventQueueCore systemEventQueueCore;
 
-    final EventDispatchThread dispatchThread;
+    EventDispatchThread dispatchThread;
 
     NativeEventThread nativeThread;
 
-    private final AWTEventsManager awtEventsManager;
+    protected AWTEventsManager awtEventsManager;
 
     /* key = nativeWindow, value = Component, should be Map<NativeWindow, Component> */
     private final Map<NativeWindow, Object> windowComponentMap = new HashMap<NativeWindow, Object>();
@@ -150,9 +151,9 @@ public abstract class Toolkit {
      */
     private final HashSet<String> userPropSet = new HashSet<String>();
 
-    protected final Map<String, Object> desktopProperties;
+    protected Map<String, Object> desktopProperties;
 
-    protected final PropertyChangeSupport desktopPropsSupport;
+    protected PropertyChangeSupport desktopPropsSupport;
 
     /**
      * For this component the native window is being created
@@ -167,9 +168,9 @@ public abstract class Toolkit {
 
     private WTK wtk;
 
-    final DTK dtk;
+    DTK dtk;
 
-    private final class ComponentInternalsImpl extends ComponentInternals {
+    protected final class ComponentInternalsImpl extends ComponentInternals {
         @Override
         public NativeWindow getNativeWindow(Component component) {
             lockAWT();
@@ -382,9 +383,8 @@ public abstract class Toolkit {
      * if <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
      */
     static void checkHeadless() throws HeadlessException {
-        if (GraphicsEnvironment.isHeadless()) {
+        if (GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance())
             throw new HeadlessException();
-        }
     }
 
     final void lockAWT() {
@@ -401,7 +401,7 @@ public abstract class Toolkit {
 
     static final void staticUnlockAWT() {
         ContextStorage.getSynchronizer().unlock();
-    }
+    }    
 
     /**
      * InvokeAndWait under AWT lock. W/o this method system can hang up.
@@ -467,7 +467,8 @@ public abstract class Toolkit {
             }
             staticLockAWT();
             try {
-                defToolkit = new ToolkitImpl();
+                defToolkit = GraphicsEnvironment.isHeadless() ?
+                        new HeadlessToolkit() : new ToolkitImpl();
                 ContextStorage.setDefaultToolkit(defToolkit);
                 return defToolkit;
             } finally {
@@ -524,15 +525,19 @@ public abstract class Toolkit {
         return windowFocusProxyMap.get(getWindowFactory().getWindowById(id));
     }
 
-    final WindowFactory getWindowFactory() {
+    WindowFactory getWindowFactory() {
         return wtk.getWindowFactory();
     }
 
-    final GraphicsFactory getGraphicsFactory() {
+    GraphicsFactory getGraphicsFactory() {
         return wtk.getGraphicsFactory();
     }
+    
+    public Toolkit() {        
+        init();
+    }
 
-    public Toolkit() {
+    protected void init() {
         lockAWT();
         try {
             ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
@@ -662,7 +667,6 @@ public abstract class Toolkit {
 
     Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlightImpl(
             InputMethodHighlight highlight) throws HeadlessException {
-        checkHeadless();
         HashMap<java.awt.font.TextAttribute, ?> map = new HashMap<java.awt.font.TextAttribute, Object>();
         wtk.getSystemProperties().mapInputMethodHighlight(highlight, map);
         return Collections.<java.awt.font.TextAttribute, Object> unmodifiableMap(map);
@@ -729,7 +733,6 @@ public abstract class Toolkit {
             throws IndexOutOfBoundsException, HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             int w = img.getWidth(null), x = hotSpot.x;
             int h = img.getHeight(null), y = hotSpot.y;
             if (x < 0 || x >= w || y < 0 || y >= h) {
@@ -758,7 +761,6 @@ public abstract class Toolkit {
     public Dimension getBestCursorSize(int prefWidth, int prefHeight) throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return wtk.getCursorFactory().getBestCursorSize(prefWidth, prefHeight);
         } finally {
             unlockAWT();
@@ -802,7 +804,6 @@ public abstract class Toolkit {
     public int getMaximumCursorColors() throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return wtk.getCursorFactory().getMaximumCursorColors();
         } finally {
             unlockAWT();
@@ -812,7 +813,6 @@ public abstract class Toolkit {
     public int getMenuShortcutKeyMask() throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return InputEvent.CTRL_MASK;
         } finally {
             unlockAWT();
@@ -862,7 +862,6 @@ public abstract class Toolkit {
     public Clipboard getSystemSelection() throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             SecurityManager security = System.getSecurityManager();
             if (security != null) {
                 security.checkSystemClipboardAccess();
@@ -888,7 +887,6 @@ public abstract class Toolkit {
     public boolean isDynamicLayoutActive() throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             // always return true
             return true;
         } finally {
@@ -899,7 +897,6 @@ public abstract class Toolkit {
     protected boolean isDynamicLayoutSet() throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return bDynamicLayoutSet;
         } finally {
             unlockAWT();
@@ -909,7 +906,6 @@ public abstract class Toolkit {
     public boolean isFrameStateSupported(int state) throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             return wtk.getWindowFactory().isWindowStateSupported(state);
         } finally {
             unlockAWT();
@@ -944,7 +940,6 @@ public abstract class Toolkit {
     public void setDynamicLayout(boolean dynamic) throws HeadlessException {
         lockAWT();
         try {
-            checkHeadless();
             bDynamicLayoutSet = dynamic;
         } finally {
             unlockAWT();

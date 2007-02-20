@@ -14,60 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov, Pavel Dolgov
- * @version $Revision$
- */
 package java.awt;
 
-import org.apache.harmony.awt.wtk.NativeEvent;
-import org.apache.harmony.awt.wtk.NativeEventQueue;
+final class HeadlessEventDispatchThread extends EventDispatchThread  {
 
-class EventDispatchThread extends Thread  {
-    
-    private static final class MarkerEvent extends AWTEvent {
-        MarkerEvent(Object source, int id) {
-            super(source, id);
-        }
+    HeadlessEventDispatchThread(Toolkit toolkit, Dispatcher dispatcher ) {
+        super(toolkit, dispatcher);
     }
-
-    final Dispatcher dispatcher;
-    final Toolkit toolkit;
-    private NativeEventQueue nativeQueue;
-
-    protected volatile boolean shutdownPending = false;
 
     /**
      * Initialise and run the main event loop
      */
     @Override
     public void run() {
-        nativeQueue = toolkit.getNativeEventQueue();
-
         try {
             runModalLoop(null);
         } finally {
             toolkit.shutdownWatchdog.forceShutdown();
         }
     }
-
+    
     void runModalLoop(ModalContext context) {
         long lastPaintTime = System.currentTimeMillis();
         while (!shutdownPending && (context == null || context.isModalLoopRunning())) {
             try {
-            EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
-
-            NativeEvent ne = nativeQueue.getNextEvent();
-            if (ne != null) {
-                dispatcher.onEvent(ne);
-                MarkerEvent marker = new MarkerEvent(this, 0);
-                eventQueue.postEvent(marker);
-                for (AWTEvent ae = eventQueue.getNextEventNoWait(); 
-                        (ae != null) && (ae != marker); 
-                        ae = eventQueue.getNextEventNoWait()) {
-                    eventQueue.dispatchEvent(ae);
-                }
-            } else {
+                EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
+    
                 toolkit.shutdownWatchdog.setNativeQueueEmpty(true);
                 AWTEvent ae = eventQueue.getNextEventNoWait();
                 if (ae != null) {
@@ -81,37 +53,11 @@ class EventDispatchThread extends Thread  {
                     toolkit.shutdownWatchdog.setAwtQueueEmpty(true);
                     toolkit.onQueueEmpty();
                     lastPaintTime = System.currentTimeMillis();
-                    waitForAnyEvent();
                 }
-            }
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
-    }
-    
-    private void waitForAnyEvent() {
-        EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
-        if (!eventQueue.isEmpty() || !nativeQueue.isEmpty()) {
-            return;
-        }
-        Object eventMonitor = nativeQueue.getEventMonitor();
-        synchronized(eventMonitor) {
-            try {
-                eventMonitor.wait();
-            } catch (InterruptedException e) {}
-        }
-    }
-
-    void shutdown() {
-        shutdownPending = true;
-    }
-
-    EventDispatchThread(Toolkit toolkit, Dispatcher dispatcher ) {
-        this.toolkit = toolkit;
-        this.dispatcher = dispatcher;
-        setName("AWT-EventDispatchThread"); //$NON-NLS-1$
-        setDaemon(true);
-    }
+    }   
 
 }

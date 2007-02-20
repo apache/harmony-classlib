@@ -88,7 +88,9 @@ final class EventQueueCore {
         // TODO: add event coalescing
         if (toolkit != null) {
             toolkit.shutdownWatchdog.setAwtQueueEmpty(false);
-            notifyEventMonitor(toolkit);
+            if (!GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance()) {
+                notifyEventMonitor(toolkit);
+            }
         }
         notifyAll();
     }

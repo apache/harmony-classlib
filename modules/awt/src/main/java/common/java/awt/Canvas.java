@@ -126,8 +126,10 @@ public class Canvas extends Component implements Accessible {
     }
 
     @Override
-    ComponentBehavior createBehavior() {
-        return new HWBehavior(this);
+    ComponentBehavior createBehavior() {        
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() ? 
+                new LWBehavior(this) : 
+                new HWBehavior(this) ;
     }
 
     @Override
