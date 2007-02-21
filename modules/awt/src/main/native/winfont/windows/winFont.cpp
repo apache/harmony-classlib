@@ -377,7 +377,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontFamiliesNames(JNIEnv *env,
         initStr);
 
     for (;i < famCount;i++){
-        env->SetObjectArrayElement(ret,i,env->NewString(families[i], (jsize)_tcslen(families[i]))); // number of chars == length of string -1
+        env->SetObjectArrayElement(ret,i,env->NewString((const jchar *)families[i], (jsize)_tcslen(families[i]))); // number of chars == length of string -1
     }
     return ret;
 
@@ -431,7 +431,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystem
         initStr);
 
     for (;i < fonts.count; i++){
-        env->SetObjectArrayElement(faces,i,env->NewString(fonts.faceNames[i], (jsize)_tcslen(fonts.faceNames[i]))); // number of chars == length of string -1
+        env->SetObjectArrayElement(faces,i,env->NewString((const jchar *)fonts.faceNames[i], (jsize)_tcslen(fonts.faceNames[i]))); // number of chars == length of string -1
     }
 
 
@@ -469,7 +469,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *env, jcla
 
     // message to other applications about installed font
     //  SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
-    env->ReleaseStringCritical(absPath, path);
+    env->ReleaseStringCritical(absPath, (const jchar *)path);
     return fontAdded;
 }
 
@@ -519,7 +519,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializ
     lf.lfPitchAndFamily = DEFAULT_PITCH;
     
     length = env->GetStringLength(jFace);
-    fontName = env->GetStringCritical(jFace, &iscopy);
+    fontName = (const TCHAR *)env->GetStringCritical(jFace, &iscopy);
     lf.lfFaceName[0] = 0;
 
     if ( fontName ) {
@@ -529,7 +529,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializ
         }
     }
 
-    env->ReleaseStringCritical(jFace, fontName);
+    env->ReleaseStringCritical(jFace, (const jchar *)fontName);
 
     res = CreateFontIndirect(& lf);
 
@@ -652,7 +652,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFamilyNative(JNIEnv *env, jcla
 
     _tcscpy(name, (TCHAR *)((char *) outm + (int) outm[0].otmpFamilyName));
 
-    res = env->NewString(name, (int)_tcslen(name));
+    res = env->NewString((const jchar *)name, (int)_tcslen(name));
 
     SelectObject(hDC, hOld);
     DeleteDC(hDC);
@@ -687,7 +687,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontNameNative(JNIEnv *env, jc
     memset(& name, 0, sizeof(name));
     _tcscpy(name, (TCHAR *)((char *) outm + (int) outm[0].otmpFaceName));
 
-    res = env->NewString(name, (jsize)_tcslen(name));
+    res = env->NewString((const jchar *)name, (jsize)_tcslen(name));
 
     SelectObject(hDC, hOld);
     DeleteDC(hDC);
@@ -727,7 +727,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_RemoveFontResource(JNIEnv *env, j
 
     fontRemoved = RemoveFontResource(path);
 
-    env->ReleaseStringCritical(absPath, path);
+    env->ReleaseStringCritical(absPath, (const jchar *)path);
 
     return fontRemoved;
 }
@@ -842,7 +842,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_ge
                 break;
 
             fontName = (const TCHAR *) szValueName;
-            pdest = _tcsstr( fontName, TrueType );
+            pdest = (TCHAR *)_tcsstr( fontName, TrueType );
             if (pdest !=NULL ){
                 if (counter == (size - 1)) {
                     size = size << 1;
@@ -868,7 +868,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_ge
             initStr);
 
         for (i = 0;i < counter;i++){
-            env->SetObjectArrayElement(ret,i,env->NewString(fontNames[i], fontSizes[i]));
+            env->SetObjectArrayElement(ret,i,env->NewString((const jchar *)fontNames[i], fontSizes[i]));
             free(fontNames[i]);
         }
 
@@ -1185,7 +1185,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphCodesNative(JNIEnv *env, 
     free(arr);
     SelectObject(hDC, hOld);
     DeleteDC(hDC);
-    env->ReleaseStringCritical(str, chars);
+    env->ReleaseStringCritical(str, (const jchar *)chars);
 
     return intArray;
 }
@@ -1405,7 +1405,7 @@ JNIEXPORT jint JNICALL
     env->SetShortArrayRegion(LCIDs, 0, size, lcidTable.lcids);
 
     for (i = 0; i < size; i++){
-            env->SetObjectArrayElement(shortStrings, i, env->NewString((TCHAR *)lcidTable.names[i], (jsize)_tcslen(lcidTable.names[i])));
+            env->SetObjectArrayElement(shortStrings, i, env->NewString((const jchar *)(TCHAR *)lcidTable.names[i], (jsize)_tcslen(lcidTable.names[i])));
     }
 
     return size;
@@ -1464,7 +1464,7 @@ JNIEXPORT jint JNICALL
 
     PointF *origin = new PointF(xOffset, yOffset);
 
-    text = env->GetStringCritical( jText, &iscopy);
+    text = (const TCHAR *)env->GetStringCritical( jText, &iscopy);
 
     result = graphics->DrawString(text,
             length,
@@ -1472,7 +1472,7 @@ JNIEXPORT jint JNICALL
             *origin,
             brush);
 
-    env->ReleaseStringCritical(jText, text);
+    env->ReleaseStringCritical(jText, (const jchar *)text);
 
     delete origin;
     delete gdipFont;

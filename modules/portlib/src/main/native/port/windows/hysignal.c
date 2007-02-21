@@ -479,8 +479,30 @@ infoForSignal (struct HyPortLibrary *portLibrary,
 }
 
 #undef CDEV_CURRENT_FUNCTION
-
 #define CDEV_CURRENT_FUNCTION infoForGPR
+
+#ifdef _WIN64
+	#define _EDI_ Rdi
+	#define _ESI_ Rsi
+	#define _EAX_ Rax
+	#define _EBX_ Rbx
+	#define _ECX_ Rcx
+	#define _EDX_ Rdx
+	#define _EIP_ Rip
+	#define _ESP_ Rsp
+	#define _EBP_ Rbp
+#else
+	#define _EDI_ Edi
+	#define _ESI_ Esi
+	#define _EAX_ Eax
+	#define _EBX_ Ebx
+	#define _ECX_ Ecx
+	#define _EDX_ Edx
+	#define _EIP_ Eip
+	#define _ESP_ Esp
+	#define _EBP_ Ebp
+#endif
+
 static U_32
 infoForGPR (struct HyPortLibrary *portLibrary, struct HyWin32SignalInfo *info,
 	    I_32 index, const char **name, void **value)
@@ -494,37 +516,37 @@ infoForGPR (struct HyPortLibrary *portLibrary, struct HyWin32SignalInfo *info,
 	case HYPORT_SIG_GPR_X86_EDI:
 	case 0:
 	  *name = "EDI";
-	  *value = &info->ContextRecord->Edi;
+	  *value = &info->ContextRecord->_EDI_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_GPR_X86_ESI:
 	case 1:
 	  *name = "ESI";
-	  *value = &info->ContextRecord->Esi;
+	  *value = &info->ContextRecord->_ESI_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_GPR_X86_EAX:
 	case 2:
 	  *name = "EAX";
-	  *value = &info->ContextRecord->Eax;
+	  *value = &info->ContextRecord->_EAX_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_GPR_X86_EBX:
 	case 3:
 	  *name = "EBX";
-	  *value = &info->ContextRecord->Ebx;
+	  *value = &info->ContextRecord->_EBX_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_GPR_X86_ECX:
 	case 4:
 	  *name = "ECX";
-	  *value = &info->ContextRecord->Ecx;
+	  *value = &info->ContextRecord->_ECX_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_GPR_X86_EDX:
 	case 5:
 	  *name = "EDX";
-	  *value = &info->ContextRecord->Edx;
+	  *value = &info->ContextRecord->_EDX_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	default:
@@ -552,19 +574,19 @@ infoForControl (struct HyPortLibrary *portLibrary,
 	case HYPORT_SIG_CONTROL_PC:
 	case 0:
 	  *name = "EIP";
-	  *value = &info->ContextRecord->Eip;
+	  *value = &info->ContextRecord->_EIP_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_CONTROL_SP:
 	case 1:
 	  *name = "ESP";
-	  *value = &info->ContextRecord->Esp;
+	  *value = &info->ContextRecord->_ESP_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	case HYPORT_SIG_CONTROL_BP:
 	case 2:
 	  *name = "EBP";
-	  *value = &info->ContextRecord->Ebp;
+	  *value = &info->ContextRecord->_EBP_;
 	  return HYPORT_SIG_VALUE_ADDRESS;
 
 	default:

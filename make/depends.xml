@@ -53,9 +53,42 @@
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
-    <target name="-really-check-win" if="is.windows">
+    <target name="-select-win-deps-x86" if="is.x86">
+        <property name="people.apache.base" value="${people.apache.base.x86}"/>
+        <property name="awtdeps.dir" value="${awtdeps.dir.x86}"/>
+        <property name="awtdeps.tar" value="${awtdeps.tar.x86}"/>
+        <property name="awtdeps.url" value="${awtdeps.url.x86}"/>
+        <property name="awtdeps.md5" value="${awtdeps.md5.x86}"/>
+        <property name="awtdeps.extract.dir" value="${awtdeps.extract.dir.x86}"/>
+        <property name="awtdeps.testfile" value="${awtdeps.testfile.x86}"/>
+
+        <property name="msvcr.dir" value="${msvcr.dir.x86}"/>
+        <property name="msvcr.dll" value="${msvcr.dll.x86}"/>
+        <property name="msvcr.url" value="${msvcr.url.x86}"/>
+        <property name="msvcr.dll.file" value="${msvcr.dll.file.x86}"/>
+        <property name="msvcr.md5" value="${msvcr.md5.x86}"/>
+    </target>
+
+    <target name="-select-win-deps-x86_64" if="is.x86_64">
+        <property name="people.apache.base" value="${people.apache.base.x86_64}"/>
+        <property name="awtdeps.dir" value="${awtdeps.dir.x86_64}"/>
+        <property name="awtdeps.tar" value="${awtdeps.tar.x86_64}"/>
+        <property name="awtdeps.url" value="${awtdeps.url.x86_64}"/>
+        <property name="awtdeps.md5" value="${awtdeps.md5.x86_64}"/>
+        <property name="awtdeps.extract.dir" value="${awtdeps.extract.dir.x86_64}"/>
+        <property name="awtdeps.testfile" value="${awtdeps.testfile.x86_64}"/>
+
+        <property name="msvcr.dir" value="${msvcr.dir.x86_64}"/>
+        <property name="msvcr.dll" value="${msvcr.dll.x86_64}"/>
+        <property name="msvcr.url" value="${msvcr.url.x86_64}"/>
+        <property name="msvcr.dll.file" value="${msvcr.dll.file.x86_64}"/>
+        <property name="msvcr.md5" value="${msvcr.md5.x86_64}"/>
+    </target>
+
+    <target name="-really-check-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
         <property environment="hyenv" />
-        <check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
+
+        <check-one-file src="${msvcr.url}" dest="${msvcr.dll}" />
         <check-one-file src="${awtdeps.url}" dest="${awtdeps.tar}" />
         <uptodate property="awtdeps.uptodate"
                   srcfile="${awtdeps.tar}"
@@ -319,14 +352,14 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     </target>
 
-    <target name="-download-win" if="is.windows">
+    <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
 
     <property environment="hyenv" />
 
-    <mkdir dir="${msvcr71.dir}" />
+    <mkdir dir="${msvcr.dir}" />
 
-    <download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
-                           md5="${msvcr71.md5}" />
+    <download-one-file src="${msvcr.url}" dest="${msvcr.dll}"
+                           md5="${msvcr.md5}" />
 
     <mkdir dir="${awtdeps.dir}" />
     <download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"

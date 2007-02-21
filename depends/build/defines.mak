@@ -30,8 +30,14 @@ EXEPATH=..\# ditto
 DLLPATH=$(HY_HDK)\jdk\jre\bin\# ditto
 SHAREDSUB=..\shared\# ditto
 
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+WARNING_LEVEL=W0
+!ELSE
+WARNING_LEVEL=WX
+!ENDIF
+
 HYCOMMONCFLAGS = \
-  -WX -GF -Gs -MD -Zm400 \
+  -$(WARNING_LEVEL) -GF -Gs -MD -Zm400 \
   -D_DLL -D_MT -D_WINSOCKAPI_ \
   /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
 

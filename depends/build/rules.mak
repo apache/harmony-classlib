@@ -13,6 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+ml=ml64
+# don't quite know what to specify as an entry point on win/em64t
+ENTRY_OPTION=
+!ELSE
+ml=ml
+ENTRY_OPTION=-entry:_DllMainCRTStartup@12
+!ENDIF
+
 .c.obj:
 	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c
 
@@ -20,7 +29,7 @@
 	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.cpp
 
 .asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32 $<
+	$(ml) /Fo$*.obj /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32 $<
 
 .rc.res:
 	rc -I..\include $<
@@ -37,7 +46,7 @@ $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !ifdef DLLNAME
 $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	-entry:_DllMainCRTStartup@12 -dll /BASE:$(DLLBASE) -machine:$(CPU) \
+	$(ENTRY_OPTION) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
         $(COMMENT) \
 	-subsystem:windows -out:$@ -map:$*.map \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
@@ -57,4 +66,5 @@ clean:
              $(LIBNAME) $(LIBNAME:.lib=.exp) \
              $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
              $(EXENAME) $(EXENAME:.exe=.pdb) \
-             $(CLEANFILES) >nul 2>&1
+             $(CLEANFILES)
+#             $(CLEANFILES) >nul 2>&1

@@ -62,3 +62,5 @@ clean:
 	-del *.obj dist\*.obj
 	-del $(LIBNAME)
 	-del $(LIBPATH)hyfdlibm.pdb
+        -del $(SHAREDSUB)*.obj
+

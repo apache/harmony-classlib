@@ -24,6 +24,11 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 
+
+#ifdef _WIN64
+	#define __ptr64 __int64 *
+#endif
+
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl
   (JNIEnv * env, jclass clazz)
 {
@@ -45,7 +50,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getAddres
   (JNIEnv * env, jobject thiz, jlong address)
 {
 #if defined(_WIN64)
-  return *(POINTER_64) address;
+  return *((POINTER_64) address);
 #else
   return (jlong) * (long *) address;
 #endif
@@ -56,7 +61,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setAddress
   (JNIEnv * env, jobject thiz, jlong address, jlong value)
 {
 #if defined(_WIN64)
-  *(POINTER_64) address = value;
+  *((POINTER_64) address) = value;
 #else
   *(long *) address = (long) value;
 #endif

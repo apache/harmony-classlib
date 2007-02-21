@@ -37,7 +37,14 @@
         </or>
     </fileset>
     
-    <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
+    <condition property="iculib.zip" 
+        value="${depends.oss}/icu4c-3.4-harmony-windows.x86_64.zip"
+        else="${depends.oss}/icu4c-3.4-harmony.zip">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.x86_64"/>
+        </and>
+    </condition>
 
     <property name="instrument.exclude.file" location="${hy.hdk}/build/instrument.exclude" />
 

@@ -266,7 +266,7 @@ Java_org_apache_harmony_awt_nativebridge_windows_WinDataTransfer_getSystemDefaul
         return NULL;
     }
 
-    return env->NewString(info.wszWebCharset, (jsize)wcslen(info.wszWebCharset));
+    return env->NewString((const jchar *)info.wszWebCharset, (jsize)wcslen(info.wszWebCharset));
 }
 
 JNIEXPORT jobjectArray JNICALL
@@ -371,14 +371,14 @@ void WinDataObject::registerFormats() {
 
 jstring WinDataObject::getStringA(JNIEnv * env, const char * cstr) {
     if (cstr == NULL) {
-        return env->NewString(L"", 0);
+        return env->NewString((const jchar *)L"", 0);
     }
     jstring jstr = NULL;
     int len = MultiByteToWideChar(CP_ACP, 0, cstr, -1, NULL, 0);
     if (len > 0) {
         wchar_t * wstr = new wchar_t[len];
         if (len == MultiByteToWideChar(CP_ACP, 0, cstr, -1, wstr, len)) {
-            jstr = env->NewString(wstr, (jsize)wcslen(wstr));
+            jstr = env->NewString((const jchar *)wstr, (jsize)wcslen(wstr));
         }
         delete [] wstr;
     }
@@ -395,9 +395,9 @@ jstring WinDataObject::getStringA(JNIEnv * env, HGLOBAL hGlobal) {
 jstring WinDataObject::getStringW(JNIEnv * env, HGLOBAL hGlobal) {
     wchar_t * wstr = (wchar_t *)GlobalLock(hGlobal);
     if (wstr == NULL) {
-        return env->NewString(L"", 0);
+        return env->NewString((const jchar *)L"", 0);
     }
-    jstring jstr = env->NewString(wstr, (jsize)wcslen(wstr));
+    jstring jstr = env->NewString((const jchar *)wstr, (jsize)wcslen(wstr));
     GlobalUnlock(hGlobal);
     return jstr;
 }
@@ -456,7 +456,7 @@ jobjectArray WinDataObject::getFileListW(JNIEnv * env, const wchar_t * files) {
     wstr = files;
     for (jsize i=0; *wstr; i++) {
         size_t len = wcslen(wstr);
-        jstring jstr = env->NewString(wstr, (jsize)len);
+        jstring jstr = env->NewString((const jchar *)wstr, (jsize)len);
         wstr += len + 1;
         env->SetObjectArrayElement(result, i, jstr);
     }
@@ -862,7 +862,7 @@ jbyteArray WinDataObject::getSerialized(JNIEnv * env, IDataObject * dataObject,
     FORMATETC format = { 0, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
     jboolean isCopy;
     const jchar * name = env->GetStringChars(nativeFormat, &isCopy);
-    format.cfFormat = RegisterClipboardFormatW(name);
+    format.cfFormat = RegisterClipboardFormatW((LPCWSTR)name);
     env->ReleaseStringChars(nativeFormat, name);
     
     STGMEDIUM stgmed;
@@ -921,8 +921,8 @@ jboolean WinDataObject::queryFormat(JNIEnv * env,
         return result;
     }
     const jchar * formatNameW = env->GetStringChars(nativeFormat, NULL);
-    if (wcsstr(formatNameW, FORMAT_SERIALIZED) != NULL) {
-        UINT format = RegisterClipboardFormatW(formatNameW);
+    if (wcsstr((const wchar_t *)formatNameW, FORMAT_SERIALIZED) != NULL) {
+        UINT format = RegisterClipboardFormatW((LPCWSTR)formatNameW);
         if (format != 0) {
             result = queryFormat(dataObject, format);
         }
@@ -936,7 +936,7 @@ jstring WinDataObject::getSerializedFormatName(JNIEnv * env, UINT format) {
     wchar_t formatName[formatNameLength];
     if (0 != GetClipboardFormatNameW(format, formatName, formatNameLength) ) {
         if (wcsstr(formatName, FORMAT_SERIALIZED) != NULL) {
-            return env->NewString(formatName, (jsize)wcslen(formatName));
+            return env->NewString((const jchar *)formatName, (jsize)wcslen(formatName));
         }
     }
     return NULL;
@@ -991,8 +991,8 @@ int WinDataObject::getFormatsForName(JNIEnv * env, jstring formatName,
 UINT WinDataObject::getSerializedFormat(JNIEnv * env, jstring formatName) {
     const jchar * formatNameW = env->GetStringChars(formatName, NULL);
     UINT result = 0;
-    if (wcsstr(formatNameW, FORMAT_SERIALIZED) != NULL) {
-        result = RegisterClipboardFormatW(formatNameW);
+    if (wcsstr((const wchar_t *)formatNameW, FORMAT_SERIALIZED) != NULL) {
+        result = RegisterClipboardFormatW((LPCWSTR)formatNameW);
     }
     env->ReleaseStringChars(formatName, formatNameW);
     return result;
@@ -1130,7 +1130,7 @@ HGLOBAL WinDataObject::getTextGlobal(JNIEnv * env, jstring text, BOOL unicode) {
         if (wstr == NULL) {
             return NULL;
         }
-        env->GetStringRegion(text, 0, len, wstr);
+        env->GetStringRegion(text, 0, len, (jchar *)wstr);
         wstr[len] = 0;
         return (HGLOBAL)wstr;
     }
@@ -1140,7 +1140,7 @@ HGLOBAL WinDataObject::getTextGlobal(JNIEnv * env, jstring text, BOOL unicode) {
     if (wstr == NULL) {
         return NULL;
     }
-    env->GetStringRegion(text, 0, len, wstr);
+    env->GetStringRegion(text, 0, len, (jchar *)wstr);
     wstr[len] = 0;
     
     int cLen = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, NULL, NULL);
@@ -1241,7 +1241,7 @@ HRESULT WinDataObject::getFileList(STGMEDIUM * pMedium) {
                 (jstring)env->GetObjectArrayElement(fileList, i);
         jsize len = (jstr != NULL) ? env->GetStringLength(jstr) : 0;
         if (len != 0) {
-            env->GetStringRegion(jstr, 0, len, wstr + charCount);
+            env->GetStringRegion(jstr, 0, len, (jchar *)(wstr + charCount));
             charCount += len + 1;
             wstr[charCount - 1] = 0;
         }
