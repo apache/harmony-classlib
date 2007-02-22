@@ -197,7 +197,6 @@ public class ObjectStreamClass implements Serializable {
     private static ObjectStreamClass addToCache(Class<?> cl, boolean computeSUID) {
 
         ObjectStreamClass result = new ObjectStreamClass();
-        classesAndDescriptors.put(cl, result);
 
         // Now we fill in the values
         result.setName(cl.getName());
@@ -239,6 +238,7 @@ public class ObjectStreamClass implements Serializable {
             flags |= ObjectStreamConstants.SC_WRITE_METHOD;
         }
         result.setFlags(flags);
+        classesAndDescriptors.put(cl, result);
 
         return result;
     }
@@ -261,13 +261,14 @@ public class ObjectStreamClass implements Serializable {
         // fields to dump based on the
         // reflect fields
 
+        ObjectStreamField[] _fields = null;
         if (!useReflectFields) {
             // The user declared a collection of emulated fields. Use them.
             // We have to be able to fetch its value, even if it is private
             AccessController.doPrivileged(new PriviAction<Object>(f));
             try {
                 // static field, pass null
-                fields = (ObjectStreamField[]) f.get(null);
+                _fields = (ObjectStreamField[]) f.get(null);
             } catch (IllegalAccessException ex) {
                 // WARNING - what should we do if we have no access ? This
                 // should not happen.
@@ -291,26 +292,27 @@ public class ObjectStreamClass implements Serializable {
             }
 
             if (serializableFields.size() == 0) {
-                fields = NO_FIELDS; // If no serializable fields, share the
+                _fields = NO_FIELDS; // If no serializable fields, share the
                 // special value so that users can test
             } else {
                 // Now convert from Vector to array
-                fields = new ObjectStreamField[serializableFields.size()];
-                fields = serializableFields.toArray(fields);
+                _fields = new ObjectStreamField[serializableFields.size()];
+                _fields = serializableFields.toArray(_fields);
             }
         }
-        ObjectStreamField.sortFields(fields);
+        ObjectStreamField.sortFields(_fields);
         // assign offsets
         int primOffset = 0, objectOffset = 0;
-        for (int i = 0; i < fields.length; i++) {
-            Class<?> type = fields[i].getType();
+        for (int i = 0; i < _fields.length; i++) {
+            Class<?> type = _fields[i].getType();
             if (type.isPrimitive()) {
-                fields[i].offset = primOffset;
+                _fields[i].offset = primOffset;
                 primOffset += primitiveSize(type);
             } else {
-                fields[i].offset = objectOffset++;
+                _fields[i].offset = objectOffset++;
             }
         }
+        fields = _fields;
     }
 
     /**
@@ -631,12 +633,14 @@ public class ObjectStreamClass implements Serializable {
      */
     ObjectStreamField[] fields() {
         if (fields == null) {
-            Class<?> forCl = forClass();
-            if (forCl != null && isSerializable(forCl) && !forCl.isArray()) {
-                buildFieldDescriptors(forCl.getDeclaredFields());
-            } else {
-                // Externalizables or arrays do not need FieldDesc info
-                setFields(new ObjectStreamField[0]);
+            synchronized(this){ 
+                Class<?> forCl = forClass();
+                if (forCl != null && isSerializable(forCl) && !forCl.isArray()) {
+                    buildFieldDescriptors(forCl.getDeclaredFields());
+                } else {
+                    // Externalizables or arrays do not need FieldDesc info
+                    setFields(new ObjectStreamField[0]);
+                }
             }
         }
         return fields;
