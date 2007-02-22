@@ -47,7 +47,7 @@ BUILDFILES = \
   $(FDLIBM_DIST)w_remainder.obj $(FDLIBM_DIST)w_scalb.obj $(FDLIBM_DIST)w_sinh.obj $(FDLIBM_DIST)w_sqrt.obj
 
 HYCFLAGS = -Oityb1 -W3 -Fd$(LIBPATH)hyfdlibm.pdb -D_IEEE_LIBM \
-	 -DHY_PLATFORM_DOUBLE_ORDER /I$(SHAREDSUB) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include
+	   /I$(SHAREDSUB) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include
 
 .c.obj:
         $(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c

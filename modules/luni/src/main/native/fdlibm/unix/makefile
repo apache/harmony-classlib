@@ -46,7 +46,7 @@ BUILDFILES = \
 
 # OPTS is overriden
 OPTS := -O0 -ffloat-store -fpic
-DEFINES += -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER
+DEFINES += -D_IEEE_LIBM
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a
 
