@@ -1379,7 +1379,7 @@ JNIEXPORT jlong JNICALL
     }                                                              
     
     glyph_bitmap = (FT_BitmapGlyph)(glyph);                          
-    ft_bitmap = (FT_Bitmap)glyph_bitmap->bitmap;
+    ft_bitmap = glyph_bitmap->bitmap;
         
     
     gbmp->left = glyph_bitmap->left;
