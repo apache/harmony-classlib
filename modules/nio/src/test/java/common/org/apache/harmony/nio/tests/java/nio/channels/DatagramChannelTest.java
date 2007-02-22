@@ -68,16 +68,19 @@ public class DatagramChannelTest extends TestCase {
 
     private DatagramSocket datagramSocket2;
 
+    // The port to be used in test cases.
+    private int testPort;
+
     protected void setUp() throws Exception {
         super.setUp();
         this.channel1 = DatagramChannel.open();
         this.channel2 = DatagramChannel.open();
-        this.localAddr1 = new InetSocketAddress("127.0.0.1",
-                Support_PortManager.getNextPort());
-        this.localAddr2 = new InetSocketAddress("127.0.0.1",
-                Support_PortManager.getNextPort());
-        this.datagramSocket1 = new DatagramSocket(0);
-        this.datagramSocket2 = new DatagramSocket(0);
+        int[] ports = Support_PortManager.getNextPortsForUDP(5);
+        this.localAddr1 = new InetSocketAddress("127.0.0.1", ports[0]);
+        this.localAddr2 = new InetSocketAddress("127.0.0.1", ports[1]);
+        this.datagramSocket1 = new DatagramSocket(ports[2]);
+        this.datagramSocket2 = new DatagramSocket(ports[3]);
+        testPort = ports[4];
     }
 
     protected void tearDown() throws Exception {
@@ -1282,7 +1285,7 @@ public class DatagramChannelTest extends TestCase {
 
     public void testReceiveSend_Normal_S2S() throws Exception {
         String msg = "normal string in testReceiveSend_Normal_S2S";
-        this.datagramSocket1 = new DatagramSocket(0);
+        this.datagramSocket1 = new DatagramSocket(testPort);
         DatagramPacket rdp = new DatagramPacket(msg.getBytes(), msg.length(),
                 localAddr2);
         datagramSocket2 = new DatagramSocket(localAddr2.getPort());
@@ -1338,7 +1341,7 @@ public class DatagramChannelTest extends TestCase {
 
     public void testReceiveSend_Empty_S2S() throws Exception {
         String msg = "";
-        this.datagramSocket1 = new DatagramSocket(0);
+        this.datagramSocket1 = new DatagramSocket(testPort);
         DatagramPacket rdp = new DatagramPacket(msg.getBytes(), msg.length(),
                 localAddr2);
         datagramSocket2 = new DatagramSocket(localAddr2.getPort());
@@ -1414,7 +1417,7 @@ public class DatagramChannelTest extends TestCase {
 
     private void sendByDatagramSocket(String data, InetSocketAddress address)
             throws Exception {
-        this.datagramSocket1 = new DatagramSocket(0);
+        this.datagramSocket1 = new DatagramSocket(testPort);
         DatagramPacket rdp = new DatagramPacket(data.getBytes(), data.length(),
                 address);
         this.datagramSocket1.send(rdp);
@@ -1506,8 +1509,7 @@ public class DatagramChannelTest extends TestCase {
     public void testRead_Security() throws Exception {        
         ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
         String strHello = "hello";
-        localAddr1 = new InetSocketAddress("127.0.0.1", Support_PortManager
-                .getNextPort());
+        localAddr1 = new InetSocketAddress("127.0.0.1", testPort);
         this.channel1.socket().bind(localAddr1);
         this.channel2.socket().bind(localAddr2);
         this.channel1.connect(localAddr2);
@@ -1526,8 +1528,7 @@ public class DatagramChannelTest extends TestCase {
     public void testReceive_Peek_Security_Nonblocking() throws Exception {        
         ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
         String strHello = "hello";
-        localAddr1 = new InetSocketAddress("127.0.0.1", Support_PortManager
-                .getNextPort());
+        localAddr1 = new InetSocketAddress("127.0.0.1", testPort);
         this.channel1.socket().bind(localAddr1);
         sendByChannel(strHello, localAddr1);
         final SecurityManager sm = System.getSecurityManager();

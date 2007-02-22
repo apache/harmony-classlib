@@ -17,6 +17,7 @@
 
 package tests.support;
 
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -39,6 +40,40 @@ public class Support_PortManager {
             }
         }
         return getNextPort_unsafe();
+    }
+
+    /**
+     * Returns 1 free ports to be used.
+     */
+    public static synchronized int getNextPortForUDP() {
+        return getNextPortsForUDP(1)[0];
+    }
+
+    /**
+     * Returns the specified number of free ports to be used.
+     */
+    public static synchronized int[] getNextPortsForUDP(int num) {
+        if (num <= 0) {
+            throw new IllegalArgumentException("Invalid ports number: " + num);
+        }
+        DatagramSocket[] dss = new DatagramSocket[num];
+        int[] ports = new int[num];
+
+        try {
+            for (int i = 0; i < num; ++i) {
+                dss[i] = new DatagramSocket(0);
+                ports[i] = dss[i].getLocalPort();
+            }
+        } catch (Exception ex) {
+            throw new Error("Unable to get " + num + " ports for UDP: " + ex);
+        } finally {
+            for (int i = 0; i < num; ++i) {
+                if (dss[i] != null) {
+                    dss[i].close();
+                }
+            }
+        }
+        return ports;
     }
 
     public static synchronized int getNextPort_unsafe() {
