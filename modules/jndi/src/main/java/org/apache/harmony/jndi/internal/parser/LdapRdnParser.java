@@ -61,9 +61,11 @@ public class LdapRdnParser implements LdapParser {
         try {
             checkTypeRestrictions(name);
             parser = new RelaxedDnParser(name);
-            listAll = (List) parser.parse();
+            listAll = parser.parse();
         } catch (IOException e) {
-            throw new InvalidNameException(Messages.getString("ldap.17") + name);
+            throw (InvalidNameException) (new InvalidNameException(Messages
+                    .getString("ldap.17")
+                    + name).initCause(e));
         }
         attrList = (List) listAll.get(0);
         for (Iterator iter = attrList.iterator(); iter.hasNext();) {

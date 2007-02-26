@@ -41,7 +41,7 @@ import org.apache.harmony.jndi.internal.parser.LdapRdnParser;
  * @author Osvaldo C. Demo
  * 
  */
-public class Rdn implements Serializable, Comparable {
+public class Rdn implements Serializable, Comparable<Object> {
 
     private static final long serialVersionUID = -5994465067210009656L;
 
@@ -101,8 +101,10 @@ public class Rdn implements Serializable, Comparable {
      * @ar.org.fitc.spec_ref
      */
     public Rdn(String rdnString) throws InvalidNameException {
-        if (rdnString == null)
+        if (rdnString == null) {
             throw new NullPointerException("rdnString "+Messages.getString("ldap.00"));
+        }
+
         if (rdnString.length() != 0) {
             parser = new LdapRdnParser(rdnString);
             list = parser.getList();

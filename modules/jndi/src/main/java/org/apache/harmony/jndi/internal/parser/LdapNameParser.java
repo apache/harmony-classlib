@@ -65,17 +65,22 @@ public class LdapNameParser implements NameParser, LdapParser {
         int from = 0;
         char[] c = s.toCharArray();
 
-        if (s.compareTo("") == 0)
+        if (s.equals("")) {
             return list;
-        if (s.startsWith(",") || s.startsWith(";"))
+        }
+
+        if (s.startsWith(",") || s.startsWith(";")) {
             throw new InvalidNameException("Invalid name: " + s);
+        }
 
         for (int i = 0; i < c.length; i++) {
             if ((c[i] == ',' || c[i] == ';') && c[i - 1] != '\\') {
 
-                if (s.substring(from, i).compareTo("") == 0)
+                String sub = s.substring(from, i); 
+                if (sub.equals("")) {
                     throw new InvalidNameException("Invalid name: " + s);
-                list.add(new Rdn(s.substring(from, i)));
+                }
+                list.add(new Rdn(sub));
                 from = i + 1;
             }
         }

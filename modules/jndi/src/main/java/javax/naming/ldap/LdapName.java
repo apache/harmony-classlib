@@ -17,6 +17,7 @@
 
 package javax.naming.ldap;
 
+import javax.naming.ldap.Rdn;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -38,15 +39,18 @@ public class LdapName implements Name {
 
     private static final long serialVersionUID = -1595520034788997356L;
 
-    private List rdns;
+    private List<Rdn> rdns;
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public LdapName(List rdns) {
-        if (rdns == null)
-            throw new NullPointerException("rdns "+Messages.getString("ldap.00"));
-        init(rdns);
+    public LdapName(List<Rdn> rdns) {
+        if (rdns == null) {
+            throw new NullPointerException("rdns "
+                    + Messages.getString("ldap.00"));
+        }
+
+        this.rdns = rdns;
     }
 
     /**
@@ -54,23 +58,24 @@ public class LdapName implements Name {
      */
     public LdapName(String name) throws InvalidNameException {
         LdapNameParser parser = new LdapNameParser(name);
-        init(parser.getList());
-    }
 
-    private void init(List rdns) {
-        this.rdns = rdns;
+        this.rdns = parser.getList();
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Name add(int posn, Rdn comp) {
-        if (comp == null)
-            throw new NullPointerException("comp "+Messages.getString("ldap.00"));
-        if (posn < 0 || posn > rdns.size())
-            throw new IndexOutOfBoundsException(
-                    Messages.getString("ldap.05"));
-        getRdns().add(posn, comp);
+        if (comp == null) {
+            throw new NullPointerException("comp "
+                    + Messages.getString("ldap.00"));
+        }
+
+        if (posn < 0 || posn > rdns.size()) {
+            throw new IndexOutOfBoundsException(Messages.getString("ldap.05"));
+        }
+
+        rdns.add(posn, comp);
         return this;
     }
 
@@ -85,25 +90,30 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Name add(Rdn comp) {
-        return add(getRdns().size(), comp);
+        return add(rdns.size(), comp);
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Name add(String comp) throws InvalidNameException {
-        return add(getRdns().size(), comp);
+        return add(rdns.size(), comp);
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Name addAll(int posn, List suffixRdns) {
-        if (suffixRdns == null)
-            throw new NullPointerException("suffixRdns "+Messages.getString("ldap.00"));
-        if (posn < 0 || posn > rdns.size())
+        if (suffixRdns == null) {
+            throw new NullPointerException("suffixRdns "
+                    + Messages.getString("ldap.00"));
+        }
+
+        if (posn < 0 || posn > rdns.size()) {
             throw new IndexOutOfBoundsException(Messages.getString("ldap.00"));
-        getRdns().addAll(posn, suffixRdns);
+        }
+
+        rdns.addAll(posn, suffixRdns);
         return this;
     }
 
@@ -112,12 +122,11 @@ public class LdapName implements Name {
      */
     public Name addAll(int posn, Name suffix) throws InvalidNameException {
         if (suffix instanceof LdapName) {
-            return addAll(posn, ((LdapName) suffix).getRdns());
+            return addAll(posn, ((LdapName) suffix).rdns);
         } else {
             List rdns = new ArrayList();
-            for (Enumeration iter = ((Name) suffix).getAll(); iter
-                    .hasMoreElements();) {
-                rdns.add(new Rdn((String)iter.nextElement()));
+            for (Enumeration iter = suffix.getAll(); iter.hasMoreElements();) {
+                rdns.add(new Rdn((String) iter.nextElement()));
             }
             return addAll(posn, rdns);
         }
@@ -127,14 +136,14 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Name addAll(List suffixRdns) {
-        return addAll(getRdns().size(), suffixRdns);
+        return addAll(rdns.size(), suffixRdns);
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Name addAll(Name suffix) throws InvalidNameException {
-        return addAll(getRdns().size(), suffix);
+        return addAll(rdns.size(), suffix);
     }
 
     /**
@@ -142,8 +151,8 @@ public class LdapName implements Name {
      */
     public Object clone() {
         List lista = new ArrayList();
-        for (int i = 0; i < getRdns().size(); i++) {
-            lista.add(getRdns().get(i));
+        for (int i = 0; i < rdns.size(); i++) {
+            lista.add(rdns.get(i));
         }
         return new LdapName(lista);
     }
@@ -153,25 +162,34 @@ public class LdapName implements Name {
      */
     public int compareTo(Object obj) {
         LdapName ln = null;
-        if (obj == null)
-            throw new ClassCastException("obj "+Messages.getString("ldap.01"));
+        if (obj == null) {
+            throw new ClassCastException("obj " + Messages.getString("ldap.01"));
+        }
+
         try {
             ln = (LdapName) obj;
         } catch (ClassCastException e) {
-            throw new ClassCastException("obj "+Messages.getString("ldap.01"));
+            throw new ClassCastException("obj " + Messages.getString("ldap.01"));
         }
+
         String s1 = new String(), s2 = new String();
 
-        for (Iterator iter = getRdns().iterator(); iter.hasNext();) {
+        for (Iterator iter = rdns.iterator(); iter.hasNext();) {
             s1 = s1 + iter.next().toString() + ",";
         }
-        for (Iterator iter = ln.getRdns().iterator(); iter.hasNext();) {
+
+        for (Iterator iter = ln.rdns.iterator(); iter.hasNext();) {
             s2 = s2 + iter.next().toString() + ",";
         }
-        if (s1.lastIndexOf(',') > 0)
+
+        if (s1.lastIndexOf(',') > 0) {
             s1 = s1.substring(0, s1.lastIndexOf(','));
-        if (s2.lastIndexOf(',') > 0)
+        }
+
+        if (s2.lastIndexOf(',') > 0) {
             s2 = s2.substring(0, s2.lastIndexOf(','));
+        }
+
         return s1.toLowerCase().compareTo(s2.toLowerCase());
     }
 
@@ -181,11 +199,12 @@ public class LdapName implements Name {
     public boolean endsWith(List rdns) {
         try {
             Iterator iter = rdns.iterator();
-            Iterator iter2 = ((LdapName) getSuffix(getRdns().size()
-                    - rdns.size())).getRdns().iterator();
+            Iterator iter2 = ((LdapName) getSuffix(rdns.size()
+                    - rdns.size())).rdns.iterator();
             while (iter.hasNext()) {
-                if (!((Rdn) iter.next()).equals((Rdn) iter2.next()))
+                if (!((Rdn) iter.next()).equals(iter2.next())) {
                     return false;
+                }
             }
             return true;
         } catch (RuntimeException e) {
@@ -198,32 +217,32 @@ public class LdapName implements Name {
      */
     public boolean endsWith(Name n) {
         try {
-            if (n.equals(getSuffix(getRdns().size() - n.size())))
-                return true;
-            else
-                return false;
+            return n.equals(getSuffix(rdns.size() - n.size()));
         } catch (RuntimeException e) {
             return false;
         }
     }
-
     /**
      * @ar.org.fitc.spec_ref
      */
     public boolean equals(Object obj) {
         LdapName ln = null;
-        if (obj == null)
+        if (obj == null) {
             return false;
+        }
+
         try {
             ln = (LdapName) obj;
         } catch (ClassCastException e) {
             return false;
         }
-        if (ln.getRdns().size() != getRdns().size())
-            return false;
 
-        Iterator iter = ln.getRdns().iterator();
-        Iterator iter2 = getRdns().iterator();
+        if (ln.rdns.size() != rdns.size()) {
+            return false;
+        }
+
+        Iterator iter = ln.rdns.iterator();
+        Iterator iter2 = rdns.iterator();
         while (iter.hasNext()) {
             Rdn rdn1 = (Rdn) iter.next();
             Rdn rdn2 = (Rdn) iter2.next();
@@ -247,6 +266,7 @@ public class LdapName implements Name {
     public Enumeration getAll() {
         final Iterator rdns = getRdns().iterator();
         return new Enumeration() {
+
             public boolean hasMoreElements() {
                 return rdns.hasNext();
             }
@@ -262,16 +282,15 @@ public class LdapName implements Name {
      */
     public Name getPrefix(int posn) {
         if (posn < 0)
-            throw new IndexOutOfBoundsException(
-                    Messages.getString("ldap.02"));
-        return new LdapName(getRdns().subList(0, posn));
+            throw new IndexOutOfBoundsException(Messages.getString("ldap.02"));
+        return new LdapName(rdns.subList(0, posn));
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Rdn getRdn(int posn) {
-        return (Rdn) getRdns().get(posn);
+        return rdns.get(posn);
     }
 
     /**
@@ -285,10 +304,11 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Name getSuffix(int posn) {
-        if (posn > getRdns().size())
-            throw new IndexOutOfBoundsException(
-                    Messages.getString("ldap.02"));
-        return new LdapName(getRdns().subList(posn, getRdns().size()));
+        if (posn > rdns.size()) {
+            throw new IndexOutOfBoundsException(Messages.getString("ldap.02"));
+        }
+
+        return new LdapName(rdns.subList(posn, rdns.size()));
     }
 
     /**
@@ -296,7 +316,7 @@ public class LdapName implements Name {
      */
     public int hashCode() {
         int sum = 0;
-        for (Iterator iter = getRdns().iterator(); iter.hasNext();) {
+        for (Iterator iter = rdns.iterator(); iter.hasNext();) {
             sum += iter.next().hashCode();
         }
         return sum;
@@ -306,17 +326,14 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public boolean isEmpty() {
-        if (getRdns().size() == 0)
-            return true;
-        else
-            return false;
+        return rdns.size() == 0;
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public Object remove(int posn) throws InvalidNameException {
-        return getRdns().remove(posn);
+        return rdns.remove(posn);
     }
 
     /**
@@ -332,11 +349,12 @@ public class LdapName implements Name {
     public boolean startsWith(List rdns) {
         try {
             Iterator iter = rdns.iterator();
-            Iterator iter2 = ((LdapName) getPrefix(rdns.size())).getRdns()
+            Iterator iter2 = ((LdapName) getPrefix(rdns.size())).rdns
                     .iterator();
             while (iter.hasNext()) {
-                if (!((Rdn) iter.next()).equals((Rdn) iter2.next()))
+                if (!((Rdn) iter.next()).equals(iter2.next())) {
                     return false;
+                }
             }
             return true;
         } catch (RuntimeException e) {
@@ -349,10 +367,7 @@ public class LdapName implements Name {
      */
     public boolean startsWith(Name n) {
         try {
-            if (n.equals(getPrefix(n.size())))
-                return true;
-            else
-                return false;
+            return n.equals(getPrefix(n.size()));
         } catch (RuntimeException e) {
             return false;
         }
@@ -366,8 +381,8 @@ public class LdapName implements Name {
         if (rdns.size() == 0)
             return "";
         StringBuffer sb = new StringBuffer();
-        sb.append(rdns.get(getRdns().size() - 1).toString());
-        for (int i = getRdns().size() - 2; i >= 0; i--) {
+        sb.append(rdns.get(rdns.size() - 1).toString());
+        for (int i = rdns.size() - 2; i >= 0; i--) {
             sb.append("," + rdns.get(i).toString());
         }
         return sb.toString();
