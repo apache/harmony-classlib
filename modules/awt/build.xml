@@ -143,7 +143,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/lcmm">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 
@@ -151,7 +152,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/jpegdecoder">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 
@@ -159,7 +161,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/gl">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
         
@@ -167,7 +170,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/oglwrapper">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>
@@ -177,7 +181,7 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/x11wrapper">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
 
@@ -185,7 +189,7 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/linuxfont">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
     </target>
@@ -195,7 +199,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/win32wrapper">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 
@@ -203,7 +208,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/winfont">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>

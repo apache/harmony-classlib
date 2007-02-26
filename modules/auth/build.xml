@@ -72,12 +72,13 @@
     
     <!-- Build native code -->
     <target name="build-native" >
-    <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" />
+        <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" />
 
-    <!-- Copy the built shared libs over to the jre/bin dir -->
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.auth.src.main.native}/auth">
-                <patternset includes="*${shlib.suffix}*" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.auth.src.main.native}/auth">
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>

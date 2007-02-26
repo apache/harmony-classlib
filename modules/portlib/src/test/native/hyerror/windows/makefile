@@ -19,7 +19,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=../hyerror.exe
+EXENAME=..\hyerror.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)hyerror.obj

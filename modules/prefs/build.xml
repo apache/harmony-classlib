@@ -60,14 +60,15 @@
     <!-- Build natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
     <target name="build-native" if="is.windows">
-    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os.family}" />
+        <make dir="${hy.prefs.src.main.native}/prefs/${hy.os.family}" />
 
-    <!-- Copy the built shared libs over to the jre/bin dir -->
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.prefs.src.main.native}/prefs">
-            <patternset includes="*${shlib.suffix}*" />
-        </fileset>
-    </copy>
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.prefs.src.main.native}/prefs">
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="clean">

@@ -121,7 +121,8 @@
         <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/luni">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*" />
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 

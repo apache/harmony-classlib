@@ -71,15 +71,17 @@
         
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.archive.src.main.native}/zlib">
-                <patternset includes="*${shlib.suffix}*" />
+            <fileset dir="${hy.archive.src.main.native}/zlib">
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
         
     <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}" />
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.archive.src.main.native}/archive">
-                <patternset includes="*${shlib.suffix}*" />
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.archive.src.main.native}/archive">
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>

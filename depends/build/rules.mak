@@ -47,24 +47,29 @@ $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
 	$(ENTRY_OPTION) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
-        $(COMMENT) \
+		$(COMMENT) \
 	-subsystem:windows -out:$@ -map:$*.map \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib \
-        comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
+		comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
+	if exist $(DLLNAME).manifest \
+		mt -manifest $(DLLNAME).manifest -outputresource:$(DLLNAME);#2
+#	del /Q $(DLLNAME).manifest
 !endif
 
 !ifdef EXENAME
 $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 	link /NOLOGO $(EXEFLAGS) /debug /opt:icf /opt:ref $(VMLINK) \
 	-out:$(EXENAME) -machine:$(CPU) setargv.obj  \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(EXEDLLFILES) 
+	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(EXEDLLFILES)
+	if exist $(EXENAME).manifest \
+		mt -manifest $(EXENAME).manifest -outputresource:$(EXENAME);#1
 !endif
 
 clean:
     -del $(BUILDFILES) *.res *.pdb \
              $(LIBNAME) $(LIBNAME:.lib=.exp) \
              $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
-             $(EXENAME) $(EXENAME:.exe=.pdb) \
-             $(CLEANFILES)
-#             $(CLEANFILES) >nul 2>&1
+			 $(DLLNAME).manifest \
+             $(EXENAME) $(EXENAME:.exe=.pdb) $(EXENAME).manifest \
+             $(CLEANFILES) >nul 2>&1

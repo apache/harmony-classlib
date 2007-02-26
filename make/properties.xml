@@ -178,6 +178,8 @@
     </condition>
     <property name="linklib.suffix" value=".so" />
 
+    <property name="manifest.suffix" value=".manifest" />
+
     <condition property="make.command" value="nmake.exe">
         <isset property="is.windows"/>
     </condition>

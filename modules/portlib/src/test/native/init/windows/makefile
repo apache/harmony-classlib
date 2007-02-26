@@ -19,7 +19,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=../init.exe
+EXENAME=..\init.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)init.obj

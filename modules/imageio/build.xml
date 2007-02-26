@@ -103,7 +103,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.imageio.src.main.native}/jpegencoder/">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>

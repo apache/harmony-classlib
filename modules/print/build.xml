@@ -107,7 +107,8 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.print.src.main.native}/print/">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*"/>
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>

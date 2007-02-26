@@ -19,7 +19,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=../hytime.exe
+EXENAME=..\hytime.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)hytime.obj

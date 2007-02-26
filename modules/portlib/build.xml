@@ -86,7 +86,8 @@
 
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/sig">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*" />
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>
@@ -97,7 +98,8 @@
 
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/thread">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*" />
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
     </target>
@@ -108,7 +110,8 @@
 
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/port">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*" />
+                <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 
@@ -120,7 +123,6 @@
         <make dir="${hy.portlib.src.main.native}/port/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/common/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/pool/${hy.os.family}" target="clean" />
-
     </target>
 
     <target name="-clean-native-sig" unless="hy.skip.sig">
