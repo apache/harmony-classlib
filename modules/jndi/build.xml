@@ -181,6 +181,7 @@
 
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
+                    <include name="**/Test*.java"/>
                     <excludesfile name="${jndi.exclude.file}" />
 
                     <!--  These tests run in a separate jvm below -->
