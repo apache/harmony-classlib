@@ -60,6 +60,9 @@
     <condition property="is.freebsd">
         <os name="freebsd" />
     </condition>
+    <condition property="is.aix">
+        <os name="aix" />
+    </condition>
     <condition property="is.unix">
         <os family="unix" />
     </condition>
@@ -81,6 +84,9 @@
     </condition>
     <condition property="hy.os" value="freebsd">
         <os name="freebsd" />
+    </condition>
+    <condition property="hy.os" value="aix">
+        <os name="aix" />
     </condition>
 
     <property name="hy.os" value="${os.name}" />
@@ -176,7 +182,10 @@
         <isset property="is.windows"/>
     </condition>
     <condition property="make.command" value="gmake">
-        <isset property="is.freebsd"/>
+        <or>
+            <isset property="is.aix"/>
+            <isset property="is.freebsd"/>
+        </or>
     </condition>
     <property name="make.command" value="make" />
 
@@ -255,6 +264,8 @@ Harmony platform properties:
   is.windows = ${is.windows}
   is.unix = ${is.unix}
   is.linux = ${is.linux}
+  is.freebsd = ${is.freebsd}
+  is.aix = ${is.aix}
   is.32bit = ${is.32bit}
   is.64bit = ${is.64bit}
   is.x86 = ${is.x86}
