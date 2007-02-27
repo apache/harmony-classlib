@@ -1926,6 +1926,16 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
             // We get here if stream-based replacement produced the same object
 
+            // Is it a Class ?
+            if (objClass == ObjectStreamClass.CLASSCLASS) {
+                return writeNewClass((Class<?>) object, unshared);
+            }
+
+            // Is it an ObjectStreamClass ?
+            if (objClass == ObjectStreamClass.OBJECTSTREAMCLASSCLASS) {
+                return writeClassDesc((ObjectStreamClass) object, unshared);
+            }
+
             // Is it a String ? (instanceof, but == is faster)
             if (objClass == ObjectStreamClass.STRINGCLASS) {
                 return writeNewString((String) object, unshared);
