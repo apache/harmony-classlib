@@ -29,7 +29,7 @@ import org.apache.harmony.jndi.tests.javax.naming.ldap.TestInitialLdapContext;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestManageReferralControl;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestPagedResultsControls;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestPagedResultsResponseControl;
-import org.apache.harmony.jndi.tests.javax.naming.ldap.TestRdn;
+import org.apache.harmony.jndi.tests.javax.naming.ldap.RdnTest;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortControl;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortKey;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortResponseControl;
@@ -77,7 +77,7 @@ public class AllTestLdap {
 	        suite.addTest(new TestSuite(TestUnsolicitedNotificationEvent.class));
 	        suite.addTest(new TestSuite(TestSortControl.class));
 	        suite.addTest(new TestSuite(TestSortResponseControl.class));
-	        suite.addTest(new TestSuite(TestRdn.class));
+	        suite.addTest(new TestSuite(RdnTest.class));
 	        suite.addTest(new TestSuite(LdapNameTest.class));
 	        suite.addTest(new TestSuite(TestPagedResultsControls.class));
 	        suite.addTest(new TestSuite(TestPagedResultsResponseControl.class));
