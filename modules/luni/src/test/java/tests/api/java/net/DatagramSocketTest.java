@@ -113,7 +113,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_ConstructorI() {
 		// Test for method java.net.DatagramSocket(int)
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			assertTrue("Created socket with incorrect port",
 					ds.getLocalPort() == portNumber);
@@ -128,7 +128,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_ConstructorILjava_net_InetAddress() {
 		// Test for method java.net.DatagramSocket(int, java.net.InetAddress)
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber, InetAddress
 					.getLocalHost());
 			assertTrue("Created socket with incorrect port",
@@ -146,7 +146,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_close() {
 		// Test for method void java.net.DatagramSocket.close()
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			dp = new DatagramPacket("Test String".getBytes(), 11, InetAddress
 					.getLocalHost(), 0);
@@ -165,7 +165,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
 					inetAddress));
@@ -183,7 +183,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				ds = new java.net.DatagramSocket();
 				InetAddress inetAddress = InetAddress
 						.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
-				int portNumber = Support_PortManager.getNextPort();
+				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds.connect(inetAddress, portNumber);
 				assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
 						inetAddress));
@@ -264,7 +264,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			DatagramPacket send = new DatagramPacket(new byte[10], 10);
 			ds.send(send);
@@ -284,11 +284,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can send/receive with datagram sockets connected at
 		// the native level
 		DatagramServer server = null;
-		int serverPortNumber = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(3);
+		int serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -333,7 +334,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			ds.disconnect();
 			ds.close();
@@ -346,7 +347,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			DatagramPacket send = new DatagramPacket(new byte[10], 10,
 					inetAddress, portNumber + 1);
@@ -364,11 +365,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can connect, then disconnect, then connect then
 		// send/recv
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -416,11 +418,12 @@ public class DatagramSocketTest extends SocketTestCase {
 
 		// validate that we can connect/disconnect then send/recv to any address
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -467,11 +470,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can connect on an allready connected socket and then
 		// send/recv
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -522,7 +526,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			ds = new java.net.DatagramSocket();
 			byte[] addressBytes = { 0, 0, 0, 0 };
 			InetAddress inetAddress = InetAddress.getByAddress(addressBytes);
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 		} catch (Exception e) {
 			fail(
@@ -539,7 +543,7 @@ public class DatagramSocketTest extends SocketTestCase {
 						0, 0, 0 };
 				InetAddress inetAddress = InetAddress
 						.getByAddress(addressBytes);
-				int portNumber = Support_PortManager.getNextPort();
+				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds.connect(inetAddress, portNumber);
 			} catch (Exception e) {
 				fail(
@@ -556,7 +560,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			ds.disconnect();
 			assertNull("Incorrect InetAddress", ds.getInetAddress());
@@ -573,7 +577,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				ds = new java.net.DatagramSocket();
 				InetAddress inetAddress = InetAddress
 						.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
-				int portNumber = Support_PortManager.getNextPort();
+				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds.connect(inetAddress, portNumber);
 				ds.disconnect();
 				assertNull("Incorrect InetAddress", ds.getInetAddress());
@@ -600,7 +604,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		// java.net.DatagramSocket.getLocalAddress()
 		InetAddress local = null;
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			local = InetAddress.getLocalHost();
 			ds = new java.net.DatagramSocket(portNumber, local);
 			assertTrue("Returned incorrect address. Got:"
@@ -644,7 +648,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_getLocalPort() {
 		// Test for method int java.net.DatagramSocket.getLocalPort()
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			assertTrue("Returned incorrect port",
 					ds.getLocalPort() == portNumber);
@@ -658,7 +662,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_getPort() {
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			DatagramSocket theSocket = new DatagramSocket(portNumber);
 			assertEquals("Expected -1 for remote port as not connected",
 					-1, theSocket.getPort());
@@ -678,7 +682,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_getReceiveBufferSize() {
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setReceiveBufferSize(130);
 			assertTrue("Incorrect buffer size",
@@ -694,7 +698,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_getSendBufferSize() {
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setSendBufferSize(134);
 			assertTrue("Incorrect buffer size", ds.getSendBufferSize() >= 134);
@@ -710,7 +714,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_getSoTimeout() {
 		// Test for method int java.net.DatagramSocket.getSoTimeout()
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setSoTimeout(100);
 			assertEquals("Returned incorrect timeout", 100, ds.getSoTimeout());
@@ -728,8 +732,8 @@ public class DatagramSocketTest extends SocketTestCase {
 		// java.net.DatagramSocket.receive(java.net.DatagramPacket)
 
 		receive_oversize_java_net_DatagramPacket();
-
-		final int portNumber = Support_PortManager.getNextPort();
+		final int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		final int portNumber = ports[0];
 
 		class TestDGRcv implements Runnable {
 			public void run() {
@@ -737,8 +741,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				try {
 					localHost = InetAddress.getLocalHost();
 					Thread.sleep(1000);
-					DatagramSocket sds = new DatagramSocket(Support_PortManager
-							.getNextPort());
+					DatagramSocket sds = new DatagramSocket(ports[1]);
 					DatagramPacket rdp = new DatagramPacket("Test String"
 							.getBytes(), 11, localHost, portNumber);
 					sds.send(rdp);
@@ -810,8 +813,9 @@ public class DatagramSocketTest extends SocketTestCase {
 			} while (thread.isAlive());
 
 			interrupted = false;
-			final int portNum = Support_PortManager.getNextPort();
-			final DatagramSocket ds2 = new DatagramSocket();
+			int[] ports1 = Support_PortManager.getNextPortsForUDP(2);
+			final int portNum = ports[0];
+			final DatagramSocket ds2 = new DatagramSocket(ports[1]);
 			ds2.setSoTimeout(12000);
 			Runnable runnable2 = new Runnable() {
 				public void run() {
@@ -871,8 +875,8 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_sendLjava_net_DatagramPacket() throws Exception {
 		// Test for method void
 		// java.net.DatagramSocket.send(java.net.DatagramPacket)
-
-		final int portNumber = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		final int portNumber = ports[0];
 
 		class TestDGSend implements Runnable {
 			Thread pThread;
@@ -905,7 +909,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			new Thread(new TestDGSend(Thread.currentThread()), "DGServer")
 					.start();
-			ds = new java.net.DatagramSocket();
+			ds = new java.net.DatagramSocket(ports[1]);
 			dp = new DatagramPacket(testString.getBytes(), testString.length(),
 					InetAddress.getLocalHost(), portNumber);
 			// Wait to allow send to occur
@@ -980,7 +984,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_setSendBufferSizeI() {
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setSendBufferSize(134);
 			assertTrue("Incorrect buffer size", ds.getSendBufferSize() >= 134);
@@ -995,7 +999,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_setReceiveBufferSizeI() {
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setReceiveBufferSize(130);
 			assertTrue("Incorrect buffer size",
@@ -1012,7 +1016,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_setSoTimeoutI() {
 		// Test for method void java.net.DatagramSocket.setSoTimeout(int)
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setSoTimeout(100);
 			assertTrue("Set incorrect timeout", ds.getSoTimeout() >= 100);
@@ -1051,7 +1055,7 @@ public class DatagramSocketTest extends SocketTestCase {
 
 		try {
 			try {
-				int portNumber = Support_PortManager.getNextPort();
+				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds = new java.net.DatagramSocket(new InetSocketAddress(
 						InetAddress.getLocalHost(), portNumber));
                 assertTrue(ds.getBroadcast());
@@ -1064,7 +1068,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			}
 
 			try {
-				int portNumber = Support_PortManager.getNextPort();
+				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds = new java.net.DatagramSocket(new mySocketAddress());
 				fail(
 						"No exception when constucting datagramSocket with unsupported SocketAddress type");
@@ -1093,8 +1097,9 @@ public class DatagramSocketTest extends SocketTestCase {
 		DatagramServer server = null;
 		try {
 			// now create a socket that is not bound and then bind it
-			int portNumber = Support_PortManager.getNextPort();
-			int serverPortNumber = Support_PortManager.getNextPort();
+			int[] ports = Support_PortManager.getNextPortsForUDP(3);
+			int portNumber = ports[0];
+			int serverPortNumber = ports[1];
 			DatagramSocket theSocket = new DatagramSocket(
 					new InetSocketAddress(InetAddress.getLocalHost(),
 							portNumber));
@@ -1113,7 +1118,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			// now make sure that datagrams sent from this socket appear to come
 			// from the address we bound to
 			InetAddress localHost = InetAddress.getLocalHost();
-			portNumber = Support_PortManager.getNextPort();
+			portNumber = ports[2];
 			DatagramSocket ds = new DatagramSocket(null);
 			ds.bind(new InetSocketAddress(localHost, portNumber));
 
@@ -1159,19 +1164,19 @@ public class DatagramSocketTest extends SocketTestCase {
 						.bind(new InetSocketAddress(
 								InetAddress
 										.getByAddress(Support_Configuration.nonLocalAddressBytes),
-								Support_PortManager.getNextPort()));
+								Support_PortManager.getNextPortForUDP()));
 				fail("No exception when binding to bad address");
 			} catch (SocketException ex) {
 			}
 			theSocket.close();
 
 			// Address that we have allready bound to
+			ports = Support_PortManager.getNextPortsForUDP(2);
 			theSocket = new DatagramSocket(null);
-			DatagramSocket theSocket2 = new DatagramSocket();
+			DatagramSocket theSocket2 = new DatagramSocket(ports[0]);
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
-						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+						InetAddress.getLocalHost(), ports[1]);
 				theSocket.bind(theAddress);
 				theSocket2.bind(theAddress);
 				fail("No exception binding to address that is not available");
@@ -1208,7 +1213,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			DatagramPacket send = new DatagramPacket(new byte[10], 10);
 			ds.send(send);
@@ -1228,11 +1233,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can send/receive with datagram sockets connected at
 		// the native level
 		DatagramServer server = null;
-		int serverPortNumber = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(3);
+		int serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -1277,7 +1283,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			ds.disconnect();
 			ds.close();
@@ -1290,7 +1296,7 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			ds = new java.net.DatagramSocket();
 			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			DatagramPacket send = new DatagramPacket(new byte[10], 10,
 					inetAddress, portNumber + 1);
@@ -1308,11 +1314,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can connect, then disconnect, then connect then
 		// send/recv
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -1360,11 +1367,12 @@ public class DatagramSocketTest extends SocketTestCase {
 
 		// validate that we can connect/disconnect then send/recv to any address
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -1411,11 +1419,12 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can connect on an allready connected socket and then
 		// send/recv
 		server = null;
-		serverPortNumber = Support_PortManager.getNextPort();
+		ports = Support_PortManager.getNextPortsForUDP(3);
+		serverPortNumber = ports[0];
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			DatagramSocket ds2 = new DatagramSocket();
+			DatagramSocket ds = new DatagramSocket(ports[1]);
+			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
 			try {
 				server = new DatagramServer(serverPortNumber, localHost);
@@ -1467,7 +1476,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			ds = new java.net.DatagramSocket();
 			byte[] addressBytes = { 0, 0, 0, 0 };
 			InetAddress inetAddress = InetAddress.getByAddress(addressBytes);
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			InetAddress localHost = InetAddress.getLocalHost();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			assertTrue("Is not connected after connect to inaddr any", ds
@@ -1492,9 +1501,10 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_isBound() {
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
-			int port = Support_PortManager.getNextPort();
+			int[] ports = Support_PortManager.getNextPortsForUDP(3);
+			int port = ports[0];
 
-			DatagramSocket theSocket = new DatagramSocket();
+			DatagramSocket theSocket = new DatagramSocket(ports[1]);
 			assertTrue("Socket indicated  not bound when it should be (1)",
 					theSocket.isBound());
 			theSocket.close();
@@ -1518,8 +1528,7 @@ public class DatagramSocketTest extends SocketTestCase {
 
 			// now test when we bind explicitely
 			InetSocketAddress theLocalAddress = new InetSocketAddress(
-					InetAddress.getLocalHost(), Support_PortManager
-							.getNextPort());
+					InetAddress.getLocalHost(), ports[2]);
 			theSocket = new DatagramSocket(null);
 			assertFalse("Socket indicated bound when it should not be (2)",
 					theSocket.isBound());
@@ -1540,10 +1549,11 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_isConnected() {
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
-			int port = Support_PortManager.getNextPort();
+			int[] ports = Support_PortManager.getNextPortsForUDP(4);
+			int port = ports[0];
 
 			// base test
-			DatagramSocket theSocket = new DatagramSocket();
+			DatagramSocket theSocket = new DatagramSocket(ports[1]);
 			assertFalse("Socket indicated connected when it should not be",
 					theSocket.isConnected());
 			theSocket.connect(new InetSocketAddress(addr, port));
@@ -1551,8 +1561,7 @@ public class DatagramSocketTest extends SocketTestCase {
 					theSocket.isConnected());
 
 			// reconnect the socket and make sure we get the right answer
-			theSocket.connect(new InetSocketAddress(addr, Support_PortManager
-					.getNextPort()));
+			theSocket.connect(new InetSocketAddress(addr, ports[2]));
 			assertTrue("Socket indicated  not connected when it should be",
 					theSocket.isConnected());
 
@@ -1563,7 +1572,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			theSocket.close();
 
 			// now check behavior when socket is closed when connected
-			theSocket = new DatagramSocket();
+			theSocket = new DatagramSocket(ports[3]);
 			theSocket.connect(new InetSocketAddress(addr, port));
 			theSocket.close();
 			assertTrue("Socket indicated  not connected when it should be",
@@ -1578,8 +1587,9 @@ public class DatagramSocketTest extends SocketTestCase {
 	 */
 	public void test_getRemoteSocketAddress() {
 		try {
-			int sport = Support_PortManager.getNextPort();
-			int portNumber = Support_PortManager.getNextPort();
+			int[] ports = Support_PortManager.getNextPortsForUDP(3);
+			int sport = ports[0];
+			int portNumber = ports[1];
 			DatagramSocket s = new DatagramSocket(new InetSocketAddress(
 					InetAddress.getLocalHost(), portNumber));
 			s.connect(new InetSocketAddress(InetAddress.getLocalHost(), sport));
@@ -1593,7 +1603,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			// now create one that is not connected and validate that we get the
 			// right answer
 			DatagramSocket theSocket = new DatagramSocket(null);
-			portNumber = Support_PortManager.getNextPort();
+			portNumber = ports[2];
 			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
 					portNumber));
 			assertNull(
@@ -1622,7 +1632,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_getLocalSocketAddress() {
 
 		try {
-			int portNumber = Support_PortManager.getNextPort();
+			int portNumber = Support_PortManager.getNextPortForUDP();
 			DatagramSocket s = new DatagramSocket(new InetSocketAddress(
 					InetAddress.getLocalHost(), portNumber));
 			assertTrue("Returned incorrect InetSocketAddress(1):"
@@ -1646,7 +1656,7 @@ public class DatagramSocketTest extends SocketTestCase {
 					theSocket.getLocalSocketAddress());
 
 			// now bind the socket and make sure we get the right answer
-			portNumber = Support_PortManager.getNextPort();
+			portNumber = Support_PortManager.getNextPortForUDP();
 			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
 					portNumber));
 			assertTrue("Returned incorrect InetSocketAddress(2):"
@@ -1700,7 +1710,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new DatagramSocket(null);
 				theSocket2 = new DatagramSocket(null);
 				theSocket1.setReuseAddress(false);
@@ -1721,7 +1731,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new DatagramSocket(null);
 				theSocket2 = new DatagramSocket(null);
 				theSocket1.setReuseAddress(true);
@@ -1742,7 +1752,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new DatagramSocket(null);
 				theSocket2 = new DatagramSocket(null);
 				theSocket1.bind(theAddress);
@@ -1786,7 +1796,8 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_setBroadcastZ() {
 
 		try {
-			DatagramSocket theSocket = new DatagramSocket();
+			int[] ports = Support_PortManager.getNextPortsForUDP(3);
+			DatagramSocket theSocket = new DatagramSocket(ports[0]);
 			theSocket.setBroadcast(false);
 			byte theBytes[] = { -1, -1, -1, -1 };
 
@@ -1794,8 +1805,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			// setBroadcast is false
 			try {
 				theSocket.connect(new InetSocketAddress(InetAddress
-						.getByAddress(theBytes), Support_PortManager
-						.getNextPort()));
+						.getByAddress(theBytes), ports[1]));
 				assertFalse(
 						"No exception when connecting to broadcast address with setBroadcast(false)",
 						theSocket.getBroadcast());
@@ -1807,8 +1817,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			theSocket.setBroadcast(true);
 			theSocket
 					.connect(new InetSocketAddress(InetAddress
-							.getByAddress(theBytes), Support_PortManager
-							.getNextPort()));
+							.getByAddress(theBytes), ports[2]));
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_BROADCAST);
 		} catch (Exception e) {
 			handleException(e, SO_BROADCAST);
@@ -1842,10 +1851,11 @@ public class DatagramSocketTest extends SocketTestCase {
 			int IPTOS_RELIABILTY = 0x4;
 			int IPTOS_THROUGHPUT = 0x8;
 			int IPTOS_LOWDELAY = 0x10;
+			int[] ports = Support_PortManager.getNextPortsForUDP(2);
 
 			new InetSocketAddress(InetAddress.getLocalHost(),
-					Support_PortManager.getNextPort());
-			DatagramSocket theSocket = new DatagramSocket();
+					ports[0]);
+			DatagramSocket theSocket = new DatagramSocket(ports[1]);
 
 			// validate that value set must be between 0 and 255
 			try {
@@ -1878,10 +1888,11 @@ public class DatagramSocketTest extends SocketTestCase {
 			int IPTOS_RELIABILTY = 0x4;
 			int IPTOS_THROUGHPUT = 0x8;
 			int IPTOS_LOWDELAY = 0x10;
+			int[] ports = Support_PortManager.getNextPortsForUDP(2);
 
 			new InetSocketAddress(InetAddress.getLocalHost(),
-					Support_PortManager.getNextPort());
-			DatagramSocket theSocket = new DatagramSocket();
+					ports[0]);
+			DatagramSocket theSocket = new DatagramSocket(ports[1]);
 
 			/*
 			 * we cannot actually check that the values are set as if a platform
@@ -1909,7 +1920,7 @@ public class DatagramSocketTest extends SocketTestCase {
 					.isClosed());
 
 			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort());
+					.getLocalHost(), Support_PortManager.getNextPortForUDP());
 			theSocket = new DatagramSocket(theAddress);
 			assertFalse("Socket should indicate it is not closed(2):",
 					theSocket.isClosed());
@@ -1949,8 +1960,8 @@ public class DatagramSocketTest extends SocketTestCase {
 	}
 
 	protected void receive_oversize_java_net_DatagramPacket() {
-
-		final int portNumber = Support_PortManager.getNextPort();
+		final int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		final int portNumber = ports[0];
 
 		class TestDGRcvOver implements Runnable {
 			public void run() {
@@ -1958,8 +1969,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				try {
 					localHost = InetAddress.getLocalHost();
 					Thread.sleep(1000);
-					DatagramSocket sds = new DatagramSocket(Support_PortManager
-							.getNextPort());
+					DatagramSocket sds = new DatagramSocket(ports[1]);
 					DatagramPacket rdp = new DatagramPacket("0123456789"
 							.getBytes(), 10, localHost, portNumber);
 					sds.send(rdp);

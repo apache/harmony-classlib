@@ -174,7 +174,8 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		} catch (UnknownHostException e) {
 			fail("Unexpected UnknownHostException : " + e.getMessage());
 		}
-		final int port = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		final int port = ports[0];
 		final Object lock = new Object();
 
 		Thread thread = new Thread(new Runnable() {
@@ -203,7 +204,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 		DatagramSocket socket = null;
 		try {
-			socket = new DatagramSocket(Support_PortManager.getNextPort());
+			socket = new DatagramSocket(ports[1]);
 			socket.setSoTimeout(3000);
 			DatagramPacket packet = new DatagramPacket(new byte[] { 1, 2, 3, 4,
 					5, 6 }, 6, localhost, port);
@@ -326,7 +327,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			// now validate we can construct
 			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort());
+					.getLocalHost(), Support_PortManager.getNextPortForUDP());
 			DatagramPacket thePacket = new DatagramPacket(buf, 1, theAddress);
 			assertTrue("Socket address not set correctly (1)", theAddress
 					.equals(thePacket.getSocketAddress()));
@@ -370,7 +371,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			// now validate we can construct
 			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort());
+					.getLocalHost(), Support_PortManager.getNextPortForUDP());
 			DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, theAddress);
 			assertTrue("Socket address not set correctly (1)", theAddress
 					.equals(thePacket.getSocketAddress()));
@@ -393,7 +394,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			// validate get returns the value we set
 			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort());
+					.getLocalHost(), Support_PortManager.getNextPortForUDP());
 			thePacket = new DatagramPacket(buf, 1);
 			thePacket.setSocketAddress(theAddress);
 			assertTrue("Socket address not set correctly (1)", theAddress
@@ -436,7 +437,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			// now validate we can set it correctly
 			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort());
+					.getLocalHost(), Support_PortManager.getNextPortForUDP());
 			thePacket = new DatagramPacket(buf, 1);
 			thePacket.setSocketAddress(theAddress);
 			assertTrue("Socket address not set correctly (1)", theAddress

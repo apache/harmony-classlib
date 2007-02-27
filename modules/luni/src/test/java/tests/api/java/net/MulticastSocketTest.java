@@ -149,7 +149,7 @@ public class MulticastSocketTest extends SocketTestCase {
 		// java.net.MulticastSocket.getInterface()
 		assertTrue("Used for testing.", true);
 
-		int groupPort = Support_PortManager.getNextPort();
+		int groupPort = Support_PortManager.getNextPortForUDP();
 		try {
 			if (atLeastOneInterface) {
 				// validate that we get the expected response when one was not
@@ -187,7 +187,7 @@ public class MulticastSocketTest extends SocketTestCase {
 									+ mss.getInterface(), firstAddress
 									.equals(mss.getInterface()));
 
-					groupPort = Support_PortManager.getNextPort();
+					groupPort = Support_PortManager.getNextPortForUDP();
 					mss = new MulticastSocket(groupPort);
 					mss.setNetworkInterface(networkInterface1);
 					assertTrue(
@@ -208,7 +208,7 @@ public class MulticastSocketTest extends SocketTestCase {
 	 * @tests java.net.MulticastSocket#getNetworkInterface()
 	 */
 	public void test_getNetworkInterface() {
-		int groupPort = Support_PortManager.getNextPort();
+		int groupPort = Support_PortManager.getNextPortForUDP();
 		try {
 			if (atLeastOneInterface) {
 
@@ -256,7 +256,7 @@ public class MulticastSocketTest extends SocketTestCase {
 							networkInterface2.equals(mss.getNetworkInterface()));
 				}
 
-				groupPort = Support_PortManager.getNextPort();
+				groupPort = Support_PortManager.getNextPortForUDP();
 				mss = new MulticastSocket(groupPort);
 				if (IPV6networkInterface1 != null) {
 					mss.setNetworkInterface(IPV6networkInterface1);
@@ -268,7 +268,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
 				// validate that we get the expected response when we set via
 				// setInterface
-				groupPort = Support_PortManager.getNextPort();
+				groupPort = Support_PortManager.getNextPortForUDP();
 				mss = new MulticastSocket(groupPort);
 				Enumeration addresses = networkInterface1.getInetAddresses();
 				if (addresses != null) {
@@ -328,14 +328,15 @@ public class MulticastSocketTest extends SocketTestCase {
 		// java.net.MulticastSocket.joinGroup(java.net.InetAddress)
 		String msg = null;
 		InetAddress group = null;
-		int groupPort = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		int groupPort = ports[0];
 		try {
 			group = InetAddress.getByName("224.0.0.3");
 			server = new MulticastServer(group, groupPort);
 			server.start();
 			Thread.sleep(1000);
 			msg = "Hello World";
-			mss = new MulticastSocket(Support_PortManager.getNextPort());
+			mss = new MulticastSocket(ports[1]);
 			DatagramPacket sdp = new DatagramPacket(msg.getBytes(), msg
 					.length(), group, groupPort);
 			mss.send(sdp, (byte) 10);
@@ -364,8 +365,9 @@ public class MulticastSocketTest extends SocketTestCase {
 		String msg = null;
 		InetAddress group = null;
 		SocketAddress groupSockAddr = null;
-		int groupPort = Support_PortManager.getNextPort();
-		int serverPort = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		int groupPort = ports[0];
+		int serverPort = ports[1];
 
 		try {
 			Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -404,8 +406,9 @@ public class MulticastSocketTest extends SocketTestCase {
 			if (atLeastOneInterface) {
 				// now validate that we can properly join a group with a null
 				// network interface
-				groupPort = Support_PortManager.getNextPort();
-				serverPort = Support_PortManager.getNextPort();
+				ports = Support_PortManager.getNextPortsForUDP(2);
+				groupPort = ports[0];
+				serverPort = ports[1];
 				mss = new MulticastSocket(groupPort);
 				mss.joinGroup(groupSockAddr, null);
 				mss.setTimeToLive(2);
@@ -433,13 +436,14 @@ public class MulticastSocketTest extends SocketTestCase {
 				// now validate that we handled the case were we join a
 				// different multicast address.
 				// verify we do not receive the data
-				serverPort = Support_PortManager.getNextPort();
+				ports = Support_PortManager.getNextPortsForUDP(2);
+				serverPort = ports[0];
 				server = new MulticastServer(groupSockAddr, serverPort,
 						networkInterface1);
 				server.start();
 				Thread.sleep(1000);
 
-				groupPort = Support_PortManager.getNextPort();
+				groupPort = ports[1];
 				mss = new MulticastSocket(groupPort);
 				InetAddress group2 = InetAddress.getByName("224.0.0.4");
 				mss.setTimeToLive(10);
@@ -513,8 +517,9 @@ public class MulticastSocketTest extends SocketTestCase {
 										.nextElement();
 							}
 
-							serverPort = Support_PortManager.getNextPort();
-							groupPort = Support_PortManager.getNextPort();
+							ports = Support_PortManager.getNextPortsForUDP(2);
+							serverPort = ports[0];
+							groupPort = ports[1];
 							groupSockAddr = new InetSocketAddress(group,
 									serverPort);
 							server = new MulticastServer(groupSockAddr,
@@ -555,7 +560,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
 					// validate that we can join the same address on two
 					// different interfaces but not on the same interface
-					groupPort = Support_PortManager.getNextPort();
+					groupPort = Support_PortManager.getNextPortForUDP();
 					mss = new MulticastSocket(groupPort);
 					mss.joinGroup(groupSockAddr, networkInterface1);
 					mss.joinGroup(groupSockAddr, networkInterface2);
@@ -582,12 +587,13 @@ public class MulticastSocketTest extends SocketTestCase {
 		String msg = null;
 		boolean except = false;
 		InetAddress group = null;
-		int groupPort = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		int groupPort = ports[0];
 
 		try {
 			group = InetAddress.getByName("224.0.0.3");
 			msg = "Hello World";
-			mss = new MulticastSocket();
+			mss = new MulticastSocket(ports[1]);
 			DatagramPacket sdp = new DatagramPacket(msg.getBytes(), msg
 					.length(), group, groupPort);
 			mss.send(sdp, (byte) 10);
@@ -620,7 +626,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
 		String msg = null;
 		InetAddress group = null;
-		int groupPort = Support_PortManager.getNextPort();
+		int groupPort = Support_PortManager.getNextPortForUDP();
 		SocketAddress groupSockAddr = null;
 		SocketAddress groupSockAddr2 = null;
 
@@ -661,7 +667,7 @@ public class MulticastSocketTest extends SocketTestCase {
 			if (atLeastOneInterface) {
 
 				// now test that we can join and leave a group successfully
-				groupPort = Support_PortManager.getNextPort();
+				groupPort = Support_PortManager.getNextPortForUDP();
 				mss = new MulticastSocket(groupPort);
 				groupSockAddr = new InetSocketAddress(group, groupPort);
 				mss.joinGroup(groupSockAddr, null);
@@ -712,11 +718,12 @@ public class MulticastSocketTest extends SocketTestCase {
 
 		String msg = "Hello World";
 		InetAddress group = null;
-		int groupPort = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		int groupPort = ports[0];
 
 		try {
 			group = InetAddress.getByName("224.0.0.3");
-			mss = new MulticastSocket();
+			mss = new MulticastSocket(ports[1]);
 			server = new MulticastServer(group, groupPort);
 			server.start();
 			Thread.sleep(200);
@@ -803,8 +810,9 @@ public class MulticastSocketTest extends SocketTestCase {
 	public void test_setNetworkInterfaceLjava_net_NetworkInterface() {
 		String msg = null;
 		InetAddress group = null;
-		int groupPort = Support_PortManager.getNextPort();
-		int serverPort = Support_PortManager.getNextPort();
+		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		int groupPort = ports[0];
+		int serverPort = ports[1];
 		try {
 			if (atLeastOneInterface) {
 				// validate that null interface is handled ok
@@ -819,7 +827,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				}
 
 				// validate that we can get and set the interface
-				groupPort = Support_PortManager.getNextPort();
+				groupPort = Support_PortManager.getNextPortForUDP();
 				mss = new MulticastSocket(groupPort);
 				mss.setNetworkInterface(networkInterface1);
 				assertTrue(
@@ -844,7 +852,8 @@ public class MulticastSocketTest extends SocketTestCase {
 								// Pseudo interface that was set
 								(Support_NetworkInterface
 										.useInterface(thisInterface) == true)) {
-							serverPort = Support_PortManager.getNextPort();
+							ports = Support_PortManager.getNextPortsForUDP(2);
+							serverPort = ports[0];
 							server = new MulticastServer(group, serverPort);
 							server.start();
 							// give the server some time to start up
@@ -854,7 +863,7 @@ public class MulticastSocketTest extends SocketTestCase {
 							// source address in the received packet
 							// should be one of the addresses for the interface
 							// set
-							groupPort = Support_PortManager.getNextPort();
+							groupPort = ports[1];
 							mss = new MulticastSocket(groupPort);
 							mss.setNetworkInterface(thisInterface);
 							msg = thisInterface.getName();
@@ -935,19 +944,19 @@ public class MulticastSocketTest extends SocketTestCase {
         assertTrue("should not be bound", !ms.isBound() && !ms.isClosed()
                 && !ms.isConnected());
         ms.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-                Support_PortManager.getNextPort()));
+                Support_PortManager.getNextPortForUDP()));
         assertTrue("should be bound", ms.isBound() && !ms.isClosed()
                 && !ms.isConnected());
         ms.close();
         assertTrue("should be closed", ms.isClosed());
         ms = new MulticastSocket(new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort()));
+                .getLocalHost(), Support_PortManager.getNextPortForUDP()));
         assertTrue("should be bound", ms.isBound() && !ms.isClosed()
                 && !ms.isConnected());
         ms.close();
         assertTrue("should be closed", ms.isClosed());
         ms = new MulticastSocket(new InetSocketAddress("localhost",
-                Support_PortManager.getNextPort()));
+                Support_PortManager.getNextPortForUDP()));
         assertTrue("should be bound", ms.isBound() && !ms.isClosed()
                 && !ms.isConnected());
         ms.close();
@@ -955,7 +964,7 @@ public class MulticastSocketTest extends SocketTestCase {
         boolean exception = false;
         try {
             ms = new MulticastSocket(new InetSocketAddress("unresolvedname",
-                    Support_PortManager.getNextPort()));
+                    Support_PortManager.getNextPortForUDP()));
         } catch (IOException e) {
             exception = true;
         }
@@ -1009,7 +1018,7 @@ public class MulticastSocketTest extends SocketTestCase {
      */
     public void test_setLoopbackModeSendReceive() throws IOException{
         final String ADDRESS = "224.1.2.3";
-        final int PORT = 6789;
+        final int PORT = Support_PortManager.getNextPortForUDP();
         final String message = "Hello, world!";
 
         // test send receive
@@ -1055,7 +1064,7 @@ public class MulticastSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new MulticastSocket(null);
 				theSocket2 = new MulticastSocket(null);
 				theSocket1.setReuseAddress(false);
@@ -1076,7 +1085,7 @@ public class MulticastSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new MulticastSocket(null);
 				theSocket2 = new MulticastSocket(null);
 				theSocket1.setReuseAddress(true);
@@ -1097,7 +1106,7 @@ public class MulticastSocketTest extends SocketTestCase {
 			try {
 				InetSocketAddress theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPort());
+								.getNextPortForUDP());
 				theSocket1 = new MulticastSocket(null);
 				theSocket2 = new MulticastSocket(null);
 				theSocket1.bind(theAddress);
