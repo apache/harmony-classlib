@@ -31,6 +31,8 @@ BUILDFILES = \
 DLLNAME = ../libhyzlib.so
 EXPNAME = HYZLIB_0.1
 
+ifeq ($(DLL_LD),$(CC))
 LDFLAGS += -Wl,-Bsymbolic
+endif
 
 include $(HY_HDK)/build/make/rules.mk
