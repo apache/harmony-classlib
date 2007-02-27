@@ -22,14 +22,16 @@
  */
 package org.apache.harmony.jndi.tests.javax.naming.ldap.main;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.apache.harmony.jndi.tests.javax.naming.ldap.LdapNameTest;
-import org.apache.harmony.jndi.tests.javax.naming.ldap.TestBasicControl;
+import org.apache.harmony.jndi.tests.javax.naming.ldap.RdnTest;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestControlFactory;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestInitialLdapContext;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestManageReferralControl;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestPagedResultsControls;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestPagedResultsResponseControl;
-import org.apache.harmony.jndi.tests.javax.naming.ldap.RdnTest;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortControl;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortKey;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.TestSortResponseControl;
@@ -44,8 +46,6 @@ import org.apache.harmony.jndi.tests.javax.naming.ldap.whitebox.TestLdapNameWhit
 import org.apache.harmony.jndi.tests.javax.naming.ldap.whitebox.TestLdapReferralException;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.whitebox.TestRdnWhiteBoxDevelopment;
 import org.apache.harmony.jndi.tests.javax.naming.ldap.whitebox.TestStartTlsRequestWhiteBoxDevelopment;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * <p>This class runs all test of the package javax.naming.ldap</p>
@@ -67,7 +67,6 @@ public class AllTestLdap {
 	     */
 	    public static Test suite() {
 	        TestSuite suite = new TestSuite("Test for javax.naming.ldap");
-	        suite.addTest(new TestSuite(TestBasicControl.class));
 	        suite.addTest(new TestSuite(TestControlFactory.class));
 	        suite.addTest(new TestSuite(TestInitialLdapContext.class));
 	        suite.addTest(new TestSuite(TestManageReferralControl.class));

@@ -18,65 +18,24 @@
 package org.apache.harmony.jndi.tests.javax.naming.ldap;
 
 import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
+
 import junit.framework.TestCase;
 
 public class BasicControlTest extends TestCase {
-    /**
-     * Test method for
-     * {@link javax.naming.ldap.BasicControl#BasicControl(java.lang.String)}.
-     */
-    public void testBasicControlString() {
-        BasicControl bc = new BasicControl("fixture");
-        assertEquals("fixture", bc.getID());
-    }
 
     /**
-     * Test method for
-     * {@link javax.naming.ldap.BasicControl#BasicControl(java.lang.String, boolean, byte[])}.
+     * <p>
+     * Test method for 'javax.naming.ldap.BasicControl.BasicControl'
+     * </p>
      */
-    public void testBasicControlStringBooleanByteArray() {
-        byte[] fixture = new byte[] { 0, 1 };
-        BasicControl bc = new BasicControl("fixture", Control.CRITICAL, fixture);
-        assertEquals("fixture", bc.getID());
-        assertEquals(Control.CRITICAL, bc.isCritical());
-        // spec says the byte[] is NOT copied
-        assertSame(fixture, bc.getEncodedValue());
-    }
-
-    /**
-     * Test method for {@link javax.naming.ldap.BasicControl#getEncodedValue()}.
-     */
-    public void testGetEncodedValue() {
-        BasicControl bc = new BasicControl("fixture");
-        assertNull(bc.getEncodedValue());
-        byte[] fixture = new byte[] { 0, 1 };
-        bc = new BasicControl("fixture", Control.CRITICAL, fixture);
-        // spec says the byte[] is NOT copied
-        assertSame(fixture, bc.getEncodedValue());
-        
-        // spec says that byte[] isn't copied and can be changed
-        fixture[0] = Byte.MIN_VALUE;
-        fixture[1] = Byte.MAX_VALUE;
-        assertEquals(Byte.MIN_VALUE, bc.getEncodedValue()[0]);
-        assertEquals(Byte.MAX_VALUE, bc.getEncodedValue()[1]);
-    }
-
-    /**
-     * Test method for {@link javax.naming.ldap.BasicControl#getID()}.
-     */
-    public void testGetID() {
-        BasicControl bc = new BasicControl("fixture");
-        assertEquals("fixture", bc.getID());
-        
-        bc = new BasicControl(null);
-        assertNull(bc.getID());
-        
-        bc = new BasicControl("");
-        assertEquals("", bc.getID());
-        
-        bc = new BasicControl(null, false, null);
-        assertNull(bc.getID());
+    public void testBasicControl() {
+        // no exceptions expected
+        new BasicControl(null);
+        new BasicControl("");
+        new BasicControl("1.2.3.333");
+        new BasicControl("", true, null);
+        new BasicControl("", false, new byte[0]);
+        new BasicControl(null, false, null);
     }
 
     /**
@@ -85,11 +44,45 @@ public class BasicControlTest extends TestCase {
     public void testIsCritical() {
         BasicControl bc = new BasicControl("fixture");
         assertFalse(bc.isCritical());
-        
+
         bc = new BasicControl(null, false, null);
         assertFalse(bc.isCritical());
-        
+
         bc = new BasicControl(null, true, null);
         assertTrue(bc.isCritical());
     }
+
+    /**
+     * @tests javax.naming.ldap.BasicControl#getID()
+     */
+    public void testGetID() {
+        String ID = "somestring";
+        assertSame(ID, new BasicControl(ID).getID());
+
+        assertNull(new BasicControl(null).getID());
+
+        assertNull(new BasicControl(null, false, new byte[1]).getID());
+    }
+
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.BasicControl.getEncodedValue()'
+     * </p>
+     * <p>
+     * Here we are testing the return method of the encoded value of
+     * BasicControl. In this case we send an encoded value null.
+     * </p>
+     * <p>
+     * The expected result is a null encoded value.
+     * </p>
+     */
+    public void testGetEncodedValue() {
+        assertNull(new BasicControl("control", true, null).getEncodedValue());
+
+        // spec says the byte[] is NOT copied
+        byte[] test = new byte[15];
+        BasicControl bc = new BasicControl("control", true, test);
+        assertSame(test, bc.getEncodedValue());
+    }
+
 }
