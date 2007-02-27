@@ -3350,6 +3350,18 @@ public class LdapNameTest extends TestCase {
         LdapName ln = new LdapName("t=test,cn=common");
         LdapName ln2 = new LdapName("t=test,cn=common");
         assertFalse(ln.compareTo(ln2) != 0);
+
+        
+        //make it compatible to RI
+        ln = new LdapName("Z=Z,A=A");
+        ln2 = new LdapName("A=A,Z=Z");
+        assertTrue(ln.compareTo(ln2) < 0);
+
+        ln = new LdapName("Z=Z");
+        ln2 = new LdapName("A=A,Z=Z");
+        assertTrue(ln.compareTo(ln2) < 0);
+        assertTrue(ln2.compareTo(ln) > 0);
+
     }
 
     /**

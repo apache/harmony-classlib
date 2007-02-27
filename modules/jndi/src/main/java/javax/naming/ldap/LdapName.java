@@ -103,7 +103,7 @@ public class LdapName implements Name {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public Name addAll(int posn, List suffixRdns) {
+    public Name addAll(int posn, List<Rdn> suffixRdns) {
         if (suffixRdns == null) {
             throw new NullPointerException("suffixRdns "
                     + Messages.getString("ldap.00"));
@@ -124,8 +124,8 @@ public class LdapName implements Name {
         if (suffix instanceof LdapName) {
             return addAll(posn, ((LdapName) suffix).rdns);
         } else {
-            List rdns = new ArrayList();
-            for (Enumeration iter = suffix.getAll(); iter.hasMoreElements();) {
+            List<Rdn> rdns = new ArrayList<Rdn>();
+            for (Enumeration<?> iter = suffix.getAll(); iter.hasMoreElements();) {
                 rdns.add(new Rdn((String) iter.nextElement()));
             }
             return addAll(posn, rdns);
@@ -135,7 +135,7 @@ public class LdapName implements Name {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public Name addAll(List suffixRdns) {
+    public Name addAll(List<Rdn> suffixRdns) {
         return addAll(rdns.size(), suffixRdns);
     }
 
@@ -150,7 +150,7 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Object clone() {
-        List lista = new ArrayList();
+        List<Rdn> lista = new ArrayList<Rdn>();
         for (int i = 0; i < rdns.size(); i++) {
             lista.add(rdns.get(i));
         }
@@ -161,51 +161,45 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public int compareTo(Object obj) {
-        LdapName ln = null;
-        if (obj == null) {
+        if (obj == null || !(obj instanceof LdapName)) {
             throw new ClassCastException("obj " + Messages.getString("ldap.01"));
         }
 
-        try {
-            ln = (LdapName) obj;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("obj " + Messages.getString("ldap.01"));
+        LdapName ln = (LdapName) obj;
+        
+        Iterator<?> iter = rdns.iterator();
+        Iterator<?> iter2 = ln.rdns.iterator();
+
+        while (iter.hasNext() && iter2.hasNext() ) {
+            int c = iter.next().toString().toLowerCase().compareTo(
+                    iter2.next().toString().toLowerCase());
+
+            if( c != 0 ) {
+                return c;
+            }
         }
 
-        String s1 = new String(), s2 = new String();
-
-        for (Iterator iter = rdns.iterator(); iter.hasNext();) {
-            s1 = s1 + iter.next().toString() + ",";
-        }
-
-        for (Iterator iter = ln.rdns.iterator(); iter.hasNext();) {
-            s2 = s2 + iter.next().toString() + ",";
-        }
-
-        if (s1.lastIndexOf(',') > 0) {
-            s1 = s1.substring(0, s1.lastIndexOf(','));
-        }
-
-        if (s2.lastIndexOf(',') > 0) {
-            s2 = s2.substring(0, s2.lastIndexOf(','));
-        }
-
-        return s1.toLowerCase().compareTo(s2.toLowerCase());
+        if( iter.hasNext() ) return 1;
+        if( iter2.hasNext() ) return -1;
+        
+        return 0;
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public boolean endsWith(List rdns) {
+    public boolean endsWith(List<Rdn> rdns) {
         try {
-            Iterator iter = rdns.iterator();
-            Iterator iter2 = ((LdapName) getSuffix(rdns.size()
+            Iterator<?> iter = rdns.iterator();
+            Iterator<?> iter2 = ((LdapName) getSuffix(rdns.size()
                     - rdns.size())).rdns.iterator();
+
             while (iter.hasNext()) {
                 if (!((Rdn) iter.next()).equals(iter2.next())) {
                     return false;
                 }
             }
+
             return true;
         } catch (RuntimeException e) {
             return false;
@@ -226,27 +220,20 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public boolean equals(Object obj) {
-        LdapName ln = null;
-        if (obj == null) {
+        if (obj == null || !(obj instanceof LdapName)) {
             return false;
         }
 
-        try {
-            ln = (LdapName) obj;
-        } catch (ClassCastException e) {
-            return false;
-        }
+        LdapName ln = (LdapName) obj;
 
         if (ln.rdns.size() != rdns.size()) {
             return false;
         }
 
-        Iterator iter = ln.rdns.iterator();
-        Iterator iter2 = rdns.iterator();
+        Iterator<Rdn> iter = ln.rdns.iterator();
+        Iterator<Rdn> iter2 = rdns.iterator();
         while (iter.hasNext()) {
-            Rdn rdn1 = (Rdn) iter.next();
-            Rdn rdn2 = (Rdn) iter2.next();
-            if (!rdn1.equals(rdn2)) {
+            if (!iter.next().equals(iter2.next())) {
                 return false;
             }
         }
@@ -263,9 +250,10 @@ public class LdapName implements Name {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public Enumeration getAll() {
-        final Iterator rdns = getRdns().iterator();
-        return new Enumeration() {
+    public Enumeration<String> getAll() {
+        final Iterator<Rdn> rdns = getRdns().iterator();
+
+        return new Enumeration<String>() {
 
             public boolean hasMoreElements() {
                 return rdns.hasNext();
@@ -281,8 +269,9 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Name getPrefix(int posn) {
-        if (posn < 0)
+        if (posn < 0) {
             throw new IndexOutOfBoundsException(Messages.getString("ldap.02"));
+        }
         return new LdapName(rdns.subList(0, posn));
     }
 
@@ -296,7 +285,7 @@ public class LdapName implements Name {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public List getRdns() {
+    public List<Rdn> getRdns() {
         return rdns;
     }
 
@@ -316,7 +305,7 @@ public class LdapName implements Name {
      */
     public int hashCode() {
         int sum = 0;
-        for (Iterator iter = rdns.iterator(); iter.hasNext();) {
+        for (Iterator<?> iter = rdns.iterator(); iter.hasNext();) {
             sum += iter.next().hashCode();
         }
         return sum;
@@ -346,11 +335,12 @@ public class LdapName implements Name {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public boolean startsWith(List rdns) {
+    public boolean startsWith(List<Rdn> rdns) {
         try {
-            Iterator iter = rdns.iterator();
-            Iterator iter2 = ((LdapName) getPrefix(rdns.size())).rdns
+            Iterator<?> iter = rdns.iterator();
+            Iterator<?> iter2 = ((LdapName) getPrefix(rdns.size())).rdns
                     .iterator();
+
             while (iter.hasNext()) {
                 if (!((Rdn) iter.next()).equals(iter2.next())) {
                     return false;
@@ -378,12 +368,15 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public String toString() {
-        if (rdns.size() == 0)
+        if (rdns.size() == 0) {
             return "";
+        }
+
         StringBuffer sb = new StringBuffer();
         sb.append(rdns.get(rdns.size() - 1).toString());
         for (int i = rdns.size() - 2; i >= 0; i--) {
-            sb.append("," + rdns.get(i).toString());
+            sb.append(',');
+            sb.append(rdns.get(i).toString());
         }
         return sb.toString();
     }
