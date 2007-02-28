@@ -46,7 +46,6 @@ public class AllTestLdap {
 	     */
 	    public static Test suite() {
 	        TestSuite suite = new TestSuite("Test for javax.naming.ldap");
-	        suite.addTest(new TestSuite(TestBasicControl.class));
 	        suite.addTest(new TestSuite(TestControlFactory.class));
 	        suite.addTest(new TestSuite(TestInitialLdapContext.class));
 	        suite.addTest(new TestSuite(TestManageReferralControl.class));
