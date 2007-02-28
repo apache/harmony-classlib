@@ -41,57 +41,24 @@ public class MockStartTlsResponse extends StartTlsResponse {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Constructor method to our TLSResponse.
-	 *
-	 */
-	public MockStartTlsResponse() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public SSLSession negotiate() throws IOException {
+        throw new Error("should not be here");
+    }
 
-	/**
-	 * <p>Method not implemented yet.</p>
-	 */
-	public void setEnabledCipherSuites(String[] arg0) {
-		// TODO Auto-generated method stub
+    public SSLSession negotiate(SSLSocketFactory factory) throws IOException {
+        throw new Error("should not be here");
+    }
 
-	}
+    public void setEnabledCipherSuites(String[] suites) {
+        throw new Error("should not be here");
+    }
 
-	/**
-	 * <p>Method not implemented yet.</p>
-	 */
-	public void setHostnameVerifier(HostnameVerifier arg0) {
-		// TODO Auto-generated method stub
+    public void setHostnameVerifier(HostnameVerifier verifier) {
+        throw new Error("should not be here");
+    }
 
-	}
-
-	/**
-	 * <p>Method not implemented yet.</p>
-	 */
-	public SSLSession negotiate() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * <p>Method not implemented yet.</p>
-	 */
-	public SSLSession negotiate(SSLSocketFactory arg0) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Method to close our TlsResponse.
-	 */
-	public void close() throws IOException {
-		try {
-			super.finalize();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public void close() throws IOException {
+        throw new Error("should not be here");
+    }
 
 }

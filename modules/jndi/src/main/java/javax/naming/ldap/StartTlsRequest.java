@@ -17,12 +17,15 @@
 
 package javax.naming.ldap;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
+
 import javax.naming.NamingException;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
-import org.apache.harmony.jndi.internal.tls.config.ClassFinder;
-import org.apache.harmony.jndi.internal.tls.config.ConfigFileNotFound;
-import org.apache.harmony.jndi.internal.tls.config.MergePath;
 
 /**
  * 
@@ -45,13 +48,6 @@ public class StartTlsRequest implements ExtendedRequest {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public StartTlsRequest() {
-
-    }
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public byte[] getEncodedValue() {
         return null;
     }
@@ -59,46 +55,65 @@ public class StartTlsRequest implements ExtendedRequest {
     /**
      * @ar.org.fitc.spec_ref
      */
-    public ExtendedResponse createExtendedResponse(String id, byte[] berValue,
-            int offset, int length) throws NamingException {
-        if (!id.equals("1.3.6.1.4.1.1466.20037")) {
-            throw new NamingException(
-                    Messages.getString("ldap.07") +" "+ id);
-        }
-        MergePath p = new MergePath(new String[] {
-                System.getProperty("user.dir"),
-                System.getProperty("java.home"),
-                System.getProperty("org.apache.harmony.boot.class.path") });
-        ClassFinder cf = new ClassFinder(p.getPathNames());
-        String[] classList;
-        Class retClass;
-        try {
-            classList = cf.getClassList();
-            for (int i = 0; i < classList.length; i++) {
-                try {
-                    retClass = Class.forName(classList[i], true, Thread
-                            .currentThread().getContextClassLoader());
-                    try {
-                        return (StartTlsResponse) retClass.newInstance();
-                    } catch (InstantiationException e) {
-                    } catch (IllegalAccessException e) {
-                    } catch (ClassCastException e) {
-                    }
-                } catch (ClassNotFoundException e) {
-                }
-            }
-            throw new NamingException(Messages.getString("ldap.08")+" "+ classList);
-        } catch (ConfigFileNotFound e) {
-            throw new NamingException(Messages.getString("ldap.09"));
-            // return new TlsResponseImpl(); TODO This should return a provider
-            // default implementation
-        }
+    public String getID() {
+        return OID;
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
-    public String getID() {
-        return OID;
+    public ExtendedResponse createExtendedResponse(String id, byte[] berValue,
+            int offset, int length) throws NamingException {
+
+        if (id != null && !OID.equals(id)) {
+            throw new NamingException(
+                    Messages.getString("ldap.07") +" "+ id);
+        }
+
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Enumeration<URL> en = cl
+                    .getResources("META-INF/services/javax.naming.ldap.StartTlsResponse");
+            while (en.hasMoreElements()) {
+                URL confFile = en.nextElement();
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(confFile
+                            .openStream()));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        // remove comments, spaces, and tabs
+                        String className = line.split("#")[0].trim();
+
+                        // try to load class
+                        if (!(className.equals(""))) {
+                            try {
+                                // TODO: the spec requires to return an instanse
+                                // of the first class that might be successfully
+                                // instantiated, RI breaks on the first
+                                // unsuccessful attempt. We follow the spec here
+                                return (StartTlsResponse) Class.forName(
+                                        className, true, cl).newInstance();
+                            } catch (Exception ignore) {
+                                // ignore
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    // ignore
+                } finally {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+
+        // TODO: return a provider default implementation
+        throw new NamingException(Messages.getString("ldap.09"));
     }
 }

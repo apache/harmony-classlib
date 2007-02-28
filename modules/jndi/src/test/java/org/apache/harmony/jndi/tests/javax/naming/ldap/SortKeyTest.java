@@ -29,7 +29,7 @@ public class SortKeyTest extends TestCase {
         assertNull(sk.getMatchingRuleID());
         
         try {
-            sk = new SortKey(null);
+            new SortKey(null);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
             //expected
@@ -43,7 +43,7 @@ public class SortKeyTest extends TestCase {
         assertEquals("matchingRuleId", sk.getMatchingRuleID());
         
         try {
-            sk = new SortKey(null, true, null);
+            new SortKey(null, true, null);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
             //expected
