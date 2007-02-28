@@ -37,9 +37,9 @@ public class LdapRdnParser implements LdapParser {
 
     LdapTypeAndValueList list = new LdapTypeAndValueList();
 
-    private List attrList;
+    private List<AttributeTypeAndValuePair> attrList;
 
-    private List listAll;
+    private List<AttributeTypeAndValuePair> listAll;
 
     private RelaxedDnParser parser = null;
 
@@ -67,10 +67,10 @@ public class LdapRdnParser implements LdapParser {
                     .getString("ldap.17")
                     + name).initCause(e));
         }
+
         attrList = (List) listAll.get(0);
-        for (Iterator iter = attrList.iterator(); iter.hasNext();) {
-            AttributeTypeAndValuePair element = (AttributeTypeAndValuePair) iter
-                    .next();
+        for (Iterator<AttributeTypeAndValuePair> iter = attrList.iterator(); iter.hasNext();) {
+            AttributeTypeAndValuePair element = iter.next();
             list.put(element.getType(), element.getValue());
         }
         return list.toAttributeList();
@@ -99,8 +99,8 @@ public class LdapRdnParser implements LdapParser {
      */
     public static String escapeValue(Object obj) {
         if (obj instanceof String) {
-            String val = String.valueOf((String) obj);
-            return getEscaped(val.toCharArray().clone());
+            String val = String.valueOf(obj);
+            return getEscaped(val.toCharArray());
         } else if (obj instanceof byte[]) {
             return getHexValues((byte[]) obj);
         } else {
@@ -111,8 +111,9 @@ public class LdapRdnParser implements LdapParser {
     private static String getEscaped(char[] chars) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < chars.length; i++) {
-            if (isSpecialChar(chars, i))
-                sb.append("\\");
+            if (isSpecialChar(chars, i)) {
+                sb.append('\\');
+            }
             sb.append(new Character(chars[i]));
         }
         return sb.toString();
@@ -124,7 +125,7 @@ public class LdapRdnParser implements LdapParser {
             sb.append(Integer.toHexString(byteArray[i] >> 4 & 0x0F));
             sb.append(Integer.toHexString(byteArray[i] & 0x0F)); 
         }
-        return "#" + sb.toString();
+        return '#' + sb.toString();
     }
 
     /**
@@ -179,9 +180,7 @@ public class LdapRdnParser implements LdapParser {
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-
                 }
-
             }
         }
         return sb.toString();
