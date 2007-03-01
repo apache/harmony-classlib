@@ -314,7 +314,7 @@ public class ObjectStreamClass implements Serializable {
         }
         fields = _fields;
     }
-
+    
     /**
      * Compute and return the Serial Version UID of the class <code>cl</code>.
      * The value is computed based on the class name, superclass chain, field
@@ -654,7 +654,33 @@ public class ObjectStreamClass implements Serializable {
      *         represents
      */
     public ObjectStreamField[] getFields() {
+        copyFieldAttributes();
         return loadFields == null ? fields().clone() : loadFields.clone();
+    }
+
+    /**
+     * If a Class uses "serialPersistentFields" to define the serialized fields, 
+     * this.loadFields cannot get the "unshared" information when deserializing
+     * fields using current implementation of ObjectInputStream. This method 
+     * provides a way to copy the "unshared" attribute from this.fields.
+     *
+     */
+    private void copyFieldAttributes() {
+        if ((loadFields == null) || fields == null) {
+            return;
+        }
+        
+        for (int i = 0; i < loadFields.length; i++) {
+            ObjectStreamField loadField = loadFields[i];
+            String name = loadField.getName();
+            for (int j = 0; j < fields.length; j++) {
+                ObjectStreamField field = fields[j];
+                if (name.equals(field.getName())) {
+                    loadField.setUnshared(field.isUnshared());
+                    break;
+                }
+            }
+        }
     }
 
     /**

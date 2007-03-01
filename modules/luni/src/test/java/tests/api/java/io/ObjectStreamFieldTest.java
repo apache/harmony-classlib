@@ -19,6 +19,8 @@ package tests.api.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotActiveException;
@@ -187,7 +189,30 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         assertEquals(Object.class, field.getType());
     }
     
-
+    public void test_isUnshared() throws Exception {
+        SerializableObject2 obj = new SerializableObject2();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
+        oos.close();
+        baos.close();
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        SerializableObject2 newObj = (SerializableObject2) ois.readObject();
+        
+        ObjectInputStream.GetField getField = newObj.getGetField();
+        ObjectStreamClass objectStreamClass = getField.getObjectStreamClass();
+        
+        assertTrue(objectStreamClass.getField("i").isUnshared());
+        assertFalse(objectStreamClass.getField("d").isUnshared());
+        assertTrue(objectStreamClass.getField("s").isUnshared());
+        
+        assertEquals(1000, getField.get("i", null));
+        assertEquals(SerializableObject2.today, getField.get("d", null));
+        assertEquals("Richard", getField.get("s", null));
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -268,5 +293,37 @@ class MockObjectInputStream extends ObjectInputStream {
 
     public ObjectStreamClass getObjectStreamClass() {
         return temp;
+    }
+}
+
+class SerializableObject2 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("i", Integer.class, true),
+        new ObjectStreamField("d", Date.class, false),
+        new ObjectStreamField("s", String.class, true),
+    };
+    
+    private ObjectInputStream.GetField getField;
+    
+    public static Date today = new Date(1172632429156l);
+    
+    public ObjectInputStream.GetField getGetField() {
+        return getField;
+    }
+    
+    private void writeObject(ObjectOutputStream o) throws IOException {
+        ObjectOutputStream.PutField putField = o.putFields();
+        putField.put("i", new Integer(1000));
+        putField.put("d", today);
+        putField.put("s", "Richard");
+        o.writeFields();
+    }
+
+    private void readObject(ObjectInputStream in) throws NotActiveException,
+            IOException, ClassNotFoundException {
+        getField = in.readFields();
     }
 }

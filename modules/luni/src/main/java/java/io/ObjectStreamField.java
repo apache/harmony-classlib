@@ -342,4 +342,8 @@ public class ObjectStreamField implements Comparable<Object> {
     public boolean isUnshared() {
         return unshared;
     }
+    
+    void setUnshared(boolean unshared) {
+        this.unshared = unshared;
+    }
 }
