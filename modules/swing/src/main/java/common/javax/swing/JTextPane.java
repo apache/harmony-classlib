@@ -55,6 +55,10 @@ public class JTextPane extends JEditorPane implements ImageObserver,
 
     public JTextPane(final StyledDocument doc) {
         this();
+
+        if (doc == null) {
+            throw new NullPointerException();
+        } 
     }
 
     public String getUIClassID() {

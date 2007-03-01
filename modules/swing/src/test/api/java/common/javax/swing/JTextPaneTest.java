@@ -607,4 +607,13 @@ public class JTextPaneTest extends SwingTestCase {
         assertEquals(isSuperScript, StyleConstants.isSuperscript(attrs));
         assertEquals(isUnderline, StyleConstants.isUnderline(attrs));
     }
+
+    public void testConstructor() {
+        try {      
+            new JTextPane(null); 
+            fail("NPE should be thrown");
+        } catch (NullPointerException npe) {              
+            // PASSED            
+        }
+    }
 }
