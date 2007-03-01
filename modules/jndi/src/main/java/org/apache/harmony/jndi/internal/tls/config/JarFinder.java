@@ -69,14 +69,14 @@ public class JarFinder extends Finder {
         try {
             jarFile = new JarFile(element);
             entry = jarFile
-                    .getJarEntry(ClassFinder.cFile);
+                    .getJarEntry(Finder.cFile);
         } catch (IOException e) {
         }
         if (entry != null) {
             foundThis(element.getAbsoluteFile());
         } else {
             throw new Exception(
-                    ClassFinder.cFile + Messages.getString("ldap.23")
+                    Finder.cFile + Messages.getString("ldap.23")
                             + element.getAbsolutePath());
         }
     }

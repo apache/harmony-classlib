@@ -31,6 +31,12 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 public abstract class Finder {
 
     /**
+     * relative path to the Configuration File
+     */
+    public static final String cFile = "META-INF" + File.separator + "services"
+            + File.separator + "javax.naming.ldap.StartTlsResponse";
+
+    /**
      * In order to store the found objects
      */
     protected List foundObjects;

@@ -44,7 +44,7 @@ public class DirFinder extends Finder {
     protected void doSearch() {
         for (Iterator iter = super.allObjects.iterator(); iter.hasNext();) {
             File element = (File) iter.next();
-            if (element.getAbsolutePath().endsWith(ClassFinder.cFile)) {
+            if (element.getAbsolutePath().endsWith(Finder.cFile)) {
                 foundThis(element.getAbsoluteFile());
             }
         }
