@@ -1,5 +1,2 @@
 # not a test
 org/apache/harmony/jndi/provider/dns/TestMgr.java
-
-# fail for unklnown reason
-org/apache/harmony/jndi/tests/javax/naming/ldap/whitebox/TestRdnWhiteBoxDevelopment.java

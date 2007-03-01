@@ -224,8 +224,13 @@ public class Rdn implements Serializable, Comparable<Object> {
             }
 
             while (en1.hasMoreElements()) {
-                if (!(escapeValue(en1.nextElement()).toLowerCase()
-                        .equals(escapeValue(en2.nextElement()).toLowerCase()))) {
+                Object o1 = en1.nextElement();
+                String s1 = (o1 instanceof String) ? (String)o1 : escapeValue(o1);
+
+                Object o2 = en2.nextElement();
+                String s2 = (o2 instanceof String) ? (String)o2 : escapeValue(o2);
+
+                if (!(s1.toLowerCase().equals(s2.toLowerCase()))) {
                     return false;
                 }
             }
