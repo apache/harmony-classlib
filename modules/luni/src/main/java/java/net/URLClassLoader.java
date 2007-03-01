@@ -31,6 +31,7 @@ import java.security.PrivilegedAction;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,8 @@ import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.Attributes;
@@ -66,10 +69,12 @@ public class URLClassLoader extends SecureClassLoader {
 
     URL[] urls, orgUrls;
 
-    HashSet<URL> invalidUrls = new HashSet<URL>();
+    Set<URL> invalidUrls = Collections.synchronizedSet(new HashSet<URL>());
 
-    private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(
-            32);
+    private Map<URL, JarFile> resCache = 
+            Collections.synchronizedMap(new IdentityHashMap<URL, JarFile>(32));
+
+    private Object lock = new Object();
 
     private URLStreamHandlerFactory factory;
 
@@ -170,7 +175,9 @@ public class URLClassLoader extends SecureClassLoader {
             URL search = createSearchURL(url);
             urls = addURL(urls, search);
             orgUrls = addURL(orgUrls, url);
-            extensions.put(search, null);
+            synchronized (extensions) {
+                extensions.put(search, null);
+            }
         } catch (MalformedURLException e) {
         }
     }
@@ -704,24 +711,36 @@ public class URLClassLoader extends SecureClassLoader {
                     String protocol = currentUrl.getProtocol();
                     if (protocol.equals("jar")) { //$NON-NLS-1$
                         jf = resCache.get(currentUrl);
-                        if (jf == null) {
-                            /*
-                             * If the connection for currentUrl or resURL is
-                             * used, getJarFile() will throw an exception if the
-                             * entry doesn't exist.
-                             */
-                            URL jarURL = ((JarURLConnection) currentUrl
-                                    .openConnection()).getJarFileURL();
-                            try {
-                                JarURLConnection juc = (JarURLConnection) new URL(
-                                        "jar", "", //$NON-NLS-1$ //$NON-NLS-2$
-                                        jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
-                                jf = juc.getJarFile();
-                                resCache.put(currentUrl, jf);
-                            } catch (IOException e) {
-                                // Don't look for this jar file again
-                                invalidUrls.add(searchList[i]);
-                                throw e;
+                        if ((jf == null) && (!invalidUrls.contains(currentUrl))) {
+                            // each jf should be found only once 
+                            // so we do this job in the synchronized block
+                            synchronized (lock) {
+                                // Check the cache again in case another thread 
+                                // updated it while we're waiting on lock
+                                jf = resCache.get(currentUrl);
+                                if (jf == null) {
+                                    if (invalidUrls.contains(currentUrl)) {
+                                        continue;
+                                    }
+                                    /*
+                                     * If the connection for currentUrl or resURL is
+                                     * used, getJarFile() will throw an exception if the
+                                     * entry doesn't exist.
+                                     */
+                                    URL jarURL = ((JarURLConnection) currentUrl
+                                              .openConnection()).getJarFileURL();
+                                    try {
+                                        JarURLConnection juc = (JarURLConnection) new URL(
+                                                "jar", "", //$NON-NLS-1$ //$NON-NLS-2$
+                                                jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
+                                        jf = juc.getJarFile();
+                                        resCache.put(currentUrl, jf);
+                                    } catch (IOException e) {
+                                        // Don't look for this jar file again
+                                        invalidUrls.add(searchList[i]);
+                                        throw e;
+                                    }
+                                }
                             }
                         }
                         String entryName;
@@ -931,9 +950,11 @@ public class URLClassLoader extends SecureClassLoader {
                 try {
                     URL newURL = new URL(protocol, host, port, file + element
                             + "!/"); //$NON-NLS-1$
-                    if (!extensions.containsKey(newURL)) {
-                        extensions.put(newURL, null);
-                        addedURLs.add(newURL);
+                    synchronized (extensions) {
+                        if (!extensions.containsKey(newURL)) {
+                            extensions.put(newURL, null);
+                            addedURLs.add(newURL);
+                        }
                     }
                 } catch (MalformedURLException e) {
                     // Nothing is added
@@ -1014,22 +1035,32 @@ public class URLClassLoader extends SecureClassLoader {
                     String protocol = thisURL.getProtocol();
                     if (protocol.equals("jar")) { //$NON-NLS-1$
                         jf = resCache.get(thisURL);
-                        if (jf == null) {
-                            // If the connection for testURL or thisURL is used,
-                            // getJarFile() will throw an exception if the entry
-                            // doesn't exist.
-                            URL jarURL = ((JarURLConnection) thisURL
-                                    .openConnection()).getJarFileURL();
-                            try {
-                                JarURLConnection juc = (JarURLConnection) new URL(
-                                        "jar", "", jarURL.toExternalForm() + "!/") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                                        .openConnection();
-                                jf = juc.getJarFile();
-                                resCache.put(thisURL, jf);
-                            } catch (IOException e) {
-                                // Don't look for this jar file again
-                                invalidUrls.add(searchURLs[i]);
-                                throw e;
+                        if ((jf == null) && (!invalidUrls.contains(thisURL))) {
+                            synchronized (lock) {
+                                // Check the cache again in case another thread updated it 
+                                // updated it while we're waiting on lock
+                                jf = resCache.get(thisURL);
+                                if (jf == null) {
+                                    if (invalidUrls.contains(thisURL)) {
+                                        continue;
+                                    }
+                                    // If the connection for testURL or thisURL is used,
+                                    // getJarFile() will throw an exception if the entry
+                                    // doesn't exist.
+                                    URL jarURL = ((JarURLConnection) thisURL
+                                              .openConnection()).getJarFileURL();
+                                    try {
+                                        JarURLConnection juc = (JarURLConnection) new URL(
+                                                "jar", "", jarURL.toExternalForm() + "!/") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                                .openConnection();
+                                        jf = juc.getJarFile();
+                                        resCache.put(thisURL, jf);
+                                    } catch (IOException e) {
+                                        // Don't look for this jar file again
+                                        invalidUrls.add(searchURLs[i]);
+                                        throw e;
+                                    }
+                                }
                             }
                         }
                         if (thisURL.getFile().endsWith("!/")) { //$NON-NLS-1$
