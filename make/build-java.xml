@@ -258,6 +258,12 @@ ${built.files.list}
                  <include name="java.security" />
              </fileset>
          </copy>
+
+        <copy todir="${hy.jdk}/jre/lib">
+            <fileset dir="${depends.files}">
+                <include name="net.properties" />
+            </fileset>
+        </copy>
     </target>
 
 

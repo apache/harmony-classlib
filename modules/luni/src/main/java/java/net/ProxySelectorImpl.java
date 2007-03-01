@@ -15,10 +15,15 @@
  */
 package java.net;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
@@ -35,6 +40,32 @@ class ProxySelectorImpl extends ProxySelector {
     private static final int FTP_PROXY_PORT = 80;
 
     private static final int SOCKS_PROXY_PORT = 1080;
+
+    // Net properties read from net.properties file.
+    private static Properties netProps = null;
+
+    // read net.properties file
+    static {
+        AccessController.doPrivileged(new java.security.PrivilegedAction() {
+            public Object run() {
+                File f = new File(System.getProperty("java.home") //$NON-NLS-1$
+                        + File.separator + "lib" + File.separator //$NON-NLS-1$
+                        + "net.properties"); //$NON-NLS-1$
+
+                if (f.exists()) {
+                    try {
+                        FileInputStream fis = new FileInputStream(f);
+                        InputStream is = new BufferedInputStream(fis);
+                        netProps = new Properties();
+                        netProps.load(is);
+                        is.close();
+                    } catch (IOException e) {
+                    }
+                }
+                return null;
+            }
+        });
+    }
 
     public ProxySelectorImpl() {
         super();
@@ -263,11 +294,13 @@ class ProxySelectorImpl extends ProxySelector {
      * is null or empty String, it returns defaultValue.
      */
     private String getSystemProperty(final String property,
-            final String defaultVaule) {
+            final String defaultValue) {
         String value = AccessController.doPrivileged(new PriviAction<String>(
                 property));
         if (null == value || "".equals(value)) { //$NON-NLS-1$
-            value = defaultVaule;
+            value = (netProps != null)
+                    ? netProps.getProperty(property, defaultValue)
+                    : defaultValue;
         }
         return value;
     }
