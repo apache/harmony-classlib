@@ -122,32 +122,7 @@ public class MultiPixelPackedSampleModel extends SampleModel {
 
     @Override
     public void setDataElements(int x, int y, Object obj, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            // awt.63=Coordinates are not in bounds
-            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
-        }
-        
-        int bitnum = dataBitOffset + x * pixelBitStride;
-        int idx = y * scanlineStride + bitnum / dataElementSize;
-        int elem = data.getElem(idx);
-        int shift = dataElementSize - (bitnum & (dataElementSize - 1)) -
-                pixelBitStride;
-        int mask = ~(bitMask << shift);
-        elem &= mask;
-        
-        switch (getTransferType()) {
-        case DataBuffer.TYPE_BYTE:
-            elem |= (((byte[]) obj)[0] & 0xff & bitMask) << shift;
-            break;
-        case DataBuffer.TYPE_USHORT:
-            elem |= (((short[]) obj)[0] & 0xffff & bitMask) << shift;
-            break;
-        case DataBuffer.TYPE_INT:
-            elem |= (((int[]) obj)[0] & bitMask) << shift;
-            break;
-        }
-        
-        data.setElem(idx, elem);
+        setSample(x, y, obj, data, 1, 0);
     }
 
     @Override
@@ -202,11 +177,7 @@ public class MultiPixelPackedSampleModel extends SampleModel {
 
     @Override
     public void setPixel(int x, int y, int iArray[], DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
-            // awt.63=Coordinates are not in bounds
-            throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
-        }
-        setSample(x, y, 0, iArray[0], data);
+        setSample(x, y, iArray, data, 2, 0);
     }
 
     @Override
@@ -226,20 +197,12 @@ public class MultiPixelPackedSampleModel extends SampleModel {
 
     @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height || b != 0) {
+        if (b != 0) {
             // awt.63=Coordinates are not in bounds
             throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.63")); //$NON-NLS-1$
         }
 
-        int bitnum = dataBitOffset + x * pixelBitStride;
-        int idx = y * scanlineStride + bitnum / dataElementSize;
-        int elem = data.getElem(idx);
-        int shift = dataElementSize - (bitnum & (dataElementSize - 1)) -
-                pixelBitStride;
-        int mask = ~(bitMask << shift);
-        elem &= mask;
-        elem |= (s & bitMask) << shift;
-        data.setElem(idx, elem);
+        setSample(x, y, null, data, 3, s);
     }
 
     @Override
@@ -354,5 +317,53 @@ public class MultiPixelPackedSampleModel extends SampleModel {
         return dataBitOffset;
     }
 
+    /**
+     * This method is used by other methods of this class. The behaviour of
+     * this method depends on the method which has been invoke this one. The
+     * argument methodId is used to choose valid behaviour in a particular case.
+     * If methodId is equal to 1 it means that this method has been invoked by
+     * the setDataElements() method, 2 - means setPixel(), and setSample() in
+     * any other cases.
+     */
+    private void setSample(final int x, final int y, final Object obj,
+            final DataBuffer data, final int methodId, int s) {
+        if ((x < 0) || (y < 0) || (x >= this.width) || (y >= this.height)) {
+            // awt.63=Coordinates are not in bounds
+            throw new ArrayIndexOutOfBoundsException(Messages
+                    .getString("awt.63")); //$NON-NLS-1$
+        }
+
+        final int bitnum = dataBitOffset + x * pixelBitStride;
+        final int idx = y * scanlineStride + bitnum / dataElementSize;
+        final int shift = dataElementSize - (bitnum & (dataElementSize - 1))
+                - pixelBitStride;
+        final int mask = ~(bitMask << shift);
+        int elem = data.getElem(idx);
+
+        switch (methodId) {
+        case 1: {                        // Invoked from setDataElements()
+            switch (getTransferType()) {
+            case DataBuffer.TYPE_BYTE:
+                s = ((byte[]) obj)[0] & 0xff;
+                break;
+            case DataBuffer.TYPE_USHORT:
+                s = ((short[]) obj)[0] & 0xffff;
+                break;
+            case DataBuffer.TYPE_INT:
+                s = ((int[]) obj)[0];
+                break;
+            }
+            break;
+        }
+        case 2: {                        // Invoked from setPixel()
+            s = ((int[]) obj)[0];
+            break;
+        }
+        }
+
+        elem &= mask;
+        elem |= (s & bitMask) << shift;
+        data.setElem(idx, elem);
+    }
 }
 
