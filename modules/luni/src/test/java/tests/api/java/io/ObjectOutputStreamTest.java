@@ -1257,6 +1257,10 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 		assertTrue("replaceObject has not been called", (obj instanceof Long));
 
         // Regression for HARMONY-3158
+        Object obj1;
+        Object obj2;
+        Object obj3;
+
         baos = new ByteArrayOutputStream();
         oos = new ObjectOutputStreamWithReplace(baos);
 
@@ -1266,13 +1270,17 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         oos.flush();
 
         ois = new ObjectInputStream(new ByteArrayInputStream (baos.toByteArray()));
-        Object obj1 = ois.readObject();
-        Object obj2 = ois.readObject();
-        Object obj3 = ois.readObject();
+        obj1 = ois.readObject();
+        obj2 = ois.readObject();
+        obj3 = ois.readObject();
         oos.close();
         ois.close();
-        assertTrue("1st replaceObject worked incorrectly", (obj1 instanceof Long) && (((Long) obj1).longValue() == 99));
-        assertEquals("2nd replaceObject worked incorrectly", obj2, Integer.class);
-        assertEquals("3rd replaceObject worked incorrectly", obj3.getClass(), ObjectStreamClass.class);
+
+        assertTrue("1st replaceObject worked incorrectly", obj1 instanceof Long);
+        assertEquals("1st replaceObject worked incorrectly",
+                99, ((Long) obj1).longValue());
+        assertEquals("2nd replaceObject worked incorrectly", Integer.class, obj2);
+        assertEquals("3rd replaceObject worked incorrectly",
+                ObjectStreamClass.class, obj3.getClass());
 	}
 }
