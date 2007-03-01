@@ -372,7 +372,7 @@ public class TextUtils {
                                              final int p, final int x)
             throws BadLocationException {
         int p0 = getRowStart(textKit, p);
-        if (p0 == 0) {
+        if (p0 <= 0) {
             return -1;
         }
         int end = p0 - 1;
@@ -405,6 +405,9 @@ public class TextUtils {
                                              final int p, final int x)
             throws BadLocationException {
         int p0 = getRowEnd(textKit, p);
+        if (p0 == -1) {
+            return -1;
+        }
         int length = textKit.getDocument().getLength();
         if (p0 == length) {
             return p;

@@ -631,6 +631,18 @@ public class UtilitiesTest extends SwingTestCase {
         getPositionAboveBelowTest(jtf);
     }
 
+    // HARMONY-2745
+    public void testGetPositionAbove() throws BadLocationException {
+        jta = new JTextArea();
+        assertEquals(-1, Utilities.getPositionAbove(jta, 1, 0));
+    }
+
+    // HARMONY-2745
+    public void testGetPositionBelow() throws BadLocationException {
+        jta = new JTextArea();
+        assertEquals(-1, Utilities.getPositionBelow(jta, 1, 0));
+    }
+
     void getWordStartTest(final JTextComponent c) {
         AbstractDocument ad = (AbstractDocument) c.getDocument();
         BreakIterator bi = BreakIterator.getWordInstance();
