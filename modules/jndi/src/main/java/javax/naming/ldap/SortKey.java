@@ -17,7 +17,6 @@
 
 package javax.naming.ldap;
 
-import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * 
@@ -38,9 +37,6 @@ public class SortKey {
      * @ar.org.fitc.spec_ref
      */
     public SortKey(String attrID) {
-        if (attrID == null) {
-            throw new NullPointerException("attrID "+Messages.getString("ldap.00"));
-        }
         this.attrID = attrID;
         this.ascendingOrder = true;
     }
@@ -49,9 +45,6 @@ public class SortKey {
      * @ar.org.fitc.spec_ref
      */
     public SortKey(String attrID, boolean ascendingOrder, String matchingRuleID) {
-        if (attrID == null) {
-            throw new NullPointerException("attrID "+Messages.getString("ldap.00"));
-        }
         this.attrID = attrID;
         this.ascendingOrder = ascendingOrder;
         this.matchingRuleID = matchingRuleID;

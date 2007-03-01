@@ -23,31 +23,19 @@ import junit.framework.TestCase;
 public class SortKeyTest extends TestCase {
 
     public void testAll() {
+        new SortKey(null);
+        new SortKey(null, true, null);
+
         SortKey sk = new SortKey("attributeId");
         assertEquals("attributeId", sk.getAttributeID());
         assertTrue(sk.isAscending());
         assertNull(sk.getMatchingRuleID());
-        
-        try {
-            new SortKey(null);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            //expected
-        }
-        
-        
-        
+
         sk = new SortKey("attributeId", false, "matchingRuleId");
         assertEquals("attributeId", sk.getAttributeID());
         assertFalse(sk.isAscending());
         assertEquals("matchingRuleId", sk.getMatchingRuleID());
         
-        try {
-            new SortKey(null, true, null);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            //expected
-        }
         
         sk = new SortKey("attributeId", true, null);
         assertEquals("attributeId", sk.getAttributeID());
