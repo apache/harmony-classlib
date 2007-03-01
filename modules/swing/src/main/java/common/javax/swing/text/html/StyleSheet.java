@@ -71,6 +71,8 @@ import org.apache.harmony.x.swing.text.html.cssparser.metamodel.Property;
 import org.apache.harmony.x.swing.text.html.cssparser.metamodel.RuleSet;
 import org.apache.harmony.x.swing.text.html.cssparser.metamodel.Sheet;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * Implementation of this class is based on <a href="http://www.w3.org/TR/CSS1">CSS1</a>.
  */
@@ -132,7 +134,7 @@ public class StyleSheet extends StyleContext {
             updateProperties();
 
             if (!(g instanceof Graphics2D)) {
-                System.err.println("Graphics is not instance of Graphics2D");
+                System.err.println(Messages.getString("swing.err.09")); //$NON-NLS-1$
             }
             Graphics2D g2d = (Graphics2D)g;
 
@@ -307,7 +309,7 @@ public class StyleSheet extends StyleContext {
                 return CSS.LEFT_SIDE;
 
             default:
-                throw new IllegalArgumentException("Invalid side " + side);
+                throw new IllegalArgumentException(Messages.getString("swing.A4", side)); //$NON-NLS-1$
             }
         }
 
@@ -1148,7 +1150,7 @@ public class StyleSheet extends StyleContext {
     }
 
     private void parseSheet(final boolean asResolver) {
-//        throw new UnsupportedOperationException("CSS parser required!");
+//        throw new UnsupportedOperationException(Messages.getString("swing.A5")); //$NON-NLS-1$
         Sheet ss = null;
         try {
             ss = parser.parse();

@@ -36,6 +36,8 @@ import javax.swing.UIManager;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class TitledBorder extends AbstractBorder {
 
@@ -284,7 +286,7 @@ public class TitledBorder extends AbstractBorder {
 
     public void setTitlePosition(final int pos) {
         if (pos < DEFAULT_POSITION || BELOW_BOTTOM < pos) {
-            throw new IllegalArgumentException(pos + " is not a valid title position.");
+            throw new IllegalArgumentException(Messages.getString("swing.24",pos)); //$NON-NLS-1$
         }
         titlePosition = pos;
     }
@@ -295,7 +297,7 @@ public class TitledBorder extends AbstractBorder {
 
     public void setTitleJustification(final int justification) {
         if (justification < DEFAULT_JUSTIFICATION || TRAILING < justification) {
-            throw new IllegalArgumentException(justification + " is not a valid title justification.");
+            throw new IllegalArgumentException(Messages.getString("swing.23",justification)); //$NON-NLS-1$
         }
         titleJustification = justification;
     }

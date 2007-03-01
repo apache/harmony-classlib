@@ -25,6 +25,8 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.ToolTipUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JToolTip extends JComponent implements Accessible {
     private static final String COMPONENT = "component";
     private static final String TIP_TEXT = "tiptext";
@@ -33,10 +35,10 @@ public class JToolTip extends JComponent implements Accessible {
 
     protected class AccessibleJToolTip extends AccessibleJComponent {
         public String getAccessibleDescription() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 

@@ -73,6 +73,8 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.harmony.luni.util.NotImplementedException;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JTree</i>
@@ -1007,7 +1009,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
             public TreePath nextElement() {
                 if (nextElement == null) {
-                    throw new NoSuchElementException("No next element in enumeration");
+                    throw new NoSuchElementException(Messages.getString("swing.4B")); //$NON-NLS-1$
                 }
                 TreePath currentValue = nextElement;
                 nextElement = getNextExpandedPath();
@@ -1317,11 +1319,10 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
     public TreePath getNextMatch(String prefix, int startingRow, Position.Bias bias) {
         if (prefix == null) {
-            throw new IllegalArgumentException("Prefix must be specified");
+            throw new IllegalArgumentException(Messages.getString("swing.4C")); //$NON-NLS-1$
         }
         if (startingRow < 0 || startingRow >= getRowCount()) {
-            throw new IllegalArgumentException(
-                    "Illegal startingRow is specified. Must be in the valid range");
+            throw new IllegalArgumentException(Messages.getString("swing.2D")); //$NON-NLS-1$
         }
         if (bias == Position.Bias.Forward) {
             int rowCount = getRowCount();
@@ -1440,7 +1441,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
 
             public TreePath nextElement() {
                 if (nextElement == null) {
-                    throw new NoSuchElementException("No next element in enumeration");
+                    throw new NoSuchElementException(Messages.getString("swing.4B")); //$NON-NLS-1$
                 }
                 TreePath currentValue = nextElement;
                 nextElement = getNextDescendPath();

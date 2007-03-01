@@ -25,6 +25,8 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.swing.plaf.SeparatorUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JSeparator extends JComponent implements SwingConstants, Accessible {
 
     protected class AccessibleJSeparator extends AccessibleJComponent {
@@ -85,8 +87,7 @@ public class JSeparator extends JComponent implements SwingConstants, Accessible
             return;
         }
 
-        throw new IllegalArgumentException(
-                                           "orientation must VERTICAL or HORIZONTAL");
+        throw new IllegalArgumentException(Messages.getString("swing.47")); //$NON-NLS-1$
     }
 
 }

@@ -32,6 +32,8 @@ import javax.accessibility.AccessibleStateSet;
 import javax.accessibility.AccessibleValue;
 import javax.swing.plaf.SplitPaneUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JSplitPane extends JComponent implements Accessible {
     public static final String BOTTOM = "bottom";
     public static final String TOP = "top";
@@ -52,27 +54,27 @@ public class JSplitPane extends JComponent implements Accessible {
 
     protected class AccessibleJSplitPane extends AccessibleJComponent implements AccessibleValue {
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public AccessibleValue getAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public Number getCurrentAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public boolean setCurrentAccessibleValue(final Number n) {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public Number getMinimumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public Number getMaximumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented yet");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public AccessibleRole getAccessibleRole() {
@@ -240,7 +242,7 @@ public class JSplitPane extends JComponent implements Accessible {
 
     public void setResizeWeight(final double weight) {
         if (weight < 0 || weight > 1) {
-            throw new IllegalArgumentException("Incorrect resize weight is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.32")); //$NON-NLS-1$
         }
         if (resizeWeight != weight) {
             double oldValue = resizeWeight;
@@ -259,7 +261,7 @@ public class JSplitPane extends JComponent implements Accessible {
 
     public void setDividerLocation(final double proportionalLocation) {
         if (proportionalLocation < 0 || proportionalLocation > 1) {
-            throw new IllegalArgumentException("Incorrect proportional location is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.33")); //$NON-NLS-1$
         }
 
         int size;
@@ -375,7 +377,7 @@ public class JSplitPane extends JComponent implements Accessible {
 
     private void checkOrientation(final int orientation) {
         if (orientation != HORIZONTAL_SPLIT && orientation != VERTICAL_SPLIT) {
-            throw new IllegalArgumentException("Incorrect orientation is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.1B")); //$NON-NLS-1$
         }
     }
 

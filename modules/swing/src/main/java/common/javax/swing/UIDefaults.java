@@ -44,6 +44,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class UIDefaults extends Hashtable<Object, Object> {
 
     public static interface ActiveValue {
@@ -408,7 +410,7 @@ public class UIDefaults extends Hashtable<Object, Object> {
     }
 
     protected void getUIError(final String message) {
-        System.err.println("ERROR: UIDefaults.getUI() failed: " + message);
+        System.err.println(Messages.getString("swing.err.06",message)); //$NON-NLS-1$
     }
 
     private Object getFromResourceBundles(final Object key, final Locale locale) {

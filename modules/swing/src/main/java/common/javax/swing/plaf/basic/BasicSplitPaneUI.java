@@ -42,6 +42,8 @@ import javax.swing.plaf.SplitPaneUI;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BasicSplitPaneUI extends SplitPaneUI {
 
     public class BasicHorizontalLayoutManager implements LayoutManager2 {
@@ -159,7 +161,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                                   && !JSplitPane.BOTTOM.equals(place)
                                   && !JSplitPane.RIGHT.equals(place)
                                   && !JSplitPane.DIVIDER.equals(place)) {
-                throw new IllegalArgumentException("illegal argument");
+                throw new IllegalArgumentException(Messages.getString("swing.73")); //$NON-NLS-1$
             }
             if (JSplitPane.DIVIDER.equals(place)) {
                 components[DIVIDER_INDEX] = component;
@@ -238,7 +240,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
         public void addLayoutComponent(final Component comp, final Object constraints) {
             if (!(constraints instanceof String)) {
-                throw new IllegalArgumentException("constraints must be String");
+                throw new IllegalArgumentException(Messages.getString("swing.74")); //$NON-NLS-1$
             }
             addLayoutComponent((String)constraints, comp);
         }
@@ -722,7 +724,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
     @Override
     public int getDividerLocation(final JSplitPane jc) {
         if (jc == null) { // Fix for HARMONY-2661, for compatibility with RI
-            throw new NullPointerException("jc is null");
+            throw new NullPointerException(Messages.getString("swing.03","jc")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return dividerLocation;
     }

@@ -23,6 +23,8 @@ import java.util.TimerTask;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>Timer</i>
@@ -109,7 +111,7 @@ public class Timer implements Serializable {
 
     public void setInitialDelay(final int initialDelay) {
         if (initialDelay < 0) {
-            throw new IllegalArgumentException("Invalid initial delay: " + initialDelay);
+            throw new IllegalArgumentException(Messages.getString("swing.63", initialDelay)); //$NON-NLS-1$
         }
         this.initialDelay = initialDelay;
     }
@@ -120,7 +122,7 @@ public class Timer implements Serializable {
 
     public void setDelay(final int delay) {
         if (delay < 0) {
-            throw new IllegalArgumentException("Invalid delay: " + delay);
+            throw new IllegalArgumentException(Messages.getString("swing.64", delay)); //$NON-NLS-1$
         }
         this.delay = delay;
     }

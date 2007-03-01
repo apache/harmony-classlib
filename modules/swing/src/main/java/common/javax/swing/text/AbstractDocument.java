@@ -51,6 +51,8 @@ import org.apache.harmony.awt.text.PropertyNames;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public abstract class AbstractDocument implements Document, Serializable {
 
@@ -878,8 +880,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         public final synchronized void writeLock() {
             if (callingListeners) {
-                throw new IllegalStateException("Document cannot be modified "
-                                                + "from listener handler");
+                throw new IllegalStateException(Messages.getString("swing.7E")); //$NON-NLS-1$
             }
 
             final Thread thread = Thread.currentThread();
@@ -1368,11 +1369,11 @@ public abstract class AbstractDocument implements Document, Serializable {
         }
 
         if (offset < 0 || offset > getLength()) {
-            throw new BadLocationException("Invalid remove position", offset);
+            throw new BadLocationException(Messages.getString("swing.7F"), offset); //$NON-NLS-1$
         }
 
         if (offset + length > getLength()) {
-            throw new BadLocationException("Invalid remove length",
+            throw new BadLocationException(Messages.getString("swing.80"), //$NON-NLS-1$
                                            offset + length);
         }
 

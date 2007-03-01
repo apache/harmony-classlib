@@ -44,6 +44,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class StyleContext
     implements Serializable, AbstractDocument.AttributeContext {
 
@@ -300,9 +302,7 @@ public class StyleContext
 
                 public Object nextElement() {
                     if (count >= attributes.length) {
-                        new NoSuchElementException("The enumeration has "
-                                                   + "no more elements "
-                                                   + "to provide");
+                        new NoSuchElementException(Messages.getString("swing.9A")); //$NON-NLS-1$
                     }
 
                     Object next = attributes[count++];
@@ -729,7 +729,7 @@ public class StyleContext
         if (key instanceof Integer) {
             count = ((Integer)key).intValue();
         } else {
-            throw new IOException("No attribute set count field.");
+            throw new IOException(Messages.getString("swing.9B")); //$NON-NLS-1$
         }
 
         while (count-- > 0) {
@@ -883,4 +883,5 @@ public class StyleContext
     }
 
 }
+
 

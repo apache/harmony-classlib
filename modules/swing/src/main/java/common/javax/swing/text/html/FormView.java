@@ -49,12 +49,14 @@ import org.apache.harmony.x.swing.text.html.form.FormTextModel;
 import org.apache.harmony.x.swing.text.html.form.FormToggleButtonModel;
 import org.apache.harmony.x.swing.internal.nls.Messages;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class FormView extends ComponentView implements ActionListener {
     private static final int EMPTY_SPAN = 0;
 
     protected class MouseEventListener extends MouseAdapter {
         public void mouseReleased(final MouseEvent evt) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 
@@ -76,7 +78,7 @@ public class FormView extends ComponentView implements ActionListener {
 
     public float getMaximumSpan(final int axis) {
         if (axis != View.X_AXIS && axis != View.Y_AXIS) {
-            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$ 
         }
         if (getComponent() == null || getParent() == null) {
             return EMPTY_SPAN;
@@ -253,12 +255,12 @@ public class FormView extends ComponentView implements ActionListener {
 
     protected void imageSubmit(final String imageData) {
         // TODO implement imageSubmit
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     protected void submitData(final String data) {
         // TODO implement submitData
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     private void determineValidControls(final Form form) {
@@ -280,7 +282,7 @@ public class FormView extends ComponentView implements ActionListener {
             case FormAttributes.TEXTAREA_TYPE_INDEX :
             case FormAttributes.SELECT_LIST_TYPE_INDEX :
             case FormAttributes.SELECT_COMBOBOX_TYPE_INDEX :
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             default :
                 // Do nothing
                 break;

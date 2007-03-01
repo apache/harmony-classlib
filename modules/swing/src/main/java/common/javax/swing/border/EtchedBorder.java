@@ -26,6 +26,8 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.security.InvalidParameterException;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class EtchedBorder extends AbstractBorder {
 
     public static final int RAISED = 0;
@@ -36,7 +38,7 @@ public class EtchedBorder extends AbstractBorder {
     protected Color shadow;
 
     private static final int INSETS_SIZE = 2;
-    private static final String INCORRECT_BORDER_TYPE_EXCEPTION_TEXT = "Incorrect type of the etched border";
+    private static final String INCORRECT_BORDER_TYPE_EXCEPTION_TEXT = Messages.getString("swing.1D"); //$NON-NLS-1$
 
     public EtchedBorder() {
     }
@@ -112,4 +114,5 @@ public class EtchedBorder extends AbstractBorder {
     }
 
 }
+
 

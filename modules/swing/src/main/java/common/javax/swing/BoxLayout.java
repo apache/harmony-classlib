@@ -24,6 +24,8 @@ import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.io.Serializable;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BoxLayout implements LayoutManager2, Serializable {
     private static final long serialVersionUID = -2474455742719112368L;
 
@@ -119,7 +121,7 @@ public class BoxLayout implements LayoutManager2, Serializable {
                         : LayoutParameters.HORIZONTAL_ALIGNMENT;
             }
         } else {
-            throw new AWTError("Invalid axis");
+            throw new AWTError(Messages.getString("swing.err.04")); //$NON-NLS-1$
         }
         return alignment;
     }
@@ -131,7 +133,7 @@ public class BoxLayout implements LayoutManager2, Serializable {
      */
     private void checkTarget(final Container target) {
         if (this.target != target) {
-            throw new AWTError("BoxLayout should be used for one container only");
+            throw new AWTError(Messages.getString("swing.err.02")); //$NON-NLS-1$
         }
     }
 }

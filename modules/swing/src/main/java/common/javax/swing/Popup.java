@@ -25,6 +25,8 @@ import java.awt.Window;
 
 import org.apache.harmony.awt.ComponentInternals;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class Popup {
     class PopupWindow extends JWindow {
@@ -63,7 +65,7 @@ public class Popup {
 
     protected Popup(final Component owner, final Component content, final int x, final int y) {
         if (content == null) {
-            throw new IllegalArgumentException("Popup content should be specified");
+            throw new IllegalArgumentException(Messages.getString("swing.52")); //$NON-NLS-1$
         }
 
         Window ownerWindow = owner instanceof Window ? (Window)owner : SwingUtilities.getWindowAncestor(owner);

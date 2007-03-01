@@ -24,6 +24,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.harmony.awt.gl.MultiRectArea;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>DefaultListSelectionModel</i>
@@ -326,7 +328,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
     public void setSelectionMode(int selectionMode) {
         if (selectionMode != SINGLE_SELECTION && selectionMode != SINGLE_INTERVAL_SELECTION
                 && selectionMode != MULTIPLE_INTERVAL_SELECTION) {
-            throw new IllegalArgumentException("Incorrect selection mode is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.08")); //$NON-NLS-1$
         }
         this.selectionMode = selectionMode;
     }

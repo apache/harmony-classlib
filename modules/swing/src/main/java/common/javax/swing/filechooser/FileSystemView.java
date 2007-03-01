@@ -37,6 +37,8 @@ import org.apache.harmony.misc.SystemUtils;
 import org.apache.harmony.x.swing.filechooser.PlatformFile;
 import org.apache.harmony.x.swing.filechooser.PlatformFileManager;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public abstract class FileSystemView {
     private static FileSystemView instance;
 
@@ -383,6 +385,6 @@ public abstract class FileSystemView {
 
 
     protected File createFileSystemRoot(final File f) {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 }

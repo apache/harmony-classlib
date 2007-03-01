@@ -60,6 +60,8 @@ import org.apache.harmony.x.swing.ButtonCommons;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicMenuItemUI extends MenuItemUI {
     protected class MouseInputHandler implements MouseInputListener {
@@ -304,7 +306,7 @@ public class BasicMenuItemUI extends MenuItemUI {
 
     public Dimension getMinimumSize(final JComponent c) {
         if (c == null) {
-            throw new NullPointerException("component is null");
+            throw new NullPointerException(Messages.getString("swing.03","component")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return null;
     }
@@ -315,7 +317,7 @@ public class BasicMenuItemUI extends MenuItemUI {
 
     public Dimension getMaximumSize(final JComponent c) {
         if (c == null) {
-            throw new NullPointerException("component is null");
+            throw new NullPointerException(Messages.getString("swing.03","component")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return null;
     }

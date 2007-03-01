@@ -69,6 +69,8 @@ import org.apache.harmony.x.swing.Utilities;
 
 import org.apache.harmony.x.swing.internal.nls.Messages;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicComboBoxUI extends ComboBoxUI {
 
@@ -82,14 +84,14 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
         public Dimension preferredLayoutSize(final Container parent) {
             if (parent == null) {
-                throw new NullPointerException("parent is null");
+                throw new NullPointerException(Messages.getString("swing.03","Parent")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return new Dimension(0, 0);
         }
 
         public Dimension minimumLayoutSize(final Container parent) {
             if (parent == null) {
-                throw new NullPointerException("parent is null");
+                throw new NullPointerException(Messages.getString("swing.03","Parent")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return new Dimension(0, 0);
         }
@@ -429,7 +431,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
     public void paintCurrentValueBackground(final Graphics g, final Rectangle bounds, final boolean hasFocus) {
         Color oldColor = g.getColor();
         if (comboBox == null) {
-            throw new NullPointerException("comboBox is null");
+            throw new NullPointerException(Messages.getString("swing.03","ComboBox")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (hasFocus) {
             g.setColor(UIManager.getColor("ComboBox.selectionBackground"));
@@ -487,7 +489,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     public int getAccessibleChildrenCount(final JComponent c) {
         if (comboBox == null) {
-            throw new NullPointerException(Messages.getString("swing.04")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("swing.03","ComboBox")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return 0;
     }

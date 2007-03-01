@@ -38,6 +38,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BorderUIResource implements Border, UIResource, Serializable {
     private static Border etched;
     private static Border blackLine;
@@ -158,7 +160,7 @@ public class BorderUIResource implements Border, UIResource, Serializable {
 
     public BorderUIResource(final Border border) {
         if (border == null) {
-            throw new IllegalArgumentException("null delegate");
+            throw new IllegalArgumentException(Messages.getString("swing.6B")); //$NON-NLS-1$
         }
         this.border = border;
     }
@@ -219,4 +221,5 @@ public class BorderUIResource implements Border, UIResource, Serializable {
         return blackLine;
     }
 }
+
 

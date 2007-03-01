@@ -36,6 +36,8 @@ import javax.swing.plaf.UIResource;
 import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JTabbedPane</i>
@@ -546,7 +548,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
     public void setSelectedComponent(Component comp) {
         int index = indexOfComponent(comp);
         if (index == NOT_FOUND) {
-            throw new IllegalArgumentException("Component not found in the tabbed pane");
+            throw new IllegalArgumentException(Messages.getString("swing.34")); //$NON-NLS-1$
         }
         setSelectedIndex(index);
     }
@@ -557,7 +559,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
 
     public void setSelectedIndex(int index) {
         if (index < -1 || index >= getTabCount()) {
-            throw new IndexOutOfBoundsException("index < -1 || index >= tab count");
+            throw new IndexOutOfBoundsException(Messages.getString("swing.35")); //$NON-NLS-1$
         }
         getModel().setSelectedIndex(index);
     }
@@ -568,7 +570,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
 
     public void setTabLayoutPolicy(int tabLayoutPolicy) {
         if (tabLayoutPolicy != WRAP_TAB_LAYOUT && tabLayoutPolicy != SCROLL_TAB_LAYOUT) {
-            throw new IllegalArgumentException("invalid tabLayoutPolicy");
+            throw new IllegalArgumentException(Messages.getString("swing.36")); //$NON-NLS-1$
         }
         int oldValue = this.tabLayoutPolicy;
         this.tabLayoutPolicy = tabLayoutPolicy;
@@ -582,7 +584,7 @@ public class JTabbedPane extends JComponent implements Serializable, Accessible,
     public void setTabPlacement(int tabPlacement) {
         if (tabPlacement != TOP && tabPlacement != BOTTOM && tabPlacement != LEFT
                 && tabPlacement != RIGHT) {
-            throw new IllegalArgumentException("invalid tabPlacement");
+            throw new IllegalArgumentException(Messages.getString("swing.37")); //$NON-NLS-1$
         }
         int oldValue = this.tabPlacement;
         this.tabPlacement = tabPlacement;

@@ -22,6 +22,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>DefaultBoundedRangeModel</i>
@@ -57,7 +59,7 @@ public class DefaultBoundedRangeModel implements BoundedRangeModel, Serializable
 
     public DefaultBoundedRangeModel(int value, int extent, int min, int max) {
         if (min > value || value > value + extent || value + extent > max) {
-            throw new IllegalArgumentException("invalid range properties");
+            throw new IllegalArgumentException(Messages.getString("swing.07")); //$NON-NLS-1$
         }
         this.min = min;
         this.max = max;

@@ -46,6 +46,8 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public abstract class LookAndFeel {
     private static Map classToSettersMap = new HashMap();
@@ -181,16 +183,16 @@ public abstract class LookAndFeel {
         }
         Method setter = getSetter(propertyName, c.getClass());
         if (setter == null) {
-            throw new IllegalArgumentException("can't set " + propertyName);
+            throw new IllegalArgumentException(Messages.getString("swing.51") + propertyName); //$NON-NLS-1$
         }
         try {
             setter.invoke(c, new Object[] {propertyValue});
         } catch (IllegalArgumentException e) {
             throw new ClassCastException();
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("can't set " + propertyName);
+            throw new IllegalArgumentException(Messages.getString("swing.51") + propertyName); //$NON-NLS-1$
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("can't set " + propertyName);
+            throw new IllegalArgumentException(Messages.getString("swing.51") + propertyName); //$NON-NLS-1$
         }
         c.installablePropertiesExcluded.remove(propertyName);
     }
@@ -229,4 +231,5 @@ public abstract class LookAndFeel {
         c.installablePropertiesExcluded.add(propertyName);
     }
 }
+
 

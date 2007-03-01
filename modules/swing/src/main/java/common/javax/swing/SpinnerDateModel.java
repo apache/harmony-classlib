@@ -26,6 +26,8 @@ import java.util.Date;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class SpinnerDateModel extends AbstractSpinnerModel implements Serializable {
 
@@ -42,16 +44,16 @@ public class SpinnerDateModel extends AbstractSpinnerModel implements Serializab
     public SpinnerDateModel(final Date value, final Comparable start,
                             final Comparable end, final int calendarField) {
         if (value == null) {
-            throw new IllegalArgumentException("value is null");
+            throw new IllegalArgumentException(Messages.getString("swing.03","value")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (start != null && start.compareTo(value) > 0) {
-            throw new IllegalArgumentException("(start <= value <= end) is false");
+            throw new IllegalArgumentException(Messages.getString("swing.59")); //$NON-NLS-1$
         }
         if (end != null && end.compareTo(value) < 0) {
-            throw new IllegalArgumentException("(start <= value <= end) is false");
+            throw new IllegalArgumentException(Messages.getString("swing.59")); //$NON-NLS-1$
         }
         if (!isValidCalendarField(calendarField)) {
-            throw new IllegalArgumentException("invalid calendarField");
+            throw new IllegalArgumentException(Messages.getString("swing.5A")); //$NON-NLS-1$
         }
 
         this.value = value;
@@ -84,7 +86,7 @@ public class SpinnerDateModel extends AbstractSpinnerModel implements Serializab
 
     public void setCalendarField(final int calendarField) {
         if (!isValidCalendarField(calendarField)) {
-            throw new IllegalArgumentException("invalid calendarField");
+            throw new IllegalArgumentException(Messages.getString("swing.5A")); //$NON-NLS-1$
         }
         if (this.calendarField != calendarField) {
             this.calendarField = calendarField;
@@ -114,7 +116,7 @@ public class SpinnerDateModel extends AbstractSpinnerModel implements Serializab
 
     public void setValue(final Object value) {
         if (!(value instanceof Date)) {
-            throw new IllegalArgumentException("illegal value");
+            throw new IllegalArgumentException(Messages.getString("swing.5B")); //$NON-NLS-1$
         }
         if (this.value != value) {
             this.value = (Date)value;

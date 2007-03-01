@@ -34,6 +34,8 @@ import javax.swing.event.MenuListener;
 import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JMenu</i>
@@ -331,7 +333,7 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     public void setDelay(int delay) {
         if (delay < 0) {
-            throw new IllegalArgumentException("Delay must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.1C")); //$NON-NLS-1$
         }
         this.delay = delay;
     }

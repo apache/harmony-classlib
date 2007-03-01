@@ -36,6 +36,8 @@ import javax.swing.text.WrappedPlainView;
 
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BasicTextAreaUI extends BasicTextUI {
     private static final String PLAIN_VIEW_I18N_CLASS =
         "javax.swing.text.PlainViewI18N";
@@ -88,7 +90,7 @@ public class BasicTextAreaUI extends BasicTextUI {
     @Override
     public Dimension getMinimumSize(final JComponent c) {
         if (!(c instanceof JTextComponent)) {
-            throw new IllegalArgumentException("not text component");
+            throw new IllegalArgumentException(Messages.getString("swing.77")); //$NON-NLS-1$
         }
         Dimension dim = super.getMinimumSize(c);
         Caret caret = ((JTextComponent)c).getCaret();
@@ -101,7 +103,7 @@ public class BasicTextAreaUI extends BasicTextUI {
     @Override
     public Dimension getPreferredSize(final JComponent c) {
         if (!(c instanceof JTextComponent)) {
-            throw new IllegalArgumentException("not text component");
+            throw new IllegalArgumentException(Messages.getString("swing.77")); //$NON-NLS-1$
         }
         Dimension dim = super.getPreferredSize(c);
 

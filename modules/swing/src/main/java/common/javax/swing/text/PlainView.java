@@ -33,6 +33,7 @@ import javax.swing.event.DocumentEvent.EventType;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class PlainView extends View implements TabExpander {
     protected FontMetrics metrics;
@@ -59,7 +60,7 @@ public class PlainView extends View implements TabExpander {
             return metrics.getHeight() * getElement().getElementCount();
 
         default:
-            throw new IllegalArgumentException("Invalid axis (" + axis + ")");
+            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$
         }
     }
 
@@ -91,7 +92,7 @@ public class PlainView extends View implements TabExpander {
         throws BadLocationException {
 
         if (pos < 0 || pos > getDocument().getLength() + 1) {
-            throw new BadLocationException("Invalid position", pos);
+            throw new BadLocationException(Messages.getString("swing.98"), pos); //$NON-NLS-1$
         }
 
         final int lineNo = getElement().getElementIndex(pos);

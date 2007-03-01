@@ -28,6 +28,8 @@ import java.awt.Toolkit;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class GrayFilter extends RGBImageFilter {
     private static final float INTERVAL_BOUND = 1f / 3;
     
@@ -41,7 +43,7 @@ public class GrayFilter extends RGBImageFilter {
 
     public GrayFilter(boolean bright, int grayPercentage) {
         if (grayPercentage < 0 || grayPercentage > 100) {
-            throw new IllegalArgumentException("Incorrect range for grayscale factor");
+            throw new IllegalArgumentException(Messages.getString("swing.09")); //$NON-NLS-1$
         }
 
         canFilterIndexColorModel = true;

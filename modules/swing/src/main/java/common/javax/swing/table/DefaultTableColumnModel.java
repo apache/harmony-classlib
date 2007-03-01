@@ -38,6 +38,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class DefaultTableColumnModel implements TableColumnModel, PropertyChangeListener, ListSelectionListener, Serializable {
     protected Vector<TableColumn> tableColumns = new Vector<TableColumn>();
     protected ListSelectionModel selectionModel;
@@ -55,7 +57,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
 
     public void addColumn(final TableColumn column) {
         if (column == null) {
-            throw new IllegalArgumentException("Column must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.78")); //$NON-NLS-1$
         }
         tableColumns.add(column);
         totalColumnWidth = -1;
@@ -78,7 +80,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
         if (columnIndex < 0 || columnIndex >= getColumnCount()
             || newIndex < 0 || newIndex > getColumnCount()) {
 
-            throw new IllegalArgumentException("Specified index is out of range");
+            throw new IllegalArgumentException(Messages.getString("swing.79")); //$NON-NLS-1$
         }
 
         if (columnIndex != newIndex) {
@@ -120,7 +122,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
 
     public int getColumnIndex(final Object identifier) {
         if (identifier == null) {
-            throw new IllegalArgumentException("Identifier must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.7A")); //$NON-NLS-1$
         }
 
         for (int i = 0; i < getColumnCount(); i++) {
@@ -130,7 +132,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
             }
         }
 
-        throw new IllegalArgumentException("Identifier is not found");
+        throw new IllegalArgumentException(Messages.getString("swing.7B")); //$NON-NLS-1$
     }
 
     public TableColumn getColumn(final int columnIndex) {
@@ -160,7 +162,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
 
     public void setSelectionModel(final ListSelectionModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("Model must be not-null");
+            throw new IllegalArgumentException(Messages.getString("swing.7C")); //$NON-NLS-1$
         }
         selectionModel.removeListSelectionListener(this);
 

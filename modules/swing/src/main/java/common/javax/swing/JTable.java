@@ -78,6 +78,8 @@ import javax.swing.table.TableModel;
 import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JTable</i>
@@ -857,7 +859,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void setRowHeight(int rowHeight) {
         if (rowHeight <= 0) {
-            throw new IllegalArgumentException("Row height must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.38")); //$NON-NLS-1$
         }
         int oldValue = this.rowHeight;
         this.rowHeight = rowHeight;
@@ -870,7 +872,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void setRowHeight(int row, int height) {
         if (height <= 0) {
-            throw new IllegalArgumentException("Row height must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.38")); //$NON-NLS-1$
         }
         if (rowHeights.size() <= row) {
             rowHeights.setSize(row + 1);
@@ -1193,7 +1195,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     public TableColumn getColumn(Object identifier) {
         int index = getColumnModel().getColumnIndex(identifier);
         if (index == -1) {
-            throw new IllegalArgumentException("Column does not exist");
+            throw new IllegalArgumentException(Messages.getString("swing.39")); //$NON-NLS-1$
         }
         return getColumnModel().getColumn(index);
     }
@@ -1435,7 +1437,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void setModel(TableModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("Model must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.3A")); //$NON-NLS-1$
         }
         TableModel oldValue = dataModel;
         if (oldValue != null) {
@@ -1457,7 +1459,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void setColumnModel(TableColumnModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("Column model must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.3B")); //$NON-NLS-1$
         }
         TableColumnModel oldValue = columnModel;
         if (oldValue != null) {
@@ -1478,7 +1480,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void setSelectionModel(ListSelectionModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("Selection model must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.17")); //$NON-NLS-1$
         }
         ListSelectionModel oldValue = selectionModel;
         if (oldValue != null) {
@@ -1870,9 +1872,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     private void checkSelectionInterval(int start, int end, int bound) {
         if (start < 0 || end < 0 || start >= bound || end >= bound) {
-            throw new IllegalArgumentException(
-                    "Illegal selection interval is specified. Should be in [0, " + (bound - 1)
-                            + "]");
+            throw new IllegalArgumentException(Messages.getString("swing.31", (bound - 1))); //$NON-NLS-1$
         }
     }
 

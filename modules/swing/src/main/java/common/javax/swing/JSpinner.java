@@ -52,6 +52,8 @@ import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JSpinner</i>
@@ -340,7 +342,7 @@ public class JSpinner extends JComponent implements Accessible {
         public DateEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerDateModel)) {
-                throw new IllegalArgumentException("model not a SpinnerDateModel");
+                throw new IllegalArgumentException(Messages.getString("swing.2C","SpinnerDateModel")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             format = new SimpleDateFormat();
             initTextField();
@@ -349,7 +351,7 @@ public class JSpinner extends JComponent implements Accessible {
         public DateEditor(JSpinner spinner, String dateFormatPattern) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerDateModel)) {
-                throw new IllegalArgumentException("model not a SpinnerDateModel");
+                throw new IllegalArgumentException(Messages.getString("swing.2C","SpinnerDateModel")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             format = new SimpleDateFormat(dateFormatPattern);
             initTextField();
@@ -453,7 +455,7 @@ public class JSpinner extends JComponent implements Accessible {
         public ListEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerListModel)) {
-                throw new IllegalArgumentException("model not a SpinnerListModel");
+                throw new IllegalArgumentException(Messages.getString("swing.2C","SpinnerListModel")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             SpinnerListFormatter formatter = new SpinnerListFormatter(this.getModel(), this
                     .getTextField());
@@ -514,7 +516,7 @@ public class JSpinner extends JComponent implements Accessible {
         public NumberEditor(JSpinner spinner) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerNumberModel)) {
-                throw new IllegalArgumentException("model not a SpinnerNumberModel");
+                throw new IllegalArgumentException(Messages.getString("swing.2C","SpinnerNumberModel")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             format = new DecimalFormat();
             initTextField();
@@ -523,7 +525,7 @@ public class JSpinner extends JComponent implements Accessible {
         public NumberEditor(JSpinner spinner, String decimalFormatPattern) {
             super(spinner);
             if (!(spinner.getModel() instanceof SpinnerNumberModel)) {
-                throw new IllegalArgumentException("model not a SpinnerNumberModel");
+                throw new IllegalArgumentException(Messages.getString("swing.2C","SpinnerNumberModel")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             format = new DecimalFormat(decimalFormatPattern);
             initTextField();
@@ -623,7 +625,7 @@ public class JSpinner extends JComponent implements Accessible {
 
     public void setModel(SpinnerModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("null model");
+            throw new IllegalArgumentException(Messages.getString("swing.2F")); //$NON-NLS-1$
         }
         SpinnerModel oldModel = this.model;
         oldModel.removeChangeListener(changeListener);
@@ -680,7 +682,7 @@ public class JSpinner extends JComponent implements Accessible {
 
     public void setEditor(JComponent editor) {
         if (editor == null) {
-            throw new IllegalArgumentException("null editor");
+            throw new IllegalArgumentException(Messages.getString("swing.30")); //$NON-NLS-1$
         }
         JComponent oldEditor = this.editor;
         if (oldEditor == editor) {

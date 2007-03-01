@@ -41,6 +41,8 @@ import javax.swing.text.NavigationFilter;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.TextAction;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JFormattedTextField</i>
@@ -455,10 +457,10 @@ public class JFormattedTextField extends JTextField {
     public void setFocusLostBehavior(final int behavior) {
         if (behavior != COMMIT && behavior != COMMIT_OR_REVERT && behavior != PERSIST
                 && behavior != REVERT) {
-            throw new IllegalArgumentException("setFocusLostBehavior " + "must be one of: "
-                    + "JFormattedTextField.COMMIT, " + "JFormattedTextField.COMMIT_OR_"
-                    + "REVERT, " + "JFormattedTextField.PERSIST "
-                    + "or JFormattedTextField.REVERT");
+            throw new IllegalArgumentException("setFocusLostBehavior" + Messages.getString("swing.13") //$NON-NLS-1$ //$NON-NLS-2$
+                    + "JFormattedTextField.COMMIT, " + "JFormattedTextField.COMMIT_OR_" //$NON-NLS-1$ //$NON-NLS-2$
+                    + "REVERT, " + "JFormattedTextField.PERSIST " //$NON-NLS-1$ //$NON-NLS-2$
+                    + "or JFormattedTextField.REVERT"); //$NON-NLS-1$
         }
         focusLostBehaviour = behavior;
     }

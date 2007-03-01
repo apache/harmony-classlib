@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.math.BigInteger;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /** CUP v0.11a beta 20060102 generated parser.
   * @version Wed Dec 20 21:02:26 ART 2006
   */
@@ -1144,10 +1146,10 @@ class CUP$ParserCup$actions {
 
           /* . . . . . .*/
           default:
-            throw new Exception(
-               "Invalid action number found in internal parse table");
+            throw new Exception(Messages.getString("swing.04")); //$NON-NLS-1$
 
         }
     }
 }
+
 

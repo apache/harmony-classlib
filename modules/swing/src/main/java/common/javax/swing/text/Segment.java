@@ -18,6 +18,8 @@ package javax.swing.text;
 
 import java.text.CharacterIterator;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class Segment implements Cloneable, CharacterIterator {
 
     public char[] array;
@@ -121,7 +123,7 @@ public class Segment implements Cloneable, CharacterIterator {
 
     public char setIndex(final int position) {
         if (position < 0 || position > offset + count) {
-            throw new IllegalArgumentException("invalid position: " + position);
+            throw new IllegalArgumentException(Messages.getString("swing.89", position)); //$NON-NLS-1$
         }
 
         pos = position;

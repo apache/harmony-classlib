@@ -50,6 +50,7 @@ import javax.swing.text.AttributeSet;
 import org.apache.harmony.x.swing.ButtonCommons;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 /**
  * <p>
@@ -803,7 +804,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
 
     public void setMultiClickThreshhold(long threshold) {
         if (threshold < 0) {
-            throw new IllegalArgumentException("threshhold must be >= 0");
+            throw new IllegalArgumentException(Messages.getString("swing.05")); //$NON-NLS-1$
         }
         multiClickThreshhold = threshold;
     }
@@ -853,7 +854,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
 
     public void setDisplayedMnemonicIndex(int index) throws IllegalArgumentException {
         if (index < -1 || index >= 0 && (text == null || index >= text.length())) {
-            throw new IllegalArgumentException("index == " + index);
+            throw new IllegalArgumentException(Messages.getString("swing.10",index)); //$NON-NLS-1$
         }
         int oldValue = mnemonicIndex;
         mnemonicIndex = index;

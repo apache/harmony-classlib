@@ -29,6 +29,8 @@ import javax.swing.text.Position.Bias;
 import org.apache.harmony.x.swing.SizeRequirementsHelper;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BoxView extends CompositeView {
     private static final int[] EMPTY_INT_ARRAY = new int[0];
     private static final SizeRequirements[] EMPTY_REQUIREMENTS_ARRAY =
@@ -484,7 +486,7 @@ public class BoxView extends CompositeView {
 
     private void isAxisValid(final int axis) {
         if (axis != X_AXIS && axis != Y_AXIS) {
-            throw new IllegalArgumentException("Invalid axis");
+            throw new IllegalArgumentException(Messages.getString("swing.81")); //$NON-NLS-1$
         }
     }
 

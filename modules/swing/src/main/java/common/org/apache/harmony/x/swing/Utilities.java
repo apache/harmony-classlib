@@ -60,6 +60,8 @@ import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
 import javax.swing.text.Position;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * SwingUtilities extension. This class provides utility
  * methods which are widely used in Swing classes.
@@ -98,11 +100,11 @@ public class Utilities implements SwingConstants {
     public static int getNextMatch(final ListModelAccessor model, final String prefix, 
                             final int startIndex, final Position.Bias bias) {
         if (prefix == null) {
-            throw new IllegalArgumentException("Prefix must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.6F")); //$NON-NLS-1$
         }
 
         if (startIndex < 0 || startIndex >= model.getSize()) {
-            throw new IllegalArgumentException("Incorrect start index");
+            throw new IllegalArgumentException(Messages.getString("swing.6D")); //$NON-NLS-1$
         }
 
         String ucPrefix = prefix.toUpperCase();

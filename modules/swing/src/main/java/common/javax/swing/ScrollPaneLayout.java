@@ -125,7 +125,7 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
         if (x != ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED &&
             x != ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS && 
             x != ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER) {
-            throw new IllegalArgumentException(Messages.getString("swing.02"));
+            throw new IllegalArgumentException(Messages.getString("swing.02","verticalScrollBarPolicy")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         vsbPolicy = x;
     }
@@ -138,7 +138,7 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
         if (x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED &&
             x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER && 
             x != ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS) {
-            throw new IllegalArgumentException(Messages.getString("swing.03")); 
+            throw new IllegalArgumentException(Messages.getString("swing.02","horizontalScrollBarPolicy")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         hsbPolicy = x;
     }

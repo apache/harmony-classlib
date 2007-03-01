@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class TreePath implements Serializable {
 
@@ -33,7 +35,7 @@ public class TreePath implements Serializable {
 
     public TreePath(final Object[] path) {
         if (Utilities.isEmptyArray(path)) {
-            throw new IllegalArgumentException("path in TreePath must be not null and not empty");
+            throw new IllegalArgumentException(Messages.getString("swing.82")); //$NON-NLS-1$
         }
 
         pathCount = path.length;
@@ -44,7 +46,7 @@ public class TreePath implements Serializable {
 
     public TreePath(final Object singlePath) {
         if (singlePath == null) {
-            throw new IllegalArgumentException("path in TreePath must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.76")); //$NON-NLS-1$
         }
         elements = new Object[] {singlePath};
         pathCount = 1;
@@ -66,7 +68,7 @@ public class TreePath implements Serializable {
 
     protected TreePath(final TreePath parentPath, final Object lastElement) {
         if (lastElement == null) {
-            throw new IllegalArgumentException("path in TreePath must not be null.");
+            throw new IllegalArgumentException(Messages.getString("swing.76")); //$NON-NLS-1$
         }
 
         elements = new Object[] {lastElement};
@@ -129,7 +131,7 @@ public class TreePath implements Serializable {
     public Object getPathComponent(final int element) {
         final int pathCount = getPathCount();
         if (element < 0 || element >= pathCount) {
-            throw new IllegalArgumentException("Index " + element + " is out of the specified range");
+            throw new IllegalArgumentException(Messages.getString("swing.75", element)); //$NON-NLS-1$
         }
         if (parent == null) {
             return elements[element];
@@ -164,7 +166,7 @@ public class TreePath implements Serializable {
 
     public TreePath pathByAddingChild(final Object child) {
         if (child == null) {
-            throw new NullPointerException("Null child not allowed");
+            throw new NullPointerException(Messages.getString("swing.72")); //$NON-NLS-1$
         }
 
         return new TreePath(this, child);

@@ -24,6 +24,8 @@ package javax.swing;
 
 import java.io.Serializable;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class SpinnerNumberModel extends AbstractSpinnerModel implements Serializable {
 
     private static final Number DEFAULT_VALUE = new Integer(0);
@@ -36,13 +38,13 @@ public class SpinnerNumberModel extends AbstractSpinnerModel implements Serializ
 
     public SpinnerNumberModel(final Number value, final Comparable minimum, final Comparable maximum, final Number stepSize) {
         if (value == null || stepSize == null) {
-            throw new IllegalArgumentException("value and stepSize must be non-null");
+            throw new IllegalArgumentException(Messages.getString("swing.5E")); //$NON-NLS-1$
         }
         if (minimum != null && minimum.compareTo(value) > 0) {
-            throw new IllegalArgumentException("(minimum <= value <= maximum) is false");
+            throw new IllegalArgumentException(Messages.getString("swing.5F")); //$NON-NLS-1$
         }
         if (maximum != null && maximum.compareTo(value) < 0) {
-            throw new IllegalArgumentException("(minimum <= value <= maximum) is false");
+            throw new IllegalArgumentException(Messages.getString("swing.5F")); //$NON-NLS-1$
         }
         this.value = value;
         this.minimum = minimum;
@@ -86,7 +88,7 @@ public class SpinnerNumberModel extends AbstractSpinnerModel implements Serializ
 
     public void setStepSize(final Number stepSize) {
         if (stepSize == null || !(stepSize instanceof Number)) {
-            throw new IllegalArgumentException("null stepSize");
+            throw new IllegalArgumentException(Messages.getString("swing.60")); //$NON-NLS-1$
         }
         if (this.stepSize != stepSize) {
             this.stepSize = stepSize;
@@ -120,7 +122,7 @@ public class SpinnerNumberModel extends AbstractSpinnerModel implements Serializ
 
     public void setValue(final Object value) {
         if (!(value instanceof Number)) {
-            throw new IllegalArgumentException("illegal value");
+            throw new IllegalArgumentException(Messages.getString("swing.5B")); //$NON-NLS-1$
         }
         if (this.value != value) {
             this.value = (Number)value;

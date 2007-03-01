@@ -25,6 +25,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BevelBorder extends AbstractBorder {
 
@@ -49,7 +51,7 @@ public class BevelBorder extends AbstractBorder {
 
         if (highlightOuterColor == null || highlightInnerColor == null ||
                 shadowOuterColor == null || shadowInnerColor == null) {
-            throw new NullPointerException("Color should not be null");
+            throw new NullPointerException(Messages.getString("swing.68")); //$NON-NLS-1$
         }
         highlightOuter = highlightOuterColor;
         highlightInner = highlightInnerColor;

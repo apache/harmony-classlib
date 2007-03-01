@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import org.apache.harmony.misc.HashCode;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class TabSet implements Serializable {
 
@@ -52,7 +54,7 @@ public class TabSet implements Serializable {
 
     public TabStop getTab(final int i) {
         if (i < 0 || i >= tabs.length) {
-            throw new IllegalArgumentException("Invalid tab index " + i);
+            throw new IllegalArgumentException(Messages.getString("swing.9C", i)); //$NON-NLS-1$
         }
         return tabs[i];
     }
@@ -111,4 +113,5 @@ public class TabSet implements Serializable {
         return result.toString();
     }
 }
+
 

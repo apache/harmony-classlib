@@ -36,6 +36,8 @@ import org.apache.harmony.awt.nativebridge.windows.WindowsConsts;
 import org.apache.harmony.x.swing.filechooser.PlatformFile;
 import org.apache.harmony.x.swing.filechooser.PlatformFileManager;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class WinFileManager implements PlatformFileManager {
 
     private static WinFileManager instance;
@@ -55,7 +57,7 @@ public class WinFileManager implements PlatformFileManager {
 
     public WinFileManager() {
         if (instance != null) {
-            throw new RuntimeException("Singleton");
+            throw new RuntimeException(Messages.getString("swing.6C")); //$NON-NLS-1$
         }
         instance = this;
     }

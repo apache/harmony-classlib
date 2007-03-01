@@ -47,6 +47,8 @@ import javax.swing.plaf.UIResource;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class SwingUtilities implements SwingConstants {
 
@@ -116,14 +118,14 @@ public class SwingUtilities implements SwingConstants {
 
     public static void convertPointToScreen(final Point point, final Component component) {
         if (component == null) {
-            throw new NullPointerException("Cannot convert point from null-component");
+            throw new NullPointerException(Messages.getString("swing.61")); //$NON-NLS-1$
         }
         translateRelatedPoint(point, component, 1, false);
     }
 
     public static void convertPointFromScreen(final Point point, final Component component) {
         if (component == null) {
-            throw new NullPointerException("Cannot convert point to null-component");
+            throw new NullPointerException(Messages.getString("swing.62")); //$NON-NLS-1$
         }
         translateRelatedPoint(point, component, -1, false);
     }

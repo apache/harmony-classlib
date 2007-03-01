@@ -67,6 +67,8 @@ import javax.swing.text.html.parser.ParserDelegator;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class HTMLEditorKit extends StyledEditorKit implements Accessible {
     public static class HTMLFactory implements ViewFactory {
 
@@ -146,7 +148,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
             // TODO: uncomment the next line and remove throw
             // when all tags are supported
 //            return new LabelView(elem);
-            throw new UnsupportedOperationException("Not implemented tag: " + tag);
+            throw new UnsupportedOperationException(Messages.getString("swing.9F") + tag); //$NON-NLS-1$
         }
     }
 
@@ -201,7 +203,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
             if (doc instanceof HTMLDocument) {
                 return (HTMLDocument)doc;
             }
-            throw new IllegalArgumentException("Document must be HTMLDocument");
+            throw new IllegalArgumentException(Messages.getString("swing.A0")); //$NON-NLS-1$
         }
 
         protected HTMLEditorKit getHTMLEditorKit(final JEditorPane pane) {
@@ -209,7 +211,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
             if (editorKit instanceof HTMLEditorKit) {
                 return (HTMLEditorKit)editorKit;
             }
-            throw new IllegalArgumentException("Editor kit must be HTMLEditorKit");
+            throw new IllegalArgumentException(Messages.getString("swing.A1")); //$NON-NLS-1$
         }
     }
 
@@ -569,7 +571,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
                 final Bias[] biasRet) throws BadLocationException {
             if (direction != NORTH && direction != SOUTH
                     && direction != EAST && direction != WEST) {
-                throw new IllegalArgumentException("Invalid direction");
+                throw new IllegalArgumentException(Messages.getString("swing.84")); //$NON-NLS-1$
             }
             biasRet[0] = Position.Bias.Forward;
             return getEndOffset();
@@ -621,7 +623,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
 
     public AccessibleContext getAccessibleContext() {
         // TODO: implement
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.9F")); //$NON-NLS-1$
     }
 
     public Action[] getActions() {
@@ -706,7 +708,7 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
                            final int pushDepth, final HTML.Tag insertTag)
             throws BadLocationException, IOException {
         if (offset > doc.getLength()) {
-            throw new BadLocationException("Invalid position", offset);
+            throw new BadLocationException(Messages.getString("swing.98"), offset); //$NON-NLS-1$
         }
 
         ParserCallback htmlReader = doc.getReader(offset, popDepth,
@@ -783,17 +785,17 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
     private static void checkReadPosition(final HTMLDocument doc, final int pos)
             throws BadLocationException {
         if (pos < 0) {
-            throw new RuntimeException("Position cannot be negative");
+            throw new RuntimeException(Messages.getString("swing.A2")); //$NON-NLS-1$
         }
         if (pos > doc.getLength()) {
-            throw new BadLocationException("Invalid position", pos);
+            throw new BadLocationException(Messages.getString("swing.98"), pos); //$NON-NLS-1$
         }
         if (doc.getLength() != 0) {
             Element body = doc.getElement(doc.getDefaultRootElement(),
                                           StyleConstants.NameAttribute,
                                           HTML.Tag.BODY);
             if (pos < body.getStartOffset() || pos > body.getEndOffset()) {
-                throw new RuntimeException("Must insert inside body element");
+                throw new RuntimeException(Messages.getString("swing.A3")); //$NON-NLS-1$
             }
         }
     }

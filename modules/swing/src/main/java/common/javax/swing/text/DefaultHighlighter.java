@@ -30,6 +30,8 @@ import javax.swing.plaf.TextUI;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 
 public class DefaultHighlighter extends LayeredHighlighter {
@@ -379,10 +381,10 @@ public class DefaultHighlighter extends LayeredHighlighter {
     private void checkBoundaries(final int start, final int end)
        throws BadLocationException {
         if (start < 0) {
-            throw new BadLocationException("Invalid position: " + start, end);
+            throw new BadLocationException(Messages.getString("swing.89", start), end); //$NON-NLS-1$
         }
         if (end < start) {
-            throw new BadLocationException("Invalid position: " + start, end);
+            throw new BadLocationException(Messages.getString("swing.89", start), end); //$NON-NLS-1$
         }
     }
 
@@ -431,4 +433,5 @@ public class DefaultHighlighter extends LayeredHighlighter {
     }
 
 }
+
 

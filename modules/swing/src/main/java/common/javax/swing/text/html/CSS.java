@@ -42,6 +42,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.View;
 
 import org.apache.harmony.x.swing.Utilities;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class CSS implements Serializable {
     public static final class Attribute {
@@ -1689,8 +1690,7 @@ public class CSS implements Serializable {
                 return new Integer(fontSize * 120 / 100);
 
             default:
-                System.err.println("font-size: can't resolve relative value. "
-                                   + "Unknown relative unit");
+                System.err.println(Messages.getString("swing.err.07")); //$NON-NLS-1$
             }
             return getDefaultValue();
         }
@@ -2163,8 +2163,7 @@ public class CSS implements Serializable {
                 return new Float(width * theValue.floatValue() / 100);
 
             default:
-                System.err.println("FloatValue: can't resolve relative value. "
-                                   + "Unknown relative unit");
+                System.err.println(Messages.getString("swing.err.07")); //$NON-NLS-1$
             }
             return ZERO;
         }

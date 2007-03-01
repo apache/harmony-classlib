@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * Implementation of empty attribute set.
  *
@@ -65,7 +67,7 @@ final class EmptyAttributeSet implements AttributeSet, Serializable {
                 return false;
             }
             public Object nextElement() {
-                throw new NoSuchElementException("Empty attribute set");
+                throw new NoSuchElementException(Messages.getString("swing.8A")); //$NON-NLS-1$
             }
         };
     }

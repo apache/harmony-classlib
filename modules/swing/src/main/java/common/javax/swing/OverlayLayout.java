@@ -27,6 +27,8 @@ import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.io.Serializable;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class OverlayLayout implements LayoutManager2, Serializable {
 
     private final Container target;
@@ -101,9 +103,10 @@ public class OverlayLayout implements LayoutManager2, Serializable {
      */
     private void checkTarget(final Container target) {
         if (this.target != target) {
-            throw new AWTError("OverlayLayout can't be shared");
+            throw new AWTError(Messages.getString("swing.err.03")); //$NON-NLS-1$
         }
     }
 
 }
+
 

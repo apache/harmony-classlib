@@ -64,6 +64,8 @@ import javax.swing.text.Position;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JList extends JComponent implements Scrollable, Accessible {
     public static final int VERTICAL = 0;
@@ -395,7 +397,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public JList(final ListModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("data model must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.15")); //$NON-NLS-1$
         }
         this.model = model;
         this.selectionModel = createSelectionModel();
@@ -407,7 +409,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public void setModel(final ListModel model) {
         if (model == null) {
-            throw new IllegalArgumentException("Model cannot be null");
+            throw new IllegalArgumentException(Messages.getString("swing.16")); //$NON-NLS-1$
         }
 
         if (this.model != model) {
@@ -424,7 +426,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public void setSelectionModel(final ListSelectionModel selectionModel) {
         if (selectionModel == null) {
-            throw new IllegalArgumentException("Selection model must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.17")); //$NON-NLS-1$
         }
 
         if (this.selectionModel != selectionModel) {
@@ -522,7 +524,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public void setDragEnabled(final boolean dragEnabled) {
         if (dragEnabled && GraphicsEnvironment.isHeadless()) {
-            throw new HeadlessException("DnD could not be used in headless environment");
+            throw new HeadlessException(Messages.getString("swing.18")); //$NON-NLS-1$
         }
 
         this.dragEnabled = dragEnabled;
@@ -564,7 +566,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
             && layoutOrientation != VERTICAL_WRAP
             && layoutOrientation != HORIZONTAL_WRAP) {
 
-            throw new IllegalArgumentException("Incorect layout orientation is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.19")); //$NON-NLS-1$
         }
 
         if (this.layoutOrientation != layoutOrientation) {
@@ -856,10 +858,10 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public int getScrollableBlockIncrement(final Rectangle visibleRect, final int orientation, final int direction) {
         if (visibleRect == null) {
-            throw new IllegalArgumentException("Visible region should be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.1A")); //$NON-NLS-1$
         }
         if (orientation != SwingConstants.VERTICAL && orientation != SwingConstants.HORIZONTAL) {
-            throw new IllegalArgumentException("Incorrect orientation is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.1B")); //$NON-NLS-1$
         }
 
         if (orientation == SwingConstants.VERTICAL) {
@@ -909,10 +911,10 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     public int getScrollableUnitIncrement(final Rectangle visibleRect, final int orientation, final int direction) {
         if (visibleRect == null) {
-            throw new IllegalArgumentException("Visible region should be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.1A")); //$NON-NLS-1$
         }
         if (orientation != SwingConstants.VERTICAL && orientation != SwingConstants.HORIZONTAL) {
-            throw new IllegalArgumentException("Incorrect orientation is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.1B")); //$NON-NLS-1$
         }
 
         if (orientation == SwingConstants.HORIZONTAL) {

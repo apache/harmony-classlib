@@ -37,6 +37,8 @@ import javax.swing.plaf.MenuItemUI;
 
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JMenuItem extends AbstractButton implements Accessible, MenuElement {
 
@@ -52,7 +54,7 @@ public class JMenuItem extends AbstractButton implements Accessible, MenuElement
         }
 
         public void stateChanged(final ChangeEvent e) {
-            throw new UnsupportedOperationException("not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 

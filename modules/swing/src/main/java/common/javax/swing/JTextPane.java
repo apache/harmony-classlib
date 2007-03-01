@@ -41,6 +41,8 @@ import javax.swing.text.StyledEditorKit;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JTextPane extends JEditorPane implements ImageObserver,
         MenuContainer, Serializable, Accessible, Scrollable {
@@ -63,7 +65,7 @@ public class JTextPane extends JEditorPane implements ImageObserver,
         if (doc instanceof StyledDocument) {
             super.setDocument(doc);
         } else {
-            throw new IllegalArgumentException("Model must be StyledDocument.");
+            throw new IllegalArgumentException(Messages.getString("swing.48")); //$NON-NLS-1$
         }
     }
 
@@ -216,7 +218,7 @@ public class JTextPane extends JEditorPane implements ImageObserver,
         if (kit instanceof StyledEditorKit) {
             super.setEditorKit(kit);
         } else {
-            throw new IllegalArgumentException("Kit isn't a StyledEditorKit");
+            throw new IllegalArgumentException(Messages.getString("swing.49")); //$NON-NLS-1$
         }
     }
 

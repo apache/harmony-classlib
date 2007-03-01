@@ -33,17 +33,19 @@ import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleStateSet;
 import javax.swing.plaf.ToolBarUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JToolBar extends JComponent implements SwingConstants, Accessible {
     private static final Insets DEFAULT_MARGIN = new Insets(0, 0, 0, 0);
 
     // TODO: implement accessibility
     protected class AccessibleJToolBar extends AccessibleJComponent {
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 
@@ -275,8 +277,7 @@ public class JToolBar extends JComponent implements SwingConstants, Accessible {
 
     private void checkOrientation(final int o) {
         if (o != HORIZONTAL && o != VERTICAL) {
-            throw new IllegalArgumentException(
-                    "orientation must be HORIZONTAL or VERTICAL");
+            throw new IllegalArgumentException(Messages.getString("swing.47")); //$NON-NLS-1$
         }
     }
 

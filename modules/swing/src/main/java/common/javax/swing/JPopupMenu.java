@@ -47,6 +47,8 @@ import org.apache.harmony.awt.MouseEventPreprocessor;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JPopupMenu extends JComponent implements Accessible, MenuElement {
 
@@ -65,7 +67,7 @@ public class JPopupMenu extends JComponent implements Accessible, MenuElement {
         }
 
         public void propertyChange(final PropertyChangeEvent event) {
-            throw new UnsupportedOperationException("not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 
@@ -226,7 +228,7 @@ public class JPopupMenu extends JComponent implements Accessible, MenuElement {
 
     public void insert(final Component c, final int i) {
         if (i < 0) {
-            throw new IllegalArgumentException("index must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.21")); //$NON-NLS-1$
         }
         if (i <= getComponentCount()) {
             super.add(c, i);
@@ -235,17 +237,17 @@ public class JPopupMenu extends JComponent implements Accessible, MenuElement {
 
     public void insert(final Action action, final int i) {
         if (i < 0) {
-            throw new IllegalArgumentException("index must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.21")); //$NON-NLS-1$
         }
         insert(createActionComponent(action), i < getComponentCount() ? i : getComponentCount());
     }
 
     public void remove(final int i) {
         if (i < 0) {
-            throw new IllegalArgumentException("index must be positive");
+            throw new IllegalArgumentException(Messages.getString("swing.21")); //$NON-NLS-1$
         }
         if (i >= getComponentCount()) {
-            throw new IllegalArgumentException("index is greater than the number of items");
+            throw new IllegalArgumentException(Messages.getString("swing.22")); //$NON-NLS-1$
         }
 
         super.remove(i);

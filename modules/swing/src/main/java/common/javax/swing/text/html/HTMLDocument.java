@@ -59,6 +59,8 @@ import org.apache.harmony.x.swing.text.html.form.FormSelectModel;
 import org.apache.harmony.x.swing.text.html.form.FormTextModel;
 import org.apache.harmony.x.swing.text.html.form.FormToggleButtonModel;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class HTMLDocument extends DefaultStyledDocument {
 
     public class BlockElement extends BranchElement {
@@ -1226,7 +1228,7 @@ public class HTMLDocument extends DefaultStyledDocument {
         int numRemovingElements = elem.getElementCount();
         insertHTMLText(elem, elem.getStartOffset(), htmlText);
         removeElements(elem, elem.getElementCount() - numRemovingElements, numRemovingElements);
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
     
     public void setOuterHTML(final Element elem, final String htmlText)
@@ -1242,7 +1244,7 @@ public class HTMLDocument extends DefaultStyledDocument {
         final int numElementsBefore = parent.getElementCount();
         insertHTMLText(elem.getParentElement(), elem.getStartOffset(), htmlText);
         removeElements(parent, indexBefore + (parent.getElementCount() - numElementsBefore), 1);
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
     
     public void processHTMLFrameHyperlinkEvent(final HTMLFrameHyperlinkEvent event) {
@@ -1383,13 +1385,13 @@ public class HTMLDocument extends DefaultStyledDocument {
 
     private void checkParser() {
         if (parser == null) {
-            throw new IllegalStateException("Parser should be set");
+            throw new IllegalStateException(Messages.getString("swing.9D")); //$NON-NLS-1$
         }
     }
 
     private void checkLeaf(final Element elem) {
         if (elem.isLeaf()) {
-            throw new IllegalArgumentException("Can't insert HTML text after start of a leaf element");
+            throw new IllegalArgumentException(Messages.getString("swing.9E")); //$NON-NLS-1$
         }
     }
     

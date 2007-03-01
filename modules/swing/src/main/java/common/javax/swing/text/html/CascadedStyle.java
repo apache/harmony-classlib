@@ -33,6 +33,8 @@ import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * Storage for all the attributes applicable for the
  * {@link javax.swing.text.Element} for which CascadedStyle
@@ -124,27 +126,27 @@ final class CascadedStyle implements Style {
     }
 
     public void removeAttribute(final Object arg0) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public void removeAttributes(final Enumeration arg0) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public void addAttributes(final AttributeSet arg0) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public void removeAttributes(final AttributeSet arg0) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public void setResolveParent(final AttributeSet arg0) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public void addAttribute(final Object arg0, final Object arg1) {
-//        throw new UnsupportedOperationException("Not implemented yet");
+//        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public int getAttributeCount() {
@@ -223,7 +225,7 @@ final class CascadedStyle implements Style {
     }
 
     public AttributeSet copyAttributes() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     public AttributeSet getResolveParent() {

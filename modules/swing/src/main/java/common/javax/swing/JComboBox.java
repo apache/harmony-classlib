@@ -40,6 +40,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.ComboBoxUI;
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 import org.apache.harmony.x.swing.StringConstants;
 
 /**
@@ -348,8 +349,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
 
     public void setSelectedIndex(int index) {
         if (index < -1 || index >= dataModel.getSize()) {
-            throw new IllegalArgumentException(
-                    "Selected index should in the range of available indices");
+            throw new IllegalArgumentException(Messages.getString("swing.0C")); //$NON-NLS-1$
         }
         if (index == -1) {
             setSelectedItem(null);
@@ -387,7 +387,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         if (dataModel instanceof MutableComboBoxModel) {
             ((MutableComboBoxModel) dataModel).addElement(element);
         } else {
-            throw new RuntimeException("Cannot modify immutable data model");
+            throw new RuntimeException(Messages.getString("swing.0B")); //$NON-NLS-1$
         }
     }
 
@@ -396,7 +396,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         if (dataModel instanceof MutableComboBoxModel) {
             ((MutableComboBoxModel) dataModel).insertElementAt(element, index);
         } else {
-            throw new RuntimeException("Cannot modify immutable data model");
+            throw new RuntimeException(Messages.getString("swing.0B")); //$NON-NLS-1$
         }
     }
 
@@ -405,7 +405,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         if (dataModel instanceof MutableComboBoxModel) {
             ((MutableComboBoxModel) dataModel).removeElement(element);
         } else {
-            throw new RuntimeException("Cannot modify immutable data model");
+            throw new RuntimeException(Messages.getString("swing.0B")); //$NON-NLS-1$
         }
     }
 
@@ -414,7 +414,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
         if (dataModel instanceof MutableComboBoxModel) {
             ((MutableComboBoxModel) dataModel).removeElementAt(index);
         } else {
-            throw new RuntimeException("Cannot modify immutable data model");
+            throw new RuntimeException(Messages.getString("swing.0B")); //$NON-NLS-1$
         }
     }
 
@@ -426,7 +426,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
                 model.removeElementAt(0);
             }
         } else {
-            throw new RuntimeException("Cannot modify immutable data model");
+            throw new RuntimeException(Messages.getString("swing.0B")); //$NON-NLS-1$
         }
     }
 

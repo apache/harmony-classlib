@@ -29,6 +29,8 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class IconView extends View {
 
     public IconView(final Element element) {
@@ -74,7 +76,7 @@ public class IconView extends View {
 
     private void isAxisValid(final int axis) {
         if (axis != X_AXIS && axis != Y_AXIS) {
-            throw new IllegalArgumentException("Invalid axis: " + axis);
+            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$
         }
     }
  }

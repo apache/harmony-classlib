@@ -27,6 +27,8 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JToggleButton extends AbstractButton implements Accessible {
 
     // TODO implement
@@ -39,7 +41,7 @@ public class JToggleButton extends AbstractButton implements Accessible {
         }
 
         public void itemStateChanged(final ItemEvent e) {
-            throw new UnsupportedOperationException("Not yet implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     };
 

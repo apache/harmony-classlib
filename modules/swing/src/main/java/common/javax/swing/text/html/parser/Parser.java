@@ -30,6 +30,8 @@ import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTML.Tag;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * This class attempts to read and parse an HTML file, which it gets via an
  * Input Stream. The parsing is based on a Documet Type Definition
@@ -123,7 +125,7 @@ public class Parser implements DTDConstants {
      * @param omitted determines whether the end tag may be omitted or not.
      */
     protected void endTag(final boolean omitted) {
-        throw new UnsupportedOperationException("not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         // XXX: Perhaps depending on the boolean value, an endtag.missing
         // error may be thrown
         //handleEndTag(currentTag);
@@ -302,7 +304,7 @@ public class Parser implements DTDConstants {
      *
      */
     protected void handleEOFInComment() {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.9F")); //$NON-NLS-1$
     }
 
     /**
@@ -375,7 +377,7 @@ public class Parser implements DTDConstants {
      */
     protected void markFirstTime(final Element elem) {
         // TODO review this
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.9F")); //$NON-NLS-1$
     }
 
     /**

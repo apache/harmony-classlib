@@ -65,6 +65,8 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicComboPopup extends JPopupMenu implements ComboPopup {
     /**
@@ -571,7 +573,7 @@ public class BasicComboPopup extends JPopupMenu implements ComboPopup {
                     } else if (scrollDirection == SCROLL_DOWN) {
                         autoScrollDown();
                     } else {
-                        throw new IllegalArgumentException("Incorrect direction is specified!");
+                        throw new IllegalArgumentException(Messages.getString("swing.6E")); //$NON-NLS-1$
                     }
                 }
             });

@@ -29,11 +29,12 @@ import java.util.Vector;
 import javax.swing.text.AbstractDocument.Content;
 import javax.swing.undo.UndoableEdit;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public final class StringContent
     implements Content, Serializable {
 
-    private static final String INVALID_START_POSITION_MESSAGE =
-                                "Invalid start position";
+    private static final String INVALID_START_POSITION_MESSAGE = Messages.getString("swing.0F"); //$NON-NLS-1$
 
     private final class StringContentEdit
         extends AbstractContentUndoableEdit implements UndoableEdit {
@@ -160,8 +161,7 @@ public final class StringContent
     private void checkInvalidOnRemove(final int where, final int nitems)
         throws BadLocationException {
         if (nitems < 0) {
-            throw new BadLocationException("The number of characters to remove "
-                                           + "must be non-negative",
+            throw new BadLocationException(Messages.getString("swing.99"), //$NON-NLS-1$
                                             length);
         }
 
@@ -174,7 +174,7 @@ public final class StringContent
     private void checkInvalidOnGetChars(final int where, final int len)
         throws BadLocationException {
         if (len < 0) {
-            throw new BadLocationException("Length must be non-negative",
+            throw new BadLocationException(Messages.getString("swing.8C"), //$NON-NLS-1$
                                            length);
         }
 

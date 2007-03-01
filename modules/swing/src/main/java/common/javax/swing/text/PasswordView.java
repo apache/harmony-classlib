@@ -29,6 +29,8 @@ import java.awt.Shape;
 import org.apache.harmony.awt.text.TextFieldKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class PasswordView extends FieldView {
     private static final char DEFAULT_ECHO_CHAR = '*';
@@ -82,7 +84,7 @@ public class PasswordView extends FieldView {
         if (echoCharIsSet()) {
             String text = getText();
             if (pos < 0 || pos > text.length()) {
-                throw new BadLocationException("incorrect position: " + pos,
+                throw new BadLocationException(Messages.getString("swing.95", pos), //$NON-NLS-1$
                                                pos);
             }
             if (shape == null) {
@@ -151,9 +153,9 @@ public class PasswordView extends FieldView {
                            final int y)  throws BadLocationException {
         int length = getTextLength();
         if (p0 < 0) {
-            throw new BadLocationException("incorrect positions: ", p0);
+            throw new BadLocationException(Messages.getString("swing.96"), p0); //$NON-NLS-1$
         } else if (p1 < p0 || p1 > length) {
-            throw new BadLocationException("incorrect positions: ", p1);
+            throw new BadLocationException(Messages.getString("swing.96"), p1); //$NON-NLS-1$
         }
 
         Color old = g.getColor();

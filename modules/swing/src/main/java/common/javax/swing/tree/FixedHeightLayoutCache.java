@@ -25,6 +25,8 @@ import java.util.Enumeration;
 
 import javax.swing.event.TreeModelEvent;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class FixedHeightLayoutCache extends AbstractLayoutCache {
     public FixedHeightLayoutCache() {
         setRowHeight(1);
@@ -32,7 +34,7 @@ public class FixedHeightLayoutCache extends AbstractLayoutCache {
 
     public void setRowHeight(final int rowHeight) {
         if (rowHeight <= 0) {
-            throw new IllegalArgumentException("row height must be positive value");
+            throw new IllegalArgumentException(Messages.getString("swing.97")); //$NON-NLS-1$
         }
         super.setRowHeight(rowHeight);
     }

@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class PopupFactory {
     private static class ReleasedPopupStorage {
         private static final int STORAGE_CAPACITY = 5;
@@ -154,7 +156,7 @@ public class PopupFactory {
 
     public static void setSharedInstance(final PopupFactory factory) {
         if (factory == null) {
-            throw new IllegalArgumentException("Factory should be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.53")); //$NON-NLS-1$
         }
 
         instance = factory;
@@ -167,7 +169,7 @@ public class PopupFactory {
     public Popup getPopup(final Component owner, final Component content,
                           final int x, final int y) throws IllegalArgumentException {
         if (content == null) {
-            throw new IllegalArgumentException("Popup content should be specified");
+            throw new IllegalArgumentException(Messages.getString("swing.52")); //$NON-NLS-1$
         }
 
         Window ownerWindow = owner instanceof Window ? (Window)owner : SwingUtilities.getWindowAncestor(owner);

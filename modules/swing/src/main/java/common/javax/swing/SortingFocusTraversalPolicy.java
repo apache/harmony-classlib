@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPolicy {
     private Comparator<? super java.awt.Component> comparator;
     private boolean isImplicitDownCycleTraversal = true;
@@ -231,18 +233,18 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
     private Component getComponentBeforeOrAfter(final NextComponentFinder finder) {
         checkCycleRootIsNotNull(finder.focusCycleRoot);
         if (!finder.focusCycleRoot.isFocusCycleRoot() && !finder.focusCycleRoot.isFocusTraversalPolicyProvider()) {
-            throw new IllegalArgumentException("Container is not a focus cycle root");
+            throw new IllegalArgumentException(Messages.getString("swing.54")); //$NON-NLS-1$
         }
 
         if (finder.currentComponent == null) {
-            throw new IllegalArgumentException("Component must be specified");
+            throw new IllegalArgumentException(Messages.getString("swing.55","Component")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (finder.currentComponent != finder.focusCycleRoot
             && finder.currentComponent.getFocusCycleRootAncestor() != finder.focusCycleRoot
             && getPolicyProvider(finder.currentComponent) != finder.focusCycleRoot) {
 
-            throw new IllegalArgumentException("Component must be in a cycle root of the specified container");
+            throw new IllegalArgumentException(Messages.getString("swing.56")); //$NON-NLS-1$
         }
 
         List components = getAllAcceptableComponentsSorted(finder.focusCycleRoot, finder.currentComponent, true);
@@ -267,7 +269,7 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
 
     private static void checkCycleRootIsNotNull(final Container focusCycleRoot) {
         if (focusCycleRoot == null) {
-            throw new IllegalArgumentException("Container must be specified");
+            throw new IllegalArgumentException(Messages.getString("swing.55","Container")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -289,4 +291,5 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         public abstract Component findNextComponent(List availableComponents, int currentComponentIndex);
     }
 }
+
 

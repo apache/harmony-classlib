@@ -46,6 +46,8 @@ import javax.swing.plaf.ViewportUI;
 
 import org.apache.harmony.x.swing.BlitSupport;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JViewport extends JComponent implements Accessible {
     private static final long serialVersionUID = -633250949788872287L;
@@ -142,7 +144,7 @@ public class JViewport extends JComponent implements Accessible {
     @Override
     public final void setBorder(final Border b) {
         if (b != null) {
-            throw new IllegalArgumentException("method is not implemented");
+            throw new IllegalArgumentException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 

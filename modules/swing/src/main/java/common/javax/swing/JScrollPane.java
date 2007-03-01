@@ -42,6 +42,8 @@ import javax.swing.plaf.UIResource;
 
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JScrollPane extends JComponent implements ScrollPaneConstants, Accessible {
     //TODO: implement
@@ -184,7 +186,7 @@ public class JScrollPane extends JComponent implements ScrollPaneConstants, Acce
             && policy != VERTICAL_SCROLLBAR_NEVER
             && policy != VERTICAL_SCROLLBAR_ALWAYS) {
 
-            throw new IllegalArgumentException("Incorrect vertical policy is psecified");
+            throw new IllegalArgumentException(Messages.getString("swing.25")); //$NON-NLS-1$
         }
         if (this.verticalScrollBarPolicy != policy) {
             int oldValue = this.verticalScrollBarPolicy;
@@ -202,7 +204,7 @@ public class JScrollPane extends JComponent implements ScrollPaneConstants, Acce
             && policy != HORIZONTAL_SCROLLBAR_NEVER
             && policy != HORIZONTAL_SCROLLBAR_ALWAYS) {
 
-            throw new IllegalArgumentException("Incorrect vertical policy is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.25")); //$NON-NLS-1$
         }
         if (this.horizontalScrollBarPolicy != policy) {
             int oldValue = this.horizontalScrollBarPolicy;
@@ -399,7 +401,7 @@ public class JScrollPane extends JComponent implements ScrollPaneConstants, Acce
             upperRight = corner;
             updateComponent(JScrollPane.UPPER_RIGHT_CORNER, oldValue, corner, JScrollPane.UPPER_RIGHT_CORNER);
         } else {
-            throw new IllegalArgumentException("Incorrect key " + key + " is invalid");
+            throw new IllegalArgumentException(Messages.getString("swing.26", key)); //$NON-NLS-1$
         }
     }
 

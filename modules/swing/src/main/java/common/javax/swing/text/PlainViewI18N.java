@@ -34,6 +34,8 @@ import javax.swing.text.Position.Bias;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 /**
  * Represents view for displaying bidirectional text.
@@ -59,7 +61,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             final int end   = getEndOffset();
 
             if (pos < start || pos > end) {
-                throw new BadLocationException("Invalid position", pos);
+                throw new BadLocationException(Messages.getString("swing.98"), pos); //$NON-NLS-1$
             }
 
             getDocument().getText(pos, end - pos, paintParams.buffer);
@@ -160,7 +162,7 @@ class PlainViewI18N extends BoxView implements TabExpander {
             final int start = getStartOffset();
 
             if (pos < start || pos > getEndOffset()) {
-                throw new BadLocationException("Invalid position", pos);
+                throw new BadLocationException(Messages.getString("swing.98"), pos); //$NON-NLS-1$
             }
 
             getDocument().getText(start, pos - start, paintParams.buffer);

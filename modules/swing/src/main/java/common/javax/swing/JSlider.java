@@ -38,28 +38,30 @@ import javax.swing.event.EventListenerList;
 import javax.swing.plaf.SliderUI;
 import javax.swing.plaf.UIResource;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JSlider extends JComponent implements SwingConstants, Accessible {
     protected class AccessibleJSlider extends AccessibleJComponent implements AccessibleValue {
         public AccessibleStateSet getAccessibleStateSet() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public AccessibleRole getAccessibleRole() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public AccessibleValue getAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public Number getCurrentAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public boolean setCurrentAccessibleValue(final Number n) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public Number getMinimumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         public Number getMaximumAccessibleValue() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 
@@ -138,7 +140,7 @@ public class JSlider extends JComponent implements SwingConstants, Accessible {
 
     private static int checkOrientation(final int orientation) {
         if (orientation != VERTICAL && orientation != HORIZONTAL) {
-            throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
+            throw new IllegalArgumentException(Messages.getString("swing.28")); //$NON-NLS-1$
         }
         return orientation;
     }
@@ -253,7 +255,7 @@ public class JSlider extends JComponent implements SwingConstants, Accessible {
 
     public void setOrientation(final int orientation) {
         if (orientation != VERTICAL && orientation != HORIZONTAL) {
-            throw new IllegalArgumentException("argument must be VERTICAL or HORIZONTAL");
+            throw new IllegalArgumentException(Messages.getString("swing.29")); //$NON-NLS-1$
         }
         if (orientation != this.orientation) {
             int oldValue = this.orientation;
@@ -301,10 +303,10 @@ public class JSlider extends JComponent implements SwingConstants, Accessible {
 
     public Hashtable createStandardLabels(final int increment, final int start) {
         if (increment <= 0) {
-            throw new IllegalArgumentException("increment must be > 0");
+            throw new IllegalArgumentException(Messages.getString("swing.2A")); //$NON-NLS-1$
         }
         if (start < sliderModel.getMinimum() || start > sliderModel.getMaximum()) {
-            throw new IllegalArgumentException("start is out of range");
+            throw new IllegalArgumentException(Messages.getString("swing.2B")); //$NON-NLS-1$
         }
 
         Hashtable result = new Hashtable();

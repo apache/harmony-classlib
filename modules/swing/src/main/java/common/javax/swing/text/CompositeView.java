@@ -27,6 +27,8 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public abstract class CompositeView extends View {
     private View[] children;
@@ -125,8 +127,7 @@ public abstract class CompositeView extends View {
                     getChildAllocation(index, shape), bias);
         }
 
-        throw new BadLocationException("View representing " + pos
-                                       + " not found", pos);
+        throw new BadLocationException(Messages.getString("swing.83", pos), pos); //$NON-NLS-1$
     }
 
     @Override
@@ -137,14 +138,12 @@ public abstract class CompositeView extends View {
         // TODO should throw IllegalArgumentException for invalid bias arg
         int index1 = getViewIndex(p1, b1);
         if (index1 == -1) {
-            throw new BadLocationException("View representing " + p1
-                                           + " not found", p1);
+            throw new BadLocationException(Messages.getString("swing.83", p1), p1); //$NON-NLS-1$
         }
 
         int index2 = getViewIndex(p2, b2);
         if (index2 == -1) {
-            throw new BadLocationException("View representing " + p2
-                                           + " not found", p2);
+            throw new BadLocationException(Messages.getString("swing.83", p2), p2); //$NON-NLS-1$
         }
 
         Rectangle rc1;
@@ -220,7 +219,7 @@ public abstract class CompositeView extends View {
                                                        direction, biasRet);
         }
 
-        throw new IllegalArgumentException("Invalid direction");
+        throw new IllegalArgumentException(Messages.getString("swing.84")); //$NON-NLS-1$
     }
 
     protected void loadChildren(final ViewFactory factory) {
@@ -329,7 +328,7 @@ public abstract class CompositeView extends View {
                                                        biasRet);
         }
 
-        throw new IllegalArgumentException("Invalid direction");
+        throw new IllegalArgumentException(Messages.getString("swing.84")); //$NON-NLS-1$
     }
 
     protected int getNextNorthSouthVisualPositionFrom(final int pos,
@@ -346,7 +345,7 @@ public abstract class CompositeView extends View {
                                                        biasRet);
         }
 
-        throw new IllegalArgumentException("Invalid direction");
+        throw new IllegalArgumentException(Messages.getString("swing.84")); //$NON-NLS-1$
     }
 
     protected boolean flipEastAndWestAtEnds(final int position,

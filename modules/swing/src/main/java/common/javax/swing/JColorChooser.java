@@ -36,6 +36,7 @@ import javax.swing.colorchooser.ColorSelectionModel;
 import javax.swing.colorchooser.DefaultColorSelectionModel;
 import javax.swing.plaf.ColorChooserUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
 /**
  * <p>
  * <i>JColorChooser</i>
@@ -251,7 +252,7 @@ public class JColorChooser extends JComponent implements Accessible {
             }
         }
         if (panelToRemove == null) {
-            throw new IllegalArgumentException("panel to remove can not be found");
+            throw new IllegalArgumentException(Messages.getString("swing.0A")); //$NON-NLS-1$
         }
         AbstractColorChooserPanel[] newChooserPanels = new AbstractColorChooserPanel[chooserPanels.length - 1];
         System.arraycopy(chooserPanels, 0, newChooserPanels, 0, index);

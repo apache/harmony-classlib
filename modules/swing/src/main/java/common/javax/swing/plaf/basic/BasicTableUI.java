@@ -54,6 +54,8 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicTableUI extends TableUI {
     public class FocusHandler implements FocusListener {
@@ -323,7 +325,7 @@ public class BasicTableUI extends TableUI {
 
     public void paint(final Graphics g, final JComponent c) {
         if (g == null) {
-            throw new NullPointerException("context is null");
+            throw new NullPointerException(Messages.getString("swing.03","context")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (table.getColumnCount() == 0 || table.getRowCount() == 0) {
             return;

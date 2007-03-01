@@ -39,6 +39,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class MinimalHTMLWriter extends AbstractWriter {
     private static final AttributeSet EMPTY_ATTR_SET = new SimpleAttributeSet();
     private Vector openEmbeddedTags = new Vector();
@@ -222,7 +224,7 @@ public class MinimalHTMLWriter extends AbstractWriter {
     protected void writeStyles() throws IOException {
         if (!(getDocument() instanceof DefaultStyledDocument)) {
             // XXX: it's not clear what to do in this case
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.9F")); //$NON-NLS-1$
         }
 
         StyledDocument styledDocument = (StyledDocument)getDocument();

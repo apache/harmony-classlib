@@ -33,6 +33,8 @@ import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JLabel</i>
@@ -294,7 +296,7 @@ public class JLabel extends JComponent implements SwingConstants, Accessible {
 
     public void setDisplayedMnemonicIndex(final int index) {
         if (index < -1 || index >= 0 && (text == null || index >= text.length())) {
-            throw new IllegalArgumentException("Invalid index is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.14")); //$NON-NLS-1$
         }
         int oldValue = this.displayedMnemonicIndex;
         this.displayedMnemonicIndex = index;

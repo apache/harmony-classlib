@@ -31,6 +31,8 @@ import java.util.LinkedList;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class ToolTipManager extends MouseAdapter implements MouseMotionListener {
     protected class insideTimerAction implements ActionListener {
@@ -105,7 +107,7 @@ public class ToolTipManager extends MouseAdapter implements MouseMotionListener 
 
     public void setInitialDelay(final int milliseconds) {
         if (milliseconds < 0) {
-            throw new IllegalArgumentException("Incorrect initial delay: " + milliseconds);
+            throw new IllegalArgumentException(Messages.getString("swing.65", milliseconds)); //$NON-NLS-1$
         }
         initialDelay = milliseconds;
     }
@@ -116,7 +118,7 @@ public class ToolTipManager extends MouseAdapter implements MouseMotionListener 
 
     public void setDismissDelay(final int milliseconds) {
         if (milliseconds < 0) {
-            throw new IllegalArgumentException("Incorrect dismiss delay: " + milliseconds);
+            throw new IllegalArgumentException(Messages.getString("swing.66", milliseconds)); //$NON-NLS-1$
         }
         dismissDelay = milliseconds;
     }
@@ -127,7 +129,7 @@ public class ToolTipManager extends MouseAdapter implements MouseMotionListener 
 
     public void setReshowDelay(final int milliseconds) {
         if (milliseconds < 0) {
-            throw new IllegalArgumentException("Incorrect reshow delay: " + milliseconds);
+            throw new IllegalArgumentException(Messages.getString("swing.67", milliseconds)); //$NON-NLS-1$
         }
         reshowDelay = milliseconds;
     }

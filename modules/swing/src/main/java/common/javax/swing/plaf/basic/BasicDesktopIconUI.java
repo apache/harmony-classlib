@@ -46,6 +46,8 @@ import javax.swing.plaf.DesktopIconUI;
 import org.apache.harmony.x.swing.ComponentDragImplHelper;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BasicDesktopIconUI extends DesktopIconUI {
     private static  final int INSETS_WIDTH = 5;
 
@@ -128,7 +130,7 @@ public class BasicDesktopIconUI extends DesktopIconUI {
 
     public Insets getInsets(final JComponent c) {
         if (c == null) {
-            throw new NullPointerException("component is null");
+            throw new NullPointerException(Messages.getString("swing.03","component")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         //return desktopIcon.getInsets();
         return new Insets(INSETS_WIDTH, INSETS_WIDTH,

@@ -33,6 +33,8 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class ComponentView extends View {
 
     private static final class ComponentViewLayout implements LayoutManager {
@@ -185,7 +187,7 @@ public class ComponentView extends View {
 
     private void isAxisValid(final int axis) {
         if (axis != X_AXIS && axis != Y_AXIS) {
-            throw new IllegalArgumentException("Invalid axis: " + axis);
+            throw new IllegalArgumentException(Messages.getString("swing.00", axis)); //$NON-NLS-1$
         }
     }
     

@@ -57,6 +57,8 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JEditorPane</i>
@@ -559,7 +561,7 @@ public class JEditorPane extends JTextComponent {
 
     public final void setContentType(final String type) {
         if (type == null) {
-            throw new NullPointerException("Content type is null");
+            throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         int index = contentTypes.indexOf(type);
@@ -677,7 +679,7 @@ public class JEditorPane extends JTextComponent {
 
     public void setPage(final URL page) throws IOException {
         if (page == null) {
-            throw new IOException("Page is null");
+            throw new IOException(Messages.getString("swing.03","Page")); //$NON-NLS-1$ //$NON-NLS-2$
         } 
 
         String url = page.toString();

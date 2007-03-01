@@ -34,6 +34,8 @@ import javax.swing.RepaintManager;
 import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.gl.MultiRectArea;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 /**
  * Blit engine which allows to 'repaint' moving components using Graphics.copyArea() (blitting mode).
@@ -170,7 +172,7 @@ public class BlitSupport {
 
     private boolean initialize() {
         if (blitingComponent == null) {
-            throw new IllegalStateException("Component is not defined yet");
+            throw new IllegalStateException(Messages.getString("swing.71")); //$NON-NLS-1$
         }
 
         if (parent == null) {

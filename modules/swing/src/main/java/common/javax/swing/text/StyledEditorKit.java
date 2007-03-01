@@ -26,6 +26,8 @@ import javax.swing.event.CaretListener;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>StyledEditorKit</i>
@@ -294,7 +296,7 @@ public class StyledEditorKit extends DefaultEditorKit {
     static final class ViewFactoryImpl implements ViewFactory {
         public View create(final Element element) {
 //            if (true) {
-//                throw new UnsupportedOperationException("Not implemented");
+//                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
 //            }
 //            return null;
             //This code committed-out temporarily (while these views is not
@@ -492,4 +494,5 @@ public class StyledEditorKit extends DefaultEditorKit {
         }
     }
 }
+
 

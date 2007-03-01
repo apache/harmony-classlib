@@ -92,6 +92,8 @@ import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public abstract class JTextComponent extends JComponent implements Scrollable,
         Accessible {
@@ -159,8 +161,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
         private void checkPositions(final int i1, final int i2,
                                    final int length) {
             if (i1 < 0 || i2 < i1 || i2 > length) {
-                throw new IllegalArgumentException("Wrong parameters :"
-                                                   + i1 + ", " + i2);
+                throw new IllegalArgumentException(Messages.getString("swing.90",i1, i2)); //$NON-NLS-1$
             }
         }
 
@@ -1138,8 +1139,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
         } else if (orientation == SwingConstants.VERTICAL) {
             return rect.height;
         } else {
-            throw new IllegalArgumentException("Invalid orientation: "
-                    + orientation);
+            throw new IllegalArgumentException(Messages.getString("swing.41", orientation)); //$NON-NLS-1$
         }
     }
 
@@ -1170,8 +1170,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
         } else if (orientation == SwingConstants.VERTICAL) {
             return rect.height / DEFAULT_UNIT_NUMBER;
         } else {
-            throw new IllegalArgumentException("Invalid orientation: "
-                    + orientation);
+            throw new IllegalArgumentException(Messages.getString("swing.41", orientation)); //$NON-NLS-1$
         }
     }
 
@@ -1242,7 +1241,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
             return;
         }
         if (pos < 0 || pos > document.getLength()) {
-            throw new IllegalArgumentException("bad position: " + pos);
+            throw new IllegalArgumentException(Messages.getString("swing.91", pos)); //$NON-NLS-1$
         }
         caret.moveDot(pos);
     }
@@ -1369,7 +1368,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
             return;
         }
         if (pos < 0 || pos > document.getLength()) {
-            throw new IllegalArgumentException("bad position: " + pos);
+            throw new IllegalArgumentException(Messages.getString("swing.91", pos)); //$NON-NLS-1$
         }
         caret.setDot(pos);
     }

@@ -63,6 +63,8 @@ import javax.swing.plaf.OptionPaneUI;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicOptionPaneUI extends OptionPaneUI {
 
@@ -568,7 +570,7 @@ public class BasicOptionPaneUI extends OptionPaneUI {
 
     protected Icon getIconForType(final int messageType) {
         if (optionPane == null) {
-            throw new NullPointerException("optionPane is null");
+            throw new NullPointerException(Messages.getString("swing.03","optionPane")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (defaultIcons == null) {

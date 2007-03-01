@@ -29,6 +29,8 @@ import javax.swing.SizeRequirements;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Position.Bias;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public abstract class FlowView extends BoxView {
     public static class FlowStrategy {
         private static FlowStrategy sharedStrategy;
@@ -232,8 +234,7 @@ public abstract class FlowView extends BoxView {
         }
 
         public void paint(final Graphics g, final Shape shape) {
-            throw new UnsupportedOperationException("Not applicable to "
-                                                    + "Layout Pool");
+            throw new UnsupportedOperationException(Messages.getString("swing.8B")); //$NON-NLS-1$
         }
 
         public void preferenceChanged(final View child,
@@ -272,8 +273,7 @@ public abstract class FlowView extends BoxView {
 
         protected View getViewAtPoint(final int x, final int y,
                                       final Rectangle alloc) {
-            throw new UnsupportedOperationException("Not applicable to "
-                                                    + "Layout Pool");
+            throw new UnsupportedOperationException(Messages.getString("swing.8B")); //$NON-NLS-1$
         }
 
         protected int getViewIndexAtPosition(final int pos) {
@@ -285,14 +285,12 @@ public abstract class FlowView extends BoxView {
 
         protected boolean isAfter(final int x, final int y,
                                   final Rectangle rc) {
-            throw new UnsupportedOperationException("Not applicable to "
-                                                    + "Layout Pool");
+            throw new UnsupportedOperationException(Messages.getString("swing.8B")); //$NON-NLS-1$
         }
 
         protected boolean isBefore(final int x, final int y,
                                    final Rectangle rc) {
-            throw new UnsupportedOperationException("Not applicable to "
-                                                    + "Layout Pool");
+            throw new UnsupportedOperationException(Messages.getString("swing.8B")); //$NON-NLS-1$
         }
 
         private float getSpanX() {

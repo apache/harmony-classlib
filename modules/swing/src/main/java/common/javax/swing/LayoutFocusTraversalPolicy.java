@@ -30,6 +30,8 @@ import java.awt.Point;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy implements Serializable {
     private static final long serialVersionUID = 3761404205428127289L;
 
@@ -41,10 +43,10 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
 
     public Component getComponentBefore(final Container focusCycleRoot, final Component component) {
         if (focusCycleRoot == null) {
-            throw new IllegalArgumentException("focusCycleRoot must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4E")); //$NON-NLS-1$
         }
         if (component == null) {
-            throw new IllegalArgumentException("component must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4F")); //$NON-NLS-1$
         }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getComponentBefore(focusCycleRoot, component);
@@ -52,10 +54,10 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
 
     public Component getComponentAfter(final Container focusCycleRoot, final Component component) {
         if (focusCycleRoot == null) {
-            throw new IllegalArgumentException("focusCycleRoot must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4E")); //$NON-NLS-1$
         }
         if (component == null) {
-            throw new IllegalArgumentException("component must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4F")); //$NON-NLS-1$
         }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getComponentAfter(focusCycleRoot, component);
@@ -63,7 +65,7 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
 
     public Component getLastComponent(final Container focusCycleRoot) {
         if (focusCycleRoot == null) {
-            throw new IllegalArgumentException("focusCycleRoot must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4E")); //$NON-NLS-1$
         }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getLastComponent(focusCycleRoot);
@@ -71,7 +73,7 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
 
     public Component getFirstComponent(final Container focusCycleRoot) {
         if (focusCycleRoot == null) {
-            throw new IllegalArgumentException("focusCycleRoot must not be null");
+            throw new IllegalArgumentException(Messages.getString("swing.4E")); //$NON-NLS-1$
         }
         ((LayoutComparator)getComparator()).setOrientation(focusCycleRoot.getComponentOrientation());
         return super.getFirstComponent(focusCycleRoot);
@@ -133,7 +135,7 @@ public class LayoutFocusTraversalPolicy extends SortingFocusTraversalPolicy impl
                 return TRCompare(c1, c2);
             }
 
-            throw new IllegalStateException("Cannot happen");
+            throw new IllegalStateException(Messages.getString("swing.50")); //$NON-NLS-1$
         }
 
         private int LTCompare(final Component c1, final Component c2) {

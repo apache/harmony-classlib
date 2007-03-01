@@ -49,6 +49,8 @@ import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.text.PropertyNames;
 import org.apache.harmony.awt.text.TextFieldKit;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * Note: <code>serialVersionUID</code> fields in this class and its inner
  * classes are added as a performance optimization but not as a guarantee of
@@ -200,7 +202,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
     public JTextField(final Document doc, final String text, final int c) {
         super();
         if (c < 0) {
-            throw new IllegalArgumentException("columns less than zero.");
+            throw new IllegalArgumentException(Messages.getString("swing.45")); //$NON-NLS-1$
         }
         Document document = doc;
         if (doc == null) {
@@ -455,7 +457,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
 
     public void setColumns(final int c) {
         if (c < 0) {
-            throw new IllegalArgumentException("columns less than zero.");
+            throw new IllegalArgumentException(Messages.getString("swing.45")); //$NON-NLS-1$
         }
         columns = c;
         invalidate();
@@ -480,7 +482,7 @@ public class JTextField extends JTextComponent implements SwingConstants {
     public void setHorizontalAlignment(final int alignment) {
         if (alignment != LEFT && alignment != RIGHT && alignment != CENTER
                 && alignment != LEADING && alignment != TRAILING) {
-            throw new IllegalArgumentException("horizontalAlignment");
+            throw new IllegalArgumentException("horizontalAlignment"); //$NON-NLS-1$
         }
         int old = horizontalAlignment;
         horizontalAlignment = alignment;

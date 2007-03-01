@@ -35,6 +35,8 @@ import javax.swing.text.PlainDocument;
 
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JTextArea extends JTextComponent {
     protected class AccessibleJTextArea extends
             JTextComponent.AccessibleJTextComponent {
@@ -68,10 +70,10 @@ public class JTextArea extends JTextComponent {
                      final int c) {
         super();
         if (r < 0) {
-            throw new IllegalArgumentException("rows: " + r);
+            throw new IllegalArgumentException(Messages.getString("swing.3C", r)); //$NON-NLS-1$
         }
         if (c < 0) {
-            throw new IllegalArgumentException("columns: " + c);
+            throw new IllegalArgumentException(Messages.getString("swing.3D", c)); //$NON-NLS-1$
         }
         Document document = doc;
         if (document == null) {
@@ -125,10 +127,10 @@ public class JTextArea extends JTextComponent {
     private int  checkLineCount(final int line) throws BadLocationException {
         int count = getDocument().getDefaultRootElement().getElementCount();
         if (line < 0) {
-            throw new BadLocationException("Negative line", line);
+            throw new BadLocationException(Messages.getString("swing.3E"), line); //$NON-NLS-1$
         }
         if (line >= count) {
-            throw new BadLocationException("No such line", line);
+            throw new BadLocationException(Messages.getString("swing.3F"), line); //$NON-NLS-1$
         }
         return count;
     }
@@ -196,7 +198,7 @@ public class JTextArea extends JTextComponent {
         Document doc = getDocument();
         int length = doc.getLength();
         if (offset < 0 || offset > length) {
-            throw new BadLocationException("Can't translate offset to line",
+            throw new BadLocationException(Messages.getString("swing.40"), //$NON-NLS-1$
                     offset);
         }
         readLock(doc);
@@ -264,8 +266,7 @@ public class JTextArea extends JTextComponent {
         if (orientation == SwingConstants.VERTICAL) {
             return rowHeight;
         }
-        throw new IllegalArgumentException("Invalid orientation: "
-                + orientation);
+        throw new IllegalArgumentException(Messages.getString("swing.41", orientation)); //$NON-NLS-1$
     }
 
     public int getTabSize() {
@@ -287,7 +288,7 @@ public class JTextArea extends JTextComponent {
         }
         int length = doc.getLength();
         if (pos < 0 || pos > length) {
-            throw new IllegalArgumentException("Invalid insert");
+            throw new IllegalArgumentException(Messages.getString("swing.42")); //$NON-NLS-1$
         }
         try {
             doc.insertString(pos, s, null);
@@ -332,10 +333,10 @@ public class JTextArea extends JTextComponent {
         }
         int length = doc.getLength();
         if (start < 0 || end > length) {
-            throw new IllegalArgumentException("Invalid remove");
+            throw new IllegalArgumentException(Messages.getString("swing.43")); //$NON-NLS-1$
         }
         if (start > end) {
-            throw new IllegalArgumentException("end before start");
+            throw new IllegalArgumentException(Messages.getString("swing.44")); //$NON-NLS-1$
         }
 
         try {
@@ -349,7 +350,7 @@ public class JTextArea extends JTextComponent {
 
     public void setColumns(final int c) {
         if (c < 0) {
-            throw new IllegalArgumentException("columns less than zero.");
+            throw new IllegalArgumentException(Messages.getString("swing.45")); //$NON-NLS-1$
         }
         columns = c;
         invalidate();
@@ -372,7 +373,7 @@ public class JTextArea extends JTextComponent {
 
     public void setRows(final int r) {
         if (r < 0) {
-            throw new IllegalArgumentException("rows less than zero.");
+            throw new IllegalArgumentException(Messages.getString("swing.46")); //$NON-NLS-1$
         }
         rows = r;
         invalidate();
@@ -399,4 +400,5 @@ public class JTextArea extends JTextComponent {
                            old, b);
     }
 }
+
 

@@ -26,6 +26,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DocumentFilter.FilterBypass;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>DefaultFormatter</i>
@@ -280,7 +282,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         }
        Object result = stringToValue(string, valueClass);
        if (result == null) {
-           throw new ParseException("Error creating instance", 0);
+           throw new ParseException(Messages.getString("swing.86"), 0); //$NON-NLS-1$
        }
        return result;
     }
@@ -332,4 +334,5 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         return (value != null) ? text : "";
     }
 }
+
 

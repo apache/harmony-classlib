@@ -34,6 +34,8 @@ import javax.swing.JSpinner.DateEditor;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 
 public class InternationalFormatter extends DefaultFormatter {
@@ -179,7 +181,7 @@ public class InternationalFormatter extends DefaultFormatter {
         }
 
         if (!checkRange(result)) {
-            throw new ParseException("the value is outside the min/max ", 0);
+            throw new ParseException(Messages.getString("swing.8F"), 0); //$NON-NLS-1$
         }
         return result;
     }
@@ -216,4 +218,5 @@ public class InternationalFormatter extends DefaultFormatter {
         return (format != null) ? format.format(value) : text;
     }
 }
+
 

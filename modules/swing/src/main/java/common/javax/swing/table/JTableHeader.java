@@ -54,11 +54,13 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.plaf.TableHeaderUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JTableHeader extends JComponent implements TableColumnModelListener, Accessible {
     protected class AccessibleJTableHeader extends AccessibleJComponent {
         protected class AccessibleJTableHeaderEntry extends AccessibleContext implements Accessible, AccessibleComponent {
             public AccessibleJTableHeaderEntry(final int c, final JTableHeader p, final JTable t) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleContext getAccessibleContext() {
@@ -66,179 +68,179 @@ public class JTableHeader extends JComponent implements TableColumnModelListener
             }
 
             public String getAccessibleName() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setAccessibleName(final String s) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public String getAccessibleDescription() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setAccessibleDescription(final String s) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleRole getAccessibleRole() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleStateSet getAccessibleStateSet() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public int getAccessibleIndexInParent() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public int getAccessibleChildrenCount() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Accessible getAccessibleChild(final int i) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Locale getLocale() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void addPropertyChangeListener(final PropertyChangeListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void removePropertyChangeListener(final PropertyChangeListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleAction getAccessibleAction() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleComponent getAccessibleComponent() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleSelection getAccessibleSelection() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleText getAccessibleText() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public AccessibleValue getAccessibleValue() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Color getBackground() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setBackground(final Color c) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Color getForeground() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setForeground(final Color c) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Cursor getCursor() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setCursor(final Cursor c) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Font getFont() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setFont(final Font f) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public FontMetrics getFontMetrics(final Font f) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public boolean isEnabled() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setEnabled(final boolean b) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public boolean isVisible() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setVisible(final boolean b) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public boolean isShowing() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public boolean contains(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Point getLocationOnScreen() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Point getLocation() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setLocation(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Rectangle getBounds() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setBounds(final Rectangle r) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Dimension getSize() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void setSize(final Dimension d) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public Accessible getAccessibleAt(final Point p) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public boolean isFocusTraversable() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void requestFocus() {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void addFocusListener(final FocusListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
 
             public void removeFocusListener(final FocusListener l) {
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
             }
         }
 
@@ -247,15 +249,15 @@ public class JTableHeader extends JComponent implements TableColumnModelListener
         }
 
         public Accessible getAccessibleAt(final Point p) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public int getAccessibleChildrenCount() {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
 
         public Accessible getAccessibleChild(final int i) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
     }
 
@@ -437,7 +439,7 @@ public class JTableHeader extends JComponent implements TableColumnModelListener
 
     public void setColumnModel(final TableColumnModel cm) {
         if (cm == null) {
-            throw new IllegalArgumentException("Null model cannot be used");
+            throw new IllegalArgumentException(Messages.getString("swing.7D")); //$NON-NLS-1$
         }
 
         columnModel.removeColumnModelListener(this);
@@ -548,4 +550,5 @@ public class JTableHeader extends JComponent implements TableColumnModelListener
         return ((JComponent)renderingComponent).getToolTipText();
     }
 }
+
 

@@ -35,6 +35,8 @@ import javax.swing.event.TreeSelectionListener;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeSelectionModel {
 
@@ -397,7 +399,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
             selection = getUniquePathArray(combined);
             break;
         default:
-            throw new IllegalArgumentException("modification mode is incorrect");
+            throw new IllegalArgumentException(Messages.getString("swing.B0")); //$NON-NLS-1$
         }
     }
 

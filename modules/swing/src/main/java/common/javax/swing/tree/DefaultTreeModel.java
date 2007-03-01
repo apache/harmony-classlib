@@ -30,6 +30,8 @@ import javax.swing.event.TreeModelListener;
 import org.apache.harmony.x.swing.TreeCommons;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class DefaultTreeModel implements TreeModel, Serializable {
 
@@ -132,7 +134,7 @@ public class DefaultTreeModel implements TreeModel, Serializable {
                                final int index) {
 
         if (newChild == null) {
-            throw new IllegalArgumentException("new child is null");
+            throw new IllegalArgumentException(Messages.getString("swing.03","new child")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         parent.insert(newChild, index);
         nodesWereInserted(parent,  new int[] {index});
@@ -141,7 +143,7 @@ public class DefaultTreeModel implements TreeModel, Serializable {
     public void removeNodeFromParent(final MutableTreeNode node) {
         MutableTreeNode parent = (MutableTreeNode)node.getParent();
         if (parent == null) {
-            throw new IllegalArgumentException("node doesn't have a parent");
+            throw new IllegalArgumentException(Messages.getString("swing.AF")); //$NON-NLS-1$
         }
         int index = parent.getIndex(node);
         parent.remove(node);

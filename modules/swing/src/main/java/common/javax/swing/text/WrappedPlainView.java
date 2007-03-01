@@ -32,6 +32,8 @@ import javax.swing.text.Position.Bias;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class WrappedPlainView extends BoxView implements TabExpander {
 
     private class LineView extends View {
@@ -72,7 +74,7 @@ public class WrappedPlainView extends BoxView implements TabExpander {
             int end   = getEndOffset() - 1;
 
             if (pos < start || pos > end) {
-                throw new BadLocationException("Invalid position", pos);
+                throw new BadLocationException(Messages.getString("swing.98"), pos); //$NON-NLS-1$
             }
 
             int lineNo = 0;

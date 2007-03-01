@@ -58,6 +58,8 @@ import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         MouseListener, MouseMotionListener {
 
@@ -983,7 +985,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      */
     public void setBlinkRate(final int i) {
         if (i < 0) {
-            throw new IllegalArgumentException("Invalid delay: " + i);
+            throw new IllegalArgumentException(Messages.getString("swing.64", i)); //$NON-NLS-1$
         }
         blinkRate = i;
         stopTimer(blinkTimer);

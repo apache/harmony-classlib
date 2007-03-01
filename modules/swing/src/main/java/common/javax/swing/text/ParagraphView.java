@@ -29,6 +29,8 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class ParagraphView extends FlowView implements TabExpander {
     private static final int DEFAULT_TAB = 72;
@@ -269,7 +271,7 @@ public class ParagraphView extends FlowView implements TabExpander {
                                        final int rowIndex,
                                        final int x)
                                 throws BadLocationException {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     protected float getPartialSize(final int startOffset,
@@ -341,7 +343,7 @@ public class ParagraphView extends FlowView implements TabExpander {
                                                       final Bias[] biasRet)
                                                throws BadLocationException {
         if (true) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
         }
         return TextUtils.getNextVisualPositionFrom(getTextKit(), this,
                                                    pos, b, a,
@@ -350,7 +352,7 @@ public class ParagraphView extends FlowView implements TabExpander {
 
     protected boolean flipEastAndWestAtEnds(final int position,
                                             final Bias bias) {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException(Messages.getString("swing.27")); //$NON-NLS-1$
     }
 
     protected TabSet getTabSet() {

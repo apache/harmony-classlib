@@ -21,6 +21,8 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
     private final FocusTraversalPolicy ancestor;
 
@@ -41,7 +43,7 @@ class BequestedFocusTraversalPolicy extends FocusTraversalPolicy {
         super();
         this.ancestor = ancestor;
         if (this.ancestor == null) {
-            throw new IllegalArgumentException("Ancestor shouldn't be null");
+            throw new IllegalArgumentException(Messages.getString("swing.06")); //$NON-NLS-1$
         }
         this.fixedComponent = fixedComponent;
         this.fixedNextComponent = fixedNextComponent;

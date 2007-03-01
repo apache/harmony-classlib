@@ -36,6 +36,7 @@ import javax.swing.plaf.ProgressBarUI;
 
 import org.apache.harmony.x.swing.StringConstants;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class JProgressBar extends JComponent implements SwingConstants, Accessible {
     protected int orientation = JProgressBar.HORIZONTAL;
@@ -128,7 +129,7 @@ public class JProgressBar extends JComponent implements SwingConstants, Accessib
         if (orientation != JProgressBar.HORIZONTAL
             && orientation != JProgressBar.VERTICAL) {
 
-            throw new IllegalArgumentException(orientation + " is not a legal orientation");
+            throw new IllegalArgumentException(Messages.getString("swing.4A", orientation)); //$NON-NLS-1$
         }
         int oldValue = this.orientation;
         this.orientation = orientation;
@@ -274,4 +275,5 @@ public class JProgressBar extends JComponent implements SwingConstants, Accessib
         }
     }
 }
+
 

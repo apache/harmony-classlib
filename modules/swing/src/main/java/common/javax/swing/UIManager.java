@@ -39,6 +39,8 @@ import javax.swing.plaf.ComponentUI;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>UIManager</i>
@@ -243,7 +245,7 @@ public class UIManager implements Serializable {
             return;
         }
         if (!laf.isSupportedLookAndFeel()) {
-            throw new UnsupportedLookAndFeelException(laf + " is not supported on this platform.");
+            throw new UnsupportedLookAndFeelException(Messages.getString("swing.2E",laf)); //$NON-NLS-1$
         }
         LookAndFeel oldValue = lookAndFeel;
         if (lookAndFeel != null) {
@@ -457,4 +459,5 @@ public class UIManager implements Serializable {
         return userUIDefaults;
     }
 }
+
 

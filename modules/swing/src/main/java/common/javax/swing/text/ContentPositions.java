@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 abstract class ContentPositions {
     public final class DocumentMark implements Position, Comparable {
         protected int index;
@@ -131,7 +133,7 @@ abstract class ContentPositions {
             throws BadLocationException {
 
         if (offset < 0) {
-            throw new BadLocationException("Invalid position offset", offset);
+            throw new BadLocationException(Messages.getString("swing.85"), offset); //$NON-NLS-1$
         }
 
         return new WeakPosition(offset);

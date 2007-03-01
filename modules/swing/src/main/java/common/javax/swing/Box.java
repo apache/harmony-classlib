@@ -26,6 +26,8 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class Box extends JComponent implements Accessible {
     private static final long serialVersionUID = 1525417495883046342L;
 
@@ -117,7 +119,7 @@ public class Box extends JComponent implements Accessible {
 
     @Override
     public void setLayout(LayoutManager layout) {
-        throw new AWTError("Illegal request");
+        throw new AWTError(Messages.getString("swing.err.01")); //$NON-NLS-1$
     }
 
     public static Component createRigidArea(Dimension size) {

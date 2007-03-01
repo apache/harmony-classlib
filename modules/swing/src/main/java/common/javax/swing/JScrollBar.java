@@ -38,6 +38,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.plaf.ScrollBarUI;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class JScrollBar extends JComponent implements Adjustable, Accessible {
 
     protected class AccessibleJScrollBar extends JComponent.AccessibleJComponent implements AccessibleValue {
@@ -121,7 +123,7 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
         model = new DefaultBoundedRangeModel(value, extent, min, max);
 
         if (orientation != HORIZONTAL && orientation != VERTICAL) {
-            throw new IllegalArgumentException("orientation must be HORIZONTAL or VERTICAL");
+            throw new IllegalArgumentException(Messages.getString("swing.28")); //$NON-NLS-1$
         } 
 
         this.orientation = orientation;
@@ -161,7 +163,7 @@ public class JScrollBar extends JComponent implements Adjustable, Accessible {
 
     public void setOrientation(final int orientation) {
         if (orientation != VERTICAL && orientation != HORIZONTAL) {
-            throw new IllegalArgumentException("orientation must be HORIZONTAL or VERTICAL");
+            throw new IllegalArgumentException(Messages.getString("swing.28")); //$NON-NLS-1$
         }
         if (orientation != this.orientation) {
             int oldValue = this.orientation;

@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class SpinnerListModel extends AbstractSpinnerModel implements Serializable {
     private static final String[] DEFAULT_VALUES = {"empty"};
     private List<?> values;
@@ -35,14 +37,14 @@ public class SpinnerListModel extends AbstractSpinnerModel implements Serializab
 
     public SpinnerListModel(final List<?> values) {
         if (values == null || values.size() <= 0) {
-            throw new IllegalArgumentException("SpinnerListModel(List) expects non-null non-empty List");
+            throw new IllegalArgumentException(Messages.getString("swing.5C")); //$NON-NLS-1$
         }
         this.values = values;
     }
 
     public SpinnerListModel(final Object[] values) {
         if (values == null || values.length <= 0) {
-            throw new IllegalArgumentException("SpinnerListModel(Object[]) expects non-null non-empty Object[]");
+            throw new IllegalArgumentException(Messages.getString("swing.5D")); //$NON-NLS-1$
         }
         this.values = Arrays.asList(values);
     }
@@ -66,7 +68,7 @@ public class SpinnerListModel extends AbstractSpinnerModel implements Serializab
 
     public void setValue(final Object obj) {
         if (!values.contains(obj)) {
-            throw new IllegalArgumentException("invalid sequence element");
+            throw new IllegalArgumentException(Messages.getString("swing.58")); //$NON-NLS-1$
         }
         index = values.indexOf(obj);
         fireStateChanged();
@@ -80,4 +82,5 @@ public class SpinnerListModel extends AbstractSpinnerModel implements Serializab
         return (index == 0) ? null : values.get(index - 1);
     }
 }
+
 

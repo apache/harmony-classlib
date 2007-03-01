@@ -27,12 +27,14 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import javax.swing.Icon;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class IconUIResource implements Icon, UIResource, Serializable {
     private Icon icon;
 
     public IconUIResource(final Icon icon) {
         if (icon == null) {
-            throw new IllegalArgumentException("null delegate");
+            throw new IllegalArgumentException(Messages.getString("swing.6B")); //$NON-NLS-1$
         }
         this.icon = icon;
     }
@@ -49,4 +51,5 @@ public class IconUIResource implements Icon, UIResource, Serializable {
         return icon.getIconHeight();
     }
 }
+
 

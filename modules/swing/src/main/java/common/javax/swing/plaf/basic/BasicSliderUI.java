@@ -54,6 +54,8 @@ import javax.swing.plaf.SliderUI;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <b>Note:</b> <code>serialVersionUID</code> fields are added as
  * a performance optimization only but not as a guarantee of correct
@@ -433,7 +435,7 @@ public class BasicSliderUI extends SliderUI {
     public void uninstallUI(final JComponent c) {
         if (c != slider) {
             // TODO Perform i18n after HARMONY-1320 is applied
-            throw new IllegalComponentStateException(this + " was asked to deinstall() " + c + " when it only knows about " + slider);
+            throw new IllegalComponentStateException(Messages.getString("swing.0E",new Object[]{this, c, slider})); //$NON-NLS-1$
         }
         uninstallListeners(slider);
         uninstallKeyboardActions(slider);

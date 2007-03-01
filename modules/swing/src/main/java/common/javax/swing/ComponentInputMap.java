@@ -17,6 +17,8 @@
 
 package javax.swing;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>ComponentInputMap</i>
@@ -34,8 +36,7 @@ public class ComponentInputMap extends InputMap {
 
     public ComponentInputMap(JComponent component) {
         if (component == null) {
-            throw new IllegalArgumentException(
-                    "ComponentInputMaps must be associated with a non-null JComponent");
+            throw new IllegalArgumentException(Messages.getString("swing.57")); //$NON-NLS-1$
         }
         this.component = component;
     }
@@ -63,8 +64,7 @@ public class ComponentInputMap extends InputMap {
         if (parent != null
                 && (!(parent instanceof ComponentInputMap) || (((ComponentInputMap) parent)
                         .getComponent() != component))) {
-            throw new IllegalArgumentException(
-                    "ComponentInputMap must have a ComponentInputMap parent associated with the same component");
+            throw new IllegalArgumentException(Messages.getString("swing.4D")); //$NON-NLS-1$
         }
         super.setParent(parent);
         if (component != null) {

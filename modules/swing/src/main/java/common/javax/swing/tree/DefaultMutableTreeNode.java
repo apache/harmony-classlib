@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Serializable {
     public static final Enumeration<TreeNode> EMPTY_ENUMERATION = new Vector<TreeNode>().elements();
 
@@ -51,10 +53,10 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
     public void insert(final MutableTreeNode child, final int childIndex) {
         if (!getAllowsChildren()) {
-            throw new IllegalStateException("Children are not allowed for this node");
+            throw new IllegalStateException(Messages.getString("swing.A6")); //$NON-NLS-1$
         }
         if (child == null || isNodeAncestor(child)) {
-            throw new IllegalArgumentException("specified child node is null or an ancestor of the current node");
+            throw new IllegalArgumentException(Messages.getString("swing.A7")); //$NON-NLS-1$
         }
 
         if (child.getParent() instanceof MutableTreeNode) {
@@ -87,7 +89,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
     public int getIndex(final TreeNode child) {
         if (child == null) {
-            throw new IllegalArgumentException("child must be not null");
+            throw new IllegalArgumentException(Messages.getString("swing.A8")); //$NON-NLS-1$
         }
 
         return children != null ? children.indexOf(child) : -1;
@@ -125,7 +127,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
     public void remove(final MutableTreeNode child) {
         int index = -1;
         if (child == null || children == null || (index = children.indexOf(child)) == -1) {
-            throw new IllegalArgumentException("specified child is null or is not a child of this node");
+            throw new IllegalArgumentException(Messages.getString("swing.A9")); //$NON-NLS-1$
         }
         remove(index);
     }
@@ -288,7 +290,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
                 if (children == null || !children.hasMoreElements()) {
                     if (nextLevelChildren.isEmpty()) {
-                        throw new NoSuchElementException("no more elements in enumeration");
+                        throw new NoSuchElementException(Messages.getString("swing.AA")); //$NON-NLS-1$
                     } else {
                         children = (Enumeration)nextLevelChildren.remove(0);
                     }
@@ -314,7 +316,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
     public Enumeration pathFromAncestorEnumeration(final TreeNode ancestor) {
         if (!isNodeAncestor(ancestor)) {
-            throw new IllegalArgumentException("Specified ancestor is not an ancestor of this node");
+            throw new IllegalArgumentException(Messages.getString("swing.AB")); //$NON-NLS-1$
         }
 
         return new Enumeration() {
@@ -327,7 +329,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
                 }
 
                 if (previousAncestor == DefaultMutableTreeNode.this) {
-                    throw new NoSuchElementException("no more elements in enumeration");
+                    throw new NoSuchElementException(Messages.getString("swing.AA")); //$NON-NLS-1$
                 }
                 TreeNode nextNode = DefaultMutableTreeNode.this;
                 while (nextNode.getParent() != previousAncestor) {
@@ -350,7 +352,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
     public TreeNode getFirstChild() {
         if (children == null || children.isEmpty()) {
-            throw new NoSuchElementException("Node has no children");
+            throw new NoSuchElementException(Messages.getString("swing.AC")); //$NON-NLS-1$
         }
 
         return (TreeNode)children.get(0);
@@ -358,7 +360,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
 
     public TreeNode getLastChild() {
         if (children == null || children.isEmpty()) {
-            throw new NoSuchElementException("Node has no children");
+            throw new NoSuchElementException(Messages.getString("swing.AC")); //$NON-NLS-1$
         }
 
         return (TreeNode)children.get(children.size() - 1);
@@ -367,7 +369,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
     public TreeNode getChildAfter(final TreeNode child) {
         int index = -1;
         if (child == null || (index = getIndex(child)) == -1) {
-            throw new IllegalArgumentException("Specified child is not a child of this node");
+            throw new IllegalArgumentException(Messages.getString("swing.AD")); //$NON-NLS-1$
         }
 
         return index + 1 < getChildCount() ? getChildAt(index + 1) : null;
@@ -376,7 +378,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
     public TreeNode getChildBefore(final TreeNode child) {
         int index = -1;
         if (child == null || (index = getIndex(child)) == -1) {
-            throw new IllegalArgumentException("Specified child is not a child of this node");
+            throw new IllegalArgumentException(Messages.getString("swing.AD")); //$NON-NLS-1$
         }
 
         return index > 0 ? getChildAt(index - 1) : null;
@@ -548,7 +550,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
                     return subChildren.nextElement();
                 }
 
-                throw new NoSuchElementException("no more elements in enumeration");
+                throw new NoSuchElementException(Messages.getString("swing.AA")); //$NON-NLS-1$
             }
 
             public boolean hasMoreElements() {
@@ -575,7 +577,7 @@ public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Seria
                     children = null;
                     return root;
                 } else {
-                    throw new NoSuchElementException("no more elements in enumeration");
+                    throw new NoSuchElementException(Messages.getString("swing.AA")); //$NON-NLS-1$
                 }
             }
 

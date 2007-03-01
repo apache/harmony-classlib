@@ -29,6 +29,8 @@ import java.util.Vector;
 import javax.swing.text.ContentPositions.DocumentMark;
 import javax.swing.undo.UndoableEdit;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 @SuppressWarnings("serial")
 public class GapContent
     implements AbstractDocument.Content, Serializable {
@@ -140,11 +142,11 @@ public class GapContent
         throws BadLocationException {
 
         if (length < 0) {
-            throw new BadLocationException("Length must be non-negative",
+            throw new BadLocationException(Messages.getString("swing.8C"), //$NON-NLS-1$
                                            length);
         }
         if (offset < 0 || length > length() - offset) {
-            throw new BadLocationException("Invalid start position", offset);
+            throw new BadLocationException(Messages.getString("swing.8D"), offset); //$NON-NLS-1$
         }
 
         if (offset + length <= gapStart) {
@@ -366,7 +368,7 @@ public class GapContent
         throws BadLocationException {
 
         if (where < 0 || where > length()) {
-            throw new BadLocationException("Invalid insert position", where);
+            throw new BadLocationException(Messages.getString("swing.8E"), where); //$NON-NLS-1$
         }
 
         shiftGap(where);
@@ -396,7 +398,7 @@ public class GapContent
 
         if (where < 0 || where + nitems >= length()) {
 
-            throw new BadLocationException("Invalid remove position", where);
+            throw new BadLocationException(Messages.getString("swing.7F"), where); //$NON-NLS-1$
         }
 
         if (where + nitems == gapStart) {

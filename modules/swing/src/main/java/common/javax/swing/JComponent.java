@@ -82,6 +82,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.plaf.ComponentUI;
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -681,8 +682,7 @@ public abstract class JComponent extends Container implements Serializable {
     public final void setInputMap(int condition, InputMap map) {
         if (condition == WHEN_IN_FOCUSED_WINDOW && !(map instanceof ComponentInputMap)
                 && map != null) {
-            throw new IllegalArgumentException("For WHEN_IN_FOCUSED_WINDOW condition "
-                    + "ComponentInputMap has to be provided");
+            throw new IllegalArgumentException(Messages.getString("swing.0D","WHEN_IN_FOCUSED_WINDOW")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (condition < FIRST_INPUT_MAP_INDEX || condition > LAST_INPUT_MAP_INDEX) {
             throw new IllegalArgumentException(ILLEGAL_CONDITION_MESSAGE);

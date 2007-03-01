@@ -39,6 +39,8 @@ import javax.swing.plaf.OptionPaneUI;
 
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class JOptionPane extends JComponent implements Accessible {
 
@@ -400,7 +402,7 @@ public class JOptionPane extends JComponent implements Accessible {
         JDesktopPane desktop = JOptionPane.getDesktopPaneForComponent(parentComponent);
         Container parent = (desktop != null) ? desktop : parentComponent.getParent();
         if (parent == null) {
-            throw new RuntimeException("JOptionPane: parentComponent does not have a valid parent");
+            throw new RuntimeException(Messages.getString("swing.1E","JOptionPane")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         JInternalFrame frame = new JInternalFrame(title);
@@ -512,10 +514,10 @@ public class JOptionPane extends JComponent implements Accessible {
             firePropertyChange(MESSAGE_TYPE_PROPERTY, oldValue, type);
             break;
         default:
-            throw new RuntimeException("JOptionPane: type must be one of " +
-                    "JOptionPane.ERROR_MESSAGE, JOptionPane.INFORMATION_MESSAGE, " +
-                    "JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE " +
-                    "or JOptionPane.PLAIN_MESSAGE");
+            throw new RuntimeException(Messages.getString("swing.1F","JOptionPane") + //$NON-NLS-1$ //$NON-NLS-2$
+                    "JOptionPane.ERROR_MESSAGE, JOptionPane.INFORMATION_MESSAGE, " + //$NON-NLS-1$
+                    "JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE " + //$NON-NLS-1$
+                    "or JOptionPane.PLAIN_MESSAGE"); //$NON-NLS-1$
         }
     }
 
@@ -534,7 +536,7 @@ public class JOptionPane extends JComponent implements Accessible {
             firePropertyChange(OPTION_TYPE_PROPERTY, oldValue, newType);
             break;
         default:
-            throw new RuntimeException("Illegal Option Type");
+            throw new RuntimeException(Messages.getString("swing.20")); //$NON-NLS-1$
         }
     }
 

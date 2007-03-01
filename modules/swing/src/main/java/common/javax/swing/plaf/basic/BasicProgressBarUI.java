@@ -49,6 +49,8 @@ import javax.swing.plaf.ProgressBarUI;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class BasicProgressBarUI extends ProgressBarUI {
 
@@ -338,7 +340,7 @@ public class BasicProgressBarUI extends ProgressBarUI {
 
     protected void setAnimationIndex(final int newValue) {
         if (progressBar == null) {
-            throw new NullPointerException("progressBar is null");
+            throw new NullPointerException(Messages.getString("swing.03","progressBar")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         animationIndex = newValue % maxAnimationIndex;
     }
@@ -437,4 +439,5 @@ public class BasicProgressBarUI extends ProgressBarUI {
         return (length - getBoxLength(length, 0)) * 2 * Math.min(animationIndex, (maxAnimationIndex - animationIndex)) / maxAnimationIndex;
     }
 }
+
 

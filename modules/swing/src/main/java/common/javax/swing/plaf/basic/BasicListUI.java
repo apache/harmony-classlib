@@ -62,6 +62,8 @@ import javax.swing.text.Position;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class BasicListUI extends ListUI {
     protected int cellHeight = -1;
     protected int cellWidth = -1;
@@ -1029,7 +1031,7 @@ public class BasicListUI extends ListUI {
                     result = new HorizontalWrapVisibleUnspecifiedLayoutStrategy();
                 }
             } else {
-                throw new IllegalArgumentException("Incorrect layout orientation");
+                throw new IllegalArgumentException(Messages.getString("swing.70")); //$NON-NLS-1$
             }
 
             return result;

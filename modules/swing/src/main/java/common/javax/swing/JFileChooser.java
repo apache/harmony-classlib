@@ -35,6 +35,8 @@ import javax.swing.filechooser.FileView;
 import javax.swing.plaf.FileChooserUI;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JFileChooser</i>
@@ -387,7 +389,7 @@ public class JFileChooser extends JComponent implements Accessible {
     public void setDialogType(final int dialogType) {
         if (dialogType != OPEN_DIALOG && dialogType != SAVE_DIALOG
                 && dialogType != CUSTOM_DIALOG) {
-            throw new IllegalArgumentException("Incorrect dialog type is specified");
+            throw new IllegalArgumentException(Messages.getString("swing.11")); //$NON-NLS-1$
         }
         int oldValue = this.dialogType;
         this.dialogType = dialogType;
@@ -418,7 +420,7 @@ public class JFileChooser extends JComponent implements Accessible {
 
     public void setFileSelectionMode(final int mode) {
         if (mode != FILES_ONLY && mode != DIRECTORIES_ONLY && mode != FILES_AND_DIRECTORIES) {
-            throw new IllegalArgumentException("Incorrect file selection mode is psecified");
+            throw new IllegalArgumentException(Messages.getString("swing.12")); //$NON-NLS-1$
         }
         int oldValue = fileSelectionMode;
         fileSelectionMode = mode;

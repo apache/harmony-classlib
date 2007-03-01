@@ -28,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.Position.Bias;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 
 public class MaskFormatter extends DefaultFormatter {
     private String mask;
@@ -211,7 +213,7 @@ public class MaskFormatter extends DefaultFormatter {
         if (maskLength - escapeLength
                 - (valueContainsLiteralCharacters ? 0 : literalsLength)
                 < length) {
-            throw new ParseException("Cann't parse value", 0);
+            throw new ParseException(Messages.getString("swing.92"), 0); //$NON-NLS-1$
         }
         int index = 0;
         int maskIndex = 0;
@@ -243,7 +245,7 @@ public class MaskFormatter extends DefaultFormatter {
         if (!acceptCharacter(maskCharacter,
                              textCharacter,
                              isLiteral)) {
-            throw new ParseException("Cann't parse String", index);
+            throw new ParseException(Messages.getString("swing.93"), index); //$NON-NLS-1$
         }
     }
 
@@ -300,7 +302,7 @@ public class MaskFormatter extends DefaultFormatter {
         int maskLength = mask.length();
         int index = 0;
         if (maskLength - length != escapeMask.cardinality()) {
-            throw new ParseException("stringToValue passed invalid value", 0);
+            throw new ParseException(Messages.getString("swing.94"), 0); //$NON-NLS-1$
         }
         int accumulator = 0;
         String result = "";
@@ -459,4 +461,5 @@ public class MaskFormatter extends DefaultFormatter {
           return result;
       }
 }
+
 

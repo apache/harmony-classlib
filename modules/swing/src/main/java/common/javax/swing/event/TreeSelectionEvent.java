@@ -24,6 +24,8 @@ import java.util.EventObject;
 
 import javax.swing.tree.TreePath;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class TreeSelectionEvent extends EventObject {
     protected TreePath[] paths;
     protected boolean[] areNew;
@@ -68,12 +70,12 @@ public class TreeSelectionEvent extends EventObject {
                 return isAddedPath(i);
             }
         }
-        throw new IllegalArgumentException("path is not found");
+        throw new IllegalArgumentException(Messages.getString("swing.69")); //$NON-NLS-1$
     }
 
     public boolean isAddedPath(final int index) {
         if (index < 0 || index >= areNew.length) {
-            throw new IllegalArgumentException("index is invalid");
+            throw new IllegalArgumentException(Messages.getString("swing.6A")); //$NON-NLS-1$
         }
         return areNew[index];
     }

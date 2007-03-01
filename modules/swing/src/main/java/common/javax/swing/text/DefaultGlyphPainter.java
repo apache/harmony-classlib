@@ -43,6 +43,8 @@ import javax.swing.text.TextInterval.TextIntervalPainter;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.text.TextUtils;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * Default GlyphPainter which is used when a GlyphView needs a painter but
  * none was set.
@@ -86,10 +88,7 @@ final class DefaultGlyphPainter extends GlyphPainter {
             throws BadLocationException {
 
             if (true) {
-                throw new UnsupportedOperationException("Default painter of "
-                                                        + "GlyphView can't "
-                                                        + "paint composed "
-                                                        + "text.");
+                throw new UnsupportedOperationException(Messages.getString("swing.87")); //$NON-NLS-1$
             }
             return x;
         }
@@ -161,8 +160,7 @@ final class DefaultGlyphPainter extends GlyphPainter {
         throws BadLocationException {
 
         if (offset < v.getStartOffset() || offset > v.getEndOffset()) {
-            throw new BadLocationException("This view doesn't represent "
-                                           + "offset " + offset, offset);
+            throw new BadLocationException(Messages.getString("swing.88", offset), offset); //$NON-NLS-1$
         }
 
         final Segment text = v.getText(v.getStartOffset(), offset);
