@@ -209,29 +209,6 @@ public final class BandedSampleModel extends ComponentSampleModel {
     }
 
     @Override
-    public int[] getPixels(int x, int y, int w, int h, int iArray[],
-            DataBuffer data) {
-        int pixels[];
-        int idx = 0;
-
-        if (iArray == null) {
-            pixels = new int[w * h * numBands];
-        } else {
-            pixels = iArray;
-        }
-
-        for (int i = y; i < y + h; i++) {
-            for (int j = x; j < x + w; j++) {
-                for (int n = 0; n < numBands; n++) {
-                    pixels[idx++] = getSample(j, i, n, data);
-                }
-            }
-        }
-
-        return pixels;
-    }
-
-    @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             // awt.63=Coordinates are not in bounds

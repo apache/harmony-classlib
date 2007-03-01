@@ -85,4 +85,17 @@ public class RasterTest extends TestCase {
             // Expected
         }
     }
+    
+    public void testGetPixels() {
+        // Regression test for HARMONY-2875
+        try {
+            Raster.createRaster(new BandedSampleModel(1, 2, 3, 4),
+                    new DataBufferByte(new byte[191], 0),
+                    new Point(new Point(28, 43))).getPixels(6,
+                    Integer.MAX_VALUE, 1, 0, new int[] {});
+            fail("ArrayIndexOutOfBoundsException should be thrown"); //$NON-NLS-1$
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+    }
 }
