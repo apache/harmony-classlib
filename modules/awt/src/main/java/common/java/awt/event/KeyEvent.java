@@ -566,6 +566,12 @@ public class KeyEvent extends InputEvent {
                 throw new IllegalArgumentException(Messages.getString("awt.192")); //$NON-NLS-1$
             }
         }
+        
+        if ((keyLocation < KEY_LOCATION_UNKNOWN)
+                || (keyLocation > KEY_LOCATION_NUMPAD)) {
+            // awt.297=Invalid keyLocation
+            throw new IllegalArgumentException(Messages.getString("awt.297")); //$NON-NLS-1$
+        }
 
         this.keyChar = keyChar;
         this.keyLocation = keyLocation;

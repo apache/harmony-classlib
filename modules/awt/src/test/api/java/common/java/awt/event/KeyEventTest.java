@@ -21,6 +21,7 @@
 package java.awt.event;
 
 import java.awt.Button;
+import java.awt.Container;
 
 import junit.framework.TestCase;
 
@@ -118,6 +119,21 @@ public class KeyEventTest extends TestCase {
             typedUndefinedChar = true;
         }
         assertTrue(typedUndefinedChar);
+        
+        // Regression for HARMONY-2491
+        try {
+            new KeyEvent(new Container(), (-1), 62554L, 5, 1, '\1', -1);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            new KeyEvent(new Container(), (-1), 62554L, 5, 1, '\1', 5);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public final void testGetSetKeyCode() {
@@ -192,10 +208,5 @@ public class KeyEventTest extends TestCase {
                 InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD);
         assertEquals(event.paramString(),
                 "unknown type,keyCode=65,keyChar='a',modifiers=Alt Graph,extModifiers=Alt Graph,keyLocation=KEY_LOCATION_NUMPAD");
-        event = new KeyEvent(button, KeyEvent.KEY_PRESSED + 1024, 0l,
-                InputEvent.ALT_GRAPH_MASK, KeyEvent.VK_A, 'a', KeyEvent.KEY_LOCATION_NUMPAD + 1024);
-        assertEquals(event.paramString(),
-                "unknown type,keyCode=65,keyChar='a',modifiers=Alt Graph,extModifiers=Alt Graph,keyLocation=unknown type");
     }
-
 }
