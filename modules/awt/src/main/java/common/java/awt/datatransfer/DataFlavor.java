@@ -196,7 +196,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     }
 
     private String getCharset() {
-        if (isCharsetRedundant()) {
+        if ((mimeInfo == null) || isCharsetRedundant()) {
             return ""; //$NON-NLS-1$
         }
         String charset = mimeInfo.getParameter("charset"); //$NON-NLS-1$
@@ -259,7 +259,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         if (lowerName.equals("humanpresentablename")) { //$NON-NLS-1$
             return humanPresentableName;
         }
-        return mimeInfo.getParameter(lowerName);
+        return mimeInfo != null ? mimeInfo.getParameter(lowerName) : null;
     }
 
     public String getHumanPresentableName() {
@@ -325,7 +325,8 @@ public class DataFlavor implements Externalizable, Cloneable {
     }
 
     public final boolean isMimeTypeEqual(DataFlavor dataFlavor) {
-        return mimeInfo.equals(dataFlavor.mimeInfo);
+        return mimeInfo != null ? mimeInfo.equals(dataFlavor.mimeInfo)
+                : (dataFlavor.mimeInfo == null);
     }
 
     public boolean isMimeTypeEqual(String mimeType) {
@@ -464,7 +465,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         if (equals(stringFlavor) || equals(plainTextFlavor)) {
             return true;
         }
-        if (!mimeInfo.getPrimaryType().equals("text")) { //$NON-NLS-1$
+        if ((mimeInfo != null) && !mimeInfo.getPrimaryType().equals("text")) { //$NON-NLS-1$
             return false;
         }
 
@@ -702,14 +703,16 @@ public class DataFlavor implements Externalizable, Cloneable {
     }
 
     private boolean isUnicodeFlavor() {
-        return (representationClass.equals(Reader.class) ||
-                representationClass.equals(String.class) ||
-                representationClass.equals(CharBuffer.class) ||
-                representationClass.equals(char[].class));
+        return (representationClass != null) 
+                && (representationClass.equals(Reader.class) 
+                || representationClass.equals(String.class) 
+                || representationClass.equals(CharBuffer.class) 
+                || representationClass.equals(char[].class));
     }
 
     private boolean isByteCodeFlavor() {
-        return (representationClass.equals(InputStream.class)
+        return (representationClass != null) 
+                && (representationClass.equals(InputStream.class)
                 || representationClass.equals(ByteBuffer.class)
                 || representationClass.equals(byte[].class));
     }

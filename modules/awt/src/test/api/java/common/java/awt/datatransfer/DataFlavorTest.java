@@ -65,6 +65,9 @@ public class DataFlavorTest extends TestCase {
                 (Object) new DataFlavor("x/y; class=java.util.List; charset=c2", "")));
         assertTrue(!new DataFlavor("z/y; class=java.util.LinkedList", "").equals(
                 new RuntimeException()));
+
+        // Regression for HARMONY-2033
+        assertFalse(new DataFlavor().equals("")); //$NON-NLS-1$
     }
 
     /*
@@ -233,6 +236,9 @@ public class DataFlavorTest extends TestCase {
     public final void testGetParameter() {
         assertEquals(new DataFlavor("x/y; param=value", "z").getParameter("param"), "value");
         assertEquals(new DataFlavor("x/y; param=value", "z").getParameter("humanPresentableName"), "z");
+        
+        // Regression for HARMONY-2033
+        assertNull(new DataFlavor().getParameter("")); //$NON-NLS-1$
     }
 
     public final void testGetHumanPresentableName() {
@@ -374,6 +380,9 @@ public class DataFlavorTest extends TestCase {
                 isMimeTypeEqual(new DataFlavor("z/y; param=value", "2")));
         assertFalse(new DataFlavor("x/y; class=java.io.Serializable", "1").
                 isMimeTypeEqual(new DataFlavor("x/z; param=value", "2")));
+        
+        // Regression for HARMONY-2033
+        assertTrue(new DataFlavor().isMimeTypeEqual(new DataFlavor()));
     }
 
     /*
@@ -386,6 +395,9 @@ public class DataFlavorTest extends TestCase {
                 isMimeTypeEqual("z/y; param=value"));
         assertFalse(new DataFlavor("x/y; class=java.io.Serializable", "1").
                 isMimeTypeEqual("x/z; param=value"));
+        
+        // Regression for HARMONY-2033
+        assertFalse(new DataFlavor().isMimeTypeEqual("")); //$NON-NLS-1$
     }
 
     /*
@@ -420,6 +432,11 @@ public class DataFlavorTest extends TestCase {
                 new DataFlavor("text/xml; class=java.lang.String; charset=US-ASCII", ""),
                 new DataFlavor("text/xml; class=java.lang.String; charset=UTF-16", "")
         }), new DataFlavor("text/xml; class=java.lang.String; charset=UTF-16", ""));
+        
+        
+        // Regression for HARMONY-2033
+        assertNull(DataFlavor
+                .selectBestTextFlavor(new DataFlavor[] { new DataFlavor() }));
     }
 
     @SuppressWarnings("deprecation")
