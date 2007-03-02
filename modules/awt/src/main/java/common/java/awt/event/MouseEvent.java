@@ -65,7 +65,35 @@ public class MouseEvent extends InputEvent {
     private int y;
 
     public static String getMouseModifiersText(int modifiers) {
-        return getModifiersExText(extractExFlags(modifiers));
+        final StringBuffer text = new StringBuffer();
+
+        if ((modifiers & META_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.meta", "Meta")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & SHIFT_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.shift", "Shift")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & CTRL_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.control", "Ctrl")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & ALT_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.alt", "Alt")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & ALT_GRAPH_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.altGraph", "Alt Graph")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & BUTTON1_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.button1", "Button1")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & BUTTON2_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.button2", "Button2")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        if ((modifiers & BUTTON3_MASK) != 0) {
+            text.append(Toolkit.getProperty("AWT.button3", "Button3")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
+        return text.length() == 0 ? text.toString() : text.substring(0, text
+                .length() - 1);
     }
 
     static String addMouseModifiersExText(String text, int modifiersEx) {

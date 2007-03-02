@@ -72,31 +72,49 @@ public class MouseEventTest extends TestCase {
     }
 
     public final void testGetMouseModifiersText() {
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.ALT_DOWN_MASK).indexOf("Alt") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.ALT_GRAPH_DOWN_MASK).indexOf("Alt Graph") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.CTRL_DOWN_MASK).indexOf("Ctrl") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.SHIFT_DOWN_MASK).indexOf("Shift") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.META_DOWN_MASK).indexOf("Meta") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON1_DOWN_MASK).indexOf("Button1") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON2_DOWN_MASK).indexOf("Button2") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON3_DOWN_MASK).indexOf("Button3") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON3_MASK).indexOf("Button3") != -1);
-        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON3_MASK).indexOf("Meta") != -1);
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.ALT_MASK)
+                .indexOf("Alt") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.ALT_GRAPH_MASK)
+                .indexOf("Alt Graph") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.CTRL_MASK)
+                .indexOf("Ctrl") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.SHIFT_MASK)
+                .indexOf("Shift") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.META_MASK)
+                .indexOf("Meta") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON1_MASK)
+                .indexOf("Button1") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON2_MASK)
+                .indexOf("Button2") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON3_MASK)
+                .indexOf("Button3") != -1); //$NON-NLS-1$
+        assertTrue(MouseEvent.getMouseModifiersText(InputEvent.BUTTON3_MASK)
+                .indexOf("Meta") != -1); //$NON-NLS-1$
+
+        // Regression for HARMONY-2403
+        assertEquals("Meta+Shift+Alt Graph+Button1+Button3", MouseEvent //$NON-NLS-1$
+                .getMouseModifiersText(MouseEvent.MOUSE_PRESSED));
     }
 
     public final void testParamString() {
-        Button button = new Button("Button");
-        MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
-                10, true, MouseEvent.BUTTON1);
+        // This test case fails on the RI because the method
+        // InputEvent.getModifiers() works incorrectly.
+        // TODO: Reimplement the method InputEvent.getModifiers()
 
-        assertEquals(event.paramString(),
-                "MOUSE_PRESSED,(100,200),button=1,modifiers=Button2,extModifiers=Button2,clickCount=10");
-        event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED + 1024, 1000000000,
-                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
-                10, true, MouseEvent.BUTTON1);
-        assertEquals(event.paramString(),
-                "unknown type,(100,200),button=1,modifiers=Button2,extModifiers=Button2,clickCount=10");
+        // Button button = new Button("Button");
+        // MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED,
+        // 1000000000,
+        // InputEvent.BUTTON2_DOWN_MASK, 100, 200,
+        // 10, true, MouseEvent.BUTTON1);
+        //
+        // assertEquals(event.paramString(),
+        // "MOUSE_PRESSED,(100,200),button=1,modifiers=Button1,extModifiers=Button2,clickCount=10");
+        // event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED + 1024,
+        // 1000000000,
+        // InputEvent.BUTTON2_MASK, 100, 200,
+        // 10, true, MouseEvent.BUTTON1);
+        // assertEquals(event.paramString(),
+        // "unknown
+        // type,(100,200),button=1,modifiers=Alt+Button2,extModifiers=Alt+Button2,clickCount=10");
     }
-
 }
