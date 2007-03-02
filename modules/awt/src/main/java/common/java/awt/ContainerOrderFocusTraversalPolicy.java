@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.io.Serializable;
@@ -38,8 +35,8 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         try {
             // By default, this method will accept a Component if and only if it is
             // visible[together with parent !!!], displayable, enabled, and focusable.
-            return (aComp.isShowing() && aComp.isDisplayable() &&
-                    aComp.isKeyEnabled() && aComp.isFocusable());
+            return (aComp.isVisible() && aComp.isDisplayable() &&
+                    aComp.isEnabled() && aComp.isFocusable());
         } finally {
             toolkit.unlockAWT();
         }
