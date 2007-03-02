@@ -123,6 +123,11 @@ public class ObjectStreamClassTest extends junit.framework.TestCase {
 		;
 	}
 
+    public void testSerialization() {
+        ObjectStreamClass osc = ObjectStreamClass.lookup(ObjectStreamClass.class);
+        assertEquals(0, osc.getFields().length);
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
