@@ -1295,8 +1295,10 @@ public class File implements Serializable, Comparable<File> {
     }
 
     private String getAbsoluteName() {
-        String name = getAbsolutePath();
-        if (isDirectory() && name.charAt(name.length() - 1) != separatorChar) {
+        File f = getAbsoluteFile();
+        String name = f.getPath();
+
+        if (f.isDirectory() && name.charAt(name.length() - 1) != separatorChar) {
             // Directories must end with a slash
             name = new StringBuilder(name.length() + 1).append(name)
                     .append('/').toString();

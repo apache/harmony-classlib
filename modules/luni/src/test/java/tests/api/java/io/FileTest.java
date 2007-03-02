@@ -2091,6 +2091,11 @@ public class FileTest extends junit.framework.TestCase {
 			assertTrue("Test 2B: Incorrect URI Returned.", uri.equals(new URI(
 					"file", null, newURIPath, null, null)));
 
+			// Regression test for HARMONY-3207
+			dir = new File(""); // current directory
+			uri = dir.toURI();
+			assertTrue("Test current dir: URI does not end with slash.",
+					uri.toString().endsWith("/"));
 		} catch (URISyntaxException e1) {
 			fail("Unexpected URISyntaxException: " + e1);
 		}
@@ -2128,6 +2133,12 @@ public class FileTest extends junit.framework.TestCase {
 				newURL = "file:/" + newURL;
 			assertTrue("Test 2: Incorrect URL Returned.", newURL.equals(f
 					.toURL().toString()));
+
+			// Regression test for HARMONY-3207
+			dir = new File(""); // current directory
+			newDirURL = dir.toURL().toString();
+			assertTrue("Test current dir: URL does not end with slash.",
+					newDirURL.endsWith("/"));
 		} catch (java.net.MalformedURLException e) {
 			fail(
 					"Unexpected java.net.MalformedURLException During Test.");
