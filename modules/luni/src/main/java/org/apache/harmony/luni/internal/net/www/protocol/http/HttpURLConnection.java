@@ -866,6 +866,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             throw new ProtocolException(Msg.getString("K008d")); //$NON-NLS-1$
         }
 
+        // connect before sending requests
+        connect();
+
         doRequest();
 
         /*
