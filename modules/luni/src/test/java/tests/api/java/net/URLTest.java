@@ -326,6 +326,18 @@ public class URLTest extends junit.framework.TestCase {
 		} catch (MalformedURLException e) {
 			fail("5 Did not expect the exception " + e);
 		}
+
+        // testing jar protocol with relative path
+        // to make sure it's not canonicalized
+        try {
+            String file = "file:/a!/b/../d";
+
+            u = new URL("jar:" + file);
+            assertEquals("Wrong file (jar protocol, relative path)",
+                    file, u.getFile());
+        } catch (MalformedURLException e) {
+            fail("Unexpected exception (jar protocol, relative path)" + e);
+        }
 	}
 
 	/**
@@ -571,13 +583,52 @@ public class URLTest extends junit.framework.TestCase {
 			// null
 			u = null;
 			u1 = new URL(u, "file.java");
-		} catch (MalformedURLException e) {
-			return;
+            fail("didn't throw the expected MalFormedURLException");
+        } catch (MalformedURLException e) {
+			// valid
 		} catch (Exception e) {
 			fail("2 Exception during tests : " + e.getMessage());
 		}
-		fail("didn't throw the expected MalFormedURLException");
-	}
+		
+        // Regression test for HARMONY-3258
+        // testing jar context url with relative file
+        try {
+            // check that relative path with null context is not canonicalized
+            String spec = "jar:file:/a!/b/../d";
+            URL ctx = null;
+            u = new URL(ctx, spec);
+            assertEquals("1 Wrong file (jar protocol, relative path)",
+                    spec, u.toString());
+
+            spec = "../d";
+            ctx = new URL("jar:file:/a!/b");
+            u = new URL(ctx, spec);
+            assertEquals("2 Wrong file (jar protocol, relative path)",
+                    "file:/a!/d", u.getFile());
+
+            spec = "../d";
+            ctx = new URL("jar:file:/a!/b/c");
+            u = new URL(ctx, spec);
+            assertEquals("3 Wrong file (jar protocol, relative path)",
+                    "file:/a!/d", u.getFile());
+
+            spec = "../d";
+            ctx = new URL("jar:file:/a!/b/c/d");
+            u = new URL(ctx, spec);
+            assertEquals("4 Wrong file (jar protocol, relative path)",
+                    "file:/a!/b/d", u.getFile());
+
+            // added the real example
+            spec = "../pdf/PDF.settings";
+            ctx = new URL("jar:file:/C:/Program%20Files/Netbeans-5.5/ide7/modules/org-netbeans-modules-utilities.jar!/org/netbeans/modules/utilities/Layer.xml");
+            u = new URL(ctx, spec);
+            assertEquals("5 Wrong file (jar protocol, relative path)",
+                    "file:/C:/Program%20Files/Netbeans-5.5/ide7/modules/org-netbeans-modules-utilities.jar!/org/netbeans/modules/pdf/PDF.settings",
+                    u.getFile());
+        } catch (MalformedURLException e) {
+            fail("Testing jar protocol, relative path failed: " + e);
+        }
+    }
 
 	/**
 	 * @tests java.net.URL#URL(java.net.URL, java.lang.String,

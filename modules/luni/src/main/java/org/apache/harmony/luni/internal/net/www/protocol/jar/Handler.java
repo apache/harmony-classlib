@@ -24,6 +24,7 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.URLUtil;
 
 public class Handler extends URLStreamHandler {
     /**
@@ -68,10 +69,15 @@ public class Handler extends URLStreamHandler {
         if (spec.indexOf("!/") == -1 && (file.indexOf("!/") == -1)) { //$NON-NLS-1$ //$NON-NLS-2$
             throw new NullPointerException(Msg.getString("K01b6")); //$NON-NLS-1$
         }
-        if (spec.charAt(0) == '/') {
+        if (file.equals("")) {
+            file = spec;
+        } else if (spec.charAt(0) == '/') {
             file = file.substring(0, file.indexOf('!') + 1) + spec;
         } else {
-            file = file.substring(0, file.lastIndexOf('/') + 1) + spec;
+            int idx = file.indexOf('!');
+            String tmpFile = file.substring(idx + 1, file.lastIndexOf('/') + 1) + spec;
+            tmpFile = URLUtil.canonicalizePath(tmpFile);
+            file = file.substring(0, idx + 1) + tmpFile;
         }
         try {
             // check that the embedded url is valid

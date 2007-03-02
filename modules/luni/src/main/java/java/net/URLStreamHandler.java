@@ -20,6 +20,7 @@ package java.net;
 import java.io.IOException;
 
 import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.URLUtil;
 
 /**
  * The abstract superclass of all classes that implement Protocol Handler.
@@ -227,27 +228,7 @@ public abstract class URLStreamHandler {
 
         if (canonicalize) {
             // modify file if there's any relative referencing
-            int dirIndex;
-            while ((dirIndex = file.indexOf("/./")) >= 0) { //$NON-NLS-1$
-                file = file.substring(0, dirIndex + 1)
-                        + file.substring(dirIndex + 3);
-            }
-            if (file.endsWith("/.")) { //$NON-NLS-1$
-                file = file.substring(0, file.length() - 1);
-            }
-            while ((dirIndex = file.indexOf("/../")) >= 0) { //$NON-NLS-1$
-                if (dirIndex != 0) {
-                    file = file.substring(0, file
-                            .lastIndexOf('/', dirIndex - 1))
-                            + file.substring(dirIndex + 3);
-                } else {
-                    file = file.substring(dirIndex + 3);
-                }
-            }
-            if (file.endsWith("/..") && file.length() > 3) { //$NON-NLS-1$
-                file = file.substring(0, file.lastIndexOf('/',
-                        file.length() - 4) + 1);
-            }
+            file = URLUtil.canonicalizePath(file);
         }
 
         setURL(u, u.getProtocol(), host, port, authority, userInfo, file,
