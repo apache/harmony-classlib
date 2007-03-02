@@ -97,7 +97,7 @@ public class ObjectStreamField implements Comparable<Object> {
             throw new NullPointerException();
         }
         this.name = name;
-        this.typeString = signature.replace('.', '/');
+        this.typeString = signature.replace('.', '/').intern();
         this.isDeserialized = true;
     }
 

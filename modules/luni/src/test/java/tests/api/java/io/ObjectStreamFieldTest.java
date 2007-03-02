@@ -137,6 +137,9 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 		assertTrue("getTypeString returned: " + holaField.getTypeString(),
 				holaField.getTypeString().indexOf("Object") >= 0);
 		assertNull("Primitive types' strings should be null", hamField.getTypeString());
+        
+        ObjectStreamField osf = new ObjectStreamField("s", String.class, true);
+        assertTrue(osf.getTypeString() == "Ljava/lang/String;");
 	}
 
 	/**
@@ -212,6 +215,8 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         assertEquals(1000, getField.get("i", null));
         assertEquals(SerializableObject2.today, getField.get("d", null));
         assertEquals("Richard", getField.get("s", null));
+        
+        assertTrue(objectStreamClass.getField("s").getTypeString() == "Ljava/lang/String;");
     }
 
 	/**
