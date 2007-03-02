@@ -1757,7 +1757,11 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ClassNotFoundException {
 
         ObjectStreamClass newClassDesc = new ObjectStreamClass();
-        newClassDesc.setName(input.readUTF());
+        String name = input.readUTF();
+        if ("".equals(name)) {
+            throw new IOException("The stream is corrupted.");
+        }
+        newClassDesc.setName(name);
         newClassDesc.setSerialVersionUID(input.readLong());
         newClassDesc.setFlags(input.readByte());
 

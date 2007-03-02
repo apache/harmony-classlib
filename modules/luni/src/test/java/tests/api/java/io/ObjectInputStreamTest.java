@@ -17,6 +17,7 @@
 
 package tests.api.java.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -783,13 +784,98 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		oos.writeClassDescriptor(desc);
 		oos.close();
 		
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        byte[] bytes = baos.toByteArray();
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 		ObjectIutputStreamWithReadDesc1 ois = new ObjectIutputStreamWithReadDesc1(
 				bais);
 		Object obj = ois.readClassDescriptor();
 		ois.close();
 		assertEquals(desc.getClass(), obj.getClass());
+        
+        //eof
+        bais = new ByteArrayInputStream(bytes);
+        ExceptionalBufferedInputStream bis = new ExceptionalBufferedInputStream(
+                bais);
+        ois = new ObjectIutputStreamWithReadDesc1(bis);
+
+        bis.setEOF(true);
+        
+        try {
+            obj = ois.readClassDescriptor();
+        } catch (IOException e) {
+            //e.printStackTrace();
+        } finally {
+            ois.close();
+        }
+        
+        //throw exception
+        bais = new ByteArrayInputStream(bytes);
+        bis = new ExceptionalBufferedInputStream(bais);
+        ois = new ObjectIutputStreamWithReadDesc1(bis);
+
+        bis.setException(new IOException());
+
+        try {
+            obj = ois.readClassDescriptor();
+        } catch (IOException e) {
+            //e.printStackTrace();
+        } finally {
+            ois.close();
+        }
+
+        //corrupt
+        bais = new ByteArrayInputStream(bytes);
+        bis = new ExceptionalBufferedInputStream(bais);
+        ois = new ObjectIutputStreamWithReadDesc1(bis);
+        
+        bis.setCorrupt(true);
+        
+        try {
+            obj = ois.readClassDescriptor();
+        } catch (IOException e) {
+            //e.printStackTrace();
+        } finally {
+            ois.close();
+        }
+
 	}
+    
+    static class ExceptionalBufferedInputStream extends BufferedInputStream {
+        private boolean eof = false;
+        private IOException exception = null; 
+        private boolean corrupt = false; 
+        
+        public ExceptionalBufferedInputStream(InputStream in) {
+            super(in);
+        }
+        
+        public int read() throws IOException {
+            if (exception != null) {
+                throw exception;
+            }
+            
+            if (eof) {
+                return -1;
+            }
+            
+            if (corrupt) {
+                return 0;
+            }
+            return super.read();
+        }
+        
+        public void setEOF(boolean eof) {
+            this.eof = eof;
+        }
+        
+        public void setException(IOException exception) {
+            this.exception = exception;
+        }
+        
+        public void setCorrupt(boolean corrupt) {
+            this.corrupt = corrupt;
+        }
+    }
 
     // Regression Test for Harmony-2402
     public void test_registerValidation() throws Exception {
