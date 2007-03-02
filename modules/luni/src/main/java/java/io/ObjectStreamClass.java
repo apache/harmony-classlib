@@ -141,30 +141,30 @@ public class ObjectStreamClass implements Serializable {
     // ClassDesc //
 
     // Name of the class this descriptor represents
-    private String className;
+    private transient String className;
 
     // Corresponding loaded class with the name above
-    private WeakReference<Class<?>> resolvedClass;
+    private transient WeakReference<Class<?>> resolvedClass;
 
     // Serial version UID of the class the descriptor represents
-    private long svUID;
+    private transient long svUID;
 
     // ClassDescInfo //
 
     // Any combination of SC_WRITE_METHOD, SC_SERIALIZABLE and SC_EXTERNALIZABLE
     // (see ObjectStreamConstants)
-    private byte flags;
+    private transient byte flags;
 
     // Descriptor for the superclass of the class associated with this
     // descriptor
-    private ObjectStreamClass superclass;
+    private transient ObjectStreamClass superclass;
 
     // Array of ObjectStreamField (see below) describing the fields of this
     // class
-    private ObjectStreamField[] fields;
+    private transient ObjectStreamField[] fields;
 
     // Array of ObjectStreamField describing the serialized fields of this class
-    private ObjectStreamField[] loadFields;
+    private transient ObjectStreamField[] loadFields;
 
     /*
      * If an ObjectStreamClass describes an Externalizable class, it (the
