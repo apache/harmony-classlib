@@ -98,8 +98,7 @@ public class DragSource implements Serializable {
     }
 
     public static boolean isDragImageSupported() {
-        // TODO: implement
-        return true;
+        return false;
     }
 
     public static int getDragThreshold() {
