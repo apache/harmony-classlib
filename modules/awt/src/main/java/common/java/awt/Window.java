@@ -691,6 +691,10 @@ public class Window extends Container implements Accessible {
     public void pack() {
         toolkit.lockAWT();
         try {
+            if (getFont() == null) {
+                setFont(Font.DEFAULT_FONT);
+            }
+            
             if ((parent != null) && !parent.isDisplayable()) {
                 parent.mapToDisplay(true);
             }

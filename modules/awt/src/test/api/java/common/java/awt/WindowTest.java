@@ -178,5 +178,19 @@ public class WindowTest extends TestCase {
         // regression test for Harmony-1605
         assertEquals(null, w.getFont());
     }
-    
+
+    public void testPack() {
+        final Button b = new Button();
+
+        assertNull(b.getFont());
+        f.add(b);
+        assertNull(b.getFont());
+        assertFalse(b.isDisplayable());
+        f.pack();
+        assertTrue(f.isDisplayable());
+        assertTrue(b.isDisplayable());
+        assertNotNull(b.getFont());
+        assertNotNull(f.getFont());
+        f.dispose();
+    }
 }
