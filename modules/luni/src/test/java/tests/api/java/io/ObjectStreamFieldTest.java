@@ -217,6 +217,10 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         assertEquals("Richard", getField.get("s", null));
         
         assertTrue(objectStreamClass.getField("s").getTypeString() == "Ljava/lang/String;");
+        
+        assertEquals(0, objectStreamClass.getField("d").getOffset());
+        assertEquals(1, objectStreamClass.getField("i").getOffset());
+        assertEquals(2, objectStreamClass.getField("s").getOffset());
     }
 
 	/**

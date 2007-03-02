@@ -677,6 +677,7 @@ public class ObjectStreamClass implements Serializable {
                 ObjectStreamField field = fields[j];
                 if (name.equals(field.getName())) {
                     loadField.setUnshared(field.isUnshared());
+                    loadField.setOffset(field.getOffset());
                     break;
                 }
             }
