@@ -218,7 +218,7 @@ public final class Locale implements Cloneable, Serializable {
         if (language == null || country == null || variant == null) {
             throw new NullPointerException();
         }
-        languageCode = language.toLowerCase();
+        languageCode = Util.toASCIILowerCase(language);
         // Map new language codes to the obsolete language
         // codes so the correct resource bundles will be used.
         if (languageCode.equals("he")) {//$NON-NLS-1$
