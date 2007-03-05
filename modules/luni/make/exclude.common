@@ -1,4 +1,3 @@
-tests/api/java/io/OutputStreamWriterTest.java
 tests/api/java/lang/ProcessTest.java
 tests/api/java/net/HttpURLConnectionTest.java
 tests/api/java/net/MulticastSocketTest.java

@@ -385,7 +385,14 @@ public class InputStreamReader extends Reader {
             if (length == 0) {
                 return 0;
             }
-
+            
+            // allocate enough space for bytes if the default length is
+            // inadequate
+            int availableLen = in.available();     
+            if (Math.min(availableLen, length) > bytes.capacity()) {
+                bytes = ByteBuffer.allocate(availableLen);
+            }
+            
             CharBuffer out = CharBuffer.wrap(buf, offset, length);
             CoderResult result = CoderResult.UNDERFLOW;
             byte[] a = bytes.array();
@@ -498,7 +505,7 @@ public class InputStreamReader extends Reader {
                 throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
             }
             try {
-                return bytes.limit() != BUFFER_SIZE || in.available() > 0;
+                return bytes.limit() != bytes.capacity() || in.available() > 0;
             } catch (IOException e) {
                 return false;
             }
