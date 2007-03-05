@@ -344,7 +344,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
     public void testToString002() throws Exception {
         String t = "SN=Lu\\C4\\8Di\\C4\\87";
         Rdn rdn = new Rdn(t);
-        assertEquals(8, rdn.toString().getBytes().length);
+        assertEquals(8, rdn.toString().length());
     }
 
     /**
