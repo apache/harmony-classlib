@@ -1789,30 +1789,57 @@ public class FileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.File#mkdir()
 	 */
-	public void test_mkdir() {
-		// Test for method boolean java.io.File.mkdir()
+    public void test_mkdir() throws IOException {
+        // Test for method boolean java.io.File.mkdir()
 
-		String base = System.getProperty("user.dir");
-		// Old test left behind "garbage files" so this time it creates a
-		// directory
-		// that is guaranteed not to already exist (and deletes it afterward.)
-		int dirNumber = 1;
-		boolean dirExists = true;
-		File dir = new File(base, String.valueOf(dirNumber));
-		while (dirExists) {
-			if (dir.exists()) {
-				dirNumber++;
-				dir = new File(base, String.valueOf(dirNumber));
-			} else {
-				dirExists = false;
-			}
-		}
-		try {
-			assertTrue("mkdir failed", dir.mkdir() && dir.exists());
-		} finally {
-			dir.delete();
-		}
-	}
+        String base = System.getProperty("user.dir");
+        // Old test left behind "garbage files" so this time it creates a
+        // directory
+        // that is guaranteed not to already exist (and deletes it afterward.)
+        int dirNumber = 1;
+        boolean dirExists = true;
+        File dir = new File(base, String.valueOf(dirNumber));
+        while (dirExists) {
+            if (dir.exists()) {
+                dirNumber++;
+                dir = new File(base, String.valueOf(dirNumber));
+            } else {
+                dirExists = false;
+            }
+        }
+        
+        assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+        dir.deleteOnExit();
+
+        String longDirName = "abcdefghijklmnopqrstuvwx";// 24 chars
+        StringBuilder sb = new StringBuilder(dir + File.separator);
+        StringBuilder sb2 = new StringBuilder(dir + File.separator);
+        
+        // Test make a long path
+        while (dir.getCanonicalPath().length() < 256 - longDirName.length()) {
+            sb.append(longDirName + File.separator);
+            dir = new File(sb.toString());
+            assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }
+        
+        while (dir.getCanonicalPath().length() < 256) {
+            sb.append(0);
+            dir = new File(sb.toString());
+            assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
+                    dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }
+        
+        // Test make many paths
+        while (dir.getCanonicalPath().length() < 256) {
+            sb2.append(0);
+            dir = new File(sb2.toString());
+            assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
+                    dir.mkdir() && dir.exists());
+            dir.deleteOnExit();
+        }     
+    }
 
 	/**
 	 * @tests java.io.File#mkdirs()

@@ -339,11 +339,66 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 I_32 VMCALL
 hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
 {
-  if (CreateDirectory (path, 0))
-    {
+	int returnVar=0;
+	int len = strlen(path);
+    //If the length is longer than 248, unicode format should be used to CreateDirectroy.
+    //"." and ".." need be processed in the unicode format.
+    if(len >= 248){
+    	char *canonicalpath;
+    	int srcArrayCount=0;
+    	int destArrayCount=0;
+    	int slashCount=0; //record how many slashes it met.
+    	int dotsCount=0; //record how many dots following a separator.
+    	int *slashStack; //record position of every separator.
+        slashStack = portLibrary->mem_allocate_memory(portLibrary, len);
+        canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len+5);
+
+        strcpy(canonicalpath,"\\\\?\\");
+        
+        for(srcArrayCount=0,destArrayCount=4;srcArrayCount<len;srcArrayCount++){
+	    	// the input path of this method has been parsed to absolute path already.
+            if(path[srcArrayCount]=='.'){
+    	    	// count the dots following last separator.
+                if(dotsCount>0 || path[srcArrayCount-1]=='\\'){
+                    dotsCount++;
+                    continue;
+                }
+            }
+	    	// deal with the dots when we meet next separator.
+            if(path[srcArrayCount]=='\\'){
+                if(dotsCount == 1){
+                    dotsCount = 0;
+                    continue;
+                }else if (dotsCount > 1){
+                    if(slashCount-2<0){
+                       slashCount=2;
+                    }
+                    destArrayCount=slashStack[slashCount-2];
+                    slashCount--;
+                }else{
+                    slashStack[slashCount++]=destArrayCount;
+                }
+            }
+	    	// for normal character.
+            canonicalpath[destArrayCount]=path[srcArrayCount];
+            destArrayCount++;
+            dotsCount = 0;          
+        }
+        
+        canonicalpath[destArrayCount]='\0';
+        returnVar = CreateDirectory (canonicalpath, 0);
+        
+        portLibrary->mem_free_memory(portLibrary, canonicalpath);
+        portLibrary->mem_free_memory(portLibrary, slashStack);
+    }else{
+        returnVar = CreateDirectory (path, 0);
+    }
+
+	if (returnVar)
+	{
       return 0;
     }
-  else
+	else
     { 
       I_32 error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error,
