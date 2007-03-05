@@ -63,9 +63,8 @@ public abstract class ContentHandler {
     public Object getContent(URLConnection uConn, Class[] types)
             throws IOException {
         Object content = getContent(uConn);
-        Class<?> cl = content.getClass();
         for (int i = 0; i < types.length; i++) {
-            if (types[i].isInstance(cl)) {
+            if (types[i].isInstance(content)) {
                 return content;
             }
         }
