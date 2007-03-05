@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
 import java.net.URI;
 import java.net.URISyntaxException;

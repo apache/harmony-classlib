@@ -197,6 +197,12 @@ public class InetAddressTest extends junit.framework.TestCase {
         } finally {
             System.setSecurityManager(oldman);
         }
+        
+        //Regression for HARMONY-56
+        InetAddress[] ia = InetAddress.getAllByName(null);
+        assertEquals("Assert 0: No loopback address", 1, ia.length);
+        assertTrue("Assert 1: getAllByName(null) not loopback",
+                ia[0].isLoopbackAddress());
 	}
 
 	/**
@@ -396,6 +402,11 @@ public class InetAddressTest extends junit.framework.TestCase {
         InetAddress ia2 = InetAddress
                 .getByName(Support_Configuration.InetTestIP);
         assertEquals("/" + Support_Configuration.InetTestIP, ia2.toString());
+        // Regression for HARMONY-84
+        InetAddress addr = InetAddress.getByName("localhost");
+        assertEquals("Assert 0: wrong string from name", "localhost/127.0.0.1", addr.toString());
+        InetAddress addr2 = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
+        assertEquals("Assert 1: wrong string from address", "/127.0.0.1", addr2.toString());
     }
 
 	/**
@@ -576,6 +587,19 @@ public class InetAddressTest extends junit.framework.TestCase {
                 InetAddress.getByName("localhost"), COMPARATOR);
     }
 
+    /**
+     * @tests java.net.InetAddress#getByAddress(byte[])
+     */
+    public void test_getByAddress() {
+        // Regression for HARMONY-61
+        try {
+            InetAddress.getByAddress(null);
+            fail("Assert 0: UnknownHostException must be thrown");
+        } catch (UnknownHostException e) {
+            // Expected
+        }
+    }
+    
     class MockSecurityManager extends SecurityManager {        
         public void checkPermission(Permission permission) {
             if (permission.getName().equals("setSecurityManager")){

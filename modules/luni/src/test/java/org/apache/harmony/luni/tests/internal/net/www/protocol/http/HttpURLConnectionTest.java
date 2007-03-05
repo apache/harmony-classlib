@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.tests.internal.net.www.protocol.http;
+package org.apache.harmony.luni.tests.internal.net.www.protocol.http;
 
 import java.io.IOException;
 import java.net.Authenticator;

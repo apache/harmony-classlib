@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.tests.internal.net.www.protocol.https;
+package org.apache.harmony.luni.tests.internal.net.www.protocol.https;
 
 import java.io.File;
 import java.io.FileInputStream;

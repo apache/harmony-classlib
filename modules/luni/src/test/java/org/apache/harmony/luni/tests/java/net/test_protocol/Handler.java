@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.tests.java.net.test_protocol;
+package org.apache.harmony.luni.tests.java.net.test_protocol;
 
 import java.io.IOException;
 import java.net.URL;

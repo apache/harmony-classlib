@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,7 +70,7 @@ public class URLTest extends TestCase {
 		// Regression test for Harmony-3094
         final String HANDLER_PKGS = "java.protocol.handler.pkgs";
 		String pkgs = System.getProperty(HANDLER_PKGS);
-		System.setProperty(HANDLER_PKGS, "fake|org.apache.harmony.tests.java.net");
+		System.setProperty(HANDLER_PKGS, "fake|org.apache.harmony.luni.tests.java.net");
 
 		try {
 			new URL("test_protocol", "", "fake.jar");
