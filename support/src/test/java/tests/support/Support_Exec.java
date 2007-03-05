@@ -104,7 +104,7 @@ public class Support_Exec extends TestCase {
                 classPathString +=  classpath[i];
             }
             execArgs[1] = "-cp";
-            execArgs[2] = "\"" + classPathString + "\"";
+            execArgs[2] = classPathString;
 		}
 
         for (int i = 0; i < args.length; i++)
