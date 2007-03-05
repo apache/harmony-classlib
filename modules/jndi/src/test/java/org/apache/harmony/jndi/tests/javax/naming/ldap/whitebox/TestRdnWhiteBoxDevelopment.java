@@ -253,7 +253,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * </p>
      */
     public final void testEscapedValue001() {
-        assertEquals("t\u044f\u041f\u041da\\, mar\u044f\u041f\u041da", Rdn.escapeValue("t\u044f\u041f\u041da, mar\u044f\u041f\u041da"));
+        assertEquals("t\u00ef\u00bf\u00bda\\, mar\u00ef\u00bf\u00bda", Rdn.escapeValue("t\u00ef\u00bf\u00bda, mar\u00ef\u00bf\u00bda"));
     }
 
     /**
@@ -299,8 +299,8 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * </p>
      */
     public final void testEscapedValue004() {
-        assertEquals("t\u044f\u041f\u041da\\, mar\u044f\u041f\u041da \\#\\,sobrante\\>\\<", Rdn
-                .escapeValue("t\u044f\u041f\u041da, mar\u044f\u041f\u041da #,sobrante><"));
+        assertEquals("t\u00ef\u00bf\u00bda\\, mar\u00ef\u00bf\u00bda \\#\\,sobrante\\>\\<", Rdn
+                .escapeValue("t\u00ef\u00bf\u00bda, mar\u00ef\u00bf\u00bda #,sobrante><"));
     }
 
     /**
@@ -315,8 +315,8 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * </p>
      */
     public final void testEscapedValue005() {
-        assertEquals("t\u044f\u041f\u041da\\, mar\u044f\u041f\u041da \\#\\,sobrante\\>\\<", Rdn
-                .escapeValue("t\u044f\u041f\u041da, mar\u044f\u041f\u041da #,sobrante><"));
+        assertEquals("t\u00ef\u00bf\u00bda\\, mar\u00ef\u00bf\u00bda \\#\\,sobrante\\>\\<", Rdn
+                .escapeValue("t\u00ef\u00bf\u00bda, mar\u00ef\u00bf\u00bda #,sobrante><"));
     }
 
     /**
