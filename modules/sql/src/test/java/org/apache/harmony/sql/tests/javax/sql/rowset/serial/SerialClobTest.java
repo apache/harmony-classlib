@@ -105,8 +105,45 @@ public class SerialClobTest extends TestCase {
         // TODO: Not yet implemented
     }
 
-    public void testGetSubString() {
-        // TODO: Not yet implemented
+    public void testGetSubString() throws Exception {
+        String s = "hello";
+        char[] buf = s.toCharArray();
+        SerialClob serialClob = new SerialClob(buf);
+
+        String sub = serialClob.getSubString(1, 5);
+        assertEquals("hello", sub);
+
+        sub = serialClob.getSubString(2, 3);
+        assertEquals("ell", sub);
+
+        try {
+            sub = serialClob.getSubString(0, 6);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            sub = serialClob.getSubString(7, 1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            sub = serialClob.getSubString(1, 7);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            sub = serialClob.getSubString(1, -2);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
     }
 
     public void testPositionLClobJ() {

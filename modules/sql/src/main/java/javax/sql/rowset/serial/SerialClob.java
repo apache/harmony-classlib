@@ -102,9 +102,14 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         return new CharArrayReader(buf);
     }
 
-    public String getSubString(long pos, int length) throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public String getSubString(long pos, int length) throws SerialException {
+        if (pos < 1 || pos > len) {
+            throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
+        }
+        if (length < 0 || length > len) {
+            throw new SerialException(Messages.getString("sql.22")); // $NON-NLS-1$
+        }
+        return new String(buf, (int) (pos - 1), length);
     }
 
     public long position(Clob searchstr, long start) throws SerialException,
