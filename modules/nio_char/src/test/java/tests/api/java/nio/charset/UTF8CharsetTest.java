@@ -19,7 +19,7 @@ package tests.api.java.nio.charset;
 /**
  * Test UTF-8 charset.
  */
-public class UTF8CharsetTest extends ConcreteCharsetTest {
+public class UTF8CharsetTest extends AbstractCharsetTestCase {
 
 	/**
 	 * Constructor for UTF8CharsetTest.

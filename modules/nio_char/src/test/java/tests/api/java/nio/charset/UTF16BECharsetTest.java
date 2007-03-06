@@ -19,7 +19,7 @@ package tests.api.java.nio.charset;
 /**
  * Test UTF-16BE.
  */
-public class UTF16BECharsetTest extends ConcreteCharsetTest {
+public class UTF16BECharsetTest extends AbstractCharsetTestCase {
 
 	/**
 	 * Constructor.

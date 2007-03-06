@@ -19,7 +19,7 @@ package tests.api.java.nio.charset;
 /**
  * Test ISO-8859-1.
  */
-public class ISOCharsetTest extends ConcreteCharsetTest {
+public class ISOCharsetTest extends AbstractCharsetTestCase {
 
 	/**
 	 * Constructor.

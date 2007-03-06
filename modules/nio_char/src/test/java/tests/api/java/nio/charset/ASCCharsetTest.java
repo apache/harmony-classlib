@@ -19,7 +19,7 @@ package tests.api.java.nio.charset;
 /**
  * Test charset US-ASCII.
  */
-public class ASCCharsetTest extends ConcreteCharsetTest {
+public class ASCCharsetTest extends AbstractCharsetTestCase {
 
 	/**
 	 * Constructor.
