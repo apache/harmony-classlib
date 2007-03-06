@@ -15,11 +15,10 @@
 
 !IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
 ml=ml64
-# don't quite know what to specify as an entry point on win/em64t
-ENTRY_OPTION=
+DLLENTRY=
 !ELSE
 ml=ml
-ENTRY_OPTION=-entry:_DllMainCRTStartup@12
+DLLENTRY=@12
 !ENDIF
 
 .c.obj:
@@ -46,7 +45,7 @@ $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !ifdef DLLNAME
 $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	$(ENTRY_OPTION) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
+	-entry:_DllMainCRTStartup$(DLLENTRY) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
 		$(COMMENT) \
 	-subsystem:windows -out:$@ -map:$*.map \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
@@ -54,7 +53,6 @@ $(DLLNAME): $(LIBNAME)
 		comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
 	if exist $(DLLNAME).manifest \
 		mt -manifest $(DLLNAME).manifest -outputresource:$(DLLNAME);#2
-#	del /Q $(DLLNAME).manifest
 !endif
 
 !ifdef EXENAME
