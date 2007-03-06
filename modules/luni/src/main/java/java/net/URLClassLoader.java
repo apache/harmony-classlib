@@ -711,7 +711,10 @@ public class URLClassLoader extends SecureClassLoader {
                     String protocol = currentUrl.getProtocol();
                     if (protocol.equals("jar")) { //$NON-NLS-1$
                         jf = resCache.get(currentUrl);
-                        if ((jf == null) && (!invalidUrls.contains(currentUrl))) {
+                        if (jf == null) {
+                            if (invalidUrls.contains(currentUrl)) {
+                                continue;
+                            }
                             // each jf should be found only once 
                             // so we do this job in the synchronized block
                             synchronized (lock) {
