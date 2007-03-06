@@ -219,8 +219,10 @@ public class BasicScrollBarUI extends ScrollBarUI implements LayoutManager, Swin
                 }
             }
 
-            scrollbar.revalidate();
-            scrollbar.repaint();
+	    if (scrollbar != null) {	
+                scrollbar.revalidate();
+                scrollbar.repaint();
+            }
         }
     }
 

@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
 import javax.swing.BasicSwingTestCase;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JButton;
@@ -272,5 +273,17 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
     private void checkIsCloseTo(final int expected, final int actual) {
         assertTrue("expected: " + expected + ", actual: " + actual,
                 Math.abs(expected - actual) <= 2);
+    }
+
+    public void testPropertyChange() {
+        try {            
+            BasicScrollBarUI sbr = new BasicScrollBarUI();
+            BasicScrollBarUI.PropertyChangeHandler h = sbr.new PropertyChangeHandler();
+            final Object object = new Object();
+            PropertyChangeEvent pce = new PropertyChangeEvent(object, "name", object, object);
+            h.propertyChange(pce);
+        } catch (NullPointerException npe) {            
+            fail("NPE thrown");
+        }
     }
 }
