@@ -43,6 +43,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.Arrays;
+import org.apache.harmony.luni.platform.Platform;
 
 import junit.framework.TestCase;
 
@@ -301,6 +302,27 @@ public class FileChannelTest extends TestCase {
         FileOutputStream fos = new FileOutputStream(file);
         try {
             fos.write(CONTENT_AS_BYTES);
+        } finally {
+            fos.close();
+        }
+    }
+
+    /**
+     * Initializes large test file.
+     * 
+     * @param file the file to be written
+     * @param size the content size to be written
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private void writeLargeDataToFile(File file, int size) throws FileNotFoundException,
+            IOException {
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] buf = new byte[size];
+
+        try {
+            // we don't care about content - just need a particular file size
+            fos.write(buf);
         } finally {
             fos.close();
         }
@@ -1929,6 +1951,51 @@ public class FileChannelTest extends TestCase {
         String expected = CONTENT.substring(0, 10) + "test"
                 + CONTENT.substring(10 + "test".length());
         assertEquals(expected, new String(checkBuffer.array(), "iso8859-1"));
+    }
+
+    /**
+     * Tests map() method for the value of positions exceeding memory
+     * page size and allocation granularity size.
+     *
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_LargePosition() throws IOException {
+        // Regression test for HARMONY-3085
+        int[] sizes = {
+            4096, // 4K size (normal page size for Linux & Windows)
+            65536, // 64K size (alocation granularity size for Windows)
+            Platform.getFileSystem().getAllocGranularity() // alloc granularity
+        };
+        final int CONTENT_LEN = 10;
+
+        for (int i = 0; i < sizes.length; ++i) {
+            // reset the file and the channel for the iterations
+            // (for the first iteration it was done by setUp()
+            if (i > 0 ) {
+                fileOfReadOnlyFileChannel = File.createTempFile(
+                        "File_of_readOnlyFileChannel", "tmp");
+                fileOfReadOnlyFileChannel.deleteOnExit();
+                readOnlyFileChannel = new FileInputStream(fileOfReadOnlyFileChannel)
+                        .getChannel();
+            }
+
+            writeLargeDataToFile(fileOfReadOnlyFileChannel, sizes[i] + 2 * CONTENT_LEN);
+            MappedByteBuffer mapped = readOnlyFileChannel.map(MapMode.READ_ONLY,
+                    sizes[i], CONTENT_LEN);
+            assertEquals("Incorrectly mapped file channel for " + sizes[i]
+                    + " position (capacity)", CONTENT_LEN, mapped.capacity());
+            assertEquals("Incorrectly mapped file channel for " + sizes[i]
+                    + " position (limit)", CONTENT_LEN, mapped.limit());
+            assertEquals("Incorrectly mapped file channel for " + sizes[i]
+                    + " position (position)", 0, mapped.position());
+
+            // map not change channel's position
+            assertEquals(0, readOnlyFileChannel.position());
+
+            // Close the file and the channel before the next iteration
+            readOnlyFileChannel.close();
+            fileOfReadOnlyFileChannel.delete();
+        }
     }
 
     /**

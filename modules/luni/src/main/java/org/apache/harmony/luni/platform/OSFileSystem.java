@@ -56,7 +56,12 @@ class OSFileSystem extends OSComponent implements IFileSystem {
 	private native int lockImpl(long fileDescriptor, long start, long length,
 			int type, boolean wait);
 
-	public native int getPageSize();
+	/**
+	 * Returns the granularity for virtual memory allocation.
+	 * Note that this value for Windows differs from the one for the
+	 * page size (64K and 4K respectively).
+	 */
+	public native int getAllocGranularity() throws IOException;
 
 	public boolean lock(long fileDescriptor, long start, long length, int type,
 			boolean waitFlag) throws IOException {

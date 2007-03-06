@@ -92,7 +92,10 @@ public interface IFileSystem extends ISystemComponent {
 
 	public void truncate(long fileDescriptor, long size) throws IOException;
 
-	public int getPageSize() throws IOException;
+	/**
+	 * Returns the granularity for virtual memory allocation.
+	 */
+	public int getAllocGranularity() throws IOException;
 
 	public long open(byte[] fileName, int mode) throws FileNotFoundException;
 

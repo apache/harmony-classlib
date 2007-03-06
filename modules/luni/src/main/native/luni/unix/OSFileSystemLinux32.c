@@ -129,15 +129,21 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_unlock
   return (rc == -1) ? -1 : 0;
 }
 
-
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_getPageSize
+/**
+ * Returns the granularity of the starting address for virtual memory allocation.
+ * (It's the same as the page size.)
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
+ * Method:    getAllocGranularity
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_getAllocGranularity
   (JNIEnv * env, jobject thiz)
 {
-  static int pageSize = 0;
-  if(pageSize == 0){
-    pageSize = getpagesize();
+  static int allocGranularity = 0;
+  if(allocGranularity == 0){
+    allocGranularity = getpagesize();
   }
-  return pageSize;
+  return allocGranularity;
 }
 
 /*

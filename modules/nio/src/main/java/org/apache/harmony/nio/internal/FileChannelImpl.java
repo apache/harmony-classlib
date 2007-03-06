@@ -48,11 +48,11 @@ public abstract class FileChannelImpl extends FileChannel {
 	// Reference to the portable file system code.
 	private static final IFileSystem fileSystem = Platform.getFileSystem();
 
-    private static final int NATIVE_PAGE_SIZE;
+    private static final int ALLOC_GRANULARITY;
 
     static {
         try {
-            NATIVE_PAGE_SIZE = fileSystem.getPageSize();
+            ALLOC_GRANULARITY = fileSystem.getAllocGranularity();
         } catch (IOException e) {
             throw new Error(e);
         }
@@ -188,7 +188,7 @@ public abstract class FileChannelImpl extends FileChannel {
         if (position + size > size()) {
             fileSystem.truncate(handle, position + size);
         }
-        long alignment = position - position % NATIVE_PAGE_SIZE;
+        long alignment = position - position % ALLOC_GRANULARITY;
         int offset = (int) (position - alignment);
         PlatformAddress address = PlatformAddressFactory.allocMap(handle, alignment, size
                 + offset, mapMode);
