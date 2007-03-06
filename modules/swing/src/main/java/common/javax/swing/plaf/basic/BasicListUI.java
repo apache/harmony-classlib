@@ -426,9 +426,9 @@ public class BasicListUI extends ListUI {
 
     @Override
     public Dimension getPreferredSize(final JComponent c) {
-        JList list = (JList)c;
         maybeUpdateLayoutState();
 
+        JList list = (JList)c;
         layouter.setList(list);
         return layouter.getLayoutStrategy().getSize();
     }

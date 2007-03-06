@@ -30,6 +30,7 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.SwingTestCase;
 import javax.swing.SwingUtilities;
@@ -502,4 +503,18 @@ public class BasicListUITest extends SwingTestCase {
         assertFalse(list.isSelectedIndex(1));
         assertFalse(list.isSelectedIndex(2));
     }
+    
+    /**
+     * Regression test for HARMONY-2653 
+     * */
+    public void testRGetPreferredSize() { 
+        try { 
+            BasicListUI bl = new BasicListUI(); 
+            bl.getPreferredSize(new JFileChooser() ); 
+            fail("No NPE thrown"); 
+        } catch (NullPointerException e) { 
+            //expected 
+        }
+    } 
+
 }
