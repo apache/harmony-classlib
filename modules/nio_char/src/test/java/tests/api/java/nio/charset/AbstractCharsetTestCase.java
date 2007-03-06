@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 /**
  * Super class for concrete charset test suites.
  */
-public abstract class ConcreteCharsetTest extends TestCase {
+public abstract class AbstractCharsetTestCase extends TestCase {
 
 	// the canonical name of this charset
 	protected final String canonicalName;
@@ -47,7 +47,7 @@ public abstract class ConcreteCharsetTest extends TestCase {
 	 * Constructor for ConcreteCharsetTest.
 	 * 
 	 */
-	public ConcreteCharsetTest(String arg0, String canonicalName,
+	public AbstractCharsetTestCase(String arg0, String canonicalName,
 			String[] aliases, boolean canEncode, boolean isRegistered) {
 		super(arg0);
 		this.canonicalName = canonicalName;
