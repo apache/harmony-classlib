@@ -23,9 +23,12 @@ package javax.swing.plaf.basic;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
+import javax.swing.plaf.metal.MetalTabbedPaneUI;
+
 
 public class BasicTabbedPaneUI$TabbedPaneLayoutTest extends SwingTestCase {
     private JTabbedPane tabbed;
@@ -59,7 +62,15 @@ public class BasicTabbedPaneUI$TabbedPaneLayoutTest extends SwingTestCase {
     }
 
     public void testCalculateLayoutInfo() {
-        // the documentation is empty, results are implementation specific
+        try {   
+            MetalTabbedPaneUI localMetalTabbedPaneUI = new MetalTabbedPaneUI();
+            BasicTabbedPaneUI.TabbedPaneLayout localTabbedPaneLayout =
+                localMetalTabbedPaneUI.new TabbedPaneLayout();
+            JPopupMenu localJPopupMenu = new JPopupMenu();
+            localTabbedPaneLayout.removeLayoutComponent(localJPopupMenu);
+        } catch (NullPointerException npe) {   
+            fail("NPE should not be thrown");            
+        }
     }
 
     public void testPreferredTabAreaHeight() {

@@ -142,6 +142,9 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
         }
 
         public void calculateLayoutInfo() {
+            if (tabPane == null) {
+                return;
+            }
             int tabCount = tabPane.getTabCount();
             final Component selectedComponent = tabPane.getSelectedComponent();
             if (selectedComponent != null) {
