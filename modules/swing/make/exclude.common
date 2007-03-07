@@ -6,6 +6,7 @@ javax/swing/JColorChooserTest.java
 javax/swing/JComboBoxTest.java
 javax/swing/JComponentTest.java
 javax/swing/JComponent_AddRemoveNotifyTest.java
+# should be checked once again: does it still hang?
 javax/swing/JComponent_MultithreadedTest.java
 javax/swing/JDialogTest.java
 javax/swing/JEditorPaneTest.java

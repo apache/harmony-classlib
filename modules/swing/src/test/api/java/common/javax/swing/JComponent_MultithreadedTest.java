@@ -14,18 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexander T. Simbirtsev
- * @version $Revision$
- * Created on 02.09.2004
- *
- */
 package javax.swing;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.FocusTraversalPolicy;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicLookAndFeel;
 
@@ -61,38 +58,136 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         }
     }
 
-    private boolean requestFocusInWindowForComponent(final JComponent c) throws Exception {
-        boolean result = c.requestFocusInWindow();
-        waitForFocus(c);
-        return result;
-    }
-
-    private boolean requestFocusInWindowForComponent(final JComponent c,
-            final boolean temporarily) throws Exception {
-        c.requestFocusInWindow(temporarily);
-        return waitForFocus(c);
-    }
-
-    private void requestFocusForComponent(final JComponent c) throws Exception {
-        c.requestFocus();
-        waitForFocus(c);
-    }
-
-    protected void requestDefaultFocusForComponent(final JComponent c,
-            final Component newFocusOwner) throws Exception {
-        c.requestDefaultFocus();
-        waitForFocus(newFocusOwner);
-    }
-
-    private void requestFocusForComponent(final JComponent c, final boolean temporarily)
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected boolean requestFocusInWindowForComponent(final JComponent c, int maxWaitTime)
             throws Exception {
-        c.requestFocus(temporarily);
-        waitForFocus(c);
+        FocusListener listener = addFocusListener(c);
+        RunnableResulted thread = new RunnableResulted() {
+            @Override
+            public void run() {
+                result = c.requestFocusInWindow();
+            }
+        };
+        SwingUtilities.invokeAndWait(thread);
+        if (!thread.result) {
+            return false;
+        }
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+        if (!c.isFocusOwner()) {
+            fail();
+        }
+        return true;
     }
 
-    private void grabFocusForComponent(final JComponent c) throws Exception {
-        c.grabFocus();
-        waitForFocus(c);
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected boolean requestFocusInWindowForComponent(final JComponent c, final boolean temporarily,
+                                                       int maxWaitTime) throws Exception {
+        FocusListener listener = addFocusListener(c);
+        RunnableResulted thread = new RunnableResulted() {
+            @Override
+            public void run() {
+                result = c.requestFocusInWindow(temporarily);
+            }
+        };
+        SwingUtilities.invokeAndWait(thread);
+        if (!thread.result) {
+            return false;
+        }
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+        if (!c.isFocusOwner()) {
+            fail();
+        }
+        return true;
+    }
+
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected void requestFocusForComponent(final JComponent c, int maxWaitTime) throws Exception {
+        FocusListener listener = addFocusListener(c);
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                c.requestFocus();
+            }
+        });
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+    }
+
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected void requestDefaultFocusForComponent(final JComponent c, final Component newFocusOwner,
+                                                   int maxWaitTime) throws Exception {
+        FocusListener listener = addFocusListener(newFocusOwner);
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                c.requestDefaultFocus();
+            }
+        });
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+    }
+
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected void requestFocusForComponent(final JComponent c, final boolean temporarily,
+                                            int maxWaitTime) throws Exception {
+        FocusListener listener = addFocusListener(c);
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                c.requestFocus(temporarily);
+            }
+        });
+
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+        if (!c.isFocusOwner()) {
+            fail();
+        }
+    }
+
+    /*
+     * Requests focus for the component and waits until it really
+     * becomes focused.
+     */
+    protected void grabFocusForComponent(final JComponent c, int maxWaitTime) throws Exception {
+        FocusListener listener = addFocusListener(c);
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                c.grabFocus();
+            }
+        });
+
+        synchronized (listener) {
+            listener.wait(maxWaitTime);
+        }
+        waitForIdle();
+        if (!c.isFocusOwner()) {
+            fail();
+        }
     }
 
     /**
@@ -141,14 +236,14 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.requestFocusInWindowForComponent(panel1);
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
-        requestFocusForComponent(panel2);
+        requestFocusForComponent(panel2, 1000);
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        requestFocusForComponent(panel1);
+        requestFocusForComponent(panel1, 1000);
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        requestFocusForComponent(panel2);
+        requestFocusForComponent(panel2, 1000);
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
     }
@@ -174,19 +269,19 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.requestFocusInWindowForComponent(panel1);
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, 1000));
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, 1000));
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, 1000));
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         panel1.setVerifyInputWhenFocusTarget(true);
         panel2.setInputVerifier(verifier2);
-        assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
+        assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true, 1000));
         assertTrue("verifier's invoked ", verifier2.invoked);
         assertFalse("focus's gained ", panel1.isFocusOwner());
         verifier.invoked = false;
@@ -212,27 +307,27 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.requestFocusInWindowForComponent(panel1);
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
-        requestFocusForComponent(panel2, false);
+        requestFocusForComponent(panel2, false, 1000);
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        requestFocusForComponent(panel1, false);
+        requestFocusForComponent(panel1, false, 1000);
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        requestFocusForComponent(panel2, false);
+        requestFocusForComponent(panel2, false, 1000);
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
-        requestFocusForComponent(panel1, false);
-        assertTrue("focus's gained ", panel1.isFocusOwner());
+        requestFocusForComponent(panel1, false, 1000);
+        assertEquals("focus's gained ", true, panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(true);
-        requestFocusForComponent(panel2, true);
+        requestFocusForComponent(panel2, true, 1000);
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        requestFocusForComponent(panel1, true);
+        requestFocusForComponent(panel1, true, 1000);
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        requestFocusForComponent(panel2, true);
+        requestFocusForComponent(panel2, true, 1000);
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
     }
@@ -258,32 +353,32 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.requestFocusInWindowForComponent(panel1);
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false, 1000));
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false, 1000));
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false, 1000));
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false, 1000));
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(true);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true, 1000));
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, true, 1000));
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true));
+        assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true, 1000));
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         panel1.setVerifyInputWhenFocusTarget(true);
         panel2.setInputVerifier(verifier2);
-        assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
+        assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true, 1000));
         assertTrue("verifier's invoked ", verifier2.invoked);
         assertFalse("focus's gained ", panel1.isFocusOwner());
         verifier.invoked = false;
@@ -306,14 +401,14 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         SwingWaitTestCase.requestFocusInWindowForComponent(panel1);
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
-        grabFocusForComponent(panel2);
+        grabFocusForComponent(panel2, 1000);
         assertTrue("verifier's invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
-        grabFocusForComponent(panel1);
+        grabFocusForComponent(panel1, 1000);
         assertTrue("focus's gained ", panel1.isFocusOwner());
         panel2.setVerifyInputWhenFocusTarget(false);
-        grabFocusForComponent(panel2);
+        grabFocusForComponent(panel2, 1000);
         assertFalse("verifier's not invoked ", verifier.invoked);
         assertTrue("focus's gained ", panel2.isFocusOwner());
     }
@@ -324,7 +419,7 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         final JComponent panel2 = new JPanel();
         final JComponent panel3 = new JPanel();
         final JComponent panel4 = new JPanel(); // this component is to be returned
-        // by our FocusTraversalPolicy()
+                                                // by our FocusTraversalPolicy()
         FocusTraversalPolicy policy = new FocusTraversalPolicy() {
             @Override
             public Component getComponentAfter(final Container a0, final Component a1) {
@@ -358,17 +453,17 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         window.pack();
         window.show();
         waitForIdle();
-        requestDefaultFocusForComponent(panel2, window);
+        requestDefaultFocusForComponent(panel2, window, 100);
         assertTrue("focus's gained ", window.isFocusOwner());
         panel3.setFocusCycleRoot(false);
         panel3.setFocusTraversalPolicy(policy);
-        requestDefaultFocusForComponent(panel3, window);
+        requestDefaultFocusForComponent(panel3, window, 100);
         assertTrue("focus's gained ", window.isFocusOwner());
         panel3.setFocusCycleRoot(true);
-        requestDefaultFocusForComponent(panel3, panel4);
+        requestDefaultFocusForComponent(panel3, panel4, 100);
         assertTrue("focus's gained ", panel4.isFocusOwner());
         panel3.setFocusCycleRoot(false);
-        requestDefaultFocusForComponent(panel3, window);
+        requestDefaultFocusForComponent(panel3, window, 100);
         assertFalse("focus's gained ", window.isFocusOwner());
     }
 
@@ -477,5 +572,20 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         listener.reset();
         panel3.add(panel1);
         listener.checkPropertyFired(panel1, "ancestor", null, panel3);
+    }
+
+    private FocusListener addFocusListener(final Component c) {
+        FocusListener listener = new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                synchronized (this) {
+                    notifyAll();
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+            }
+        };
+        c.addFocusListener(listener);
+        return listener;
     }
 }
