@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import tests.support.Support_Configuration;
+import tests.support.Support_Exec;
 
 public class ServerSocketTest extends SocketTestCase {
 
@@ -891,6 +892,15 @@ public class ServerSocketTest extends SocketTestCase {
         } catch (SocketException e) {
             // expected
         }
+    }
+    
+    /**
+     * Regression for HARMONY-3265
+     * @throws Exception
+     */
+    public void test_ServerSocket_init() throws Exception {
+        String[] args = new String[]{"tests.api.java.net.TestServerSocketInit"};
+        Support_Exec.execJava(args, null, true);
     }
 
     static class MockSocketImpl extends SocketImpl {

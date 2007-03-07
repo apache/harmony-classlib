@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 
 import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.platform.Platform;
 
 import org.apache.harmony.luni.util.Msg;
 
@@ -43,6 +44,10 @@ public class ServerSocket {
     private boolean isBound;
 
     private boolean isClosed;
+    
+    static {
+        Platform.getNetworkSystem().oneTimeInitialization(true);
+    }
 
     /**
      * Construct a ServerSocket, which is not bound to any port. The default

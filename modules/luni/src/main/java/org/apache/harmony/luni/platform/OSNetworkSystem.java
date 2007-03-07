@@ -721,9 +721,8 @@ final class OSNetworkSystem implements INetworkSystem {
     public void oneTimeInitialization(boolean jcl_supports_ipv6){
         if (!isNetworkInited){
             oneTimeInitializationImpl(jcl_supports_ipv6);
-        } else {
             isNetworkInited = true;
-        }
+        } 
     }
     
     native void oneTimeInitializationImpl (boolean jcl_supports_ipv6);
