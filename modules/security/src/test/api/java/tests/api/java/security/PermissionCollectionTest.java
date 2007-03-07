@@ -18,15 +18,11 @@
 package tests.api.java.security;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PermissionCollection;
 import java.security.SecurityPermission;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import tests.support.Support_Exec;
@@ -57,26 +53,23 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
     /**
      * @tests java.security.PermissionCollection#implies(java.security.Permission)
      */
-    public void test_impliesLjava_security_Permission() {
+    public void test_impliesLjava_security_Permission() throws Exception{
 
         // Look for the tests classpath
         URL classURL = this.getClass().getProtectionDomain().getCodeSource()
                 .getLocation();
         assertNotNull("Could not get this class' location", classURL);
 
-        File policyFile = null;
-        try {
-            policyFile = Support_GetLocal.createTempFile(".policy");
-        } catch (IOException e) {
-            fail("Unexpected IOException while creating policy file : " + e);
-        }
+        File policyFile = Support_GetLocal.createTempFile(".policy");
+        policyFile.deleteOnExit();
 
         URL signedBKS = getResourceURL("PermissionCollection/signedBKS.jar");
         URL keystoreBKS = getResourceURL("PermissionCollection/keystore.bks");
         
         // Create the policy file (and save the existing one if any)
+        FileOutputStream fileOut = null;
         try {
-            FileOutputStream fileOut = new FileOutputStream(policyFile);
+            fileOut = new FileOutputStream(policyFile);
             String linebreak = System.getProperty("line.separator");
             String towrite = "grant codeBase \""
                     + signedBKS.toExternalForm()
@@ -102,36 +95,37 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
                     + "\",\"BKS\";";
             fileOut.write(towrite.getBytes());
             fileOut.flush();
-            fileOut.close();
-        } catch (Exception e) {
-            fail("Exception while creating policy file : " + e);
+        } finally {
+            if (fileOut != null) {
+                fileOut.close();
+            }
         }
 
         // Copy mypermissionBKS.jar to the user directory so that it can be put
         // in
         // the classpath
         File jarFile = null;
+        FileOutputStream fout = null;
+        InputStream jis = null;
         try {
-            InputStream jis = Support_Resources
+            jis = Support_Resources
                     .getResourceStream("PermissionCollection/mypermissionBKS.jar");
             jarFile = Support_GetLocal.createTempFile(".jar");
-            FileOutputStream fout = new FileOutputStream(jarFile);
+            jarFile.deleteOnExit();
+            fout = new FileOutputStream(jarFile);
             int c = jis.read();
             while (c != -1) {
                 fout.write(c);
                 c = jis.read();
             }
             fout.flush();
-            fout.close();
-            jis.close();
-        } catch (MalformedURLException e) {
-            fail("Unexpected MalformedURLException while creating jar file :"
-                    + e);
-        } catch (FileNotFoundException e) {
-            fail("Unexpected FileNotFoundException while creating jar file :"
-                    + e);
-        } catch (IOException e) {
-            fail("Unexpected IOException while creating jar file : " + e);
+        } finally {
+            if (fout != null) {
+                fout.close();
+            }
+            if (jis != null) {
+                jis.close();
+            }
         }
 
         String classPath = new File(classURL.getFile()).getPath();
@@ -140,49 +134,21 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         String[] classPathArray = new String[2];
         classPathArray[0] = classPath;
         classPathArray[1] = jarFile.getPath();
-        String[] args = new String[3];
-        try {
-            args[0] = "-Djava.security.policy=" + policyFile.toURL();
-            args[1] = "tests.support.Support_PermissionCollection";
-            args[2] = signedBKS.toExternalForm();
-        } catch (MalformedURLException e) {
-            fail("Unexpected MalformedURLException while policy file to url : "
-                    + e);
-        }
+        String[] args = { "-Djava.security.policy=" + policyFile.toURL(),
+                "tests.support.Support_PermissionCollection",
+                signedBKS.toExternalForm() };
 
-        try {
-            String result = Support_Exec.execJava(args, classPathArray, true);
-            // Delete the Jar file copied in the user directory
-            if (!jarFile.delete()) {
-                throw new IOException("Could not delete temporary jar file : "
-                        + jarFile.getPath());
-            }
+        String result = Support_Exec.execJava(args, classPathArray, true);
 
-            // Delete the temporary policy file
-            if (!policyFile.delete()) {
-                throw new IOException(
-                        "Could not delete temporary policy file : "
-                                + policyFile.getPath());
-            }
+        StringTokenizer resultTokenizer = new StringTokenizer(result, ",");
 
-            StringTokenizer resultTokenizer = new StringTokenizer(result, ",");
-
-            // Check the test result from the new VM process
-            assertEquals("Permission should be granted", "true",
-                    resultTokenizer.nextToken());
-            assertEquals("signed Permission should be granted", "true",
-                    resultTokenizer.nextToken());
-            assertEquals("Permission should not be granted", "false",
-                    resultTokenizer.nextToken());
-        } catch (IOException e) {
-            fail("IOException during test : " + e);
-        } catch (InterruptedException e) {
-            fail("InterruptedException during test : " + e);
-        } catch (NoSuchElementException e) {
-            fail("NoSuchElementException during test : " + e);
-        } catch (Exception e) {
-            fail("Exception during test : " + e);
-        }
+        // Check the test result from the new VM process
+        assertEquals("Permission should be granted", "true", resultTokenizer
+                .nextToken());
+        assertEquals("signed Permission should be granted", "true",
+                resultTokenizer.nextToken());
+        assertEquals("Permission should not be granted", "false",
+                resultTokenizer.nextToken());
     }
 
     /**
@@ -190,16 +156,11 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
      */
     public void test_Constructor() {
         // test java.security.permissionCollection.PermissionCollection()
-        try {
-            SecurityPermission permi = new SecurityPermission(
-                    "testing permissionCollection-isReadOnly");
-            PermissionCollection permCollect = permi.newPermissionCollection();
-            assertNotNull(
-                    "creat permissionCollection constructor returned a null",
-                    permCollect);
-        } catch (Exception e) {
-            fail("creating of permissionCollection constructor failed : " + e);
-        }
+        SecurityPermission permi = new SecurityPermission(
+                "testing permissionCollection-isReadOnly");
+        PermissionCollection permCollect = permi.newPermissionCollection();
+        assertNotNull("creat permissionCollection constructor returned a null",
+                permCollect);
     }
 
     /**
