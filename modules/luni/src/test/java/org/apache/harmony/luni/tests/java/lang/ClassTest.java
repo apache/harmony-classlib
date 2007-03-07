@@ -731,4 +731,44 @@ public class ClassTest extends junit.framework.TestCase {
 		assertNotNull(in);
 		in.close();		
 	}
+        
+        /*
+         * Regression test for HARMONY-2644:
+         * Load system and non-system array classes via Class.forName()
+         */
+        public void test_forName_arrays() throws Exception {
+            Class c1 = getClass();
+            String s = c1.getName();
+            Class a1 = Class.forName("[L" + s + ";");
+            Class a2 = Class.forName("[[L" + s + ";");
+            assertSame(c1, a1.getComponentType());
+            assertSame(a1, a2.getComponentType());
+            Class l4 = Class.forName("[[[[[J");
+            assertSame(long[][][][][].class, l4);
+            
+            try{
+                System.out.println(Class.forName("[;"));
+                fail("1");
+            } catch (ClassNotFoundException ok) {}
+            try{
+                System.out.println(Class.forName("[["));
+                fail("2");
+            } catch (ClassNotFoundException ok) {}
+            try{
+                System.out.println(Class.forName("[L"));
+                fail("3");
+            } catch (ClassNotFoundException ok) {}
+            try{
+                System.out.println(Class.forName("[L;"));
+                fail("4");
+            } catch (ClassNotFoundException ok) {}
+            try{
+                System.out.println(Class.forName(";"));
+                fail("5");
+            } catch (ClassNotFoundException ok) {}
+            try{
+                System.out.println(Class.forName(""));
+                fail("6");
+            } catch (ClassNotFoundException ok) {}
+        }
 }
