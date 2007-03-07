@@ -32,6 +32,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JScrollBar;
 import javax.swing.SwingTestCase;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -122,6 +123,9 @@ public class BasicCheckBoxUITest extends SwingTestCase {
         assertEquals("PreferredSize", new Dimension(horInsets + iconW + textWidth
                 + button1.getIconTextGap(), vertInsets + Math.max(iconH, textHeight)), ui
                 .getPreferredSize(button6));
+
+        // regression test for HARMONY-2605
+        assertNull(new BasicCheckBoxUI().getMaximumSize(new JScrollBar()));
     }
 
     public void testCreateUI() {

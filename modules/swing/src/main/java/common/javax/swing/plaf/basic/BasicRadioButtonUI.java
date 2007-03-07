@@ -77,7 +77,11 @@ public class BasicRadioButtonUI extends BasicToggleButtonUI {
     }
 
     public Dimension getPreferredSize(final JComponent c) {
-        return ButtonCommons.getPreferredSize((AbstractButton)c, getDefaultIcon());
+        if (c instanceof AbstractButton) {
+            return ButtonCommons.getPreferredSize((AbstractButton) c, getDefaultIcon());
+        } else {
+            return null;
+        }
     }
 
     protected void paintIcon(final Graphics g, final JComponent c, final Rectangle iconRect) {
