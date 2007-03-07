@@ -12,7 +12,6 @@ java/awt/FileDialogTest.java
 java/awt/FlowLayoutTest.java
 java/awt/GridBagLayoutTest.java
 java/awt/GridLayoutTest.java
-java/awt/RobotTest.java
 java/awt/WindowRTest.java
 java/awt/datatransfer/ClipboardTest.java
 java/awt/BorderLayoutTest.java

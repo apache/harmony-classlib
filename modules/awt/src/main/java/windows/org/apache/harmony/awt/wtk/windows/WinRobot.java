@@ -258,8 +258,8 @@ public class WinRobot implements NativeRobot {
     }
 
     private Dimension getScreenSize() {
-        int w = win32.GetSystemMetrics(WindowsDefs.SM_CXVIRTUALSCREEN);
-        int h = win32.GetSystemMetrics(WindowsDefs.SM_CYVIRTUALSCREEN);
+        int w = win32.GetSystemMetrics(WindowsDefs.SM_CXSCREEN);
+        int h = win32.GetSystemMetrics(WindowsDefs.SM_CYSCREEN);
         return new Dimension(w, h);
     }
 }
