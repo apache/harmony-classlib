@@ -96,9 +96,9 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 	 */
 	public void test_equalsLjava_lang_Object_subtest0() {
 		SocketPermission sp1 = new SocketPermission(
-				Support_Configuration.InetAlias1, "resolve,connect");
+				Support_Configuration.InetTestAddress, "resolve,connect");
 		SocketPermission sp2 = new SocketPermission(
-				Support_Configuration.InetAlias2, "resolve,connect");
+				Support_Configuration.InetTestIP, "resolve,connect");
 		assertTrue("Same IP address should be equal", sp1.equals(sp2));
 
 	}
