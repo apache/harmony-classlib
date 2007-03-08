@@ -89,7 +89,7 @@ public class CharsetTest extends TestCase {
 	public void test_defaultCharset() {
 		String charsetName = null;
 		String defaultCharsetName = null;
-		Properties oldProps = (Properties) System.getProperties().clone();
+        String oldDefaultEncoding = System.getProperty("file.encoding");
 		try {
 			// Normal behavior
 			charsetName = "UTF-8"; //$NON-NLS-1$
@@ -102,15 +102,11 @@ public class CharsetTest extends TestCase {
 			defaultCharsetName = Charset.defaultCharset().name();
 			assertEquals(charsetName, defaultCharsetName);
 
-			System.setProperties(oldProps);
-
 			// Unsupported behavior
 			charsetName = "IMPOSSIBLE-8"; //$NON-NLS-1$
 			System.setProperty("file.encoding", charsetName);//$NON-NLS-1$
 			defaultCharsetName = Charset.defaultCharset().name();
 			assertEquals("UTF-8", defaultCharsetName);
-
-			System.setProperties(oldProps);
 
 			// Null behavior
 			try {
@@ -121,7 +117,6 @@ public class CharsetTest extends TestCase {
 			} catch (IllegalArgumentException e) {
 				// expected
 			}
-			System.setProperties(oldProps);
 
 			// IllegalCharsetName behavior
 			try {
@@ -133,7 +128,7 @@ public class CharsetTest extends TestCase {
 				// expected
 			}
 		} finally {
-			System.setProperties(oldProps);
+            System.setProperty("file.encoding", oldDefaultEncoding);//$NON-NLS-1$
 		}
 	}
 	
