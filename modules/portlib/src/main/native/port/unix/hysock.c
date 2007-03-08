@@ -195,8 +195,6 @@ copy_hostent (struct HyPortLibrary *portLibrary, OSHOSTENT * source,
 
 #define CDEV_CURRENT_FUNCTION findError
 
-#define HYPORT_SUCCESS 0
-
 /**
  * @internal
  * Determines the proper portable error code to return given a native error code
@@ -210,8 +208,6 @@ findError (I_32 errorCode)
 {
   switch (errorCode)
     {
-    case HYPORT_SUCCESS:
-      return HYPORT_SUCCESS;
     case HYPORT_ERROR_SOCKET_UNIX_EBADF:
       return HYPORT_ERROR_SOCKET_BADDESC;
     case HYPORT_ERROR_SOCKET_UNIX_ENOBUFS:
