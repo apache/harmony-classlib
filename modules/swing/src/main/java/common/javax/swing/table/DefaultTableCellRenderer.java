@@ -53,8 +53,10 @@ public class DefaultTableCellRenderer extends JLabel implements TableCellRendere
         super.setBackground(c);
     }
 
-    public void updateUI() {
+    public void updateUI() {        
         super.updateUI();
+        setBackground(null);
+        setForeground(null);
         focusBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
         focusCellBackground = UIManager.getColor("Table.focusCellBackground");
         focusCellForeground = UIManager.getColor("Table.focusCellForeground");

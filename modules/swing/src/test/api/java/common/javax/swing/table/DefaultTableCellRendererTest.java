@@ -156,6 +156,11 @@ public class DefaultTableCellRendererTest extends BasicSwingTestCase {
         assertEquals(table.getSelectionBackground(), renderer.getBackground());
         assertEquals(table.getSelectionForeground(), renderer.getForeground());
         assertEquals(table.getFont(), renderer.getFont());
+
+        // regression test for HARMONY-1721
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        Color c = renderer.getBackground();
+        assertNull(c);
     }
 
     public void testIsOpaque() throws Exception {
