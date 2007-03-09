@@ -1,4 +1,5 @@
 java/awt/ComponentTest.java
+java/awt/RobotTest.java
 java/awt/WindowTest.java
 org/apache/harmony/awt/gl/linux/XGraphics2DRTest.java
 java/awt/BasicStrokeTest.java
