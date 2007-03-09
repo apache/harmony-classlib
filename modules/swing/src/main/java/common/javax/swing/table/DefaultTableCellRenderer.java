@@ -42,6 +42,7 @@ public class DefaultTableCellRenderer extends JLabel implements TableCellRendere
 
     public DefaultTableCellRenderer() {
         updateUI();
+        setName(null);
     }
 
     public void setForeground(final Color c) {

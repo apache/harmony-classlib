@@ -603,6 +603,7 @@ public class JFileChooser extends JComponent implements Accessible {
         if (isAcceptAllFileFilterUsed()) {
             addChoosableFileFilter(getAcceptAllFileFilter());
         }
+        setName(null);
     }
 
     private FileFilter[] toFileFilterArray(final Collection<FileFilter> fileFilterList) {

@@ -180,4 +180,9 @@ public class DefaultTableCellRendererTest extends BasicSwingTestCase {
         renderer.setValue(new Integer("4"));
         assertEquals("4", renderer.getText());
     }
+
+    public void testGetName() {
+        DefaultTableCellRenderer cr = new DefaultTableCellRenderer();
+        assertNull(cr.getName());
+    }
 }

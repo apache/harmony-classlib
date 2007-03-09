@@ -575,6 +575,11 @@ public class JFileChooserTest extends SwingTestCase {
         assertTrue(chooser.getAccessibleContext() instanceof JFileChooser.AccessibleJFileChooser);
     }
 
+    public void testGetName() {
+        JFileChooser fc = new JFileChooser();
+        assertNull(fc.getName());
+    }
+
     private class TestActionListener implements ActionListener {
         private ActionEvent event;
 
