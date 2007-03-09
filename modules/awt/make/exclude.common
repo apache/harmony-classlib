@@ -12,6 +12,9 @@ java/awt/FileDialogTest.java
 java/awt/FlowLayoutTest.java
 java/awt/GridBagLayoutTest.java
 java/awt/GridLayoutTest.java
+# intermittent failure, seems RobotTest depends on
+# whether mouse or keyboard were touched during the test
+java/awt/RobotTest.java
 java/awt/WindowRTest.java
 java/awt/datatransfer/ClipboardTest.java
 java/awt/BorderLayoutTest.java
