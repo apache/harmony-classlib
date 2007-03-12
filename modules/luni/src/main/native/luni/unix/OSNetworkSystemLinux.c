@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(AIX)
 #include <sys/types.h>
 #include <netinet/in.h>
 #endif
