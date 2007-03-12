@@ -47,7 +47,7 @@
 #endif
 /* the following defines are used to determine how gethostby*_r calls should be handled.*/
 /* HOSTENT_DATA_R: if the HOSTENT_DATA structure is used */
-#define HOSTENT_DATA_R (defined(false))
+#define HOSTENT_DATA_R (defined(AIX))
 /* GLIBC_R: uses the GLIBC versions */
 #define GLIBC_R (defined(LINUX))
 /* ORIGINAL_R: the original gethostby* call is thread safe */

@@ -21,7 +21,7 @@
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H
 
-#if defined(LINUX) || defined(FREEBSD)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX)
 // common linux section--------------------------------
 #include <dlfcn.h>
 #include <stdint.h>
@@ -33,7 +33,7 @@
 
 #define FindFunction(lib, name) (void *)dlsym(lib, name)
 
-#ifndef __INTEL_COMPILER
+#if !defined(__INTEL_COMPILER) && !defined(AIX)
     typedef long long __int64;
 #endif
 
