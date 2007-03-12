@@ -245,9 +245,12 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;
+  //fix for HARMONY-3334, convert the jlong to int before (off_t *) to make it work 
+  //on both big endian and little endian architectures
+  int off = offset;
 #if !defined(FREEBSD)
-  return sendfile(socket,(int)fd,(off_t *)&offset,(size_t)count);	
+  return sendfile(socket,(int)fd,(off_t *)&off,(size_t)count);	
 #else
-  return sendfile(fd, socket, offset, (size_t)count, NULL, NULL, 0);
+  return sendfile(fd, socket, off, (size_t)count, NULL, NULL, 0);
 #endif
 }

@@ -933,15 +933,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
               options[j].optionString = classPath;
               i++;              /*skip next arguement */
             }
-          //TODO: we may find more non-standard options later, and they need to be converted like below
-          //probably we need to record all these options in a properties file
-          else if (strcmp(argv[i], "-verify")==0)
-            {
-              char *replaceString = hymem_allocate_memory(strlen("-verify")+2); 
-              strcpy(replaceString, "-X");
-              strcat(replaceString, "verify");
-              options[j].optionString = replaceString;
-            }
           else
             {
               options[j].optionString = argv[i];
