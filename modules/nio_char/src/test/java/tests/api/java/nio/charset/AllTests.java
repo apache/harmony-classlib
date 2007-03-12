@@ -41,7 +41,7 @@ public class AllTests {
 		suite.addTestSuite(ISOCharsetEncoderTest.class);
 		suite.addTestSuite(UTFCharsetEncoderTest.class);
 		// suite.addTestSuite(GBCharsetEncoderTest.class);
-		suite.addTestSuite(ASCCharsetEncoderTest.class);
+		suite.addTestSuite(ASCIICharsetEncoderTest.class);
 		suite.addTestSuite(UTF16CharsetEncoderTest.class);
 		suite.addTestSuite(UTF16LECharsetEncoderTest.class);
 		suite.addTestSuite(UTF16BECharsetEncoderTest.class);

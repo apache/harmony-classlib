@@ -40,7 +40,7 @@ public class CharsetEncoderTest extends TestCase {
 	static final float AVER_BYTES = 0.5f;
 
 	// charset for mock class
-	private static final Charset MOCKCS = new MockCharset("mock", new String[0]);
+	private static final Charset MOCKCS = new MockCharset("CharsetEncoderTest_mock", new String[0]);
 
 	Charset cs = MOCKCS;
 
@@ -939,25 +939,6 @@ public class CharsetEncoderTest extends TestCase {
 		encoder.onUnmappableCharacter(CodingErrorAction.IGNORE);
 		assertSame(CodingErrorAction.IGNORE, encoder
 				.unmappableCharacterAction());
-	}
-
-	public void testMultiStepEncode() throws CharacterCodingException {
-		if (!cs.name().equals("mock")) {
-			encoder.onMalformedInput(CodingErrorAction.REPORT);
-			encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
-			ByteBuffer out = ByteBuffer.allocate(10);
-			encoder.encode(CharBuffer.wrap("\ud800\udc00"));
-			encoder.reset();
-			assertTrue(encoder.encode(CharBuffer.wrap("\ud800"), out, true)
-					.isMalformed());
-			encoder.flush(out);
-			encoder.reset();
-			out = ByteBuffer.allocate(10);
-			assertSame(CoderResult.UNDERFLOW, encoder.encode(CharBuffer
-					.wrap("\ud800"), out, false));
-			assertTrue(encoder.encode(CharBuffer.wrap("\udc01"), out, true)
-					.isMalformed());
-		}
 	}
 
 	public void testReplacement() {
