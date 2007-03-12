@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.nio.charset;
+package org.apache.harmony.nio_char.tests.java.nio.charset;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
