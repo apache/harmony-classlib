@@ -92,7 +92,6 @@ public class BasicSliderUI extends SliderUI {
         }
     }
 
-
     public class ComponentHandler extends ComponentAdapter {
         @Override
         public void componentResized(final ComponentEvent e) {
@@ -383,6 +382,12 @@ public class BasicSliderUI extends SliderUI {
     private Color focusColor;
 
     private boolean isDragging;
+
+    private ChangeListener changeHandler;
+    private ComponentListener componentHandler;
+    private FocusListener focusHandler;
+    private PropertyChangeListener propertyChangeHandler;
+
     private static final int THUMB_WIDTH = 11;
     private static final int THUMB_HEIGHT = 20;
     private static final int TRACK_SIZE = 2;
@@ -434,7 +439,6 @@ public class BasicSliderUI extends SliderUI {
     @Override
     public void uninstallUI(final JComponent c) {
         if (c != slider) {
-            // TODO Perform i18n after HARMONY-1320 is applied
             throw new IllegalComponentStateException(Messages.getString("swing.0E",new Object[]{this, c, slider})); //$NON-NLS-1$
         }
         uninstallListeners(slider);
@@ -452,23 +456,28 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected TrackListener createTrackListener(final JSlider slider) {
-        this.slider = slider;
         return new TrackListener();
     }
 
     protected ChangeListener createChangeListener(final JSlider slider) {
-        this.slider = slider;
-        return new ChangeHandler();
+        if (changeHandler == null) {
+            changeHandler = new ChangeHandler();
+        }
+        return changeHandler;
     }
 
     protected ComponentListener createComponentListener(final JSlider slider) {
-        this.slider = slider;
-        return new ComponentHandler();
+        if (componentHandler == null) {
+            componentHandler = new ComponentHandler();
+        }
+        return componentHandler;
     }
 
     protected FocusListener createFocusListener(final JSlider slider) {
-        this.slider = slider;
-        return new FocusHandler();
+        if (focusHandler == null) {
+            focusHandler = new FocusHandler();
+        }
+        return focusHandler;
     }
 
     protected ScrollListener createScrollListener(final JSlider slider) {
@@ -478,8 +487,10 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected PropertyChangeListener createPropertyChangeListener(final JSlider slider) {
-        this.slider = slider;
-        return new PropertyChangeHandler();
+        if (propertyChangeHandler == null) {
+            propertyChangeHandler = new PropertyChangeHandler();
+        }
+        return propertyChangeHandler;
     }
 
     protected void installListeners(final JSlider slider) {

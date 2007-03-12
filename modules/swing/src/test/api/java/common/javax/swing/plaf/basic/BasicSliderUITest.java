@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Sergey Burlak
- * @version $Revision$
- */
 package javax.swing.plaf.basic;
 
 import java.awt.IllegalComponentStateException;
@@ -84,31 +80,68 @@ public class BasicSliderUITest extends SwingTestCase {
 
     public void testCreateUI() throws Exception {
         assertNotNull(BasicSliderUI.createUI(slider));
-        assertFalse(BasicSliderUI.createUI(slider) == BasicSliderUI.createUI(slider));
+        assertNotSame(BasicSliderUI.createUI(slider),
+                      BasicSliderUI.createUI(slider));
     }
 
     public void testCreateTrackListener() throws Exception {
+        assertNull(sliderUI.slider);
         assertNotNull(sliderUI.createTrackListener(slider));
-        assertFalse(sliderUI.createTrackListener(slider) == sliderUI
-                .createTrackListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.trackListener);
+        assertNotSame(sliderUI.createTrackListener(slider),
+                      sliderUI.createTrackListener(new JSlider()));
     }
 
     public void testCreateChangeListener() throws Exception {
+        assertNull(sliderUI.slider);
         assertNotNull(sliderUI.createChangeListener(slider));
-        assertFalse(sliderUI.createChangeListener(slider) == sliderUI
-                .createChangeListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.changeListener);
+        assertSame(sliderUI.createChangeListener(slider),
+                   sliderUI.createChangeListener(new JSlider()));
+    }
+
+    public void testCreateChangeListenerNotSame() throws Exception {
+        assertNotSame(sliderUI.createChangeListener(slider),
+                      new BasicSliderUI(slider).createChangeListener(slider));
     }
 
     public void testCreateComponentListener() throws Exception {
+        assertNull(sliderUI.slider);
         assertNotNull(sliderUI.createComponentListener(slider));
-        assertFalse(sliderUI.createComponentListener(slider) == sliderUI
-                .createComponentListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.componentListener);
+        assertSame(sliderUI.createComponentListener(slider),
+                   sliderUI.createComponentListener(new JSlider()));
+    }
+
+    public void testCreateComponentListenerNotSame() throws Exception {
+        assertNotSame(sliderUI.createComponentListener(slider),
+                      new BasicSliderUI(slider).createComponentListener(slider));
+    }
+
+    public void testCreateFocusListener() throws Exception {
+        assertNull(sliderUI.slider);
+        assertNotNull(sliderUI.createFocusListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.focusListener);
+        assertSame(sliderUI.createFocusListener(slider),
+                   sliderUI.createFocusListener(new JSlider()));
+    }
+
+    public void testCreateFocusListenerNotSame() throws Exception {
+        assertNotSame(sliderUI.createFocusListener(slider),
+                      new BasicSliderUI(slider).createFocusListener(slider));
     }
 
     public void testCreateScrollListener() throws Exception {
+        assertNull(sliderUI.slider);
         assertNotNull(sliderUI.createScrollListener(slider));
-        assertFalse(sliderUI.createScrollListener(slider) == sliderUI
-                .createScrollListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.scrollListener);
+        assertNotSame(sliderUI.createScrollListener(slider),
+                      sliderUI.createScrollListener(slider));
     }
 
     // Regression for HARMONY-2878
@@ -117,9 +150,17 @@ public class BasicSliderUITest extends SwingTestCase {
     }
 
     public void testCreatePropertyChangeListener() throws Exception {
+        assertNull(sliderUI.slider);
         assertNotNull(sliderUI.createPropertyChangeListener(slider));
-        assertFalse(sliderUI.createPropertyChangeListener(slider) == sliderUI
-                .createPropertyChangeListener(slider));
+        assertNull(sliderUI.slider);
+        assertNull(sliderUI.propertyChangeListener);
+        assertSame(sliderUI.createPropertyChangeListener(slider),
+                   sliderUI.createPropertyChangeListener(new JSlider()));
+    }
+
+    public void testCreatePropertyChangeListenerNotSame() throws Exception {
+        assertNotSame(sliderUI.createPropertyChangeListener(slider),
+                      new BasicSliderUI(slider).createPropertyChangeListener(slider));
     }
 
     public void testGetShadowColor() throws Exception {
