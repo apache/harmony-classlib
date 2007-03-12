@@ -20,7 +20,6 @@ org/apache/harmony/lang/management/tests/java/lang/management/ManagementFactoryT
 org/apache/harmony/lang/management/tests/java/lang/management/MemoryManagerMXBeanTest.java
 org/apache/harmony/lang/management/tests/java/lang/management/MemoryMXBeanTest.java
 org/apache/harmony/lang/management/tests/java/lang/management/MemoryPoolMXBeanTest.java
-org/apache/harmony/lang/management/tests/java/lang/management/MemoryUsageTest.java
 org/apache/harmony/lang/management/tests/java/lang/management/RuntimeMXBeanTest.java
 org/apache/harmony/lang/management/tests/java/lang/management/ThreadMXBeanTest.java
 

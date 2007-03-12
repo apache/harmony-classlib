@@ -3,4 +3,3 @@ tests/api/java/nio/charset/UTF16BECharsetEncoderTest.java
 tests/api/java/nio/charset/UTF16CharsetDecoderTest.java
 tests/api/java/nio/charset/UTF16CharsetEncoderTest.java
 tests/api/java/nio/charset/UTF16LECharsetEncoderTest.java
-tests/api/java/nio/charset/UTFCharsetEncoderTest.java

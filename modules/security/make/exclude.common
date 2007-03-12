@@ -1,3 +1,2 @@
 org/apache/harmony/security/tests/java/security/KeyStore2Test.java
-org/apache/harmony/security/tests/java/security/SecureRandom2Test.java
 tests/api/java/security/PermissionCollectionTest.java
