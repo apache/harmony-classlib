@@ -65,7 +65,6 @@ javax/swing/plaf/basic/BasicScrollBarUITest.java
 javax/swing/plaf/basic/BasicSplitPaneDividerTest.java
 javax/swing/plaf/basic/BasicSplitPaneUITest.java
 javax/swing/plaf/basic/BasicTabbedPaneUITest.java
-javax/swing/plaf/basic/BasicTableUITest.java
 javax/swing/plaf/basic/BasicTextAreaUITest.java
 javax/swing/plaf/basic/BasicTextFieldUITest.java
 javax/swing/plaf/basic/BasicTextPaneUITest.java
