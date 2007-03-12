@@ -16,17 +16,21 @@
  */
 package java.awt;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import junit.framework.TestCase;
 
-/*
- * Regression test for JIRA issue HARMONY-2818
- */
 public class EventDispatchThreadRTest extends TestCase {
+    
+    /**
+     * Regression test for JIRA issue HARMONY-2818
+     */
     public final void testHARMONY2818() throws Throwable {
         EventQueue.invokeLater(
             new Runnable() {
                 public void run() {
-                    throw new RuntimeException("expected from EDT");
+                    throw new RuntimeException("expected from EDT"); //$NON-NLS-1$
                 }
             }
         );
@@ -36,5 +40,24 @@ public class EventDispatchThreadRTest extends TestCase {
                 }
             }
         );
+    }
+    
+    public void testHarmony2116() throws InterruptedException {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final PrintStream err = System.err;
+        final Toolkit tk;
+
+        System.setErr(new PrintStream(out));
+        tk = new ToolkitImpl() {
+            protected EventQueue getSystemEventQueueImpl() {
+                return null;
+            }
+        };
+
+        Thread.sleep(100);
+        tk.dispatchThread.shutdown();
+        tk.dispatchThread.join(3000);
+        System.setErr(err);
+        assertEquals(0, out.size());
     }
 }

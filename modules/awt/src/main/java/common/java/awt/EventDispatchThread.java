@@ -85,7 +85,8 @@ class EventDispatchThread extends Thread  {
                 }
             }
             } catch (Throwable t) {
-                t.printStackTrace();
+                // TODO: Exception handler should be implemented
+                // t.printStackTrace();
             }
         }
     }
