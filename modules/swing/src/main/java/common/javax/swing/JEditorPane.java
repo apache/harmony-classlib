@@ -257,6 +257,10 @@ public class JEditorPane extends JTextComponent {
     }
 
     public static String getEditorKitClassNameForContentType(final String type) {
+        if (type == null) {
+            throw new NullPointerException();
+        }
+
         int index = contentTypes.indexOf(type);
         return (index >= 0) ? editorKitNames.get(index) : null;
     }

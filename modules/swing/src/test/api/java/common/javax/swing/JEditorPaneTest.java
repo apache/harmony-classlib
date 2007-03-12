@@ -819,6 +819,13 @@ public class JEditorPaneTest extends SwingTestCase {
         assertEquals("javax.swing.text.rtf.RTFEditorKit", JEditorPane
                 .getEditorKitClassNameForContentType("text/rtf"));
         assertNull(JEditorPane.getEditorKitClassNameForContentType("..."));
+        
+        // Regression test for HARMONY-2571
+        try { 
+            JEditorPane.getEditorKitClassNameForContentType(null); 
+            fail("NPE expected"); 
+        } catch (NullPointerException e) { 
+        } 
     }
 
     public void testSetEditorKitForContentType() throws Exception {
