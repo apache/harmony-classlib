@@ -121,7 +121,7 @@ public class BasicTableUI extends TableUI {
         }
 
         public void mousePressed(final MouseEvent e) {
-            if (!table.isEnabled()) {
+            if (table == null || !table.isEnabled()) {
                 return;
             }
 
@@ -162,7 +162,7 @@ public class BasicTableUI extends TableUI {
         }
 
         public void mouseReleased(final MouseEvent e) {
-            if (!table.isEnabled()) {
+            if (table == null || !table.isEnabled()) {
                 return;
             }
 
@@ -178,7 +178,7 @@ public class BasicTableUI extends TableUI {
         }
 
         public void mouseDragged(final MouseEvent e) {
-            if (!table.isEnabled()) {
+            if (table == null || !table.isEnabled()) {
                 return;
             }
 

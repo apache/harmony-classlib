@@ -25,7 +25,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Label;
+import java.awt.event.MouseWheelEvent;
 import javax.swing.BasicSwingTestCase;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
@@ -34,7 +37,13 @@ import javax.swing.table.TableColumn;
 import org.apache.harmony.x.swing.Utilities;
 
 public class BasicTableHeaderUITest extends BasicSwingTestCase {
+
     private BasicTableHeaderUI ui;
+
+    private MouseWheelEvent mouseWheelEvent =
+            new MouseWheelEvent(new Label(),
+                    0, 0, 0, 0, 0, 0, false, 0,
+                    MouseWheelEvent.WHEEL_UNIT_SCROLL, 0);
 
     public BasicTableHeaderUITest(final String name) {
         super(name);
@@ -63,6 +72,13 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
     }
 
     public void testInstallUninstallUI() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallUI(new JTable());
+            }
+        });
         assertNull(ui.header);
         assertNull(ui.rendererPane);
         JTableHeader header = new JTableHeader();
@@ -76,6 +92,18 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
     }
 
     public void testInstallUninstallDefaults() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.installDefaults();
+            }
+        });
+
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.uninstallDefaults();
+
         ui.header = new JTableHeader();
         ui.header.setForeground(new ColorUIResource(Color.RED));
         ui.header.setBackground(new ColorUIResource(Color.BLUE));
@@ -93,8 +121,23 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
     }
 
     public void testInstallUninstallListeners() throws Exception {
-        ui.header = new JTableHeader();
         assertNull(ui.mouseInputListener);
+
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.installListeners();
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallListeners();
+            }
+        });
+        ui.header = new JTableHeader();
         int mouseListenersCount = ui.header.getMouseListeners().length;
         int mouseMotionListenersCount = ui.header.getMouseMotionListeners().length;
         ui.installListeners();
@@ -113,15 +156,56 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
         assertTrue(Utilities.isEmptyArray(ui.header.getActionMap().allKeys()));
     }
 
+    public void testInstallKeyboardActions() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.installKeyboardActions();
+    }
+
+    public void testUninstallKeyboardActions() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.uninstallKeyboardActions();
+    }
+
     public void testPaint() throws Exception {
+        final Graphics g = createTestGraphics();
+
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.paint(g, new JTable());
+            }
+        });
         ui.installUI(new JTableHeader());
         ui.header.getColumnModel().addColumn(new TableColumn());
-        Graphics g = createTestGraphics();
         g.setClip(0, 0, 100, 100);
         ui.paint(g, null);
     }
 
     public void testGetMinimumMaximumPreferredSize() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getMinimumSize(new JTable());
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getMaximumSize(new JTable());
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getPreferredSize(new JTable());
+            }
+        });
         ui.header = new JTableHeader();
         assertEquals(new Dimension(), ui.getMinimumSize(null));
         assertEquals(new Dimension(), ui.getMaximumSize(null));
@@ -151,8 +235,66 @@ public class BasicTableHeaderUITest extends BasicSwingTestCase {
                 .getPreferredSize(null));
     }
 
-    public void testMouseInputListener() throws Exception {
+    public void testMouseInputHandlerMouseEnteredNull() throws Exception {
         // Regression test for HARMONY-1777
         new BasicTableHeaderUI().new MouseInputHandler().mouseEntered(null);
+    }
+
+    public void testMouseInputHandlerMouseClicked() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseClicked(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseEntered() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseEntered(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseExited() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseExited(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMousePressed() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new MouseInputHandler().mousePressed(mouseWheelEvent);
+            }
+        });
+    }
+
+    public void testMouseInputHandlerMouseReleased() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new MouseInputHandler().mouseReleased(mouseWheelEvent);
+            }
+        });
+    }
+
+    public void testMouseInputHandlerMouseDragged() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new MouseInputHandler().mouseDragged(mouseWheelEvent);
+            }
+        });
+    }
+
+    public void testMouseInputHandlerMouseMoved() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new MouseInputHandler().mouseMoved(mouseWheelEvent);
+            }
+        });
     }
 }

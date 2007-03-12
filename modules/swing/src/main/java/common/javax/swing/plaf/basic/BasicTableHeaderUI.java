@@ -101,11 +101,15 @@ public class BasicTableHeaderUI extends TableHeaderUI {
         }
 
         public void mouseEntered(final MouseEvent e) {
-            updateCursor(e);
+            if (header != null) {
+                updateCursor(e);
+            }
         }
 
         public void mouseExited(final MouseEvent e) {
-            header.setCursor(originalHeaderCursor);
+            if (header != null) {
+                header.setCursor(originalHeaderCursor);
+            }
         }
 
 
@@ -316,7 +320,9 @@ public class BasicTableHeaderUI extends TableHeaderUI {
     }
 
     protected void uninstallDefaults() {
-        Utilities.uninstallColorsAndFont(header);
+        if (header != null) {
+            Utilities.uninstallColorsAndFont(header);
+        }
     }
 
     protected void installListeners() {

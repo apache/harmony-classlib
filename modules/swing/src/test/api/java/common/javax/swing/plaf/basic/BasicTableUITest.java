@@ -22,6 +22,10 @@ package javax.swing.plaf.basic;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Label;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
 import javax.swing.BasicSwingTestCase;
 import javax.swing.CellRendererPane;
 import javax.swing.JTable;
@@ -31,6 +35,15 @@ import javax.swing.table.TableColumn;
 
 public class BasicTableUITest extends BasicSwingTestCase {
     private BasicTableUI ui;
+
+    private FocusEvent focusEvent = new FocusEvent(new JTable(), 0);
+
+    private KeyEvent keyEvent = new KeyEvent(new JTable(), 0, 0, 0, 0);
+
+    private MouseWheelEvent mouseWheelEvent =
+            new MouseWheelEvent(new Label(),
+                    0, 0, 0, 0, 0, 0, false, 0,
+                    MouseWheelEvent.WHEEL_UNIT_SCROLL, 0);
 
     public BasicTableUITest(final String name) {
         super(name);
@@ -83,6 +96,13 @@ public class BasicTableUITest extends BasicSwingTestCase {
     }
 
     public void testUninstallUI() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallUI(new JTable());
+            }
+        });
         JTable table = new JTable();
         ui.installUI(table);
         ui.uninstallUI(null);
@@ -92,6 +112,27 @@ public class BasicTableUITest extends BasicSwingTestCase {
 
     public void testGetMinimumMaximumPreferredSize() throws Exception {
         JTable table = new JTable();
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getMinimumSize(new JTable());
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getMaximumSize(new JTable());
+            }
+        });
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.getPreferredSize(new JTable());
+            }
+        });
         ui.table = table;
         assertEquals(new Dimension(), ui.getMinimumSize(null));
         TableColumn column1 = new TableColumn();
@@ -133,17 +174,32 @@ public class BasicTableUITest extends BasicSwingTestCase {
         ui.paint(g, null);
     }
 
-    // Regression test for HARMONY-1776
     public void testPaint_Null() throws Exception {
         try {
+            // Regression test for HARMONY-1776
             ui.paint(null, null);
             fail("NullPointerException should have been thrown");
         } catch (NullPointerException e) {
             // Expected
         }
+
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.paint(createTestGraphics(), new JTable());
+            }
+        });
     }
 
     public void testInstallDefaults() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.installDefaults();
+            }
+        });
         ui.table = new JTable();
         ui.installDefaults();
         assertSame(UIManager.getFont("Table.font"), ui.table.getFont());
@@ -154,5 +210,139 @@ public class BasicTableUITest extends BasicSwingTestCase {
                 .getSelectionForeground());
         assertSame(UIManager.getColor("Table.selectionBackground"), ui.table
                 .getSelectionBackground());
+    }
+
+    public void testInstallKeyboardActions() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.installKeyboardActions();
+            }
+        });
+    }
+
+    public void testUninstallDefaults() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallDefaults();
+            }
+        });
+    }
+
+    public void testUninstallKeyboardActions() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallKeyboardActions();
+            }
+        });
+    }
+
+    public void testInstallListeners() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.installListeners();
+            }
+        });
+    }
+
+    public void testUninstallListeners() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.uninstallListeners();
+            }
+        });
+    }
+
+    public void testFocusHandlerFocusGained() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new FocusHandler().focusGained(focusEvent);
+            }
+        });
+    }
+
+    public void testFocusHandlerFocusLost() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new FocusHandler().focusLost(focusEvent);
+            }
+        });
+    }
+
+    public void testKeyHandlerKeyPressed() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new KeyHandler().keyPressed(keyEvent);
+    }
+
+    public void testKeyHandlerKeyReleased() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new KeyHandler().keyReleased(keyEvent);
+    }
+
+    public void testFocusHandlerKeyTyped() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
+            // Regression test for HARMONY-2613
+            @Override
+            public void exceptionalAction() throws Exception {
+                ui.new KeyHandler().keyTyped(keyEvent);
+            }
+        });
+    }
+
+    public void testMouseInputHandlerMouseClicked() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseClicked(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseEntered() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseEntered(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseExited() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseExited(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMousePressed() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mousePressed(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseReleased() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseReleased(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseDragged() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseDragged(mouseWheelEvent);
+    }
+
+    public void testMouseInputHandlerMouseMoved() throws Exception {
+        // Regression test for HARMONY-2613
+        // Make sure it throws no exceptions
+        ui.new MouseInputHandler().mouseMoved(mouseWheelEvent);
     }
 }
