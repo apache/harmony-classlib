@@ -20,6 +20,11 @@
  */
 package java.awt;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+
 import junit.framework.TestCase;
 
 public class ButtonRTest extends TestCase {
@@ -38,5 +43,50 @@ public class ButtonRTest extends TestCase {
             throw new RuntimeException(e);
         }
         frm.dispose();
+    }
+    
+    // Regression test for HARMONY-2305
+    // Currently fails on Linux version of RI
+    public void testHarmony2305() throws Exception {
+        final Frame f = new Frame();
+        final Button b1 = new Button("B1"); //$NON-NLS-1$
+        final Button b2 = new Button("B2"); //$NON-NLS-1$
+        final AL l1 = new AL();
+        final AL l2 = new AL();
+        final Robot r = new Robot();
+
+        try {
+            b1.addActionListener(l1);
+            b2.addActionListener(l2);
+            f.add(BorderLayout.WEST, b1);
+            f.add(BorderLayout.EAST, b2);
+            f.setSize(100, 100);
+            f.setVisible(true);
+
+            r.setAutoWaitForIdle(true);
+            r.setAutoDelay(500);
+            r.mouseMove(b1.getLocation().x + 3, b1.getLocation().y + 3);
+            r.mousePress(InputEvent.BUTTON1_MASK);
+            r.mouseRelease(InputEvent.BUTTON1_MASK);
+            assertNotNull(l1.e);
+            assertEquals("B1", l1.e.getActionCommand()); //$NON-NLS-1$
+
+            assertNull(l2.e);
+            r.keyPress(KeyEvent.VK_SPACE);
+            r.mouseMove(b2.getLocation().x + 3, b2.getLocation().y + 3);
+            r.mousePress(InputEvent.BUTTON1_MASK);
+            r.mouseRelease(InputEvent.BUTTON1_MASK);
+            assertNull(l2.e);
+        } finally {
+            f.dispose();
+        }
+    }
+
+    static class AL implements ActionListener {
+        ActionEvent e;
+
+        public void actionPerformed(final ActionEvent e) {
+            this.e = e;
+        }
     }
 }

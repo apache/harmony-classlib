@@ -42,6 +42,8 @@ import org.apache.harmony.awt.internal.nls.Messages;
  */
 public abstract class ButtonStateController implements MouseListener, FocusListener, KeyListener {
 
+    private static Component activeComponent;
+    
     private boolean mousePressed = false;
     private boolean keyPressed = false;
     private boolean mouseInside = false;
@@ -68,12 +70,13 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
 
     public void mousePressed(MouseEvent me) {
         if (mousePressed || keyPressed ||
-            (me.getButton() != MouseEvent.BUTTON1)) {
-
+                (me.getButton() != MouseEvent.BUTTON1) ||
+                (activeComponent != null)) {
             return;
         }
 
         mousePressed = true;
+        activeComponent = component;
         if (mouseInside) {
             component.repaint();
         }
@@ -84,12 +87,14 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     public void mouseReleased(MouseEvent me) {
-        if (!mousePressed || (me.getButton() != MouseEvent.BUTTON1)) {
+        if (!mousePressed || (me.getButton() != MouseEvent.BUTTON1) || 
+                (activeComponent != component)) {
             return;
         }
 
         mousePressed = false;
         component.repaint();
+        activeComponent = null;
         if (mouseInside) {
             when = me.getWhen();
             mod = me.getModifiers();
@@ -101,11 +106,14 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
         // awt.54=Key event for unfocused component
         assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
-        if (mousePressed || keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE)) {
+        if (mousePressed || keyPressed ||
+                (ke.getKeyCode() != KeyEvent.VK_SPACE) ||
+                (activeComponent != null)) {
             return;
         }
 
         keyPressed = true;
+        activeComponent = component;
         component.repaint();
     }
 
@@ -113,11 +121,13 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
         // awt.54=Key event for unfocused component
         assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
-        if (!keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE)) {
+        if (!keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE) ||
+                (activeComponent != component)) {
             return;
         }
 
         keyPressed = false;
+        activeComponent = null;
         component.repaint();
         when = ke.getWhen();
         mod = ke.getModifiers();
