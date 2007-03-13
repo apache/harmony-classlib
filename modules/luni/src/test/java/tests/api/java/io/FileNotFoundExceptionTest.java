@@ -17,32 +17,25 @@
 
 package tests.api.java.io;
 
+import java.io.FileNotFoundException;
+
 public class FileNotFoundExceptionTest extends junit.framework.TestCase {
 
-	/**
-	 * @tests java.io.FileNotFoundException#FileNotFoundException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.io.FileNotFoundException()
-		try {
-			new java.io.FileInputStream("9://0//l");
-		} catch (java.io.FileNotFoundException e) {
-			return;
-		}
-		fail("Failed to generate Exception");
-	}
+    /**
+     * @tests java.io.FileNotFoundException#FileNotFoundException()
+     */
+    public void test_Constructor() {
+        FileNotFoundException e = new FileNotFoundException();
+        assertNull(e.getMessage());
+    }
 
 	/**
 	 * @tests java.io.FileNotFoundException#FileNotFoundException(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.io.FileNotFoundException(java.lang.String)
-		try {
-			new java.io.FileInputStream("9://0//l");
-		} catch (java.io.FileNotFoundException e) {
-			return;
-		}
-		fail("Failed to generate Exception");
+		String message = "Cannot found file: 9://0//l";
+        FileNotFoundException e = new FileNotFoundException(message);
+        assertSame(message, e.getMessage());
 	}
 
 	/**
