@@ -436,6 +436,8 @@ public abstract class Charset implements Comparable<Charset> {
                             Class<?> c = Class.forName(providerClassName, true,
                                     systemClassLoader);
                             cp = c.newInstance();
+                        } catch (SecurityException e) {
+                            throw e;  
                         } catch (Exception e) {
                             throw new Error(e.getMessage(), e);
                         }

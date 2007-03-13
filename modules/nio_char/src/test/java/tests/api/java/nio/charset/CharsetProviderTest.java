@@ -20,10 +20,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.charset.spi.CharsetProvider;
+import java.util.Iterator;
+import java.util.Vector;
 
+import junit.framework.TestCase;
 import tests.api.java.nio.charset.CharsetTest.MockCharset;
 import tests.api.java.nio.charset.CharsetTest.MockSecurityManager;
-import junit.framework.TestCase;
 
 /**
  * Test charset providers managed by Charset.
@@ -33,11 +36,8 @@ public class CharsetProviderTest extends TestCase {
 	// need to be modified, e.g., read from system property
 	static String PROP_CONFIG_FILE1 = "clear.tests.cp1";
 
-	static String PROP_CONFIG_FILE2 = "clear.tests.cp2";
-
 	static String CONFIG_FILE1 = null;
 
-	static String CONFIG_FILE2 = null;
 
 	static MockCharset charset1 = new MockCharset("mockCharset00",
 			new String[] { "mockCharset01", "mockCharset02" });
@@ -50,24 +50,14 @@ public class CharsetProviderTest extends TestCase {
 	 */
 	public CharsetProviderTest(String arg0) {
 		super(arg0);
-		if (null == System.getProperty(PROP_CONFIG_FILE1)
-				|| null == System.getProperty(PROP_CONFIG_FILE2)) {
-			throw new RuntimeException(
-					"Please set system property clear.tests.cp1 and clear.tests.cp2, i.e. two classpaths in order to run this test suite.");
-		}
+        CONFIG_FILE1 = System.getProperty("user.dir")+"/bin/test";
+        
 		String sep = System.getProperty("file.separator");
 
-		CONFIG_FILE1 = System.getProperty(PROP_CONFIG_FILE1);
 		if (!CONFIG_FILE1.endsWith(sep)) {
 			CONFIG_FILE1 += sep;
 		}
 		CONFIG_FILE1 += "META-INF" + sep + "services" + sep
-				+ "java.nio.charset.spi.CharsetProvider";
-		CONFIG_FILE2 = System.getProperty(PROP_CONFIG_FILE2);
-		if (!CONFIG_FILE2.endsWith(sep)) {
-			CONFIG_FILE2 += sep;
-		}
-		CONFIG_FILE2 += "META-INF" + sep + "services" + sep
 				+ "java.nio.charset.spi.CharsetProvider";
 	}
 
@@ -79,7 +69,7 @@ public class CharsetProviderTest extends TestCase {
 		int sepIndex = path.lastIndexOf(sep);
 		File f = new File(path.substring(0, sepIndex));
 		f.mkdirs();
-
+        
 		FileOutputStream fos = new FileOutputStream(path);
 		OutputStreamWriter writer = new OutputStreamWriter(fos);// , "UTF-8");
 		try {
@@ -101,15 +91,29 @@ public class CharsetProviderTest extends TestCase {
 	 * Test the method isSupported(String) with charset supported by some
 	 * providers (multiple).
 	 */
-	public void testIsSupported_NormalProvider() throws Exception {
+	public void testIsSupported_And_ForName_NormalProvider() throws Exception {
 		try {
-			assertFalse(Charset.isSupported("mockCharset00"));
-			assertFalse(Charset.isSupported("mockCharset01"));
-			assertFalse(Charset.isSupported("mockCharset02"));
-
 			assertFalse(Charset.isSupported("mockCharset10"));
 			assertFalse(Charset.isSupported("mockCharset11"));
 			assertFalse(Charset.isSupported("mockCharset12"));
+            try {
+                Charset.forName("mockCharset10");
+                fail("Should throw UnsupportedCharsetException!");
+            } catch (UnsupportedCharsetException e) {
+                // expected
+            }
+            try {
+                Charset.forName("mockCharset11");
+                fail("Should throw UnsupportedCharsetException!");
+            } catch (UnsupportedCharsetException e) {
+                // expected
+            }
+            try {
+                Charset.forName("mockCharset12");
+                fail("Should throw UnsupportedCharsetException!");
+            } catch (UnsupportedCharsetException e) {
+                // expected
+            }
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("#comment\r");
@@ -126,32 +130,28 @@ public class CharsetProviderTest extends TestCase {
 			sb.append("\n");
 			sb.append("\r\n");
 			sb
-					.append(" \ttests.api.java.nio.charset.CharsetTest$MockCharsetProvider2 \t\n\r");
-			setupFile(CONFIG_FILE2, sb.toString());
-
-			assertTrue(Charset.isSupported("mockCharset00"));
-			assertTrue(Charset.isSupported("mockCharset01"));
-			assertTrue(Charset.isSupported("mockCharset02"));
-			assertTrue(Charset.isSupported("MOCKCharset00"));
-			assertTrue(Charset.isSupported("MOCKCharset01"));
-			assertTrue(Charset.isSupported("MOCKCharset02"));
-
+					.append(" \ttests.api.java.nio.charset.CharsetProviderTest$MockCharsetProvider \t\n\r");
+			setupFile(CONFIG_FILE1, sb.toString());
+            
 			assertTrue(Charset.isSupported("mockCharset10"));
 			// ignore case problem in mock, intended
-			assertFalse(Charset.isSupported("mockCharset11"));
-			assertTrue(Charset.isSupported("mockCharset12"));
+			assertTrue(Charset.isSupported("MockCharset11"));
+			assertTrue(Charset.isSupported("MockCharset12"));
 			assertTrue(Charset.isSupported("MOCKCharset10"));
 			// intended case problem in mock
-			assertFalse(Charset.isSupported("MOCKCharset11"));
+			assertTrue(Charset.isSupported("MOCKCharset11"));
 			assertTrue(Charset.isSupported("MOCKCharset12"));
+            
+            assertTrue(Charset.forName("mockCharset10") instanceof MockCharset);
+            assertTrue(Charset.forName("mockCharset11") instanceof MockCharset);
+            assertTrue(Charset.forName("mockCharset12") instanceof MockCharset);
 
-			// cleanupFile(CONFIG_FILE1);
-			// assertFalse(Charset.isSupported("mockCharset00"));
-			// assertFalse(Charset.isSupported("mockCharset01"));
-			// assertTrue(Charset.isSupported("mockCharset02"));
+            assertTrue(Charset.forName("mockCharset10") == charset2);
+            // intended case problem in mock
+            Charset.forName("mockCharset11");
+            assertTrue(Charset.forName("mockCharset12") == charset2);
 		} finally {
 			cleanupFile(CONFIG_FILE1);
-			cleanupFile(CONFIG_FILE2);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class CharsetProviderTest extends TestCase {
 	 * Test the method isSupported(String) with insufficient privilege to use
 	 * charset provider.
 	 */
-	public void testIsSupported_InsufficientPrililege() throws Exception {
+	public void testIsSupported_InsufficientPrivilege() throws Exception {
 		SecurityManager oldMan = System.getSecurityManager();
 		System.setSecurityManager(new MockSecurityManager());
 		try {
@@ -206,11 +206,11 @@ public class CharsetProviderTest extends TestCase {
 			try {
 				StringBuffer sb = new StringBuffer();
 				sb
-						.append("tests.api.java.nio.charset.CharsetTest$MockCharsetProvider2\r");
+						.append("tests.api.java.nio.charset.CharsetProviderTest$MockCharsetProvider\r");
 				setupFile(CONFIG_FILE1, sb.toString());
 
 				Charset.isSupported("gb180300000");
-				// fail("Should throw SecurityException!");
+				fail("Should throw SecurityException!");
 			} catch (SecurityException e) {
 				// expected
 			} finally {
@@ -222,107 +222,6 @@ public class CharsetProviderTest extends TestCase {
 	}
 
 	/*
-	 * Test the method forName(String) with charset supported by some providers
-	 * (multiple).
-	 */
-	public void testForName_NormalProvider() throws Exception {
-		try {
-			try {
-				Charset.forName("mockCharset00");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset01");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset02");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset10");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset11");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-
-			// try {
-			// Charset.forName("mockCharset12");
-			// fail("Should throw UnsupportedCharsetException!");
-			// } catch (UnsupportedCharsetException e) {
-			// // expected
-			// }
-
-			StringBuffer sb = new StringBuffer();
-			sb.append("#comment\r");
-			sb.append("\n");
-			sb.append("\r\n");
-			sb
-					.append(" \ttests.api.java.nio.charset.CharsetTest$MockCharsetProvider \t\n\r");
-			sb
-					.append(" \ttests.api.java.nio.charset.CharsetTest$MockCharsetProvider \t");
-			setupFile(CONFIG_FILE1, sb.toString());
-
-			sb = new StringBuffer();
-			sb.append("#comment\r");
-			sb.append("\n");
-			sb.append("\r\n");
-			sb
-					.append(" \ttests.api.java.nio.charset.CharsetTest$MockCharsetProvider2 \t\n\r");
-			setupFile(CONFIG_FILE2, sb.toString());
-
-			assertTrue(Charset.forName("mockCharset00") instanceof MockCharset);
-			assertTrue(Charset.forName("mockCharset01") instanceof MockCharset);
-			assertTrue(Charset.forName("mockCharset02") instanceof MockCharset);
-
-			assertTrue(Charset.forName("mockCharset10") == charset2);
-			// intended case problem in mock
-			try {
-				Charset.forName("mockCharset11");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			assertTrue(Charset.forName("mockCharset12") == charset2);
-
-			cleanupFile(CONFIG_FILE1);
-			try {
-				Charset.forName("mockCharset00");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset01");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-			try {
-				Charset.forName("mockCharset02");
-				fail("Should throw UnsupportedCharsetException!");
-			} catch (UnsupportedCharsetException e) {
-				// expected
-			}
-		} finally {
-			cleanupFile(CONFIG_FILE1);
-			cleanupFile(CONFIG_FILE2);
-		}
-	}
-
-	/*
 	 * Test the method forName(String) when the charset provider supports a
 	 * built-in charset.
 	 */
@@ -330,7 +229,7 @@ public class CharsetProviderTest extends TestCase {
 		try {
 			StringBuffer sb = new StringBuffer();
 			sb
-					.append("tests.api.java.nio.charset.CharsetTest$MockCharsetProvider3\r");
+					.append("tests.api.java.nio.charset.CharsetProviderTest$MockCharsetProviderACSII\r");
 			setupFile(CONFIG_FILE1, sb.toString());
 
 			assertFalse(Charset.forName("us-ascii") instanceof MockCharset);
@@ -385,13 +284,6 @@ public class CharsetProviderTest extends TestCase {
 	public void testAvailableCharsets_NormalProvider() throws Exception {
 		try {
 			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset00"));
-			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset01"));
-			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset02"));
-
-			assertFalse(Charset.availableCharsets()
 					.containsKey("mockCharset10"));
 			assertFalse(Charset.availableCharsets()
 					.containsKey("mockCharset11"));
@@ -413,8 +305,8 @@ public class CharsetProviderTest extends TestCase {
 			sb.append("\n");
 			sb.append("\r\n");
 			sb
-					.append(" \ttests.api.java.nio.charset.CharsetTest$MockCharsetProvider2 \t\n\r");
-			setupFile(CONFIG_FILE2, sb.toString());
+					.append(" \ttests.api.java.nio.charset.CharsetProviderTest$MockCharsetProvider \t\n\r");
+			setupFile(CONFIG_FILE1, sb.toString());
 
 			assertTrue(Charset.availableCharsets().containsKey("mockCharset00"));
 			assertTrue(Charset.availableCharsets().containsKey("MOCKCharset00"));
@@ -432,14 +324,6 @@ public class CharsetProviderTest extends TestCase {
 			assertFalse(Charset.availableCharsets()
 					.containsKey("mockCharset12"));
 
-			// delete one config file
-			cleanupFile(CONFIG_FILE1);
-			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset00"));
-			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset01"));
-			assertFalse(Charset.availableCharsets()
-					.containsKey("mockCharset02"));
 			assertTrue(Charset.availableCharsets().containsKey("mockCharset10"));
 			assertTrue(Charset.availableCharsets().containsKey("MOCKCharset10"));
 			assertTrue(Charset.availableCharsets().get("mockCharset10") == charset2);
@@ -449,7 +333,6 @@ public class CharsetProviderTest extends TestCase {
 					.containsKey("mockCharset12"));
 		} finally {
 			cleanupFile(CONFIG_FILE1);
-			cleanupFile(CONFIG_FILE2);
 		}
 	}
 
@@ -510,5 +393,46 @@ public class CharsetProviderTest extends TestCase {
 			cleanupFile(CONFIG_FILE1);
 		}
 	}
+    
+    /*
+     * Mock charset provider.
+     */
+    public static class MockCharsetProvider extends CharsetProvider {
+
+        public Charset charsetForName(String charsetName) {
+            if ("MockCharset10".equalsIgnoreCase(charsetName)
+                    || "MockCharset11".equalsIgnoreCase(charsetName)
+                    || "MockCharset12".equalsIgnoreCase(charsetName)) {
+                return charset2;
+            }
+            return null;
+        }
+
+        public Iterator charsets() {
+            Vector v = new Vector();
+            v.add(charset2);
+            return v.iterator();
+        }
+    }
+    
+    /*
+     * Another mock charset provider providing build-in charset "ascii".
+     */
+    public static class MockCharsetProviderACSII extends CharsetProvider {
+
+        public Charset charsetForName(String charsetName) {
+            if ("US-ASCII".equalsIgnoreCase(charsetName)
+                    || "ASCII".equalsIgnoreCase(charsetName)) {
+                return new MockCharset("US-ASCII", new String[] { "ASCII" });
+            }
+            return null;
+        }
+
+        public Iterator charsets() {
+            Vector v = new Vector();
+            v.add(new MockCharset("US-ASCII", new String[] { "ASCII" }));
+            return v.iterator();
+        }
+    }
 
 }
