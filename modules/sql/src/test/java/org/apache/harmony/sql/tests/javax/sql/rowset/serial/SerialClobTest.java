@@ -162,12 +162,96 @@ public class SerialClobTest extends TestCase {
         // TODO: Not yet implemented
     }
 
-    public void testSetStringJLString() {
-        // TODO: Not yet implemented
+    public void testSetStringJLString() throws Exception {
+        String s = "hello";
+        char[] buf = s.toCharArray();
+        SerialClob serialClob = new SerialClob(buf);
+        
+        int count = serialClob.setString(1, "olleh");
+        String sub = serialClob.getSubString(1, 5);
+        assertEquals("olleh", sub);
+        assertEquals(5, count);
+        
+        count = serialClob.setString(2, "mm");
+        sub = serialClob.getSubString(1, 5);
+        assertEquals("ommeh", sub);
+        assertEquals(2, count);
+        
+        try {
+            serialClob.setString(-1, "hello");
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            serialClob.setString(6, "hello");
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        // Harmony-3335, non bug difference from RI
+        try {
+            serialClob.setString(2, "hello");
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
     }
 
-    public void testSetStringJLStringII() {
-        // TODO: Not yet implemented
+    public void testSetStringJLStringII() throws Exception {
+        String s = "hello";
+        char[] buf = s.toCharArray();
+        SerialClob serialClob = new SerialClob(buf);
+        
+        int count = serialClob.setString(1, "olleh", 0, 5);
+        String sub = serialClob.getSubString(1, 5);
+        assertEquals("olleh", sub);
+        assertEquals(5, count);
+        
+        count = serialClob.setString(2, "mmnn",1, 2);
+        sub = serialClob.getSubString(1, 5);
+        // RI's bug
+        assertEquals(2, count);
+        assertEquals("omneh", sub);
+        
+        try {
+            serialClob.setString(-1, "hello", 0, 5);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            serialClob.setString(6, "hello", 0, 5);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            serialClob.setString(1, "hello", 0, 6);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        // Harmony-3335, non bug difference from RI
+        try {
+            serialClob.setString(2, "hello", 0, 5);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        try {
+            // Harmony-3335
+            serialClob.setString(1, "hello", -1, 5);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
     }
 
     public void testTruncate() {

@@ -36,20 +36,15 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -1662519690087375313L;
 
-    // required by serialized form
-    @SuppressWarnings("unused")
     private char[] buf;
 
     // required by serialized form
     @SuppressWarnings("unused")
     private Clob clob;
 
-    // required by serialized form
-    @SuppressWarnings("unused")
     private long len;
 
     // required by serialized form
-    @SuppressWarnings("unused")
     private long origLen;
 
     public SerialClob(char[] ch) throws SerialException, SQLException {
@@ -132,14 +127,23 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         throw new NotImplementedException();
     }
 
-    public int setString(long pos, String str) throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public int setString(long pos, String str) throws SerialException {
+        return setString(pos, str, 0, str.length());
     }
 
-    public int setString(long pos, String str, int offset, int len)
-            throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+    public int setString(long pos, String str, int offset, int length)
+            throws SerialException {
+        if (pos < 1 || length < 0 || pos > (len - length + 1)) {
+            throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
+        }
+        if (offset < 0  || offset > (str.length() - length)) {
+            throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
+        }
+        if (length > len + offset) {
+            throw new SerialException(Messages.getString("sql.23")); // $NON-NLS-1$
+        }
+        str.getChars(offset, offset+length, buf, (int)pos-1);
+        return length;
     }
 
     public void truncate(long len) throws SerialException,
