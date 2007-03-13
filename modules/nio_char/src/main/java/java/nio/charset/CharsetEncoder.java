@@ -480,13 +480,12 @@ public abstract class CharsetEncoder {
             }
             if (result.isUnderflow()) {
                 int remaining = in.remaining();
+                status = endOfInput ? END : ONGOING;
                 if (endOfInput && remaining > 0) {
                     result = CoderResult.malformedForLength(remaining);
                 } else {
-                    status = endOfInput ? END : ONGOING;
                     return result;
                 }
-
             }
             if (result.isOverflow()) {
                 return result;

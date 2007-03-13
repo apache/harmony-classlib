@@ -556,6 +556,16 @@ public class CharsetEncoderTest extends TestCase {
 		out = encoder.encode(CharBuffer.wrap(unistr));
 		assertEquals(out.position(), 0);
 		assertByteArray(out, addSurrogate(unibytes));
+        
+        // Regression test for harmony-3378
+        Charset cs = Charset.forName("UTF-8");
+        CharsetEncoder encoder = cs.newEncoder();
+        encoder.onMalformedInput(CodingErrorAction.REPLACE);
+        encoder = encoder.replaceWith(new byte[] { (byte) 0xef, (byte) 0xbf,
+                (byte) 0xbd, });
+        CharBuffer in = CharBuffer.wrap("\ud800");
+        out = encoder.encode(in);
+        assertNotNull(out); 
 	}
 
 	private byte[] addSurrogate(byte[] expected) {
