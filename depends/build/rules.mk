@@ -38,20 +38,18 @@ else
 endif
 
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) $(EXPFILE)
-	$(DLL_LD) -shared -Wl,--version-script,$(EXPFILE) $(LDFLAGS) \
-	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
+	$(DLL_LD) -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE) \
+	$(LDFLAGS) $(VMLINK) -o $@ \
 	$(BUILDFILES) \
 	$(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX) \
 	$(OSLIBS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(CC) $(VMLINK) $(LDFLAGS) \
+	$(CC) $(VMLINK) $(EXELDFLAGS) \
 	$(BUILDFILES) \
 	$(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX) \
 	-o $@ $(OSLIBS) \
-	-Xlinker -z -Xlinker origin \
-	-Xlinker -rpath -Xlinker \$$ORIGIN/ \
-	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
+	$(EXERPATHPREFIX) -L$(HY_HDK)/jdk/jre/bin
 
 clean:
 	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME) $(EXPFILE) \

@@ -33,6 +33,10 @@ OSLIBS = -lc -lm
 XLIBS = -L/usr/X11R6/lib -lX11 -lXft
 MDLLIBPREFIX = -Xlinker --start-group
 MDLLIBSUFFIX = -Xlinker --end-group
+EXELDFLAGS = $(LDFLAGS)
+EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
+	-Xlinker \$$ORIGIN/ -Xlinker -rpath-link \
+	-Xlinker
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 
