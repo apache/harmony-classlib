@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.harmony.archive.util.Util;
+
 /**
  * JarFile is used to read jar entries and their associated data from jar files.
  * 
@@ -288,27 +290,23 @@ public class JarFile extends ZipFile {
         int dirLength = META_DIR.length();
 
         boolean signed = false;
+
         if (null != metaEntries) {
             for (ZipEntry entry : metaEntries) {
                 String entryName = entry.getName();
                 if (manifestEntry == null
                         && manifest == null
-                        && entryName.regionMatches(true, dirLength,
-                                MANIFEST_NAME, dirLength, MANIFEST_NAME
-                                        .length()
-                                        - dirLength)) {
+                        && Util.ASCIIIgnoreCaseRegionMatches(entryName,
+                                dirLength, MANIFEST_NAME, dirLength,
+                                MANIFEST_NAME.length() - dirLength)) {
                     manifestEntry = entry;
                     if (verifier == null) {
                         break;
                     }
-                } else if (verifier != null
-                        && entryName.length() > dirLength
-                        && (entryName.regionMatches(true,
-                                entryName.length() - 3, ".SF", 0, 3) //$NON-NLS-1$
-                                || entryName.regionMatches(true, entryName
-                                        .length() - 4, ".DSA", 0, 4) || entryName //$NON-NLS-1$
-                                .regionMatches(true, entryName.length() - 4,
-                                        ".RSA", 0, 4))) { //$NON-NLS-1$
+                } else if (verifier != null && entryName.length() > dirLength
+                        && (Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 3, ".SF", 0 ,3) //$NON-NLS-1$
+                           || Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 4, ".DSA", 0 ,4) //$NON-NLS-1$
+                           || Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 4, ".RSA", 0 ,4))){ //$NON-NLS-1$
                     signed = true;
                     InputStream is = super.getInputStream(entry);
                     byte[] buf = new byte[is.available()];

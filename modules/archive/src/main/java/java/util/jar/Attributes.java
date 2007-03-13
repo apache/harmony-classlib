@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.harmony.archive.util.Util;
+
 /**
  * The Attributes class is used to store values for Manifest entries. Attributes
  * keys are generally instances of Attributes.Name. Values associated with
@@ -113,7 +115,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         @Override
         public int hashCode() {
             if (hashCode == 0) {
-                hashCode = name.toLowerCase().hashCode();
+                hashCode = Util.toASCIILowerCase("name").hashCode();
             }
             return hashCode;
         }
