@@ -601,6 +601,19 @@ public class Raster {
             // awt.284=Overflow Y coordinate of Raster
             throw new RasterFormatException(Messages.getString("awt.284")); //$NON-NLS-1$
         }
+        
+        if (sampleModel instanceof ComponentSampleModel) {
+            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
+                    ((ComponentSampleModel) sampleModel).getScanlineStride());
+        } else if (sampleModel instanceof MultiPixelPackedSampleModel) {
+            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
+                    ((MultiPixelPackedSampleModel) sampleModel)
+                            .getScanlineStride());
+        } else if (sampleModel instanceof SinglePixelPackedSampleModel) {
+            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
+                    ((SinglePixelPackedSampleModel) sampleModel)
+                            .getScanlineStride());
+        }
 
         this.sampleModel = sampleModel;
         this.dataBuffer = dataBuffer;
@@ -839,6 +852,13 @@ public class Raster {
         return width;
     }
 
+    private static void validateDataBuffer(final DataBuffer dataBuffer, final int w,
+            final int h, final int scanlineStride) {
+        if (dataBuffer.getSize() < (scanlineStride * (h - 1) + w - 1)) {
+            // awt.298=dataBuffer is too small
+            throw new RasterFormatException(Messages.getString("awt.298")); //$NON-NLS-1$
+        }
+    }
 }
 
 

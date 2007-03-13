@@ -45,13 +45,31 @@ public class RasterTest extends TestCase {
         }
     }
     
-    // Regression test for harmony-2717
-    public void test_createPackedRaster() throws RasterFormatException {
+    public void testCreatePackedRaster() throws RasterFormatException {
+        // Regression test for harmony-2717
         try {
             Raster.createPackedRaster(null, -32, Integer.MAX_VALUE, 35, new int[] {}, null);
-            fail("Exception expected");
+            fail("Exception expected"); //$NON-NLS-1$
         } catch (NullPointerException expectedException) {
             // Expected
+        }
+        
+        // Regression for HARMONY-2884
+        try {
+            Raster.createPackedRaster(new DataBufferInt(1), 7, 9, 214,
+                    new int[] { 0, 0, 0 }, new Point(10292, 0));
+            fail("RasterFormatException expected!"); //$NON-NLS-1$
+        } catch (RasterFormatException e) {
+            // expected
+        }
+        
+        try {
+            Raster.createRaster(new SinglePixelPackedSampleModel(1, 10, 12, 0,
+                    new int[431]), new DataBufferUShort(new short[5], 3),
+                    new Point());
+            fail("RasterFormatException expected!"); //$NON-NLS-1$
+        } catch (RasterFormatException e) {
+            // expected
         }
     }
     
@@ -90,7 +108,7 @@ public class RasterTest extends TestCase {
         // Regression test for HARMONY-2875
         try {
             Raster.createRaster(new BandedSampleModel(1, 2, 3, 4),
-                    new DataBufferByte(new byte[191], 0),
+                    new DataBufferByte(new byte[191], 5),
                     new Point(new Point(28, 43))).getPixels(6,
                     Integer.MAX_VALUE, 1, 0, new int[] {});
             fail("ArrayIndexOutOfBoundsException should be thrown"); //$NON-NLS-1$
