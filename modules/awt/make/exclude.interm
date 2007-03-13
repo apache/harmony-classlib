@@ -1,0 +1,3 @@
+# intermittent failure, seems RobotTest depends on
+# whether mouse or keyboard were touched during the test
+java/awt/RobotTest.java
