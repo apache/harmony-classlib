@@ -62,6 +62,50 @@ public class FileWriterTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.io.FileWriter#FileWriter(java.io.File, boolean)
+     */
+    public void test_ConstructorLjava_io_FileZ() throws Exception {
+        // Test for method java.io.FileWriter(java.io.File)
+        //append = true
+        {
+            FileWriter fileWriter = new FileWriter(f);
+
+            String first = "The first string for testing. ";
+            fileWriter.write(first);
+            fileWriter.close();
+
+            fileWriter = new FileWriter(f, true);
+            String second = "The second String for testing.";
+            fileWriter.write(second);
+            fileWriter.close();
+
+            FileReader fileReader = new FileReader(f);
+            char[] out = new char[first.length() + second.length() + 10];
+            int length = fileReader.read(out);
+            fileReader.close();
+            assertEquals(first + second, new String(out, 0, length));
+        }
+        //append = false
+        {
+            FileWriter fileWriter = new FileWriter(f);
+            String first = "The first string for testing. ";
+            fileWriter.write(first);
+            fileWriter.close();
+
+            fileWriter = new FileWriter(f, false);
+            String second = "The second String for testing.";
+            fileWriter.write(second);
+            fileWriter.close();
+
+            FileReader fileReader = new FileReader(f);
+            char[] out = new char[first.length() + second.length() + 10];
+            int length = fileReader.read(out);
+            fileReader.close();
+            assertEquals(second, new String(out, 0, length));
+        }
+    }
+    
 	/**
 	 * @tests java.io.FileWriter#FileWriter(java.io.FileDescriptor)
 	 */
