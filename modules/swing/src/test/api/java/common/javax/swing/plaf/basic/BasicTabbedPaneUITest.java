@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -543,7 +544,14 @@ public class BasicTabbedPaneUITest extends SwingTestCase {
     }
 
     public void testPaintGraphicsJComponent() {
-        // Note: painting code, cannot test
+        BasicTabbedPaneUI localBasicTabbedPaneUI = new BasicTabbedPaneUI(); 
+        localBasicTabbedPaneUI.installUI(new JTabbedPane());
+        try { 
+            localBasicTabbedPaneUI.paint(null, new JToolBar()); 
+            fail("NPE is not thrown"); 
+        } catch (NullPointerException e) {
+            // PASSED
+        } 
     }
 
     public void testPaintContentBorder() {

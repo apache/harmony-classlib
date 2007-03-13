@@ -1297,6 +1297,10 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
     }
 
     public void paint(final Graphics g, final JComponent c) {
+	if (g == null) {
+            throw new NullPointerException();
+        }
+
         if (tabPane.getTabCount() == 0) {
             return;
         }
