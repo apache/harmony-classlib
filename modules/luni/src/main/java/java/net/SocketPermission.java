@@ -159,11 +159,13 @@ public final class SocketPermission extends Permission implements Serializable {
                 return false;
             }
         }
-        if (this.portMin != sp.portMin) {
-            return false;
-        }
-        if (this.portMax != sp.portMax) {
-            return false;
+        if (this.actionsMask != SP_RESOLVE) {
+            if (this.portMin != sp.portMin) {
+                return false;
+            }
+            if (this.portMax != sp.portMax) {
+                return false;
+            }
         }
         return this.actionsMask == sp.actionsMask;
     }
