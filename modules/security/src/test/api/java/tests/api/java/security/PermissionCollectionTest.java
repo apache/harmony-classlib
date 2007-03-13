@@ -71,29 +71,49 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         try {
             fileOut = new FileOutputStream(policyFile);
             String linebreak = System.getProperty("line.separator");
-            String towrite = "grant codeBase \""
-                    + signedBKS.toExternalForm()
-                    + "\" signedBy \"eleanor\" {"
-                    + linebreak
-                    + "permission java.io.FilePermission \"test1.txt\", \"write\";"
-                    + linebreak
-                    + "permission mypackage.MyPermission \"essai\", signedBy \"eleanor,dylan\";"
-                    + linebreak
-                    + "};"
-                    + linebreak
-                    + "grant codeBase \""
-                    + signedBKS.toExternalForm()
-                    + "\" signedBy \"eleanor\" {"
-                    + linebreak
-                    + "permission java.io.FilePermission \"test2.txt\", \"write\";"
-                    + linebreak + "};" + linebreak + "grant codeBase \"";
-            towrite += classURL.toExternalForm();
-            towrite += "\" {" + linebreak
-                    + "permission java.security.AllPermission;" + linebreak
-                    + "};" + linebreak + "keystore \""
-                    + keystoreBKS.toExternalForm()
-                    + "\",\"BKS\";";
-            fileOut.write(towrite.getBytes());
+            StringBuilder towrite = new StringBuilder();
+            towrite.append("grant {");
+            towrite.append(linebreak);
+            towrite.append("permission java.io.FilePermission \"");
+            towrite.append(signedBKS.getFile());
+            towrite.append("\", \"read\";");
+            towrite.append(linebreak);
+            towrite.append("permission java.lang.RuntimePermission \"getProtectionDomain\";");
+            towrite.append(linebreak);
+            towrite.append("permission java.security.SecurityPermission \"getPolicy\";");
+            towrite.append(linebreak);
+            towrite.append("};");
+            towrite.append(linebreak);
+            towrite.append("grant codeBase \"");
+            towrite.append(signedBKS.toExternalForm());
+            towrite.append("\" signedBy \"eleanor\" {");
+            towrite.append(linebreak);
+            towrite.append("permission java.io.FilePermission \"test1.txt\", \"write\";");
+            towrite.append(linebreak);
+            towrite.append("permission mypackage.MyPermission \"essai\", signedBy \"eleanor,dylan\";");
+            towrite.append(linebreak);
+            towrite.append("};");
+            towrite.append(linebreak);
+            towrite.append("grant codeBase \"");
+            towrite.append(signedBKS.toExternalForm());
+            towrite.append("\" signedBy \"eleanor\" {");
+            towrite.append(linebreak);
+            towrite.append("permission java.io.FilePermission \"test2.txt\", \"write\";");
+            towrite.append(linebreak);
+            towrite.append("};");
+            towrite.append(linebreak);
+            towrite.append("grant codeBase \"");
+            towrite.append(classURL.toExternalForm());
+            towrite.append("\" {");
+            towrite.append(linebreak);
+            towrite.append("permission java.security.AllPermission;");
+            towrite.append(linebreak);
+            towrite.append("};");
+            towrite.append(linebreak);
+            towrite.append("keystore \"");
+            towrite.append(keystoreBKS.toExternalForm());
+            towrite.append("\",\"BKS\";");            
+            fileOut.write(towrite.toString().getBytes());
             fileOut.flush();
         } finally {
             if (fileOut != null) {
@@ -143,9 +163,9 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         StringTokenizer resultTokenizer = new StringTokenizer(result, ",");
 
         // Check the test result from the new VM process
-        assertEquals("Permission should be granted", "true", resultTokenizer
+        assertEquals("Permission should be granted", "false", resultTokenizer
                 .nextToken());
-        assertEquals("signed Permission should be granted", "true",
+        assertEquals("signed Permission should be granted", "false",
                 resultTokenizer.nextToken());
         assertEquals("Permission should not be granted", "false",
                 resultTokenizer.nextToken());
