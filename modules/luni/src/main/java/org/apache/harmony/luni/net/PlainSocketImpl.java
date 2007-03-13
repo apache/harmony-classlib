@@ -223,6 +223,8 @@ class PlainSocketImpl extends SocketImpl {
                                 timeout, trafficClass, address);
                     }
                 }
+            } else {
+            	netImpl.connectDatagram(fd, aPort, trafficClass, address);
             }
         } catch (ConnectException e) {
             throw new ConnectException(anAddr + ":" + aPort + " - "

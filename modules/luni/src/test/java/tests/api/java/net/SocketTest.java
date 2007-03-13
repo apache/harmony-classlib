@@ -520,15 +520,17 @@ public class SocketTest extends SocketTestCase {
 		out.close();
 		assertTrue("write to closed socket did not cause exception", exception);
 
-        // Regression test for harmony-2934
-        s = new Socket("127.0.0.1", 0, false);
-        OutputStream o = s.getOutputStream();
-        o.write(1);
+		// Regression test for harmony-2934
+        s = new Socket("127.0.0.1", Support_PortManager.getNextPortForUDP(),
+				false);
+		OutputStream o = s.getOutputStream();
+		o.write(1);
 
-        // Regression test for harmony-2942
-        s = new Socket("0.0.0.0", 0, false);
-        o = s.getOutputStream();
-        o.write(1);
+		// Regression test for harmony-2942
+		s = new Socket("0.0.0.0", Support_PortManager.getNextPortForUDP(),
+				false);
+		o = s.getOutputStream();
+		o.write(1);
 	}
 
 	/**
@@ -794,18 +796,9 @@ public class SocketTest extends SocketTestCase {
 		// give things some time to settle
 		Thread.sleep(1000);
 
-		int totalBytesRead = 0;
-		byte[] myBytes = new byte[100];
-		while (theInput.available() > 0) {
-			int bytesRead = theInput.read(myBytes, totalBytesRead,
-					myBytes.length - totalBytesRead);
-			totalBytesRead = totalBytesRead + bytesRead;
-		}
-
-		String receivedString = new String(myBytes, 0, totalBytesRead);
-		assertTrue("We should have received no data on shutdown input:"
-				+ receivedString, 0 == totalBytesRead);
-
+		// RI fails here. It is a RI bug not to return 0 to indicate EOF
+		assertEquals(0, theInput.available());
+		
 		theSocket.close();
 		serverSocket.close();
 	}
