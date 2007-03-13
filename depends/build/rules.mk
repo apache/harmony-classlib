@@ -41,13 +41,13 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) $(EXPFILE)
 	$(DLL_LD) -shared -Wl,--version-script,$(EXPFILE) $(LDFLAGS) \
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) \
-	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
+	$(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX) \
 	$(OSLIBS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(CC) $(VMLINK) $(LDFLAGS) \
 	$(BUILDFILES) \
-	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
+	$(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX) \
 	-o $@ $(OSLIBS) \
 	-Xlinker -z -Xlinker origin \
 	-Xlinker -rpath -Xlinker \$$ORIGIN/ \

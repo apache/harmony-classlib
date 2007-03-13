@@ -31,6 +31,8 @@ CXX_DLL_LD = $(CXX)
 STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
 XLIBS = -L/usr/X11R6/lib -lX11 -lXft
+MDLLIBPREFIX = -Xlinker --start-group
+MDLLIBSUFFIX = -Xlinker --end-group
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 
