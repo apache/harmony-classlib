@@ -87,6 +87,7 @@ import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.text.TextUtils;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 
 public abstract class BasicTextUI extends TextUI implements ViewFactory {
@@ -689,11 +690,11 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     }
 
     public void installUI(final JComponent c) {
-        super.installUI(c);
-
-        if (c == null || (!(c instanceof JTextComponent))) {
-            return;
+        if (!(c instanceof JTextComponent)) {
+            throw new Error(Messages.getString("swing.B1")); //$NON-NLS-1$
         }
+        
+        super.installUI(c);
 
         setComponent((JTextComponent)c);
 

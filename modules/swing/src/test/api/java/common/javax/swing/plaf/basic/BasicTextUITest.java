@@ -33,6 +33,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -65,6 +66,8 @@ import javax.swing.text.PlainView;
 import javax.swing.text.Position;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
+
+import junit.framework.AssertionFailedError;
 
 public class BasicTextUITest extends SwingTestCase {
     MyBasicTextUI basicTextUI;
@@ -176,8 +179,8 @@ public class BasicTextUITest extends SwingTestCase {
         super.tearDown();
     }
 
-    public void testBasicTextUI() {
-    }
+//    public void testBasicTextUI() {
+//    }
 
     private void getPos(final BasicTextUI ui, final int start, final Position.Bias bias,
             final int direction, final int samplePos, final Position.Bias sample,
@@ -470,6 +473,34 @@ public class BasicTextUITest extends SwingTestCase {
         assertEquals(caretBlinkRate, caret.getBlinkRate());
         assertEquals(jta.getDocument().getDefaultRootElement(), jta.getUI().getRootView(jta)
                 .getElement());
+    }
+
+    // Regression test for HARMONY-1779
+    public void testInstallUINull() {
+        basicTextUI = new MyBasicTextUI();
+        try {
+            basicTextUI.installUI(null);
+            fail("Error is expected (\"TextUI needs JTextComponent\")");
+        } catch (AssertionFailedError e) {
+            // Let JUnit handle its exceptions
+            throw e;
+        } catch (Error e) {
+            // expected
+        }
+    }
+
+    // Regression test for HARMONY-1779
+    public void testInstallUINonTextComponent() {
+        basicTextUI = new MyBasicTextUI();
+        try {
+            basicTextUI.installUI(new JMenuItem());
+            fail("Error is expected (\"TextUI needs JTextComponent\")");
+        } catch (AssertionFailedError e) {
+            // Let JUnit handle its exceptions
+            throw e;
+        } catch (Error e) {
+            // expected
+        }
     }
 
     public void testGetKeymapName() {
