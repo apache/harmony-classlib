@@ -219,6 +219,7 @@
 
     <!-- names of exclude lists, used by prepare-exclude-list macro -->
     <property name="common.exclude.file" value="exclude.common" />
+    <property name="common.exclude.interm" value="exclude.interm" />
     <property name="platform.exclude.file"
               value="exclude.${hy.platform}.${hy.test.vm.name}" />
     <property name="interm.exclude.file"
@@ -392,7 +393,8 @@ properties in preference to these:
                <fileset dir="@{dir}">
                    <include name="${common.exclude.file}"/> 
                    <include name="${platform.exclude.file}"/>
-                   <include name="${interm.exclude.file}"/>
+                   <include name="${common.exclude.interm}" if="exclude.interm" />
+                   <include name="${interm.exclude.file}" if="exclude.interm" />
 		   <size value="0" when="more"/>
                </fileset>
            </concat>
