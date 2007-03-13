@@ -26,37 +26,20 @@ public class NotActiveExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.NotActiveException#NotActiveException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.io.NotActiveException()
-		try {
-			ObjectOutputStream os = new ObjectOutputStream(
-					new ByteArrayOutputStream());
-			os.defaultWriteObject();
-		} catch (NotActiveException e) {
-			// Correct
-			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Failed to throw exception");
-	}
+    public void test_Constructor() {
+        // Test for method java.io.NotActiveException()
+        NotActiveException e = new NotActiveException();
+        assertNull(e.getMessage());
+    }
 
 	/**
 	 * @tests java.io.NotActiveException#NotActiveException(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.io.NotActiveException(java.lang.String)
-		try {
-			ObjectOutputStream os = new ObjectOutputStream(
-					new ByteArrayOutputStream());
-			os.defaultWriteObject();
-		} catch (NotActiveException e) {
-			// Correct
-			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Failed to throw expected exception");
+        String message = "Exception message";
+        NotActiveException e = new NotActiveException(message);
+        assertSame(message, e.getMessage());
 	}
 
 	/**
