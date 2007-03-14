@@ -17,11 +17,7 @@
 
 package tests.api.java.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
-
-import tests.support.Support_StringReader;
 
 public class NotSerializableExceptionTest extends junit.framework.TestCase {
 
@@ -29,18 +25,8 @@ public class NotSerializableExceptionTest extends junit.framework.TestCase {
 	 * @tests java.io.NotSerializableException#NotSerializableException()
 	 */
 	public void test_Constructor() {
-		// Test for method java.io.NotSerializableException()
-		try {
-			ObjectOutputStream os = new ObjectOutputStream(
-					new ByteArrayOutputStream());
-			os.writeObject(new Support_StringReader("l"));
-		} catch (NotSerializableException e) {
-			// Correct
-			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Failed to throw expected exception");
+        NotSerializableException nse = new NotSerializableException();
+        assertNull(nse.getMessage());
 	}
 
 	/**
@@ -48,17 +34,9 @@ public class NotSerializableExceptionTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.io.NotSerializableException(java.lang.String)
-		try {
-			ObjectOutputStream os = new ObjectOutputStream(
-					new ByteArrayOutputStream());
-			os.writeObject(new Support_StringReader("l"));
-		} catch (NotSerializableException e) {
-			// Correct
-			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Failed to throw expected exception");
+        String message = "Test message";
+        NotSerializableException nse = new NotSerializableException(message);
+        assertSame(message, nse.getMessage());
 	}
 
 	/**
