@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.harmony.archive.util.Util;
+
 public class JarInputStream extends ZipInputStream {
 
     private Manifest manifest;
@@ -52,7 +54,7 @@ public class JarInputStream extends ZipInputStream {
         if ((mEntry = getNextJarEntry()) == null) {
             return;
         }
-        String name = mEntry.getName().toUpperCase();
+        String name = Util.toASCIIUpperCase(mEntry.getName());
         if (name.equals(JarFile.META_DIR)) {
             mEntry = null; // modifies behavior of getNextJarEntry()
             closeEntry();
@@ -162,7 +164,7 @@ public class JarInputStream extends ZipInputStream {
                 return null;
             }
             if (verifier != null) {
-                isMeta = jarEntry.getName().toUpperCase().startsWith(
+                isMeta = Util.toASCIIUpperCase(jarEntry.getName()).startsWith(
                         JarFile.META_DIR);
                 if (isMeta) {
                     verStream = new ByteArrayOutputStream();

@@ -37,6 +37,8 @@ import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.security.utils.JarUtils;
 
+import org.apache.harmony.archive.util.Util;
+
 /**
  * Non-public class used by {@link JarFile} and
  * {@link JarInputStream} to manage the verification of signed
@@ -215,7 +217,7 @@ class JarVerifier {
      * @see #removeMetaEntries()
      */
     void addMetaEntry(String name, byte[] buf) {
-        metaEntries.put(name.toUpperCase(), buf);
+        metaEntries.put(Util.toASCIIUpperCase(name), buf);
     }
 
     /**
