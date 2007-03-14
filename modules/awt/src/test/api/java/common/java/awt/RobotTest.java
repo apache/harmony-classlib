@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
 package java.awt;
 
 import java.awt.event.InputEvent;
@@ -293,6 +289,7 @@ public class RobotTest extends TestCase {
         int key = KeyEvent.VK_SPACE;
         robot.delay(500);
         robot.keyPress(key);
+        robot.delay(1000);
         assertNotNull("key event was dispatched", keyEvent);
         assertEquals("key pressed", KeyEvent.KEY_PRESSED, keyEvent.getID());
         assertEquals("proper key is pressed", key, keyEvent.getKeyCode());
@@ -325,10 +322,11 @@ public class RobotTest extends TestCase {
                keyEvent = ke;
            }
         });
-        robot.setAutoDelay(500);
+        robot.setAutoDelay(100);
         int key = KeyEvent.VK_SPACE;
         robot.keyPress(key);
         robot.keyRelease(key);
+        robot.delay(1000);
         assertNotNull(keyEvent);
         assertEquals(KeyEvent.KEY_RELEASED, keyEvent.getID());
         assertEquals(key, keyEvent.getKeyCode());
@@ -351,7 +349,7 @@ public class RobotTest extends TestCase {
 
     public final void testMouseMove() {
         Point p = new Point(100, 200);
-        robot.setAutoDelay(500);
+        robot.setAutoDelay(0);
         robot.mouseMove(p.x, p.y);
         assertEquals(p, MouseInfo.getPointerInfo().getLocation());
     }
@@ -374,9 +372,10 @@ public class RobotTest extends TestCase {
                mouseEvent = me;
            }
         });
-        robot.setAutoDelay(500);
+        robot.setAutoDelay(0);
         int mask = InputEvent.BUTTON1_MASK;
         robot.mousePress(mask);
+        robot.delay(5000);
         assertNotNull(mouseEvent);
         assertEquals(MouseEvent.MOUSE_PRESSED, mouseEvent.getID());
         assertEquals(MouseEvent.BUTTON1, mouseEvent.getButton());
@@ -403,9 +402,10 @@ public class RobotTest extends TestCase {
                mouseEvent = me;
            }
         });
-        robot.setAutoDelay(500);
+        robot.setAutoDelay(0);
         robot.mousePress(mask);
         robot.mouseRelease(mask);
+        robot.delay(5000);
         assertNotNull("event is not null", mouseEvent);
         assertEquals("mouse released", MouseEvent.MOUSE_RELEASED,
                      mouseEvent.getID());
@@ -427,8 +427,9 @@ public class RobotTest extends TestCase {
                 mouseEvent = mwe;
             }
         });
-        robot.setAutoDelay(500);
+        robot.setAutoDelay(100);
         robot.mouseWheel(scroll);
+        robot.delay(1000);
         assertNotNull(mouseEvent);
         assertTrue(mouseEvent instanceof MouseWheelEvent);
         assertEquals(MouseEvent.MOUSE_WHEEL, mouseEvent.getID());
