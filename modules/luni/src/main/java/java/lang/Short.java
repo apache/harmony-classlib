@@ -68,12 +68,6 @@ public final class Short extends Number implements Comparable<Short> {
 	// Note: This can't be set to "short.class", since *that* is
 	// defined to be "java.lang.Short.TYPE";
 
-    /**
-     * <p>
-     * A cache of instances used by {@link #valueOf(short)} and auto-boxing.
-     * </p>
-     */
-    private static final Short[] CACHE = new Short[256];
     
 	/**
 	 * Constructs a new instance of this class given a string.
@@ -173,7 +167,7 @@ public final class Short extends Number implements Comparable<Short> {
 	 */
 	@Override
     public boolean equals(Object object) {
-		return (object == this) || (object instanceof Short)
+		return (object instanceof Short)
 				&& (value == ((Short) object).value);
 	}
 
@@ -357,10 +351,21 @@ public final class Short extends Number implements Comparable<Short> {
         if (s < -128 || s > 127) {
             return new Short(s);
         }
-        synchronized (CACHE) {
-            int idx = 128 + s; // 128 matches a cache size of 256
-            Short result = CACHE[idx];
-            return (result == null ? CACHE[idx] = new Short(s) : result);
+        return valueOfCache.CACHE[s+128];
+    }
+
+    static class valueOfCache {
+        /**
+         * <p>
+         * A cache of instances used by {@link Short#valueOf(short)} and auto-boxing.
+         * </p>
+         */
+        private static final Short[] CACHE = new Short[256];
+
+        static {
+            for(int i=-128; i<=127; i++) {
+                CACHE[i+128] = new Short((short)i);
+            }
         }
     }
 }

@@ -1701,13 +1701,6 @@ public final class Character implements Serializable, Comparable<Character> {
         return value - c.value;
     }
     
-    /*
-     * Provides a cache for the 'valueOf' method. A size of 512 should cache the
-     * first couple pages of Unicode, which includes the ASCII/Latin-1
-     * characters, which other parts of this class are optimized for.
-     */
-    private static final Character[] CACHE = new Character[512];
-
     /**
      * <p>
      * Returns a <code>Character</code> instance for the <code>char</code>
@@ -1720,18 +1713,28 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static Character valueOf(char c) {
-        if (c > CACHE.length) {
+        if (c >= CACHE_LEN ) {
             return new Character(c);
         }
-        synchronized (CACHE) {
-            Character ch = CACHE[c];
-            if (ch == null) {
-                CACHE[c] = ch = new Character(c);
-            }
-            return ch;
-        }
+        return valueOfCache.CACHE[c];
     }
 
+    private static final int CACHE_LEN = 512;
+
+    static class valueOfCache {
+        /*
+        * Provides a cache for the 'valueOf' method. A size of 512 should cache the
+        * first couple pages of Unicode, which includes the ASCII/Latin-1
+        * characters, which other parts of this class are optimized for.
+        */
+        private static final Character[] CACHE = new Character[CACHE_LEN ];
+
+        static {
+            for(int i=0; i<CACHE.length; i++){
+                CACHE[i] =  new Character((char)i);
+            }
+        }
+    }
     /**
      * <p>
      * A test for determining if the <code>codePoint</code> is a valid Unicode
@@ -2491,7 +2494,7 @@ public final class Character implements Serializable, Comparable<Character> {
      */
     @Override
     public boolean equals(Object object) {
-        return (object == this) || (object instanceof Character)
+        return (object instanceof Character)
                 && (value == ((Character) object).value);
     }
 

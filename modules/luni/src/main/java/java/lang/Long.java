@@ -75,12 +75,6 @@ public final class Long extends Number implements Comparable<Long> {
      */
     public static final int SIZE = 64;
 
-    /**
-     * <p>
-     * A cache of instances used by {@link #valueOf(long)} and auto-boxing.
-     * </p>
-     */
-    private static final Long[] CACHE = new Long[256];
 
     /**
      * Constructs a new instance of the receiver which represents the long
@@ -212,7 +206,7 @@ public final class Long extends Number implements Comparable<Long> {
      */
     @Override
     public boolean equals(Object o) {
-        return (o == this) || (o instanceof Long)
+        return (o instanceof Long)
                 && (value == ((Long) o).value);
     }
 
@@ -830,10 +824,21 @@ public final class Long extends Number implements Comparable<Long> {
         if (lng < -128 || lng > 127) {
             return new Long(lng);
         }
-        synchronized (CACHE) {
-            int idx = 128 + (int) lng; // 128 matches a cache size of 256
-            Long result = CACHE[idx];
-            return (result == null ? CACHE[idx] = new Long(lng) : result);
+        return valueOfCache.CACHE[128+(int)lng];
+    }
+
+    static class valueOfCache {
+        /**
+         * <p>
+         * A cache of instances used by {@link Long#valueOf(long)} and auto-boxing.
+         * </p>
+         */
+        static final Long[] CACHE = new Long[256];
+
+        static {
+            for(int i=-128; i<=127; i++) {
+                CACHE[i+128] = new Long(i);
+            }
         }
     }
 }

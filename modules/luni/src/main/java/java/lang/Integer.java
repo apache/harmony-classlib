@@ -76,13 +76,6 @@ public final class Integer extends Number implements Comparable<Integer> {
     // defined to be "java.lang.Integer.TYPE";
 
     /**
-     * <p>
-     * A cache of instances used by {@link #valueOf(int)} and auto-boxing.
-     * </p>
-     */
-    private static final Integer[] CACHE = new Integer[256];
-
-    /**
      * Constructs a new instance of the receiver which represents the int valued
      * argument.
      * 
@@ -212,7 +205,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     @Override
     public boolean equals(Object o) {
-        return (o == this) || (o instanceof Integer)
+        return (o instanceof Integer)
                 && (value == ((Integer) o).value);
     }
 
@@ -816,10 +809,22 @@ public final class Integer extends Number implements Comparable<Integer> {
         if (i < -128 || i > 127) {
             return new Integer(i);
         }
-        synchronized (CACHE) {
-            int idx = 128 + i; // 128 matches a cache size of 256
-            Integer result = CACHE[idx];
-            return (result == null ? CACHE[idx] = new Integer(i) : result);
+        return valueOfCache.CACHE [i+128];
+
+    }
+
+   static class valueOfCache {
+        /**
+         * <p>
+         * A cache of instances used by {@link Integer#valueOf(int)} and auto-boxing.
+         * </p>
+         */
+        static final Integer[] CACHE = new Integer[256];
+
+        static {
+            for(int i=-128; i<=127; i++) {
+                CACHE[i+128] = new Integer(i);
+            }
         }
     }
 }
