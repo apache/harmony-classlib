@@ -166,9 +166,7 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 			host = InetAddress.getByName(Support_Configuration.UnresolvedIP);
 		} catch (UnknownHostException e) {
 		}
-		if (!host.getHostName().equals(Support_Configuration.UnresolvedIP)) {
-			fail("IP maps to host: " + host);
-		}
+		
 		SocketPermission perm1 = new SocketPermission(
 				Support_Configuration.UnresolvedIP, "connect");
 		SocketPermission perm2 = new SocketPermission(
