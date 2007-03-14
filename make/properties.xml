@@ -222,7 +222,7 @@
     <property name="common.exclude.interm" value="exclude.interm" />
     <property name="platform.exclude.file"
               value="exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="interm.exclude.file"
+    <property name="platform.exclude.interm"
               value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
 
     <!-- flags -->
@@ -394,8 +394,8 @@ properties in preference to these:
                    <include name="${common.exclude.file}"/> 
                    <include name="${platform.exclude.file}"/>
                    <include name="${common.exclude.interm}" if="exclude.interm" />
-                   <include name="${interm.exclude.file}" if="exclude.interm" />
-		   <size value="0" when="more"/>
+                   <include name="${platform.exclude.interm}" if="exclude.interm" />
+                   <size value="0" when="more"/>
                </fileset>
            </concat>
        </sequential>
