@@ -386,11 +386,11 @@ public abstract class CharsetDecoder {
              */
             if (result.isUnderflow()) {
                 int remaining = in.remaining();
+                status = endOfInput ? END : ONGOING;
                 if (endOfInput && remaining > 0) {
                     result = CoderResult.malformedForLength(remaining);
                     in.position(in.position() + result.length());
                 } else {
-                    status = endOfInput ? END : ONGOING;
                     return result;
                 }
             }

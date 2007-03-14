@@ -90,7 +90,7 @@ public class UTF16CharsetDecoderTest extends CharsetDecoderTest {
 			out.clear();
 			assertSame(CoderResult.UNDERFLOW, decoder.decode(ByteBuffer
 					.wrap(new byte[] { -1, -2, 32, 0, 98 }), out, false));
-			assertTrue(decoder
+			assertFalse(decoder
 					.decode(ByteBuffer.wrap(new byte[] {}), out, true)
 					.isMalformed());
 
@@ -106,7 +106,7 @@ public class UTF16CharsetDecoderTest extends CharsetDecoderTest {
 			out.clear();
 			assertSame(CoderResult.UNDERFLOW, decoder.decode(ByteBuffer
 					.wrap(new byte[] { -1, -2, 32, 0, 98 }), out, false));
-			assertFalse(decoder.decode(ByteBuffer.wrap(new byte[] { 0 }), out,
+			assertTrue(decoder.decode(ByteBuffer.wrap(new byte[] { 0 }), out,
 					true).isMalformed());
 
 		}

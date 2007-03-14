@@ -488,6 +488,7 @@ public abstract class CharsetEncoder {
                 }
             }
             if (result.isOverflow()) {
+                status = endOfInput ? END : ONGOING;
                 return result;
             }
             CodingErrorAction action = malformAction;
