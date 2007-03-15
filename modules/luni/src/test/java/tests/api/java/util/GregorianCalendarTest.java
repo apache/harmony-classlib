@@ -659,14 +659,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_getI() { 
         // Regression test for HARMONY-2959
         Date date = new Date(Date.parse("Jan 15 00:00:01 GMT 2000")); 
-        GregorianCalendar gc = new GregorianCalendar(); 
+        GregorianCalendar gc = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
         gc.setGregorianChange(date); 
         gc.setTimeInMillis(Date.parse("Dec 24 00:00:01 GMT 2000")); 
         assertEquals(346, gc.get(Calendar.DAY_OF_YEAR)); 
         
         // Regression test for HARMONY-3003
         date = new Date(Date.parse("Feb 28 00:00:01 GMT 2000"));
-        gc = new GregorianCalendar();
+        gc = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         gc.setGregorianChange(date);
         gc.setTimeInMillis(Date.parse("Dec 1 00:00:01 GMT 2000"));
         assertEquals(1, gc.get(Calendar.DAY_OF_MONTH));
