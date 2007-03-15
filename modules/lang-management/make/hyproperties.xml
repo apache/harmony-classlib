@@ -24,21 +24,21 @@
             <resources location="src/main/resources" />
          </main>
          <test>
-	         <api>
-	            <java location="src/test/api/java" />
-	            <resources location="src/test/api/resources" />
-	         </api>
-	         <impl>
-	            <java location="src/test/impl/java" />
-	            <resources location="src/test/impl/resources" />
-	         </impl>
+             <api>
+                <java location="src/test/api/java" />
+                <resources location="src/test/api/resources" />
+             </api>
+             <impl>
+                <java location="src/test/impl/java" />
+                <resources location="src/test/impl/resources" />
+             </impl>
          </test>
       </src>
       <bin>
         <main location="bin/main" />
         <test>
-        	<api location="bin/api" />
-        	<impl location="bin/impl" />
+            <api location="bin/api" />
+            <impl location="bin/impl" />
         </test>
       </bin>
       <packaging>
