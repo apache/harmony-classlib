@@ -150,8 +150,34 @@ public class SerialClobTest extends TestCase {
         // TODO: Not yet implemented
     }
 
-    public void testPositionLStringJ() {
-        // TODO: Not yet implemented
+    public void testPositionLStringJ() throws Exception {
+        String s = "helloo";
+        char[] buf = s.toCharArray();
+        SerialClob serialClob = new SerialClob(buf);
+        
+        long pos = serialClob.position("llo", 1);
+        assertEquals(3, pos);
+        
+        pos = serialClob.position("llo", 3);
+        assertEquals(3, pos);
+        
+        pos = serialClob.position("o", 6);
+        assertEquals(6, pos);
+        
+        pos = serialClob.position("ooooooo", 1);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position("llo", 4);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position("llo", 0);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position("llo", -1);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position("llo", 10);
+        assertEquals(-1, pos);
     }
 
     public void testSetAsciiStream() {

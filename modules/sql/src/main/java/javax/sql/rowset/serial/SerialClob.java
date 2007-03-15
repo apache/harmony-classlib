@@ -113,8 +113,31 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public long position(String searchstr, long start) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        if (start < 1 || len - (start - 1) < searchstr.length()) {
+            return -1;
+        }
+        char[] pattern = searchstr.toCharArray();
+        for (int i = (int) start - 1; i < len; i++) {
+            if (match(buf, i, pattern)) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
+    /*
+     * Returns true if the chars array contains exactly the same elements from
+     * start position to start + pattern.length as pattern. Otherwise returns
+     * false.
+     */
+    private boolean match(char[] chars, int start, char[] pattern) {
+        for (int i = 0; i < pattern.length;) {
+            if (chars[start++] != pattern[i++]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public OutputStream setAsciiStream(long pos) throws SerialException,
