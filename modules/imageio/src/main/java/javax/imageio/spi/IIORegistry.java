@@ -21,9 +21,11 @@
 package javax.imageio.spi;
 
 import java.util.Arrays;
+
 import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageReaderSpi;
 import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageWriterSpi;
 import org.apache.harmony.x.imageio.plugins.png.PNGImageReaderSpi;
+import org.apache.harmony.x.imageio.plugins.png.PNGImageWriterSpi;
 import org.apache.harmony.x.imageio.spi.FileIISSpi;
 import org.apache.harmony.x.imageio.spi.FileIOSSpi;
 import org.apache.harmony.x.imageio.spi.InputStreamIISSpi;
@@ -32,7 +34,7 @@ import org.apache.harmony.x.imageio.spi.RAFIISSpi;
 import org.apache.harmony.x.imageio.spi.RAFIOSSpi;
 
 /**
- * @author Rustem V. Rafikov
+ * @author Rustem V. Rafikov, Viskov Nikolay
  * @version $Revision: 1.3 $
  */
 public final class IIORegistry extends ServiceRegistry {
@@ -57,6 +59,7 @@ public final class IIORegistry extends ServiceRegistry {
         registerServiceProvider(new JPEGImageWriterSpi());
         registerServiceProvider(new JPEGImageReaderSpi());
         registerServiceProvider(new PNGImageReaderSpi());
+        registerServiceProvider(new PNGImageWriterSpi());
         registerServiceProvider(new FileIOSSpi());
         registerServiceProvider(new FileIISSpi());
         registerServiceProvider(new RAFIOSSpi());
