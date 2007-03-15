@@ -19,12 +19,13 @@
  * @version $Revision$
  */
 package org.apache.harmony.x.swing.text.html.cssparser;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class CSSLogger {
     public boolean loggingEnabled = true;
 
     public void logError(final Token token) {
-        printMessage("CSSParser: failed to parse " + getTokenInfo(token));
+        printMessage(Messages.getString("swing.err.18", getTokenInfo(token))); //$NON-NLS-1$
     }
 
 

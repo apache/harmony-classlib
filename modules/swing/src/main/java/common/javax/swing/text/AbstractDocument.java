@@ -284,7 +284,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             if (AbstractDocument.this.getCurrentWriter()
                 != Thread.currentThread()) {
 
-                throw new Error("The thread doesn't have the write lock");
+                throw new Error(Messages.getString("swing.err.0F")); //$NON-NLS-1$
             }
         }
 
@@ -865,7 +865,7 @@ public abstract class AbstractDocument implements Document, Serializable {
             final int index = readers.indexOf(currentThread);
 
             if (index == -1) {
-                throw new Error("This thread doesn't hold read lock");
+                throw new Error(Messages.getString("swing.err.10")); //$NON-NLS-1$
             }
 
             readers.remove(index);
@@ -899,11 +899,8 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         public final synchronized void writeUnlock() {
             if (writer != Thread.currentThread()) {
-                throw new Error("Can't unlock document from "
-                                + "writing the reason being the current thread "
-                                + "doesn't hold the lock");
+                throw new Error(Messages.getString("swing.err.11")); //$NON-NLS-1$            }
             }
-
             if (--writerCount == 0) {
                 writer = null;
                 readers.clear();

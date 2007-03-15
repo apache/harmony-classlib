@@ -2,6 +2,7 @@
 package org.apache.harmony.x.swing.text.html.cssparser;
 
 import org.apache.harmony.x.swing.text.html.cssparser.metamodel.*;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class CSSParser implements CSSParserConstants {
     private final CSSLogger logger = new CSSLogger();
@@ -53,7 +54,7 @@ public class CSSParser implements CSSParserConstants {
     result = styleSheet();
     jj_consume_token(0);
     {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public Sheet styleSheet() throws ParseException {
@@ -73,7 +74,7 @@ public class CSSParser implements CSSParserConstants {
     }
     styleSheetBody(result);
       {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public String importStatement() throws ParseException {
@@ -93,7 +94,7 @@ public class CSSParser implements CSSParserConstants {
     }
     jj_consume_token(SEMICOLON);
         {if (true) return TokenResolver.resolve(importValue);}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public String import_recoverable() throws ParseException {
@@ -104,7 +105,7 @@ public class CSSParser implements CSSParserConstants {
       skipTillImportEnd();
     }
       {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public void styleSheetBody(final Sheet sheet) throws ParseException {
@@ -198,7 +199,7 @@ public class CSSParser implements CSSParserConstants {
     }
     jj_consume_token(CLOSE_BRACE);
      {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public RuleSet ruleSet_recoverable() throws ParseException {
@@ -209,7 +210,7 @@ public class CSSParser implements CSSParserConstants {
      skipTillRuleSetEnd();
     }
      {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public String selector() throws ParseException {
@@ -270,7 +271,7 @@ public class CSSParser implements CSSParserConstants {
       throw new ParseException();
     }
      {if (true) return TokenResolver.resolve(startToken, getToken(0), true);}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public void simple_selector() throws ParseException {
@@ -369,7 +370,7 @@ public class CSSParser implements CSSParserConstants {
       ;
     }
       {if (true) return null;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public Property declaration_recoverable() throws ParseException {
@@ -380,7 +381,7 @@ public class CSSParser implements CSSParserConstants {
       skipTillDeclarationEnd();
     }
       {if (true) return result;}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public void prio() throws ParseException {
@@ -447,7 +448,7 @@ public class CSSParser implements CSSParserConstants {
       ;
     }
       {if (true) return result.toString();}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public String term() throws ParseException {
@@ -498,7 +499,7 @@ public class CSSParser implements CSSParserConstants {
       throw new ParseException();
     }
       {if (true) return TokenResolver.resolve(startToken, getToken(0), false);}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public String oper() throws ParseException {
@@ -516,7 +517,7 @@ public class CSSParser implements CSSParserConstants {
       throw new ParseException();
     }
       {if (true) return TokenResolver.resolve(oper);}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   final public void unary_oper() throws ParseException {
@@ -538,7 +539,7 @@ public class CSSParser implements CSSParserConstants {
   Token name;
     name = jj_consume_token(IDENT);
       {if (true) return TokenResolver.resolve(name);}
-    throw new Error("Missing return statement in function");
+    throw new Error(Messages.getString("swing.err.15")); //$NON-NLS-1$
   }
 
   void skipTillExpressionEnd() throws ParseException {

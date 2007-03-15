@@ -298,7 +298,7 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
     }
 
     public boolean isTearOff() {
-        throw new Error("Not yet implemented");
+        throw new Error(Messages.getString("swing.err.0A")); //$NON-NLS-1$
     }
 
     public boolean isTopLevelMenu() {
@@ -312,7 +312,7 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     @Override
     public void setAccelerator(KeyStroke keyStroke) {
-        throw new Error("setAccelerator() in not used for JMenu. Use setMnemonic() instead.");
+        throw new Error(Messages.getString("swing.err.0B","setAccelerator()","setMnemonic()"));//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

@@ -127,7 +127,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
             message = e.getMessage();
         }
         assertTrue(bWasException);
-        assertEquals("document must be StyledDocument", message);
+        assertTrue(message.endsWith("'StyledDocument'"));
         StyledEditorKit styledKit = new StyledEditorKit();
         jep.setEditorKit(styledKit);
         assertEquals(jep.getDocument(), action.getStyledDocument(jep));
@@ -140,7 +140,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
             message = e.getMessage();
         }
         assertTrue(bWasException);
-        assertEquals("document must be StyledDocument", message);
+        assertTrue(message.endsWith("'StyledDocument'"));
     }
 
     public void testGetStyledEditorKit() {
@@ -152,7 +152,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
             message = e.getMessage();
         }
         assertTrue(bWasException);
-        assertEquals("EditorKit must be StyledEditorKit", message);
+        assertTrue(message.endsWith("'StyledEditorKit'"));
         StyledEditorKit styledKit = new StyledEditorKit();
         jep.setEditorKit(styledKit);
         assertEquals(styledKit, action.getStyledEditorKit(jep));

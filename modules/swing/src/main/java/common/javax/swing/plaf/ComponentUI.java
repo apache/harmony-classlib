@@ -27,6 +27,8 @@ import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.swing.JComponent;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public abstract class ComponentUI {
     public void update(final Graphics graphics, final JComponent component) {
         if (component.isOpaque()) {
@@ -73,7 +75,8 @@ public abstract class ComponentUI {
     }
 
     public static ComponentUI createUI(final JComponent component) {
-        throw new Error("ComponentUI.createUI not implemented");
+        throw new Error(Messages.getString("swing.err.0C", "ComponentUI.createUI")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }
+
 

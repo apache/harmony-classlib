@@ -69,7 +69,7 @@ public class JTextPane extends JEditorPane implements ImageObserver,
         if (doc instanceof StyledDocument) {
             super.setDocument(doc);
         } else {
-            throw new IllegalArgumentException(Messages.getString("swing.48")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("swing.48", "StyledDocument")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -222,7 +222,7 @@ public class JTextPane extends JEditorPane implements ImageObserver,
         if (kit instanceof StyledEditorKit) {
             super.setEditorKit(kit);
         } else {
-            throw new IllegalArgumentException(Messages.getString("swing.49")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("swing.49","StyledEditorKit")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

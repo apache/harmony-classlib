@@ -94,7 +94,7 @@ public abstract class FlowView extends BoxView {
                 span += viewSpan;
             }
             if (index == -1) {
-                throw new Error("view to break on not found");
+                throw new Error(Messages.getString("swing.err.14")); //$NON-NLS-1$
             }
 
             View broken = toBreak.breakView(fv.getFlowAxis(),

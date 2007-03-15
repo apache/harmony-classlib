@@ -32,6 +32,8 @@ import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 /**
  * <p>
  * <i>JMenuBar</i>
@@ -210,11 +212,11 @@ public class JMenuBar extends JComponent implements Accessible, MenuElement {
     }
 
     public void setHelpMenu(JMenu menu) {
-        throw new Error("setHelpMenu() hasn't been implemented yet");
+        throw new Error(Messages.getString("swing.err.0C", "setHelpMenu()")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public JMenu getHelpMenu() {
-        throw new Error("getHelpMenu() hasn't been implemented yet");
+        throw new Error(Messages.getString("swing.err.0C", "getHelpMenu()")); //$NON-NLS-1$ //$NON-NLS-2$ 
     }
 
     public void setMargin(Insets margin) {

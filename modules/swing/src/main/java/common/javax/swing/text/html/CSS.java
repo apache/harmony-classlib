@@ -2972,8 +2972,7 @@ public class CSS implements Serializable {
 
     static final class FixedSetValuesError extends Error {
         FixedSetValuesError(final int index, final String className) {
-            super("Can't create value holder for " + index
-                  + " of type " + className);
+            super(Messages.getString("swing.err.07", index, className)); //$NON-NLS-1$
         }
     }
 

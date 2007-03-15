@@ -40,6 +40,8 @@ import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoableEdit;
 
+import org.apache.harmony.x.swing.internal.nls.Messages;
+
 public class DefaultStyledDocument extends AbstractDocument
     implements StyledDocument {
 
@@ -345,7 +347,7 @@ public class DefaultStyledDocument extends AbstractDocument
                     break;
 
                 default:
-                    throw new Error("Unknown type in the spec");
+                    throw new Error(Messages.getString("swing.err.12")); //$NON-NLS-1$
                 }
             }
         }
@@ -485,7 +487,7 @@ public class DefaultStyledDocument extends AbstractDocument
                 break;
 
             default:
-                throw new Error("Unknown direction in the ElementSpec");
+                throw new Error(Messages.getString("swing.err.13","ElementSpec")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -1454,4 +1456,5 @@ public class DefaultStyledDocument extends AbstractDocument
         oos.defaultWriteObject();
     }
 }
+
 

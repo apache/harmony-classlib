@@ -327,9 +327,9 @@ public abstract class JComponent extends Container implements Serializable {
 
     private JPopupMenu componentPopupMenu;
 
-    private static final String ILLEGAL_CONDITION_MESSAGE = "condition must be one of "
-            + "JComponent.WHEN_IN_FOCUSED_WINDOW, JComponent.WHEN_FOCUSED "
-            + "or JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT";
+    private static final String ILLEGAL_CONDITION_MESSAGE = 
+            Messages.getString("swing.B3","JComponent.WHEN_IN_FOCUSED_WINDOW, JComponent.WHEN_FOCUSED ", //$NON-NLS-1$ //$NON-NLS-2$
+                    "JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT"); //$NON-NLS-1$ 
 
     private boolean opaque;
 

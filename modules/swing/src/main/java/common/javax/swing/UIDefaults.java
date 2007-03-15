@@ -321,7 +321,7 @@ public class UIDefaults extends Hashtable<Object, Object> {
             String classID = comp.getUIClassID();
             String fullClassName = (String)get(classID);
             if (fullClassName == null) {
-                getUIError("there is no UI class for " + classID + " key");
+                getUIError(Messages.getString("swing.err.0D", classID)); //$NON-NLS-1$
                 return null;
             }
             Class uiClass = (Class)get(fullClassName);

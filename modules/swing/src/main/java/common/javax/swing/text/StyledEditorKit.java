@@ -166,9 +166,9 @@ public class StyledEditorKit extends DefaultEditorKit {
 
     public abstract static class StyledTextAction extends TextAction {
         private static final String documentExceptionMessage =
-            "document must be StyledDocument";
+            Messages.getString("swing.48","StyledDocument"); //$NON-NLS-1$ //$NON-NLS-2$
         private static final String editorKitExceptionMessage =
-            "EditorKit must be StyledEditorKit";
+            Messages.getString("swing.49","StyledEditorKit"); //$NON-NLS-1$ //$NON-NLS-2$
 
         public StyledTextAction(final String name) {
             super(name);
@@ -494,5 +494,6 @@ public class StyledEditorKit extends DefaultEditorKit {
         }
     }
 }
+
 
 

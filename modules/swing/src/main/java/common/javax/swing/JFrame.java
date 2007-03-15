@@ -30,6 +30,7 @@ import java.awt.event.WindowEvent;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleStateSet;
+import org.apache.harmony.x.swing.internal.nls.Messages;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -369,8 +370,8 @@ public class JFrame extends Frame implements WindowConstants, Accessible, RootPa
                 break;
             default:
                 throw new IllegalArgumentException(
-                        "defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE,"
-                                + " HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
+                    Messages.getString("swing.B2","defaultCloseOperation", //$NON-NLS-1$ //$NON-NLS-2$
+                        "DO_NOTHING_ON_CLOSE, HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, EXIT_ON_CLOSE")); //$NON-NLS-1$ 
         }
         firePropertyChange("defaultCloseOperation", oldOperation, operation);
     }
