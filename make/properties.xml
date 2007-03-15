@@ -387,8 +387,8 @@ properties in preference to these:
     <pathconvert property="converted.tc" >
         <path path="${test.case}"/>
         <compositemapper>
-            <unpackagemapper from="${basedir}/*Test" to="*Test.java" />
-            <globmapper from="${basedir}/*.java" to="*.java" />
+            <unpackagemapper from="${basedir}${file.separator}*Test" to="*Test.java" />
+            <globmapper from="${basedir}${file.separator}*.java" to="*.java" />
         </compositemapper>
     </pathconvert>
 
