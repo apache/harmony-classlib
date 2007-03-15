@@ -380,6 +380,18 @@ properties in preference to these:
         </sequential>
     </macrodef>
 
+
+    <!-- To use with -Dtest.case=... option                   -->
+    <!-- if ${test.case} is provided in package+class form    -->
+    <!-- it is converted to dir+filename form                 -->
+    <pathconvert property="converted.tc" >
+        <path path="${test.case}"/>
+        <compositemapper>
+            <unpackagemapper from="${basedir}/*Test" to="*Test.java" />
+            <globmapper from="${basedir}/*.java" to="*.java" />
+        </compositemapper>
+    </pathconvert>
+
     <!-- Concatenate several exclude lists into single list -->
     <macrodef name="prepare-exclude-list">
        <attribute name="moduleName"/>

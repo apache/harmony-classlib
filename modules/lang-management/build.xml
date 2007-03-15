@@ -197,12 +197,13 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                 <fileset dir="${hy.lang-management.src.test.api.java}" >
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${lang-management.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case"/>
+                    <excludesfile name="${lang-management.exclude.file}" unless="test.case"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -234,12 +235,13 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                 <fileset dir="${hy.lang-management.src.test.impl.java}">
-                    <include name="**/*Test.java" />
-                    <excludesfile name="${lang-management.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${lang-management.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>
