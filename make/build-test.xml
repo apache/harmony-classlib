@@ -74,7 +74,7 @@
         <delete dir="${report.dir}" />
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}" includes="TEST*-*.xml">
-                <containsregexp expression='(errors|failures)="[1-9]' />
+                <containsregexp expression='(errors|failures)=.[1-9]' />
                 <exclude name="TESTS-TestSuites.xml" />
             </fileset>
             <report format="frames" todir="${report.dir}"/>
