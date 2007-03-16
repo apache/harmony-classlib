@@ -10,7 +10,7 @@ org/apache/harmony/awt/gl/render/JavaBlitterTest.java
 java/awt/image/RasterTest.java
 # Intermittent failure, seems RobotTest depends on
 # whether mouse or keyboard were touched during the test.
-# However, it fails to often to be in the intermittent list
+# However, it fails too often to be in the intermittent list
 java/awt/RobotTest.java
 # ayza: constantly fails for me 
 java/awt/ComponentTest.java
