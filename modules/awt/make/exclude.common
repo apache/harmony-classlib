@@ -1,5 +1,4 @@
 java/awt/ToolkitRTest.java
-java/awt/geom/ShapeTest.java
 java/awt/AccessibleAWTComponentTest.java
 java/awt/AccessibleAWTListChildTest.java
 java/awt/ChoiceTest.java
