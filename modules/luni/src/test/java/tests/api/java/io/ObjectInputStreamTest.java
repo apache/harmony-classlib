@@ -773,6 +773,47 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         }
     }
 	
+    static class ObjectInputStreamWithResolveObject extends ObjectInputStream {
+        
+        public static Integer intObj = Integer.valueOf(1000);
+        
+        public ObjectInputStreamWithResolveObject(InputStream in) throws IOException {
+            super(in);
+            enableResolveObject(true);
+        }
+        
+        protected Object resolveObject(Object obj) throws IOException {
+            if(obj instanceof Integer){
+                obj = intObj;
+            }
+            return super.resolveObject(obj);
+        }        
+    }
+    
+    /**
+     * @tests java.io.ObjectInputStream#resolveObject(Object)
+     */
+    public void test_resolveObjectLjava_lang_Object() throws Exception {
+        // Write an Integer object into memory
+        Integer original = new Integer(10);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(original);
+        oos.flush();
+        oos.close();
+
+        // Read the object from memory
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        ObjectInputStreamWithResolveObject ois = 
+            new ObjectInputStreamWithResolveObject(bais);
+        Integer actual = (Integer) ois.readObject();
+        ois.close();
+
+        // object should be resolved from 10 to 1000 
+        assertEquals(ObjectInputStreamWithResolveObject.intObj, actual);
+    }
+    
 	public void test_readClassDescriptor() throws IOException,
 			ClassNotFoundException {
 
