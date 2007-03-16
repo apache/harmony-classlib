@@ -1,0 +1,5 @@
+# CC reports about failures of these tests
+java/awt/AccessibleAWTWindowTest.java 
+java/awt/AccessibleAWTCanvasTest.java
+java/awt/font/LineBreakMeasurerTest.java
+
