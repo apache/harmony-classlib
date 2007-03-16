@@ -694,11 +694,15 @@ public class BasicInternalFrameUI extends InternalFrameUI {
     }
 
     protected void setupMenuOpenKey() {
+        if (frame == null) {
+            throw new NullPointerException();
+        }
+
         Object[] keys = (Object[])UIManager.get("InternalFrame.windowBindings");
         if (keys == null) {
             return;
         }
-
+        
         InputMap map = LookAndFeel.makeComponentInputMap(frame, keys);
         SwingUtilities.replaceUIInputMap(
                 frame, JComponent.WHEN_IN_FOCUSED_WINDOW, map);

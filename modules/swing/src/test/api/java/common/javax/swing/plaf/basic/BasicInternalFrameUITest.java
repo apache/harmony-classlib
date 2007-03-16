@@ -281,6 +281,14 @@ public class BasicInternalFrameUITest extends SwingTestCase {
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
         assertNotNull("inputMap installed", uiInputMap);
         assertEquals(1, uiInputMap.allKeys().length);
+        
+        // Regression test for HARMONY-2709
+        try {
+            new BasicInternalFrameUI(null).setupMenuOpenKey();
+            fail("NPE expected");
+        } catch (NullPointerException npe) {
+            // PASSED
+        } 
     }
 
     /*
