@@ -331,9 +331,9 @@
                     <exclude name="**/*Headless*Test.java"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <include name="**/*Test*.java"/>
+                    <include name="**/*Test.java"/>
                     <excludesfile name="${awt.exclude.file}" />
-                    <exclude name="**/*Headless*Test*.java"/>
+                    <exclude name="**/*Headless*Test.java"/>
                 </fileset>
             </batchtest>  
         </junit>
@@ -364,7 +364,7 @@
                     <excludesfile name="${awt.exclude.file}" />
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <include name="**/*Headless*Test*.java"/>
+                    <include name="**/*Headless*Test.java"/>
                     <excludesfile name="${awt.exclude.file}" />
                 </fileset>
             </batchtest>  

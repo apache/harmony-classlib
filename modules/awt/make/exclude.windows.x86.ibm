@@ -1,7 +1,0 @@
-java/awt/AWTTestCase.java
-java/awt/SerializeTestCase.java
-java/awt/geom/ShapeTestCase.java
-java/awt/geom/GeomTestCase.java
-java/awt/geom/PathIteratorTestCase.java
-org/apache/harmony/awt/gl/MultiRectAreaTestCase.java
-java/awt/WinWindowRTest.java

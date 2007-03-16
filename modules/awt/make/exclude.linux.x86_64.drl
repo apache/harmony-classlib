@@ -1,8 +1,5 @@
-java/awt/ComponentTest.java
-java/awt/WindowTest.java
 org/apache/harmony/awt/gl/linux/XGraphics2DRTest.java
 java/awt/BasicStrokeTest.java
-java/awt/KeyboardFocusManagerRTest.java
 java/awt/geom/CubicCurve2DDoubleTest.java
 java/awt/geom/CubicCurve2DFloatTest.java
 java/awt/geom/CubicCurve2DTest.java
@@ -11,3 +8,16 @@ java/awt/geom/Rectangle2DTest.java
 java/awt/image/BufferedImageFilterTest.java
 java/awt/KeyboardFocusManagerRTest.java
 org/apache/harmony/awt/tests/nativebridge/PointerPointerTest.java
+java/awt/font/TextLayoutTest.java
+java/awt/font/TextMeasurerTest.java
+
+# The following tests crash 32bit version of DRLVM if all AWT tests are executed in a batch.
+# Most likely it will crash 64 bit VM as well.
+java/awt/ButtonRTest.java
+java/awt/BorderLayoutTest.java
+java/awt/CardLayoutTest.java
+java/awt/FlowLayoutTest.java
+java/awt/GridLayoutTest.java
+java/awt/GridBagLayoutTest.java
+java/awt/KeyboardFocusManagerRTest.java
+java/awt/ScrollPaneAdjustableTest.java
