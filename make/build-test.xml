@@ -91,6 +91,11 @@
              manifest="support/META-INF/MANIFEST.MF">
             <fileset dir="${tests.support.output}" />
         </jar>
+        <copy todir="${hy.hdk}/build/test"> 
+        <fileset dir="${jetty.dir}">
+            <include name="*.jar" />
+        </fileset>
+        </copy>
     </target>
 
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
