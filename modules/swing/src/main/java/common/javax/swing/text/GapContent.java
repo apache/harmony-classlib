@@ -364,8 +364,12 @@ public class GapContent
     }
 
     final void insertItems(final int where, final Object addItems,
-                             final int addSize)
+                           final int addSize)
         throws BadLocationException {
+
+        if (addSize == 0) {
+            return;
+        }
 
         if (where < 0 || where > length()) {
             throw new BadLocationException(Messages.getString("swing.8E"), where); //$NON-NLS-1$
@@ -399,6 +403,10 @@ public class GapContent
         if (where < 0 || where + nitems >= length()) {
 
             throw new BadLocationException(Messages.getString("swing.7F"), where); //$NON-NLS-1$
+        }
+
+        if (nitems == 0) {
+            return;
         }
 
         if (where + nitems == gapStart) {

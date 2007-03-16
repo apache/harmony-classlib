@@ -16,6 +16,8 @@
  */
 package javax.swing.text;
 
+import javax.swing.BasicSwingTestCase;
+
 import junit.framework.TestCase;
 
 public class GapContent_GapVectorTest extends TestCase {
@@ -87,6 +89,37 @@ public class GapContent_GapVectorTest extends TestCase {
         }
     }
 
+    public void testInsertStringNull() throws BadLocationException {
+        try {
+            gv.insertString(0, null);
+            fail("NullPointerException is expected");
+        } catch (NullPointerException e) { }
+        assertEquals(10, gv.getGapStart());
+        assertEquals(19, gv.getGapEnd());
+    }
+
+    public void testInsertStringEmpty() throws BadLocationException {
+        gv.insertString(0, "");
+        assertEquals(10, gv.getGapStart());
+        assertEquals(19, gv.getGapEnd());
+    }
+
+    public void testInsertStringInvalidNull() {
+        try {
+            gv.insertString(-1, null);
+
+            fail("NullPointerException or BadLocationException must be thrown");
+        } catch (NullPointerException e) {
+            if (!BasicSwingTestCase.isHarmony()) {
+                fail("Unexpected NullPointerException");
+            }
+        } catch (BadLocationException e) {
+            if (BasicSwingTestCase.isHarmony()) {
+                fail("Unexpected BadLocationException");
+            }
+        }
+    }
+
     public void testRemoveValid() throws BadLocationException {
         gv.remove(1, 7);
         assertEquals(1, gv.getGapStart());
@@ -110,6 +143,24 @@ public class GapContent_GapVectorTest extends TestCase {
         }
     }
 
+    public void testRemoveEmpty() throws BadLocationException {
+        gv.remove(1, 0);
+
+        assertEquals(10, gv.getGapStart());
+        assertEquals(19, gv.getGapEnd());
+    }
+
+    public void testRemoveEmptyInvalid() {
+        try {
+            gv.remove(-1, 0);
+
+            fail("BadLocationException should be thrown");
+        } catch (BadLocationException e) { }
+
+        assertEquals(10, gv.getGapStart());
+        assertEquals(19, gv.getGapEnd());
+    }
+
     public void testReplace() throws BadLocationException {
         char[] charArray = { 'z', 'y', 'x', 'w', 'v' };
         gv.replace(3, 5, charArray, 3);
@@ -121,6 +172,74 @@ public class GapContent_GapVectorTest extends TestCase {
         }
         for (int i = gv.getGapEnd(), j = 0; j < chars2.length; i++, j++) {
             assertEquals("2 @ " + i, chars2[j], array[i]);
+        }
+    }
+
+    // HARMONY-1809
+    public void testReplaceInvalidRemovePosition() throws Exception {
+        gv.replace(-2, 2, null, 0);
+        if (BasicSwingTestCase.isHarmony()) {
+            // Harmony just ignores the operation
+            // because GapContent.removeItems throws BadLocationException;
+            assertEquals("abcdefghij\n", gv.getString(0, gv.length()));
+        } else {
+            assertEquals("cdefghij\n", gv.getString(0, gv.length()));
+        }
+    }
+
+    // HARMONY-1809
+    public void testReplaceInvalidRemoveLength() throws Exception {
+        gv.replace(5, 6, null, 0);
+        if (BasicSwingTestCase.isHarmony()) {
+            // Harmony just ignores the operation
+            // because GapContent.removeItems throws BadLocationException;
+            assertEquals("abcdefghij\n", gv.getString(0, gv.length()));
+        } else {
+            assertEquals("abcde", gv.getString(0, gv.length()));
+        }
+    }
+
+    // HARMONY-1809
+    public void testReplaceNullInsert() throws Exception {
+        gv.replace(0, 0, null, 0);
+        assertEquals(10, gv.getGapStart());
+        assertEquals(19, gv.getGapEnd());
+        assertEquals("abcdefghij\n", gv.getString(0, gv.length()));
+    }
+
+    // HARMONY-1809
+    public void testReplaceInvalidInsertLength() throws Exception {
+        try {
+            gv.replace(0, 0, new char[] {'1'}, 2);
+            fail("ArrayIndexOutOfBounds is expected");
+        } catch (ArrayIndexOutOfBoundsException e) { }
+
+        if (BasicSwingTestCase.isHarmony()) {
+            assertEquals(0, gv.getGapStart());
+            assertEquals(9, gv.getGapEnd());
+            assertEquals("abcdefghij\n", gv.getString(0, gv.length()));
+        } else {
+            assertEquals(2, gv.getGapStart());
+            assertEquals(9, gv.getGapEnd());
+            assertEquals("ababcdefghij\n", gv.getString(0, gv.length()));
+        }
+    }
+
+    // HARMONY-1809
+    public void testReplaceInvalidInsertLengthNegative() throws Exception {
+        try {
+            gv.replace(0, 0, new char[] {'1'}, -1);
+            fail("ArrayIndexOutOfBounds is expected");
+        } catch (ArrayIndexOutOfBoundsException e) { }
+
+        if (BasicSwingTestCase.isHarmony()) {
+            assertEquals(0, gv.getGapStart());
+            assertEquals(9, gv.getGapEnd());
+            assertEquals("abcdefghij\n", gv.getString(0, gv.length()));
+        } else {
+            assertEquals(-1, gv.getGapStart());
+            assertEquals(9, gv.getGapEnd());
+            assertEquals("bcdefghij\n", gv.getString(0, gv.length()));
         }
     }
 
