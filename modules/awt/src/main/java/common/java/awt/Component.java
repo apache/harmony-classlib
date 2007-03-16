@@ -3265,13 +3265,13 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         toolkit.lockAWT();
         try {
             if (isMinimumSizeSet()) {
-                return new Dimension(minimumSize);
+                return (Dimension)minimumSize.clone();
             }
             Dimension defSize = getDefaultMinimumSize();
-            if (defSize == null) {
-                defSize = (isDisplayable() ? new Dimension(1, 1) : new Dimension(w, h));
+            if (defSize != null) {
+                return (Dimension)defSize.clone();
             }
-            return new Dimension(defSize);
+            return isDisplayable()? new Dimension(1, 1) : new Dimension(w, h);
         } finally {
             toolkit.unlockAWT();
         }
