@@ -741,6 +741,8 @@ netLookupErrorString (JNIEnv * env, I_32 anErrorNum)
       return "Unable to allocate the fdset structure";
     case HYPORT_ERROR_SOCKET_CONNECTION_REFUSED:
       return "Connection refused";
+	case HYPORT_ERROR_FILE_LOCKED:
+      return "File has been locked by another process";
 
     default:
       return (char *) hysock_error_message ();

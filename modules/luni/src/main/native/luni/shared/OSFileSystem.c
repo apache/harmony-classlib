@@ -22,7 +22,7 @@
 #include <string.h>
 #include "iohelp.h"
 #include "exceptions.h"
-
+#include "nethelp.h"
 #include "OSFileSystem.h"
 #include "IFileSystem.h"
 
@@ -71,6 +71,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readI
   result =
     (jlong) hyfile_read ((IDATA) fd, (void *) (bytes + offset),
                          (IDATA) nbytes);
+  if(result == -1 && hyerror_last_error_number() == HYPORT_ERROR_FILE_LOCKED){
+    throwNewExceptionByName(env, "java/io/IOException", netLookupErrorString(env, HYPORT_ERROR_FILE_LOCKED));
+  }
   (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
 
   return result;
@@ -92,6 +95,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   result =
     (jlong) hyfile_write ((IDATA) fd, (void *) (bytes + offset),
                          (IDATA) nbytes);
+  if(result == -1 && hyerror_last_error_number() == HYPORT_ERROR_FILE_LOCKED){
+    throwNewExceptionByName(env, "java/io/IOException", netLookupErrorString(env, HYPORT_ERROR_FILE_LOCKED));
+  }
    (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
 
   return result;

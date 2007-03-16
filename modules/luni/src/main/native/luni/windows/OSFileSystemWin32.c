@@ -151,6 +151,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readv
   int i = 0;
   while(i<size){
     long bytesRead = hyfile_read ((IDATA) fd, (void *) (*(bufs+i)+*(offsets+i)), (IDATA) *(lengths+i));
+    if(bytesRead == -1 && hyerror_last_error_number() == HYPORT_ERROR_FILE_LOCKED){
+        throwNewExceptionByName(env, "java/io/IOException", netLookupErrorString(env, HYPORT_ERROR_FILE_LOCKED));
+	break;
+    }
     if(bytesRead == -1){
         if (totalRead == 0){
                 totalRead = -1;
@@ -190,6 +194,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   int i = 0;
   while(i<size){
     long bytesWritten = hyfile_write ((IDATA) fd, (void *) (*(bufs+i)+*(offsets+i)), (IDATA) *(lengths+i));
+    if(bytesWritten == -1 && hyerror_last_error_number() == HYPORT_ERROR_FILE_LOCKED){
+        throwNewExceptionByName(env, "java/io/IOException", netLookupErrorString(env, HYPORT_ERROR_FILE_LOCKED));
+	break;
+    }
     if(bytesWritten == -1){
         totalWritten = -1;
         break;

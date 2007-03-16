@@ -65,6 +65,8 @@ findError (I_32 errorCode)
       return HYPORT_ERROR_FILE_EXIST;
     case ERROR_NOT_ENOUGH_MEMORY:
       return HYPORT_ERROR_FILE_SYSTEMFULL;
+    case ERROR_LOCK_VIOLATION:
+      return HYPORT_ERROR_FILE_LOCKED;
     default:
       return HYPORT_ERROR_FILE_OPFAILED;
     }
