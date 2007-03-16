@@ -279,6 +279,9 @@ public class BasicScrollBarUI extends ScrollBarUI implements LayoutManager, Swin
     }
 
     protected void configureScrollBarColors() {
+        if (scrollbar == null)
+            throw new NullPointerException();
+            
         if ((thumbColor == null) || (thumbColor instanceof UIResource)) {
             thumbColor = UIManager.getColor("ScrollBar.thumb");
         }

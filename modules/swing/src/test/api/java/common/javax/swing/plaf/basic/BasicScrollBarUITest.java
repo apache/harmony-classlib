@@ -257,6 +257,15 @@ public class BasicScrollBarUITest extends BasicSwingTestCase {
         f.dispose();
     }
 
+    public void testConfigureScrollBarColors() {
+	try {            
+            new BasicScrollBarUI().configureScrollBarColors();
+            fail("NPE expected");
+        } catch (NullPointerException npe) {
+            // PASSED
+        }
+    }
+
     private JFrame createFrame(final JScrollPane pane) throws Exception {
         final JFrame f = new JFrame();
         f.getContentPane().add(pane);
