@@ -22,22 +22,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.CacheRequest;
 import java.net.CacheResponse;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ResponseCache;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import tests.support.Support_Configuration;
-import tests.support.resource.Support_Resources;
+import tests.support.Support_Jetty;
 
 public class HttpURLConnectionTest extends junit.framework.TestCase {
 
@@ -56,6 +53,17 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
     private Map<String, List<String>> mockHeaderMap;
 
     private InputStream mockIs = new MockInputStream();
+    
+    private static int port;
+
+    static {
+        // run-once set up
+        try {
+            port = Support_Jetty.startDefaultHttpServer();
+        } catch (Exception e) {
+            fail("Exception during setup jetty : " + e.getMessage());
+        }
+    }
 
     /**
      * @tests java.net.HttpURLConnection#getResponseCode()
@@ -193,85 +201,9 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.net.HttpURLConnection#usingProxy()
-     */
-    public void test_usingProxy() throws Exception {
-        try {
-            System.setProperty("http.proxyHost",
-                    Support_Configuration.ProxyServerTestHost);
-
-            URL u1 = new URL("http://" + Support_Configuration.HomeAddress);
-            URLConnection conn1 = u1.openConnection();
-            conn1.getInputStream();
-
-            boolean exception = false;
-            try {
-                System.setProperty("http.proxyPort", "81");
-                URL u3 = new URL("http://"
-                        + Support_Configuration.InetTestAddress);
-                URLConnection conn3 = u3.openConnection();
-                conn3.getInputStream();
-                fail("Should throw IOException");
-            } catch (IOException e) {
-                //expected
-            }
-            
-            System.setProperty("http.proxyPort", "80");
-
-            URL u2 = new URL("http://"
-                    + Support_Configuration.ProxyServerTestHost
-                    + "/cgi-bin/test.pl");
-            java.net.HttpURLConnection conn2 = (java.net.HttpURLConnection) u2
-                    .openConnection();
-            conn2.setDoOutput(true);
-            conn2.setRequestMethod("POST");
-            OutputStream out2 = conn2.getOutputStream();
-            String posted2 = "this is a test";
-            out2.write(posted2.getBytes());
-            out2.close();
-            conn2.getResponseCode();
-            InputStream is2 = conn2.getInputStream();
-            String response2 = "";
-            byte[] b2 = new byte[1024];
-            int count2 = 0;
-            while ((count2 = is2.read(b2)) > 0)
-                response2 += new String(b2, 0, count2);
-            assertTrue("Response to POST method invalid", response2
-                    .equals(posted2));
-
-            String posted4 = "just a test";
-            URL u4 = new URL("http://"
-                    + Support_Configuration.ProxyServerTestHost
-                    + "/cgi-bin/test.pl");
-            java.net.HttpURLConnection conn4 = (java.net.HttpURLConnection) u4
-                    .openConnection();
-            conn4.setDoOutput(true);
-            conn4.setRequestMethod("POST");
-            conn4.setRequestProperty("Content-length", String.valueOf(posted4
-                    .length()));
-            OutputStream out = conn4.getOutputStream();
-            out.write(posted4.getBytes());
-            out.close();
-            conn4.getResponseCode();
-            InputStream is = conn4.getInputStream();
-            String response = "";
-            byte[] b4 = new byte[1024];
-            int count = 0;
-            while ((count = is.read(b4)) > 0)
-                response += new String(b4, 0, count);
-            assertTrue("Response to POST method invalid", response
-                    .equals(posted4));
-        } finally {
-            System.setProperties(null);
-        }
-    }
-
-    /**
      * @tests java.net.HttpURLConnection#setFixedLengthStreamingMode_I()
      */
     public void test_setFixedLengthStreamingModeI() throws Exception {
-        url = new URL("http://" + Support_Configuration.InetTestAddress);
-        uc = (HttpURLConnection) url.openConnection();
         try {
             uc.setFixedLengthStreamingMode(-1);
             fail("should throw IllegalArgumentException");
@@ -313,8 +245,6 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
      * @tests java.net.HttpURLConnection#setChunkedStreamingMode_I()
      */
     public void test_setChunkedStreamingModeI() throws Exception {
-        url = new URL("http://" + Support_Configuration.InetTestAddress);
-        uc = (HttpURLConnection) url.openConnection();
         uc.setChunkedStreamingMode(0);
         uc.setChunkedStreamingMode(-1);
         uc.setChunkedStreamingMode(-2);
@@ -360,8 +290,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
      */
     public void test_setFixedLengthStreamingModeI_effect() throws Exception {
         String posted = "just a test";
-        URL u = new URL("http://" + Support_Configuration.InetTestAddress);
-        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url
                 .openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
@@ -393,8 +322,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         String posted = "just a test";
         // for test, use half length of the string
         int chunkSize = posted.length() / 2;
-        URL u = new URL("http://" + Support_Configuration.InetTestAddress);
-        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url
                 .openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
@@ -414,8 +342,6 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
     }
 
     public void test_getOutputStream_afterConnection() throws Exception {
-        URLConnection uc = new URL("http://"
-                + Support_Configuration.InetTestAddress).openConnection();
         uc.setDoOutput(true);
         uc.connect();
         assertNotNull(uc.getOutputStream());
@@ -430,8 +356,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         // set cache before URLConnection created, or it does not take effect
         ResponseCache rc = new MockNonCachedResponseCache();
         ResponseCache.setDefault(rc);
-        URLConnection uc = new URL("http://"
-                + Support_Configuration.InetTestAddress).openConnection();
+        uc = (HttpURLConnection) url.openConnection();
         assertFalse(isGetCalled);
         uc.setUseCaches(true);
         uc.setDoOutput(true);
@@ -454,8 +379,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         ResponseCache rc = new MockNonCachedResponseCache();
         ResponseCache.setDefault(rc);
         uc.setUseCaches(true);
-        URLConnection uc = new URL("http://"
-                + Support_Configuration.InetTestAddress).openConnection();
+        URLConnection uc = url.openConnection();
         uc.setDoOutput(true);
         assertFalse(isGetCalled);
         uc.connect();
@@ -476,8 +400,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         // set cache before URLConnection created, or it does not take effect
         ResponseCache rc = new MockNonCachedResponseCache();
         ResponseCache.setDefault(rc);
-        URLConnection uc = new URL("http://"
-                + Support_Configuration.InetTestAddress).openConnection();
+        uc = (HttpURLConnection) url.openConnection();
         assertFalse(isGetCalled);
         uc.setDoOutput(true);
         uc.setUseCaches(true);
@@ -508,8 +431,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         // set cache before URLConnection created, or it does not take effect
         ResponseCache rc = new MockNonCachedResponseCache();
         ResponseCache.setDefault(rc);
-        URLConnection uc = new URL("http://"
-                + Support_Configuration.InetTestAddress).openConnection();
+        URLConnection uc = url.openConnection();
         assertFalse(isGetCalled);
         uc.setDoOutput(true);
         uc.setUseCaches(true);
@@ -528,8 +450,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
      */
     public void test_UseCache_HttpURLConnection_NonCached() throws IOException {
         ResponseCache.setDefault(new MockNonCachedResponseCache());
-        URL u = new URL("http://" + Support_Configuration.InetTestAddress);
-        HttpURLConnection uc = (HttpURLConnection) u.openConnection();
+        uc = (HttpURLConnection) url.openConnection();
 
         // default useCaches is true
         assertTrue(uc.getUseCaches());
@@ -637,8 +558,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
     public void test_UseCache_HttpURLConnection_NoCached_GetOutputStream()
             throws Exception {
         ResponseCache.setDefault(new MockNonCachedResponseCache());
-        URL u = new URL("http://" + Support_Configuration.InetTestAddress);
-        HttpURLConnection uc = (HttpURLConnection) u.openConnection();
+        uc = (HttpURLConnection) url.openConnection();
         uc.setChunkedStreamingMode(10);
         uc.setDoOutput(true);
         uc.getOutputStream();
@@ -769,8 +689,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 
     protected void setUp() {
         try {
-            url = new URL(Support_Resources
-                    .getResourceURL("/URLConnectionTest/Harmony.html"));
+            url = new URL("http://localhost:"+port+"/");
             uc = (HttpURLConnection) url.openConnection();
         } catch (Exception e) {
             fail("Exception during setup : " + e.getMessage());

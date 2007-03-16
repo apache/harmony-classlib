@@ -282,7 +282,9 @@
                     <pathelement path="${hy.luni.bin.test}"/>
                     <pathelement path="${hy.luni.src.test.resources}"/>
                     <pathelement path="../../build/tests"/>
-                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+		    <fileset dir="${hy.hdk}/build/test/">
+		        <include name="*.jar" />
+		    </fileset>
                 </classpath>
                 <!-- Required by various tests that set security manager etc -->
                 <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
