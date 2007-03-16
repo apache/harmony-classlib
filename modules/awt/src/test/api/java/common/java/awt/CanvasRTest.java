@@ -31,4 +31,22 @@ public class CanvasRTest extends TestCase {
         assertNull(c.getName());
 
     }
+    
+    public void testGetMinimumSize() {
+        // Regression for HARMONY-1717
+        final Frame f = new Frame();
+        final Panel p = new Panel(new GridBagLayout());
+        final Component c = new Canvas();
+
+        try {
+            f.setSize(100, 100);
+            c.setSize(10, 10);
+            p.add(c);
+            f.add(p);
+            f.setVisible(true);
+            assertEquals(new Dimension(10, 10), c.getMinimumSize());
+        } finally {
+            f.dispose();
+        }
+    }
 }

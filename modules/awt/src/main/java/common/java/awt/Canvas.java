@@ -124,6 +124,11 @@ public class Canvas extends Component implements Accessible {
             toolkit.unlockAWT();
         }
     }
+    
+    @Override
+    Dimension getDefaultMinimumSize() {
+        return new Dimension(w, h);
+    }
 
     @Override
     ComponentBehavior createBehavior() {        
