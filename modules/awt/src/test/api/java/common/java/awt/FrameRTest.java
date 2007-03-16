@@ -30,4 +30,12 @@ public class FrameRTest extends TestCase {
     public void testConstructor() {
         new Frame();
     }
+
+    // regression test for HARMONY-3318
+    public void testSetTitle() {
+        final Frame frame = new Frame();
+        
+        frame.setTitle(null);
+        assertEquals("", frame.getTitle());  //$NON-NLS-1$
+    }
 }

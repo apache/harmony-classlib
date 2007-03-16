@@ -975,7 +975,7 @@ public class Window extends Container implements Accessible {
         String oldTitle = this.title;
         toolkit.lockAWT();
         try {
-            this.title = title;
+            this.title = (title == null) ? "" : title; //$NON-NLS-1$
             NativeWindow win = getNativeWindow();
             if (win != null) {
                 win.setTitle(title);
