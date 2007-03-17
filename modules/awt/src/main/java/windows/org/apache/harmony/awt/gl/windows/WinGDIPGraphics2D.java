@@ -304,6 +304,13 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
         BasicStroke bs = (BasicStroke)stroke;
         float []dash = bs.getDashArray();
+        if (dash != null && dash.length % 2 == 1) {
+            // If dash len is odd then we need to double the array           
+            float []newDash = new float[dash.length*2];
+            System.arraycopy(dash, 0, newDash, 0, dash.length);
+            System.arraycopy(dash, 0, newDash, dash.length, dash.length);
+            dash = newDash;
+        }
         setPen(gi, bs.getLineWidth(), bs.getEndCap(), bs.getLineJoin(), bs.getMiterLimit(),
                 dash, (dash != null)?dash.length:0, bs.getDashPhase());
     }
