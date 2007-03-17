@@ -617,8 +617,9 @@ public class BasicFileChooserUI extends FileChooserUI {
     }
 
     public void ensureFileIsVisible(final JFileChooser fc, final File f) {
-        fileChooser = fc;  
-        fileChooser.ensureFileIsVisible(f);
+        if (fileChooser != null) {  
+            fileChooser.ensureFileIsVisible(f);
+        }
     }
 
     public JFileChooser getFileChooser() {
