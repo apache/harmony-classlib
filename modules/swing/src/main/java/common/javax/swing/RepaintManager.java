@@ -62,7 +62,7 @@ public class RepaintManager {
 
     private static RepaintManager instance;
     
-    RepaintManager() {
+    public RepaintManager() {
         maximumSize = GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() ? 
                 new Dimension(0,0)
                 : Toolkit.getDefaultToolkit().getScreenSize();
