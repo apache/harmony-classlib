@@ -327,7 +327,7 @@ public class UIDefaults extends Hashtable<Object, Object> {
             Class uiClass = (Class)get(fullClassName);
             Method method = null;
             if (uiClass == null) {
-                uiClass = getUIClass(classID);
+                uiClass = getUIClass(classID, comp.getClass().getClassLoader());
                 method = getCreateUIMethodPriveledged(uiClass);
 
                 put(fullClassName, uiClass);

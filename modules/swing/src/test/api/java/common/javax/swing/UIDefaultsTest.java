@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -187,6 +188,89 @@ public class UIDefaultsTest extends SwingTestCase {
         assertNotNull(classObj);
         Object methodObj = uiDefaults.get(classObj);
         assertNotNull(methodObj);
+    }
+
+    public void testGetUIWithClassLoader() throws Exception {
+        // Regression test for HARMONY-3385
+
+        class ArrayClassLoader extends ClassLoader {
+
+            private Hashtable<String, byte[]> table =
+                    new Hashtable<String, byte[]>();
+
+            ArrayClassLoader() {
+                table.put("MyJLabel", new byte[] {
+                    /*
+                     * public class MyJLabel extends JLabel {
+                     *     public String getUIClassID() {
+                     *         return "LabelUI";
+                     *     }
+                     * }
+                     */
+                    -54, -2, -70, -66, 0, 0, 0, 49, 0, 17, 10, 0, 4, 0, 13, 8,
+                    0, 14, 7, 0, 15, 7, 0, 16, 1, 0, 6, 60, 105, 110, 105, 116,
+                    62, 1, 0, 3, 40, 41, 86, 1, 0, 4, 67, 111, 100, 101, 1, 0,
+                    15, 76, 105, 110, 101, 78, 117, 109, 98, 101, 114, 84, 97,
+                    98, 108, 101, 1, 0, 12, 103, 101, 116, 85, 73, 67, 108, 97,
+                    115, 115, 73, 68, 1, 0, 20, 40, 41, 76, 106, 97, 118, 97,
+                    47, 108, 97, 110, 103, 47, 83, 116, 114, 105, 110, 103, 59,
+                    1, 0, 10, 83, 111, 117, 114, 99, 101, 70, 105, 108, 101, 1,
+                    0, 13, 77, 121, 74, 76, 97, 98, 101, 108, 46, 106, 97, 118,
+                    97, 12, 0, 5, 0, 6, 1, 0, 7, 76, 97, 98, 101, 108, 85, 73,
+                    1, 0, 8, 77, 121, 74, 76, 97, 98, 101, 108, 1, 0, 18, 106,
+                    97, 118, 97, 120, 47, 115, 119, 105, 110, 103, 47, 74, 76,
+                    97, 98, 101, 108, 0, 33, 0, 3, 0, 4, 0, 0, 0, 0, 0, 2, 0,
+                    1, 0, 5, 0, 6, 0, 1, 0, 7, 0, 0, 0, 29, 0, 1, 0, 1, 0, 0,
+                    0, 5, 42, -73, 0, 1, -79, 0, 0, 0, 1, 0, 8, 0, 0, 0, 6, 0,
+                    1, 0, 0, 0, 3, 0, 1, 0, 9, 0, 10, 0, 1, 0, 7, 0, 0, 0, 27,
+                    0, 1, 0, 1, 0, 0, 0, 3, 18, 2, -80, 0, 0, 0, 1, 0, 8, 0, 0,
+                    0, 6, 0, 1, 0, 0, 0, 5, 0, 1, 0, 11, 0, 0, 0, 2, 0, 12 });
+                table.put("MyLabelUI", new byte[] {
+                    /*
+                     * public class MyLabelUI extends LabelUI {
+                     *     public static ComponentUI createUI(JComponent c) {
+                     *         return new MyLabelUI();
+                     *     }
+                     * }
+                     */
+                    -54, -2, -70, -66, 0, 0, 0, 49, 0, 16, 10, 0, 4, 0, 13, 7,
+                    0, 14, 10, 0, 2, 0, 13, 7, 0, 15, 1, 0, 6, 60, 105, 110,
+                    105, 116, 62, 1, 0, 3, 40, 41, 86, 1, 0, 4, 67, 111, 100,
+                    101, 1, 0, 15, 76, 105, 110, 101, 78, 117, 109, 98, 101,
+                    114, 84, 97, 98, 108, 101, 1, 0, 8, 99, 114, 101, 97, 116,
+                    101, 85, 73, 1, 0, 56, 40, 76, 106, 97, 118, 97, 120, 47,
+                    115, 119, 105, 110, 103, 47, 74, 67, 111, 109, 112, 111,
+                    110, 101, 110, 116, 59, 41, 76, 106, 97, 118, 97, 120, 47,
+                    115, 119, 105, 110, 103, 47, 112, 108, 97, 102, 47, 67,
+                    111, 109, 112, 111, 110, 101, 110, 116, 85, 73, 59, 1, 0,
+                    10, 83, 111, 117, 114, 99, 101, 70, 105, 108, 101, 1, 0,
+                    14, 77, 121, 76, 97, 98, 101, 108, 85, 73, 46, 106, 97,
+                    118, 97, 12, 0, 5, 0, 6, 1, 0, 9, 77, 121, 76, 97, 98, 101,
+                    108, 85, 73, 1, 0, 24, 106, 97, 118, 97, 120, 47, 115, 119,
+                    105, 110, 103, 47, 112, 108, 97, 102, 47, 76, 97, 98, 101,
+                    108, 85, 73, 0, 33, 0, 2, 0, 4, 0, 0, 0, 0, 0, 2, 0, 1, 0,
+                    5, 0, 6, 0, 1, 0, 7, 0, 0, 0, 29, 0, 1, 0, 1, 0, 0, 0, 5,
+                    42, -73, 0, 1, -79, 0, 0, 0, 1, 0, 8, 0, 0, 0, 6, 0, 1, 0,
+                    0, 0, 5, 0, 9, 0, 9, 0, 10, 0, 1, 0, 7, 0, 0, 0, 32, 0, 2,
+                    0, 1, 0, 0, 0, 8, -69, 0, 2, 89, -73, 0, 3, -80, 0, 0, 0,
+                    1, 0, 8, 0, 0, 0, 6, 0, 1, 0, 0, 0, 7, 0, 1, 0, 11, 0, 0,
+                    0, 2, 0, 12 });
+            }
+
+            protected Class findClass(String name) throws ClassNotFoundException {
+                byte[] bytes = table.get(name);
+
+                if (bytes == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                return defineClass(name, bytes, 0, bytes.length);
+            }
+        }
+        uiDefaults.put("LabelUI", "MyLabelUI");
+        Class<? extends JComponent> cls = (Class<? extends JComponent>)
+                new ArrayClassLoader().loadClass("MyJLabel");
+        JComponent component = cls.newInstance();
+        assertNotNull(uiDefaults.getUI(component));
     }
 
     public void testGetUIClass() throws ClassNotFoundException {
