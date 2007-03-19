@@ -105,7 +105,8 @@ public class UIDefaults extends Hashtable<Object, Object> {
                 public Object run() {
                     value = null;
                     try {
-                        Class classObj = Class.forName(className);
+                        Class classObj = Class.forName(className, true,
+                                Thread.currentThread().getContextClassLoader());
                         if (params == null) {
                             value = (methodName == null)
                                     ? classObj.newInstance()
