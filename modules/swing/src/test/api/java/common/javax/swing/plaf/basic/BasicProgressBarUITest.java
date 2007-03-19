@@ -182,4 +182,32 @@ public class BasicProgressBarUITest extends BasicSwingTestCase {
             super.stopAnimationTimer();
         }
     }
+    
+    public void testHarmony2698Regression() {
+        class testBasicProgressBarUI extends BasicProgressBarUI { 
+            public Dimension getPreferredInnerVertical() { 
+                return super.getPreferredInnerVertical(); 
+            } 
+      
+        public Dimension getPreferredInnerHorizontal() { 
+            return super.getPreferredInnerHorizontal(); 
+            } 
+        }
+
+        try { 
+            testBasicProgressBarUI pb = new testBasicProgressBarUI();
+            pb.getPreferredInnerHorizontal(); 
+            fail("NPE expected"); 
+        } catch (NullPointerException e) { 
+            //expected
+        } 
+
+        try { 
+            testBasicProgressBarUI pb = new testBasicProgressBarUI(); 
+            pb.getPreferredInnerVertical(); 
+            fail("NPE expected"); 
+        } catch (NullPointerException e) { 
+            //expected
+        } 
+    }
 }

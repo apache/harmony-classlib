@@ -222,10 +222,16 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected Dimension getPreferredInnerHorizontal() {
+        if (progressBar == null) {
+            throw new NullPointerException();
+        }
         return horizontalSize;
     }
 
     protected Dimension getPreferredInnerVertical() {
+        if (progressBar == null) {
+            throw new NullPointerException();
+        }
         return verticalSize;
     }
 
