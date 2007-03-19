@@ -357,14 +357,14 @@ public class UIDefaults extends Hashtable<Object, Object> {
     }
 
     public Class<? extends javax.swing.plaf.ComponentUI> getUIClass(final String name) {
-        return getUIClass(name, ClassLoader.getSystemClassLoader());
+        return getUIClass(name, null);
     }
 
     public Class<? extends javax.swing.plaf.ComponentUI> getUIClass(final String name, final ClassLoader classLoader) {
         try {
             if (classLoader == null) {
                 return (Class<? extends javax.swing.plaf.ComponentUI>)
-                        Class.forName((String)get(name), false, classLoader);
+                        Class.forName((String)get(name), true, Thread.currentThread().getContextClassLoader());
             } else {
                 return (Class<? extends javax.swing.plaf.ComponentUI>)
                         classLoader.loadClass((String)get(name));

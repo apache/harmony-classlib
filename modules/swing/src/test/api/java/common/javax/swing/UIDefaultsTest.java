@@ -297,6 +297,84 @@ public class UIDefaultsTest extends SwingTestCase {
         });
     }
 
+    public void testGetUIClassWithThreadClassLoader() throws Exception {
+        // Regression test for HARMONY-3398
+
+        class ArrayClassLoader extends ClassLoader {
+            byte[] bytesMyLabelUI= new byte[] {
+                    /*
+                     * public class MyLabelUI extends LabelUI {
+                     *     public static ComponentUI createUI(JComponent c) {
+                     *         return new MyLabelUI();
+                     *     }
+                     * }
+                     */
+                    -54, -2, -70, -66, 0, 0, 0, 49, 0, 16, 10, 0, 4, 0, 13, 7,
+                    0, 14, 10, 0, 2, 0, 13, 7, 0, 15, 1, 0, 6, 60, 105, 110,
+                    105, 116, 62, 1, 0, 3, 40, 41, 86, 1, 0, 4, 67, 111, 100,
+                    101, 1, 0, 15, 76, 105, 110, 101, 78, 117, 109, 98, 101,
+                    114, 84, 97, 98, 108, 101, 1, 0, 8, 99, 114, 101, 97, 116,
+                    101, 85, 73, 1, 0, 56, 40, 76, 106, 97, 118, 97, 120, 47,
+                    115, 119, 105, 110, 103, 47, 74, 67, 111, 109, 112, 111,
+                    110, 101, 110, 116, 59, 41, 76, 106, 97, 118, 97, 120, 47,
+                    115, 119, 105, 110, 103, 47, 112, 108, 97, 102, 47, 67,
+                    111, 109, 112, 111, 110, 101, 110, 116, 85, 73, 59, 1, 0,
+                    10, 83, 111, 117, 114, 99, 101, 70, 105, 108, 101, 1, 0,
+                    14, 77, 121, 76, 97, 98, 101, 108, 85, 73, 46, 106, 97,
+                    118, 97, 12, 0, 5, 0, 6, 1, 0, 9, 77, 121, 76, 97, 98, 101,
+                    108, 85, 73, 1, 0, 24, 106, 97, 118, 97, 120, 47, 115, 119,
+                    105, 110, 103, 47, 112, 108, 97, 102, 47, 76, 97, 98, 101,
+                    108, 85, 73, 0, 33, 0, 2, 0, 4, 0, 0, 0, 0, 0, 2, 0, 1, 0,
+                    5, 0, 6, 0, 1, 0, 7, 0, 0, 0, 29, 0, 1, 0, 1, 0, 0, 0, 5,
+                    42, -73, 0, 1, -79, 0, 0, 0, 1, 0, 8, 0, 0, 0, 6, 0, 1, 0,
+                    0, 0, 5, 0, 9, 0, 9, 0, 10, 0, 1, 0, 7, 0, 0, 0, 32, 0, 2,
+                    0, 1, 0, 0, 0, 8, -69, 0, 2, 89, -73, 0, 3, -80, 0, 0, 0,
+                    1, 0, 8, 0, 0, 0, 6, 0, 1, 0, 0, 0, 7, 0, 1, 0, 11, 0, 0,
+                    0, 2, 0, 12
+            };
+
+            protected Class findClass(String name) throws ClassNotFoundException {
+                if ("MyLabelUI".equals(name)) {
+                    return defineClass(name, bytesMyLabelUI, 0, bytesMyLabelUI.length);
+                }
+                throw new ClassNotFoundException(name);
+            }
+        };
+
+        final ClassLoader classLoader = new ArrayClassLoader();
+
+        class ThreadGetUIClass extends Thread {
+            private UIDefaults uid = new UIDefaults(
+                    new Object[] { "LabelUI", "MyLabelUI" });
+            private Class result;
+
+            public ThreadGetUIClass() {
+                setContextClassLoader(classLoader);
+            }
+
+            public void run() {
+                result = uid.getUIClass("LabelUI");
+            }
+
+            public Class getResult() {
+                while (true) {
+                    try {
+                        join();
+                        return result;
+                    } catch (InterruptedException e) {
+                        // Ignored.
+                    }
+                }
+            }
+        };
+
+        ThreadGetUIClass thread = new ThreadGetUIClass();
+        thread.start();
+        Class result = thread.getResult();
+        assertNotNull(result);
+        assertEquals(result, classLoader.loadClass("MyLabelUI"));
+    }
+
     public void testGetValueFromResourceBundle() {
         String bundleName = "javax.swing.TestBundle";
         assertNull(uiDefaults.get("OptionPane.okButtonText"));
