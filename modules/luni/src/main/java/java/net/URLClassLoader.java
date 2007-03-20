@@ -1086,6 +1086,16 @@ public class URLClassLoader extends SecureClassLoader {
                         if (entry != null) {
                             readAvailable = true;
                             is = jf.getInputStream(entry);
+                            /**
+                             * Avoid recursive load class, especially the class
+                             * is an implementation class of security provider
+                             * and the jar is signed.
+                             */
+                            Class loadedClass = findLoadedClass(clsName);
+                            if (null != loadedClass) {
+                                is.close();
+                                return loadedClass;
+                            }
                             manifest = jf.getManifest();
                         }
                     } else if (protocol.equals("file")) { //$NON-NLS-1$

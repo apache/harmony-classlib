@@ -36,6 +36,7 @@ import java.security.DomainCombiner;
 import java.security.Permission;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -158,6 +159,14 @@ public class ClassTest extends junit.framework.TestCase {
             fail("should throw ClassNotFoundException.");
         } catch (ClassNotFoundException e) {
         }
+        
+        //Regression Test for HARMONY-3332
+        String securityProviderClassName;
+        int count = 1;
+        while ((securityProviderClassName = Security
+                .getProperty("security.provider." + count++)) != null) {
+            Class.forName(securityProviderClassName);
+        }       
     }
 
     /**

@@ -273,6 +273,13 @@ class JarVerifier {
             Certificate[] signerCertChain = JarUtils.verifySignature(
                     new ByteArrayInputStream(sfBytes),
                     new ByteArrayInputStream(sBlockBytes));
+            /*
+             * Recursive call in loading security provider related class which
+             * is in a signed jar. 
+             */
+            if (null == metaEntries) {
+                return;
+            }
             if (signerCertChain != null) {
                 certificates.put(signatureFile, signerCertChain);
             }
