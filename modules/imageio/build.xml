@@ -147,7 +147,7 @@
         </jar>
     </target>
 
-    <target name="compile-tests">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling ImageIO tests" />
 
         <mkdir dir="${hy.imageio.bin.test}" />
@@ -223,4 +223,12 @@
             append="true">imageio${line.separator}</echo>
     </target>
 
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.imageio.bin.test}/resources" />
+        <copy todir="${hy.imageio.bin.test}/resources" includeemptydirs="false">
+            <fileset dir="${hy.imageio.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
 </project>

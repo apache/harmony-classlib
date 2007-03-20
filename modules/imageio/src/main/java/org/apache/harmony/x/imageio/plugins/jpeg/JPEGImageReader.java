@@ -99,6 +99,12 @@ public class JPEGImageReader extends ImageReader {
         OffscreenImage image = new OffscreenImage(source);
         source.addConsumer(image);
         source.load();
+        // The interrupted flag should be cleared because ImageDecoder interrupts
+        // current thread while decoding. The same technique is used in
+        // ImageLoader#run(). Another solution can be to create
+        // a separate decoding thread. However, decoder keeps its own pool
+        // of threads so creating a new thread will be just a waste of resources.
+        Thread.interrupted();
         return image.getBufferedImage();
     }
 

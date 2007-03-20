@@ -82,6 +82,9 @@ public class PNGImageReader  extends ImageReader {
         OffscreenImage image = new OffscreenImage(source);
         source.addConsumer(image);
         source.load();
+        // The interrupted flag should be cleared because ImageDecoder interrupts
+        // current thread while decoding (due its architecture).
+        Thread.interrupted();
         return image.getBufferedImage();
     }
 
