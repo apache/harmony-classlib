@@ -107,17 +107,18 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         return new String(buf, (int) (pos - 1), length);
     }
 
-    public long position(Clob searchstr, long start) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+    public long position(Clob searchClob, long start) throws SerialException,
+            SQLException {
+        String searchString = searchClob.getSubString(1, (int)searchClob.length());
+        return position(searchString, start);
     }
 
-    public long position(String searchstr, long start) throws SerialException,
+    public long position(String searchString, long start) throws SerialException,
             SQLException {
-        if (start < 1 || len - (start - 1) < searchstr.length()) {
+        if (start < 1 || len - (start - 1) < searchString.length()) {
             return -1;
         }
-        char[] pattern = searchstr.toCharArray();
+        char[] pattern = searchString.toCharArray();
         for (int i = (int) start - 1; i < len; i++) {
             if (match(buf, i, pattern)) {
                 return i + 1;

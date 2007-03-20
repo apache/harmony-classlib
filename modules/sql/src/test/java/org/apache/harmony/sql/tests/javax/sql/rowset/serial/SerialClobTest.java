@@ -146,14 +146,39 @@ public class SerialClobTest extends TestCase {
 
     }
 
-    public void testPositionLClobJ() {
-        // TODO: Not yet implemented
+    public void testPositionLClobJ() throws Exception {
+        SerialClob serialClob = new SerialClob("helloo".toCharArray());
+        SerialClob searchClob = new SerialClob("llo".toCharArray());
+        long pos = serialClob.position(searchClob, 1);
+        assertEquals(3, pos);
+        
+        pos = serialClob.position(searchClob, 3);
+        assertEquals(3, pos);
+        
+        searchClob = new SerialClob("o".toCharArray());
+        pos = serialClob.position(searchClob, 6);
+        assertEquals(6, pos);
+        
+        searchClob = new SerialClob("ooooooo".toCharArray());
+        pos = serialClob.position(searchClob, 1);
+        assertEquals(-1, pos);
+        
+        searchClob = new SerialClob("llo".toCharArray());
+        pos = serialClob.position(searchClob, 4);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position(searchClob, 0);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position(searchClob, -1);
+        assertEquals(-1, pos);
+        
+        pos = serialClob.position(searchClob, 10);
+        assertEquals(-1, pos);
     }
 
     public void testPositionLStringJ() throws Exception {
-        String s = "helloo";
-        char[] buf = s.toCharArray();
-        SerialClob serialClob = new SerialClob(buf);
+        SerialClob serialClob = new SerialClob("helloo".toCharArray());
         
         long pos = serialClob.position("llo", 1);
         assertEquals(3, pos);
