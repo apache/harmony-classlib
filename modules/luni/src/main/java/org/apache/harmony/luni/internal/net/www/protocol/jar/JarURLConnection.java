@@ -61,6 +61,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
     private JarFile jarFile;
 
     private JarEntry jarEntry;
+    
+    private boolean closed;
 
     ReferenceQueue<JarFile> cacheQueue = new ReferenceQueue<JarFile>();
 
@@ -335,6 +337,9 @@ public class JarURLConnection extends java.net.JarURLConnection {
      */
     @Override
     public InputStream getInputStream() throws IOException {
+        if (closed) {
+            throw new IllegalStateException(Msg.getString("KA027"));
+        }
         if (!connected) {
             connect();
         }
@@ -469,7 +474,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
         public void close() throws IOException {
             super.close();
             if (!useCaches) {
-                connected = false;
+                closed = true;
                 jarFile.close();
             }
         }
