@@ -23,7 +23,9 @@
 package org.apache.harmony.security.x509;
 
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.harmony.security.asn1.ASN1BitString;
@@ -140,8 +142,8 @@ public class SubjectPublicKeyInfo {
      */
     public PublicKey getPublicKey() {
         if (publicKey == null) {
+            String alg_oid = algorithmID.getAlgorithm();
             try {
-                String alg_oid = algorithmID.getAlgorithm();
                 String alg = 
                     AlgNameMapper.map2AlgName(alg_oid);
                 
@@ -150,8 +152,12 @@ public class SubjectPublicKeyInfo {
                 }
                 publicKey = KeyFactory.getInstance(alg)
                     .generatePublic(new X509EncodedKeySpec(getEncoded()));
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InvalidKeySpecException e) {
+            } catch (NoSuchAlgorithmException e) {
+            }
+            if (publicKey == null) {
+                publicKey = new X509PublicKey(alg_oid, getEncoded(),
+                        subjectPublicKey);
             }
         }
         return publicKey;

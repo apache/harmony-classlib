@@ -18,7 +18,9 @@
 package org.apache.harmony.security.tests.java.security.cert;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.security.cert.X509CertSelector;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -87,5 +89,30 @@ public class X509CertSelectorTest extends TestCase {
                 // expected
             }
         }
+    }
+    
+    /**
+     * @tests java.security.cert.X509CertSelector#setSubjectPublicKey(byte[])
+     */
+    public void test_setSubjectPublicKeyLB$() throws Exception {
+
+        //SubjectPublicKeyInfo  ::=  SEQUENCE  {
+        //    algorithm            AlgorithmIdentifier,
+        //    subjectPublicKey     BIT STRING  }
+        byte[] enc = { 0x30, 0x0E, // SEQUENCE
+                0x30, 0x07, // SEQUENCE
+                0x06, 0x02, 0x03, 0x05,//OID
+                0x01, 0x01, 0x07, //ANY
+                0x03, 0x03, 0x01, 0x01, 0x06, // subjectPublicKey
+        };
+
+        X509CertSelector selector = new X509CertSelector();
+
+        selector.setSubjectPublicKey(enc);
+        PublicKey key = selector.getSubjectPublicKey();
+        assertEquals("0.3.5", key.getAlgorithm());
+        assertEquals("X.509", key.getFormat());
+        assertTrue(Arrays.equals(enc, key.getEncoded()));
+        assertNotNull(key.toString());
     }
 }
