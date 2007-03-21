@@ -1,4 +1,3 @@
-tests/api/java/net/MulticastSocketTest.java
 tests/api/java/net/URLClassLoaderTest.java
 tests/api/java/net/URLConnectionTest.java
 tests/api/java/net/URLTest.java

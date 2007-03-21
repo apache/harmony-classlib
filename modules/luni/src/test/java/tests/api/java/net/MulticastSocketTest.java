@@ -205,84 +205,77 @@ public class MulticastSocketTest extends SocketTestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.net.MulticastSocket#getNetworkInterface()
 	 */
-	public void test_getNetworkInterface() {
+	public void test_getNetworkInterface() throws IOException {
 		int groupPort = Support_PortManager.getNextPortForUDP();
-		try {
-			if (atLeastOneInterface) {
+		if (atLeastOneInterface) {
+            // validate that we get the expected response when one was not
+            // set
+            mss = new MulticastSocket(groupPort);
+            NetworkInterface theInterface = mss.getNetworkInterface();
+            assertNotNull(
+                    "network interface returned wrong network interface when not set:"
+                            + theInterface, theInterface.getInetAddresses());
+            InetAddress firstAddress = (InetAddress) theInterface
+                    .getInetAddresses().nextElement();
+            // validate we the first address in the network interface is the
+            // ANY address
+            String preferIPv4StackValue = System
+                    .getProperty("java.net.preferIPv4Stack");
+            String preferIPv6AddressesValue = System
+                    .getProperty("java.net.preferIPv6Addresses");
+            if (((preferIPv4StackValue == null) || preferIPv4StackValue
+                    .equalsIgnoreCase("false"))
+                    && (preferIPv6AddressesValue != null)
+                    && (preferIPv6AddressesValue.equals("true"))) {
+                assertTrue(
+                        "network interface returned wrong network interface when not set:"
+                                + theInterface, InetAddress.getByName("::0")
+                                .equals(firstAddress));
 
-				// validate that we get the expected response when one was not
-				// set
-				mss = new MulticastSocket(groupPort);
-				NetworkInterface theInterface = mss.getNetworkInterface();
-				assertNotNull(
-						"network interface returned wrong network interface when not set:"
-								+ theInterface,
-						theInterface.getInetAddresses());
-				InetAddress firstAddress = (InetAddress) theInterface
-						.getInetAddresses().nextElement();
-				// validate we the first address in the network interface is the
-				// ANY address
-				String preferIPv4StackValue = System
-						.getProperty("java.net.preferIPv4Stack");
-				String preferIPv6AddressesValue = System
-						.getProperty("java.net.preferIPv6Addresses");
-				if (((preferIPv4StackValue == null) || preferIPv4StackValue
-						.equalsIgnoreCase("false"))
-						&& (preferIPv6AddressesValue != null)
-						&& (preferIPv6AddressesValue.equals("true"))) {
-					assertTrue(
-							"network interface returned wrong network interface when not set:"
-									+ theInterface, InetAddress
-									.getByName("::0").equals(firstAddress));
+            } else {
+                assertTrue(
+                        "network interface returned wrong network interface when not set:"
+                                + theInterface, InetAddress
+                                .getByName("0.0.0.0").equals(firstAddress));
+            }
 
-				} else {
-					assertTrue(
-							"network interface returned wrong network interface when not set:"
-									+ theInterface, InetAddress.getByName(
-									"0.0.0.0").equals(firstAddress));
-				}
+            mss.setNetworkInterface(networkInterface1);
+            assertTrue(
+                    "getNetworkInterface did not return interface set by setNeworkInterface",
+                    networkInterface1.equals(mss.getNetworkInterface()));
 
-				mss.setNetworkInterface(networkInterface1);
-				assertTrue(
-						"getNetworkInterface did not return interface set by setNeworkInterface",
-						networkInterface1.equals(mss.getNetworkInterface()));
+            if (atLeastTwoInterfaces) {
+                mss.setNetworkInterface(networkInterface2);
+                assertTrue(
+                        "getNetworkInterface did not return network interface set by second setNetworkInterface call",
+                        networkInterface2.equals(mss.getNetworkInterface()));
+            }
 
-				if (atLeastTwoInterfaces) {
-					mss.setNetworkInterface(networkInterface2);
-					assertTrue(
-							"getNetworkInterface did not return network interface set by second setNetworkInterface call",
-							networkInterface2.equals(mss.getNetworkInterface()));
-				}
+            groupPort = Support_PortManager.getNextPortForUDP();
+            mss = new MulticastSocket(groupPort);
+            if (IPV6networkInterface1 != null) {
+                mss.setNetworkInterface(IPV6networkInterface1);
+                assertTrue(
+                        "getNetworkInterface did not return interface set by setNeworkInterface",
+                        IPV6networkInterface1.equals(mss.getNetworkInterface()));
+            }
 
-				groupPort = Support_PortManager.getNextPortForUDP();
-				mss = new MulticastSocket(groupPort);
-				if (IPV6networkInterface1 != null) {
-					mss.setNetworkInterface(IPV6networkInterface1);
-					assertTrue(
-							"getNetworkInterface did not return interface set by setNeworkInterface",
-							IPV6networkInterface1.equals(mss
-									.getNetworkInterface()));
-				}
-
-				// validate that we get the expected response when we set via
-				// setInterface
-				groupPort = Support_PortManager.getNextPortForUDP();
-				mss = new MulticastSocket(groupPort);
-				Enumeration addresses = networkInterface1.getInetAddresses();
-				if (addresses != null) {
-					firstAddress = (InetAddress) addresses.nextElement();
-					mss.setInterface(firstAddress);
-					assertTrue(
-							"getNetworkInterface did not return interface set by setInterface",
-							networkInterface1.equals(mss.getNetworkInterface()));
-				}
-			}
-		} catch (Exception e) {
-			fail("Exception during getNetworkInterface test: "
-					+ e.toString());
-		}
+            // validate that we get the expected response when we set via
+            // setInterface
+            groupPort = Support_PortManager.getNextPortForUDP();
+            mss = new MulticastSocket(groupPort);
+            Enumeration addresses = networkInterface1.getInetAddresses();
+            if (addresses != null) {
+                firstAddress = (InetAddress) addresses.nextElement();
+                mss.setInterface(firstAddress);
+                assertTrue(
+                        "getNetworkInterface did not return interface set by setInterface",
+                        networkInterface1.equals(mss.getNetworkInterface()));
+            }
+        }
 	}
 
 	/**
@@ -350,9 +343,11 @@ public class MulticastSocketTest extends SocketTestCase {
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws InterruptedException 
 	 * @tests java.net.MulticastSocket#joinGroup(java.net.SocketAddress,java.net.NetworkInterface)
 	 */
-	public void test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface() {
+	public void test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface() throws IOException, InterruptedException {
 		// security manager that allows us to check that we only return the
 		// addresses that we should
 		class mySecurityManager extends SecurityManager {
@@ -369,212 +364,201 @@ public class MulticastSocketTest extends SocketTestCase {
 		int groupPort = ports[0];
 		int serverPort = ports[1];
 
-		try {
 			Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
 
-			// first validate that we handle a null group ok
-			mss = new MulticastSocket(groupPort);
-			try {
-				mss.joinGroup(null, null);
-				fail("Did not get exception when group was null");
-			} catch (IllegalArgumentException e) {
-			}
+        // first validate that we handle a null group ok
+        mss = new MulticastSocket(groupPort);
+        try {
+            mss.joinGroup(null, null);
+            fail("Did not get exception when group was null");
+        } catch (IllegalArgumentException e) {
+        }
 
-			// now validate we get the expected error if the address specified
-			// is not a multicast group
-			try {
-				groupSockAddr = new InetSocketAddress(InetAddress
-						.getByName("255.255.255.255"), groupPort);
-				mss.joinGroup(groupSockAddr, null);
-				fail("Did not get exception when group is not a multicast address");
-			} catch (IOException e) {
-			}
+        // now validate we get the expected error if the address specified
+        // is not a multicast group
+        try {
+            groupSockAddr = new InetSocketAddress(InetAddress
+                    .getByName("255.255.255.255"), groupPort);
+            mss.joinGroup(groupSockAddr, null);
+            fail("Did not get exception when group is not a multicast address");
+        } catch (IOException e) {
+        }
 
-			// now try to join a group if we are not authorized
-			// set the security manager that will make the first address not
-			// visible
-			System.setSecurityManager(new mySecurityManager());
-			try {
-				group = InetAddress.getByName("224.0.0.3");
-				groupSockAddr = new InetSocketAddress(group, groupPort);
-				mss.joinGroup(groupSockAddr, null);
-				fail( "Did not get exception when joining group is not allowed");
-			} catch (SecurityException e) {
-			}
-			System.setSecurityManager(null);
+        // now try to join a group if we are not authorized
+        // set the security manager that will make the first address not
+        // visible
+        System.setSecurityManager(new mySecurityManager());
+        try {
+            group = InetAddress.getByName("224.0.0.3");
+            groupSockAddr = new InetSocketAddress(group, groupPort);
+            mss.joinGroup(groupSockAddr, null);
+            fail("Did not get exception when joining group is not allowed");
+        } catch (SecurityException e) {
+        }
+        System.setSecurityManager(null);
 
-			if (atLeastOneInterface) {
-				// now validate that we can properly join a group with a null
-				// network interface
-				ports = Support_PortManager.getNextPortsForUDP(2);
-				groupPort = ports[0];
-				serverPort = ports[1];
-				mss = new MulticastSocket(groupPort);
-				mss.joinGroup(groupSockAddr, null);
-				mss.setTimeToLive(2);
-				Thread.sleep(1000);
+        if (atLeastOneInterface) {
+            // now validate that we can properly join a group with a null
+            // network interface
+            ports = Support_PortManager.getNextPortsForUDP(2);
+            groupPort = ports[0];
+            serverPort = ports[1];
+            mss = new MulticastSocket(groupPort);
+            mss.joinGroup(groupSockAddr, null);
+            mss.setTimeToLive(2);
+            Thread.sleep(1000);
 
-				// set up the server and join the group on networkInterface1
-				group = InetAddress.getByName("224.0.0.3");
-				groupSockAddr = new InetSocketAddress(group, groupPort);
-				server = new MulticastServer(groupSockAddr, serverPort,
-						networkInterface1);
-				server.start();
-				Thread.sleep(1000);
-				msg = "Hello World";
-				DatagramPacket sdp = new DatagramPacket(msg.getBytes(), msg
-						.length(), group, serverPort);
-				mss.setTimeToLive(2);
-				mss.send(sdp);
-				Thread.sleep(1000);
-				// now vaildate that we received the data as expected
-				assertTrue("Group member did not recv data: ", new String(
-						server.rdp.getData(), 0, server.rdp.getLength())
-						.equals(msg));
-				server.stopServer();
+            // set up the server and join the group on networkInterface1
+            group = InetAddress.getByName("224.0.0.3");
+            groupSockAddr = new InetSocketAddress(group, groupPort);
+            server = new MulticastServer(groupSockAddr, serverPort,
+                    networkInterface1);
+            server.start();
+            Thread.sleep(1000);
+            msg = "Hello World";
+            DatagramPacket sdp = new DatagramPacket(msg.getBytes(), msg
+                    .length(), group, serverPort);
+            mss.setTimeToLive(2);
+            mss.send(sdp);
+            Thread.sleep(1000);
+            // now vaildate that we received the data as expected
+            assertTrue("Group member did not recv data: ", new String(
+                    server.rdp.getData(), 0, server.rdp.getLength())
+                    .equals(msg));
+            server.stopServer();
 
-				// now validate that we handled the case were we join a
-				// different multicast address.
-				// verify we do not receive the data
-				ports = Support_PortManager.getNextPortsForUDP(2);
-				serverPort = ports[0];
-				server = new MulticastServer(groupSockAddr, serverPort,
-						networkInterface1);
-				server.start();
-				Thread.sleep(1000);
+            // now validate that we handled the case were we join a
+            // different multicast address.
+            // verify we do not receive the data
+            ports = Support_PortManager.getNextPortsForUDP(2);
+            serverPort = ports[0];
+            server = new MulticastServer(groupSockAddr, serverPort,
+                    networkInterface1);
+            server.start();
+            Thread.sleep(1000);
 
-				groupPort = ports[1];
-				mss = new MulticastSocket(groupPort);
-				InetAddress group2 = InetAddress.getByName("224.0.0.4");
-				mss.setTimeToLive(10);
-				msg = "Hello World - Different Group";
-				sdp = new DatagramPacket(msg.getBytes(), msg.length(), group2,
-						serverPort);
-				mss.send(sdp);
-				Thread.sleep(1000);
-				assertFalse(
-						"Group member received data when sent on different group: ",
-						new String(server.rdp.getData(), 0, server.rdp
-								.getLength()).equals(msg));
-				server.stopServer();
+            groupPort = ports[1];
+            mss = new MulticastSocket(groupPort);
+            InetAddress group2 = InetAddress.getByName("224.0.0.4");
+            mss.setTimeToLive(10);
+            msg = "Hello World - Different Group";
+            sdp = new DatagramPacket(msg.getBytes(), msg.length(), group2,
+                    serverPort);
+            mss.send(sdp);
+            Thread.sleep(1000);
+            assertFalse(
+                    "Group member received data when sent on different group: ",
+                    new String(server.rdp.getData(), 0, server.rdp.getLength())
+                            .equals(msg));
+            server.stopServer();
 
-				// if there is more than one network interface then check that
-				// we can join on specific interfaces and that we only receive
-				// if data is received on that interface
-				if (atLeastTwoInterfaces) {
-					// set up server on first interfaces
-					NetworkInterface loopbackInterface = NetworkInterface
-							.getByInetAddress(InetAddress
-									.getByName("127.0.0.1"));
+            // if there is more than one network interface then check that
+            // we can join on specific interfaces and that we only receive
+            // if data is received on that interface
+            if (atLeastTwoInterfaces) {
+                // set up server on first interfaces
+                NetworkInterface loopbackInterface = NetworkInterface
+                        .getByInetAddress(InetAddress.getByName("127.0.0.1"));
 
-					theInterfaces = NetworkInterface.getNetworkInterfaces();
-					while (theInterfaces.hasMoreElements()) {
+                theInterfaces = NetworkInterface.getNetworkInterfaces();
+                while (theInterfaces.hasMoreElements()) {
 
-						NetworkInterface thisInterface = (NetworkInterface) theInterfaces
-								.nextElement();
-						if ((thisInterface.getInetAddresses() != null)
-								&& (Support_NetworkInterface
-										.useInterface(thisInterface) == true)) {
-							// get the first address on the interface
+                    NetworkInterface thisInterface = (NetworkInterface) theInterfaces
+                            .nextElement();
+                    if ((thisInterface.getInetAddresses() != null && thisInterface
+                            .getInetAddresses().hasMoreElements())
+                            && (Support_NetworkInterface
+                                    .useInterface(thisInterface) == true)) {
+                        // get the first address on the interface
 
-							// start server which is joined to the group and has
-							// only asked for packets on this interface
-							Enumeration addresses = thisInterface
-									.getInetAddresses();
+                        // start server which is joined to the group and has
+                        // only asked for packets on this interface
+                        Enumeration addresses = thisInterface
+                                .getInetAddresses();
 
-							NetworkInterface sendingInterface = null;
-							boolean isLoopback = false;
-							if (addresses != null) {
-								InetAddress firstAddress = (InetAddress) addresses
-										.nextElement();
-								if (firstAddress.isLoopbackAddress()) {
-									isLoopback = true;
-								}
-								if (firstAddress instanceof Inet4Address) {
-									group = InetAddress.getByName("224.0.0.4");
-									if (networkInterface1
-											.equals(NetworkInterface
-													.getByInetAddress(InetAddress
-															.getByName("127.0.0.1")))) {
-										sendingInterface = networkInterface2;
-									} else {
-										sendingInterface = networkInterface1;
-									}
-								} else {
-									// if this interface only seems to support
-									// IPV6 addresses
-									group = InetAddress
-											.getByName("FF01:0:0:0:0:0:2:8001");
-									sendingInterface = IPV6networkInterface1;
-								}
-							}
+                        NetworkInterface sendingInterface = null;
+                        boolean isLoopback = false;
+                        if (addresses != null) {
+                            InetAddress firstAddress = (InetAddress) addresses
+                                    .nextElement();
+                            if (firstAddress.isLoopbackAddress()) {
+                                isLoopback = true;
+                            }
+                            if (firstAddress instanceof Inet4Address) {
+                                group = InetAddress.getByName("224.0.0.4");
+                                if (networkInterface1.equals(NetworkInterface
+                                        .getByInetAddress(InetAddress
+                                                .getByName("127.0.0.1")))) {
+                                    sendingInterface = networkInterface2;
+                                } else {
+                                    sendingInterface = networkInterface1;
+                                }
+                            } else {
+                                // if this interface only seems to support
+                                // IPV6 addresses
+                                group = InetAddress
+                                        .getByName("FF01:0:0:0:0:0:2:8001");
+                                sendingInterface = IPV6networkInterface1;
+                            }
+                        }
 
-							InetAddress useAddress = null;
-							addresses = sendingInterface.getInetAddresses();
-							if ((addresses != null)
-									&& (addresses.hasMoreElements())) {
-								useAddress = (InetAddress) addresses
-										.nextElement();
-							}
+                        InetAddress useAddress = null;
+                        addresses = sendingInterface.getInetAddresses();
+                        if ((addresses != null)
+                                && (addresses.hasMoreElements())) {
+                            useAddress = (InetAddress) addresses.nextElement();
+                        }
 
-							ports = Support_PortManager.getNextPortsForUDP(2);
-							serverPort = ports[0];
-							groupPort = ports[1];
-							groupSockAddr = new InetSocketAddress(group,
-									serverPort);
-							server = new MulticastServer(groupSockAddr,
-									serverPort, thisInterface);
-							server.start();
-							Thread.sleep(1000);
+                        ports = Support_PortManager.getNextPortsForUDP(2);
+                        serverPort = ports[0];
+                        groupPort = ports[1];
+                        groupSockAddr = new InetSocketAddress(group, serverPort);
+                        server = new MulticastServer(groupSockAddr, serverPort,
+                                thisInterface);
+                        server.start();
+                        Thread.sleep(1000);
 
-							// Now send out a package on interface
-							// networkInterface 1. We should
-							// only see the packet if we send it on interface 1
-							InetSocketAddress theAddress = new InetSocketAddress(
-									useAddress, groupPort);
-							mss = new MulticastSocket(groupPort);
-							mss.setNetworkInterface(sendingInterface);
-							msg = "Hello World - Again"
-									+ thisInterface.getName();
-							sdp = new DatagramPacket(msg.getBytes(), msg
-									.length(), group, serverPort);
-							mss.send(sdp);
-							Thread.sleep(1000);
-							if (thisInterface.equals(sendingInterface)) {
-								assertTrue(
-										"Group member did not recv data when bound on specific interface: ",
-										new String(server.rdp.getData(), 0,
-												server.rdp.getLength())
-												.equals(msg));
-							} else {
-								assertFalse(
-										"Group member received data on other interface when only asked for it on one interface: ",
-										new String(server.rdp.getData(), 0,
-												server.rdp.getLength())
-												.equals(msg));
-							}
+                        // Now send out a package on interface
+                        // networkInterface 1. We should
+                        // only see the packet if we send it on interface 1
+                        InetSocketAddress theAddress = new InetSocketAddress(
+                                useAddress, groupPort);
+                        mss = new MulticastSocket(groupPort);
+                        mss.setNetworkInterface(sendingInterface);
+                        msg = "Hello World - Again" + thisInterface.getName();
+                        sdp = new DatagramPacket(msg.getBytes(), msg.length(),
+                                group, serverPort);
+                        mss.send(sdp);
+                        Thread.sleep(1000);
+                        if (thisInterface.equals(sendingInterface)) {
+                            assertTrue(
+                                    "Group member did not recv data when bound on specific interface: ",
+                                    new String(server.rdp.getData(), 0,
+                                            server.rdp.getLength()).equals(msg));
+                        } else {
+                            assertFalse(
+                                    "Group member received data on other interface when only asked for it on one interface: ",
+                                    new String(server.rdp.getData(), 0,
+                                            server.rdp.getLength()).equals(msg));
+                        }
 
-							server.stopServer();
-						}
-					}
+                        server.stopServer();
+                    }
+                }
 
-					// validate that we can join the same address on two
-					// different interfaces but not on the same interface
-					groupPort = Support_PortManager.getNextPortForUDP();
-					mss = new MulticastSocket(groupPort);
-					mss.joinGroup(groupSockAddr, networkInterface1);
-					mss.joinGroup(groupSockAddr, networkInterface2);
-					try {
-						mss.joinGroup(groupSockAddr, networkInterface1);
-						fail(
-								"Did not get expected exception when joining for second time on same interface");
-					} catch (IOException e) {
-					}
-				}
-			}
-		} catch (Exception e) {
-			fail("Exception during joinGroup test: " + e.toString());
-		}
+                // validate that we can join the same address on two
+                // different interfaces but not on the same interface
+                groupPort = Support_PortManager.getNextPortForUDP();
+                mss = new MulticastSocket(groupPort);
+                mss.joinGroup(groupSockAddr, networkInterface1);
+                mss.joinGroup(groupSockAddr, networkInterface2);
+                try {
+                    mss.joinGroup(groupSockAddr, networkInterface1);
+                    fail("Did not get expected exception when joining for second time on same interface");
+                } catch (IOException e) {
+                }
+            }
+        }
 		System.setSecurityManager(null);
 	}
 
@@ -805,101 +789,95 @@ public class MulticastSocketTest extends SocketTestCase {
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws InterruptedException 
 	 * @tests java.net.MulticastSocket#setNetworkInterface(java.net.NetworkInterface)
 	 */
-	public void test_setNetworkInterfaceLjava_net_NetworkInterface() {
+	public void test_setNetworkInterfaceLjava_net_NetworkInterface() throws IOException, InterruptedException {
 		String msg = null;
 		InetAddress group = null;
 		int[] ports = Support_PortManager.getNextPortsForUDP(2);
 		int groupPort = ports[0];
 		int serverPort = ports[1];
-		try {
-			if (atLeastOneInterface) {
-				// validate that null interface is handled ok
-				mss = new MulticastSocket(groupPort);
+		if (atLeastOneInterface) {
+            // validate that null interface is handled ok
+            mss = new MulticastSocket(groupPort);
 
-				// this should through a socket exception to be compatible
-				try {
-					mss.setNetworkInterface(null);
-					fail(
-							"No socket exception when we set then network interface with NULL");
-				} catch (SocketException ex) {
-				}
+            // this should through a socket exception to be compatible
+            try {
+                mss.setNetworkInterface(null);
+                fail("No socket exception when we set then network interface with NULL");
+            } catch (SocketException ex) {
+            }
 
-				// validate that we can get and set the interface
-				groupPort = Support_PortManager.getNextPortForUDP();
-				mss = new MulticastSocket(groupPort);
-				mss.setNetworkInterface(networkInterface1);
-				assertTrue(
-						"Interface did not seem to be set by setNeworkInterface",
-						networkInterface1.equals(mss.getNetworkInterface()));
+            // validate that we can get and set the interface
+            groupPort = Support_PortManager.getNextPortForUDP();
+            mss = new MulticastSocket(groupPort);
+            mss.setNetworkInterface(networkInterface1);
+            assertTrue(
+                    "Interface did not seem to be set by setNeworkInterface",
+                    networkInterface1.equals(mss.getNetworkInterface()));
 
-				// set up the server and join the group
-				group = InetAddress.getByName("224.0.0.3");
+            // set up the server and join the group
+            group = InetAddress.getByName("224.0.0.3");
 
-				Enumeration theInterfaces = NetworkInterface
-						.getNetworkInterfaces();
-				while (theInterfaces.hasMoreElements()) {
-					NetworkInterface thisInterface = (NetworkInterface) theInterfaces
-							.nextElement();
-					if (thisInterface.getInetAddresses() != null) {
-						if ((!((InetAddress) thisInterface.getInetAddresses()
-								.nextElement()).isLoopbackAddress())
-								&&
-								// for windows we cannot use these pseudo
-								// interfaces for the test as the packets still
-								// come from the actual interface, not the
-								// Pseudo interface that was set
-								(Support_NetworkInterface
-										.useInterface(thisInterface) == true)) {
-							ports = Support_PortManager.getNextPortsForUDP(2);
-							serverPort = ports[0];
-							server = new MulticastServer(group, serverPort);
-							server.start();
-							// give the server some time to start up
-							Thread.sleep(1000);
+            Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface thisInterface = (NetworkInterface) theInterfaces
+                        .nextElement();
+                if (thisInterface.getInetAddresses() != null
+                        && thisInterface.getInetAddresses().hasMoreElements()) {
+                    if ((!((InetAddress) thisInterface.getInetAddresses()
+                            .nextElement()).isLoopbackAddress())
+                            &&
+                            // for windows we cannot use these pseudo
+                            // interfaces for the test as the packets still
+                            // come from the actual interface, not the
+                            // Pseudo interface that was set
+                            (Support_NetworkInterface
+                                    .useInterface(thisInterface) == true)) {
+                        ports = Support_PortManager.getNextPortsForUDP(2);
+                        serverPort = ports[0];
+                        server = new MulticastServer(group, serverPort);
+                        server.start();
+                        // give the server some time to start up
+                        Thread.sleep(1000);
 
-							// Send the packets on a particular interface. The
-							// source address in the received packet
-							// should be one of the addresses for the interface
-							// set
-							groupPort = ports[1];
-							mss = new MulticastSocket(groupPort);
-							mss.setNetworkInterface(thisInterface);
-							msg = thisInterface.getName();
-							byte theBytes[] = msg.getBytes();
-							DatagramPacket sdp = new DatagramPacket(theBytes,
-									theBytes.length, group, serverPort);
-							mss.send(sdp);
-							Thread.sleep(1000);
-							String receivedMessage = new String(server.rdp
-									.getData(), 0, server.rdp.getLength());
-							assertTrue(
-									"Group member did not recv data when send on a specific interface: ",
-									receivedMessage.equals(msg));
-							assertTrue(
-									"Datagram was not received from expected interface expected["
-											+ thisInterface
-											+ "] got ["
-											+ NetworkInterface
-													.getByInetAddress(server.rdp
-															.getAddress())
-											+ "]", NetworkInterface
-											.getByInetAddress(
-													server.rdp.getAddress())
-											.equals(thisInterface));
+                        // Send the packets on a particular interface. The
+                        // source address in the received packet
+                        // should be one of the addresses for the interface
+                        // set
+                        groupPort = ports[1];
+                        mss = new MulticastSocket(groupPort);
+                        mss.setNetworkInterface(thisInterface);
+                        msg = thisInterface.getName();
+                        byte theBytes[] = msg.getBytes();
+                        DatagramPacket sdp = new DatagramPacket(theBytes,
+                                theBytes.length, group, serverPort);
+                        mss.send(sdp);
+                        Thread.sleep(1000);
+                        String receivedMessage = new String(server.rdp
+                                .getData(), 0, server.rdp.getLength());
+                        assertTrue(
+                                "Group member did not recv data when send on a specific interface: ",
+                                receivedMessage.equals(msg));
+                        assertTrue(
+                                "Datagram was not received from expected interface expected["
+                                        + thisInterface
+                                        + "] got ["
+                                        + NetworkInterface
+                                                .getByInetAddress(server.rdp
+                                                        .getAddress()) + "]",
+                                NetworkInterface.getByInetAddress(
+                                        server.rdp.getAddress()).equals(
+                                        thisInterface));
 
-							// stop the server
-							server.stopServer();
-						}
-					}
-				}
-			}
-			;
-		} catch (Exception e) {
-			fail("Exception during setNetworkInterface test: "
-					+ e.toString());
-		}
+                        // stop the server
+                        server.stopServer();
+                    }
+                }
+            }
+        }
 	}
 
 	/**
@@ -1143,31 +1121,35 @@ public class MulticastSocketTest extends SocketTestCase {
 
 			atLeastOneInterface = false;
 			while (theInterfaces.hasMoreElements()
-					&& (atLeastOneInterface == false)) {
-				networkInterface1 = (NetworkInterface) theInterfaces
-						.nextElement();
-				if ((networkInterface1.getInetAddresses() != null) &&
-				// we only want real interfaces
-						(Support_NetworkInterface
-								.useInterface(networkInterface1) == true)) {
-					atLeastOneInterface = true;
-				}
-			}
+                    && (atLeastOneInterface == false)) {
+                networkInterface1 = (NetworkInterface) theInterfaces
+                        .nextElement();
+                if ((networkInterface1.getInetAddresses() != null)
+                        && networkInterface1.getInetAddresses()
+                                .hasMoreElements() &&
+                        // we only want real interfaces
+                        (Support_NetworkInterface
+                                .useInterface(networkInterface1) == true)) {
+                    atLeastOneInterface = true;
+                }
+            }
 
 			atLeastTwoInterfaces = false;
 			if (theInterfaces.hasMoreElements()) {
-				while (theInterfaces.hasMoreElements()
-						&& (atLeastTwoInterfaces == false)) {
-					networkInterface2 = (NetworkInterface) theInterfaces
-							.nextElement();
-					if ((networkInterface2.getInetAddresses() != null) &&
-					// we only want real interfaces
-							(Support_NetworkInterface
-									.useInterface(networkInterface2) == true)) {
-						atLeastTwoInterfaces = true;
-					}
-				}
-			}
+                while (theInterfaces.hasMoreElements()
+                        && (atLeastTwoInterfaces == false)) {
+                    networkInterface2 = (NetworkInterface) theInterfaces
+                            .nextElement();
+                    if ((networkInterface2.getInetAddresses() != null)
+                            && networkInterface2.getInetAddresses()
+                                    .hasMoreElements() &&
+                            // we only want real interfaces
+                            (Support_NetworkInterface
+                                    .useInterface(networkInterface2) == true)) {
+                        atLeastTwoInterfaces = true;
+                    }
+                }
+            }
 
 			Enumeration addresses;
 
