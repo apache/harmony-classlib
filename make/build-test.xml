@@ -48,7 +48,7 @@
         <delete file="${hy.hdk}/build/test/support.jar" />
     </target>
 
-    <target name="test-modules" depends="support-jar">
+    <target name="test-modules" depends="support-jar, test-jre-vm-info">
         <call-modules target="-test-module" />
     </target>
 
