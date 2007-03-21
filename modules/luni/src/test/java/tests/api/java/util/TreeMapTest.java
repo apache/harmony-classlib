@@ -374,6 +374,10 @@ public class TreeMapTest extends junit.framework.TestCase {
 
         tm = new TreeMap();
         assertNull(tm.put(new Integer(1), new Object()));
+
+        // regression for Harmony-2474
+        tm = new TreeMap();
+        tm.remove(o);
     }
 
     /**

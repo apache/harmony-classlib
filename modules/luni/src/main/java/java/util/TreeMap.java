@@ -1319,6 +1319,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 	 */
 	@Override
     public V remove(Object key) {
+		if (size == 0) {
+			return null;
+		}
 		Entry<K, V> node = find(key);
 		if (node == null) {
             return null;
