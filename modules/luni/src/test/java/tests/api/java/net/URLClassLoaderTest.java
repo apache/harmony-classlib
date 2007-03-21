@@ -359,6 +359,26 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertTrue("Returned incorrect resource", !sb.toString().equals(
                 "This is a test resource file"));
     }
+    
+    public void testFindResource_H3461() throws Exception {
+        File userDir = new File(System.getProperty("user.dir"));
+        File dir = new File(userDir, "encode#me");
+        File f;
+        URLClassLoader loader;
+        
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        f = File.createTempFile("temp", ".dat", dir);
+        f.deleteOnExit();
+        dir.deleteOnExit();
+        loader = new URLClassLoader(
+                new URL[] { new URL("file:" + userDir.getAbsolutePath() +
+                        "/encode%23me/") });
+                
+        assertNotNull("Unable to load resource with problematic name",
+            loader.getResource(f.getName()));
+    }
 
     /**
      * @tests java.net.URLClassLoader#getResource(java.lang.String)

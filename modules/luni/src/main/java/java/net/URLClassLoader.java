@@ -709,6 +709,7 @@ public class URLClassLoader extends SecureClassLoader {
                 try {
                     URL currentUrl = searchList[i];
                     String protocol = currentUrl.getProtocol();
+                    
                     if (protocol.equals("jar")) { //$NON-NLS-1$
                         jf = resCache.get(currentUrl);
                         if (jf == null) {
@@ -787,7 +788,15 @@ public class URLClassLoader extends SecureClassLoader {
                             fixedResName = fixedResName.substring(1);
                         }
                         buf.append(fixedResName);
+
                         String filename = buf.toString();
+                        
+                        try {
+                            filename = URLDecoder.decode(filename, "UTF-8"); //$NON-NLS-1$
+                        } catch (IllegalArgumentException e) {
+                            return null;
+                        }
+
                         if (new File(filename).exists()) {
                             return targetURL(currentUrl, fixedResName);
                         }
