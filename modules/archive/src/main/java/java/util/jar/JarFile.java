@@ -232,10 +232,7 @@ public class JarFile extends ZipFile {
 
             public JarEntry nextElement() {
                 JarEntry je = new JarEntry(ze.nextElement());
-                je.parentJar = jf;
-                if (verifier != null) {
-                    je.certificates = verifier.getCertificates(je.getName());
-                }
+                je.parentJar = jf;                
                 return je;
             }
         }
@@ -376,10 +373,7 @@ public class JarFile extends ZipFile {
             return ze;
         }
         JarEntry je = new JarEntry(ze);
-        je.parentJar = this;
-        if (verifier != null) {
-            je.certificates = verifier.getCertificates(je.getName());
-        }
+        je.parentJar = this;        
         return je;
     }
 

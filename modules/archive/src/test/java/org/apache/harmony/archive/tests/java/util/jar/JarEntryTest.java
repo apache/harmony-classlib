@@ -108,10 +108,24 @@ public class JarEntryTest extends TestCase {
     /**
      * @tests java.util.jar.JarEntry#getCertificates()
      */
-    public void test_getCertificates() {
+    public void test_getCertificates() throws Exception{
         zipEntry = jarFile.getEntry(entryName2);
         jarEntry = new JarEntry(zipEntry);
         assertNull("Shouldn't have any Certificates", jarEntry.getCertificates());
+        
+        //Regression Test for HARMONY-3424
+        String jarFileName = "TestCodeSigners.jar";
+        Support_Resources.copyFile(resources, null, jarFileName);
+        File file = new File(resources, jarFileName);
+        JarFile jarFile = new JarFile(file);
+        JarEntry jarEntry1 = jarFile.getJarEntry("Test.class");
+        JarEntry jarEntry2 = jarFile.getJarEntry("Test.class");
+        InputStream in = jarFile.getInputStream(jarEntry1);
+        byte[] buffer = new byte[1024];
+         while(in.read(buffer)>=0);
+        in.close();
+        assertNotNull(jarEntry1.getCertificates());
+        assertNotNull(jarEntry2.getCertificates());
     }
 
     /**

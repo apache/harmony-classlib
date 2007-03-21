@@ -386,9 +386,6 @@ class JarVerifier {
                     JarFile.MANIFEST_NAME, zipEntry.getName(), jarName }));
         }
         verifiedEntries.put(zipEntry.getName(), entry.certificates);
-        if (zipEntry instanceof JarEntry) {
-            ((JarEntry) zipEntry).certificates = entry.certificates.clone();
-        }
     }
 
     /**
