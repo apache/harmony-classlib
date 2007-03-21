@@ -28,7 +28,8 @@ public class ImageIOTest extends TestCase {
     public void testReadURL() throws Exception {
         // Regression for HARMONY-3135
         for (URL url : listImages()) {
-            assertNotNull(ImageIO.read(url));
+            assertNotNull("Failed to load image from URL " + url,
+                    ImageIO.read(url));
             assertFalse("The current thread has been interrupted! URL: " + url, //$NON-NLS-1$
                     Thread.currentThread().isInterrupted());
         }
