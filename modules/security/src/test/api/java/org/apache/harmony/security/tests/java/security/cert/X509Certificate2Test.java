@@ -19,7 +19,6 @@ package org.apache.harmony.security.tests.java.security.cert;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -31,41 +30,34 @@ import org.apache.harmony.security.tests.support.cert.TestUtils;
 import tests.support.resource.Support_Resources;
 
 public class X509Certificate2Test extends junit.framework.TestCase {
-	private X509Certificate pemCert = null;
 
-	protected void setUp() throws Exception {
+    /**
+     * @tests java.security.cert.X509Certificate#getExtensionValue(java.lang.String)
+     */
+    public void test_getExtensionValueLjava_lang_String() throws Exception {
 
         InputStream is = Support_Resources
                 .getResourceStream("hyts_certificate_PEM.txt");
 
         CertificateFactory certFact = CertificateFactory.getInstance("X509");
-        pemCert = (X509Certificate) certFact.generateCertificate(is);
+        X509Certificate pemCert = (X509Certificate) certFact
+                .generateCertificate(is);
+
+        Vector<String> extensionOids = new Vector<String>();
+        extensionOids.addAll(pemCert.getCriticalExtensionOIDs());
+        extensionOids.addAll(pemCert.getNonCriticalExtensionOIDs());
+        Iterator i = extensionOids.iterator();
+        while (i.hasNext()) {
+            String oid = (String) i.next();
+            byte[] value = pemCert.getExtensionValue(oid);
+            if (value != null && value.length > 0) {
+                // check that it is an encoded as a OCTET STRING
+                assertEquals("The extension value for the oid " + oid
+                        + " was not encoded as an OCTET STRING", 0x04, value[0]);
+            }
+        }
     }
 
-	/**
-	 * @tests java.security.cert.X509Certificate#getExtensionValue(java.lang.String)
-	 */
-	public void test_getExtensionValueLjava_lang_String() {
-		if (pemCert != null) {
-			Vector extensionOids = new Vector();
-			extensionOids.addAll(pemCert.getCriticalExtensionOIDs());
-			extensionOids.addAll(pemCert.getNonCriticalExtensionOIDs());
-			Iterator i = extensionOids.iterator();
-			while (i.hasNext()) {
-				String oid = (String) i.next();
-				byte[] value = pemCert.getExtensionValue(oid);
-				if (value != null && value.length > 0) {
-					// check that it is an encoded as a OCTET STRING
-					assertTrue("The extension value for the oid " + oid
-							+ " was not encoded as an OCTET STRING",
-							value[0] == 0x04);
-				}
-			}
-		} else {
-			fail("Unable to obtain X509Certificate");
-		}
-	}
-    
     /**
      * Test for X.509 Certificate provider
      */
@@ -73,7 +65,7 @@ public class X509Certificate2Test extends junit.framework.TestCase {
 
         // Regression for HARMONY-3384
         CertificateFactory certFact = CertificateFactory.getInstance("X509");
-        pemCert = (X509Certificate) certFact
+        X509Certificate pemCert = (X509Certificate) certFact
                 .generateCertificate(new ByteArrayInputStream(TestUtils
                         .getX509Certificate_v3()));
 
