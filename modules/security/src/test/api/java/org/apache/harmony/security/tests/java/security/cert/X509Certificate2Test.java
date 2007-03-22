@@ -17,15 +17,18 @@
 
 package org.apache.harmony.security.tests.java.security.cert;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
 
-import tests.support.resource.Support_Resources;
+import org.apache.harmony.security.tests.support.cert.TestUtils;
 
-import junit.framework.TestCase;
+import tests.support.resource.Support_Resources;
 
 public class X509Certificate2Test extends junit.framework.TestCase {
 	private X509Certificate pemCert = null;
@@ -62,4 +65,23 @@ public class X509Certificate2Test extends junit.framework.TestCase {
 			fail("Unable to obtain X509Certificate");
 		}
 	}
+    
+    /**
+     * Test for X.509 Certificate provider
+     */
+    public void test_toString() throws Exception {
+
+        // Regression for HARMONY-3384
+        CertificateFactory certFact = CertificateFactory.getInstance("X509");
+        pemCert = (X509Certificate) certFact
+                .generateCertificate(new ByteArrayInputStream(TestUtils
+                        .getX509Certificate_v3()));
+
+        // extension value is empty sequence
+        byte[] extnValue = pemCert.getExtensionValue("2.5.29.35");
+        assertTrue(Arrays.equals(new byte[] { 0x04, 0x02, 0x30, 0x00 },
+                extnValue));
+        assertNotNull(pemCert.toString());
+        // End regression for HARMONY-3384
+    }
 }

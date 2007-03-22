@@ -118,8 +118,14 @@ public class AuthorityKeyIdentifier extends ExtensionValue {
         protected Object getDecodedObject(BerInputStream in) throws IOException {
             Object[] values = (Object[]) in.content;
 
+            byte[] enc = (byte[]) values[2];
+            BigInteger authorityCertSerialNumber = null;
+            if (enc != null) {
+                authorityCertSerialNumber = new BigInteger(enc);
+            }
+
             return new AuthorityKeyIdentifier((byte[]) values[0],
-                    (GeneralNames) values[1], new BigInteger((byte[]) values[2]));
+                    (GeneralNames) values[1], authorityCertSerialNumber);
         }
 
         protected void getValues(Object object, Object[] values) {
@@ -128,7 +134,9 @@ public class AuthorityKeyIdentifier extends ExtensionValue {
 
             values[0] = akid.keyIdentifier;
             values[1] = akid.authorityCertIssuer;
-            values[2] = akid.authorityCertSerialNumber.toByteArray();
+            if (akid.authorityCertSerialNumber != null) {
+                values[2] = akid.authorityCertSerialNumber.toByteArray();
+            }
         }
     };
 }
