@@ -14,6 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.apache.harmony.annotation.tests.java.lang.annotation;
 
 import java.lang.annotation.IncompleteAnnotationException;
@@ -36,5 +37,22 @@ public class IncompleteAnnotationExceptionTest extends TestCase {
         } catch (NullPointerException e) {
             // Expected
         }
+    }
+
+    /**
+     * @throws Exception
+     * @tests java.lang.annotation.IncompleteAnnotationException#IncompleteAnnotationException(Class,
+     *        String)
+     */
+    @SuppressWarnings("nls")
+    public void test_constructorLjava_lang_Class_Ljava_lang_String()
+            throws Exception {
+        Class clazz = String.class;
+        String elementName = "some element";
+        IncompleteAnnotationException e = new IncompleteAnnotationException(
+                clazz, elementName);
+        assertNotNull("can not instanciate IncompleteAnnotationException", e);
+        assertSame("wrong annotation type", clazz, e.annotationType());
+        assertSame("wrong element name", elementName, e.elementName());
     }
 }
