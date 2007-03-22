@@ -245,9 +245,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;
+  /* Value of offset is checked in jint scope (checked in java layer)
+   The conversion here is to guarantee no value lost when converting offset to off_t
+   */
+  off_t off = offset;
 #if !defined(FREEBSD)
-  return sendfile(socket,(int)fd,(off_t *)&offset,(size_t)count);	
+  return sendfile(socket,(int)fd,(off_t *)&off,(size_t)count);	
 #else
-  return sendfile(fd, socket, offset, (size_t)count, NULL, NULL, 0);
+  return sendfile(fd, socket, off, (size_t)count, NULL, NULL, 0);
 #endif
 }
