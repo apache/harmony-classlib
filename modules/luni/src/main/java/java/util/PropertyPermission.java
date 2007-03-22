@@ -25,6 +25,8 @@ import java.security.BasicPermission;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
+import org.apache.harmony.luni.util.Util;
+
 /**
  * PropertyPermission objects represent permission to access system properties.
  */
@@ -48,7 +50,7 @@ public final class PropertyPermission extends BasicPermission {
     }
 
     private void decodeActions(String actions) {
-        StringTokenizer tokenizer = new StringTokenizer(actions.toLowerCase(),
+        StringTokenizer tokenizer = new StringTokenizer(Util.toASCIILowerCase(actions),
                 " \t\n\r,"); //$NON-NLS-1$
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
