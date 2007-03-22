@@ -223,15 +223,10 @@ public class ByteArrayOutputStream extends OutputStream {
      */
     @Override
     public synchronized void write(int oneByte) {
-        try {
-            buf[count] = (byte) oneByte;
-            count++;
-        } catch (IndexOutOfBoundsException e) {
-            // Expand when necessary
+        if (count == buf.length) {
             expand(1);
-            buf[count++] = (byte) oneByte;
-        } catch (NullPointerException e) {
         }
+        buf[count++] = (byte) oneByte;
     }
 
     /**
