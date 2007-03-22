@@ -32,7 +32,7 @@ VIRTFILES = hynio.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
-  $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
+  $(LIBPATH)hycommon.lib $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
   $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
   
 DLLBASE=0x13200000

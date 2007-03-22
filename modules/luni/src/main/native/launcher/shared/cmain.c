@@ -87,7 +87,9 @@ main (int argc, char **argv, char **envp)
   HyPortLibraryVersion portLibraryVersion;
   struct haCmdlineOptions options;
   int rc = 257;
+#if !defined(HY_NO_SIG)
   UDATA result;
+#endif /* HY_NO_SIG */
 
   /* Use portlibrary version which we compiled against, and have allocated space
    * for on the stack.  This version may be different from the one in the linked DLL.

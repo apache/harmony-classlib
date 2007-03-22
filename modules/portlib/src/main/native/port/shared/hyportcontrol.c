@@ -52,7 +52,7 @@ hyport_control (struct HyPortLibrary * portLibrary, char *key, UDATA value)
       return 0;
     }
 
-#if defined(WIN32)
+#if defined(WIN32) && !defined(HY_NO_SIG)
   if (!strcmp ("SIG_INTERNAL_HANDLER", key))
     {
       /* used by optimized code to implement fast signal handling on Windows */
