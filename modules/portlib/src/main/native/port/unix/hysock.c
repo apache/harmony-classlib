@@ -5247,7 +5247,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
                        SOL_SOCKET, SO_ERROR, (char *) &errorVal,
                        &errorValLen) >= 0)
                     {
-                      return findError (errorVal);
+                        return errorVal ? findError(errorVal):0; 
                     }
                   else
                     {
@@ -5269,7 +5269,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
                   (((struct selectFDSet_struct *) *context)->sock, SOL_SOCKET,
                    SO_ERROR, (char *) &errorVal, &errorValLen) >= 0)
                 {
-                  return findError (errorVal);
+                     return errorVal ? findError(errorVal):0; 
                 }
               rc = errno;
               return portLibrary->error_set_last_error (portLibrary, rc,
