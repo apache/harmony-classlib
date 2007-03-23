@@ -32,13 +32,14 @@ SHAREDSUB=..\shared\# ditto
 
 !IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
 WARNING_LEVEL=W0
+PLATFORM_64=-DHYX86_64
 !ELSE
 WARNING_LEVEL=WX
 !ENDIF
 
 HYCOMMONCFLAGS = \
   -$(WARNING_LEVEL) -GF -Gs -MD -Zm400 \
-  -D_DLL -D_MT -D_WINSOCKAPI_ \
+  -D_DLL -D_MT -D_WINSOCKAPI_ $(PLATFORM_64) \
   /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
 
 !ifndef HYDEBUGCFLAGS
