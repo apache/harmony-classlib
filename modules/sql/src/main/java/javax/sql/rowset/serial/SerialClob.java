@@ -170,8 +170,13 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         return length;
     }
 
-    public void truncate(long len) throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public void truncate(long length) throws SerialException {
+        if(length > len || length < 0) {
+            throw new SerialException(Messages.getString("sql.24"));
+        }
+        char[] truncatedBuffer = new char[(int) length];
+        System.arraycopy(buf, 0, truncatedBuffer, 0, (int)length);
+        buf = truncatedBuffer;
+        len = length;   
     }
 }

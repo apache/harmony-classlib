@@ -252,10 +252,7 @@ public class SerialClobTest extends TestCase {
     }
 
     public void testSetStringJLStringII() throws Exception {
-        String s = "hello";
-        char[] buf = s.toCharArray();
-        SerialClob serialClob = new SerialClob(buf);
-        
+        SerialClob serialClob = new SerialClob("hello".toCharArray());
         int count = serialClob.setString(1, "olleh", 0, 5);
         String sub = serialClob.getSubString(1, 5);
         assertEquals("olleh", sub);
@@ -305,8 +302,29 @@ public class SerialClobTest extends TestCase {
         }
     }
 
-    public void testTruncate() {
-        // TODO: Not yet implemented
+    public void testTruncate() throws Exception {
+        SerialClob serialClob = new SerialClob("hello".toCharArray());
+        serialClob.truncate(3);
+        assertEquals(3, serialClob.length());
+        String s = serialClob.getSubString(1, 3);
+        assertEquals("hel", s);
+        serialClob.truncate(0);
+        assertEquals(0, serialClob.length());
+
+        serialClob = new SerialClob("hello".toCharArray());
+        try {
+            serialClob.truncate(10);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+
+        try {
+            serialClob.truncate(-1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
     }
 
     static class MockSerialClob implements Clob {
