@@ -356,7 +356,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
             }
 			E[] newArray = newElementArray(size + increment);
 			if (size > 0) {
-                System.arraycopy(array, firstIndex, newArray, firstIndex, size);
+                System.arraycopy(array, firstIndex, newArray, 0, size);
+                firstIndex = 0;
+                lastIndex = size;
             }
 			array = newArray;
 		}

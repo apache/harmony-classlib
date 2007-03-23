@@ -188,12 +188,29 @@ public class ArrayListTest extends junit.framework.TestCase {
 				.get(101) == i.next());
 		assertTrue("Item at slot 103 is wrong: " + alist.get(102), alist
 				.get(102) == i.next());
+        
+        
+        // Regression test for Harmony-3481
+        ArrayList<Integer> originalList = new ArrayList<Integer>(12);
+        for (int j = 0; j < 12; j++) {
+            originalList.add(j);
+        }
+        
+        originalList.remove(0);
+        originalList.remove(0);
+        
+        ArrayList<Integer> additionalList = new ArrayList<Integer>(11);
+        for (int j = 0; j < 11; j++) {
+            additionalList.add(j);
+        }
+        assertTrue(originalList.addAll(additionalList));
+        assertEquals(21, originalList.size());
 
 	}
 
 	/**
-	 * @tests java.util.ArrayList#clear()
-	 */
+     * @tests java.util.ArrayList#clear()
+     */
 	public void test_clear() {
 		// Test for method void java.util.ArrayList.clear()
 		alist.clear();
