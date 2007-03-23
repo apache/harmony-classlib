@@ -2,3 +2,5 @@
 java/awt/AccessibleAWTWindowTest.java
 java/awt/AccessibleAWTCanvasTest.java
 java/awt/font/LineBreakMeasurerTest.java
+# HARMONY-2867, fails intermittently on IBM VME also
+java/awt/WindowTest.java
