@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FilePermission;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.CodeSource;
@@ -1014,10 +1015,19 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     private URL targetURL(URL base, String name) throws MalformedURLException {
-        String file = new StringBuffer(base.getFile().length() + name.length())
-                .append(base.getFile()).append(name).toString();
-        return new URL(base.getProtocol(), base.getHost(), base.getPort(),
-                file, null);
+        try {
+            String file = base.getFile() + URIEncoderDecoder.quoteIllegal(name,
+                    "/@" + URI.someLegal);
+
+            return new URL(base.getProtocol(), base.getHost(), base.getPort(),
+                    file, null);
+        } catch (UnsupportedEncodingException e) {
+            MalformedURLException e2 = new MalformedURLException(e.toString());
+            
+            e2.initCause(e);
+            throw e2;
+        }
+        
     }
 
     /**

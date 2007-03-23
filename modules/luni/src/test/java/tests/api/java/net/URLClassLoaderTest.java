@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
@@ -363,21 +364,28 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
     public void testFindResource_H3461() throws Exception {
         File userDir = new File(System.getProperty("user.dir"));
         File dir = new File(userDir, "encode#me");
-        File f;
+        File f, f2;
         URLClassLoader loader;
+        URL dirUrl;
         
         if (!dir.exists()) {
             dir.mkdir();
         }
+        dir.deleteOnExit();
+        dirUrl = new URI("file", null, dir.getAbsolutePath() +
+                        File.separator, null).toURL();
+        loader = new URLClassLoader( new URL[] { dirUrl });
+
         f = File.createTempFile("temp", ".dat", dir);
         f.deleteOnExit();
-        dir.deleteOnExit();
-        loader = new URLClassLoader(
-                new URL[] { new URL("file:" + userDir.getAbsolutePath() +
-                        "/encode%23me/") });
+        f2 = File.createTempFile("bad#name#", ".dat", dir);
+        f2.deleteOnExit();
                 
-        assertNotNull("Unable to load resource with problematic name",
+        assertNotNull("Unable to load resource from path with problematic name",
             loader.getResource(f.getName()));
+        assertEquals("URL was not correctly encoded",
+            new URI("file", null, f2.getAbsolutePath(), null).toURL(),    
+            loader.getResource(f2.getName()));
     }
 
     /**
