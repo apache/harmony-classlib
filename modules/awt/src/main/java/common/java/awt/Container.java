@@ -989,7 +989,7 @@ public class Container extends Component {
     private void paintComponentsImpl(Graphics g) {
         Shape clip;
         
-        if (g == null) {
+        if ((!isShowing()) || (g == null)) {
             return;
         }
         
@@ -999,7 +999,7 @@ public class Container extends Component {
             Component comp = children.get(i);
 
             if (comp.isLightweight() && comp.isVisible()) {
-                if (!clip.intersects(comp.getBounds())) {
+                if ((clip != null) && !clip.intersects(comp.getBounds())) {
                     continue;
                 }
 
