@@ -284,10 +284,13 @@
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/api/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${security.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -299,10 +302,13 @@
                 <!-- to pick up junit.jar               -->
                 <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/api/java.injected">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${security.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -322,11 +328,13 @@
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
                 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/impl/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${security.exclude.file}" />
-                        <exclude name="${hy.security.x-list}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -338,13 +346,13 @@
                 <!-- to pick up junit.jar               -->
                 <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/impl/java.injected">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${security.exclude.file}" />
-
-                        <exclude name="${hy.security.x-list}" />
-
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -424,8 +432,6 @@
                 </classpath>
 
                 <formatter type="xml" />
-
-                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
             </junit>
         </sequential>
     </macrodef>

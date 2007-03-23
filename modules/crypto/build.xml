@@ -183,10 +183,13 @@
                     <pathelement path="../../build/tests" />
                 </classpath>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.crypto.src.test}/api/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${crypto.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -198,10 +201,13 @@
                 <!-- to pick up junit.jar               -->
                 <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/api.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar"/>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.crypto.src.test}/api/java.injected">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${crypto.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -220,10 +226,13 @@
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
                 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.crypto.src.test}/impl/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${crypto.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -235,10 +244,13 @@
                 <!-- to pick up junit.jar               -->
                 <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/impl.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests"/>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.crypto.src.test}/impl/java.injected">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${crypto.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
                     </fileset>
                 </batchtest>
 
@@ -320,8 +332,6 @@
                 </classpath>
 
                 <formatter type="xml" />
-
-                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
             </junit>
         </sequential>
     </macrodef>

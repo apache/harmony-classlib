@@ -219,18 +219,21 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.auth.src.test.java.platform}">
-                    <include name="**/*Test.java"/>
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${auth.exclude.file}" unless="test.case" />
                 </fileset>
                 <fileset dir="${hy.auth.src.test.java}">
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${auth.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${auth.exclude.file}" unless="test.case" />
 
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>

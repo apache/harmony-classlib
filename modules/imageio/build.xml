@@ -190,22 +190,20 @@
 
             <jvmarg line="${hy.test.vmargs}" />
 
-            <env key="JAVA_HOME" value="${test.jre.home}"/>
-
             <classpath>
                 <pathelement path="${hy.imageio.bin.test}"/>
             </classpath>
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.imageio.src.test.java}" >
-                    <excludesfile name="${imageio.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*.java" unless="test.case" />
+                    <excludesfile name="${imageio.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>

@@ -192,9 +192,6 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
             <!-- run LogManagerTest in separated VM -->
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
@@ -205,14 +202,16 @@
                 </fileset>
             </batchtest>
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.logging.src.test.java}">
-                    <include name="org/apache/harmony/logging/tests/java/util/logging/*Test.java"/>
-                    <excludesfile name="${logging.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="org/apache/harmony/logging/tests/java/util/logging/*Test.java" unless="test.case" />
+                    <excludesfile name="${logging.exclude.file}" unless="test.case" />
 
-                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java" />
+                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>

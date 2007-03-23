@@ -319,20 +319,22 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${awt.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                     <exclude name="**/*Headless*Test.java"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${awt.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                     <exclude name="**/*Headless*Test.java"/>
                 </fileset>
             </batchtest>  
@@ -356,16 +358,21 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
-                    <include name="**/*Headless*Test.java"/>
-                    <excludesfile name="${awt.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Headless*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <include name="**/*Headless*Test.java"/>
-                    <excludesfile name="${awt.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Headless*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
             </batchtest>  
         </junit>

@@ -191,15 +191,14 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.misc.src.test.java}">
-                    <include name="**/*Test.java" />
-                    <excludesfile name="${misc.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${misc.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>

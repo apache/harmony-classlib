@@ -196,17 +196,17 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                  if="test.case" />
             <jvmarg value="-Xbootclasspath/a:${hy.swing.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 <!--            <jvmarg value="-Djava2d.opengl=true"/> -->
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.swing.src.test.api}/java/common">
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${swing.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${swing.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>

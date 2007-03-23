@@ -151,10 +151,13 @@
                     <pathelement path="../../build/tests"/>
                 </classpath>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.rmi.src.test}/api/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${rmi.exclude.file}" />
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${rmi.exclude.file}" unless="test.case"  />
                     </fileset>
                 </batchtest>
 
@@ -236,8 +239,6 @@
                 </classpath>
 
                 <formatter type="xml" />
-
-                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
             </junit>
         </sequential>
     </macrodef>
