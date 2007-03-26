@@ -17,9 +17,6 @@
 package java.awt;
 
 
-import javax.swing.DebugGraphics;
-import javax.swing.JButton;
-
 import junit.framework.TestCase;
 
 
@@ -66,28 +63,6 @@ public class ContainerRTest extends TestCase {
         // Regression test for HARMONY-2527
         final Component c = new Frame();
         c.paint(c.getGraphics());
-        // End of regression for HARMONY-2527
-        
-        // Regression for HARMONY-3443
-        final Graphics g;
-        final Frame f = new Frame();
-
-        f.add(new JButton());
-        f.setVisible(true);
-        g = f.getGraphics();
-
-        try {
-            g.setClip(null);
-            assertNull(g.getClip());
-            f.paint(g);
-        } finally {
-            f.dispose();
-        }
-        // End of regression for HARMONY-3443
-        
-        // Regression for HARMONY-3430
-        new Container().paint(new DebugGraphics());
-        // End of regression for HARMONY-3430
     }
 
     public void testAddComponent() {
