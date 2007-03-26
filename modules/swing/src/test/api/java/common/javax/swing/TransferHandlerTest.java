@@ -20,15 +20,19 @@
  */
 package javax.swing;
 
+import java.awt.AWTPermission;
 import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.security.Permission;
+
 
 public class TransferHandlerTest extends SwingTestCase {
     TransferHandler transferHandler;
@@ -264,5 +268,45 @@ public class TransferHandlerTest extends SwingTestCase {
         //        assertEquals(button, trH.component);
         //        assertEquals("copy", action.getValue(Action.NAME));
         //        assertTrue(action == TransferHandler.getCopyAction());
+    }
+
+    public void testAccessSystemClipboard() {
+        // Regression test for HARMONY-3479
+
+        class TestSecurityManager extends SecurityManager {
+
+            public boolean flag;
+
+            public void checkPermission(Permission perm) {
+                if ((perm instanceof AWTPermission)
+                        && "accessClipboard".equals(perm.getName())) {
+                    flag = true;
+                    throw new SecurityException("test");
+                }
+            }
+        }
+
+        SecurityManager oldSecurityManager = System.getSecurityManager();
+        TestSecurityManager testSecurityManager = new TestSecurityManager();
+        System.setSecurityManager(testSecurityManager);
+
+        try {
+            ActionEvent event = new ActionEvent(new JPanel(), 0, "");
+            Action action;
+
+            testSecurityManager.flag = false;
+            TransferHandler.getCopyAction().actionPerformed(event);
+            assertTrue(testSecurityManager.flag);
+
+            testSecurityManager.flag = false;
+            TransferHandler.getCutAction().actionPerformed(event);
+            assertTrue(testSecurityManager.flag);
+
+            testSecurityManager.flag = false;
+            TransferHandler.getPasteAction().actionPerformed(event);
+            assertTrue(testSecurityManager.flag);
+        } finally {
+            System.setSecurityManager(oldSecurityManager);
+        }
     }
 }

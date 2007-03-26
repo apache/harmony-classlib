@@ -57,10 +57,11 @@ public class TransferHandler implements Serializable {
         public void actionPerformed(final ActionEvent e) {
             Object source = e.getSource();
             TransferHandler transferHandler = getTransferHandler(source);
-            if (transferHandler != null) {
-                transferHandler.exportToClipboard((JComponent)source,
-                                                  getSystemClipboard(),
-                                                  MOVE);
+            Clipboard clipboard = getSystemClipboard();
+
+            if ((transferHandler != null) && (clipboard != null)) {
+                transferHandler.exportToClipboard(
+                        (JComponent) source, clipboard, MOVE);
             }
         }
     };
@@ -70,10 +71,11 @@ public class TransferHandler implements Serializable {
         public void actionPerformed(final ActionEvent e) {
             Object source = e.getSource();
             TransferHandler transferHandler = getTransferHandler(source);
-            if (transferHandler != null) {
-                transferHandler.exportToClipboard((JComponent)source,
-                                                  getSystemClipboard(),
-                                                  COPY);
+            Clipboard clipboard = getSystemClipboard();
+
+            if ((transferHandler != null) && (clipboard != null)) {
+                transferHandler.exportToClipboard(
+                        (JComponent) source, clipboard, COPY);
             }
         }
     };
@@ -83,10 +85,13 @@ public class TransferHandler implements Serializable {
         public void actionPerformed(final ActionEvent e) {
             Object source = e.getSource();
             TransferHandler transferHandler = getTransferHandler(source);
-            if (transferHandler != null) {
-               Transferable t = getSystemClipboard().getContents(this);
+            Clipboard clipboard = getSystemClipboard();
+
+            if ((transferHandler != null) && (clipboard != null)) {
+               Transferable t = clipboard.getContents(this);
+
                if (t != null) {
-                   transferHandler.importData((JComponent)source, t);
+                   transferHandler.importData((JComponent) source, t);
                }
             }
         }
@@ -147,7 +152,13 @@ public class TransferHandler implements Serializable {
     }
 
     private static Clipboard getSystemClipboard() {
-        return Toolkit.getDefaultToolkit().getSystemClipboard();
+        try {
+            return Toolkit.getDefaultToolkit().getSystemClipboard();
+        } catch (SecurityException e) {
+            // we need to catch this exception in order to be compatible with RI
+            // see HARMONY-3479
+            return null;
+        }
     }
 
     private PropertyDescriptor getPropertyDescriptor(final JComponent c) {
@@ -309,5 +320,6 @@ public class TransferHandler implements Serializable {
         return COPY_ACTION;
     }
 }
+
 
 

@@ -2,7 +2,6 @@ javax/swing/DefaultCellEditorTest.java
 javax/swing/DefaultComboBoxModelTest.java
 javax/swing/JSpinnerTest.java
 javax/swing/Timer_MultithreadedTest.java
-javax/swing/TransferHandlerTest.java
 javax/swing/border/CompoundBorderTest.java
 javax/swing/border/EtchedBorderTest.java
 javax/swing/border/LineBorderTest.java
