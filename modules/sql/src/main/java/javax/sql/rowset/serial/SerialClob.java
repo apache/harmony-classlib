@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.sql.Clob;
 import java.sql.SQLException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SerialClob implements Clob, Serializable, Cloneable {
@@ -87,13 +86,14 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         return len;
     }
 
-    public InputStream getAsciiStream() throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
+    public InputStream getAsciiStream() throws SerialException, SQLException {
+        if (clob == null) {
+            throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
+        }
+        return clob.getAsciiStream();
     }
 
-    public Reader getCharacterStream() throws SerialException,
-            NotImplementedException {
+    public Reader getCharacterStream() throws SerialException {
         return new CharArrayReader(buf);
     }
 
@@ -142,13 +142,19 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public OutputStream setAsciiStream(long pos) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        if (clob == null) {
+            throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
+        }
+        return clob.setAsciiStream(pos);
     }
 
     public Writer setCharacterStream(long pos) throws SerialException,
-            SQLException, NotImplementedException {
-        throw new NotImplementedException();
+            SQLException {
+        if (clob == null) {
+            throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
+        }
+        return clob.setCharacterStream(pos);
     }
 
     public int setString(long pos, String str) throws SerialException {

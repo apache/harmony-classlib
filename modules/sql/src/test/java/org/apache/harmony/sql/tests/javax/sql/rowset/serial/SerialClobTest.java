@@ -18,7 +18,9 @@
 package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +28,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialException;
@@ -35,9 +38,7 @@ import junit.framework.TestCase;
 public class SerialClobTest extends TestCase {
 
     public void testSerialClob$C() throws Exception {
-        char[] buf = new char[8];
-        SerialClob serialClob = new SerialClob(buf);
-
+        SerialClob serialClob = new SerialClob(new char[8]);
         assertEquals(8, serialClob.length());
 
         try {
@@ -52,13 +53,13 @@ public class SerialClobTest extends TestCase {
         SerialClob serialClob;
         MockSerialClob mockClob = new MockSerialClob();
 
-        mockClob.characterStream = new CharArrayReader(mockClob.buf);
-        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
         serialClob = new SerialClob(mockClob);
         assertEquals(mockClob.buf.length, serialClob.length());
 
-        mockClob.characterStream = null;
-        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.characterStreamReader = null;
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
         try {
             new SerialClob(mockClob);
             fail("should throw SQLException");
@@ -66,8 +67,8 @@ public class SerialClobTest extends TestCase {
             // expected
         }
 
-        mockClob.characterStream = new CharArrayReader(new char[] { 1 });
-        mockClob.asciiStream = null;
+        mockClob.characterStreamReader = new CharArrayReader(new char[] { 1 });
+        mockClob.asciiInputStream = null;
         try {
             new SerialClob(mockClob);
             fail("should throw SQLException");
@@ -75,8 +76,8 @@ public class SerialClobTest extends TestCase {
             // expected
         }
 
-        mockClob.characterStream = new MockAbnormalReader();
-        mockClob.asciiStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.characterStreamReader = new MockAbnormalReader();
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
         try {
             new SerialClob(mockClob);
             fail("should throw SerialException");
@@ -94,21 +95,54 @@ public class SerialClobTest extends TestCase {
     }
 
     public void testLength() {
-        // TODO: Not yet implemented
+        // length() has been tested in constructor test.
     }
 
-    public void testGetAsciiStream() {
-        // TODO: Not yet implemented
+    public void testGetAsciiStream() throws Exception {
+        MockSerialClob mockClob = new MockSerialClob();
+        mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
+        SerialClob serialClob = new SerialClob(mockClob);
+        InputStream is = serialClob.getAsciiStream();
+        assertTrue(mockClob.isGetAsciiStreamInvoked);
+        assertEquals(mockClob.asciiInputStream, is);
+        
+        try {
+            serialClob = new SerialClob("helloo".toCharArray());
+            serialClob.getAsciiStream();
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected 
+         }
+
     }
 
-    public void testGetCharacterStream() {
-        // TODO: Not yet implemented
+    public void testGetCharacterStream() throws Exception {
+        char[] buf = "helloo".toCharArray();
+        SerialClob serialClob = new SerialClob(buf);
+        
+        Reader reader = serialClob.getCharacterStream();
+        char[] data = new char[buf.length];
+        int read = reader.read(data);
+        assertEquals(buf.length, read);
+        assertTrue(Arrays.equals(buf, data));
+        assertFalse(reader.ready());
+        
+        MockSerialClob mockClob = new MockSerialClob();
+        mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.asciiOutputStream = new ByteArrayOutputStream();
+        serialClob = new SerialClob(mockClob);
+        reader = serialClob.getCharacterStream();
+        data = new char[mockClob.buf.length];
+        read = reader.read(data);
+        assertEquals(mockClob.buf.length, read);
+        assertTrue(Arrays.equals(mockClob.buf, data));
+        assertFalse(reader.ready());
     }
 
     public void testGetSubString() throws Exception {
-        String s = "hello";
-        char[] buf = s.toCharArray();
-        SerialClob serialClob = new SerialClob(buf);
+        SerialClob serialClob = new SerialClob("hello".toCharArray());
 
         String sub = serialClob.getSubString(1, 5);
         assertEquals("hello", sub);
@@ -205,12 +239,44 @@ public class SerialClobTest extends TestCase {
         assertEquals(-1, pos);
     }
 
-    public void testSetAsciiStream() {
-        // TODO: Not yet implemented
+    public void testSetAsciiStream() throws Exception {
+        MockSerialClob mockClob = new MockSerialClob();
+        mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.asciiOutputStream = new ByteArrayOutputStream();
+        SerialClob serialClob = new SerialClob(mockClob);
+        OutputStream os = serialClob.setAsciiStream(1);
+        assertTrue(mockClob.isSetAsciiStreamInvoked);
+        assertEquals(mockClob.asciiOutputStream, os);
+        
+        try {
+            serialClob = new SerialClob("helloo".toCharArray());
+            // Harmony-3491, non bug difference from RI
+            serialClob.setAsciiStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected 
+        }
     }
 
-    public void testSetCharacterStream() {
-        // TODO: Not yet implemented
+    public void testSetCharacterStream() throws Exception {
+        MockSerialClob mockClob = new MockSerialClob();
+        mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
+        mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
+        mockClob.characterStreamWriter = new CharArrayWriter();
+        SerialClob serialClob = new SerialClob(mockClob);
+        Writer writer = serialClob.setCharacterStream(1);
+        assertTrue(mockClob.isSetCharacterStreamInvoked);
+        assertEquals(mockClob.characterStreamWriter, writer);
+        
+        try {
+            serialClob = new SerialClob("helloo".toCharArray());
+            // Harmony-3491, non bug difference from RI
+            serialClob.setCharacterStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected 
+        }
     }
 
     public void testSetStringJLString() throws Exception {
@@ -329,21 +395,32 @@ public class SerialClobTest extends TestCase {
 
     static class MockSerialClob implements Clob {
 
-        char[] buf = { 1, 2, 3 };
+        public char[] buf = { 1, 2, 3 };
 
-        public Reader characterStream;
+        public Reader characterStreamReader;
+        
+        public Writer characterStreamWriter;
 
-        public InputStream asciiStream;
+        public InputStream asciiInputStream;
+        
+        public OutputStream asciiOutputStream;
+        
+        public boolean isGetAsciiStreamInvoked;
+        
+        public boolean isSetAsciiStreamInvoked;
+
+        public boolean isSetCharacterStreamInvoked;
 
         public MockSerialClob() {
         }
 
         public InputStream getAsciiStream() throws SQLException {
-            return asciiStream;
+            isGetAsciiStreamInvoked = true;
+            return asciiInputStream;
         }
 
         public Reader getCharacterStream() throws SQLException {
-            return characterStream;
+            return characterStreamReader;
         }
 
         public String getSubString(long pos, int length) throws SQLException {
@@ -363,11 +440,13 @@ public class SerialClobTest extends TestCase {
         }
 
         public OutputStream setAsciiStream(long pos) throws SQLException {
-            return null;
+            isSetAsciiStreamInvoked = true;
+            return asciiOutputStream;
         }
 
         public Writer setCharacterStream(long pos) throws SQLException {
-            return null;
+            isSetCharacterStreamInvoked = true;
+            return characterStreamWriter;
         }
 
         public int setString(long pos, String str) throws SQLException {
