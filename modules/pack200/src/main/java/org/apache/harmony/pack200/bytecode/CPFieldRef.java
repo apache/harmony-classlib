@@ -16,82 +16,10 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
+public class CPFieldRef extends CPRef {
 
-
-public class CPFieldRef extends ConstantPoolEntry {
-
-	CPClass className;
-	transient int classNameIndex;
-
-
-	private CPNameAndType nameAndType;
-	transient int nameAndTypeIndex;
 	public CPFieldRef(String className, String descriptor) {
-		super(ConstantPoolEntry.CP_Fieldref);
-		this.className = new CPClass(className);
-		this.nameAndType = new CPNameAndType(descriptor);
-	}
-
-
-	
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		ClassFileEntry[] entries = new ClassFileEntry[2];
-		entries[0] = className;
-		entries[1] = nameAndType;
-		return entries;
-	}
-
-
-	
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		nameAndTypeIndex = pool.indexOf(nameAndType);
-		classNameIndex = pool.indexOf(className);
-	}
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(classNameIndex);
-		dos.writeShort(nameAndTypeIndex);
-	}
-
-	
-	public String toString() {
-		return "FieldRef: " + className + "#" + nameAndType;
-	}
-
-
-	
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((className == null) ? 0 : className.hashCode());
-		result = PRIME * result + ((nameAndType == null) ? 0 : nameAndType.hashCode());
-		return result;
-	}
-
-
-	
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final CPFieldRef other = (CPFieldRef) obj;
-		if (className == null) {
-			if (other.className != null)
-				return false;
-		} else if (!className.equals(other.className))
-			return false;
-		if (nameAndType == null) {
-			if (other.nameAndType != null)
-				return false;
-		} else if (!nameAndType.equals(other.nameAndType))
-			return false;
-		return true;
+		super(ConstantPoolEntry.CP_Fieldref, className, descriptor);
 	}
 
 }

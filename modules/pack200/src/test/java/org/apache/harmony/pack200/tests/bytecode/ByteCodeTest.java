@@ -14,15 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.pack200.tests.bytecode;
 
-import java.util.List;
+import junit.framework.TestCase;
 
-public class CPMethod extends CPMember {
+import org.apache.harmony.pack200.bytecode.ByteCode;
 
-	public CPMethod(String descriptor, long flags, List attributes) {
-		// TODO Check that we only pass these on, or remap
-		super(descriptor, 0x7FFF & flags, attributes);
+public class ByteCodeTest extends TestCase {
+	public void testByteCode() {
+		assertEquals("nop", ByteCode.getByteCode(0).getName());
+		assertEquals("return", ByteCode.getByteCode(-79).getName());
+		assertEquals("return", ByteCode.getByteCode(177).getName());
 	}
-
 }

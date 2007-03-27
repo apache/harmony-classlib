@@ -16,13 +16,19 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
-import java.util.List;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class CPMethod extends CPMember {
+public class ExceptionTableEntry {
+	public int catchType;
+	public int endPC;
+	public int handlerPC;
+	public int startPC;
 
-	public CPMethod(String descriptor, long flags, List attributes) {
-		// TODO Check that we only pass these on, or remap
-		super(descriptor, 0x7FFF & flags, attributes);
+	public void write(DataOutputStream dos) throws IOException {
+		dos.writeShort(startPC);
+		dos.writeShort(endPC);
+		dos.writeShort(handlerPC);
+		dos.writeShort(catchType);
 	}
-
 }

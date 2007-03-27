@@ -24,8 +24,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class ClassFileEntry {
-	private static final ClassFileEntry[] NONE = new ClassFileEntry[0];
+	protected static final ClassFileEntry[] NONE = new ClassFileEntry[0];
 	private boolean resolved;
+
+	protected abstract void doWrite(DataOutputStream dos) throws IOException;
 
 	public abstract boolean equals(Object arg0);
 
@@ -47,11 +49,9 @@ public abstract class ClassFileEntry {
 	public abstract String toString();
 
 	public final void write(DataOutputStream dos) throws IOException {
-		if(!resolved)
+		if (!resolved)
 			throw new IllegalStateException("Entry has not been resolved");
 		doWrite(dos);
 	}
-
-	protected abstract void doWrite(DataOutputStream dos) throws IOException;
 
 }

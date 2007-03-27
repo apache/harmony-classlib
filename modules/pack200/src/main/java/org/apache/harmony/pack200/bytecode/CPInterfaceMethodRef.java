@@ -16,13 +16,10 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
-import java.util.List;
+public class CPInterfaceMethodRef extends CPRef {
 
-public class CPMethod extends CPMember {
-
-	public CPMethod(String descriptor, long flags, List attributes) {
-		// TODO Check that we only pass these on, or remap
-		super(descriptor, 0x7FFF & flags, attributes);
+	public CPInterfaceMethodRef(String className, String descriptor) {
+		super(ConstantPoolEntry.CP_InterfaceMethodref, className, descriptor);
 	}
 
 }

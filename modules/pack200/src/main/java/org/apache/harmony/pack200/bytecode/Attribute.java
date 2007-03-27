@@ -19,14 +19,19 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
 public abstract class Attribute extends ClassFileEntry {
-	private CPUTF8 attributeName;
+	private final CPUTF8 attributeName;
 
 	private int attributeNameIndex;
 
 	public Attribute(String attributeName) {
 		this.attributeName = new CPUTF8(attributeName);
+	}
+
+	protected void doWrite(DataOutputStream dos) throws IOException {
+		dos.writeShort(attributeNameIndex);
+		dos.writeInt(getLength());
+		writeBody(dos);
 	}
 
 	public boolean equals(Object obj) {
@@ -51,7 +56,10 @@ public abstract class Attribute extends ClassFileEntry {
 
 	protected abstract int getLength();
 
-	
+	protected ClassFileEntry[] getNestedClassFileEntries() {
+		return new ClassFileEntry[] { getAttributeName() };
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -65,13 +73,6 @@ public abstract class Attribute extends ClassFileEntry {
 		attributeNameIndex = pool.indexOf(attributeName);
 	}
 
-	protected void doWrite(DataOutputStream dos) throws IOException {
-		dos.writeShort(attributeNameIndex);
-		dos.writeInt(getLength());
-		writeBody(dos);
-	}
-
-	protected abstract void writeBody(DataOutputStream dos)
-			throws IOException;
+	protected abstract void writeBody(DataOutputStream dos) throws IOException;
 
 }
