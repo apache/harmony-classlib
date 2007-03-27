@@ -30,7 +30,7 @@ public class CharacterTest extends TestCase {
             assertEquals(e, a);
         }
         // test the rest of the chars
-        for (int c = '\u0512'; c <= Character.MAX_VALUE; c++) {
+        for (int c = 512; c <= Character.MAX_VALUE; c++) {
             assertEquals(new Character((char) c), Character.valueOf((char) c));
         }
     }
