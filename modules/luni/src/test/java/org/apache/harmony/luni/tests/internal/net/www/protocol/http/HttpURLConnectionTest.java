@@ -14,13 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.apache.harmony.luni.tests.internal.net.www.protocol.http;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -30,16 +31,17 @@ import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
+import java.security.Permission;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-
 /**
- * Tests for <code>HTTPURLConnection</code> class constructors and methods.
- *
+ * Tests for <code>HttpURLConnection</code> class constructors and methods.
  */
 public class HttpURLConnectionTest extends TestCase {
+
+    private static final boolean DEBUG = false;
 
     private final static Object bound = new Object();
 
@@ -51,7 +53,7 @@ public class HttpURLConnectionTest extends TestCase {
         public MockServer(String name) throws IOException {
             super(name);
             serverSocket = new ServerSocket(0);
-            serverSocket.setSoTimeout(1000);
+            serverSocket.setSoTimeout(5000);
         }
 
         public int port() {
@@ -77,6 +79,128 @@ public class HttpURLConnectionTest extends TestCase {
         }
     }
 
+    static class MockHTTPServer extends MockServer {
+        // HTTP response codes
+        static final int OK_CODE = 200;
+        static final int NOT_FOUND_CODE = 404;
+        // how many times persistent connection will be used
+        // by server
+        int persUses;
+        // result code to be sent to client
+        int responseCode;
+        // response content to be sent to client
+        String response = "<html></html>";
+        // client's POST message
+        String clientPost = "Hello from client!";
+
+        public MockHTTPServer(String name, int persUses) throws IOException {
+            this(name, persUses, OK_CODE);
+        }
+
+        public MockHTTPServer(String name, int persUses,
+                int responseCode) throws IOException {
+            super(name);
+            this.persUses = persUses;
+            this.responseCode = responseCode;
+        }
+
+        public int port() {
+            return serverSocket.getLocalPort();
+        }
+
+        @Override
+        public void run() {
+            try {
+                synchronized (bound) {
+                    started = true;
+                    bound.notify();
+                }
+                InputStream is = null;
+                Socket client = null;
+                try {
+                    client = serverSocket.accept();
+                    accepted = true;
+                    for (int i=0; i<persUses; i++) {
+                        if (DEBUG) {
+                            System.out.println("*** Using connection for "
+                                    + (i+1) + " time ***");
+                        }
+                        byte[] buff = new byte[1024];
+                        is = client.getInputStream();
+                        int num = 0; // number of read bytes
+                        int bytik; // read byte value
+                        boolean wasEOL = false;
+                        // read header (until empty string)
+                        while (((bytik = is.read()) > 0)) {
+                            if (bytik == '\r') {
+                                bytik = is.read();
+                            }
+                            if (wasEOL && (bytik == '\n')) {
+                                break;
+                            }
+                            wasEOL = (bytik == '\n');
+                            buff[num++] = (byte) bytik;
+                        }
+                        //int num = is.read(buff);
+                        String message = new String(buff, 0, num);
+                        if (DEBUG) {
+                            System.out.println("---- Server got request: ----\n"
+                                + message + "-----------------------------");
+                        }
+                        
+                        // Act as Server (not Proxy) side
+                        if (message.startsWith("POST")) {
+                            // client connection sent some data
+                            // if the data was not read with header
+                            if (DEBUG) {
+                                System.out.println(
+                                        "---- Server read client's data: ----");
+                            }
+                            num = is.read(buff);
+                            message = new String(buff, 0, num);
+                            if (DEBUG) {
+                                System.out.println("'" + message + "'");
+                                System.out.println(
+                                        "------------------------------------");
+                            }
+                            // check the received data
+                            assertEquals(clientPost, message);
+                        }
+
+                        client.getOutputStream().write((
+                            "HTTP/1.1 " + responseCode + " OK\n"
+                            + "Content-type: text/html\n"
+                            + "Content-length: " 
+                            + response.length() + "\n\n"
+                            + response).getBytes());
+
+                        if (responseCode != OK_CODE) {
+                            // wait while test case check closed connection
+                            // and interrupt this thread
+                            try {
+                                while (!isInterrupted()) {
+                                    Thread.sleep(1000);
+                                }
+                            } catch (Exception ignore) { }
+                        }
+                    }
+                } catch (SocketTimeoutException ignore) {
+                    ignore.printStackTrace();
+                } finally {
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (client != null) {
+                        client.close();
+                    }
+                    serverSocket.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     static class MockProxyServer extends MockServer {
 
         boolean acceptedAuthorizedRequest;
@@ -89,18 +213,18 @@ public class HttpURLConnectionTest extends TestCase {
         public void run() {
             try {
                 Socket socket = serverSocket.accept();
-                socket.setSoTimeout(1000);
+                socket.setSoTimeout(5000);
                 byte[] buff = new byte[1024];
                 int num = socket.getInputStream().read(buff);
                 socket.getOutputStream().write((
-                    "HTTP/1.0 407 Proxy authentication required\n" 
-                  + "Proxy-authenticate: Basic realm=\"remotehost\"\n\n")
+                    "HTTP/1.0 407 Proxy authentication required\n"
+                        + "Proxy-authenticate: Basic realm=\"remotehost\"\n\n")
                         .getBytes());
                 num = socket.getInputStream().read(buff);
                 if (num == -1) {
                     // this connection was closed, create new one:
                     socket = serverSocket.accept();
-                    socket.setSoTimeout(1000);
+                    socket.setSoTimeout(5000);
                     num = socket.getInputStream().read(buff);
                 }
                 String request = new String(buff, 0, num);
@@ -114,7 +238,15 @@ public class HttpURLConnectionTest extends TestCase {
             }
         }
     }
-    
+
+    public void setUp() {
+        if (DEBUG) {
+            System.out.println("\n==============================");
+            System.out.println("===== Execution: "+getName());
+            System.out.println("==============================");
+        }
+    }
+
     /**
      * ProxySelector implementation used in the test.
      */
@@ -256,7 +388,7 @@ public class HttpURLConnectionTest extends TestCase {
             server.join();
             proxy.join();
 
-            assertTrue("Connection does not use proxy", 
+            assertTrue("Connection does not use proxy",
                                             connection.usingProxy());
             assertTrue("Proxy server was not used", proxy.accepted);
         } finally {
@@ -274,17 +406,17 @@ public class HttpURLConnectionTest extends TestCase {
                     "user", "password".toCharArray());
             }
         });
-        
+
         try {
             MockProxyServer proxy = new MockProxyServer("ProxyServer");
 
             URL url = new URL("http://remotehost:55555/requested.data");
-            HttpURLConnection connection = 
+            HttpURLConnection connection =
                 (HttpURLConnection) url.openConnection(
-                        new Proxy(Proxy.Type.HTTP, 
+                        new Proxy(Proxy.Type.HTTP,
                             new InetSocketAddress("localhost", proxy.port())));
-            connection.setConnectTimeout(1000);
-            connection.setReadTimeout(1000);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
 
             proxy.start();
 
@@ -299,5 +431,398 @@ public class HttpURLConnectionTest extends TestCase {
             Authenticator.setDefault(null);
         }
     }
-    
+
+    /**
+     * Test that a connection is not closed if the client reads all the data 
+     * but not closes input stream. read until -1.
+     */
+    public void testConnectionPersistence() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+
+        c.setDoInput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+        InputStream is = c.getInputStream();
+        byte[] buffer = new byte[128];
+        int totalBytes = 0;
+        int bytesRead = 0;
+        while((bytesRead = is.read(buffer)) > 0){
+            if (DEBUG) {
+                System.out.println("Client got response: '"
+                        + new String(buffer, 0, bytesRead) + "'");
+            }
+            totalBytes += bytesRead;
+        }
+
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        is = c2.getInputStream();
+        buffer = new byte[128];
+        totalBytes = 0;
+        bytesRead = 0;
+        while((bytesRead = is.read(buffer)) > 0){
+            if (DEBUG) {
+                System.out.println("Client got response: '"
+                        + new String(buffer, 0, bytesRead) + "'");
+                totalBytes += bytesRead;
+            }
+        }
+    }
+
+    /**
+     * Test that a connection is not closed if the client reads all the data 
+     * but not closes input stream. read() not receives -1.
+     */
+    public void testConnectionPersistence2() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+
+        c.setDoInput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+        InputStream is = c.getInputStream();
+        int bytes2Read = httpServer.response.length();
+        byte[] buffer = new byte[httpServer.response.length()];
+        while((bytes2Read -= is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        is = c2.getInputStream();
+        buffer = new byte[httpServer.response.length()];
+        bytes2Read = httpServer.response.length();
+        while((bytes2Read -= is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+    }
+
+    /**
+     * Test that a connection is not closed if it firstly does POST, 
+     * and then does GET requests.
+     */
+    public void testConnectionPersistence3() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+
+        c.setDoInput(true);
+        c.setDoOutput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+        c.getOutputStream().write(httpServer.clientPost.getBytes());
+
+        InputStream is = c.getInputStream(); 
+        int bytes2Read = httpServer.response.length();
+        byte[] buffer = new byte[httpServer.response.length()];
+        while((bytes2Read -= is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        is = c2.getInputStream();
+        buffer = new byte[httpServer.response.length()];
+        bytes2Read = httpServer.response.length();
+        while((bytes2Read -= is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+    }
+
+    /**
+     * Test that a connection is not closed if it firstly does GET, 
+     * and then does POST requests.
+     */
+    public void testConnectionPersistence4() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+
+        c.setDoInput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+
+        InputStream is = c.getInputStream(); 
+        int bytes2Read = httpServer.response.length();
+        byte[] buffer = new byte[httpServer.response.length()];
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+        
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        c2.setDoOutput(true);
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        is = c2.getInputStream();
+        buffer = new byte[httpServer.response.length()];
+        bytes2Read = httpServer.response.length();
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+    }
+
+    /**
+     * Test that a connection is not closed if it does POST for 2 times.
+     */
+    public void testConnectionPersistence5() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+        c.setDoOutput(true);
+        c.setDoInput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+        c.getOutputStream().write(httpServer.clientPost.getBytes());
+        InputStream is = c.getInputStream(); 
+        int bytes2Read = httpServer.response.length();
+        byte[] buffer = new byte[httpServer.response.length()];
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+        c2.setDoOutput(true);
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        is = c2.getInputStream();
+        buffer = new byte[httpServer.response.length()];
+        bytes2Read = httpServer.response.length();
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+    }
+
+    /**
+     * Test that a connection made through proxy will be reused
+     * for connection establishing without proxy.
+     */
+    public void testProxiedConnectionPersistence() throws Exception {
+        MockHTTPServer httpServer =
+            new MockHTTPServer("HTTP Server for persistence checking", 2);
+        httpServer.start();
+        synchronized(bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://some.host:1234")
+                    .openConnection(new Proxy(Proxy.Type.HTTP,
+                            new InetSocketAddress("localhost",
+                                httpServer.port())));
+        if (DEBUG) {
+            System.out.println("Actual connection class: "+c.getClass());
+        }
+        c.setDoOutput(true);
+        c.setDoInput(true);
+        c.setConnectTimeout(5000);
+        c.setReadTimeout(5000);
+        c.getOutputStream().write(httpServer.clientPost.getBytes());
+        InputStream is = c.getInputStream(); 
+        int bytes2Read = httpServer.response.length();
+        byte[] buffer = new byte[httpServer.response.length()];
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+
+        HttpURLConnection c2 = (HttpURLConnection)
+            new URL("http://some.host:1234").openConnection();
+        c2.setDoOutput(true);
+        c2.setDoInput(true);
+        c2.setConnectTimeout(5000);
+        c2.setReadTimeout(5000);
+        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        is = c2.getInputStream(); 
+        buffer = new byte[httpServer.response.length()];
+        bytes2Read = httpServer.response.length();
+        while((bytes2Read = is.read(buffer)) > 0) { }
+        if (DEBUG) {
+            System.out.println("Client got response: '"
+                    + new String(buffer) + "'");
+        }
+    }
+
+    public void testSecurityManager() throws MalformedURLException, IOException, InterruptedException {
+        try {
+            MockHTTPServer httpServer =
+                new MockHTTPServer("HTTP Server for persistence checking", 2);
+            httpServer.start();
+            synchronized(bound) {
+                if (!httpServer.started) {
+                    bound.wait(5000);
+                }
+            }
+            MySecurityManager sm = new MySecurityManager();
+            System.setSecurityManager(sm);
+
+            // Check that a first connection calls checkConnect
+            try {
+                HttpURLConnection c = (HttpURLConnection)
+                    new URL("http://localhost:"+httpServer.port()).openConnection();
+                if (DEBUG) {
+                    System.out.println("Actual connection class: "+c.getClass());
+                }
+                c.connect();
+                fail("Should have thrown a SecurityException upon connection");
+
+            } catch (SecurityException e) {
+            }
+
+            // Now create a connection properly
+            System.setSecurityManager(null);
+            HttpURLConnection c = (HttpURLConnection)
+            new URL("http://localhost:"+httpServer.port()).openConnection();
+            c.setDoInput(true);
+            c.setConnectTimeout(5000);
+            c.setReadTimeout(5000);
+            InputStream is = c.getInputStream();
+            byte[] buffer = new byte[128];
+            int totalBytes = 0;
+            int bytesRead = 0;
+            while((bytesRead = is.read(buffer)) > 0){
+                if (DEBUG) {
+                    System.out.println("Client got response: '"
+                            + new String(buffer, 0, bytesRead) + "'");
+                }
+                totalBytes += bytesRead;
+            }
+
+            // Now check that a second connection also calls checkConnect
+            System.setSecurityManager(sm);
+            try {
+                HttpURLConnection c2 = (HttpURLConnection)
+                    new URL("http://localhost:"+httpServer.port()).openConnection();
+                c2.setDoInput(true);
+                c2.setConnectTimeout(5000);
+                c2.setReadTimeout(5000);
+                is = c2.getInputStream();
+                buffer = new byte[128];
+                totalBytes = 0;
+                bytesRead = 0;
+                while((bytesRead = is.read(buffer)) > 0){
+                    if (DEBUG) {
+                        System.out.println("Client got response: '"
+                                + new String(buffer, 0, bytesRead) + "'");
+                        totalBytes += bytesRead;
+                    }
+                }
+                fail("Expected a SecurityException to be thrown");
+            } catch (SecurityException e) {
+            }
+        } finally {
+            System.setSecurityManager(null);
+        }
+    }
+
+    private static class MySecurityManager extends SecurityManager {
+
+        @Override
+        public void checkConnect(String host, int port) {
+           throw new SecurityException();
+        }
+        
+        @Override
+        public void checkConnect(String host, int port, Object context) {
+            throw new SecurityException();
+        }
+        
+        @Override
+        public void checkPermission(Permission permission) {
+            // allows a new security manager to be set
+        }
+
+    }
+
 }

@@ -161,6 +161,48 @@ public class HttpsURLConnectionTest extends TestCase {
     }
 
     /**
+     * Checks if HTTPS connection performs initial SSL handshake with the
+     * server working over SSL, sends encrypted HTTP request,
+     * and receives expected HTTP response. After that it checks that the
+     * established connection is persistent.
+     * After HTTPS session if finished
+     * test checks connection state parameters established by
+     * HttpsURLConnection.
+     */
+    public void testHttpsPersistentConnection() throws Throwable {
+        // set up the properties defining the default values needed by SSL stuff
+        setUpStoreProperties();
+
+        try {
+            // create the SSL server socket acting as a server
+            SSLContext ctx = getContext();
+            ServerSocket ss = ctx.getServerSocketFactory()
+                    .createServerSocket(0);
+
+            // create the HostnameVerifier to check hostname verification
+            TestHostnameVerifier hnv = new TestHostnameVerifier();
+            HttpsURLConnection.setDefaultHostnameVerifier(hnv);
+
+            // create url connection to be tested
+            URL url = new URL("https://localhost:" + ss.getLocalPort());
+            HttpsURLConnection connection = (HttpsURLConnection) url
+                    .openConnection();
+
+            // perform the interaction between the peers
+            SSLSocket peerSocket = (SSLSocket) doPersistentInteraction(connection, ss);
+
+            // check the connection state
+            checkConnectionStateParameters(connection, peerSocket);
+
+            // should silently exit
+            connection.connect();
+        } finally {
+            // roll the properties back to system values
+            tearDownStoreProperties();
+        }
+    }
+
+    /**
      * Tests the behaviour of HTTPS connection in case of unavailability
      * of requested resource.
      */
@@ -408,6 +450,43 @@ public class HttpsURLConnectionTest extends TestCase {
     }
 
     /**
+     * Tests the behaviour in case of sending the data to the server 
+     * over persistent connection.
+     */
+    public void testPersistence_doOutput() throws Throwable {
+        // setting up the properties pointing to the key/trust stores
+        setUpStoreProperties();
+
+        try {
+            // create the SSLServerSocket which will be used by server side
+            SSLServerSocket ss = (SSLServerSocket) getContext()
+                    .getServerSocketFactory().createServerSocket(0);
+
+            // create the HostnameVerifier to check that Hostname verification
+            // is done
+            TestHostnameVerifier hnv = new TestHostnameVerifier();
+            HttpsURLConnection.setDefaultHostnameVerifier(hnv);
+
+            // create HttpsURLConnection to be tested
+            URL url = new URL("https://localhost:" + ss.getLocalPort());
+            HttpsURLConnection connection = (HttpsURLConnection) url
+                    .openConnection();
+            connection.setDoOutput(true);
+
+            // perform the interaction between the peers and check the results
+            SSLSocket peerSocket = (SSLSocket) 
+                doPersistentInteraction(connection, ss);
+            checkConnectionStateParameters(connection, peerSocket);
+
+            // should silently exit
+            connection.connect();
+        } finally {
+            // roll the properties back to system values
+            tearDownStoreProperties();
+        }
+    }
+
+    /**
      * Tests HTTPS connection process made through the proxy server.
      */
     public void testProxyConnection() throws Throwable {
@@ -432,6 +511,43 @@ public class HttpsURLConnectionTest extends TestCase {
 
             // perform the interaction between the peers and check the results
             SSLSocket peerSocket = (SSLSocket) doInteraction(connection, ss);
+            checkConnectionStateParameters(connection, peerSocket);
+
+            // should silently exit
+            connection.connect();
+        } finally {
+            // roll the properties back to system values
+            tearDownStoreProperties();
+        }
+    }
+
+    /**
+     * Tests HTTPS connection process made through the proxy server.
+     * Checks that persistent connection to the host exists and can
+     * be used no in spite of explicit Proxy specifying.
+     */
+    public void testPersistentProxyConnection() throws Throwable {
+        // setting up the properties pointing to the key/trust stores
+        setUpStoreProperties();
+
+        try {
+            // create the SSLServerSocket which will be used by server side
+            ServerSocket ss = new ServerSocket(0);
+
+            // create the HostnameVerifier to check that Hostname verification
+            // is done
+            TestHostnameVerifier hnv = new TestHostnameVerifier();
+            HttpsURLConnection.setDefaultHostnameVerifier(hnv);
+
+            // create HttpsURLConnection to be tested
+            URL url = new URL("https://requested.host:55556/requested.data");
+            HttpsURLConnection connection = (HttpsURLConnection) url
+                    .openConnection(new Proxy(Proxy.Type.HTTP,
+                            new InetSocketAddress("localhost", ss
+                                    .getLocalPort())));
+
+            // perform the interaction between the peers and check the results
+            SSLSocket peerSocket = (SSLSocket) doPersistentInteraction(connection, ss);
             checkConnectionStateParameters(connection, peerSocket);
 
             // should silently exit
@@ -568,7 +684,7 @@ public class HttpsURLConnectionTest extends TestCase {
 
             // perform the interaction between the peers and check the results
             SSLSocket peerSocket = (SSLSocket) doInteraction(connection, ss,
-                    OK_CODE, true);
+                    OK_CODE);
             checkConnectionStateParameters(connection, peerSocket);
         } finally {
             // roll the properties back to system values
@@ -603,8 +719,7 @@ public class HttpsURLConnectionTest extends TestCase {
 
             // perform the interaction between the peers and check the results
             try {
-                doInteraction(connection, ss, AUTHENTICATION_REQUIRED_CODE,
-                        true);
+                doInteraction(connection, ss, AUTHENTICATION_REQUIRED_CODE);
             } catch (IOException e) {
                 // SSL Tunnelling failed
                 if (DO_LOG) {
@@ -704,10 +819,10 @@ public class HttpsURLConnectionTest extends TestCase {
     }
 
     /**
-     * Returns the file name of the key/trust store. The key store file 
+     * Returns the file name of the key/trust store. The key store file
      * (named as "key_store." + extension equals to the default KeyStore
      * type installed in the system in lower case) is searched in classpath.
-     * @throws AssertionFailedError if property was not set 
+     * @throws AssertionFailedError if property was not set
      * or file does not exist.
      */
     private static String getKeyStoreFileName() throws Exception {
@@ -826,7 +941,7 @@ public class HttpsURLConnectionTest extends TestCase {
     public static Socket doInteraction(
             final HttpURLConnection clientConnection,
             final ServerSocket serverSocket) throws Throwable {
-        return doInteraction(clientConnection, serverSocket, OK_CODE, false);
+        return doInteraction(clientConnection, serverSocket, OK_CODE, false, false);
     }
 
     /**
@@ -839,7 +954,31 @@ public class HttpsURLConnectionTest extends TestCase {
             final ServerSocket serverSocket, final int responseCode)
             throws Throwable {
         return doInteraction(clientConnection, serverSocket, responseCode,
-                false);
+                false, false);
+    }
+
+    /**
+     * Performs interaction between client's HttpURLConnection and
+     * servers side (ServerSocket) over persistent connection.
+     */
+    public static Socket doPersistentInteraction(
+            final HttpURLConnection clientConnection,
+            final ServerSocket serverSocket) throws Throwable {
+        return doInteraction(clientConnection, serverSocket, OK_CODE,
+                false, true);
+    }
+
+    /**
+     * Performs interaction between client's HttpURLConnection and
+     * servers side (ServerSocket) over persistent connection.
+     * Server will response with specified response code.
+     */
+    public static Socket doPersistentInteraction(
+            final HttpURLConnection clientConnection,
+            final ServerSocket serverSocket, final int responseCode)
+            throws Throwable {
+        return doInteraction(clientConnection, serverSocket, responseCode,
+                false, true);
     }
 
     /**
@@ -852,7 +991,8 @@ public class HttpsURLConnectionTest extends TestCase {
     public static Socket doInteraction(
             final HttpURLConnection clientConnection,
             final ServerSocket serverSocket, final int responseCode,
-            final boolean doAuthentication) throws Throwable {
+            final boolean doAuthentication, 
+            final boolean checkPersistence) throws Throwable {
 
         // set up the connection
         clientConnection.setDoInput(true);
@@ -860,7 +1000,7 @@ public class HttpsURLConnectionTest extends TestCase {
         clientConnection.setReadTimeout(TIMEOUT);
 
         ServerWork server = new ServerWork(serverSocket, responseCode,
-                doAuthentication);
+                doAuthentication, checkPersistence);
 
         ClientConnectionWork client = new ClientConnectionWork(clientConnection);
 
@@ -868,8 +1008,6 @@ public class HttpsURLConnectionTest extends TestCase {
         client.start();
 
         client.join();
-        server.join();
-
         if (client.thrown != null) {
             if (responseCode != OK_CODE) { // not OK response expected
                 // it is probably expected exception, keep it as is
@@ -883,6 +1021,30 @@ public class HttpsURLConnectionTest extends TestCase {
                 throw new Exception(client.thrown);
             }
         }
+
+        if (checkPersistence) {
+            ClientConnectionWork client2 =
+                new ClientConnectionWork((HttpURLConnection)
+                        clientConnection.getURL().openConnection());
+            client2.start();
+            client2.join();
+            if (client2.thrown != null) {
+                if (responseCode != OK_CODE) { // not OK response expected
+                    // it is probably expected exception, keep it as is
+                    throw client2.thrown;
+                }
+                if ((client2.thrown instanceof SocketTimeoutException)
+                        && (server.thrown != null)) {
+                    // server's exception is more informative in this case
+                    throw new Exception(server.thrown);
+                } else {
+                    throw new Exception(client2.thrown);
+                }
+            }
+        }
+
+        server.join();
+
         if (server.thrown != null) {
             throw server.thrown;
         }
@@ -998,6 +1160,9 @@ public class HttpsURLConnectionTest extends TestCase {
         // indicates if the server needs proxy authentication
         private boolean needProxyAuthentication;
 
+        // do we check for connection persistence
+        private boolean checkPersistence;
+
         // response code to be send to the client peer
         private int responseCode;
 
@@ -1007,7 +1172,7 @@ public class HttpsURLConnectionTest extends TestCase {
         public ServerWork(ServerSocket serverSocket) {
             // the server does not require proxy authentication
             // and sends OK_CODE (OK) response code
-            this(serverSocket, OK_CODE, false);
+            this(serverSocket, OK_CODE, false, false);
         }
 
         /**
@@ -1018,10 +1183,11 @@ public class HttpsURLConnectionTest extends TestCase {
          * indicates if the server needs proxy authentication
          */
         public ServerWork(ServerSocket serverSocket, int responseCode,
-                boolean needProxyAuthentication) {
+                boolean needProxyAuthentication, boolean checkPersistence) {
             this.serverSocket = serverSocket;
             this.responseCode = responseCode;
             this.needProxyAuthentication = needProxyAuthentication;
+            this.checkPersistence = checkPersistence;
             // will act as a proxy server if the specified server socket
             // is not a secure server socket
             if (serverSocket instanceof SSLServerSocket) {
@@ -1073,105 +1239,120 @@ public class HttpsURLConnectionTest extends TestCase {
                 InputStream is = peerSocket.getInputStream();
                 OutputStream os = peerSocket.getOutputStream();
 
-                num = is.read(buff);
-                String message = new String(buff, 0, num);
-                log("Got request:\n" + message);
-                log("------------------");
-
-                if (!actAsProxy) {
-                    // Act as Server (not Proxy) side
-                    if (message.startsWith("POST")) {
-                        // client connection sent some data
-                        log("try to read client data");
-                        num = is.read(buff);
-                        message = new String(buff, 0, num);
-                        log("client's data: '" + message + "'");
-                        // check the received data
-                        assertEquals(clientsData, message);
+                // how many times established connection will be used
+                int number_of_uses = checkPersistence ? 2 : 1;
+                for (int it=0; it<number_of_uses; it++) {
+                    if (checkPersistence) {
+                        log("==========================================");
+                        log("Use established connection for "+(it+1)+" time");
                     }
-                    // just send the response
-                    os
-                            .write(("HTTP/1.1 " + responseCode + "\n" + httpsResponseTail)
-                                    .getBytes());
-                    // and return
-                    log("Work is DONE");
-                    return;
-                }
 
-                // Do proxy work
-                if (needProxyAuthentication) {
-                    log("Authentication required ...");
-                    // send Authentication Request
-                    os.write(respAuthenticationRequired.getBytes());
-                    // read response
                     num = is.read(buff);
-                    if (num == -1) {
-                        // this connection was closed, 
-                        // do clean up and create new one:
-                        closeSocket(peerSocket);
-                        peerSocket = serverSocket.accept();
-                        peerSocket.setSoTimeout(TIMEOUT);
-                        log("New client connection ACCEPTED");
+                    String message = new String(buff, 0, num);
+                    log("Got request:\n" + message);
+                    log("------------------");
+
+                    if (!actAsProxy) {
+                        // Act as Server (not Proxy) side
+                        if (message.startsWith("POST")) {
+                            // client connection sent some data
+                            log("try to read client data");
+                            num = is.read(buff);
+                            message = new String(buff, 0, num);
+                            log("client's data: '" + message + "'");
+                            // check the received data
+                            assertEquals(clientsData, message);
+                        }
+                        // just send the response
+                        os.write(("HTTP/1.1 " + responseCode + "\n" 
+                                    + httpsResponseTail).getBytes());
+                        log("Simple NON-Proxy work is DONE");
+                        continue;
+                    }
+
+                    // Do proxy work
+                    if (needProxyAuthentication) {
+                        log("Authentication required ...");
+                        // send Authentication Request
+                        os.write(respAuthenticationRequired.getBytes());
+                        // read response
+                        num = is.read(buff);
+                        if (num == -1) {
+                            // this connection was closed, 
+                            // do clean up and create new one:
+                            closeSocket(peerSocket);
+                            peerSocket = serverSocket.accept();
+                            peerSocket.setSoTimeout(TIMEOUT);
+                            log("New client connection ACCEPTED");
+                            is = peerSocket.getInputStream();
+                            os = peerSocket.getOutputStream();
+                            num = is.read(buff);
+                        }
+                        message = new String(buff, 0, num);
+                        log("Got authenticated request:\n" + message);
+                        log("------------------");
+                        // check provided authorization credentials
+                        assertTrue("Received message does not contain "
+                                + "authorization credentials", message
+                                .toLowerCase().indexOf("proxy-authorization:") > 0);
+                    }
+
+                    if (peerSocket instanceof SSLSocket) {
+                        // it will be so if we are have second iteration 
+                        // over persistent connection
+                        os.write(("HTTP/1.1 " + OK_CODE
+                                    + "\n" + httpsResponseTail).getBytes());
+                        log("Sent OK RESPONSE over SSL");
+                    } else {
+                        // The content of this response will reach proxied
+                        // HTTPUC but will not reach proxied HTTPSUC
+                        // In case of HTTP connection it will be the final 
+                        // message, in case of HTTPS connection this message
+                        // will just indicate that connection with remote
+                        // host has been done
+                        // (i.e. SSL tunnel has been established).
+                        os.write(plainResponse.getBytes());
+                        log("Sent OK RESPONSE");
+                    }
+
+                    if (message.startsWith("CONNECT")) { // request for SSL tunnel
+                        log("Perform SSL Handshake...");
+                        // create sslSocket acting as a remote server peer
+                        SSLSocket sslSocket = (SSLSocket) getContext()
+                                .getSocketFactory().createSocket(peerSocket,
+                                        "localhost", peerSocket.getPort(), true); // do autoclose
+                        sslSocket.setUseClientMode(false);
+                        // demand client authentication
+                        sslSocket.setNeedClientAuth(true);
+                        sslSocket.startHandshake();
+                        peerSocket = sslSocket;
                         is = peerSocket.getInputStream();
                         os = peerSocket.getOutputStream();
-                        num = is.read(buff);
-                    }
-                    message = new String(buff, 0, num);
-                    log("Got authenticated request:\n" + message);
-                    log("------------------");
-                    // check provided authorization credentials
-                    assertTrue("Received message does not contain "
-                            + "authorization credentials", message
-                            .toLowerCase().indexOf("proxy-authorization:") > 0);
-                }
 
-                // The content of this response will reach proxied HTTPUC
-                // but will not reach proxied HTTPSUC
-                // In case of HTTP connection it will be the final message,
-                // in case of HTTPS connection this message will just indicate
-                // that connection with remote host has been done
-                // (i.e. SSL tunnel has been established).
-                os.write(plainResponse.getBytes());
-                log("Sent OK RESPONSE");
-
-                if (message.startsWith("CONNECT")) { // request for SSL tunnel
-                    log("Perform SSL Handshake...");
-                    // create sslSocket acting as a remote server peer
-                    SSLSocket sslSocket = (SSLSocket) getContext()
-                            .getSocketFactory().createSocket(peerSocket,
-                                    "localhost", peerSocket.getPort(), true); // do autoclose
-                    sslSocket.setUseClientMode(false);
-                    // demand client authentication
-                    sslSocket.setNeedClientAuth(true);
-                    sslSocket.startHandshake();
-                    peerSocket = sslSocket;
-                    is = peerSocket.getInputStream();
-                    os = peerSocket.getOutputStream();
-
-                    // read the HTTP request sent by secure connection
-                    // (HTTPS request)
-                    num = is.read(buff);
-                    message = new String(buff, 0, num);
-                    log("[Remote Server] Request from SSL tunnel:\n" + message);
-                    log("------------------");
-
-                    if (message.startsWith("POST")) {
-                        // client connection sent some data
-                        log("[Remote Server] try to read client data");
+                        // read the HTTP request sent by secure connection
+                        // (HTTPS request)
                         num = is.read(buff);
                         message = new String(buff, 0, num);
-                        log("[Remote Server] client's data: '" + message + "'");
-                        // check the received data
-                        assertEquals(clientsData, message);
-                    }
+                        log("[Remote Server] Request from SSL tunnel:\n" + message);
+                        log("------------------");
 
-                    log("[Remote Server] Sending the response by SSL tunnel..");
-                    // send the response with specified response code
-                    os
-                            .write(("HTTP/1.1 " + responseCode + "\n" + httpsResponseTail)
-                                    .getBytes());
-                }
-                log("Work is DONE");
+                        if (message.startsWith("POST")) {
+                            // client connection sent some data
+                            log("[Remote Server] try to read client data");
+                            num = is.read(buff);
+                            message = new String(buff, 0, num);
+                            log("[Remote Server] client's data: '" + message + "'");
+                            // check the received data
+                            assertEquals(clientsData, message);
+                        }
+
+                        log("[Remote Server] Sending the response by SSL tunnel..");
+                        // send the response with specified response code
+                        os.write(("HTTP/1.1 " + responseCode 
+                                    + "\n" + httpsResponseTail).getBytes());
+                    }
+                    log("Work is DONE");
+                };
             } catch (Throwable e) {
                 if (DO_LOG) {
                     e.printStackTrace();
@@ -1222,7 +1403,7 @@ public class HttpsURLConnectionTest extends TestCase {
                 }
                 // read the content of HTTP(s) response
                 InputStream is = connection.getInputStream();
-                log("Input Stream obtained");
+                log("Input Stream obtained: "+is.getClass());
                 byte[] buff = new byte[2048];
                 int num = 0;
                 int byt = 0;
