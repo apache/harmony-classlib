@@ -361,16 +361,10 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
                     <include name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
                     <include name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
