@@ -986,7 +986,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 throw new IllegalBlockingModeException();
             }
             ByteBuffer buffer = ByteBuffer.allocate(1);
-            buffer.put((byte) (oneByte & 0xFF));
+            buffer.put(0, (byte) (oneByte & 0xFF));
             channel.write(buffer);
         }
     }

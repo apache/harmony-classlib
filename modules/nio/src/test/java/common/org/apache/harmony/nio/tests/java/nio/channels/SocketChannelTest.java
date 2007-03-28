@@ -3013,6 +3013,41 @@ public class SocketChannelTest extends TestCase {
         }
     }
 
+    /**
+     * @tests SocketChannelImpl#socket().getOutputStream().write(int)
+     */
+    public void test_socket_getOutputStream_write_oneByte()
+            throws IOException {
+
+        // Regression test for Harmony-3475
+
+        int MAGIC = 123;
+
+        channel1.connect(this.localAddr1);
+
+        OutputStream os = channel1.socket().getOutputStream();
+
+        Socket acceptedSocket = server1.accept();
+
+        InputStream in = acceptedSocket.getInputStream();
+
+        os.write(MAGIC);
+        channel1.close();
+
+        int lastByte =  in.read();
+        if (lastByte == -1) {
+            fail("Server received nothing. Expected 1 byte.");
+        } else if (lastByte != MAGIC) {
+            fail("Server received wrong single byte: " + lastByte +
+                 ", expected: " + MAGIC);
+        }
+
+        lastByte = in.read();
+        if (lastByte != -1) {
+            fail("Server received too long sequence. Expected 1 byte.");
+        }
+    }
+
     class MockSocketChannel extends SocketChannel{
         
         private boolean isWriteCalled = false;
