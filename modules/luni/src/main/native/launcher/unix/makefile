@@ -21,7 +21,7 @@ include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
-	$(SHAREDSUB)libhlp.o  
+	$(SHAREDSUB)libhlp.o
 ifeq ($(HY_NO_THR),false)
 MDLLIBFILES += $(DLLPATH)libhyprt.so
 else
