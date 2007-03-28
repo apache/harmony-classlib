@@ -33,8 +33,6 @@ SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib 
 
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib 
-
 DLLBASE=0x13300000
 COMMENT=/comment:"Win32 Wrapper native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
 
