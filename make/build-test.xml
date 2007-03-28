@@ -38,7 +38,7 @@
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"
-        depends="clean, test-modules, process-empty, gen-report, check-test-result">
+        depends="clean-test-output, test-modules, process-empty, gen-report, check-test-result">
     </target>
 
     <target name="clean">
@@ -46,6 +46,10 @@
         <delete dir="${tests.build.output}" />
         <delete dir="${tests.support.output}" />
         <delete file="${hy.hdk}/build/test/support.jar" />
+    </target>
+
+    <target name="clean-test-output">
+        <delete dir="${tests.output}" />
     </target>
 
     <target name="test-modules" depends="support-jar, test-jre-vm-info">
