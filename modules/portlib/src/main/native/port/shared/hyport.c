@@ -73,6 +73,10 @@ hyport_init_library (struct HyPortLibrary *portLibrary,
 I_32 VMCALL
 hyport_shutdown_library (struct HyPortLibrary * portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+
+#endif /* HY_NO_THR */
 #if !defined(HY_NO_SIG)
   portLibrary->sig_shutdown (portLibrary);
 #endif /* HY_NO_SIG */
@@ -202,9 +206,31 @@ I_32 VMCALL
 hyport_startup_library (struct HyPortLibrary * portLibrary)
 {
   I_32 rc = 0;
+#ifdef HY_NO_THR
+  HyThreadLibrary *hyThreadLibrary;
+  HyThreadLibraryVersion hyThreadLibraryVersion;
+  
+  HYTHREAD_SET_VERSION(&hyThreadLibraryVersion, HYTHREAD_CAPABILITY_MASK);
+  rc = hythread_allocate_library(&hyThreadLibraryVersion, &hyThreadLibrary);
+  if ( 0 != rc ) {
+  	 rc = HYPORT_ERROR_STARTUP_THREAD;
+  	  goto cleanup;
+    }
+
+  rc = hythread_startup_library(hyThreadLibrary);
+  if ( 0 != rc )
+    {
+  	  rc = HYPORT_ERROR_STARTUP_THREAD;
+  	  goto cleanup;
+    }
+#endif /* HY_NO_THR */
 
   /* NLS uses the thread library */
+#ifndef HY_NO_THR
   rc = hythread_attach (&portLibrary->attached_thread);
+#else /* HY_NO_THR */
+  rc = hyThreadLibrary->thread_attach (hyThreadLibrary, &portLibrary->attached_thread);
+#endif /* HY_NO_THR */
   if (0 != rc)
     {
       /* Reassign return code as hythread_attach only returns -1 on error */
@@ -220,6 +246,11 @@ hyport_startup_library (struct HyPortLibrary * portLibrary)
       goto cleanup;
     }
 
+#ifdef HY_NO_THR
+  /* Store threadLibrary in port globals */
+  portLibrary->portGlobals->threadLibrary = hyThreadLibrary;
+  
+#endif /* HY_NO_THR */
   /* Create the tls buffers as early as possible */
   rc = hyport_tls_startup (portLibrary);
   if (0 != rc)
@@ -543,6 +574,14 @@ hyport_allocate_library (struct HyPortLibraryVersion * version,
   return rc;
 }
 
+#ifdef HY_NO_THR
+HyThreadLibrary * VMCALL
+hyport_get_thread_library(HyPortLibrary * portLib)
+{
+  return portLib->portGlobals->threadLibrary;
+}
+
+#endif /* HY_NO_THR */
 /* Set up the NLS catalog. This must be called prior to attempting 
  * any nls_printf() calls on the port library.
  */

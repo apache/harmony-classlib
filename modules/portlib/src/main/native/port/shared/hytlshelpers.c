@@ -49,6 +49,9 @@
 void *VMCALL
 hyport_tls_get (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   PortlibPTBuffers_t ptBuffers;
 
   ptBuffers =
@@ -97,6 +100,9 @@ hyport_tls_get (struct HyPortLibrary *portLibrary)
 void VMCALL
 hyport_tls_free (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   PortlibPTBuffers_t ptBuffers;
 
   MUTEX_ENTER (portLibrary->portGlobals->tls_mutex);
@@ -147,6 +153,9 @@ hyport_tls_free (struct HyPortLibrary *portLibrary)
 I_32 VMCALL
 hyport_tls_startup (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   if (hythread_tls_alloc (&portLibrary->portGlobals->tls_key))
     {
       return HYPORT_ERROR_STARTUP_TLS_ALLOC;
@@ -172,6 +181,9 @@ hyport_tls_startup (struct HyPortLibrary *portLibrary)
 void VMCALL
 hyport_tls_shutdown (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   PortlibPTBuffers_t ptBuffers, next;
 
   /* Free all remaining buffer sets */
@@ -207,6 +219,9 @@ hyport_tls_shutdown (struct HyPortLibrary *portLibrary)
 void *VMCALL
 hyport_tls_peek (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   return hythread_tls_get (hythread_self (),
                            portLibrary->portGlobals->tls_key);
 }

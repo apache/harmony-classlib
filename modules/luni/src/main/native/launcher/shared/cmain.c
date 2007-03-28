@@ -17,7 +17,13 @@
 
 #include "hycomp.h"
 #include "hyport.h"
+#ifdef HY_NO_THR
+#include "main_hlp.h"
+#endif /* HY_NO_THR */
 #include <stdlib.h>             /* for malloc for atoe and abort */
+#ifdef HY_NO_THR
+#include <stdio.h>
+#endif /* HY_NO_THR */
 
 struct haCmdlineOptions
 {
@@ -27,6 +33,9 @@ struct haCmdlineOptions
   HyPortLibrary *portLibrary;
 };
 extern UDATA VMCALL gpProtectedMain (void *arg);
+#ifdef HY_NO_THR
+extern int main_addVMDirToPath(int argc, char **argv, char **envp); 
+#endif /* HY_NO_THR */
 
 static UDATA VMCALL
 genericSignalHandler (struct HyPortLibrary *portLibrary, U_32 gpType,
@@ -80,6 +89,12 @@ signalProtectedMain (HyPortLibrary * portLibrary, void *arg)
   return gpProtectedMain (arg);
 }
 
+#ifdef HY_NO_THR
+typedef I_32 (PVMCALL hyport_init_library_type) (struct HyPortLibrary *portLibrary,
+		struct HyPortLibraryVersion *version, 
+		UDATA size);
+
+#endif /* HY_NO_THR */
 int
 main (int argc, char **argv, char **envp)
 {
@@ -90,13 +105,35 @@ main (int argc, char **argv, char **envp)
 #if !defined(HY_NO_SIG)
   UDATA result;
 #endif /* HY_NO_SIG */
+#ifdef HY_NO_THR
+  UDATA portLibDescriptor;
+  hyport_init_library_type port_init_library_func;
 
+  /* determine which VM directory to use and add it to the path */
+  rc = main_addVMDirToPath(argc, argv, envp);
+  if ( 0 != rc ) {
+	  return rc;
+  }
+
+  if ( 0 != main_open_port_library(&portLibDescriptor) ) {
+	  fprintf( stderr, "failed to open hyprt library.\n" );
+	  return -1;
+  }
+  if ( 0 != main_lookup_name( portLibDescriptor, "hyport_init_library", (UDATA *)&port_init_library_func) ) {
+	  fprintf( stderr, "failed to find hyport_init_library function in hyprt library\n" );
+	  return -1;
+  }
+#endif /* HY_NO_THR */
   /* Use portlibrary version which we compiled against, and have allocated space
    * for on the stack.  This version may be different from the one in the linked DLL.
    */
   HYPORT_SET_VERSION (&portLibraryVersion, HYPORT_CAPABILITY_MASK);
   if (0 ==
+#ifndef HY_NO_THR
       hyport_init_library (&hyportLibrary, &portLibraryVersion,
+#else /* HY_NO_THR */
+	  port_init_library_func (&hyportLibrary, &portLibraryVersion,
+#endif /* HY_NO_THR */
                            sizeof (HyPortLibrary)))
     {
       options.argc = argc;

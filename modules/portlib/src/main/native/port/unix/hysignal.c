@@ -222,6 +222,9 @@ hysig_protect (struct HyPortLibrary * portLibrary, hysig_protected_fn fn,
                void *fn_arg, hysig_handler_fn handler, void *handler_arg,
                U_32 flags, UDATA * result)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
 
   struct HySignalHandlerRecord thisRecord;
   hythread_t thisThread;

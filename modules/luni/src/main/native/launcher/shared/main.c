@@ -24,6 +24,9 @@
 #include "hyexelibnls.h"        /* nls strings */
 #include "libhlp.h"             /* defaults and environment variables and string buffer functions */
 #include "strhelp.h"            /* for properties file parsing */
+#ifdef HY_NO_THR
+#include "main_hlp.h"           /* plaftorm specific launcher helpers */
+#endif /* HY_NO_THR */
 #include <string.h>
 #include <stdlib.h>
 
@@ -63,7 +66,11 @@ PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv,
 char *VMCALL vmdll_parseCmdLine
 PROTOTYPE ((HyPortLibrary * portLibrary, UDATA lastLegalArg, char **argv));
 char *VMCALL vmdlldir_parseCmdLine
+#ifndef HY_NO_THR
 PROTOTYPE ((HyPortLibrary * portLibrary, UDATA lastLegalArg, char **argv));
+#else /* HY_NO_THR */
+PROTOTYPE ((UDATA lastLegalArg, char **argv));
+#endif /* HY_NO_THR */
 UDATA VMCALL gpProtectedMain PROTOTYPE ((struct haCmdlineOptions * args));
 IDATA convertString
 PROTOTYPE ((JNIEnv * env, HyPortLibrary * portLibrary, jclass stringClass,
@@ -73,7 +80,11 @@ PROTOTYPE ((HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *mainCl
 int augmentToolsArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int *argc, char ***argv));
 static IDATA addDirsToPath
+#ifndef HY_NO_THR
 PROTOTYPE ((HyPortLibrary * portLibrary, int count, char *newPathToAdd[], char **argv));
+#else /* HY_NO_THR */
+PROTOTYPE ((int count, char *newPathToAdd[], char **argv));
+#endif /* HY_NO_THR */
 int main_runJavaMain
 PROTOTYPE ((JNIEnv * env, char *mainClassName, int nameIsUTF, int java_argc,
             char **java_argv, HyPortLibrary * portLibrary));
@@ -129,8 +140,10 @@ gpProtectedMain (struct haCmdlineOptions *args)
   int genericLauncher = 0;
   char *str;
   char *knownGenericNames[] = { "java", "java.exe", "javaw.exe", NULL };
+#ifndef HY_NO_THR
   char *dirs[2];
     
+#endif /* ! HY_NO_THR */
 
   PORT_ACCESS_FROM_PORT (args->portLibrary);
 
@@ -271,7 +284,11 @@ gpProtectedMain (struct haCmdlineOptions *args)
   }
 
   /* Find the directory of the dll and set up the path */
+#ifndef HY_NO_THR
   vmdllsubdir = vmdlldir_parseCmdLine (PORTLIB, argc - 1, argv);
+#else /* HY_NO_THR */
+  vmdllsubdir = vmdlldir_parseCmdLine (argc - 1, argv);
+#endif /* HY_NO_THR */
   if (!vmdllsubdir) {
       vmdllsubdir = defaultDirName;
    }
@@ -309,6 +326,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     strcat (vmiPath, DIR_SEPERATOR_STRING);
     strcat (vmiPath, vmdll);
 
+#ifndef HY_NO_THR
     dirs[0] = newPathToAdd;
     dirs[1] = exeName;
     
@@ -320,6 +338,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
         goto bail;
     }
 
+#endif /* ! HY_NO_THR */
   if (showVersion == 1)
     {
       if (!versionWritten)
@@ -566,7 +585,11 @@ vmdll_parseCmdLine (HyPortLibrary * portLibrary, UDATA lastLegalArg,
  * if the argument cannot be found.
  */
 char *VMCALL
+#ifndef HY_NO_THR
 vmdlldir_parseCmdLine (HyPortLibrary * portLibrary, UDATA lastLegalArg,
+#else /* HY_NO_THR */
+vmdlldir_parseCmdLine (UDATA lastLegalArg,
+#endif /* HY_NO_THR */
                        char **argv)
 {
   UDATA i;
@@ -1003,7 +1026,11 @@ static BOOLEAN findDirInPath(char *path, char *dir, char *separator)
 * 
 */
 static IDATA
+#ifndef HY_NO_THR
 addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], char **argv)
+#else /* HY_NO_THR */
+addDirsToPath (int count, char *newPathToAdd[], char **argv)
+#endif /* HY_NO_THR */
 {
   char *oldPath = NULL;
   char *variableName = NULL;
@@ -1015,9 +1042,13 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
   int i=0;
   int strLen;
 
+#ifndef HY_NO_THR
   PORT_ACCESS_FROM_PORT (portLibrary);
 
   hysysinfo_get_executable_name (argv[0], &exeName);
+#else /* HY_NO_THR */
+  main_get_executable_name (argv[0], &exeName);
+#endif /* HY_NO_THR */
 
 #if defined(WIN32)
   variableName = "PATH";
@@ -1066,7 +1097,11 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
     }
   }
 
+#ifndef HY_NO_THR
   newPath = hymem_allocate_memory(strLen + 1);
+#else /* HY_NO_THR */
+  newPath = main_mem_allocate_memory(strLen + 1);
+#endif /* HY_NO_THR */
 
   strcpy (newPath, variableName);
   strcat (newPath, "=");
@@ -1456,3 +1491,67 @@ getDefineArgument (char *arg, char *key)
   return NULL;
 }
 
+#ifdef HY_NO_THR
+
+
+int 
+main_addVMDirToPath(int argc, char **argv, char **envp) 
+{
+  char *vmdllsubdir;
+  char *newPathToAdd = NULL;
+  char *propertiesFileName = NULL;
+  char *exeName = NULL;
+  char *exeBaseName;
+  char *endPathPtr;
+  char defaultDirName[] = "default";
+  int rc = -1;
+  char *dirs[2];
+	    
+  /* Find out name of the executable we are running as */
+  main_get_executable_name (argv[0], &exeName);
+
+  /* Pick out the end of the exe path, and start of the basename */
+  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  if (exeBaseName == NULL) {
+    endPathPtr = exeBaseName = exeName;
+  } else {
+    exeBaseName += 1;
+    endPathPtr = exeBaseName;
+  }
+
+  /* Find the directory of the dll and set up the path */
+  vmdllsubdir = vmdlldir_parseCmdLine (argc - 1, argv);
+  if (!vmdllsubdir) {
+      vmdllsubdir = defaultDirName;
+   }
+
+  /* jvm dlls are located in a subdirectory off of jre/bin */
+  /* setup path to dll named in -vm argument                      */
+  endPathPtr[0] = '\0';
+
+  newPathToAdd = main_mem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) + 1);
+	    
+  if (newPathToAdd == NULL) {
+     goto bail;
+   }
+	        
+  strcpy (newPathToAdd, exeName);
+  strcat (newPathToAdd, vmdllsubdir);
+
+  dirs[0] = newPathToAdd;
+  dirs[1] = exeName;
+	    
+  rc = addDirsToPath(2, dirs, argv);
+	    
+bail:
+  if (exeName) {
+    main_mem_free_memory (exeName);
+  }
+
+  if (newPathToAdd) {
+    main_mem_free_memory (newPathToAdd);
+  }
+  // error code should be equal to 1 because of compatibility
+  return rc == 0 ? 0 : 1;
+}
+#endif /* HY_NO_THR */

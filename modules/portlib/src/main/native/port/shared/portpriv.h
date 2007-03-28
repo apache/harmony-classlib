@@ -22,6 +22,9 @@
 #include "hyportpg.h"
 #include "hyportptb.h"
 #include "hyport.h"
+#ifdef HY_NO_THR
+#include "hythread.h"
+#endif /* HY_NO_THR */
 #include "hymutex.h"
 
 /* The following defines are used by hyshmem and hyshsem */
@@ -85,6 +88,9 @@ typedef struct HyPortLibraryGlobalData
   hythread_tls_key_t tls_key;
   MUTEX tls_mutex;
   void *buffer_list;
+#ifdef HY_NO_THR
+  struct HyThreadLibrary *threadLibrary;
+#endif /* HY_NO_THR */
   struct HyPortPlatformGlobals platformGlobals;
 } HyPortLibraryGlobalData;
 /* HySourceHyCPUControl*/
@@ -1166,6 +1172,11 @@ extern HY_CFUNC UDATA VMCALL
   hysl_up_lookup_name
 PROTOTYPE ((struct HyPortLibrary * portLibrary, UDATA descriptor, char *name,
             UDATA * func, const char *argSignature));
+#ifdef HY_NO_THR
+extern HY_CFUNC HyThreadLibrary * VMCALL
+  hyport_get_thread_library
+PROTOTYPE ((HyPortLibrary * portLib));
+#endif /* HY_NO_THR */
 static HyPortLibrary MasterPortLibraryTable = {
   {HYPORT_MAJOR_VERSION_NUMBER, HYPORT_MINOR_VERSION_NUMBER, 0, HYPORT_CAPABILITY_MASK},        /* portVersion */
   NULL,                         /* portGlobals */
@@ -1414,6 +1425,9 @@ hytty_startup,                /* tty_startup */
   hyshmem_stat,                 /* shmem_stat */
   hysysinfo_get_processing_capacity,    /* sysinfo_get_processing_capacity */
   hybuf_write_text,            /* buf_write_text */
+#ifdef HY_NO_THR
+  hyport_get_thread_library,    /* port_get_thread_library */
+#endif /* HY_NO_THR */
 };
 #endif
 

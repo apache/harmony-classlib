@@ -83,6 +83,9 @@ void VMCALL
 hynls_set_locale (struct HyPortLibrary *portLibrary, const char *lang,
                   const char *region, const char *variant)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
 
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
 #if defined(NLS_DEBUG_TRACE)
@@ -265,6 +268,9 @@ hynls_lookup_message (struct HyPortLibrary *portLibrary, UDATA flags,
                       U_32 module_name, U_32 message_num,
                       const char *default_string)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
   const char *message;
 #if defined(NLS_DEBUG_TRACE)
@@ -313,6 +319,9 @@ hynls_set_catalog (struct HyPortLibrary *portLibrary, const char **paths,
                    const int nPaths, const char *baseName,
                    const char *extension)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
 
   int i;
   char *p;
@@ -1078,6 +1087,9 @@ nlsh_insert (struct HyPortLibrary *portLibrary, HyNLSHashEntry * entry)
 I_32 VMCALL
 hynls_startup (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
 
   if (0 !=
@@ -1105,6 +1117,9 @@ hynls_startup (struct HyPortLibrary *portLibrary)
 void VMCALL
 hynls_shutdown (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
   HyNLSHashEntry *entry;
   U_32 i;

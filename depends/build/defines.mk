@@ -66,7 +66,13 @@ else
 OPT += $(HYDEBUGCFLAGS)
 endif
 
-MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a
+MDLLIBFILES = $(LIBPATH)libhycommon.a
+
+ifeq ($(HY_NO_THR),false)
+MDLLIBFILES += $(DLLPATH)libhythr.so
+else
+DEFINES += -DHY_NO_THR
+endif
 
 ifeq ($(HY_NO_SIG),false)
 MDLLIBFILES += $(DLLPATH)libhysig.so

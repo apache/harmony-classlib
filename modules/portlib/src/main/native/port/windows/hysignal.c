@@ -18,6 +18,9 @@
 #include <windows.h>
 #include <stdlib.h>
 #include "hyport.h"
+#ifdef HY_NO_THR
+#include "portpriv.h"
+#endif /* HY_NO_THR */
 #include "hythread.h"
 #include "hysignal.h"
 
@@ -63,6 +66,9 @@ static U_32 infoForModule (struct HyPortLibrary *portLibrary,
 static U_32 countInfoInCategory (struct HyPortLibrary *portLibrary,
 				 void *info, U_32 category);
 
+#ifdef HY_NO_THR
+static HyThreadLibrary * threadLibraryForConsoleCtrlHandler;
+#endif /* HY_NO_THR */
 static BOOL WINAPI consoleCtrlHandler (DWORD dwCtrlType);
 
 int structuredExceptionHandler (struct HyPortLibrary *portLibrary,
@@ -142,6 +148,9 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
 				hysig_handler_fn handler, void *handler_arg,
 				U_32 flags)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   U_32 rc = 0;
   HyWin32AsyncHandlerRecord *cursor;
   HyWin32AsyncHandlerRecord **previousLink;
@@ -170,6 +179,10 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
 	      /* if this is the last handler, unregister the Win32 handler function */
 	      if (asyncHandlerList == NULL)
 		{
+#ifdef HY_NO_THR
+              /* The static function consoleCtrlHandler needs a threadLibrary */
+              threadLibraryForConsoleCtrlHandler = privateThreadLibrary;
+#endif /* HY_NO_THR */
 		  SetConsoleCtrlHandler (consoleCtrlHandler, FALSE);
 		}
 	    }
@@ -206,6 +219,10 @@ hysig_set_async_signal_handler (struct HyPortLibrary * portLibrary,
 	      /* if this is the first handler, register the Win32 handler function */
 	      if (asyncHandlerList == NULL)
 		{
+#ifdef HY_NO_THR
+              /* The static function consoleCtrlHandler needs a threadLibrary */
+              threadLibraryForConsoleCtrlHandler = privateThreadLibrary;
+#endif /* HY_NO_THR */
 		  SetConsoleCtrlHandler (consoleCtrlHandler, TRUE);
 		}
 
@@ -252,6 +269,10 @@ hysig_can_protect (struct HyPortLibrary * portLibrary, U_32 flags)
 void VMCALL
 hysig_shutdown (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+
+#endif /* HY_NO_THR */
   hythread_monitor_t globalMonitor = hythread_global_monitor ();
 
   removeAsyncHandlers (portLibrary);
@@ -275,6 +296,9 @@ hysig_shutdown (struct HyPortLibrary *portLibrary)
 I_32 VMCALL
 hysig_startup (struct HyPortLibrary *portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   hythread_monitor_t globalMonitor = hythread_global_monitor ();
   I_32 result = 0;
 
@@ -676,6 +700,10 @@ countInfoInCategory (struct HyPortLibrary *portLibrary, void *info,
 static BOOL WINAPI
 consoleCtrlHandler (DWORD dwCtrlType)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_THREAD(threadLibraryForConsoleCtrlHandler);
+	
+#endif /* HY_NO_THR */
   U_32 flags;
   BOOL result = FALSE;
 
@@ -735,6 +763,9 @@ consoleCtrlHandler (DWORD dwCtrlType)
 static void
 removeAsyncHandlers (HyPortLibrary * portLibrary)
 {
+#ifdef HY_NO_THR
+  THREAD_ACCESS_FROM_PORT(portLibrary);
+#endif /* HY_NO_THR */
   /* clean up the list of async handlers */
   HyWin32AsyncHandlerRecord *cursor;
   HyWin32AsyncHandlerRecord **previousLink;
@@ -766,6 +797,10 @@ removeAsyncHandlers (HyPortLibrary * portLibrary)
 
   if (asyncHandlerList == NULL)
     {
+#ifdef HY_NO_THR
+      /* The static function consoleCtrlHandler needs a threadLibrary */
+      threadLibraryForConsoleCtrlHandler = privateThreadLibrary;
+#endif /* HY_NO_THR */
       SetConsoleCtrlHandler (consoleCtrlHandler, FALSE);
     }
 

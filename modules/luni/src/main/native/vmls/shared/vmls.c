@@ -77,6 +77,9 @@ static HyVMLSTable VMLSTable;
  */
 void JNICALL HyVMLSFreeKeys(JNIEnv * env, UDATA * pInitCount, ...)
 {
+#if defined(HY_NO_THR)
+	THREAD_ACCESS_FROM_ENV(env);
+#endif /* HY_NO_THR */
 	va_list args;
 	HyVMLSTable* vmls = GLOBAL_DATA(VMLSTable);
 
@@ -122,6 +125,9 @@ void JNICALL HyVMLSFreeKeys(JNIEnv * env, UDATA * pInitCount, ...)
  */
 UDATA JNICALL HyVMLSAllocKeys(JNIEnv * env, UDATA * pInitCount, ...)
 {
+#if defined(HY_NO_THR)
+	THREAD_ACCESS_FROM_ENV(env);
+#endif /* HY_NO_THR */
 	va_list args;
 	HyVMLSTable *vmls = GLOBAL_DATA(VMLSTable);
 
@@ -259,6 +265,9 @@ void * JNICALL HyVMLSSet(JNIEnv * env, void ** pKey, void * value)
  */	
 void initializeVMLocalStorage(JavaVM * vm)
 {
+#if defined(HY_NO_THR)
+	THREAD_ACCESS_FROM_JAVAVM(vm);
+#endif /* HY_NO_THR */
 	HyVMLSTable* vmls = GLOBAL_DATA(VMLSTable);
 	VMLSContainer* container = NULL;
 
@@ -318,6 +327,9 @@ void freeVMLocalStorage(JavaVM * vm)
 	VMLSContainer* previous = NULL;
 
 	/* Reach for the VM interface */
+#if defined(HY_NO_THR)
+	THREAD_ACCESS_FROM_JAVAVM(vm);
+#endif /* HY_NO_THR */
 	PORT_ACCESS_FROM_JAVAVM(vm);
 
 	/* Obtain the global lock */

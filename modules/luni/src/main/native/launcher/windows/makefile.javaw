@@ -20,11 +20,17 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 EXENAME=$(EXEPATH)javaw.exe
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
         winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
+!IF "$(HY_NO_THR)" == "false"
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
+!ELSE
+BUILDFILES = $(BUILDFILES) main_hlp.obj
+!ENDIF
 VIRTFILES = javaw.res
 EXEFLAGS=$(guilflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
 
 !include <$(HY_HDK)\build\make\rules.mak>

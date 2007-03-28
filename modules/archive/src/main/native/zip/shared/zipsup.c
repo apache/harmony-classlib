@@ -1115,7 +1115,9 @@ I_32 VMCALL
 zip_closeZipFile (HyPortLibrary * portLib, struct HyZipFile * zipFile)
 {
   PORT_ACCESS_FROM_PORT (portLib);
-
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
   IDATA fd;
 
   ENTER ();
@@ -1325,6 +1327,9 @@ zip_getNextZipEntry (HyPortLibrary * portLib, HyZipFile * zipFile,
                      HyZipEntry * zipEntry, IDATA * nextEntryPointer)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
   IDATA result;
   BOOLEAN retryAllowed = TRUE;
   IDATA pointer;
@@ -1447,6 +1452,9 @@ zip_getZipEntry (HyPortLibrary * portLib, HyZipFile * zipFile,
                  BOOLEAN findDirectory)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
   IDATA result, position;
   BOOLEAN retryAllowed = TRUE;
   I_64 seekResult;
@@ -1584,6 +1592,9 @@ zip_getZipEntryData (HyPortLibrary * portLib, HyZipFile * zipFile,
                      HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
 
   I_32 result;
   U_8 *dataBuffer;
@@ -1754,6 +1765,9 @@ zip_getZipEntryExtraField (HyPortLibrary * portLib, HyZipFile * zipFile,
                            HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
 
   I_32 result;
   U_8 *extraFieldBuffer;
@@ -1862,6 +1876,9 @@ zip_getZipEntryComment (HyPortLibrary * portLib, HyZipFile * zipFile,
                         HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
 
   I_32 result;
   U_8 *fileCommentBuffer;
@@ -1973,6 +1990,9 @@ zip_openZipFile (HyPortLibrary * portLib, char *filename, HyZipFile * zipFile,
                  HyZipCachePool * cachePool)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
 
   IDATA fd = -1;
   I_32 result = 0;
@@ -2149,6 +2169,9 @@ zip_getZipEntryFromOffset (HyPortLibrary * portLib, HyZipFile * zipFile,
                            HyZipEntry * entry, IDATA offset)
 {
   PORT_ACCESS_FROM_PORT (portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
   I_32 result;
   I_64 seekResult;
 

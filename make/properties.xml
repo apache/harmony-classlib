@@ -225,7 +225,14 @@
               value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
 
     <!-- flags -->
-    <property name="hy.no.sig" value="false" />
+    <property name="hy.no.thr" value="false" />
+    <condition property="hy.skip.thr" value="true">
+        <not>
+            <equals arg1="${hy.no.thr}" arg2="false" />
+        </not>
+    </condition>
+
+    <property name="hy.no.sig" value="${hy.no.thr}" />
     <condition property="hy.skip.sig" value="true">
         <not>
             <equals arg1="${hy.no.sig}" arg2="false" />
@@ -397,6 +404,7 @@ properties in preference to these:
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_NO_SIG" value="${hy.no.sig}" />
+                <env key="HY_NO_THR" value="${hy.no.thr}" />
                 <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>

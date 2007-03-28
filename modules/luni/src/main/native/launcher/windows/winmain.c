@@ -19,16 +19,30 @@
 #include "jni.h"
 #include "hyport.h"
 //#include "libhlp.h"
+#ifdef HY_NO_THR
+#include "main_hlp.h"
+#endif /* HY_NO_THR */
 
 /* external prototypes */
 UDATA VMCALL gpProtectedMain PROTOTYPE ((void *arg));
+#ifdef HY_NO_THR
+extern int main_addVMDirToPath PROTOTYPE((int argc, char **argv, char **envp));
+#endif /* HY_NO_THR */
 
 char **getArgvCmdLine
+#ifndef HY_NO_THR
 PROTOTYPE ((HyPortLibrary * portLibrary, LPTSTR buffer, int *finalArgc));
+#else /* HY_NO_THR */
+PROTOTYPE ((LPTSTR buffer, int *finalArgc));
+#endif /* HY_NO_THR */
 int WINAPI WinMain
 PROTOTYPE ((HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
       int nShowCmd));
+#ifndef HY_NO_THR
 void freeArgvCmdLine PROTOTYPE ((HyPortLibrary * portLibrary, char **argv));
+#else /* HY_NO_THR */
+void freeArgvCmdLine PROTOTYPE ((char **argv));
+#endif /* HY_NO_THR */
 
 struct haCmdlineOptions
 {
@@ -38,6 +52,13 @@ struct haCmdlineOptions
   HyPortLibrary *portLibrary;
 };
 
+#ifdef HY_NO_THR
+typedef I_32 (PVMCALL hyport_init_library_type) (struct HyPortLibrary *portLibrary,
+		struct HyPortLibraryVersion *version, 
+		UDATA size);
+
+
+#endif /* HY_NO_THR */
 int WINAPI
 WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
    int nShowCmd)
@@ -47,12 +68,41 @@ WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   HyPortLibraryVersion portLibraryVersion;
   struct haCmdlineOptions options;
   char **argv;
+#ifdef HY_NO_THR
+  UDATA portLibDescriptor;
+  hyport_init_library_type port_init_library_func;
+  
+  argv = getArgvCmdLine (GetCommandLine (), &argc);
+  if (argv == NULL) {
+	  rc = -1;
+	  goto cleanup;
+  }
+
+  /* determine which VM directory to use and add it to the path */
+  rc = main_addVMDirToPath(argc, argv, NULL);
+  if ( rc != 0 ) {
+	  goto cleanup;
+  }
+
+  if ( 0 != main_open_port_library(&portLibDescriptor) ) {
+	  fprintf( stderr, "failed to open hyprt library.\n" );
+	  rc = -1;
+	  goto cleanup;
+  }
+
+  if ( 0 != main_lookup_name( portLibDescriptor, "hyport_init_library", (UDATA *)&port_init_library_func) ) {
+	  fprintf( stderr, "failed to find hyport_init_library function in hyprt library\n" );
+	  rc = -1;
+	  goto cleanup;
+  }
+#endif /* HY_NO_THR */
 
   /* Use portlibrary version which we compiled against, and have allocated space
    * for on the stack.  This version may be different from the one in the linked DLL.
    */
 
   HYPORT_SET_VERSION (&portLibraryVersion, HYPORT_CAPABILITY_MASK);
+#ifndef HY_NO_THR
   rc =
     hyport_init_library (&hyportLibrary, &portLibraryVersion,
        sizeof (HyPortLibrary));
@@ -78,6 +128,25 @@ WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     {
       return -1;
     }
+#else /* HY_NO_THR */
+  rc = port_init_library_func (&hyportLibrary, &portLibraryVersion, sizeof (HyPortLibrary));
+  if (0 != rc) {
+	  goto cleanup;
+  }
+	  
+  options.argc = argc;
+  options.argv = argv;
+  options.envp = NULL;
+  options.portLibrary = &hyportLibrary;
+  rc = hyportLibrary.gp_protect (&hyportLibrary, gpProtectedMain, &options);
+  hyportLibrary.port_shutdown_library (&hyportLibrary);
+
+cleanup:
+	if (argv) {
+		freeArgvCmdLine(argv);
+	}
+	return rc;
+#endif /* HY_NO_THR */
 }
 
 /*
@@ -87,7 +156,11 @@ WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
  *  also converts the string to ASCII.
  */
 char **
+#ifndef HY_NO_THR
 getArgvCmdLine (HyPortLibrary * portLibrary, LPTSTR buffer, int *finalArgc)
+#else /* HY_NO_THR */
+getArgvCmdLine (LPTSTR buffer, int *finalArgc)
+#endif /* HY_NO_THR */
 {
 
 #define QUOTE_CHAR  34
@@ -95,7 +168,9 @@ getArgvCmdLine (HyPortLibrary * portLibrary, LPTSTR buffer, int *finalArgc)
   int argc = 0, currentArg, i, asciiLen;
   char *asciiCmdLine;
   char **argv;
+#ifndef HY_NO_THR
   PORT_ACCESS_FROM_PORT (portLibrary);
+#endif /* ! HY_NO_THR */
 
   asciiCmdLine = buffer;
 
@@ -109,7 +184,11 @@ getArgvCmdLine (HyPortLibrary * portLibrary, LPTSTR buffer, int *finalArgc)
     }
 
   /* allocate the buffer for the args */
+#ifndef HY_NO_THR
   argv = hymem_allocate_memory (argc * sizeof (char *));
+#else /* HY_NO_THR */
+  argv = main_mem_allocate_memory (argc * sizeof (char *));
+#endif /* HY_NO_THR */
   if (!argv)
     return NULL;
 
@@ -168,9 +247,17 @@ getArgvCmdLine (HyPortLibrary * portLibrary, LPTSTR buffer, int *finalArgc)
 
 #undef QUOTE_CHAR
 void
+#ifndef HY_NO_THR
 freeArgvCmdLine (HyPortLibrary * portLibrary, char **argv)
+#else /* HY_NO_THR */
+freeArgvCmdLine (char **argv)
+#endif /* HY_NO_THR */
 {
+#ifndef HY_NO_THR
   PORT_ACCESS_FROM_PORT (portLibrary);
 
   hymem_free_memory (argv);
+#else /* HY_NO_THR */
+  main_mem_free_memory (argv);
+#endif /* HY_NO_THR */
 }

@@ -33,6 +33,7 @@
 #include <unistd.h>
 #endif
 
+struct HyPortLibrary;
 /**
  * @name Port library access
  * @anchor PortAccess
@@ -57,8 +58,6 @@ HyPortLibrary *privatePortLibrary = (*portPrivateVMI)->GetPortLibrary(portPrivat
 
 #define PORT_ACCESS_FROM_VMI(vmi) HyPortLibrary *privatePortLibrary = (*vmi)->GetPortLibrary(vmi)
 #define PORT_ACCESS_FROM_PORT(portLibrary) HyPortLibrary *privatePortLibrary = (portLibrary)
-
-/** @} */
 
 #define HY_STR_(x) #x
 #define HY_STR(x) HY_STR_(x)
@@ -1001,7 +1000,10 @@ typedef struct HyPortLibrary
   /** see @ref hyfile.c::hybuf_write_text "hybuf_write_text"*/
   char *(PVMCALL buf_write_text) (struct HyPortLibrary * portLibrary,
                                  const char *buf, IDATA nbytes);
-
+#if defined(HY_NO_THR)
+  /** see @ref hyport.c::hyport_get_thread_library "hyport_get_thread_library" */
+  HyThreadLibrary * (PVMCALL port_get_thread_library) (struct HyPortLibrary * portLibrary);
+#endif /* HY_NO_THR */
   char _hypadding039C[4];       /* 4 bytes of automatic padding */
 } HyPortLibrary;
 #define HYPORT_SL_FOUND  0
@@ -1031,7 +1033,11 @@ typedef struct HyPortLibrary
 #define HYPORT_CTLDATA_TRACE_STOP  "TRACE_STOP"
 #define HYPORT_CTLDATA_SHMEM_GROUP_PERM  "SHMEM_GROUP_PERM"
 #define HYPORT_MAJOR_VERSION_NUMBER  4
+#if defined(HY_NO_THR)
+#define HYPORT_MINOR_VERSION_NUMBER  1
+#else
 #define HYPORT_MINOR_VERSION_NUMBER  0
+#endif
 #define HYPORT_CAPABILITY_BASE  0
 #define HYPORT_CAPABILITY_STANDARD  1
 #define HYPORT_CAPABILITY_FILESYSTEM  2
@@ -1109,6 +1115,18 @@ typedef struct HyPortLibrary
 #define HYPORT_SIG_GPR_AMD64_R13  -29
 #define HYPORT_SIG_GPR_AMD64_R14  -30
 #define HYPORT_SIG_GPR_AMD64_R15  -31
+#define HYPORT_SIG_CONTROL_POWERPC_LR  -32
+#define HYPORT_SIG_CONTROL_POWERPC_MSR  -33
+#define HYPORT_SIG_CONTROL_POWERPC_CTR  -34
+#define HYPORT_SIG_CONTROL_POWERPC_CR  -35
+#define HYPORT_SIG_CONTROL_POWERPC_FPSCR  -36
+#define HYPORT_SIG_CONTROL_POWERPC_XER  -37
+#define HYPORT_SIG_CONTROL_POWERPC_MQ  -38
+#define HYPORT_SIG_CONTROL_POWERPC_DAR  -39
+#define HYPORT_SIG_CONTROL_POWERPC_DSIR  -40
+#define HYPORT_SIG_CONTROL_MIPS_STATUS  -41
+#define HYPORT_SIG_CONTROL_MIPS_FPC_CSR  -42
+#define HYPORT_SIG_CONTROL_MIPS_FPC_EIR  -43
 #define HYPORT_SIG_VALUE_UNDEFINED  1
 #define HYPORT_SIG_VALUE_STRING  2
 #define HYPORT_SIG_VALUE_ADDRESS  3
@@ -1185,6 +1203,9 @@ extern HY_CFUNC I_32 VMCALL hyport_isCompatible (struct HyPortLibraryVersion
  * @{
  */
 #if !defined(HYPORT_LIBRARY_DEFINE)
+#if defined(HY_NO_THR)
+#define hyport_get_thread_library() privatePortLibrary->port_get_thread_library(privatePortLibrary)
+#endif
 #define hyport_shutdown_library() privatePortLibrary->port_shutdown_library(privatePortLibrary)
 #define hyport_isFunctionOverridden(param1) privatePortLibrary->port_isFunctionOverridden(privatePortLibrary,param1)
 #define hyport_tls_free() privatePortLibrary->port_tls_free(privatePortLibrary)
