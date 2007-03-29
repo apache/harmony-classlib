@@ -23,8 +23,6 @@
 #endif /* HY_NO_THR */
 #include "hythread.h"
 #include "hysignal.h"
-#include <stdio.h>
-#include <DbgHelp.h>
 
 typedef struct HyWin32AsyncHandlerRecord
 {
@@ -321,54 +319,6 @@ hysig_startup (struct HyPortLibrary *portLibrary)
 }
 
 #undef CDEV_CURRENT_FUNCTION
-static void
-genMiniDumpFile (EXCEPTION_POINTERS * exceptionInfo, char* dumpInfo)
-{
-  typedef BOOL (WINAPI * MINIDUMPPROC)(HANDLE /*hProcess*/, DWORD /*ProcessId*/,
-    HANDLE /*hFile*/, MINIDUMP_TYPE /*DumpType*/, PMINIDUMP_EXCEPTION_INFORMATION /*ExceptionParam*/,
-    PMINIDUMP_USER_STREAM_INFORMATION /*UserStreamParam*/, PMINIDUMP_CALLBACK_INFORMATION /*CallbackParam*/);
-  MINIDUMPPROC _MiniDumpWriteDump = NULL;
-  HANDLE dmpFile = 0;
-  DWORD uv = 0;
-  char dumpFileName[64] = {0};
-  HMODULE dbghLib = NULL;
-  BOOL res = FALSE;
-	MINIDUMP_EXCEPTION_INFORMATION mei;
-
-  dbghLib = LoadLibrary( "DBGHELP.DLL");
-  if (!dbghLib){
-    sprintf(dumpInfo, "Failed to load DbgHelp library.");
-    return;
-  }
-  _MiniDumpWriteDump = (MINIDUMPPROC)GetProcAddress(dbghLib, "MiniDumpWriteDump");
-  if (!_MiniDumpWriteDump){
-    sprintf(dumpInfo, "Failed to load DbgHelp library.");
-    return;
-  }
-
-  uv = GetTickCount();
-  sprintf(dumpFileName, "hydump_%d.dmp", uv);
-  dmpFile = CreateFile(dumpFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-  if (dmpFile == INVALID_HANDLE_VALUE){
-    sprintf(dumpInfo, "Failed to create dump file: .%s", dumpFileName);
-    return;
-  }
-
-	mei.ThreadId = GetCurrentThreadId();
-	mei.ExceptionPointers = exceptionInfo;
-	mei.ClientPointers = TRUE;
-
-	res = _MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), dmpFile, MiniDumpNormal, &mei, 0, 0 );
-  if (!res){
-    sprintf(dumpInfo, "Failed generate dump file.");
-  }
-  else{
-    char dir[_MAX_PATH] = {0};
-    GetCurrentDirectory( _MAX_PATH, dir);
-    sprintf(dumpInfo, "%s\\%s", dir, dumpFileName);
-  }
-	CloseHandle(dmpFile);
-}
 
 #define CDEV_CURRENT_FUNCTION structuredExceptionHandler
 int
@@ -483,7 +433,7 @@ fillInWin32SignalInfo (struct HyPortLibrary *portLibrary,
   hyinfo->handlerAddress2 = (void *) structuredExceptionHandler;
   hyinfo->ExceptionRecord = exceptionInfo->ExceptionRecord;
   hyinfo->ContextRecord = exceptionInfo->ContextRecord;
-  genMiniDumpFile(exceptionInfo, hyinfo->dumpInfo);
+
   /* module info is filled on demand */
 }
 
@@ -718,10 +668,6 @@ infoForModule (struct HyPortLibrary *portLibrary,
       *name = "Offset_in_DLL";
       *value = &info->offsetInDLL;
       return HYPORT_SIG_VALUE_32;
-    case 3:
-      *name = "Dumpfile";
-      *value = &info->dumpInfo;
-      return HYPORT_SIG_VALUE_STRING;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
