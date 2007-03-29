@@ -264,7 +264,6 @@
             <javac-elements>
                 <src>
                     <pathelement location="${hy.luni.src.test}/java"/>
-                	<pathelement location="${hy.luni.src.test}/impl"/>
                 </src>
                 <include name="**/*.java" />
             </javac-elements>

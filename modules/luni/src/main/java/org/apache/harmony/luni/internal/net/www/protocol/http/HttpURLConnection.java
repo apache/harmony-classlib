@@ -17,6 +17,7 @@
 
 package org.apache.harmony.luni.internal.net.www.protocol.http;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,6 +33,8 @@ import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.ResponseCache;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketPermission;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,11 +74,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     private int httpVersion = 1; // Assume HTTP/1.1
 
-    protected HttpConnection connection;
-
     private InputStream is;
 
     private InputStream uis;
+
+    protected Socket socket;
 
     private OutputStream socketOut;
 
@@ -127,12 +130,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         @Override
         public void close() throws IOException {
-            if(bytesRemaining > 0) {
-                bytesRemaining = 0;
-                disconnect(true); // Should close the socket if client hasn't read all the data
-            } else {
-                disconnect(false);
-            }
+            bytesRemaining = 0;
+            closeSocket();
             /*
              * if user has set useCache to true and cache exists, aborts it when
              * closing
@@ -154,7 +153,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         @Override
         public int read() throws IOException {
             if (bytesRemaining <= 0) {
-                disconnect(false);
                 return -1;
             }
             int result = is.read();
@@ -164,9 +162,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 cacheOut.write(result);
             }
             bytesRemaining--;
-            if (bytesRemaining <= 0) {
-                disconnect(false);
-            }
             return result;
         }
 
@@ -181,7 +176,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 throw new ArrayIndexOutOfBoundsException();
             }
             if (bytesRemaining <= 0) {
-                disconnect(false);
                 return -1;
             }
             if (length > bytesRemaining) {
@@ -196,15 +190,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                     cacheOut.write(buf, offset, result);
                 }
             }
-            if (bytesRemaining <= 0) {
-                disconnect(false);
-            }
             return result;
         }
 
         public long skip(int amount) throws IOException {
             if (bytesRemaining <= 0) {
-                disconnect(false);
                 return -1;
             }
             if (amount > bytesRemaining) {
@@ -213,9 +203,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             long result = is.skip(amount);
             if (result > 0) {
                 bytesRemaining -= result;
-            }
-            if (bytesRemaining <= 0) {
-                disconnect(false);
             }
             return result;
         }
@@ -232,12 +219,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         @Override
         public void close() throws IOException {
-            if(!atEnd && available() > 0) {
-                disconnect(true);
-            } else {
-                disconnect(false);
-            }
             atEnd = true;
+            closeSocket();
             // if user has set useCache to true and cache exists, abort
             if (useCaches && null != cacheRequest) {
                 cacheRequest.abort();
@@ -278,7 +261,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 readChunkSize();
             }
             if (atEnd) {
-                disconnect(false);
                 return -1;
             }
             bytesRemaining--;
@@ -304,7 +286,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 readChunkSize();
             }
             if (atEnd) {
-                disconnect(false);
                 return -1;
             }
             if (length > bytesRemaining) {
@@ -324,7 +305,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         public long skip(int amount) throws IOException {
             if (atEnd) {
-                disconnect(false);
                 return -1;
             }
             if (bytesRemaining <= 0) {
@@ -448,7 +428,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 }
                 sendCache(closed);
             }
-            disconnect(false);
         }
 
         @Override
@@ -606,13 +585,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             return;
         }
         // socket to be used for connection
-        connection = null;
+        Socket socket = null;
         // try to determine: to use the proxy or not
         if (proxy != null) {
             // try to make the connection to the proxy
             // specified in constructor.
             // IOException will be thrown in the case of failure
-            connection = getHTTPConnection(proxy);
+            socket = getHTTPConnection(proxy);
         } else {
             // Use system-wide ProxySelect to select proxy list,
             // then try to connect via elements in the proxy list.
@@ -625,7 +604,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                         continue;
                     }
                     try {
-                        connection = getHTTPConnection(selectedProxy);
+                        socket = getHTTPConnection(selectedProxy);
                         proxy = selectedProxy;
                         break; // connected
                     } catch (IOException e) {
@@ -635,38 +614,64 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 }
             }
         }
-        if (connection == null) {
+        if (socket == null) {
             // make direct connection
-            connection = getHTTPConnection(null);
+            socket = getHTTPConnection(null);
         }
-        connection.setSoTimeout(getReadTimeout());
-        setUpTransportIO(connection);
+        socket.setSoTimeout(getReadTimeout());
+        setUpTransportIO(socket);
         connected = true;
     }
 
     /**
-     * Returns connected socket to be used for this HTTP connection. 
+     * Returns connected socket to be used for this HTTP connection. TODO:
+     * implement persistent connections.
      */
-    protected HttpConnection getHTTPConnection(Proxy proxy) throws IOException {
-        HttpConnection connection;
+    protected Socket getHTTPConnection(Proxy proxy) throws IOException {
+        Socket socket;
         if (proxy == null || proxy.type() == Proxy.Type.DIRECT) {
-          this.proxy = null; // not using proxy
-          connection = HttpConnectionManager.getDefault().getConnection(uri, getConnectTimeout());
+            this.proxy = null; // not using proxy
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(getHostName(), getHostPort()),
+                    getConnectTimeout());
+        } else if (proxy.type() == Proxy.Type.HTTP) {
+            socket = new Socket();
+
+            SocketAddress proxyAddr = proxy.address();
+
+            if (!(proxyAddr instanceof InetSocketAddress)) {
+                throw new IllegalArgumentException(Msg.getString(
+                        "K0316", proxyAddr.getClass())); //$NON-NLS-1$
+            }
+
+            InetSocketAddress iProxyAddr = (InetSocketAddress) proxyAddr;
+
+            if( iProxyAddr.getAddress() == null ) {
+                // Resolve proxy, see HARMONY-3113
+                socket.connect(new InetSocketAddress((iProxyAddr.getHostName()),
+                    iProxyAddr.getPort()), getConnectTimeout());
+            } else {
+                socket.connect(iProxyAddr, getConnectTimeout());
+            }
         } else {
-            connection = HttpConnectionManager.getDefault().getConnection(uri, proxy, getConnectTimeout());
+            // using SOCKS proxy
+            socket = new Socket(proxy);
+            socket.connect(new InetSocketAddress(getHostName(), getHostPort()),
+                    getConnectTimeout());
         }
-        return connection;
+        return socket;
     }
 
     /**
      * Sets up the data streams used to send request[s] and read response[s].
      * 
-     * @param connection
-     *            HttpConnection to be used
+     * @param socket
+     *            socket to be used for connection
      */
-    protected void setUpTransportIO(HttpConnection connection) throws IOException {
-        socketOut = connection.getOutputStream();
-        is = connection.getInputStream();
+    protected void setUpTransportIO(Socket socket) throws IOException {
+        this.socket = socket;
+        socketOut = socket.getOutputStream();
+        is = new BufferedInputStream(socket.getInputStream());
     }
 
     // Tries to get head and body from cache, return true if has got this time
@@ -716,17 +721,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      */
     @Override
     public void disconnect() {
-        disconnect(true);
+        try {
+            closeSocket();
+        } catch (IOException e) {
+        }
     }
 
-    private void disconnect(boolean closeSocket) {
-        if(closeSocket && connection != null) {
-            connection.closeSocketAndStreams();
-        } else if (connection != null) {
-            HttpConnectionManager.getDefault().returnConnectionToPool(connection);
-            connection = null;
+    void closeSocket() throws IOException {
+        if (is != null) {
+            is.close();
         }
-        connection = null;
     }
 
     protected void endRequest() throws IOException {
@@ -1066,7 +1070,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (method == HEAD || (responseCode >= 100 && responseCode < 200)
                 || responseCode == HTTP_NO_CONTENT
                 || responseCode == HTTP_NOT_MODIFIED) {
-            disconnect();
+            closeSocket();
             uis = new LimitedInputStream(0);
         }
         putToCache();
@@ -1159,7 +1163,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         // if we are doing output make sure the appropriate headers are sent
         if (os != null) {
             if (reqHeader.get("Content-Type") == null) { //$NON-NLS-1$
-                output.append("Content-Type: application/x-www-form-urlencoded\r\n"); //$NON-NLS-1$
+                output
+                        .append("Content-Type: application/x-www-form-urlencoded\r\n"); //$NON-NLS-1$
             }
             if (os.isCached()) {
                 if (reqHeader.get("Content-Length") == null) { //$NON-NLS-1$
@@ -1193,7 +1198,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                          * if both setFixedLengthStreamingMode and
                          * content-length are set, use fixedContentLength first
                          */
-                        output.append((fixedContentLength >= 0) ? String
+                        output
+                                .append((fixedContentLength >= 0) ? String
                                         .valueOf(fixedContentLength)
                                         : reqHeader.get(i));
                     } else {
@@ -1375,7 +1381,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
                 endRequest();
-                disconnect();
+                closeSocket();
                 connected = false;
                 String credentials = getAuthorizationCredentials(challenge);
                 if (credentials == null) {
@@ -1398,7 +1404,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
                 endRequest();
-                disconnect();
+                closeSocket();
                 connected = false;
                 String credentials = getAuthorizationCredentials(challenge);
                 if (credentials == null) {
@@ -1444,7 +1450,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                             hostPort = -1;
                         }
                         endRequest();
-                        disconnect();
+                        closeSocket();
                         connected = false;
                         continue;
                     }
@@ -1461,7 +1467,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * authorization challenge
      * 
      * @param challenge
-     * @return authorization credentials
+     * @return
      * @throws IOException
      */
     private String getAuthorizationCredentials(String challenge)
