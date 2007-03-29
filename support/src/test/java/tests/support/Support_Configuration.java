@@ -44,7 +44,7 @@ public class Support_Configuration {
 
 	public static String HomeAddressResponse = "HTTP/1.1 200 OK";
 
-	public static String HomeAddressSoftware = "Apache/1.3.33 (Win32)";
+	public static String HomeAddressSoftware = "Jetty(6.0.x)";
 
 	public static String ProxyServerTestHost = "jcltest.apache.org";
 

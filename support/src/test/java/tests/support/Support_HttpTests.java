@@ -184,8 +184,7 @@ public class Support_HttpTests {
 			is.close();
 			connector.close();
 			String result = new String(bout.toByteArray(), "ISO8859_1");
-			Assert.assertTrue("Error sending data 2: " + result, ("C" + toWrite)
-					.equals(result));
+            Assert.assertEquals(toWrite, result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("Exception during test e: " + e);
@@ -335,7 +334,7 @@ public class Support_HttpTests {
 				connector.close();
 
 				c = is.read();
-
+                
 				if (testCodes[i] == Support_HttpServer.NOT_MODIFIED) {
 					// accept either the message-body or nothing, since the spec
 					// says there MUST NOT be a message body on 304 responses.

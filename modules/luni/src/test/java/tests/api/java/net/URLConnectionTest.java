@@ -46,6 +46,7 @@ import tests.support.Support_Configuration;
 import tests.support.Support_HttpServer;
 import tests.support.Support_HttpServerSocket;
 import tests.support.Support_HttpTests;
+import tests.support.Support_Jetty;
 import tests.support.Support_PortManager;
 import tests.support.Support_URLConnector;
 import tests.support.resource.Support_Resources;
@@ -56,6 +57,17 @@ public class URLConnectionTest extends junit.framework.TestCase {
 
 	URLConnection uc;
 
+    private static int port;
+    
+    static {
+        // run-once set up
+        try {
+            port = Support_Jetty.startDefaultHttpServer();
+        } catch (Exception e) {
+            fail("Exception during setup jetty : " + e.getMessage());
+        }
+    }
+    
 	/**
 	 * @tests java.net.URLConnection#getAllowUserInteraction()
 	 */
@@ -71,15 +83,11 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#getContent()
 	 */
-	public void test_getContent() {
-		try {
-			byte[] ba = new byte[600];
-			((InputStream) uc.getContent()).read(ba, 0, 600);
-			String s = new String(ba);
-			assertTrue("Incorrect content returned", s.indexOf("20060107") > 0);
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+	public void test_getContent() throws IOException {
+		byte[] ba = new byte[600];
+        ((InputStream) uc.getContent()).read(ba, 0, 600);
+        String s = new String(ba);
+        assertTrue("Incorrect content returned", s.indexOf("Hello OneHandler") > 0);
 	}
 
 	/**
@@ -94,9 +102,9 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#getContentLength()
 	 */
-	public void test_getContentLength() {
-		assertTrue("getContentLength failed: " + uc.getContentLength(), uc
-				.getContentLength() == 943);
+	public void test_getContentLength() throws IOException {
+		assertEquals("getContentLength failed: " + uc.getContentLength(),25, uc
+				.getContentLength());
 	}
 
 	/**
@@ -105,7 +113,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	public void test_getContentType() {
 		// should not be known for a file
 		assertTrue("getContentType failed: " + uc.getContentType(), uc
-				.getContentType().equals("text/html"));
+				.getContentType().contains("text/html"));
 
 		try {
 			File resources = Support_Resources.createTempFolder();
@@ -229,14 +237,14 @@ public class URLConnectionTest extends junit.framework.TestCase {
         FileNameMap map = URLConnection.getFileNameMap();
         
         // These types are defaulted
-        assertEquals("text/html", map.getContentTypeFor("htm"));
-        assertEquals("text/html", map.getContentTypeFor("html"));
-        assertEquals("text/plain", map.getContentTypeFor("text"));
-        assertEquals("text/plain", map.getContentTypeFor("txt"));
+        assertEquals("text/html", map.getContentTypeFor(".htm"));
+        assertEquals("text/html", map.getContentTypeFor(".html"));
+        assertEquals("text/plain", map.getContentTypeFor(".text"));
+        assertEquals("text/plain", map.getContentTypeFor(".txt"));
         
         // These types come from the properties file
-        assertEquals("application/pdf", map.getContentTypeFor("pdf"));
-        assertEquals("application/zip", map.getContentTypeFor("zip"));
+        assertEquals("application/pdf", map.getContentTypeFor(".pdf"));
+        assertEquals("application/zip", map.getContentTypeFor(".zip"));
         
 		URLConnection.setFileNameMap(new FileNameMap() {
 			public String getContentTypeFor(String fileName) {
@@ -250,6 +258,9 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			// unset the map so other tests don't fail
 			URLConnection.setFileNameMap(null);
 		}
+        // RI fails since it does not support fileName that does not begin with
+        // '.'
+        assertEquals("image/gif", map.getContentTypeFor("gif"));
 	}
 
 	/**
@@ -426,19 +437,19 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		}
 		hf = uc.getHeaderField("Content-Length");
 		if (hf != null) {
-			assertTrue(
-					"Wrong value returned for header field 'Content-Length': "
-							+ hf, hf.equals("943"));
-		}
+            assertEquals(
+                    "Wrong value returned for header field 'Content-Length': ",
+                    "25", hf);
+        }
 		hf = uc.getHeaderField("Content-Type");
 		if (hf != null) {
 			assertTrue("Wrong value returned for header field 'Content-Type': "
-					+ hf, hf.equals("text/html"));
+					+ hf, hf.contains("text/html"));
 		}
 		hf = uc.getHeaderField("content-type");
 		if (hf != null) {
 			assertTrue("Wrong value returned for header field 'content-type': "
-					+ hf, hf.equals("text/html"));
+					+ hf, hf.contains("text/html"));
 		}
 		hf = uc.getHeaderField("Date");
 		if (hf != null) {
@@ -493,17 +504,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 				+ uc.getHeaderFieldDate("Date", 22L), uc.getHeaderFieldDate(
 				"Date", 22L) > 930000000000L);
 
-		try {
-			URL url = new URL(Support_Resources.getResourceURL("/RESOURCE.TXT"));
-			URLConnection connection = url.openConnection();
-			long time = connection.getHeaderFieldDate("Last-Modified", 0);
-			assertTrue("Wrong date: " + time,
-					time == Support_Configuration.URLConnectionDate);
-		} catch (MalformedURLException e) {
-			fail("MalformedURLException : " + e.getMessage());
-		} catch (IOException e) {
-			fail("IOException : " + e.getMessage());
-		}
+		long time = uc.getHeaderFieldDate("Last-Modified", 0);
+        assertEquals("Wrong date: ", time , Support_Configuration.URLConnectionLastModified);
 	}
 
 	/**
@@ -534,38 +536,20 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#getInputStream()
 	 */
-	public void test_getInputStream() {
-		try {
-			InputStream is = uc.getInputStream();
-			byte[] ba = new byte[600];
-			is.read(ba, 0, 600);
-			is.close();
-			String s = new String(ba);
-			assertTrue("Incorrect input stream read", s.indexOf("20060107") > 0);
+	public void test_getInputStream() throws IOException {
+		InputStream is = uc.getInputStream();
+        byte[] ba = new byte[600];
+        is.read(ba, 0, 600);
+        is.close();
+        String s = new String(ba);
+        assertTrue("Incorrect input stream read",
+                s.indexOf("Hello OneHandler") > 0);
 
-			boolean exception = false;
-			try {
-				is.available();
-			} catch (IOException e) {
-				exception = true;
-			}
-			assertTrue("available() after close() should cause IOException",
-					exception);
-		} catch (Exception e) {
-			fail("Exception during test1 : " + e.getMessage());
-		}
-
-		try {
-			// open an non-existent file
-			URL url = new URL(Support_Resources.getResourceURL("/fred-zz6.txt"));
-			InputStream is = url.openStream();
-			assertTrue("available() less than 0", is.available() >= 0);
-			is.close();
-			fail("Error: data returned on opening a non-existent file.");
-		} catch (FileNotFoundException e) {
-		} catch (Exception e) {
-			fail("Exception during test2: " + e);
-		}
+		// open an non-existent file
+        URL url = new URL("http://localhost:" + port + "/fred-zz6.txt");
+        is = url.openStream();
+        assertTrue("available() less than 0", is.available() >= 0);
+        is.close();
 
 		// create a serversocket
 		Support_HttpServerSocket serversocket = new Support_HttpServerSocket();
@@ -594,7 +578,6 @@ public class URLConnectionTest extends junit.framework.TestCase {
 
 		final String authTestUrl = "http://localhost:" + server.getPort()
 				+ Support_HttpServer.AUTHTEST;
-		InputStream is;
 
 		// Authentication test
 		try {
@@ -668,138 +651,107 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#getOutputStream()
 	 */
-	public void test_getOutputStream() {
-		boolean exception = false;
-		URL test;
-		java.net.URLConnection conn2 = null;
-		try {
-			test = new URL("http://" + Support_Configuration.HomeAddress
-					+ "/cgi-bin/test.pl");
-			conn2 = (java.net.URLConnection) test.openConnection();
-		} catch (IOException e) {
-			fail("Unexpected I/O exception: " + e);
-		}
+	public void test_getOutputStream() throws Exception {
+        int port = Support_Jetty.startDefaultServlet();
+        try {
+            boolean exception = false;
+            URL test;
+            java.net.URLConnection conn2 = null;
+            
+            test = new URL("http://localhost:" + port + "/");
+            conn2 = (java.net.URLConnection) test.openConnection();
+            
+            try {
+                conn2.getOutputStream();
+                fail("should throw ProtocolException");
+            } catch (java.net.ProtocolException e) {
+                // correct
+            } 
+            
+            conn2.setDoOutput(true);
+            conn2.getOutputStream();
+            conn2.connect();
+            conn2.getOutputStream();
 
-		try {
-			conn2.getOutputStream();
-		} catch (java.net.ProtocolException e) {
-			// correct
-			exception = true;
-		} catch (IOException e) {
-			fail("Wrong kind of exception thrown : " + e);
-		}
-		assertTrue("Failed to throw ProtocolException", exception);
+            try {
+                conn2.getInputStream();
+                conn2.getOutputStream();
+                fail("should throw ProtocolException");
+            } catch (ProtocolException e) {
+                // expected.
+            }
 
-		try {
-			conn2.setDoOutput(true);
-			conn2.getOutputStream();
-			conn2.connect();
-			conn2.getOutputStream();
-		} catch (IOException e) {
-			fail("Unexpected IOException : " + e.getMessage());
-		}
+            URL u = new URL("http://localhost:" + port + "/");
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+                    .openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            OutputStream out = conn.getOutputStream();
+            String posted = "this is a test";
+            out.write(posted.getBytes());
+            out.close();
+            conn.getResponseCode();
+            InputStream is = conn.getInputStream();
+            String response = "";
+            byte[] b = new byte[1024];
+            int count = 0;
+            while ((count = is.read(b)) > 0)
+                response += new String(b, 0, count);
+            assertEquals("Response to POST method invalid 1", posted, response);
 
-		exception = false;
-		try {
-			conn2.getInputStream();
-			conn2.getOutputStream();
-		} catch (ProtocolException e) {
-			exception = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Wrong exception thrown2: " + e);
-		}
-		assertTrue("Failed to throw ProtocolException2", exception);
+            posted = "just a test";
+            u = new URL("http://localhost:" + port + "/");
+            conn = (java.net.HttpURLConnection) u.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-length", String.valueOf(posted
+                    .length()));
+            out = conn.getOutputStream();
+            out.write(posted.getBytes());
+            out.close();
+            conn.getResponseCode();
+            is = conn.getInputStream();
+            response = "";
+            b = new byte[1024];
+            count = 0;
+            while ((count = is.read(b)) > 0)
+                response += new String(b, 0, count);
+            assertTrue("Response to POST method invalid 2", response
+                    .equals(posted));
+           
 
-		try {
-			URL u = new URL("http://" + Support_Configuration.HomeAddress
-					+ "/cgi-bin/test.pl");
-			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
-					.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			OutputStream out = conn.getOutputStream();
-			String posted = "this is a test";
-			out.write(posted.getBytes());
-			out.close();
-			conn.getResponseCode();
-			InputStream is = conn.getInputStream();
-			String response = "";
-			byte[] b = new byte[1024];
-			int count = 0;
-			while ((count = is.read(b)) > 0)
-				response += new String(b, 0, count);
-			assertTrue("Response to POST method invalid 1", response
-					.equals(posted));
-		} catch (Exception e) {
-			fail("Unexpected exception 1 : " + e.getMessage());
-		}
-
-		try {
-			String posted = "just a test";
-			URL u = new URL("http://" + Support_Configuration.HomeAddress
-					+ "/cgi-bin/test.pl");
-			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
-					.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-length", String.valueOf(posted
-					.length()));
-			OutputStream out = conn.getOutputStream();
-			out.write(posted.getBytes());
-			out.close();
-			conn.getResponseCode();
-			InputStream is = conn.getInputStream();
-			String response = "";
-			byte[] b = new byte[1024];
-			int count = 0;
-			while ((count = is.read(b)) > 0)
-				response += new String(b, 0, count);
-			assertTrue("Response to POST method invalid 2", response
-					.equals(posted));
-		} catch (Exception e) {
-			fail("Unexpected exception 2 : " + e.getMessage());
-		}
-
-		try {
-			String posted = "just another test";
-			URL u = new URL("http://" + Support_Configuration.HomeAddress
-					+ "/cgi-bin/test.pl");
-			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
-					.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-length", String.valueOf(posted
-					.length()));
-			OutputStream out = conn.getOutputStream();
-			out.write(posted.getBytes());
-			// out.close();
-			conn.getResponseCode();
-			InputStream is = conn.getInputStream();
-			String response = "";
-			byte[] b = new byte[1024];
-			int count = 0;
-			while ((count = is.read(b)) > 0)
-				response += new String(b, 0, count);
-			assertTrue("Response to POST method invalid 3", response
-					.equals(posted));
-		} catch (Exception e) {
-			fail("Unexpected exception 3 : " + e.getMessage());
-		}
-
-		try {
-			URL u = new URL("http://" + Support_Configuration.HomeAddress
-					+ "/cgi-bin/test.pl");
-			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
-					.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			int result = conn.getResponseCode();
-			assertTrue("Unexpected response code: " + result, result == 200);
-		} catch (Exception e) {
-			fail("Unexpected exception 4 : " + e.getMessage());
-		}
-
+            
+            posted = "just another test";
+            u = new URL("http://localhost:" + port + "/");
+            conn = (java.net.HttpURLConnection) u
+                    .openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-length", String.valueOf(posted
+                    .length()));
+            out = conn.getOutputStream();
+            out.write(posted.getBytes());
+            // out.close();
+            conn.getResponseCode();
+            is = conn.getInputStream();
+            response = "";
+            b = new byte[1024];
+            count = 0;
+            while ((count = is.read(b)) > 0)
+                response += new String(b, 0, count);
+            assertTrue("Response to POST method invalid 3", response
+                    .equals(posted));
+            
+            u = new URL("http://localhost:" + port + "/");
+            conn = (java.net.HttpURLConnection) u.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            int result = conn.getResponseCode();
+            assertTrue("Unexpected response code: " + result, result == 200);
+            
+        } finally {
+            Support_Jetty.startDefaultServlet();
+        }
 	}
 
 	/**
@@ -811,7 +763,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			assertTrue("Permission of wrong type: " + p.toString(),
 					p instanceof java.net.SocketPermission);
 			assertTrue("Permission has wrong name: " + p.getName(), p.getName()
-					.indexOf(Support_Configuration.HomeAddress + ":80") >= 0);
+					.contains("localhost:"+port));
 
 			URL fileUrl = new URL("file:myfile");
 			Permission perm = new FilePermission("myfile", "read");
@@ -825,8 +777,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			assertTrue("Wrong file: permission 2:" + perm + " , " + result,
 					result.equals(perm));
 
-			fileUrl = new URL("file://host/volume/file");
-			perm = new FilePermission("//host/volume/file", "read");
+			fileUrl = new URL("file:///host/volume/file");
+			perm = new FilePermission("/host/volume/file", "read");
 			result = fileUrl.openConnection().getPermission();
 			assertTrue("Wrong file: permission 3:" + perm + " , " + result,
 					result.equals(perm));
@@ -909,20 +861,17 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#guessContentTypeFromStream(java.io.InputStream)
 	 */
-	public void test_guessContentTypeFromStreamLjava_io_InputStream() {
-		try {
-			InputStream in = uc.getInputStream();
-			byte[] bytes = new byte[in.available()];
-			in.read(bytes, 0, bytes.length);
-			in.close();
-			assertEquals("Should have returned text/html",
-					"text/html", URLConnection.guessContentTypeFromStream(
-							new ByteArrayInputStream(bytes))
-							);
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+	public void test_guessContentTypeFromStreamLjava_io_InputStream() throws IOException {
+        InputStream in = uc.getInputStream();
+        byte[] bytes = new byte[in.available()];
+        in.read(bytes, 0, bytes.length);
+        in.close();
+        // RI fails and it's a non-bug difference.
+        assertEquals("Should have returned text/html", "text/html",
+                URLConnection
+                        .guessContentTypeFromStream(new ByteArrayInputStream(
+                                bytes)));
+    }
 
 	/**
 	 * @tests java.net.URLConnection#setAllowUserInteraction(boolean)
@@ -999,23 +948,19 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#setIfModifiedSince(long)
 	 */
-	public void test_setIfModifiedSinceJ() {
-		try {
-			URL url = new URL("http://localhost:8080/");
-			URLConnection connection = url.openConnection();
-			Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-			cal.clear();
-			cal.set(2000, Calendar.MARCH, 5);
-			connection.setIfModifiedSince(cal.getTime().getTime());
-			assertEquals("Wrong date set", "Sun, 05 Mar 2000 00:00:00 GMT", connection.getRequestProperty(
-					"If-Modified-Since")
-					);
-		} catch (MalformedURLException e) {
-			fail("MalformedURLException : " + e.getMessage());
-		} catch (IOException e) {
-			fail("IOException : " + e.getMessage());
-		}
-	}
+	public void test_setIfModifiedSinceJ() throws IOException {
+        URL url = new URL("http://localhost:8080/");
+        URLConnection connection = url.openConnection();
+        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        cal.clear();
+        cal.set(2000, Calendar.MARCH, 5);
+
+        long sinceTime = cal.getTime().getTime();
+        connection.setIfModifiedSince(sinceTime);
+        assertEquals("Wrong date set", sinceTime, connection
+                .getIfModifiedSince());
+
+    }
 
 	/**
 	 * @tests java.net.URLConnection#setRequestProperty(java.lang.String,
@@ -1093,18 +1038,13 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		assertTrue("Wrong toString: " + uc.toString(), uc.toString().indexOf(
-				"URLConnectionTest/Harmony.html") > 0);
+				"URLConnection") > 0);
 	}
 
-	protected void setUp() {
-		try {
-			url = new URL(Support_Resources
-					.getResourceURL("/URLConnectionTest/Harmony.html"));
-			uc = url.openConnection();
-		} catch (Exception e) {
-			fail("Exception during setup : " + e.getMessage());
-		}
-	}
+	protected void setUp() throws IOException {
+        url = new URL("http://localhost:" + port + "/");
+        uc = (HttpURLConnection) url.openConnection();
+    }
 
 	protected void tearDown() {
 		((HttpURLConnection) uc).disconnect();

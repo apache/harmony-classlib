@@ -458,7 +458,6 @@ public class Support_HttpServer {
 					in.read();
 					in.read();
 					while (len > 0) {
-						data.write('C');
 						for (int i = 0; i < len; i++) {
 							data.write(in.read());
 						}
