@@ -372,8 +372,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
             dir.mkdir();
         }
         dir.deleteOnExit();
-        dirUrl = new URI("file", null, dir.getAbsolutePath() +
-                        File.separator, null).toURL();
+        dirUrl = dir.toURI().toURL();
         loader = new URLClassLoader( new URL[] { dirUrl });
 
         f = File.createTempFile("temp", ".dat", dir);
@@ -384,7 +383,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertNotNull("Unable to load resource from path with problematic name",
             loader.getResource(f.getName()));
         assertEquals("URL was not correctly encoded",
-            new URI("file", null, f2.getAbsolutePath(), null).toURL(),    
+            f2.toURI().toURL(),    
             loader.getResource(f2.getName()));
     }
 
