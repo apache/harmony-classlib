@@ -30,6 +30,7 @@ typedef struct HyWin32SignalInfo
   void *moduleBaseAddress;
   U_32 offsetInDLL;
   char moduleName[_MAX_PATH];
+  char dumpInfo[_MAX_PATH];
 } HyWin32SignalInfo;
 
 #endif /* hysignal_h */
