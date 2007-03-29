@@ -390,6 +390,8 @@
                    jvm="${test.jre.home}/bin/java">
 
                 <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
 
                 <junit-elements />
 

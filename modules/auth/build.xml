@@ -208,6 +208,9 @@
                jvm="${test.jre.home}/bin/java">
 
             <jvmarg line="${hy.test.vmargs}" />
+            <!-- Used by Support_Exec.execJava() -->
+            <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
 
             <!-- to pick up junit.jar -->
             <jvmarg value="-Xbootclasspath/a:${hy.auth.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
