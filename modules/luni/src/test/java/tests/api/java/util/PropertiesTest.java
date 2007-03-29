@@ -74,6 +74,32 @@ public class PropertiesTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.util.Properties#getProperty(java.lang.String)
+     */
+    public void test_getPropertyLjava_lang_String2() {
+        // regression test for HARMONY-3518
+        MyProperties props = new MyProperties();
+        assertNull(props.getProperty("key"));
+    }
+
+    /**
+     * @tests java.util.Properties#getProperty(java.lang.String,
+     *        java.lang.String)
+     */
+    public void test_getPropertyLjava_lang_StringLjava_lang_String2() {
+        // regression test for HARMONY-3518
+        MyProperties props = new MyProperties();
+        assertEquals(props.getProperty("key", "defaultValue"), "defaultValue");
+    }
+
+    // regression testing for HARMONY-3518
+    static class MyProperties extends Properties {
+        public synchronized Object get(Object key) {
+            return getProperty((String) key); // assume String
+        }
+    }
+
+    /**
      * @tests java.util.Properties#list(java.io.PrintStream)
      */
     public void test_listLjava_io_PrintStream() {

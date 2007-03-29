@@ -147,7 +147,7 @@ public class Properties extends Hashtable<Object,Object> {
 	 * @return the named property value
 	 */
 	public String getProperty(String name) {
-		Object result = get(name);
+		Object result = super.get(name);
 		String property = result instanceof String ? (String) result : null;
 		if (property == null && defaults != null) {
 			property = defaults.getProperty(name);
@@ -167,7 +167,7 @@ public class Properties extends Hashtable<Object,Object> {
 	 * @return the named property value
 	 */
 	public String getProperty(String name, String defaultValue) {
-		Object result = get(name);
+		Object result = super.get(name);
 		String property = result instanceof String ? (String) result : null;
 		if (property == null && defaults != null) {
 			property = defaults.getProperty(name);
@@ -195,7 +195,7 @@ public class Properties extends Hashtable<Object,Object> {
 			String key = (String) keys.nextElement();
 			buffer.append(key);
 			buffer.append('=');
-			String property = (String) get(key);
+			String property = (String) super.get(key);
 			Properties def = defaults;
 			while (property == null) {
 				property = (String) def.get(key);
@@ -229,7 +229,7 @@ public class Properties extends Hashtable<Object,Object> {
 			String key = (String) keys.nextElement();
 			buffer.append(key);
 			buffer.append('=');
-			String property = (String) get(key);
+			String property = (String) super.get(key);
 			Properties def = defaults;
 			while (property == null) {
 				property = (String) def.get(key);
