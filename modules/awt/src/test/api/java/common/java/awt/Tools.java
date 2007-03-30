@@ -56,7 +56,8 @@ public abstract class Tools {
     public static String getClasstPath(Class clazz) {
         String name = clazz.getName();
         name = name.substring(0, name.lastIndexOf('.'));
-        return name.replace('.', java.io.File.separator.charAt(0)) + java.io.File.separator;
+
+        return name.replace('.', '/') + '/';
     }
 
     public static class Shape {
