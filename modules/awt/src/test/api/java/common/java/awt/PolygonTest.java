@@ -30,10 +30,13 @@ import java.awt.geom.ShapeTestCase;
 
 public class PolygonTest extends ShapeTestCase {
 
+    static { 
+        SERIALIZATION_TEST = true;
+    }
+    
     public PolygonTest(String name) {
         super(name);
-        filterImage = createFilter("^(polygon).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
-        serializePath = getSerializePath(Polygon.class);
+//        filterImage = createFilter("^(polygon).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
     }
 
     public void testCreate1() {
@@ -308,24 +311,30 @@ public class PolygonTest extends ShapeTestCase {
         return obj.getClass().getName() + "[" + data + "]";
     }
 
-    public void _testSerializeRead() {
-        assertTrue(checkRead(new Polygon()));
-        assertTrue(checkRead(new Polygon(new int[]{1, 2, 3}, new int[]{4, 5, 6}, 3)));
+    public void testSerializeRead1() {
+        checkRead(new Polygon());
     }
 
-    public void _testSerializeWrite() {
-        assertTrue(checkWrite(new Polygon()));
-        assertTrue(checkWrite(new Polygon(new int[]{1, 2, 3}, new int[]{4, 5, 6}, 3)));
+    public void testSerializeRead2() {
+        checkRead(new Polygon(new int[]{1, 2, 3}, new int[]{4, 5, 6}, 3));
+    }
+    
+    public void testSerializeWrite1() {
+        checkWrite(new Polygon());
     }
 
+    public void testSerializeWrite2() {
+        checkWrite(new Polygon(new int[]{1, 2, 3}, new int[]{4, 5, 6}, 3));
+    }
+    
     public void createSerializeTemplates() {
         saveSerialized(new Polygon());
         saveSerialized(new Polygon(new int[]{1, 2, 3}, new int[]{4, 5, 6}, 3));
     }
 
     public static void main(String[] args) {
-//        junit.textui.TestRunner.run(PolygonTest.class);
-        new PolygonTest("").createSerializeTemplates();
+//        new PolygonTest("").createSerializeTemplates();
+        junit.textui.TestRunner.run(PolygonTest.class);
     }
 
 }

@@ -26,33 +26,27 @@ import java.awt.Rectangle;
 import java.awt.Tools;
 import java.awt.geom.PathIteratorTestCase;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.net.URL;
 
 import org.apache.harmony.awt.gl.MultiRectArea;
 
 
 public class MultiRectAreaTestCase extends PathIteratorTestCase {
 
-    final static String SHAPE_PATH = "org/apache/harmony/awt/gl/resources/";
-    final static String OUTPUT_PATH = "org/apache/harmony/awt/gl/output/";
-
     static Color colorBack = Color.white;
     static Color colorOverride = Color.black;
-
+    
     String shapePath, outputPath;
 
     public MultiRectAreaTestCase(String name) {
         super(name);
-        String basePath = System.getProperty("TEST_SRC_DIR");
-        assertNotNull("Parameter TEST_SRC_DIR not defined", basePath);
-        if (!basePath.endsWith(File.separator)) {
-            basePath += File.separator;
-        }
+       
+        String classPath = "shapes/" + Tools.getClasstPath(this.getClass());
+        URL url = ClassLoader.getSystemClassLoader().getResource(classPath);
 
-        shapePath = basePath + SHAPE_PATH;
-        outputPath = basePath + OUTPUT_PATH;
-
-        new File(outputPath).mkdirs();
+        assertNotNull("Path not found " + classPath, url);
+        shapePath = url.getPath();
+        outputPath = shapePath + "output/";
     }
 
     Color getRectColor(int index) {

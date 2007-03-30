@@ -31,36 +31,26 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.net.URL;
 
 public class BasicStrokeTest extends TestCase {
 
-    String SHAPE_PATH = "java/awt/shapes/";
-    String OUTPUT_PATH = "java/awt/shapes/output/";
     boolean OUTPUT = System.getProperty("TEST_OUTPUT") != null;
     final double SHAPE_DELTA = 0.01;
 
     String shapePath, outputPath;
     BasicStroke stroke;
     Shape srcShape, dstShape;
-
+    
     public BasicStrokeTest(String name) {
         super(name);
-    }
+        
+        String classPath = "shapes/" + Tools.getClasstPath(this.getClass());
+        URL url = ClassLoader.getSystemClassLoader().getResource(classPath);
 
-    @Override
-    protected void setUp() throws Exception {
-        String basePath = System.getProperty("TEST_SRC_DIR");
-        assertNotNull("Parameter TEST_SRC_DIR not defined", basePath);
-        if (!basePath.endsWith(File.separator)) {
-            basePath += File.separator;
-        }
-
-        shapePath = basePath + SHAPE_PATH;
-        outputPath = basePath + OUTPUT_PATH;
-
-        if (OUTPUT) {
-            new File(outputPath).mkdirs();
-        }
+        assertNotNull("Path not found " + classPath, url);
+        shapePath = url.getPath();
+        outputPath = shapePath + "output/";
     }
 
     public void testCreate() {
@@ -154,13 +144,14 @@ public class BasicStrokeTest extends TestCase {
 
     public void testCreateStrokedShape() {
         File path = new File(shapePath);
-//      System.out.println("Shape path: " + path.getAbsolutePath());
         String test[] = path.list();
+
         if (test == null) {
             fail("Golden files folder is empty " + path.getAbsolutePath());
         } else {
             System.out.println("Golden files folder " + path.getAbsolutePath());
         }
+
         for (String element : test) {
             if (element.indexOf("_d") != -1 && element.indexOf("#JAVA") == -1) {
                 check(path.getAbsolutePath() + File.separator + element);
@@ -173,7 +164,7 @@ public class BasicStrokeTest extends TestCase {
         int b = fileName.indexOf(".shape");
         String strokeDesc = fileName.substring(a + 2, b);
         String srcName = fileName.substring(0, a) + fileName.substring(b);
-        System.out.println(SHAPE_PATH + Tools.File.extractFileName(fileName));
+//        System.out.println(SHAPE_PATH + Tools.File.extractFileName(fileName));
 
         BasicStroke bs = createStroke(strokeDesc);
         Shape src = Tools.Shape.load(srcName);

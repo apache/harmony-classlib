@@ -168,9 +168,8 @@ public class Arc2DTest extends ShapeTestCase {
 
     public Arc2DTest(String name) {
         super(name);
-        filterImage = createFilter("^(arc).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
+//        filterImage = createFilter("^(arc).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
         filterShape = createFilter("^(arc).*([.]shape)$", null);
-//      filterBounds = createFilter("^(arc).*(bounds).*([.]ico)$", null);
     }
 
     @Override

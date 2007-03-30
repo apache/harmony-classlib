@@ -14,17 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt.geom;
 
 public class Ellipse2DTest extends ShapeTestCase {
 
     public Ellipse2DTest(String name) {
         super(name);
-        filterImage = createFilter("^(ellipse).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
+//        filterImage = createFilter("^(ellipse).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
         filterShape = createFilter("^(ellipse).*([.]shape)$", null);
     }
 

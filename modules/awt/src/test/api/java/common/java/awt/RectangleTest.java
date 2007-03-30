@@ -27,11 +27,14 @@ import java.awt.geom.Rectangle2D;
 
 public class RectangleTest extends SerializeTestCase {
 
+    static { 
+        SERIALIZATION_TEST = true;
+    }
+    
     Rectangle r;
 
     public RectangleTest(String name) {
         super(name);
-        serializePath = getSerializePath(Rectangle.class);
     }
 
     @Override
@@ -344,16 +347,28 @@ public class RectangleTest extends SerializeTestCase {
         assertEquals(new Rectangle2D.Double(0, 0, 5, 6), r.createUnion(new Rectangle2D.Double(0, 0, 5, 6))); // Cover
     }
 
-    public void testSerializeRead() {
-        assertTrue(checkRead(new Rectangle()));
-        assertTrue(checkRead(new Rectangle(1, 2)));
-        assertTrue(checkRead(new Rectangle(1, 2, 3, 4)));
+    public void testSerializeRead1() {
+        checkRead(new Rectangle());
     }
 
-    public void testSerializeWrite() {
-        assertTrue(checkWrite(new Rectangle()));
-        assertTrue(checkWrite(new Rectangle(1, 2)));
-        assertTrue(checkWrite(new Rectangle(1, 2, 3, 4)));
+    public void testSerializeRead2() {
+        checkRead(new Rectangle(1, 2));
+    }
+
+    public void testSerializeRead3() {
+        checkRead(new Rectangle(1, 2, 3, 4));
+    }
+
+    public void testSerializeWrite1() {
+        checkWrite(new Rectangle());
+    }
+
+    public void testSerializeWrite2() {
+        checkWrite(new Rectangle(1, 2));
+    }
+
+    public void testSerializeWrite3() {
+        checkWrite(new Rectangle(1, 2, 3, 4));
     }
 
     public void createSerializeTemplates() {
@@ -363,9 +378,10 @@ public class RectangleTest extends SerializeTestCase {
     }
 
     public static void main(String[] args) {
-//        junit.textui.TestRunner.run(RectangleTest.class);
-        new RectangleTest("").createSerializeTemplates();
+//        new RectangleTest("").createSerializeTemplates();
+        junit.textui.TestRunner.run(RectangleTest.class);
     }
 
 }
+
 

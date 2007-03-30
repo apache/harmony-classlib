@@ -25,11 +25,14 @@ import java.awt.Dimension;
 
 public class DimensionTest extends SerializeTestCase {
 
+    static { 
+        SERIALIZATION_TEST = true;
+    }
+    
     Dimension d;
 
     public DimensionTest(String name) {
         super(name);
-        serializePath = getSerializePath(Dimension.class);
     }
 
     @Override
@@ -105,14 +108,20 @@ public class DimensionTest extends SerializeTestCase {
         assertEquals(d.toString(), "java.awt.Dimension[width=2,height=3]");
     }
 
-    public void testSerializeRead() {
-        assertTrue(checkRead(new Dimension()));
-        assertTrue(checkRead(new Dimension(1, 2)));
+    public void testSerializeRead1() {
+        checkRead(new Dimension());
     }
 
-    public void testSerializeWrite() {
-        assertTrue(checkWrite(new Dimension()));
-        assertTrue(checkWrite(new Dimension(1, 2)));
+    public void testSerializeRead2() {
+        checkRead(new Dimension(1, 2));
+    }
+
+    public void testSerializeWrite1() {
+        checkWrite(new Dimension());
+    }
+
+    public void testSerializeWrite2() {
+        checkWrite(new Dimension(1, 2));
     }
 
     public void createSerializeTemplates() {
@@ -121,8 +130,8 @@ public class DimensionTest extends SerializeTestCase {
     }
 
     public static void main(String[] args) {
-//        junit.textui.TestRunner.run(DimensionTest.class);
-        new DimensionTest("").createSerializeTemplates();
+//        new DimensionTest("").createSerializeTemplates();
+        junit.textui.TestRunner.run(DimensionTest.class);
     }
 
 }

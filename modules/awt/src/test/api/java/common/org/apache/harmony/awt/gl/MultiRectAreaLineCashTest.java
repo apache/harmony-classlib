@@ -28,6 +28,10 @@ public class MultiRectAreaLineCashTest extends MultiRectAreaTestCase {
 
     MultiRectArea.LineCash area;
 
+    static { 
+        SERIALIZATION_TEST = false;
+    }
+    
     public MultiRectAreaLineCashTest(String name) {
         super(name);
     }

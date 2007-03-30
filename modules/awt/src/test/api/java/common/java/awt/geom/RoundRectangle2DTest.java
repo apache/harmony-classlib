@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt.geom;
 
 import java.awt.geom.ShapeTestCase;
@@ -26,7 +22,7 @@ public class RoundRectangle2DTest extends ShapeTestCase {
 
     public RoundRectangle2DTest(String name) {
         super(name);
-        filterImage = createFilter("^(round).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
+//        filterImage = createFilter("^(round).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
         filterShape = createFilter("^(round).*([.]shape)$", null);
     }
 

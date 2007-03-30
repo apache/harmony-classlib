@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt;
 
 import java.io.File;
@@ -26,82 +22,80 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
-
 public class SerializeTestCase extends TestCase {
 
-    static final String POSTFIX = ".actual";
-    static final String FOLDER = "serialization";
-
+    public static boolean SERIALIZATION_TEST = false;
+    
     public String serializePath;
-
+    
     public SerializeTestCase(String name) {
         super(name);
-    }
-
-    public static String getSerializePath(Class<?> serializeClass) {
-        String path = System.getProperty("TEST_SRC_DIR");
-        assertNotNull("Variable TEST_SRC_DIR not defined", path);
-        if (!path.endsWith(File.separator)) {
-            path += File.separator;
+        if (SERIALIZATION_TEST) {
+            String classPath = "serialization/" + Tools.getClasstPath(this.getClass());
+            URL url = ClassLoader.getSystemClassLoader().getResource(classPath);
+            assertNotNull("Path not found " + classPath, url);
+            serializePath = url.getPath();
         }
-        String name = serializeClass.getName();
-        name = name.substring(0, name.lastIndexOf('.'));
-        path += name.replace('.', File.separator.charAt(0)) + File.separator + FOLDER + File.separator;
-        new File(path).mkdirs();
-        return path;
     }
 
     public String objToStr(Object obj) {
         return obj.toString();
     }
 
-    public boolean checkRead(Object obj) {
-        assertNotNull("Serialize path not defined");
-        try {
-            Object template = loadSerialized(serializePath + objToStr(obj));
-            return objToStr(template).equals(objToStr(obj));
-        } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-        }
-        return false;
+    public void checkRead(Object obj) {
+        String file = serializePath + objToStr(obj) + ".ser";
+        Object golden = loadSerialized(file);
+        assertTrue("Non equals objects " + file, objToStr(golden).equals(objToStr(obj)));
     }
 
-    public boolean checkWrite(Object obj) {
-        assertNotNull("Serialize path not defined");
-        String file = serializePath + objToStr(obj);
-        saveSerialized(obj, file + POSTFIX);
-        return compare(file, file + POSTFIX);
+    public void checkWrite(Object obj) {
+        String name = objToStr(obj);
+        String expected = serializePath + name + ".ser";
+        File actual = null;
+        try {
+            actual = File.createTempFile(name, ".actual", new File(serializePath));
+            actual.deleteOnExit();
+        } catch (IOException e) {
+            fail("Can't create temp file");
+        }
+        saveSerialized(obj, actual.getPath());
+        assertTrue("Non equals files " + expected, compare(expected, actual.getPath()));
+    }
+
+    public Object loadSerialized(String file) {
+        try {
+            //System.out.println("load " + file);   
+            FileInputStream fs = new FileInputStream(file);
+            ObjectInputStream os = new ObjectInputStream(fs);
+            Object obj = os.readObject();
+            os.close();
+            fs.close();
+            return obj;
+        } catch (Exception e) {
+            fail("Can''t read object from file " + file);
+        }
+        return null;
     }
 
     public void saveSerialized(Object obj) {
-        assertNotNull("Serialize path not defined");
         saveSerialized(obj, serializePath + objToStr(obj));
     }
 
     public void saveSerialized(Object obj, String file) {
         try {
+//            System.out.println("save " + file);
             FileOutputStream fs = new FileOutputStream(file);
             ObjectOutputStream os = new ObjectOutputStream(fs);
             os.writeObject(obj);
             os.close();
             fs.close();
-            System.out.println("Write " + file);
         } catch (Exception e) {
-            System.out.println("Can''t write object to file " + file);
+            fail("Can''t write object to file " + file);
         }
-    }
-
-    public Object loadSerialized(String file) throws IOException, ClassNotFoundException {
-        FileInputStream fs = new FileInputStream(file);
-        ObjectInputStream os = new ObjectInputStream(fs);
-        Object obj = os.readObject();
-        os.close();
-        fs.close();
-        System.out.println("Read " + file);
-        return obj;
     }
 
     boolean compare(String file1, String file2) {
@@ -136,7 +130,7 @@ public class SerializeTestCase extends TestCase {
             fs1.close();
             fs2.close();
         } catch (Exception e) {
-            System.out.println("Can''t compare files " + file1 + " and " + file2);
+            fail("Can''t compare files " + file1 + " and " + file2);
         }
         return cmp;
     }

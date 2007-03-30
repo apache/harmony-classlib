@@ -24,7 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Tools;
 
-public class GeneralPathTest extends PathIteratorTestCase {
+public class GeneralPathTest extends ShapeTestCase {
 
     // Test append
     float[][][][] shapes1 = new float[][][][] {

@@ -240,7 +240,7 @@
               target="clean"/>
     </target>
 
-    <target name="compile-tests">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling AWT tests" />
 
         <mkdir dir="${hy.awt.bin.test}" />
@@ -267,7 +267,7 @@
             </bootclasspath>
             <classpath location="../../build/tests" />
         </javac>
-        <mkdir dir="${hy.awt.src.test.api}/java/common/java/awt/geom/shapes" />
+        <!--mkdir dir="${hy.awt.src.test.api}/java/common/java/awt/geom/shapes" />
         <copy todir="${hy.awt.bin.test}/java/awt/geom/shapes" overwrite="yes">
             <fileset dir="${hy.awt.src.test.api}/java/common/java/awt/geom/shapes" />
         </copy>
@@ -286,14 +286,22 @@
         <mkdir dir="${hy.awt.src.test.api}/java/common/org/apache/harmony/awt/gl/resources" />
         <copy todir="${hy.awt.bin.test}/org/apache/harmony/awt/gl/resources" overwrite="yes">
             <fileset dir="${hy.awt.src.test.api}/java/common/org/apache/harmony/awt/gl/resources" />
-        </copy>    
+        </copy-->    
+    </target>
+
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.awt.bin.test}" />
+        <copy todir="${hy.awt.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.awt.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="prepare-exclude">
        <prepare-exclude-list moduleName="awt" dir="./make"
                              result="${awt.exclude.file}"/>
     </target>
-
 
     <target name="run-tests">
 

@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt.geom;
 
 import java.awt.Shape;
@@ -27,6 +23,10 @@ import java.awt.geom.GeomTestCase;
 
 public class AffineTransformTest extends GeomTestCase {
 
+    static { 
+        SERIALIZATION_TEST = true;
+    }
+    
     final static double ROTATION_DELTA = 1E-5;
 
     double[][] type = new double[][]{
@@ -102,7 +102,6 @@ public class AffineTransformTest extends GeomTestCase {
 
     public AffineTransformTest(String name) {
         super(name);
-        serializePath = getSerializePath(AffineTransform.class);
     }
 
     @Override
@@ -225,8 +224,6 @@ public class AffineTransformTest extends GeomTestCase {
                 s += Integer.toString(type & ~all) + ",";
             }
         }
-//      System.out.println(s);
-//      return s;
         return Integer.toString(type);
     }
 
@@ -493,7 +490,6 @@ public class AffineTransformTest extends GeomTestCase {
         t.translate(8, 9);
         assertEquals(
                 AffineTransform.TYPE_GENERAL_TRANSFORM,
-//                new double[]{2, 3, 4, 5, 14, 16},
                 new double[]{2, 3, 4, 5, 58, 76},
                 0.0,
                 t);
@@ -509,7 +505,6 @@ public class AffineTransformTest extends GeomTestCase {
         t.scale(2, 3);
         assertEquals(
                 AffineTransform.TYPE_GENERAL_TRANSFORM,
-//                new double[]{4, 9, 8, 15, 12, 21},
                 new double[]{4, 6, 12, 15, 6, 7},
                 0.0,
                 t);
@@ -526,7 +521,6 @@ public class AffineTransformTest extends GeomTestCase {
         assertEquals(
                 AffineTransform.TYPE_GENERAL_TRANSFORM,
                 new double[]{10, 13, 10, 14, 6, 7},
-//                new double[]{11, 7, 19, 13, 27, 19},
                 0.0,
                 t);
     }
@@ -548,7 +542,6 @@ public class AffineTransformTest extends GeomTestCase {
         assertEquals(
                 AffineTransform.TYPE_GENERAL_TRANSFORM,
                 new double[]{4, 5, -2, -3, 6, 7},
-//                new double[]{-3, 2, -5, 4, -7, 6},
                 0.0,
                 t);
     }
@@ -881,14 +874,20 @@ public class AffineTransformTest extends GeomTestCase {
             m[1] + ", " + m[3] + ", " + m[5] + "]]";
     }
 
-    public void testSerializeRead() {
-        assertTrue(checkRead(new AffineTransform()));
-        assertTrue(checkRead(new AffineTransform(1, 2, 3, 4, 5, 6)));
+    public void testSerializeRead1() {
+        checkRead(new AffineTransform());
     }
 
-    public void testSerializeWrite() {
-        assertTrue(checkWrite(new AffineTransform()));
-        assertTrue(checkWrite(new AffineTransform(1, 2, 3, 4, 5, 6)));
+    public void testSerializeRead2() {
+        checkRead(new AffineTransform(1, 2, 3, 4, 5, 6));
+    }
+
+    public void testSerializeWrite1() {
+        checkWrite(new AffineTransform());
+    }
+
+    public void testSerializeWrite2() {
+        checkWrite(new AffineTransform(1, 2, 3, 4, 5, 6));
     }
 
     public void createSerializeTemplates() {
@@ -897,8 +896,8 @@ public class AffineTransformTest extends GeomTestCase {
     }
 
     public static void main(String[] args) {
-//        junit.textui.TestRunner.run(AffineTransformTest.class);
-        new AffineTransformTest("").createSerializeTemplates();
+//        new AffineTransformTest("").createSerializeTemplates();
+        junit.textui.TestRunner.run(AffineTransformTest.class);
     }
 
 }

@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt.geom;
 
 import java.awt.Point;
@@ -114,8 +110,7 @@ public class Rectangle2DTest extends ShapeTestCase {
 
     public Rectangle2DTest(String name) {
         super(name);
-        filterImage = createFilter("^(rect).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
-//      filterShape = createFilter("^(rect).*([.]shape)$", null);
+//        filterImage = createFilter("^(rect).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
     }
 
     @Override

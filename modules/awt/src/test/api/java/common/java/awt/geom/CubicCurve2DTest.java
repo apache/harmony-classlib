@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt.geom;
 
 import java.awt.Point;
@@ -68,8 +64,7 @@ public class CubicCurve2DTest extends ShapeTestCase {
 
     public CubicCurve2DTest(String name) {
         super(name);
-        filterImage = createFilter("^(cubic).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
-//      filterShape = createFilter("^(quad).*([.]shape)$", null);
+//        filterImage = createFilter("^(cubic).*([.]ico)$", "(.*)((affine)|(flat)|(bounds))(.*)");
     }
 
     @Override

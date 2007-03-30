@@ -43,6 +43,10 @@ public class MultiRectAreaTest extends MultiRectAreaTestCase {
     OperationTest opUnion = new OperationTest.Union();
     OperationTest opSubtract = new OperationTest.Subtract();
 
+    static { 
+        SERIALIZATION_TEST = false;
+    }
+    
     public MultiRectAreaTest(String name) {
         super(name);
     }

@@ -14,27 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
 package java.awt;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.QuadCurve2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
-import junit.framework.Assert;
+import java.util.Arrays;
+
+//import javax.imageio.ImageIO;
+
 import org.apache.harmony.awt.gl.MultiRectAreaOp;
 
+import junit.framework.Assert;
+
 public abstract class Tools {
+
+    static String typeName[] = {"move", "line", "quad", "cubic", "close"};
 
     static int findString(String buf[], String value) {
         for(int i = 0; i < buf.length; i++) {
@@ -44,6 +51,12 @@ public abstract class Tools {
         }
         Assert.fail("Unknown value " + value);
         return -1;
+    }
+    
+    public static String getClasstPath(Class clazz) {
+        String name = clazz.getName();
+        name = name.substring(0, name.lastIndexOf('.'));
+        return name.replace('.', java.io.File.separator.charAt(0)) + java.io.File.separator;
     }
 
     public static class Shape {
@@ -61,8 +74,41 @@ public abstract class Tools {
         static final double IMAGE_MAX_BORDER = 100.0;
         static final Color backColor = Color.white;
 
-        static String typeName[] = {"move", "line", "quad", "cubic", "close"};
+        public static Frame show(final java.awt.Shape shape) {
+            Frame f = new Frame("Shape") {
+                
+                public void paint(Graphics g) {
+                    // Background
+                    g.setColor(Color.white);
+                    g.fillRect(0, 0, getWidth(), getHeight());
 
+                    // Fill shape
+                    g.setColor(Color.lightGray);
+                    ((Graphics2D)g).fill(shape);
+
+                    // Draw shape
+                    g.setColor(Color.black);
+                    ((Graphics2D)g).draw(shape);
+
+//                    java.awt.image.BufferedImage img = Shape.createImage(shape, null, Color.gray, Color.lightGray);
+//                    g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
+                }
+                
+            };
+
+            f.addWindowListener(
+                    new WindowAdapter() {
+                        public void windowClosing(WindowEvent e) {
+                            System.exit(0);
+                        }
+                    }
+                );          
+
+            f.setSize(600, 400);
+            f.show();
+            return f;            
+        }
+        
         public static void save(java.awt.Shape s, String fileName) {
             try {
                 FileWriter f = new FileWriter(fileName);
@@ -135,10 +181,10 @@ public abstract class Tools {
             return s;
         }
 
-        public static java.awt.image.BufferedImage createImage(java.awt.Shape src, AffineTransform t, Color draw, Color fill) {
+        public static java.awt.image.BufferedImage createImage(java.awt.Shape shape, AffineTransform t, Color draw, Color fill) {
 
             // Calculate image border
-            Rectangle r = src.getBounds();
+            Rectangle r = shape.getBounds();
             double border = r.getWidth() * IMAGE_REL_BORDER;
             border = Math.min(IMAGE_MAX_BORDER, border);
             border = Math.max(IMAGE_MIN_BORDER, border);
@@ -150,7 +196,7 @@ public abstract class Tools {
                 t.setToTranslation(- r.getX() + border, - r.getY() + border);
             }
             java.awt.geom.GeneralPath dst = new java.awt.geom.GeneralPath();
-            dst.append(src.getPathIterator(t), false);
+            dst.append(shape.getPathIterator(t), false);
 
             java.awt.image.BufferedImage img =
                 new java.awt.image.BufferedImage(
@@ -183,15 +229,15 @@ public abstract class Tools {
             return PathIterator.equals(s1.getPathIterator(null), s2.getPathIterator(null), delta);
         }
 
-        public static java.awt.Shape scale(java.awt.Shape src, double k) {
-            java.awt.geom.PathIterator path = src.getPathIterator(AffineTransform.getScaleInstance(k, k));
+        public static java.awt.Shape scale(java.awt.Shape shape, double k) {
+            java.awt.geom.PathIterator path = shape.getPathIterator(AffineTransform.getScaleInstance(k, k));
             java.awt.geom.GeneralPath dst = new java.awt.geom.GeneralPath(path.getWindingRule());
             dst.append(path, false);
             return dst;
         }
 
-        public static java.awt.Shape flip(java.awt.Shape src) {
-            java.awt.geom.PathIterator path = src.getPathIterator(new AffineTransform(0, 1, 1, 0, 0, 0));
+        public static java.awt.Shape flip(java.awt.Shape shape) {
+            java.awt.geom.PathIterator path = shape.getPathIterator(new AffineTransform(0, 1, 1, 0, 0, 0));
             java.awt.geom.GeneralPath dst = new java.awt.geom.GeneralPath(path.getWindingRule());
             dst.append(path, false);
             return dst;
@@ -345,33 +391,7 @@ public abstract class Tools {
     }
 
     public static class BufferedImage {
-/*
-        public static java.awt.image.BufferedImage load(String filename) {
-            java.awt.image.BufferedImage img = null;
-            try {
-                FileInputStream in = new FileInputStream(filename);
-                JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(in);
-                img = decoder.decodeAsBufferedImage();
-                in.close();
-            } catch (Exception e) {
-                Assert.fail("Can't open file: " + filename);
-            }
-            return img;
-        }
 
-        public static void save(java.awt.image.BufferedImage img, String filename) {
-            try {
-                FileOutputStream out = new FileOutputStream(filename);
-                JPEGEncodeParam param = JPEGCodec.getDefaultJPEGEncodeParam(img);
-                param.setQuality(1.0f, false);
-                JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out, param);
-                encoder.encode(img);
-                out.close();
-            } catch (Exception e) {
-                Assert.fail("Can't save file: " + filename);
-            }
-        }
-*/
         public static java.awt.image.BufferedImage load(String filename) {
             java.awt.image.BufferedImage img = null;
             try {
@@ -440,6 +460,8 @@ public abstract class Tools {
 
     public static class PathIterator {
 
+        public static String equalsError = "";
+        
         static boolean coordsEquals(double coords1[], double coords2[], int count, double delta) {
             for(int i = 0; i < count; i++) {
                 if (Math.abs(coords1[i] - coords2[i]) > delta) {
@@ -459,21 +481,27 @@ public abstract class Tools {
         }
 
         public static boolean equals(java.awt.geom.PathIterator p1, java.awt.geom.PathIterator p2, double delta) {
+            equalsError = "";
             if (p1.getWindingRule() != p2.getWindingRule()) {
+                equalsError = "WindingRule expected " + p1.getWindingRule() + " but was " + p2.getWindingRule();
                 return false;
             }
+            int count = 0;
             double coords1[] = new double[6];
             double coords2[] = new double[6];
             while(!p1.isDone() && !p2.isDone()) {
                 int type1 = p1.currentSegment(coords1);
                 int type2 = p2.currentSegment(coords2);
                 if (type1 != type2 || !coordsEquals(coords1, coords2, Shape.pointCount[type1], delta)) {
+                    equalsError = "Expected #" + count + " segment "+ typeName[type1] + Arrays.toString(coords1) + " but was " + typeName[type2] + Arrays.toString(coords2);
                     return false;
                 }
                 p1.next();
                 p2.next();
+                count++;
             }
             if (p1.isDone() != p2.isDone()) {
+                equalsError = "Expected #" + count + " isDone " + p1.isDone() + " but was " + p2.isDone();
                 return false;
             }
             return true;
@@ -523,6 +551,7 @@ public abstract class Tools {
                 }
                 path.next();
             }
+            out += "done\n";
             return out;
         }
     }

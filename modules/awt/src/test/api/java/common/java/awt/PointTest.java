@@ -24,9 +24,12 @@ import java.awt.Point;
 
 public class PointTest extends SerializeTestCase {
 
+    static { 
+        SERIALIZATION_TEST = true;
+    }
+    
     public PointTest(String name) {
         super(name);
-        serializePath = getSerializePath(Point.class);
     }
 
     @Override
@@ -128,14 +131,20 @@ public class PointTest extends SerializeTestCase {
         assertFalse(new Point(3, 3).equals(new Point(1, 2)));
     }
 
-    public void testSerializeRead() {
-        assertTrue(checkRead(new Point()));
-        assertTrue(checkRead(new Point(1, 2)));
+    public void testSerializeRead1() {
+        checkRead(new Point());
     }
 
-    public void testSerializeWrite() {
-        assertTrue(checkWrite(new Point()));
-        assertTrue(checkWrite(new Point(1, 2)));
+    public void testSerializeRead2() {
+        checkRead(new Point(1, 2));
+    }
+
+    public void testSerializeWrite1() {
+        checkWrite(new Point());
+    }
+
+    public void testSerializeWrite2() {
+        checkWrite(new Point(1, 2));
     }
 
     public void createSerializeTemplates() {
@@ -144,8 +153,8 @@ public class PointTest extends SerializeTestCase {
     }
 
     public static void main(String[] args) {
-//        junit.textui.TestRunner.run(PointTest.class);
-        new PointTest("").createSerializeTemplates();
+//        new PointTest("").createSerializeTemplates();
+        junit.textui.TestRunner.run(PointTest.class);
     }
 
 }
