@@ -17,6 +17,7 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import java.nio.ByteBuffer;
 import java.security.DigestException;
 import java.security.MessageDigest;
 
@@ -99,6 +100,21 @@ public class MessageDigest1Test extends TestCase {
         byte[] b = { 1, 2, 3, 4, 5 };
         md.update(b);
         assertTrue(md.runEngineUpdate2);
+    }
+
+    /**
+     * @tests java.security.MessageDigest#update(ByteBuffer)
+     */
+    public void test_updateLjava_nio_ByteBuffer() {
+        MyMessageDigest1 md = new MyMessageDigest1("ABC");
+        byte[] b = { 1, 2, 3, 4, 5 };
+        ByteBuffer byteBuffer = ByteBuffer.wrap(b);
+
+        int limit = byteBuffer.limit();
+        md.update(byteBuffer);
+        assertTrue(md.runEngineUpdate2);
+        assertEquals(byteBuffer.limit(), byteBuffer.position());
+        assertEquals(limit, byteBuffer.limit());
     }
 
     /**
