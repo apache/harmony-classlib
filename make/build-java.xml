@@ -93,7 +93,11 @@
             <fileset refid="built.files" />
         </delete>
 
-        <fail if="built.files.exist">
+        <condition property="continue">
+            <equals arg1="${keep.working}" arg2="true" />
+        </condition>
+
+        <fail if="built.files.exist" unless="continue">
 ...
 
 Built files still exist after module clean targets have run.  This

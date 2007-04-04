@@ -120,7 +120,9 @@ Building Java component archives...
          ================================= -->
     <target name="clean-java" depends="-init-hdk-for-clean"
             description="Removes the compiled java code" >
-        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
+        <ant antfile="make/build-java.xml" inheritall="false" target="clean" >
+            <property name="keep.working" value="${keep.working}" />
+        </ant>
     </target>
 
     <!-- ================================
