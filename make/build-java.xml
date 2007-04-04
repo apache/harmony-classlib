@@ -218,7 +218,6 @@ ${built.files.list}
                 <patternset includes="icu4jni_3.4/*.jar" />
                 <patternset includes="mx4j_3.0.2/*.jar" />
                 <patternset includes="xalan-j_2.7.0/*.jar" />
-                <patternset includes="xerces_2.8.0/*.jar" />
                 <patternset includes="yoko_M2-20070130/yoko-rmi-spec.jar" />
                 <patternset includes="yoko_M2-20070130/yoko-rmi-impl.jar" />
                 <patternset includes="yoko_M2-20070130/yoko.jar" />
@@ -226,6 +225,20 @@ ${built.files.list}
             </fileset>
             <fileset dir="${depends.manifests}"/>
         </copy>
+
+	<!-- Unzip xerces jars -->
+	<mkdir dir="${hy.jdk}/jre/lib/boot/xerces-2_9_0" />
+	<unzip src="${depends.jars}/xerces_2.9.0/xerces.zip"
+	       dest="${hy.jdk}/jre/lib/boot" >
+		<patternset>
+			<include name="xerces-2_9_0/resolver.jar" />
+			<include name="xerces-2_9_0/xercesImpl.jar" />
+			<include name="xerces-2_9_0/xml-apis.jar" />
+		</patternset>
+	</unzip>
+	<move todir="${hy.jdk}/jre/lib/boot/xerces_2.9.0">
+		<fileset dir="${hy.jdk}/jre/lib/boot/xerces-2_9_0"/>
+	</move>
 
         <!-- delete these lines if BC version is greater than jdk15-134 -->
         <!-- delete the original signed.bcprov.jar                      -->

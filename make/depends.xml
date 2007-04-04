@@ -38,9 +38,7 @@
         <check-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}" />
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
-        <check-one-file src="${resolver.url}" dest="${resolver.jar}" />
-        <check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
-        <check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
+        <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
@@ -311,14 +309,8 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${xalan.md5}" />
 
     <mkdir dir="${xerces.dir}" />
-    <download-one-file src="${resolver.url}" dest="${resolver.jar}"
-                           md5="${resolver.md5}" />
-
-    <download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
-                           md5="${xerces.impl.md5}" />
-
-    <download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
-                           md5="${xml.apis.md5}" />
+    <download-one-file src="${xerces.url}" dest="${xerces.zip}"
+                           md5="${xerces.md5}" />
 
     <mkdir dir="${junit.dir}" />
     <download-one-file src="${junit.url}" dest="${junit.jar}"
