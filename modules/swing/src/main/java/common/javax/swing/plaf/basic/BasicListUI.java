@@ -59,6 +59,8 @@ import javax.swing.plaf.ListUI;
 import javax.swing.plaf.UIResource;
 import javax.swing.text.Position;
 
+import org.apache.harmony.x.swing.ExtendedListElement;
+import org.apache.harmony.x.swing.ExtendedListFactory;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -88,6 +90,8 @@ public class BasicListUI extends ListUI {
     protected PropertyChangeListener propertyChangeListener;
     private ComponentListener componentListener;
     private KeyListener keyListener;
+
+    boolean extendedSupportEnabled;
 
 
     final ListLayouter layouter = new ListLayouter();
@@ -265,6 +269,16 @@ public class BasicListUI extends ListUI {
                 }
             }
 
+            if (StringConstants.EXTENDED_SUPPORT_ENABLED_PROPERTY.equals(changedProperty)) {
+                extendedSupportEnabled = ((Boolean)event.getNewValue()).booleanValue();
+                if (extendedSupportEnabled) {
+                    list.setCellRenderer(ExtendedListFactory.getFactory().createExtendedRenderer());
+                } else {
+                    list.setCellRenderer((ListCellRenderer)UIManager.get("List.cellRenderer"));
+                }
+                updateLayoutStateNeeded = updateLayoutStateNeeded | otherChanged;
+            }
+
             list.revalidate();
             list.repaint();
         }
@@ -315,7 +329,7 @@ public class BasicListUI extends ListUI {
                 startIndex = 0;
             }
 
-            int nextIndex = list.getNextMatch(searchPrefix.toString(), startIndex, Position.Bias.Forward);
+            int nextIndex = getNextMatch(startIndex);
             if (nextIndex == -1) {
                 if (searchPrefix.length() > 1) {
                     resetSearch();
@@ -324,7 +338,7 @@ public class BasicListUI extends ListUI {
                     if (startIndex >= list.getModel().getSize()) {
                         startIndex = 0;
                     }
-                    nextIndex = list.getNextMatch(searchPrefix.toString(), startIndex, Position.Bias.Forward);
+                    nextIndex = getNextMatch(startIndex);
                 }
             }
             if (nextIndex != -1) {
@@ -335,6 +349,30 @@ public class BasicListUI extends ListUI {
             } else {
                 resetSearch();
             }
+        }
+
+        private int getNextMatch(final int startIndex) {
+            int candidateIndex = list.getNextMatch(searchPrefix.toString(), startIndex, Position.Bias.Forward);
+            if (candidateIndex == -1 || !extendedSupportEnabled) {
+                return candidateIndex;
+            }
+
+            int firstFoundIndex = candidateIndex;
+            do {
+                Object value = list.getModel().getElementAt(candidateIndex);
+                if (!(value instanceof ExtendedListElement)
+                    || ((ExtendedListElement)value).isChoosable()) {
+
+                    return candidateIndex;
+                }
+                int nextStartIndex = candidateIndex + 1;
+                if (nextStartIndex == list.getModel().getSize()) {
+                    nextStartIndex = 0;
+                }
+                candidateIndex = list.getNextMatch(searchPrefix.toString(), nextStartIndex, Position.Bias.Forward);
+            } while(firstFoundIndex != candidateIndex);
+
+            return -1;
         }
 
         private void resetSearch() {
@@ -669,6 +707,16 @@ public class BasicListUI extends ListUI {
     protected PropertyChangeListener createPropertyChangeListener() {
         return new PropertyChangeHandler();
     }
+
+
+    boolean isChoosable(final int index) {
+        if (!extendedSupportEnabled) {
+            return true;
+        }
+        Object value = list.getModel().getElementAt(index);
+        return (value instanceof ExtendedListElement) ? ((ExtendedListElement)value).isChoosable() : true;
+    }
+
 
     private ComponentListener createComponentListener() {
         return new ComponentReshapeHandler();

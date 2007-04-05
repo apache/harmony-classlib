@@ -105,5 +105,8 @@ public interface StringConstants {
     String INDETERMINATE_PROPERTY = "indeterminate";
 
     String VALUE_PROPERTY_NAME = "value";
+
+    String EXTENDED_SUPPORT_ENABLED_PROPERTY = "extendedSupportEnabled";
+
     String LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED = "lightWeightPopupEnabled";
 }

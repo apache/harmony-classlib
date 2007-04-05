@@ -64,6 +64,7 @@ import javax.swing.plaf.ComboBoxUI;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
 
+import org.apache.harmony.x.swing.ExtendedListElement;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -200,7 +201,24 @@ public class BasicComboBoxUI extends ComboBoxUI {
                 oldModel.removeListDataListener(listDataListener);
                 newModel.addListDataListener(listDataListener);
             } else if (StringConstants.COMPONENT_ORIENTATION.equals(event.getPropertyName())) {
-                listBox.setComponentOrientation((ComponentOrientation)event.getNewValue());
+                listBox.setComponentOrientation((ComponentOrientation) event.getNewValue());
+            } else if (StringConstants.EXTENDED_SUPPORT_ENABLED_PROPERTY
+                    .equals(event.getPropertyName())) {
+                listBox.putClientProperty(
+                        StringConstants.EXTENDED_SUPPORT_ENABLED_PROPERTY,
+                        event.getNewValue());
+                if (((Boolean) event.getNewValue()).booleanValue()) {
+                    for (int i = 0; i < comboBox.getModel().getSize(); i++) {
+                        Object element = comboBox.getModel().getElementAt(i);
+                        if (!(element instanceof ExtendedListElement)
+                                || ((ExtendedListElement) element)
+                                        .isChoosable()) {
+
+                            comboBox.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                }
             } else if (StringConstants.IS_TABLE_EDITOR.equals(event.getPropertyName())) {
                 isTableEditor = ((Boolean)event.getNewValue()).booleanValue();
             } else if (StringConstants.EDITOR_PROPERTY_CHANGED.equals(event.getPropertyName())) {
@@ -255,15 +273,19 @@ public class BasicComboBoxUI extends ComboBoxUI {
             String beginPart = keySequence.toString().toUpperCase();
             int selectedIndex = getIndex(model.getSelectedItem(), model);
             for (int i = selectedIndex + 1; i < model.getSize(); i++) {
-                String item = model.getElementAt(i).toString();
-                if (item.toUpperCase().startsWith(beginPart)) {
+                Object item = model.getElementAt(i);
+                if (item.toString().toUpperCase().startsWith(beginPart)
+                        && isChoosable(item)) {
+
                     return i;
                 }
             }
 
             for (int i = 0; i <= selectedIndex; i++) {
-                String item = model.getElementAt(i).toString();
-                if (item.toUpperCase().startsWith(beginPart)) {
+                Object item = model.getElementAt(i);
+                if (item.toString().toUpperCase().startsWith(beginPart)
+                        && isChoosable(item)) {
+
                     return i;
                 }
             }
@@ -284,6 +306,13 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
             return -1;
         }
+
+        private boolean isChoosable(final Object element) {
+            return !((BasicListUI) listBox.getUI()).extendedSupportEnabled
+                    || !(element instanceof ExtendedListElement)
+                    || ((ExtendedListElement) element).isChoosable();
+        }
+
     }
 
 
@@ -314,7 +343,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
     private FocusListener editorFocusListener;
     private ActionListener editorActionListener;
     private Object selectedValue;
-    
+
     private static final String PROTOTYPE_VALUE_FOR_EDITABLE_COMBOBOX = "wwwwwwwwww";
 
     public static ComponentUI createUI(final JComponent comboBox) {

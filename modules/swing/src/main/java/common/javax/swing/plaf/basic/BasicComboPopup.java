@@ -185,8 +185,11 @@ public class BasicComboPopup extends JPopupMenu implements ComboPopup {
         }
 
         public void mouseReleased(final MouseEvent e) {
-            comboBox.setPopupVisible(false);
-            comboBox.setSelectedIndex(list.getSelectedIndex());
+            BasicListUI ui = (BasicListUI)list.getUI();
+            if (!ui.extendedSupportEnabled || ui.isChoosable(list.getSelectedIndex())) {
+                comboBox.setPopupVisible(false);
+                comboBox.setSelectedIndex(list.getSelectedIndex());
+            }
         }
     }
 
