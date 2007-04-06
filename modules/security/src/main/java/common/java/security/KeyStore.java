@@ -236,16 +236,12 @@ public class KeyStore {
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
         }
-        if (alias == null) {
-            throw new NullPointerException(Messages.getString("security.3F")); //$NON-NLS-1$
-        }
-        if (key == null) {
-            throw new KeyStoreException(Messages.getString("security.2C")); //$NON-NLS-1$
-        }
+
         // Certificate chain is required for PrivateKey
-        if ((key instanceof PrivateKey)
-                && ((chain == null) || chain.length == 0)) {
-            throw new KeyStoreException(Messages.getString("security.52")); //$NON-NLS-1$
+        if (null != key && key instanceof PrivateKey
+                && (chain == null || chain.length == 0)) {
+            throw new IllegalArgumentException(Messages
+                    .getString("security.52")); //$NON-NLS-1$
         }
         implSpi.engineSetKeyEntry(alias, key, password, chain);
     }
@@ -272,9 +268,6 @@ public class KeyStore {
             throws KeyStoreException {
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
-        }
-        if (alias == null) {
-            throw new NullPointerException(Messages.getString("security.3F")); //$NON-NLS-1$
         }
         implSpi.engineSetCertificateEntry(alias, cert);
     }
@@ -405,9 +398,6 @@ public class KeyStore {
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
         }
-        if (param == null) {
-            throw new IOException(Messages.getString("security.3E")); //$NON-NLS-1$
-        }
         implSpi.engineStore(param);
     }
 
@@ -427,9 +417,6 @@ public class KeyStore {
      */
     public final void load(LoadStoreParameter param) throws IOException,
             NoSuchAlgorithmException, CertificateException {
-        if (param == null) {
-            throw new IOException(Messages.getString("security.3E")); //$NON-NLS-1$
-        }
         implSpi.engineLoad(param);
         isInit = true;
     }

@@ -740,11 +740,9 @@ public class KeyStore_Impl1Test extends TestCase {
         assertNotNull("KeyStore objects were not created", kss);
         for (int i = 0; i < kss.length; i++) {
             kss[i].load(null, null);
-            try {
-                kss[i].setKeyEntry(null, key, pwd, certs);
-                fail("NullPointerException should be thrown when alias is null");
-            } catch (NullPointerException e) {
-            }
+            
+            // Null as alias does not necessarily lead to NullPointerException
+            
             try {
                 kss[i].setKeyEntry("ZZZ", null, pwd, certs);
                 fail("KeyStoreException should be thrown when key is null");
@@ -754,14 +752,14 @@ public class KeyStore_Impl1Test extends TestCase {
                 kss[i].setKeyEntry("ZZZ", key, pwd, null);
                 fail("KeyStoreException or IllegalArgumentException should be thrown "
                         + "when chain is null and key is private");
-            } catch (KeyStoreException e) {
+            } catch (IllegalArgumentException e) {
             }
             try {
                 kss[i].setKeyEntry("ZZZ", key, pwd,
                         new KeyStoreTestSupport.MCertificate[0]);
                 fail("KeyStoreException or IllegalArgumentException should be thrown "
                         + "when chain is empty and key is private");
-            } catch (KeyStoreException e) {
+            } catch (IllegalArgumentException e) {
             }
 
             for (int j = 0; j < aliases.length; j++)  {

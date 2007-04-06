@@ -157,15 +157,13 @@ public class KeyStore_Impl2Test extends TestCase {
                 new KeyStore.PasswordProtection(new char[0]));        
         try {
             keyS.store(null);
-            fail("IOException must be thrown when param is null");
-        } catch (IOException e) {
+            fail("UnsupportedOperationException must be thrown");
+        } catch (UnsupportedOperationException e) {
         }
 
-        try {
-            keyS.load(null);
-            fail("load(null) does not throw any exception");
-        } catch (IOException e) {
-        }
+        
+        //No exception should be thrown out.
+        keyS.load(null);
 
         try {
             keyS.store(lParam);

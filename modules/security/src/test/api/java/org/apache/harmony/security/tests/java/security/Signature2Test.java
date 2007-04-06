@@ -80,6 +80,18 @@ public class Signature2Test extends junit.framework.TestCase {
        			Signature.getInstance("DSA", providers[i].getName());
        		}// end for
 	}
+    
+    /**
+     * @tests java.security.Signature#getParameters()
+     */
+    public void test_getParameters() throws Exception {
+        Signature sig = Signature.getInstance("DSA");
+        try {
+            sig.getParameters();
+        } catch (UnsupportedOperationException e) {
+            // Could be that the operation is not supported
+        }
+    }
 
 	/**
 	 * @tests java.security.Signature#getParameter(java.lang.String)
