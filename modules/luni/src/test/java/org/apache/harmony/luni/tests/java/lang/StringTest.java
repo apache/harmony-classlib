@@ -248,6 +248,29 @@ public class StringTest extends TestCase {
         } catch (NullPointerException e) {
         }
     }
+    
+    /**
+     * @tests java.lang.String#contentEquals(StringBuffer)
+     */
+    @SuppressWarnings("nls")
+    public void test_boolean_contentEquals_StringBuffer() {
+        String s = "abc";
+        assertTrue(s.contentEquals(new StringBuffer("abc")));
+        assertFalse(s.contentEquals(new StringBuffer("def")));
+        assertFalse(s.contentEquals(new StringBuffer("ghij")));
+
+        s = newString(1, 3, "_abc_".toCharArray());
+        assertTrue(s.contentEquals(new StringBuffer("abc")));
+        assertFalse(s.contentEquals(new StringBuffer("def")));
+        assertFalse(s.contentEquals(new StringBuffer("ghij")));
+
+        try {
+            s.contentEquals((StringBuffer) null);
+            fail("Should throw a NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.lang.String#contains(CharSequence)

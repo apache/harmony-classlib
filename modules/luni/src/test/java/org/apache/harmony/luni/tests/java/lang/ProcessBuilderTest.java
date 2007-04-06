@@ -17,6 +17,8 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,6 +140,25 @@ public class ProcessBuilderTest extends TestCase {
         assertTrue(pb.redirectErrorStream());
     }
 
-    public void testStart() {
+    /**
+     * @throws IOException
+     * @tests {@link java.lang.ProcessBuilder#start()}
+     */
+    @SuppressWarnings("nls")
+    public void testStart() throws IOException {
+        ProcessBuilder pb = new ProcessBuilder("java", "-version");
+        pb.directory(new File(System.getProperty("java.home") + File.separator
+                + "bin"));
+
+        // Call the test target
+        Process process = pb.start();
+        InputStream in = process.getInputStream();
+        InputStream err = process.getErrorStream();
+        byte[] buf = new byte[1024];
+        if (in.available() > 0) {
+            assertTrue(in.read(buf) > 0);
+        } else {
+            assertTrue(err.read(buf) > 0);
+        }
     }
 }

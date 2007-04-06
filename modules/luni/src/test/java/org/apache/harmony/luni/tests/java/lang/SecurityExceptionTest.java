@@ -41,6 +41,27 @@ public class SecurityExceptionTest extends TestCase {
         assertEquals("fixture", e.getMessage());
         assertNull(e.getCause());
     }
+    
+    /**
+     * @tests java.lang.SecurityException#SecurityException(String, Throwable)
+     */
+    @SuppressWarnings("nls")
+    public void test_ConstructorLjava_lang_StringLjava_lang_Throwable() {
+        NullPointerException npe = new NullPointerException();
+        SecurityException e = new SecurityException("fixture", npe);
+        assertSame("fixture", e.getMessage());
+        assertSame(npe, e.getCause());
+    }
+
+    /**
+     * @tests java.lang.SecurityException#SecurityException(Throwable)
+     */
+    @SuppressWarnings("nls")
+    public void test_ConstructorLjava_lang_Throwable() {
+        NullPointerException npe = new NullPointerException();
+        SecurityException e = new SecurityException(npe);
+        assertSame(npe, e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization.

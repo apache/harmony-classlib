@@ -457,6 +457,66 @@ public class StringBufferTest extends TestCase {
             
         }
     }
+    
+    /**
+     * @tests {@link java.lang.StringBuffer#indexOf(String, int)}
+     */
+    @SuppressWarnings("nls")
+    public void test_IndexOfStringInt() {
+        final String fixture = "0123456789";
+        StringBuffer sb = new StringBuffer(fixture);
+        assertEquals(0, sb.indexOf("0"));
+        assertEquals(0, sb.indexOf("012"));
+        assertEquals(-1, sb.indexOf("02"));
+        assertEquals(8, sb.indexOf("89"));
+
+        assertEquals(0, sb.indexOf("0"), 0);
+        assertEquals(0, sb.indexOf("012"), 0);
+        assertEquals(-1, sb.indexOf("02"), 0);
+        assertEquals(8, sb.indexOf("89"), 0);
+
+        assertEquals(-1, sb.indexOf("0"), 5);
+        assertEquals(-1, sb.indexOf("012"), 5);
+        assertEquals(-1, sb.indexOf("02"), 0);
+        assertEquals(8, sb.indexOf("89"), 5);
+
+        try {
+            sb.indexOf(null, 0);
+            fail("Should throw a NullPointerExceptionE");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.StringBuffer#lastIndexOf(String, int)}
+     */
+    @SuppressWarnings("nls")
+    public void test_lastIndexOfLjava_lang_StringI() {
+        final String fixture = "0123456789";
+        StringBuffer sb = new StringBuffer(fixture);
+        assertEquals(0, sb.lastIndexOf("0"));
+        assertEquals(0, sb.lastIndexOf("012"));
+        assertEquals(-1, sb.lastIndexOf("02"));
+        assertEquals(8, sb.lastIndexOf("89"));
+
+        assertEquals(0, sb.lastIndexOf("0"), 0);
+        assertEquals(0, sb.lastIndexOf("012"), 0);
+        assertEquals(-1, sb.lastIndexOf("02"), 0);
+        assertEquals(8, sb.lastIndexOf("89"), 0);
+
+        assertEquals(-1, sb.lastIndexOf("0"), 5);
+        assertEquals(-1, sb.lastIndexOf("012"), 5);
+        assertEquals(-1, sb.lastIndexOf("02"), 0);
+        assertEquals(8, sb.lastIndexOf("89"), 5);
+
+        try {
+            sb.lastIndexOf(null, 0);
+            fail("Should throw a NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 
     // comparator for StringBuffer objects
     private static final SerializableAssert STRING_BUFFER_COMPARATOR = new SerializableAssert() {

@@ -41,6 +41,18 @@ public class IllegalArgumentExceptionTest extends TestCase {
         assertEquals("fixture", e.getMessage());
         assertNull(e.getCause());
 	}
+    
+    /**
+     * @tests java.lang.IllegalArgumentException#IllegalArgumentException(String,Throwable)
+     */
+    @SuppressWarnings("nls")
+    public void test_ConstructorLjava_lang_StringLjava_lang_Throwable() {
+        NullPointerException npe = new NullPointerException();
+        IllegalArgumentException e = new IllegalArgumentException("fixture",
+                npe);
+        assertSame("fixture", e.getMessage());
+        assertSame(npe, e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization.
