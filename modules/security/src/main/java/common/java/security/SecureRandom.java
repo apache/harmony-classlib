@@ -301,7 +301,7 @@ public class SecureRandom extends Random {
         for (int i = 0; i < bytes; i++) {
             ret = (next[i] & 0xFF) | (ret << 8);
         }    
-        ret = ret >> (bytes*8 - numBits);
+        ret = ret >>> (bytes*8 - numBits);
         return ret;
     }
 

@@ -172,4 +172,58 @@ public class SecureRandom2Test extends junit.framework.TestCase {
         
         assertEquals("unknown", sr.getAlgorithm());
     }
+    
+    //Regression Test for HARMONY-3552.
+    public void test_nextJ() throws Exception {
+        MySecureRandom mySecureRandom = new MySecureRandom(
+                new MySecureRandomSpi(), null);
+        int numBits = 29;
+        int random = mySecureRandom.getNext(numBits);
+        assertEquals(numBits, Integer.bitCount(random));
+        
+        numBits = 0;
+        random = mySecureRandom.getNext(numBits);
+        assertEquals(numBits, Integer.bitCount(random));
+        
+        numBits = 40;
+        random = mySecureRandom.getNext(numBits);
+        assertEquals(32, Integer.bitCount(random));     
+        
+        numBits = -1;
+        random = mySecureRandom.getNext(numBits);
+        assertEquals(0, Integer.bitCount(random));
+    }
+    
+    class MySecureRandom extends SecureRandom {
+        private static final long serialVersionUID = 1L;
+
+        public MySecureRandom(SecureRandomSpi secureRandomSpi, Provider provider) {
+            super(secureRandomSpi, provider);
+        }
+
+        public int getNext(int numBits) {
+            return super.next(numBits);
+        }
+    }
+
+    class MySecureRandomSpi extends SecureRandomSpi {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected byte[] engineGenerateSeed(int arg0) {
+            return null;
+        }
+
+        @Override
+        protected void engineNextBytes(byte[] bytes) {
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = (byte) 0xFF;
+            }
+        }
+
+        @Override
+        protected void engineSetSeed(byte[] arg0) {
+            return;
+        }
+    }
 }
