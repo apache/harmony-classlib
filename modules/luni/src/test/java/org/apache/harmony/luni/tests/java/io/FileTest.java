@@ -18,6 +18,8 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import junit.framework.TestCase;
 
 public class FileTest extends TestCase {
@@ -119,6 +121,22 @@ public class FileTest extends TestCase {
         assertEquals(parent.getPath(), f3.getPath());
         
         
+    }
+    
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void test_serialization_self() throws Exception {
+        File testFile = new File("test.ser");
+        SerializationTest.verifySelf(testFile);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void test_serialization_compatibility() throws Exception {
+        File file = new File("FileTest.golden.ser");
+        SerializationTest.verifyGolden(this, file);
     }
 
 }
