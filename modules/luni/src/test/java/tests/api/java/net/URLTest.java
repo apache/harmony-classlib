@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -37,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tests.support.Support_Configuration;
+import tests.support.Support_Jetty;
 import tests.support.resource.Support_Resources;
 
 public class URLTest extends junit.framework.TestCase {
@@ -65,33 +64,6 @@ public class URLTest extends junit.framework.TestCase {
 	boolean caught = false;
 	
 	static boolean isSelectCalled;
-
-	/**
-	 * @tests java.net.URL#setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory)
-	 */
-	public void test_setURLStreamHandlerFactoryLjava_net_URLStreamHandlerFactory() {
-		// Test for method void
-		// java.net.URL.setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory)
-		class TestFactory implements URLStreamHandlerFactory {
-			public TestFactory() {
-			}
-
-			public URLStreamHandler createURLStreamHandler(String protocol) {
-				return null;
-			}
-		}
-		try {
-			u = new URL("http://www.yahoo.com");
-			URL.setURLStreamHandlerFactory(new TestFactory());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		try {
-			URL.setURLStreamHandlerFactory(new TestFactory());
-			fail("Can only set Factory once.");
-		} catch (Error e) {
-		}
-	}
 
 	/**
 	 * @tests java.net.URL#URL(java.lang.String)
@@ -883,15 +855,14 @@ public class URLTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @throws MalformedURLException 
 	 * @tests java.net.URL#openStream()
 	 */
-	public void test_openStream() throws MalformedURLException {
+	public void test_openStream() throws Exception {
         // Regression test for Harmony-1700
         URL BASE = URLTest.class.getClassLoader().getResource(
                 URLTest.class.getPackage().getName().replace('.',
                         File.separatorChar)
-                        + "/hello.jar");
+                        + "/lf.jar");        
         URL url = new URL("jar:" + BASE + "!/foo.jar!/Bugs/HelloWorld.class");
         try {
             url.openStream();
@@ -927,50 +898,40 @@ public class URLTest extends junit.framework.TestCase {
 			fail("IOException opening stream : " + e.getMessage());
 		}
 
-		try {
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
-			InputStream in = u.openStream();
-			byte[] buf = new byte[3];
-			int result = in.read(buf);
-			assertTrue("Incompete read: " + result, result == 3);
-			in.close();
-			assertTrue("Returned incorrect data", buf[0] == 0x42
-					&& buf[1] == 0x4d && buf[2] == (byte) 0xbe);
-		} catch (java.io.IOException e) {
-			fail("IOException during test : " + e.getMessage());
-		}
-
-		try {
-			URL u = new URL("ftp://" + Support_Configuration.FTPTestAddress
-					+ "/nettest.txt");
-			InputStream in = u.openStream();
-			byte[] buf = new byte[3];
-			assertEquals("Incompete read 2", 3, in.read(buf));
-			in.close();
-			assertTrue("Returned incorrect data 2", buf[0] == 0x54
-					&& buf[1] == 0x68 && buf[2] == 0x69);
-		} catch (java.io.IOException e) {
-			fail("IOException during test 2 : " + e.getMessage());
-		}
-
-		try {
-			File test = new File("hytest.$$$");
-			FileOutputStream out = new FileOutputStream(test);
-			out.write(new byte[] { 0x55, (byte) 0xaa, 0x14 });
-			out.close();
-			URL u = new URL("file:" + test.getName());
-			InputStream in = u.openStream();
-			byte[] buf = new byte[3];
-			int result = in.read(buf);
-			in.close();
-			test.delete();
-			assertEquals("Incompete read 3", 3, result);
-			assertTrue("Returned incorrect data 3", buf[0] == 0x55
-					&& buf[1] == (byte) 0xaa && buf[2] == 0x14);
-		} catch (java.io.IOException e) {
-			fail("IOException during test 3 : " + e.getMessage());
-		}
+		int port = Support_Jetty.startHttpServerWithDocRoot("./src/test/resources/tests/api/java/net/");
+		URL u = new URL("jar:" + "http://localhost:" + port                 
+                + "/lf.jar!/plus.bmp");
+        InputStream in = u.openStream();
+        byte[] buf = new byte[3];
+        int result = in.read(buf);
+        assertTrue("Incompete read: " + result, result == 3);
+        in.close();
+        assertTrue("Returned incorrect data", buf[0] == 0x42 && buf[1] == 0x4d
+                && buf[2] == (byte) 0xbe);
+		
+		//FIXME Lack of FTP server, comment it out temporarily
+        /*u = new URL("ftp://" + Support_Configuration.FTPTestAddress
+                + "/nettest.txt");
+        in = u.openStream();
+        buf = new byte[3];
+        assertEquals("Incompete read 2", 3, in.read(buf));
+        in.close();
+        assertTrue("Returned incorrect data 2", buf[0] == 0x54
+                && buf[1] == 0x68 && buf[2] == 0x69);*/
+		
+		File test = new File("hytest.$$$");
+        FileOutputStream out = new FileOutputStream(test);
+        out.write(new byte[] { 0x55, (byte) 0xaa, 0x14 });
+        out.close();
+        u = new URL("file:" + test.getName());
+        in = u.openStream();
+        buf = new byte[3];
+        result = in.read(buf);
+        in.close();
+        test.delete();
+        assertEquals("Incompete read 3", 3, result);
+        assertTrue("Returned incorrect data 3", buf[0] == 0x55
+                && buf[1] == (byte) 0xaa && buf[2] == 0x14);		
 	}
 
 	/**
@@ -1155,67 +1116,6 @@ public class URLTest extends junit.framework.TestCase {
         URI uri = u.toURI();
         assertTrue(u.equals(uri.toURL()));
     }
-    
-    /**
-     * @tests java.net.URL#openConnection(Proxy)
-     */
-    public void test_openConnectionLjava_net_Proxy() throws IOException {
-		SocketAddress addr1 = new InetSocketAddress(
-				Support_Configuration.ProxyServerTestHost, 808);
-		SocketAddress addr2 = new InetSocketAddress(
-				Support_Configuration.ProxyServerTestHost, 1080);
-		Proxy proxy1 = new Proxy(Proxy.Type.HTTP, addr1);
-		Proxy proxy2 = new Proxy(Proxy.Type.SOCKS, addr2);
-		Proxy proxyList[] = { proxy1, proxy2 };
-		for (int i = 0; i < proxyList.length; ++i) {
-			try {
-				String posted = "just a test";
-				URL u = new URL("http://"
-						+ Support_Configuration.ProxyServerTestHost
-						+ "/cgi-bin/test.pl");
-				java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
-						.openConnection(proxyList[i]);
-				conn.setDoOutput(true);
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-length", String.valueOf(posted
-						.length()));
-				OutputStream out = conn.getOutputStream();
-				out.write(posted.getBytes());
-				out.close();
-				conn.getResponseCode();
-				InputStream is = conn.getInputStream();
-				String response = "";
-				byte[] b = new byte[1024];
-				int count = 0;
-				while ((count = is.read(b)) > 0){
-					response += new String(b, 0, count);
-				}
-				assertTrue("Response to POST method invalid", response
-						.equals(posted));
-			}  catch (Exception e) {
-				fail("Unexpected exception connecting to proxy : "
-						+ proxyList[i] + e.getMessage());
-			}
-		}
-		
-		URL httpUrl = new URL("http://abc.com");
-		URL jarUrl = new URL("jar:"
-				+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
-		URL ftpUrl = new URL("ftp://" + Support_Configuration.FTPTestAddress
-				+ "/nettest.txt");
-		URL fileUrl = new URL("file://abc");
-		URL[] urlList = { httpUrl, jarUrl, ftpUrl, fileUrl };
-		for (int i = 0; i < urlList.length; ++i) {
-			try {
-				urlList[i].openConnection(null);
-			} catch (IllegalArgumentException iae) {
-				// expected
-			}
-		}
-		// should not throw exception
-		fileUrl.openConnection(Proxy.NO_PROXY);
-	}
-    
  
     /**
      * @tests java.net.URL#openConnection()
@@ -1412,8 +1312,7 @@ public class URLTest extends junit.framework.TestCase {
 
     // Regression test for harmony-2941
     public void test_URLStreamHandler_parseURL() throws MalformedURLException {
-        URL.setURLStreamHandlerFactory(new MyURLStreamHandlerFactory());
-        URL url = new URL("null://localhost");
+        URL url = new URL("http://localhost");
         MyURLStreamHandler handler = MyURLStreamHandlerFactory.handler;
         try {
             handler.parse(url, "//", 0, Integer.MIN_VALUE);
@@ -1433,7 +1332,18 @@ public class URLTest extends junit.framework.TestCase {
         } catch (StringIndexOutOfBoundsException e) {
             // expected;
         }
-        handler.parse(url, "1", 3, 2);
-        handler.parse(url, "11", 1, Integer.MIN_VALUE);
+        try {
+            handler.parse(url, "1", 3, 2);
+            fail("Should throw SecurityException.");
+        } catch (SecurityException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "11", 1, Integer.MIN_VALUE);
+            fail("Should throw SecurityException.");
+        } catch (SecurityException e) {
+            // expected;
+        }
     }
 }
