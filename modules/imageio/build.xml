@@ -72,6 +72,8 @@
     <target name="clean-native">
         <make dir="${hy.imageio.src.main.native}/jpegencoder/${hy.os.family}"
               target="clean" />
+        <make dir="${hy.imageio.src.main.native}/pngencoder/${hy.os.family}"
+              target="clean" />
     </target>
 
     <target name="compile-java">
