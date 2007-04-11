@@ -223,6 +223,13 @@ public class ZipFileTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect name: " + zfile.getName(), zfile
 				.getName().equals(tempFileName));
 	}
+    
+    /**
+     * @tests java.util.zip.ZipFile#size()
+     */
+    public void test_size() {
+        assertEquals(6, zfile.size());
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

@@ -120,10 +120,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
 		return name;
 	}
 
-	long getOffset() {
-		return dataOffset;
-	}
-
 	/**
 	 * Gets the uncompressed size of this ZipEntry.
 	 * 
@@ -233,14 +229,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
             throw new IllegalArgumentException();
         }
 		compressionMethod = value;
-	}
-
-	void setName(String entryName) {
-		name = entryName;
-	}
-
-	void setOffset(long value) {
-		dataOffset = value;
 	}
 
 	/**
