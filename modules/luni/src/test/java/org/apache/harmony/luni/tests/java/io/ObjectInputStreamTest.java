@@ -29,6 +29,8 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import junit.framework.TestCase;
 
 public class ObjectInputStreamTest extends TestCase {
@@ -72,6 +74,44 @@ public class ObjectInputStreamTest extends TestCase {
 	    assertFalse("should not construct self", B.list.contains(b));
 	    assertEquals("super field A.s", A.DEFAULT, ((A)b).s);
 	    assertNull("transient field B.s", b.s);
+	}
+	
+	/**
+	 * @tests {@link java.io.ObjectInputStream#readNewLongString()}
+	 */
+	public void test_readNewLongString() throws Exception {
+		LongString longString = new LongString();
+		SerializationTest.verifySelf(longString);
+	}
+	
+	private static class LongString implements Serializable{
+		String lString;
+		
+		public LongString() {
+			StringBuilder builder = new StringBuilder();
+			// construct a string whose length > 64K
+			for (int i = 0; i < 65636; i++) {
+				builder.append('1');
+			}
+			lString = builder.toString();
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (o == this) {
+				return true;
+			}
+			if (o instanceof LongString) {
+				LongString l = (LongString) o;
+				return l.lString.equals(l.lString);
+			}
+			return true;
+		}
+		
+		@Override
+		public int hashCode() {
+			return lString.hashCode();
+		}
 	}
 
 	static class A { 

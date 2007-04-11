@@ -17,6 +17,8 @@
 
 package tests.api.java.io;
 
+import java.io.IOException;
+
 import tests.support.Support_PlatformFile;
 
 public class FilterInputStreamTest extends junit.framework.TestCase {
@@ -134,7 +136,12 @@ public class FilterInputStreamTest extends junit.framework.TestCase {
 	 */
 	public void test_reset() {
 		// Test for method void java.io.FilterInputStream.reset()
-		assertTrue("Not supported by underlying stream", true);
+        try {
+            is.reset();
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // expected
+        }
 	}
 
 	/**
