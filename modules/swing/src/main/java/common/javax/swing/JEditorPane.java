@@ -26,8 +26,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Hashtable;
 
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleHyperlink;
@@ -203,19 +203,15 @@ public class JEditorPane extends JTextComponent {
 
     private static final String REFERENCE_TAIL_PATTERN = "#.*";
 
-    private static List<String> contentTypes = new ArrayList<String>();
-
-    private static List<String> editorKitNames = new ArrayList<String>();
-
-    private static List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
-
     private static final String RTF_HEADER = "{\\rtf";
 
     private static final String HTML_HEADER = "<html";
 
-    private List<String> localContentTypes = new ArrayList<String>();
+    private static Map<String, ContentTypeRegistration> contentTypes =
+            new Hashtable<String, ContentTypeRegistration>();
 
-    private List<EditorKit> localEditorKits = new ArrayList<EditorKit>();
+    private static Map<String, EditorKit> localContentTypes =
+            new Hashtable<String, EditorKit>();
 
     private String contentType = PLAIN_CONTENT_TYPE;
 
@@ -226,43 +222,49 @@ public class JEditorPane extends JTextComponent {
     private AccessibleContext accessible;
 
     private AccessibleContext accessibleHTML;
+
     static {
-        contentTypes.add(PLAIN_CONTENT_TYPE);
-        contentTypes.add(HTML_CONTENT_TYPE);
-        contentTypes.add(RTF_CONTENT_TYPE);
-        editorKitNames.add("javax.swing.JEditorPane$PlainEditorKit");
-        editorKitNames.add("javax.swing.text.html.HTMLEditorKit");
-        editorKitNames.add("javax.swing.text.rtf.RTFEditorKit");
-        classLoaders.add(null);
-        classLoaders.add(null);
-        classLoaders.add(null);
+        contentTypes.put(PLAIN_CONTENT_TYPE,
+                new ContentTypeRegistration("javax.swing.JEditorPane$PlainEditorKit", null));
+        contentTypes.put(HTML_CONTENT_TYPE,
+                new ContentTypeRegistration("javax.swing.text.html.HTMLEditorKit", null));
+        contentTypes.put(RTF_CONTENT_TYPE,
+                new ContentTypeRegistration("javax.swing.text.rtf.RTFEditorKit", null));
     }
 
     public static EditorKit createEditorKitForContentType(final String contentType) {
-        int index = contentTypes.indexOf(contentType);
-        if (index < 0) {
-            return null;
+        ContentTypeRegistration registration = contentTypes.get(contentType);
+
+        if (registration != null) {
+            try {
+                if (registration.editorKit == null) {
+                    registration.editorKit = (EditorKit)
+                            Class.forName(registration.className, true,
+                                    registration.classLoader).newInstance();
+                }
+                return (EditorKit) registration.editorKit.clone();
+            } catch (Throwable e) {
+                // Ignore.
+
+                /*
+                 * This is rather dangerous, but is being done so for
+                 * compatibility with RI that seems to do the same.
+                 * See HARMONY-3454 for details.
+                 * This could be tweaked in the future and changed to
+                 * only catch Exception and LinkageError, for example.
+                 */
+            }
         }
-        String kitName = editorKitNames.get(index);
-        Object loader = classLoaders.get(index);
-        EditorKit editorKit = null;
-        try {
-            editorKit = (EditorKit) ((loader != null) ? ((ClassLoader) loader).loadClass(
-                    kitName).newInstance() : Class.forName(kitName).newInstance());
-        } catch (IllegalAccessException e) {
-        } catch (ClassNotFoundException e) {
-        } catch (InstantiationException e) {
-        }
-        return editorKit;
+        return null;
     }
 
     public static String getEditorKitClassNameForContentType(final String type) {
         if (type == null) {
-            throw new NullPointerException();
+            throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        ContentTypeRegistration registration = contentTypes.get(type);
 
-        int index = contentTypes.indexOf(type);
-        return (index >= 0) ? editorKitNames.get(index) : null;
+        return ((registration != null) ? registration.className : null);
     }
 
     public static void registerEditorKitForContentType(final String type,
@@ -272,20 +274,16 @@ public class JEditorPane extends JTextComponent {
 
     public static void registerEditorKitForContentType(final String type,
             final String editorKitName, final ClassLoader loader) {
-
-        if (type == null || editorKitName == null) {
-            throw new NullPointerException();
+        if (type == null) {
+            throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        int index = contentTypes.indexOf(type);
-        if (index >= 0) {
-            contentTypes.remove(index);
-            editorKitNames.remove(index);
-            classLoaders.remove(index);
+        if (editorKitName == null) {
+            throw new NullPointerException(Messages.getString("swing.03","Class name")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        contentTypes.add(type);
-        editorKitNames.add(editorKitName);
-        classLoaders.add(loader);
+        contentTypes.put(type, new ContentTypeRegistration(
+                editorKitName, ((loader != null) ? loader
+                        : Thread.currentThread().getContextClassLoader())));
     }
 
     public JEditorPane() {
@@ -299,8 +297,9 @@ public class JEditorPane extends JTextComponent {
 
     public JEditorPane(final String type, final String text) {
         this();
+
         if (type == null) {
-            throw new NullPointerException();
+            throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         setContentType(type);
         setText(text);
@@ -352,12 +351,16 @@ public class JEditorPane extends JTextComponent {
     }
 
     public EditorKit getEditorKitForContentType(final String type) {
-        int index = localContentTypes.indexOf(type);
-        if (index >= 0) {
-            return localEditorKits.get(index);
+        EditorKit kit = localContentTypes.get(type);
+
+        if (kit == null) {
+            kit = createEditorKitForContentType(type);
+
+            if (kit == null) {
+                kit = createDefaultEditorKit();
+            }
         }
-        EditorKit kit = JEditorPane.createEditorKitForContentType(type);
-        return (kit == null) ? createDefaultEditorKit() : kit;
+        return kit;
     }
 
     public synchronized HyperlinkListener[] getHyperlinkListeners() {
@@ -557,7 +560,7 @@ public class JEditorPane extends JTextComponent {
         scrollRectToVisible(rect);
     }
 
-    private boolean changeEditoKit(final String contentType) {
+    private boolean changeEditorKit(final String contentType) {
         return !(/*(RTF_CONTENT_TYPE.equals(contentType) && editorKit instanceof RTFEditorKit)
                  ||*/ (HTML_CONTENT_TYPE.equals(contentType) && editorKit instanceof HTMLEditorKit)
                  || (PLAIN_CONTENT_TYPE.equals(contentType) && editorKit instanceof PlainEditorKit));
@@ -567,11 +570,9 @@ public class JEditorPane extends JTextComponent {
         if (type == null) {
             throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        contentType = (contentTypes.containsKey(type) ? type : PLAIN_CONTENT_TYPE);
 
-        int index = contentTypes.indexOf(type);
-        contentType = (index >= 0) ? (String)contentTypes.get(index)
-                                  : PLAIN_CONTENT_TYPE;
-        if (changeEditoKit(contentType)) {
+        if (changeEditorKit(contentType)) {
             EditorKit kit = getEditorKitForContentType(contentType);
             updateEditorKit((kit != null) ? kit : new PlainEditorKit());
             updateDocument(editorKit);
@@ -582,14 +583,19 @@ public class JEditorPane extends JTextComponent {
         if (kit == null) {
             return PLAIN_CONTENT_TYPE;
         }
-        int index = localEditorKits.indexOf(kit);
-        if (index >= 0) {
-            return localContentTypes.get(index);
+
+        for (Map.Entry<String, EditorKit> entry : localContentTypes.entrySet()) {
+             if (kit.equals(entry.getValue())) {
+                 return entry.getKey();
+             }
         }
-        index = editorKitNames.indexOf(kit.getClass().getName());
-        if (index >= 0) {
-            return contentTypes.get(index);
+
+        for (Map.Entry<String, ContentTypeRegistration> entry : contentTypes.entrySet()) {
+             if (kit.getClass().getName().equals(entry.getValue().className)) {
+                 return entry.getKey();
+             }
         }
+
         return PLAIN_CONTENT_TYPE;
     }
 
@@ -619,17 +625,14 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void setEditorKitForContentType(final String type, final EditorKit kit) {
-        if (type == null || kit == null) {
-            throw new NullPointerException();
+        if (type == null) {
+            throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-  
-        int index = localContentTypes.indexOf(contentType);
-        if (index >= 0) {
-            localContentTypes.remove(index);
-            localEditorKits.remove(index);
+
+        if (kit == null) {
+            throw new NullPointerException(Messages.getString("swing.03","Editor kit")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        localContentTypes.add(type);
-        localEditorKits.add(kit);
+        localContentTypes.put(type, kit);
     }
 
     public void setPage(final String page) throws IOException {
@@ -655,6 +658,17 @@ public class JEditorPane extends JTextComponent {
             } catch (BadLocationException e1) {
             }
         } catch (BadLocationException e) {
+        }
+    }
+
+    private static class ContentTypeRegistration {
+        String className;
+        ClassLoader classLoader;
+        EditorKit editorKit;
+
+        ContentTypeRegistration(String className, ClassLoader classLoader) {
+            this.className = className;
+            this.classLoader = classLoader;
         }
     }
 

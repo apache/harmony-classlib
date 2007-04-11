@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.accessibility.AccessibleContext;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -857,5 +859,125 @@ public class JEditorPaneTest extends SwingTestCase {
     public void testIsFocusCycleRoot() throws Exception {
         // Regression test for HARMONY-2573
         assertTrue(new JEditorPane().isFocusCycleRoot());
+    }
+
+    public void testCreateEditorKitForContentType() throws Exception {
+
+        // Regression test for HARMONY-3453, HARMONY-3454
+        final ClassLoader classLoader1 = new ArrayClassLoader();
+        final ClassLoader classLoader2 = new ArrayClassLoader();
+        final ClassLoader classLoader3 = new ArrayClassLoader();
+
+        class ThreadCheckEditorKit extends Thread {
+            private boolean register;
+            public EditorKit[] result = new EditorKit[9];
+
+            public ThreadCheckEditorKit(boolean register) {
+                this.register = register;
+
+                if (register) {
+                    setContextClassLoader(classLoader1);
+                }
+            }
+
+            public void run() {
+                result[0] = JEditorPane.createEditorKitForContentType("testContentType1");
+                result[1] = JEditorPane.createEditorKitForContentType("testContentType2");
+                result[2] = JEditorPane.createEditorKitForContentType("testContentType3");
+
+                if (register) {
+                    JEditorPane.registerEditorKitForContentType(
+                            "testContentType1", "MyEditorKit");
+                    JEditorPane.registerEditorKitForContentType( // This throws NPE on RI
+                            "testContentType2", "MyEditorKit", null); // see HARMONY-3453.
+                    JEditorPane.registerEditorKitForContentType(
+                            "testContentType3", "MyEditorKit",
+                            (register ? classLoader2 : classLoader3));
+                }
+                result[3] = JEditorPane.createEditorKitForContentType("testContentType1");
+                result[4] = JEditorPane.createEditorKitForContentType("testContentType2");
+                result[5] = JEditorPane.createEditorKitForContentType("testContentType3");
+
+                result[6] = JEditorPane.createEditorKitForContentType("testContentType1");
+                result[7] = JEditorPane.createEditorKitForContentType("testContentType2");
+                result[8] = JEditorPane.createEditorKitForContentType("testContentType3");
+            }
+
+            public void go() {
+                start();
+
+                while (true) {
+                    try {
+                        join();
+                        return;
+                    } catch (InterruptedException e) {
+                        // Ignored.
+                    }
+                }
+            }
+        };
+
+        ThreadCheckEditorKit thread1 = new ThreadCheckEditorKit(true);
+        thread1.go();
+        ThreadCheckEditorKit thread2 = new ThreadCheckEditorKit(false);
+        thread2.go();
+
+        Map<EditorKit, Object> kitMap = new HashMap<EditorKit, Object>();
+        EditorKit result;
+
+        for (int i = 0; i < 9; i++) {
+            result = thread1.result[i];
+
+            if (i < 3) {
+                assertNull(result);
+            } else {
+                assertNotNull(result);
+                kitMap.put(result, null);
+                assertEquals(result.getClass().getClassLoader(),
+                        ((i % 3) == 2) ? classLoader2 : classLoader1);
+            }
+            result = thread2.result[i];
+            assertNotNull(result);
+            kitMap.put(result, null);
+            assertEquals(result.getClass().getClassLoader(),
+                    (((i % 3) == 2) ? classLoader2 : classLoader1));
+        }
+        // Make sure all returned values are unique.
+        assertEquals(kitMap.size(), 15);
+    }
+
+    /**
+     * Special classloader for testCreateEditorKitForContentType().
+     */
+    private static class ArrayClassLoader extends ClassLoader {
+
+        private static byte[] bytesMyEditorKit = new byte[] {
+                /*
+                 * public class MyEditorKit extends DefaultEditorKit {}
+                 */
+                -54, -2, -70, -66, 0, 0, 0, 49, 0, 13, 10, 0, 3, 0, 10, 7, 0,
+                11, 7, 0, 12, 1, 0, 6, 60, 105, 110, 105, 116, 62, 1, 0, 3, 40,
+                41, 86, 1, 0, 4, 67, 111, 100, 101, 1, 0, 15, 76, 105, 110,
+                101, 78, 117, 109, 98, 101, 114, 84, 97, 98, 108, 101, 1, 0,
+                10, 83, 111, 117, 114, 99, 101, 70, 105, 108, 101, 1, 0, 16,
+                77, 121, 69, 100, 105, 116, 111, 114, 75, 105, 116, 46, 106,
+                97, 118, 97, 12, 0, 4, 0, 5, 1, 0, 11, 77, 121, 69, 100, 105,
+                116, 111, 114, 75, 105, 116, 1, 0, 33, 106, 97, 118, 97, 120,
+                47, 115, 119, 105, 110, 103, 47, 116, 101, 120, 116, 47, 68,
+                101, 102, 97, 117, 108, 116, 69, 100, 105, 116, 111, 114, 75,
+                105, 116, 0, 33, 0, 2, 0, 3, 0, 0, 0, 0, 0, 1, 0, 1, 0, 4, 0,
+                5, 0, 1, 0, 6, 0, 0, 0, 29, 0, 1, 0, 1, 0, 0, 0, 5, 42, -73, 0,
+                1, -79, 0, 0, 0, 1, 0, 7, 0, 0, 0, 6, 0, 1, 0, 0, 0, 5, 0, 1,
+                0, 8, 0, 0, 0, 2, 0, 9
+        };
+
+        protected Class findClass(String name) throws ClassNotFoundException {
+            if ("MyEditorKit".equals(name)) {
+                return defineClass("MyEditorKit", bytesMyEditorKit,
+                        0, bytesMyEditorKit.length);
+            } else {
+                throw new ClassNotFoundException(name);
+            }
+        }
     }
 }
