@@ -127,6 +127,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.misc.src.main.native}/accessors">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>

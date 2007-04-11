@@ -87,6 +87,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.security.src.main.native}/security">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>

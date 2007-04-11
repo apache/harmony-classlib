@@ -104,6 +104,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/sig">
                 <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -116,6 +117,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/thread">
                 <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -128,6 +130,7 @@
         <copy todir="${hy.hdk}/lib" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/thrstub">
                 <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -140,6 +143,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/port">
                 <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>

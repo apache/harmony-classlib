@@ -172,6 +172,10 @@
     </condition>
     <property name="shlib.suffix" value=".so" />
 
+    <condition property="progdb.suffix" value=".pdb">
+        <isset property="is.windows" />
+    </condition>
+
     <condition property="linklib.suffix" value=".lib">
         <isset property="is.windows"/>
     </condition>

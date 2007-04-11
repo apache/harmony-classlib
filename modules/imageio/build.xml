@@ -106,6 +106,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.imageio.src.main.native}/jpegencoder/">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -114,6 +115,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.imageio.src.main.native}/pngencoder/">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>

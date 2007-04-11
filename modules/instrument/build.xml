@@ -81,7 +81,9 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.instrument.src.main.native}/instrument">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}*" />
             </fileset>
         </copy>
     </target>

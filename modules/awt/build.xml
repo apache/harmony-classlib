@@ -144,6 +144,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/lcmm">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -153,6 +154,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/jpegdecoder">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -162,6 +164,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/gl">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -171,6 +174,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/oglwrapper">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -200,6 +204,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/win32wrapper">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -209,6 +214,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/winfont">
                 <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>

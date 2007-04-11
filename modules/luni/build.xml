@@ -122,6 +122,7 @@
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/luni">
                 <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
@@ -137,6 +138,7 @@
             <fileset dir="${hy.luni.src.main.native}/launcher">
                 <patternset includes="java${exe.suffix}" />
                 <patternset includes="javaw${exe.suffix}" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
             </fileset>
         </copy>
 
