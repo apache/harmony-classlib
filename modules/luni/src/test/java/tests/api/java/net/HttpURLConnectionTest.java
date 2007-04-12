@@ -25,9 +25,11 @@ import java.net.CacheResponse;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ResponseCache;
+import java.net.SocketPermission;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -566,6 +568,29 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         assertFalse(isPutCalled);
         assertFalse(isAbortCalled);
         uc.disconnect();
+    }
+    
+    /**
+     * @tests java.net.URLConnection#getErrorStream()
+     */
+    public void test_getErrorStream() throws Exception {
+        uc.setDoOutput(true);
+        uc.connect();
+        assertEquals(200, uc.getResponseCode());        
+        // no error stream
+        assertNull(uc.getErrorStream());        
+        uc.disconnect();
+        assertNull(uc.getErrorStream());
+    }
+    
+    /**
+     * @tests java.net.URLConnection#getPermission()
+     */
+    public void test_Permission() throws Exception {
+        uc.connect();
+        Permission permission = uc.getPermission();
+        assertNotNull(permission);
+        permission.implies(new SocketPermission("localhost","connect"));
     }
 
     class MockNonCachedResponseCache extends ResponseCache {

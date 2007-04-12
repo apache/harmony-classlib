@@ -129,7 +129,7 @@ public abstract class JarURLConnection extends URLConnection {
      * @return java.util.jar.Manifest The JarFile's Manifest
      */
     public Manifest getManifest() throws java.io.IOException {
-        return getJarFile().getManifest();
+        return (Manifest)getJarFile().getManifest().clone();
     }
 
     /**

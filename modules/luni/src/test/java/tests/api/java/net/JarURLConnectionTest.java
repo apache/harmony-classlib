@@ -29,6 +29,7 @@ import java.net.URLConnection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -230,6 +231,46 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         assertTrue(file.delete());
     }
 
+    /**
+     * @tests java.net.JarURLConnection#getManifest()
+     */
+    public void test_getManifest() throws Exception {
+        URL u = new URL("jar:" + BASE.toString() + "/lf.jar!/plus.bmp");
+        juc = (JarURLConnection) u.openConnection();
+        Manifest mf = juc.getManifest();
+        assertNotNull(mf);
+        // equal but not same manifest
+        assertEquals(mf,juc.getManifest());
+        assertNotSame(mf,juc.getManifest());
+        // same main attrubutes
+        assertEquals(juc.getMainAttributes(),mf.getMainAttributes());
+    }
+
+    /**
+     * @tests java.net.JarURLConnection#getCertificates()
+     */
+    public void test_getCertificates() throws Exception {
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        juc = (JarURLConnection) u.openConnection();
+        // read incomplete, shall return null
+        assertNull(juc.getCertificates());
+        assertEquals("Returned incorrect JarEntry", "plus.bmp", juc
+                .getJarEntry().getName());
+        // read them all
+        InputStream is =juc.getInputStream();        
+        byte[] buf = new byte[80];
+        while(is.read(buf)>0);
+        // still return null for this type of file
+        assertNull(juc.getCertificates());
+        
+        URL fileURL = new URL("jar:" + BASE.toString()+"/lf.jar!/");
+        juc = (JarURLConnection)fileURL.openConnection();
+        is = juc.getJarFileURL().openStream();
+        while(is.read(buf)>0);
+        // null for this jar file
+        assertNull(juc.getCertificates());
+    }
 
 	protected void setUp() {
 	}
