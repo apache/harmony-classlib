@@ -304,8 +304,8 @@ public abstract class SocketImpl implements SocketOptions {
      */
     int write(byte[] buffer, int offset, int count) throws IOException {
         if (!streaming) {
-            this.netImpl
-                    .sendDatagram2(fd, buffer, offset, count, port, address);
+            return this.netImpl.sendDatagram2(fd, buffer, offset, count, port,
+                    address);
         }
         return this.netImpl.sendStream(fd, buffer, offset, count);
     }
