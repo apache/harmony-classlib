@@ -55,7 +55,9 @@ public class PNGImageReaderSpi extends ImageReaderSpi {
 
         byte[] signature = new byte[8];
         markable.seek(0);
-        markable.read(signature, 0, 8);
+
+        int nBytes = markable.read(signature, 0, 8);
+        if(nBytes != 8) markable.read(signature, nBytes, 8-nBytes);
         markable.reset();
 
         // PNG signature: 137 80 78 71 13 10 26 10
