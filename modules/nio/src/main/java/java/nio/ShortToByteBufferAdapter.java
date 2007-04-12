@@ -16,6 +16,8 @@
 
 package java.nio;
 
+import org.apache.harmony.nio.internal.DirectBuffer;
+import org.apache.harmony.luni.platform.PlatformAddress;
 
 
 /**
@@ -31,7 +33,7 @@ package java.nio;
  * </p>
  * 
  */
-final class ShortToByteBufferAdapter extends ShortBuffer {
+final class ShortToByteBufferAdapter extends ShortBuffer implements DirectBuffer {
 
 	static ShortBuffer wrap(ByteBuffer byteBuffer) {
 		return new ShortToByteBufferAdapter(byteBuffer.slice());
@@ -44,6 +46,58 @@ final class ShortToByteBufferAdapter extends ShortBuffer {
 		this.byteBuffer = byteBuffer;
 		this.byteBuffer.clear();
 	}
+
+        public int getByteCapacity() {
+            if (byteBuffer instanceof DirectBuffer) {
+                return ((DirectBuffer)byteBuffer).getByteCapacity();
+            } else {
+                assert false : byteBuffer;
+                return -1;
+            }            
+        }
+
+        public PlatformAddress getEffectiveAddress() {
+            if (byteBuffer instanceof DirectBuffer) {
+                return ((DirectBuffer)byteBuffer).getEffectiveAddress();
+            } else {
+                assert false : byteBuffer;
+                return null;
+            }
+        }
+
+        public PlatformAddress getBaseAddress() {
+            if (byteBuffer instanceof DirectBuffer) {
+                return ((DirectBuffer)byteBuffer).getBaseAddress();
+            } else {
+                assert false : byteBuffer;
+                return null;
+            }
+        }
+            
+        public boolean isAddressValid() {
+            if (byteBuffer instanceof DirectBuffer) {
+                return ((DirectBuffer)byteBuffer).isAddressValid();
+            } else {
+                assert false : byteBuffer;
+                return false;
+            }
+        }
+
+        public void addressValidityCheck() {
+            if (byteBuffer instanceof DirectBuffer) {
+                ((DirectBuffer)byteBuffer).addressValidityCheck();
+            } else {
+                assert false : byteBuffer;
+            }
+        }
+            
+        public void free() {
+            if (byteBuffer instanceof DirectBuffer) {
+                ((DirectBuffer)byteBuffer).free();
+            } else {
+                assert false : byteBuffer;
+            }   
+        }
 
 	public ShortBuffer asReadOnlyBuffer() {
 		ShortToByteBufferAdapter buf = new ShortToByteBufferAdapter(byteBuffer

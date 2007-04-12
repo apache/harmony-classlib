@@ -269,4 +269,8 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
     final protected boolean protectedHasArray() {
         return false;
     }
+    
+    public final int getByteCapacity() {
+        return capacity;
+    }
 }

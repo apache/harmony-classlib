@@ -99,9 +99,8 @@ JNIEXPORT void* JNICALL GetDirectBufferAddress
  */
 JNIEXPORT jlong JNICALL GetDirectBufferCapacity
   (JNIEnv * env, jobject buf){
-	  jfieldID fieldCapacity;
+	  jmethodID methodCapacity;
 	  jclass directBufferClass;
-	  jclass bufferClass;
           directBufferClass = (*env)->FindClass (env, "org/apache/harmony/nio/internal/DirectBuffer");
 	  if (!directBufferClass){
 	      	  return -1;
@@ -109,14 +108,10 @@ JNIEXPORT jlong JNICALL GetDirectBufferCapacity
 	  if (JNI_FALSE == (*env)->IsInstanceOf(env, buf, directBufferClass)){
 		  return -1;
 	  }
-	  bufferClass = (*env)->FindClass (env, "java/nio/Buffer");
-	  if (!bufferClass){
+	  methodCapacity = (*env)->GetMethodID (env, directBufferClass, "getByteCapacity",
+             "()I");
+	  if (!methodCapacity){
 	      	  return -1;
 	  }
-	  fieldCapacity = (*env)->GetFieldID (env, bufferClass, "capacity",
-             "I");
-	  if (!fieldCapacity){
-	      	  return -1;
-	  }
-	  return (*env)->GetIntField(env, buf, fieldCapacity);
+	  return (jlong)(*env)->CallIntMethod(env, buf, methodCapacity);
   }

@@ -18,13 +18,16 @@ package org.apache.harmony.nio.internal;
 import org.apache.harmony.luni.platform.PlatformAddress;
 
 public interface DirectBuffer {
-	public PlatformAddress getEffectiveAddress();
     
-    public PlatformAddress getBaseAddress();
+    PlatformAddress getEffectiveAddress();
     
-    public boolean isAddressValid();
+    PlatformAddress getBaseAddress();
     
-    public void addressValidityCheck();
+    boolean isAddressValid();
     
-    public void free();
+    void addressValidityCheck();
+    
+    void free();
+    
+    int getByteCapacity();
 }
