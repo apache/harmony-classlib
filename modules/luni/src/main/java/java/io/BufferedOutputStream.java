@@ -121,14 +121,17 @@ public class BufferedOutputStream extends FilterOutputStream {
             // K0047=buffer is null
             throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
         }
-        if (offset < 0 || offset > buffer.length - length || length < 0) {
-            // K002f=Arguments out of bounds
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
-        }
+        
         if (count == 0 && length >= buf.length) {
             out.write(buffer, offset, length);
             return;
         }
+        
+        if (offset < 0 || offset > buffer.length - length || length < 0) {
+            // K002f=Arguments out of bounds
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+        }
+        
         int available = buf.length - count;
         if (length < available) {
             available = length;

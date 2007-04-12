@@ -251,6 +251,300 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.io.BufferedOutputStream#write(byte[], int, int)
+     */
+    public void test_write_$BII_NullStream_NullArray() throws IOException {
+        OutputStream bos = new BufferedOutputStream(null);   
+        byte[] nullByteArray = null;
+        
+        try {
+            bos.write(nullByteArray, -1, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 0, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            bos.write(nullByteArray, -1, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            bos.write(nullByteArray, 0, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+       
+        try {
+            bos.write(nullByteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.io.BufferedOutputStream#write(byte[], int, int)
+     */
+    public void test_write_$BII_NullStream_NullArray_Size() throws IOException {
+        OutputStream bos = new BufferedOutputStream(null, 1);   
+        byte[] nullByteArray = null;
+        
+        try {
+            bos.write(nullByteArray, -1, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            bos.write(nullByteArray, 0, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            bos.write(nullByteArray, -1, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            bos.write(nullByteArray, 0, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(nullByteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.io.BufferedOutputStream#write(byte[], int, int)
+     */
+    public void test_write_$BII_NullStream() throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(null);   
+        byte[] byteArray = new byte[10];
+        
+        try {
+            bos.write(byteArray, -1, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            bos.write(byteArray, 0, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, 1, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, -1, 0);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        bos.write(byteArray, 0, 0);
+        
+        bos.write(byteArray, 1, 0);
+        
+        bos.write(byteArray, byteArray.length, 0);
+        
+        try {
+            bos.write(byteArray, byteArray.length + 1, 0);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
+        
+        try {
+            bos.write(byteArray, -1, 1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        bos.write(byteArray, 0, 1);
+        bos.write(byteArray, 1, 1);
+        
+        bos.write(byteArray, 0, byteArray.length);
+    
+        try {
+            bos.write(byteArray, byteArray.length + 1, 1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
+    }
+    
+    /**
+     * @tests java.io.BufferedOutputStream#write(byte[], int, int)
+     */
+    public void test_write_$BII_NullStream_Size() throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(null, 1);   
+        byte[] byteArray = new byte[10];
+        
+        try {
+            bos.write(byteArray, -1, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            bos.write(byteArray, 0, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, 1, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, -1, 0);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        bos.write(byteArray, 0, 0);
+        
+        bos.write(byteArray, 1, 0);
+        
+        bos.write(byteArray, byteArray.length, 0);
+        
+        try {
+            bos.write(byteArray, byteArray.length + 1, 0);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
+        
+        try {
+            bos.write(byteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, 0, byteArray.length);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            bos.write(byteArray, byteArray.length + 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            //expected
+        }
+    }
+    
 	/**
 	 * @tests java.io.BufferedOutputStream#write(int)
 	 */
