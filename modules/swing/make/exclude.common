@@ -9,7 +9,10 @@ javax/swing/JComponent_AddRemoveNotifyTest.java
 # should be checked once again: does it still hang?
 javax/swing/JComponent_MultithreadedTest.java
 javax/swing/JDialogTest.java
+javax/swing/JEditorPaneTest.java
 javax/swing/JEditorPane_AccessibleJEditorPaneHTMLTest.java
+javax/swing/JEditorPane_AccessibleJEditorPaneTest.java
+javax/swing/JEditorPane_MultithreadedTest.java
 javax/swing/JFormattedTextFieldTest.java
 javax/swing/JFormattedTextField_CommitActionRTest.java
 javax/swing/JFrameRTest.java
