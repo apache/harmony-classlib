@@ -498,11 +498,11 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         protected Object replaceObject(Object obj) throws IOException {
             if (obj instanceof NotSerializable) {
                 return new Long(10);
-            } else if (obj instanceof Integer) {
-                return new Long(((Integer) obj).longValue());
-            } else {
-                return obj;
             }
+            if (obj instanceof Integer) {
+                return new Long(((Integer) obj).longValue());
+            }
+            return super.replaceObject(obj);            
         }
     }
         
@@ -516,6 +516,21 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 
         protected Object replaceObject(Object obj) throws IOException {
             return new Long(10);
+        }
+    }
+    
+    private static class ObjectOutputStreamWriteOverride extends ObjectOutputStream {
+        String test = "test";
+
+        protected ObjectOutputStreamWriteOverride() throws IOException,
+                SecurityException {
+            super();
+        }
+
+        @Override
+        protected void writeObjectOverride(Object object) throws IOException {
+            test = null;
+            super.writeObjectOverride(object);
         }
     }
 
@@ -954,6 +969,15 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
             fail("Expected NotSerializableException");
         } catch (NotSerializableException e) {}
         out.writeObject(new ExternalizableWithReplace());
+    }
+    
+    /**
+     * @tests {@link java.io.ObjectOutputStream#writeObjectOverride(Object)}
+     */
+    public void test_writeObject_WriteOverride() throws Exception {
+        ObjectOutputStreamWriteOverride mockOut = new ObjectOutputStreamWriteOverride();
+        mockOut.writeObject(new Object());
+        assertNull(mockOut.test);
     }
 
     /**

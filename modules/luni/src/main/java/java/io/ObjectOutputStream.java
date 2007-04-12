@@ -2059,8 +2059,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      *             If an IO exception happened when writing the object
      */
     protected void writeObjectOverride(Object object) throws IOException {
-        // Subclasses must override.
-        throw new IOException();
+        if (!subclassOverridingImplementation) {
+            // Subclasses must override.
+            throw new IOException();
+        }
     }
 
     /**
