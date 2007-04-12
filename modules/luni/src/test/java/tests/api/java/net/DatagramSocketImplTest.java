@@ -35,6 +35,18 @@ public class DatagramSocketImplTest extends junit.framework.TestCase {
         MockDatagramSocketImpl impl = new MockDatagramSocketImpl();
         assertNull(impl.getFileDescriptor());
     }
+    
+    
+    public void test_connect() throws Exception {
+        MockDatagramSocketImpl impl = new MockDatagramSocketImpl();
+        InetAddress localhost = InetAddress.getByName("localhost"); //$NON-NLS-1$
+        // connect do nothing, so will not throw exception
+        impl.test_connect(localhost, 0);
+        impl.test_connect(localhost, -1);
+        impl.test_connect(null, -1);
+        // disconnect
+        impl.test_disconnect();
+    }
 }
 
 class MockDatagramSocketImpl extends DatagramSocketImpl {
@@ -113,7 +125,7 @@ class MockDatagramSocketImpl extends DatagramSocketImpl {
 
     @Override
     protected void send(DatagramPacket pack) throws IOException {
-        // TODO Auto-generated method stub
+        // empty
 
     }
 
@@ -132,4 +144,11 @@ class MockDatagramSocketImpl extends DatagramSocketImpl {
         // empty
     }
 
+    public void test_connect(InetAddress inetAddr, int port ) throws SocketException{
+        super.connect(inetAddr, port);
+    }
+    
+    public void test_disconnect(){
+        super.disconnect();
+    }
 }
