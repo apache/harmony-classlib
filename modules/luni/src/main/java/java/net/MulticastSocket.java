@@ -183,11 +183,6 @@ public class MulticastSocket extends DatagramSocket {
         return impl.getTTL();
     }
 
-    @Override
-    boolean isMulticastSocket() {
-        return true;
-    }
-
     /**
      * Add this socket to the multicast group. A socket must joint a group
      * before data may be received. A socket may be a member of multiple groups

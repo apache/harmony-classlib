@@ -262,15 +262,6 @@ public class DatagramSocket {
     }
 
     /**
-     * Answers whether this socket is multicast.
-     * 
-     * @return Always answers false.
-     */
-    boolean isMulticastSocket() {
-        return false;
-    }
-
-    /**
      * Answer the socket receive buffer size (SO_RCVBUF).
      * 
      * @return int socket receive buffer size
