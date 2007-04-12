@@ -62,6 +62,23 @@ public class JarEntryTest extends TestCase {
             jarFile.close();
         }
     }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.jar.JarEntry#JarEntry(java.util.jar.JarEntry)
+     */
+    public void test_ConstructorLjava_util_jar_JarEntry() throws IOException {
+        JarEntry newJarEntry = new JarEntry(jarFile.getJarEntry(entryName));
+        assertNotNull(newJarEntry);
+
+        jarEntry = null;
+        try {
+            newJarEntry = new JarEntry(jarEntry);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 
     /**
      * @tests java.util.jar.JarEntry#JarEntry(java.util.zip.ZipEntry)

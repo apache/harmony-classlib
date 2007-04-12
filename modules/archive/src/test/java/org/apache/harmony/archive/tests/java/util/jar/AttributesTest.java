@@ -289,5 +289,19 @@ public class AttributesTest extends TestCase {
         assertEquals(2, attribute.size());
         assertNull(attribute.get(name));
     }
+    
+    /**
+     * @tests java.util.jar.Attributes.hashCode()
+     */
+    public void test_hashCode() {
+        MockAttributes mockAttr = new MockAttributes();
+        mockAttr.putValue("1", "one");
+        assertEquals(mockAttr.getMap().hashCode(), mockAttr.hashCode());
+    }
 
+    private static class MockAttributes extends Attributes {
+        public Map<Object, Object> getMap() {
+            return map;
+        }
+    }
 }
