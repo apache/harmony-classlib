@@ -1,3 +1,8 @@
 org/apache/harmony/luni/tests/java/lang/ThreadTest.java
+
+#HARMONY-3628
+org/apache/harmony/luni/tests/java/lang/SecurityManagerTest.java
+
 org/apache/harmony/tests/internal/net/www/protocol/http/HttpURLConnectionTest.java
 tests/api/java/net/SocketTest.java
+
