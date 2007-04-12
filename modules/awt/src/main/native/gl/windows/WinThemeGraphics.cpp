@@ -24,7 +24,6 @@
 
 #include <windows.h>
 #include <objidl.h>
-#include <uxTheme.h>
 
 #include "gl_GDIPlus.h"
 #include "org_apache_harmony_awt_theme_windows_WinThemeGraphics.h"
@@ -80,14 +79,32 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_theme_windows_WinThemeGraphic
     restoreGdiClip(gi->hdc, (HRGN)hOldClipRgn);
 }
 
+static void (__stdcall *drawThemeBackground) (void*, void*, int, int, void*, void*)(NULL);
+static BOOL isUxThemeAvailable(true);
+
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_theme_windows_WinThemeGraphics_drawXpBackground
         (JNIEnv * env, jclass clazz, jlong gip, jint x, jint y, jint w, jint h, 
         jlong hTheme, jint type, jint state) {
 
+    if (!isUxThemeAvailable) {
+        return;
+    }
+
+    if (drawThemeBackground == NULL) {
+        HMODULE libUxTheme = LoadLibrary("UxTheme");
+        isUxThemeAvailable = (libUxTheme != NULL);
+
+        if (!isUxThemeAvailable) {
+            return;
+        }
+
+        drawThemeBackground = (void (__stdcall *) (void*, void*, int, int, void*, void*)) GetProcAddress(libUxTheme, "DrawThemeBackground");
+    }
+
     GraphicsInfo *gi = (GraphicsInfo *)gip;
 
     RECT bounds = { (int)x, (int)y, (int)x + (int)w, (int)y + (int)h };
-    DrawThemeBackground((HTHEME)hTheme, gi->hdc, type, state, &bounds, NULL);
+    drawThemeBackground((void*) hTheme, (void*) gi->hdc, (int) type, (int) state, (void*) &bounds, (void*) NULL);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_theme_windows_WinThemeGraphics_drawClassicBackground

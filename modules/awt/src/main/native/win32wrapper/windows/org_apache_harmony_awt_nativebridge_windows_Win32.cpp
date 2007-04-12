@@ -161,6 +161,9 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 long  (__stdcall * p_nbridge_GetThemeSysFont) (void *, int, void *) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetThemeSysFont( JNIEnv *env, jobject self, jlong hTheme, jint iFontId, jlong plf) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetThemeSysFont == NULL) {
         p_nbridge_GetThemeSysFont = (long  (__stdcall *) (void *, int, void *)) FindFunction(libUxTheme, "GetThemeSysFont");
     }
@@ -269,6 +272,9 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 long  (__stdcall * p_nbridge_GetThemeSysInt) (void *, int, void *) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetThemeSysInt( JNIEnv *env, jobject self, jlong hTheme, jint iIntId, jlong piValue) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetThemeSysInt == NULL) {
         p_nbridge_GetThemeSysInt = (long  (__stdcall *) (void *, int, void *)) FindFunction(libUxTheme, "GetThemeSysInt");
     }
@@ -404,6 +410,9 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_k
 long  (__stdcall * p_nbridge_DrawThemeBackground) (void *, void *, int, int, void *, void *) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_DrawThemeBackground( JNIEnv *env, jobject self, jlong hTheme, jlong hdc, jint iPartId, jint iStateId, jlong pRect, jlong pClipRect) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_DrawThemeBackground == NULL) {
         p_nbridge_DrawThemeBackground = (long  (__stdcall *) (void *, void *, int, int, void *, void *)) FindFunction(libUxTheme, "DrawThemeBackground");
     }
@@ -881,6 +890,9 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_D
 long  (__stdcall * p_nbridge_GetCurrentThemeName) (void *, int, void *, int, void *, int) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetCurrentThemeName( JNIEnv *env, jobject self, jlong pszThemeFileName, jint cchMaxNameChars, jlong pszColorBuff, jint cchMaxColorChars, jlong pszSizeBuff, jint cchMaxSizeChars) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetCurrentThemeName == NULL) {
         p_nbridge_GetCurrentThemeName = (long  (__stdcall *) (void *, int, void *, int, void *, int)) FindFunction(libUxTheme, "GetCurrentThemeName");
     }
@@ -1007,6 +1019,9 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_W
 int  (__stdcall * p_nbridge_IsThemeActive) () = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_IsThemeActive( JNIEnv *env, jobject self) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_IsThemeActive == NULL) {
         p_nbridge_IsThemeActive = (int  (__stdcall *) ()) FindFunction(libUxTheme, "IsThemeActive");
     }
@@ -1016,6 +1031,9 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_I
 unsigned long  (__stdcall * p_nbridge_GetThemeSysColor) (void *, int) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetThemeSysColor( JNIEnv *env, jobject self, jlong hTheme, jint iColorId) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetThemeSysColor == NULL) {
         p_nbridge_GetThemeSysColor = (unsigned long  (__stdcall *) (void *, int)) FindFunction(libUxTheme, "GetThemeSysColor");
     }
@@ -1070,6 +1088,9 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_D
 long  (__stdcall * p_nbridge_CloseThemeData) (void *) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_CloseThemeData( JNIEnv *env, jobject self, jlong hTheme) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_CloseThemeData == NULL) {
         p_nbridge_CloseThemeData = (long  (__stdcall *) (void *)) FindFunction(libUxTheme, "CloseThemeData");
     }
@@ -1097,6 +1118,9 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_G
 int (__stdcall * p_nbridge_GetThemeSysSize) (void *, int) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetThemeSysSize( JNIEnv *env, jobject self, jlong hTheme, jint iSizeId) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetThemeSysSize == NULL) {
         p_nbridge_GetThemeSysSize = (int (__stdcall *) (void *, int)) FindFunction(libUxTheme, "GetThemeSysSize");
     }
@@ -1394,6 +1418,9 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 int  (__stdcall * p_nbridge_GetThemeSysBool) (void *, int) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_GetThemeSysBool( JNIEnv *env, jobject self, jlong hTheme, jint iBoolId) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_GetThemeSysBool == NULL) {
         p_nbridge_GetThemeSysBool = (int  (__stdcall *) (void *, int)) FindFunction(libUxTheme, "GetThemeSysBool");
     }
@@ -1421,6 +1448,9 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 void * (__stdcall * p_nbridge_OpenThemeData) (void *, void *) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_OpenThemeData( JNIEnv *env, jobject self, jlong hwnd, jlong pszClassList) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_OpenThemeData == NULL) {
         p_nbridge_OpenThemeData = (void * (__stdcall *) (void *, void *)) FindFunction(libUxTheme, "OpenThemeData");
     }
@@ -1484,6 +1514,9 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_
 long  (__stdcall * p_nbridge_EnableTheming) (int) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_EnableTheming( JNIEnv *env, jobject self, jint fEnable) {
+    if (libUxTheme == NULL) {
+        return 0;
+    }
     if (p_nbridge_EnableTheming == NULL) {
         p_nbridge_EnableTheming = (long  (__stdcall *) (int)) FindFunction(libUxTheme, "EnableTheming");
     }
@@ -2233,5 +2266,6 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_p
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Win32_proxycall191( JNIEnv *env, jobject self, jlong fnptr1234, jlong This, jint param_1, jlong param_2) {
     return (jint)((long  (__stdcall *) (void *, long, void *)) fnptr1234)((void *) This, (long) param_1, (void *) param_2);
 }
+
 
 
