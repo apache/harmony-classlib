@@ -55,7 +55,15 @@ public class SocketImplTest extends junit.framework.TestCase {
             // expected
         }
     }
-
+    
+    /*
+     * @tests java.net.SocketImpl#shutdownOutput()
+     */
+    public void test_supportsUrgentData() {
+        MockSocketImpl s = new MockSocketImpl();
+        assertFalse(s.testSupportsUrgentData());
+    }
+    
 	// the mock class for test, leave all method empty
 	class MockSocketImpl extends SocketImpl{
 		
@@ -118,6 +126,11 @@ public class SocketImplTest extends junit.framework.TestCase {
         public void shutdownOutput() throws IOException {
             super.shutdownOutput();
         }
+        
+        public boolean testSupportsUrgentData(){
+            return super.supportsUrgentData();
+        }
+        
 	}
 
 	protected void setUp() {

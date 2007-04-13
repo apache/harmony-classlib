@@ -230,38 +230,6 @@ public abstract class SocketImpl implements SocketOptions {
     protected abstract void listen(int backlog) throws IOException;
 
     /**
-     * In the IP stack, read at most <code>count</code> bytes off the socket
-     * into the <code>buffer</code>, at the <code>offset</code>. If the
-     * timeout is zero, block indefinitely waiting for data, otherwise wait the
-     * specified period (in milliseconds).
-     * 
-     * @param buffer
-     *            the buffer to read into
-     * @param offset
-     *            the offset into the buffer
-     * @param count
-     *            the max number of bytes to read
-     * @return int the actual number of bytes read
-     * @exception IOException
-     *                thrown if an error occurs while reading
-     */
-    int read(byte[] buffer, int offset, int count) throws IOException {
-        if (shutdownInput) {
-            return -1;
-        }
-        try {
-            int read = this.netImpl.receiveStream(fd, buffer, offset, count,
-                    receiveTimeout);
-            if (read == -1) {
-                shutdownInput = true;
-            }
-            return read;
-        } catch (InterruptedIOException e) {
-            throw new SocketTimeoutException(e.getMessage());
-        }
-    }
-
-    /**
      * Set the nominated socket option.
      * 
      * @param optID
