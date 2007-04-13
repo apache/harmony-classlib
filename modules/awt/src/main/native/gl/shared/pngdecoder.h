@@ -60,8 +60,8 @@ typedef struct png_decoder_info_tag {
   unsigned char *inputBuffer;  
 
   size_t rowbytes; // Bytes for one row of data
-  int width;
-  int height;
+  png_uint_32 width;
+  png_uint_32 height;
 
   int channels;
   int bitDepth;
