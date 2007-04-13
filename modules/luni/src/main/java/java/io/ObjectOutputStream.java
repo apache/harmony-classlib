@@ -1860,7 +1860,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                                 .methodWriteReplace(objClass);
                         if (writeReplace == null) {
                             writeReplaceCache.put(objClass, this);
-                            writeReplaceMethod = null;
+                            // writeReplaceMethod must be null here
+                            assert writeReplaceMethod == null;
                         } else {
                             // Has replacement method
                             AccessController

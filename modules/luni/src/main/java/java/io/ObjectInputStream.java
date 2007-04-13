@@ -1758,16 +1758,18 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         ObjectStreamClass newClassDesc = new ObjectStreamClass();
         String name = input.readUTF();
-        if ("".equals(name)) {
+        if (name.length() == 0) {
             throw new IOException("The stream is corrupted.");
         }
         newClassDesc.setName(name);
         newClassDesc.setSerialVersionUID(input.readLong());
         newClassDesc.setFlags(input.readByte());
 
-        // We must register the class descriptor before reading field
-        // descriptors.
-        // if called outside of readObject, the descriptorHandle might be null
+        /*
+         * We must register the class descriptor before reading field
+         * descriptors. If called outside of readObject, the descriptorHandle
+         * might be null.
+         */
         descriptorHandle = (null == descriptorHandle ? Integer
                 .valueOf(nextHandle()) : descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
@@ -1974,7 +1976,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                             .methodReadResolve(objectClass);
                     if (readResolve == null) {
                         readResolveCache.put(objectClass, this);
-                        readResolveMethod = null;
+                        // readResolveMethod must be null here
+                        assert readResolveMethod == null;
                     } else {
                         // Has replacement method
                         AccessController.doPrivileged(new PriviAction<Object>(
