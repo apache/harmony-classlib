@@ -388,7 +388,7 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
   	   if (!errorCodeExClass){
   	           return;
   	   }
-  	   errorCodeExConstructor = (*env)->GetMethodID(env,errorCodeExClass,"init","(I)V");
+  	   errorCodeExConstructor = (*env)->GetMethodID(env,errorCodeExClass,"<init>","(I)V");
        if (!errorCodeExConstructor){
                return;
        }
@@ -397,7 +397,7 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
   	   if (!socketExClass) {
   	           return;
   	   }
-  	   socketExConstructor = (*env)->GetMethodID(env,socketExClass,"init","(Ljava/lang/String;)V");
+  	   socketExConstructor = (*env)->GetMethodID(env,socketExClass,"<init>","(Ljava/lang/String;)V");
        if (!socketExConstructor) {
                return;
        }
