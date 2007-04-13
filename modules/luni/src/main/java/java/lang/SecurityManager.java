@@ -586,7 +586,7 @@ public class SecurityManager {
         Class<?>[] classes = Class.getStackClasses(-1, true);
         for (int i = 0; i < classes.length; i++) {
             ClassLoader cl = classes[i].getClassLoaderImpl();
-            if (!cl.isSystemClassLoader()) {
+            if (cl != null && !cl.isSystemClassLoader()) {
                 return cl;
             }
         }
@@ -622,7 +622,7 @@ public class SecurityManager {
         Class<?>[] classes = Class.getStackClasses(-1, true);
         for (int i = 0; i < classes.length; i++) {
             ClassLoader cl = classes[i].getClassLoaderImpl();
-            if (!cl.isSystemClassLoader()) {
+            if (cl != null && !cl.isSystemClassLoader()) {
                 return i;
             }
         }
@@ -657,7 +657,7 @@ public class SecurityManager {
         Class<?>[] classes = Class.getStackClasses(-1, true);
         for (int i = 0; i < classes.length; i++) {
             ClassLoader cl = classes[i].getClassLoaderImpl();
-            if (!cl.isSystemClassLoader()) {
+            if (cl != null && !cl.isSystemClassLoader()) {
                 return classes[i];
             }
         }
