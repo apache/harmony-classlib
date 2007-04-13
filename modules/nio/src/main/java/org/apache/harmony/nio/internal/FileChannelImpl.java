@@ -404,19 +404,29 @@ public abstract class FileChannelImpl extends FileChannel {
         }
         
         ByteBuffer buffer = null;
-        if (src instanceof FileChannel) {
-            FileChannel fileSrc = (FileChannel) src;
-            long size = fileSrc.size();
-            long filePosition = fileSrc.position();
-            count = Math.min(count, size - filePosition);
-            buffer = fileSrc.map(MapMode.READ_ONLY, filePosition, count);
-            fileSrc.position(filePosition + count);
-        } else {
-            buffer = ByteBuffer.allocateDirect((int) count);
-            src.read(buffer);
-            buffer.flip();
+
+        try {
+            if (src instanceof FileChannel) {
+                FileChannel fileSrc = (FileChannel) src;
+                long size = fileSrc.size();
+                long filePosition = fileSrc.position();
+                count = Math.min(count, size - filePosition);
+                buffer = fileSrc.map(MapMode.READ_ONLY, filePosition, count);
+                fileSrc.position(filePosition + count);
+            } else {
+                buffer = ByteBuffer.allocateDirect((int) count);
+                src.read(buffer);
+                buffer.flip();
+            }
+            return write(buffer, position);
+        } finally {
+            // unmap the buffer
+            if (buffer != null) {
+                // all children of FileChannelImpl currently returns
+                // an instance of DirectBuffer from map() method
+               ((DirectBuffer) buffer).free();
+            }
         }
-        return write(buffer, position);
 	}
 
 	public long transferTo(long position, long count, WritableByteChannel target)
@@ -443,8 +453,18 @@ public abstract class FileChannelImpl extends FileChannel {
             return kernelTransfer(handle, ((SocketChannelImpl) target).getFD(),
                     position, count);
         }
-        buffer = map(MapMode.READ_ONLY, position, count);
-        return target.write(buffer);
+
+        try {
+            buffer = map(MapMode.READ_ONLY, position, count);
+            return target.write(buffer);
+        } finally {
+            // unmap the buffer
+            if (buffer != null) {
+                // all children of FileChannelImpl currently returns
+                // an instance of DirectBuffer from map() method
+                ((DirectBuffer) buffer).free();
+            }
+        }
     }
 
     private long kernelTransfer(long l, FileDescriptor fd, long position,

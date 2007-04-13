@@ -357,7 +357,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public void free() {
-		((MappedPlatformAddress)this.wrapped.getBaseAddress()).free();
 		this.wrapped.free();
 	}
         
