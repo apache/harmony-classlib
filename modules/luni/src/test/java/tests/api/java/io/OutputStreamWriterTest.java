@@ -370,7 +370,7 @@ public class OutputStreamWriterTest extends TestCase {
 			fail();
 		} catch (NullPointerException e) {
 		}
-		OutputStreamWriter writer2 = new OutputStreamWriter(out, cs);
+		OutputStreamWriter writer2 = new OutputStreamWriter(out, enc);
 		assertEquals(cs, Charset.forName(writer2.getEncoding()));
 		writer2.close();
 	}
