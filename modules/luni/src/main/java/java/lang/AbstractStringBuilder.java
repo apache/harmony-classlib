@@ -330,7 +330,7 @@ abstract class AbstractStringBuilder {
         }
     }
 
-    final void insert0(int index, char chars[], int start, int length) {
+    final void insert0(int index, char[] chars, int start, int length) {
         if (0 <= index && index <= count) {
             // start + length could overflow, start/length maybe MaxInt
             if (start >= 0 && 0 <= length && length <= chars.length - start) {
@@ -341,8 +341,9 @@ abstract class AbstractStringBuilder {
                 }
                 return;
             }
-            throw new StringIndexOutOfBoundsException("offset " + start
-                    + ", len " + length + ", array.length " + chars.length);
+            throw new StringIndexOutOfBoundsException("offset " + start //$NON-NLS-1$
+                    + ", length " + length //$NON-NLS-1$
+                    + ", char[].length " + chars.length); //$NON-NLS-1$
         }
         throw new StringIndexOutOfBoundsException(index);
     }
