@@ -35,139 +35,139 @@ import tests.support.Support_Configuration;
 
 public class InetAddressTest extends junit.framework.TestCase {
     
-	private static boolean someoneDone[] = new boolean[2];
+    private static boolean someoneDone[] = new boolean[2];
 
-	protected static boolean threadedTestSucceeded;
+    protected static boolean threadedTestSucceeded;
 
-	protected static String threadedTestErrorString;
+    protected static String threadedTestErrorString;
 
-	/**
-	 * This class is used to test inet_ntoa, gethostbyaddr and gethostbyname
-	 * functions in the VM to make sure they're threadsafe. getByName will cause
-	 * the gethostbyname function to be called. getHostName will cause the
-	 * gethostbyaddr to be called. getHostAddress will cause inet_ntoa to be
-	 * called.
-	 */
-	static class threadsafeTestThread extends Thread {
-		private String lookupName;
+    /**
+     * This class is used to test inet_ntoa, gethostbyaddr and gethostbyname
+     * functions in the VM to make sure they're threadsafe. getByName will cause
+     * the gethostbyname function to be called. getHostName will cause the
+     * gethostbyaddr to be called. getHostAddress will cause inet_ntoa to be
+     * called.
+     */
+    static class threadsafeTestThread extends Thread {
+        private String lookupName;
 
-		private InetAddress testAddress;
+        private InetAddress testAddress;
 
-		private int testType;
+        private int testType;
 
-		/*
-		 * REP_NUM can be adjusted if desired. Since this error is
-		 * non-deterministic it may not always occur. Setting REP_NUM higher,
-		 * increases the chances of an error being detected, but causes the test
-		 * to take longer. Because the Java threads spend a lot of time
-		 * performing operations other than running the native code that may not
-		 * be threadsafe, it is quite likely that several thousand iterations
-		 * will elapse before the first error is detected.
-		 */
-		private static final int REP_NUM = 20000;
+        /*
+         * REP_NUM can be adjusted if desired. Since this error is
+         * non-deterministic it may not always occur. Setting REP_NUM higher,
+         * increases the chances of an error being detected, but causes the test
+         * to take longer. Because the Java threads spend a lot of time
+         * performing operations other than running the native code that may not
+         * be threadsafe, it is quite likely that several thousand iterations
+         * will elapse before the first error is detected.
+         */
+        private static final int REP_NUM = 20000;
 
-		public threadsafeTestThread(String name, String lookupName,
-				InetAddress testAddress, int type) {
-			super(name);
-			this.lookupName = lookupName;
-			this.testAddress = testAddress;
-			testType = type;
-		}
+        public threadsafeTestThread(String name, String lookupName,
+                InetAddress testAddress, int type) {
+            super(name);
+            this.lookupName = lookupName;
+            this.testAddress = testAddress;
+            testType = type;
+        }
 
-		public void run() {
-			try {
-				String correctName = testAddress.getHostName();
-				String correctAddress = testAddress.getHostAddress();
-				long startTime = System.currentTimeMillis();
+        public void run() {
+            try {
+                String correctName = testAddress.getHostName();
+                String correctAddress = testAddress.getHostAddress();
+                long startTime = System.currentTimeMillis();
 
-				synchronized (someoneDone) {
-				}
+                synchronized (someoneDone) {
+                }
 
-				for (int i = 0; i < REP_NUM; i++) {
-					if (someoneDone[testType]) {
-						break;
-					} else if ((i % 25) == 0
-							&& System.currentTimeMillis() - startTime > 240000) {
-						System.out
-								.println("Exiting due to time limitation after "
-										+ i + " iterations");
-						break;
-					}
+                for (int i = 0; i < REP_NUM; i++) {
+                    if (someoneDone[testType]) {
+                        break;
+                    } else if ((i % 25) == 0
+                            && System.currentTimeMillis() - startTime > 240000) {
+                        System.out
+                                .println("Exiting due to time limitation after "
+                                        + i + " iterations");
+                        break;
+                    }
 
-					InetAddress ia = InetAddress.getByName(lookupName);
-					String hostName = ia.getHostName();
-					String hostAddress = ia.getHostAddress();
+                    InetAddress ia = InetAddress.getByName(lookupName);
+                    String hostName = ia.getHostName();
+                    String hostAddress = ia.getHostAddress();
 
                     // Intentionally not looking for exact name match so that 
                     // the test works across different platforms that may or 
                     // may not include a domain suffix on the hostname
                     if (!hostName.startsWith(correctName)) {
-						threadedTestSucceeded = false;
-						threadedTestErrorString = (testType == 0 ? "gethostbyname"
-								: "gethostbyaddr")
-								+ ": getHostName() returned "
-								+ hostName
-								+ " instead of " + correctName;
-						break;
-					}
+                        threadedTestSucceeded = false;
+                        threadedTestErrorString = (testType == 0 ? "gethostbyname"
+                                : "gethostbyaddr")
+                                + ": getHostName() returned "
+                                + hostName
+                                + " instead of " + correctName;
+                        break;
+                    }
                     // IP addresses should match exactly
-					if (!correctAddress.equals(hostAddress)) {
-						threadedTestSucceeded = false;
-						threadedTestErrorString = (testType == 0 ? "gethostbyname"
-								: "gethostbyaddr")
-								+ ": getHostName() returned "
-								+ hostAddress
-								+ " instead of " + correctAddress;
-						break;
-					}
+                    if (!correctAddress.equals(hostAddress)) {
+                        threadedTestSucceeded = false;
+                        threadedTestErrorString = (testType == 0 ? "gethostbyname"
+                                : "gethostbyaddr")
+                                + ": getHostName() returned "
+                                + hostAddress
+                                + " instead of " + correctAddress;
+                        break;
+                    }
 
-				}
-				someoneDone[testType] = true;
-			} catch (Exception e) {
-				threadedTestSucceeded = false;
-				threadedTestErrorString = e.toString();
-			}
-		}
-	}
+                }
+                someoneDone[testType] = true;
+            } catch (Exception e) {
+                threadedTestSucceeded = false;
+                threadedTestErrorString = e.toString();
+            }
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#equals(java.lang.Object)
-	 */
-	public void test_equalsLjava_lang_Object() {
-		// Test for method boolean java.net.InetAddress.equals(java.lang.Object)
-		try {
-			InetAddress ia1 = InetAddress
-					.getByName(Support_Configuration.InetTestAddress);
-			InetAddress ia2 = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			assertTrue("Equals returned incorrect result - " + ia1 + " != "
-					+ ia2, ia1.equals(ia2));
-		} catch (Exception e) {
-			fail("Exception during equals test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#equals(java.lang.Object)
+     */
+    public void test_equalsLjava_lang_Object() {
+        // Test for method boolean java.net.InetAddress.equals(java.lang.Object)
+        try {
+            InetAddress ia1 = InetAddress
+                    .getByName(Support_Configuration.InetTestAddress);
+            InetAddress ia2 = InetAddress
+                    .getByName(Support_Configuration.InetTestIP);
+            assertTrue("Equals returned incorrect result - " + ia1 + " != "
+                    + ia2, ia1.equals(ia2));
+        } catch (Exception e) {
+            fail("Exception during equals test : " + e.getMessage());
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#getAddress()
-	 */
-	public void test_getAddress() {
-		// Test for method byte [] java.net.InetAddress.getAddress()
-		try {
-			InetAddress ia = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			byte[] caddr = Support_Configuration.InetTestCaddr;
-			byte[] addr = ia.getAddress();
-			for (int i = 0; i < addr.length; i++)
-				assertTrue("Incorrect address returned", caddr[i] == addr[i]);
-		} catch (java.net.UnknownHostException e) {
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#getAddress()
+     */
+    public void test_getAddress() {
+        // Test for method byte [] java.net.InetAddress.getAddress()
+        try {
+            InetAddress ia = InetAddress
+                    .getByName(Support_Configuration.InetTestIP);
+            byte[] caddr = Support_Configuration.InetTestCaddr;
+            byte[] addr = ia.getAddress();
+            for (int i = 0; i < addr.length; i++)
+                assertTrue("Incorrect address returned", caddr[i] == addr[i]);
+        } catch (java.net.UnknownHostException e) {
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#getAllByName(java.lang.String)
-	 */
-	public void test_getAllByNameLjava_lang_String() throws Exception {
-		// Test for method java.net.InetAddress []
+    /**
+     * @tests java.net.InetAddress#getAllByName(java.lang.String)
+     */
+    public void test_getAllByNameLjava_lang_String() throws Exception {
+        // Test for method java.net.InetAddress []
         // java.net.InetAddress.getAllByName(java.lang.String)
         InetAddress[] all = InetAddress
                 .getAllByName(Support_Configuration.SpecialInetTestAddress);
@@ -203,12 +203,12 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals("Assert 0: No loopback address", 1, ia.length);
         assertTrue("Assert 1: getAllByName(null) not loopback",
                 ia[0].isLoopbackAddress());
-	}
+    }
 
-	/**
-	 * @tests java.net.InetAddress#getByName(java.lang.String)
-	 */
-	public void test_getByNameLjava_lang_String() throws Exception {
+    /**
+     * @tests java.net.InetAddress#getByName(java.lang.String)
+     */
+    public void test_getByNameLjava_lang_String() throws Exception {
         // Test for method java.net.InetAddress
         // java.net.InetAddress.getByName(java.lang.String)
         InetAddress ia2 = InetAddress
@@ -220,8 +220,8 @@ public class InetAddressTest extends junit.framework.TestCase {
          * for details
          */
 //        assertTrue(
-//		"Expected " + Support_Configuration.InetTestAddress + "*",
-//	        ia2.getHostName().startsWith(Support_Configuration.InetTestAddress));
+//      "Expected " + Support_Configuration.InetTestAddress + "*",
+//          ia2.getHostName().startsWith(Support_Configuration.InetTestAddress));
 
         // TODO : Test to ensure all the address formats are recognized
         InetAddress i = InetAddress.getByName("1.2.3");
@@ -235,23 +235,23 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals("222.222.222.222",i.getHostAddress());
     }
 
-	/**
-	 * @tests java.net.InetAddress#getHostAddress()
-	 */
-	public void test_getHostAddress() {
-		// Test for method java.lang.String
-		// java.net.InetAddress.getHostAddress()
-		try {
-			InetAddress ia2 = InetAddress
-					.getByName(Support_Configuration.InetTestAddress);
-			assertTrue("getHostAddress returned incorrect result: "
-					+ ia2.getHostAddress() + " != "
-					+ Support_Configuration.InetTestIP, ia2.getHostAddress()
-					.equals(Support_Configuration.InetTestIP));
-		} catch (Exception e) {
-			fail("Exception during getHostAddress test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#getHostAddress()
+     */
+    public void test_getHostAddress() {
+        // Test for method java.lang.String
+        // java.net.InetAddress.getHostAddress()
+        try {
+            InetAddress ia2 = InetAddress
+                    .getByName(Support_Configuration.InetTestAddress);
+            assertTrue("getHostAddress returned incorrect result: "
+                    + ia2.getHostAddress() + " != "
+                    + Support_Configuration.InetTestIP, ia2.getHostAddress()
+                    .equals(Support_Configuration.InetTestIP));
+        } catch (Exception e) {
+            fail("Exception during getHostAddress test : " + e.getMessage());
+        }
+    }
 
     /**
      * @tests java.net.InetAddress#getHostName()
@@ -267,8 +267,8 @@ public class InetAddressTest extends junit.framework.TestCase {
          * for details
          */
 //        assertTrue(
-//		"Expected " + Support_Configuration.InetTestAddress + "*",
-//		ia.getHostName().startsWith(Support_Configuration.InetTestAddress));
+//      "Expected " + Support_Configuration.InetTestAddress + "*",
+//      ia.getHostName().startsWith(Support_Configuration.InetTestAddress));
 
         // Test for any of the host lookups, where the default SecurityManager
         // is installed.
@@ -345,59 +345,133 @@ public class InetAddressTest extends junit.framework.TestCase {
         }
     }
 
-	/**
-	 * @tests java.net.InetAddress#getLocalHost()
-	 */
-	public void test_getLocalHost() {
-		// Test for method java.net.InetAddress
-		// java.net.InetAddress.getLocalHost()
-		try {
-			// We don't know the host name or ip of the machine
-			// running the test, so we can't build our own address
-			DatagramSocket dg = new DatagramSocket(0, InetAddress
-					.getLocalHost());
-			assertTrue("Incorrect host returned", InetAddress.getLocalHost()
-					.equals(dg.getLocalAddress()));
-			dg.close();
-		} catch (Exception e) {
-			fail("Exception during getLocalHost test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#getLocalHost()
+     */
+    public void test_getLocalHost() {
+        // Test for method java.net.InetAddress
+        // java.net.InetAddress.getLocalHost()
+        try {
+            // We don't know the host name or ip of the machine
+            // running the test, so we can't build our own address
+            DatagramSocket dg = new DatagramSocket(0, InetAddress
+                    .getLocalHost());
+            assertTrue("Incorrect host returned", InetAddress.getLocalHost()
+                    .equals(dg.getLocalAddress()));
+            dg.close();
+        } catch (Exception e) {
+            fail("Exception during getLocalHost test : " + e.getMessage());
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#hashCode()
-	 */
-	public void test_hashCode() {
-		// Test for method int java.net.InetAddress.hashCode()
-		try {
-			InetAddress host = InetAddress
-					.getByName(Support_Configuration.InetTestAddress);
-			int hashcode = host.hashCode();
-			assertTrue("Incorrect hash returned: " + hashcode + " from host: "
-					+ host, hashcode == Support_Configuration.InetTestHashcode);
-		} catch (java.net.UnknownHostException e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#hashCode()
+     */
+    public void test_hashCode() {
+        // Test for method int java.net.InetAddress.hashCode()
+        try {
+            InetAddress host = InetAddress
+                    .getByName(Support_Configuration.InetTestAddress);
+            int hashcode = host.hashCode();
+            assertTrue("Incorrect hash returned: " + hashcode + " from host: "
+                    + host, hashcode == Support_Configuration.InetTestHashcode);
+        } catch (java.net.UnknownHostException e) {
+            fail("Exception during test : " + e.getMessage());
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#isMulticastAddress()
-	 */
-	public void test_isMulticastAddress() {
-		// Test for method boolean java.net.InetAddress.isMulticastAddress()
-		try {
-			InetAddress ia2 = InetAddress.getByName("239.255.255.255");
-			assertTrue("isMulticastAddress returned incorrect result", ia2
-					.isMulticastAddress());
-		} catch (Exception e) {
-			fail("Exception during isMulticastAddress test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.net.InetAddress#isMulticastAddress()
+     */
+    public void test_isMulticastAddress() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertTrue(ia2.isMulticastAddress());
+        ia2 = InetAddress.getByName("localhost");
+        assertFalse(ia2.isMulticastAddress());
+    }
 
-	/**
-	 * @tests java.net.InetAddress#toString()
-	 */
-	public void test_toString() throws Exception {
+    /**
+     * @tests java.net.InetAddress#isAnyLocalAddress()
+     */
+    public void test_isAnyLocalAddress() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertFalse(ia2.isAnyLocalAddress());
+        ia2 = InetAddress.getByName("localhost");
+        assertFalse(ia2.isAnyLocalAddress());
+    }
+    
+    /**
+     * @tests java.net.InetAddress#isLinkLocalAddress()
+     */
+    public void test_isLinkLocalAddress() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertFalse(ia2.isLinkLocalAddress());
+        ia2 = InetAddress.getByName("localhost");
+        assertFalse(ia2.isLinkLocalAddress());
+    }
+    
+    /**
+     * @tests java.net.InetAddress#isLoopbackAddress()
+     */
+    public void test_isLoopbackAddress() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertFalse(ia2.isLoopbackAddress());
+        ia2 = InetAddress.getByName("localhost");
+        assertTrue(ia2.isLoopbackAddress());
+        ia2 = InetAddress.getByName("127.0.0.2");
+        assertTrue(ia2.isLoopbackAddress());
+    }
+    
+    /**
+     * @tests java.net.InetAddress#isLoopbackAddress()
+     */
+    public void test_isSiteLocalAddress() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertFalse(ia2.isSiteLocalAddress());
+        ia2 = InetAddress.getByName("localhost");
+        assertFalse(ia2.isSiteLocalAddress());
+        ia2 = InetAddress.getByName("127.0.0.2");
+        assertFalse(ia2.isSiteLocalAddress());
+        ia2 = InetAddress.getByName("243.243.45.3");
+        assertFalse(ia2.isSiteLocalAddress());
+        ia2 = InetAddress.getByName("10.0.0.2");
+        assertTrue(ia2.isSiteLocalAddress());
+    }
+    
+    /**
+     * @tests java.net.InetAddress#isMCGlobal()/isMCLinkLocal/isMCNodeLocal/isMCOrgLocal/isMCSiteLocal
+     */
+    public void test_isMCVerify() throws UnknownHostException {
+        InetAddress ia2 = InetAddress.getByName("239.255.255.255");
+        assertFalse(ia2.isMCGlobal());
+        assertFalse(ia2.isMCLinkLocal());
+        assertFalse(ia2.isMCNodeLocal());
+        assertFalse(ia2.isMCOrgLocal());
+        assertTrue(ia2.isMCSiteLocal());
+        ia2 = InetAddress.getByName("243.243.45.3");
+        assertFalse(ia2.isMCGlobal());
+        assertFalse(ia2.isMCLinkLocal());
+        assertFalse(ia2.isMCNodeLocal());
+        assertFalse(ia2.isMCOrgLocal());
+        assertFalse(ia2.isMCSiteLocal());
+        ia2 = InetAddress.getByName("250.255.255.254");
+        assertFalse(ia2.isMCGlobal());
+        assertFalse(ia2.isMCLinkLocal());
+        assertFalse(ia2.isMCNodeLocal());
+        assertFalse(ia2.isMCOrgLocal());
+        assertFalse(ia2.isMCSiteLocal());
+        ia2 = InetAddress.getByName("10.0.0.2");
+        assertFalse(ia2.isMCGlobal());
+        assertFalse(ia2.isMCLinkLocal());
+        assertFalse(ia2.isMCNodeLocal());
+        assertFalse(ia2.isMCOrgLocal());
+        assertFalse(ia2.isMCSiteLocal());
+    }
+         
+    /**
+     * @tests java.net.InetAddress#toString()
+     */
+    public void test_toString() throws Exception {
         // Test for method java.lang.String java.net.InetAddress.toString()
         InetAddress ia2 = InetAddress
                 .getByName(Support_Configuration.InetTestIP);
@@ -409,37 +483,37 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals("Assert 1: wrong string from address", "/127.0.0.1", addr2.toString());
     }
 
-	/**
-	 * @tests java.net.InetAddress#getByAddress(java.lang.String, byte[])
-	 */
-	public void test_getByAddressLjava_lang_String$B() {
-		// Check an IPv4 address with an IPv6 hostname
-		byte ipAddress[] = { 127, 0, 0, 1 };
-		String addressStr = "::1";
-		try {
-			InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress);
-			addr = InetAddress.getByAddress(ipAddress);
-		} catch (UnknownHostException e) {
-			fail("Unexpected problem creating IP Address "
-					+ ipAddress.length);
-		}
+    /**
+     * @tests java.net.InetAddress#getByAddress(java.lang.String, byte[])
+     */
+    public void test_getByAddressLjava_lang_String$B() {
+        // Check an IPv4 address with an IPv6 hostname
+        byte ipAddress[] = { 127, 0, 0, 1 };
+        String addressStr = "::1";
+        try {
+            InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress);
+            addr = InetAddress.getByAddress(ipAddress);
+        } catch (UnknownHostException e) {
+            fail("Unexpected problem creating IP Address "
+                    + ipAddress.length);
+        }
 
-		byte ipAddress2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 127, 0, 0,
-				1 };
-		addressStr = "::1";
-		try {
-			InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress2);
-			addr = InetAddress.getByAddress(ipAddress);
-		} catch (UnknownHostException e) {
-			fail("Unexpected problem creating IP Address "
-					+ ipAddress.length);
-		}
-	}
+        byte ipAddress2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 127, 0, 0,
+                1 };
+        addressStr = "::1";
+        try {
+            InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress2);
+            addr = InetAddress.getByAddress(ipAddress);
+        } catch (UnknownHostException e) {
+            fail("Unexpected problem creating IP Address "
+                    + ipAddress.length);
+        }
+    }
 
-	/**
-	 * @tests java.net.InetAddress#getCanonicalHostName()
-	 */
-	public void test_getCanonicalHostName() throws Exception {
+    /**
+     * @tests java.net.InetAddress#getCanonicalHostName()
+     */
+    public void test_getCanonicalHostName() throws Exception {
         InetAddress theAddress = null;
         theAddress = InetAddress.getLocalHost();
         assertTrue("getCanonicalHostName returned a zero length string ",
@@ -460,8 +534,8 @@ public class InetAddressTest extends junit.framework.TestCase {
 //           "Expected " + Support_Configuration.InetTestAddress + "*", 
 //           ia.getCanonicalHostName().startsWith(Support_Configuration.InetTestAddress));
     }
-	
-	/**
+    
+    /**
      * @tests java.net.InetAddress#isReachableI
      */
     public void test_isReachableI() throws Exception {

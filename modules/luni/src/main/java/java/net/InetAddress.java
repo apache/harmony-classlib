@@ -112,23 +112,6 @@ public class InetAddress extends Object implements Serializable {
         this.hostName = hostName;
     }
 
-    /**
-     * Returns the IP address of the argument <code>addr</code> as an array.
-     * The elements are in network order (the highest order address byte is in
-     * the zero-th element).
-     * 
-     * @return byte[] the network address as a byte array
-     */
-    static byte[] addressOf(int addr) {
-        int temp = addr;
-        byte array[] = new byte[4];
-        array[3] = (byte) (temp & 0xFF);
-        array[2] = (byte) ((temp >>>= 8) & 0xFF);
-        array[1] = (byte) ((temp >>>= 8) & 0xFF);
-        array[0] = (byte) ((temp >>>= 8) & 0xFF);
-        return array;
-    }
-
     CacheElement cacheElement() {
         return new CacheElement();
     }
