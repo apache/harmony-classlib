@@ -345,15 +345,17 @@ public class KeyFactory2Test extends junit.framework.TestCase {
 
 	protected void setUp() {
 		if (keyfactAlgs == null) {
-			Provider[] providers = Security.getProviders();
-			if (providers == null) {
-				fail("No providers found");
-			}
-			// Arbitrarily uUse the first provider that supports
-			// KeyFactory algorithms
-			providerName = providers[0].getName();
-			keyfactAlgs = getKeyFactoryAlgorithms(providerName);
-		}
+            Provider[] providers = Security.getProviders();
+            // Arbitrarily use the first provider that supports
+            // KeyFactory algorithms
+            for (Provider provider : providers) {
+                providerName = provider.getName();
+                keyfactAlgs = getKeyFactoryAlgorithms(providerName);
+                if (keyfactAlgs.length != 0) {
+                    break;
+                }
+            }
+        }
 	}
 
 	/*
