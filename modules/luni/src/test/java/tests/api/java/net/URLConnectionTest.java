@@ -911,7 +911,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		assertTrue("Used to test", true);
         HttpURLConnection u = null;
 
-        u = (HttpURLConnection) (new URL("http://intel.com").openConnection());
+        u = (HttpURLConnection) (new URL("http://localhost:" + port).openConnection());
         u.connect();
 
         try {
@@ -929,7 +929,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		assertTrue("Used to test", true);
         HttpURLConnection u = null;
 
-        u = (HttpURLConnection) (new URL("http://intel.com").openConnection());
+        u = (HttpURLConnection) (new URL("http://localhost:" + port).openConnection());
         u.connect();
 
         try {
