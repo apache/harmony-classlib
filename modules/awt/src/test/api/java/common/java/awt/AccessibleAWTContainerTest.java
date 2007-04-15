@@ -175,15 +175,18 @@ public class AccessibleAWTContainerTest extends TestCase {
         f.add(container);
         f.setSize(100, 300);
         f.show();
+        
+        try {
+            assertSame(c2, aContainer.getAccessibleAt(p));
+            p.translate(cont1.getX(), cont1.getY());
 
-        assertSame(c2, aContainer.getAccessibleAt(p));
-//        container.remove(c2); // why ??? last assert should pass without this?
-        p.translate(cont1.getX(), cont1.getY());
-
-        assertSame(cont1, aContainer.getAccessibleAt(p));
-        p = new Point();
-        assertSame(c3, cont1.getAccessibleContext().getAccessibleComponent().getAccessibleAt(p));
-
+            assertSame(cont1, aContainer.getAccessibleAt(p));
+            p = new Point();
+            assertSame(c3, cont1.getAccessibleContext()
+                    .getAccessibleComponent().getAccessibleAt(p));
+        } finally {
+            f.dispose();
+        }
     }
 
     public final void testAccessibleAWTContainer() {

@@ -40,29 +40,35 @@ public class WinWindowRTest extends TestCase {
     
     public final void testSetVisible() throws Throwable {
         Frame frame = new Frame();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                try {
-                assertTrue("window is focused before opened", 
-                           e.getWindow().isFocused());
-                } catch (Throwable err) {
-                    error = err;
-                }
-            }
-        });
-        frame.pack();
-        frame.setVisible(true);
+        
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e1) {            
-            e1.printStackTrace();
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowOpened(WindowEvent e) {
+                    try {
+                        assertTrue("window is focused before opened", e
+                                .getWindow().isFocused());
+                    } catch (Throwable err) {
+                        error = err;
+                    }
+                }
+            });
+            
+            frame.pack();
+            frame.setVisible(true);
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e1) {
+                // reset interrupt flag, in case someone else cares
+                Thread.currentThread().interrupt();
+            }
+            
+            if (error != null) {
+                throw error;
+            }
+        } finally {
+            frame.dispose();
         }
-        if (error != null) {
-            throw error;
-        }
-        frame.dispose();
-
     }
-
 }
