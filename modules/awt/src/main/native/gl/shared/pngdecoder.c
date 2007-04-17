@@ -225,6 +225,7 @@ void gl_info_callback(png_structp png_ptr, png_infop info) {
   env = decoderInfo->env;
   obj = decoderInfo->obj;
 
+  // images that have width or height > 2^31 aren't supported :)
   (*env)->SetIntField(env, obj, img_PNG_imageWidthID, decoderInfo->width);
   (*env)->SetIntField(env, obj, img_PNG_imageHeightID, decoderInfo->height);
   (*env)->SetIntField(env, obj, img_PNG_bitDepthID, decoderInfo->bitDepth);
