@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
+import java.beans.IndexedPropertyChangeEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -553,6 +554,21 @@ public class PropertyChangeSupportTest extends TestCase {
 
         sup.addPropertyChangeListener("myProP", l1);
         sup.hasListeners(null);
+    }
+
+    public void testFireIndexedPropertyChange() {
+        final Object src = new Object();
+        PropertyChangeSupport pcs = new PropertyChangeSupport(src);
+        pcs.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                assertEquals(src, evt.getSource());
+                assertEquals(0, ((IndexedPropertyChangeEvent)evt).getIndex());
+                assertEquals("one", evt.getOldValue());
+                assertEquals("two", evt.getNewValue());
+            }
+        });
+
+        pcs.fireIndexedPropertyChange("foo", 0, "one", "two");
     }
 
     /*

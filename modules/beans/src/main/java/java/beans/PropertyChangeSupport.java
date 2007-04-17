@@ -66,7 +66,7 @@ public class PropertyChangeSupport implements Serializable {
             Object oldValue, Object newValue) {
 
         // nulls and equals check done in doFire...
-        doFirePropertyChange(new IndexedPropertyChangeEvent(source,
+        doFirePropertyChange(new IndexedPropertyChangeEvent(sourceBean,
                 propertyName, oldValue, newValue, index));
     }
 
