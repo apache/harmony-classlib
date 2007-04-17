@@ -48,12 +48,6 @@ public class SocketTest extends SocketTestCase {
 	Thread t;
 
 	boolean interrupted = false;
-	
-	private static final int port = 8080;
-
-	private static String host = "localhost";
-    
-    private static String failureMsg = null;
 
 	class SServer extends Thread implements Runnable {
 		Socket s1 = null;
@@ -79,91 +73,6 @@ public class SocketTest extends SocketTestCase {
 			}
 		}
 	}
-	
-	static class ServerThread implements Runnable {
-		public boolean ready = false;
-
-		private int serverSocketConstructor = 0;
-		
-		private static final int FIRST_TIME = 1;
-
-		private static final int SECOND_TIME = 2;
-		
-		private int backlog = 10;
-
-		public void run() {
-			try {
-
-				ServerSocket socket = null;
-				switch (serverSocketConstructor) {
-				case FIRST_TIME:
-					socket = new ServerSocket(port, backlog,
-							new InetSocketAddress(host, port).getAddress());
-					break;
-				case SECOND_TIME:
-					socket = new ServerSocket(port, backlog);
-					host = socket.getInetAddress().getHostName();
-					break;
-				default:
-					socket = new ServerSocket();
-					break;
-				}
-
-				synchronized (this) {
-					ready = true;
-					this.notifyAll();
-				}
-
-				socket.setSoTimeout(5000);
-				socket.accept();				
-
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-
-		public synchronized void waitCreated() throws Exception{
-			while (!ready) {				
-				this.wait();
-			}
-		}
-	}
-	
-	static class ClientThread implements Runnable {
-
-		public void run() {
-			try {
-				Socket socket = new Socket();
-				InetSocketAddress addr = new InetSocketAddress(host, port);				
-				socket.connect(addr);
-
-				socket.close();
-			}catch (Exception e) {
-                failureMsg = e.getMessage();
-			} 
-		}
-	}
-	
-	private static void connectTestImpl(int ssConsType) throws Exception {
-		ServerThread server = new ServerThread();
-		server.serverSocketConstructor = ssConsType;
-		Thread serverThread = new Thread(server);
-		serverThread.start();
-		server.waitCreated();
-
-		ClientThread client = new ClientThread();
-		Thread clientThread = new Thread(client);
-		clientThread.start();
-		try {
-			serverThread.join();
-			clientThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}	
 
 	/**
 	 * @tests java.net.Socket#Socket()
@@ -2537,19 +2446,6 @@ public class SocketTest extends SocketTestCase {
             fail("Should throw UnknownHostException");
         } catch (UnknownHostException e) {
             // expected
-        }
-    }
-    
-    /**
-     * Regression for Harmony-2503 
-     */
-    public void test_connectLjava_net_SocketAddress_AnyAddress()
-            throws Exception {
-        connectTestImpl(ServerThread.FIRST_TIME);
-        connectTestImpl(ServerThread.SECOND_TIME);
-        if (failureMsg != null) {
-            failureMsg = null;
-            fail(failureMsg);
         }
     }
     
