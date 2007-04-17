@@ -207,9 +207,8 @@ class PlainSocketImpl extends SocketImpl {
      */
     private void connect(InetAddress anAddr, int aPort, int timeout)
             throws IOException {
-        InetAddress address = anAddr.isAnyLocalAddress() ? InetAddress
-                .getByName("localhost") //$NON-NLS-1$
-                : anAddr;
+        InetAddress normalAddr = anAddr.isAnyLocalAddress() ? InetAddress
+                .getLocalHost() : anAddr;
 
         try {
             if (streaming) {
@@ -217,20 +216,20 @@ class PlainSocketImpl extends SocketImpl {
                     socksConnect(anAddr, aPort, 0);
                 } else {
                     if (timeout == 0) {
-                        netImpl.connect(fd, trafficClass, address, aPort);
+                        netImpl.connect(fd, trafficClass, normalAddr, aPort);
                     } else {
                         netImpl.connectStreamWithTimeoutSocket(fd, aPort,
-                                timeout, trafficClass, address);
+                                timeout, trafficClass, normalAddr);
                     }
                 }
             } else {
-            	netImpl.connectDatagram(fd, aPort, trafficClass, address);
+            	netImpl.connectDatagram(fd, aPort, trafficClass, normalAddr);
             }
         } catch (ConnectException e) {
             throw new ConnectException(anAddr + ":" + aPort + " - "
                     + e.getMessage());
         }
-        super.address = address;
+        super.address = normalAddr;
         super.port = aPort;
     }
 
