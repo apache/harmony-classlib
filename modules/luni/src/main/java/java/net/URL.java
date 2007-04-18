@@ -921,10 +921,6 @@ public final class URL implements java.io.Serializable {
         this.query = query;
     }
 
-    URLStreamHandler getStreamHandler() {
-        return strmHandler;
-    }
-
     /**
      * Returns the default port for this URL as defined by the URLStreamHandler.
      * 

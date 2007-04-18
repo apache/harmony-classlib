@@ -38,6 +38,8 @@ import java.net.URLStreamHandler;
 import java.security.Permission;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -89,6 +91,34 @@ public class URLConnectionTest extends junit.framework.TestCase {
         String s = new String(ba);
         assertTrue("Incorrect content returned", s.indexOf("Hello OneHandler") > 0);
 	}
+    
+    /**
+     * @tests java.net.URLConnection#getContent(Class[])
+     */
+    public void test_getContent_LjavalangClass() throws IOException {
+        byte[] ba = new byte[600];
+
+        try{
+            ((InputStream) uc.getContent(null)).read(ba, 0, 600);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
+
+        try{
+            ((InputStream) uc.getContent(new Class[]{})).read(ba, 0, 600);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
+
+        try{
+            ((InputStream) uc.getContent(new Class[]{Class.class})).read(ba, 0, 600);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.net.URLConnection#getContentEncoding()
@@ -381,7 +411,6 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 * @tests java.net.URLConnection#getRequestProperties()
 	 */
 	public void test_getRequestProperties() {
-
 		uc.setRequestProperty("whatever", "you like");
 		Map headers = uc.getRequestProperties();
 
@@ -864,6 +893,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	public void test_guessContentTypeFromStreamLjava_io_InputStream() throws IOException {
         InputStream in = uc.getInputStream();
         byte[] bytes = new byte[in.available()];
+
         in.read(bytes, 0, bytes.length);
         in.close();
         // RI fails and it's a non-bug difference.
@@ -871,6 +901,13 @@ public class URLConnectionTest extends junit.framework.TestCase {
                 URLConnection
                         .guessContentTypeFromStream(new ByteArrayInputStream(
                                 bytes)));
+
+        try {
+            URLConnection.guessContentTypeFromStream(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
     }
 
 	/**
@@ -939,10 +976,14 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.net.URLConnection#setFileNameMap(java.net.FileNameMap)
 	 */
-	public void test_setFileNameMapLjava_net_FileNameMap() {
-		assertTrue("Used to test", true);
+	public void test_setFileNameMapLjava_net_FileNameMap() throws IOException {
+        // nothing happens if set null
+        URLConnection.setFileNameMap(null);
+        // take no effect
+        assertNotNull(URLConnection.getFileNameMap());
 	}
 
 	/**
