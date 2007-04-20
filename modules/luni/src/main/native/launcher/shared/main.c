@@ -741,7 +741,8 @@ cleanup:
     {
       hymem_free_memory (mainClassJar);
     }
-  (*jvm)->DetachCurrentThread(jvm);
+
+  // by spec we must call DestroyJavaVM without detaching main thread
   (*jvm)->DestroyJavaVM (jvm);
   /*if ((*jvm)->DestroyJavaVM(jvm)) {
      hytty_printf (PORTLIB, "Failed to destroy JVM\n");
