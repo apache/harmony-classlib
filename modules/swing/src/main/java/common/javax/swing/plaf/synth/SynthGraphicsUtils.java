@@ -76,8 +76,10 @@ public class SynthGraphicsUtils {
     @SuppressWarnings("unused")
     public void drawLine(SynthContext context, Object paintKey, Graphics g,
             int x1, int y1, int x2, int y2) {
+        Color oldColor = g.getColor();
         g.setColor(context.getStyle().getColor(context, ColorType.FOREGROUND));
         g.drawLine(x1, y1, x2, y2);
+        g.setColor(oldColor);
     }
 
     /**
