@@ -43,6 +43,6 @@ Java_java_util_zip_Adler32_updateByteImpl (JNIEnv * env, jobject recv,
                                            jint val, jlong crc)
 {
   PORT_ACCESS_FROM_ENV (env);
-
-  return adler32 ((uLong) crc, (Bytef *) (&val), 1);
+  Bytef bytefVal = val;
+  return adler32 ((uLong) crc, (Bytef *) (&bytefVal), 1);
 }
