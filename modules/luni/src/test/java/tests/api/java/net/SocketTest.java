@@ -40,17 +40,22 @@ import tests.support.Support_Configuration;
 import tests.support.Support_PortManager;
 
 public class SocketTest extends SocketTestCase {
+    ServerSocket ss;
 
-	ServerSocket ss;
+    Socket s;
 
-	Socket s;
+    Thread t;
 
-	Thread t;
+    boolean interrupted;
 
-	boolean interrupted = false;
+    String host = "localhost";
 
-	class SServer extends Thread implements Runnable {
-		Socket s1 = null;
+    int port;
+
+    Exception failureException;
+
+	private class SServer extends Thread implements Runnable {
+		private Socket s1;
 
 		public void run() {
 			try {
@@ -73,6 +78,93 @@ public class SocketTest extends SocketTestCase {
 			}
 		}
 	}
+	
+	private class ServerThread implements Runnable {
+		public boolean ready = false;
+
+		private int serverSocketConstructor = 0;
+		
+		private static final int FIRST_TIME = 1;
+
+		private static final int SECOND_TIME = 2;
+		
+		private int backlog = 10;
+
+		public void run() {
+			try {
+
+				ServerSocket socket = null;
+				switch (serverSocketConstructor) {
+				case FIRST_TIME:
+					socket = new ServerSocket(port, backlog,
+							new InetSocketAddress(host, port).getAddress());
+                    port = socket.getLocalPort();
+					break;
+				case SECOND_TIME:
+					socket = new ServerSocket(port, backlog);
+					host = socket.getInetAddress().getHostName();
+                    port = socket.getLocalPort();
+					break;
+				default:
+					socket = new ServerSocket();
+					break;
+				}
+
+				synchronized (this) {
+					ready = true;
+					this.notifyAll();
+				}
+
+				socket.setSoTimeout(5000);
+				socket.accept();				
+
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+
+		public synchronized void waitCreated() throws Exception{
+			while (!ready) {				
+				this.wait();
+			}
+		}
+	}
+	
+	private class ClientThread implements Runnable {
+
+		public void run() {
+			try {
+				Socket socket = new Socket();
+				InetSocketAddress addr = new InetSocketAddress(host, port);				
+				socket.connect(addr);
+
+				socket.close();
+			}catch (Exception e) {
+                failureException = e;
+			} 
+		}
+	}
+	
+	private void connectTestImpl(int ssConsType) throws Exception {
+		ServerThread server = new ServerThread();
+		server.serverSocketConstructor = ssConsType;
+		Thread serverThread = new Thread(server);
+		serverThread.start();
+		server.waitCreated();
+
+		ClientThread client = new ClientThread();
+		Thread clientThread = new Thread(client);
+		clientThread.start();
+		try {
+			serverThread.join();
+			clientThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}	
 
 	/**
 	 * @tests java.net.Socket#Socket()
@@ -2450,6 +2542,18 @@ public class SocketTest extends SocketTestCase {
     }
     
     /**
+     * Regression for Harmony-2503 
+     */
+    public void test_connectLjava_net_SocketAddress_AnyAddress()
+            throws Exception {
+        connectTestImpl(ServerThread.FIRST_TIME);
+        connectTestImpl(ServerThread.SECOND_TIME);
+        if (failureException != null) {
+            throw failureException;
+        }
+    }
+    
+    /**
      * @tests Socket#getOutputStream()
      */
     public void test_getOutputStream_shutdownOutput() throws Exception {
@@ -2491,37 +2595,30 @@ public class SocketTest extends SocketTestCase {
         }
     }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 * 
-	 * @throws Exception
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		try {
-			if (s != null)
-				s.close();
-		} catch (Exception e) {
-		}
-		try {
-			if (ss != null)
-				ss.close();
-		} catch (Exception e) {
-		}
-		try {
-			if (t != null)
-				t.interrupt();
-		} catch (Exception e) {
-		}
-	}
+    protected void tearDown() {
+        try {
+            if (s != null)
+                s.close();
+        } catch (Exception e) {
+        }
+        try {
+            if (ss != null)
+                ss.close();
+        } catch (Exception e) {
+        }
+        try {
+            if (t != null)
+                t.interrupt();
+        } catch (Exception e) {
+        }
+        this.t = null;
+        this.s = null;
+        this.ss = null;
+        this.interrupted = false;
+        this.host = "localhost";
+        this.port = 0;
+        this.failureException = null;
+    }
 
 	static class MockSecurityManager extends SecurityManager {
 
