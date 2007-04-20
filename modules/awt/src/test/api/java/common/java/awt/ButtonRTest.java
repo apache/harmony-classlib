@@ -81,6 +81,13 @@ public class ButtonRTest extends TestCase {
             f.dispose();
         }
     }
+    
+    // Regression test for HARMONY-3701
+    public void testHarmony3701() throws Exception {
+        setName("testHarmony3701"); //$NON-NLS-1$
+        testHarmony2305();
+        testHarmony2305();
+    }
 
     static class AL implements ActionListener {
         ActionEvent e;
