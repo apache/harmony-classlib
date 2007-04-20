@@ -225,10 +225,7 @@ public class SynthGraphicsUtils {
 
         if (!Utilities.isEmptyString(text)) {
             Dimension stringDim = Utilities.getStringSize(text, fm);
-            Dimension size = new Dimension(stringDim.width, Utilities.getTextY(
-                    fm, new Rectangle(stringDim)));
-
-            return new Rectangle(size);
+            return new Rectangle(stringDim.width, Utilities.getTextY(fm, new Rectangle(stringDim)));
         }
 
         return new Rectangle();
