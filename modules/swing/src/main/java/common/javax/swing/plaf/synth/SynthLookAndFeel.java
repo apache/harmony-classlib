@@ -32,8 +32,7 @@ import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class SynthLookAndFeel extends BasicLookAndFeel implements Serializable {
 
-    private final static String packageName = SynthLookAndFeel.class
-            .getPackage().getName();
+    private final static String packageName = "javax.swing.plaf.synth";
 
     private static SynthStyleFactory currentFactory;
 
