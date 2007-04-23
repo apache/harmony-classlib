@@ -589,12 +589,12 @@ static I_32
 writeIntToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
                   U_64 value, U_8 tag, int isSigned, const char *digits)
 {
-  I_32 index = 0;
-  I_32 length = 0;
+  U_32 index = 0;
+  U_32 length = 0;
   I_32 rightSpace = 0;
-  I_64 temp;
+  U_64 temp;
   int base = strlen (digits);
-  I_32 actualPrecision = 0;
+  U_32 actualPrecision = 0;
   char signChar = 0;
 
   if (isSigned)
@@ -614,7 +614,7 @@ writeIntToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
           signChar = '-';
           value = (U_64) (signedValue * -1);
         }
-      else if (tag & HYFFLAG_PLUS)
+      else if (signedValue >= 0 && (tag & HYFFLAG_PLUS))
         {
           signChar = '+';
         }
