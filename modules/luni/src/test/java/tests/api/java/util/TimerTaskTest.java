@@ -34,8 +34,6 @@ public class TimerTaskTest extends junit.framework.TestCase {
 		// The default is false and needs to be set by some tests
 		private boolean sleepInRun = false;
 
-		private boolean cancelCalled = false;
-
 		public void run() {
 			synchronized (this) {
 				wasRun++;
@@ -59,15 +57,6 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			return wasRun;
 		}
 		
-		public boolean cancel() {
-			this.cancelCalled = true;
-			return super.cancel();
-		}
-
-		public synchronized boolean cancelled() {
-			return cancelCalled;
-		}
-
 		public void sleepInRun(boolean value) {
 			sleepInRun = value;
 		}
@@ -96,60 +85,32 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			t = new Timer();
 			testTask = new TimerTestTask();
 			t.schedule(testTask, 500);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
-			assertTrue("TimerTask should not have run yet", testTask.cancel());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-			}
-			assertEquals("TimerTask.run() method should not be called after cancel()",
-					0, testTask.wasRun());
+			assertTrue("TimerTask should not have run yet", testTask.cancel());			
 			t.cancel();
 
 			// Ensure cancelling a task which has already run returns true
 			t = new Timer();
 			testTask = new TimerTestTask();
 			t.schedule(testTask, 50);
-			try {
-				Thread.sleep(150);
-			} catch (InterruptedException e) {
-			}
-			assertTrue(
-					"TimerTask.cancel() should return false if task has run",
-					!testTask.cancel());
-			t.cancel();
-
-			// Ensure cancelling a task which is has already run returns true
-			t = new Timer();
-			testTask = new TimerTestTask();
-			t.schedule(testTask, 50);
-            while (testTask.wasRun <= 0) {
+            while (testTask.wasRun() == 0) {
                 try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
-            
-			assertTrue(
+			assertFalse(
 					"TimerTask.cancel() should return false if task has run",
-					!testTask.cancel());
-			assertTrue(
-					"TimerTask.cancel() should return false if called a second time",
-					!testTask.cancel());
+					testTask.cancel());
+            assertFalse(
+                    "TimerTask.cancel() should return false if called a second time",
+                    testTask.cancel());
 			t.cancel();
 
 			// Ensure cancelling a repeated execution task which has never run
 			// returns true
 			t = new Timer();
 			testTask = new TimerTestTask();
-			t.schedule(testTask, 500, 500); // should never run
-			try {
-				Thread.sleep(150);
-			} catch (InterruptedException e) {
-			}
+			t.schedule(testTask, 500, 500); // should never run			
 			assertTrue(
 					"TimerTask.cancel() should return true if sheduled for repeated execution even if not run",
 					testTask.cancel());
@@ -159,39 +120,28 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			// true
 			t = new Timer();
 			testTask = new TimerTestTask();
-			t.schedule(testTask, 50, 50); // should run at least two times
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-			}
+			t.schedule(testTask, 50, 50); 
+            while (testTask.wasRun() == 0) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }                
+            }			
 			assertTrue(
 					"TimerTask.cancel() should return true if sheduled for repeated execution and run",
-					testTask.cancel());
-			assertTrue("TimerTask should have run at least twice", testTask
-					.wasRun() > 2);
-			int wasRunCount = testTask.wasRun();
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-			}
-			assertTrue("TimerTask cancelled should not run again", testTask
-					.wasRun() == wasRunCount);
+					testTask.cancel());			
 			t.cancel();
 
 			// Ensure calling cancel a second returns false
 			t = new Timer();
 			testTask = new TimerTestTask();
-			t.schedule(testTask, 5000); // Should never run
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
+			t.schedule(testTask, 5000); // Should never run			
 			assertTrue(
 					"TimerTask.cancel() should return true if task has never run",
 					testTask.cancel());
-			assertTrue(
+			assertFalse(
 					"TimerTask.cancel() should return false if called a second time",
-					!testTask.cancel());
+					testTask.cancel());
 			t.cancel();
 
 			// Ensure cancelling a task won't cause deadlock
@@ -206,9 +156,8 @@ public class TimerTaskTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			testTask.cancel();
-			assertTrue("TimerTask should have been cancelled", testTask
-					.cancelled());
+			assertFalse("TimerTask should have been cancelled", testTask
+					.cancel());
 			t.cancel();
 		} finally {
 			if (t != null)
@@ -234,10 +183,7 @@ public class TimerTaskTest extends junit.framework.TestCase {
 				}
 			}
 			long scheduledExecutionTime = testTask.scheduledExecutionTime();
-			assertTrue("scheduledExecutionTime not too accurate "
-					+ scheduledExecutionTime + " vs time " + time,
-					(scheduledExecutionTime > time - 50)
-							&& scheduledExecutionTime <= time);
+            assertTrue(scheduledExecutionTime <= time);
 			t.cancel();
 
 			// Ensure scheduledExecutionTime is the last scheduled time
@@ -255,9 +201,7 @@ public class TimerTaskTest extends junit.framework.TestCase {
 				}
 			}
 			scheduledExecutionTime = testTask.scheduledExecutionTime();
-			assertTrue("scheduledExecutionTime should be last time it was run",
-					(scheduledExecutionTime > estNow - 50)
-							&& scheduledExecutionTime <= estNow);
+            assertTrue(scheduledExecutionTime <= estNow);
 			t.cancel();
 		} finally {
 			if (t != null)
@@ -285,35 +229,18 @@ public class TimerTaskTest extends junit.framework.TestCase {
 			t = new Timer();
 			testTask = new TimerTestTask();
 			t.schedule(testTask, 200);
-			try {
-				Thread.sleep(400);
-			} catch (InterruptedException e) {
-			}
-			assertEquals("TimerTask.run() method not called after 200ms",
-					1, testTask.wasRun());
-			t.cancel();
-
-			// Ensure a repeated execution task does just that
-			t = new Timer();
-			testTask = new TimerTestTask();
-			t.schedule(testTask, 50, 50);
-            
-            while(testTask.wasRun() <= 4)
-			try {
-				Thread.sleep(400);
-			} catch (InterruptedException e) {
-			}			
+            while(testTask.wasRun() < 1) {
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                }
+            }
+            assertFalse(testTask.cancel());
 			t.cancel();
 		} finally {
 			if (t != null)
 				t.cancel();
 		}
 
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }
