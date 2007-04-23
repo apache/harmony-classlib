@@ -354,39 +354,63 @@ public class JarURLConnection extends java.net.JarURLConnection {
     }
 
     /**
-     * Answers the content type of the resource. Test cases reveal that only if
-     * the URL is refering to a Jar file, that this method answers a non-null
-     * value - x-java/jar.
+     * Answers the content type of the resource.
+     * For jar file itself "x-java/jar" should be returned,
+     * for jar entries the content type of the entry should be returned.
+     * Returns non-null results ("content/unknown" for unknown types).
      * 
      * @return the content type
      */
     @Override
     public String getContentType() {
-        // it could also return "x-java/jar" which jdk returns but here, we get
-        // it from the URLConnection
-        try {
-            if (url.getFile().endsWith("!/")) { //$NON-NLS-1$
-                return getJarFileURL().openConnection().getContentType();
+        if (url.getFile().endsWith("!/")) { //$NON-NLS-1$
+            // the type for jar file itself is always "x-java/jar"
+            return "x-java/jar"; //$NON-NLS-1$
+        } else {
+            String cType = null;
+            String entryName = getEntryName();
+
+            if (entryName != null) {
+                // if there is an Jar Entry, get the content type from the name
+                cType = guessContentTypeFromName(entryName);
+            } else {
+                try {
+                    if (!connected) {
+                        connect();
+                    }
+
+                    cType = jarFileURLConnection.getContentType();
+                } catch (IOException ioe) {
+                    // Ignore
+                }
             }
-        } catch (IOException ioe) {
-            // Ignore
+
+            if (cType == null) {
+                cType = "content/unknown"; //$NON-NLS-1$
+            }
+            return cType;
         }
-        // if there is an Jar Entry, get the content type from the name
-        return guessContentTypeFromName(url.getFile());
     }
 
     /**
      * Answers the content length of the resource. Test cases reveal that if the
      * URL is refering to a Jar file, this method answers a content-length
-     * returned by URLConnection. If not, it will return -1.
+     * returned by URLConnection. For jar entry it should return it's size.
+     * Otherwise, it will return -1.
      * 
      * @return the content length
      */
     @Override
     public int getContentLength() {
         try {
-            if (url.getFile().endsWith("!/")) { //$NON-NLS-1$
-                return getJarFileURL().openConnection().getContentLength();
+            if (!connected) {
+                connect();
+            }
+
+            if (jarEntry == null) {
+                return jarFileURLConnection.getContentLength();
+            } else {
+                return (int) getJarEntry().getSize();
             }
         } catch (IOException e) {
             //Ignored
