@@ -39,6 +39,7 @@
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
+        <check-one-file src="${xmlsec.url}" dest="${xmlsec.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
@@ -311,6 +312,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${xerces.dir}" />
     <download-one-file src="${xerces.url}" dest="${xerces.zip}"
                            md5="${xerces.md5}" />
+
+    <mkdir dir="${xmlsec.dir}" />
+    <download-one-file src="${xmlsec.url}" dest="${xmlsec.zip}"
+                           md5="${xmlsec.md5}" />
 
     <mkdir dir="${junit.dir}" />
     <download-one-file src="${junit.url}" dest="${junit.jar}"
