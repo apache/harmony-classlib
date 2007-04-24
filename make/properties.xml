@@ -243,6 +243,11 @@
         </not>
     </condition>
 
+    <condition property="hy.libstdc++.suffix" value=".libstdc++6">
+        <isset property="use.libstdc++6"/>
+    </condition>
+    <property name="hy.libstdc++.suffix" value="" />
+
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
