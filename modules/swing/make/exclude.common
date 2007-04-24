@@ -61,7 +61,6 @@ javax/swing/plaf/basic/BasicOptionPaneUITest.java
 javax/swing/plaf/basic/BasicProgressBarUITest.java
 javax/swing/plaf/basic/BasicRadioButtonMenuItemUITest.java
 javax/swing/plaf/basic/BasicRootPaneUITest.java
-javax/swing/plaf/basic/BasicScrollBarUITest.java
 javax/swing/plaf/basic/BasicSplitPaneDividerTest.java
 javax/swing/plaf/basic/BasicSplitPaneUITest.java
 javax/swing/plaf/basic/BasicTabbedPaneUITest.java
