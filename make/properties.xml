@@ -24,6 +24,8 @@
         Ant file of common properties to be imported by other ant files
     </description>
 
+    <property file="${user.home}/.harmony-classlib.properties" />
+
     <!-- Debug or release version -->
     <property name="hy.cfg" value="debug" />
 
