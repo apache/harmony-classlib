@@ -69,6 +69,38 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         metaDataImpl.setColumnCount(18);
         assertEquals(18, metaDataImpl.getColumnCount());
+        metaDataImpl.setAutoIncrement(1, true);
+        assertTrue(metaDataImpl.isAutoIncrement(1));
+        // original records have been overwritten
+        metaDataImpl.setColumnCount(19);
+        assertEquals(19, metaDataImpl.getColumnCount());
+        assertFalse(metaDataImpl.isAutoIncrement(1));
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnLabel(int)
+     */
+    public void test_getColumnLabelI() throws SQLException {
+        try {
+            metaDataImpl.getColumnLabel(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(3);
+        assertNull(metaDataImpl.getColumnLabel(1));
+        metaDataImpl.setColumnLabel(1, null);
+        assertEquals("", metaDataImpl.getColumnLabel(1));
+        metaDataImpl.setColumnLabel(1, "err");
+        assertEquals("err", metaDataImpl.getColumnLabel(1));
+        
+        try {
+            metaDataImpl.getColumnLabel(11);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
     }
     
     /**
@@ -132,6 +164,145 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isCurrency(int)}
+     */
+    public void test_isCurrencyI() throws SQLException {
+        try {
+            metaDataImpl.isCurrency(1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(5);
+        assertFalse(metaDataImpl.isCurrency(1));
+        metaDataImpl.setCurrency(1, true);
+        assertTrue(metaDataImpl.isCurrency(1));
+        metaDataImpl.setCurrency(1, true);
+        assertTrue(metaDataImpl.isCurrency(1));
+                
+        try {
+            metaDataImpl.isCurrency(0);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(6);
+        assertFalse(metaDataImpl.isCurrency(1));
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isReadOnly(int)}
+     */
+    public void test_isReadOnlyI() throws SQLException {
+        try {
+            metaDataImpl.isReadOnly(1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(11);
+        assertFalse(metaDataImpl.isReadOnly(1));
+        assertFalse(metaDataImpl.isReadOnly(11));
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isWritable(int)}
+     */
+    public void test_isWritableI() throws SQLException {
+        try {
+            metaDataImpl.isWritable(3);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(3);
+        assertTrue(metaDataImpl.isWritable(1));
+        
+        assertTrue(metaDataImpl.isWritable(3));
+        assertFalse(metaDataImpl.isReadOnly(3));
+        
+        try {
+            metaDataImpl.isWritable(4);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isDefinitelyWritable(int)}
+     */
+    public void test_isDefinitelyWritableI() throws SQLException {
+        metaDataImpl.setColumnCount(2);
+        assertTrue(metaDataImpl.isDefinitelyWritable(1));
+        assertTrue(metaDataImpl.isDefinitelyWritable(2));
+        
+        // RI fails here, which does not comply to the spec
+        try {
+            metaDataImpl.isDefinitelyWritable(-1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isSearchable(int)}
+     */
+    public void test_isSearchableI() throws SQLException {
+        try {
+            metaDataImpl.isSearchable(Integer.MAX_VALUE);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        assertFalse(metaDataImpl.isSearchable(1));
+        metaDataImpl.setSearchable(1, true);
+        assertTrue(metaDataImpl.isSearchable(1));
+        metaDataImpl.setSearchable(1, false);
+        assertFalse(metaDataImpl.isSearchable(1));
+        
+        try {
+            metaDataImpl.isSearchable(2);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isSigned(int)}
+     */
+    public void test_isSignedI() throws SQLException {
+        try {
+            metaDataImpl.isSigned(2);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(35);
+        assertFalse(metaDataImpl.isSigned(35));
+        metaDataImpl.setSigned(35, true);
+        assertTrue(metaDataImpl.isSigned(35));
+        metaDataImpl.setSigned(35, false);
+        assertFalse(metaDataImpl.isSigned(35));
+        
+        try {
+            metaDataImpl.isSigned(36);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setAutoIncrement(int, boolean)}
      */
     public void test_setAutoIncrementIZ() throws SQLException {
@@ -179,6 +350,108 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         try {
             metaDataImpl.setCaseSensitive(10, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnLabel(int, String)}
+     */
+    public void test_setColumnLabelIZ() throws SQLException {
+        try {
+            metaDataImpl.setColumnLabel(1, null);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(3);
+        assertNull(metaDataImpl.getColumnLabel(3));
+        metaDataImpl.setColumnLabel(3, null);
+        assertEquals("", metaDataImpl.getColumnLabel(3));
+        
+        try {
+            metaDataImpl.setColumnLabel(4, "exception");
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setCurrency(int, boolean)}
+     */
+    public void test_setCurrencyIZ() throws SQLException {
+        try {
+            metaDataImpl.setCurrency(12, false);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(7);
+        assertFalse(metaDataImpl.isCurrency(4));
+        metaDataImpl.setCurrency(4, false);
+        assertFalse(metaDataImpl.isCurrency(4));
+        metaDataImpl.setCurrency(4, true);
+        assertTrue(metaDataImpl.isCurrency(4));
+        
+        try {
+            metaDataImpl.setCurrency(8, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setSearchable(int, boolean)}
+     */
+    public void test_setSearchableIZ() throws SQLException {
+        try {
+            metaDataImpl.setSearchable(-22, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(8);
+        assertFalse(metaDataImpl.isSearchable(2));
+        metaDataImpl.setSearchable(2, true);
+        assertTrue(metaDataImpl.isSearchable(2));
+        metaDataImpl.setSearchable(2, false);
+        assertFalse(metaDataImpl.isSearchable(2));        
+        
+        try {
+            metaDataImpl.setSearchable(Integer.MIN_VALUE, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setSigned(int, boolean)}
+     */
+    public void test_setSignedIZ() throws SQLException {
+        try {
+            metaDataImpl.setSigned(34, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(12);
+        assertFalse(metaDataImpl.isSigned(12));
+        metaDataImpl.setSigned(12, true);
+        assertTrue(metaDataImpl.isSigned(12));
+        metaDataImpl.setSigned(12, false);
+        assertFalse(metaDataImpl.isSigned(12));        
+        
+        try {
+            metaDataImpl.setSigned(0, true);
             fail ("should throw SQLException");
         } catch (SQLException e) {
             // expected

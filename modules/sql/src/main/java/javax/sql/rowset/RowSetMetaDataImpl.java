@@ -35,6 +35,8 @@ import org.apache.harmony.sql.internal.nls.Messages;
  */
 public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
 
+    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
     private static final int DEFAULT_COLUMN_COUNT = 4;
 
     private static final long serialVersionUID = 6893806403181801867L;
@@ -102,23 +104,44 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         colInfo[arrayIndex].caseSensitive = property;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setSearchable(int, boolean)
+     */
     public void setSearchable(int columnIndex, boolean property)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].searchable = property;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setCurrency(int, boolean)
+     */
     public void setCurrency(int columnIndex, boolean property)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].currency = property;
     }
 
     public void setNullable(int columnIndex, int property) throws SQLException {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setSigned(int, boolean)
+     */
     public void setSigned(int columnIndex, boolean property)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].signed = property;
     }
 
     public void setColumnDisplaySize(int columnIndex, int size)
@@ -126,9 +149,16 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setColumnLabel(int, String)
+     */
     public void setColumnLabel(int columnIndex, String label)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].columnLabel = label == null ? EMPTY_STRING : label;
     }
 
     public void setColumnName(int columnIndex, String columnName)
@@ -200,28 +230,56 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         return colInfo[arrayIndex].caseSensitive;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isSearchable(int)
+     */
     public boolean isSearchable(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].searchable;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isCurrency(int)
+     */
     public boolean isCurrency(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].currency;
     }
 
     public int isNullable(int columnIndex) throws SQLException {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isSigned(int)
+     */
     public boolean isSigned(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].signed;
     }
 
     public int getColumnDisplaySize(int columnIndex) throws SQLException {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnLabel(int)
+     */
     public String getColumnLabel(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].columnLabel;
     }
 
     public String getColumnName(int columnIndex) throws SQLException {
@@ -256,16 +314,35 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isReadOnly(int)
+     */
     public boolean isReadOnly(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return !isWritable(columnIndex);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isWritable(int)
+     */
     public boolean isWritable(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].writeable; 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isDefinitelyWritable(int)
+     */    
     public boolean isDefinitelyWritable(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].definiteWritable; 
     }
 
     public String getColumnClassName(int columnIndex) throws SQLException {
@@ -280,6 +357,17 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         public boolean autoIncrement;
 
         public boolean caseSensitive;
+        
+        public boolean currency;
 
+        public boolean signed;
+
+        public boolean searchable;
+
+        public boolean writeable = true;
+
+        public boolean definiteWritable = true;
+        
+        public String columnLabel;
     }
 }
