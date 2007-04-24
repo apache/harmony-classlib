@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import javax.sql.RowSetMetaData;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.sql.internal.nls.Messages;
 
 /**
  * This class is a concrete implementation of javax.sql.RowSetMetatData, which
@@ -34,28 +35,71 @@ import org.apache.harmony.luni.util.NotImplementedException;
  */
 public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
 
+    private static final int DEFAULT_COLUMN_COUNT = 4;
+
     private static final long serialVersionUID = 6893806403181801867L;
 
     private int colCount;
 
     private ColInfo[] colInfo;
 
+    /**
+     * The default constructor. 
+     */
     public RowSetMetaDataImpl() {
-        throw new NotImplementedException();
+        // do nothing
     }
-
+    
+    private void checkColumnIndex(int arrayIndex) throws SQLException {
+        if (null == colInfo || arrayIndex < 0 || arrayIndex >= colInfo.length) {
+            throw new SQLException(Messages.getString("sql.27", arrayIndex + 1)); //$NON-NLS-1$
+        }
+        // lazy initialization
+        if (null == colInfo[arrayIndex]) {
+            colInfo[arrayIndex] = new ColInfo();
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setColumnCount(int)
+     */
     public void setColumnCount(int columnCount) throws SQLException {
-        throw new NotImplementedException();
+        if (columnCount <= 0) {
+            throw new SQLException(Messages.getString("sql.26")); //$NON-NLS-1$
+        }
+        try {
+            colInfo = new ColInfo[columnCount];            
+        } catch (OutOfMemoryError e) {
+            // For compatibility, use same default value as RI
+            colInfo = new ColInfo[DEFAULT_COLUMN_COUNT];
+        }                        
+        colCount = columnCount;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setAutoIncrement(int, boolean)
+     */
     public void setAutoIncrement(int columnIndex, boolean property)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].autoIncrement = property;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setCaseSensitive(int, boolean)
+     */
     public void setCaseSensitive(int columnIndex, boolean property)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].caseSensitive = property;
     }
 
     public void setSearchable(int columnIndex, boolean property)
@@ -125,16 +169,35 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnCount()
+     */
     public int getColumnCount() throws SQLException {
-        throw new NotImplementedException();
+        return colCount;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isAutoIncrement(int)
+     */
     public boolean isAutoIncrement(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].autoIncrement; 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#isCaseSensitive(int)
+     */
     public boolean isCaseSensitive(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].caseSensitive;
     }
 
     public boolean isSearchable(int columnIndex) throws SQLException {
@@ -209,7 +272,14 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * The inner class to store meta information of columns.
+     */
     private class ColInfo {
+        
+        public boolean autoIncrement;
+
+        public boolean caseSensitive;
 
     }
 }
