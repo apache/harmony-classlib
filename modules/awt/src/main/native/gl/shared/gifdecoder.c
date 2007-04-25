@@ -172,14 +172,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_decode
     memmove(decoder->input, decoder->inputPtr, decoder->bytesInBuffer);
   }
 
+  (*env)->ReleasePrimitiveArrayCritical(env, jInput, decoder->input, 0);
+
   (*env)->SetIntField(
       env, 
       obj, 
       img_GIF_bytesConsumedID, 
       bytesInBuffer - decoder->bytesInBuffer
     );
-
-  (*env)->ReleasePrimitiveArrayCritical(env, jInput, decoder->input, 0);
 
   if(decoder->stateVars.imageDataStarted) {
     if(!decoder->interlace) {
@@ -242,19 +242,17 @@ static void toIntARGB(unsigned char *in, unsigned int *out, int lengthInPixels) 
  */
 JNIEXPORT jintArray JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_toRGB
 (JNIEnv *env, jclass cls, jbyteArray jSrc, jbyteArray jColormap, jint transparentColor) {
-  unsigned int *intARGBColormap;
-  unsigned char *src = (*env)->GetPrimitiveArrayCritical(env, jSrc, 0);
-  unsigned char *colormap = (*env)->GetPrimitiveArrayCritical(env, jColormap, 0);
-
   unsigned int numPixels = (*env)->GetArrayLength(env, jSrc);
   unsigned int cmapSize = (*env)->GetArrayLength(env, jColormap);
+  // Create INT_ARGB colormap
+  unsigned int *intARGBColormap = malloc(cmapSize*sizeof(int));
   jintArray jDst = (*env)->NewIntArray(env, numPixels);
+  unsigned char *src = (*env)->GetPrimitiveArrayCritical(env, jSrc, 0);
+  unsigned char *colormap = (*env)->GetPrimitiveArrayCritical(env, jColormap, 0);
   unsigned int *dst = (*env)->GetPrimitiveArrayCritical(env, jDst, 0);
   unsigned int *dstPtr = dst;
   unsigned char *srcPtr = src;
 
-  // Create INT_ARGB colormap
-  intARGBColormap = malloc(cmapSize*sizeof(int));
   // Fill it
   toIntARGB(colormap, intARGBColormap, cmapSize);
 
@@ -266,11 +264,11 @@ JNIEXPORT jintArray JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_toRG
     *(dstPtr++) = intARGBColormap[*(srcPtr++)];
   }
 
-  free(intARGBColormap);
-  
-  (*env)->ReleasePrimitiveArrayCritical(env, jSrc, src, 0);
   (*env)->ReleasePrimitiveArrayCritical(env, jDst, dst, 0);
-  (*env)->ReleasePrimitiveArrayCritical(env, jColormap, colormap, 0);
+  (*env)->ReleasePrimitiveArrayCritical(env, jSrc, src, JNI_ABORT); /* We does not change this array */
+  (*env)->ReleasePrimitiveArrayCritical(env, jColormap, colormap, JNI_ABORT); /* We does not change this array */
+  
+  free(intARGBColormap);  
 
   return jDst;
 }
