@@ -296,6 +296,39 @@ public class TreeSetTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect set", s.contains(objArray[i]));
 	}
 
+    /**
+     * Tests equals() method.
+     * Tests that no ClassCastException will be thrown in all cases.
+     * Regression test for HARMONY-1639.
+     */
+    public void test_equals() throws Exception {
+        // comparing TreeSets with different object types
+        Set s1 = new TreeSet();
+        Set s2 = new TreeSet();
+        s1.add("key1");
+        s1.add("key2");
+        s2.add(new Integer(1));
+        s2.add(new Integer(2));
+        assertFalse("Sets should not be equal 1", s1.equals(s2));
+        assertFalse("Sets should not be equal 2", s2.equals(s1));
+
+        // comparing TreeSet with HashSet
+        s1 = new TreeSet();
+        s2 = new HashSet();
+        s1.add("key");
+        s2.add(new Object());
+        assertFalse("Sets should not be equal 3", s1.equals(s2));
+        assertFalse("Sets should not be equal 4", s2.equals(s1));
+
+        // comparing TreeSets with not-comparable objects inside
+        s1 = new TreeSet();
+        s2 = new TreeSet();
+        s1.add(new Object());
+        s2.add(new Object());
+        assertFalse("Sets should not be equal 5", s1.equals(s2));
+        assertFalse("Sets should not be equal 6", s2.equals(s1));
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

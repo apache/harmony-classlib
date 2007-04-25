@@ -139,10 +139,15 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
             Set<?> objectSet = map.entrySet();
             Iterator<Map.Entry<K, V>> it = entrySet().iterator();
-            while (it.hasNext()) {
-                if (!objectSet.contains(it.next())) {
-                    return false;
+
+            try {
+                while (it.hasNext()) {
+                    if (!objectSet.contains(it.next())) {
+                        return false;
+                    }
                 }
+            } catch (ClassCastException cce) {
+                return false;
             }
             return true;
         }

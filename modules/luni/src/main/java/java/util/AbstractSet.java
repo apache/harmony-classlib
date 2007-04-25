@@ -52,7 +52,12 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements
         }
         if (object instanceof Set) {
             Set<?> s = (Set<?>) object;
-            return size() == s.size() && containsAll(s);
+
+            try {
+                return size() == s.size() && containsAll(s);
+            } catch (ClassCastException cce) {
+                return false;
+            }
         }
         return false;
     }
