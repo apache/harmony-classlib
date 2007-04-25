@@ -971,9 +971,37 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     enableResolve = old;
                 }
             }
+            
+            classSig = formatClassSig(classSig);
             ObjectStreamField f = new ObjectStreamField(classSig, fieldName);
             fields[i] = f;
         }
+    }
+    
+    /*
+     * Format the class signature for ObjectStreamField, for example,
+     * "[L[Ljava.lang.String;;" is converted to "[Ljava.lang.String;"
+     */
+    private static String formatClassSig(String classSig) {
+        int start = 0;
+        int end = classSig.length();
+
+        if (end <= 0) {
+            return classSig;
+        }
+
+        while (classSig.startsWith("[L", start)
+                && classSig.charAt(end - 1) == ';') {
+            start += 2;
+            end--;
+        }
+
+        if (start > 0) {
+            start -= 2;
+            end++;
+            return classSig.substring(start, end);
+        }
+        return classSig;
     }
 
     /**
