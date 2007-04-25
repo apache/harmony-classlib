@@ -115,4 +115,13 @@ public class Provider2Test extends junit.framework.TestCase {
 			// expected
 		}
 	}
+    
+    
+    /**
+     * @tests java.security.Provider#toString()
+     */
+    public void test_toString() {
+        // Regression for HARMONY-3734
+        assertEquals("provTest version 1.2", provTest.toString());
+    }
 }

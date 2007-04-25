@@ -46,9 +46,8 @@ public class Provider_ImplTest extends TestCase {
      * Class under test for String toString()
      */
     public final void testToString() {
-        assertEquals("Incorrect provider.toString()",
-                "MyProvider provider, Ver. 1.0 Provider for testing", p
-                        .toString());
+        assertEquals("Incorrect provider.toString()", "MyProvider version 1.0",
+                p.toString());
     }
  
     public final void testImplementsAlg() {

@@ -139,7 +139,7 @@ public abstract class Provider extends Properties {
 	 * @return a printable representation for the receiver.
 	 */
     public String toString() {
-        return name + " provider, Ver. " + version + " " + info; //$NON-NLS-1$ //$NON-NLS-2$
+        return name + " version " + version; //$NON-NLS-1$
     }
 
     public synchronized void clear() {
