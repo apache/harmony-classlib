@@ -461,6 +461,67 @@ public class CalendarTest extends junit.framework.TestCase {
         assertEquals(6017546357372606464L, cal.getTimeInMillis());
     }
 
+    /**
+     * @tests {@link java.util.Calendar#getActualMaximum(int)}
+     */
+    public void test_getActualMaximum_I() {
+    	Calendar c = new MockCalendar();
+    	assertEquals("should be equal to 0", 0, c.getActualMaximum(0));
+    }
+    
+    /**
+     * @tests {@link java.util.Calendar#getActualMinimum(int)}
+     */
+    public void test_getActualMinimum_I() {
+    	Calendar c = new MockCalendar();
+    	assertEquals("should be equal to 0", 0, c.getActualMinimum(0));
+    }
+
+
+    private class MockCalendar extends Calendar {
+
+		public MockCalendar() {
+			super();
+		}
+
+		@Override
+		public void add(int field, int value) {
+		}
+
+		@Override
+		protected void computeFields() {
+		}
+
+		@Override
+		protected void computeTime() {
+		}
+
+		@Override
+		public int getGreatestMinimum(int field) {
+			return 0;
+		}
+
+		@Override
+		public int getLeastMaximum(int field) {
+			return 0;
+		}
+
+		@Override
+		public int getMaximum(int field) {
+			return 0;
+		}
+
+		@Override
+		public int getMinimum(int field) {
+			return 0;
+		}
+
+		@Override
+		public void roll(int field, boolean increment) {
+		}
+    }
+
+
 	protected void setUp() {
 		defaultLocale = Locale.getDefault();
 		Locale.setDefault(Locale.US);
