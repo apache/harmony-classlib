@@ -325,9 +325,10 @@ cleanup:
     /* Commit the full bootstrap class path into the VMI */
     if (bootstrapClassPath)
     {
+        int shift=(bootstrapClassPath[0]==(char)hysysinfo_get_classpathSeparator() ? 1 : 0);
         vmiError rcSetProperty = (*vmInterface)->SetSystemProperty (vmInterface,
             BOOTCLASSPATH_PROPERTY,
-            bootstrapClassPath);
+            bootstrapClassPath + shift);
         if (VMI_ERROR_NONE != rcSetProperty)
         {
             returnCode = JNI_ERR;
