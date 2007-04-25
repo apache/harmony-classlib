@@ -37,6 +37,10 @@ EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 
+ifeq ($(RANLIB),)
+RANLIB=echo
+endif
+
 ifneq ($(HY_OS),freebsd)
 OSLIBS += -ldl
 endif
@@ -66,13 +70,13 @@ endif
 MDLLIBFILES = $(LIBPATH)libhycommon.a
 
 ifeq ($(HY_NO_THR),false)
-MDLLIBFILES += $(DLLPATH)libhythr.so
+MDLLIBFILES += $(DLLPATH)libhythr$(HY_SHLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_THR
 endif
 
 ifeq ($(HY_NO_SIG),false)
-MDLLIBFILES += $(DLLPATH)libhysig.so
+MDLLIBFILES += $(DLLPATH)libhysig$(HY_SHLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_SIG
 endif

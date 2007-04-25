@@ -27,10 +27,10 @@ BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
 	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
 
 MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
 
-DLLNAME=../libhyarchive.so
+DLLNAME=../libhyarchive$(HY_SHLIB_SUFFIX)
 EXPNAME=HYARCHIVE_0.1
 
 include $(HY_HDK)/build/make/rules.mk

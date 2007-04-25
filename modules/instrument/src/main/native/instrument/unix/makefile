@@ -27,9 +27,9 @@ BUILDFILES = \
 MDLLIBFILES += \
 	$(LIBPATH)libhyzip.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libvmi.so
+	$(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
 
-DLLNAME = ../libhyinstrument.so
+DLLNAME = ../libhyinstrument$(HY_SHLIB_SUFFIX)
 EXPNAME = HYINSTRUMENT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

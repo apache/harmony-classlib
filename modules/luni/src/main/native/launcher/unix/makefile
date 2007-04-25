@@ -23,7 +23,7 @@ BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
 	$(SHAREDSUB)libhlp.o
 ifeq ($(HY_NO_THR),false)
-MDLLIBFILES += $(DLLPATH)libhyprt.so
+MDLLIBFILES += $(DLLPATH)libhyprt$(HY_SHLIB_SUFFIX)
 else
 BUILDFILES += main_hlp.o
 endif

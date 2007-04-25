@@ -13,16 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#
-# Makefile for module 'hysig'
-#
+DEFINES += -DMACOSX -DMACOSX_PPC32 -DPPC32
+OPT += -fno-common
+OSLIBS = -lc -lm -ldl -liconv
+MDLLIBPREFIX =
+MDLLIBSUFFIX =
+EXERPATHPREFIX = 
+DLL_LD = $(CC)
+# TOFIX: exports?
+DLL_LDFLAGS = -dynamiclib -dynamic -install_name $(@F)
 
-include $(HY_HDK)/build/make/defines.mk
-
-CFLAGS += -fpic
-BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
-MDLLIBFILES =
-DLLNAME = ../libhysig$(HY_SHLIB_SUFFIX)
-EXPNAME = HYSIG_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+RANLIB=ranlib

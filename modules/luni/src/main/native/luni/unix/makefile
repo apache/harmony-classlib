@@ -37,10 +37,10 @@ BUILDFILES = \
 	OSNetworkSystemLinux.o hyenv.o
 
 MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
 
-DLLNAME = ../libhyluni.so
+DLLNAME = ../libhyluni$(HY_SHLIB_SUFFIX)
 EXPNAME = HYLUNI_0.1
 
 include $(HY_HDK)/build/make/rules.mk

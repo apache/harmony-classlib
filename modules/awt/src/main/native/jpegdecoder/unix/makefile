@@ -25,10 +25,10 @@ BUILDFILES = \
   libjpeg.a
 
 MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
 
-DLLNAME=../libjpegdecoder.so
+DLLNAME=../libjpegdecoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYJPEGDECODER_0.1
 
 CLEANFILES=jconfig.h

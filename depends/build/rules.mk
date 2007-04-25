@@ -25,6 +25,7 @@ all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
 $(LIBNAME): $(BUILDFILES)
 	$(AR) $(ARFLAGS) $@ $(BUILDFILES)
+	$(RANLIB) $@
 
 $(EXPFILE): exports.txt
 ifeq ($(HY_OS),aix)

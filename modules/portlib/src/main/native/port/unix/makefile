@@ -37,9 +37,9 @@ BUILDFILES += hysignal.o $(HY_PLATFORM)/hysignal_context.o
 endif
 
 ifeq ($(HY_NO_THR),true)
-MDLLIBFILES += $(LIBPATH)libhythr.so
+MDLLIBFILES += $(LIBPATH)libhythr$(HY_SHLIB_SUFFIX)
 endif
-DLLNAME = ../libhyprt.so
+DLLNAME = ../libhyprt$(HY_SHLIB_SUFFIX)
 EXPNAME = HYPRT_0.1
 
 # temp by geir - please ignore

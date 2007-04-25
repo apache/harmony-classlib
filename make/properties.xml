@@ -441,6 +441,7 @@ properties in preference to these:
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
+                <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
                 <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>

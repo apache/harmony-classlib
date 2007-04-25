@@ -25,11 +25,11 @@ INCLUDES += -I$(HY_HDK)/include/icu4c
 BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES += \
-	$(DLLPATH)libicuuc.so.34 \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+	$(DLLPATH)libicuuc$(HY_SHLIB_SUFFIX).34 \
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
 
-DLLNAME = ../libhytext.so
+DLLNAME = ../libhytext$(HY_SHLIB_SUFFIX)
 EXPNAME = HYTEXT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

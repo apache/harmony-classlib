@@ -110,7 +110,7 @@
           -->
         <copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
             <fileset dir="${hy.luni.src.main.native}/vmi">
-                <include name="libvmi.so"/>
+                <include name="libvmi${shlib.suffix}"/>
             </fileset>
         </copy>
     </target>

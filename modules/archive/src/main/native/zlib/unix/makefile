@@ -28,11 +28,13 @@ BUILDFILES = \
 	$(ZLIB_DIST)crc32.o $(ZLIB_DIST)deflate.o $(ZLIB_DIST)infback.o $(ZLIB_DIST)inffast.o \
 	$(ZLIB_DIST)inflate.o $(ZLIB_DIST)inftrees.o $(ZLIB_DIST)trees.o $(ZLIB_DIST)uncompr.o $(ZLIB_DIST)zutil.o
 
-DLLNAME = ../libhyzlib.so
+DLLNAME = ../libhyzlib$(HY_SHLIB_SUFFIX)
 EXPNAME = HYZLIB_0.1
 
 ifeq ($(DLL_LD),$(CC))
+ifneq ($(HY_OS),macosx)
 LDFLAGS += -Wl,-Bsymbolic
+endif
 endif
 
 include $(HY_HDK)/build/make/rules.mk

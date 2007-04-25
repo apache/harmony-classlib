@@ -28,7 +28,7 @@ MDLLIBFILES = \
 	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a
 
-DLLNAME = ../libhynio.so
+DLLNAME = ../libhynio$(HY_SHLIB_SUFFIX)
 EXPNAME = HYNIO_0.1
 
 include $(HY_HDK)/build/make/rules.mk
