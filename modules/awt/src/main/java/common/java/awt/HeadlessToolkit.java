@@ -39,6 +39,9 @@ import org.apache.harmony.awt.wtk.NativeEventQueue;
 import org.apache.harmony.awt.wtk.WindowFactory;
 
 public final class HeadlessToolkit extends ToolkitImpl {
+
+    private class EventMonitor {}
+    private final Object eventMonitor = new EventMonitor();
     
     @Override
     protected ButtonPeer createButton(Button a0) throws HeadlessException {
@@ -156,6 +159,11 @@ public final class HeadlessToolkit extends ToolkitImpl {
     @Override
     public ColorModel getColorModel() throws HeadlessException {
         throw new HeadlessException();
+    }
+
+    @Override
+    public final Object getEventMonitor() {
+        return eventMonitor;
     }
 
     @Override

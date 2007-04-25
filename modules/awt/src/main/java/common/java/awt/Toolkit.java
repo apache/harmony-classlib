@@ -1177,6 +1177,10 @@ public abstract class Toolkit {
         return wtk.getNativeEventQueue();
     }
 
+    Object getEventMonitor(){
+	return wtk.getNativeEventQueue().getEventMonitor();	
+    }
+
     /**
      * Returns a shared instance of implementation of org.apache.harmony.awt.wtk.NativeCursor
      * for current platform for
