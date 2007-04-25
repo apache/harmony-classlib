@@ -103,6 +103,16 @@ PROTOTYPE ((HyPortLibrary * portLib, void **vmOptionsTable, int argc,
 #define	DIR_SEPERATOR_STRING "/"
 #endif
 
+void
+printUsageMessage(HyPortLibrary * portLibrary)
+{
+  PORT_ACCESS_FROM_PORT (portLibrary);
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
+                  "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
+}
+
 /**
  * The actual main function wrapped in the standard GP-handler.
  * 
@@ -196,10 +206,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
      *  they thought they were running Java...
 	 */
 	if (argc <= 1) {
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
-                     "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
+      printUsageMessage(PORTLIB);
       goto bail;
     }
 
@@ -266,6 +273,11 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	/* Now ensure tools JAR is on classpath */
 	augmentToolsArgs(args->portLibrary, &argc, &argv);
 	classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
+  }
+
+  if (mainClass == NULL && !isStandaloneJar) {
+    printUsageMessage(PORTLIB);
+    goto bail;
   }
 
   /* Useful when debugging */
