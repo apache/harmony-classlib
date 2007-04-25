@@ -22,11 +22,8 @@ CPP = $(CC) -E
 AS = as
 AR = ar
 ARFLAGS = rcv
-ifneq ($(HY_OS),aix)
 DLL_LD = $(CC)
-else
-DLL_LD = $(LD)
-endif
+DLL_LDFLAGS = -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE)
 CXX_DLL_LD = $(CXX)
 STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
