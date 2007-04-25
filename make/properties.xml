@@ -58,6 +58,9 @@
     <condition property="is.linux">
         <os name="linux" />
     </condition>
+    <condition property="is.macosx">
+        <os name="mac os x" />
+    </condition>
     <condition property="is.freebsd">
         <os name="freebsd" />
     </condition>
@@ -85,6 +88,9 @@
     </condition>
     <condition property="hy.os" value="freebsd">
         <os name="freebsd" />
+    </condition>
+    <condition property="hy.os" value="macosx">
+        <isset property="is.macosx"/>
     </condition>
     <condition property="hy.os" value="aix">
         <os name="aix" />
@@ -116,7 +122,10 @@
         <equals arg1="ia64" arg2="${os.arch}"/>
     </condition>
     <condition property="is.ppc32">
-        <equals arg1="${os.arch}" arg2="ppc32" />
+        <or>
+            <equals arg1="${os.arch}" arg2="ppc32" />
+            <equals arg1="${os.arch}" arg2="ppc" />
+        </or>
     </condition>
     <condition property="is.ppc64">
         <equals arg1="${os.arch}" arg2="ppc64" />
@@ -158,6 +167,9 @@
             <isset property="is.32bit" />
         </and>
     </condition>
+    <condition property="hy.arch" value="ppc32">
+        <isset property="is.ppc32" />
+    </condition>
     <property name="hy.arch" value="${os.arch}" />
     
     <!-- Normalized platform name -->
@@ -171,6 +183,9 @@
 
     <condition property="shlib.suffix" value=".dll">
         <isset property="is.windows"/>
+    </condition>
+    <condition property="shlib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
     </condition>
     <property name="shlib.suffix" value=".so" />
 
@@ -204,15 +219,24 @@
     <condition property="png.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
+    <condition property="png.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
     <property name="png.home" value="/usr" />
 
     <condition property="lcms.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
+    <condition property="lcms.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
     <property name="lcms.home" value="/usr" />
 
     <condition property="jpeg.home" value="/usr/local">
         <isset property="is.freebsd"/>
+    </condition>
+    <condition property="jpeg.home" value="/sw">
+        <isset property="is.macosx"/>
     </condition>
     <property name="jpeg.home" value="/usr" />
     
@@ -285,6 +309,7 @@ Harmony platform properties:
   is.unix = ${is.unix}
   is.linux = ${is.linux}
   is.freebsd = ${is.freebsd}
+  is.macosx = ${is.macosx}
   is.aix = ${is.aix}
   is.32bit = ${is.32bit}
   is.64bit = ${is.64bit}
