@@ -125,6 +125,12 @@ JNIEXPORT jobjectArray JNICALL
                 famList[j] = (char*)malloc(sizeof(char) * len);
 
                 strncpy(famList[j], family, len);
+            } else {
+                /* 
+                 * TODO
+                 * We should add special handling for this case
+                 */
+                famList[j] = 0;
             }
         }
         XftFontSetDestroy (fs);
@@ -265,11 +271,6 @@ JNIEXPORT jlong JNICALL
         slant = XFT_SLANT_ROMAN;
     }
 
-    name = (*env)->GetStringUTFChars(env, jName, &iscopy);
-    if (jFaceStyle){
-        faceStyle = (FcChar8 *)(*env)->GetStringUTFChars(env, jFaceStyle, &iscopy);
-    }
-    
     fid=(*env)->GetFieldID(env, cls, "screen", "I");
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
@@ -277,29 +278,59 @@ JNIEXPORT jlong JNICALL
         return (jlong)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
-    
+
+    name = (*env)->GetStringUTFChars(env, jName, &iscopy);
+    if (jFaceStyle){
+        faceStyle = (FcChar8 *)(*env)->GetStringUTFChars(env, jFaceStyle, &iscopy);
+    }
+        
     /* Xft part */
     /* Create pattern */
     pattern = XftPatternCreate();
 
     if (!XftPatternAddString (pattern, XFT_FAMILY, name)){
+        if(name){
+            (*env)->ReleaseStringUTFChars(env, jName, name);
+        }
+        if(faceStyle){
+            (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+        }
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding family name to XFTPattern structure");
     }
 
+    /* We do not need name any more */
+    if(name){
+        (*env)->ReleaseStringUTFChars(env, jName, name);
+    }
+
     if (faceStyle && !XftPatternAddString (pattern, XFT_STYLE, faceStyle)){
+        if(faceStyle){
+            (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+        }
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding style name to XFTPattern structure");
     }
 
+    /* We do not need faceStyle any more */
+    if(faceStyle){
+        XftPatternDestroy (pattern);
+        (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+    }
+
     if (!XftPatternAddInteger(pattern, XFT_SLANT, slant)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font slant to XFTPattern structure");
     }
 
     if (!XftPatternAddInteger(pattern, XFT_WEIGHT, weight)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font weight to XFTPattern structure");
     }
 
     /* We set antialias mode for simple text rendering without antialiasing */
     if (!XftPatternAddBool(pattern, XFT_ANTIALIAS, False)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font antialias set to false to XFTPattern structure");
     }
 
@@ -314,20 +345,24 @@ JNIEXPORT jlong JNICALL
     fSize = (double)size / 96 * 72;
 
     if (!XftPatternAddDouble (pattern, XFT_SIZE, fSize)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font size to XFTPattern structure");
     }
 
 /*  if (!XftPatternAddBool (pattern, FC_HINTING, True)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font hinting set to false to XFTPattern structure");
     }
 */
 
     if (!XftPatternAddBool (pattern, XFT_RENDER, True)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font RENDER set to true to XFTPattern structure");
     }
 
 
     if (!XftPatternAddBool (pattern, FC_AUTOHINT, True)){
+        XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding font autohinting set to false to XFTPattern structure");
     }
         
@@ -358,13 +393,6 @@ JNIEXPORT jlong JNICALL
     if (!xftFnt){
         XftPatternDestroy (matchPattern);
         return (long)NULL;
-    }
-
-    if(name){
-        (*env)->ReleaseStringUTFChars(env, jName, name);
-    }
-    if(faceStyle){
-        (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
     }
 
     /* defining font type */
@@ -1287,7 +1315,6 @@ JNIEXPORT jint JNICALL
     FcStrSet *subdirs;
     FcStrList *list;
     jboolean result = TRUE;
-    dirName = (FcChar8*)((*env)->GetStringUTFChars(env, fName, &iscopy));
 
     /* get current congif */
     config = FcConfigGetCurrent();
@@ -1295,6 +1322,8 @@ JNIEXPORT jint JNICALL
     if (!config){
         return FALSE;
     }
+
+    dirName = (FcChar8*)((*env)->GetStringUTFChars(env, fName, &iscopy));
 
     list = FcConfigGetConfigDirs (config);
     set = FcFontSetCreate ();
@@ -1336,9 +1365,7 @@ JNIEXPORT jlong JNICALL
     FT_Error error;
     FT_Face face;
     FT_Bitmap ft_bitmap;
-    
-    GlyphBitmap *gbmp = (GlyphBitmap *)malloc(sizeof(GlyphBitmap));
-                                         
+                                             
     if (!font){
         return 0;
     }
@@ -1382,6 +1409,7 @@ JNIEXPORT jlong JNICALL
     ft_bitmap = glyph_bitmap->bitmap;
         
     
+    GlyphBitmap *gbmp = (GlyphBitmap *)malloc(sizeof(GlyphBitmap));
     gbmp->left = glyph_bitmap->left;
     gbmp->top = glyph_bitmap->top;
     gbmp->bitmap.rows = ft_bitmap.rows;
