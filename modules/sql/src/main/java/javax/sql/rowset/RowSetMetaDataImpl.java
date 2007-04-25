@@ -40,7 +40,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
     private static final int DEFAULT_COLUMN_COUNT = 4;
 
     private static final long serialVersionUID = 6893806403181801867L;
-
+        
     private int colCount;
 
     private ColInfo[] colInfo;
@@ -161,14 +161,30 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         colInfo[arrayIndex].columnLabel = label == null ? EMPTY_STRING : label;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setColumnName(int, String)
+     */
     public void setColumnName(int columnIndex, String columnName)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].columnName = columnName == null ? EMPTY_STRING
+                : columnName;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setSchemaName(int, String)
+     */
     public void setSchemaName(int columnIndex, String schemaName)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].schemaName = schemaName == null ? EMPTY_STRING
+                : schemaName;
     }
 
     public void setPrecision(int columnIndex, int precision)
@@ -190,13 +206,30 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setColumnType(int, int)
+     */
     public void setColumnType(int columnIndex, int SQLType) throws SQLException {
-        throw new NotImplementedException();
+        SqlUtil.validateType(SQLType);
+        
+        int arrayIndex = columnIndex - 1;        
+        checkColumnIndex(arrayIndex);        
+        colInfo[arrayIndex].colType = SQLType;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see javax.sql.RowSetMetaData#setColumnTypeName(int, String)
+     */
     public void setColumnTypeName(int columnIndex, String typeName)
             throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        colInfo[arrayIndex].colTypeName = typeName == null ? EMPTY_STRING
+                : typeName;
     }
 
     /**
@@ -282,12 +315,26 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         return colInfo[arrayIndex].columnLabel;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnName(int)
+     */
     public String getColumnName(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].columnName;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getSchemaName(int)
+     */
     public String getSchemaName(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].schemaName;
     }
 
     public int getPrecision(int columnIndex) throws SQLException {
@@ -306,12 +353,26 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnType(int)
+     */
     public int getColumnType(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].colType;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnTypeName(int)
+     */
     public String getColumnTypeName(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        int arrayIndex = columnIndex - 1;
+        checkColumnIndex(arrayIndex);
+        return colInfo[arrayIndex].colTypeName;
     }
 
     /**
@@ -345,8 +406,13 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         return colInfo[arrayIndex].definiteWritable; 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.ResultSetMetaData#getColumnClassName(int)
+     */    
     public String getColumnClassName(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return SqlUtil.getClassNameByType(getColumnType(columnIndex));
     }
 
     /**
@@ -369,5 +435,13 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         public boolean definiteWritable = true;
         
         public String columnLabel;
+
+        public String columnName;
+
+        public String schemaName = EMPTY_STRING;
+
+        public String colTypeName;
+
+        public int colType;
     }
 }

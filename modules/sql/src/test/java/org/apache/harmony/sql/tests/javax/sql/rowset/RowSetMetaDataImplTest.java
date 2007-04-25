@@ -2,6 +2,7 @@ package org.apache.harmony.sql.tests.javax.sql.rowset;
 
 
 import java.sql.SQLException;
+import java.sql.Types;
 
 import javax.sql.rowset.RowSetMetaDataImpl;
 import junit.framework.TestCase;
@@ -78,7 +79,44 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
-     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnLabel(int)
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnClassName(int)}
+     */
+    public void test_getColumnClassNameI() throws SQLException {
+        try {
+            metaDataImpl.getColumnClassName(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(12);
+        assertEquals("java.lang.String", metaDataImpl.getColumnClassName(12));
+        
+        metaDataImpl.setColumnTypeName(12, null);
+        assertEquals("java.lang.String", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.BLOB);
+        assertEquals("[B", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.FLOAT);
+        assertEquals("java.lang.Double", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.BIGINT);
+        assertEquals("java.lang.Long", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.BIT);
+        assertEquals("java.lang.Boolean", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.DECIMAL);
+        assertEquals("java.math.BigDecimal", metaDataImpl.getColumnClassName(12));
+        metaDataImpl.setColumnType(12, Types.TINYINT);
+        assertEquals("java.lang.Byte", metaDataImpl.getColumnClassName(12));
+        
+        try {
+            metaDataImpl.getColumnClassName(0);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnLabel(int)}
      */
     public void test_getColumnLabelI() throws SQLException {
         try {
@@ -102,6 +140,107 @@ public class RowSetMetaDataImplTest extends TestCase {
             // expected
         }
     }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnName(int)}
+     */
+    public void test_getColumnNameI() throws SQLException {
+        try {
+            metaDataImpl.getColumnName(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(13);
+        assertNull(metaDataImpl.getColumnName(12));
+        metaDataImpl.setColumnName(12, null);
+        assertEquals("", metaDataImpl.getColumnName(12));
+        metaDataImpl.setColumnName(12, "ColumnName");
+        assertEquals("ColumnName", metaDataImpl.getColumnName(12));
+        
+        try {
+            metaDataImpl.getColumnName(0);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnType(int)}
+     */
+    public void test_getColumnTypeI() throws SQLException {
+        try {
+            metaDataImpl.getColumnType(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(13);
+        metaDataImpl.setColumnType(13, Types.ARRAY);
+        assertEquals(Types.ARRAY, metaDataImpl.getColumnType(13));
+        
+        try {
+            metaDataImpl.getColumnType(14);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnTypeName(int)}
+     */
+    public void test_getColumnTypeNameI() throws SQLException {
+        try {
+            metaDataImpl.getColumnTypeName(223);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(21);
+        metaDataImpl.setColumnType(14, Types.BIGINT);
+        metaDataImpl.setColumnTypeName(14, null);
+        assertEquals("", metaDataImpl.getColumnTypeName(14));
+        metaDataImpl.setColumnTypeName(14, "haha");
+        assertEquals("haha", metaDataImpl.getColumnTypeName(14));
+        
+        try {
+            metaDataImpl.getColumnTypeName(22);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getSchemaName(int)}
+     */
+    public void test_getSchemaNameI() throws SQLException {
+        try {
+            metaDataImpl.getSchemaName(352);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(67);
+        metaDataImpl.setSchemaName(67, null);
+        assertEquals("", metaDataImpl.getSchemaName(67));
+        metaDataImpl.setSchemaName(67, "a \u0053");
+        assertEquals("a S", metaDataImpl.getSchemaName(67));
+        
+        try {
+            metaDataImpl.getSchemaName(Integer.MIN_VALUE);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
     
     /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isAutoIncrement(int)}
@@ -357,9 +496,35 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnName(int, String)}
+     */
+    public void test_setColumnNameILjava_lang_String() throws SQLException {
+        try {
+            metaDataImpl.setColumnName(1, null);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(4);
+        assertNull(metaDataImpl.getColumnName(1));
+        metaDataImpl.setColumnName(1, "ate dsW");
+        assertEquals("ate dsW", metaDataImpl.getColumnName(1));
+        metaDataImpl.setColumnName(1, null);
+        assertEquals("", metaDataImpl.getColumnName(1));
+        
+        try {
+            metaDataImpl.setColumnName(5, "exception");
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnLabel(int, String)}
      */
-    public void test_setColumnLabelIZ() throws SQLException {
+    public void test_setColumnLabelILjava_lang_String() throws SQLException {
         try {
             metaDataImpl.setColumnLabel(1, null);
             fail ("should throw SQLException");
@@ -378,6 +543,60 @@ public class RowSetMetaDataImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnType(int, int)}
+     */
+    public void test_setColumnTypeII() throws SQLException {
+       try {
+           metaDataImpl.setColumnType(1, Types.BIGINT);
+           fail ("should throw SQLException");
+       } catch (SQLException e) {
+           // expected
+       }
+       
+       metaDataImpl.setColumnCount(2);
+       assertEquals(0, metaDataImpl.getColumnType(1));
+       metaDataImpl.setColumnType(1, Types.CLOB);
+       assertEquals(Types.CLOB, metaDataImpl.getColumnType(1));
+       metaDataImpl.setColumnType(1, Types.BOOLEAN);
+       assertEquals(Types.BOOLEAN, metaDataImpl.getColumnType(1));
+       
+       try {
+           metaDataImpl.setColumnType(1, 66);
+           fail ("should throw SQLException");
+       } catch (SQLException e) {
+           // expected
+       }       
+       
+       try {
+           metaDataImpl.setColumnType(3, 58);
+           fail ("should throw SQLException");
+       } catch (SQLException e) {
+           // expected
+       }
+    } 
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnTypeName(int, String)}
+     */
+    public void test_setColumnTypeNameILjava_lang_String() throws SQLException {
+        try {
+            metaDataImpl.setColumnTypeName(1, "aa");
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertNull(metaDataImpl.getColumnTypeName(2));
+        metaDataImpl.setColumnTypeName(2, null);
+        assertEquals("", metaDataImpl.getColumnTypeName(2));
+        metaDataImpl.setColumnTypeName(2, "");
+        assertEquals("", metaDataImpl.getColumnTypeName(2));
+        metaDataImpl.setColumnTypeName(2, "java.lang.String");
+        assertEquals(0, metaDataImpl.getColumnType(2));
     }
     
     /**
@@ -400,6 +619,32 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         try {
             metaDataImpl.setCurrency(8, true);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setSchemaName(int, String)}
+     */
+    public void test_setSchemaNameILjava_lang_String() throws SQLException {
+        try {
+            metaDataImpl.setSchemaName(-12, "asw");
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(7);
+        assertEquals("", metaDataImpl.getSchemaName(3));
+        metaDataImpl.setSchemaName(3, "schema name");
+        assertEquals("schema name", metaDataImpl.getSchemaName(3));
+        metaDataImpl.setSchemaName(3, null);
+        assertEquals("", metaDataImpl.getSchemaName(3));
+        
+        try {
+            metaDataImpl.setSchemaName(Integer.MIN_VALUE, null);
             fail ("should throw SQLException");
         } catch (SQLException e) {
             // expected
