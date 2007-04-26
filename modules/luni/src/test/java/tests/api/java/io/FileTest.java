@@ -1812,6 +1812,7 @@ public class FileTest extends junit.framework.TestCase {
         dir.deleteOnExit();
 
         String longDirName = "abcdefghijklmnopqrstuvwx";// 24 chars
+        String newbase = new String(dir + File.separator);
         StringBuilder sb = new StringBuilder(dir + File.separator);
         StringBuilder sb2 = new StringBuilder(dir + File.separator);
         
@@ -1830,7 +1831,7 @@ public class FileTest extends junit.framework.TestCase {
                     dir.mkdir() && dir.exists());
             dir.deleteOnExit();
         }
-        
+        dir = new File(sb2.toString());
         // Test make many paths
         while (dir.getCanonicalPath().length() < 256) {
             sb2.append(0);
@@ -1839,6 +1840,25 @@ public class FileTest extends junit.framework.TestCase {
                     dir.mkdir() && dir.exists());
             dir.deleteOnExit();
         }     
+        
+        // Regression test for HARMONY-3656
+        String []ss = {
+                "dir\u3400",
+                "abc",
+                "abc@123",
+                "!@#$%^&",
+                "~\u4E00!\u4E8C@\u4E09$",
+                "\u56DB\u4E94\u516D",
+                "\u4E03\u516B\u4E5D"
+        };
+        for (int i=0; i<ss.length; i++)
+        {
+            dir = new File(newbase, ss[i]);
+            assertTrue("mkdir " + dir.getCanonicalPath() + " failed",
+                    dir.mkdir() && dir.exists() 
+                    && dir.getCanonicalPath().equals(newbase + ss[i]));
+            dir.deleteOnExit();
+        }
     }
 
 	/**

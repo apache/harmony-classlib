@@ -35,6 +35,8 @@
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 
 static I_32 findError (I_32 errorCode);
+void convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
+	     wchar_t **pathW);
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -87,7 +89,10 @@ I_32 VMCALL
 hyfile_attr (struct HyPortLibrary * portLibrary, const char *path)
 {
   DWORD result;
-  result = GetFileAttributes ((LPCTSTR) path);
+  wchar_t *pathW;
+  convert_path_to_unicode(portLibrary, path, &pathW);
+  result = GetFileAttributesW ((LPCWSTR) pathW);
+  portLibrary->mem_free_memory(portLibrary, pathW);
   if (result == 0xFFFFFFFF)
     {
       result = GetLastError ();
@@ -327,32 +332,21 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 
 #undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION hyfile_mkdir
-/**
- * Create a directory.
- *
- * @param[in] portLibrary The port library
- * @param[in] path Directory to be created.
- *
- * @return 0 on success, -1 on failure.
- * @note Assumes all components of path up to the last directory already exist. 
- * @internal @todo return negative portable return code on failure.
- */
-I_32 VMCALL
-hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
+#define CDEV_CURRENT_FUNCTION convert_path_to_unicode
+
+void
+convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
+	     wchar_t **pathW)
 {
-	int returnVar=0;
 	int len = strlen(path);
-    //If the length is longer than 248, unicode format should be used to CreateDirectroy.
-    //"." and ".." need be processed in the unicode format.
-    if(len >= 248){
+	int wlen;
     	char *canonicalpath;
     	int srcArrayCount=0;
     	int destArrayCount=0;
     	int slashCount=0; //record how many slashes it met.
     	int dotsCount=0; //record how many dots following a separator.
     	int *slashStack; //record position of every separator.
-        slashStack = portLibrary->mem_allocate_memory(portLibrary, len);
+        slashStack = portLibrary->mem_allocate_memory(portLibrary, len*sizeof(int));
         canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len+5);
 
         strcpy(canonicalpath,"\\\\?\\");
@@ -388,13 +382,34 @@ hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
         }
         
         canonicalpath[destArrayCount]='\0';
-        returnVar = CreateDirectory (canonicalpath, 0);
-        
+        wlen = MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, 0);
+        *pathW = portLibrary->mem_allocate_memory(portLibrary, wlen*sizeof(wchar_t));
+        MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, wlen);
         portLibrary->mem_free_memory(portLibrary, canonicalpath);
         portLibrary->mem_free_memory(portLibrary, slashStack);
-    }else{
-        returnVar = CreateDirectory (path, 0);
-    }
+}
+
+#undef CDEV_CURRENT_FUNCTION
+
+#define CDEV_CURRENT_FUNCTION hyfile_mkdir
+/**
+ * Create a directory.
+ *
+ * @param[in] portLibrary The port library
+ * @param[in] path Directory to be created.
+ *
+ * @return 0 on success, -1 on failure.
+ * @note Assumes all components of path up to the last directory already exist. 
+ * @internal @todo return negative portable return code on failure.
+ */
+I_32 VMCALL
+hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
+{
+	int returnVar=0;
+	wchar_t *pathW;
+	convert_path_to_unicode(portLibrary, path, &pathW);
+	returnVar = CreateDirectoryW (pathW, 0);
+	portLibrary->mem_free_memory(portLibrary, pathW);
 
 	if (returnVar)
 	{
@@ -759,20 +774,25 @@ hyfile_unlink (struct HyPortLibrary * portLibrary, const char *path)
 I_32 VMCALL
 hyfile_unlinkdir (struct HyPortLibrary * portLibrary, const char *path)
 {
+  wchar_t *pathW;
+  convert_path_to_unicode(portLibrary, path, &pathW);
+
   /* should be able to delete read-only dirs, so we set the file attribute back to normal */
-  if (0 == SetFileAttributes (path, FILE_ATTRIBUTE_NORMAL))
+  if (0 == SetFileAttributesW (pathW, FILE_ATTRIBUTE_NORMAL))
     {
       I_32 error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error, findError (error));	/* continue */
     }
 
-  if (RemoveDirectory (path))
+  if (RemoveDirectoryW (pathW))
     {
+      portLibrary->mem_free_memory(portLibrary, pathW);
       return 0;
     }
   else
     {
       I_32 error = GetLastError ();
+      portLibrary->mem_free_memory(portLibrary, pathW);
       portLibrary->error_set_last_error (portLibrary, error,
 					 findError (error));
       return -1;
