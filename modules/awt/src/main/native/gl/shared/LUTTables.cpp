@@ -21,6 +21,7 @@
  */
  
 #include "LUTTables.h"
+#include <string.h>
 
 unsigned char mulLUT[256][256];  /* Multiply Luckup table */
 unsigned char divLUT[256][256];  /* Divide Luckup table   */
@@ -41,7 +42,8 @@ void init_mulLUT(){
 void init_divLUT(){
     int i, j;
     if(divLUT_inited) return;
-    for(i = 0; i < 256; i++){
+    memset(divLUT[0], 0, 256);
+    for(i = 1; i < 256; i++){
         for(j = 0; j <= i; j++){
             divLUT[i][j] = (int)(((float)j) / i * 255 + 0.5);
         }
