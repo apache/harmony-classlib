@@ -1,10 +1,16 @@
 package org.apache.harmony.sql.tests.javax.sql.rowset;
 
 
+import java.io.Serializable;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
 import javax.sql.rowset.RowSetMetaDataImpl;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -16,11 +22,32 @@ public class RowSetMetaDataImplTest extends TestCase {
     private static RowSetMetaDataImpl metaDataImpl = null;
     
     /**
+     * This comparator is designed for RowSetMetaDataImpl objects whose
+     * colCount has already been set. Other objects may fail when using it.
+     */
+    private final static SerializableAssert ROWSET_METADATA_COMPARATOR = new SerializableAssert() {
+
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+            try {
+                RowSetMetaDataImpl initialImpl = (RowSetMetaDataImpl) initial;
+                RowSetMetaDataImpl deserializedImpl = (RowSetMetaDataImpl) deserialized;
+                
+                Assert.assertEquals(initialImpl.getColumnCount(), deserializedImpl.getColumnCount());                
+                Assert.assertEquals(initialImpl.getColumnType(1), deserializedImpl.getColumnType(1));
+            } catch (SQLException e) {
+                fail();
+            }
+        }
+    };
+    
+    /**
      * @tests javax.sql.rowset.RowSetMetaDataImpl#RowSetMetaDataImpl()
      */
     public void test_Constructor() {
         assertNotNull(metaDataImpl);        
     }
+    
     
     /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnCount()}
@@ -40,7 +67,7 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         metaDataImpl.setColumnCount(Integer.MAX_VALUE);
         assertFalse(metaDataImpl.isAutoIncrement(4));
-        assertEquals(Integer.MAX_VALUE, metaDataImpl.getColumnCount());
+        //assertEquals(Integer.MAX_VALUE, metaDataImpl.getColumnCount());
         // RI throws ArrayIndexOutOfBoundsException here, which is a RI's bug
         try {
             metaDataImpl.isAutoIncrement(5);
@@ -79,6 +106,32 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getCatalogName(int)}
+     */
+    public void test_getCatalogNameI() throws SQLException {
+        try {
+            metaDataImpl.getCatalogName(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertEquals("", metaDataImpl.getCatalogName(1));
+        metaDataImpl.setCatalogName(1, "catalog");
+        assertEquals("catalog", metaDataImpl.getCatalogName(1));
+        metaDataImpl.setCatalogName(1, null);
+        assertEquals("", metaDataImpl.getCatalogName(1));
+        
+        try {
+            metaDataImpl.getCatalogName(Integer.MIN_VALUE);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnClassName(int)}
      */
     public void test_getColumnClassNameI() throws SQLException {
@@ -109,6 +162,30 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         try {
             metaDataImpl.getColumnClassName(0);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getColumnDisplaySize(int)}
+     */
+    public void test_getColumnDisplaySizeI() throws SQLException {
+        try {
+            metaDataImpl.getColumnDisplaySize(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertEquals(0, metaDataImpl.getColumnDisplaySize(1));
+        metaDataImpl.setColumnDisplaySize(1, 4);
+        assertEquals(4, metaDataImpl.getColumnDisplaySize(1));
+        
+        try {
+            metaDataImpl.getColumnDisplaySize(-32);
             fail ("should throw SQLException");
         } catch (SQLException e) {            
             // expected
@@ -217,6 +294,54 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getPrecision(int)}
+     */
+    public void test_getPrecisionI() throws SQLException {
+        try {
+            metaDataImpl.getPrecision(2);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        assertEquals(0, metaDataImpl.getPrecision(1));
+        metaDataImpl.setPrecision(1, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, metaDataImpl.getPrecision(1));
+        
+        try {
+            metaDataImpl.getPrecision(3);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getSchemaName(int)}
+     */
+    public void test_getScaleI() throws SQLException {
+        try {
+            metaDataImpl.getScale(1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertEquals(0, metaDataImpl.getScale(2));
+        metaDataImpl.setScale(2, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, metaDataImpl.getScale(2));
+        
+        try {
+            metaDataImpl.getScale(3);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getSchemaName(int)}
      */
     public void test_getSchemaNameI() throws SQLException {
@@ -241,6 +366,31 @@ public class RowSetMetaDataImplTest extends TestCase {
         }
     }
     
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#getTableName(int)}
+     */
+    public void test_getTableNameI() throws SQLException {
+        try {
+            metaDataImpl.getTableName(2);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {            
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertEquals("", metaDataImpl.getTableName(1));
+        assertEquals("", metaDataImpl.getTableName(2));
+        metaDataImpl.setTableName(1, "tableName");
+        assertEquals("tableName", metaDataImpl.getTableName(1));
+        assertEquals("", metaDataImpl.getTableName(2));
+        
+        try {
+            metaDataImpl.getTableName(Integer.MIN_VALUE);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
     
     /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isAutoIncrement(int)}
@@ -329,6 +479,30 @@ public class RowSetMetaDataImplTest extends TestCase {
         
         metaDataImpl.setColumnCount(6);
         assertFalse(metaDataImpl.isCurrency(1));
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#isNullable(int)}
+     */
+    public void test_isNullableI() throws SQLException {
+        try {
+            metaDataImpl.isNullable(1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        assertEquals(ResultSetMetaData.columnNoNulls, metaDataImpl.isNullable(1));
+        metaDataImpl.setNullable(1, ResultSetMetaData.columnNullableUnknown);
+        assertEquals(ResultSetMetaData.columnNullableUnknown, metaDataImpl.isNullable(1));
+        
+        try {
+            metaDataImpl.isNullable(3);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
     }
     
     /**
@@ -496,6 +670,62 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setCatalogName(int, String)}
+     */
+    public void test_setCatalogNameILjava_lang_String() throws SQLException {
+        try {
+            metaDataImpl.setCatalogName(1, "test");
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        metaDataImpl.setCatalogName(1, "AbC");
+        assertEquals("AbC", metaDataImpl.getCatalogName(1));
+        metaDataImpl.setCatalogName(1, null);
+        assertEquals("", metaDataImpl.getCatalogName(1));
+        
+        try {
+            metaDataImpl.setCatalogName(10, null);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnDisplaySize(int, int)}
+     */
+    public void test_setColumnDisplaySizeII() throws SQLException {
+        try {
+            metaDataImpl.setColumnDisplaySize(1, 2);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        assertEquals(0, metaDataImpl.getColumnDisplaySize(1));
+        metaDataImpl.setColumnDisplaySize(1, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, metaDataImpl.getColumnDisplaySize(1));
+        
+        try {
+            metaDataImpl.setColumnDisplaySize(2, 0);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        try {
+            metaDataImpl.setColumnDisplaySize(2, Integer.MIN_VALUE);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setColumnName(int, String)}
      */
     public void test_setColumnNameILjava_lang_String() throws SQLException {
@@ -626,6 +856,90 @@ public class RowSetMetaDataImplTest extends TestCase {
     }
     
     /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setNullable(int, int)}
+     */
+    public void test_setNullableII() throws SQLException {
+        try {
+            metaDataImpl.setNullable(21, 1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        assertEquals(0, metaDataImpl.isNullable(1));
+        metaDataImpl.setNullable(1, ResultSetMetaData.columnNullable);
+        assertEquals(ResultSetMetaData.columnNullable, metaDataImpl.isNullable(1));
+        
+        try {
+            metaDataImpl.setNullable(2, ResultSetMetaData.columnNullableUnknown);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        try {
+            metaDataImpl.setNullable(2, 3);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setPrecision(int, int)}
+     */
+    public void test_setPrecisionII() throws SQLException {
+        try {
+            metaDataImpl.setPrecision(12, 1);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        metaDataImpl.setPrecision(1, 0);
+        assertEquals(0, metaDataImpl.getPrecision(1));
+        
+        try {
+            metaDataImpl.setPrecision(12, Integer.MIN_VALUE);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setScale(int, int)}
+     */
+    public void test_setScaleII() throws SQLException {
+        try {
+            metaDataImpl.setScale(34, 5);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(1);
+        metaDataImpl.setScale(1, 252);
+        assertEquals(252, metaDataImpl.getScale(1));
+        
+        try {
+            metaDataImpl.setScale(1, -23);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        try {
+            metaDataImpl.setScale(2, Integer.MIN_VALUE);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
      * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setSchemaName(int, String)}
      */
     public void test_setSchemaNameILjava_lang_String() throws SQLException {
@@ -701,6 +1015,52 @@ public class RowSetMetaDataImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.RowSetMetaDataImpl#setTableName(int, String)}
+     */
+    public void test_setTableNameILjava_lang_String() throws SQLException {
+        try {
+            metaDataImpl.setTableName(34, null);
+            fail ("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        
+        metaDataImpl.setColumnCount(2);
+        metaDataImpl.setTableName(2, "test");
+        assertEquals("test", metaDataImpl.getTableName(2));
+        metaDataImpl.setTableName(2, null);
+        assertEquals("", metaDataImpl.getTableName(2));
+        
+        try {
+            metaDataImpl.setTableName(-3, null);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void test_serialization_self() throws Exception {
+       RowSetMetaDataImpl impl = new RowSetMetaDataImpl();
+       impl.setColumnCount(1);
+       impl.setColumnType(1, Types.CHAR);
+       SerializationTest.verifySelf(impl, ROWSET_METADATA_COMPARATOR);
+    }
+    
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void test_serialization_compatibility() throws Exception {
+        RowSetMetaDataImpl impl = new RowSetMetaDataImpl();
+        impl.setColumnCount(2);
+        impl.setColumnType(1, Types.ARRAY);
+        impl.setColumnType(2, Types.BIGINT);
+        SerializationTest.verifyGolden(this, impl, ROWSET_METADATA_COMPARATOR);
     }
 
     @Override
