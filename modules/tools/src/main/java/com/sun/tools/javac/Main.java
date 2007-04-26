@@ -17,14 +17,25 @@
 
 package com.sun.tools.javac;
 
+import java.io.PrintWriter;
+import org.apache.harmony.tools.toolutils.Util;
+
 public class Main {
 
     public Main() {
         super();
     }
 
-    public int compile(String[] args) {
+    public static int compile(String[] args) {
+        return compile(args, Util.getDefaultWriter(System.out), Util.getDefaultWriter(System.err));
+    }
+
+    public static int compile(String[] args, PrintWriter out) {
+        return compile(args, out, out);
+    }
+
+    public static int compile(String[] args, PrintWriter out, PrintWriter err) {
         org.apache.harmony.tools.javac.Main hyMain = new org.apache.harmony.tools.javac.Main();
-        return hyMain.compile(args) ? 0 : 1;
+        return hyMain.compile(args, out, err) ? 0 : 1;
     }
 }

@@ -18,8 +18,19 @@
 package org.apache.harmony.tests.tools.javac;
 
 import junit.framework.TestCase;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import com.sun.tools.javac.Main;
 
 public class MainTest extends TestCase {
+
+    public void test_main() throws Exception {
+        StringWriter out = new StringWriter();
+        String testStr = "no_this_test.java";
+        Main.compile(new String[]{testStr}, new PrintWriter(out));
+        assertTrue("The output should have " + testStr, out.toString().contains(testStr));
+    }
 
 	public void test_nothing() {
 		// bogus test

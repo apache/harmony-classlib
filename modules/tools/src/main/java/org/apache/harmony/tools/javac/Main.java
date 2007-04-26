@@ -17,6 +17,9 @@
 
 package org.apache.harmony.tools.javac;
 
+import java.io.PrintWriter;
+import org.apache.harmony.tools.toolutils.Util;
+
 /**
  * This is the entry point for the javac tool.
  */
@@ -45,9 +48,25 @@ public final class Main {
      */
     public boolean compile(String[] args) {
 
+        return compile(args,Util.getDefaultWriter(System.out), Util.getDefaultWriter(System.err));
+    }
+
+    /**
+     * Invokes the ECJ compiler with the given arguments.
+     * 
+     * @param args
+     *            the arguments passed through to the compiler
+     * @param out
+     *            get the output from System.out
+     * @param err
+     *            get the output from System.err
+     * @return true on compilation success, false on failure
+     */
+    public boolean compile(String[] args, PrintWriter out, PrintWriter err) {
+
         /* Give me something to do */
         if (args == null || args.length == 0) {
-            new Compiler().printUsage();
+            new Compiler(out, err).printUsage();
             return false;
         }
 
@@ -55,7 +74,7 @@ public final class Main {
         String[] newArgs = addBootclasspath(args);
 
         /* Invoke the compiler */
-        return Compiler.main(newArgs);
+        return Compiler.main(newArgs, out, err);
     }
 
     /*
