@@ -275,7 +275,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
   }
 
-  if (mainClass == NULL && !isStandaloneJar) {
+  if (mainClass == NULL && !isStandaloneJar && !versionFlag) {
     printUsageMessage(PORTLIB);
     goto bail;
   }
