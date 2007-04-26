@@ -435,7 +435,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         while (true) {
             Object l = ois.readObject();
 
-            if (l != null && l.equals("EOS")) { //$NON-NLS-1$
+            if ("EOS".equals(l)) { //$NON-NLS-1$
                 coll.add(l);
             } else {
                 break;

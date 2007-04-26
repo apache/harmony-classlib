@@ -2163,5 +2163,16 @@ public class BeanContextSupportTest extends TestCase {
         p.addPropertyChangeListener(s);
         p.firePropertyChange(null, new Object(), new Object());
     }
+    
+    //Regression Test for HARMONY-3757
+    public void testSelfSerializatoin() throws Exception {
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new ObjectOutputStream(baos).writeObject(beanContextSupport);
+        ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        Object obj = oin.readObject();
+        assertTrue(obj instanceof BeanContextSupport);
+    }
 
 }
