@@ -122,10 +122,11 @@ static BOOL writeMemBuffer(LPVOID f, size_t size, LPBYTE Data) {
 
   if (size == 0) return TRUE;
        
-  if (memBuffer != NULL) 
+  if (memBuffer != NULL) {
     CopyMemory(memBuffer->CurrPtr, Data, size);
     memBuffer->CurrPtr += size;
-
+  }
+  
   return TRUE;
 }
 
@@ -135,9 +136,10 @@ static size_t zeroMemBuffer(LPVOID f, size_t size) {
 
   if (size == 0) return TRUE;
        
-  if (memBuffer != NULL) 
+  if (memBuffer != NULL) {
     ZeroMemory(memBuffer->CurrPtr, size);
     memBuffer->CurrPtr += size;
+  }
 
   return size;
 }
