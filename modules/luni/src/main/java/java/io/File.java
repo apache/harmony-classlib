@@ -394,7 +394,7 @@ public class File implements Serializable, Comparable<File> {
             security.checkDelete(path);
         }
 
-        DeleteOnExit.addFile(Util.toUTF8String(properPath(true)));
+        DeleteOnExit.addFile(Util.toString(properPath(true)));
     }
 
     /**
@@ -450,7 +450,7 @@ public class File implements Serializable, Comparable<File> {
      */
     public String getAbsolutePath() {
         byte[] absolute = properPath(false);
-        return Util.toUTF8String(absolute);
+        return Util.toString(absolute);
     }
 
     /**
@@ -575,7 +575,7 @@ public class File implements Serializable, Comparable<File> {
         newResult[newLength] = 0;
         newResult = getCanonImpl(newResult);
         newLength = newResult.length;
-        return Util.toUTF8String(newResult, 0, newLength);
+        return Util.toString(newResult, 0, newLength);
     }
 
     /**
@@ -1175,7 +1175,7 @@ public class File implements Serializable, Comparable<File> {
         if (properPath != null) {
             return properPath;
         }
-        byte[] pathBytes = Util.getUTF8Bytes(path);
+        byte[] pathBytes = Util.getBytes(path);
         if (isAbsoluteImpl(pathBytes)) {
             return properPath = pathBytes;
         }
@@ -1191,32 +1191,23 @@ public class File implements Serializable, Comparable<File> {
             return properPath;
         }
         if (path.length() == 0) {
-            return properPath = Util.getUTF8Bytes(userdir);
+            return properPath = Util.getBytes(userdir);
         }
         int length = userdir.length();
-        
-        // Handle windows-like path
         if (path.charAt(0) == '\\') {
             if (length > 1 && userdir.charAt(1) == ':') {
-                return properPath = Util.getUTF8Bytes(userdir.substring(0, 2)
+                return properPath = Util.getBytes(userdir.substring(0, 2)
                         + path);
-            } else {
-                path = path.substring(1);
             }
-        }
-        
-        // Handle separator
-        String result  = userdir;
-        if (userdir.charAt(length - 1) != separatorChar) {
-            if (path.charAt(0) != separatorChar) {
-                result += separator;
+            if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
+                return properPath = Util.getBytes(userdir + path.substring(1));
             }
-        } else if (path.charAt(0) == separatorChar) {
-            result = result.substring(0, length - 2);
-
+            return properPath = Util.getBytes(userdir + path);
         }
-        result += path;
-        return properPath = Util.getUTF8Bytes(result);        
+        if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
+            return properPath = Util.getBytes(userdir + path);
+        }
+        return properPath = Util.getBytes(userdir + separator + path);
     }
 
     private static native byte[] properPathImpl(byte[] path);
