@@ -36,7 +36,8 @@
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.maxmem" value="384M" />
 
-    <condition property="hy.javac.debug" value="on" else="off">
+    <!-- Temporarily always include class file debug info -->
+    <condition property="hy.javac.debug" value="on" else="on">
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
