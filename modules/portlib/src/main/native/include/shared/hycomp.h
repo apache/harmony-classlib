@@ -127,6 +127,13 @@ typedef double SYS_FLOAT;
 #define PLATFORM_LINE_DELIMITER "\012"
 #define DIR_SEPARATOR '/'
 #define DIR_SEPARATOR_STR "/"
+#define PATH_SEPARATOR ':'
+#define PATH_SEPARATOR_STR ":"
+#if defined(AIX)
+#define LIBPATH_ENV_VAR "LIBPATH"
+#else
+#define LIBPATH_ENV_VAR "LD_LIBRARY_PATH"
+#endif
 
 /**
  * No priorities on Linux
@@ -155,6 +162,9 @@ typedef double SYS_FLOAT;
 
 #define DIR_SEPARATOR '\\'
 #define DIR_SEPARATOR_STR "\\"
+#define PATH_SEPARATOR ';'
+#define PATH_SEPARATOR_STR ";"
+#define LIBPATH_ENV_VAR "PATH"
 
 /* Modifications for the Alpha running WIN-NT */
 #if defined(_ALPHA_)

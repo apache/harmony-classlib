@@ -171,12 +171,6 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
                                 HyStringBuffer ** finalJavaLibraryPath,
                                 char *argv0)
 {
-#if defined(WIN32)
-#define ENV_PATH "PATH"
-#else
-#define ENV_PATH "LD_LIBRARY_PATH"
-#endif
-
   HyStringBuffer *javaLibraryPath = NULL;
   char *exeName = NULL;
   IDATA rc = -1;
@@ -206,7 +200,7 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
       exeName = NULL;
     }
 
-  envSize = hysysinfo_get_env (ENV_PATH, NULL, 0);
+  envSize = hysysinfo_get_env (LIBPATH_ENV_VAR, NULL, 0);
   if (envSize > 0)
     {
       if (envSize >= ENV_BUFFER_SIZE)
@@ -214,12 +208,12 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
           envResult = hymem_allocate_memory (envSize + 1);
           if (!envResult)
             goto done;
-          hysysinfo_get_env (ENV_PATH, envResult, envSize);
+          hysysinfo_get_env (LIBPATH_ENV_VAR, envResult, envSize);
         }
       else
         {
           envSize = -1;         /* make it -1 so we don't free the buffer */
-          hysysinfo_get_env (ENV_PATH, envBuffer, ENV_BUFFER_SIZE);
+          hysysinfo_get_env (LIBPATH_ENV_VAR, envBuffer, ENV_BUFFER_SIZE);
           envResult = envBuffer;
         }
     }

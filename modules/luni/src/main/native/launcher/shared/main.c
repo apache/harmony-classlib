@@ -1058,13 +1058,8 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
   main_get_executable_name (argv[0], &exeName);
 #endif /* HY_NO_THR */
 
-#if defined(WIN32)
-  variableName = "PATH";
-  separator = ";";
-#else
-  variableName = "LD_LIBRARY_PATH";
-  separator = ":";
-#endif
+  variableName = LIBPATH_ENV_VAR;
+  separator = PATH_SEPARATOR_STR;
 
   oldPath = getenv (variableName);
   if (!oldPath) {
