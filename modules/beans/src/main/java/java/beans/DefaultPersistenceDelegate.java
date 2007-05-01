@@ -17,6 +17,7 @@
 
 package java.beans;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.harmony.beans.internal.nls.Messages;
@@ -165,23 +166,29 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        if (oldInstance != null) {
+        if (oldInstance != null && constructorPropertyNames != null
+                && constructorPropertyNames.length > 0) {
+
+            //Get explicitly declared equals method.
+            Method equalsMethod = null;
             try {
-                Method equalsMethod = oldInstance.getClass().getMethod(
+                equalsMethod = oldInstance.getClass().getDeclaredMethod(
                         "equals", new Class[] { Object.class }); //$NON-NLS-1$
 
-                if (equalsMethod != null) {
-                    Object result = equalsMethod.invoke(oldInstance,
-                            new Object[] { newInstance });
+            } catch (NoSuchMethodException e) {
+                // does not declare explicitly an equals method.
+            }
 
+            if (equalsMethod != null) {
+                    Object result;
+                    try {
+                        result = equalsMethod.invoke(oldInstance,
+                                new Object[] { newInstance });
+                    } catch (Exception e) {
+                        //should not happen here.
+                        throw new Error(e);
+                    }
                     return ((Boolean) result).booleanValue();
-                }
-            } catch (Exception e) {
-                // XXX bad style of logging
-                System.out.println(Messages.getString(
-                        "beans.02", e.getClass(), e.getMessage())); //$NON-NLS-1$
-
-                return false;
             }
         }
         return super.mutatesTo(oldInstance, newInstance);
