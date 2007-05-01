@@ -34,8 +34,6 @@
 
 #define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
 
-#define HY_PATH_SLASH DIR_SEPARATOR
-
 /* Tools launchers will invoke HY_TOOLS_PACKAGE+"."+<execname>+"."+HY_TOOLS_MAIN_TYPE */
 #define HY_TOOLS_PACKAGE "org.apache.harmony.tools"
 #define HY_TOOLS_MAIN_TYPE "Main"
@@ -95,14 +93,6 @@ PROTOTYPE ((HyPortLibrary * portLib, void **vmOptionsTable, int argc,
             HyStringBuffer ** javaLibraryPathInd,
             char *vmdllsubdir, int *vmOptionsCount));
 
-#if defined(WIN32)
-#define	DIR_SEPERATOR '\\'
-#define	DIR_SEPERATOR_STRING "\\"
-#else
-#define	DIR_SEPERATOR '/'
-#define	DIR_SEPERATOR_STRING "/"
-#endif
-
 void
 printUsageMessage(HyPortLibrary * portLibrary)
 {
@@ -161,7 +151,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   hysysinfo_get_executable_name (argv[0], &exeName);
 
   /* Pick out the end of the exe path, and start of the basename */
-  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  exeBaseName = strrchr(exeName, DIR_SEPARATOR);
   if (exeBaseName == NULL) {
 	  endPathPtr = exeBaseName = exeName;
   } else {
@@ -321,7 +311,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     vmiPath =
     hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) +
                             strlen (vmdll) +
-                            strlen (DIR_SEPERATOR_STRING) + 1);
+                            strlen (DIR_SEPARATOR_STR) + 1);
     if (vmiPath == NULL)
     {
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
@@ -335,7 +325,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     strcpy (newPathToAdd, exeName);
     strcat (newPathToAdd, vmdllsubdir);
     strcpy (vmiPath, newPathToAdd);
-    strcat (vmiPath, DIR_SEPERATOR_STRING);
+    strcat (vmiPath, DIR_SEPARATOR_STR);
     strcat (vmiPath, vmdll);
 
 #ifndef HY_NO_THR
@@ -814,7 +804,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   PORT_ACCESS_FROM_PORT (portLibrary);
   /* get the path to the executable */
   hysysinfo_get_executable_name (argv[0], &exeName);
-  endPathPtr = strrchr (exeName, DIR_SEPERATOR);
+  endPathPtr = strrchr (exeName, DIR_SEPARATOR);
   endPathPtr[0] = '\0';
 
   subst_values[0] = exeName;
@@ -1529,7 +1519,7 @@ main_addVMDirToPath(int argc, char **argv, char **envp)
   main_get_executable_name (argv[0], &exeName);
 
   /* Pick out the end of the exe path, and start of the basename */
-  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  exeBaseName = strrchr(exeName, DIR_SEPARATOR);
   if (exeBaseName == NULL) {
     endPathPtr = exeBaseName = exeName;
   } else {
