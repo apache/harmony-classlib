@@ -46,7 +46,7 @@
 #define PLATFORM_STRNICMP strnicmp
 #endif
 
-#if (LINUX) || defined(FREEBSD) || defined(AIX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX)
 #define PLATFORM_STRNICMP strncasecmp
 #endif
 
