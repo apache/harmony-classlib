@@ -67,19 +67,9 @@ public class Beans {
                 .getSystemResourceAsStream(beanResourceName) : cls
                 .getResourceAsStream(beanResourceName);
 
-        if (is != null) {
-            try {
-                ObjectInputStream ois = (cls == null) ? new ObjectInputStream(
-                        is) : new CustomizedObjectInputStream(is, cls);
-
-                try {
-                    result = ois.readObject();
-                } catch (ClassNotFoundException cnfe) {
-                    // skip exception
-                }
-            } catch (IOException ioe) {
-                // skip exception
-            }
+        if (is != null) {            
+            ObjectInputStream ois = (cls == null) ? new ObjectInputStream(is) : new CustomizedObjectInputStream(is, cls);
+            result = ois.readObject();
         }
 
         if (result == null) {
