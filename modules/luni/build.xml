@@ -130,21 +130,6 @@
         <!-- Build vmls lib -->
         <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" />
 
-        <!-- Build launcher executables -->
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
-
-        <!-- Copy across the built executables -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/launcher">
-                <patternset includes="java${exe.suffix}" />
-                <patternset includes="javaw${exe.suffix}" />
-                <include name="*${progdb.suffix}*" if="is.windows" />
-            </fileset>
-        </copy>
-
-        <!-- Make sure the Linux launcher has execute permission -->
-        <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
-
     </target>
 
     <!-- Overlay OSS packages into their required locations -->
@@ -164,8 +149,6 @@
         <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" target="clean" />
         <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" target="clean" />
         <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
-              target="clean" />
     </target>
 
     <target name="test" depends="-test-module">
