@@ -17,13 +17,31 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
+
 import javax.sql.rowset.BaseRowSet;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialRef;
+
 import junit.framework.TestCase;
 
 public class BaseRowSetTest extends TestCase {
-    
+
     public void testGetParams() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         Object[] params = brs.getParams();
@@ -153,12 +171,213 @@ public class BaseRowSetTest extends TestCase {
         assertEquals(Short.valueOf((short)1), params[0]);
     }
     
+    public void testSetArray() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Array a = new MockArray();
+        brs.setArray(1, a);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue("Should have stored a SerialArray", params[0] instanceof SerialArray);
+    }
+    
+    public void testSetBlob() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Blob b = new MockBlob();
+        brs.setBlob(1, b);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue("Should have stored a SerialBlob", params[0] instanceof SerialBlob);
+    }
+    
+    public void testSetClob() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Clob c = new MockClob();
+        brs.setClob(1, c);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue(c != params[0]);
+        assertTrue("Should have stored a SerialClob", params[0] instanceof SerialClob);
+    }
+    
+    public void testSetRef() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Ref r = new MockRef();
+        brs.setRef(1, r);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue(r != params[0]);
+        assertTrue("Should have stored a SerialRef", params[0] instanceof SerialRef);        
+    }
+    
     private static final class BaseRowSetImpl extends BaseRowSet {
         private static final long serialVersionUID = 1L;
 
         @Override
         protected void initParams() {
             super.initParams();
+        }
+    }
+    
+    static class MockArray implements Array {
+
+        public Object getArray() throws SQLException {
+            return new Object[0];
+        }
+
+        public Object getArray(long index, int count) throws SQLException {
+            return null;
+        }
+
+        public Object getArray(long index, int count, Map<String, Class<?>> map)
+                throws SQLException {
+            return null;
+        }
+
+        public Object getArray(Map<String, Class<?>> map) throws SQLException {
+            return null;
+        }
+
+        public int getBaseType() throws SQLException {
+            return 0;
+        }
+
+        public String getBaseTypeName() throws SQLException {
+            return null;
+        }
+
+        public ResultSet getResultSet() throws SQLException {
+            return null;
+        }
+
+        public ResultSet getResultSet(long index, int count)
+                throws SQLException {
+            return null;
+        }
+
+        public ResultSet getResultSet(long index, int count,
+                Map<String, Class<?>> map) throws SQLException {
+            return null;
+        }
+
+        public ResultSet getResultSet(Map<String, Class<?>> map)
+                throws SQLException {
+            return null;
+        }
+
+    }
+    
+    static class MockBlob implements Blob {
+
+        public InputStream getBinaryStream() throws SQLException {
+            return null;
+        }
+
+        public byte[] getBytes(long pos, int length) throws SQLException {
+            return new byte[0];
+        }
+
+        public long length() throws SQLException {
+            return 0;
+        }
+
+        public long position(Blob pattern, long start) throws SQLException {
+            return 0;
+        }
+
+        public long position(byte[] pattern, long start) throws SQLException {
+            return 0;
+        }
+
+        public OutputStream setBinaryStream(long pos) throws SQLException {
+            return null;
+        }
+
+        public int setBytes(long pos, byte[] theBytes) throws SQLException {
+            return 0;
+        }
+
+        public int setBytes(long pos, byte[] theBytes, int offset, int len)
+                throws SQLException {
+            return 0;
+        }
+
+        public void truncate(long len) throws SQLException {
+        }
+    }
+    
+    static class MockClob implements Clob {
+        
+        public Reader characterStreamReader = new StringReader("xys");
+        public InputStream asciiInputStream = new ByteArrayInputStream("hello".getBytes());
+        
+        public InputStream getAsciiStream() throws SQLException {
+            return asciiInputStream;
+        }
+
+        public Reader getCharacterStream() throws SQLException {
+            return characterStreamReader;
+        }
+
+        public String getSubString(long pos, int length) throws SQLException {
+            return null;
+        }
+
+        public long length() throws SQLException {
+            return 3;
+        }
+
+        public long position(Clob searchstr, long start) throws SQLException {
+            return 0;
+        }
+
+        public long position(String searchstr, long start) throws SQLException {
+            return 0;
+        }
+
+        public OutputStream setAsciiStream(long pos) throws SQLException {
+            return null;
+        }
+
+        public Writer setCharacterStream(long pos) throws SQLException {
+            return null;
+        }
+
+        public int setString(long pos, String str) throws SQLException {
+            return 0;
+        }
+
+        public int setString(long pos, String str, int offset, int len)
+                throws SQLException {
+            return 0;
+        }
+
+        public void truncate(long len) throws SQLException {
+        }
+    }
+
+    public class MockRef implements Ref {
+
+        public String getBaseTypeName() throws SQLException {
+            return "ref";
+        }
+
+        public Object getObject() throws SQLException {
+            return null;
+        }
+
+        public Object getObject(Map<String, Class<?>> map) throws SQLException {
+            return null;
+        }
+
+        public void setObject(Object value) throws SQLException {
         }
     }
 }

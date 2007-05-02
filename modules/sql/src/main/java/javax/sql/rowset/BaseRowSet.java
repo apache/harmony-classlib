@@ -36,9 +36,14 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.sql.RowSet;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetListener;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialRef;
 
 public abstract class BaseRowSet implements Cloneable, Serializable {
     private static final long serialVersionUID = 4886719666485113312L ;
@@ -622,7 +627,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         if (params == null) {
             throw new SQLException();
         }
-        params.put(Integer.valueOf(parameterIndex - 1), ref);
+        params.put(Integer.valueOf(parameterIndex - 1), new SerialRef(ref));
     }
 
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
@@ -632,7 +637,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         if (params == null) {
             throw new SQLException();
         }
-        params.put(Integer.valueOf(parameterIndex - 1), x);
+        params.put(Integer.valueOf(parameterIndex - 1), new SerialBlob(x));
     }
 
     public void setClob(int parameterIndex, Clob x) throws SQLException {
@@ -642,7 +647,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         if (params == null) {
             throw new SQLException();
         }
-        params.put(Integer.valueOf(parameterIndex - 1), x);
+        params.put(Integer.valueOf(parameterIndex - 1), new SerialClob(x));
     }
 
     public void setArray(int parameterIndex, Array array) throws SQLException {
@@ -652,7 +657,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         if (params == null) {
             throw new SQLException();
         }
-        params.put(Integer.valueOf(parameterIndex - 1), array);
+        params.put(Integer.valueOf(parameterIndex - 1), new SerialArray(array));
     }
 
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
