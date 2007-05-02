@@ -170,7 +170,6 @@ ${built.files.list}
             <src path="modules/swing/src/main/java/${hy.os.family}" />
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
-            <src path="modules/tools/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
 
             <classpath>
