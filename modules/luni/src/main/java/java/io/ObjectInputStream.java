@@ -105,9 +105,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     // Handle for the current class descriptor
     private Integer descriptorHandle;
 
-    // cache for readResolve methods
-    private IdentityHashMap<Class<?>, Object> readResolveCache;
-
     private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>();
 
     static {
@@ -325,7 +322,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         primitiveTypes = new DataInputStream(this);
         enableResolve = false;
         this.subclassOverridingImplementation = false;
-        this.readResolveCache = new IdentityHashMap<Class<?>, Object>();
         resetState();
         nestedLevels = 0;
         // So read...() methods can be used by
@@ -1173,13 +1169,12 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 // Object type (array included).
                 String fieldName = fieldDesc.getName();
                 boolean setBack = false;
-                ObjectStreamField field = classDesc.getField(fieldName);
-                if (mustResolve && field == null) {
+                if (mustResolve && fieldDesc == null) {
                     setBack = true;
                     mustResolve = false;
                 }
                 Object toSet;
-                if (field != null && field.isUnshared()) {
+                if (fieldDesc != null && fieldDesc.isUnshared()) {
                     toSet = readUnshared();
                 } else {
                     toSet = readObject();
@@ -1187,9 +1182,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 if (setBack) {
                     mustResolve = true;
                 }
-                if (field != null) {
+                if (fieldDesc != null) {
                     if (toSet != null) {
-                        Class<?> fieldType = field.getType();
+                        Class<?> fieldType = fieldDesc.getType();
                         Class<?> valueType = toSet.getClass();
                         if (!fieldType.isAssignableFrom(valueType)) {
                             throw new ClassCastException(Msg.getString(
@@ -1199,7 +1194,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                                                     + fieldName }));
                         }
                         try {
-                            objSetField(obj, declaringClass, fieldName, field
+                            objSetField(obj, declaringClass, fieldName, fieldDesc
                                     .getTypeString(), toSet);
                         } catch (NoSuchFieldError e) {
                             // Ignored
@@ -1360,11 +1355,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (!ObjectStreamClass.isSerializable(cl)) {
             return;
         }
-
-        final Method readMethod = ObjectStreamClass
-                .getPrivateReadObjectNoDataMethod(cl);
-        if (readMethod != null) {
-            AccessController.doPrivileged(new PriviAction<Object>(readMethod));
+        ObjectStreamClass classDesc = ObjectStreamClass.lookupStreamClass(cl);
+        if (classDesc.hasMethodReadObjectNoData()){
+            final Method readMethod = classDesc.getMethodReadObjectNoData();
             try {
                 readMethod.invoke(object, new Object[0]);
             } catch (InvocationTargetException e) {
@@ -1379,6 +1372,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 throw new RuntimeException(e.toString());
             }
         }
+
     }
 
     private void readObjectForClass(Object object, ObjectStreamClass classDesc)
@@ -1390,12 +1384,12 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         boolean hadWriteMethod = (classDesc.getFlags() & SC_WRITE_METHOD) > 0;
         Class<?> targetClass = classDesc.forClass();
+
         final Method readMethod;
         if (targetClass == null || !mustResolve) {
             readMethod = null;
         } else {
-            readMethod = ObjectStreamClass
-                    .getPrivateReadObjectMethod(targetClass);
+            readMethod = classDesc.getMethodReadObject();
         }
         try {
             if (readMethod != null) {
@@ -1716,10 +1710,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // We need to map classDesc to class.
         try {
             newClassDesc.setClass(resolveClass(newClassDesc));
-            // Check SUIDs
-            verifySUID(newClassDesc);
-            // Check base name of the class
-            verifyBaseName(newClassDesc);
+            // Check SUIDs & base name of the class
+            verifyAndInit(newClassDesc);
         } catch (ClassNotFoundException e) {
             if (mustResolve) {
                 throw e;
@@ -1997,39 +1989,24 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
 
         if (objectClass != null) {
-            Object readResolveMethod = readResolveCache.get(objectClass);
-            if (readResolveMethod != this) {
-                if (readResolveMethod == null) {
-                    final Method readResolve = ObjectStreamClass
-                            .methodReadResolve(objectClass);
-                    if (readResolve == null) {
-                        readResolveCache.put(objectClass, this);
-                        // readResolveMethod must be null here
-                        assert readResolveMethod == null;
+
+            ObjectStreamClass desc = ObjectStreamClass.lookupStreamClass(objectClass);
+            if (desc.hasMethodReadResolve()){
+                Method methodReadResolve = desc.getMethodReadResolve();
+                try {
+                    result = methodReadResolve.invoke(result, (Object[]) null);
+                } catch (IllegalAccessException iae) {
+                } catch (InvocationTargetException ite) {
+                    Throwable target = ite.getTargetException();
+                    if (target instanceof ObjectStreamException) {
+                        throw (ObjectStreamException) target;
+                    } else if (target instanceof Error) {
+                        throw (Error) target;
                     } else {
-                        // Has replacement method
-                        AccessController.doPrivileged(new PriviAction<Object>(
-                                readResolve));
-                        readResolveCache.put(objectClass, readResolve);
-                        readResolveMethod = readResolve;
+                        throw (RuntimeException) target;
                     }
                 }
-                if (readResolveMethod != null) {
-                    try {
-                        result = ((Method) readResolveMethod).invoke(result,
-                                (Object[]) null);
-                    } catch (IllegalAccessException iae) {
-                    } catch (InvocationTargetException ite) {
-                        Throwable target = ite.getTargetException();
-                        if (target instanceof ObjectStreamException) {
-                            throw (ObjectStreamException) target;
-                        } else if (target instanceof Error) {
-                            throw (Error) target;
-                        } else {
-                            throw (RuntimeException) target;
-                        }
-                    }
-                }
+
             }
         }
         // We get here either if class-based replacement was not needed or if it
@@ -2726,8 +2703,10 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     /**
-     * Verify if the SUID for descriptor <code>loadedStreamClass</code>matches
-     * the SUID of the corresponding loaded class.
+     * Verify if the SUID & the base name for descriptor 
+     * <code>loadedStreamClass</code>matches
+     * the SUID & the base name of the corresponding loaded class and
+     * init private fields.
      * 
      * @param loadedStreamClass
      *            An ObjectStreamClass that was loaded from the stream.
@@ -2735,41 +2714,20 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * @throws InvalidClassException
      *             If the SUID of the stream class does not match the VM class
      */
-    private void verifySUID(ObjectStreamClass loadedStreamClass)
+    private void verifyAndInit(ObjectStreamClass loadedStreamClass)
             throws InvalidClassException {
+
         Class<?> localClass = loadedStreamClass.forClass();
-        // Instances of java.lang.Class are always Serializable, even if their
-        // instances aren't (e.g. java.lang.Object.class). We cannot call lookup
-        // because it returns null if the parameter represents instances that
-        // cannot be serialized, and that is not what we want. If we are loading
-        // an instance of java.lang.Class, we better have the corresponding
-        // ObjectStreamClass.
         ObjectStreamClass localStreamClass = ObjectStreamClass
                 .lookupStreamClass(localClass);
+
         if (loadedStreamClass.getSerialVersionUID() != localStreamClass
                 .getSerialVersionUID()) {
             throw new InvalidClassException(loadedStreamClass.getName(), Msg
                     .getString("K00da", loadedStreamClass, //$NON-NLS-1$
                             localStreamClass));
         }
-    }
 
-    /**
-     * Verify if the base name for descriptor <code>loadedStreamClass</code>
-     * matches the base name of the corresponding loaded class.
-     * 
-     * @param loadedStreamClass
-     *            An ObjectStreamClass that was loaded from the stream.
-     * 
-     * @throws InvalidClassException
-     *             If the base name of the stream class does not match the VM
-     *             class
-     */
-    private void verifyBaseName(ObjectStreamClass loadedStreamClass)
-            throws InvalidClassException {
-        Class<?> localClass = loadedStreamClass.forClass();
-        ObjectStreamClass localStreamClass = ObjectStreamClass
-                .lookupStreamClass(localClass);
         String loadedClassBaseName = getBaseName(loadedStreamClass.getName());
         String localClassBaseName = getBaseName(localStreamClass.getName());
 
@@ -2778,6 +2736,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     .getString("KA015", loadedClassBaseName, //$NON-NLS-1$
                             localClassBaseName));
         }
+
+        loadedStreamClass.initPrivateFields(localStreamClass);        
     }
 
     private static String getBaseName(String fullName) {

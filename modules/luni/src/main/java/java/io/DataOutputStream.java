@@ -31,6 +31,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 
     /** The number of bytes written out so far */
     protected int written;
+    byte buff[];
 
     /**
      * Constructs a new DataOutputStream on the OutputStream <code>out</code>.
@@ -43,6 +44,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      */
     public DataOutputStream(OutputStream out) {
         super(out);
+        buff = new byte[8];
     }
 
     /**
@@ -190,9 +192,9 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      * @see DataInput#readChar()
      */
     public final void writeChar(int val) throws IOException {
-        out.write(val >> 8);
-        out.write(val);
-        written += 2;
+        buff[0] = (byte) (val >> 8);
+        buff[1] = (byte) val;
+        out.write(buff, 0, 2);
     }
 
     /**
@@ -269,11 +271,11 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      * @see DataInput#readInt()
      */
     public final void writeInt(int val) throws IOException {
-        out.write(val >> 24);
-        out.write(val >> 16);
-        out.write(val >> 8);
-        out.write(val);
-        written += 4;
+        buff[0] = (byte) (val >> 24);
+        buff[1] = (byte) (val >> 16);
+        buff[2] = (byte) (val >> 8);
+        buff[3] = (byte) val;
+        out.write(buff, 0, 4);
     }
 
     /**
@@ -290,8 +292,15 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      * @see DataInput#readLong()
      */
     public final void writeLong(long val) throws IOException {
-        writeInt((int) (val >> 32));
-        writeInt((int) val);
+        buff[0] = (byte) (val >> 56);
+        buff[1] = (byte) (val >> 48);
+        buff[2] = (byte) (val >> 40);
+        buff[3] = (byte) (val >> 32);
+        buff[4] = (byte) (val >> 24);
+        buff[5] = (byte) (val >> 16);
+        buff[6] = (byte) (val >> 8);
+        buff[7] = (byte) val;
+        out.write(buff, 0, 8);
     }
 
     /**
@@ -309,7 +318,9 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      * @see DataInput#readUnsignedShort()
      */
     public final void writeShort(int val) throws IOException {
-        writeChar(val);
+        buff[0] = (byte) (val >> 8);
+        buff[1] = (byte) val;
+        out.write(buff, 0, 2);
     }
 
     /**
@@ -325,53 +336,12 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
      * @see DataInput#readUTF()
      */
     public final void writeUTF(String str) throws IOException {
-        int length = str.length();
-        if (length <= DataInputStream.MAX_BUF_SIZE / 3) {
-            int size = length * 3;
-            byte[] utfBytes;
-            boolean makeBuf = true;
-            synchronized (DataInputStream.byteBuf) {
-                if (DataInputStream.useShared) {
-                    DataInputStream.useShared = false;
-                    makeBuf = false;
-                }
-            }
-            if (makeBuf) {
-                utfBytes = new byte[size];
-            } else {
-                if (DataInputStream.byteBuf.length < size) {
-                    DataInputStream.byteBuf = new byte[size];
-                }
-                utfBytes = DataInputStream.byteBuf;
-            }
-            int utfIndex = 0;
-            for (int i = 0; i < length; i++) {
-                int charValue = str.charAt(i);
-                if (charValue > 0 && charValue <= 127) {
-                    utfBytes[utfIndex++] = (byte) charValue;
-                } else if (charValue <= 2047) {
-                    utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                } else {
-                    utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                }
-            }
-            writeShort(utfIndex);
-            write(utfBytes, 0, utfIndex);
-            if (!makeBuf) {
-                DataInputStream.useShared = true;
-            }
-        } else {
-            long utfCount;
-            if (length <= 65535 && (utfCount = countUTFBytes(str)) <= 65535) {
-                writeShort((int) utfCount);
-                writeUTFBytes(str, utfCount);
-            } else {
-                throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
-            }
+        long utfCount = countUTFBytes(str);
+        if (utfCount > 65535) {
+            throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
         }
+        writeShort((int) utfCount);
+        writeUTFBytes(str, utfCount);
     }
 
     long countUTFBytes(String str) {
@@ -390,70 +360,23 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
     }
 
     void writeUTFBytes(String str, long count) throws IOException {
-        boolean single = true;
         int size = (int) count;
-        if (count > DataInputStream.MAX_BUF_SIZE) {
-            single = false;
-            size = DataInputStream.MAX_BUF_SIZE;
+        int length = str.length();
+        byte[] utfBytes = new byte[size];
+        int utfIndex = 0;
+        for (int i = 0; i < length; i++) {
+            int charValue = str.charAt(i);
+            if (charValue > 0 && charValue <= 127) {
+                utfBytes[utfIndex++] = (byte) charValue;
+            } else if (charValue <= 2047) {
+                utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+            } else {
+                utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
+                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+             }
         }
-        byte[] utfBytes;
-        boolean makeBuf = true;
-        if (DataInputStream.useShared) {
-            synchronized (DataInputStream.cacheLock) {
-                if (DataInputStream.useShared) {
-                    DataInputStream.useShared = false;
-                    makeBuf = false;
-                }
-            }
-        }
-        if (makeBuf) {
-            utfBytes = new byte[size];
-        } else {
-            // byteBuf is not protected by the cacheLock, so sample it first
-            utfBytes = DataInputStream.byteBuf;
-            if (utfBytes.length < size) {
-                utfBytes = DataInputStream.byteBuf = new byte[size];
-            }
-        }
-
-        int utfIndex = 0, i = 0, length = str.length();
-        int end = length;
-        while (i < length) {
-            if (!single) {
-                end = i + ((utfBytes.length - utfIndex) / 3);
-                if (end > length) {
-                    end = length;
-                }
-            }
-            for (int j = i; j < end; j++) {
-                int charValue = str.charAt(j);
-                if (charValue > 0 && charValue <= 127) {
-                    utfBytes[utfIndex++] = (byte) charValue;
-                } else if (charValue <= 2047) {
-                    utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                } else {
-                    utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
-                    utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
-                }
-            }
-            if (single || utfIndex > utfBytes.length - 300) {
-                write(utfBytes, 0, utfIndex);
-                if (single) {
-                    return;
-                }
-                utfIndex = 0;
-            }
-            i = end;
-        }
-        if (utfIndex > 0) {
-            write(utfBytes, 0, utfIndex);
-        }
-        if (!makeBuf) {
-            // Update the useShared flag optimistically (see DataInputStream
-            // equivalent)
-            DataInputStream.useShared = true;
-        }
+        write(utfBytes, 0, utfIndex);
     }
 }
