@@ -151,9 +151,9 @@ public abstract class Toolkit {
      */
     private final HashSet<String> userPropSet = new HashSet<String>();
 
-    protected Map<String, Object> desktopProperties;
+    protected final Map<String, Object> desktopProperties;
 
-    protected PropertyChangeSupport desktopPropsSupport;
+    protected final PropertyChangeSupport desktopPropsSupport;
 
     /**
      * For this component the native window is being created
@@ -170,7 +170,7 @@ public abstract class Toolkit {
 
     DTK dtk;
 
-    protected final class ComponentInternalsImpl extends ComponentInternals {
+    final class ComponentInternalsImpl extends ComponentInternals {
         @Override
         public NativeWindow getNativeWindow(Component component) {
             lockAWT();
@@ -534,18 +534,18 @@ public abstract class Toolkit {
     }
     
     public Toolkit() {        
+        desktopProperties = new HashMap<String, Object>();
+        desktopPropsSupport = new PropertyChangeSupport(this);
         init();
     }
 
-    protected void init() {
+    void init() {
         lockAWT();
         try {
             ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
             new EventQueue(this); // create the system EventQueue
             dispatcher = new Dispatcher(this);
             final String className = getWTKClassName();
-            desktopProperties = new HashMap<String, Object>();
-            desktopPropsSupport = new PropertyChangeSupport(this);
             awtEventsManager = new AWTEventsManager();
             dispatchThread = new EventDispatchThread(this, dispatcher);
             nativeThread = new NativeEventThread();
